@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLFBRuleReasoner.java,v 1.4 2003-06-03 21:21:29 der Exp $
+ * $Id: OWLFBRuleReasoner.java,v 1.5 2003-06-08 17:49:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.graph.*;
  * figure out what should be done at the bindSchema stage).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-03 21:21:29 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-08 17:49:17 $
  */
 public class OWLFBRuleReasoner extends FBRuleReasoner {
     
@@ -97,8 +97,8 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
      */
     public InfGraph bind(Graph data) throws ReasonerException {
         FBRuleInfGraph graph =  null;
-        FBRuleInfGraph schemaArg = schemaGraph == null ? getPreload() : (FBRuleInfGraph)schemaGraph; 
-        List baseRules = schemaArg.getRules();
+        InfGraph schemaArg = schemaGraph == null ? getPreload() : (FBRuleInfGraph)schemaGraph; 
+        List baseRules = ((FBRuleInfGraph)schemaArg).getRules();
         graph = new FBRuleInfGraph(this, augmentRules(baseRules, data), schemaArg);
         graph.setDerivationLogging(recordDerivations);
         graph.setTraceOn(traceOn);
@@ -110,7 +110,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
     /**
      * Get the single static precomputed rule closure.
      */
-    public FBRuleInfGraph getPreload() {
+    public InfGraph getPreload() {
 //        return null;        // Disable preload for now, causes problems
         synchronized (OWLFBRuleReasoner.class) {
             if (preload == null) {
@@ -126,7 +126,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
      * augmented by new intersection rules (or the original rule set if no
      * augmentations are needed).
      */
-    private List augmentRules(List baseRules, Graph data) {
+    protected static List augmentRules(List baseRules, Graph data) {
         Iterator i = data.find(null, OWL.intersectionOf.asNode(), null);
         if (i.hasNext()) {
             List newrules = (List) ((ArrayList) baseRules).clone();
@@ -147,7 +147,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
      * @param rules a list of rules to be extended
      * @param data the source data to use as a context for this processing
      */
-    private void translateIntersectionOf(Triple decl, List rules, Graph data) {
+    protected static void translateIntersectionOf(Triple decl, List rules, Graph data) {
         Node className = decl.getSubject();
         List elements = new ArrayList();
         translateIntersectionList(decl.getObject(), data, elements);
@@ -181,7 +181,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
      * @param data the source data to use as a context for this processing
      * @param elements the list of elements found so far
      */
-    private void translateIntersectionList(Node node, Graph data, List elements) {
+    protected static void translateIntersectionList(Node node, Graph data, List elements) {
         if (node.equals(RDF.nil.asNode())) {
             return; // end of list
         } 

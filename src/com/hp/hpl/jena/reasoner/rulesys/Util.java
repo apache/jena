@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Util.java,v 1.5 2003-06-02 09:03:50 der Exp $
+ * $Id: Util.java,v 1.6 2003-06-08 17:49:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -16,13 +16,14 @@ import com.hp.hpl.jena.reasoner.IllegalParameterException;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import java.io.*;
+import java.net.*;
 import java.util.*;
 
 /**
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-02 09:03:50 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-08 17:49:17 $
  */
 public class Util {
 
@@ -123,6 +124,32 @@ public class Util {
             result.append("\n");
         }
         return result.toString();
+    }
+    
+    /**
+     * Open a file defined by a URL and read it into a single string.
+     * If the URL fails it will try a plain file name as well.
+     */
+    public static String loadURLFile(String urlStr) throws IOException {
+        BufferedReader dataReader;
+        try {
+            URL url = new URL(urlStr);
+            dataReader = new BufferedReader(new InputStreamReader(url.openStream())) ;
+        } catch (java.net.MalformedURLException e) {
+            // Try as a file.
+            dataReader = new BufferedReader(new FileReader(urlStr));
+        }
+        StringWriter sw = new StringWriter(1024);
+        char buff[] = new char[1024];
+        while (dataReader.ready()) {
+            int l = dataReader.read(buff);
+            if (l <= 0)
+                break;
+            sw.write(buff, 0, l);
+        }
+        dataReader.close();
+        sw.close();
+        return sw.toString();
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.8 2003-06-04 08:10:29 der Exp $
+ * $Id: TestFBRules.java,v 1.9 2003-06-08 17:49:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-04 08:10:29 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-08 17:49:51 $
  */
 public class TestFBRules extends TestCase {
     
@@ -76,6 +76,7 @@ public class TestFBRules extends TestCase {
         return new TestSuite( TestFBRules.class ); 
 //        TestSuite suite = new TestSuite();
 //        suite.addTest(new TestFBRules( "testHybrid2" ));
+//        suite.addTest(new TestFBRules( "testDuplicatesEC4" ));
 //        return suite;
     }  
 
@@ -135,7 +136,7 @@ public class TestFBRules extends TestCase {
         Property prop = data.createProperty(PrintUtil.egNS, "prop");
         Property propbar = data.createProperty(PrintUtil.egNS, "propbar");
         Property propfunc = data.createProperty(PrintUtil.egNS, "propfunc");
-        Property rbr = data.createProperty(Rule.RBNamespace, "restriction");
+        Property rbr = data.createProperty(ReasonerVocabulary.RBNamespace, "restriction");
         R1.addProperty(RDF.type, OWL.Restriction)
           .addProperty(OWL.onProperty, p)
           .addProperty(OWL.allValuesFrom, D);
@@ -528,7 +529,7 @@ public class TestFBRules extends TestCase {
         Graph data = premisesM.getGraph();
         Reasoner reasoner =  new OWLFBRuleReasoner();
         InfGraph infgraph = reasoner.bind(data);
-        Node rbPrototypeProp = Node.createURI(Rule.RBNamespace+"prototype");
+        Node rbPrototypeProp = Node.createURI(ReasonerVocabulary.RBNamespace+"prototype");
         int count = 0;
         for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
             Object t = i.next();
@@ -573,7 +574,8 @@ public class TestFBRules extends TestCase {
      */
     public void listGraph(Graph g) {
         for (Iterator i = g.find(null,null,null); i.hasNext();) {
-            logger.info(PrintUtil.print(i.next()));
+            Triple t = (Triple)i.next();
+            logger.info(PrintUtil.print(t));
         }
         logger.info("  --------  ");
     }

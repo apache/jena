@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.8 2003-06-02 09:03:50 der Exp $
+ * $Id: Rule.java,v 1.9 2003-06-08 17:49:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -53,7 +53,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.8 $ on $Date: 2003-06-02 09:03:50 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.9 $ on $Date: 2003-06-08 17:49:17 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -73,9 +73,6 @@ public class Rule implements ClauseEntry {
     
     /** Flags whether the rule was written as a forward or backward rule */
     protected boolean isBackward = false;
-    
-    /** A namespace used for Rubic specific properties */
-    public static final String RBNamespace = "urn:x-hp-jena:rubik/";
     
     /**
      * Constructor

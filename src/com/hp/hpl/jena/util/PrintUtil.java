@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PrintUtil.java,v 1.2 2003-05-28 11:13:55 chris-dollin Exp $
+ * $Id: PrintUtil.java,v 1.3 2003-06-08 17:50:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -15,9 +15,7 @@ import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.TriplePattern;
-import com.hp.hpl.jena.reasoner.rulesys.Rule;
 
 /**
  * A collection of small utilites for pretty printing nodes, triples
@@ -25,7 +23,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Rule;
  * prefix map which is preloaded with known prefixes.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-28 11:13:55 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-08 17:50:41 $
  */
 public class PrintUtil {
 
@@ -35,18 +33,30 @@ public class PrintUtil {
     /** The inverse prefix map */
     protected static Map nsToPrefix = new HashMap();
     
+//    /** Flag to indicate initialization is complete */
+//    protected static boolean initialized = false;
+    
     /** Default built in eg namespace used in testing */
     public static final String egNS = "urn:x-hp:eg/";
-    
-    // Pre-register standard prefixes
+        
     static {
+        init();
+    }
+    
+    /**
+     * Load built in prefixes.
+     */
+    public static void init() {
+//        if (! initialized) {
             registerPrefix("rdf", RDF.getURI());
             registerPrefix("rdfs", RDFS.getURI());
             registerPrefix("owl", OWL.NAMESPACE);
             registerPrefix("daml", DAML_OIL.NAMESPACE_DAML.getURI());
-            registerPrefix("jr", ReasonerRegistry.JenaReasonerNS);
-            registerPrefix("rb", Rule.RBNamespace);
+            registerPrefix("jr", ReasonerVocabulary.getJenaReasonerNS());
+            registerPrefix("rb", ReasonerVocabulary.getRBNamespace());
             registerPrefix("eg", egNS);
+//            initialized = true;
+//        }
     }
     
     /**
@@ -61,6 +71,7 @@ public class PrintUtil {
      * Return a simplified print string for a Node. 
      */
     public static String print(Node node) {
+//        if (!initialized) init();
         if (node instanceof Node_URI) {
             String uri = node.getURI();
             int split = uri.lastIndexOf('#');
@@ -95,6 +106,7 @@ public class PrintUtil {
      * Return a simplified print string for an RDFNode. 
      */
     public static String print(RDFNode node) {
+//        if (!initialized) init();
         return print(node.asNode());
     }
     
@@ -102,6 +114,7 @@ public class PrintUtil {
      * Return a simplified print string for a Triple
      */
     public static String print(Triple triple) {
+//        if (!initialized) init();
         return "(" + print(triple.getSubject()) + " " +
                       print(triple.getPredicate()) + " " +
                       print(triple.getObject()) + ")";
@@ -111,6 +124,7 @@ public class PrintUtil {
      * Return a simplified print string for a TriplePattern
      */
     public static String print(TriplePattern triple) {
+//        if (!initialized) init();
         return "(" + print(triple.getSubject()) + " " +
                       print(triple.getPredicate()) + " " +
                       print(triple.getObject()) + ")";
@@ -120,6 +134,7 @@ public class PrintUtil {
      * Return a simplified print string for a statment
      */
     public static String print(Statement stmt) {
+//        if (!initialized) init();
         return print(stmt.asTriple());
     }
     
@@ -148,6 +163,7 @@ public class PrintUtil {
      * expand the prefix, otherwise return the original URI
      */
     public static String expandQname(String uri) {
+//        if (!initialized) init();
         int split = uri.indexOf(':');
         String nsPrefix = uri.substring(0, split);
         String localname = uri.substring(split+1);

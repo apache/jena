@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.9 2003-05-27 15:50:24 der Exp $
+ * $Id: TransitiveReasoner.java,v 1.10 2003-06-08 17:49:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import java.util.HashSet;
@@ -33,7 +34,7 @@ import java.util.HashSet;
  * of RDFS processing.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-05-27 15:50:24 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-08 17:49:51 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -105,7 +106,7 @@ public class TransitiveReasoner implements Reasoner {
         ReasonerFactory rf = TransitiveReasonerFactory.theInstance();
         Model caps = rf.getCapabilities();
         Resource root = caps.getResource(rf.getURI());
-        return caps.contains(root, ReasonerRegistry.supportsP, property);
+        return caps.contains(root, ReasonerVocabulary.supportsP, property);
     }
      
     /**

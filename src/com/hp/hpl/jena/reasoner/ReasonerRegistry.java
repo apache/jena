@@ -5,14 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.10 2003-06-06 14:01:25 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.11 2003-06-08 17:49:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
@@ -34,7 +32,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-06 14:01:25 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-08 17:49:52 $
  */
 public class ReasonerRegistry {
 
@@ -47,36 +45,6 @@ public class ReasonerRegistry {
     /** Union of the all reasoner capability descriptions */
     protected Model allDescriptions;
 
-    /** The namespace used for system level descriptive properties */
-    public static String JenaReasonerNS = "http://www.hpl.hp.com/semweb/2003/JenaReasoner#";
-    
-    /** The RDF class to which all Reasoners belong */
-    public static Resource ReasonerClass = new ResourceImpl(JenaReasonerNS + "ReasonerClass");    
-    
-    /** Reasoner description property: name of the reasoner */
-    public static Property nameP;
-    
-    /** Reasoner description property: text description of the reasoner */
-    public static Property descriptionP;
-    
-    /** Reasoner description property: version of the reasoner */
-    public static Property versionP;
-    
-    /** Reasoner description property: a schema property supported by the reasoner */
-    public static Property supportsP;
-    
-    /** Reasoner description property: a configuration property supported by the reasoner */
-    public static Property configurationP;
-    
-    // Static initializer for properties
-    static {
-        nameP = new PropertyImpl(JenaReasonerNS, "name");
-        descriptionP = new PropertyImpl(JenaReasonerNS, "description");
-        versionP = new PropertyImpl(JenaReasonerNS, "version");
-        supportsP = new PropertyImpl(JenaReasonerNS, "supports");
-        configurationP = new PropertyImpl(JenaReasonerNS, "configurationProperty");
-    }
-    
     /**
      * Constructor is hidden - go via theRegistry
      */
@@ -111,7 +79,7 @@ public class ReasonerRegistry {
             allDescriptions.add(description);
         }
         allDescriptions.createResource(factory.getURI())
-                        .addProperty(RDF.type, ReasonerClass);
+                        .addProperty(RDF.type, ReasonerVocabulary.ReasonerClass);
     }
     
     /**
@@ -123,7 +91,7 @@ public class ReasonerRegistry {
     public void register(String reasonerUri, ReasonerFactory factory) {
         reasonerFactories.put(reasonerUri, factory);
         allDescriptions.createResource(reasonerUri)
-                       .addProperty(RDF.type, ReasonerClass);
+                       .addProperty(RDF.type, ReasonerVocabulary.ReasonerClass);
     }
     
     /**
@@ -144,7 +112,7 @@ public class ReasonerRegistry {
      */
     public Resource getDescription(String uri) {
         Resource reasonerURI = allDescriptions.getResource(uri);
-        if (allDescriptions.contains(reasonerURI, RDF.type, ReasonerClass)) {
+        if (allDescriptions.contains(reasonerURI, RDF.type, ReasonerVocabulary.ReasonerClass)) {
             return reasonerURI;
         } else {
             return null;

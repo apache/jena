@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasonerFactory.java,v 1.6 2003-06-06 10:20:58 ian_dickinson Exp $
+ * $Id: TransitiveReasonerFactory.java,v 1.7 2003-06-08 17:49:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.*;
  * Factory class for creating blank instances of the transitive reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-06 10:20:58 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-08 17:49:51 $
  */
 public class TransitiveReasonerFactory implements ReasonerFactory {
     
@@ -56,13 +56,13 @@ public class TransitiveReasonerFactory implements ReasonerFactory {
         if (capabilities == null) {
             capabilities = new ModelMem();
             Resource base = capabilities.createResource(getURI());
-            base.addProperty(ReasonerRegistry.nameP, "Transitive Reasoner")
-                .addProperty(ReasonerRegistry.descriptionP, "Provides reflexive-transitive closure of subClassOf and subPropertyOf")
-                .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
-                .addProperty(ReasonerRegistry.supportsP, ReasonerVocabulary.directSubClassOf)
-                .addProperty(ReasonerRegistry.supportsP, ReasonerVocabulary.directSubPropertyOf)
-                .addProperty(ReasonerRegistry.versionP, "0.1");
+            base.addProperty(ReasonerVocabulary.nameP, "Transitive Reasoner")
+                .addProperty(ReasonerVocabulary.descriptionP, "Provides reflexive-transitive closure of subClassOf and subPropertyOf")
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.subClassOf)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.subPropertyOf)
+                .addProperty(ReasonerVocabulary.supportsP, ReasonerVocabulary.directSubClassOf)
+                .addProperty(ReasonerVocabulary.supportsP, ReasonerVocabulary.directSubPropertyOf)
+                .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;
     }

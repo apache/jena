@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.10 2003-06-06 14:02:51 der Exp $
+ * $Id: TestBasics.java,v 1.11 2003-06-08 17:49:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -18,6 +18,7 @@ import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.*;
+
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.util.*;
@@ -27,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-06 14:02:51 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-08 17:49:51 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -347,7 +348,7 @@ public class TestBasics extends TestCase  {
         Property prop = data.createProperty(PrintUtil.egNS, "prop");
         Property propbar = data.createProperty(PrintUtil.egNS, "propbar");
         Property propfunc = data.createProperty(PrintUtil.egNS, "propfunc");
-        Property rbr = data.createProperty(Rule.RBNamespace, "restriction");
+        Property rbr = data.createProperty(ReasonerVocabulary.RBNamespace, "restriction");
         R1.addProperty(RDF.type, OWL.Restriction)
           .addProperty(OWL.onProperty, p)
           .addProperty(OWL.allValuesFrom, D);

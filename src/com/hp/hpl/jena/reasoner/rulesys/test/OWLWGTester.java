@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.7 2003-06-02 16:53:46 der Exp $
+ * $Id: OWLWGTester.java,v 1.8 2003-06-08 17:49:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
 import com.hp.hpl.jena.util.ModelLoader;
 //import com.hp.hpl.jena.util.PrintUtil;
@@ -32,7 +31,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-02 16:53:46 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-08 17:49:51 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -109,22 +108,23 @@ public class OWLWGTester {
      * Run all the tests in the manifest
      * @param manifestFile the name of the manifest file relative to baseDir
      * @param log set to true to enable derivation logging
+     * @param stats set to true to log performance statistics
      * @return true if all the tests pass
      * @throws IOException if one of the test files can't be found
      * @throws RDFException if the test can't be found or fails internally
      */
-    public boolean runTests(String manifestFile, boolean log) throws IOException {
+    public boolean runTests(String manifestFile, boolean log, boolean stats) throws IOException {
         // Load up the manifest
         Model manifest = ModelLoader.loadModel(baseDir + manifestFile);
         ResIterator tests = manifest.listSubjectsWithProperty(RDF.type, PositiveEntailmentTest);
         while (tests.hasNext()) {
             Resource test = tests.nextResource();
-            if (!runTest(test, log)) return false;
+            if (!runTest(test, log, stats)) return false;
         }
         tests = manifest.listSubjectsWithProperty(RDF.type, NegativeEntailmentTest);
         while (tests.hasNext()) {
             Resource test = tests.nextResource();
-            if (!runTest(test, log)) return false;
+            if (!runTest(test, log, stats)) return false;
         }
         return true;
     }
@@ -133,11 +133,12 @@ public class OWLWGTester {
      * Run a single designated test.
      * @param test the root node descibing the test
      * @param log set to true to enable derivation logging
+     * @param stats set to true to log performance statistics
      * @return true if the test passes
      * @throws IOException if one of the test files can't be found
      * @throws RDFException if the test can't be found or fails internally
      */
-    public boolean runTest(Resource test, boolean log) throws IOException {
+    public boolean runTest(Resource test, boolean log, boolean stats) throws IOException {
         // Find the specification for the named test
         RDFNode testType = test.getProperty(RDF.type).getObject();
         if (!(testType.equals(NegativeEntailmentTest) ||
@@ -165,8 +166,8 @@ public class OWLWGTester {
         if (log) {
             configuration = ModelFactory.createDefaultModel();
             configuration.createResource(reasonerF.getURI())
-                         .addProperty(BasicForwardRuleReasoner.PROPtraceOn, "true")
-                         .addProperty(BasicForwardRuleReasoner.PROPderivationLogging, "true");
+                         .addProperty(ReasonerVocabulary.PROPtraceOn, "true")
+                         .addProperty(ReasonerVocabulary.PROPderivationLogging, "true");
         }
         Reasoner reasoner = reasonerF.create(configuration);
         long t1 = System.currentTimeMillis();
@@ -184,8 +185,10 @@ public class OWLWGTester {
         long t2 = System.currentTimeMillis();
         timeCost += (t2-t1);
         numTests++;
-        logger.info("Time=" + (t2-t1) + "ms for " + test.getURI());
-        printStats();
+        if (stats) {
+            logger.info("Time=" + (t2-t1) + "ms for " + test.getURI());
+            printStats();
+        }
         
         if (!correct) {
             // List all the forward deductions for debugging

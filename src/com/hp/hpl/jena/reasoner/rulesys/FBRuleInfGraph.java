@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.7 2003-06-04 08:08:58 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.8 2003-06-08 17:49:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-04 08:08:58 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-08 17:49:16 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -56,6 +56,16 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 
 //  =======================================================================
 //  Constructors
+
+    /**
+     * Constructor.
+     * @param reasoner the reasoner which created this inf graph instance
+     * @param schema the (optional) schema graph to be included
+     */
+    public FBRuleInfGraph(Reasoner reasoner, Graph schema) {
+        super(reasoner, schema);
+        bEngine = new BRuleEngine(this);
+    }
 
     /**
      * Constructor.
@@ -163,7 +173,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Return a compiled representation of all the registered
      * forward rules.
      */
-    public Object getForwardRuleStore() {
+    private FRuleEngine.RuleStore getForwardRuleStore() {
         return engine.getRuleStore();
     }
     
@@ -225,7 +235,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 engine.fastInit(); 
             } else {
                 // No preload so do the rule separation
-                extractPureBackwardRules();
+                addBRules(extractPureBackwardRules(rules));
                 engine.init(true);
             }
             // Prepare the context for builtins run in backwards engine
@@ -246,6 +256,28 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void rebind() {
         if (bEngine != null) bEngine.reset();
         isPrepared = false;
+    }
+    
+    /**
+     * Create a compiled representation of a list of rules.
+     * @param rules a list of Rule objects
+     * @return a datastructure containing precompiled representations suitable
+     * for initializing FBRuleInfGraphs
+     */
+    public static RuleStore compile(List rules) {
+        FRuleEngine.RuleStore fRules = FRuleEngine.compile(rules, true);
+        List bRules = extractPureBackwardRules(rules);
+        return new RuleStore(rules, fRules, bRules);
+    }
+
+    /**
+     * Attach a compiled rule set to this inference graph.
+     * @param rulestore a compiled set of rules.
+     */
+    public void setRuleStore(RuleStore ruleStore) {
+        this.rules = ruleStore.rawRules;
+        addBRules(ruleStore.bRules);
+        engine.setRuleStore(ruleStore.fRuleStore);
     }
     
     /**
@@ -337,13 +369,15 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * Scan the initial rule set and pick out all the backward-only rules with non-null bodies,
      * and transfer these rules to the backward engine. 
      */
-    private void extractPureBackwardRules() {
+    private static List extractPureBackwardRules(List rules) {
+        List bRules = new ArrayList();
         for (Iterator i = rules.iterator(); i.hasNext(); ) {
             Rule r = (Rule)i.next();
             if (r.isBackward() && r.bodyLength() > 0) {
-                bEngine.addRule(r);
+                bRules.add(r);
             }
         }
+        return bRules;
     }
 
     /**
@@ -353,7 +387,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * in the parent Reasoner.
      * @return true if the preload was able to load rules as well
      */
-    public boolean preloadDeductions(Graph preloadIn) {
+    protected boolean preloadDeductions(Graph preloadIn) {
         Graph d = fdeductions.getGraph();
         FBRuleInfGraph preload = (FBRuleInfGraph)preloadIn;
         // If the rule set is the same we can reuse those as well
@@ -372,7 +406,34 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             return false;
         }
     }
+    
+//  =======================================================================
+//   Inner classes
 
+    /**
+     * Structure used to wrap up pre-processed/compiled rule sets.
+     */
+    public static class RuleStore {
+        
+        /** The raw rules */
+        protected List rawRules;
+        
+        /** The indexed store used by the forward chainer */
+        protected FRuleEngine.RuleStore fRuleStore;
+        
+        /** The separated backward rules */
+        protected List bRules;
+        
+        /** 
+         * Constructor.
+         */
+        public RuleStore(List rawRules, FRuleEngine.RuleStore fRuleStore, List bRules) {
+            this.rawRules = rawRules;
+            this.fRuleStore = fRuleStore;
+            this.bRules = bRules;
+        }
+        
+    }
 }
 
 

@@ -1,25 +1,33 @@
 /******************************************************************
- * File:        RDFSRuleReasonerFactory.java
+ * File:        GenericRuleReasonerFactory.java
  * Created by:  Dave Reynolds
- * Created on:  08-Apr-03
+ * Created on:  08-Jun-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSRuleReasonerFactory.java,v 1.4 2003-06-08 17:49:16 der Exp $
+ * $Id: GenericRuleReasonerFactory.java,v 1.1 2003-06-08 17:49:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.vocabulary.*;
 
-/** * Factory class for creating blank instances of the RDFS reasoner.
- * * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.4 $ on $Date: 2003-06-08 17:49:16 $ */
-public class RDFSRuleReasonerFactory implements ReasonerFactory {    
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
+
+/**
+ * Factory object for creating general rule reasoner instances. The
+ * specific rule set and mode confriguration can be set either be method
+ * calls to the created reasoner or though parameters in the configuration Model.
+ * 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
+ * @version $Revision: 1.1 $ on $Date: 2003-06-08 17:49:17 $
+ */
+public class GenericRuleReasonerFactory implements ReasonerFactory {
+    
     /** Single global instance of this factory */
-    private static ReasonerFactory theInstance = new RDFSRuleReasonerFactory();
+    private static ReasonerFactory theInstance = new GenericRuleReasonerFactory();
     
     /** Static URI for this reasoner type */
-    public static final String URI = "http://www.hpl.hp.com/semweb/2003/RDFSRuleReasoner";
+    public static final String URI = "http://www.hpl.hp.com/semweb/2003/GenericRuleReasoner";
     
     /** Cache of the capabilities description */
     protected Model capabilities;
@@ -38,7 +46,7 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
      * is not configurable and will ignore this parameter.
      */
     public Reasoner create(Model configuration) {
-        return new RDFSRuleReasoner();
+        return new GenericRuleReasoner(this, configuration);
     }
    
     /**
@@ -50,15 +58,8 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
         if (capabilities == null) {
             capabilities = ModelFactory.createDefaultModel();
             Resource base = capabilities.createResource(getURI());
-            base.addProperty(ReasonerVocabulary.nameP, "RDFS Rule Reasoner")
-                .addProperty(ReasonerVocabulary.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"
-                                            + "Pure forward chaining so all entailments are immediate calculated\n"
-                                            + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
-                .addProperty(ReasonerVocabulary.supportsP, RDFS.subClassOf)
-                .addProperty(ReasonerVocabulary.supportsP, RDFS.subPropertyOf)
-                .addProperty(ReasonerVocabulary.supportsP, RDFS.member)
-                .addProperty(ReasonerVocabulary.supportsP, RDFS.range)
-                .addProperty(ReasonerVocabulary.supportsP, RDFS.domain)
+            base.addProperty(ReasonerVocabulary.nameP, "Generic Rule Reasoner")
+                .addProperty(ReasonerVocabulary.descriptionP, "Generic rule reasoner, configurable")
                 .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;
@@ -70,19 +71,10 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
     public String getURI() {
         return URI;
     }
-    
-    /**
-     * Temporary testing hack
-     */
-    public static void main(String[] args) {
-        Resource rdfsDescr = ReasonerRegistry.theRegistry().getDescription(URI);
-        System.out.println("Reasoner: " + rdfsDescr);
-        for (StmtIterator i = rdfsDescr.listProperties(); i.hasNext(); ) {
-            Statement s = i.nextStatement();
-            System.out.println(s.getPredicate().getLocalName() + " = " + s.getObject());
-        }
-    }
+
 }
+
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003
@@ -113,4 +105,3 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-

@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleReasoner.java,v 1.7 2003-06-02 16:52:30 der Exp $
+ * $Id: BasicForwardRuleReasoner.java,v 1.8 2003-06-08 17:49:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
@@ -17,7 +18,7 @@ import java.util.*;
  * according to a set of rules. This trivial version does not support
  * separate schema processing. The actual work is done in the inference
  * graph implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.7 $ on $Date: 2003-06-02 16:52:30 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.8 $ on $Date: 2003-06-08 17:49:17 $ */
 public class BasicForwardRuleReasoner implements Reasoner {
     
     /** The parent reasoner factory which is consulted to answer capability questions */
@@ -34,17 +35,6 @@ public class BasicForwardRuleReasoner implements Reasoner {
     
     /** Flag which, if true, enables tracing of rule actions to logger.info */
     boolean traceOn = false;
-    
-    /** Base URI used for configuration properties for rule reasoners */
-    static final String URI = "http://www.hpl.hp.com/semweb/2003/BasicRuleReasoner";
-     
-    /** Property used to configure the derivation logging behaviour of the reasoner.
-     *  Set to "true" to enable logging of derivations. */
-    public static final Property PROPderivationLogging = ResourceFactory.createProperty(URI+"#", "derivationLogging");
-    
-    /** Property used to configure the tracing behaviour of the reasoner.
-     *  Set to "true" to enable internal trace message to be sent to Logger.info . */
-    public static final Property PROPtraceOn = ResourceFactory.createProperty(URI+"#", "traceOn");
     
     /**
      * Constructor. This is the raw version that does not reference a ReasonerFactory
@@ -100,7 +90,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
         if (factory == null) return false;
         Model caps = factory.getCapabilities();
         Resource root = caps.getResource(factory.getURI());
-        return caps.contains(root, ReasonerRegistry.supportsP, property);
+        return caps.contains(root, ReasonerVocabulary.supportsP, property);
     }
     
     /**
@@ -181,9 +171,9 @@ public class BasicForwardRuleReasoner implements Reasoner {
      * java object like Boolean or Integer.
      */
     public void setParameter(String parameterUri, Object value) {
-        if (parameterUri.equals(PROPderivationLogging.getURI())) {
+        if (parameterUri.equals(ReasonerVocabulary.PROPderivationLogging.getURI())) {
             recordDerivations = Util.convertBooleanPredicateArg(parameterUri, value);
-        } else if (parameterUri.equals(PROPtraceOn.getURI())) {
+        } else if (parameterUri.equals(ReasonerVocabulary.PROPtraceOn.getURI())) {
             traceOn =  Util.convertBooleanPredicateArg(parameterUri, value);
         } else {
             throw new IllegalParameterException("Don't recognize configuration parameter " + parameterUri + " for rule-based reasoner");

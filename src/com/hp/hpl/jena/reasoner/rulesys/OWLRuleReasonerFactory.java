@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLRuleReasonerFactory.java,v 1.5 2003-06-02 16:52:30 der Exp $
+ * $Id: OWLRuleReasonerFactory.java,v 1.6 2003-06-08 17:49:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-02 16:52:30 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-08 17:49:16 $
  */
 public class OWLRuleReasonerFactory implements ReasonerFactory {
     
@@ -58,11 +58,11 @@ public class OWLRuleReasonerFactory implements ReasonerFactory {
     public Reasoner create(Model configuration) {
         OWLRuleReasoner reasoner = new OWLRuleReasoner();
         if (configuration != null) {
-            Boolean doLog = Util.checkBinaryPredicate(URI, BasicForwardRuleReasoner.PROPderivationLogging, configuration);
+            Boolean doLog = Util.checkBinaryPredicate(URI, ReasonerVocabulary.PROPderivationLogging, configuration);
             if (doLog != null) {
                 reasoner.setDerivationLogging(doLog.booleanValue());
             }
-            Boolean doTrace = Util.checkBinaryPredicate(URI, BasicForwardRuleReasoner.PROPtraceOn, configuration);
+            Boolean doTrace = Util.checkBinaryPredicate(URI, ReasonerVocabulary.PROPtraceOn, configuration);
             if (doTrace != null) {
                 reasoner.setTraceOn(doTrace.booleanValue());
             }
@@ -79,17 +79,17 @@ public class OWLRuleReasonerFactory implements ReasonerFactory {
         if (capabilities == null) {
             capabilities = ModelFactory.createDefaultModel();
             Resource base = capabilities.createResource(getURI());
-            base.addProperty(ReasonerRegistry.nameP, "OWL Rule Reasoner")
-                .addProperty(ReasonerRegistry.descriptionP, "Experimental OWL reasoner.\n"
+            base.addProperty(ReasonerVocabulary.nameP, "OWL Rule Reasoner")
+                .addProperty(ReasonerVocabulary.descriptionP, "Experimental OWL reasoner.\n"
                                             + "Pure forward chaining so all entailments are immediate calculated\n"
                                             + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
-                .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.member)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.range)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.domain)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.subClassOf)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.subPropertyOf)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.member)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.range)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.domain)
                 // TODO - add OWL elements supported
-                .addProperty(ReasonerRegistry.versionP, "0.1");
+                .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;
     }

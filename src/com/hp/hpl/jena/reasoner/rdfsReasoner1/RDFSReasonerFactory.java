@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasonerFactory.java,v 1.8 2003-05-27 15:50:24 der Exp $
+ * $Id: RDFSReasonerFactory.java,v 1.9 2003-06-08 17:49:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Factory class for creating blank instances of the RDFS reasoner.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-05-27 15:50:24 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-08 17:49:51 $
  */
 public class RDFSReasonerFactory implements ReasonerFactory {
     
@@ -62,19 +62,19 @@ public class RDFSReasonerFactory implements ReasonerFactory {
         if (capabilities == null) {
             capabilities = new ModelMem();
             Resource base = capabilities.createResource(getURI());
-            base.addProperty(ReasonerRegistry.nameP, "RDFS Reasoner 1")
-                .addProperty(ReasonerRegistry.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"
+            base.addProperty(ReasonerVocabulary.nameP, "RDFS Reasoner 1")
+                .addProperty(ReasonerVocabulary.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"
                                             + "Eager caching of schema information, back chaining for most entailments\n"
                                             + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
-                .addProperty(ReasonerRegistry.configurationP, scanProperties)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.member)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.range)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.domain)
-                .addProperty(ReasonerRegistry.supportsP, TransitiveReasoner.directSubClassOf)
-                .addProperty(ReasonerRegistry.supportsP, TransitiveReasoner.directSubPropertyOf)
-                .addProperty(ReasonerRegistry.versionP, "0.1");
+                .addProperty(ReasonerVocabulary.configurationP, scanProperties)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.subClassOf)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.subPropertyOf)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.member)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.range)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.domain)
+                .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubClassOf)
+                .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubPropertyOf)
+                .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;
     }

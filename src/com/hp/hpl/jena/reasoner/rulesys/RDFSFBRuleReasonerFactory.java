@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSFBRuleReasonerFactory.java,v 1.1 2003-05-30 16:26:12 der Exp $
+ * $Id: RDFSFBRuleReasonerFactory.java,v 1.2 2003-06-08 17:49:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * Factory class for creating blank instances of the hybrid rule RDFS reasoner. 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-30 16:26:12 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-08 17:49:16 $
  */
 public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
     
@@ -55,15 +55,15 @@ public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
         if (capabilities == null) {
             capabilities = ModelFactory.createDefaultModel();
             Resource base = capabilities.createResource(getURI());
-            base.addProperty(ReasonerRegistry.nameP, "RDFS BRule Reasoner")
-                .addProperty(ReasonerRegistry.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"
+            base.addProperty(ReasonerVocabulary.nameP, "RDFS BRule Reasoner")
+                .addProperty(ReasonerVocabulary.descriptionP, "Complete RDFS implementation supporting metalevel statements.\n"
                                             + "Can separate tbox and abox data if desired to reuse tbox caching or mix them.")
-                .addProperty(ReasonerRegistry.supportsP, RDFS.subClassOf)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.subPropertyOf)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.member)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.range)
-                .addProperty(ReasonerRegistry.supportsP, RDFS.domain)
-                .addProperty(ReasonerRegistry.versionP, "0.1");
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.subClassOf)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.subPropertyOf)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.member)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.range)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.domain)
+                .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;
     }

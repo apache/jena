@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.12 2003-05-27 15:50:24 der Exp $
+ * $Id: RDFSReasoner.java,v 1.13 2003-06-08 17:49:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 
 /**
  * An RDFS reasoner suited to modest vocabularies but large instance
@@ -31,7 +32,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-05-27 15:50:24 $
+ * @version $Revision: 1.13 $ on $Date: 2003-06-08 17:49:51 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -91,7 +92,7 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
         ReasonerFactory rf = RDFSReasonerFactory.theInstance();
         Model caps = rf.getCapabilities();
         Resource root = caps.getResource(rf.getURI());
-        return caps.contains(root, ReasonerRegistry.supportsP, property);
+        return caps.contains(root, ReasonerVocabulary.supportsP, property);
     }
      
     /**

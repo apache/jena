@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.11 2003-06-02 16:53:45 der Exp $
+ * $Id: TestOWLRules.java,v 1.12 2003-06-08 17:49:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -19,7 +19,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-06-02 16:53:45 $
+ * @version $Revision: 1.12 $ on $Date: 2003-06-08 17:49:51 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -31,6 +31,9 @@ public class TestOWLRules extends TestCase {
     
     /** Flag to control whether tracing and logging enabled */
     protected static boolean enableTracing = false;
+    
+    /** Flag to control whether to print performance stats as we go */
+    protected static boolean printStats = false;
     
     /**
      * Boilerplate for junit
@@ -163,11 +166,11 @@ public class TestOWLRules extends TestCase {
     protected void runTest() throws IOException {
         if (testForward) {
             OWLWGTester tester = new OWLWGTester(OWLRuleReasonerFactory.theInstance(), this, null);
-            tester.runTests(manifest, enableTracing);
+            tester.runTests(manifest, enableTracing, printStats);
 //            OWLRuleReasoner.printStats();
         } else {
             OWLWGTester tester = new OWLWGTester(OWLFBRuleReasonerFactory.theInstance(), this, null);
-            tester.runTests(manifest, enableTracing);
+            tester.runTests(manifest, enableTracing, printStats);
         }
     }
 
