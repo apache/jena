@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.36 2003-10-05 20:04:47 der Exp $
+# $Id: owl-fb.rules,v 1.37 2003-10-07 10:52:23 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -539,7 +539,10 @@
 [oneOf1: (?C owl:oneOf ?l) -> listMapAsSubject(?l, rdf:type, ?C) ]
 				
 [oneOf2: (?C owl:oneOf ?l1) (?D owl:oneOf ?l2) notEqual(?l1, ?l2) listEqual(?l1, ?l2) -> (?C owl:equivalentClass ?D) ]
-				
+
+[oneOf3: (?C owl:oneOf ?l) (?l rdf:first ?x) (?l rdf:rest rdf:nil) 	->
+				[ (?Y ?P ?x)  <- (?Y ?P ?I) (?I rdf:type ?C)  ] ]
+					
 #------------------------------------------------------------------
 # Declaration of main XSD datatypes
 #------------------------------------------------------------------
