@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            27 July 2001
  * Filename           $RCSfile: Log.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Released $State: Exp $
  *
- * Last modified on   $Date: 2003-03-29 09:42:24 $
+ * Last modified on   $Date: 2003-04-01 14:33:50 $
  *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright Hewlett-Packard Company 2000, 2001
@@ -117,7 +117,7 @@ import java.io.IOException;
  * </pre></code>
  * </p>
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: Log.java,v 1.2 2003-03-29 09:42:24 jeremy_carroll Exp $
+ * @version CVS info: $Id: Log.java,v 1.3 2003-04-01 14:33:50 jeremy_carroll Exp $
  */
 public class Log
 {
@@ -146,7 +146,7 @@ public class Log
     public static final int FINEST = 1;
 
     /** Message level used to suppress all messages. */
-    public static final int OFF = 0;
+    public static final int OFF = 8;
 
     /** Convenience alias for FINE */
     public static final int DEBUG = FINE;
