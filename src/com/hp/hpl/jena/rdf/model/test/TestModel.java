@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModel.java,v 1.1 2003-01-30 10:25:17 chris-dollin Exp $
+  $Id: TestModel.java,v 1.2 2003-02-02 12:47:08 bwm Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -20,7 +20,7 @@ public class TestModel extends GraphTestBase
 
     public void testCreateDefaultModel()
         {
-        Model m = Factory.createDefaultModel();
+        Model m = ModelFactory.createDefaultModel();
         }    
     }
 
