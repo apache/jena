@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFException.java,v 1.1.1.1 2002-12-19 19:17:51 bwm Exp $
+ * $Id: RDFException.java,v 1.2 2003-04-01 14:32:37 jeremy_carroll Exp $
  *
  * Created on 26 July 2000, 07:00
  */
@@ -35,7 +35,7 @@ import java.lang.Integer;
 
 /** Generic RDF Exception class.
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:17:51 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-04-01 14:32:37 $
  */
 public class RDFException extends RuntimeException {
     
@@ -236,7 +236,11 @@ public class RDFException extends RuntimeException {
         return errorCode;
     }
     
+    public Throwable getCause() {
+        return nestedException!=null?nestedException:this;
+    }
     public Exception getNestedException() {
+        
         return nestedException;
     }
 }
