@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreatorRegistry.java,v 1.8 2005-02-16 10:04:27 chris-dollin Exp $
+  $Id: ModelSpecCreatorRegistry.java,v 1.9 2005-02-16 13:39:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -73,7 +73,7 @@ public class ModelSpecCreatorRegistry
         try
             {
             Model m = FileManager.get().loadModel( name ); 
-            StmtIterator it = m.listStatements( null, m.createProperty( JMS.baseURI + "typeCreatedBy" ), (RDFNode) null ); 
+            StmtIterator it = m.listStatements( null, JMS.typeCreatedBy, (RDFNode) null ); 
             while (it.hasNext()) addFromStatement( it.nextStatement() );
             }
         catch (NotFoundException e)

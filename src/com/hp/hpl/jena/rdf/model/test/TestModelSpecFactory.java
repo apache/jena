@@ -163,6 +163,10 @@ public class TestModelSpecFactory extends ModelTestBase
         new ModelSpecCreatorRegistry( "there/is/no/such/config.file", true );
         }
     
+    /**
+        Note: this relies on the contents of testing/modelspecs/modelspec-config.n3;
+        mayhap there's a less fragile way of making the test.
+    */
     public void testRegistryDetectSuppliedConfig()
         {
         Model model = modelWithStatements( "" );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.24 2004-08-13 08:42:51 chris-dollin Exp $
+  $Id: JMS.java,v 1.25 2005-02-16 13:39:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -136,6 +136,12 @@ public class JMS
         FileModelMaker.
     */
     public static final Property fileBase = property( "fileBase" );
+    
+    /**
+        The property of some subclass of jms:ModelSpec that specifies the name of the
+        Java class that implements that ModelSpec.
+    */
+    public static final Property typeCreatedBy = property( "typeCreatedBy" );
     
     /**
         The class of MakerSpec resources.
