@@ -6,12 +6,13 @@
 package com.hp.hpl.jena.db.test;
 
 import junit.framework.* ;
+import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.22 $
+ * @version 	$Revision: 1.23 $
  */
 public class TestPackage extends TestSuite
 {
