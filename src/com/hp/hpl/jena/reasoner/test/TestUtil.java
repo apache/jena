@@ -5,25 +5,26 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestUtil.java,v 1.8 2003-12-08 09:29:35 ian_dickinson Exp $
+ * $Id: TestUtil.java,v 1.9 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import junit.framework.TestCase;
 import java.util.Iterator;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-12-08 09:29:35 $
+ * @version $Revision: 1.9 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class TestUtil {
     
     /** Helper function test an iterator against a list of objects - order independent */
     public static void assertIteratorValues(TestCase testCase, Iterator it, Object[] vals) {
-        Logger logger = Logger.getLogger( testCase.getClass() );
+        Log logger = LogFactory.getLog( testCase.getClass() );
         
         boolean[] found = new boolean[vals.length];
         for (int i = 0; i < vals.length; i++) found[i] = false;

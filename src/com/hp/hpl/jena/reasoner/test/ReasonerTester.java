@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.23 2003-09-09 14:24:43 chris-dollin Exp $
+ * $Id: ReasonerTester.java,v 1.24 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -20,7 +20,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.shared.*;
 
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 import java.io.*;
@@ -44,7 +45,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2003-09-09 14:24:43 $
+ * @version $Revision: 1.24 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class ReasonerTester {
 
@@ -91,8 +92,7 @@ public class ReasonerTester {
     /** A cache of loaded source files, map from source name to Model */
     protected Map sourceCache = new HashMap();
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(ReasonerTester.class);
+    protected static Log logger = LogFactory.getLog(ReasonerTester.class);
     
     /**
      * Constructor.

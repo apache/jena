@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.27 2003-11-14 05:58:49 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.28 2003-12-08 10:48:28 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -99,12 +99,13 @@ import com.hp.hpl.jena.shared.*;
 import java.util.*;
 import java.io.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2003-11-14 05:58:49 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.28 $' Date='$Date: 2003-12-08 10:48:28 $'
 
  */
 class Unparser {
@@ -112,7 +113,7 @@ class Unparser {
 	static private Property DESCRIPTION =
 		new PropertyImpl(RDF.getURI(), "Description");
         
-    static protected Logger logger = Logger.getLogger( Unparser.class );
+    static protected Log logger = LogFactory.getLog( Unparser.class );
     
 	/** Creates an Unparser for the specified model.
 	 * The localName is the URI (typical URL) intended for

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.24 2003-10-13 15:02:28 chris-dollin Exp $
+  $Id: Node.java,v 1.25 2003-12-08 10:48:24 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -11,7 +11,8 @@ import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
 
-import org.apache.log4j.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 
@@ -30,7 +31,7 @@ public abstract class Node {
     static final int THRESHOLD = 1000;
     static final HashMap present = new HashMap( THRESHOLD * 2 );
 
-    static final Logger log = Logger.getLogger( Node.class );
+    static final Log log = LogFactory.getLog( Node.class );
 
     /**
         The canonical instance of Node_ANY; no-one else need use the

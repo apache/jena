@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestRacer.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 16:38:37 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-12-08 10:48:26 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -27,7 +27,8 @@ package com.hp.hpl.jena.reasoner.dig.test;
 ///////////////
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -43,7 +44,7 @@ import junit.framework.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestRacer.java,v 1.4 2003-12-04 16:38:37 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestRacer.java,v 1.5 2003-12-08 10:48:26 andy_seaborne Exp $)
  */
 public class TestRacer 
     extends TestCase
@@ -110,7 +111,7 @@ public class TestRacer
     protected void iteratorTest( Iterator i, Object[] expected ) {
         assertNotNull( "Iterator should not be null", i );
         
-        Logger logger = Logger.getLogger( getClass() );
+        Log logger = LogFactory.getLog( getClass() );
         List expList = new ArrayList();
         for (int j = 0; j < expected.length; j++) {
             expList.add( expected[j] );

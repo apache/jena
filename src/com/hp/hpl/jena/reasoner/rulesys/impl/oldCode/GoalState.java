@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GoalState.java,v 1.2 2003-08-27 13:09:40 andy_seaborne Exp $
+ * $Id: GoalState.java,v 1.3 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
 import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Represents the state in a traversal of all the solutions of a
@@ -22,7 +23,7 @@ import org.apache.log4j.Logger;
  * whole derivation) is complete.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:09:40 $
+ * @version $Revision: 1.3 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class GoalState {
     
@@ -35,8 +36,7 @@ public class GoalState {
     /** The index of the next memoized solution to return */
     protected int solutionPointer = 0;
     
-    /** log4j logger*/
-    static Logger logger = Logger.getLogger(GoalState.class);
+    static Log logger = LogFactory.getLog(GoalState.class);
     
     /**
      * Constructor. Create a GoalState which can traverse all the

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:05:52 $
+ * Last modified on   $Date: 2003-12-08 10:48:25 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
@@ -26,7 +26,8 @@ package com.hp.hpl.jena.rdf.model.test;
 ///////////////
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import junit.framework.*;
 
@@ -44,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.5 2003-08-27 13:05:52 andy_seaborne Exp $
+ * @version CVS $Id: TestList.java,v 1.6 2003-12-08 10:48:25 andy_seaborne Exp $
  */
 public class TestList
     extends TestCase
@@ -110,7 +111,7 @@ public class TestList
 
     /** Test that an iterator delivers the expected values */
     protected static void iteratorTest( Iterator i, Object[] expected ) {
-        Logger logger = Logger.getLogger( TestList.class );
+        Log logger = LogFactory.getLog( TestList.class );
         List expList = new ArrayList();
         for (int j = 0; j < expected.length; j++) {
             expList.add( expected[j] );

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: TestOntReasoning.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
+ * Last modified on   $Date: 2003-12-08 10:48:25 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -26,7 +26,8 @@ package com.hp.hpl.jena.ontology.impl.test;
 ///////////////
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import junit.framework.TestCase;
 
@@ -41,7 +42,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntReasoning.java,v 1.7 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS $Id: TestOntReasoning.java,v 1.8 2003-12-08 10:48:25 andy_seaborne Exp $
  */
 public class TestOntReasoning 
     extends TestCase
@@ -274,7 +275,7 @@ public class TestOntReasoning
 
     /** Test that an iterator delivers the expected values */
     protected void iteratorTest( Iterator i, Object[] expected ) {
-        Logger logger = Logger.getLogger( getClass() );
+        Log logger = LogFactory.getLog( getClass() );
         List expList = new ArrayList();
         for (int j = 0; j < expected.length; j++) {
             expList.add( expected[j] );

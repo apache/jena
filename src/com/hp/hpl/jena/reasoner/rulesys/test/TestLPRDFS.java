@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestLPRDFS.java,v 1.2 2003-08-27 13:11:16 andy_seaborne Exp $
+ * $Id: TestLPRDFS.java,v 1.3 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -17,14 +17,15 @@ import com.hp.hpl.jena.reasoner.test.ReasonerTester;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import java.util.*;
 
 /**
  *  Test an FB hyrid using the emerging LP engine on the basic RDFS tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:11:16 $
+ * @version $Revision: 1.3 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class TestLPRDFS extends TestCase {
     
@@ -37,8 +38,7 @@ public class TestLPRDFS extends TestCase {
     /** The tester utility */
     protected ReasonerTester tester;
      
-    /** log4j logger*/
-    static Logger logger = Logger.getLogger(TestLPRDFS.class);
+    static Log logger = LogFactory.getLog(TestLPRDFS.class);
     
     /**
      * Boilerplate for junit

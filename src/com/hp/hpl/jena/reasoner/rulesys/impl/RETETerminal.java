@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETETerminal.java,v 1.9 2003-10-05 15:37:21 der Exp $
+ * $Id: RETETerminal.java,v 1.10 2003-12-08 10:48:26 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -13,22 +13,22 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * The final node in a RETE graph. It runs the builtin guard clauses
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-10-05 15:37:21 $
+ * @version $Revision: 1.10 $ on $Date: 2003-12-08 10:48:26 $
  */
 public class RETETerminal implements RETESinkNode {
 
     /** Context containing the specific rule and parent graph */
     protected RETERuleContext context;
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(FRuleEngine.class);
+    protected static Log logger = LogFactory.getLog(FRuleEngine.class);
     
     /**
      * Constructor.

@@ -17,7 +17,8 @@ import java.io.*;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.shared.JenaException;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 //=======================================================================
 /**
@@ -44,7 +45,7 @@ import org.apache.log4j.Logger;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.9 $ on $Date: 2003-11-26 03:11:45 $
+* @version $Revision: 1.10 $ on $Date: 2003-12-08 10:47:59 $
 */
 
 public class SQLCache {
@@ -68,7 +69,7 @@ public class SQLCache {
     /** Set to true to enable cache of pre-prepared statements. */
     protected boolean CACHE_PREPARED_STATEMENTS = true;
 
-    static protected Logger logger = Logger.getLogger( SQLCache.class );
+    static protected Log logger = LogFactory.getLog( SQLCache.class );
 //=======================================================================
 // Public interface
 

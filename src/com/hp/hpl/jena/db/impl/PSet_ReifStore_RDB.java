@@ -19,7 +19,8 @@ import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
 
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 //=======================================================================
 /**
@@ -39,7 +40,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.18 $ on $Date: 2003-11-26 03:16:31 $
+* @version $Revision: 1.19 $ on $Date: 2003-12-08 10:47:59 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -47,7 +48,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	//=======================================================================
 	// Internal variables
     
-    protected static Logger logger = Logger.getLogger( PSet_ReifStore_RDB.class );
+    protected static Log logger = LogFactory.getLog( PSet_ReifStore_RDB.class );
     
 	//=======================================================================
 	// Constructors and accessors

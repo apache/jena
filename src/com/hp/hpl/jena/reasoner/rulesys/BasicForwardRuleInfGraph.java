@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.34 2003-11-20 15:48:54 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.35 2003-12-08 10:48:26 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,8 @@ import java.util.*;
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.iterator.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * An inference graph interface that runs a set of forward chaining
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.34 $ on $Date: 2003-11-20 15:48:54 $
+ * @version $Revision: 1.35 $ on $Date: 2003-12-08 10:48:26 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -55,8 +56,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /** Flag which, if true, enables tracing of rule actions to logger.info */
     protected boolean traceOn = false;
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(BasicForwardRuleInfGraph.class);
+    protected static Log logger = LogFactory.getLog(BasicForwardRuleInfGraph.class);
     
 //=======================================================================
 // Core methods
@@ -401,7 +401,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      
     /**
      * Set the state of the trace flag. If set to true then rule firings
-     * are logged out to the Logger at "INFO" level.
+     * are logged out to the Log at "INFO" level.
      */
     public void setTraceOn(boolean state) {
         traceOn = state;

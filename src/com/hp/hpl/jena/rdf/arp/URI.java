@@ -63,7 +63,8 @@
 package com.hp.hpl.jena.rdf.arp;
 
 import java.io.Serializable;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 /**********************************************************************
@@ -95,12 +96,12 @@ import org.apache.log4j.Logger;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.12 2003-11-30 23:38:51 jeremy_carroll Exp $
+* @version  $Id: URI.java,v 1.13 2003-12-08 10:48:25 andy_seaborne Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
 	
-	static Logger logger = Logger.getLogger(URI.class);
+	static Log logger = LogFactory.getLog(URI.class);
 
 	/** reserved characters */
 	private static final String RESERVED_CHARACTERS = ";/?:@&=+$,[]";

@@ -17,7 +17,8 @@ import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.vocabulary.ResultSet ;
 
-import org.apache.log4j.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 //import com.hp.hpl.jena.mem.ModelMem ;
 //import com.hp.hpl.jena.reasoner.* ;
@@ -46,7 +47,7 @@ import org.apache.log4j.*;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.18 2003-11-27 18:06:02 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.19 2003-12-08 10:48:29 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -79,7 +80,7 @@ public class rdfquery
 
     static boolean applyRDFS = false ;
     
-    static protected Logger logger = Logger.getLogger( rdfquery.class );
+    static protected Log logger = LogFactory.getLog( rdfquery.class );
 
     public static void main (String [] argv)
     {
@@ -342,12 +343,6 @@ public class rdfquery
 
         if ( messageLevel >= 3 )
             dumpModel = true ;
-
-        if ( debug )
-        {
-            logger.setLevel( Level.DEBUG );
-            logger.debug("Debug on");
-        }
 
         String queryString = null ;
 

@@ -8,7 +8,8 @@ package com.hp.hpl.jena.util;
 import java.io.* ;
 import java.net.* ;
 
-import org.apache.log4j.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
@@ -20,12 +21,12 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.15 2003-12-03 18:21:28 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.16 2003-12-08 10:48:28 andy_seaborne Exp $
  */
 
 public class ModelLoader
 {
-    static Logger logger = Logger.getLogger(ModelLoader.class) ;
+    static Log logger = LogFactory.getLog(ModelLoader.class) ;
 
     public static final String langXML         = "RDF/XML" ;
     public static final String langXMLAbbrev   = "RDF/XML-ABBREV" ;

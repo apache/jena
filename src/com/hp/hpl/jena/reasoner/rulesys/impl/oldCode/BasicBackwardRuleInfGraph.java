@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.2 2003-08-27 13:09:19 andy_seaborne Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.3 2003-12-08 10:48:26 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -18,14 +18,15 @@ import java.util.*;
 
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.iterator.*;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * An inference graph that runs a set of rules using a tabled
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:09:19 $
+ * @version $Revision: 1.3 $ on $Date: 2003-12-08 10:48:26 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -71,8 +72,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
     /** Default setting for rules threshold */
     public static final long DEFAULT_RULES_THRESHOLD = 500000;
     
-    /** log4j logger*/
-    static Logger logger = Logger.getLogger(BasicBackwardRuleInfGraph.class);
+    static Log logger = LogFactory.getLog(BasicBackwardRuleInfGraph.class);
     
 //=======================================================================
 // Core methods
@@ -264,7 +264,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
     
     /**
      * Set the state of the trace flag. If set to true then rule firings
-     * are logged out to the Logger at "INFO" level.
+     * are logged out to the Log at "INFO" level.
      */
     public void setTraceOn(boolean state) {
         traceOn = state;

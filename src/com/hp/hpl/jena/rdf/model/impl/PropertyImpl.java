@@ -37,12 +37,13 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.shared.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-08-27 13:05:53 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-12-08 10:48:25 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property {
@@ -54,7 +55,7 @@ public class PropertyImpl extends ResourceImpl implements Property {
             return new PropertyImpl(n,eg);
         }
     };
-    protected static Logger logger = Logger.getLogger( PropertyImpl.class );
+    protected static Log logger = LogFactory.getLog( PropertyImpl.class );
         
     protected int    ordinal   = 0;
 

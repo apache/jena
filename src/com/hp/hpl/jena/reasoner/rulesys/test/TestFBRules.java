@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.31 2003-10-10 08:56:57 der Exp $
+ * $Id: TestFBRules.java,v 1.32 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -29,18 +29,18 @@ import junit.framework.TestSuite;
 import java.io.IOException;
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.31 $ on $Date: 2003-10-10 08:56:57 $
+ * @version $Revision: 1.32 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class TestFBRules extends TestCase {
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(TestFBRules.class);
+    protected static Log logger = LogFactory.getLog(TestFBRules.class);
     
     // Useful constants
     protected Node p = Node.createURI("p");

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSInfGraph.java,v 1.16 2003-08-27 13:11:17 andy_seaborne Exp $
+ * $Id: RDFSInfGraph.java,v 1.17 2003-12-08 10:48:26 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -19,7 +19,8 @@ import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 
@@ -36,7 +37,7 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-08-27 13:11:17 $
+ * @version $Revision: 1.17 $ on $Date: 2003-12-08 10:48:26 $
  */
 public class RDFSInfGraph extends BaseInfGraph {
 
@@ -75,8 +76,7 @@ public class RDFSInfGraph extends BaseInfGraph {
 //=======================================================================
 // static rules and axioms
         
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(RDFSInfGraph.class);
+    protected static Log logger = LogFactory.getLog(RDFSInfGraph.class);
     
     /** The RDFS forward rule set */
     protected static BaseFRule[] rules = new BaseFRule[] {

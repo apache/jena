@@ -31,7 +31,8 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
 //=======================================================================
@@ -48,7 +49,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.34 $ on $Date: 2003-08-27 12:56:40 $
+* @version $Revision: 1.35 $ on $Date: 2003-12-08 10:47:59 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -220,7 +221,7 @@ public abstract class DriverRDB implements IRDBDriver {
    /** Database layout version */
    protected String LAYOUT_VERSION = "2.0";
    
-   protected static Logger logger = Logger.getLogger( PSet_ReifStore_RDB.class );
+   protected static Log logger = LogFactory.getLog( PSet_ReifStore_RDB.class );
     
 // =======================================================================
 //	Instance variables

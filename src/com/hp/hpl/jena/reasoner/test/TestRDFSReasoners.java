@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.11 2003-09-09 14:24:43 chris-dollin Exp $
+ * $Id: TestRDFSReasoners.java,v 1.12 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -22,21 +22,21 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-09-09 14:24:43 $
+ * @version $Revision: 1.12 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class TestRDFSReasoners extends ReasonerTestBase {
     
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(TestReasoners.class);
+    protected static Log logger = LogFactory.getLog(TestReasoners.class);
 
     /**
      * Boilerplate for junit

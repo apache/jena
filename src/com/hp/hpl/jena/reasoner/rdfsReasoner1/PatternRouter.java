@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PatternRouter.java,v 1.2 2003-08-27 13:11:16 andy_seaborne Exp $
+ * $Id: PatternRouter.java,v 1.3 2003-12-08 10:48:26 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -17,7 +17,8 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveGraphCache;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.graph.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.util.*;
 
@@ -35,12 +36,11 @@ import java.util.*;
  * pattern predicates and does a linear search down the rest.<br />
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:11:16 $
+ * @version $Revision: 1.3 $ on $Date: 2003-12-08 10:48:26 $
  */
 public class PatternRouter {
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(PatternRouter.class);
+    protected static Log logger = LogFactory.getLog(PatternRouter.class);
     
     
     /** A map from pattern predicate to a list of satisfying Finders */

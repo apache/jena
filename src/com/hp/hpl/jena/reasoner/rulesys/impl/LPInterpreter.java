@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.5 2003-10-05 15:36:47 der Exp $
+ * $Id: LPInterpreter.java,v 1.6 2003-12-08 10:48:26 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -15,7 +15,8 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.util.PrintUtil;
 
 import java.util.*;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Bytecode interpeter engine for the LP version of the backward
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-10-05 15:36:47 $
+ * @version $Revision: 1.6 $ on $Date: 2003-12-08 10:48:26 $
  */
 public class LPInterpreter {
 
@@ -66,8 +67,7 @@ public class LPInterpreter {
     /** Original set up goal, only used for debugging */
     protected TriplePattern goal;
         
-    /** log4j logger*/
-    static Logger logger = Logger.getLogger(LPInterpreter.class);
+    static Log logger = LogFactory.getLog(LPInterpreter.class);
 
     //  =======================================================================
     //  Constructors

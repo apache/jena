@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDataInstanceImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
+ * Last modified on   $Date: 2003-12-08 10:48:24 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -35,7 +35,8 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.Iterator;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 
@@ -44,7 +45,7 @@ import org.apache.log4j.Logger;
  * of a DAML datatype. The instance is a resource whose <code>rdf:value</code> is a typed literal.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.10 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.11 2003-12-08 10:48:24 andy_seaborne Exp $
  */
 public class DAMLDataInstanceImpl
     extends DAMLInstanceImpl
@@ -143,7 +144,7 @@ public class DAMLDataInstanceImpl
             RDFDatatype dType = getDatatype();
             
             if (dType == null) {
-                Logger.getLogger( getClass() ).warn( "No RDFDatatype defined for DAML data instance " + this );
+                LogFactory.getLog( getClass() ).warn( "No RDFDatatype defined for DAML data instance " + this );
             }
             else {
                 return dType.parse( getRequiredProperty( RDF.value ).getString() );

@@ -24,14 +24,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: JenaConfig.java,v 1.5 2003-08-27 13:05:52 andy_seaborne Exp $
+ * $Id: JenaConfig.java,v 1.6 2003-12-08 10:48:25 andy_seaborne Exp $
  *
  * Created on 27 June 2002, 08:49
  */
 
 package com.hp.hpl.jena.rdf.model;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.*;
 
@@ -50,7 +51,7 @@ import com.hp.hpl.jena.*;
        See <code>setOldLiteralCompare</code> below.</li>
  * </ul>
  * @author bwm
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  *
  */
 public class JenaConfig {
@@ -59,7 +60,7 @@ public class JenaConfig {
     private JenaConfig() {
     }
     
-    protected static Logger logger = Logger.getLogger( JenaConfig.class );
+    protected static Log logger = LogFactory.getLog( JenaConfig.class );
     
     private static boolean oldLiteralCompare;
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestCurrentRDFWG.java,v 1.6 2003-11-08 17:58:41 der Exp $
+ * $Id: TestCurrentRDFWG.java,v 1.7 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -21,13 +21,14 @@ import java.util.Iterator;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Test the default RDFS reasoner against the current set of working group tests
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-11-08 17:58:41 $
+ * @version $Revision: 1.7 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class TestCurrentRDFWG extends ReasonerTestBase {
     
@@ -44,8 +45,7 @@ public class TestCurrentRDFWG extends ReasonerTestBase {
     /** The resource which acts as a description for the Jena2 instance being tested */
     Resource jena2;
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(TestCurrentRDFWG.class);
+    protected static Log logger = LogFactory.getLog(TestCurrentRDFWG.class);
 
     /**
      * Boilerplate for junit

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCompareToMem.java,v 1.7 2003-09-09 12:14:41 chris-dollin Exp $
+  $Id: TestCompareToMem.java,v 1.8 2003-12-08 10:48:23 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -28,7 +28,8 @@ import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 import junit.framework.*;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class TestCompareToMem extends TestCase
     {    
@@ -39,7 +40,7 @@ public class TestCompareToMem extends TestCase
     public static TestSuite suite()
         { return new TestSuite( TestCompareToMem.class ); }   
      
-     static Logger logger = Logger.getLogger( TestCompareToMem.class );
+     static Log logger = LogFactory.getLog( TestCompareToMem.class );
      
     Model modelrdf = null;    
     Model modelmem = null;

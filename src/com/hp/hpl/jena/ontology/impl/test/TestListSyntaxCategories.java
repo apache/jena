@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-25 10:51:39 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-12-08 10:48:25 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -32,7 +32,8 @@ import junit.framework.*;
 
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 
@@ -43,7 +44,7 @@ import org.apache.log4j.Logger;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.16 2003-11-25 10:51:39 chris-dollin Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.17 2003-12-08 10:48:25 andy_seaborne Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -675,7 +676,7 @@ public class TestListSyntaxCategories
                 
                 // debugging 
                 if (m_count != actual.size()) {
-                    Logger logger = Logger.getLogger( getClass() );
+                    Log logger = LogFactory.getLog( getClass() );
                     logger.debug( getName() + " - expected " + m_count + " results, actual = " + actual.size() );
                     for (Iterator j = actual.iterator(); j.hasNext(); ) {
                         logger.debug( getName() + " - saw actual: " + j.next() );

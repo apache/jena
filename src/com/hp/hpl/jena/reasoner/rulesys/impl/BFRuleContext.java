@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.10 2003-08-27 13:09:19 andy_seaborne Exp $
+ * $Id: BFRuleContext.java,v 1.11 2003-12-08 10:48:26 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -16,7 +16,8 @@ import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * An implementation of the generic RuleContext interface used by
@@ -24,7 +25,7 @@ import org.apache.log4j.Logger;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-27 13:09:19 $
+ * @version $Revision: 1.11 $ on $Date: 2003-12-08 10:48:26 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -48,8 +49,7 @@ public class BFRuleContext implements RuleContext {
     /** A searchable index into the pending triples */
     protected Graph pendingCache;
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(BFRuleContext.class);
+    protected static Log logger = LogFactory.getLog(BFRuleContext.class);
     
     /**
      * Constructor.

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.10 2003-08-27 13:09:18 andy_seaborne Exp $
+ * $Id: FBRuleReasoner.java,v 1.11 2003-12-08 10:48:26 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-27 13:09:18 $
+ * @version $Revision: 1.11 $ on $Date: 2003-12-08 10:48:26 $
  */
 public class FBRuleReasoner implements Reasoner {
     
@@ -248,7 +248,7 @@ public class FBRuleReasoner implements Reasoner {
     
     /**
      * Set the state of the trace flag. If set to true then rule firings
-     * are logged out to the Logger at "INFO" level.
+     * are logged out to the Log at "INFO" level.
      */
     public void setTraceOn(boolean state) {
         traceOn = state;
@@ -256,7 +256,7 @@ public class FBRuleReasoner implements Reasoner {
     
     /**
      * Return the state of the trace flag.If set to true then rule firings
-     * are logged out to the Logger at "INFO" level.
+     * are logged out to the Log at "INFO" level.
      */
     public boolean isTraceOn() {
         return traceOn;

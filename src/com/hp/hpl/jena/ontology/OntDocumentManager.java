@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-02 21:41:34 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-12-08 10:48:24 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -31,7 +31,8 @@ import java.net.*;
 import java.net.URLConnection;
 import java.util.*;
 
-import org.apache.log4j.*;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -50,7 +51,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.29 2003-12-02 21:41:34 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.30 2003-12-08 10:48:24 andy_seaborne Exp $
  */
 public class OntDocumentManager
 {
@@ -122,8 +123,8 @@ public class OntDocumentManager
     /** Mapping of public public URI's to language resources */
     protected Map m_languageMap = new HashMap();
 
-    /** Logger for this class */
-    private Logger m_log = Logger.getLogger( getClass() );
+    /** Log for this class */
+    private Log m_log = LogFactory.getLog( getClass() );
 
     /** Flag: cache models as they are loaded */
     protected boolean m_cacheModels = true;
@@ -817,7 +818,7 @@ public class OntDocumentManager
      */
     protected void loadImport( OntModel model, String importURI, List readQueue ) {
         if (m_processImports) {
-            Logger.getLogger( getClass() ).debug( "OntDocumentManager loading " + importURI );
+            LogFactory.getLog( getClass() ).debug( "OntDocumentManager loading " + importURI );
             
             // add this model to occurs check list
             model.addLoadedImport( importURI );
@@ -918,7 +919,7 @@ public class OntDocumentManager
                     u = u + " (re-directed via the document mgr from <" + uri + ">)"; 
                 }
                 
-                Logger.getLogger( OntDocumentManager.class )
+                LogFactory.getLog( OntDocumentManager.class )
                       .warn( "An error occurred while attempting to read from " + u + 
                              ". Error was '" + e.getMessage() + "'.", e );
             }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.21 2003-11-08 17:58:05 der Exp $
+ * $Id: WGReasonerTester.java,v 1.22 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -22,7 +22,8 @@ import com.hp.hpl.jena.rdf.arp.test.ARPTests;
 import com.hp.hpl.jena.shared.*;
 
 import junit.framework.TestCase;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
 import java.util.*;
@@ -43,7 +44,7 @@ import java.net.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-11-08 17:58:05 $
+ * @version $Revision: 1.22 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class WGReasonerTester {
 
@@ -113,8 +114,7 @@ public class WGReasonerTester {
     /** The rdf defining all the tests to be run */
     protected Model testManifest;
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(WGReasonerTester.class);
+    protected static Log logger = LogFactory.getLog(WGReasonerTester.class);
     
     /**
      * Constructor.

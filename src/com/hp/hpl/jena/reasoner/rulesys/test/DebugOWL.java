@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugOWL.java,v 1.24 2003-09-16 09:28:25 der Exp $
+ * $Id: DebugOWL.java,v 1.25 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -24,7 +24,8 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.oldCode.*;
 //import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import java.util.*;
 
 /**
@@ -33,7 +34,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2003-09-16 09:28:25 $
+ * @version $Revision: 1.25 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class DebugOWL {
 
@@ -58,8 +59,7 @@ public class DebugOWL {
     /** Instance properties */
     Node[] properties;
         
-    /** log4j logger*/
-    static Logger logger = Logger.getLogger(DebugOWL.class);
+    static Log logger = LogFactory.getLog(DebugOWL.class);
     
     /** reasoner config: experimental ruleset and config */
     public static final int EXPT = 1;

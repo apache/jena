@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-09-09 14:41:08 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-12-08 10:48:24 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -34,14 +34,15 @@ import java.util.*;
 
 import java.io.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 /**
  * Legacy JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.18 2003-09-09 14:41:08 chris-dollin Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.19 2003-12-08 10:48:24 andy_seaborne Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -57,7 +58,7 @@ public class DAMLTest
     // Instance variables
     //////////////////////////////////
 
-    private Logger m_log = Logger.getLogger( DAMLTest.class );
+    private Log m_log = LogFactory.getLog( DAMLTest.class );
      
     // Constructors
     //////////////////////////////////

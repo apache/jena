@@ -1,13 +1,14 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: testModelEquals.java,v 1.9 2003-12-04 17:26:05 jeremy_carroll Exp $
+    $Id: testModelEquals.java,v 1.10 2003-12-08 10:48:28 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.regression;
 
 import com.hp.hpl.jena.rdf.model.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  *
  * @author  bwm
@@ -15,7 +16,7 @@ import org.apache.log4j.Logger;
 public class testModelEquals extends Object {
    
 
-    protected static Logger logger = Logger.getLogger( testModelEquals.class );
+    protected static Log logger = LogFactory.getLog( testModelEquals.class );
     
     void test(GetModel gm) {
         Model m1, m2;
@@ -102,5 +103,5 @@ public class testModelEquals extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testModelEquals.java,v 1.9 2003-12-04 17:26:05 jeremy_carroll Exp $
+ * $Id: testModelEquals.java,v 1.10 2003-12-08 10:48:28 andy_seaborne Exp $
  */

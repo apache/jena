@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.40 $
+ * Revision           $Revision: 1.41 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-10-22 09:37:15 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-12-08 10:48:24 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,8 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 /**
@@ -50,7 +51,7 @@ import org.apache.log4j.Logger;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.40 2003-10-22 09:37:15 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.41 2003-12-08 10:48:24 andy_seaborne Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -966,7 +967,7 @@ public class OntResourceImpl
                 // this object is referenced from inside a list
                 // we don't delete this, since it would make the list ill-formed
                 String me = isAnon() ? ("Anon object " + getId()) : getURI();
-                Logger.getLogger( getClass() ).warn( me + " is referened from an RDFList, so will not be fully removed");
+                LogFactory.getLog( getClass() ).warn( me + " is referened from an RDFList, so will not be fully removed");
                 skip.add( s );
             }
             else if (s.getObject() instanceof Resource){

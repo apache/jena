@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.31 2003-11-29 15:12:13 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.32 2003-12-08 10:48:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -25,7 +25,8 @@ import java.util.*;
 
 import org.apache.xerces.util.*;
 import org.apache.oro.text.regex.*;
-//import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /** 
  * This is not part of the public API.
@@ -47,7 +48,7 @@ import org.apache.oro.text.regex.*;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.31 $' Date='$Date: 2003-11-29 15:12:13 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.32 $' Date='$Date: 2003-12-08 10:48:28 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -55,8 +56,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         setupMaps();
     }
     
-    /** log4j logger */
-	//protected static Logger logger = Logger.getLogger( BaseXMLWriter.class );
+	//protected static Log logger = LogFactory.getLog( BaseXMLWriter.class );
   protected static SimpleLogger logger = new SimpleLogger() {
   	public void warn(String s) {
   		System.err.println(s);

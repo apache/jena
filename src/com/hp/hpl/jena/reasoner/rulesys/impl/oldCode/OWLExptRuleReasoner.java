@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLExptRuleReasoner.java,v 1.3 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: OWLExptRuleReasoner.java,v 1.4 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
 import java.util.*;
 import java.io.*;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
@@ -25,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * A hybrid forward/backward implementation of the OWL closure rules - experimental variant.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.4 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class OWLExptRuleReasoner extends FBRuleReasoner  {
     
@@ -41,8 +42,7 @@ public class OWLExptRuleReasoner extends FBRuleReasoner  {
     /** Flag, set to true to use the LP engine */
     private static final boolean USE_LP = true;
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(OWLExptRuleReasoner.class);
+    protected static Log logger = LogFactory.getLog(OWLExptRuleReasoner.class);
     
     /**
      * Constructor

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.20 2003-11-17 15:41:24 der Exp $
+ * $Id: Rule.java,v 1.21 2003-12-08 10:48:26 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,8 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /** * Representation of a generic inference rule. 
  * <p>
@@ -56,7 +57,7 @@ import org.apache.log4j.Logger;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.20 $ on $Date: 2003-11-17 15:41:24 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.21 $ on $Date: 2003-12-08 10:48:26 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -77,8 +78,7 @@ public class Rule implements ClauseEntry {
     /** Flags whether the rule was written as a forward or backward rule */
     protected boolean isBackward = false;
     
-    /** log4j logger*/
-    static Logger logger = Logger.getLogger(Rule.class);
+    static Log logger = LogFactory.getLog(Rule.class);
     
     /**
      * Constructor

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLFBRuleReasonerFactory.java,v 1.8 2003-10-25 16:39:04 der Exp $
+ * $Id: OWLFBRuleReasonerFactory.java,v 1.9 2003-12-08 10:48:26 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,13 +23,13 @@ import com.hp.hpl.jena.vocabulary.*;
  * be recorded in an internal data structure for replay through the {@link com.hp.hpl.jena.reasoner.InfGraph#getDerivation getDerivation}
  * method. </li>
  * <li><b>traceOn</b> - if set to true this causes all rule firings and deduced triples to be
- * written out to the Logger at INFO level.</li>
+ * written out to the Log at INFO level.</li>
  * <li><b>ruleThreshold</b> - which limits the number of rules that can be fired on a single 
  * data processing stage to the given number (useful to limit infinite runaways). </li>
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-10-25 16:39:04 $
+ * @version $Revision: 1.9 $ on $Date: 2003-12-08 10:48:26 $
  */
 public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     

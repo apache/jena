@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.24 2003-12-04 20:50:51 jeremy_carroll Exp $
+    $Id: testWriterAndReader.java,v 1.25 2003-12-08 10:48:28 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -17,7 +17,8 @@ import java.io.*;
 import java.util.*;
 
 import junit.framework.*;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * This will test any Writer and Reader pair.
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2003-12-04 20:50:51 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.25 $' Date='$Date: 2003-12-08 10:48:28 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -37,7 +38,7 @@ public class testWriterAndReader
 	static private int lastTest = 9;
 	static private int repetitionsJ = 6;
     
-  protected static Logger logger = Logger.getLogger( testWriterAndReader.class );
+  protected static Log logger = LogFactory.getLog( testWriterAndReader.class );
     
 	String lang;
 	String test;
@@ -557,5 +558,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.24 2003-12-04 20:50:51 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.25 2003-12-08 10:48:28 andy_seaborne Exp $
  */

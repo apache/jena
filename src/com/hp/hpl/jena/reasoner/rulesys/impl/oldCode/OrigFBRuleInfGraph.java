@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OrigFBRuleInfGraph.java,v 1.2 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: OrigFBRuleInfGraph.java,v 1.3 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -26,7 +26,8 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 //import com.hp.hpl.jena.util.PrintUtil;
 //import com.hp.hpl.jena.vocabulary.RDF;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * An inference graph that uses a mixture of forward and backward
@@ -37,7 +38,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.3 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class OrigFBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -71,8 +72,7 @@ public class OrigFBRuleInfGraph  extends BasicForwardRuleInfGraph implements Bac
     /** Cache of temporary property values inferred through getTemp calls */
     protected TempNodeCache tempNodecache;
     
-    /** log4j logger*/
-    static Logger logger = Logger.getLogger(FBRuleInfGraph.class);
+    static Log logger = LogFactory.getLog(FBRuleInfGraph.class);
 
 //  =======================================================================
 //  Constructors
@@ -440,7 +440,7 @@ public class OrigFBRuleInfGraph  extends BasicForwardRuleInfGraph implements Bac
     
     /**
      * Set the state of the trace flag. If set to true then rule firings
-     * are logged out to the Logger at "INFO" level.
+     * are logged out to the Log at "INFO" level.
      */
     public void setTraceOn(boolean state) {
         super.setTraceOn(state);

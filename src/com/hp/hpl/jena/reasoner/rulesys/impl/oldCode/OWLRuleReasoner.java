@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLRuleReasoner.java,v 1.1 2003-09-08 13:01:58 der Exp $
+ * $Id: OWLRuleReasoner.java,v 1.2 2003-12-08 10:48:27 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
 import java.util.*;
 import java.io.*;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleInfGraph;
@@ -36,7 +37,7 @@ import com.hp.hpl.jena.graph.*;
  * figure out what should be done at the bindSchema stage).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-09-08 13:01:58 $
+ * @version $Revision: 1.2 $ on $Date: 2003-12-08 10:48:27 $
  */
 public class OWLRuleReasoner extends BasicForwardRuleReasoner {
     
@@ -46,8 +47,7 @@ public class OWLRuleReasoner extends BasicForwardRuleReasoner {
     /** The parsed rules */
     protected static List ruleSet;
     
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(OWLRuleReasoner.class);
+    protected static Log logger = LogFactory.getLog(OWLRuleReasoner.class);
     
     /** Performance statistics - the total number of rule firings used during data bind operations so far. */
     protected static long nRulesFired = 0;
