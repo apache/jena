@@ -1,31 +1,39 @@
 /******************************************************************
- * File:        XSDByteType.java
+ * File:        XSDBigNumberType.java
  * Created by:  Dave Reynolds
- * Created on:  10-Dec-02
+ * Created on:  10-Dec-2002
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDByteType.java,v 1.1 2003-03-31 10:01:30 der Exp $
+ * $Id: XSDBigNumberType.java,v 1.4 2003-04-15 21:04:48 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
+import org.apache.xerces.impl.dv.xs.DecimalDV;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
- * Datatype template used to define XSD int types
- *
+ * Datatype template used to define those XSD numeric types which might
+ * require BigDecimal or BigNumber support. For performance, rather than
+ * always use the math package we check the number of digits involved
+ * and default to a Long when possible.
+ * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:30 $
+ * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:04:48 $
  */
-public class XSDByteType extends XSDBaseNumericType {
-
+public class XSDBigNumberType extends XSDBaseNumericType {
+    
+    static final DecimalDV decimalDV = new DecimalDV();
+    
     /**
      * Constructor. 
      * @param typeName the name of the XSD type to be instantiated, this is 
      * used to lookup a type definition from the Xerces schema factory.
      */
-    public XSDByteType(String typeName) {
+    public XSDBigNumberType(String typeName) {
         super(typeName);
     }
     
@@ -36,7 +44,7 @@ public class XSDByteType extends XSDBaseNumericType {
      * @param javaClass the java class for which this xsd type is to be
      * treated as the cannonical representation
      */
-    public XSDByteType(String typeName, Class javaClass) {
+    public XSDBigNumberType(String typeName, Class javaClass) {
         super(typeName, javaClass);
     }
     
@@ -44,19 +52,17 @@ public class XSDByteType extends XSDBaseNumericType {
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {        
-        return new Byte(super.parse(lexicalForm).toString());
+    public Object parse(String lexicalForm) throws DatatypeFormatException {
+        Object xsdValue = super.parse(lexicalForm);
+        if (decimalDV.getFractionDigits(xsdValue) >= 1) {
+            return new BigDecimal(xsdValue.toString());
+        } else if (decimalDV.getTotalDigits(xsdValue) > 18) {
+            return new BigInteger(xsdValue.toString());
+        } else {
+            return new Long(xsdValue.toString());
+        }
     }
     
-    /**
-     * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
-     */
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-       return value1.getValue().equals(value2.getValue());
-    }
-
 }
 
 /*
