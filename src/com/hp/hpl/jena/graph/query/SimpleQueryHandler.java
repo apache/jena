@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryHandler.java,v 1.4 2003-04-15 11:30:05 chris-dollin Exp $
+  $Id: SimpleQueryHandler.java,v 1.5 2003-04-15 11:47:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -83,9 +83,9 @@ public class SimpleQueryHandler implements QueryHandler
     public boolean containsNode( Node n )
         {
         return 
-            graph.find( n, null, null ).hasNext()
-            || graph.find( null, n, null ).hasNext()
-            || graph.find( null, null, n ).hasNext()
+            graph.contains( n, null, null )
+            || graph.contains( null, n, null )
+            || graph.contains( null, null, n )
             ;
         }
     }
