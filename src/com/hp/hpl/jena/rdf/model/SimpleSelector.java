@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleSelector.java,v 1.11 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: SimpleSelector.java,v 1.12 2004-06-15 14:02:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.graph.*;
     default <CODE>selects</CODE> method simply returns true.
     
     @author bwm
-    @version Release='$Name: not supported by cvs2svn $ $Revision: 1.11 $ $Date: 2003-08-27 13:05:52 $
+    @version Release='$Name: not supported by cvs2svn $ $Revision: 1.12 $ $Date: 2004-06-15 14:02:05 $
 */
 
 public class SimpleSelector extends Object implements Selector {
@@ -198,7 +198,7 @@ public class SimpleSelector extends Object implements Selector {
     }
     
     private Literal literal( String s, String lang )
-        { return new LiteralImpl( Node.createLiteral( s, lang, false ), (Model) null ); }
+        { return new LiteralImpl( Node.createLiteral( s, lang, false ), (ModelCom) null ); }
     
     /** Create a selector.  A model <b>may</b> restrict statements that are tested using
      * the <CODE>selects</CODE> method to those whose subject matches the

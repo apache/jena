@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.28 2004-04-23 14:32:30 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.29 2004-06-15 14:00:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.28 $' Date='$Date: 2004-04-23 14:32:30 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.29 $' Date='$Date: 2004-06-15 14:00:49 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -45,8 +45,8 @@ public class ResourceImpl extends EnhNode implements Resource {
     
         NOT FOR PUBLIC USE - used in ModelCom [and ContainerImpl]
     */
-     public ResourceImpl( Node n, Model m ) {
-        super( n, (ModelCom) m );
+     public ResourceImpl( Node n, ModelCom m ) {
+        super( n, m );
     }
 
     /** Creates new ResourceImpl */
@@ -55,7 +55,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         this( (ModelCom) null );
     }
 
-    public ResourceImpl( Model m ) {
+    public ResourceImpl( ModelCom m ) {
         this( fresh( null ), m );
     }
 
@@ -76,19 +76,19 @@ public class ResourceImpl extends EnhNode implements Resource {
         this( id, null );
     }
 
-    public ResourceImpl(AnonId id, Model m) {
+    public ResourceImpl(AnonId id, ModelCom m) {
         this( Node.createAnon( id ), m );
     }
 
-    public ResourceImpl(String uri, Model m) {
-       this( fresh( uri ), m );
+    public ResourceImpl(String uri, ModelCom m) {
+        this( fresh( uri ), m );
     }
     
-    public ResourceImpl( Resource r, Model m ) {
+    public ResourceImpl( Resource r, ModelCom m ) {
         this( r.getNode(), m );
     }
     
-    public ResourceImpl(String nameSpace, String localName, Model m) {
+    public ResourceImpl(String nameSpace, String localName, ModelCom m) {
         this( Node.createURI( nameSpace + localName ), m );
     }
 
@@ -118,11 +118,11 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public String getNameSpace() {
-        return isAnon() ? null : node.getNameSpace(); // getURI().substring( 0, getSplit() );
+        return isAnon() ? null : node.getNameSpace();
     }
     
 	public String getLocalName() {
-        return isAnon() ? null : node.getLocalName();  // getURI().substring( getSplit() );
+        return isAnon() ? null : node.getLocalName(); 
     }
 
     public boolean hasURI( String uri ) {
@@ -139,7 +139,7 @@ public class ResourceImpl extends EnhNode implements Resource {
 
 	protected ModelCom mustHaveModel()
 		{
-        ModelCom model = (ModelCom) getGraph();
+        ModelCom model = getModelCom();
 		if (model == null) throw new HasNoModelException( this );
 		return model;
 		}
@@ -269,8 +269,11 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public Model getModel() {
-        return (ModelCom)getGraph();
+        return (Model) getGraph();
     }
+    
+    protected ModelCom getModelCom()
+        { return (ModelCom) getGraph(); }
 }
 /*
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP

@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Alt.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-08-27 13:05:53 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2004-06-15 14:00:49 $'
  */
 public class AltImpl extends ContainerImpl implements Alt {
     
@@ -52,14 +52,14 @@ public class AltImpl extends ContainerImpl implements Alt {
     };
     
     /** Creates new AltMem */
-    public AltImpl(Model model)  
+    public AltImpl( ModelCom model )  
         { super( model ); }
     
-    public AltImpl(String uri, Model model)  {
+    public AltImpl( String uri, ModelCom model )  {
         super( uri, model );
     }
     
-    public AltImpl(Resource r, Model m)  {
+    public AltImpl( Resource r, ModelCom m )  {
         super( r, m );
     }
     
@@ -184,7 +184,7 @@ public class AltImpl extends ContainerImpl implements Alt {
     }    
     
     public Alt setDefault(String o, String l)  {
-        return setDefault( new LiteralImpl( Node.createLiteral( o,l, false ), getModel()) );
+        return setDefault( new LiteralImpl( Node.createLiteral( o,l, false ), getModelCom()) );
     }      
         
     protected Statement getDefaultStatement()  {

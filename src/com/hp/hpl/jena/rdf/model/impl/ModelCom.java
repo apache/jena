@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.89 2004-06-07 14:02:03 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.90 2004-06-15 14:00:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -34,8 +34,8 @@ import java.util.*;
  */
 
 public class ModelCom 
-extends EnhGraph
-implements Model, PrefixMapping, ModelLock
+    extends EnhGraph
+    implements Model, PrefixMapping, ModelLock
 {
 
       private RDFReaderF readerFactory = new RDFReaderFImpl();
@@ -75,6 +75,13 @@ implements Model, PrefixMapping, ModelLock
                
     protected static Model createWorkModel()
         { return ModelFactory.createDefaultModel(); }
+    
+    public RDFNode asRDFNode( Node n )
+        {
+        return n.isLiteral() 
+          ? (RDFNode) this.getNodeAs( n, Literal.class )
+          : (RDFNode) this.getNodeAs( n, Resource.class );
+        }
 
     /**
         the ModelReifier does everything to do with reification.
@@ -126,7 +133,7 @@ implements Model, PrefixMapping, ModelLock
     }
     
     private Literal literal( String s, String lang, boolean wellFormed )
-        { return new LiteralImpl( Node.createLiteral( s, lang, wellFormed), (Model) this ); }
+        { return new LiteralImpl( Node.createLiteral( s, lang, wellFormed), this ); }
     
     public Model add(Resource s, Property p, String o, String l)
         { return add( s, p, o, l, false ); }
@@ -506,7 +513,7 @@ implements Model, PrefixMapping, ModelLock
      */
     public Literal createTypedLiteral(String v)  {
         LiteralLabel ll = new LiteralLabel(v);
-        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), this);
     }
 
     /**
@@ -515,7 +522,7 @@ implements Model, PrefixMapping, ModelLock
     public Literal createTypedLiteral(Calendar cal) {
         Object value = new XSDDateTime(cal);
         LiteralLabel ll = new LiteralLabel(value, "", XSDDatatype.XSDdateTime);
-        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), this);
         
     }
     
@@ -531,7 +538,7 @@ implements Model, PrefixMapping, ModelLock
     public Literal createTypedLiteral(String lex, RDFDatatype dtype) 
                                         throws DatatypeFormatException {
         LiteralLabel ll = new LiteralLabel(lex, "", dtype);
-        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), this);
     }
     
     /**
@@ -542,7 +549,7 @@ implements Model, PrefixMapping, ModelLock
      */
     public Literal createTypedLiteral(Object value, RDFDatatype dtype) {
         LiteralLabel ll = new LiteralLabel(value, "", dtype);
-        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
+        return new LiteralImpl( Node.createLiteral(ll), this );
     }
 
     /**
@@ -557,7 +564,7 @@ implements Model, PrefixMapping, ModelLock
     public Literal createTypedLiteral(String lex, String typeURI)  {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = new LiteralLabel(lex, "", dt);
-        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
+        return new LiteralImpl( Node.createLiteral(ll), this );
     }
         
     /**
@@ -569,7 +576,7 @@ implements Model, PrefixMapping, ModelLock
     public Literal createTypedLiteral(Object value, String typeURI) {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = new LiteralLabel(value, "", dt);
-        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), this);
     }
         
     /**
@@ -580,7 +587,7 @@ implements Model, PrefixMapping, ModelLock
      */
     public Literal createTypedLiteral(Object value) {
         LiteralLabel ll = new LiteralLabel(value);
-        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), this);
     }
 
     public Literal createLiteral(boolean v)  
@@ -727,8 +734,8 @@ implements Model, PrefixMapping, ModelLock
     public RDFNode getRDFNode( Node n )
         {   
         return n.isURI() || n.isBlank()
-            ? (RDFNode) new ResourceImpl( n, (Model) this )
-            : (RDFNode) new LiteralImpl( n, (Model) this); 
+            ? (RDFNode) new ResourceImpl( n, this )
+            : (RDFNode) new LiteralImpl( n, this ); 
         }
     
     public Resource getResource(String uri)  {

@@ -40,14 +40,14 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.23 $ $Date: 2004-04-22 12:42:28 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.24 $ $Date: 2004-06-15 14:00:47 $
  */
 public class StatementImpl  implements Statement {
     
     protected Resource subject;
     protected Property predicate;
     protected RDFNode  object;
-    final private Model model;
+    final private ModelCom model;
     
     public StatementImpl(Resource subject, Property predicate, RDFNode object) {
         this.model = null;
@@ -61,7 +61,7 @@ public class StatementImpl  implements Statement {
     public StatementImpl(Resource subject,
                          Property predicate,
                          RDFNode object,
-                         Model model)  {
+                         ModelCom model)  {
         this.model = model;
         this.subject = (Resource) subject.inModel( model ); 
         this.predicate = (Property) predicate.inModel( model ); 
@@ -73,12 +73,12 @@ public class StatementImpl  implements Statement {
         The Statement has subject, predicate, and object corresponding to
         those of _t_.
     */
-    public static Statement toStatement( Triple t, EnhGraph eg )
+    public static Statement toStatement( Triple t, ModelCom eg )
         {
         Resource s = new ResourceImpl( t.getSubject(), eg );
         Property p = new PropertyImpl( t.getPredicate(), eg );
         RDFNode o = createObject( t.getObject(), eg );
-        return new StatementImpl( s, p, o, (Model) eg );
+        return new StatementImpl( s, p, o, eg );
         }
     
     public Resource getSubject() {
@@ -359,7 +359,7 @@ public class StatementImpl  implements Statement {
         and with the given _uri_.
     */
     public ReifiedStatement createReifiedStatement( String uri )
-        { return ReifiedStatementImpl.create( this.getModel(), uri, this ); }
+        { return ReifiedStatementImpl.create( (ModelCom) this.getModel(), uri, this ); }
         
     public RSIterator listReifiedStatements()
         { return mustHaveModel().listReifiedStatements( this ); }

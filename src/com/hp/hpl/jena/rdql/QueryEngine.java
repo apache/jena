@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.ModelLoader ;
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryEngine.java,v 1.11 2004-05-28 16:56:15 andy_seaborne Exp $
+ * @version    $Id: QueryEngine.java,v 1.12 2004-06-15 14:02:06 chris-dollin Exp $
  */
  
 public class QueryEngine implements QueryExecution
@@ -263,10 +263,10 @@ public class QueryEngine implements QueryExecution
     static RDFNode convertGraphNodeToRDFNode(Node n, Model model)
     {
         if ( n.isLiteral() )
-            return new LiteralImpl(n, model) ;
+            return new LiteralImpl(n, (ModelCom) model) ;
                 
         if ( n.isURI() || n.isBlank() )
-            return new ResourceImpl(n, model) ;
+            return new ResourceImpl(n, (ModelCom) model) ;
                 
         if ( n.isVariable() )
         {

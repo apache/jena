@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.6 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: AbstractTestModel.java,v 1.7 2004-06-15 14:02:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -100,6 +100,21 @@ public abstract class AbstractTestModel extends ModelTestBase
         assertTrue( ob.equals( resource( model, "a" ) ) || ob.equals( resource( model, "b" ) ) );
         assertNull( x.getProperty( property( model, "noSuchPropertyHere" ) ) );
         }
+    
+    public void testToStatement()
+        {
+        Triple t = triple( "a P b" );
+        Statement s = model.asStatement( t );
+        assertEquals( node( "a" ), s.getSubject().asNode() );
+        assertEquals( node( "P" ), s.getPredicate().asNode() );
+        assertEquals( node( "b" ), s.getObject().asNode() );
+        }
+    
+    public void testAsRDF()
+        {
+        RDFNode r = model.asRDFNode( node( "a" ) );
+        }
+    
     }
 
 

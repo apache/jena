@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelQueryUtil.java,v 1.3 2003-08-27 13:07:55 andy_seaborne Exp $
+  $Id: ModelQueryUtil.java,v 1.4 2004-06-15 14:02:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util;
@@ -29,7 +29,7 @@ public class ModelQueryUtil
         {}
     
     public static ExtendedIterator queryBindingsWith
-        ( final ModelCom model, Model query, Resource [] variables )
+        ( final Model model, Model query, Resource [] variables )
         {
         Map1 mm = new Map1()
             { public Object map1( Object x ) { return mappy( model, x ); } };
@@ -40,10 +40,10 @@ public class ModelQueryUtil
             ;
         }
 
-    public static RDFNode asRDF( ModelCom m, Node n )
-        { return IteratorFactory.asRDFNode( n, m ); }
+    public static RDFNode asRDF( Model m, Node n )
+        { return m.asRDFNode( n ); }
         
-    public static List mappy( ModelCom m, Object x )
+    public static List mappy( Model m, Object x )
         {
         List L = (List) x;
         ArrayList result = new ArrayList( L.size() );

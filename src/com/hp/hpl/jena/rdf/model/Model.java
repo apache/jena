@@ -1,14 +1,12 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.50 2004-03-23 13:47:41 chris-dollin Exp $
+  $Id: Model.java,v 1.51 2004-06-15 14:02:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 
 import java.io.*;
@@ -63,17 +61,13 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.50 $Date: 2003/12/08 11:55:58 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.51 $Date: 2004/03/23 13:47:41 $'
  */
 public interface Model 
-    extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
+    extends ModelCon, ModelGraphInterface, 
+        RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
 {
 
-	/** Every model is based on some Graph */
-	Graph getGraph();
-
-	/** Every Model has a QueryHandler */
-	QueryHandler queryHandler();
 
     /** 
      * size will return the number of statements in a concrete model, 
@@ -964,5 +958,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.50 2004-03-23 13:47:41 chris-dollin Exp $
+ * $Id: Model.java,v 1.51 2004-06-15 14:02:04 chris-dollin Exp $
  */

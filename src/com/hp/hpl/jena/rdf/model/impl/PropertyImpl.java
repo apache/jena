@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-12-08 10:48:25 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2004-06-15 14:00:45 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property {
@@ -83,12 +83,12 @@ public class PropertyImpl extends ResourceImpl implements Property {
         checkOrdinal();
     }
 
-    public PropertyImpl(String uri, Model m)  {
+    public PropertyImpl(String uri, ModelCom m)  {
         super(uri, m);
         checkOrdinal();
     }
 
-    public PropertyImpl(String nameSpace, String localName, Model m)
+    public PropertyImpl(String nameSpace, String localName, ModelCom m)
        {
         super(nameSpace, localName, m);
         checkOrdinal();
@@ -103,7 +103,7 @@ public class PropertyImpl extends ResourceImpl implements Property {
     public PropertyImpl(String nameSpace,
                         String localName,
                         int ordinal,
-                        Model m) {
+                        ModelCom m) {
         super(nameSpace, localName, m);
         checkLocalName();
         this.ordinal = ordinal;

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.16 2003-12-08 10:48:27 andy_seaborne Exp $
+    $Id: Regression.java,v 1.17 2004-06-15 14:02:05 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2003-12-08 10:48:27 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2004-06-15 14:02:05 $'
  */
 public class Regression extends Object {
 
@@ -4850,7 +4850,7 @@ public class Regression extends Object {
 
     public class ResTestObjF implements ResourceF {
         public Resource createResource(Resource r)
-            { return new ResourceImpl( r, r.getModel() ); }
+            { return new ResourceImpl( r, (ModelCom) r.getModel() ); }
     }
 }
 /*
@@ -4879,5 +4879,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.16 2003-12-08 10:48:27 andy_seaborne Exp $
+ * $Id: Regression.java,v 1.17 2004-06-15 14:02:05 chris-dollin Exp $
  */

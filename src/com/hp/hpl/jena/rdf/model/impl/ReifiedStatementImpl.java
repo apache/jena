@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ReifiedStatementImpl.java,v 1.6 2003-08-27 13:05:53 andy_seaborne Exp $
+	$Id: ReifiedStatementImpl.java,v 1.7 2004-06-15 14:00:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -25,7 +25,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         bnode if uril == null. 
     */
 
-    private ReifiedStatementImpl( Model m, String uri, Statement s ) 
+    private ReifiedStatementImpl( ModelCom m, String uri, Statement s ) 
         {
         super( uri, m ); 
         assertStatement( s ); 
@@ -60,7 +60,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
             {
             Triple x = getTriple( eg, n );
             if (x == null) throw new DoesNotReifyException( n );
-            Statement st = StatementImpl.toStatement( x, eg );
+            Statement st = StatementImpl.toStatement( x, (ModelCom) eg );
             return new ReifiedStatementImpl( eg, n, st );
             }
 
@@ -109,13 +109,13 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         Statement _s_. The mapping is remembered.
     */  
     public static ReifiedStatement create( Statement s )
-        { return create( s.getModel(), null, s ); }
+        { return create( (ModelCom) s.getModel(), (String) null, s ); }
 
     /**
         factory method. answer a ReifiedStatement which encodes the
         Statement _s_ with uri _uri_. The mapping is remembered.
     */        
-    public static ReifiedStatementImpl create( Model m, String uri, Statement s )
+    public static ReifiedStatementImpl create( ModelCom m, String uri, Statement s )
         { return new ReifiedStatementImpl( m, uri, s ).cache(); }        
         
     public static ReifiedStatementImpl create( EnhGraph eg, Node n, Statement s )
