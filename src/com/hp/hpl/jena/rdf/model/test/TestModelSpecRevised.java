@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.21 2004-08-31 09:49:53 andy_seaborne Exp $
+  $Id: TestModelSpecRevised.java,v 1.22 2004-11-29 16:01:14 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -29,7 +29,12 @@ public class TestModelSpecRevised extends ModelTestBase
         { super( name ); }
     
     public static TestSuite suite()
-         { return new TestSuite( TestModelSpecRevised.class ); }
+         { 
+//         TestSuite result = new TestSuite();
+//         result.addTest( new TestModelSpecRevised( "testURLRulesets" ) );
+//         return result; 
+         return new TestSuite( TestModelSpecRevised.class ); 
+         }
     
     public static final Resource A = resource( "_a" );
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.40 2004-08-31 09:49:50 andy_seaborne Exp $
+  $Id: ModelSpecImpl.java,v 1.41 2004-11-29 15:59:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -53,7 +53,9 @@ public abstract class ModelSpecImpl implements ModelSpec
         this.description = description; 
         }
     
-    protected static final Model emptyModel = ModelFactory.createDefaultModel();
+    public static final Model emptyModel = ModelFactory.createDefaultModel();
+    
+    public static final Resource emptyResource = emptyModel.createResource();
     
     protected Model description = emptyModel;
     

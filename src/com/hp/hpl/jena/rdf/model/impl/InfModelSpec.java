@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.12 2004-08-31 09:49:50 andy_seaborne Exp $
+  $Id: InfModelSpec.java,v 1.13 2004-11-29 15:59:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -96,7 +96,7 @@ public class InfModelSpec extends ModelSpecImpl
     public Model addDescription( Model desc, Resource self )
         {
         super.addDescription( desc, self );
-        Resource r = reasonerRoot; // desc.createResource();
+        Resource r = reasonerRoot; 
         desc.add( self, JMS.reasonsWith, r );
         desc.add( r, JMS.reasoner, reasonerResource );
         new ModelExtract( notJMS ) .extractInto( desc, r, description );
@@ -140,7 +140,8 @@ public class InfModelSpec extends ModelSpecImpl
     */
     private static ReasonerFactory loadFactory( ReasonerFactory rf, Model rs, Resource R )
         {
-        WrappedReasonerFactory f = new WrappedReasonerFactory( rf );
+        Resource config = (Resource) R.inModel( rs );
+        WrappedReasonerFactory f = new WrappedReasonerFactory( rf, config );
     	loadSchemas( rs, R, f );
         loadRulesets( rs, R, f );
         return f;

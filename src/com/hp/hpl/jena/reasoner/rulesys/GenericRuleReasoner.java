@@ -5,12 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.17 2004-08-03 11:20:59 chris-dollin Exp $
+ * $Id: GenericRuleReasoner.java,v 1.18 2004-11-29 16:01:20 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
+import com.hp.hpl.jena.util.IteratorCollection;
+import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
@@ -26,7 +28,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2004-08-03 11:20:59 $
+ * @version $Revision: 1.18 $ on $Date: 2004-11-29 16:01:20 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -196,6 +198,35 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         }
     }
         
+    protected boolean doSetResourceParameter( Property parameter, Resource value )
+        {
+        if (parameter.equals( JMS.ruleSetURL )) 
+            {
+//            System.err.println( ">> ruleSetURL " + value );
+            addRules( Rule.rulesFromURL( value.getURI() ) );
+            }
+        else if (parameter.equals( JMS.ruleSet )) 
+            {
+//            System.err.println( ">> ruleSet " + value );
+//            System.err.println( "++  " + IteratorCollection.iteratorToSet( value.listProperties() ) );
+            StmtIterator that = value.listProperties( JMS.ruleSetURL );
+            while (that.hasNext())
+                {
+                addRules( Rule.rulesFromURL( that.nextStatement().getResource().getURI() ) );
+                }
+            StmtIterator it = value.listProperties( JMS.hasRule );
+            while (it.hasNext()) 
+                {
+                String s = it.nextStatement().getString();
+                // System.err.println( "++  " + s );
+                addRules( Rule.parseRules( s ) ); 
+                }
+            }
+        else
+            return false;
+        return true;
+        }
+    
     /**
      * Internal version of setParameter that does not directly raise an
      * exception on parameters it does not reconize.
@@ -204,10 +235,8 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     protected boolean doSetParameter(Property parameter, Object value) {
         if (parameter.equals(ReasonerVocabulary.PROPderivationLogging)) {
             recordDerivations = Util.convertBooleanPredicateArg(parameter, value);
-            
         } else if (parameter.equals(ReasonerVocabulary.PROPtraceOn)) {
             traceOn =  Util.convertBooleanPredicateArg(parameter, value);
-            
         } else if (parameter.equals(ReasonerVocabulary.PROPenableFunctorFiltering)) {
             filterFunctors =  Util.convertBooleanPredicateArg(parameter, value);
             

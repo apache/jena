@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedReasonerFactory.java,v 1.2 2004-08-06 13:58:41 chris-dollin Exp $
+  $Id: WrappedReasonerFactory.java,v 1.3 2004-11-29 16:01:21 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -22,21 +22,23 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 public final class WrappedReasonerFactory extends BaseRuleReasonerFactory 
     implements RuleReasonerFactory
     {
-    private final ReasonerFactory factory;
-    private List schemas = new ArrayList();
+    protected final ReasonerFactory factory;
+    protected final List schemas = new ArrayList();
+    protected final Resource config;
     
-    public WrappedReasonerFactory( ReasonerFactory rrf )
+    public WrappedReasonerFactory( ReasonerFactory rrf, Resource config )
         { super();
-        this.factory = rrf; }
+        this.factory = rrf; 
+        this.config = config; }
     
     /**
          Answer a Reasoner created according to the underlying factory, and then 
          loaded with this Wrapper's rules (if the Reasoner is a RuleReasoner) and
          bound to this Wrapper's schemas (in an unspecified order).
      */
-    public Reasoner create( Resource configuration )
-        { Reasoner result = factory.create( configuration );
-        if (result instanceof RuleReasoner) ((RuleReasoner) result).setRules( rules );
+    public Reasoner create( Resource ignored )
+        { Reasoner result = factory.create( config );
+        // if (result instanceof RuleReasoner) ((RuleReasoner) result).setRules( rules );
         for (int i = 0; i < schemas.size(); i += 1) result.bindSchema( (Graph) schemas.get(i) );
         return result; }
     
