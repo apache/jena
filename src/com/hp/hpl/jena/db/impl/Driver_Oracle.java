@@ -24,6 +24,8 @@ import com.hp.hpl.jena.db.RDFRDBException;
 /* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE IMPORT STATEMENTS)  -------
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BLOB;
+import oracle.jdbc.OracleDatabaseMetaData;
+
 /*--------------------------------------------------------------------*/
 
 /**
@@ -31,13 +33,15 @@ import oracle.sql.BLOB;
  *
  * Extends DriverRDB with Oracle-specific parameters.
  * Note: To use this class with Oracle:
- *       1. Uncomment out the Oracle-specific
- *           import statements above this comment block.
+ *       1. Uncomment the import statements above.
  *       2. Comment out the interface stubs below.
  */
    public class Driver_Oracle extends DriverRDB {
 
+
 //* <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
+    import oracle.jdbc.OracleDatabaseMetaData;
+	
 	public interface BLOB extends java.sql.Blob {
 		OutputStream getBinaryOutputStream();
 		int getBufferSize();
@@ -55,7 +59,7 @@ import oracle.sql.BLOB;
 	/** 
 	 * Constructor
 	 */
-	public Driver_Oracle(){
+	public Driver_Oracle( ){
 		super();
 
 		String myPackageName = this.getClass().getPackage().getName();
@@ -67,7 +71,9 @@ import oracle.sql.BLOB;
 		URI_COMPRESS = false;
 		INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 4000;
 		LONG_OBJECT_LENGTH_MAX = LONG_OBJECT_LENGTH = 250;
-		TABLE_NAME_LENGTH_MAX = 30;  // just a guess; need to verify it.
+		TABLE_NAME_LENGTH_MAX =	30;
+		/* 30 is a guesstimate. setConnection should be called
+		 * immediately to get the correct value. */
 		IS_XACT_DB = true;
 		PRE_ALLOCATE_ID = true;
 		SKIP_DUPLICATE_CHECK = false;
@@ -83,6 +89,7 @@ import oracle.sql.BLOB;
 		QUOTE_CHAR = '\'';
 		
 		DB_NAMES_TO_UPPER = true;
+		setTableNames(TABLE_NAME_PREFIX);
 	}
 	
 	/**
@@ -90,6 +97,14 @@ import oracle.sql.BLOB;
 	 */
 	public void setConnection( IDBConnection dbcon ) {
 		m_dbcon = dbcon;
+		try {
+			OracleDatabaseMetaData dmd = (OracleDatabaseMetaData)dbcon.getConnection().getMetaData();
+			if (dmd == null)
+				throw new RDFRDBException("Oracle database metadata not available.");
+			TABLE_NAME_LENGTH_MAX =	dmd.getMaxTableNameLength();
+		} catch ( SQLException e ) {
+			throw new RDFRDBException("Problem accessing Oracle database metadata.");
+		}	  
 		
 		try {   		
 			// Properties defaultSQL = SQLCache.loadSQLFile(DEFAULT_SQL_FILE, null, ID_SQL_TYPE);
@@ -201,12 +216,7 @@ import oracle.sql.BLOB;
 				
 		getTblParams (parms);
 		int tblCnt = getTableCount(graphId);
-		String tblName = TABLE_NAME_PREFIX + 
-					"g" + Integer.toString(graphId) +
-					"t" + Integer.toString(tblCnt) +
-					(isReif ? "_reif" : "_stmt");	
-		tblName = stringToDBname(tblName);	
-		res[0] = tblName;
+		res[0] = genTableName(graphId,tblCnt,isReif);
 		res[1] = parms[0];
 		return res;
 	}
@@ -252,7 +262,7 @@ import oracle.sql.BLOB;
 			m_sql.returnPreparedSQLStatement(ps);
 			
 			if ( lobj.tail.length() > 0) {
-				if (! inTransaction) {
+				if (! xactOp(xactIsActive)) {
 				  m_dbcon.getConnection().setAutoCommit(false);				
 				}
 				opname = "getEmptyBLOB";
@@ -279,7 +289,7 @@ import oracle.sql.BLOB;
 				instream.close();
 				outstream.close();
 				lobStmt.close();
-				if (! inTransaction) {
+				if (! xactOp(xactIsActive)) {
 			  		m_dbcon.getConnection().setAutoCommit(save);				
 				}
 			}
