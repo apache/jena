@@ -1,233 +1,232 @@
 <html>
 <head>
-<title>model specifications &amp; joseki</title>
+<title>ModelSpec 2.2 howto</title>
 <style>
-h1 { background-color: #bbb }
-h2 { background-color: #ccc }
-pre { background-color: #fcc }
+pre {
+    background-color: #eee;
+    margin-top: 2mm;
+    margin-bottom: 2mm;
+    margin-left: 0;
+    }
+<link href="../styles/doc.css" rel="stylesheet" type="text/css">
 </style>
 </head>
 <body>
+<h1>ModelSpec howto - describing Jena 2.2 models in RDF</h1>
 
-<h1>use cases for Joseki model specifications</h1>
+<h1>introduction</h1>
 
-<i>Draft for discussion, v0.2, 28th July 2004</i>.
+This document describes the ModelSpec features for Jena 2.2 (although
+they will be available in CVS before Jena 2.2 is released). They build
+on the experimental features available in Jena 2.0 and 2.1, but have
+been extended to increase flexibility and uniformity.
 
-<p>Based on the existing ModelSpec details and put into
-the context of being used in Joseki configurations.
-We assume that the designations of models in the
-configuration take the form
+<p>The intention is to be able to specify how a model is constructed 
+using a configuration file, input stream, URL, or other way of getting 
+RDF into a Jena process, and for this configuration to be capabile of
+specifying anything that the ModelFactory class can construct.
+
+<p>A more formal document is available: the 
+<a href="modelspec-details-2-2.html">ModelSpec design document</a>. 
+Here we concentrate on how to use ModelSpecs in general.
+
+<p>The ModelSpec descriptions use the Jena Model Specification
+vocabulary, which is available in the vocabulary class <code>JMS</code>
+and which will be referred to using the prefix <code>jms</code>.
+Jena defines this vocabulary namespace as 
+
+<blockquote>
+http://jena.hpl.hp.com/2003/08/jms#
+</blockquote>
+
+<h1>creating a ModelSpec</h1>
+
+<code>ModelSpec</code>s are created by calling one of the ModelFactory 
+methods named <code>createSpec</code>, which create a ModelSpec from
+an RDF description. There are four variants of <code>createSpec</code>:
+
+<ul>
+<li>createSpec( Resource r , Model m ). This is the core method.
+    The ModelSpec is created from the sub-graph of <code>m</code>
+	rooted at <code>r</code>. The resource <code>r</code> identifies
+	the model specification. Model specifications are described in
+	detail in [A LATER SECTION].
+
+<li>createSpec( Model m ). The ModelSpec is created from the sub-graph
+    of <code>m</code> rooted at the unique resource with type
+	<code>jms:ModelSpec</code>.
+
+<li>createSpec( Resource r ). This abbreviates 
+    <code>createSpec( r, r.getModel() )</code> and replaces the
+	earlier use where the model was obtained from <code>r</code>'s
+	URI.
+
+<li>createSpec( String uri ). Load the model identified by <code>uri</code>
+    and create the specification from that model.
+
+</ul>
+
+<h1>using a ModelSpec</h1>
+
+A ModelSpec doesn't describe a single model, but a way of making
+many models of the same kind. Often these models are named, or built
+on named models. The two important creation methods are:
+
+<ul>
+<li><code>createModel()</code>: create a new model according to
+    the specification. This method is used by 
+	<code>ModelFactory.createModel(ModelSpec)</code>. You may need
+	to cast this model to the appropriate type - in particular,
+	if you're expecting an <code>OntModel</code>.
+	
+	<p>[Should we provide createOntModel and createInfModel as
+	wrappers for these cases?]
+
+<li><code>createModelOver(String name)</code>: most <code>ModelSpec</code>s
+    have an underlying <a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelMaker.html">
+    <code>ModelMaker</code></a>. This method creates a new Model where
+    any underlying Model has the given <code>name</code> in that ModelMaker.
+    For particularly simple <code>ModelSpec</code>s, the result is that
+    Model. The usual case of interest is when the ModelSpec creates
+	models in a database.
+</ul>
+
+Once a ModelSpec has been constructed, the RDF on which it is based
+may become inacessible; indeed, it is possible to construct some
+ModelSpecs without using RDF at all. To regenerate RDF "equivalent"
+to that description, use:
+
+<ul>
+
+<li><code>getDescription()</code>: returns an RDF description which
+    describes this ModelSpec. If the original RDF description had no
+    superfluous statements, this model is likely "the same" as that
+    original, ie isomorphic. This is a useful way to save an RDF
+    description to be used in a later <code>createSpec</code>.
+
+</ul>
+
+<h1>Some simple ModelSpec descriptions</h1>
+
+We will write our descriptions in N3, rather than RDF/XML, for clarity.
+We will assume the usual Jena prefixes (rdfs, jms, rdf), call the
+root resource of the description "_:this", and make heavy use of
+bnodes. Your own descriptions can use whatever mixtures of bnodes
+and URIs you like.
+ 
+<hr>
+Unmodified original from here .....
+
+<h2>PlainModelSpec, no frills</h2>
+
+A <code>PlainModelSpec</code> is described by a ModelMaker specification.
+For a memory-based model, that just describes a reification mode.
 
 <pre>
-modelID 
-    joseki:attachedModel URI
-    ; joseki:initialContents URI
-    ; joseki:usingSpec modelSpec
-    .
+    _this jms:maker _A
+    _A jms:reificationMode jms:rsMinimal
 </pre>
 
-The model is created from the modelSpec by using the
-spec to create a ModelMaker, and then using .createOver()
-to create the model from the URI.
+The ModelSpec construction uses RDFS reasoning over the supplied model,
+so that using <code>jms:maker</code> is sufficient to say that
+<code>_this</code> is a <code>jms:ModelSpec</code>.
 
-<p>If the initialContents are specified, then the 
-contents of that URI are loaded into the model when it
-has been created. 
+<h2>PlainModelSpec, file-based</h2>
 
-<p>Where the modelSpec also contributes to the URIs
-of any models, we need to decide what the interaction between
-the different components is.
-
-<h2>an in-memory model with no inference</h2>
+A FileModelMaker needs a fileBase to be specified as well.
 
 <pre>
-modelSpec
-    rdf:type jms:PlainModelSpec
+    _this jms:maker _A
+    _A jms:reificationMode jms:rsConvenient
+    _A jms:fileBase "/tmp"
 </pre>
 
-An in-memory model is created, bound to the content of
-the named URI. 
+The resulting <code>PlainModelSpec</code> makes models backed by
+files found in "/tmp" (file-system names are implementation-specific).
 
-<p><i>issue: inconsistent with both memory
-models and with file models; must resolve.</i>
+<h2>PlainModelSpec from a database</h2>
 
-<h2>an in-memory model with inference</h2>
+Database model makers need to have their connection specified. Each
+such <code>ModelSpec</code> will create its own connection. 
 
 <pre>
-modelSpec
-    rdf:type jms:InfModelSpec
-    ; jms:reasonsWith reasonerSpec
-    .
+    _this jms:maker _A
+    _A jms:reificationMode jms:rsStandard
+    _A jms:dbURL "jdbc:mysql://some.database.machine.eg/jenaDB"
+    _A jms:dbUser "william.blake"
+    _A jms:dbPassword "tyger, tyger"
+    _A jms:dbType "MySQL"
 </pre>
 
-The <code>type</code> assertion is optional, since
-it follows from the domain of <code>reasonsWith</code>.
-The reasoner specification is elsewhere because several
-different models may share the same specification.
+<h2>an inference model</h2>
+
+Inference models require a reasoner specification as well as a
+base ModelMaker. In the current ModelSpec implementation, the
+reasoner only requires the URI describing the necessary inference:
+other reasoner properties will be introduced in later revisions.
 
 <pre>
-reasonerSpec
-    rdfs:type jms:ReasonerSpec
-    ; jms:reasoner SomeRegisteredReasonerURI
-    ; jms:ruleSet theRuleSet
-    ; jms:ruleSetURL URL
-    ; jms:schemaURL URL
-    ; jms:schema aModelSpec
-    .
+    _this jms:maker _M
+    _this jms:reasonsWith _R
+    _M jms:reificationMode jms:rsMinimal
+    _R jms:reasoner http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner
 </pre>
 
-The reasoner spec describes the reasoner that is used
-by giving the registered URI of that reasoner in the
-Jena reasoner registry. 
+<h2>an ontology model</h2>
 
-<p>Zero or more <code>ruleSetURL</code> assertions may
-be used to specify rules to be loaded into the reasoner.
-The rules will be in the default language (see below).
-
-<p>Zero or more <code>ruleSet</code>
-assertions may be attached to specify rulesets that are
-loaded into the reasoner. This allows rulesets to be
-given in the specification document rather than having to 
-allocate them a separate URL.
-
-<p>Zero or more <code>schemaURL</code> assertions may
-be attached to specify the URLs of schemas to be loaded
-into the reasoner. Zero or more <code>schema</code>
-assertions may be attached to specify models containing
-schemas. (These can initialise the "T-box" of an ontology.) 
-
-<p>The type assertion is optional, since it is implied by
-the <code>reasoner</code> assertion.
+Finally, here's the description of an ontology model for OWL Lite over
+a database model, while doing RDFS inference.
 
 <pre>
-theRuleSet
-    rdfs:type jms:RuleSet
-    ; jms:ruleLanguage "some rule language name"
-    ; jms:hasRule "some rule or other"
-    ; jms:hasRule "some other other rule"
-    ; jms:fromRuleURL URL
-    .    
-</pre>
-
-A rule-set may have zero or more <code>hasRule</code>
-assertions, giving strings which encode rules in the
-given <code>ruleLanguage</code>, and zero or more
-<code>fromRuleURL</code> assertions specifying URLs
-which contain rules.
-
-<p>If no language is specified, some default language
-is used (Dave's internal rule language notation,
-presumably). A rule-set may legally be empty. It it
-isn't, the <code>type</code> assertion is optional.
+    _this jms:importMaker _D
+    _this jms:ontLanguage "http://www.w3.org/TR/owl-features/#term_OWLLite"
+    _this jms:docManager _DM
+    _this jms:reasonsWith _R
     
-<h2>an in-memory model with an ontology</h2>
+    _D jms:dbURL "jdbc:mysql://some.database.machine.eg/jenaDB"
+    _D jms:dbUser "william.blake"
+    _D jms:dbPassword "tyger, tyger"
+    _D jms:dbType "MySQL"    
 
-<pre>
-modelSpec
-    rdf:type OntModelSpec
-    ; jms:ontology ontSpec
-    .
+    _R jms:reasoner http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner
 </pre>
 
-The ontSpec allows ontology specifications to be shared 
-among different models. The <code>type</code> assertion
-is optional (implied by being the subject of <code>ontology</code>).
+The <code>docManager</code> bnode has no attached properties; in this
+case, the resulting <code>OntModelSpec</code> will use the default
+document manager. Adding the triple
 
 <pre>
-ontSpec
-    jms:ontLanguage ontLanguageURI
-    ; jms:docManager docSpec
-    ; jms:maker aModelSpec
-    .
+    _DM jms:policyPath "file:/somehere/policy"
 </pre>
 
-The <code>ontSpec</code> descibes the ontology properties
-shared by all the ontology models created by this spec.
-The <code>ontLanguage</code> gives the language URI for
-this ontology (from the set of available ontology URIs).
-The <code>docManager</code> specifies the document manager
-to be used; if omitted, the default document manager is
-implied. 
+will use a document manager which takes its policy from the specified
+file; see the <a href="../javadoc/com/hp/hpl/jena/ontology/OntDocumentManager.html">
+OntDSocumentManager</a> documentation for more details.
+<h1>GUBBINS TO BE ASSIMILATED</h1>
 
-<p>The <code>maker</code> specifies the model maker used
-to construct the base model for the OntModel.
+, passing it the Model containing the
+RDF description. The description uses the <a href="../javadoc/com/hp/hpl/jena/vocabulary/JMS.html">JMS (Jena Model Specification)
+vocabulary</a>. The result is a ModelSpec object specialised to the
+description. <code>createSpec</code> finds the unique resource in
+<code>desc</code> with <code>RDF.type</code> <code>JMS.ModelSpec</code>,
+and then find the "most specific" subtype of <code>JMS.ModelSpec</code>
+that resource has. [Fortunately, the current type tree allows this.]
 
-<pre>
-docSpec
-    jms:policyPath policyURL
-    ; jms:policy policySpec
-    ; jms:importMaker aModelSpec
-    .
-</pre>
+<p>That type identifies the kind of Java ModelSpec to create. The
+constructor for that type analyses the description to find the
+relevant properties: irrelevant ones are ignored. [The mapping from
+RDF types to ModelSpecCreators is driven from the
+<a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelSpecCreatorRegistry.html">
+ModelSpecCreatorRegistry
+</a>
+and is extensible.]
 
-The <code>policyPath</code> URL names an RDF file
-containing a policySpec, or the policySpec can be given by a
-<code>policy</code> assertion.
+<p>The <code>createSpec(Resource,Model)</code> method performs the same function,
+but the ModelSpec resource (which must have type <code>JMS.ModelSpec</code>)
+is passed as the first argument, rather than being the unique ModelSpec
+resource in the description.
 
-<p>The ModelMaker to use for imported models is specified
-by <code>aModelSpec</code>; if no <code>importMaker</code>
-is specified, it defaults to a MemModelMaker.
-
-The <code>policySpec</code> properties and values are those
-defined by the OntDocumentManager metadata specification.
-
-<h2>an in-memory model with inference and ontology</h2>
-
-<pre>
-modelSpec
-    jms:ontology ontSpec
-    ; jms:reasonsWith reasonerSpec
-    .
-</pre>
-
-Providing both a reasoner and an ontology specification
-constructs an OntModel over the results of the reasoner.
-
-<h2>using RDB models</h2>
-
-A model that is persistent within a database can be specified
-by using an RDB model maker.
-
-<pre>
-modelSpec
-    rdf:type RDBMaker
-    ; jms:dbUser "user name"
-    ; jms:dbPassword "password"
-    ; jms:dbType "database type"
-    ; jms:dbURL dbURL
-    ; jms:dbClass "class"
-    .
-</pre>
-
-The <code>dbType</code> identifies the type of the database [details
-to be supplied] and <code>dbClass</code> identifies its class [ditto].
-<code>dbURL</code> is the URL required to make the JDBC connection.
-
-<p>The resulting ModelMaker will open/create models in that database.
-If the <code>attachedModel</code> URI starts with the dbURL, that
-component is stripped before being passed on to the database.
-
-<p>To allow an ontology to operate over database models, its
-OntSpec maker should me an RDBMaker. Each such OntModel will,
-by default, operate over a separate database connection.
-
-<h2>sharing of specifications</h2>
-
-Each specification is interpreted (by the Jena ModelSpec
-handler, not by Joseki) to create the appropriate objects.
-By default, each time a specification is interpreted, a new
-object is constructed. However, if the specification has
-<code>type</code> <code>jms:Shared</code>, then the
-resulting object is cached with the specification, and re-use
-of the specification will deliver the original object.
-
-<p>The identity used for the cache is the resource of the
-specification (so changing the properties of a shared resource
-is a very bad idea).
-
-<p>Thus an ontology, or a reasoner, or a database connection,
-can be marked <code>Shared</code> and not have multiple
-copies in the same JVM.
-
+<p>In both cases, the <code>Model</code> can be replaced by a [non-bnode]
+<code>Resource</code> whose URI names the model to be loaded.
 </body>
 </html>
