@@ -208,6 +208,8 @@ public class Checker extends AbsChecker {
 		if ( monotoneLevel < Levels.Full && monotoneProblems.size() == 0)
    		   snapCheck();
    		int m = monotoneLevel < nonMonotoneLevel ? nonMonotoneLevel : monotoneLevel;
+   		if ( wantLite && m == Levels.DL)
+   		   return "DL or Full";
 		return Levels.toString(m);
 	}
 	void actions(long key, CNodeI s, CNodeI o, Triple t) {
