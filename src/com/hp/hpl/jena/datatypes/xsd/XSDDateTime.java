@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.10 2003-12-04 15:57:28 der Exp $
+ * $Id: XSDDateTime.java,v 1.11 2004-02-17 09:14:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -17,7 +17,7 @@ import java.util.*;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-12-04 15:57:28 $
+ * @version $Revision: 1.11 $ on $Date: 2004-02-17 09:14:28 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -201,11 +201,17 @@ public class XSDDateTime extends AbstractDateTime {
         }
         if ((mask & TIME_MASK) != 0 ) {
             buff.append("T");
+            if(data[h]<10) buff.append("0");
             buff.append(data[h]);
+            
             buff.append(":");
+            if(data[m]<10) buff.append("0");
             buff.append(data[m]);
+            
             buff.append(":");
+            if(data[s]<10) buff.append("0");
             buff.append(data[s]);
+             
             if (data[ms] != 0) {
                 buff.append(".");
                 buff.append(data[ms]);
