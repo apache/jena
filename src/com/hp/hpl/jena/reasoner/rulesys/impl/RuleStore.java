@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleStore.java,v 1.10 2003-07-18 16:20:08 der Exp $
+ * $Id: RuleStore.java,v 1.11 2003-08-15 16:09:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * </p> 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-07-18 16:20:08 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-15 16:09:37 $
  */
 public class RuleStore {
 
@@ -54,6 +54,15 @@ public class RuleStore {
             addRule( (Rule)i.next() );
         }
         allRules = rules;
+    }
+    
+    /**
+     * Add all the rules and  from an existing rulestore into this one.
+     */
+    public void addAll(RuleStore store) {
+        for (Iterator i = store.getAllRules().iterator(); i.hasNext(); ) {
+            addRule( (Rule)i.next() );
+        }
     }
     
     /**
