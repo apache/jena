@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.9 2003-04-09 20:44:41 jeremy_carroll Exp $
+  $Id: TestReifier.java,v 1.10 2003-05-09 15:37:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -83,7 +83,6 @@ public class TestReifier extends GraphTestBase
     /* */
     	assertTrue( "node is known bound", R.hasTriple( M ) );
     	assertTrue( "node is known bound", R.hasTriple( N ) );
-    	assertFalse( "node is known unbound", R.hasTriple( Node.ANY ) );
     	assertFalse( "node is known unbound", R.hasTriple( Node.createURI( "any:thing" ) ) );
     /* */
 //    	Graph GR = R.getReifiedTriples();
@@ -151,10 +150,48 @@ public class TestReifier extends GraphTestBase
         Node X = node( "x" );
         R.reifyAs( X, triple( "x R y" ) );
         R.reifyAs( X, triple( "x R y" ) );
-        try { R.reifyAs( X, triple( "x R z" ) ); fail( "did not detected already reified node" ); }
+        try { R.reifyAs( X, triple( "x R z" ) ); fail( "did not detect already reified node" ); }
         catch (Reifier.AlreadyReifiedException e) { }      
         }
         
+    public void testKevinCaseA()
+        {
+        Graph G = GraphBase.withReification( graphWith( "" ) );
+        Node X = node( "x" ), a = node( "a" ), b = node( "b" ), c = node( "c" );
+        G.add( new Triple( X, Reifier.type, Reifier.Statement ) );
+        G.getReifier().reifyAs( X, new Triple( a, b, c ) ); 
+        }
+        
+    public void testKevinCaseB()
+        {
+        Graph G = GraphBase.withReification( graphWith( "" ) );
+        Node X = node( "x" ), Y = node( "y" );
+        Node a = node( "a" ), b = node( "b" ), c = node( "c" );
+        G.add( new Triple( X, Reifier.subject, Y ) );
+        try
+            {
+            G.getReifier().reifyAs( X, new Triple( a, b, c ) );
+            fail( "X already has subject Y: cannot make it a" );
+            }
+        catch (Reifier.CannotReifyException e)
+            { /* as requried */ }
+        }
+
+//    public void testKevinCaseC()
+//        {
+//        Graph G = GraphBase.withReification( graphWith( "" ) );
+//        Node X = node( "x" ), Y = node( "y" );
+//        Node a = node( "a" ), b = node( "b" ), c = node( "c" );
+//        G.getReifier().reifyAs( X, new Triple( a, b, c ) );         
+//        try
+//            {
+//            G.add( new Triple( X, Reifier.subject, Y ) );
+//            fail( "X already reifies (a, b, c): cannot give it subject Y" );
+//            }
+//        catch (Reifier.CannotReifyException e)
+//            { /* as requried */ }
+//        }
+            
 //    public void testQuads()
 //        {
 //        Node A = node( "a" ), B = node( "b" );

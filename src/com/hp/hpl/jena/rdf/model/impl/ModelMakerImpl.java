@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelMakerImpl.java,v 1.2 2003-05-09 14:04:53 chris-dollin Exp $
+  $Id: ModelMakerImpl.java,v 1.3 2003-05-09 15:37:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;

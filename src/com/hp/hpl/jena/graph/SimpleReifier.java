@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.12 2003-04-09 20:44:39 jeremy_carroll Exp $
+  $Id: SimpleReifier.java,v 1.13 2003-05-09 15:36:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -80,12 +80,16 @@ public class SimpleReifier implements Reifier
     public Node reifyAs( Node tag, Triple t )
     	{
         Object partial = nodeMap.get( tag );
-        if (partial == null)
+        if (partial instanceof Triple)
+            { if (!t.equals( partial )) throw new Reifier.AlreadyReifiedException( tag ); }
+        else if (partial == null)
             nodeMap.putTriple( tag, t );
-        else if (partial instanceof Fragments)
+        else
+            {
             graphAddQuad( parent, tag, t );
-        else if (!t.equals( partial )) 
-            throw new Reifier.AlreadyReifiedException( tag );
+            Triple t2 = getTriple( tag );
+            if (t2 == null) throw new CannotReifyException( tag );
+            }
         return tag; 
     	}
         

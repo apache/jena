@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.5 2003-05-06 07:43:57 chris-dollin Exp $
+  $Id: Reifier.java,v 1.6 2003-05-09 15:36:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -18,6 +18,7 @@ package com.hp.hpl.jena.graph;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.shared.*;
 
 public interface Reifier extends GetTriple
     {
@@ -81,11 +82,18 @@ public interface Reifier extends GetTriple
     boolean handledRemove( Triple t );
     
     /**
-        the exception raised by _reifyAs_ if a node is already bound to
+        The exception raised by reifyAs if a node is already bound to
         a reified triple.
     */
-    static public class AlreadyReifiedException extends RDFException 
+    static public class AlreadyReifiedException extends JenaException 
         { public AlreadyReifiedException( Node n ) { super( n.toString() ); } };
+        
+    /**
+        The exception thrown by reifyAs if a node is bound to bits and
+        pieces of another triple.
+    */
+    static public class CannotReifyException extends JenaException
+        { public CannotReifyException( Node n ) { super( n.toString() ); } };    
     }
     
 /*
