@@ -161,7 +161,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.19 2003-11-25 11:32:33 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.20 2003-12-02 06:21:11 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
@@ -208,25 +208,20 @@ nl,
 gogo :-
   compMapping,
   buildChecker,
-  gogo('Grammar'),
-  gogo('Triples').
-gogo(G) :-
+  gogo('Grammar','com.hp.hpl.jena.ontology.tidy.impl',
+         '../../src/com/hp/hpl/jena/ontology/tidy/impl/Grammar.java'),
+  gogo('Triples','owlcompiler','java/owlcompiler/Triples.java').
+gogo(G,P,JF) :-
   % tt/4 is now good.
-  jfile(G,JF),
+  % jfile(G,JF),
   tell(JF),
   copyrightHead,
-  wlist(['package com.hp.hpl.jena.ontology.tidy;',nl]),
+  wlist(['package ', P,';',nl]),
   (G=='Triples'->
-  wlist([
+  wlist(['import com.hp.hpl.jena.ontology.tidy.impl.*;',nl,
          'import java.util.Arrays;',nl]); true),
   wlist([ 'class ',G,' implements Constants {',nl]),
-  flag(catID,_,1),
-  category(C),
-  flag(catID,N,N+1),
-  wsfi(C,N),
-  fail.
-  
-gogo(G) :-
+  wCategories,
   %wActions,
   wGetBuiltinID,
   wGroups1,
@@ -236,7 +231,20 @@ gogo(G) :-
   wlist(['}',nl]),
   copyrightTail,
   told.
-  
+wCategories :-
+  flag(catID,_,1),
+  category(C),
+  flag(catID,N,N+1),
+  wsfi(C,N),
+  fail.
+
+wCategories :-
+  wlist([' static String catNames[] = { "--not used--",',nl]),
+  category(C),
+  wlist(['      "',C,'",',nl]),
+  fail.
+wCategories :-
+  wlist(['       };',nl]).
  c :-
   tell(compileddata),
   wlist(['%% categories',nl]),
@@ -454,8 +462,9 @@ getBuiltins(Q) :-
   wlist(['       } else if ( uri.equals("',Nm,'") ) {',nl]),
  %(P=[ontologyPropertyID]->Gp=ontologyPropertyHack;
   gname(P,Gp),
-  specialBuiltin(Special,SpCode),
-  wlist(['          return ',Gp,SpCode,';',nl]),
+ % specialBuiltin(Special,SpCode),
+  (Special=bad -> wlist(['   return BadXSD;',nl]);
+  wlist(['          return ',Gp,SpCode,';',nl])),
   fail.
 getBuiltins(Q) :-
   disallowed(Q,N),
@@ -475,9 +484,11 @@ getBuiltins(RDF_S) :-
 getBuiltins(_) :-
   wlist(['     }',nl,'   }',nl]).
 
+/*
 specialBuiltin(bad,'| BadXSD').
 specialBuiltin(0,'').
 specialBuiltin(notQuite,'').
+*/
 
 jfile(Nm,Nmx) :-
   concat_atom(['../../src/com/hp/hpl/jena/ontology/tidy/',Nm,'.java'],Nmx).

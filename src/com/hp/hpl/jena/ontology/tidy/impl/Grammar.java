@@ -1,6 +1,6 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.2 2003-12-02 06:21:10 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 class Grammar implements Constants {
@@ -95,6 +95,99 @@ class Grammar implements Constants {
     static final int rdfsrange = 89;
     static final int rdfssubClassOf = 90;
     static final int rdfssubPropertyOf = 91;
+ static String catNames[] = { "--not used--",
+      "orphan",
+      "notype",
+      "cyclic",
+      "cyclicRest",
+      "cyclicFirst",
+      "badRestriction",
+      "annotationPropID",
+      "classID",
+      "dataAnnotationPropID",
+      "dataPropID",
+      "dataRangeID",
+      "datatypeID",
+      "dlInteger",
+      "individualID",
+      "liteInteger",
+      "literal",
+      "objectPropID",
+      "ontologyID",
+      "ontologyPropertyID",
+      "transitivePropID",
+      "unnamedIndividual",
+      "unnamedOntology",
+      "userTypedLiteral",
+      "allDifferent",
+      "description5disjointWith",
+      "description5equivalentClass",
+      "description5object",
+      "description5subClassOf",
+      "listOfDataLiteral",
+      "listOfDescription",
+      "listOfIndividualID",
+      "restriction6disjointWith",
+      "restriction6equivalentClass",
+      "restriction6object",
+      "restriction6subClassOf",
+      "restriction7disjointWith",
+      "restriction7equivalentClass",
+      "restriction7object",
+      "restriction7subClassOf",
+      "restriction8disjointWith",
+      "restriction8equivalentClass",
+      "restriction8object",
+      "restriction8subClassOf",
+      "unnamedDataRange",
+      "owlAllDifferent",
+      "owlAnnotationProperty",
+      "owlClass",
+      "owlDataRange",
+      "owlDatatypeProperty",
+      "owlDeprecatedClass",
+      "owlDeprecatedProperty",
+      "owlFunctionalProperty",
+      "owlInverseFunctionalProperty",
+      "owlObjectProperty",
+      "owlOntology",
+      "owlOntologyProperty",
+      "owlRestriction",
+      "owlSymmetricProperty",
+      "owlTransitiveProperty",
+      "owlcomplementOf",
+      "owldifferentFrom",
+      "owldisjointWith",
+      "owldistinctMembers",
+      "owlequivalentClass",
+      "owlequivalentProperty",
+      "owlhasValue",
+      "owlintersectionOf",
+      "owlinverseOf",
+      "owlmaxCardinality",
+      "owlonProperty",
+      "owloneOf",
+      "owlsameAs",
+      "owlsomeValuesFrom",
+      "owlunionOf",
+      "rdfList",
+      "rdfProperty",
+      "rdfXMLLiteral",
+      "rdffirst",
+      "rdfnil",
+      "rdfrest",
+      "rdftype",
+      "rdfsClass",
+      "rdfsContainer",
+      "rdfsContainerMembershipProperty",
+      "rdfsDatatype",
+      "rdfsResource",
+      "rdfsdomain",
+      "rdfsmember",
+      "rdfsrange",
+      "rdfssubClassOf",
+      "rdfssubPropertyOf",
+       };
 static int getBuiltinID(String uri) {
   if ( uri.startsWith("http://www.w3.org/") ) {
       uri = uri.substring(18);
@@ -103,89 +196,131 @@ static int getBuiltinID(String uri) {
        uri = uri.substring(12);
        if (false) {
        } else if ( uri.equals("Thing") ) {
-          return classID;
+          return classID
+;
        } else if ( uri.equals("Nothing") ) {
-          return classID;
+          return classID
+;
        } else if ( uri.equals("versionInfo") ) {
-          return annotationPropID;
+          return annotationPropID
+;
        } else if ( uri.equals("imports") ) {
-          return ontologyPropertyID;
+          return ontologyPropertyID
+;
        } else if ( uri.equals("priorVersion") ) {
-          return ontologyPropertyID;
+          return ontologyPropertyID
+;
        } else if ( uri.equals("backwardCompatibleWith") ) {
-          return ontologyPropertyID;
+          return ontologyPropertyID
+;
        } else if ( uri.equals("incompatibleWith") ) {
-          return ontologyPropertyID;
+          return ontologyPropertyID
+;
        } else if ( uri.equals("Ontology") ) {
-          return owlOntology;
+          return owlOntology
+;
        } else if ( uri.equals("ObjectProperty") ) {
-          return owlObjectProperty;
+          return owlObjectProperty
+;
        } else if ( uri.equals("DataRange") ) {
-          return owlDataRange;
+          return owlDataRange
+;
        } else if ( uri.equals("DatatypeProperty") ) {
-          return owlDatatypeProperty;
+          return owlDatatypeProperty
+;
        } else if ( uri.equals("equivalentClass") ) {
-          return owlequivalentClass;
+          return owlequivalentClass
+;
        } else if ( uri.equals("sameAs") ) {
-          return owlsameAs;
+          return owlsameAs
+;
        } else if ( uri.equals("equivalentProperty") ) {
-          return owlequivalentProperty;
+          return owlequivalentProperty
+;
        } else if ( uri.equals("Class") ) {
-          return owlClass;
+          return owlClass
+;
        } else if ( uri.equals("intersectionOf") ) {
-          return owlintersectionOf;
+          return owlintersectionOf
+;
        } else if ( uri.equals("unionOf") ) {
-          return owlunionOf;
+          return owlunionOf
+;
        } else if ( uri.equals("complementOf") ) {
-          return owlcomplementOf;
+          return owlcomplementOf
+;
        } else if ( uri.equals("Restriction") ) {
-          return owlRestriction;
+          return owlRestriction
+;
        } else if ( uri.equals("onProperty") ) {
-          return owlonProperty;
+          return owlonProperty
+;
        } else if ( uri.equals("allValuesFrom") ) {
-          return owlsomeValuesFrom;
+          return owlsomeValuesFrom
+;
        } else if ( uri.equals("someValuesFrom") ) {
-          return owlsomeValuesFrom;
+          return owlsomeValuesFrom
+;
        } else if ( uri.equals("cardinality") ) {
-          return owlmaxCardinality;
+          return owlmaxCardinality
+;
        } else if ( uri.equals("minCardinality") ) {
-          return owlmaxCardinality;
+          return owlmaxCardinality
+;
        } else if ( uri.equals("maxCardinality") ) {
-          return owlmaxCardinality;
+          return owlmaxCardinality
+;
        } else if ( uri.equals("hasValue") ) {
-          return owlhasValue;
+          return owlhasValue
+;
        } else if ( uri.equals("OntologyProperty") ) {
-          return owlOntologyProperty;
+          return owlOntologyProperty
+;
        } else if ( uri.equals("AllDifferent") ) {
-          return owlAllDifferent;
+          return owlAllDifferent
+;
        } else if ( uri.equals("distinctMembers") ) {
-          return owldistinctMembers;
+          return owldistinctMembers
+;
        } else if ( uri.equals("AnnotationProperty") ) {
-          return owlAnnotationProperty;
+          return owlAnnotationProperty
+;
        } else if ( uri.equals("FunctionalProperty") ) {
-          return owlFunctionalProperty;
+          return owlFunctionalProperty
+;
        } else if ( uri.equals("InverseFunctionalProperty") ) {
-          return owlInverseFunctionalProperty;
+          return owlInverseFunctionalProperty
+;
        } else if ( uri.equals("SymmetricProperty") ) {
-          return owlSymmetricProperty;
+          return owlSymmetricProperty
+;
        } else if ( uri.equals("TransitiveProperty") ) {
-          return owlTransitiveProperty;
+          return owlTransitiveProperty
+;
        } else if ( uri.equals("DeprecatedProperty") ) {
-          return owlDeprecatedProperty;
+          return owlDeprecatedProperty
+;
        } else if ( uri.equals("DeprecatedClass") ) {
-          return owlDeprecatedClass;
+          return owlDeprecatedClass
+;
        } else if ( uri.equals("inverseOf") ) {
-          return owlinverseOf;
+          return owlinverseOf
+;
        } else if ( uri.equals("oneOf") ) {
-          return owloneOf;
+          return owloneOf
+;
        } else if ( uri.equals("differentFrom") ) {
-          return owldifferentFrom;
+          return owldifferentFrom
+;
        } else if ( uri.equals("disjointWith") ) {
-          return owldisjointWith;
+          return owldisjointWith
+;
        } else if ( uri.equals("AllDifferent") ) {
-          return owlAllDifferent;
+          return owlAllDifferent
+;
        } else if ( uri.equals("distinctMembers") ) {
-          return owldistinctMembers;
+          return owldistinctMembers
+;
        } else { return BadOWL; 
      }
    }
@@ -193,33 +328,47 @@ static int getBuiltinID(String uri) {
        uri = uri.substring(25);
        if (false) {
        } else if ( uri.equals("XMLLiteral") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("Bag") ) {
-          return classOnly;
+          return classOnly
+;
        } else if ( uri.equals("Seq") ) {
-          return classOnly;
+          return classOnly
+;
        } else if ( uri.equals("Alt") ) {
-          return classOnly;
+          return classOnly
+;
        } else if ( uri.equals("Statement") ) {
-          return classOnly;
+          return classOnly
+;
        } else if ( uri.equals("subject") ) {
-          return propertyOnly;
+          return propertyOnly
+;
        } else if ( uri.equals("predicate") ) {
-          return propertyOnly;
+          return propertyOnly
+;
        } else if ( uri.equals("object") ) {
-          return propertyOnly;
+          return propertyOnly
+;
        } else if ( uri.equals("type") ) {
-          return rdftype;
+          return rdftype
+;
        } else if ( uri.equals("Property") ) {
-          return rdfProperty;
+          return rdfProperty
+;
        } else if ( uri.equals("nil") ) {
-          return rdfnil;
+          return rdfnil
+;
        } else if ( uri.equals("first") ) {
-          return rdffirst;
+          return rdffirst
+;
        } else if ( uri.equals("rest") ) {
-          return rdfrest;
+          return rdfrest
+;
        } else if ( uri.equals("List") ) {
-          return rdfList;
+          return rdfList
+;
        } else { return BadRDF; 
      }
    }
@@ -227,120 +376,166 @@ static int getBuiltinID(String uri) {
        uri = uri.substring(15);
        if (false) {
        } else if ( uri.equals("string") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("boolean") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("decimal") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("float") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("double") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("dateTime") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("time") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("date") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("gYearMonth") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("gYear") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("gMonthDay") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("gDay") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("gMonth") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("hexBinary") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("base64Binary") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("anyURI") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("normalizedString") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("token") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("language") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("NMTOKEN") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("Name") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("NCName") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("integer") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("nonPositiveInteger") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("negativeInteger") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("long") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("int") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("short") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("byte") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("nonNegativeInteger") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("unsignedLong") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("unsignedInt") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("unsignedShort") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("unsignedByte") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("positiveInteger") ) {
-          return datatypeID;
+          return datatypeID
+;
        } else if ( uri.equals("duration") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("QName") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("ENTITY") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("ID") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("IDREF") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("ENTITIES") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("IDREFS") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("NOTATION") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
        } else if ( uri.equals("NMTOKENS") ) {
-          return datatypeID| BadXSD;
+   return BadXSD;
      }
    }
    else if ( uri.startsWith("2000/01/rdf-schema#") ) {
        uri = uri.substring(19);
        if (false) {
        } else if ( uri.equals("Literal") ) {
-          return dataRangeID;
+          return dataRangeID
+;
        } else if ( uri.equals("comment") ) {
-          return dataAnnotationPropID;
+          return dataAnnotationPropID
+;
        } else if ( uri.equals("label") ) {
-          return dataAnnotationPropID;
+          return dataAnnotationPropID
+;
        } else if ( uri.equals("isDefinedBy") ) {
-          return annotationPropID;
+          return annotationPropID
+;
        } else if ( uri.equals("seeAlso") ) {
-          return annotationPropID;
+          return annotationPropID
+;
        } else if ( uri.equals("Datatype") ) {
-          return rdfsDatatype;
+          return rdfsDatatype
+;
        } else if ( uri.equals("subClassOf") ) {
-          return rdfssubClassOf;
+          return rdfssubClassOf
+;
        } else if ( uri.equals("subPropertyOf") ) {
-          return rdfssubPropertyOf;
+          return rdfssubPropertyOf
+;
        } else if ( uri.equals("domain") ) {
-          return rdfsdomain;
+          return rdfsdomain
+;
        } else if ( uri.equals("range") ) {
-          return rdfsrange;
+          return rdfsrange
+;
        } else if ( uri.equals("Class") ) {
-          return rdfsClass;
+          return rdfsClass
+;
        } else if ( uri.equals("Resource") ) {
            return DisallowedVocab;
        } else if ( uri.equals("member") ) {
