@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.66 $
+ * Revision           $Revision: 1.67 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-06-21 15:00:02 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2004-07-16 13:17:49 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.66 2004-06-21 15:00:02 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.67 2004-07-16 13:17:49 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -97,6 +97,10 @@ public class OntModelImpl
     
     /** The event manager for ontology events on this model */
     protected OntEventManager m_ontEventMgr = null;
+    
+    /** Cached deductions model */
+    private Model m_deductionsModel = null;
+
     
     // Constructors
     //////////////////////////////////
@@ -2439,18 +2443,29 @@ public class OntModelImpl
     }
     
     /**
-     * Returns a derivations model. The rule reasoners typically create a 
+     * <p>Returns a derivations model. The rule reasoners typically create a 
      * graph containing those triples added to the base graph due to rule firings.
      * In some applications it can useful to be able to access those deductions
      * directly, without seeing the raw data which triggered them. In particular,
      * this allows the forward rules to be used as if they were rewrite transformation
-     * rules.
-     * @return null always because this functionality is rarely relevant to ontology models
+     * rules.</p>
+     * 
+     * @return The derivations model, if one is defined, or else null
      */
     public Model getDeductionsModel() {
-        return null;
+        if (m_deductionsModel == null) {
+            InfGraph infGraph = getInfGraph();
+            if (infGraph != null) {
+                Graph deductionsGraph = infGraph.getDeductionsGraph();
+                if (deductionsGraph != null) {
+                    m_deductionsModel = ModelFactory.createModelForGraph( deductionsGraph );
+                }
+            }
+        }
+        return m_deductionsModel;
     }
     
+  
     /**
      * Test the consistency of the underlying data. This normally tests
      * the validity of the bound instance data against the bound
@@ -2759,6 +2774,17 @@ public class OntModelImpl
     private static Model makeBaseModel( OntModelSpec spec, Model model ) {
         return model == null ? spec.createBaseModel() : model;
     }
+    
+    
+    /**
+     * <p>Answer the InfGraph that this model is wrapping, or null if this ontology
+     * model is not wrapping an inf graph.</p>
+     * @return The model's graph as an InfGraph, or null
+     */
+    private InfGraph getInfGraph() {
+        return (getGraph() instanceof InfGraph) ? ((InfGraph) getGraph()) : null;
+    }
+    
     
     //==============================================================================
     // Inner class definitions
