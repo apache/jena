@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<rdf:RDF
+    xmlns:rss="http://purl.org/rss/1.0/"
+    xmlns:jms="http://jena.hpl.hp.com/2003/08/jms#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns="http://www.idi.ntnu.no/~herje/ja/restaurant.owl#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:vcard="http://www.w3.org/2001/vcard-rdf/3.0#"
+    xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:adr="http://www.idi.ntnu.no/~herje/ja/adresse.owl#"
+  xml:base="http://www.idi.ntnu.no/~herje/ja/restaurant.owl">
+  
+  <owl:Class rdf:about="http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#Reiseliv"/>
+   <owl:Class rdf:about="http://www.idi.ntnu.no/~herje/ja/restaurant.owl#Restaurant">
+      	<rdfs:subClassOf rdf:resource="http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#Reiseliv"/>
+  </owl:Class>
+  <owl:Class rdf:about="http://www.idi.ntnu.no/~herje/ja/hotell.owl#Hotell">
+        <rdfs:subClassOf rdf:resource="http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#Reiseliv"/>
+  </owl:Class> 
+
+  <owl:Ontology rdf:about="">
+    <!--owl:imports rdf:resource="http://www.idi.ntnu.no/~herje/ja/adresse.owl"/-->
+  </owl:Ontology>
+  <owl:Class rdf:ID="UteRestaurant">
+    <rdfs:subClassOf>
+      <owl:Class rdf:about="#Restaurant"/>
+    </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="UteDoRestaurant">
+      <rdfs:subClassOf>
+        <owl:Class rdf:about="#UteRestaurant"/>
+      </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="UteBadRestaurant">
+        <rdfs:subClassOf>
+          <owl:Class rdf:about="#UteRestaurant"/>
+        </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="SkogRestaurant">
+      <rdfs:subClassOf>
+        <owl:Class rdf:about="#UteDoRestaurant"/>
+      </rdfs:subClassOf>
+  </owl:Class>
+  <owl:Class rdf:ID="Restaurant">
+  <rdfs:subClassOf>
+        <owl:Restriction rdf:ID="__rest1">
+          <owl:onProperty>
+            <owl:ObjectProperty rdf:about="#beliggenhet"/>
+          </owl:onProperty>
+          <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+          >1</owl:cardinality>
+        </owl:Restriction>
+      </rdfs:subClassOf>
+      <rdfs:subClassOf>
+        <owl:Restriction rdf:ID="__rest2">
+          <owl:onProperty>
+            <owl:ObjectProperty rdf:about="#matretter"/>
+          </owl:onProperty>
+          <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+          >1</owl:minCardinality>
+        </owl:Restriction>
+      </rdfs:subClassOf>
+      <rdfs:subClassOf>
+        <owl:Restriction rdf:ID="__rest3">
+          <owl:cardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#int"
+          >1</owl:cardinality>
+          <owl:onProperty>
+            <owl:DatatypeProperty rdf:about="#restaurantNavn"/>
+          </owl:onProperty>
+        </owl:Restriction>
+      </rdfs:subClassOf>
+  </owl:Class>
+  <owl:ObjectProperty rdf:ID="beliggenhet">
+    <rdfs:domain rdf:resource="#Restaurant"/>
+    <rdfs:range rdf:resource="http://www.idi.ntnu.no/~herje/ja/adresse.owl#Adresse"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="miljoer">
+	<rdfs:domain rdf:resource="#Restaurant"/>
+    <rdfs:range rdf:resource="#Miljoe"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="matretter">
+    <rdfs:domain rdf:resource="#Restaurant"/>
+    <rdfs:range rdf:resource="#Matrett"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="utebord">
+    <rdfs:range rdf:resource="#Utendoers"/>
+    <rdfs:domain rdf:resource="#UteRestaurant"/>
+    <rdfs:subPropertyOf rdf:resource="#bordplassering"/>
+  </owl:ObjectProperty>
+  <owl:ObjectProperty rdf:ID="drikkevarer">
+    <rdfs:domain rdf:resource="#Restaurant"/>
+    <rdfs:range rdf:resource="#Drikkevare"/>
+  </owl:ObjectProperty>
+  <owl:DatatypeProperty rdf:ID="restaurantNavn">
+  	<rdfs:domain rdf:resource="#Restaurant"/>
+  	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+   </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="matrettNavn">
+  	<rdfs:domain rdf:resource="#Matrett"/>
+  	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+  </owl:DatatypeProperty>
+  <owl:DatatypeProperty rdf:ID="drikkevareNavn">
+  	<rdfs:domain rdf:resource="#Drikkevare"/>
+  	<rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>	
+  </owl:DatatypeProperty>
+</rdf:RDF>
+<!-- Created with Protege (with OWL Plugin 1.1 beta, Build 102)  http://protege.stanford.edu -->

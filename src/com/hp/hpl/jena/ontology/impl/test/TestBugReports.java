@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.39 $
+ * Revision           $Revision: 1.40 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-04-22 10:22:33 $
+ * Last modified on   $Date: 2004-04-26 18:28:14 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -926,6 +926,75 @@ public class TestBugReports
         }
     }
     
+    /** Bug report from Ole Hjalmar - direct subClassOf not reporting correct result with rule reasoner */
+    public void xxtest_oh_01() {
+        String NS = "http://www.idi.ntnu.no/~herje/ja/";
+        Resource[] expected = new Resource[] {
+            ResourceFactory.createResource( NS+"reiseliv.owl#Reiseliv" ),
+            ResourceFactory.createResource( NS+"hotell.owl#Hotell" ),
+            ResourceFactory.createResource( NS+"restaurant.owl#Restaurant" ),
+            ResourceFactory.createResource( NS+"restaurant.owl#UteRestaurant" ),
+            ResourceFactory.createResource( NS+"restaurant.owl#UteBadRestaurant" ),
+            ResourceFactory.createResource( NS+"restaurant.owl#UteDoRestaurant" ),
+            ResourceFactory.createResource( NS+"restaurant.owl#SkogRestaurant" ),
+        };
+        
+        test_oh_01scan( OntModelSpec.OWL_MEM, "No inf", expected );
+        test_oh_01scan( OntModelSpec.OWL_MEM_MINI_RULE_INF, "Mini rule inf", expected );
+        test_oh_01scan( OntModelSpec.OWL_MEM_RULE_INF, "Full rule inf", expected );
+        test_oh_01scan( OntModelSpec.OWL_MEM_MICRO_RULE_INF, "Micro rule inf", expected );
+    }
+    
+    private void test_oh_01scan( OntModelSpec s, String prompt, Resource[] expected ) {
+        String NS = "http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#";
+        OntModel m = ModelFactory.createOntologyModel(s, null);
+        m.read( "file:testing/ontology/bugs/test_oh_01.owl");
+
+        System.out.println( prompt );
+        OntClass r = m.getOntClass( NS + "Reiseliv" );
+        List q = new ArrayList();
+        Set seen = new HashSet();
+        q.add( r );
+        
+        while (!q.isEmpty()) {
+            OntClass c = (OntClass) q.remove( 0 );
+            seen.add( c );
+            
+            for (Iterator i = c.listSubClasses( true ); i.hasNext(); ) {
+                OntClass sub = (OntClass) i.next();
+                if (!seen.contains( sub )) {
+                    q.add( sub );
+                }
+            }
+            
+            System.out.println( "  Seen class " + c );
+        }
+
+        // check we got all classes
+        int mask = (1 << expected.length) - 1;
+        
+        for (int j = 0;  j < expected.length; j++) {
+            if (seen.contains( expected[j] )) {
+                mask &= ~(1 << j);
+            }
+            else {
+                System.out.println( "Expected but did not see " + expected[j] );
+            }
+        }
+        
+        for (Iterator k = seen.iterator();  k.hasNext(); ) {
+            Resource res = (Resource) k.next();
+            boolean isExpected = false;
+            for (int j = 0;  !isExpected && j < expected.length; j++) {
+                isExpected = expected[j].equals( res );
+            }
+            if (!isExpected) {
+                System.out.println( "Got unexpected result " + res );
+            }
+        }
+        
+        assertEquals( "Some expected results were not seen", 0, mask );
+    }
     
     // Internal implementation methods
     //////////////////////////////////
