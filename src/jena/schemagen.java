@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: schemagen.java,v 1.5 2003-02-11 15:17:10 chris-dollin Exp $
+ * $Id: schemagen.java,v 1.6 2003-02-25 18:21:30 bwm Exp $
  */
 
 package jena;
@@ -66,14 +66,14 @@ import java.util.HashSet;
  *     are used, or this fixup leads to name clashes.</p>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-02-11 15:17:10 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-02-25 18:21:30 $
  */
 public class schemagen extends java.lang.Object {
 
     /**
     * @param args the command line arguments
     */
-    public static void main (String args[]) {
+    public static void main(String args[]) {
 
         if (args.length < 4 || args.length > 5) {
             usage();
@@ -115,7 +115,9 @@ public class schemagen extends java.lang.Object {
         System.err.println(
             "    java jena.schemagen name schemaURIRef input output [lang]");
         System.err.println();
-        System.err.println("    name is the name of the vocabylary e.g. RDF");
+        System.err.println("    name is the name of the vocabulary");
+        System.err.println("         It may be simple, e.g. RDF, or it may" +
+                                    " be fully qualified");
         System.err.println("    input can be URL's or filenames");
         System.err.println("    lang can take values");
         System.err.println("      RDF/XML");
@@ -125,7 +127,7 @@ public class schemagen extends java.lang.Object {
     }
 
     protected static void read(Model model, String in, String lang)
-      throws RDFException, java.io.FileNotFoundException {
+        throws RDFException, java.io.FileNotFoundException {
         try {
             URL url = new URL(in);
             model.read(in, lang);
@@ -134,8 +136,12 @@ public class schemagen extends java.lang.Object {
         }
     }
 
-    protected static void renderVocabularyClass(String name,
-         String uriRef, Model schema, PrintStream out) throws RDFException {
+    protected static void renderVocabularyClass(
+        String name,
+        String uriRef,
+        Model schema,
+        PrintStream out)
+        throws RDFException {
         Set classNames = listNames(uriRef, schema, RDFS.Class);
         Set propertyNames = listNames(uriRef, schema, RDF.Property);
         renderPreamble(name, uriRef, out);
@@ -146,19 +152,18 @@ public class schemagen extends java.lang.Object {
     }
 
     protected static Set listNames(String uriRef, Model schema, Resource type)
-      throws RDFException {
+        throws RDFException {
 
         Set result = new HashSet();
 
         // extract all the resources of the given type in the schema
-        StmtIterator iter = schema.listStatements(
-                                 new SimpleSelector(null, RDF.type, type));
+        StmtIterator iter =
+            schema.listStatements(new SimpleSelector(null, RDF.type, type));
         // for each one
         while (iter.hasNext()) {
-            Resource r = iter.nextStatement()
-                             .getSubject();
+            Resource r = iter.nextStatement().getSubject();
             // ignore if bNode
-            if (! r.isAnon()) {
+            if (!r.isAnon()) {
                 // get the URI and check if it matches the vocabulary
                 String s = r.getURI();
                 if (s.startsWith(uriRef)) {
@@ -171,22 +176,26 @@ public class schemagen extends java.lang.Object {
         return result;
     }
 
-    protected static void renderDeclarations(Set names, String type,
-                                                               PrintStream out)
-     throws RDFException {
-       Iterator iter = names.iterator();
-       while (iter.hasNext()) {
-           String name = (String) iter.next();
-           String jname = makeJavaLegalId(name);
-           out.println("           static String n" + jname
-                                                     + " = \"" + name + "\";");
-           out.println("    public static " + type + " " + jname + ";");
-       }
+    protected static void renderDeclarations(
+        Set names,
+        String type,
+        PrintStream out)
+        throws RDFException {
+        Iterator iter = names.iterator();
+        while (iter.hasNext()) {
+            String name = (String) iter.next();
+            String jname = makeJavaLegalId(name);
+            out.println(
+                "           static String n" + jname + " = \"" + name + "\";");
+            out.println("    public static " + type + " " + jname + ";");
+        }
     }
 
-    protected static void renderInitializer(Set classNames, Set propertyNames,
-                                                               PrintStream out)
-      throws RDFException {
+    protected static void renderInitializer(
+        Set classNames,
+        Set propertyNames,
+        PrintStream out)
+        throws RDFException {
         out.println();
         out.println("    static {");
         out.println("        try {");
@@ -198,50 +207,72 @@ public class schemagen extends java.lang.Object {
         out.println("    }");
     }
 
-    protected static void renderTypedInitializer(Set names, String type,
-                                                              PrintStream out) {
+    protected static void renderTypedInitializer(
+        Set names,
+        String type,
+        PrintStream out) {
         Iterator iter = names.iterator();
         while (iter.hasNext()) {
             String jname = makeJavaLegalId((String) iter.next());
-            out.println("            "
-                       + jname + " = new " + type + "Impl(uri, n" + jname + ");");
+            out.println(
+                "            "
+                    + jname
+                    + " = ResourceFactory.create"
+                    + type
+                    + "(uri + n"
+                    + jname
+                    + ");");
         }
     }
 
+    protected static void renderPreamble(
+        String name,
+        String uriRef,
+        PrintStream out) {
+        
+        // compute the package name
+        String packageName;
+        if (name.indexOf('.') == -1) {
+            packageName = "com.hp.hpl.mesa.rdf.jena.vocabulary";
+        } else {
+            packageName = name.substring(0, name.lastIndexOf('.'));
+            name = name.substring(name.lastIndexOf('.') + 1);
+        }
+        
+        out.println(
+            "/* Vocabulary Class generated by Jena vocabulary generator");
+        out.println(" *");
+        out.println(
+            " * Version $Id: schemagen.java,v 1.6 2003-02-25 18:21:30 bwm Exp $");
+        out.println(" * On: " + (new Date()).toString());
+        out.println(" */");
+        out.println("package " + packageName + ";");
+        out.println();
 
-    protected static void renderPreamble(String name, String uriRef,
-                                                              PrintStream out) {
-      out.println("/* Vocabulary Class generated by Jena vocabulary generator");
-      out.println(" *");
-      out.println(" * Version $Id: schemagen.java,v 1.5 2003-02-11 15:17:10 chris-dollin Exp $");
-      out.println(" * On: " + (new Date()).toString());
-      out.println(" */");
-      out.println("package com.hp.hpl.jena.vocabulary;");
-      out.println();
+        out.println("import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;");
+        out.println("import com.hp.hpl.jena.rdf.model.Model;");
+        out.println("import com.hp.hpl.jena.rdf.model.Resource;");
+        out.println("import com.hp.hpl.jena.rdf.model.ResourceFactory;");
+        out.println("import com.hp.hpl.jena.rdf.model.Property;");
+        out.println("import com.hp.hpl.jena.rdf.model.RDFException;");
+        out.println();
 
-      out.println("import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;");
-      out.println("import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;");
-      out.println("import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;");
-      out.println("import com.hp.hpl.jena.rdf.model.Model;");
-      out.println("import com.hp.hpl.jena.rdf.model.Resource;");
-      out.println("import com.hp.hpl.jena.rdf.model.Property;");
-      out.println("import com.hp.hpl.jena.rdf.model.RDFException;");
-      out.println();
+        out.println(
+            "/** " + name + " vocabulary class for namespace " + uriRef);
+        out.println(" */");
+        out.println("public class " + name + " {");
+        out.println();
 
-      out.println("/** " + name + " vocabulary class for namespace " + uriRef);
-      out.println(" */");
-      out.println("public class " + name + " {");
-      out.println();
+        out.println(
+            "    protected static final String uri =\"" + uriRef + "\";");
+        out.println();
 
-      out.println("    protected static final String uri =\"" + uriRef + "\";");
-      out.println();
-
-      out.println("    /** returns the URI for this schema");
-      out.println("     * @return the URI for this schema");
-      out.println("     */");
-      out.println("    public static String getURI() {");
-      out.println("          return uri;");
-      out.println("    }");
+        out.println("    /** returns the URI for this schema");
+        out.println("     * @return the URI for this schema");
+        out.println("     */");
+        out.println("    public static String getURI() {");
+        out.println("          return uri;");
+        out.println("    }");
     }
 
     protected static void renderPostamble(PrintStream out) {
@@ -258,5 +289,4 @@ public class schemagen extends java.lang.Object {
         return Util.replace(name, ".", "_");
     }
 
-
-    }
+}
