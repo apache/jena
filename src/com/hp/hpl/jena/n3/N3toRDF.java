@@ -11,9 +11,11 @@ import com.hp.hpl.jena.rdf.model.* ;
 
 import com.hp.hpl.jena.vocabulary.*;
 
+// TODO: Add triples to graphs, not statements to models.
+
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.7 2003-04-24 09:43:43 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.8 2003-05-02 08:22:31 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
