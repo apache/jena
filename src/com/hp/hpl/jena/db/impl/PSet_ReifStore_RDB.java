@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.17 $ on $Date: 2003-08-27 12:56:40 $
+* @version $Revision: 1.18 $ on $Date: 2003-11-26 03:16:31 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -407,7 +407,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			updateOneFrag(stmtURI,frag,fragMask,false,my_GID);
 		}
 
-	public ResultSetTripleIterator findFrag(
+	public ResultSetReifIterator findFrag(
 		Node stmtURI,
 		Triple frag,
 		StmtMask fragMask,
@@ -416,8 +416,8 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			String stmtStr = null;
 			Node val = null;
 			int argc = 1;
-			ResultSetTripleIterator result =
-				new ResultSetTripleIterator(this, true, my_GID);
+			ResultSetReifIterator result =
+				new ResultSetReifIterator(this, true, my_GID);
 			boolean notFound = false;
 			String argStr;
 			
@@ -472,6 +472,57 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 				logger.debug("find encountered exception ", e);
 			}
 		return result;
+	}
+	
+	public void deleteFrag(
+		Triple frag,
+		StmtMask fragMask,
+		IDBID my_GID) {
+			
+			if ( !fragMask.hasOneBit() )
+				throw new JenaException("Can only delete one fragment");
+			int argc = 1;
+		
+			PreparedStatement ps = null;
+			String stmtStr = "deleteReified";
+			if ( fragMask.hasSubj() )
+				stmtStr += "S";
+			else if ( fragMask.hasPred() )
+				stmtStr += "P";
+			else if ( fragMask.hasObj() )
+				stmtStr += "O";
+			else if ( fragMask.hasType() )
+				stmtStr += "T";
+			else
+				throw new JenaException("Unspecified reification fragment in deleteFrag");
+
+			Node val = frag.getObject();
+			String argStr = m_driver.nodeToRDBString(val,false);
+			Node stmtURI = frag.getSubject();
+			String uriStr = m_driver.nodeToRDBString(stmtURI,false);
+							
+			try {
+				ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
+				ps.clearParameters();
+				
+				if ( fragMask.hasSubj() )
+					ps.setString(argc++,argStr);
+				else if ( fragMask.hasPred() )
+					ps.setString(argc++,argStr);
+				else if ( fragMask.hasObj() )
+					ps.setString(argc++,argStr);
+				ps.setString(argc++,my_GID.getID().toString());
+				ps.setString(argc,uriStr);
+				
+			} catch (Exception e) {
+				logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
+			}
+			try {
+				ps.executeUpdate();
+			} catch (Exception e) {
+				logger.debug("deleteFrag encountered exception ", e);
+			}
+		return;
 	}
 }
 	/*
