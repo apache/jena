@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Node_RuleVariable.java,v 1.8 2003-06-02 09:03:50 der Exp $
+ * $Id: Node_RuleVariable.java,v 1.9 2003-07-01 11:04:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.Node_Variable;
  * it should not end up in a Graph. It is only needed for the rule systems. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-02 09:03:50 $
+ * @version $Revision: 1.9 $ on $Date: 2003-07-01 11:04:01 $
  */
 public class Node_RuleVariable extends Node_Variable {
     /** The offset of this variable in the Frule's binding table */
@@ -72,7 +72,7 @@ public class Node_RuleVariable extends Node_Variable {
     /**
      * Return an indexable object for this Node. This is actually the 
      * rule label. This is weird but needed because equals is (deliberately)
-     * perverse on Node_Rulelabel so if we want to put then in a Set or Map
+     * perverse on Node_RuleVariable so if we want to put then in a Set or Map
      * we need something with a better equals function.
      */
     public Object getRepresentative() {
@@ -81,7 +81,7 @@ public class Node_RuleVariable extends Node_Variable {
     
     /**
      * Binds a value to the brule version of the variable. Does not follow
-     * any reference trail, assues we have already be derefenced.
+     * any reference trail, assues we have already been derefenced.
      * @param node a concrete Node value or another Node_RuleVariable
      * to alias to
      */
