@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.12 2003-11-27 16:14:20 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.13 2004-04-27 14:52:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -51,6 +51,9 @@ public class GraphTestBase extends JenaTestBase
                 
     public static Triple triple( String fact )
         { return Triple.create( fact ); }
+    
+    public static Triple triple( PrefixMapping pm, String fact )
+        { return Triple.create( pm, fact ); }
         
     public static Triple [] tripleArray( String facts )
         {
@@ -71,13 +74,20 @@ public class GraphTestBase extends JenaTestBase
     public static Graph graphAdd( Graph g, String s )
         {
         StringTokenizer semis = new StringTokenizer( s, ";" );
-        while (semis.hasMoreTokens()) g.add( triple( semis.nextToken() ) );     
+        while (semis.hasMoreTokens()) g.add( triple( PrefixMapping.Extended, semis.nextToken() ) );     
         return g;
         }
         
+    public static Graph newGraph()
+        {
+        Graph result = new GraphMem();
+        result.getPrefixMapping().setNsPrefixes( PrefixMapping.Extended );
+        return result;
+        }
+    
     public static Graph graphWith( String s )
         {
-        return graphAdd( new GraphMem(), s );
+        return graphAdd( newGraph(), s );
         }
         
     public static void assertEqualsTemplate( String title, Graph g, String template )

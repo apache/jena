@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphListener.java,v 1.13 2004-03-23 13:47:03 chris-dollin Exp $
+  $Id: GraphListener.java,v 1.14 2004-04-27 14:50:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -10,7 +10,7 @@ import java.util.*;
 
 /**
     Interface for listening to graph-level update events. Each time the graph is
-    oked to add or remove some triples, and after that poke has completed
+    poked to add or remove some triples, and after that poke has completed
     without throwing an exception, all the listeners attached to the Graph are
     informed about the poke.
     
