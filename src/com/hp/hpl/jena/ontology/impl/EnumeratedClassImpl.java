@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: EnumeratedClassImpl.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-28 20:15:00 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-26 15:24:07 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: EnumeratedClassImpl.java,v 1.12 2003-06-28 20:15:00 ian_dickinson Exp $
+ * @version CVS $Id: EnumeratedClassImpl.java,v 1.13 2003-08-26 15:24:07 der Exp $
  */
 public class EnumeratedClassImpl 
     extends OntClassImpl
@@ -104,7 +104,7 @@ public class EnumeratedClassImpl
     /**
      * <p>Assert that this class is exactly the enumeration of the given individuals. Any existing 
      * statements for <code>oneOf</code> will be removed.</p>
-     * @param A list of individuals that defines the class extension for this class
+     * @param enum A list of individuals that defines the class extension for this class
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
     public void setOneOf( RDFList enum ) {

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            19-Aug-2003
  * Filename           $RCSfile: DataRange.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-19 16:50:41 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-26 15:24:13 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DataRange.java,v 1.1 2003-08-19 16:50:41 ian_dickinson Exp $
+ * @version CVS $Id: DataRange.java,v 1.2 2003-08-26 15:24:13 der Exp $
  */
 public interface DataRange 
     extends OntResource
@@ -56,7 +56,7 @@ public interface DataRange
     /**
      * <p>Assert that this data range is exactly the enumeration of the given individuals. Any existing 
      * statements for <code>oneOf</code> will be removed.</p>
-     * @param emum A list of literals that defines the permissible values for this datarange
+     * @param enum A list of literals that defines the permissible values for this datarange
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 
     public void setOneOf( RDFList enum );
@@ -103,7 +103,7 @@ public interface DataRange
     /**
      * <p>Remove the statement that this enumeration includes <code>lit</code> among its members.  If this statement
      * is not true of the current model, nothing happens.</p>
-     * @param res A literal that may be declared to be part of this data range, and which is
+     * @param lit A literal that may be declared to be part of this data range, and which is
      * no longer to be one of the data range values.
      */
     public void removeOneOf( Literal lit );

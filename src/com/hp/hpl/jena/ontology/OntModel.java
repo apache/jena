@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.30 $
+ * Revision           $Revision: 1.31 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-26 13:46:51 $
+ * Last modified on   $Date: 2003-08-26 15:24:13 $
  *               by   $Author: der $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -63,12 +63,13 @@ import java.util.*;
  * wraps an inference graph, and we want to make the special capabilities of the
  * <code>InfModel</code>, for example global consistency checking, accessible to 
  * client programs.  Since not all ont models use a reasoner, using these methods
- * may result in a {@link RequiresReasonerException}.
+ * may result in a runtime exception, though the typical behaviour is that such
+ * calls will be silently ignored.
  * </p>
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.30 2003-08-26 13:46:51 der Exp $
+ * @version CVS $Id: OntModel.java,v 1.31 2003-08-26 15:24:13 der Exp $
  */
 public interface OntModel
     extends InfModel
