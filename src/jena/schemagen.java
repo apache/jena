@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-31 08:36:31 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-07-31 20:16:34 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.21 2003-07-31 08:36:31 chris-dollin Exp $
+ * @version CVS $Id: schemagen.java,v 1.22 2003-07-31 20:16:34 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -915,7 +915,7 @@ public class schemagen {
                         Resource ind = candidate.getSubject();
 
                         // do we have a local class resource
-                        String varName = (String) m_resourcesToNames.get( (Resource) candidate.getObject() );
+                        String varName = (String) m_resourcesToNames.get( candidate.getObject() );
                         String valType = (varName != null) ? varName : "m_model.createClass( \"" + uri + "\" )";
 
                         // push the individuals type onto the stack
