@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.5 2003-01-31 12:26:18 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.6 2003-02-01 13:26:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -25,7 +25,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-01-31 12:26:18 $
+ * @version $Revision: 1.6 $ on $Date: 2003-02-01 13:26:59 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -309,7 +309,7 @@ public class TestTypedLiterals extends TestCase {
         Calendar cal = xdt.asCalendar();
         Calendar testCal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
         testCal.set(1999, 5, 31, 12, 56, 32);
-        assertEquals("calendar value", cal.getTimeInMillis(), testCal.getTimeInMillis());
+        assertEquals("calendar value", cal, testCal);
         assertEquals("equality test", l1, m.createTypedLiteral("1999-05-31T12:56:32Z", "", XSDDatatype.XSDdateTime));
         assertTrue("inequality test", l1 != m.createTypedLiteral("1999-04-31T12:56:32Z", "", XSDDatatype.XSDdateTime));
         
