@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-09 14:47:49 $
+ * Last modified on   $Date: 2004-01-25 16:55:58 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.9 2003-09-09 14:47:49 chris-dollin Exp $
+ * @version CVS $Id: Polyadic.java,v 1.10 2004-01-25 16:55:58 chris-dollin Exp $
  */
 public abstract class Polyadic
     extends CompositionBase
@@ -90,7 +90,14 @@ public abstract class Polyadic
             m_subGraphs.add( graphs[i] );
         }
     }
-
+    
+    private PrefixMapping pm;
+    
+    public PrefixMapping getPrefixMapping()
+        { 
+        if (pm == null) pm = new PolyadicPrefixMappingImpl( this );
+        return pm;
+        }
     
     /**
      * <p>
@@ -249,9 +256,6 @@ public abstract class Polyadic
 //        if (reifier == null) reifier = new SimpleReifier( this, style );
 //        return reifier;
 //        }
-
-    public PrefixMapping getPrefixMapping()
-        { return (getBaseGraph() == null) ? super.getPrefixMapping() : getBaseGraph().getPrefixMapping(); }
 
     // Internal implementation methods
     //////////////////////////////////

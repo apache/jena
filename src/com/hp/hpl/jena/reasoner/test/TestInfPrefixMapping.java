@@ -1,50 +1,46 @@
-/******************************************************************
- * File:        TestPackage.java
- * Created by:  Dave Reynolds
- * Created on:  30-Jan-2003
- * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
- * [See end of file]
- * $Id: TestPackage.java,v 1.13 2004-01-25 16:58:41 chris-dollin Exp $
- *****************************************************************/
+/*
+  (c) Copyright 2004, Hewlett-Packard Development Company, LP
+  [See end of file]
+  $Id: TestInfPrefixMapping.java,v 1.1 2004-01-25 16:58:40 chris-dollin Exp $
+*/
 
 package com.hp.hpl.jena.reasoner.test;
 
 import junit.framework.*;
 
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.reasoner.InfGraph;
+
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+
 /**
- * Aggregate tester that runs all the test associated with the reasoner package.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2004-01-25 16:58:41 $
- */
-
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
+     Needs extending; relys on knowing that the only InfGraph currently used is
+     the Jena-provided base. Needs to be made into an abstract test and
+     parametrised with the InfGraph being tested (hence getInfGraph).
+ 	@author hedgehog
+*/
+public class TestInfPrefixMapping extends ModelTestBase
+    {
+    public TestInfPrefixMapping( String name )
+        { super( name ); }
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("reasoners");
-        addTest( "TestTransitiveGraphCache", TestTransitiveGraphCache.suite() );
-        addTest( "TestReasoners", TestReasoners.suite() );
-        addTest( "TestRDFSReasoners", TestRDFSReasoners.suite() );
-        addTest( "TestRuleReasoners",  com.hp.hpl.jena.reasoner.rulesys.test.TestPackage.suite() );
-        addTest( "TestReasonerPrefixMapping", TestInfPrefixMapping.suite() );
+    public static TestSuite suite()
+        { return new TestSuite( TestInfPrefixMapping.class ); }
+    
+    private InfGraph getInfGraph()
+        {
+        return (InfGraph) ModelFactory.createOntologyModel().getGraph();
+        }
+    
+    public void testInfGraph()
+        {
+        InfGraph ig = getInfGraph();
+        assertSame( ig.getPrefixMapping(), ig.getRawGraph().getPrefixMapping() );
+        }
     }
-
-    // helper method
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
-}
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.3 2003-08-27 13:01:01 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.4 2004-01-25 16:58:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -10,30 +10,33 @@ package com.hp.hpl.jena.graph.compose.test;
 	@author kers
 */
 
-import com.hp.hpl.jena.graph.compose.Difference;
-import com.hp.hpl.jena.graph.compose.Intersection;
-import com.hp.hpl.jena.graph.compose.Union;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.*;
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.test.AbstractTestPrefixMapping;
 
 import junit.framework.TestSuite;
 
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-08-27 13:01:01 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2004-01-25 16:58:01 $
  */
 public class TestPackage extends Object {
     
     public static TestSuite suite() {
     	TestSuite result = new TestSuite();
-        suite(result,Intersection.class);
-        suite(result,Union.class);
-        suite(result,Difference.class);
+        suite( result, Intersection.class );
+        suite( result, Union.class );
+        suite( result, Difference.class );
     /* */
         result.addTest( TestDelta.suite() );
         result.addTest( TestUnion.suite() );
         result.addTest( TestDifference.suite() );
         result.addTest( TestIntersection.suite() );
         result.addTest( TestMultiUnion.suite() );
+    /* */
+        result.addTest( TestPolyadicPrefixMapping.suite() );
         return  result;
     }
 

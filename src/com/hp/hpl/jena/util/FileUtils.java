@@ -88,22 +88,8 @@ public class FileUtils {
         } 
         
     public static String getTempDirectory()
-        { return temp; }
+        { return System.getProperty( "java.io.tmpdir" ); }
     
-    private static String temp = constructTempDirectory();
-
-    private static String constructTempDirectory()
-        {
-        try 
-            { 
-            File x = File.createTempFile( "xxx", ".none" );
-            x.delete();
-            return x.getParent(); 
-            }
-        catch (IOException e) 
-            { throw new JenaException( e ); }
-        }
-
     /**
      * Open an resource file for reading.
      */

@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.24 2004-01-16 16:06:18 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.25 2004-01-25 16:58:22 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.iterator.*;
 import java.util.Iterator;
 
@@ -19,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2004-01-16 16:06:18 $
+ * @version $Revision: 1.25 $ on $Date: 2004-01-25 16:58:22 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -34,6 +35,9 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     
     /** Flag to record if the preparation call has been made and so the graph is ready for queries */
     protected boolean isPrepared = false;
+    
+    public PrefixMapping getPrefixMapping()
+        { return getRawGraph().getPrefixMapping(); }
 
     /**
      * Constructor
