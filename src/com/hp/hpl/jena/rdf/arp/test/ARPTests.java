@@ -53,7 +53,7 @@ public class ARPTests extends java.lang.Object {
 	static public boolean internet = false;
 	static URI wgTestDir =
 		URI.create("http://www.w3.org/2000/10/rdf-tests/rdfcore/");
-	static private URI arpTestDir =
+	static URI arpTestDir =
 		URI.create("http://jcarroll.hpl.hp.com/arp-tests/");
 	/** Creates new ARPTests */
 	static public Test suite() {

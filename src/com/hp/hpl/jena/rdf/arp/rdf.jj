@@ -43,7 +43,7 @@ class RDFParser implements ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.14 2004-10-11 11:54:37 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.15 2004-10-19 17:33:29 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -147,7 +147,7 @@ void white1(boolean warnOnPi) :         {}
 {  ( oneWhite(warnOnPi) ) * 
 }
 void whiteOrErr() :                     {}
-{  ( oneWhite(true)| warning() ) * 
+{  ( oneWhite(false)| warning() ) * 
 }
 void xOneWhite() :                     { Token w; }
 {  w=<CD_STRING>                       { X.checkWhite((StrToken)w,true); } 

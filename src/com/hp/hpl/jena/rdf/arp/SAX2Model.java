@@ -86,10 +86,14 @@ public class SAX2Model extends SAX2RDF {
     	handler = new JenaHandler(m,errorHandler);
     	handler.useWith(getHandlers());
     }
-
-    void close() throws SAXParseException{
-    	handler.bulkUpdate();
+private boolean closed = false;
+    public void close() throws SAXParseException{
+    //	System.err.println("closing;");
+    	if (!closed) {
     	super.close();
+    	handler.bulkUpdate();
+    	closed = true;
+    	}
     }
 	/**
 	 * Change the error handler.

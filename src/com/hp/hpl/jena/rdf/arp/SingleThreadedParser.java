@@ -138,7 +138,10 @@ class SingleThreadedParser extends XMLHandler {
 			} catch (WrappedException wrapped) {
 				wrapped.throwMe();
 			} catch (ParseException parse) {
-				throw parse.rootCause();
+				// This has already been reported.
+				// Don't overdo it.
+				//throw parse.rootCause();
+				
 			}
 		} finally {
 			// TODO pull up
