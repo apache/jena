@@ -2,7 +2,7 @@
 # OWL rule set v0.2
 # This rule set is design to implement owl(f)lite using the hybrid
 # rule system (mixture of forward and backward chaining).
-# $Id: owl-fb.rules,v 1.5 2003-06-13 09:11:21 der Exp $
+# $Id: owl-fb.rules,v 1.6 2003-06-13 16:26:57 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -59,13 +59,13 @@
 [rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
 
 [rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
-[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ] 
+[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y), notFunctor(?y)] ] 
 [rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
 [rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)] 
 [rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] 
 [rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]
 [rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
-[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
+[rdfs9:  (?x rdfs:subClassOf ?y), notEqual(?x,?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
 [rdfs10: (?x rdf:type rdfs:ContainerMembershipProperty) -> (?x rdfs:subPropertyOf rdfs:member)] 
 
 [rdfs2-partial: (?p rdfs:domain ?c) -> (?c rdf:type rdfs:Class)]
@@ -314,7 +314,6 @@
 [sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
 [sameIndividualAs6: (?Y rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
 
-# Don't yet handle reflexivity of sameIndividualAs
 
 #------------------------------------------------------------------
 # Property rules
