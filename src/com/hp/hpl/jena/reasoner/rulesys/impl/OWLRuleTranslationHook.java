@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLRuleTranslationHook.java,v 1.3 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: OWLRuleTranslationHook.java,v 1.4 2003-09-05 16:15:44 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * intersection statement.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.4 $ on $Date: 2003-09-05 16:15:44 $
  */
 public class OWLRuleTranslationHook implements RulePreprocessHook {
 
@@ -62,6 +62,7 @@ public class OWLRuleTranslationHook implements RulePreprocessHook {
             recognitionHead.add(new TriplePattern(var, RDF.type.asNode(), className));
             Rule rr = new Rule("intersectionRecognition", recognitionHead, recognitionBody);
             rr.setBackward(true);
+//            System.out.println("translation hook => " + rr);
             infGraph.addRuleDuringPrepare(rr);
         }
     }
@@ -93,6 +94,8 @@ public class OWLRuleTranslationHook implements RulePreprocessHook {
                 elements.add(Functor.makeFunctorNode("all", new Node[] {onprop, value}));
             } else if ((value = Util.getPropValue(description, OWL.someValuesFrom.asNode(), dataFind)) != null) {
                 elements.add(Functor.makeFunctorNode("some", new Node[] {onprop, value}));
+            } else if ((value = Util.getPropValue(description, OWL.hasValue.asNode(), dataFind)) != null) {
+                elements.add(Functor.makeFunctorNode("hasValue", new Node[] {onprop, value}));
             } else if ((value = Util.getPropValue(description, OWL.minCardinality.asNode(), dataFind)) != null) {
                 elements.add(Functor.makeFunctorNode("min", new Node[] {onprop, value}));
             } else if ((value = Util.getPropValue(description, OWL.maxCardinality.asNode(), dataFind)) != null) {
@@ -100,6 +103,8 @@ public class OWLRuleTranslationHook implements RulePreprocessHook {
             } else if ((value = Util.getPropValue(description, OWL.cardinality.asNode(), dataFind)) != null) {
                 elements.add(Functor.makeFunctorNode("max", new Node[] {onprop, value}));
                 elements.add(Functor.makeFunctorNode("min", new Node[] {onprop, value}));
+            } else {
+                elements.add(description);
             }
         } else {
             // Assume its a class name
