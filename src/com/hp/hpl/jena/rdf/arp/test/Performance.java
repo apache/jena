@@ -635,7 +635,7 @@ class Performance  {
 			System.setIn(in);
 			NTriple.mainEh(
 				new String[] { "-b", base, "-t" },
-				eh);
+				eh, null);
 
 		} catch (Exception e) {
 			System.err.println(base + " " + e.toString());

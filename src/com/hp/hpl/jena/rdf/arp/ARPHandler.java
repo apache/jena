@@ -1,37 +1,31 @@
 /*
-  (c) Copyright 2003,  Hewlett-Packard Development Company, LP
-  all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: CollectionAction.java,v 1.2 2003-12-06 21:46:59 jeremy_carroll Exp $
+  $Id: ARPHandler.java,v 1.1 2003-12-06 21:46:59 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
 /**
- * This stuff looks somewhat complicated.
- * The original code has a recursive call to do
- * tails of collections.
- * However, this led to a stack overflow.
- * In keeping with the streaming parser goals
- * the current code outputs triples as fast as it
- * can, without any stack.
- * @author jjc
+ * Convenience generalization of all ARP handler interfaces.
+ * Sample usage:
+ * <pre>
+ *    ARPHandler h = new ARPHandler() {
+ *     // definitions
+ *    };
+ *    ARP arp = new ARP();
+ *    arp.setStatementHandler(h);
+ *    arp.setExtendedHandler(h);
+ *    arp.setNamespaceHandler(h);
+ * </pre>
+ * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
- */
-abstract class CollectionAction {
-	ParserSupport X;
-	
-	CollectionAction(ParserSupport x){
-		X=x;
-	}
-	abstract void terminate();
-	
-	abstract CollectionAction next(AResourceInternal r);
-	
-
+*/
+public interface ARPHandler extends StatementHandler, ExtendedHandler, NamespaceHandler {
+  // deliberately empty - add by adding additional super-interfaces.
 }
 
 /*
-	(c) Copyright  2003 Hewlett-Packard Development Company, LP
+	(c) Copyright Hewlett-Packard Company 2003
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

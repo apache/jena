@@ -15,26 +15,24 @@ public interface RDFParserConstants {
   int A_ABOUT = 9;
   int A_NODEID = 10;
   int AV_STRING = 11;
-  int A_BAGID = 12;
-  int A_OTHER = 13;
-  int A_RDF_N = 14;
-  int A_TYPE = 15;
-  int E_OTHER = 16;
-  int E_LI = 17;
-  int E_RDF_N = 18;
-  int A_PARSETYPE = 19;
-  int AV_LITERAL = 20;
-  int AV_DAMLCOLLECTION = 21;
-  int AV_COLLECTION = 22;
-  int AV_RESOURCE = 23;
-  int A_RESOURCE = 24;
-  int A_DATATYPE = 25;
-  int A_XMLSPACE = 26;
-  int A_XMLNS = 27;
-  int A_XMLBASE = 28;
-  int A_XMLLANG = 29;
-  int X_WARNING = 30;
-  int A_ABOUTEACH = 31;
+  int A_OTHER = 12;
+  int A_RDF_N = 13;
+  int A_TYPE = 14;
+  int E_OTHER = 15;
+  int E_LI = 16;
+  int E_RDF_N = 17;
+  int A_PARSETYPE = 18;
+  int AV_LITERAL = 19;
+  int AV_DAMLCOLLECTION = 20;
+  int AV_COLLECTION = 21;
+  int AV_RESOURCE = 22;
+  int A_RESOURCE = 23;
+  int A_DATATYPE = 24;
+  int A_XMLSPACE = 25;
+  int A_XMLNS = 26;
+  int A_XMLBASE = 27;
+  int A_XMLLANG = 28;
+  int X_WARNING = 29;
 
   String[] tokenImage = {
     "<EOF>",
@@ -49,7 +47,6 @@ public interface RDFParserConstants {
     "<A_ABOUT>",
     "<A_NODEID>",
     "<AV_STRING>",
-    "<A_BAGID>",
     "<A_OTHER>",
     "<A_RDF_N>",
     "<A_TYPE>",
@@ -68,7 +65,6 @@ public interface RDFParserConstants {
     "<A_XMLBASE>",
     "<A_XMLLANG>",
     "<X_WARNING>",
-    "<A_ABOUTEACH>",
   };
 
 }

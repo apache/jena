@@ -1,8 +1,8 @@
 /*
-  (c) Copyright 2003 "sdr"
+  ???? (c) Copyright 2003, Plugged In Software ????
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ExtendedHandler.java,v 1.1 2003-12-05 17:46:34 jeremy_carroll Exp $
+  $Id: ExtendedHandler.java,v 1.2 2003-12-06 21:46:59 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -12,7 +12,7 @@ package com.hp.hpl.jena.rdf.arp;
  * <li> when a blank node goes out of scope, allowing its anonymous
  * ID to be freed by external applications.
  * <li> when a rdf:RDF start and end tag is seen
- * @author sdr,jjc
+ * @author Simon Raboczi,Jeremy Carroll
  *
  * 
  */

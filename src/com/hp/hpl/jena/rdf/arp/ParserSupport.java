@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.12 2003-12-05 14:47:03 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.13 2003-12-06 21:46:59 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -178,10 +178,10 @@ class ParserSupport
 		ExceptionToken sax = (ExceptionToken) t;
 		arp.parseWarning(sax.errorCode, t.location, sax.toString());
 	}
-	CollectionAction collectionAction(AResource rslt[]){
+	CollectionAction collectionAction(AResourceInternal rslt[]){
 		return new RDFCollection(this,rslt);
 	}
-	CollectionAction damlCollectionAction(AResource rslt[]){
+	CollectionAction damlCollectionAction(AResourceInternal rslt[]){
 		return new DAMLCollection(this,rslt);
 	}
 	void checkXMLLang(StrToken s) throws ParseException {

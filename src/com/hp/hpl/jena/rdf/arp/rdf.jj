@@ -43,7 +43,7 @@ class RDFParser implements ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.9 2003-12-05 14:47:03 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.10 2003-12-06 21:46:59 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -54,8 +54,6 @@ class RDFParser implements ARPErrorNumbers {
 // Terminal description for error messages.
 // The tokeniser (ARPFilter) defines what the tokens actually are.
      tokenImage[A_ABOUT] = "attribute rdf:about";
-     tokenImage[A_ABOUTEACH] = "attribute rdf:aboutEach";
-     tokenImage[A_BAGID] = "attribute rdf:bagID";
      tokenImage[A_ID] = "attribute rdf:ID";
      tokenImage[A_NODEID] = "attribute rdf:nodeID";
      tokenImage[A_OTHER] = "property attributes";
@@ -113,16 +111,23 @@ PARSER_END(RDFParser)
 // No kleene star - there can only be one document level element.
 void rdfFile(XMLContext ctxt) :     {}   
 {   
-   whiteOrErr()
-   rdfFileSub(ctxt)
+   whiteOrErr()                        
+   rdfFileSub(ctxt)                    
    white1(false)
    
 }
-void rdfFileSub(XMLContext ctxt) :     {}   
+void rdfFileSub(XMLContext ctxt) :     { ARPResource r; }   
 {   
    rdf(ctxt)
- | // OR
-   obj(ctxt) 
+ | // OR    
+                            try {                           
+                                       { arp.startRDF(); }
+   r = obj(ctxt)                       { arp.endLocalScope(r); 
+                                       }
+                            }
+                            finally {
+                                arp.endRDF();
+                            }
    
 }
 
@@ -188,17 +193,21 @@ Token pi(boolean warnOnPi) :           { Token w; }
 
 /* [6.1] RDF  ::= ['<rdf:RDF>'] obj* ['</rdf:RDF>'] */
  
-void rdf(XMLContext ctxt) :            {}
+void rdf(XMLContext ctxt) :            { ARPResource r; }
 {                            try { (
-  <E_RDF> 
+  <E_RDF>                              { arp.startRDF(); }
    ctxt=xmlAttrs(ctxt) 
    white() 
-   ( obj(ctxt) 
+   ( r = obj(ctxt)                     { arp.endLocalScope(r); }
      white() 
    ) *    
-   <E_END>                             ) } 
+   <E_END>                             
+                             ) } 
                              catch ( ParseException e ) {
                                        error_recovery(e);
+                             }
+                             finally {
+                               arp.endRDF();
                              }
 }
 
@@ -207,18 +216,38 @@ void rdf(XMLContext ctxt) :            {}
 ARPResource obj(XMLContext ctxt) :     
                                        {  ARPResource r = 
                                                         new ARPResource(arp); }
-{  description(ctxt,r,false)           { return r; }
+{                            try { (
+   description(ctxt,r,false)           { return r; }
+                             ) }
+                             catch (ParseException e) {
+                               arp.endLocalScope(r);
+                               throw e;
+                             }
+                             catch (RuntimeException e) {
+                               arp.endLocalScope(r);
+                               throw e;
+                             }
 }
 
 ARPResource xobj(XMLContext ctxt) :     
                                        {  ARPResource r = 
                                                         new ARPResource(arp); }
-{  description(ctxt,r,true)            { return r; }
+{                            try { (
+   description(ctxt,r,true)            { return r; }
+                             ) }
+                             catch (ParseException e) {
+                               arp.endLocalScope(r);
+                               throw e;
+                             }
+                             catch (RuntimeException e) {
+                               arp.endLocalScope(r);
+                               throw e;
+                             }
 }
 
 
-/* [6.3] description    ::= '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '/>'
- *                        | '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '>'
+/* [6.3] description    ::= '<rdf:Description' idAboutAttr? propAttr* '/>'
+ *                        | '<rdf:Description' idAboutAttr?  propAttr* '>'
  *                                       propertyElt* '</rdf:Description>'
  *                        | typedNode  */
 
@@ -228,7 +257,6 @@ void description(XMLContext ctxt, ARPResource r, boolean suggestParseType)
    <E_DESCRIPTION> 
    ctxt=xmlAttrs(ctxt) 
    [ idAboutAttr(ctxt,r) ] 
-   [ bagIdAttr(ctxt,r) ] 
    ( propAttr(ctxt,r) ) * 
    zwhite(suggestParseType) 
    ( propertyElt(ctxt,r) 
@@ -287,15 +315,7 @@ void nodeIdAttr(XMLContext ctxt,ARPResource r)
 
 
 
-/*
-  [6.9] bagIdAttr      ::= ' bagID="' IDsymbol '"'
-*/
-void bagIdAttr(XMLContext ctxt,ARPResource r) 
-                                     : {String s; }
-{  <A_BAGID> 
-   s=idSymbol(ctxt) 
-   ( warning() ) *                     { r.setBagId(s); }
-}
+
 
 /* 
  [6.10] propAttr       ::= typeAttr
@@ -343,7 +363,7 @@ void  typeAttr(XMLContext ctxt,ARPResource r)
                                literal '</' propName '>'
                          | '<' propName idAttr? parseResource '>'
                                propertyElt* '</' propName '>'
-                         | '<' propName idRefAttr? bagIdAttr? propAttr* '/>'
+                         | '<' propName idRefAttr?  propAttr* '/>'
 
 Merged with:
  [6.29] referencedItem ::= '<rdf:li' resourceAttr '/>'
@@ -389,7 +409,9 @@ void propertyEltIdAndValue( XMLContext ctxt,ARPResource r, Token p )
                                        }
 { 
    [ reify = idAttr(ctxt) ] 
-   v = propEltValue(ctxt)              { X.createTriple(r, p, v, reify ); }
+   v = propEltValue(ctxt)              { X.createTriple(r, p, v, reify );
+                                         arp.endLocalScope(v); 
+                                       }
 }
 
 Object propEltValue(XMLContext ctxt) : { String xml; 
@@ -397,7 +419,7 @@ Object propEltValue(XMLContext ctxt) : { String xml;
                                          Token parseType; 
                                          String parseTypeVal;
                                          ARPResource ptr; 
-                                         AResource daml[];
+                                         AResourceInternal daml[];
                                          ARPString dtLex;
                                          URIReference dtURI;
                                          Location wh;
@@ -423,7 +445,7 @@ Object propEltValue(XMLContext ctxt) : { String xml;
  | // OR
                              LOOKAHEAD(2) 
    <A_PARSETYPE> 
-   <AV_DAMLCOLLECTION>                   { daml = new AResource[1]; }
+   <AV_DAMLCOLLECTION>                   { daml = new AResourceInternal[1]; }
    ( warning() ) * 
    white() 
    collection(ctxt, 
@@ -432,7 +454,7 @@ Object propEltValue(XMLContext ctxt) : { String xml;
  | // OR
                              LOOKAHEAD(2) 
    <A_PARSETYPE> 
-   <AV_COLLECTION>                      { daml = new AResource[1]; }
+   <AV_COLLECTION>                      { daml = new AResourceInternal[1]; }
    ( warning() ) * 
    white() 
    collection(ctxt, 
@@ -453,19 +475,12 @@ Object propEltValue(XMLContext ctxt) : { String xml;
  | // OR 
                                         { ptr = new ARPResource(arp); } 
    resourceOrNodeIdAttr(ctxt,ptr)  
-   [ bagIdAttr(ctxt,ptr) ]
    ( propAttr(ctxt,ptr) ) *
    empty()                              { return ptr; }
 
  | // OR
                                         { ptr = new ARPResource(arp); }  
    ( propAttr(ctxt,ptr) ) +
-   empty()                              { return ptr; }
-
- | // OR
-                                        { ptr = new ARPResource(arp); }  
-   bagIdAttr(ctxt,ptr) 
-   ( propAttr(ctxt,ptr) ) *
    empty()                              { return ptr; }
 
  | // OR    This one last because it can expand to empty.
@@ -488,8 +503,8 @@ CollectionAction objInCollection(XMLContext ctxt, CollectionAction act )
    white()                           { return act.next( head ); }
 }
 /*
- [6.13] typedNode      ::= '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>'
-                         | '<' typeName idAboutAttr? bagIdAttr? propAttr* '>'
+ [6.13] typedNode      ::= '<' typeName idAboutAttr?  propAttr* '/>'
+                         | '<' typeName idAboutAttr?  propAttr* '>'
                                propertyElt* '</' typeName '>'
  We do the action at the right point to reflect the XML
  document order in the bagID bag (if any).
@@ -501,8 +516,7 @@ void typedNode(XMLContext ctxt, ARPResource r, boolean suggestParseType)
                                          type.next = null;
                                        }
    ctxt=xmlAttrs(ctxt) 
-   [ idAboutAttr(ctxt,r) ] 
-   [ bagIdAttr(ctxt,r) ]               { r.setType(
+   [ idAboutAttr(ctxt,r) ]              { r.setType(
                                                ((ARPQname)type)
                                                    .asURIReference(arp)); 
                                        }
@@ -708,7 +722,8 @@ void embeddedFile(XMLContext ctxt)    : {}
 }
 
 void root(XMLContext ctxt)        : {}
-{  rdf(ctxt)
+{                                   
+   rdf(ctxt)                        
  | // OR
    element(ctxt)
 }
@@ -750,7 +765,8 @@ XMLContext xmlAttrsNoWarnings(XMLContext ctxt)
 }
 
 void content(XMLContext ctxt)        : {}
-{  rdf(ctxt)
+{                                      
+   rdf(ctxt)                           
  | // OR
    <CD_STRING>
  | // OR
@@ -783,8 +799,6 @@ Token litStartElement()               : { Token t; }
 Token litAttrName()                  : { Token t; }
 { // One of: 
     t=<A_ABOUT>                        { return t; }
-  | t=<A_ABOUTEACH>                    { return t; }
-  | t=<A_BAGID>                        { return t; }
   | t=<A_ID>                           { return t; }
   | t=<A_OTHER>                        { return t; }
   | t=<A_PARSETYPE>                    { return t; }
@@ -802,8 +816,6 @@ Token litAttrName()                  : { Token t; }
 void attrName()                      : {}
 {  // One of:
     <A_ABOUT> 
-  | <A_ABOUTEACH> 
-  | <A_BAGID> 
   | <A_ID> 
   | <A_OTHER> 
   | <A_PARSETYPE> 

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.6 2003-12-05 16:04:34 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.7 2003-12-06 21:46:59 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -87,25 +87,36 @@ import org.xml.sax.*;
  */
 public class NTriple implements ARPErrorNumbers {
 
-    private static StringBuffer line = new StringBuffer();
+	private static StringBuffer line = new StringBuffer();
 	private static ARP arp;
 	private static String xmlBase = null;
-    private static boolean numbers = false;
+	private static boolean numbers = false;
 	/** Starts an RDF/XML to NTriple converter.
 	 * @param args The command-line arguments.
 	 */
 	static public void main(String args[]) {
-		mainEh(args, null);
+		mainEh(args, null, null);
 	}
-	/** Starts an RDF/XML to NTriple converter.
+	static StatementHandler andMeToo = null;
+	/** Starts an RDF/XML to NTriple converter,
+	 * using an error handler, and an ARPHandler.
+	 * Statements get processed both by this class,
+	 * and by the passed in StatementHandler
 	 * @param args The command-line arguments.
+	 * @param eh Can be null.
+	 * @param ap Can be null.
 	 */
-	static public void mainEh(String args[], ErrorHandler eh) {
+	static public void mainEh(String args[], ErrorHandler eh, ARPHandler ap) {
 		boolean doneOne = false;
-		SH sh = new SH();
+		andMeToo = ap;
+		//SH sh = new SH();
 		int i;
 		arp = new ARP();
-		arp.setStatementHandler(sh);
+		arp.setStatementHandler(getSH(true));
+		if (ap != null) {
+			arp.setNamespaceHandler(ap);
+			arp.setExtendedHandler(ap);
+		}
 		if (eh != null)
 			arp.setErrorHandler(eh);
 
@@ -130,15 +141,32 @@ public class NTriple implements ARPErrorNumbers {
 			process(System.in, "http://example.org/stdin", "standard input");
 		}
 	}
-    
-    static private void lineNumber() {
-        if (numbers) {
-            Locator locator = arp.getLocator();
-            if ( locator != null)
-          print("# "+locator.getSystemId()+":"+locator.getLineNumber()+"("+
-          locator.getColumnNumber()+")\n");
-        }
-    }
+
+	/**
+	 * @param b false for quiet.
+	 * @return
+	 */
+	private static StatementHandler getSH(boolean b) {
+		StatementHandler rslt = b?(StatementHandler)new SH():new NoSH();
+		if (andMeToo!=null)
+		  rslt = new TwoSH(rslt,andMeToo);
+		return rslt;
+	}
+
+	static private void lineNumber() {
+		if (numbers) {
+			Locator locator = arp.getLocator();
+			if (locator != null)
+				print(
+					"# "
+						+ locator.getSystemId()
+						+ ":"
+						+ locator.getLineNumber()
+						+ "("
+						+ locator.getColumnNumber()
+						+ ")\n");
+		}
+	}
 
 	/*
 	 * Options:
@@ -151,7 +179,7 @@ public class NTriple implements ARPErrorNumbers {
 	 *  -e:  convert numbered warnings to errors
 	 *  -i:  suppress numbered warnings
 	 *  -w:  convert numbered errors/suppressed warnings to warnings
-     *  -n:  give line numbers
+	 *  -n:  give line numbers
 	 *
 	 */
 	static void usage() {
@@ -169,11 +197,13 @@ public class NTriple implements ARPErrorNumbers {
 		System.err.println("    -b uri    Sets XML Base to the absolute URI.");
 		System.err.println(
 			"    -r        Content is RDF (no embedding, rdf:RDF tag may be omitted).");
-		System.err.println("    -t        No n-triple output, error checking only.");
+		System.err.println(
+			"    -t        No n-triple output, error checking only.");
 		System.err.println("    -x        Lax mode - warnings are suppressed.");
-		System.err.println("    -s        Strict mode - most warnings are errors.");
-        System.err.println("    -n        Show line and column numbers.");
-        System.err.println(
+		System.err.println(
+			"    -s        Strict mode - most warnings are errors.");
+		System.err.println("    -n        Show line and column numbers.");
+		System.err.println(
 			"    -u        Allow unqualified attributes (defaults to warning).");
 		System.err.println(
 			"    -f        All errors are fatal - report first one only.");
@@ -185,7 +215,8 @@ public class NTriple implements ARPErrorNumbers {
 		System.err.println(
 			"              Treats numbered error conditions as warnings.");
 		System.err.println("    -i NNN[,NNN...]");
-		System.err.println("              Ignores numbered error/warning conditions.");
+		System.err.println(
+			"              Ignores numbered error/warning conditions.");
 		System.exit(1);
 	}
 	static private int processOpts(String opts, String nextArg) {
@@ -205,14 +236,14 @@ public class NTriple implements ARPErrorNumbers {
 					arp.setStrictErrorMode();
 					break;
 				case 't' :
-					arp.setStatementHandler(new NoSH());
+					arp.setStatementHandler(getSH(false));
 					break;
 				case 'r' :
 					arp.setEmbedding(false);
 					break;
-                    case 'n':
-                    numbers = true;
-                    break;
+				case 'n' :
+					numbers = true;
+					break;
 				case 'b' :
 					xmlBase = nextArg;
 					break;
@@ -272,7 +303,9 @@ public class NTriple implements ARPErrorNumbers {
 						case 0 :
 							break;
 						case 3 :
-							arp.setErrorMode(n[0] * 100 + n[1] * 10 + n[2], mode);
+							arp.setErrorMode(
+								n[0] * 100 + n[1] * 10 + n[2],
+								mode);
 							j = 0;
 							break;
 						default :
@@ -291,14 +324,14 @@ public class NTriple implements ARPErrorNumbers {
 
 		URL url;
 		String baseURL;
-		
+
 		try {
 			File ff = new File(surl);
 			in = new FileInputStream(ff);
 			url = ff.toURL();
-			baseURL  = url.toExternalForm();
+			baseURL = url.toExternalForm();
 			if (baseURL.startsWith("file:/")
-			    && !baseURL.startsWith("file://")) {
+				&& !baseURL.startsWith("file://")) {
 				baseURL = "file://" + baseURL.substring(5);
 			}
 		} catch (Exception ignore) {
@@ -308,7 +341,8 @@ public class NTriple implements ARPErrorNumbers {
 				baseURL = url.toExternalForm();
 			} catch (Exception e) {
 				System.err.println("ARP: Failed to open: " + surl);
-				System.err.println("    " + ParseException.formatMessage(ignore));
+				System.err.println(
+					"    " + ParseException.formatMessage(ignore));
 				System.err.println("    " + ParseException.formatMessage(e));
 				return;
 			}
@@ -320,14 +354,30 @@ public class NTriple implements ARPErrorNumbers {
 		try {
 			arp.load(in, xmlBasey);
 		} catch (IOException e) {
-			System.err.println("Error: " + surl + ": " + ParseException.formatMessage(e));
+			System.err.println(
+				"Error: " + surl + ": " + ParseException.formatMessage(e));
 		} catch (SAXParseException e) {
-            // already reported.
-        } catch (SAXException sax) {
-			System.err.println("Error: " + surl + ": " + ParseException.formatMessage(sax));
+			// already reported.
+		} catch (SAXException sax) {
+			System.err.println(
+				"Error: " + surl + ": " + ParseException.formatMessage(sax));
 		}
 	}
-
+	private static class TwoSH implements StatementHandler {
+		final StatementHandler a, b;
+		public void statement(AResource subj, AResource pred, AResource obj) {
+			a.statement(subj, pred, obj);
+			b.statement(subj, pred, obj);
+		}
+		public void statement(AResource subj, AResource pred, ALiteral lit) {
+			a.statement(subj, pred, lit);
+			b.statement(subj, pred, lit);
+		}
+		TwoSH(StatementHandler A, StatementHandler B) {
+			a = A;
+			b = B;
+		}
+	}
 	private static class NoSH implements StatementHandler {
 		public void statement(AResource subj, AResource pred, AResource obj) {
 		}
@@ -336,8 +386,8 @@ public class NTriple implements ARPErrorNumbers {
 	}
 	private static class SH implements StatementHandler {
 		public void statement(AResource subj, AResource pred, AResource obj) {
-            lineNumber();
-            resource(subj);
+			lineNumber();
+			resource(subj);
 			resource(pred);
 			resource(obj);
 			line.append('.');
@@ -347,15 +397,15 @@ public class NTriple implements ARPErrorNumbers {
 		public void statement(AResource subj, AResource pred, ALiteral lit) {
 			String lang = lit.getLang();
 			String parseType = lit.getParseType();
-            lineNumber();
-            /*
+			lineNumber();
+			/*
 			if (parseType != null) {
 				System.out.print("# ");
 				if (parseType != null)
 					System.out.print("'" + parseType + "'");
 				System.out.println();
 			}
-            */
+			*/
 			resource(subj);
 			resource(pred);
 			literal(lit);
@@ -370,7 +420,7 @@ public class NTriple implements ARPErrorNumbers {
 	static private void resource(AResource r) {
 		if (r.isAnonymous()) {
 			print("_:j");
-			print( r.getAnonymousID() );
+			print(r.getAnonymousID());
 			print(" ");
 		} else {
 			print("<");
@@ -413,30 +463,30 @@ public class NTriple implements ARPErrorNumbers {
 			}
 		}
 	}
-	
+
 	static private boolean okURIChars[] = new boolean[128];
 	static {
-		for (int i= 32; i<127; i++)
-		  okURIChars[i] =true;
-	    okURIChars['<'] = false;
-	    okURIChars['>'] = false;
-	    okURIChars['\\'] = false;
-		       
+		for (int i = 32; i < 127; i++)
+			okURIChars[i] = true;
+		okURIChars['<'] = false;
+		okURIChars['>'] = false;
+		okURIChars['\\'] = false;
+
 	}
 	static private void escapeURI(String s) {
 		int lg = s.length();
 		for (int i = 0; i < lg; i++) {
 			char ch = s.charAt(i);
-			if (ch<okURIChars.length && okURIChars[ch]) {
-						line.append(ch);
+			if (ch < okURIChars.length && okURIChars[ch]) {
+				line.append(ch);
 			} else {
-						print("\\u");
-						String hexstr = Integer.toHexString(ch).toUpperCase();
-						int pad = 4 - hexstr.length();
+				print("\\u");
+				String hexstr = Integer.toHexString(ch).toUpperCase();
+				int pad = 4 - hexstr.length();
 
-						for (; pad > 0; pad--)
-							print("0");
-						print(hexstr);
+				for (; pad > 0; pad--)
+					print("0");
+				print(hexstr);
 			}
 		}
 	}
@@ -451,13 +501,13 @@ public class NTriple implements ARPErrorNumbers {
 			line.append('@');
 			print(lang);
 		}
-        String dt = l.getDatatypeURI();
-        if ( dt != null && !dt.equals("")) {
-            print("^^<");
-            escapeURI(dt);
-            line.append('>');
-        }
-           
+		String dt = l.getDatatypeURI();
+		if (dt != null && !dt.equals("")) {
+			print("^^<");
+			escapeURI(dt);
+			line.append('>');
+		}
+
 		line.append(' ');
 	}
 

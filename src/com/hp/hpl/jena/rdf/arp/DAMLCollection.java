@@ -2,7 +2,7 @@
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, 
   all rights reserved.
   [See end of file]
-  $Id: DAMLCollection.java,v 1.1 2003-10-10 11:19:39 jeremy_carroll Exp $
+  $Id: DAMLCollection.java,v 1.2 2003-12-06 21:46:59 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -24,11 +24,11 @@ class DAMLCollection extends CollectionAction {
 	DAMLCollection(ParserSupport x){
 		super(x);
 	}
-    DAMLCollection(ParserSupport x,AResource r[]){
+    DAMLCollection(ParserSupport x,AResourceInternal r[]){
     	super(x);
     	rslt = r;
     }
-    private AResource rslt[];
+    private AResourceInternal rslt[];
 	static {
 		try {
      		nil        = new URIReference(damlns+"nil");
@@ -52,9 +52,11 @@ class DAMLCollection extends CollectionAction {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.CollectionAction#next(com.hp.hpl.jena.rdf.arp.AResource)
 	 */
-	CollectionAction next(AResource head) {
+	CollectionAction next(AResourceInternal head) {
 		ARPResource cell= new ARPResource(X.arp); 
 		cell.setPredicateObject( first,head, null );
+		X.arp.endLocalScope(head);
+		
 		cell.setType(List);
 												 
 		rslt[0] = cell;

@@ -2,7 +2,7 @@
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, 
   all rights reserved.
   [See end of file]
-  $Id: DAMLTailCollection.java,v 1.1 2003-10-10 11:19:39 jeremy_carroll Exp $
+  $Id: DAMLTailCollection.java,v 1.2 2003-12-06 21:46:59 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -14,20 +14,29 @@ public class DAMLTailCollection extends DAMLCollection {
 	DAMLTailCollection(ParserSupport x,ARPResource cell) {
 		super(x);
 		last = cell;
+		f = cell;
 	}
 	ARPResource last;
+	final ARPResource f;
+	private void endLastScope() {
+		if (last!=f)
+		   X.arp.endLocalScope(last);
+	}
 	void terminate() {
 		last.setPredicateObject(rest, nil, null);
+		endLastScope();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.CollectionAction#next(com.hp.hpl.jena.rdf.arp.AResource)
 	 */
-	CollectionAction next(AResource head) {
+	CollectionAction next(AResourceInternal head) {
 		ARPResource cell = new ARPResource(X.arp);
 		last.setPredicateObject(rest, cell, null);
 		cell.setPredicateObject(first, head, null);
+		X.arp.endLocalScope(head);
 		cell.setType(List);
+		endLastScope();
 		last = cell;
 		return this;
 	}

@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: ParseException.java,v 1.5 2003-12-05 12:29:04 jeremy_carroll Exp $
+ *  * $Id: ParseException.java,v 1.6 2003-12-06 21:46:59 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -175,14 +175,8 @@ public class ParseException
 				case A_ABOUT :
 					rslt += ", rdf:about";
 					break;
-				case A_ABOUTEACH :
-					rslt += ", rdf:aboutEach";
-					break;
 				case A_DATATYPE :
 					rslt += ", rdf:datatype";
-					break;
-				case A_BAGID :
-					rslt += ", rdf:bagID";
 					break;
 				case A_NODEID :
 					rslt += ", rdf:nodeID";
@@ -317,8 +311,6 @@ public class ParseException
 					}
 				}
 			case A_ABOUT :
-			case A_ABOUTEACH :
-			case A_BAGID :
 			case A_ID :
 			case A_PARSETYPE :
 			case A_RESOURCE :

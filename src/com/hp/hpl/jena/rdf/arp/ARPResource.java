@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPResource.java,v 1.5 2003-12-05 17:46:34 jeremy_carroll Exp $
+ * * $Id: ARPResource.java,v 1.6 2003-12-06 21:46:59 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -42,7 +42,7 @@ package com.hp.hpl.jena.rdf.arp;
  *
  * @author  jjc
  */
-class ARPResource implements  AResource {
+class ARPResource implements  AResourceInternal {
     // Constants cribbed from com.megginson.sax.rdf.RDFFilter
     private final static String RDFNS =
 	"http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -52,15 +52,15 @@ class ARPResource implements  AResource {
 
 
 				// Element names
-    private static AResource RDF_STATEMENT ; 
+    private static AResourceInternal RDF_STATEMENT ; 
     static URIReference RDF_BAG;  
     static URIReference RDF_SEQ ;  
     static URIReference RDF_ALT ; 
     private static String RDF_LI ; 
-    private static AResource RDF_TYPE ;
-    private static AResource RDF_SUBJECT ;
-    private static AResource RDF_PREDICATE ;
-    private static AResource RDF_OBJECT ;
+    private static AResourceInternal RDF_TYPE ;
+    private static AResourceInternal RDF_SUBJECT ;
+    private static AResourceInternal RDF_PREDICATE ;
+    private static AResourceInternal RDF_OBJECT ;
     static {
         try {
         RDF_STATEMENT =
@@ -90,13 +90,12 @@ class ARPResource implements  AResource {
     
     private ARPFilter arp;
     
-    private String nodeID = null;
+    String nodeID = null;
     
     // The uri is the document uri.
     // If the uri is null then
     // we are an anonymous resource , number genId.
     private String uri;     // maybe the 
-    private ARPResource bag = null;
     static private int genIdCounter = 0;
     final private int genId = genIdCounter++;
     private int liCounter = 1;
@@ -107,11 +106,6 @@ class ARPResource implements  AResource {
         arp = parent;
     }
     
-    void setBagId(String id) {
-        bag = new ARPResource(arp);
-        bag.setAbout(id);
-        bag.setType(RDF_BAG);
-    } 
     
     void setAbout(URIReference uri){
         setAbout(uri.getURI());
@@ -125,15 +119,15 @@ class ARPResource implements  AResource {
         setPredObject( rdf_n(liCounter++), v, reify(reify) );
     }
   
-    void setPredicateObject(AResource p, ARPString v) {
+    void setPredicateObject(AResourceInternal p, ARPString v) {
         setPredObject(p,v,null);
     }
     
-    void setPredicateObject(AResource p, Object v, String reify) {
+    void setPredicateObject(AResourceInternal p, Object v, String reify) {
         setPredObject(p,v,reify(reify));
     }
     
-    AResource reify(String reify) {
+    AResourceInternal reify(String reify) {
         ARPResource reification = null;
         if ( reify != null ) {
                 reification = new ARPResource(arp);
@@ -147,18 +141,11 @@ class ARPResource implements  AResource {
         setPredObject(RDF_TYPE, r, null );
     }
     
-    private void setPredObject( AResource pred, Object obj, AResource reify ) {
+    private void setPredObject( AResourceInternal pred, Object obj, AResourceInternal reify ) {
         // The basic triple.
         triple( this, pred, obj );
         
-        // Deal with bag before reification
-        if ( bag != null ) {
-            if ( reify == null )
-                reify = new ARPResource(arp);
-            bag.setLiObject( reify, null );
-           // tripleRes( bag, rdf_n(bag.liCounter++), reify ); 
-            // Don't take the short cut - it misses stuff.
-        }
+      
         
         if ( reify != null ) {
             tripleRes( reify, RDF_TYPE, RDF_STATEMENT );
@@ -169,9 +156,9 @@ class ARPResource implements  AResource {
         
     }
     
-    private void triple( AResource subj, AResource pred, Object obj ) {
+    private void triple( AResourceInternal subj, AResourceInternal pred, Object obj ) {
         int sw = 0;
-        if ( obj instanceof AResource ) {
+        if ( obj instanceof AResourceInternal ) {
             sw += 1;
         }
         if ( obj instanceof ALiteral ) {
@@ -179,7 +166,7 @@ class ARPResource implements  AResource {
         }
         switch (sw) {
             case 1:
-                tripleRes(subj,pred,(AResource)obj);
+                tripleRes(subj,pred,(AResourceInternal)obj);
                 break;
             case 2:
                 tripleLit(subj,pred,(ALiteral)obj);
@@ -191,13 +178,16 @@ class ARPResource implements  AResource {
         }
     }
     
-    private void tripleRes(final AResource s,final AResource p,final AResource o ) {
+    private void tripleRes(final AResourceInternal s,final AResourceInternal p,final AResourceInternal o ) {
+        s.setHasBeenUsed();
+        o.setHasBeenUsed();
         arp.statementHandler.statement(s,p,o);
         
     }
     
-    private void tripleLit( AResource s, final AResource p, final ALiteral o ) {
-           arp.statementHandler.statement(s,p,o);
+    private void tripleLit( AResourceInternal s, final AResourceInternal p, final ALiteral o ) {
+		   s.setHasBeenUsed();
+       arp.statementHandler.statement(s,p,o);
     }
     
     static private URIReference _rdf_n[] = new URIReference[0];
@@ -220,7 +210,7 @@ class ARPResource implements  AResource {
         return _rdf_n[i];
     }
     
-    static int isRDF_N(AResource r) {
+    static int isRDF_N(AResourceInternal r) {
         if ( !r.isAnonymous() ) {
             String uri = r.getURI();
             if ( uri.length() > RDFNS_LENGTH && uri.charAt(RDFNS_LENGTH) == '_' ) {
@@ -245,8 +235,8 @@ class ARPResource implements  AResource {
     
     public String getAnonymousID() {
         return nodeID==null
-                ? ( "ARP:" + Integer.toString(genId) )
-                : nodeID;
+                ? ( "A" + Integer.toString(genId) )
+                : "U" + nodeID;
     }
     
     void setNodeId(String s) {
@@ -262,20 +252,24 @@ class ARPResource implements  AResource {
     }
     
     public int hashCode() {
-        if ( uri==null )
+        if ( uri==null && nodeID==null)
             return genId;
-        else
+        else if ( uri != null )
             return uri.hashCode();
+        else
+           return nodeID.hashCode();
     }
     
     public boolean equals(Object o) {
-        if ( o == null || !(o instanceof AResource))
+        if ( o == null || !(o instanceof AResourceInternal))
             return false;
-        AResource a=(AResource)o;
-        if ( uri == null ) 
-            return a.isAnonymous() && a.getAnonymousID().equals(getAnonymousID());
-        else
-            return (!a.isAnonymous()) && uri.equals(a.getURI());
+        if ( this == o)
+          return true;
+        AResourceInternal a=(AResourceInternal)o;
+        if ( uri != null )
+		      return (!a.isAnonymous()) && uri.equals(a.getURI());
+		    ARPResource aa = (ARPResource)a;
+        return nodeID != null && nodeID.equals(aa.nodeID);
     }
     
     private Object userData;
@@ -303,6 +297,22 @@ class ARPResource implements  AResource {
 	 */
 	public boolean hasNodeID() {
 		return nodeID!=null;
+	}
+  private boolean used = false;
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.rdf.arp.AResourceInternal#setHasBeenUsed()
+	 */
+	public void setHasBeenUsed() {
+		used = true;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.rdf.arp.AResourceInternal#getHasBeenUsed()
+	 */
+	public boolean getHasBeenUsed() {
+		return used;
 	}
     
 }

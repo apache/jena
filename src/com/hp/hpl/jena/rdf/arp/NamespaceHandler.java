@@ -1,37 +1,42 @@
 /*
-  (c) Copyright 2003,  Hewlett-Packard Development Company, LP
-  all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: CollectionAction.java,v 1.2 2003-12-06 21:46:59 jeremy_carroll Exp $
+  $Id: NamespaceHandler.java,v 1.1 2003-12-06 21:46:59 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
 /**
- * This stuff looks somewhat complicated.
- * The original code has a recursive call to do
- * tails of collections.
- * However, this led to a stack overflow.
- * In keeping with the streaming parser goals
- * the current code outputs triples as fast as it
- * can, without any stack.
- * @author jjc
+ * This has methods copied form SAX  for
+ * notifying the application of namespaces.
+ * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
- */
-abstract class CollectionAction {
-	ParserSupport X;
-	
-	CollectionAction(ParserSupport x){
-		X=x;
-	}
-	abstract void terminate();
-	
-	abstract CollectionAction next(AResourceInternal r);
-	
+*/
+public interface NamespaceHandler {	
+/**
+	* A namespace prefix is being defined..
+	* 
+	* @param prefix
+	*            the name of the prefix (ie the X in xmlns:X=U)
+	* @param uri
+	*            the uri string (ie the U)
+	*/
+   public void startPrefixMapping(String prefix, String uri);
+   /**
+	   * A namespace prefix is going out of scope.
+	   * There is no guarantee that start and end PrefixMapping
+	   * calls nest.
+	   * 
+	   * @param prefix
+	   *            the name of the prefix (ie the X in xmlns:X=U)
+	   * 
+	   * 
+	   */
+   public void endPrefixMapping(String prefix);
 
 }
 
 /*
-	(c) Copyright  2003 Hewlett-Packard Development Company, LP
+	(c) Copyright Hewlett-Packard Company 2003
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

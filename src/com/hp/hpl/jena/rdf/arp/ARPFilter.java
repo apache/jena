@@ -23,7 +23,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: ARPFilter.java,v 1.14 2003-12-05 17:46:34 jeremy_carroll Exp $
+ * $Id: ARPFilter.java,v 1.15 2003-12-06 21:46:59 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -35,11 +35,7 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.BitSet;
-import java.util.Set;
-import java.util.HashSet;
+import java.util.*;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
@@ -88,7 +84,7 @@ class ARPFilter
 	 * all its bindings. In the nice case, prefixes that are present will be
 	 * bound to singleton sets.
 	 */
-	private Map prefixMap = new HashMap();
+//	private Map prefixMap = new HashMap();
 
 	/**
 	 * over-ridden from XMLFilterImpl: catch a namespace prefix mapping as it
@@ -102,12 +98,20 @@ class ARPFilter
 	public void startPrefixMapping(String prefix, String uri)
 		throws SAXException {
 		super.startPrefixMapping(prefix, uri);
+		nameHandler.startPrefixMapping(prefix,uri);
+		/*
 		Set uris = (Set) prefixMap.get(prefix);
 		if (uris == null) {
 			uris = new HashSet();
 			prefixMap.put(prefix, uris);
 		}
 		uris.add(uri);
+		*/
+	}
+	public void endPrefixMapping(String prefix)
+		throws SAXException {
+		super.endPrefixMapping(prefix);
+		nameHandler.endPrefixMapping(prefix);
 	}
 
 	/**
@@ -117,11 +121,12 @@ class ARPFilter
 	 * @param x
 	 *            the map to be updated
 	 * @return the updated map
-	 */
+	 * /
 	public Map getPrefixes(Map x) {
 		x.putAll(prefixMap);
 		return x;
 	}
+	*/
 
 	void userWarning(ParseException e) throws SAXException {
 		getErrorHandler().warning(e.rootCause());
@@ -290,19 +295,46 @@ class ARPFilter
 		saxParser.reset();
 
 		// initEncodingChecks();
-
 		try {
-			RDFParser p = new RDFParser(pipe, ARPFilter.this);
-			if (embedding)
-				p.embeddedFile(documentContext);
-			else
-				p.rdfFile(documentContext);
-		} catch (WrappedException wrapped) {
-			wrapped.throwMe();
-		} catch (ParseException parse) {
-			throw parse.rootCause();
+			try {
+				RDFParser p = new RDFParser(pipe, ARPFilter.this);
+				if (embedding)
+					p.embeddedFile(documentContext);
+				else
+					p.rdfFile(documentContext);
+			} catch (WrappedException wrapped) {
+				wrapped.throwMe();
+			} catch (ParseException parse) {
+				throw parse.rootCause();
+			}
+		} finally {
+			if ( scopeHandler != nullScopeHandler ) {
+				Iterator it = nodeIdUserData.keySet().iterator();
+				while (it.hasNext()) {
+					String nodeId = (String)it.next();
+					ARPResource bn = new ARPResource(this);
+					bn.setNodeId(nodeId);
+					scopeHandler.endBNodeScope(bn);
+				}
+			}
 		}
 
+	}
+	private NamespaceHandler nameHandler = new NamespaceHandler() {
+
+		public void startPrefixMapping(String prefix, String uri) {
+			
+		}
+
+		public void endPrefixMapping(String prefix) {
+			
+		}
+	};
+	// Add scope handler
+	NamespaceHandler setNamespaceHandler(NamespaceHandler sh) {
+		NamespaceHandler old = nameHandler;
+		nameHandler = sh;
+		return old;
 	}
 	// Add scope handler
 	ExtendedHandler setExtendedHandler(ExtendedHandler sh) {
@@ -310,7 +342,7 @@ class ARPFilter
 		scopeHandler = sh;
 		return old;
 	}
-	ExtendedHandler scopeHandler = new ExtendedHandler() {
+	static ExtendedHandler nullScopeHandler = new ExtendedHandler() {
 
 		public void endBNodeScope(AResource bnode) {
 		}
@@ -321,6 +353,7 @@ class ARPFilter
 		public void endRDF() {
 		}
 	};
+	ExtendedHandler scopeHandler = nullScopeHandler;
 
 	StatementHandler setStatementHandler(StatementHandler sh) {
 		StatementHandler old = statementHandler;
@@ -872,6 +905,39 @@ class ARPFilter
 	}
 
 	private static class DontDieYetException extends RuntimeException {
+	}
+	/**
+	 * @param v
+	 */
+	public void endLocalScope(Object v) {
+		if (scopeHandler != nullScopeHandler && v instanceof ARPResource) {
+			ARPResource bn = (ARPResource) v;
+			if (!bn.isAnonymous())
+				return;
+		  if (!bn.getHasBeenUsed())
+		    return;
+			if (bn.hasNodeID()) {
+				// save for later end scope
+				String bnodeID = bn.nodeID;
+				if (!nodeIdUserData.containsKey(bnodeID))
+					nodeIdUserData.put(bnodeID, null);
+			} else {
+				scopeHandler.endBNodeScope(bn);
+			}
+		}
+	}
+
+	/**
+	 * 
+	 */
+	public void endRDF() {
+		scopeHandler.endRDF();
+	}
+	/**
+	 * 
+	 */
+	public void startRDF() {
+		scopeHandler.startRDF();
 	}
 
 }

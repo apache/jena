@@ -1,37 +1,64 @@
 /*
-  (c) Copyright 2003,  Hewlett-Packard Development Company, LP
-  all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: CollectionAction.java,v 1.2 2003-12-06 21:46:59 jeremy_carroll Exp $
+  $Id: TestScope.java,v 1.1 2003-12-06 21:46:59 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.rdf.arp;
+package com.hp.hpl.jena.rdf.arp.test;
+import junit.framework.*;
+//import com.hp.hpl.jena.rdf.arp.*;
+import java.io.*;
+import com.hp.hpl.jena.rdf.model.*;
 
 /**
- * This stuff looks somewhat complicated.
- * The original code has a recursive call to do
- * tails of collections.
- * However, this led to a stack overflow.
- * In keeping with the streaming parser goals
- * the current code outputs triples as fast as it
- * can, without any stack.
- * @author jjc
+ * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
- */
-abstract class CollectionAction {
-	ParserSupport X;
-	
-	CollectionAction(ParserSupport x){
-		X=x;
+*/
+public class TestScope extends TestCase {
+	public static Test suite() {
+		TestSuite s = new TestSuite(TestScope.class);
+		s.setName("ARP Scoping");
+		return s;
 	}
-	abstract void terminate();
+  public	TestScope(String nm){
+		super(nm);
+	}
+	/*
+	public void test01() throws Exception {
+		check("testing/arp/scope/test01.rdf");
+	}
+	public void test02() throws Exception {
+		check("testing/arp/scope/test02.rdf");
+	}
+	public void test03() throws Exception {
+		check("testing/arp/scope/test03.rdf");
+	}
+	*/
 	
-	abstract CollectionAction next(AResourceInternal r);
-	
+	public void test04() throws Exception {
+		check("testing/arp/scope/test04.rdf");
+	}
+	RDFErrorHandler suppress = new RDFErrorHandler(){
+
+		public void warning(Exception e) {
+		}
+
+		public void error(Exception e) {
+		}
+
+		public void fatalError(Exception e) {
+		}
+		
+	};
+	private void check(String fn) throws IOException {
+		InputStream in = new FileInputStream(fn);
+		NTripleTestSuite.loadRDFx(in,suppress,"http://example.org/a");
+		in.close();
+	}
 
 }
 
 /*
-	(c) Copyright  2003 Hewlett-Packard Development Company, LP
+	(c) Copyright Hewlett-Packard Company 2003
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

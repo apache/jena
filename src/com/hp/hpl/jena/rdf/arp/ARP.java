@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2003  Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,8 +24,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.9 2003-11-07 23:45:05 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.10 2003-12-06 21:46:59 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
+   with modification from PI Software
 */
 /*
  * ARP.java
@@ -52,15 +53,13 @@ import java.io.Reader;
 import java.util.*;
 
 import org.apache.xerces.util.EncodingMap;
-/**
- *
- * @author  jjc
- */
+
 /** Another RDF Parser.
  * To load an RDF file:
  * <nl>
  * <li>Create an ARP.</li>
  * <li>Set its StatementHandler.</li>
+ * <li>Optionally, set the ExtendedHandler.</li>
  * <li>Optionally, modify the error handling.</li>
  * <li>Call a load method.</li>
  * </nl>
@@ -70,6 +69,13 @@ import org.apache.xerces.util.EncodingMap;
  * Errors may occur
  * in either the XML or the RDF part, see setErrorHandler for details
  * of how to distinguish between them.
+ * <p>
+ * For very large files, ARP does not use any additional
+ * memory except when either the {@link #setExtendedHandler}
+ * method or the {@link AResource#setUserData} method have been
+ * used. In these cases ARP needs to remember the <code>rdf:nodeID</code>
+ * usage through the file life time. 
+ * @author  Jeremy Carroll, contribution //TODO sdr, newman
  */
 public class ARP implements ARPErrorNumbers {
 
@@ -90,8 +96,8 @@ public class ARP implements ARPErrorNumbers {
             while (it.hasNext()) {
                 Map.Entry me = (Map.Entry) it.next();
                 if (null == EncodingMap.fJava2IANAMap.get(me.getValue())) {
-                //  System.err.println(
-                //      "?2? " + me.getKey() + " => " + me.getValue());
+//                  System.err.println(
+//                      "?2? " + me.getKey() + " => " + me.getValue());
                     EncodingMap.fJava2IANAMap.put(me.getValue(),me.getKey());
                 }
             }
@@ -121,7 +127,25 @@ public class ARP implements ARPErrorNumbers {
     public ARP()  {
         arpf =  ARPFilter.create();
     }
-    
+	/** Sets the ExtendedHandler that provides the callback mechanism
+	 * for bnodes as they leave scope, and for the start and end of rdf:RDF
+	 * elements.
+ * <p>
+ * See note about large files in class documentation.
+	 * @param sh The handler to use.
+	 * @return The old handler.
+	 */
+		public ExtendedHandler setExtendedHandler(ExtendedHandler sh) {
+			return arpf.setExtendedHandler(sh);
+		}
+/** Sets the NamespaceHandler that provides the callback mechanism
+	* for XML namespace declarations.
+	* @param sh The handler to use.
+	* @return The old handler.
+	*/
+	   public NamespaceHandler setNamespaceHandler(NamespaceHandler sh) {
+		   return arpf.setNamespaceHandler(sh);
+	   }
 /**
  * When parsing a file, this returns a Locator giving the
  * position of the last XML event processed by ARP.
