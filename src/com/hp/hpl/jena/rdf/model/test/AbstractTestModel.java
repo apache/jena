@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.7 2004-06-15 14:02:16 chris-dollin Exp $
+  $Id: AbstractTestModel.java,v 1.8 2004-06-18 10:20:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -23,18 +23,15 @@ public abstract class AbstractTestModel extends ModelTestBase
     private Model model;
     
     public void setUp()
-        {
-        model = getModel();
-        }
+        { model = getModel(); }
         
     public void tearDown()
-        {
-        model.close();
-        } 
+        { model.close(); } 
        
     public void testTransactions()
         { 
-        Command cmd = null;
+        Command cmd = new Command() 
+        	{ public Object execute() { return null; } };
         if (model.supportsTransactions()) model.executeInTransaction( cmd );
         }
         
