@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.19 2003-08-11 22:08:31 der Exp $
+ * $Id: LPInterpreter.java,v 1.20 2003-08-12 09:31:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-08-11 22:08:31 $
+ * @version $Revision: 1.20 $ on $Date: 2003-08-12 09:31:56 $
  */
 public class LPInterpreter {
 
@@ -73,21 +73,35 @@ public class LPInterpreter {
     //  Constructors
 
     /**
-     * Constructor.
+     * Constructor used to construct top level calls.
      * @param engine the engine which is calling this interpreter
      * @param goal the query to be satisfied
      */
     public LPInterpreter(LPBRuleEngine engine, TriplePattern goal) {
-        this(engine, goal, engine.getRuleStore().codeFor(goal));
+        this(engine, goal, engine.getRuleStore().codeFor(goal), true);
     }
+
 
     /**
      * Constructor.
      * @param engine the engine which is calling this interpreter
      * @param goal the query to be satisfied
-     * @param clauses the set of code blocks needed to implement this goal
+     * @param isTop true if this is a top level call from the outside iterator, false means it is an
+     * internal generator call which means we don't need to insert an tabled call
      */
-    public LPInterpreter(LPBRuleEngine engine, TriplePattern goal, List clauses) {
+    public LPInterpreter(LPBRuleEngine engine, TriplePattern goal, boolean isTop) {
+        this(engine, goal, engine.getRuleStore().codeFor(goal), isTop);
+    }
+    
+    /**
+     * Constructor.
+     * @param engine the engine which is calling this interpreter
+     * @param goal the query to be satisfied
+     * @param clauses the set of code blocks needed to implement this goal
+     * @param isTop true if this is a top level call from the outside iterator, false means it is an
+     * internal generator call which means we don't need to insert an tabled call
+     */
+    public LPInterpreter(LPBRuleEngine engine, TriplePattern goal, List clauses, boolean isTop) {
         this.engine = engine;
         
         // Construct dummy top environemnt which is a call into the clauses for this goal
@@ -98,15 +112,12 @@ public class LPInterpreter {
         envFrame.pVars[2] = argVars[2] = standardize(goal.getObject());
         
         if (clauses != null && clauses.size() > 0) {
-//            if (engine.getRuleStore().isTabled(goal)) {
-//                setupTabledCall(0, 0);
-//            } else {
+            if (isTop && engine.getRuleStore().isTabled(goal)) {
+                setupTabledCall(0, 0);
+//                setupClauseCall(0, 0, clauses);
+            } else {
                 setupClauseCall(0, 0, clauses);
-//                ChoicePointFrame newChoiceFrame = new ChoicePointFrame(this, clauses);
-//                newChoiceFrame.linkTo(null);
-//                newChoiceFrame.setContinuation(0, 0);
-//                cpFrame = newChoiceFrame;
-//            }
+            }
         }
         
 //        TripleMatchFrame tmFrame = new TripleMatchFrame(this);
@@ -116,6 +127,18 @@ public class LPInterpreter {
         cpFrame = topTMFrame;
     }
 
+    /**
+     * Called by top level interpeter to set to execution context for this interpeter to be
+     * top level instead of an internal generator.
+     */
+    public void setTopInterpreter(LPInterpreterContext context) {
+        iContext = context;
+        FrameObject topChoice = topTMFrame.getLink();
+        if (topChoice instanceof ConsumerChoicePointFrame) {
+            ((ConsumerChoicePointFrame)topChoice).context = context;
+        }
+    }
+    
     //  =======================================================================
     //  Control methods
 
@@ -676,11 +699,12 @@ public class LPInterpreter {
     }
     
     /**
-     * Standardize a node by replacing any variables by new variables.
+     * Standardize a node by replacing instances of wildcard ANY by new distinct variables.
      * This is used in constructing the arguments to a top level call from a goal pattern.
+     * @param node the node to be standardized
      */
-    public Node standardize(Node node) {
-        if (node.isVariable()) {
+    private Node standardize(Node node) {
+        if (node == Node.ANY || node == Node_RuleVariable.WILD) {
             return new Node_RuleVariable(null, 0);
         } else {
             return node;

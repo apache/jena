@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.8 2003-08-11 16:25:39 der Exp $
+ * $Id: LPRuleStore.java,v 1.9 2003-08-12 09:31:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-11 16:25:39 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-12 09:31:56 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -29,7 +29,7 @@ public class LPRuleStore extends RuleStore {
     protected boolean isCompiled = false;
     
     /** A map from predicate to a list of RuleClauseCode objects for that predicate.
-     *  Uses Node_RuleVariable.ANY for wildcard predicates.
+     *  Uses Node_RuleVariable.WILD for wildcard predicates.
      */ 
     protected Map predicateToCodeMap;
     
@@ -71,7 +71,7 @@ public class LPRuleStore extends RuleStore {
     /**
      * Return an ordered list of RuleClauseCode objects to implement the given 
      * predicate.
-     * @param predicate the predicate node or Node_RuleVariable.ANY for wildcards.
+     * @param predicate the predicate node or Node_RuleVariable.WILD for wildcards.
      */
     public List codeFor(Node predicate) {
         if (!isCompiled) {
@@ -151,7 +151,7 @@ public class LPRuleStore extends RuleStore {
                 allRuleClauseCodes.add(code);
                 Node predicate = ((TriplePattern)term).getPredicate();
                 if (predicate.isVariable()) {
-                    predicate = Node_RuleVariable.ANY;
+                    predicate = Node_RuleVariable.WILD;
                 }
                 List predicateCode = (List)predicateToCodeMap.get(predicate);
                 if (predicateCode == null) {
@@ -166,13 +166,13 @@ public class LPRuleStore extends RuleStore {
         }
 
         // Now add the wild card rules into the list for each non-wild predicate)
-        List wildRules = (List) predicateToCodeMap.get(Node_RuleVariable.ANY);
+        List wildRules = (List) predicateToCodeMap.get(Node_RuleVariable.WILD);
         if (wildRules != null) {
             for (Iterator i = predicateToCodeMap.entrySet().iterator(); i.hasNext(); ) {
                 Map.Entry entry = (Map.Entry)i.next();
                 Node predicate = (Node)entry.getKey();
                 List predicateCode = (List)entry.getValue();
-                if (predicate != Node_RuleVariable.ANY) {
+                if (predicate != Node_RuleVariable.WILD) {
                     predicateCode.addAll(wildRules);
                 }
             }
@@ -181,8 +181,8 @@ public class LPRuleStore extends RuleStore {
         // Now we change the semantics of the wildcard entry in the code map table
         // to be used for any wildcard query. Doing it now enables us to easily include
         // the allRules case in the subsequent indexing stage
-        predicateToCodeMap.put(Node_RuleVariable.ANY, allRuleClauseCodes);
-        indexPredicateToCodeMap.put(Node_RuleVariable.ANY, new HashMap());
+        predicateToCodeMap.put(Node_RuleVariable.WILD, allRuleClauseCodes);
+        indexPredicateToCodeMap.put(Node_RuleVariable.WILD, new HashMap());
         
         // Now built any required two level indices
         for (Iterator i = indexPredicateToCodeMap.entrySet().iterator(); i.hasNext(); ) {
