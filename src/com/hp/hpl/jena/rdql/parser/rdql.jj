@@ -5,7 +5,7 @@
  * Author:  Andy Seaborne andy_seaborne@hp.com
  * Date:    June 2001
  *
- * (c) Copyright Hewlett-Packard Company 2001-2003
+ * (c) Copyright 2001-2003 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * See end of file for details.
  *
@@ -22,8 +22,7 @@ options
 
 PARSER_BEGIN(RDQLParser)
 /*
- *  (c) Copyright Hewlett-Packard Company 2001, 2002
- *  All rights reserved.
+ * (c) Copyright 2001-2003 Hewlett-Packard Development Company, LP
  */
 
 package com.hp.hpl.jena.rdql.parser ; 
@@ -1970,8 +1969,7 @@ void Identifier() :
 
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003
- *  All rights reserved.
+ * (c) Copyright 2001-2003 Hewlett-Packard Development Company, LP
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
