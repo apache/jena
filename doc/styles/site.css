@@ -1,168 +1,156 @@
-/* Top level CSS2 style sheet for Jena site */
+/* Jena web site style sheet */
+
+/* (c) Copyright 2003, Hewlett-Packard Development Company LP */
+/* $Id: site.css,v 1.3 2003-08-22 17:25:28 andy_seaborne Exp $ */
+
 
 body {
-    text-align:left;
-    font-family: helvetica, arial, sans-serif;
-    font-size: smaller;
-    background: #fff;
+    text-align: left;
+    font-family: verdana, helvetica, arial, sans-serif;
+    font-size:10pt ;
+    background: #DDD;
     color: black;
-    margin: 0;
+    margin: 2ex ;
+    padding:0 ;
 }
 
-/* Page sections */
-
-#title h1 {
-    background: #ffe0b0;
-    border-bottom: 2px solid #dd8080;
-    margin-bottom: 0;
+#header {
+    color:#FFFFFF ;
+    background: #215E9B ; 
+    font-size: 16pt ; 
+    font-weight: bold ;
+    text-align: center ;
     padding-top: 5px;
     padding-bottom: 5px;
 }
 
-#main {
-    margin-top: 0;
-    height: 350px;
-}
-
-#content {
-    margin-left: 10px;
-}
-
 #footer {
-    border-top: 2px solid #dd8080;
-    background: #ffe0b0;
-    position: relative;
-    font-size: 80%;
-    padding: 3px;
-    width: 100%;
-    text-align: center;
+	color:#FFFFFF ;
+	background: #215E9B ;  
+    font-size: 12pt ; 
+    font-weight: bold ;
+    text-align: center ;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    
 }
 
-#footerC {
+#logos      { margin: 2ex ; }
+#logos img  { vertical-align: top; border: 0 ; }
+
+.left    { float: left }
+.right   { float: right }
+.center: { text-align: center ; }
+
+#main { margin:0 ; padding: 0; background: white ;}
+
+#content { font-size:10pt ;
+           margin-top: 2ex ;
+           margin-bottom: 2ex ;} 
+
+/* Generic components for content div */
+
+ul { list-style-type: disc }
+/* Force this - IE seems to make it same as user font size otherwise */
+li { line-height:14 pt ; }
+
+
+#content p { margin-left: 2ex ; margin-top: 1ex ; margin-bottom: 1ex }
+
+
+#content h1 {
+    font-size: 12pt;
+    font-weight: bold;
+    color:#000;
+    background: #CADFF4;
+	/* background:#eeeeff; */
+    padding-left: 1ex ;
+    margin-top: 3ex ;
+    margin-bottom: 1ex ;
 }
 
-#footerL {
-    position: absolute;
-    text-align: left;
-    left: 2px;
+#content h2 {
+    font-size: 10pt ;
+    font-weight: bold;
+    color: #003399;
+    background: #CADFF4;
+	/* background:#eeeeff; */
+    padding-left: 1ex ;
+    margin-bottom:5px;
 }
 
-#footerR {
-    position: absolute;
-    text-align: right;
-    right: 2px;
+#content h3, h4, h5 {
+    font-size: 10pt ;
+    font-weight: italic;
+    margin-bottom:3px;
+	padding-left: 1ex ;
 }
-
-/* breadcrumbs trail */
-
-#trail {
-    border-bottom: 1px dotted #ffe0b0;
-    text-align: right;
-    font-size: 90%;
-    text-decoration:none;
-    font-weight:normal;
-    padding-right: 10px;
-}
-
-#trail a:link {
-    text-decoration:none;
-    color: black;
-    background: white;
-}
-
-#trail a:active {
-    text-decoration:none;
-    color:white;
-    background: #dd8080;
-}
-
-#trail a:visited {
-    text-decoration:none;
-}
-
-#trail a:hover {
-    color:white;
-    text-decoration:none;
-    background: #dd8080;
-}
-
 
 /* LHS navigation menu */
 
 #leftnav {
-    float: left;
+    /*float: left;*/
+    font-size: 9pt ;
     color: black;
     background: white;
-    padding-right: 4px;
-    padding-left: 0;
-    border-right: 1px dotted #dd8080;
-    width: 150px;
     position: relative;
     font-weight:normal;
-    height: 105%;
 }
 
-#leftnav p {
-    margin-left: 1.2em;
-    text-indent: -0.9em;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
+/*#leftnav .item{*/
+.item {
+    margin-top: 1ex ;
+    margin-botton: 1ex ;
+    padding-left: 2ex;
+    padding-right: 1ex;
 }
 
-#leftnav .spacer {
-    margin-bottom: 1em;
-}
-
-#leftnav img {
-    padding-top: 0px;
-    margin-left: 36px;
-    margin-bottom: 10px;
-}
-
-#leftnav a:link {
-    text-decoration:none;
-}
-
-#leftnav a:active {
-    text-decoration:none;
-    color:white;
-    background: #dd8080;
-}
-
-#leftnav a:visited {
-    text-decoration:none;
-}
-
-#leftnav a:hover {
-    text-decoration:none;
-    color:white;
-    background: #dd8080;
-}
-
-/* Generic components */
-
-h1 {
-    font-size: 135%;
+#leftnav .grouptitle {
+    background: #CADFF4;
+    color: black ;
+    font-size: 10pt ; 
     font-weight: bold;
-    color:#000;
-    background:#eeeeff;
-    padding: 1px;
-    text-align:center;
+    padding-left: 1ex ;
+    padding-right: 1ex ;
+    text-indent: 0;
 }
 
-h2 {
-    font-size: 110%;
-    font-weight: bold;
-    color: #003399;
-    background:#eeeeff;
-    margin-bottom:5px;
+.spacer { font-size: 10pt ; padding: 0 ; margin: 0 ;}
+
+#leftnav img { text-align: center ; margin: 1ex ; }
+
+
+/* breadcrumbs trail */
+#trail {
+	border-bottom: 1px solid #DDD;
+    text-align: right;
+    font-size: 9pt;
+    text-decoration:none;
+    font-weight:normal;
+    padding-right: 2ex;
+    padding-top: 0.25ex ;
+    padding-bottom: 0.25ex ;
 }
 
-h3, h4, h5 {
-    font-size: 100%;
-    font-weight: bold;
-    margin-bottom:3px;
-}
+#trail a:link    { text-decoration:none; color:black; background: white; }
+#trail a:active  { text-decoration:none; color:white; background: #039; }
+#trail a:visited { text-decoration:none; color:black; background: white; }
+#trail a:hover   { text-decoration:none; color:white; background: #039; }
+
+/* Links */
+
+
+a:active  { text-decoration:none; color:white; background: #039; }
+a:hover   { text-decoration:none; color:white; background: #039; }
+
+/* Table - for positioning */
+
+table   { margin: 0 ; padding:0 ;
+		  border-collapse: collapse;
+		}
+tr      { margin: 0 ; padding:0 ; }
+td      { margin: 0 ; padding:0 ;
+          text-align:left ; vertical-align: top ; 
+        }
+
 

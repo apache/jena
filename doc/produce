@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Make the site from template and content.
+
+MARK=.content.html
+FILES="$(echo *$MARK)"
+
+if [ "$FILES" = "*$MARK" ]
+then
+    echo "No content files" 1>&2
+    exit 1
+    fi
+
+for f in $FILES
+do
+  html="${f%$MARK}".html
+  merge $f > $html
+  done

@@ -1,0 +1,74 @@
+#!/bin/bash
+# Export the web site to jena.sourceforge.net
+# Assumes you have ssh set up correctly.
+
+HOST="shell.sourceforge.net"
+LOC="/home/groups/j/je/jena/htdocs"
+
+PAGES=$(cat <<EOF
+documentation.html
+downloads.html
+index.html
+license.html
+resources.html
+support.html
+
+migrate1-2.html
+reify-api.html
+reify-spi.html
+jena2-api-changes.html
+enh-node-howto.html
+EOF
+)
+
+DIRS=$(cat <<EOF
+DB/
+FAQ/
+IO/
+RDQL/
+examples/
+how-to/
+inference/
+ontology/
+tutorial/
+images/
+styles/
+javadoc/
+EOF
+)
+
+## STYLE=$(cat <<EOF
+## styles/site.css
+## styles/usermanual.css
+## styles/tutorial.css
+## EOF
+## )
+## 
+## #images/JenaLogo.png
+## IMAGES=$(cat <<EOF
+## images/JenaLogoSimple.png
+## images/rdf_w3c_icon.gif
+## images/sflogo-type1.png
+## EOF
+## )
+
+# Copy to a release ara, them copy all to SourceForge
+
+cp $PAGES   ~/WWW/Jena/WebSite
+## cp $STYLE   ~/WWW/Jena/WebSite/styles
+## cp $IMAGES  ~/WWW/Jena/WebSite/images
+
+# Need to skip CVS directories ...
+## cp -R $DIRS ~/WWW/Jena/WebSite
+## 
+## find ~/WWW/Jena/WebSite -name CVS | xargs rm -rf
+
+## ##echo $PAGES
+## scp $PAGES "$HOST/$LOC"
+## 
+## ## echo $STYLE
+## scp $STYLE "$HOST/${LOC}/styles"
+## 
+## ## # Fix permissions?
+## ## ssh $HOST "find /home/groups/j/je/jena/htdocs -type d | xargs chmod +rx"
+## ## ssh $HOST "find /home/groups/j/je/jena/htdocs -type f | xargs chmod +r"

@@ -1,0 +1,152 @@
+#!/bin/perl
+
+# $Id: merge,v 1.1 2003-08-22 17:25:26 andy_seaborne Exp $
+# Take a template file and a file with content and merge them.
+# Content is defined as the stuff between certain <div id=""> markers
+# NB The id=, not class=
+
+$template = "template.html" ;
+$target = undef ;
+$prog = $0 ;
+$extract = 0 ;
+
+$usage = "$prog [--extract] [--template FILE] FILE" ;
+
+
+if ( $#ARGV == -1 )
+{
+    print STDERR $usage, "\n" ;
+    exit 0 ;
+}
+
+if ( $#ARGV == 0 && ( ( $ARGV[0] eq '-h' ) || ( $ARGV[0] eq '--help' ) ) )
+{
+    print STDERR $usage, "\n" ;
+    exit 0 ;
+}
+		      
+if ( $#ARGV >= 0 && ( $ARGV[0] eq '--extract' ) )
+{
+    $extract = 1 ;
+    shift @ARGV ;
+}
+
+if ( $#ARGV == 0 )
+{
+    $target = $ARGV[0] ;
+}
+elsif ( ( $#ARGV == 2 ) && ( $ARGV[0] eq '--template' ) )
+{
+    $template = $ARGV[1] ;
+    $target = $ARGV[2] ;
+}
+else
+{
+    print STDERR $usage, "\n" ;
+    exit 1 ;
+}
+
+# Read whole files.
+undef $/ ;
+open(TARGET, "<$target") || die ;
+binmode TARGET ;
+$_ = <TARGET> ;
+close(TARGET) ;
+
+## ---- Extract the content
+
+@sections =  ("header", "footer", "trail", "content") ;
+%sections = () ;
+
+for $s (@sections)
+{
+    if ( m!<div\s*id="${s}"\s*>(.*?)</div>!s )
+    {
+	my $t = $& ;
+	$sections{$s} = $t ;
+    }
+    else
+    {
+	#print STDERR "No section '$section'\n" ;
+	;
+    }
+}
+# And the HTML title.
+$title='' ;
+if ( m!<title>(.*?)</title>! )
+{
+    $title = $& ;
+}
+
+# And meta data
+@meta = m!\s*<meta[^>]*>\s*!sg  ;
+
+if ( $extract )
+{
+    for $m (@meta)
+    {
+	print "Meta: $m\n"
+	}
+    
+    # Debug:
+    for $s (@sections)
+    {
+	print "-----------------------------------------------------------\n" ;
+	print "Section:: $s\n" ;
+	print $sections{$s} ;
+	print "\n" if ( $sections{$s} !~ /\n$/s ) ;
+	print "-----------------------------------------------------------\n" ;
+    }
+    print "Title:\n$title\n" ;
+    print "\n" ;
+    print "Meta data:\n" ;
+    print @meta,"\n" ;
+    exit ;
+}
+
+
+## ---- Substitute
+
+open(TEMPLATE,"<$template") || die ;
+binmode TEMPLATE ;
+$_ = <TEMPLATE> ;
+close(TEMPLATE) ;
+
+# Now substitute into template
+
+for $s (@sections)
+{
+    $t = $sections{$s} ;
+    if ( $t eq '' )
+    {
+	# print STDERR "No section '$s' - skipped\n" ;
+	next ;
+    }
+    s!<div\s*id="${s}"\s*\>.*?</div>!$t!s ;
+}
+
+# Title
+if ( $title ne '' )
+{
+    s!<title>(.*?)</title>!$title! ;
+}
+
+#Meta data
+#Replace the first one with a marker.
+
+s/\s*<meta[^>]*>\s*/META/ ;
+
+# Remove all others
+s/\s*<meta[^>]*>//g ;
+
+# Insert the new stuff
+$meta = join("",@meta) ;
+$meta =~ s/ *$// ;
+s/META/$meta/ ; 
+
+# ---- Write out
+
+binmode STDOUT ;
+# Fix up ... UNIX newlines
+s/\r//g ;
+print ;
