@@ -1,7 +1,28 @@
 Release Notes
 =============
 
-Post Jena 2.1 change list
+Post 2.2beta change list
+
+  FileGraph and ModelMakerImpl
+      o ModelMakerImpl now implements [the obsolescent] createModelOver
+        using maker.openModel( ... ) rather than .createModel( ... ). This
+        fixes a problem with existing files in the directory not being
+        consulted for their contents.
+
+      o FileGraphs now (weakly) support (non-nested) transactions, using
+        checkpoint files to record their state at a begin() and restoring
+        that state at an abort(). A commit() writes the current state to
+        the backing file and deletes the checkpoint.
+
+  InfModelBase (hence, any inference model)
+      o Inference models now (weakly) support transactions; they delegate them to
+        their base model. Additionally, an abort() will do a rebind().
+  
+  JMS & ModelSpec
+      o Added new modelName property to the vocabulary and schema, ready
+        to properly support named models as well as model makers.
+
+Post Jena 2.1 change list [up to 2.2beta]
 
   RDF API
       o Fixed bug in typed literals support which caused isValidLiteral tests
