@@ -5,7 +5,7 @@ Jena 2.1-dev-2:
   Developers' release to include recent bug fixes (notably
   handling of typed literals in validation rules).
   Do not use this version unless you need one or more bug
-  not in Jena 2.0.
+  fixes not in Jena 2.0.
   
 Jena 2.1-dev-1:
   This is a developers' release, particularly
