@@ -9,7 +9,7 @@
 ]>
 
 <rdf:RDF xmlns:rdf="&rdf;" xmlns:rdfs="&rdfs;" xmlns:xsd="&xsd;" xmlns:owl="&owl;"
-         xml:base="urn:x-hp:eg/" xmlns="&eg;">
+         xml:base="urn:x-hp:eg/" xmlns:eg="&eg;" xmlns="&eg;">
 
   <owl:Class rdf:about="&eg;Computer">
       <rdfs:subClassOf>
