@@ -1,27 +1,27 @@
-ReleaseNotes
-============
+Release Notes
+=============
 
 Jena2-pre3 (May 2003)
 
-Thrid preview release of Jena2.
+Third preview release of Jena2.
 
 It is a preview release, not intended for serious development.  Developers
 are encouraged to try it out and send feedback to jena-dev@yahoogroups.com.
 
 This release does adds the first release of the relational database-backed
 persistence for Jena2. Jena1 database models are not compatible with Jena2
-databse models.  See <Jena>/doc/DB/ for further detauils.
+database models.  See <Jena>/doc/DB/ for further details.
 
 
 Database:
-See the directory <Jena>/doc/DB/ for prelimiinary documentation.
+See the directory <Jena>/doc/DB/ for preliminary documentation.
 
 + Bulk update interface supported (performance impact
   not yet evaluated).
 + Reification storage optimized to avoid quad bloat.
 + Table layout changed to use a "denormalized" schema
   for faster response time (but uses more space).
-+ Configuration options specifed as RDF statements;
++ Configuration options specified as RDF statements;
   config files (e.g., Mysql.config) no longer used.
 + MySQL supported. Oracle, Postgresql, BDB coming soon.
 
@@ -34,6 +34,11 @@ See the directory <Jena>/doc/DB/ for prelimiinary documentation.
   the database may be left in an inconsistent
   state.
 
+ModelFactory
++ The ModelFactory has been improved to make it easier to build
+  ontology models with different reasonless. It is also now possible
+  to use the ontology model API with OWL or DAML triples stored
+  in the new persistent storage models.
 
 Reification
 + reification Model API unchanged since preview 2
@@ -58,14 +63,14 @@ OWL Syntax Checker: pre-alpha
      If [Level] is correct then this option has no effect.
 
 Tools
-+ The schemagen tool (jena.scehamgen)has been extensively updated.
++ The schemagen tool (jena.scehamgen) has been extensively updated.
   It now RDFS, OWL and DAML+OIL schemas into Java vocabulary classes.
   New capabilities are documented in a howto in doc/tools/. 
   The old schemagen has been renamed schemagen_orig.
 
 Vocabularies:
-+ Dublin Core vocabulary updated to currnet version
-+ Added vocabulary classes for DV terms and DC types
++ Dublin Core vocabulary updated to current version
++ Added vocabulary classes for DC terms and DC types
 + Class DC is the current (1.1) Dublin Core - Old DC available via class DC_10
 
 Misc
