@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.6 2005-03-08 13:12:47 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.7 2005-03-18 18:56:38 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -56,21 +56,29 @@ public class LocationMapper
         {
             theMapper = new LocationMapper() ;
             if ( getGlobalConfigPath() != null )
-            theMapper.init(getGlobalConfigPath(), false) ;
+            theMapper.initFromPath(getGlobalConfigPath(), false) ;
         }
         return theMapper ;
     }
 
-    /** Create a LocationMApper with no mapping yet */
+    /** Create a LocationMapper with no mapping yet */
     public LocationMapper() { }
+    
+    /** Create a LocationMapper from an existing model
+     * @see com.hp.hpl.jena.vocabulary.LocationMappingVocab;
+     */
+    public LocationMapper(Model model)
+    {
+        processConfig(model) ;
+    }
     
     /** Create a LocationMapper from a config file */
     public LocationMapper(String config)
     {
-        init(config, true) ;
+        initFromPath(config, true) ;
     }
     
-    private void init(String configPath, boolean configMustExist)
+    private void initFromPath(String configPath, boolean configMustExist)
     {
         if ( configPath == null )
         {
@@ -162,6 +170,11 @@ public class LocationMapper
     {
         altPrefixes.put(uriPrefix, altPrefix) ;
     }
+
+    /** Iterate over all the entries registered */ 
+    public Iterator listAltEntries()  { return altLocations.keySet().iterator() ; } 
+    /** Iterate over all the prefixes registered */ 
+    public Iterator listAltPrefixes() { return altPrefixes.keySet().iterator() ; } 
     
     public void removeAltEntry(String uri)
     {
@@ -259,38 +272,6 @@ public class LocationMapper
             }
         }
     }
-    
-    
-    // This code has a list of mappings  
-//    private void processConfigList(Model m)
-//    {
-//        StmtIterator mappings =
-//            m.listStatements(null, LocationMappingVocab.mapping, (RDFNode)null) ;
-//
-//        for (; mappings.hasNext();)
-//        {
-//            Statement s = mappings.nextStatement() ;
-//            Resource listItem =  s.getResource() ;
-//            
-//            for (; !listItem.equals(RDF.nil);)
-//            {
-//                Resource r = listItem.getRequiredProperty(RDF.first).getResource();
-//                if ( r.hasProperty(LocationMappingVocab.name) )
-//                {
-//                    String name = r.getRequiredProperty(LocationMappingVocab.name).getString() ;
-//                    String altName = r.getRequiredProperty(LocationMappingVocab.altName).getString() ;
-//                    addAltEntry(name, altName) ;
-//                }
-//                if ( r.hasProperty(LocationMappingVocab.prefix) )
-//                {
-//                    String prefix = r.getRequiredProperty(LocationMappingVocab.prefix).getString() ;
-//                    String altPrefix = r.getRequiredProperty(LocationMappingVocab.altPrefix).getString() ;
-//                    addAltEntry(prefix, altPrefix) ;
-//                }
-//                listItem = listItem.getRequiredProperty(RDF.rest).getResource();
-//            }
-//        }
-//    }
 }
 
 /*
