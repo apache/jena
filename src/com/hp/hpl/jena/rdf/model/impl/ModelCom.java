@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2003-04-08 14:14:59 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2003-04-10 08:59:48 $'
  */
 
 public class ModelCom extends EnhGraph
@@ -289,7 +289,7 @@ public class ModelCom extends EnhGraph
     public Model remove(Model m) throws RDFException
         {
         StmtIterator iter = m.listStatements();
-        if (m.getGraph().mightContain( this.getGraph() ))
+        if (m.getGraph().dependsOn( this.getGraph() ))
             {
             ArrayList X = new ArrayList();
             while (iter.hasNext()) X.add( iter.nextStatement() );

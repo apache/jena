@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.5 2003-04-08 14:54:14 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.6 2003-04-10 08:58:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.iterator.*;
 
 public abstract class GraphBase implements Graph {
 
-	public boolean mightContain(Graph other) {
+	public boolean dependsOn(Graph other) {
 		return this == other;
 	}
 

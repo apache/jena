@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.2 2003-01-28 13:03:17 chris-dollin Exp $
+  $Id: Graph.java,v 1.3 2003-04-10 08:58:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -16,8 +16,15 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  */
 public interface Graph  {
 	
-    /** true if we think we might have other as a component somewhere */
-    boolean mightContain( Graph other );
+    /** 
+        true if this graph's content depends on the other graph. May be
+        pessimistic (ie return true if it's not sure). Typically true when a
+        graph is a composition of other graphs, eg union.
+        
+         @param other the graph this graph may depend on
+         @return false if this does not depend on other 
+    */
+    boolean dependsOn( Graph other );
     
     /** returns this Graph's query handler */
     QueryHandler queryHandler();

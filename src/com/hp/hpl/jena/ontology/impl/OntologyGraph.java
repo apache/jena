@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Apr-2003
  * Filename           $RCSfile: OntologyGraph.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 14:29:58 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-10 08:59:48 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyGraph.java,v 1.2 2003-04-08 14:29:58 ian_dickinson Exp $
+ * @version CVS $Id: OntologyGraph.java,v 1.3 2003-04-10 08:59:48 chris-dollin Exp $
  */
 public class OntologyGraph
     implements Graph 
@@ -73,8 +73,8 @@ public class OntologyGraph
     //////////////////////////////////
 
     /** Delegated to the union component */
-    public boolean mightContain( Graph other ) {
-        return m_unionGraph.mightContain( other );
+    public boolean dependsOn( Graph other ) {
+        return m_unionGraph.dependsOn( other );
     }
     
     /** Delegated to the inf graph, or the union graoh if null */

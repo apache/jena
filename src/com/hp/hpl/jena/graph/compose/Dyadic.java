@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Dyadic.java,v 1.2 2003-03-04 17:54:59 ian_dickinson Exp $
+  $Id: Dyadic.java,v 1.3 2003-04-10 08:59:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -34,9 +34,9 @@ public abstract class Dyadic extends CompositionBase
     	R.close();
     	}
  
-    public boolean mightContain( Graph other )
+    public boolean dependsOn( Graph other )
         {
-        return other == this || L.mightContain( other ) || R.mightContain( other );
+        return other == this || L.dependsOn( other ) || R.dependsOn( other );
         }
  				
     public Union union( Graph X )

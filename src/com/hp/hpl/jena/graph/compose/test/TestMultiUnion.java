@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestMultiUnion.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:17:20 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-10 08:59:46 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestMultiUnion.java,v 1.2 2003-03-12 17:17:20 ian_dickinson Exp $
+ * @version CVS $Id: TestMultiUnion.java,v 1.3 2003-04-10 08:59:46 chris-dollin Exp $
  */
 public class TestMultiUnion
     extends GraphTestBase
@@ -78,7 +78,7 @@ public class TestMultiUnion
         Graph g0 = graphWith( "x p y");
         
         assertEquals( "Empty model should have size zero", 0, m.size() );
-        assertFalse( "Empty model should not contain another graph", m.mightContain( g0 ) );
+        assertFalse( "Empty model should not contain another graph", m.dependsOn( g0 ) );
     }
     
 
