@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: JenaParameters.java,v 1.2 2003-08-27 13:07:30 andy_seaborne Exp $
+ * $Id: JenaParameters.java,v 1.3 2003-11-08 15:53:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.shared.impl;
 
@@ -20,7 +20,7 @@ package com.hp.hpl.jena.shared.impl;
  * moved to being model-specific rather than global.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:07:30 $
+ * @version $Revision: 1.3 $ on $Date: 2003-11-08 15:53:56 $
  */
 public class JenaParameters {
     
@@ -71,6 +71,13 @@ public class JenaParameters {
       */
      public static boolean enableSilentAcceptanceOfUnknownDatatypes = true;
 
+    /**
+     * Set this flag to true to switch on checking of surrounding whitespace
+     * in non-string XSD numeric types. In the false (default) setting then
+     * leading and trailing white space is silently trimmed when parsing an
+     * XSD numberic typed literal.
+     */
+    public static boolean enableWhitespaceCheckingOfTypedLiterals = false;
 }
 
 

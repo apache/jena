@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.11 2003-09-09 12:03:15 der Exp $
+  $Id: LiteralLabel.java,v 1.12 2003-11-08 15:53:33 der Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -317,7 +317,7 @@ final public class LiteralLabel {
 	public boolean sameValueAs(LiteralLabel other) {
 		if (other == null)
 			return false;
-		if (!wellformed) {
+		if (!wellformed || !other.wellformed) {
 			if (!other.wellformed) {
 				// Need to support this comparison in order for the WG tests on ill formed
 				// literals to be testable using isIsomorphic to
