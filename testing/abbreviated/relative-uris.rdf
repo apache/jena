@@ -1,4 +1,4 @@
-<!-- $Id: relative-uris.rdf,v 1.1 2003-03-29 09:46:09 jeremy_carroll Exp $ -->
+<!-- $Id: relative-uris.rdf,v 1.2 2003-03-29 21:33:28 jeremy_carroll Exp $ -->
 
 
 <rdf:RDF
@@ -14,6 +14,7 @@ http://www.example.org/a/b/C/D
 http://www.example.org/A/B#foo/
 http://www.example.org/a/b/c/d/X#bar
 http://example.com/A
+http://www.example.org/a/b/c/d/z?x=a
 -->
 
 <rdf:Description rdf:about="e/f/g/">

@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003    
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.4 2003-03-29 09:42:24 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.5 2003-03-29 21:32:24 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -10,6 +10,7 @@ package com.hp.hpl.jena.xmloutput.test;
 import com.hp.hpl.jena.xmloutput.BaseXMLWriter;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.rdf.arp.URI;
 
@@ -20,14 +21,14 @@ import junit.framework.TestSuite;
 import org.apache.oro.text.awk.AwkCompiler;
 import org.apache.oro.text.awk.AwkMatcher;
 import org.apache.oro.text.regex.MalformedPatternException;
-import java.util.Properties;
+import java.util.*;
 
 import java.io.*;
 import com.hp.hpl.jena.util.TestLogger;
 
 /** 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2003-03-29 09:42:24 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-03-29 21:32:24 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -51,16 +52,18 @@ public class TestXMLFeatures extends TestCase {
 		return new TestSuite(TestXMLFeatures.class);
 	}
 
-    public void testBug696057() throws IOException {
-        File f = File.createTempFile("jena",".rdf");
-        String fileName = f.getAbsolutePath();
-        Model m = new ModelMem();
-        m.read(new FileInputStream("testing/wg/rdfms-syntax-incomplete/test001.rdf"), "");
-        m.write(new FileWriter( fileName), lang );
-        Model m1 = new ModelMem();
-        m1.read(new FileInputStream(fileName), "");
-        assertTrue("Use of FileWriter",m.isIsomorphicWith(m1));
-    }
+	public void testBug696057() throws IOException {
+		File f = File.createTempFile("jena", ".rdf");
+		String fileName = f.getAbsolutePath();
+		Model m = new ModelMem();
+		m.read(
+			new FileInputStream("testing/wg/rdfms-syntax-incomplete/test001.rdf"),
+			"");
+		m.write(new FileWriter(fileName), lang);
+		Model m1 = new ModelMem();
+		m1.read(new FileInputStream(fileName), "");
+		assertTrue("Use of FileWriter", m.isIsomorphicWith(m1));
+	}
 	public void testXMLBase() throws IOException, MalformedPatternException {
 		check(file1, //any will do
 		"xml:base=['\"]" + base2 + "['\"]", new Change() {
@@ -96,26 +99,26 @@ public class TestXMLFeatures extends TestCase {
 		check(filename, null, regexPresent, regexAbsent, false, code);
 	}
 
-    private void check(
-        String filename,
-        String encoding,
-        String regexPresent,
-        String regexAbsent,
-        Change code)
-    throws IOException, MalformedPatternException {
-      check(filename,encoding,regexPresent,regexAbsent,false,code);
-    }
 	private void check(
 		String filename,
 		String encoding,
 		String regexPresent,
 		String regexAbsent,
-        boolean errorExpected,
 		Change code)
 		throws IOException, MalformedPatternException {
-            TestLogger tl = new TestLogger(BaseXMLWriter.class);
-            boolean errorsFound;
-        Model m = new ModelMem();
+		check(filename, encoding, regexPresent, regexAbsent, false, code);
+	}
+	private void check(
+		String filename,
+		String encoding,
+		String regexPresent,
+		String regexAbsent,
+		boolean errorExpected,
+		Change code)
+		throws IOException, MalformedPatternException {
+		TestLogger tl = new TestLogger(BaseXMLWriter.class);
+		boolean errorsFound;
+		Model m = new ModelMem();
 		m.read(filename);
 		Writer sw;
 		ByteArrayOutputStream bos = null;
@@ -151,7 +154,7 @@ public class TestXMLFeatures extends TestCase {
 					!matcher.contains(contents, awk.compile(regexAbsent)));
 			contents = null;
 		} finally {
-            errorsFound = !tl.end();
+			errorsFound = !tl.end();
 			System.setProperties(p);
 			if (contents != null) {
 				System.err.println("===================");
@@ -161,8 +164,8 @@ public class TestXMLFeatures extends TestCase {
 				System.err.println("===================");
 			}
 		}
-        assertEquals("Errors (not) detected.",errorExpected,errorsFound);
-        
+		assertEquals("Errors (not) detected.", errorExpected, errorsFound);
+
 	}
 
 	void doBadPropTest(String lang) throws IOException {
@@ -245,7 +248,7 @@ public class TestXMLFeatures extends TestCase {
 	public void testBadPrefixNamespace()
 		throws IOException, MalformedPatternException {
 		// Trying to set the prefix should generate a warning.
-    	check(file1, null, null, "xmlns:3", true, new Change() {
+		check(file1, null, null, "xmlns:3", true, new Change() {
 			public void code(RDFWriter writer) {
 				writer.setNsPrefix("3", "http://example.org/#");
 			}
@@ -417,16 +420,176 @@ public class TestXMLFeatures extends TestCase {
 		});
 	}
 
-   public void testRelativeAPI() {
-       RDFWriter w = new ModelMem().getWriter(lang);
-       String old = (String)w.setProperty("relativeURIs","");
-       assertEquals("default value check",old,"same-document, absolute, relative, parent");
-       w.setProperty("relativeURIs","network, grandparent,relative,  ");
-       w.setProperty("relativeURIs","  parent, same-document, network, parent, absolute ");
-       TestLogger tl = new TestLogger(URI.class);
-        w.setProperty("relativeURIs", "foo"); // will get warning
-      assertTrue("A warning should have been generated.",!tl.end());      
-   }
+	public void testRelativeAPI() {
+		RDFWriter w = new ModelMem().getWriter(lang);
+		String old = (String) w.setProperty("relativeURIs", "");
+		assertEquals(
+			"default value check",
+			old,
+			"same-document, absolute, relative, parent");
+		w.setProperty("relativeURIs", "network, grandparent,relative,  ");
+		w.setProperty(
+			"relativeURIs",
+			"  parent, same-document, network, parent, absolute ");
+		TestLogger tl = new TestLogger(URI.class);
+		w.setProperty("relativeURIs", "foo"); // will get warning
+		assertTrue("A warning should have been generated.", !tl.end());
+	}
+	private void relative(
+		String relativeParam,
+		String base,
+		Collection regexesPresent,
+		Collection regexesAbsent)
+		throws IOException, MalformedPatternException {
+
+		Model m = new ModelMem();
+		m.read("file:testing/abbreviated/relative-uris.rdf");
+
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		RDFWriter writer = m.getWriter(lang);
+		writer.setProperty("relativeURIs", relativeParam);
+		writer.write(m, bos, base);
+		bos.close();
+
+		String contents = bos.toString("UTF8");
+		boolean errorsFound;
+		try {
+			Model m2 = new ModelMem();
+			m2.read(new StringReader(contents), base);
+			assertTrue(m.isIsomorphicWith(m2));
+			Iterator it = regexesPresent.iterator();
+			while (it.hasNext()) {
+				String regexPresent = (String) it.next();
+				assertTrue(
+					"Looking for /" + regexPresent + "/",
+					matcher.contains(
+						contents,
+						awk.compile(
+							Util.substituteStandardEntities(regexPresent))));
+			}
+			it = regexesAbsent.iterator();
+			while (it.hasNext()) {
+				String regexAbsent = (String) it.next();
+				assertTrue(
+					"Looking for (not) /" + regexAbsent + "/",
+					!matcher.contains(
+						contents,
+						awk.compile(
+							"[\"']" +
+                            Util.substituteStandardEntities(regexAbsent)
+                + "[\"']" )));
+			}
+			contents = null;
+		} finally {
+			if (contents != null) {
+				System.err.println("===================");
+				System.err.println("Offending content - " + toString());
+				System.err.println("===================");
+				System.err.println(contents);
+				System.err.println("===================");
+			}
+		}
+	}
+    static String rData1[][] = {
+    // http://www.example.org/a/b/c/d/
+     { "", "http://www.example.org/a/b/c/d/", "http://www.example.org/a/b/c/d/e/f/g/", "http://www.example.org/a/b/C/D", "http://www.example.org/A/B#foo/", "http://www.example.org/a/b/c/d/X#bar", "http://example.com/A", "http://www.example.org/a/b/c/d/z[?]x=a", },
+     { "same-document", "", null, null, null, null, null, null, },
+     { "absolute", "/a/b/c/d/", "/a/b/c/d/e/f/g/", "/a/b/C/D", "/A/B#foo/", "/a/b/c/d/X#bar", null, "/a/b/c/d/z[?]x=a", },
+     { "relative", "[.]", "e/f/g/", null, null, "X#bar", null, "z[?]x=a", },
+     { "parent", "[.][.]", "[.][.]/e/f/g/", null, null, "[.][.]/X#bar", null, "[.][.]/z[?]x=a", },
+     { "network", "//www.example.org/a/b/c/d/", "//www.example.org/a/b/c/d/e/f/g/", "//www.example.org/a/b/C/D", "//www.example.org/A/B#foo/", "//www.example.org/a/b/c/d/X#bar", "//example.com/A", "//www.example.org/a/b/c/d/z[?]x=a", },
+     { "grandparent", "[.][.]/[.][.]", "[.][.]/[.][.]/e/f/g/", null, null, "[.][.]/[.][.]/X#bar", null, "[.][.]/[.][.]/z[?]x=a", },
+    };
+    static String rData2[][] = {
+
+    // http://www.example.org/a/b/c/d
+     { "", "http://www.example.org/a/b/c/d/", "http://www.example.org/a/b/c/d/e/f/g/", "http://www.example.org/a/b/C/D", "http://www.example.org/A/B#foo/", "http://www.example.org/a/b/c/d/X#bar", "http://example.com/A", "http://www.example.org/a/b/c/d/z[?]x=a", },
+     { "same-document", null, null, null, null, null, null, null, },
+     { "absolute", "/a/b/c/d/", "/a/b/c/d/e/f/g/", "/a/b/C/D", "/A/B#foo/", "/a/b/c/d/X#bar", null, "/a/b/c/d/z[?]x=a", },
+     { "relative", "d/", "d/e/f/g/", null, null, "d/X#bar", null, "d/z[?]x=a", },
+     { "parent", "[.][.]/d/", "[.][.]/d/e/f/g/", null, null, "[.][.]/d/X#bar", null, "[.][.]/d/z[?]x=a", },
+     { "network", "//www.example.org/a/b/c/d/", "//www.example.org/a/b/c/d/e/f/g/", "//www.example.org/a/b/C/D", "//www.example.org/A/B#foo/", "//www.example.org/a/b/c/d/X#bar", "//example.com/A", "//www.example.org/a/b/c/d/z[?]x=a", },
+     { "grandparent", "[.][.]/[.][.]/d/", "[.][.]/[.][.]/d/e/f/g/", null, null, "[.][.]/[.][.]/d/X#bar", null, "[.][.]/[.][.]/d/z[?]x=a", },
+        };
+        static String rData3[][] = {
+    // http://www.example.org/A/B#
+     { "", "http://www.example.org/a/b/c/d/", "http://www.example.org/a/b/c/d/e/f/g/", "http://www.example.org/a/b/C/D", "http://www.example.org/A/B#foo/", "http://www.example.org/a/b/c/d/X#bar", "http://example.com/A", "http://www.example.org/a/b/c/d/z[?]x=a", },
+     { "same-document", null, null, null, "#foo/", null, null, null, },
+     { "absolute", "/a/b/c/d/", "/a/b/c/d/e/f/g/", "/a/b/C/D", "/A/B#foo/", "/a/b/c/d/X#bar", null, "/a/b/c/d/z[?]x=a", },
+     { "relative", null, null, null, "B#foo/", null, null, null, },
+     { "parent", null, null, null, "[.][.]/B#foo/", null, null, null, },
+     { "network", "//www.example.org/a/b/c/d/", "//www.example.org/a/b/c/d/e/f/g/", "//www.example.org/a/b/C/D", "//www.example.org/A/B#foo/", "//www.example.org/a/b/c/d/X#bar", "//example.com/A", "//www.example.org/a/b/c/d/z[?]x=a", },
+     { "grandparent", null, null, null, "[.][.]/[.][.]/B#foo/", null, null, null, },
+            };
+    private void relative(int i, String base, String d[][]) 
+         throws IOException, MalformedPatternException{
+        Set in = new HashSet();
+        Set out = new HashSet();
+        for (int j=1;j<d[i].length;j++){
+            
+            in.add(d[i][j]==null?d[0][j]:d[i][j]);
+            if ( i != 0 && d[i][j] != null )
+             out.add(d[0][j]);
+        }
+       // System.out.println(base + "["+i+"]");
+        relative(
+                d[i][0],
+                base,
+                in,
+                out);
+    
+    }
+    
+    public void testRelative() throws Exception {
+        for (int i=0; i<4; i++) {
+            relative(i, "http://www.example.org/a/b/c/d/", rData1);
+            relative(i, "http://www.example.org/a/b/c/d", rData2);
+            relative(i, "http://www.example.org/A/B#", rData3);
+        }
+    }
+	private static String uris[] =
+		{
+			"http://www.example.org/a/b/c/d/",
+			"http://www.example.org/a/b/c/d/e/f/g/",
+			"http://www.example.org/a/b/C/D",
+			"http://www.example.org/A/B#foo/",
+			"http://www.example.org/a/b/c/d/X#bar",
+			"http://example.com/A",
+			"http://www.example.org/a/b/c/d/z?x=a",
+			};
+
+	static public void main(String args[]) throws Exception {
+		String b[] =
+			{
+				"http://www.example.org/a/b/c/d/",
+				"http://www.example.org/a/b/c/d",
+				"http://www.example.org/A/B#",
+				};
+		String n[] =
+			{
+				"",
+				"same-document",
+				"absolute",
+				"relative",
+				"parent",
+				"network",
+				"grandparent" };
+		for (int k = 0; k < b.length; k++) {
+			System.out.println("// " + b[k]);
+			URI bb = new URI(b[k]);
+
+			for (int i = 0; i < n.length; i++) {
+				System.out.print(" { \"" + n[i] + "\", ");
+				int f = URI.str2flags(n[i]);
+				for (int j = 0; j < uris.length; j++) {
+					String r = bb.relativize(uris[j], f);
+					System.out.print(
+						(i!=0 && r.equals(uris[j])) ? "null, " : "\"" + r + "\"" + ", ");
+				}
+				System.out.println("},");
+			}
+		}
+	}
 }
 /*
  *  (c)   Copyright Hewlett-Packard Company 2001-2003
@@ -454,5 +617,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.4 2003-03-29 09:42:24 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.5 2003-03-29 21:32:24 jeremy_carroll Exp $
  */
