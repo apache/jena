@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<!--
+	Two distinct object values for a functional property.
+  -->
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc  ="http://purl.org/dc/elements/1.1/"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns     ="http://jena.hpl.hp.com/testing/reasoners/owl#"
+  xml:base  ="http://jena.hpl.hp.com/testing/reasoners/owl"
+>
+   
+   	<owl:Thing rdf:ID="it1" />
+   	<owl:Thing rdf:ID="it2" />
+
+    <owl:AllDifferent> 
+      <owl:distinctMembers rdf:parseType="Collection">
+        <rdf:Description rdf:about="#it1" />
+        <rdf:Description rdf:about="#it2" />
+      </owl:distinctMembers>
+    </owl:AllDifferent> 
+
+    <A rdf:ID="ia">
+    	<fp rdf:resource="#it1" />
+      	<fp rdf:resource="#it2" />
+    </A>
+	
+</rdf:RDF>
