@@ -23,7 +23,7 @@ import com.hp.hpl.jena.shared.JenaException;
 * the same as SimpleCache.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.2 $ on $Date: 2003-08-26 17:38:30 $
+* @version $Revision: 1.3 $ on $Date: 2003-08-27 03:18:22 $
 */
 
 public class LRUCache implements ICache {
@@ -51,22 +51,21 @@ public class LRUCache implements ICache {
     
 	*/
 	
-	protected HashMap cache;
+	protected HashMap keyCache;
+	protected HashMap valCache;
+
 	protected IDBID Keys[];
 	protected Random rand;
 
 	public LRUCache(int max) {
 		rand = new Random();
 		resize(max);
-		maxCount = max;
-		cache = new HashMap(max);
-		Keys = new IDBID[max];
-		count = 0;
 	}
 	
 	protected void resize ( int max ) {
 		maxCount = max;
-		cache = new HashMap(max);
+		keyCache = new HashMap(max);
+		valCache = new HashMap(max);
 		Keys = new IDBID[max];
 		count = 0;
 	}
@@ -75,24 +74,33 @@ public class LRUCache implements ICache {
 	protected int count;
 
 	public Object get(IDBID id) {
-		return cache.get(id);
+		return keyCache.get(id);
 	}
+	
+	public Object getByValue(String val) {
+		return valCache.get(val);
+	}
+
 
 	public void put(IDBID id, Object val) {
 		synchronized (this) {
-			int curSize = cache.size();
-			cache.put(id, val);
-			if (cache.size() > curSize) {
+			int curSize = keyCache.size();
+			keyCache.put(id, val);
+			valCache.put(val,id);
+			if (keyCache.size() > curSize) {
 				int ix = count++;
 				if (count > maxCount) {
 					// pick an entry at random and remove it.
 					// not exactly LRU
 					ix = rand.nextInt(maxCount);
-					if (cache.remove(Keys[ix]) == null)
-						throw new JenaException("LRUCache corrupted");
+					Object keyval = keyCache.get(Keys[ix]);
+					if ( (keyval == null) || (keyCache.remove(Keys[ix]) == null) )
+						throw new JenaException("LRUCache keyCache corrupted");
+					if ( valCache.remove(keyval) == null )
+						throw new JenaException("LRUCache valCache corrupted");
 					count--;
 					Keys[ix] = id;
-					if (cache.size() > maxCount)
+					if (keyCache.size() > maxCount)
 						throw new JenaException("LRUCache exceeds threshold");
 				}
 				Keys[ix] = id;
@@ -110,7 +118,9 @@ public class LRUCache implements ICache {
     */
     
     public void clear() {
-    	cache.clear();
+    	keyCache.clear();
+    	valCache.clear();
+    	count = 0;
     }
     
 	/*
