@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-13 15:39:20 $
+ * Last modified on   $Date: 2003-11-13 16:59:17 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -36,6 +36,7 @@ import com.hp.hpl.jena.ontology.impl.OntClassImpl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.vocabulary.OWL;
 
@@ -49,7 +50,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.21 2003-11-13 15:39:20 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.22 2003-11-13 16:59:17 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -499,8 +500,55 @@ public class TestBugReports
         // will throw an exception if the wrong code path is taken
         A.hasSuperClass( b, true );
     }
-     
-     
+    
+    /** Bug report by Ivan Ferrari (ivan_ferrari_75 [ivan_ferrari_75@yahoo.it]) - duplicate nodes in output */ 
+    public void test_if_01() {
+        //create a new default model  
+        OntModel m = ModelFactory.createOntologyModel();
+        
+        m.getDocumentManager().addAltEntry( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine", 
+                                            "file:testing/reasoners/bugs/wine.owl" );
+        m.getDocumentManager().addAltEntry( "http://www.w3.org/2001/sw/WebOnt/guide-src/food", 
+                                            "file:testing/reasoners/bugs/food.owl" );
+
+        // note: due to bug in the Wine example, we have to manually read the imported food document
+        m.getDocumentManager().setProcessImports( false );
+        m.read( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine" ); 
+        m.getDocumentManager().setProcessImports( true );
+        m.getDocumentManager().loadImport( m, "http://www.w3.org/2001/sw/WebOnt/guide-src/food" ); 
+        
+        OntClass ontclass = m.getOntClass( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine#Wine" );
+        System.out.println(ontclass.getLocalName());
+        
+        int nNamed = 0;
+        int nRestriction = 0;
+        int nAnon = 0;
+        
+        for (ExtendedIterator iter2 = ontclass.listSuperClasses(true); iter2.hasNext();) {
+            OntClass ontsuperclass = (OntClass) iter2.next();
+            
+            //this is to view different anonymous IDs
+            if (!ontsuperclass.isAnon()) {
+                System.out.println( "super: " + ontsuperclass.toString());
+                nNamed++;
+            }
+            else if (ontsuperclass.canAs( Restriction.class )) {
+                Restriction r = ontsuperclass.asRestriction();
+                System.out.println( "anon. restriction on prop " + r.getOnProperty() );
+                nRestriction++;
+            }
+            else {
+                System.out.println( "anon. super: " + ontsuperclass.getId() );
+                nAnon++;
+            }
+        }
+        
+        assertEquals( "Should be two named super classes ", 2, nNamed );
+        assertEquals( "Should be nine named super classes ", 9, nRestriction );
+        assertEquals( "Should be no named super classes ", 0, nAnon );
+    }
+    
+    
     // Internal implementation methods
     //////////////////////////////////
     
