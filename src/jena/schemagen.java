@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-04 16:16:51 $
+ * Last modified on   $Date: 2003-05-09 17:09:27 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.12 2003-05-04 16:16:51 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.13 2003-05-09 17:09:27 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -119,8 +119,8 @@ public class schemagen {
     /** Additional decoration for class header (such as implements); use <code>--classdec &lt;classname&gt;</code> on command line; use <code>sgen:classdec</code> in config file */
     protected static final Object OPT_CLASSDEC = new Object();
     
-    /** The base URI for the vocabulary; use <code>--base &lt;uri&gt;</code> on command line; use <code>sgen:base</code> in config file */
-    protected static final Object OPT_BASE = new Object();
+    /** The namespace URI for the vocabulary; use <code>- &lt;uri&gt;</code> on command line; use <code>sgen:namespace</code> in config file */
+    protected static final Object OPT_NAMESPACE = new Object();
     
     /** Additional declarations to add at the top of the class; use <code>--declarations &lt;...&gt;</code> on command line; use <code>sgen:declarations</code> in config file */
     protected static final Object OPT_DECLARATIONS = new Object();
@@ -210,7 +210,7 @@ public class schemagen {
         {OPT_ONTOLOGY,            new OptionDefinition( "--ontology", "ontology" ) },
         {OPT_CLASSNAME,           new OptionDefinition( "-n", "classname" ) },
         {OPT_CLASSDEC,            new OptionDefinition( "--classdec", "classdec" ) },
-        {OPT_BASE,                new OptionDefinition( "-b", "base" ) },
+        {OPT_NAMESPACE,           new OptionDefinition( "-a", "namespace" ) },
         {OPT_DECLARATIONS,        new OptionDefinition( "--declarations", "declarations" ) },
         {OPT_PROPERTY_SECTION,    new OptionDefinition( "--propSection", "propSection" ) },
         {OPT_CLASS_SECTION,       new OptionDefinition( "--classSection", "classSection" ) },
@@ -250,7 +250,7 @@ public class schemagen {
     /** Map from resources to java names */
     protected Map m_resourcesToNames = new HashMap();
     
-    /** List of allowed base URI strings for admissible values */
+    /** List of allowed namespace URI strings for admissible values */
     protected List m_includeURI = new ArrayList();
     
     
@@ -544,7 +544,7 @@ public class schemagen {
         System.err.println( "Commonly used options include:" );
         System.err.println( "   -i <input> the source document as a file or URL." );
         System.err.println( "   -n <name> the name of the created Java class." );
-        System.err.println( "   -b <uri> the base URI of the source document." );
+        System.err.println( "   -a <uri> the namespace URI of the source document." );
         System.err.println( "   -o <file> the file to write the generated class into." );
         System.err.println( "   -o <dir> the directory in which the generated Java class is created." );
         System.err.println( "            By default, output goes to stdout." );
@@ -728,31 +728,36 @@ public class schemagen {
     
     /** Write the string and resource that represent the namespace */
     protected void writeNamespace() {
-        String baseURI = determineBaseURI();
+        String nsURI = determineNamespaceURI();
         
         writeln( 1, "/** <p>The namespace of the vocabalary as a string {@value}</p> */" );
-        writeln( 1, "public static final String NS = \"" + baseURI + "\";" );
+        writeln( 1, "public static final String NS = \"" + nsURI + "\";" );
+        writeln( 1 );
+        
+        writeln( 1, "/** <p>The namespace of the vocabalary as a string</p>" );
+        writeln( 1, " *  @see #NS */" );
+        writeln( 1, "public static String getURI() {return NS;}" );
         writeln( 1 );
         
         writeln( 1, "/** <p>The namespace of the vocabalary as a resource {@value}</p> */" );
-        writeln( 1, "public static final Resource NAMESPACE = m_model.createResource( \"" + baseURI + "\" );" );
+        writeln( 1, "public static final Resource NAMESPACE = m_model.createResource( NS );" );
         writeln( 1 );
     }
     
     
-    /** Determine what the base URI for this vocabulary is */
-    protected String determineBaseURI() {
+    /** Determine what the namespace URI for this vocabulary is */
+    protected String determineNamespaceURI() {
         // easy: it was set by the user
-        if (hasResourceValue( OPT_BASE )) {
-            String base = getResource( OPT_BASE ).getURI();
+        if (hasResourceValue( OPT_NAMESPACE )) {
+            String ns = getResource( OPT_NAMESPACE ).getURI();
             
-            // save the base URI as the main included uri for the filter
-            m_includeURI.add( base );
+            // save the namespace URI as the main included uri for the filter
+            m_includeURI.add( ns );
             
-            return base;
+            return ns;
         }
         
-        // if we are using an ontology model, get the base URI from the ontology element
+        // if we are using an ontology model, get the namespace URI from the ontology element
         try {
             Resource ont = m_source.getBaseModel()
                                    .listStatements( null, RDF.type, m_source.getProfile().ONTOLOGY() )
@@ -762,7 +767,7 @@ public class schemagen {
             String uri = ont.getURI();
             uri = (!uri.endsWith( "#" )) ? uri + "#" : uri;
             
-            // save the base URI as the main included uri for the filter
+            // save the namespace URI as the main included uri for the filter
             m_includeURI.add( uri );
             
             return uri;

@@ -22,7 +22,7 @@ that may be used to control the output.
 Schemagen is typeically invoked from the command line or from a built script (such as Ant).
 Synopsis of the command:<br />
 <code><pre>
-java jena.schemagen -i &lt;input&gt; [-b &lt;baseURI&gt;] [-o &lt;output file&gt;] [-c &lt;config uri&gt;] [-s &lt;syntax&gt;] ...
+java jena.schemagen -i &lt;input&gt; [-a &lt;namespaceURI&gt;] [-o &lt;output file&gt;] [-c &lt;config uri&gt;] [-s &lt;syntax&gt;] ...
 </pre></code>
 Schemagen is highly configurable, either with command line options or by RDF information read from a configuration file.
 <b>Many</b> other options are defined, and these are described in detail below.  Note that the <code>CLASSPATH</code> environment variable must
@@ -33,7 +33,7 @@ be set to include the Jena <code>.jar</code> libraries.
 <table width="800" border="1" cellspacing="0" cellpadding="1">
 <caption align="bottom">Table 1: schemagen options</caption>
   <tr align="left"><th width="190">Command line option</th><th width="180">RDF config file property</th><th width="430">Meaning</th></tr>
-  <tr> <td>-b &lt;uri&gt;</td> <td>sgen:base</td> <td>The base URI for the vocabulary. Names with this URI as prefix are automatically included in the generated vocabulary.</td> </tr>
+  <tr> <td>-a &lt;uri&gt;</td> <td>sgen:namespace</td> <td>The namespace URI for the vocabulary. Names with this URI as prefix are automatically included in the generated vocabulary.</td> </tr>
   <tr> <td>-c &lt;filename&gt;<br>-c &lt;url&gt;</td> <td>&nbsp;</td> <td>Specify an alternative config file.</td> </tr>
   <tr> <td>--classdec &lt;string&gt;</td> <td>sgen:classdec</td> <td>Additional decoration for class header (such as <code>implements</code>)</td> </tr>
   <tr> <td>--classnamesuffix &lt;string&gt;</td> <td>sgen:classnamesuffix</td> <td>Option for adding a suffix to the generated class name, e.g. "Vocab".</td> </tr>
@@ -102,7 +102,7 @@ Perhaps the easiest way to explain the detail of what schemagen does is to show 
 <code>java jena.schemagen -i deputy.rdf -b http://example.org/eg#</code><br />
 to produce the following generated class:</p>
 <code><pre>
-/* CVS $Id: schemagen-HOWTO.html,v 1.2 2003-05-04 16:16:45 ian_dickinson Exp $ */
+/* CVS $Id: schemagen-HOWTO.html,v 1.3 2003-05-09 17:09:02 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -139,7 +139,7 @@ public class Deputy {
 <p>We noted earlier that schemagen is highly configurable. One additional argument generates a vocabulary file that uses Jena's ontology API, rather than the RDF model API. We change <code>rdfs:Class</code> to <code>owl:Class</code>, and invoke<br />
 <code>java jena.schemagen -i deputy.rdf -b http://example.org/eg# --ontology</code><br />to get:</p>
 <p><code><pre>
-/* CVS $Id: schemagen-HOWTO.html,v 1.2 2003-05-04 16:16:45 ian_dickinson Exp $ */
+/* CVS $Id: schemagen-HOWTO.html,v 1.3 2003-05-09 17:09:02 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
@@ -239,7 +239,7 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  &nbsp;&nbsp;&nbsp;Not all possible options are used in this example, see Javadoc and Howto for full details.
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS: &nbsp;&nbsp;&nbsp;$Id: schemagen-HOWTO.html,v 1.2 2003-05-04 16:16:45 ian_dickinson Exp $
+	CVS: &nbsp;&nbsp;&nbsp;$Id: schemagen-HOWTO.html,v 1.3 2003-05-09 17:09:02 ian_dickinson Exp $
 --&gt;
 
 &lt;sgen:Config&gt;
@@ -271,10 +271,10 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  * Web site &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@website@
  * Created &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%
  * Filename &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$RCSfile: schemagen-HOWTO.html,v $
- * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.2 $
+ * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.3 $
  * Release status &nbsp;&nbsp;&nbsp;&nbsp;@releaseStatus@ $State: Exp $
  *
- * Last modified on &nbsp;&nbsp;$Date: 2003-05-04 16:16:45 $
+ * Last modified on &nbsp;&nbsp;$Date: 2003-05-09 17:09:02 $
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: ian_dickinson $
  *
  * @copyright@
@@ -340,6 +340,6 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
 &lt;/rdf:RDF&gt;
 </pre></code></p>
 <hr />
-<p><small>CVS $Id: schemagen-HOWTO.html,v 1.2 2003-05-04 16:16:45 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: schemagen-HOWTO.html,v 1.3 2003-05-09 17:09:02 ian_dickinson Exp $</small></p>
 </body>
 </html>
