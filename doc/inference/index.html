@@ -210,7 +210,7 @@
     System.out.println("Statement: " + a.getProperty(q));
 </pre>
 <p>Which prints the output:</p>
-<pre>    Statement: [urn:x-hp-jena:eg/a, urn:x-hp-jena:eg/q, Literal<foo>]
+<pre>   <i> Statement: [urn:x-hp-jena:eg/a, urn:x-hp-jena:eg/q, Literal<foo>]</i>
 </pre>
 <p></p>
 <p>Alternatively we could have created an empty inference model and then added 
@@ -306,10 +306,10 @@
   value to some resource with the value <code>&quot;25.5&quot;^^xsd:decimal</code>. 
   If we run the above sample code on this file we see:</p>
 <blockquote>
-  <p>Conflicts <br>
+  <p><i>Conflicts <br>
     - Error (dtRange): Property http://www.hpl.hp.com/semweb/2003/eg#bar has a 
     typed range Datatype[http://www.w3.org/2001/XMLSchema#integer -> class java.math.BigInteger]that 
-    is not compatible with 25.5:http://www.w3.org/2001/XMLSchema#decimal </p>
+    is not compatible with 25.5:http://www.w3.org/2001/XMLSchema#decimal </i></p>
 </blockquote>
 <p>Whereas the file <code>testing/reasoners/rdfs/dttest3.nt</code> uses the value 
   &quot;25&quot;^^xsd:decimal instead, which is a valid integer and so passes. 
@@ -400,12 +400,12 @@ eg:C eg:p eg:D .</pre>
     out.flush();
 </pre>
 <p>Which generates the output:</p>
-<pre>Statement is [urn:x-hp:eg/A, urn:x-hp:eg/p, urn:x-hp:eg/D]
+<pre><i>Statement is [urn:x-hp:eg/A, urn:x-hp:eg/p, urn:x-hp:eg/D]
 Rule rule1 concluded (eg:A eg:p eg:D) <-
     Fact (eg:A eg:p eg:B)
     Rule rule1 concluded (eg:B eg:p eg:D) <-
         Fact (eg:B eg:p eg:C)
-        Fact (eg:C eg:p eg:D)</pre>
+        Fact (eg:C eg:p eg:D)</i></pre>
 <h3><a name="rawAccess"></a>Accessing raw data and deductions</h3>
 <p>From an <code>InfModel</code> it is easy to retrieve the original, unchanged, 
   data over which the model has been computed using the <code>getRawModel()</code> 
@@ -627,14 +627,14 @@ Resource Person = infmodel.getResource("urn:x-hp:eg/Person");
 System.out.println("\nPerson has types:");
 printStatements(infmodel, Person, RDF.type, null);</pre>
 <p>This produces the output:</p>
-<pre>colin has types:
+<pre><i>colin has types:
  - (eg:colin rdf:type eg:Teenager)
  - (eg:colin rdf:type rdfs:Resource)
  - (eg:colin rdf:type eg:Person)
 
 Person has types:
  - (eg:Person rdf:type rdfs:Class)
- - (eg:Person rdf:type rdfs:Resource)</pre>
+ - (eg:Person rdf:type rdfs:Resource)</i></pre>
 <p>This says that <code>colin</code> is both a <code>Teenager</code> (by direct 
   definition), a <code>Person</code> (because he has a <code>mum</code> which 
   means he has a <code>parent</code> and the domain of <code>parent</code> is 
@@ -654,10 +654,10 @@ if (validity.isValid()) {
 }</pre>
 <p>
   Then we get the additional output:</p>
-<pre>Conflicts
+<pre><i>Conflicts
  - Error (dtRange): Property urn:x-hp:eg/age has a typed range 
 Datatype[http://www.w3.org/2001/XMLSchema#integer -> class java.math.BigInteger]
-that is not compatible with 13</pre>
+that is not compatible with 13</i></pre>
 <p>because the age was given using an RDF plain litera where as the schema requires 
   it to be a datatyped literal which is compatible with xsd:integer.</p>
 <p>[<a href="#rdfs">RDFS index</a>] [<a href="#index">main index</a>]</p>
@@ -856,7 +856,7 @@ that is not compatible with 13</pre>
   </tr>
   <tr> 
     <td width="53%"> 
-      <div align="left">owl:SymmerticProperty, owl:TransitiveProperty</div>
+      <div align="left">owl:SymmeticProperty, owl:TransitiveProperty</div>
     </td>
     <td width="47%"> 
       <div align="left"></div>
@@ -880,6 +880,18 @@ that is not compatible with 13</pre>
 <p>Nevertheless, the reasoner passes the normative OWL working group positive 
   and negative entailment tests for the supported constructs, though some tests 
   need modification for the comprehension axioms (see below).</p>
+<p>The OWL rule set does include incomplete support for validation of datasets 
+  using the above constructs. Specifically, it tests for:</p>
+<ul>
+  <li>Illegal existence of a property restricted by a maxCardinality(0) restriction.</li>
+  <li>Two individuals both sameAs and differentFrom each other.</li>
+  <li>Two classes declared as disjoint but where one subsumes the other (currently 
+    reported as a violation concerning the class prototypes, error message to 
+    be improved).</li>
+  <li>Range or a allValuesFrom violations for DatatypeProperties.</li>
+  <li>Too many literal-values for a DatatypeProperty restricted by a maxCardinality(N) 
+    restriction.</li>
+</ul>
 <p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h2><a name="OWLconfiguration"></a>OWL Configuration</h2>
@@ -921,24 +933,125 @@ that is not compatible with 13</pre>
 <p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h2><a name="OWLexamples"></a>OWL Example</h2>
-<p>To be completed.</p>
+<p>As an example of using the OWL inference support, consider the sample schema 
+  and data file in the data directory - <a href="data/owlDemoSchema.xml">owlDemoSchema.xml</a> 
+  and <a href="data/owlDemoData.xml">owlDemoData.xml</a>. </p>
+<p>The schema file shows a simple, artificial ontology concerning computers which 
+  defines a GamingComputer as a Computer which includes at least one bundle of 
+  type GameBundle and a component with the value gamingGraphics. </p>
+<p>The data file shows information on serveral hypothetical computer configurations 
+  including two different descriptions of the configurations &quot;whiteBoxZX&quot; 
+  and &quot;<code>bigName42</code>&quot;.</p>
+<p>We can create an instance of the OWL reasoner, specialized to the demo schema 
+  and then apply that to the demo data to obtain an inference model, as follows:</p>
+<pre>    Model schema = ModelLoader.loadModel("file:data/owlDemoSchema.owl");
+    Model data = ModelLoader.loadModel("file:data/owlDemoData.rdf");
+    Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
+    reasoner = reasoner.bindSchema(schema);
+    InfModel infmodel = ModelFactory.createInfModel(reasoner, data);</pre>
+<p>A typical example operation on such a model would be to find out all we know 
+  about a specific instance, for example the <code>nForce</code> mother board. 
+  This can be done using:</p>
+<pre>    Resource nForce = infmodel.getResource("urn:x-hp:eg/nForce");
+    System.out.println("nForce *:");
+    printStatements(infmodel, nForce, null, null);<br></pre>
+<p> where <code>printStatements</code> is defined by: </p>
+<pre>    public void printStatements(Model m, Resource s, Property p, Resource o) {
+        for (StmtIterator i = m.listStatements(s,p,o); i.hasNext(); ) {
+            Statement stmt = i.nextStatement();
+            System.out.println(" - " + PrintUtil.print(stmt));
+        }
+    }</pre>
+<p>This products the output:</p>
+<pre><i>nForce *:
+ - (eg:nForce owl:sameIndividualAs eg:unknownMB)
+ - (eg:nForce owl:sameIndividualAs eg:nForce)
+ - (eg:nForce rdf:type owl:Thing)
+ - (eg:nForce owl:sameAs eg:unknownMB)
+ - (eg:nForce owl:sameAs eg:nForce)
+ - (eg:nForce rdf:type eg:MotherBoard)
+ - (eg:nForce rdf:type rdfs:Resource)
+ - (eg:nForce rdf:type a3b24:f7822755ad:-7ffd)
+ - (eg:nForce eg:hasGraphics eg:gamingGraphics)
+ - (eg:nForce eg:hasComponent eg:gamingGraphics)</i></pre>
+<p>Note that this includes inferences based on subClass inheritance (being an 
+  <code>eg:MotherBoard</code> implies it is an <code>owl:Thing</code> and an <code>rdfs:Resource</code>), 
+  property inheritance (<code>eg:hasComponent eg:gameGraphics</code> derives from 
+  <code>hasGraphics</code> being a subProperty of <code>hasComponent</code>) and 
+  cardinality reasoning (it is the sameAs <code>eg:unknownMB</code> because computers 
+  are defined to have only one motherboard and the two diffferent descriptions 
+  of <code>whileBoxZX</code> use these two different terms for the mother board).<i> 
+  </i>The anonymous rdf:type statement referencesthe <code>&quot;hasValue(eg:hasComponent, 
+  eg:gamingGraphics)&quot; </code>restriction mentioned in the definition of GamingComputer.</p>
+<p>A second, typical operation is instance recognition. Testing if an individual 
+  is an instance of a class expression. In this case the <code>whileBoxZX</code> 
+  is identifiable as a <code>GamingComputer</code> because it is a <code>Computer</code>, 
+  is explicitly declared as having an appropriate bundle and can be inferred to 
+  have a <code>gamingGraphics</code> component from the combination of the <code>nForce</code> 
+  inferences we've already seen and the transitivity of <code>hasComponent</code>. 
+  We can test this using:</p>
+<pre>    Resource whiteBox = infmodel.getResource("urn:x-hp:eg/whiteBoxZX");
+    if (infmodel.contains(whiteBox, RDF.type, gamingComputer)) {
+        System.out.println("White box recognized as gaming computer");
+    } else {
+        System.out.println("Failed to recognize white box correctly");
+    }</pre>
+<p> Which gnerates the output:</p>
+<pre><i>White box recognized as gaming computer</i></pre>
+<p>Finally, we can check for inconsistencies within the data by using the validation 
+  interface:</p>
+<pre>    ValidityReport validity = infmodel.validate();
+    if (validity.isValid()) {
+        System.out.println("OK");
+    } else {
+        System.out.println("Conflicts");
+        for (Iterator i = validity.getReports(); i.hasNext(); ) {
+            ValidityReport.Report report = (ValidityReport.Report)i.next();
+            System.out.println(" - " + report);
+        }
+    }</pre>
+<p>Which generates the output:</p>
+<pre><i>Conflicts
+ - Error (conflict): Two individuals both same and different, may be 
+   due to disjoint classes or functional properties
+Culprit = eg:nForce2
+Implicated node: eg:bigNameSpecialMB</i>
+
+... + 3 other similar reports
+</pre>
+<p>This is due to the two records for the <code>bigName42</code> configuration 
+  referencing two motherboards which are explicitly defined to be different resources 
+  and thus violate the FunctionProperty nature of <code>hasMotherBoard</code>.</p>
 <p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h2><a name="OWLnotes"></a>OWL notes and limitations</h2>
 <h3>Comprehension axioms</h3>
-<p>A critical implication of the instance-based approach is that the reasoner 
-  cannot answer queries relating to dynamically introduced class expressions.</p>
+<p>A critical implication of our variant of the instance-based approach is that 
+  the reasoner does not directly answer queries relating to dynamically introduced 
+  class expressions.</p>
 <p>For example, given a model containing the RDF assertions corresponding to the 
   two OWL axioms:</p>
 <pre>class A = intersectionOf (minCardinality(P, 1), maxCardinality(P,1))
 class B = cardinality(P,1)</pre>
-<p>Then the reasoner can demonstrate that classes A and B are equivalent. However, 
-  given a model just containing the first set of assertions you cannot directly 
-  query the inference model for the assertions that make up cardinality(P,1). 
+<p>Then the reasoner can demonstrate that classes A and B are equivalent, in particular 
+  that any instance of A is an instance of B and vice versa. However, given a 
+  model just containing the first set of assertions you cannot directly query 
+  the inference model for the individual triples that make up <i>cardinality(P,1)</i>. 
   If the relevant class expressions are not already present in your model then 
   you need to use the list-with-posits mechanism described <a href="#extendedListStatements">above</a>, 
   though be warned that such posits start inference afresh each time and can be 
-  expensive. <br>
+  expensive. </p>
+<p>Actually, it would be possible to introduce comprehension axioms for simple 
+  cases like this example. We have, so far, chosen not to do so. First, since 
+  the OWL/full closure is generally infiite, some limitation on comprehension 
+  inferences seems to be useful. Secondly, the typical queries that Jena applications 
+  expect to be able to issue would suddenly jump in size and cost - causing a 
+  support nightmare. For example, queries such as (a, rdf:type, *) would become 
+  near-unusable.</p>
+<p>Approximately, 10 of the OWL working group tests for the supported OWL subset 
+  currently rely on such comprehension inferences. The shipping version of the 
+  Jena rule reasoner passes these tests only after they have been rewritten to 
+  avoid the comprehension requirements.<br>
 </p>
 <h3>Prototypes</h3>
 <p>As noted above the current OWL rule set introduces prototypical instances for 
@@ -1519,9 +1632,9 @@ while (list.hasNext()) {
 }</pre>
 <p>When run on a rawData model contain the above four triples this generates the 
   (correct) output:</p>
-<pre>A * * =>
+<pre><i>A * * =>
  - [urn:x-hp:eg/A, urn:x-hp:eg/p, urn:x-hp:eg/B]
- - [urn:x-hp:eg/A, urn:x-hp:eg/r, urn:x-hp:eg/C]</pre>
+ - [urn:x-hp:eg/A, urn:x-hp:eg/r, urn:x-hp:eg/C]</i></pre>
 <p>[<a href="#rules">rule index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h2><a name="RULEnotes"></a>Notes</h2>
@@ -1622,7 +1735,7 @@ while (list.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.11 2003-08-28 11:29:05 andy_seaborne Exp $</i>
+  Last modification: $Id: index.html,v 1.12 2003-09-08 17:26:56 der Exp $</i>
 </p>
 </body>
 </html>
