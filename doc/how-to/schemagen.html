@@ -9,6 +9,12 @@
   <meta name="description" content="" />
   <meta name="keywords" content="" />
   <link href="../styles/doc.css" rel="stylesheet" type="text/css" />
+  <style type="text/css">
+  <!--
+  .syntax { text-align: left; font: 100% "Courier new", monospace; background: #eee;  }
+  .syntaxPrompt { text-align: left; background: #eee; }
+  -->
+  </style>
 </head>
 
 <body bgcolor="#FFFFFF">
@@ -42,6 +48,7 @@ be set to include the Jena <code>.jar</code> libraries.
   <tr> <td>--classTemplate &lt;string&gt;</td> <td>sgen:classTemplate</td> <td>Template for writing out declarations of class resources.</td> </tr>
   <tr> <td>--daml</td> <td>sgen:daml</td> <td>Specify that the language of the source ontology is DAML+OIL.</td> </tr>
   <tr> <td>--declarations &lt;string&gt;</td> <td>sgen:declarations</td> <td>Additional declarations to add at the top of the class.</td> </tr>
+  <tr> <td>-e &lt;string&gt;</td> <td>sgen:encoding</td> <td>The surface syntax of the input file (e.g. RDF/XML, N3). Defaults to RDF/XML.</td> </tr>
   <tr> <td>--footer &lt;string&gt;</td> <td>sgen:footer</td> <td>Template for standard text to add to the end of the file.</td> </tr>
   <tr> <td>--header &lt;string&gt;</td> <td>sgen:header</td> <td>Template for the file header, including the class comment.</td> </tr>
   <tr> <td>-i &lt;filename&gt;<br>-i &lt;url&gt;</td> <td>sgen:input</td> <td>Specify the input document to load</td> </tr>
@@ -62,7 +69,6 @@ be set to include the Jena <code>.jar</code> libraries.
   <tr> <td>--propSection &lt;string&gt;</td> <td>sgen:propSection</td> <td>Section declaration comment for properties section.</td> </tr>
   <tr> <td>--propTemplate &lt;string&gt;</td> <td>sgen:propTemplate</td> <td>Template for writing out declarations of property resources.</td> </tr>
   <tr> <td>-r &lt;uri&gt;</td> <td>&nbsp;</td> <td>Specify the uri of the root node in the RDF configuration model.</td> </tr>
-  <tr> <td>-s &lt;string&gt;</td> <td>sgen:syntax</td> <td>The surface syntax of the input file (e.g. RDF/XML, N3). Defaults to RDF/XML.</td> </tr>
   <tr> <td>--uppercase</td> <td>sgen:uppercase</td> <td>Option for mapping constant names to uppercase (like Java constants). Default is to leave the case of names unchanged.</td> </tr>
 </table>
 
@@ -103,7 +109,7 @@ Perhaps the easiest way to explain the detail of what schemagen does is to show 
 <code>java jena.schemagen -i deputy.rdf -b http://example.org/eg#</code><br />
 to produce the following generated class:</p>
 <code><pre>
-/* CVS $Id: schemagen.html,v 1.3 2003-08-28 11:29:05 andy_seaborne Exp $ */
+/* CVS $Id: schemagen.html,v 1.4 2004-01-30 23:58:59 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -140,7 +146,7 @@ public class Deputy {
 <p>We noted earlier that schemagen is highly configurable. One additional argument generates a vocabulary file that uses Jena's ontology API, rather than the RDF model API. We change <code>rdfs:Class</code> to <code>owl:Class</code>, and invoke<br />
 <code>java jena.schemagen -i deputy.rdf -b http://example.org/eg# --ontology</code><br />to get:</p>
 <p><code><pre>
-/* CVS $Id: schemagen.html,v 1.3 2003-08-28 11:29:05 andy_seaborne Exp $ */
+/* CVS $Id: schemagen.html,v 1.4 2004-01-30 23:58:59 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
@@ -208,7 +214,177 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
 
 <h2>Details of schemagen options</h2>
 <p>We now go through each of the configuration options in detail.</p>
-<p>@@TODO@@</p>
+<p><strong>Note</strong>: for brevity, we assume a standard prefix <code>sgen</code> 
+  is defined for resource URI's in the schemagen namespace. The expansion for 
+  <code>sgen</code> is: <code>http://jena.hpl.hp.com/2003/04/schemagen#</code>, 
+  thus:</p>
+<pre>xmlns:sgen=&quot;http://jena.hpl.hp.com/2003/04/schemagen#&quot;</pre>
+<h3 id="java_ids">Note on legal Java identifiers</h3>
+<p>Schemagen will attempt to ensure that all generated code will compile as legal 
+  Java. Occasionally, this means that identifiers from input documents, which 
+  are legal components of RDF URI identifiers, have to be modified to be legal 
+  Java identifiers. Specifically, any character in an identifier name that is 
+  not a legal Java identifier character will be replaced with the character '_' 
+  (underscore). Thus the name '<code>trading-price</code>' might become <code>'trading_price</code>'. 
+  In addition, Java requires that identifiers be distinct. If a name clash is 
+  detected (for example, <code>trading-price</code> and <code>trading+price</code> 
+  both map to the same Java identifier), schemagen will add disambiguators to 
+  the second and subsequent uses. These will be based on the role of the identifier; 
+  for example property names are disambiguated by appending <code>_PROPn</code> 
+  for increasing values of <code>n</code>. In a well-written ontology, identifiers 
+  are typically made distinct for clarity and ease-of-use by the ontology users, 
+  so the use of the disambiguation tactic is rare. Indeed, it may be taken as 
+  a hint that refactoring the ontology itself is desireable.</p>
+<h3 id="config_file">Specifying the configuration file</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="1">
+  <tr>
+    <td width="140" class="syntaxPrompt">Command line </td>
+    <td class="syntax">-c &lt;<i>config-file-path</i>&gt;<br>
+      -c &lt;<i>config-file-URL</i>&gt;</td>
+  </tr>
+  <tr>
+    <td class="syntaxPrompt">Config file</td>
+    <td class="syntaxPrompt">n/a</td>
+  </tr>
+</table>
+<p>The default configuration file name is <code>schemagen.rdf</code> in the current 
+  directory. To specify a different configuration file, either as a file name 
+  on the local file system, or as a URL (e.g. an <code>http:</code> address), 
+  the config file location is passed with the <code>-c</code> option. If no <code>-c</code> 
+  option is given, and there is no configuration file in the current directory, 
+  schemagen will continue and use default values (plus the other command line 
+  options) to configure the tool. If a file name or URL is given with <code>-c</code>, 
+  and that file cannot be located, schemagen will stop with an error.</p>
+<h3 id="config_root">Specifying the configuration root in the configuration file</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="1">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line </td>
+    <td class="syntax">-r &lt;<i>config-root-URI</i>&gt;</td>
+  </tr>
+  <tr> 
+    <td class="syntaxPrompt">Config file </td>
+    <td class="syntaxPrompt">n/a</td>
+  </tr>
+</table>
+<p>It is possible to have more than one set of configuration options in one configuration 
+  file. If there is only one set of configuration options, schemagen will locate 
+  the root by searching for a resource of rdf:type sgen:Config. If there is more 
+  than one, and no root is specified on the command line, it is not specified 
+  which set of configuration options will be used. The root URI given as a command 
+  line option must match exactly with the URI given in the configuration file. 
+  For example:</p>
+<pre>java jena.schemagen -c config/localconf.rdf -r http://example.org/sg#project1</pre>
+<p>matches:</p>
+<pre>...
+ &lt;sgen:Config rdf:about=&quot;http://example.org/sg#project1&quot;&gt;
+   ....
+ &lt;/sgen:Config&gt;</pre>
+<h3 id="input">Specifying the input document</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="1">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td  class="syntax">-i &lt;<i>input-file-path</i>&gt;<br>
+      -i &lt;<i>input-URL</i>&gt;</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td  class="syntax">&lt;sgen:input rdf:resource=&quot;<i>inputURL</i>&quot; /&gt;</td>
+  </tr>
+</table>
+<p>The only mandatory argument to schemagen is the input document to process. 
+  This can be specified in the configuration file, though this does, of course, 
+  mean that the same configuration cannot be applied to multiple different input 
+  files for consistency. However, by specifying the input document in the default 
+  configuration file, schemagen can easily be invoked with the minimum of command 
+  line typing. For other means of automating schemagen, see <a href="#ant">using 
+  schemagen with Ant</a>. </p>
+<h3 id="output">Specifying the output location</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="1">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td  class="syntax">-o &lt;<i>input-file-path</i>&gt;<br>
+      -o &lt;<i>output-dir</i>&gt;</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td  class="syntax">&lt;sgen:output rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i><br>
+      output-path-or-dir</i>&lt;/sgen:output&gt;</td>
+  </tr>
+</table>
+<p>Schemagen must know where to write the generated Java file. By default, the 
+  output is written to the standard output. Various options exist to change this. 
+  The output location can be specified either on the command line, or in the configuration 
+  file. If specified in the configuration file, the resource must be a string 
+  literal, denoting the file path. If the path given resolves to an existing directory, 
+  then it is assumed that the output will be based on the <a href="#class_name">name</a> 
+  of the generated class (i.e. it will be the class name with '<code>.java</code>' 
+  appended). Otherwise, the path is assumed to point to a file. Any existing file 
+  that has the given path name will be overwritten.</p>
+<h3 id="output">Specifying the class name</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="1">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td  class="syntax">-n &lt;<i>class-name</i>&gt;</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td  class="syntax">&lt;sgen:classname rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i><br>
+      classname</i>&lt;/sgen:classname&gt;</td>
+  </tr>
+</table>
+<p>By default, the name of the class will be based on the name of the input file. 
+  Specifically, the last component of the input document's path name, with the 
+  prefix removed, becomes the class name. By default, the initial letter is adjusted 
+  to a capital to conform to standard Java usage. Thus <code>file:vocabs/trading.owl</code> 
+  becomes <code>Trading.java</code>. To override this default algorithm, a class 
+  name specified by <code>-n</code> or in the config file is used exactly as given.</p>
+<p>Sometimes it is convenient to have all vocabulary files distinguished by a 
+  common suffix, for example <code>xyzSchema.java</code> or <code>xyzVocabs.java</code>. 
+  This can be achieved by the classname-suffix option:</p>
+<table width="650" border="0" cellspacing="0" cellpadding="1">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td  class="syntax">--classnamesuffix &lt;<i>suffix</i>&gt;</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td  class="syntax">&lt;sgen:classnamesuffix rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i><br>
+      suffix</i>&lt;/sgen:classnamesuffix&gt;</td>
+  </tr>
+</table>
+<p></p>
+<p>See also the <a href="#java_ids">note on legal Java identifiers</a>, which 
+  applies to generated class names. </p>
+<p></p>
+<p></p>
+<h3 id="input">Specifying the vocabulary namespace</h3>
+<table width="650" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="140" class="syntaxPrompt">Command line</td>
+    <td class="syntax">-a &lt;<i>namespace-URI</i>&gt;</td>
+  </tr>
+  <tr> 
+    <td width="140" class="syntaxPrompt">Config file</td>
+    <td class="syntax">&lt;sgen:namespace rdf:datatype=&quot;&amp;xsd;string&quot;&gt;<i>namespace</i>&lt;/sgen:namespace&gt;</td>
+  </tr>
+</table>
+<p>Since ontology files are often modularised, it is not the case that all of 
+  the resource names appearing in a given document are being defined by that ontology. 
+  They may appear simply as part of the definitions of other terms. Schemagen 
+  assumes that there is one primary namespace for each document, and it is names 
+  from that namespace that will appear in the generated Java file.</p>
+<p>In an OWL or DAML+OIL ontology, this namespace is computed by finding the owl:Ontology 
+  or daml:Ontology element, and using its namespace as the primary namespace of 
+  the ontology. This may not be available (it is not, for example, a part of RDFS) 
+  or correct, so the namespace may be specified directly with the <code>-a</code> 
+  option or in the configuration file.</p>
+<h3 id="output"></h3>
+<p>Schemagen does not, in the present version, permit more than one primary namespace 
+  per generated Java class. If an input ontology has more than one namespace for 
+  which Java constants should be generated, users are advised to run schemagen 
+  multiple times with different <code>-a</code> arguments, and thus to generate 
+  more than one output Java class.</p>
+<p>&nbsp;</p>
 
 <h2 id="appendixA">Appendix A: Complete example configuration file</h2>
 <p>The source of this example is provided in the Jena download as <code>etc/schemagen.rdf</code>.</p>
@@ -240,7 +416,7 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  &nbsp;&nbsp;&nbsp;Not all possible options are used in this example, see Javadoc and Howto for full details.
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.3 2003-08-28 11:29:05 andy_seaborne Exp $
+	CVS: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.4 2004-01-30 23:58:59 ian_dickinson Exp $
 --&gt;
 
 &lt;sgen:Config&gt;
@@ -272,11 +448,11 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
  * Web site &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@website@
  * Created &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%
  * Filename &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$RCSfile: schemagen.html,v $
- * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.3 $
+ * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.4 $
  * Release status &nbsp;&nbsp;&nbsp;&nbsp;@releaseStatus@ $State: Exp $
  *
- * Last modified on &nbsp;&nbsp;$Date: 2003-08-28 11:29:05 $
- * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: andy_seaborne $
+ * Last modified on &nbsp;&nbsp;$Date: 2004-01-30 23:58:59 $
+ * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: ian_dickinson $
  *
  * @copyright@
  *****************************************************************************/
@@ -341,6 +517,6 @@ By default, schemagen will look for a configuration file named <code>schemagen.r
 &lt;/rdf:RDF&gt;
 </pre></code></p>
 <hr />
-<p><small>CVS $Id: schemagen.html,v 1.3 2003-08-28 11:29:05 andy_seaborne Exp $</small></p>
+<p><small>CVS $Id: schemagen.html,v 1.4 2004-01-30 23:58:59 ian_dickinson Exp $</small></p>
 </body>
 </html>
