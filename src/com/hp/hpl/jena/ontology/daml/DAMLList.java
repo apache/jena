@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLList.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-08-28 11:22:12 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * in the current list interpretation.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLList.java,v 1.4 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLList.java,v 1.5 2003-08-28 11:22:12 ian_dickinson Exp $
  */
 public interface DAMLList
     extends RDFList
@@ -80,7 +80,7 @@ public interface DAMLList
      * given value and whose rest is the current list.  This is the 'cons' operator
      * familiar from other list processing languages.</p>
      *
-     * @param The new value to be added to the head of the list
+     * @param value The new value to be added to the head of the list
      * @return a new list whose <code>daml:first</code> is the value, and whose
      *         <code>daml:rest</code> is this list.
      */
@@ -124,7 +124,7 @@ public interface DAMLList
      * <p>Set the property <code>daml:rest</code> for the given list element. This is a single
      * value that denotes the tail of the list.</p>
      *
-     * @param value The value to be assigned to the tail of the list.
+     * @param tail The value to be assigned to the tail of the list.
      */
     public void setRest( DAMLList tail );
 
