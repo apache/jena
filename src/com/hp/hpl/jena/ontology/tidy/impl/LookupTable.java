@@ -15,7 +15,8 @@ import com.hp.hpl.jena.reasoner.rulesys.Util;
  */
 class LookupTable implements Constants, Lookup {
 
-
+  static final int WW = 9;
+  static final int MM = (1<<WW)-1;
 	static final int key[];
 	static final int value[];
 	static final byte action[];

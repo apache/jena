@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.4 2003-12-03 14:35:33 jeremy_carroll Exp $
+  $Id: MinimalSubGraph.java,v 1.5 2003-12-03 21:30:56 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -39,6 +39,8 @@ class MinimalSubGraph extends AbsChecker {
 	 */
 	MinimalSubGraph(boolean lite, Triple problem, CheckerImpl parent) {
 		super(lite);
+		
+	//	parent.dump();
 		//unionHasBeen = new Union(hasBeenChecked,justForErrorMessages);
 		justForErrorMessages = hasBeenChecked;
 		parentUnion = new Union(parent.hasBeenChecked,parent.justForErrorMessages);

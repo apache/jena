@@ -17,7 +17,6 @@
 package owlcompiler;
 
 import com.hp.hpl.jena.ontology.tidy.impl.CategorySet;
-import com.hp.hpl.jena.ontology.tidy.impl.Constants;
 //import com.hp.hpl.jena.ontology.tidy.impl.Grammar;
 //import com.hp.hpl.jena.ontology.tidy.impl.Q;
 import com.hp.hpl.jena.shared.*;

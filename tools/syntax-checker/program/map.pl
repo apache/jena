@@ -191,6 +191,7 @@ findType(_Seq,lexicalForm@language^^_DT,literal,_).
 findType(_Seq,lexicalForm@language,literal,_).
 findType(_Seq,lexicalForm^^_DT,literal,_).
 findType(_Seq,lexicalForm,literal,_).
+findType(_,badID,badID,_).
 findType(_,x([nonterminal(SomeID)]),SomeID,_) :-
    atomic(SomeID),
    atom_concat(_,'ID',SomeID),

@@ -63,6 +63,8 @@ annotation ::=
    annotation( a, individual ).
 annotation ::=
    annotation( a, a ).
+annotation ::=
+   annotation( a, b ).
 
 
 annotation ::=

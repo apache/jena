@@ -1,6 +1,6 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.3 2003-12-03 14:35:15 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.4 2003-12-03 21:30:41 jeremy_carroll Exp $
 */
 package owlcompiler;
 import com.hp.hpl.jena.ontology.tidy.impl.*;
@@ -12,90 +12,86 @@ class Grammar implements Constants {
     static final int cyclicFirst = 4;
     static final int badRestriction = 5;
     static final int annotationPropID = 6;
-    static final int classID = 7;
-    static final int dataAnnotationPropID = 8;
-    static final int dataPropID = 9;
-    static final int dataRangeID = 10;
-    static final int datatypeID = 11;
-    static final int dlInteger = 12;
-    static final int individualID = 13;
-    static final int liteInteger = 14;
-    static final int literal = 15;
-    static final int objectPropID = 16;
-    static final int ontologyID = 17;
-    static final int ontologyPropertyID = 18;
-    static final int transitivePropID = 19;
-    static final int unnamedIndividual = 20;
-    static final int unnamedOntology = 21;
-    static final int userTypedLiteral = 22;
-    static final int allDifferent = 23;
-    static final int description5disjointWith = 24;
-    static final int description5equivalentClass = 25;
-    static final int description5object = 26;
-    static final int description5subClassOf = 27;
-    static final int listOfDataLiteral = 28;
-    static final int listOfDescription = 29;
-    static final int listOfIndividualID = 30;
-    static final int restriction6disjointWith = 31;
-    static final int restriction6equivalentClass = 32;
-    static final int restriction6object = 33;
-    static final int restriction6subClassOf = 34;
-    static final int restriction7disjointWith = 35;
-    static final int restriction7equivalentClass = 36;
-    static final int restriction7object = 37;
-    static final int restriction7subClassOf = 38;
-    static final int restriction8disjointWith = 39;
-    static final int restriction8equivalentClass = 40;
-    static final int restriction8object = 41;
-    static final int restriction8subClassOf = 42;
-    static final int unnamedDataRange = 43;
-    static final int owlAllDifferent = 44;
-    static final int owlAnnotationProperty = 45;
-    static final int owlClass = 46;
-    static final int owlDataRange = 47;
-    static final int owlDatatypeProperty = 48;
-    static final int owlDeprecatedClass = 49;
-    static final int owlDeprecatedProperty = 50;
-    static final int owlFunctionalProperty = 51;
-    static final int owlInverseFunctionalProperty = 52;
-    static final int owlObjectProperty = 53;
-    static final int owlOntology = 54;
-    static final int owlOntologyProperty = 55;
-    static final int owlRestriction = 56;
-    static final int owlSymmetricProperty = 57;
-    static final int owlTransitiveProperty = 58;
-    static final int owlcomplementOf = 59;
-    static final int owldifferentFrom = 60;
-    static final int owldisjointWith = 61;
-    static final int owldistinctMembers = 62;
-    static final int owlequivalentClass = 63;
-    static final int owlequivalentProperty = 64;
-    static final int owlhasValue = 65;
-    static final int owlintersectionOf = 66;
-    static final int owlinverseOf = 67;
-    static final int owlmaxCardinality = 68;
-    static final int owlonProperty = 69;
-    static final int owloneOf = 70;
-    static final int owlsameAs = 71;
-    static final int owlsomeValuesFrom = 72;
-    static final int owlunionOf = 73;
-    static final int rdfList = 74;
-    static final int rdfProperty = 75;
-    static final int rdfXMLLiteral = 76;
+    static final int badID = 7;
+    static final int classID = 8;
+    static final int dataAnnotationPropID = 9;
+    static final int dataPropID = 10;
+    static final int dataRangeID = 11;
+    static final int datatypeID = 12;
+    static final int dlInteger = 13;
+    static final int individualID = 14;
+    static final int liteInteger = 15;
+    static final int literal = 16;
+    static final int objectPropID = 17;
+    static final int ontologyID = 18;
+    static final int ontologyPropertyID = 19;
+    static final int transitivePropID = 20;
+    static final int unnamedIndividual = 21;
+    static final int unnamedOntology = 22;
+    static final int userTypedLiteral = 23;
+    static final int allDifferent = 24;
+    static final int description5disjointWith = 25;
+    static final int description5equivalentClass = 26;
+    static final int description5object = 27;
+    static final int description5subClassOf = 28;
+    static final int listOfDataLiteral = 29;
+    static final int listOfDescription = 30;
+    static final int listOfIndividualID = 31;
+    static final int restriction6disjointWith = 32;
+    static final int restriction6equivalentClass = 33;
+    static final int restriction6object = 34;
+    static final int restriction6subClassOf = 35;
+    static final int restriction7disjointWith = 36;
+    static final int restriction7equivalentClass = 37;
+    static final int restriction7object = 38;
+    static final int restriction7subClassOf = 39;
+    static final int restriction8disjointWith = 40;
+    static final int restriction8equivalentClass = 41;
+    static final int restriction8object = 42;
+    static final int restriction8subClassOf = 43;
+    static final int unnamedDataRange = 44;
+    static final int owlAllDifferent = 45;
+    static final int owlAnnotationProperty = 46;
+    static final int owlClass = 47;
+    static final int owlDataRange = 48;
+    static final int owlDatatypeProperty = 49;
+    static final int owlDeprecatedClass = 50;
+    static final int owlDeprecatedProperty = 51;
+    static final int owlFunctionalProperty = 52;
+    static final int owlInverseFunctionalProperty = 53;
+    static final int owlObjectProperty = 54;
+    static final int owlOntology = 55;
+    static final int owlOntologyProperty = 56;
+    static final int owlRestriction = 57;
+    static final int owlSymmetricProperty = 58;
+    static final int owlTransitiveProperty = 59;
+    static final int owlcomplementOf = 60;
+    static final int owldifferentFrom = 61;
+    static final int owldisjointWith = 62;
+    static final int owldistinctMembers = 63;
+    static final int owlequivalentClass = 64;
+    static final int owlequivalentProperty = 65;
+    static final int owlhasValue = 66;
+    static final int owlintersectionOf = 67;
+    static final int owlinverseOf = 68;
+    static final int owlmaxCardinality = 69;
+    static final int owlonProperty = 70;
+    static final int owloneOf = 71;
+    static final int owlsameAs = 72;
+    static final int owlsomeValuesFrom = 73;
+    static final int owlunionOf = 74;
+    static final int rdfList = 75;
+    static final int rdfProperty = 76;
     static final int rdffirst = 77;
     static final int rdfnil = 78;
     static final int rdfrest = 79;
     static final int rdftype = 80;
     static final int rdfsClass = 81;
-    static final int rdfsContainer = 82;
-    static final int rdfsContainerMembershipProperty = 83;
-    static final int rdfsDatatype = 84;
-    static final int rdfsResource = 85;
-    static final int rdfsdomain = 86;
-    static final int rdfsmember = 87;
-    static final int rdfsrange = 88;
-    static final int rdfssubClassOf = 89;
-    static final int rdfssubPropertyOf = 90;
+    static final int rdfsDatatype = 82;
+    static final int rdfsdomain = 83;
+    static final int rdfsrange = 84;
+    static final int rdfssubClassOf = 85;
+    static final int rdfssubPropertyOf = 86;
  static String catNames[] = { "--not used--",
       "orphan",
       "notype",
@@ -103,6 +99,7 @@ class Grammar implements Constants {
       "cyclicFirst",
       "badRestriction",
       "annotationPropID",
+      "badID",
       "classID",
       "dataAnnotationPropID",
       "dataPropID",
@@ -172,18 +169,13 @@ class Grammar implements Constants {
       "owlunionOf",
       "rdfList",
       "rdfProperty",
-      "rdfXMLLiteral",
       "rdffirst",
       "rdfnil",
       "rdfrest",
       "rdftype",
       "rdfsClass",
-      "rdfsContainer",
-      "rdfsContainerMembershipProperty",
       "rdfsDatatype",
-      "rdfsResource",
       "rdfsdomain",
-      "rdfsmember",
       "rdfsrange",
       "rdfssubClassOf",
       "rdfssubPropertyOf",
@@ -537,13 +529,13 @@ static int getBuiltinID(String uri) {
           return rdfsClass
 ;
        } else if ( uri.equals("Resource") ) {
-           return DisallowedVocab;
+           return badID;
        } else if ( uri.equals("member") ) {
-           return DisallowedVocab;
+           return badID;
        } else if ( uri.equals("Container") ) {
-           return DisallowedVocab;
+           return badID;
        } else if ( uri.equals("ContainerMembershipProperty") ) {
-           return DisallowedVocab;
+           return badID;
        } else { return BadRDF; 
      }
    }
@@ -634,9 +626,9 @@ restriction6disjointWith,
 restriction7disjointWith,
 restriction8disjointWith,
 };
-static final int MAX_SINGLETON_SET = 91 + 1;
+static final int MAX_SINGLETON_SET = 87 + 1;
 static {
-for (int i=0; i<91; i++) {
+for (int i=0; i<87; i++) {
 if ( i != CategorySet.find(new int[]{i},true) )
       System.err.println("initialization problem");
 }
@@ -832,6 +824,18 @@ SPOA( dataPropID, annotationPropID, annotationPropID, 0 ),
 SPOA( objectPropID, annotationPropID, annotationPropID, 0 ),
 SPOA( transitivePropID, annotationPropID, annotationPropID, 0 ),
 SPOA( datatypeID, annotationPropID, annotationPropID, 0 ),
+SPOA( ontologyID, annotationPropID, badID, 0 ),
+SPOA( unnamedOntology, annotationPropID, badID, 0 ),
+SPOA( individualID, annotationPropID, badID, 0 ),
+SPOA( unnamedIndividual, annotationPropID, badID, 0 ),
+SPOA( annotationPropID, annotationPropID, badID, 0 ),
+SPOA( dataAnnotationPropID, annotationPropID, badID, 0 ),
+SPOA( ontologyPropertyID, annotationPropID, badID, 0 ),
+SPOA( classID, annotationPropID, badID, 0 ),
+SPOA( dataPropID, annotationPropID, badID, 0 ),
+SPOA( objectPropID, annotationPropID, badID, 0 ),
+SPOA( transitivePropID, annotationPropID, badID, 0 ),
+SPOA( datatypeID, annotationPropID, badID, 0 ),
 SPOA( ontologyID, annotationPropID, dataAnnotationPropID, 0 ),
 SPOA( unnamedOntology, annotationPropID, dataAnnotationPropID, 0 ),
 SPOA( individualID, annotationPropID, dataAnnotationPropID, 0 ),
@@ -1378,18 +1382,6 @@ SPOA( dataPropID, annotationPropID, rdfProperty, 0 ),
 SPOA( objectPropID, annotationPropID, rdfProperty, 0 ),
 SPOA( transitivePropID, annotationPropID, rdfProperty, 0 ),
 SPOA( datatypeID, annotationPropID, rdfProperty, 0 ),
-SPOA( ontologyID, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( unnamedOntology, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( individualID, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( unnamedIndividual, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( annotationPropID, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( dataAnnotationPropID, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( ontologyPropertyID, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( classID, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( dataPropID, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( objectPropID, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( transitivePropID, annotationPropID, rdfXMLLiteral, 0 ),
-SPOA( datatypeID, annotationPropID, rdfXMLLiteral, 0 ),
 SPOA( ontologyID, annotationPropID, rdffirst, 0 ),
 SPOA( unnamedOntology, annotationPropID, rdffirst, 0 ),
 SPOA( individualID, annotationPropID, rdffirst, 0 ),
@@ -1450,30 +1442,6 @@ SPOA( dataPropID, annotationPropID, rdfsClass, 0 ),
 SPOA( objectPropID, annotationPropID, rdfsClass, 0 ),
 SPOA( transitivePropID, annotationPropID, rdfsClass, 0 ),
 SPOA( datatypeID, annotationPropID, rdfsClass, 0 ),
-SPOA( ontologyID, annotationPropID, rdfsContainer, 0 ),
-SPOA( unnamedOntology, annotationPropID, rdfsContainer, 0 ),
-SPOA( individualID, annotationPropID, rdfsContainer, 0 ),
-SPOA( unnamedIndividual, annotationPropID, rdfsContainer, 0 ),
-SPOA( annotationPropID, annotationPropID, rdfsContainer, 0 ),
-SPOA( dataAnnotationPropID, annotationPropID, rdfsContainer, 0 ),
-SPOA( ontologyPropertyID, annotationPropID, rdfsContainer, 0 ),
-SPOA( classID, annotationPropID, rdfsContainer, 0 ),
-SPOA( dataPropID, annotationPropID, rdfsContainer, 0 ),
-SPOA( objectPropID, annotationPropID, rdfsContainer, 0 ),
-SPOA( transitivePropID, annotationPropID, rdfsContainer, 0 ),
-SPOA( datatypeID, annotationPropID, rdfsContainer, 0 ),
-SPOA( ontologyID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( unnamedOntology, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( individualID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( unnamedIndividual, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( annotationPropID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( dataAnnotationPropID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( ontologyPropertyID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( classID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( dataPropID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( objectPropID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( transitivePropID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
-SPOA( datatypeID, annotationPropID, rdfsContainerMembershipProperty, 0 ),
 SPOA( ontologyID, annotationPropID, rdfsDatatype, 0 ),
 SPOA( unnamedOntology, annotationPropID, rdfsDatatype, 0 ),
 SPOA( individualID, annotationPropID, rdfsDatatype, 0 ),
@@ -1486,18 +1454,6 @@ SPOA( dataPropID, annotationPropID, rdfsDatatype, 0 ),
 SPOA( objectPropID, annotationPropID, rdfsDatatype, 0 ),
 SPOA( transitivePropID, annotationPropID, rdfsDatatype, 0 ),
 SPOA( datatypeID, annotationPropID, rdfsDatatype, 0 ),
-SPOA( ontologyID, annotationPropID, rdfsResource, 0 ),
-SPOA( unnamedOntology, annotationPropID, rdfsResource, 0 ),
-SPOA( individualID, annotationPropID, rdfsResource, 0 ),
-SPOA( unnamedIndividual, annotationPropID, rdfsResource, 0 ),
-SPOA( annotationPropID, annotationPropID, rdfsResource, 0 ),
-SPOA( dataAnnotationPropID, annotationPropID, rdfsResource, 0 ),
-SPOA( ontologyPropertyID, annotationPropID, rdfsResource, 0 ),
-SPOA( classID, annotationPropID, rdfsResource, 0 ),
-SPOA( dataPropID, annotationPropID, rdfsResource, 0 ),
-SPOA( objectPropID, annotationPropID, rdfsResource, 0 ),
-SPOA( transitivePropID, annotationPropID, rdfsResource, 0 ),
-SPOA( datatypeID, annotationPropID, rdfsResource, 0 ),
 SPOA( ontologyID, annotationPropID, rdfsdomain, 0 ),
 SPOA( unnamedOntology, annotationPropID, rdfsdomain, 0 ),
 SPOA( individualID, annotationPropID, rdfsdomain, 0 ),
@@ -1510,18 +1466,6 @@ SPOA( dataPropID, annotationPropID, rdfsdomain, 0 ),
 SPOA( objectPropID, annotationPropID, rdfsdomain, 0 ),
 SPOA( transitivePropID, annotationPropID, rdfsdomain, 0 ),
 SPOA( datatypeID, annotationPropID, rdfsdomain, 0 ),
-SPOA( ontologyID, annotationPropID, rdfsmember, 0 ),
-SPOA( unnamedOntology, annotationPropID, rdfsmember, 0 ),
-SPOA( individualID, annotationPropID, rdfsmember, 0 ),
-SPOA( unnamedIndividual, annotationPropID, rdfsmember, 0 ),
-SPOA( annotationPropID, annotationPropID, rdfsmember, 0 ),
-SPOA( dataAnnotationPropID, annotationPropID, rdfsmember, 0 ),
-SPOA( ontologyPropertyID, annotationPropID, rdfsmember, 0 ),
-SPOA( classID, annotationPropID, rdfsmember, 0 ),
-SPOA( dataPropID, annotationPropID, rdfsmember, 0 ),
-SPOA( objectPropID, annotationPropID, rdfsmember, 0 ),
-SPOA( transitivePropID, annotationPropID, rdfsmember, 0 ),
-SPOA( datatypeID, annotationPropID, rdfsmember, 0 ),
 SPOA( ontologyID, annotationPropID, rdfsrange, 0 ),
 SPOA( unnamedOntology, annotationPropID, rdfsrange, 0 ),
 SPOA( individualID, annotationPropID, rdfsrange, 0 ),

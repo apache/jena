@@ -37,7 +37,7 @@ abstract class CNode implements CNodeI, Constants{
                     );
 					return new CURIref(n,eg,Grammar.classID);
 					*/
-                	
+              /*  now uses badID
                 case DisallowedVocab:
                 
                     ((AbsChecker)eg).addProblem(
@@ -48,6 +48,7 @@ abstract class CNode implements CNodeI, Constants{
                        )
                     );
                     return new CURIref(n,eg);
+                    */
                 case BadOWL:
                     ((AbsChecker)eg).addProblem(
                        new SyntaxProblemImpl(

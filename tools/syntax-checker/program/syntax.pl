@@ -32,7 +32,7 @@ compSyntax(Level) :-
    fail.
 compSyntax(Level) :-
    flag(builtinX,_,1),
-   setof(A+B,(builtiny(A,B);disallowed(A,B)),S),
+   setof(A+B,(builtiny(A,B)),S),
    member(A+B,S),
    flag(builtinX,N,N+1),
    assertOnce(xmapping(arg,V,annotation(a,A:B),

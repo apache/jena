@@ -164,7 +164,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.22 2003-12-03 14:35:33 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.23 2003-12-03 21:30:49 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
@@ -485,7 +485,7 @@ getBuiltins(Q) :-
   disallowed(Q,N),
   \+ builtin(Q,N),
   wlist(['       } else if ( uri.equals("',N,'") ) {',nl]),
-  wlist(['           return DisallowedVocab;',nl]),
+  wlist(['           return badID;',nl]),
   fail.
 
 getBuiltins(owl) :-

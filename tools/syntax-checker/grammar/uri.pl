@@ -7,6 +7,7 @@ comment(note,
      owl:backwardsCompatibleWith, etc. 
      There is no facility for user-defined metaproperties.']).
      */
+uriref(b, bad, lite).
 uriref(m, ontologyProperty, lite ).
 uriref(dt, datatype, lite).
 uriref(a, annotationProp, lite).

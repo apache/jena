@@ -108,6 +108,8 @@ D + annotation( a, individual ) ->
 
 D + annotation( a, a ) ->
           t(D,x(a),x(a) ).
+D + annotation( a, b ) ->
+          t(D,x(a),b ).
 
 D + annotation( a, da ) ->
           t(D,x(a),x(da) ).
