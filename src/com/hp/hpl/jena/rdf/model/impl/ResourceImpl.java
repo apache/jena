@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-04-16 15:33:57 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-04-17 20:14:00 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -49,6 +49,15 @@ public class ResourceImpl extends EnhNode implements Resource {
             return new ResourceImpl(n,eg);
         }
     };
+    final static public Implementation rdfNodeFactory = new Implementation() {
+	public EnhNode wrap(Node n,EnhGraph eg) {
+		if ( n.isURI() || n.isBlank() )
+		  return new ResourceImpl(n,eg);
+		if ( n.isLiteral() )
+		  return new LiteralImpl(n,eg);
+		return null;
+	}
+};
     private int splitHere = 0;
 
     private ResourceImpl( Resource r )
