@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLInstanceImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-23 15:14:21 $
+ * Last modified on   $Date: 2003-02-20 17:11:57 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -66,7 +66,7 @@ import java.util.Iterator;
  * Java representation of a DAML Instance.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLInstanceImpl.java,v 1.2 2003-01-23 15:14:21 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLInstanceImpl.java,v 1.3 2003-02-20 17:11:57 ian_dickinson Exp $
  */
 public class DAMLInstanceImpl
     extends DAMLCommonImpl
@@ -188,8 +188,7 @@ public class DAMLInstanceImpl
 
 
     /**
-     * Answer a property accessor for a user defined property.  TODO: think of
-     * a better name for this method!
+     * Answer a property accessor for a user defined property.
      *
      * @param property An RDF or DAML property
      * @return a property accessor, that simplifies some of the basic operations

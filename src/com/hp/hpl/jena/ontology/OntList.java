@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntList.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-02-19 10:54:24 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-02-20 17:11:11 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -26,7 +26,6 @@ package com.hp.hpl.jena.ontology;
 ///////////////
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.enhanced.*;
 
 import java.util.*;
 
@@ -58,15 +57,10 @@ import java.util.*;
  * appropriately compact serialisations, such as <code>rdf:parseType=&quot;
  * Collection&quot;</code>
  * </p>
- * <p>
- * TODO This class currently extends RDFNode, to give a common abstraction base.
- * This will change in future, when the decision is taken as to the correct top
- * type for the presentation layer, possibly Polymorphic or EnhNode.
- * </p>
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: OntList.java,v 1.3 2003-02-19 10:54:24 chris-dollin Exp $)
+ * @version Release ($Id: OntList.java,v 1.4 2003-02-20 17:11:11 ian_dickinson Exp $)
  */
 public interface OntList
     extends OntResource

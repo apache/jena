@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-03 22:49:39 $
+ * Last modified on   $Date: 2003-02-20 17:11:57 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -51,17 +51,10 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.RDFException;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.SimpleSelector;
 
 import com.hp.hpl.jena.mem.ModelMem;
-
-
 
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.OneToManyMap;
@@ -94,16 +87,9 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * convenience interface to the underlying RDF statements, and providing a set of
  * indexes for efficiently retrieving these objects.
  * </p>
- * <p>
- * <b>TODO:</b> this class should really not extend ModelMem, since that commits it
- * to a particular storage model (in-memory storage). Brian is looking at refactoring
- * the Jena Model implementations, to parameterise them on a storage module, rather than
- * expressing that storage through the class hierarchy. Pending that change, I have
- * decided to directly extend ModelMem.
- * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.4 2003-02-03 22:49:39 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.5 2003-02-20 17:11:57 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends ModelMem
@@ -724,31 +710,54 @@ public class DAMLModelImpl
 
 
     /**
-     * Answer true if the model contains the given resource.  TODO: this
-     * is a workaround for a Jena bug, and should go away soon ... hopefully,
-     * as it's horribly inefficient!
+     * Answer true if the model contains the given resource.
+     * 
+     * @param uri The string URI of the resource to test
+     * @return True if the resource appears in any subject, predicate or object position in the model.
      */
     protected boolean containsResource( String uri ) {
         try {
-            // currently no better way to do this than search the whole model - yuck!
-            for (StmtIterator i = listStatements();  i.hasNext();  ) {
-                Statement s = i.nextStatement();
-                Resource subj = s.getSubject();
-                Property pred = s.getPredicate();
-                RDFNode obj = s.getObject();
+            // first try as a subject
+            Resource r = getResource( uri );
+            StmtIterator i0 = listStatements( new SimpleSelector( r, null, (RDFNode) null ) );
+            if (i0.hasNext()) {
+                i0.close();
+                return true;
+            }
+            else {
+                i0.close();
+            }
 
-                if ((subj.getURI() != null && subj.getURI().equals( uri ))   ||
-                    (pred.getURI() != null && pred.getURI().equals( uri ))   ||
-                    (obj instanceof com.hp.hpl.jena.rdf.model.Resource  &&
-                     (((Resource) obj).getURI()) != null && ((Resource) obj).getURI().equals( uri ))) {
+            // now as object
+            StmtIterator i1 = listStatements( new SimpleSelector( null, null, r ) );
+            if (i1.hasNext()) {
+                i1.close();
+                return true;
+            }
+            else {
+                i1.close();
+            }
+
+            // now as predicate: note that this URI may not be a valid predicate URI
+            // so we ignore any RDFException in this region
+            try {
+                Property p = getProperty( uri );
+                StmtIterator p0 = listStatements( new SimpleSelector( null, p, (RDFNode) null ) );
+                if (p0.hasNext()) {
+                    p0.close();
                     return true;
                 }
+                else {
+                    p0.close();
+                }
             }
+            catch (RDFException ignore) {}
         }
         catch (RDFException e) {
             Log.severe( "RDF exception: " + e, e );
         }
 
+        // not in the model
         return false;
     }
 
