@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.16 2003-10-16 15:30:42 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.17 2004-03-09 16:16:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -79,7 +79,12 @@ public class PatternStage extends Stage
     protected void plantWhereFullyBound( Expression e, Iterator it, Mapping map, ValuatorSet [] es )
         {
         for (int i = 0; i < boundVariables.length; i += 1)
-            if (canEval( e, i )) { es[i].add( e.prepare( map ) ); it.remove(); return; }
+            if (canEval( e, i )) 
+                { 
+                es[i].add( e.prepare( map ) ); 
+                it.remove(); 
+                return; 
+                }
         }
     
     /**

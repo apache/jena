@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExpressionSet.java,v 1.8 2003-10-16 15:30:42 chris-dollin Exp $
+  $Id: ExpressionSet.java,v 1.9 2004-03-09 16:16:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -72,6 +72,9 @@ public class ExpressionSet
     public Iterator iterator()
         { return expressions.iterator(); }
     
+    /**
+         Answer a string representing this ExpressionSet for human consumption.
+    */
     public String toString()
         { return expressions.toString(); }
     }

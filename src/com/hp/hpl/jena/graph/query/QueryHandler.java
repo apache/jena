@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryHandler.java,v 1.11 2003-10-06 05:37:40 chris-dollin Exp $
+  $Id: QueryHandler.java,v 1.12 2004-03-09 16:16:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -33,7 +33,7 @@ public interface QueryHandler
     <p>
         _map_ is the variable binding map to use and update. _constraints_ is
         the current constraint expression: if this Stage can absorb some of the 
-        ANDed constraints, it may do so, remove them from the graph.
+        ANDed constraints, it may do so, and remove them from the ExpressionSet.
     */
     public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] p );
     
