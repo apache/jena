@@ -2,7 +2,7 @@
 # OWL rule set v0.2
 # This rule set is design to implement owl(f)lite using the hybrid
 # rule system (mixture of forward and backward chaining).
-# $Id: owl-fb.rules,v 1.8 2003-06-16 17:00:47 der Exp $
+# $Id: owl-fb.rules,v 1.9 2003-06-22 16:11:51 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -167,7 +167,7 @@
 						 -> (?C rdfs:subClassOf all(?P, ?C)) ]
 
 [restrictionR-S: (?P rdfs:range ?C), notFunctor(?C) ->
-     [restrictionRSb: (?X rdf:type some(?P, ?C)) <- (?X ?P *) ] ]
+     [restrictionRSb: (?X rdf:type some(?P, ?C)) <- (?X ?P ?A) ] ]
      
 [restrictionRMn-S: (?P rdfs:range ?D), (?C rdfs:subClassOf min(?P, '1')) 
 						-> (?C rdfs:subClassOf some(?P, ?D)) ]
@@ -190,7 +190,7 @@
 
 [restriction-S: (?X rdf:type some(?P, ?C)) <- bound(?P), bound(?X), (?X ?P ?V), (?V rdf:type ?C) ]
 
-[restrictionM-N: (?X rdf:type owl:Nothing) <- (?X rdf:type max(?P, '0')), (?X ?P *) ]
+[restrictionM-N: (?X rdf:type owl:Nothing) <- (?X rdf:type max(?P, '0')), (?X ?P ?A) ]
 
 [restrictionA-Ty: (?C rdfs:subClassOf all(?P, ?D)), notEqual(?P, rdf:type), notEqual(?C, ?D) ->
 		[restrictionA-tyb: (?Y rdf:type ?D) <- (?X rdf:type ?C), (?X ?P ?Y) ] ]
