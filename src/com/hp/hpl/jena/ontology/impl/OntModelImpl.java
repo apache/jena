@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.77 $
+ * Revision           $Revision: 1.78 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 19:44:50 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-12-10 15:20:09 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.77 2004-12-07 19:44:50 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.78 2004-12-10 15:20:09 chris-dollin Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2692,8 +2692,9 @@ public class OntModelImpl
     protected BindingQueryPlan queryXTypeOfType( Resource type ) {
         if (type != null) {
             Query q = new Query();
-            q.addMatch( Query.X, RDF.type.asNode(), Query.Y );
+            // kers: this non-intuitive order should improve search performance
             q.addMatch( Query.Y, RDF.type.asNode(), type.asNode() );
+            q.addMatch( Query.X, RDF.type.asNode(), Query.Y );
             
             return queryHandler().prepareBindings( q, new Node[] {Query.X} );
         }
