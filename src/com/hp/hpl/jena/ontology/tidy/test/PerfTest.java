@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PerfTest.java,v 1.2 2004-01-27 15:45:23 jeremy_carroll Exp $
+  $Id: PerfTest.java,v 1.3 2004-03-16 20:23:05 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 import org.xml.sax.InputSource;
@@ -356,8 +356,8 @@ public class PerfTest {
 	 * @param nms
 	 */
 	private void testWW(String nm, String[] nms) {
-	//	uk.ac.man.cs.img.owl.validation.SpeciesValidator.main(new String[]{"-q","-d",nm});
- //   runtime.gc();
+//		uk.ac.man.cs.img.owl.validation.SpeciesValidator.main(new String[]{"-q","-d",nm});
+ //  runtime.gc();
  //   System.err.println(runtime.totalMemory()-runtime.freeMemory());
 	}
 //	OWLSpeciesValidator owlTest = new OWLSpeciesValidator();
@@ -465,6 +465,7 @@ public class PerfTest {
 	}
 	void go() {
 		
+		if ( DoMem )
 		new Thread() {
 			public void run() {
 				while (true) {
