@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: UniqueExtendedIterator.java,v 1.4 2003-04-15 21:31:59 jeremy_carroll Exp $
+ * $Id: UniqueExtendedIterator.java,v 1.5 2003-06-20 14:28:40 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util.iterator;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * to be returned by the iterator. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:31:59 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-20 14:28:40 $
  */
 public class UniqueExtendedIterator extends WrappedIterator {
 
@@ -41,20 +41,14 @@ public class UniqueExtendedIterator extends WrappedIterator {
      */
     protected Object nextIfNew() {
         Object value = super.next();
-        if (seen.add(value)) {
-            return value;
-        } else {
-            return null;
-        }
+        return seen.add( value ) ? value : null;
     }
     
     /**
      * @see Iterator#hasNext()
      */
     public boolean hasNext() {
-        while (next == null && super.hasNext()) {
-            next = nextIfNew();
-        }
+        while (next == null && super.hasNext()) next = nextIfNew();
         return next != null;
     }
 
@@ -62,11 +56,7 @@ public class UniqueExtendedIterator extends WrappedIterator {
      * @see Iterator#next()
      */
     public Object next() {
-        if (next == null) {
-            if (!hasNext()) {
-                throw new NoSuchElementException("Element no available");
-            }
-        }
+        if (hasNext() == false) noElements( "exhausted UniqueIterator" );
         Object result = next;
         next = null;
         return result;

@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: NiceIterator.java,v 1.2 2003-01-28 10:39:12 chris-dollin Exp $
+  $Id: NiceIterator.java,v 1.3 2003-06-20 14:28:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
+
+import java.util.*;
 
 /**
 	@author kers
@@ -34,10 +36,19 @@ public class NiceIterator implements ExtendedIterator
         default next: throw an exception.
     */
     public Object next()
-        {
-        throw new UnsupportedOperationException( "no objects in this iterator" );
-        }
-
+        { return noElements( "empty NiceIterator" ); }
+        
+    /**
+        Utility method for this and other (sub)classes: raise the appropriate
+        "no more elements" exception. I note that we raised the wrong exception
+        in at least one case ...
+    
+        @param message the string to include in the exception
+        @return never - but we have a return type to please the compiler
+    */
+    protected Object noElements( String message )
+        { throw new NoSuchElementException( message ); }
+        
     /**
         default remove: we have no elements, so we can't remove any.
     */
