@@ -8,7 +8,7 @@ LIBS="$(cat<<EOF
 antlr.jar
 commons-logging.jar
 concurrent.jar
-icu4j.jar
+icu4j_3_2.jar
 jakarta-oro-2.0.5.jar
 jena.jar
 junit.jar

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.16 2005-02-21 12:14:32 andy_seaborne Exp $
+  $Id: InfModelSpec.java,v 1.17 2005-04-05 17:39:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -42,7 +42,6 @@ public class InfModelSpec extends ModelSpecImpl
         Statement xx = description.listStatements( root, JMS.reasonsWith, (RDFNode) null ).nextStatement();
         reasonerRoot = st.getSubject();
         Resource yy = xx.getResource();
-        Assert.assertEquals( reasonerRoot, yy );
         reasonerResource = st.getResource();
         factory = getReasonerFactory( st.getSubject(), description );
         }   
