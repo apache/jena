@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.31 2003-11-13 16:36:32 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.32 2003-11-25 10:51:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.daml.impl.DAMLModelImpl;
@@ -51,7 +50,28 @@ public class ModelFactory extends ModelFactoryBase
     */
     public static final ReificationStyle Minimal = ReificationStyle.Minimal;
     
-    private static PrefixMapping defaultPrefixMapping = new PrefixMappingImpl();
+    /**
+        Each Model created by ModelFactory has a default set of prefix mappings.
+        These mappings are copied from a (static) default PrefixMapping which is
+        set by setDefaultModelPrefixes. It is the reference to a PrefixMapping that
+        is retained, not a copy of it, so a user may set the defaults with this method
+        and continue to modify it; the modifications will appear in the next model to
+        be created.
+    <p>
+        When a Model is created from an existing Graph, the prefixes of that Graph 
+        are not disturbed; only ones not present in the Graph are added.
+        
+     	@param pm the default prefixes to use
+     	@return the previous default prefix mapping
+    */
+    public static PrefixMapping setDefaultModelPrefixes( PrefixMapping pm )
+        { return ModelCom.setDefaultModelPrefixes( pm ); }
+    
+    /**
+        Answer the current default model prefixes PrefixMapping object.
+    */
+    public static PrefixMapping getDefaultModelPrefixes()
+        { return ModelCom.getDefaultModelPrefixes(); }
     
     /**
         Answer a ModelSpec which can create models to the specifications in the RDF
@@ -96,7 +116,7 @@ public class ModelFactory extends ModelFactoryBase
         Answer a new memory-based model with the given reification style
     */
     public static Model createDefaultModel( ReificationStyle style )
-        { return new ModelCom( new GraphMem( style ), defaultPrefixMapping ); }   
+        { return new ModelCom( new GraphMem( style ) ); }   
 
     /**
         Answer a read-only Model with all the statements of this Model and any
@@ -114,12 +134,13 @@ public class ModelFactory extends ModelFactoryBase
         { return createDefaultModel( Minimal ); }
         
     /** 
-     * Answer a model that encapsulates the given graph.
-     * @param g A graph structure
-     * @return A model presenting an API view of graph g
-     */
+        Answer a model that encapsulates the given graph. Existing prefixes are
+        undisturbed.
+        @param g A graph structure
+        @return A model presenting an API view of graph g
+    */
     public static Model createModelForGraph( Graph g ) {
-        return new ModelCom( g, defaultPrefixMapping ); 
+        return new ModelCom( g ); 
     }
     
     /**

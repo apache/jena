@@ -1,14 +1,16 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelPrefixMapping.java,v 1.3 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: TestModelPrefixMapping.java,v 1.4 2003-11-25 10:51:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.test.*;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 
 import junit.framework.*;
 
@@ -25,7 +27,63 @@ public class TestModelPrefixMapping extends AbstractTestPrefixMapping
         { return new TestSuite( TestModelPrefixMapping.class ); }   
 
     protected PrefixMapping getMapping()
-        { return ModelFactory.createDefaultModel(); }                
+        { return ModelFactory.createDefaultModel(); }       
+    
+    protected static final String alphaPrefix = "alpha";
+    protected static final String betaPrefix = "beta";
+    protected static final String alphaURI = "http://testing.jena.hpl.hp.com/alpha#";
+    protected static final String betaURI = "http://testing.jena.hpl.hp.com/beta#";
+    
+    protected PrefixMapping baseMap = PrefixMapping.Factory.create()
+        .setNsPrefix( alphaPrefix, alphaURI )
+        .setNsPrefix( betaPrefix, betaURI );
+    
+    private PrefixMapping prevMap;
+    
+    public void setPrefixes()
+        {
+        prevMap = ModelCom.setDefaultModelPrefixes( baseMap );
+        }
+    
+    public void restorePrefixes()
+        {
+        ModelCom.setDefaultModelPrefixes( prevMap );
+        }
+    
+    /**
+        Test that a freshly-created Model has the prefixes established by the
+        default in ModelCom.
+    */
+    public void testDefaultPrefixes()
+        {
+        setPrefixes();
+        Model m = ModelFactory.createDefaultModel();
+        assertEquals( baseMap.getNsPrefixMap(), m.getNsPrefixMap() );
+        restorePrefixes();
+        }
+    
+    public void testOnlyFreshPrefixes()
+        {
+        setPrefixes();
+        try { doOnlyFreshPrefixes(); } finally { restorePrefixes(); }
+        }
+    
+    /**
+       Test that existing prefixes are not over-ridden by the default ones.
+    */
+    private void doOnlyFreshPrefixes()
+        { String newURI = "abc:def";
+        Graph g = Factory.createDefaultGraph();
+        PrefixMapping pm = g.getPrefixMapping();
+        pm.setNsPrefix( alphaPrefix, newURI );
+        Model m = ModelFactory.createModelForGraph( g );
+        assertEquals( newURI, m.getNsPrefixURI( alphaPrefix ) );
+        assertEquals( betaURI, m.getNsPrefixURI( betaPrefix ) ); }
+    
+    public void testGetDefault()
+        { setPrefixes();
+        try { assertSame( baseMap, ModelCom.getDefaultModelPrefixes() ); } 
+        finally { restorePrefixes(); } }
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.12 2003-08-27 12:59:59 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.13 2003-11-25 10:51:39 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -77,22 +77,16 @@ public class TestPackage extends GraphTestBase  {
 		}
 		
     public static TestSuite suite()
-        { TestSuite suite = new TestSuite( "Enhanced" ); 
-        // add all the tests defined in this class to the suite
-        /* */ suite.addTest( new TestPackage( "testSplitBasic" ) );    /* */
-        /* */ suite.addTest( new TestPackage( "testComboBasic" ) );    /* */
-        /* */ suite.addTest( new TestPackage( "testSplitFollow" ) );   /* */
-        /* */ suite.addTest( new TestPackage( "testComboFollow" ) );   /* */
-        /* */ suite.addTest( new TestPackage( "testSplitCache" ) );    /* */
-        /* */ suite.addTest( new TestPackage( "testComboCache" ) );    /* */
-        /* */ suite.addTest( new TestPackage( "testBitOfBothBasic" ) );/* */
-        /* */ suite.addTest( new TestPackage( "testBitOfBothFollow" ) );  /* */
-        /* */ suite.addTest( new TestPackage( "testBitOfBothCache" ) );   /* */
-        /* */ suite.addTest( new TestPackage( "testBitOfBothSurprise" ) ); /* */
-        /* */ suite.addTest( new TestPackage( "testBrokenBasic" ) );  /* */
-        /* */ suite.addTest( new TestPackage( "testSimple" ) );  /* */
-        suite.addTest( new TestSuite( TestPackage.class ) );
-        return suite;
+        { return new TestSuite( TestPackage.class ); }
+    
+    /**
+        test that equals works on an EnhNode (after hedgehog introduced FrontsNode
+        it didn't).
+    */
+    public void testEquals()
+        {
+        EnhNode a = new EnhNode( Node.create( "eg:example" ), null );
+        assertEquals( a, a );
         }
         
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelFactory.java,v 1.19 2003-09-11 15:00:50 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.20 2003-11-25 10:51:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -39,6 +39,21 @@ public class TestModelFactory extends ModelTestBase
     public void testCreateDefaultModel()
         { ModelFactory.createDefaultModel().close(); }    
 
+    public void testGetDefaultPrefixMapping()
+        {
+        assertSame( ModelCom.getDefaultModelPrefixes(), ModelFactory.getDefaultModelPrefixes() );
+        }
+    
+    public void testSetDefaultPrefixMapping()
+        {
+        PrefixMapping original = ModelCom.getDefaultModelPrefixes();
+        PrefixMapping pm = PrefixMapping.Factory.create();
+        ModelFactory.setDefaultModelPrefixes( pm );
+        assertSame( pm, ModelCom.getDefaultModelPrefixes() );
+        assertSame( pm, ModelFactory.getDefaultModelPrefixes() );
+        ModelCom.setDefaultModelPrefixes( original );
+        }
+    
     public void testCreateSpecFails()
         {
         try

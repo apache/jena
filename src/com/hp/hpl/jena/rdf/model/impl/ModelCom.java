@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.83 2003-11-13 16:36:32 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.84 2003-11-25 10:51:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -29,7 +29,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.83 $' Date='$Date: 2003-11-13 16:36:32 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.84 $' Date='$Date: 2003-11-25 10:51:39 $'
  */
 
 public class ModelCom 
@@ -48,12 +48,24 @@ implements Model, PrefixMapping, ModelLock
         { this( base, BuiltinPersonalities.model ); }
     
     public ModelCom( Graph base, Personality personality )
-        { super( base, personality ); }
+        { super( base, personality ); 
+        addDefaultPrefixMapping(); }
     
-    public ModelCom( Graph base, PrefixMapping pm )
-        { this( base ); 
-        setNsPrefixes( pm ); }
-	
+    private static PrefixMapping defaultPrefixMapping = PrefixMapping.Factory.create();
+    
+    protected void addDefaultPrefixMapping()
+        { Map temp = defaultPrefixMapping.getNsPrefixMap();
+        temp.putAll( this.getNsPrefixMap() );
+        this.setNsPrefixes( temp ); }
+    
+    public static PrefixMapping getDefaultModelPrefixes()
+        { return defaultPrefixMapping; }
+    
+    public static PrefixMapping setDefaultModelPrefixes( PrefixMapping pm )
+        { PrefixMapping result = defaultPrefixMapping;
+        defaultPrefixMapping = pm;
+        return result; }
+    
     public QueryHandler queryHandler()
     	{ return getGraph().queryHandler(); }
 		

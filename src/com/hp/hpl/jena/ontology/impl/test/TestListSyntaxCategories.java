@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-20 17:43:16 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-11-25 10:51:39 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.15 2003-11-20 17:43:16 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.16 2003-11-25 10:51:39 chris-dollin Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -193,7 +193,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list functional properties",  "file:testing/ontology/DAML/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list functional properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
                         new String[] {NS+"fp"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -205,7 +205,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list transitive properties",  "file:testing/ontology/DAML/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list transitive properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
                         new String[] {NS+"tp"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -217,7 +217,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list inverse functional properties",  "file:testing/ontology/DAML/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list inverse functional properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
                         new String[] {NS+"ifp"} ) 
         {
             public Iterator doList( OntModel m ) {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhNode.java,v 1.8 2003-11-20 16:53:13 chris-dollin Exp $
+  $Id: EnhNode.java,v 1.9 2003-11-25 10:51:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -19,8 +19,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *         <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)<br>
  *         <a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> (refactoring and commentage)
 */
-public class EnhNode 
-    extends Polymorphic
+public class EnhNode extends Polymorphic implements FrontsNode
 {
     
     /** The graph node that this enhanced node is wrapping */
@@ -29,7 +28,7 @@ public class EnhNode
     /** The enhanced graph containing this node */
     final protected EnhGraph enhGraph;
     
-    public EnhNode(Node n,EnhGraph g ) {
+    public EnhNode( Node n, EnhGraph g ) {
         super();
         node=n;
         enhGraph = g;
