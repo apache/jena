@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.5 2003-09-23 08:57:32 der Exp $
+ * $Id: TestBasicLP.java,v 1.6 2003-10-05 15:38:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-09-23 08:57:32 $
+ * @version $Revision: 1.6 $ on $Date: 2003-10-05 15:38:01 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -397,6 +397,29 @@ public class TestBasicLP  extends TestCase {
                 new Object[] {
                     new Triple(a, s, D2),
                     new Triple(b, s, D2),
+                } );
+    }
+   
+    /**
+     * Test backtracking - multiple triple matches
+     */
+    public void testBacktrack10() {
+        doTest("[r1: (?x s ?y) <- (?x r ?y) (?x q ?z), equal(?y, ?z)(?x, p, ?y)]" +
+        "[(a p D1) <- ]" +
+        "[(a p D2) <- ]" +
+        "[(b p D1) <- ]",
+                new Triple[] {
+                    new Triple(a, r, D1),
+                    new Triple(a, r, D2),
+                    new Triple(a, r, D3),
+                    new Triple(b, r, D2),
+                    new Triple(a, q, D2),
+                    new Triple(b, q, D2),
+                    new Triple(b, q, D3),
+                },
+                new Triple(Node.ANY, s, Node.ANY),
+                new Object[] {
+                    new Triple(a, s, D2),
                 } );
     }
     
