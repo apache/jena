@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Graph;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.3 $
+* @version $Revision: 1.4 $
 */
 
 public interface IRDBDriver {
@@ -139,17 +139,17 @@ public interface IRDBDriver {
     /**
      * Aborts the open transaction, then turns autocommit on.
      */
-	public void abort();
+	public void abort() throws  RDFRDBException;
         
 	/**
 	 * Turns autocommit off, then opens a new transaction.	 *
 	 */
-	public void begin();
+	public void begin() throws  RDFRDBException;
         
 	/**
 	 * Commits the open transaction, then turns autocommit on.
 	 */
-	public void commit();
+	public void commit() throws  RDFRDBException;
 
 	/**
 	 * Returns true if the underlying database supports transactions.
