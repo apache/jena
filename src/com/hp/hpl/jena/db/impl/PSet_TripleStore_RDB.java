@@ -53,7 +53,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.3 $ on $Date: 2003-05-01 18:00:29 $
+* @version $Revision: 1.4 $ on $Date: 2003-05-01 18:02:46 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -899,9 +899,9 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			Triple t;
 			String cmd;
 			try {
-				Connection con = m_sql.getConnection();
-				//TODO when doing batch.  con.setAutoCommit(false);
-				Statement stmt = con.createStatement();
+				 Connection con = m_sql.getConnection();
+				//TODO when using executeBatch().  con.setAutoCommit(false);
+				//TODO when doing executeBatch() Statement stmt = con.createStatement();
 				Iterator it = triples.iterator();
 				
 				while (it.hasNext()) {
@@ -911,8 +911,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 				}
 				//TODO  stmt.executeBatch();
 				ArrayList c = new ArrayList(triples);
-				triples.removeAll(c);
-								
+				triples.removeAll(c);						
 		} catch(BatchUpdateException b) {
 					System.err.println("SQLException: " + b.getMessage());
 					System.err.println("SQLState: " + b.getSQLState());
