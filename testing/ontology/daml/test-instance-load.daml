@@ -1,4 +1,4 @@
-<!-- $Id: test-instance-load.daml,v 1.1 2003-06-18 12:59:57 ian_dickinson Exp $ -->
+<!-- $Id: test-instance-load.daml,v 1.2 2005-02-10 11:07:42 ian_dickinson Exp $ -->
 
 <!-- Test case for bug reported by Charlie Abela: if the instance file imports the
      class definitions, rather than vice versa, Jena 1.2 would not recognise the
@@ -13,9 +13,9 @@
 >
 
 <daml:Ontology rdf:about="">
-  <daml:versionInfo>$Id: test-instance-load.daml,v 1.1 2003-06-18 12:59:57 ian_dickinson Exp $</daml:versionInfo>
+  <daml:versionInfo>$Id: test-instance-load.daml,v 1.2 2005-02-10 11:07:42 ian_dickinson Exp $</daml:versionInfo>
   <daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil" />
-  <daml:imports rdf:resource="file:modules/rdf/regression/testDAML/test-instance-load-classes.daml" />
+  <daml:imports rdf:resource="file:testing/ontology/daml/test-instance-load-classes.daml" />
 </daml:Ontology>
 
 <cr:Cop rdf:about="http://dickinson-i-4/daml/tests/test-instance-load.daml#pugh">
