@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelBulkUpdate.java,v 1.5 2003-08-06 08:54:28 chris-dollin Exp $
+  $Id: TestModelBulkUpdate.java,v 1.6 2003-08-19 15:12:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -81,10 +81,10 @@ public class TestModelBulkUpdate extends ModelTestBase
         Model A = modelWithStatements( "clouds offer rain; trees offer shelter" );
         Model B = modelWithStatements( "x R y; y Q z; z P x" );
         m.add( A );
-        assertIsoModels( "", A, m );
+        assertIsoModels( A, m );
         m.add( B );
         m.remove( A );
-        assertIsoModels( "", B, m );
+        assertIsoModels( B, m );
         m.remove( B );
         assertEquals( "", 0, m.size() );
         }
@@ -110,7 +110,7 @@ public class TestModelBulkUpdate extends ModelTestBase
         Model target = modelWithStatements( Reifier.Minimal, "" );
         target.add( m, suppress );
         target.setNsPrefixes( PrefixMapping.Standard );
-        assertIsoModels( "", (suppress ? modelWithStatements("a P b") : m), target );
+        assertIsoModels( (suppress ? modelWithStatements("a P b") : m), target );
         }
         
     public void testBulkDeleteByModelReifying()
@@ -130,7 +130,7 @@ public class TestModelBulkUpdate extends ModelTestBase
         addReification( answer, "x", "S P O" );
         if (suppress) addReification( answer, "y", "A P B" );
         target.remove( remove, suppress );
-        assertIsoModels( "", answer, target );
+        assertIsoModels( answer, target );
         }
         
     public void addReification( Model m, String tag, String statement )

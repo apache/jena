@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.5 2003-08-18 15:26:49 chris-dollin Exp $
+  $Id: TestModelMakerImpl.java,v 1.6 2003-08-19 15:12:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -116,7 +116,7 @@ public class TestModelMakerImpl extends ModelTestBase
         maker.getDescription();
         assertEquals( history(), one( "getDescription()" ) ); 
         }
-        
+
     private List history()
         { return ((MockGraphMaker) maker.getGraphMaker()).history; }
         
@@ -134,6 +134,12 @@ public class TestModelMakerImpl extends ModelTestBase
         
         public MockGraphMaker( Graph graph )
             { this.graph = graph; }
+            
+        public Reifier.Style getReificationStyle()
+            {
+            history.add( "getReificationStyle()" );
+            return null; 
+            }
             
         public Graph getGraph()
             {

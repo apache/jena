@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.9 2003-08-15 10:37:19 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.10 2003-08-19 15:13:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
@@ -39,7 +40,10 @@ public class GraphRDBMaker extends BaseGraphMaker
         this.c = c; 
         this.reificationStyle = GraphRDB.styleRDB( style );
         }
-     
+
+    public Node getMakerClass()
+        { return JMS.RDBMakerClass.asNode(); }
+             
     public Graph getGraph()
         { return consGraph( null, true ); }
         

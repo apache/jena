@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BaseGraphMaker.java,v 1.5 2003-08-19 09:53:38 chris-dollin Exp $
+  $Id: BaseGraphMaker.java,v 1.6 2003-08-19 15:13:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -28,6 +28,12 @@ public abstract class BaseGraphMaker implements GraphMaker
     private int counter = 0;
     protected Reifier.Style style;
     
+    /**
+        Answer our reification style.
+    */
+    public Reifier.Style getReificationStyle()
+        { return style; }
+        
     /**
         Answer the default graph for this maker. If we haven't already made it, make it
         now.
@@ -60,14 +66,28 @@ public abstract class BaseGraphMaker implements GraphMaker
     public Graph openGraph( String name )
         { return openGraph( name, false ); }
         
+    /**
+        Answer an RDF specification of this GraphMaker, adequate to constructing one
+        just like it.
+        
+        @return a Graph describing the Maker using the JMS vocabulary.
+    */
     public Graph getDescription()
         {
         Graph result = new GraphMem();
         Node self = Node.createAnon();
         Node mode = JMS.rsStandard.asNode();
         result.add( Triple.create( self, JMS.reificationMode.asNode(), mode ) );
+        result.add( Triple.create( self, RDF.type.asNode(), getMakerClass() ) );
         return result;    
         }
+        
+    /**
+        Answer the Class node for this GraphMaker's description.
+        
+        @return a URI node which is some RDFS subclass of MakerSpec
+    */
+    public abstract Node getMakerClass();
     }
 
 

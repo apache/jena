@@ -1,14 +1,15 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelSpec.java,v 1.5 2003-08-19 09:53:09 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.6 2003-08-19 15:12:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
-
+import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -49,7 +50,7 @@ public class TestModelSpec extends ModelTestBase
         Statement langDaml = d.createStatement( JMS.current, JMS.ontLanguage, daml );
         Statement docManager = d.createStatement
             ( JMS.current, JMS.docManager, 
-            d.createTypedLiteral( oms.getDocumentManager(), "", "jms:types/DocumentManager" )
+            d.createTypedLiteral( oms.getDocumentManager(), "jms:types/DocumentManager" )
             );
         assertTrue( "spec must specify DAML", d.contains( langDaml ) ); 
         assertTrue( "spec must have document manager", d.contains( docManager ) );
@@ -63,7 +64,7 @@ public class TestModelSpec extends ModelTestBase
         Statement s = d.getProperty( JMS.current, JMS.importMaker );
         Model makerSpec = oms.getModelMaker().getDescription();
         assertNotNull( s );
-        assertIsoModels( "", makerSpec, subModel( d, s.getObject() ) );
+        assertIsoModels( makerSpec, subModel( d, s.getObject() ) );
         }
         
     public void testOntModelReasoner()
@@ -74,7 +75,7 @@ public class TestModelSpec extends ModelTestBase
         Statement s = d.getProperty( JMS.current, JMS.reasonsWith );
         Model reasonerSpec = ModelFactory.createDefaultModel()
             .add( d.createResource(), JMS.reasoner, reasonerURI );
-        assertIsoModels( "", reasonerSpec, subModel( d, s.getObject() ) );
+        assertIsoModels( reasonerSpec, subModel( d, s.getObject() ) );
         }
         
     public Model memMakerSpec( Resource root )
@@ -104,19 +105,71 @@ public class TestModelSpec extends ModelTestBase
         spec.add( JMS.current, JMS.reasonsWith, r );
         Resource m = spec.createResource();
         Model modelMaker = ModelFactory.createDefaultModel();
+        modelMaker.add( m, RDF.type, JMS.MemMakerClass );
         modelMaker.add( m, JMS.reificationMode, JMS.rsStandard );
         spec.add( JMS.current, JMS.importMaker, m );
         spec.add( modelMaker );
         OntDocumentManager odm = oms.getDocumentManager();
-        Literal dm = spec.createTypedLiteral( odm, "", "jms:types/DocumentManager" );
+        Literal dm = spec.createTypedLiteral( odm, "jms:types/DocumentManager" );
         spec.add( JMS.current, JMS.docManager, dm );
     /* */
         OntModelSpec ms = new OntModelSpec( spec );
         assertEquals( lang.getURI(), ms.getLanguage() );
         assertEquals( factory.getURI(), ms.getReasonerFactory().getURI() );
-        assertIsoModels( "", modelMaker, ms.getModelMaker().getDescription() );
+        assertIsoModels( modelMaker, ms.getModelMaker().getDescription() );
         assertSame( odm, ms.getDocumentManager() );
         }
+
+    public void testCreateFailingMaker()
+        {
+        try
+            {
+            ModelSpecImpl.createMaker( modelWithStatements( "" ) );
+            fail( "oops" );
+            }   
+        catch (Exception e)
+            {} 
+        }
+        
+    public void testCreateMemModelMaker()
+        {
+        Resource mem = JMS.MemMakerClass;
+        testCreateModelMaker( JMS.rsStandard, mem, SimpleGraphMaker.class );
+        testCreateModelMaker( JMS.rsMinimal, mem, SimpleGraphMaker.class );
+        testCreateModelMaker( JMS.rsConvenient, mem, SimpleGraphMaker.class );
+        }
+
+    public void testCreateFileModelMaker()
+        {
+        Resource file =JMS.FileMakerClass;
+        testCreateModelMaker( JMS.rsStandard, file, FileGraphMaker.class );
+        testCreateModelMaker( JMS.rsMinimal, file, FileGraphMaker.class );
+        testCreateModelMaker( JMS.rsConvenient, file, FileGraphMaker.class );
+        }
+        
+    public void testCreateFileModelMakerRooted()
+        {
+        String fileBase = "/somewhere";
+        Model spec = ModelFactory.createDefaultModel()
+            .add( JMS.current, RDF.type, JMS.FileMakerClass )
+            .add( JMS.current, JMS.fileBase, fileBase )
+            ;
+        ModelMaker maker = ModelSpecImpl.createMaker( spec );
+        FileGraphMaker fgm = (FileGraphMaker) maker.getGraphMaker();
+        assertEquals( fileBase, fgm.getFileBase() );
+        }
+        
+    public void testCreateModelMaker( Literal style, Resource cl, Class required )
+        {
+        Reifier.Style wanted = ModelSpecImpl.findStyle( style );
+        Model spec = modelWithStatements( "" )
+            .add( JMS.current, RDF.type, cl )
+            .add( JMS.current, JMS.reificationMode, style );
+        ModelMaker maker = ModelSpecImpl.createMaker( spec );
+        assertTrue( required.isInstance( maker.getGraphMaker() ) );
+        assertEquals( wanted, maker.getGraphMaker().getReificationStyle() );
+        }
+                
     }
 
 /*

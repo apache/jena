@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.8 2003-08-15 10:37:31 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.9 2003-08-19 15:13:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.*;
 import java.io.*;
 import java.util.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 /**
     A FileGraph factory, makeing FileGraphs based round some supplied
@@ -21,7 +22,7 @@ import com.hp.hpl.jena.shared.*;
 */
 public class FileGraphMaker extends BaseGraphMaker
     {
-    private String root;
+    private String fileBase;
     private boolean deleteOnClose;
     private Map created = new HashMap();
     
@@ -56,10 +57,16 @@ public class FileGraphMaker extends BaseGraphMaker
     public FileGraphMaker( String root, Reifier.Style style, boolean deleteOnClose )
         {
         super( style );
-        this.root = root;
+        this.fileBase = root;
         this.deleteOnClose = deleteOnClose;       
         }
 
+    public Node getMakerClass()
+        { return JMS.FileMakerClass.asNode(); }
+
+    public String getFileBase()
+        { return fileBase; }
+                
     public Graph createGraph()
         { return FileGraph.create(); }
         
@@ -86,7 +93,7 @@ public class FileGraphMaker extends BaseGraphMaker
         }
 
     private File withRoot( String name )
-        { return new File( root, makeSafe( name ) ); }
+        { return new File( fileBase, makeSafe( name ) ); }
         
     /**
         Make <code>name</name> safe for use as a filename. "safe" is a bit weak

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
     [See end of file]
-    $Id: RDFException.java,v 1.9 2003-06-16 11:20:28 chris-dollin Exp $
+    $Id: RDFException.java,v 1.10 2003-08-19 15:13:07 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.shared.*;
  * but instead uses particular Jena exceptions. Those exceptions presently
  * subclass RDFException and set the magic numbers, but This Will Change.
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2003-06-16 11:20:28 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2003-08-19 15:13:07 $
  */
 public class RDFException extends JenaException {
     
@@ -179,25 +179,19 @@ public class RDFException extends JenaException {
      * @return the error message
      */
     public String toString() {
-        String message = getMessage();
-        if (message == null) {
-            return this.getClass().getName();
-        } else {
-            return this.getClass().getName() + ": " + message;
-        }
+        String m = getMessage(), name = this.getClass().getName();
+        return m == null ? name : name + ": " + m;
     }
     
     public String getMessage() {
-        String message;
-        
-        message = Integer.toString(errorCode) + " " + this.message;
+        String result = Integer.toString(errorCode) + " " + this.message;
         if (errorCode == INVALIDERRORCODE) {
-            message = message + " = " + Integer.toString(otherCode);
+            result = result + " = " + Integer.toString(otherCode);
         } else if (errorCode == NESTEDEXCEPTION
                 || errorCode == SELECTOREXCEPTION) {
-            message = this.message + " = " + nestedException.toString();
+            result = this.message + " = " + nestedException.toString();
         }
-        return message;
+        return result;
     }
     
     public int getErrorCode() {
@@ -242,7 +236,7 @@ public class RDFException extends JenaException {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFException.java,v 1.9 2003-06-16 11:20:28 chris-dollin Exp $
+ * $Id: RDFException.java,v 1.10 2003-08-19 15:13:07 chris-dollin Exp $
  *
  * Created on 26 July 2000, 07:00
  */

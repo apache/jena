@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.17 2003-08-06 08:54:06 chris-dollin Exp $
+  $Id: Reifier.java,v 1.18 2003-08-19 15:13:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -44,6 +44,9 @@ public interface Reifier extends GetTriple
             
         public boolean conceals()
             { return conceal; }
+            
+        public String toString()
+            { return "<style int=" + intercept + ", con=" + conceal + ">"; }
         }
         
     /**

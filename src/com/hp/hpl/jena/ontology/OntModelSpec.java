@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-19 09:53:27 $
+ * Last modified on   $Date: 2003-08-19 15:13:07 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.ontology;
 // Imports
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.ontology.impl.*;
@@ -41,9 +42,9 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.13 2003-08-19 09:53:27 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.14 2003-08-19 15:13:07 chris-dollin Exp $
  */
-public class OntModelSpec implements ModelSpec {
+public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
     //////////////////////////////////
 
@@ -168,30 +169,18 @@ public class OntModelSpec implements ModelSpec {
      * @param spec
      */
     public OntModelSpec( OntModelSpec spec ) {
-        this
-            ( 
-            spec.getModelMaker(), 
-            spec.getDocumentManager(), 
-            spec.getReasonerFactory(), 
-            spec.getLanguage() 
-            );
-//        setDocumentManager( spec.getDocumentManager() );
-//        setModelMaker( spec.getModelMaker() );
-//        setReasonerFactory( spec.getReasonerFactory() );
-//        setLanguage( spec.getLanguage() );
+        this( spec.getModelMaker(), spec.getDocumentManager(), 
+            spec.getReasonerFactory(), spec.getLanguage() );
     }
     
     /**
-        Initialise an OntModelSpec from an RDF description using the JMS vocabulary.
+        Initialise an OntModelSpec from an RDF description using the JMS vocabulary. See
+        (insert reference here) for the descritpion of the OntModel used.
+        @param description an RDF model using the JMS vocabulary
     */
     public OntModelSpec( Model description )  { 
-        this
-            ( 
-            getModelMaker( description ),
-            getDocumentManager( description ),
-            getReasonerFactory( description ),
-            getLanguage( description)
-            );
+        this( createMaker( description ), getDocumentManager( description ),
+            getReasonerFactory( description ), getLanguage( description)  );
     }
     
     
@@ -367,11 +356,6 @@ public class OntModelSpec implements ModelSpec {
         return new OntModelImpl( this, m_maker.createModel() );
     }
     
-    public static ModelMaker getModelMaker( Model description ) {
-        Statement makStatement = description.getProperty( JMS.current, JMS.importMaker );
-        return ModelFactory.createMemModelMaker();
-    }
-    
     /**
         Answer the URI string of the ontology language in this description
      
@@ -411,7 +395,7 @@ public class OntModelSpec implements ModelSpec {
             (
             JMS.current,
             JMS.docManager,
-            d.createTypedLiteral( getDocumentManager(),  "", "jms:types/DocumentManager" )
+            d.createTypedLiteral( getDocumentManager(), "jms:types/DocumentManager" )
             );
         Model makerSpec = m_maker.getDescription();
         d.add( JMS.current, JMS.importMaker, subject( makerSpec ) );
@@ -431,12 +415,6 @@ public class OntModelSpec implements ModelSpec {
             );
         return d;
     }
-        
-    /**
-        temporray helper: get "the" subject of a Model
-    */
-    Resource subject( Model m )
-        { return m.listSubjects().nextResource(); }
     
     // Internal implementation methods
     //////////////////////////////////
