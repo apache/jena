@@ -20,7 +20,7 @@ import java.io.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.12 2003-08-27 13:01:45 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.13 2003-11-05 12:16:45 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -34,12 +34,13 @@ public class N3JenaWriterCommon implements RDFWriter
     
     // The simple N3 writer does nothing during preparation.
     
-    static final boolean doAbbreviatedBaseURIref = true ; 
+    Map writerPropertyMap = null ;
+
+    final boolean doAbbreviatedBaseURIref = getBooleanValue("abbrevBaseURI", true) ; 
     boolean alwaysAllocateBNodeLabel = false ;
     
     // Common variables
 	RDFErrorHandler errorHandler = null;
-	Map writerPropertyMap = new HashMap() ;
 
 	static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
 
@@ -61,33 +62,33 @@ public class N3JenaWriterCommon implements RDFWriter
     String baseURIrefHash = null ;
 
     // Min spacing of items    
-    static int minGap = getIntValue("minGap", 1) ;
-    static final String minGapStr = pad(minGap) ;
+    final int minGap = getIntValue("minGap", 1) ;
+    final String minGapStr = pad(minGap) ;
 
     // Gap from subject to property
-	static int indentProperty = getIntValue("indentProperty", 6) ;
+	final int indentProperty = getIntValue("indentProperty", 6) ;
     
     // Width of property before wrapping.
     // This is not necessarily a control of total width
     // e.g. the pretty writer may be writing properties inside indented one ref bNodes 
-    static int widePropertyLen = getIntValue("widePropertyLen", 20) ;
+    final int widePropertyLen = getIntValue("widePropertyLen", 20) ;
     
     // Column for property when an object follows a property on the same line
-    static int propertyCol = getIntValue("propertyColumn", 8) ;
+    final int propertyCol = getIntValue("propertyColumn", 8) ;
     
     // Max width of property to align to.
     // Property may be longer and still go on same line but the columnization is broken. 
     // Allow for min gap.
     // Require propertyWidth < propertyCol (strict less than)
-    static int propertyWidth = propertyCol-minGap ;
+    final int propertyWidth = propertyCol-minGap ;
 
     //  Gap from property to object when object on a new line.
-    static int indentObject = propertyCol ;
+    final int indentObject = propertyCol ;
     
     // If a subject is shorter than this, the first property may go on same line.
-    static int subjectColumn = getIntValue("subjectColumn", indentProperty) ; 
+    final int subjectColumn = getIntValue("subjectColumn", indentProperty) ; 
     // Require shortSubject < subjectCol (strict less than)
-    static int shortSubject = subjectColumn-minGap;
+    final int shortSubject = subjectColumn-minGap;
 
     // ----------------------------------------------------
     // Jena RDFWriter interface
@@ -101,9 +102,13 @@ public class N3JenaWriterCommon implements RDFWriter
 
     public Object setProperty(String propName, Object propValue) 
     {
-        Object obj = writerPropertyMap.get(propName);
+        // Store localized property names
+        propName = absolutePropName(propName) ;
+        if ( writerPropertyMap == null )
+            writerPropertyMap = new HashMap() ;
+        Object oldValue = writerPropertyMap.get(propName);
         writerPropertyMap.put(propName, propValue);
-        return obj;
+        return oldValue;
     }
 
     /** Write the model out in N3.  The writer should be one suitable for UTF-8 which
@@ -324,9 +329,9 @@ public class N3JenaWriterCommon implements RDFWriter
             // Special cases: N3 handling of base names.
             if (doAbbreviatedBaseURIref && p.equals(""))
             {
-                if (u.equals(baseURIrefHash))
+                if (baseURIrefHash != null && u.equals(baseURIrefHash))
                     u = "#";
-                if (u.equals(baseURIref))
+                if (baseURIref != null && u.equals(baseURIref))
                     u = "";
             }
 
@@ -680,19 +685,19 @@ public class N3JenaWriterCommon implements RDFWriter
     
     // Convenience operations for accessing system properties.
     
-    static protected String getStringValue(String prop, String defaultValue)
+    protected String getStringValue(String prop, String defaultValue)
     {
-        prop = N3JenaWriter.propBase+prop ;
-        String p = System.getProperty(prop) ;
+        String p = getPropValue(prop) ;
+        
         if ( p == null )
             return defaultValue ;
         return p ;
     }
      
-    static protected boolean getBooleanValue(String prop, boolean defaultValue)
+    protected boolean getBooleanValue(String prop, boolean defaultValue)
     {
-        prop = N3JenaWriter.propBase+prop ;
-        String p = System.getProperty(prop) ;
+        String p = getPropValue(prop) ;
+        
         if ( p == null )
             return defaultValue ;
             
@@ -705,10 +710,9 @@ public class N3JenaWriterCommon implements RDFWriter
         return false ;
     }        
 
-    static protected int getIntValue(String prop, int defaultValue)
+    protected int getIntValue(String prop, int defaultValue)
     {
-        prop = N3JenaWriter.propBase+prop ;
-        String p = System.getProperty(prop) ;
+        String p = getPropValue(prop) ;
         if ( p == null )
             return defaultValue ;
         try {
@@ -720,8 +724,34 @@ public class N3JenaWriterCommon implements RDFWriter
         }
     }
     
-
-
+    // Maybe the abolute or local form of the property name
+    
+    protected String getPropValue(String prop)
+    {
+        prop = absolutePropName(prop) ;
+        if ( writerPropertyMap != null && writerPropertyMap.containsKey(prop) )
+            return (String)writerPropertyMap.get(prop) ;
+        String s = System.getProperty(prop) ;
+        if ( s == null )
+            s = System.getProperty(localPropName(prop)) ;
+        return s ;
+    }
+    
+    protected String absolutePropName(String propName)
+    {
+        if ( propName.indexOf(':') == -1 )
+            return N3JenaWriter.propBase + propName ;
+        return propName ;
+    }
+    
+    protected String localPropName(String propName)
+    {
+        if ( propName.startsWith(N3JenaWriter.propBase) )
+            propName = propName.substring(N3JenaWriter.propBase.length()) ;
+        return propName ;
+    }
+    
+    
 }
 
 /*

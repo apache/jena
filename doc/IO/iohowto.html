@@ -9,7 +9,7 @@
  <link rel="stylesheet" type="text/css" href="../styles/doc.css" />
 <style>
 td { text-align:left; } 
-</style>
+  </style>
   </HEAD>
   <BODY>
   <h1>Jena I/O Mini HowTo</h1>
@@ -205,7 +205,9 @@ property <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code>.</p>
 <h4>N3 Writer Properties</h4>
 <p>The N3 pretty printer (which is used by default)&nbsp; and the N3 plain 
 writer provide a number of properties to control their output.&nbsp; The 
-properties all start: <code>http://jena.hpl.hp.com/n3/properties/</code>. All 
+properties all start: <code>http://jena.hpl.hp.com/n3/properties/</code>. The 
+name used can be the full name, starting with this string, or the short form of 
+just the name below.&nbsp; All 
 values are strings; they may be interpreted as interger, boolean or string as 
 defined below.</p>
   <TABLE BORDER="1" CELLPADDING="3" CELLSPACING="0">
@@ -231,7 +233,7 @@ defined below.</p>
  <td>
  Print object lists as comma separated lists</td>
  <td align="center">
- true</td>
+ <p style="text-align: center">true</td>
  <td>
  boolean &quot;true&quot; or &quot;false&quot;</td>
   </tr>
@@ -248,23 +250,30 @@ defined below.</p>
   <tr>
   <td>propertyColumn</td>
   <td>Width of the property column</td>
-  <td align="center">8</td>
+  <td align="center" style="text-align: center">8</td>
  <td>
  positive integer</td>
   </tr>
   <tr BGCOLOR="white" CLASS="TableRowColor">
-  <td>indentColumn</td>
+  <td>indentProperty</td>
   <td> Width to indent properties</td>
-  <td align="center"> 6</td>
+  <td align="center" style="text-align: center"> 6</td>
  <td>
  positive integer</td>
  </tr>
   <tr BGCOLOR="white" CLASS="TableRowColor">
   <td>widePropertyLen</td>
   <td> Width of the property column </td>
-  <td align="center"> 20</td>
+  <td align="center" style="text-align: center"> 20</td>
  <td>
  integer, greater than propertyColumn</td>
+ </tr>
+  <tr BGCOLOR="white" CLASS="TableRowColor">
+  <td>abbrevBaseURI</td>
+  <td> Control whether to use abbreviations <code>&lt;&gt;</code> or <code>&lt;#&gt;</code></td>
+  <td align="center" style="text-align: center"> true</td>
+ <td>
+ boolean &quot;true&quot; or &quot;false&quot;</td>
  </tr>
  </table>
 
