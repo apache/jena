@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: SomeValuesFromRestrictionImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-11-21 21:53:45 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SomeValuesFromRestrictionImpl.java,v 1.6 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: SomeValuesFromRestrictionImpl.java,v 1.7 2003-11-21 21:53:45 ian_dickinson Exp $
  */
 public class SomeValuesFromRestrictionImpl
     extends RestrictionImpl
@@ -120,17 +120,25 @@ public class SomeValuesFromRestrictionImpl
         checkProfile( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM" );
         Resource r = (Resource) getRequiredProperty( getProfile().SOME_VALUES_FROM() ).getObject();
         
-        if (r.canAs( OntClass.class )) {
-            // all values from a class
-            return (Resource) r.as( OntClass.class );
+        boolean currentStrict = ((OntModel) getModel()).strictMode();
+        ((OntModel) getModel()).setStrictMode( true );
+        
+        try {
+            if (r.canAs( OntClass.class )) {
+                // all values from a class
+                return (Resource) r.as( OntClass.class );
+            }
+            else if (r.canAs( DataRange.class )) {
+                // all values from a given data range
+                return (Resource) r.as( DataRange.class );
+            }
+            else {
+                // must be a datatype ID or rdfs:Literal
+                return r;
+            }
         }
-        else if (r.canAs( DataRange.class )) {
-            // all values from a given data range
-            return (Resource) r.as( DataRange.class );
-        }
-        else {
-            // must be a datatype ID or rdfs:Literal
-            return r;
+        finally {
+            ((OntModel) getModel()).setStrictMode( currentStrict );
         }
     }
 

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: RestrictionImpl.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-11-21 21:53:45 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RestrictionImpl.java,v 1.13 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: RestrictionImpl.java,v 1.14 2003-11-21 21:53:45 ian_dickinson Exp $
  */
 public class RestrictionImpl 
     extends OntClassImpl
@@ -208,7 +208,7 @@ public class RestrictionImpl
      */
     public boolean isAllValuesFromRestriction() {
         checkProfile( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM" );
-        return canAs( AllValuesFromRestriction.class );
+        return hasProperty( getProfile().ALL_VALUES_FROM() );
     }
          
     /** 
@@ -218,7 +218,7 @@ public class RestrictionImpl
      */
     public boolean isSomeValuesFromRestriction() {
         checkProfile( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM" );
-        return canAs( SomeValuesFromRestriction.class );
+        return hasProperty( getProfile().SOME_VALUES_FROM() );
     }
          
     /** 
@@ -228,7 +228,7 @@ public class RestrictionImpl
      */
     public boolean isHasValueRestriction() {
         checkProfile( getProfile().HAS_VALUE(), "HAS_VALUE" );
-        return canAs( HasValueRestriction.class );
+        return hasProperty( getProfile().HAS_VALUE() );
     }
          
     /** 
@@ -240,7 +240,7 @@ public class RestrictionImpl
      */
     public boolean isCardinalityRestriction() {
         checkProfile( getProfile().CARDINALITY(), "CARDINALITY" );
-        return canAs( CardinalityRestriction.class );
+        return hasProperty( getProfile().CARDINALITY() );
     }
 
     /** 
@@ -252,7 +252,7 @@ public class RestrictionImpl
      */
     public boolean isMinCardinalityRestriction() {
         checkProfile( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY" );
-        return canAs( MinCardinalityRestriction.class );
+        return hasProperty( getProfile().MIN_CARDINALITY() );
     }
 
     /** 
@@ -264,7 +264,7 @@ public class RestrictionImpl
      */
     public boolean isMaxCardinalityRestriction() {
         checkProfile( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY" );
-        return canAs( MaxCardinalityRestriction.class );
+        return hasProperty( getProfile().MAX_CARDINALITY() );
     }
 
 
