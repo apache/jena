@@ -54,7 +54,7 @@ public class TestModelSpecMore extends ModelTestBase
         FileOutputStream fos = new FileOutputStream( name );
         m.write( fos, FileUtils.guessLang( name ) ); 
         fos.close();
-	    return "file://" + name;
+	    return "file:" + name;
         }
     
     public void testOpenModel()

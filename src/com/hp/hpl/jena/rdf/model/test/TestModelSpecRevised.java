@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.5 2004-07-28 19:12:05 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.6 2004-07-30 14:07:28 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -77,7 +77,7 @@ public class TestModelSpecRevised extends ModelTestBase
     public void testRulesetURLWorks()
         {
         String uri = GenericRuleReasonerFactory.URI;
-        URL url = TestModelSpecRevised.class.getResource( "/testing/modelspecs/empty.rules" );
+        String url = "file:testing/modelspecs/empty.rules";
         Model rs = modelWithStatements( "_a jms:reasoner " + uri + "; _a jms:ruleSetURL " + url );
         Resource A = resource( "_a" );
         ModelSpecImpl.getReasonerFactory( A, rs );
