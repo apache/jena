@@ -35,7 +35,7 @@ import org.apache.xerces.util.XMLChar;
 /** Some utility functions.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-01 20:34:34 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-05-21 14:50:19 $'
  */
 public class Util extends Object {
 
@@ -111,11 +111,7 @@ public class Util extends Object {
      *@return The property value, or null if none or there is a SecurityException.
      */
     public static String getProperty(String p) {
-        try {
-            return System.getProperty(p);
-        } catch (SecurityException e) {
-            return null;
-        }
+        return getProperty( p, null );
     }
     /** Call System.getProperty and suppresses SecurityException, (simply returns null).
      *@return The property value, or null if none or there is a SecurityException.

@@ -1,45 +1,38 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2003
- *  All rights reserved.
- *
- *
- */
-
-//=======================================================================
-// Package
-package com.hp.hpl.jena.db;
-
-//=======================================================================
-// Imports
-import com.hp.hpl.jena.rdf.model.RDFException;
-
-
-//=======================================================================
-/**
-* Used to signal most errors with RDB access.
-* Extends RDFException to allow new error messages.
-*
-* @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.1 $ on $Date: 2003-04-25 02:56:52 $
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: RDFRDBException.java,v 1.2 2003-05-21 14:49:13 chris-dollin Exp $
 */
 
-public class RDFRDBException extends RDFException {
+package com.hp.hpl.jena.db;
+
+import com.hp.hpl.jena.shared.*;
+
+/**
+* Used to signal most errors with RDB access. Updated by kers to
+* switch to using JenaException not the (now deprecated) RDFException.
+*
+* @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
+* @author Chris Dollin <a href="mailto:chris.dollin@hp.com">email</a>
+*/
+
+public class RDFRDBException extends JenaException {
 
     /** Construct an exception with given error message */
-    public RDFRDBException(String message) {
-        super(message);
+    public RDFRDBException( String message ) {
+        super( message );
     }
 
     /** Construct an exception with given error message */
     public RDFRDBException(String message, Exception e) {
-        super(message+":"+e.getMessage());
+        super( message, e ); 
     }
 
 	
-} // End class
+}
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001
+ *  (c) Copyright Hewlett-Packard Company 2000-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

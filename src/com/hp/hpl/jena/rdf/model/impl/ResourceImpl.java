@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-05-20 12:42:09 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-05-21 14:50:19 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -153,7 +153,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         { return asNode().getBlankNodeId(); }
 
     public String  getURI() {
-        return isAnon() ? null : asNode().toString();
+        return isAnon() ? null : node.getURI();
     }
 
     public String getNameSpace() {
@@ -179,41 +179,42 @@ public class ResourceImpl extends EnhNode implements Resource {
 		return model;
 		}
 		
-    public Statement getProperty(Property p) throws RDFException
+    public Statement getProperty(Property p) 
     	{ return mustHaveModel().getProperty( this, p ); }
 
-    public StmtIterator listProperties(Property p) throws RDFException
+    public StmtIterator listProperties(Property p) 
 		{ return mustHaveModel().listStatements( this, p, (RDFNode) null ); }
 
-    public StmtIterator listProperties() throws RDFException
+    public StmtIterator listProperties() 
     	{ return mustHaveModel().listStatements( this, null, (RDFNode) null ); }	
 
-    public Resource addProperty(Property p, boolean o) throws RDFException
+    public Resource addProperty(Property p, boolean o) 
     	{
     	mustHaveModel().add( this, p, o );
     	return this;
      	}
 
-    public Resource addProperty(Property p, long o) throws RDFException {
+    public Resource addProperty(Property p, long o)  {
         mustHaveModel().add( this, p, o );
         return this;
     }
-    public Resource addProperty(Property p, char o) throws RDFException {
-        mustHaveModel().add( this, p, o );
-        return this;
-    }
-
-    public Resource addProperty(Property p, float o) throws RDFException {
+    
+    public Resource addProperty(Property p, char o)  {
         mustHaveModel().add( this, p, o );
         return this;
     }
 
-    public Resource addProperty(Property p, double o) throws RDFException {
+    public Resource addProperty(Property p, float o) {
         mustHaveModel().add( this, p, o );
         return this;
     }
 
-    public Resource addProperty(Property p, String o) throws RDFException {
+    public Resource addProperty(Property p, double o) {
+        mustHaveModel().add( this, p, o );
+        return this;
+    }
+
+    public Resource addProperty(Property p, String o) {
         mustHaveModel().add( this, p, o );
         return this;
     }
@@ -224,86 +225,75 @@ public class ResourceImpl extends EnhNode implements Resource {
         return this;
     }
 
-    public Resource addProperty(Property p, Object o) throws RDFException {
+    public Resource addProperty(Property p, Object o) {
         mustHaveModel().add( this, p, o );
         return this;
     }
 
-    public Resource addProperty(Property p, RDFNode o) throws RDFException {
+    public Resource addProperty(Property p, RDFNode o) {
         mustHaveModel().add( this, p, o );
         return this;
     }
 
-    public boolean hasProperty(Property p) throws RDFException {
+    public boolean hasProperty(Property p)  {
         return mustHaveModel().contains( this, p );
     }
-    public boolean hasProperty(Property p, boolean o) throws RDFException {
+    
+    public boolean hasProperty(Property p, boolean o)  {
         return mustHaveModel().contains( this, p, o );
     }
 
-    public boolean hasProperty(Property p, long o) throws RDFException {
+    public boolean hasProperty(Property p, long o) {
         return mustHaveModel().contains( this, p, o );
     }
 
-    public boolean hasProperty(Property p, char o) throws RDFException {
+    public boolean hasProperty(Property p, char o)  {
         return mustHaveModel().contains( this, p, o );
     }
 
-    public boolean hasProperty(Property p, float o) throws RDFException {
+    public boolean hasProperty(Property p, float o)  {
         return mustHaveModel().contains( this, p, o );
     }
 
-    public boolean hasProperty(Property p, double o) throws RDFException {
+    public boolean hasProperty(Property p, double o) {
         return mustHaveModel().contains( this, p, o );
     }
 
-    public boolean hasProperty(Property p, String o) throws RDFException {
+    public boolean hasProperty(Property p, String o) {
         return mustHaveModel().contains( this, p, o );
     }
 
-    public boolean hasProperty(Property p, String o, String l)
-      throws RDFException {
+    public boolean hasProperty(Property p, String o, String l) {
         return mustHaveModel().contains( this, p, o, l );
     }
 
-    public boolean hasProperty(Property p, Object o) throws RDFException {
+    public boolean hasProperty(Property p, Object o) {
         return mustHaveModel().contains( this, p, o );
     }
 
-    public boolean hasProperty(Property p, RDFNode o) throws RDFException {
+    public boolean hasProperty(Property p, RDFNode o)  {
         return mustHaveModel().contains( this, p, o );
     }
 
-    public Resource removeProperties() throws RDFException {
+    public Resource removeProperties()  {
         StmtIterator it  = mustHaveModel().listStatements( this, null, (RDFNode) null );
         while (it.hasNext()) { it.nextStatement(); it.remove(); }
         return this;
     }
 
-    public Resource begin() throws RDFException {
+    public Resource begin()  {
         mustHaveModel().begin();
         return this;
     }
 
-    public Resource abort() throws RDFException {
+    public Resource abort()  {
         mustHaveModel().abort();
         return this;
     }
 
-    public Resource commit() throws RDFException {
+    public Resource commit()  {
         mustHaveModel().commit();
         return this;
-    }
-
-    
-    public Resource port(Model m) throws RDFException {
-        if ( getGraph() == m )
-            return this;
-        if ( m instanceof ModelCom )
-            return IteratorFactory.asResource( asNode(), (ModelCom)m);
-        if ( isAnon() )
-            return m.createResource();
-        return m.createResource(getURI());
     }
 
     public Model getModel() {

@@ -52,7 +52,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.35 $' Date='$Date: 2003-05-20 11:20:46 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.36 $' Date='$Date: 2003-05-21 14:50:19 $'
  */
 
 public class ModelCom 
@@ -787,11 +787,10 @@ implements Model, ModelI, PrefixMapping, ModelLock
             Node node = (Node) it.next();
             if (node.isURI())
                 {
-                String ns = IteratorFactory.asResource( node, this ).getNameSpace();
-                if (ns == null)
-                    System.err.println( "updateNamespace: null ns for " + node );
-                else
-                    set.add( ns );
+                String uri = node.getURI();
+                String ns = uri.substring( 0, Util.splitNamespace( uri ) );
+                // String ns = IteratorFactory.asResource( node, this ).getNameSpace();
+                set.add( ns );
                 }
             }
         }

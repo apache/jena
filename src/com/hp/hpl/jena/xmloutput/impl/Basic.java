@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.7 2003-05-20 13:50:19 chris-dollin Exp $
+  $Id: Basic.java,v 1.8 2003-05-21 14:50:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-05-20 13:50:19 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-05-21 14:50:19 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -92,19 +92,18 @@ public class Basic extends BaseXMLWriter {
 		writer.println(">");
 	}
 
-	protected void writePredicate(Statement stmt, PrintWriter writer)
+	protected void writePredicate(Statement stmt, final PrintWriter writer)
 		throws RDFException {
 
-		Property predicate = stmt.getPredicate();
-		RDFNode object = stmt.getObject();
+		final Property predicate = stmt.getPredicate();
+		final RDFNode object = stmt.getObject();
 
 		writer.print(space+space+
 			"<"
 				+ startElementTag(
 					predicate.getNameSpace(),
 					predicate.getLocalName()));
-
-		
+                           
 		if (object instanceof Resource) {
 			writer.print(" ");
 			writeResourceReference(((Resource) object), writer);

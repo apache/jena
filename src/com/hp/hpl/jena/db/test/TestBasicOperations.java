@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.4 2003-05-09 20:55:28 wkw Exp $
+  $Id: TestBasicOperations.java,v 1.5 2003-05-21 14:50:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -22,8 +22,7 @@ package com.hp.hpl.jena.db.test;
  * @author csayers
 */
 
-import com.hp.hpl.jena.db.IDBConnection;
-import com.hp.hpl.jena.db.ModelRDB;
+import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.DB;
 
@@ -231,11 +230,12 @@ public class TestBasicOperations extends TestCase
 		// badURI should be consistent with BlankNodeRDBPrefix in PSet_TripleStore_RDB
     	    	
 		Statement stmt = model.createStatement(s,p,o);
+        // TODO the thrown exception should be more specific 
 		try {
 			model.add(stmt);
 			model.remove(stmt);
 			assertTrue("Inserted URI with blank node prefix", false);
-   		} catch ( RDFException e ) {
+   		} catch ( RDFRDBException e ) {
 	  }
    }
 
