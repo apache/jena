@@ -2,26 +2,20 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: RDF.java,v 1.3 2003-05-21 15:33:23 chris-dollin Exp $
+ *  $Id: RDF.java,v 1.4 2003-06-17 14:39:39 chris-dollin Exp $
  */
 
 
 package com.hp.hpl.jena.vocabulary;
 
-import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-
-
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 
 /**
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-05-21 15:33:23 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-06-17 14:39:39 $'
  */
 public class RDF{
 
@@ -37,7 +31,7 @@ public class RDF{
         return uri;
     }
 
-    public static       Property li(int i) throws RDFException {
+    public static       Property li(int i) {
     	// System.err.println( "constructing RDF.li(" + i + ")" );
         return new PropertyImpl(uri, "_"+Integer.toString(i));}
 

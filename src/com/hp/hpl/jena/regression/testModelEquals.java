@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testModelEquals.java,v 1.3 2003-02-01 14:35:14 bwm Exp $
+ * $Id: testModelEquals.java,v 1.4 2003-06-17 14:39:39 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -91,7 +91,7 @@ public class testModelEquals extends Object {
      //   System.out.println("End of " + test);        
     }
     
-    static protected void empty(Model m) throws RDFException {
+    static protected void empty(Model m) {
         StmtIterator iter = m.listStatements();
         while (iter.hasNext()) {
             iter.nextStatement();
@@ -111,7 +111,7 @@ public class testModelEquals extends Object {
     }
     
     // RUN THIS TEST ONLY
-    static public void main(String args[]) throws RDFException
+    static public void main(String args[])
     {
         doTest(new ModelMem(), new ModelMem());
     }

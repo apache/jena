@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: schemagen_orig.java,v 1.2 2003-05-16 13:11:44 ian_dickinson Exp $
+ * $Id: schemagen_orig.java,v 1.3 2003-06-17 14:39:39 chris-dollin Exp $
  */
 
 package jena;
@@ -70,7 +70,7 @@ import java.util.HashSet;
  *     are used, or this fixup leads to name clashes.</p>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-05-16 13:11:44 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-06-17 14:39:39 $
  */
 public class schemagen_orig extends java.lang.Object {
 
@@ -131,7 +131,7 @@ public class schemagen_orig extends java.lang.Object {
     }
 
     protected static void read(Model model, String in, String lang)
-        throws RDFException, java.io.FileNotFoundException {
+        throws java.io.FileNotFoundException {
         try {
             new URL(in);
             model.read(in, lang);
@@ -145,7 +145,7 @@ public class schemagen_orig extends java.lang.Object {
         String uriRef,
         Model schema,
         PrintStream out)
-        throws RDFException {
+        {
         Set classNames = listNames(uriRef, schema, RDFS.Class);
         Set propertyNames = listNames(uriRef, schema, RDF.Property);
         renderPreamble(name, uriRef, out);
@@ -156,7 +156,7 @@ public class schemagen_orig extends java.lang.Object {
     }
 
     protected static Set listNames(String uriRef, Model schema, Resource type)
-        throws RDFException {
+         {
 
         Set result = new HashSet();
 
@@ -184,7 +184,7 @@ public class schemagen_orig extends java.lang.Object {
         Set names,
         String type,
         PrintStream out)
-        throws RDFException {
+         {
         Iterator iter = names.iterator();
         while (iter.hasNext()) {
             String name = (String) iter.next();
@@ -199,7 +199,7 @@ public class schemagen_orig extends java.lang.Object {
         Set classNames,
         Set propertyNames,
         PrintStream out)
-        throws RDFException {
+         {
         out.println();
         out.println("    static {");
         out.println("        try {");

@@ -16,7 +16,7 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.10 2003-06-17 11:59:01 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.11 2003-06-17 14:39:31 chris-dollin Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -209,7 +209,7 @@ public class N3toRDF implements N3ParserEventHandler
 	
 	private Map bNodeMap = new HashMap() ;
 	
-	private RDFNode createNode(int line, AST thing) throws RDFException
+	private RDFNode createNode(int line, AST thing) 
 	{
 		//String tokenType = N3AntlrParser._tokenNames[thing.getType()] ;
 		//System.out.println("Token type: "+tokenType) ;

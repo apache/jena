@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.4 2003-06-16 11:05:24 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.5 2003-06-17 14:39:31 chris-dollin Exp $
  */
 
 
@@ -113,7 +113,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	}
 
 	// Validate one list element.
-    private boolean checkListElement(Resource listElement) throws RDFException
+    private boolean checkListElement(Resource listElement) 
 	{
 		if (!listElement.hasProperty(RDF.rest)
 			|| !listElement.hasProperty(RDF.first))
@@ -156,7 +156,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	// which are not RDF lists.
     // Could do this testing at write time (unlike lists)
 
-    private void prepareOneRefBNodes(Model model) throws RDFException
+    private void prepareOneRefBNodes(Model model) 
 	{
 
 		NodeIterator objIter = model.listObjects() ;
@@ -491,7 +491,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	// Need to out.print in short (all on one line) and long forms (multiple lines)
 	// That needs starts point depth tracking.
 	private void writeList(Resource resource)
-		throws RDFException
+		
 	{
 		out.print( "(");
 		out.incIndent(2) ;

@@ -1,21 +1,20 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ResourceImpl.java,v 1.14 2003-06-16 10:47:09 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.15 2003-06-17 14:39:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.graph.*;
 
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2003-06-16 10:47:09 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2003-06-17 14:39:38 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -193,7 +192,7 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public Resource addProperty(Property p, String o, String l)
-      throws RDFException {
+    {
         mustHaveModel().add( this, p, o, l );
         return this;
     }

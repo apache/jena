@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriterF.java,v 1.1.1.1 2002-12-19 19:17:54 bwm Exp $
+ * $Id: RDFWriterF.java,v 1.2 2003-06-17 14:39:38 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -44,7 +44,7 @@ package com.hp.hpl.jena.rdf.model;
  *with a name of the form com.hp.hpl.jena.readers.<lang> to the class
  *name.</p>
  * @author bwm
- * @version $Version$ $Date: 2002-12-19 19:17:54 $
+ * @version $Version$ $Date: 2003-06-17 14:39:38 $
  */
 
 public interface RDFWriterF {
@@ -52,14 +52,14 @@ public interface RDFWriterF {
 /** return an RDFWriter instance for the default serialization language.
  * @return an RDFWriter instance for the default serialization language.
  */    
-    public RDFWriter getWriter() throws RDFException;
+    public RDFWriter getWriter();
     
 /** an RDFWriter instance for the specified serialization language.
  * @param lang the serialization langauge - <code>null</code> selects the
  *             default
  * @return the RDFWriter instance
  */    
-    public RDFWriter getWriter(String lang) throws RDFException; 
+    public RDFWriter getWriter(String lang); 
     
 /** set the class name for the RDFWriter for a langauge
  * @param lang the language for which this class should be used

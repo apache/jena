@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            16 Jan 2001
  * Filename           $RCSfile: DAML_OIL.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 12:22:48 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-06-17 14:39:39 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -45,13 +45,7 @@ package com.hp.hpl.jena.vocabulary;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.Log;
-import com.hp.hpl.jena.ontology.daml.impl.*;
-import com.hp.hpl.jena.ontology.daml.*;
-
-
 
 /**
  * <p>
@@ -76,7 +70,7 @@ import com.hp.hpl.jena.ontology.daml.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAML_OIL.java,v 1.5 2003-06-10 12:22:48 ian_dickinson Exp $
+ * @version CVS info: $Id: DAML_OIL.java,v 1.6 2003-06-17 14:39:39 chris-dollin Exp $
  */
 public class DAML_OIL
     implements DAMLVocabulary

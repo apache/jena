@@ -21,7 +21,7 @@ import com.hp.hpl.jena.db.* ;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.6 2003-06-11 13:05:49 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.7 2003-06-17 14:39:39 chris-dollin Exp $
  */
 
 public class ModelLoader
@@ -151,7 +151,7 @@ public class ModelLoader
 
 
     public static Model loadModel(Model model, String urlStr, String lang)
-        throws RDFException, java.io.FileNotFoundException
+        throws java.io.FileNotFoundException
     {
         // Wild guess at the language!
         // Yes - repeated from above.

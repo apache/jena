@@ -41,7 +41,7 @@ import java.util.Iterator;
  *  A sequence node iterator.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-11 10:37:32 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-17 14:39:39 $'
  */
 public class SeqNodeIteratorImpl extends WrappedIterator implements NodeIterator {
     
@@ -54,30 +54,30 @@ public class SeqNodeIteratorImpl extends WrappedIterator implements NodeIterator
     */
     public SeqNodeIteratorImpl (Iterator  iterator, 
                                 
-                                Seq       seq) throws RDFException {
+                                Seq       seq)  {
         super( iterator ); 
         this.seq      = seq;
         this.size     = seq.size();
     }
 
-    public Object next() throws NoSuchElementException, RDFException {
+    public Object next() throws NoSuchElementException {
         stmt = (Statement) super.next();
         index += 1;
         return stmt.getObject();
     }
     
-    public RDFNode nextNode() throws NoSuchElementException, RDFException {
+    public RDFNode nextNode() throws NoSuchElementException {
         return (RDFNode) next();
     }
             
-    public void remove() throws NoSuchElementException, RDFException {
+    public void remove() throws NoSuchElementException {
         if (stmt == null) throw new NoSuchElementException();
         ((ContainerI)seq).remove(index-numDeleted, stmt.getObject());
         stmt = null;
         numDeleted++;
     }
     
-    public void close() throws RDFException {
+    public void close() {
         super.close();
     }
 }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SeqImpl.java,v 1.8 2003-06-16 10:47:09 chris-dollin Exp $
+  $Id: SeqImpl.java,v 1.9 2003-06-17 14:39:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -11,12 +11,11 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.graph.*;
 
 import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.shared.*;
 
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-06-16 10:47:09 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-06-17 14:39:39 $' 
  */
 public class SeqImpl extends ContainerImpl implements Seq {
 

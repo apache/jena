@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ContNodeIteratorImpl.java,v 1.4 2003-04-11 10:37:32 chris-dollin Exp $
+  $Id: ContNodeIteratorImpl.java,v 1.5 2003-06-17 14:39:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import java.util.*;
 /** An internal class not normally of interest to application developers.
  *  An iterator over the nodes in a container.
  * @author bwm, kers
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-11 10:37:32 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-17 14:39:38 $'
  */
 public class ContNodeIteratorImpl 
   extends WrappedIterator implements NodeIterator{
@@ -29,7 +29,7 @@ public class ContNodeIteratorImpl
     /** Creates new ContNodeIteratorImpl */
     public ContNodeIteratorImpl (Iterator  iterator, 
                                 Object     object,
-                                Container  cont) throws RDFException {
+                                Container  cont)  {
         super( iterator ); 
         this.cont     = cont;
         this.size     = cont.size();

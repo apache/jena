@@ -34,7 +34,7 @@ package com.hp.hpl.jena.rdf.model;
 /**
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-05-23 15:03:00 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-06-17 14:39:38 $'
  */
 
 import com.hp.hpl.jena.util.iterator.*;
@@ -50,15 +50,14 @@ import java.util.NoSuchElementException;
  *   that should be called to free resources if the application does 
  *   not complete the iteration.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-05-23 15:03:00 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-06-17 14:39:38 $'
  */
 public interface StmtIterator extends ExtendedIterator {
     
     /** Return the next Statement of the iteration.
      * @throws NoSuchElementException if there are no more to be returned.
-     * @throws RDFException Generic RDF exception.
      * @return The next Resource from the iteration.
      */
-    public Statement nextStatement() throws  NoSuchElementException, RDFException;
+    public Statement nextStatement() throws  NoSuchElementException;
     
 }

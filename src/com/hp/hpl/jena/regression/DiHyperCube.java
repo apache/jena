@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: DiHyperCube.java,v 1.1.1.1 2002-12-19 19:20:11 bwm Exp $
+ * $Id: DiHyperCube.java,v 1.2 2003-06-17 14:39:39 chris-dollin Exp $
  *
  * DiHyperCube.java
  *
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * by duplicating a node.
  *
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:20:11 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-17 14:39:39 $'
  */
 class DiHyperCube extends java.lang.Object {
     final private Resource corners[];
@@ -58,7 +58,7 @@ class DiHyperCube extends java.lang.Object {
     
     private int id = 2000;
     /** Creates new DiHyperCube */
-    public DiHyperCube(int dimension, Model m) throws RDFException {
+    public DiHyperCube(int dimension, Model m)  {
         dim = dimension;
         model = m;
         corners = new Resource[1<<dim];
@@ -70,7 +70,7 @@ class DiHyperCube extends java.lang.Object {
             addDown(i,corners[i]);
     }
     
-    private void addDown(int corner,Resource r) throws RDFException {
+    private void addDown(int corner,Resource r)  {
         for (int j=0;j<dim;j++) {
             int bit = 1<<j;
             if ( (corner & bit) != 0 ) {
@@ -79,7 +79,7 @@ class DiHyperCube extends java.lang.Object {
         }
     }
     
-    DiHyperCube dupe(int corner) throws RDFException {
+    DiHyperCube dupe(int corner)  {
         Resource dup = model.createResource();
         //dup.id = id++;
         for (int j=0;j<dim;j++) {
