@@ -1,11 +1,11 @@
 /******************************************************************
- * File:        LPPartialDerivation.java
+ * File:        EnvironmentFrameWithDerivation.java
  * Created by:  Dave Reynolds
  * Created on:  18-Aug-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPPartialDerivation.java,v 1.1 2003-08-18 13:50:31 der Exp $
+ * $Id: EnvironmentFrameWithDerivation.java,v 1.1 2003-08-18 14:02:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -15,23 +15,27 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
 import java.util.*;
 
 /**
- * Structure used to record the partial state of an LP derivation. Used
- * to build up the information need for derivation logging.
+ * Extension of the normal AND-stack environment frame to support
+ * incremental derivation logging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-18 13:50:31 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-18 14:02:17 $
  */
-public class LPPartialDerivation {
+public class EnvironmentFrameWithDerivation extends EnvironmentFrame {
+        
+    /** 
+     * Constructor 
+     * @param clause the compiled code being interpreted by this env frame 
+     */
+    public EnvironmentFrameWithDerivation(RuleClauseCode clause) {
+        super(clause);
+    }
+    
     /** The initial starting arguments for the call */
     Node[] argVars = new Node[RuleClauseCode.MAX_ARGUMENT_VARS];
         
     /** The set of instantiated subgoals processed so far */
     List matchList = new ArrayList();
-        
-    /** Constructor */
-    public LPPartialDerivation(Node[] args) {
-        System.arraycopy(args, 0, argVars, 0, RuleClauseCode.MAX_ARGUMENT_VARS);
-    }
         
     /** Instantiate and record a matched subgoal */
     public void noteMatch(TriplePattern pattern) {
@@ -57,6 +61,14 @@ public class LPPartialDerivation {
     public List getMatchList() {
         return matchList;
     }
+    /**
+     * Create an initial derivation record for this frame, based on the given
+     * argument registers.
+     */
+    public void initDerivationRecord(Node[] args) {
+        System.arraycopy(args, 0, argVars, 0, RuleClauseCode.MAX_ARGUMENT_VARS);
+    }    
+    
 }
 
 

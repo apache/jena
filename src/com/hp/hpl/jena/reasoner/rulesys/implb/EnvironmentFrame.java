@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: EnvironmentFrame.java,v 1.7 2003-08-18 13:50:31 der Exp $
+ * $Id: EnvironmentFrame.java,v 1.8 2003-08-18 14:02:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Rule;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-18 13:50:31 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-18 14:02:17 $
  */
 public class EnvironmentFrame extends FrameObject {
 
@@ -38,10 +38,7 @@ public class EnvironmentFrame extends FrameObject {
     /** The continuation argument counter offset in the parent clause's arg stream */
     int cac;
     
-    /** A derivation record for this frame, only used if recording derivations. */
-    LPPartialDerivation derivation;
-        
-    /** 
+     /** 
      * Constructor 
      * @param clause the compiled code being interpreted by this env frame 
      */
@@ -65,21 +62,6 @@ public class EnvironmentFrame extends FrameObject {
         } else {
             return null;
         }
-    }
-    
-    /**
-     * Create an initial derivation record for this frame, based on the given
-     * argument registers.
-     */
-    public void initDerivationRecord(Node[] args) {
-        derivation = new LPPartialDerivation(args);
-    }
-    
-    /**
-     * Return the derivation record for this frame.
-     */
-    public LPPartialDerivation getDerivationRecord() {
-        return derivation;
     }
     
     /**
