@@ -1,5 +1,6 @@
 // (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
 // Test 1-07 : fixed triple pattern, no variables
+// Result is one binding of no variables
 
 SELECT *
 SOURCE <model1.nt>
