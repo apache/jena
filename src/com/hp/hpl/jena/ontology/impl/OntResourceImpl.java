@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.49 $
+ * Revision           $Revision: 1.50 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 16:15:18 $
+ * Last modified on   $Date: 2005-02-10 11:05:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -30,6 +30,7 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.path.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.reasoner.*;
@@ -40,6 +41,7 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
@@ -51,7 +53,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.49 2004-12-07 16:15:18 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.50 2005-02-10 11:05:44 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -84,7 +86,8 @@ public class OntResourceImpl
         }
     };
 
-
+    private static final Log log = LogFactory.getLog( OntResourceImpl.class );
+    
     // Instance variables
     //////////////////////////////////
 
@@ -964,8 +967,10 @@ public class OntResourceImpl
     * </p>
     */
     public void remove() {
-        List stmts = new ArrayList();
+        Set stmts = new HashSet();
+        List lists = new ArrayList();
         List skip = new ArrayList();
+        Property first = getProfile().FIRST();
         
         // collect statements mentioning this object
         for (StmtIterator i = listProperties();  i.hasNext();  stmts.add( i.next() ) );
@@ -974,25 +979,31 @@ public class OntResourceImpl
         // check for lists
         for (Iterator i = stmts.iterator(); i.hasNext(); ) {
             Statement s = (Statement) i.next();
-            if (s.getPredicate().equals( RDF.first )) {
-                // this object is referenced from inside a list
-                // we don't delete this, since it would make the list ill-formed
-                String me = isAnon() ? ("Anon object " + getId()) : getURI();
-                LogFactory.getLog( getClass() ).warn( me + " is referened from an RDFList, so will not be fully removed");
+            if (s.getPredicate().equals( first ) && 
+                s.getObject().equals( this )) {
+                // _this_ is referenced from inside a list
+                // we don't delete this reference, since it would make the list ill-formed
+                log.debug( toString() + " is referened from an RDFList, so will not be fully removed");
                 skip.add( s );
             }
             else if (s.getObject() instanceof Resource){
                 // check for list-valued properties
                 Resource obj = s.getResource();
-                if (obj.hasProperty( RDF.type, RDF.List ) || obj.hasProperty( RDF.first )) {
-                    // this value is a list, so remove all of the elements
-                    ((RDFList) obj.as( RDFList.class )).removeAll();
+                if (obj.canAs( RDFList.class )) {
+                    // this value is a list, so we will want to remove all of the elements
+                    lists.add( obj );
                 }
             }
         }
         
+        // add in the contents of the lists to the statements to be removed
+        for (Iterator i = lists.iterator(); i.hasNext(); ) {
+            Resource r = (Resource) i.next();
+            stmts.addAll( ((RDFListImpl) r.as( RDFList.class )).collectStatements() );
+        }
+        
         // skip the contents of the skip list
-        for (Iterator i = skip.iterator(); i.hasNext(); stmts.remove( i.next() ));
+        stmts.removeAll( skip );
         
         // and then remove the remainder
         for (Iterator i = stmts.iterator();  i.hasNext();  ((Statement) i.next()).remove() );
