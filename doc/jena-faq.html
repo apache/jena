@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.20 2004-04-26 19:34:26 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.html,v 1.21 2004-07-21 15:28:51 der Exp $ -->
 <!-- (c) Copyright 2003, 2004, Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
@@ -64,11 +64,13 @@ Jena 2 &ndash; Frequently Asked Questions
 <h3>General</h3>
 <ul>
   <li><a href="#general-0">Why do I get a <code>java.lang.NoClassDefFoundError</code> when I run a Jena application?</a></li>
+  <li><a href="#general-1">What does the error '<code>java.lang.NoSuchFieldError: actualValueType</code>' mean?</a></li>
 </ul>
 <h3>RDF model API</h3>
 <ul>
       <li><a href="#api-0">Why does the localname part of my URI look wrong?</a></li>
       <li><a href="#api-1">How do I change the URI or localName of a Resource?</a></li>
+      <li><a href="#api-2">Why do I see the warning message <i>'Detected a NaN anomaly believed to be due to use of JDK 1.4.1'</i>?</a></li>
 </ul>
 <h3>Reasoner and inference models</h3>
 <ul>
@@ -76,6 +78,7 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#reasoner-1">Why are there two different arrows ( -&gt; and &lt;- ) in the rule syntax?</a></li>
   <li><a href="#reasoner-2">The domain and range inferences look wrong, is that a bug?</a></li>
   <li><a href="#reasoner-3">Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></a></li>
+  <li><a href="#reasoner-4">Why do I get out of memory errors when working with the wine ontology?</a></li>
 </ul>
 <h3>Ontology API</h3>
 <ul>
@@ -119,6 +122,7 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h2>Answers</h2>
 <h3>General</h3>
+
 <p id="general-0"><strong>Q: Why do I get a <code>java.lang.NoClassDefFoundError</code> when I run a Jena application?</strong><br>
   <strong>A:</strong> This means that one or more of the libraries that Jena depends on is not
   on your classpath. Typically, all of the libraries (.jar files) in <code>$JENA/lib</code>,
@@ -127,6 +131,16 @@ Jena 2 &ndash; Frequently Asked Questions
   the classpath for your system. There are also a number of on-line tutorials for setting 
   the Java classpath. Consult Google or see 
   	<a href="http://www.dynamic-apps.com/tutorials/classpath.jsp">here</a>.</p>
+
+<p id="general-1"><strong>Q: What does the error '<code>java.lang.NoSuchFieldError: actualValueType</code>' mean?</strong><br>
+  <strong>A:</strong> This is almost always due to using the wrong version of the Xerces
+  library. Jena makes use of XML Schema support that changed at Xerces 2.6.0 and is not 
+  compatible with earlier versions. At the time of writing Jena ships with Xerces 2.6.1.
+  <br />
+  In some situations your runtime environment may be picking up an earlier version of Xerces from
+  an "endorsed" directory and you will need to either disable use of that endorsed library or replace 
+  it by a more uptodate version of Xerces. This occurs with tomcat 5.* and certain configurations of jdk 1.4.1.
+ </p>
 
 <h3>RDF model API</h3>
     <p id="api-0"><strong>Q. Why does the localname part of my URI look wrong?</strong><br />
@@ -155,7 +169,18 @@ Jena 2 &ndash; Frequently Asked Questions
       If you are working with inference or ontology models, you need to be 
       careful to do this on the base model, not the entailment (aka inference) model.
     </p>
-
+    
+    <p id="api-2"><strong>Why do I see the warning message <i>'Detected a NaN anomaly believed to be due to use of JDK 1.4.1'</i>?</strong><br />
+      <strong>A:</strong>As a side effect of some changes post-Jena 2.1 we started seeing 
+      random error message of the form 'Illegal load factor: NaN' when creating a HashMap.
+      This appears to be a JDK bug in that the call is perfectly legal and the error
+      message is seen frequently under JDK 1.4.1 but
+      has never been seen under 1.3.1 or 1.4.2. We provide a work around which simply tries
+      again to create the HashMap and this log message indicates that the work around has
+      been triggered. To prevent it occuring switch to JDK 1.4.2. If you see the message
+      under a JDK other than 1.4.1 please let us know.
+    </p>
+    
 <h3>Reasoner and inference models</h3>
   <p id="reasoner-0"><strong>Q. I want to develop my own rules, how do I get started?</strong><br />
     A: The GenericRuleReasoner is the place to start. You can create instances of this reasoner by
@@ -240,6 +265,17 @@ Jena 2 &ndash; Frequently Asked Questions
 	  final InfModel/OntModel is specified to use OWL inference. If this is not
 	  appropriate for some reason you can disable the check and warning messages 
 	  using the global flag <code>com.hp.hpl.jena.shared.impl.JenaParameters.enableOWLRuleOverOWLRuleWarnings.</code></p>
+      
+      
+  <p id="reasoner-4"><strong>Q: Why do I get out of memory errors when working with the wine ontology?</strong><br />
+      <strong>A:</strong> 
+      The wine/food ontology is specifically designed to exercise all OWL/DL constructs. The 
+      Jena rule-based reasoner only supports the OWL/lite subset of OWL/Full and has scaling
+      problems with some of the constructs used in the wine ontology. If you need full
+      reasoning support for the wine (or similar) ontologies then use the new DIG interface
+      onto a reasoner such as Racer. If you only need to do things like traverse the class
+      hiearchy and infernce over RDFS plus OWL property relations is enough for you then the
+      OWL micro reasoner may be an option.</p>
       
       
     <h3>Ontology API</h3>

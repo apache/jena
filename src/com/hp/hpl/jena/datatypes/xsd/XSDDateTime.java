@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.15 2004-05-04 08:09:59 der Exp $
+ * $Id: XSDDateTime.java,v 1.16 2004-07-21 15:28:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2004-05-04 08:09:59 $
+ * @version $Revision: 1.16 $ on $Date: 2004-07-21 15:28:51 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -106,7 +106,9 @@ public class XSDDateTime extends AbstractDateTime {
         TimeZone tz = data[utc] == 'Z' ? TimeZone.getTimeZone("GMT") : TimeZone.getDefault();
         Calendar calendar = new GregorianCalendar(tz);
         calendar.set(data[CY], data[M] - 1, data[D], data[h], data[m], data[s]);
-        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.MILLISECOND, data[ms]);
+        // was this to work around problems with some Linux JDKs
+        // calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
     }
     
