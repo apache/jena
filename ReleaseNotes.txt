@@ -3,7 +3,10 @@ Release Notes
 
 Jena 2.1 - Main changes from Jena 2.0
   Installation
-      The names of some jars have changed be sure to update your classpath
+      The names of some jars have changed be sure to update your classpath.
+	  The name of the xerces jars are now: xercesImpl.jar and xml-apis.jar
+	  We also require Jakarta commons logging: commons-logging.jar
+	  See readme.html for the full list of jars.
       
   OWL Syntax Checker
       Major update from alpha version (Jena 2.0), to production 
@@ -133,7 +136,7 @@ no BerkeleyDB persistence is currently provided.  Jena2 adds new
 functionality with an ontology API, including OWL, a reasoner plug-in
 architecture together with rule-based reasoners for RDFS and OWL.
 
-Release Notes
+Release Notes - Jena2
 =============
 
 Changes from Jena2-beta1:
