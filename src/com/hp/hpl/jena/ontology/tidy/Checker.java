@@ -7,6 +7,7 @@ import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdql.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -48,6 +49,7 @@ public class Checker extends AbsChecker {
 	private Vector monotoneProblems = new Vector();
 
 	private Vector nonMonotoneProblems = null;
+	private int nonMonotoneLevel;
 
 	public Iterator getProblems() {
 		snapCheck();
@@ -59,6 +61,8 @@ public class Checker extends AbsChecker {
 	private void snapCheck() {
 		if (nonMonotoneProblems == null) {
 			nonMonotoneProblems = new Vector();
+			nonMonotoneLevel = Levels.Lite;
+			Model m = ModelFactory.createModelForGraph(hasBeenChecked);
 		
 		/*
 		 * Easy problems to check.
@@ -67,18 +71,18 @@ public class Checker extends AbsChecker {
 				public void apply(Node n){
 					nonMonProblem("Untyped node",n);
 				}
-			});
+			}, m);
 			check(CategorySet.orphanSets,new NodeAction() {
 			public void apply(Node n){
 				nonMonProblem("Orphaned rdf:List or owl:OntologyProperty node",n);
 			}
-		});
+		}, m);
 		if ( wantLite )
 		check(CategorySet.dlOrphanSets,new NodeAction() {
 		public void apply(Node n){
 			nonMonProblem("Orphaned blank owl:Class or owl:Restriction is in OWL DL",n,Levels.Lite);
 		}
-	});
+	}, m);
 		/*
 		 * Slightly harder
 		 */
@@ -87,13 +91,13 @@ public class Checker extends AbsChecker {
 			 	if (getCNode(n).asOne().incomplete())
 				  nonMonProblem("Incomplete blank owl:Class or owl:AllDifferent",n);
 			 }
-		 });
+		 }, m);
 		 check(CategorySet.structuredTwo,new NodeAction() {
 			 public void apply(Node n){
 				if (getCNode(n).asTwo().incomplete())
 				  nonMonProblem("Incomplete rdf:List or owl:Restriction",n);
 			 }
-		 });
+		 }, m);
 		 
 		 /*
 		  * Getting harder ...
@@ -114,8 +118,16 @@ public class Checker extends AbsChecker {
 		}
 	}
 	
-	private void check(Q q,NodeAction a){
-		// TODO check(Q,NodeAction)
+	private void check(Q q,NodeAction a, Model m){
+		Query rdql = q.asRDQL();
+		rdql.setSource(m);
+		QueryExecution qe = new QueryEngine(rdql);
+		QueryResults results = qe.exec();
+		while ( results.hasNext() ) {
+			ResultBinding rb = (ResultBinding)results.next() ;
+			RDFNode nn = (RDFNode)rb.get("x");
+			a.apply(nn.asNode());
+		}
 	}
 	private void nonMonProblem(String shortD,Node n) {
 		nonMonProblem(shortD, n,Levels.DL);
@@ -123,6 +135,8 @@ public class Checker extends AbsChecker {
 	private void nonMonProblem(String shortD,Node n, int lvl) {
 		Model m = ModelFactory.createDefaultModel();
 		Graph mg = m.getGraph();
+		if ( nonMonotoneLevel <= lvl )
+		   nonMonotoneLevel = lvl + 1;
 		EnhNode enh = ((EnhGraph)m).getNodeAs(n,RDFNode.class);
 		Iterator it = this.hasBeenChecked.find(n,null,null);
 		while ( it.hasNext() )
@@ -167,9 +181,11 @@ public class Checker extends AbsChecker {
 	void addProblem(SyntaxProblem sp) {
 		monotoneProblems.add(sp);
 	}
-	// TODO getSubLanguage()
 	public String getSubLanguage() {
-		return null;
+		if ( monotoneLevel < Levels.Full )
+   		   snapCheck();
+   		int m = monotoneLevel < nonMonotoneLevel ? nonMonotoneLevel : monotoneLevel;
+		return Levels.toString(m);
 	}
 	void actions(long key, CNodeI s, CNodeI o, Triple t) {
 		if (SubCategorize.tripleForObject(key))
@@ -189,22 +205,16 @@ public class Checker extends AbsChecker {
 	}
 	static public void main(String argv[]) {
 		OntDocumentManager dm = new OntDocumentManager();
-
 		dm.setProcessImports(true);
-
 		OntModel m = ModelFactory.createOntologyModel(OWL.NAMESPACE, null, dm);
-
 		m.read(argv[0]);
 
 		// m.getDocumentManager();
 		GraphFactory gf = dm.getDefaultGraphFactory();
-
 		Checker chk = new Checker(false, gf);
-
 		chk.add(m.getGraph());
 
 		String subLang = chk.getSubLanguage();
-
 		System.out.println(subLang);
 
 		if (argv.length > 1) {

@@ -12,7 +12,8 @@ import com.hp.hpl.jena.graph.*;
 abstract class AbsChecker extends EnhGraph {
 
 	final boolean wantLite;
-	AbsChecker( boolean lite, GraphFactory gf) {
+	int monotoneLevel = Levels.Lite;
+	AbsChecker(boolean lite, GraphFactory gf) {
 		super(gf.getGraph(), personality);
 		hasBeenChecked = gf.getGraph();
 		wantLite = lite;
@@ -27,9 +28,8 @@ abstract class AbsChecker extends EnhGraph {
 	Graph hasBeenChecked; // This is a subgraph of the input triples
 	// it can be extended to an OWL Lite/DL graph.
 
-
 	final boolean add(Triple t, boolean topLevelCall) {
-		return addX(t,topLevelCall)!= 0;
+		return addX(t, topLevelCall) != 0;
 	}
 	/**0 on failure, 1 on trivial, 2 on refinement.
 		 * @param topLevelCall True if t has not already been checked, false if t is being rechecked, as a result of some other changes
@@ -69,19 +69,19 @@ abstract class AbsChecker extends EnhGraph {
 				addProblem(Levels.DL, t);
 				success = false;
 			} else {
-				if (wantLite && SubCategorize.dl(key)) {
-					success = false;
-					addProblem(Levels.Lite, t);
-				} else {
-
-					success =
-						o.setCategories(SubCategorize.object(key, o0), true)
-							&& p.setCategories(SubCategorize.prop(key, p0), true)
-							&& s.setCategories(
-								SubCategorize.subject(key, s0),
-								true);
-
+				if (SubCategorize.dl(key)) {
+					if (wantLite) {
+						success = false;
+						addProblem(Levels.Lite, t);
+					} else {
+						setMonotoneLevel(Levels.DL);
+					}
 				}
+				success =
+					success
+						&& o.setCategories(SubCategorize.object(key, o0), true)
+						&& p.setCategories(SubCategorize.prop(key, p0), true)
+						&& s.setCategories(SubCategorize.subject(key, s0), true);
 			}
 			s1 = s.getCategories();
 			p1 = p.getCategories();
@@ -97,12 +97,18 @@ abstract class AbsChecker extends EnhGraph {
 			p.setCategories(pOrig, false);
 			o.setCategories(oOrig, false);
 		}
-		if (!success)
-		  return 0;
-		if ( s1 == sOrig && p1 == pOrig && o1 == oOrig)
-		return 1;
+		if (!success) {
+			setMonotoneLevel(wantLite?Levels.DL:Levels.Full);
+			return 0;
+		}
+		if (s1 == sOrig && p1 == pOrig && o1 == oOrig)
+			return 1;
 		else
-		  return 2;
+			return 2;
+	}
+	void setMonotoneLevel(int l) {
+		if (monotoneLevel < l)
+			monotoneLevel = l;
 	}
 	abstract void actions(long key, CNodeI s, CNodeI o, Triple t);
 
@@ -120,7 +126,7 @@ abstract class AbsChecker extends EnhGraph {
 		return rslt;
 	}
 	CNodeI getCNode(Node n) {
-		return (CNodeI)getNodeAs(n,CNodeI.class);
+		return (CNodeI) getNodeAs(n, CNodeI.class);
 	}
 
 	abstract void addProblem(int lvl, Triple t);

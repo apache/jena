@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: OneTwoImpl.java,v 1.2 2003-04-17 10:50:02 jeremy_carroll Exp $
+  $Id: OneTwoImpl.java,v 1.3 2003-04-17 11:45:11 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -41,9 +41,8 @@ class OneTwoImpl extends CGeneral {
 			Graph problem = ModelFactory.createDefaultModel().getGraph();
 			problem.add(old);
 			problem.add(t);
-
-			Checker chk = (Checker) getGraph();
-			chk.addProblem(new SyntaxProblem(shortMsg[i], problem, Levels.DL));
+            getChecker().setMonotoneLevel(Levels.Full);
+			getChecker().addProblem(new SyntaxProblem(shortMsg[i], problem, Levels.DL));
 
 		} else {
 
