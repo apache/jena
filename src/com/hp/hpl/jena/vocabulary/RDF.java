@@ -1,21 +1,19 @@
 /*
- *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
- *   All rights reserved.
+ *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002. All rights reserved.
  * [See end of file]
- *  $Id: RDF.java,v 1.4 2003-06-17 14:39:39 chris-dollin Exp $
- */
+ *  $Id: RDF.java,v 1.5 2003-06-23 11:01:37 chris-dollin Exp $
+*/
 
 
 package com.hp.hpl.jena.vocabulary;
 
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
 
 /**
  *
- * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-06-17 14:39:39 $'
+ * @author  bwm; updated by kers/daniel/christopher
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-23 11:01:37 $'
  */
 public class RDF{
 
@@ -30,66 +28,33 @@ public class RDF{
     {
         return uri;
     }
+    
+    /*
+         would use a Model as a resource/property factory, but ... createDefaultModel
+         needs Reifier.Standard which needs Reifier which needs RDF.type; oops,
+         circularity and sudden death. 
+         TODO break circularity somehow. 
+    */
 
     public static       Property li(int i) {
     	// System.err.println( "constructing RDF.li(" + i + ")" );
         return new PropertyImpl(uri, "_"+Integer.toString(i));}
 
+    public static       Resource Alt = new ResourceImpl(uri+"Alt");
+    public static       Resource Bag = new ResourceImpl(uri+"Bag");
+    public static       Resource Property = new ResourceImpl(uri+"Property");
+    public static       Resource Seq = new ResourceImpl(uri+"Seq");
+    public static       Resource Statement = new ResourceImpl(uri+"Statement");
+    public static       Resource List = new ResourceImpl(uri+"List");
+    public static       Resource nil = new ResourceImpl(uri+"nil");
 
-           static final String   nAlt = "Alt";
-    public static       Resource Alt = null;
-           static final String   nBag = "Bag";
-    public static       Resource Bag = null;
-           static final String   nProperty = "Property";
-    public static       Resource Property;
-           static final String   nSeq = "Seq";
-    public static       Resource Seq = null;
-           static final String   nStatement = "Statement";
-    public static       Resource Statement = null;
-           static final String   nList = "List";
-    public static       Resource List = null;
-           static final String   nnil = "nil";
-    public static       Resource nil = null;
-
-
-           static final String   nfirst = "first";
-    public static       Property first;
-           static final String   nrest = "rest";
-    public static       Property rest;
-           static final String   nsubject = "subject";
-    public static       Property subject;
-           static final String   npredicate = "predicate";
-    public static       Property predicate;
-           static final String   nobject = "object";
-    public static       Property object;
-           static final String ntype = "type";
-    public static       Property type;
-           static final String   nvalue = "value";
-    public static       Property value;
-
-
-
-    static {
-        try {
-            Alt         = new ResourceImpl(uri+nAlt);
-            Bag         = new ResourceImpl(uri+nBag);
-            Property    = new ResourceImpl(uri + nProperty);
-            Seq         = new ResourceImpl(uri+nSeq);
-            Statement   = new ResourceImpl(uri+nStatement);
-            List        = new ResourceImpl(uri+nList);
-            nil         = new ResourceImpl(uri+nnil);
-            type        = new PropertyImpl(uri, ntype);
-            rest        = new PropertyImpl(uri, nrest);
-            first       = new PropertyImpl(uri, nfirst);
-            subject     = new PropertyImpl(uri, nsubject);
-            predicate   = new PropertyImpl(uri, npredicate);
-            object      = new PropertyImpl(uri, nobject);
-            value       = new PropertyImpl(uri, nvalue);
-
-        } catch (JenaException e) {
-            ErrorHelper.logInternalError("RDF", 1, e);
-        }
-    }
+    public static       Property first = new PropertyImpl(uri, "first");
+    public static       Property rest = new PropertyImpl(uri, "rest");
+    public static       Property subject = new PropertyImpl(uri, "subject");
+    public static       Property predicate = new PropertyImpl(uri, "predicate");
+    public static       Property object = new PropertyImpl(uri, "object");
+    public static       Property type = new PropertyImpl(uri, "type");
+    public static       Property value = new PropertyImpl(uri, "value");
 
 }
 
