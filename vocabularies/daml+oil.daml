@@ -1,14 +1,16 @@
-<!-- $Revision: 1.1 $ of $Date: 2003-04-08 14:29:17 $. -->
+<!-- $Revision: 1.2 $ of $Date: 2003-06-18 12:59:57 $. -->
 
 <rdf:RDF
   xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
   xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
   xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
   xmlns     ="http://www.daml.org/2001/03/daml+oil#"
+  
+  xml:base="http://www.daml.org/2001/03/daml+oil"
 >
 
 <rdf:Description rdf:about="">
-  <versionInfo>$Id: daml+oil.daml,v 1.1 2003-04-08 14:29:17 ian_dickinson Exp $</versionInfo>
+  <versionInfo>$Id: daml+oil.daml,v 1.2 2003-06-18 12:59:57 ian_dickinson Exp $</versionInfo>
   <imports rdf:resource="http://www.w3.org/2000/01/rdf-schema"/>
 </rdf:Description>
 
@@ -488,5 +490,84 @@
   <samePropertyAs rdf:resource="http://www.w3.org/2000/01/rdf-schema#isDefinedBy"/>
   <rdfs:subPropertyOf rdf:resource="#seeAlso"/>
 </rdf:Property>
+
+<!-- we re-express the equivalences using subPropertyOf and subClassOf to make them available to the Jena reasoners -->
+<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#subPropertyOf">
+  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#subPropertyOf" />
+</rdf:Property>
+<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#subPropertyOf">
+	<rdfs:subPropertyOf rdf:resource="#subPropertyOf" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#type">
+  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" />
+</rdf:Property>
+<rdf:Property rdf:about="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+	<rdfs:subPropertyOf rdf:resource="#type" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#value">
+  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#value" />
+</rdf:Property>
+<rdf:Property rdf:about="http://www.w3.org/1999/02/22-rdf-syntax-ns#value">
+	<rdfs:subPropertyOf rdf:resource="#value" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#subClassOf">
+  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf" />
+</rdf:Property>
+<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#subClassOf">
+	<rdfs:subPropertyOf rdf:resource="#subClassOf" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#domain">
+  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#domain" />
+</rdf:Property>
+<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#domain">
+	<rdfs:subPropertyOf rdf:resource="#domain" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#range">
+  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#range" />
+</rdf:Property>
+<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#range">
+	<rdfs:subPropertyOf rdf:resource="#range" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#domain">
+  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#domain" />
+</rdf:Property>
+<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#domain">
+	<rdfs:subPropertyOf rdf:resource="#domain" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#label">
+  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#label" />
+</rdf:Property>
+<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#label">
+	<rdfs:subPropertyOf rdf:resource="#label" />
+</rdf:Property>
+
+<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#comment">
+  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#comment" />
+</rdf:Property>
+<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#comment">
+	<rdfs:subPropertyOf rdf:resource="#comment" />
+</rdf:Property>
+
+<rdfs:Class rdf:about="http://www.daml.org/2001/03/daml+oil#Literal">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal" />
+</rdfs:Class>
+<rdfs:Class rdf:about="http://www.w3.org/2000/01/rdf-schema#Literal">
+	<rdfs:subClassOf rdf:resource="#Literal" />
+</rdfs:Class>
+
+<rdfs:Class rdf:about="http://www.daml.org/2001/03/daml+oil#Property">
+  <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property" />
+</rdfs:Class>
+<rdfs:Class rdf:about="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property">
+	<rdfs:subClassOf rdf:resource="#Property" />
+</rdfs:Class>
+
 
 </rdf:RDF>

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-18 12:59:57 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.4 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.5 2003-06-18 12:59:57 ian_dickinson Exp $
  */
 public class OntModelSpec {
     // Constants
@@ -184,7 +184,7 @@ public class OntModelSpec {
             return OWL_LITE_MEM_TRANS_INF;
         }
         else if (languageURI.equals( ProfileRegistry.DAML_LANG )) {
-            return DAML_MEM;
+            return DAML_MEM_RDFS_INF;
         }
         else {
             throw new OntologyException( "Did not recognise this language URI, so cannot determine default model spec: " + languageURI );

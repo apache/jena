@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModel.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 13:47:43 $
+ * Last modified on   $Date: 2003-06-18 12:59:56 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,8 +24,10 @@ package com.hp.hpl.jena.ontology.daml;
 // Imports
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.daml.impl.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
@@ -40,7 +42,7 @@ import java.util.*;
  * information from all loaded ontologies.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModel.java,v 1.4 2003-06-17 13:47:43 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModel.java,v 1.5 2003-06-18 12:59:56 ian_dickinson Exp $
  */
 public interface DAMLModel
     extends OntModel
@@ -127,15 +129,7 @@ public interface DAMLModel
      */
     public DAMLDatatypeProperty createDAMLDatatypeProperty( String uri );
 
-    /**
-     * <p>Create an (optionally anonymous) DAML datatype.</p>
-     *
-     * @param uri The URI for the new datatype, or null to create
-     *            an anonymous datatype.
-     * @return A new DAMLDatatype object.
-     */
-    public DAMLDatatype createDAMLDatatype( String uri );
-    
+
     /**
      * <p>Create an empty DAML list.</p>
      *
@@ -182,11 +176,9 @@ public interface DAMLModel
      *
      * @param uri The URI of the new DAML value, or null for an anonymous value
      * @param damlClass The class to which the new DAML value will belong
-     * @param vocabulary The vocabulary to use for the newly created classs, or null to use
-     *                   the default vocabulary
      * @return An instance of a DAMLCommon value that corresponds to the given class.
      */
-    public DAMLCommon createDAMLValue( String uri, Resource damlClass, DAMLVocabulary vocabulary );
+    public DAMLCommon createDAMLValue( String uri, Resource damlClass );
 
 
     /**
@@ -210,20 +202,38 @@ public interface DAMLModel
      * @param uri The URI of the DAML resource to look for.
      * @param damlClass The class of the new resource to create if no existing resource
      *                  is found.
-     * @param vocabulary The vocabulary to use for the new value (if needed), or null
-     *                   to use the default vocabulary.
      * @return An existing DAML resource from the model, matching uri, or a new
      *         resource if no existing resource is found.
      */
-    public DAMLCommon getDAMLValue( String uri, DAMLClass damlClass, DAMLVocabulary vocabulary );
+    public DAMLCommon getDAMLValue( String uri, DAMLClass damlClass );
 
-
+    /**
+     * <p>Answer a resource from the current model with the given uri, viewed as a DAML Class.</p>
+     * @param uri The uri of the resource to fetch
+     * @return The class resource with the given URI, or null
+     */
+    public DAMLClass getDAMLClass( String uri );
+    
+    /**
+     * <p>Answer a resource from the current model with the given uri, viewed as a DAML Property.</p>
+     * @param uri The uri of the resource to fetch
+     * @return The property resource with the given URI, or null
+     */
+    public DAMLProperty getDAMLProperty( String uri );
+    
+    /**
+     * <p>Answer a resource from the current model with the given uri, viewed as a DAML Instance.</p>
+     * @param uri The uri of the resource to fetch
+     * @return The instance resource with the given URI, or null
+     */
+    public DAMLInstance getDAMLInstance( String uri );
+    
     /**
      * <p>Answer an iterator over all DAML classes that are presently in the model.</p>
      *
      * @return An iterator over all currently defined classes (including Restrictions).
      */
-    public Iterator listDAMLClasses();
+    public ExtendedIterator listDAMLClasses();
 
 
     /**
@@ -232,7 +242,7 @@ public interface DAMLModel
      * @return An iterator over all currently defined properties (i.e. rdf:Property and
      *         all sub-classes).
      */
-    public Iterator listDAMLProperties();
+    public ExtendedIterator listDAMLProperties();
 
 
     /**
@@ -240,7 +250,7 @@ public interface DAMLModel
      *
      * @return An iterator over all currently defined DAML instances.
      */
-    public Iterator listDAMLInstances();
+    public ExtendedIterator listDAMLInstances();
 
 
     /**
@@ -263,13 +273,17 @@ public interface DAMLModel
     /**
      * <p>Answer a reference to the XML datatype registry for this model, that can be used to
      * map between XML data marked up using XML Schema data descriptions, and Java objects.
-     * This registry is also used to detect resources in the model that correspond to
-     * {@link DAMLDataInstance} objects, and type declarations that correspond to
-     * {@link DAMLDatatype} objects.</p>
+     * This method has changed since Jena1, and now uses the much more clearly defined mechanism
+     * for datatypes that has been specified for RDF.  This updated specification is represented
+     * in Jena2 via the <code>com.hp.hpl.jena.datatypes</code> package.
+     * </p>
+     * <p>
+     * Note that the type mapper returned is the shared, global singleton instance of the type mapper.
+     * </p>
      *
-     * @return An XML data translator registry
+     * @return An XML datatype mapper
      */
-    public XMLDatatypeRegistry getDatatypeRegistry();
+    public TypeMapper getDatatypeRegistry();
 
 
     /**

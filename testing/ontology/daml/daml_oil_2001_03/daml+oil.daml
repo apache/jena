@@ -1,4 +1,4 @@
-<!-- $Revision: 1.1.1.1 $ of $Date: 2002-12-19 19:12:43 $. -->
+<!-- $Revision: 1.1 $ of $Date: 2003-06-18 12:59:57 $. -->
 <!-- Note: this is just http://www.daml.org/2001/03/daml+oil.daml, modified     -->
 <!-- to make all names absolute with rdf:about rather than relative with rdf:ID -->
 
@@ -10,7 +10,7 @@
 >
 
 <rdf:Description rdf:about="">
-  <versionInfo>$Id: daml+oil.daml,v 1.1.1.1 2002-12-19 19:12:43 bwm Exp $</versionInfo>
+  <versionInfo>$Id: daml+oil.daml,v 1.1 2003-06-18 12:59:57 ian_dickinson Exp $</versionInfo>
   <imports rdf:resource="http://www.w3.org/2000/01/rdf-schema"/>
 </rdf:Description>
 

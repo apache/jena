@@ -20,7 +20,7 @@
 	The default set of mappings for locally cached ontologies
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS:    $Id: ont-policy.rdf,v 1.2 2003-04-08 14:30:00 ian_dickinson Exp $
+	CVS:    $Id: ont-policy.rdf,v 1.3 2003-06-18 12:59:58 ian_dickinson Exp $
 -->
 
 <DocumentManagerPolicy>
@@ -54,12 +54,5 @@
 	<prefix    rdf:datatype="&xsd;string">daml</prefix>
 </OntologySpec>
 
-<OntologySpec>
-	<!-- local version of the old DAML vocabulary -->
-	<publicURI rdf:resource="http://www.daml.org/2000/12/daml+oil" />
-	<altURL    rdf:resource="file:vocabularies/daml+oil-2000-12.daml" />
-	<language  rdf:resource="http://www.daml.org/2000/12/daml+oil" />
-	<prefix    rdf:datatype="&xsd;string">daml</prefix>
-</OntologySpec>
 
 </rdf:RDF>
