@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLConsistencyTest.java,v 1.1 2005-02-14 18:08:57 der Exp $
+ * $Id: OWLConsistencyTest.java,v 1.2 2005-02-15 16:28:04 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.FileManager;
  * Utility for checking OWL validation results.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 public class OWLConsistencyTest extends TestCase {
@@ -59,7 +59,7 @@ public class OWLConsistencyTest extends TestCase {
     protected Object culprit;
     
     /**
-     * Constructor - builds a dummy test which can't be run without setting a reasoner factroy 
+     * Constructor - builds a dummy test which can't be run without setting a reasoner factory 
      * @param tbox The tbox to be tested, relative to BASE_DIR
      * @param abox The abox to be tested, relative to BASE_DIR
      * @param expected The expected result to check against - INCONSISTENT/WARNINGS/CLEAN
@@ -100,7 +100,10 @@ public class OWLConsistencyTest extends TestCase {
     public ValidityReport testResults() {
         Model t = FileManager.get().loadModel(BASE_DIR + tbox);
         Model a = FileManager.get().loadModel(BASE_DIR + abox);
-        Reasoner r = rf.create(null).bindSchema(t);
+        // Work around non-deterministic bug in bindSchema
+//        Reasoner r = rf.create(null).bindSchema(t);
+        Reasoner r = rf.create(null);
+        a.add(t);
         InfModel im = ModelFactory.createInfModel(r, a);
         return im.validate();
     }

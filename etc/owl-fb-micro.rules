@@ -486,6 +486,14 @@
 [validationIndiv: (?v rb:validation on())  ->
 	[validationIndiv: (?X rb:violation error('conflict', 'Two individuals both same and different, may be due to disjoint classes or functional properties', ?Y)) 
 				<- (?X owl:differentFrom ?Y), (?X owl:sameAs ?Y) ] ]
+				
+[validationIndiv2: (?v rb:validation on()) (?X owl:disjointWith ?Y) -> 
+	[validationIndiv: (?I rb:violation error('conflict', 'Individual a member of disjoint classes', ?X, ?Y)) 
+				<- (?I rdf:type ?X), (?I rdf:type ?Y)] ]
+
+[validationIndiv3: (?v rb:validation on()) ->
+	[validationIndiv: (?I rb:violation error('conflict', 'Individual a member of Nothing', ?I)) 
+				<- (?I rdf:type owl:Nothing) ] ]
 
 [validationDisjoint: (?v rb:validation on())  ->
 	[validationIndiv: (?X rb:violation error('disjoint', 'Two classes related by both subclass and disjoint relations', ?Y)) 

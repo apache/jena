@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.27 2004-12-17 11:28:37 der Exp $
+ * $Id: TestBugs.java,v 1.28 2005-02-15 16:28:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,6 +13,7 @@ import java.io.*;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.model.*;
@@ -33,7 +34,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2004-12-17 11:28:37 $
+ * @version $Revision: 1.28 $ on $Date: 2005-02-15 16:28:04 $
  */
 public class TestBugs extends TestCase {
 
@@ -51,7 +52,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "xxtest_oh_01" ));
+//        suite.addTest(new TestBugs( "xxtest_der_validation" ));
 //        return suite;
     }  
 
@@ -519,6 +520,19 @@ public class TestBugs extends TestCase {
         test_oh_01scan( OntModelSpec.OWL_MEM_RULE_INF, "Full rule inf", expected );
     }
     
+    /** Problem with bindSchema and validation rules */
+    public void xxtest_der_validation() {
+        Model abox = FileManager.get().loadModel("file:testing/reasoners/owl/nondetbug.rdf");
+        List rules = FBRuleReasoner.loadRules("testing/reasoners/owl/nondetbug.rules");
+        GenericRuleReasoner r = new GenericRuleReasoner(rules);
+        r.setTraceOn(true);
+        for (int i = 0; i < 1; i++) {
+            InfModel im = ModelFactory.createInfModel(r, abox);
+            assertTrue("failed on count " + i, im.contains(null, ReasonerVocabulary.RB_VALIDATION_REPORT, (RDFNode)null));
+        }
+    }
+    
+    // Temporary for debug
     private void test_oh_01scan( OntModelSpec s, String prompt, Resource[] expected ) {
         String NS = "http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#";
         OntModel m = ModelFactory.createOntologyModel(s, null);

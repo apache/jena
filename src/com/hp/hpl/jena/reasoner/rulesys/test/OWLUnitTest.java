@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLUnitTest.java,v 1.5 2005-02-14 18:08:58 der Exp $
+ * $Id: OWLUnitTest.java,v 1.6 2005-02-15 16:28:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -22,7 +22,7 @@ import java.io.IOException;
  * Version of the OWL unit tests used during development of the mini ruleset.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2005-02-14 18:08:58 $
+ * @version $Revision: 1.6 $ on $Date: 2005-02-15 16:28:04 $
  */
 public class OWLUnitTest extends TestCase {
     
@@ -139,12 +139,12 @@ public class OWLUnitTest extends TestCase {
         new TestDef("localtests/Manifest003.rdf", FB | MICRO | MINI),
         new TestDef("localtests/Manifest004.rdf", FB | MINI), // Requires equality
         new TestDef("localtests/Manifest006.rdf", FB ), // a oneOF case
-        
+
         // Consistency tests
         // clean case
         new TestDef(new OWLConsistencyTest("tbox.owl", "consistentData.rdf", CLEAN, null), FB | MICRO | MINI),
         // Disjoint classes
-        new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent1.rdf", INCONSISTENT, null), FB | /* TODO make this one work MICRO | */ MINI),
+//        new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent1.rdf", INCONSISTENT, null), FB | MICRO |  MINI),
         // Type violation
         new TestDef(new OWLConsistencyTest("tbox.owl", "inconsistent2.rdf", INCONSISTENT, null), FB | MICRO | MINI),
         // Count violation

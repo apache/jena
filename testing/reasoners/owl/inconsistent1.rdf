@@ -21,10 +21,6 @@
    	<owl:Thing rdf:ID="it2" />
    	
     <A rdf:ID="ia">
-    	<fp rdf:resource="#it1" />
-    	<p  rdf:resource="#it1" />
-    	<p  rdf:resource="#it2" />
-    	<dp rdf:datatype="&xsd;int">1</dp>
     </A>
     
     <B rdf:about="#ia" />
