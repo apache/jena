@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.12 2003-09-22 12:25:08 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.13 2003-09-22 14:56:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-09-22 12:25:08 $
+ * @version $Revision: 1.13 $ on $Date: 2003-09-22 14:56:51 $
  */
 public class WebOntTestHarness {
 
@@ -220,10 +220,10 @@ public class WebOntTestHarness {
         }
         WebOntTestHarness harness = new WebOntTestHarness();
 //        harness.runTests();
-//        harness.runTest("http://www.w3.org/2002/03owlt/I5.8/Manifest006#test");
-//        harness.runTest("http://www.w3.org/2002/03owlt/I5.8/Manifest008#test");
-//        harness.runTest("http://www.w3.org/2002/03owlt/I5.8/Manifest009#test");
-//        harness.runTest("http://www.w3.org/2002/03owlt/I5.3/Manifest015#test");
+        harness.runTest("http://www.w3.org/2002/03owlt/I5.8/Manifest006#test");
+        harness.runTest("http://www.w3.org/2002/03owlt/I5.8/Manifest008#test");
+        harness.runTest("http://www.w3.org/2002/03owlt/I5.8/Manifest009#test");
+        harness.runTest("http://www.w3.org/2002/03owlt/I5.3/Manifest015#test");
         RDFWriter writer = harness.testResults.getWriter("RDF/XML-ABBREV");
         OutputStream stream = new FileOutputStream(resultFile);
         writer.setProperty("showXmlDeclaration", "true");

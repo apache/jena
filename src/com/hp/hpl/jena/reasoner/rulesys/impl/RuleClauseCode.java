@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.4 2003-09-22 08:12:41 der Exp $
+ * $Id: RuleClauseCode.java,v 1.5 2003-09-22 14:58:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-09-22 08:12:41 $
+ * @version $Revision: 1.5 $ on $Date: 2003-09-22 14:58:09 $
  */
 public class RuleClauseCode {
     
@@ -126,15 +126,15 @@ public class RuleClauseCode {
     // current next = 0x22
     
     /** The maximum number of permanent variables allowed in a single rule clause. 
-     *   Future refactorings will remove this restriction. */
-    public static final int MAX_PERMANENT_VARS = 12;
+     *  Now only relevent for initial holding clause. */
+    public static final int MAX_PERMANENT_VARS = 15;
     
     /** The maximum number of argument variables allowed in a single goal 
      *   Future refactorings will remove this restriction. */
-    public static final int MAX_ARGUMENT_VARS = 12;
+    public static final int MAX_ARGUMENT_VARS = 8;
     
     /** The maximum number of temporary variables allowed in a single rule clause. */
-    public static final int MAX_TEMPORARY_VARS = 12;
+    public static final int MAX_TEMPORARY_VARS = 8;
     
     /** Dummy code block which just returns */
     public static RuleClauseCode returnCodeBlock;
@@ -311,7 +311,7 @@ public class RuleClauseCode {
                     out.println("CLEAR_ARG " + "A" + code[p++]);
                     break;
                 case ALLOCATE:
-                    out.println("ALLOCATE");
+                    out.println("ALLOCATE + " + code[p++]);
                     break;
                 default:
                     out.println("Unused code: " + instruction);
@@ -430,7 +430,10 @@ public class RuleClauseCode {
          * emit the code for the head clause
          */
         void emitHead(TriplePattern head) {
-            if (permanentVars.size() > 0) code[p++] = ALLOCATE;
+            if (permanentVars.size() > 0) {
+                code[p++] = ALLOCATE;
+                code[p++] = (byte)permanentVars.size();
+            }
             emitHeadGet(head.getSubject(), 0);
             emitHeadGet(head.getPredicate(), 1);
             emitHeadGet(head.getObject(), 2);
@@ -456,12 +459,12 @@ public class RuleClauseCode {
                             // No movement code required, var in right place  
                     } else {
                         code[p++] = seen.add(var) ? GET_TEMP : UNIFY_TEMP;
-                        code[p++] = (byte)var.getIndex();
+                        code[p++] = (byte)tempVars.indexOf(var);
                         code[p++] = (byte)argi;
                     }
                 } else {
                     code[p++] = seen.add(var) ? GET_VARIABLE : UNIFY_VARIABLE;
-                    code[p++] = (byte)var.getIndex();
+                    code[p++] = (byte)permanentVars.indexOf(var);
                     code[p++] = (byte)argi;
                 }
             } else if (Functor.isFunctor(node)) {
@@ -523,6 +526,11 @@ public class RuleClauseCode {
          * use in calling builtins
          */
         void emitBodyPut(Node node, int argi, boolean deref) {
+            if (argi >= MAX_ARGUMENT_VARS) {
+                throw new LPRuleSyntaxException("Rule too complex for current implementation\n" 
+                            + "Rule clauses are limited to " + MAX_ARGUMENT_VARS + " argument variables\n", rule); 
+
+            }
             if (node instanceof Node_RuleVariable) {
                 Node_RuleVariable var = (Node_RuleVariable)node;
                 if (isDummy(var)) {
@@ -537,7 +545,7 @@ public class RuleClauseCode {
                             // No movement code required, var in right place  
                     } else {
                         code[p++] = PUT_TEMP;
-                        code[p++] = (byte)var.getIndex();
+                        code[p++] = (byte)tempVars.indexOf(var);
                         code[p++] = (byte)argi;
                     }
                 } else {
@@ -546,7 +554,7 @@ public class RuleClauseCode {
                     } else {
                         code[p++] = PUT_NEW_VARIABLE;
                     }
-                    code[p++] = (byte)var.getIndex();
+                    code[p++] = (byte)permanentVars.indexOf(var);
                     code[p++] = (byte)argi;
                 }
             } else if (Functor.isFunctor(node)) {
@@ -676,12 +684,12 @@ public class RuleClauseCode {
             
             if (permanentVars.size() > MAX_PERMANENT_VARS) {
                 throw new LPRuleSyntaxException("Rule too complex for current implementation\n" 
-                            + "Rule clauses are limited to " + MAX_PERMANENT_VARS + "permanent variables\n", rule); 
+                            + "Rule clauses are limited to " + MAX_PERMANENT_VARS + " permanent variables\n", rule); 
             }
             
             if (tempVars.size() > MAX_TEMPORARY_VARS) {
                 throw new LPRuleSyntaxException("Rule too complex for current implementation\n" 
-                            + "Rule clauses are limited to " + MAX_TEMPORARY_VARS + "temporary variables\n", rule); 
+                            + "Rule clauses are limited to " + MAX_TEMPORARY_VARS + " temporary variables\n", rule); 
             }
             
             // Builtins in the forward system use the var index to modify variable bindings.
@@ -787,7 +795,10 @@ public class RuleClauseCode {
             String test18 = "(?a p ?a) <- (?a s ?a).";
             String test19 = "(?X p ?T) <- (?X rdf:type c), noValue(?X, p), makeInstance(?X, p, ?T).";
             String test20 = "(a p b ) <- unbound(?x).";
-            store.addRule(Rule.parseRule(test20));
+            String testLong = "(?P p ?C) <- (?P q ?D), (?D r xsd(?B, ?S1, ?L1)),(?P p ?E), notEqual(?D, ?E) " +
+                    "(?E e xsd(?B, ?S2, ?L2)),min(?S1, ?S2, ?S3),min(?L1, ?L2, ?L3), (?C r xsd(?B, ?S3, ?L3)).";
+            String test21 = "(?a p ?y) <- (?x s ?y) (?a p ?x).";
+            store.addRule(Rule.parseRule(test21));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);
