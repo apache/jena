@@ -3,7 +3,7 @@
 # This variant is used in the case where the subclass and subproperty
 # lattices have been precomputed by a transitive graph closure cache.
 # and only includes the minimum useful core rules with no axioms.
-# $Id: rdfs-fb-tgc-simple.rules,v 1.2 2003-08-21 12:01:02 der Exp $
+# $Id: rdfs-fb-tgc-simple.rules,v 1.3 2003-08-25 20:59:25 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -22,10 +22,9 @@
 [rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ] 
 [rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] 
 
-# Either version should work, pure back one scales better, but a bug (suspected in Brule system)
-# seems to cause problems in some cases. Stick to original version for now.
-[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
-#[rdfs9-alt:  (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x) ] 
+# Either version should work, pure back one scales better.
+# rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
+[rdfs9-alt:  (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x) ] 
 
 # Not needed - replaced by TGC front end
 #[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
