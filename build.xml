@@ -17,10 +17,12 @@
     
     <property name="web.site"        value="http://jena.sourceforge.net/" />
   
-    <property name="debug"           value="true"/>
-    <property name="debuglevel"      value="source,lines"/>
-    <property name="deprecation"     value="false"/>
-    <property name="optimize"        value="true"/>
+    <property name="java.debug"      value="true"/>
+    <property name="java.debuglevel" value="source,lines"/>
+    <property name="java.deprecation"   value="false"/>
+    <property name="java.optimize"   value="true"/>
+    <property name="java.source"     value="1.4"/>
+    <property name="java.target"     value="1.4"/>
 
     <property name="orig-src.dir"    value="src"/>
     <property name="src.dir"         value="bldsrc"/>
@@ -166,10 +168,12 @@
     <target name="compile-jena" depends="pre-compile">
         <javac srcdir="${src.dir}"
                destdir="${classes.dir}"
-               debug="${debug}"
-               debuglevel="${debuglevel}"
-               deprecation="${deprecation}"
-               optimize="${optimize}">
+               debug="${java.debug}"
+               debuglevel="${java.debuglevel}"
+               deprecation="${java.deprecation}"
+               optimize="${java.optimize}"
+	       source="${java.source}"
+	       target="${java.target}">
             <classpath refid="classpath" />
         </javac>
         <copy todir="${classes.dir}" file="${src.dir}/log4j.properties"/>
