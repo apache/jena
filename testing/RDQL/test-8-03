@@ -1,4 +1,4 @@
-// (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+// (c) Copyright 2002 Hewlett-Packard Development Company, LP
 // Test-8-03 : Regular expression testing
 SELECT ?x ?y ?z
 FROM   <model1.nt>

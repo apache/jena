@@ -1,4 +1,4 @@
-// (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+// (c) Copyright 2002 Hewlett-Packard Development Company, LP
 // Tutorial query 6
 
 SELECT ?resource, ?familyName

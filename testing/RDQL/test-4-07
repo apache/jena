@@ -1,4 +1,4 @@
-// (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+// (c) Copyright 2002 Hewlett-Packard Development Company, LP
 // Test 4-07 : Anonymous nodes : ?x and ?y should be the same on model3.
 
 SELECT ?x, ?y

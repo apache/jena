@@ -1,4 +1,4 @@
-// (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+// (c) Copyright 2002 Hewlett-Packard Development Company, LP
 // Test A-01 : Test handling of prefixes : mixed use
 // Note : no comma in list
 // Current still needs comma in USING clause - grammar/parser needs fixing.
