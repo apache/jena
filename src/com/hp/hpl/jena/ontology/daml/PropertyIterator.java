@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            11 Sept 2001
  * Filename           $RCSfile: PropertyIterator.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-23 15:14:22 $
+ * Last modified on   $Date: 2003-02-03 22:49:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -93,7 +93,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyIterator.java,v 1.2 2003-01-23 15:14:22 ian_dickinson Exp $
+ * @version CVS info: $Id: PropertyIterator.java,v 1.3 2003-02-03 22:49:40 ian_dickinson Exp $
  * @since Jena 1.3.0 (was previously in package com.hp.hpl.jena.ontology.daml.common).
  */
 public class PropertyIterator
@@ -188,8 +188,8 @@ public class PropertyIterator
      * @param isReflexive If true, the property is reflexive (so, the root resource will be included
      *                    in the iteration).
      * @param useEquivalence If true, equivalence between DAML values will be included in the
-     *                       iteration (unless the model containing the DAML values has equivalence
-     *                       switched off via {@link com.hp.hpl.jena.ontology.daml.Model#setUseEquivalence}.
+     * iteration (unless the model containing the DAML values
+     * has equivalence switched off via {@link DAMLModel#setUseEquivalence}).
      */
     public PropertyIterator( Resource root, Property pred, Property inverse, boolean isTransitive,
                              boolean isReflexive, boolean useEquivalence ) {
@@ -249,8 +249,8 @@ public class PropertyIterator
      * @param isReflexive If true, the property is reflexive (so, the root resources will be included
      *                    in the iteration).
      * @param useEquivalence If true, equivalence between DAML values will be included in the
-     *                       iteration (unless the model containing the DAML values has equivalence
-     *                       switched off via {@link com.hp.hpl.jena.ontology.daml.Model#setUseEquivalence}.
+     * iteration (unless the model containing the DAML values has equivalence
+     * switched off via {@link DAMLModel#setUseEquivalence}.
      */
     public PropertyIterator( Iterator roots, Property pred, Property inverse, boolean isTransitive,
                              boolean isReflexive, boolean useEquivalence ) {

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Jan 2001
  * Filename           $RCSfile: DAMLLoader.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-01 14:35:32 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-02-03 22:49:39 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -98,7 +98,7 @@ import com.hp.hpl.jena.mem.ModelMem;
  * of imports on or off overall, or by using
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLLoader.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
+ * @version CVS info: $Id: DAMLLoader.java,v 1.4 2003-02-03 22:49:39 ian_dickinson Exp $
  */
 public class DAMLLoader
 {
@@ -116,7 +116,7 @@ public class DAMLLoader
     /** {@link #getStatus Status} flag: OK */
     public static final long STATUS_OK = 0L;
 
-    /** {@link #getStatus Status} flag: input source is not available (e.g. a file cannot be opened) */
+    /** {@link #getStatus Status} flag: input source is not available (e&#046;g&#046; a file cannot be opened) */
     public static final long STATUS_INPUT_UNAVAILABLE = 1L;
 
     /** {@link #getStatus Status} flag: an I/O error occurred - details will be in log file. */

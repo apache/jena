@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClass.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-23 14:35:17 $
+ * Last modified on   $Date: 2003-02-03 22:49:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -54,7 +54,7 @@ import java.util.Iterator;
  * not the same as Java classes: think of classifications rather than active data structures.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClass.java,v 1.2 2003-01-23 14:35:17 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLClass.java,v 1.3 2003-02-03 22:49:40 ian_dickinson Exp $
  */
 public interface DAMLClass
     extends DAMLCommon, DAMLClassExpression
@@ -155,7 +155,7 @@ public interface DAMLClass
      * Answer an iterator over the DAML classes (or, strictly, class expressions)
      * that mention this class as one of its super-classes.
      *
-     * @param closed If true, close the iteration over the sub-class relation: i.e.
+     * @param closed If true, close the iteration over the sub-class relation: i&#046;e&#046;
      *               return the sub-classes of the sub-classes, etc.
      * @return an iterator over this class's super-classes. The members of the
      *         iteration will be DAMLClass objects.
@@ -178,7 +178,7 @@ public interface DAMLClass
      * Answer an iterator over the DAML classes (or, strictly, class expressions)
      * that mention this class as one of its sub-classes.
      *
-     * @param closed If true, close the iteration over the super-class relation: i.e.
+     * @param closed If true, close the iteration over the super-class relation: i&#046;e&#046;
      *               return the super-classes of the super-classes, etc.
      * @return an iterator over this class's sub-classes. The members of the
      *         iteration will be DAMLClass objects.
@@ -246,7 +246,7 @@ public interface DAMLClass
 
     /**
      * Answer an iteration of the properties that may be used for
-     * instances of this class: i.e. the properties that have this class,
+     * instances of this class: i&#046;e&#046; the properties that have this class,
      * or one of its super-classes, as domain.
      *
      * @return An iteration of the properties that have this class as domain
@@ -256,7 +256,7 @@ public interface DAMLClass
 
     /**
      * Answer an iteration of the properties that may be used for
-     * instances of this class: i.e. the properties that have this class,
+     * instances of this class: i&#046;e&#046; the properties that have this class,
      * or optionally one of its super-classes, as domain.
      *
      * @param closed If true, close the iteration over the super-classes

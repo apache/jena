@@ -1,32 +1,35 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.2 2003-02-03 22:49:40 ian_dickinson Exp $
+  $Id: TestPackage.java,v 1.1 2003-02-03 22:49:40 ian_dickinson Exp $
 */
 
-package com.hp.hpl.jena.enhanced;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.ontology.OntList;
-import com.hp.hpl.jena.ontology.impl.OntListImpl;
+package com.hp.hpl.jena.ontology.impl.test;
 
+import junit.framework.*;
 
 /**
-	@author jjc + kers
+    Collected test suite for the .ontology.impl package.
+    @author  Ian Dickinson
 */
-public class BuiltinPersonalities {
 
-	static final private  GraphPersonality graph = new GraphPersonality();
+public class TestPackage extends TestSuite {
 
-	static final public GraphPersonality model = (GraphPersonality)graph.copy()
-        .add( Resource.type, ResourceImpl.factory )
-		.add( Property.type, PropertyImpl.factory )	
-		.add( Literal.type,LiteralImpl.factory )
-        .add( Alt.type, AltImpl.factory )
-        .add( Bag.type, BagImpl.factory )
-        .add( Seq.type, SeqImpl.factory )
-        .add( OntList.type, OntListImpl.factory )
-        ;		
+    static public TestSuite suite() {
+        return new TestPackage();
+    }
+    
+    /** Creates new TestPackage */
+    private TestPackage() {
+        super("ontology.impl");
+        addTest( "TestList", TestList.suite() );
+    }
+
+    private void addTest(String name, TestSuite tc) {
+        tc.setName(name);
+        addTest(tc);
+    }
+
 }
 
 /*

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-01 14:35:32 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-02-03 22:49:39 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -103,7 +103,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.4 2003-02-03 22:49:39 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends ModelMem
@@ -168,10 +168,10 @@ public class DAMLModelImpl
     /** The set of indexes to different daml values */
     protected Hashtable m_indexes = new Hashtable();
 
-    /** An index of values by type and name only (i.e. collecting namespace entries together) */
+    /** An index of values by type and name only (i&#046;e&#046; collecting namespace entries together) */
     protected OneToManyMap m_nameIndex = new OneToManyMap();
 
-    /** An index of classes by namespace and type only (i.e. collecting named entries together) */
+    /** An index of classes by namespace and type only (i&#046;e&#046; collecting named entries together) */
     protected OneToManyMap m_namespaceIndex = new OneToManyMap();
 
     /** A registry for mapping XML data to Java types */
@@ -461,7 +461,7 @@ public class DAMLModelImpl
     /**
      * Answer an iterator over all DAML properties that are presently in the model.
      *
-     * @return an iterator over all currently defined properties (i.e. rdf:Property and
+     * @return an iterator over all currently defined properties (i&#046;e&#046; rdf:Property and
      *         all sub-classes).
      */
     public Iterator listDAMLProperties() {

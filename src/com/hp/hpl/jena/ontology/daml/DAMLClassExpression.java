@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            29 Jan 2001
  * Filename           $RCSfile: DAMLClassExpression.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:14:49 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-02-03 22:49:40 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -53,7 +53,7 @@ package com.hp.hpl.jena.ontology.daml;
  * a boolean expression, an enumeration or a Restriction.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClassExpression.java,v 1.1.1.1 2002-12-19 19:14:49 bwm Exp $
+ * @version CVS info: $Id: DAMLClassExpression.java,v 1.2 2003-02-03 22:49:40 ian_dickinson Exp $
  * @see DAMLClass
  * @see DAMLRestriction
  */
@@ -63,7 +63,7 @@ public interface DAMLClassExpression
     //////////////////////////////////
 
     /**
-     * Answer true if this class expression is an enumeration (i.e. has a property
+     * Answer true if this class expression is an enumeration (i&#046;e&#046; has a property
      * 'oneOf' with a list of values).  This is not an exclusive property, a class
      * expression can be an enumeration at the same time as one of the other kinds
      * of class expression, though the conjunction of these may produce the Nothing
@@ -75,7 +75,7 @@ public interface DAMLClassExpression
 
 
     /**
-     * Answer true if this class expression is an named class (i.e. is not an anonymous
+     * Answer true if this class expression is an named class (i&#046;e&#046; is not an anonymous
      * class expression).  This is not an exclusive property, a class
      * expression can be named at the same time as one of the other kinds
      * of class expression, though the conjunction of these may produce the Nothing
@@ -87,7 +87,7 @@ public interface DAMLClassExpression
 
 
     /**
-     * Answer true if this class expression is an property restriction (i.e. is a
+     * Answer true if this class expression is an property restriction (i&#046;e&#046; is a
      * Restriction value).  This is not an exclusive property, a class
      * expression can be a property restriction at the same time as one of the other kinds
      * of class expression, though the conjunction of these may produce the Nothing

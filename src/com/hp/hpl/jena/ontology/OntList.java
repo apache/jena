@@ -6,11 +6,11 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
- * Filename           $RCSfile: OntologyList.java,v $
+ * Filename           $RCSfile: OntList.java,v $
  * Revision           $Revision: 1.1 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-01-29 22:13:34 $
+ * Last modified on   $Date: 2003-02-03 22:49:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -26,8 +26,9 @@ package com.hp.hpl.jena.ontology;
 ///////////////
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.enhanced.*;
 
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -53,20 +54,36 @@ import java.util.List;
  * lists are processed in non-strict mode.
  * </p>
  * <p>
- * @todo Still to investigate: interaction of lists with writers to generate
+ * TODO Still to investigate: interaction of lists with writers to generate
  * appropriately compact serialisations, such as <code>rdf:parseType=&quot;
  * Collection&quot;</code>
+ * </p>
+ * <p>
+ * TODO This class currently extends RDFNode, to give a common abstraction base.
+ * This will change in future, when the decision is taken as to the correct top
+ * type for the presentation layer, possibly Polymorphic or EnhNode.
  * </p>
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: OntologyList.java,v 1.1 2003-01-29 22:13:34 ian_dickinson Exp $)
+ * @version Release ($Id: OntList.java,v 1.1 2003-02-03 22:49:40 ian_dickinson Exp $)
  */
-public interface OntologyList
+public interface OntList
+    extends Resource
 {
     // Constants
     //////////////////////////////////
 
+    /**
+     * This type value defines the polymorphic type of OntList, which is
+     * used to generate list facets of resources.
+     */
+    public static final Type type = new Type() {
+        public boolean accepts( Polymorphic p )     { return p instanceof OntList;}
+        public boolean supportedBy( Polymorphic p ) { return p instanceof OntList; }
+        public String toString()                    { return "OntList.type"; }
+    };
+    
 
     // External signature methods
     //////////////////////////////////
@@ -112,7 +129,7 @@ public interface OntologyList
      * @return The tail of the list, as a list
      * @exception EmptyListException if this list is the empty list
      */
-    public RDFList getTail();
+    public OntList getTail();
     
     
     /**
@@ -124,7 +141,7 @@ public interface OntologyList
      * @param tail The new tail for this list.
      * @return The old tail.
      */
-    public RDFList setTail( RDFList tail );
+    public OntList setTail( OntList tail );
     
     
     /**
@@ -144,7 +161,7 @@ public interface OntologyList
      * 
      * @return A list vocabulary
      */
-    public OntologyList.Vocabulary getVocabulary();
+    public OntList.Vocabulary getVocabulary();
     
     
     /**
@@ -156,7 +173,7 @@ public interface OntologyList
      * @param value A new value to add to the head of the list
      * @return The new list, whose head is <code>value</code>
      */
-    public RDFList add( RDFNode value );
+    public OntList cons( RDFNode value );
     
     
     /**
@@ -187,7 +204,7 @@ public interface OntologyList
      * @exception ListIndexException if the list has fewer than (i + 1)
      * elements.
      */
-    public RDFNode replace( int i );
+    public RDFNode replace( int i, RDFNode value );
     
     
     /**
@@ -238,14 +255,14 @@ public interface OntologyList
      * the head of the given <code>list</code>. This is a non side-effecting
      * operation on either this list or the given list, but generates a copy
      * of this list.  For a more storage efficient alternative, see {@link
-     * #concatenate}.
+     * #concatenate concatenate}.
      * </p>
      * 
      * @param list The argument list
-     * @return A new RDFList that contains all of this elements of this list,
+     * @return A new OntList that contains all of this elements of this list,
      * followed by all of the elements of the given list.
      */
-    public RDFList append( RDFList list );
+    public OntList append( OntList list );
     
     
     /**
@@ -253,17 +270,50 @@ public interface OntologyList
      * Change the tail of this list to point to the given list, so that this
      * list becomes the list of the concatenation of the elements of both lists.
      * This is a side-effecting operation on this list; for a non side-effecting
-     * alternative, see {@link #append}.
+     * alternative, see {@link #append append}.  The return value of this method
+     * is the concatenated list.  Typically, the return value is <i>this</i>.
+     * However, if this list is the empty list (nil), concatenating list
+     * <code>L</code> to this list will return <code>L</code>, otherwise the
+     * node underlying this list view would change (thus violating an invariant
+     * on EnhNode).
      * </p>
      * 
      * @param list The argument list to concatenate to this list
+     * @return The concatenated list
      */
-    public void concatenate( RDFList list );
+    public OntList concatenate( OntList list );
+        
+        
+    /**
+     * <p>
+     * Add the nodes returned by the given iterator to the end of this list.
+     * The return value of this method is the concatenated list. Typically, the
+     * return value is <i>this</i>. However, if this list is the empty list
+     * (nil), concatenating nodes <code>L</code> to this list will return
+     * a new list, otherwise the node underlying this list view would change
+     * (thus violating an invariant on EnhNode).
+     * </p>
+     * 
+     * @param nodes An iterator whose range is RDFNode
+     * @return The concatenated list
+     */
+    public OntList concatenate( Iterator nodes );
+        
+    
+    /**
+     * <p>
+     * Answer a list that contains all of the elements of this list in the same
+     * order, but is a duplicate copy in the underlying model.
+     * </p>
+     * 
+     * @return A copy of the current list
+     */
+    public OntList copy();
     
     
     /**
      * <p>
-     * Apply a function to each node of the list in turn.
+     * Apply a function to each value in the list in turn.
      * </p>
      * 
      * @param fn The function to apply to each list node.
@@ -273,7 +323,7 @@ public interface OntologyList
     
     /**
      * <p>
-     * Apply a function to each node of the list in turn, accumulating the
+     * Apply a function to each value in the list in turn, accumulating the
      * results in an accumulator. The final value of the accumulator is returned
      * as the value of <code>reduce()</code>.
      * </p>
@@ -288,12 +338,16 @@ public interface OntologyList
     /**
      * <p>
      * Remove the value from the head of the list.  The tail of the list remains
-     * in the model.
+     * in the model.  Note that no changes are made to list cells that point to
+     * this list cell as their tail.  Immediately following a
+     * <code>removeHead</code> operation, such lists will be in a non-valid
+     * state.
      * </p>
      * 
-     * @return RDFNode The value of the head of the list, that has been removed.
+     * @return The remainder of the list after the head is removed (i&#046;e&#046; the
+     * pre-removal list tail)
      */
-    public RDFNode removeHead();
+    public OntList removeHead();
     
     
     /**
@@ -328,6 +382,22 @@ public interface OntologyList
     
     /**
      * <p>
+     * Answer true if this list has the same elements in the same order as the
+     * given list.  Note that the standard <code>equals</code> test just tests
+     * for equality of two given list cells.  While such a test is sufficient
+     * for many purposes, this test provides a broader equality definition, but
+     * is correspondingly more expensive to test.
+     * </p>
+     * 
+     * @param list The list to test against
+     * @return True if the given list and this list are the same length, and
+     * contain equal elements in the same order.
+     */
+    public boolean sameListAs( OntList list );
+    
+    
+    /**
+     * <p>
      * Answer true if this list is operating in strict mode, in which the
      * well- formedness of the list is checked at every operation.
      * </p>
@@ -352,19 +422,41 @@ public interface OntologyList
      * <p>
      * Answer true if the list is well-formed, by checking that each node is
      * correctly typed, and has a head and tail pointer from the correct
-     * vocabulary.
+     * vocabulary. If the list is invalid, the reason is available via {@link
+     * #getValidityErrorMessage}.
      * </p>
      * 
      * @return True if the list is well-formed.
+     * @see #getValidityErrorMessage
      */
     public boolean isValid();
     
+    
+    /**
+     * <p>
+     * Answer the error message returned by the last failed validity check,
+     * if any.
+     * </p>
+     * 
+     * @return The most recent error message, or null.
+     * @see #isValid
+     */
+    public String getValidityErrorMessage();
     
     
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
+    /**
+     * Encapsulates the sub-set of a general RDF vocabulary that is used to
+     * build a well-formed list. In particular, this vocabulary defines the
+     * relations that relate the list cell to a value ({@link #getHead head}),
+     * and a  list cell to the next cell in the list ({@link #getTail tail}),
+     * the <code>rdf:type</code> for each cell in the list ({@link
+     * #getCellType}) and the resource used to represent an empty list ({@link
+     * #getNil nil}).
+     */
     public static interface Vocabulary {
         
         /**
@@ -395,10 +487,12 @@ public interface OntologyList
         public Property getTail();
         
         /**
-         * <p>Answer the resource that will be the type of each cell in the list
+         * <p>Answer the resource that will be the type of each cell in the
+         * list.
          * </p>
          * 
-         * @return A resource that should be the rdf:type of each list cell
+         * @return A resource that should be the <code>rdf:type</code> of each
+         * list cell.
          */
         public Resource getCellType();
     }
@@ -411,10 +505,10 @@ public interface OntologyList
     public static interface ApplyFn {
         /** 
          * <p>
-         * Apply a function to the given RDF node 
+         * Apply a function to the given RDF node.
          * </p>
          * 
-         * @param node A node from the list
+         * @param node A node from the list.
          */
         public void apply( RDFNode node );
     }
@@ -427,12 +521,12 @@ public interface OntologyList
     public static interface ReduceFn {
         /** 
          * <p>
-         * Apply a function to the given RDF node 
+         * Apply a function to the given RDF node.
          * </p>
          * 
-         * @param node A node from the list
+         * @param node A node from the list.
          * @param accumulator The accumulator for the reduction, which will
-         * either be an initial value passed to {@link RDFList#reduce}, or the
+         * either be an initial value passed to {@link OntList#reduce}, or the
          * output from <code>reduce</code> applied to the previous node in the
          * list.
          * @return The result of applying the reduction function to the current
