@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Mapping.java,v 1.4 2003-07-15 13:26:58 chris-dollin Exp $
+  $Id: Mapping.java,v 1.5 2003-07-18 11:02:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
-
 import java.util.*;
 
 /**
@@ -35,8 +34,12 @@ public class Mapping
         @return the index of v in the mapping
     */
 	public int indexOf( Node v )
-		{ return ((Integer) map.get( v )).intValue(); }
-		
+		{ 
+        Integer i = (Integer) map.get( v );
+        if (i == null) throw new Query.UnboundVariableException( v );
+        return i.intValue();
+        }
+
     /**
         allocate an index to the node _v_. _v_ must not already
         be mapped.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.11 2003-07-17 15:34:12 chris-dollin Exp $
+  $Id: Query.java,v 1.12 2003-07-18 11:02:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -9,6 +9,8 @@ package com.hp.hpl.jena.graph.query;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.mem.*;
+
+import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 
@@ -38,7 +40,10 @@ public class Query
 	public Query()
 		{
 		}
-		
+        
+    public static class UnboundVariableException extends JenaException
+        { public UnboundVariableException( Node n ) { super( n.toString() ); } }
+        		
     public Query( Graph pattern )
         { 
         addMatches( pattern );

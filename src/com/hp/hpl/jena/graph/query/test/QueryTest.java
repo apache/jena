@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.14 2003-07-17 15:34:12 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.15 2003-07-18 11:02:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -501,17 +501,22 @@ public class QueryTest extends GraphTestBase
         }
         
     /**
-        PLACEHOLDER
-    */
-    public void testQueryConstraintNull()
+        test that unbound constraint variables are handled "nicely".
+    */  
+    public void testQueryConstraintUnbound()
         {
-        try 
-            { 
-            Query q = new Query().addConstraint( null, node( "ne" ), null );
-            fail( "null operands to addConstraint should be caught" );
+        Query q = new Query()
+            .addConstraint( Query.X, Query.NE, Query.Y )
+            .addMatch( Query.X, Query.ANY, Query.X )
+            ;
+        Graph g = graphWith( "x R x; x R y" );
+        try
+            {
+            ExtendedIterator it = q.executeBindings( g, new Node[] {Query.X} );
+            fail( "should spot unbound variable" );
             }
-        catch (Exception e) { /* should be more explicit */ }
-        }
+        catch (Query.UnboundVariableException b) { /* as required */ }
+        } 
         
     public void testCloseQuery()
         {
