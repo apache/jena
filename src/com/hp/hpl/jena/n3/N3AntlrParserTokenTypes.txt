@@ -1,4 +1,4 @@
-// $ANTLR 2.7.2: n3.g -> N3AntlrParserTokenTypes.txt$
+// $ANTLR : n3.g -> N3AntlrParserTokenTypes.txt$
 N3AntlrParser    // output token vocab name
 ANON=4
 FORMULA=5

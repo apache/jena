@@ -460,8 +460,26 @@ AT_WORD
 		{ $setType(AT_LANG) ; }
 	;
 
+// To Do:
+// Align with XML 1.1 -- http://www.w3.org/TR/xml11/
+// NameStartChar 
+// NameChar
+// Name ::= NameStartChar NameChar*
+
+// Namepace 1.1 -- http://www.w3.org/TR/xml-names11/
+// NCName ::= NCNameStartChar NCNameChar*
+// NCNameChar       ::=    NameChar - ':' 
+// NCNameStartChar  ::=    NameStartChar - ':'
+// QName    ::=    PrefixedName 
+//               | UnprefixedName 
+// PrefixedName     ::=    Prefix ':' LocalPart  
+// UnprefixedName   ::=    LocalPart  
+// Prefix           ::=    NCName (does not start with numbers)
+// LocalPart        ::=    NCName (does not start with numbers) 
+
+
 // Namespace prefix name: include bNode ids.
-protected
+protected // Prefix
 NSNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
 
 // LNAME does not allow a start of '-' because it confuses with
@@ -471,7 +489,7 @@ NSNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
 // or as a path separator or as a number decimal point.
 // See N3JenaWriter, which avoids outputing qnames with a '.' in them.
 
-protected
+protected // LocalPart
 LNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
 
 // Use lookahead as the DOT character is also the statement separator/terminator
@@ -570,6 +588,22 @@ WS:
 protected
 NWS: ~(' ' | '\t' | '\f' | '\r' | '\n' ) ;
 
+
+// Align with XML 1.1 -- http://www.w3.org/TR/xml11/
+// NameStartChar 
+// NameChar
+// Name ::= NameStartChar NameChar*
+
+// Namepace 1.1 -- http://www.w3.org/TR/xml-names11/
+// NCName ::= NCNameStartChar NCNameChar*
+// NCNameChar       ::=    NameChar - ':' 
+// NCNameStartChar  ::=    NameStartChar - ':'
+// QName    ::=    PrefixedName 
+//               | UnprefixedName 
+// PrefixedName     ::=    Prefix ':' LocalPart  
+// UnprefixedName   ::=    LocalPart  
+// Prefix           ::=    NCName (does not start with numbers)
+// LocalPart        ::=    NCName (does not start with numbers) 
 
 protected
 ALPHA: ('A'..'Z')|('a'..'z') ;
