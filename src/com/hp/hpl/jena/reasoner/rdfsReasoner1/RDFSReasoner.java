@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.4 2003-02-01 14:35:31 bwm Exp $
+ * $Id: RDFSReasoner.java,v 1.5 2003-02-10 10:14:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-02-01 14:35:31 $
+ * @version $Revision: 1.5 $ on $Date: 2003-02-10 10:14:13 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -41,6 +41,9 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     
     /** Note if the reasoner is configured to scan for member properties */
     protected boolean scanProperties = true;
+    
+    /** Note if datatype range checking is enabled for adds */
+    protected boolean checkDTRange = false;
     
     // Static initializer
     static {
@@ -62,14 +65,30 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     public RDFSReasoner(Model configuration) {
         super();
         if (configuration != null) {
-            Resource base = configuration.getResource(RDFSReasonerFactory.URI);
-            StmtIterator i = base.listProperties(RDFSReasonerFactory.scanProperties);
-            if (i.hasNext()) {
-                scanProperties = i.nextStatement().getObject().toString().equalsIgnoreCase("true");
-            }
+            Boolean flag = checkBinaryPredicate(RDFSReasonerFactory.scanProperties, configuration);
+            if (flag != null) scanProperties = flag.booleanValue();
+            flag = checkBinaryPredicate(RDFSReasonerFactory.checkDTRange, configuration);
+            if (flag != null) checkDTRange = flag.booleanValue();
         }
     }
      
+    /**
+     * Helper method - extracts the truth of a boolean configuration
+     * predicate.
+     * @param pred the predicate to be tested
+     * @param configuration the configuration model
+     * @return null if there is no setting otherwise a Boolean giving the setting value
+     */
+    private Boolean checkBinaryPredicate(Property predicate, Model configuration) {
+        Resource base = configuration.getResource(RDFSReasonerFactory.URI);
+        StmtIterator i = base.listProperties(RDFSReasonerFactory.scanProperties);
+        if (i.hasNext()) {
+            return new Boolean(i.nextStatement().getObject().toString().equalsIgnoreCase("true"));
+        } else {
+            return null;
+        }
+    }
+
     /**
      * Extracts all of the subClass and subProperty declarations from
      * the given schema/tbox and caches the resultant graphs.
@@ -79,7 +98,7 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
      * subClassOf is discovered.
      * @param tbox schema containing the property and class declarations
      */
-    public Reasoner bindRuleset(Graph tbox) throws ReasonerException {
+    public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         super.bindSchema(tbox);
         subPropertyCache.setCaching(true);
         
@@ -101,9 +120,8 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException {
-        Reasoner bReasoner = new BoundRDFSReasoner(tbox, data, subPropertyCache, 
-                                                    subClassCache, scanProperties);
-        return new BaseInfGraph(data, bReasoner);
+        return new RDFSInfGraph(tbox, data, subPropertyCache, 
+                                                    subClassCache, this);
     }   
     
 }

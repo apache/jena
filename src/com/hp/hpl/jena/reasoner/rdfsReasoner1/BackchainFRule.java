@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BackchainFRule.java,v 1.1 2003-01-30 18:31:10 der Exp $
+ * $Id: BackchainFRule.java,v 1.2 2003-02-10 10:14:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.reasoner.*;
  * and registers it with the reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:31:10 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:14:12 $
  */
 public class BackchainFRule extends BaseFRule {
 
@@ -31,7 +31,7 @@ public class BackchainFRule extends BaseFRule {
      * Assert each of the instantiated Triples into the reasoner
      * triple cache.
      */
-    void fire(TriplePattern[] body, BoundRDFSReasoner reasoner) {
+    void fire(TriplePattern[] body, RDFSInfGraph reasoner) {
         reasoner.addBRule(new BRWRule(body[0], body[1]));
     }
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PropertyBRWRule.java,v 1.1 2003-01-30 18:31:10 der Exp $
+ * $Id: PropertyBRWRule.java,v 1.2 2003-02-10 10:14:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of "anything mentioned in predicated position is a Property".
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:31:10 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:14:11 $
  */
 public class PropertyBRWRule extends BRWRule {
 
@@ -39,14 +39,14 @@ public class PropertyBRWRule extends BRWRule {
      * against the whole reasoner+rawdata again and then rewrite the
      * results from that query according the rule.
      * @param query the query being processed
-     * @param reasoner the parent reasoner that invoked us, will be called recursively
+     * @param infGraph the parent InfGraph that invoked us, will be called recursively
      * @param data the raw data graph which gets passed back to the reasoner as part of the recursive invocation
      * @param firedRules set of rules which have already been fired and should now be blocked
      * @return a ExtendedIterator which aggregates the matches and rewrites them
      * according to the rule
      */
-    public ExtendedIterator execute(TriplePattern query, Reasoner reasoner, Finder data, HashSet firedRules) {
-        BoundRDFSReasoner bRr = (BoundRDFSReasoner) reasoner;
+    public ExtendedIterator execute(TriplePattern query, InfGraph infGraph, Finder data, HashSet firedRules) {
+        RDFSInfGraph bRr = (RDFSInfGraph) infGraph;
         Node prop = query.getSubject();
         if (bRr.getScanProperties()) {
             // All properties are cached in the subProperty graph

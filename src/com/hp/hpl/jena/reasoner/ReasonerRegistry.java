@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.2 2003-02-01 13:35:01 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.3 2003-02-10 10:13:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -32,7 +32,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-01 13:35:01 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-10 10:13:20 $
  */
 public class ReasonerRegistry {
 
@@ -103,7 +103,9 @@ public class ReasonerRegistry {
     public void register(ReasonerFactory factory) {
         reasonerFactories.put(factory.getURI(), factory);
         Model description = factory.getCapabilities();
-        allDescriptions.add(description);
+        if (description != null) {
+            allDescriptions.add(description);
+        }
         allDescriptions.createResource(factory.getURI())
                         .addProperty(RDF.type, ReasonerClass);
     }

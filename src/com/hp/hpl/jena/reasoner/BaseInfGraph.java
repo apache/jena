@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.1 2003-01-30 18:30:35 der Exp $
+ * $Id: BaseInfGraph.java,v 1.2 2003-02-10 10:13:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -16,9 +16,9 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:30:35 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:13:24 $
  */
-public class BaseInfGraph extends GraphBase implements InfGraph {
+public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
     /** The Reasoner instance which performs all inferences and Tbox lookups */
     protected Reasoner reasoner;
@@ -82,6 +82,16 @@ public class BaseInfGraph extends GraphBase implements InfGraph {
                                      "\nResult was: " + resultNode);
     }
     
+    /**
+     * Test the consistency of the bound data. This normally tests
+     * the validity of the bound instance data against the bound
+     * schema data. 
+     * @return a ValidityReport structure
+     */
+    public ValidityReport validate() {
+        return new StandardValidityReport();
+    }
+    
    /**
      * An extension of the Graph.find interface which allows the caller to 
      * encode complex expressions in RDF and then refer to those expressions
@@ -112,9 +122,32 @@ public class BaseInfGraph extends GraphBase implements InfGraph {
      * Returns an iterator over Triples.
      */
     public ExtendedIterator find(Node subject, Node property, Node object) {
-        return reasoner.findWithContinuation(
+        return findWithContinuation(
                             new TriplePattern(subject, property, object), fdata);
     }
+
+    /**
+     * Basic pattern lookup interface.
+     * @param pattern a TriplePattern to be matched against the data
+     * @return a ExtendedIterator over all Triples in the data set
+     *  that match the pattern
+     */
+    public ExtendedIterator find(TriplePattern pattern) {
+        return findWithContinuation(pattern, null);
+    }
+    
+    /**
+     * Extended find interface used in situations where the implementator
+     * may or may not be able to answer the complete query. It will
+     * attempt to answer the pattern but if its answers are not known
+     * to be complete then it will also pass the request on to the nested
+     * Finder to append more results.
+     * @param pattern a TriplePattern to be matched against the data
+     * @param continuation either a Finder or a normal Graph which
+     * will be asked for additional match results if the implementor
+     * may not have completely satisfied the query.
+     */
+    abstract public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation);
     
     /** 
         returns this Graph's reifier. Each call on a given Graph gets the same

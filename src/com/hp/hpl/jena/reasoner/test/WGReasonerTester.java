@@ -1,0 +1,342 @@
+/******************************************************************
+ * File:        WGReasonerTester.java
+ * Created by:  Dave Reynolds
+ * Created on:  09-Feb-03
+ * 
+ * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * [See end of file]
+ * $Id: WGReasonerTester.java,v 1.1 2003-02-10 10:14:16 der Exp $
+ *****************************************************************/
+package com.hp.hpl.jena.reasoner.test;
+
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.vocabulary.RDF;
+
+import junit.framework.TestCase;
+import org.apache.log4j.Logger;
+
+import java.io.*;
+import java.util.*;
+
+/**
+ * A utility to support execution of the RDFCode working group entailment
+ * tests as specified in <a href="http://www.w3.org/TR/2003/WD-rdf-testcases-20030123/">
+ * http://www.w3.org/TR/2003/WD-rdf-testcases-20030123/</a>.
+ * 
+ * <p>The manifest file defines a set of tests. Only the positive and negative
+ * entailment tests are handled by this utility. Each test defines a set
+ * of data files to load. For normal positive entailment tests we check each
+ * triple in the conclusions file to ensure it is included in the inferred
+ * graph. For postive entailment tests which are supposed to entail the 
+ * false document we run an additional validation check (TODO implement!). For
+ * negative entailment tests which tests all triples in the non-conclusions file 
+ * and check that at least one trile is missing. </p>
+ * 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
+ * @version $Revision: 1.1 $ on $Date: 2003-02-10 10:14:16 $
+ */
+public class WGReasonerTester {
+
+    /** The namespace for the test specification schema */
+    public static final String NS = "http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#";
+    
+    /** The base URI in which the files are purported to reside */
+    public static final String BASE_URI = "http://www.w3.org/2000/10/rdf-tests/rdfcore/";
+    
+    /** The base directory in which the test data is actually stored */
+    public static final String baseDir = "testing/wg/";
+    
+    /** The rdf class for positive tests */
+    public static final Resource PositiveEntailmentTest;
+    
+    /** The rdf class for positive tests */
+    public static final Resource NegativeEntailmentTest;
+    
+    /** The constant used to indicate an invalid document */
+    public static final Resource FalseDocument;
+    
+    /** The predicate defining the description of the test */
+    public static final Property descriptionP;
+    
+    /** The predicate defining the status of the test */
+    public static final Property statusP;
+    
+    /** The predicate defining the rule sets used */
+    public static final Property entailmentRulesP;
+    
+    /** The predicate defining a premise for the test */
+    public static final Property premiseDocumentP;
+    
+    /** The predicate defining the conclusion from the test */
+    public static final Property conclusionDocumentP;
+    
+    // Static initializer for the predicates
+    static {
+        PositiveEntailmentTest = new ResourceImpl(NS, "PositiveEntailmentTest");
+        NegativeEntailmentTest = new ResourceImpl(NS, "NegativeEntailmentTest");
+        FalseDocument = new ResourceImpl(NS, "False-Document");
+        descriptionP = new PropertyImpl(NS, "description");
+        statusP = new PropertyImpl(NS, "status");
+        entailmentRulesP = new PropertyImpl(NS, "entailmentRules");
+        premiseDocumentP = new PropertyImpl(NS, "premiseDocument");
+        conclusionDocumentP = new PropertyImpl(NS, "conclusionDocument");
+    }
+    
+    /** The rdf defining all the tests to be run */
+    protected Model testManifest;
+    
+    /** log4j logger */
+    protected static Logger logger = Logger.getLogger(WGReasonerTester.class);
+    
+    /**
+     * Constructor.
+     * @param manifest the name of the manifest file defining these
+     * tests - relative to baseDir
+     */
+    public WGReasonerTester(String manifest) throws IOException {
+        testManifest = loadFile(manifest);
+    }
+    
+    /**
+     * Utility to load a file in rdf/nt/n3 format as a Model.
+     * Files are assumed to be relative to the BASE_URI.
+     * @param file the file name, relative to baseDir
+     * @return the loaded Model
+     */
+    public static Model loadFile(String file) throws IOException {
+        String langType = "RDF/XML";
+        if (file.endsWith(".nt")) {
+            langType = "N-TRIPLE";
+        } else if (file.endsWith("n3")) {
+            langType = "N3";
+        }
+        Model result = new ModelMem();
+        String fname = file;
+        if (fname.startsWith(BASE_URI)) {
+            fname = fname.substring(BASE_URI.length());
+        }
+        Reader reader = new BufferedReader(new FileReader(baseDir + fname));
+        result.read(reader, BASE_URI + fname, langType);
+        return result;
+    }
+    
+    /**
+     * Load the datafile given by the property name.
+     * @param test the test being processed
+     * @param predicate the property of the test giving the file name to load
+     * @return a graph containing the file contents or an empty graph if the property
+     * is not present
+     * @throws IOException if the property is present but the file can't be found
+     */
+    private Graph loadTestFile(Resource test, Property predicate) throws IOException {
+        if (test.hasProperty(predicate)) {
+            String fileName = test.getProperty(predicate).getObject().toString();
+            return loadFile(fileName).getGraph();
+        } else {
+            return new GraphMem();
+        }
+    }
+    
+    /**
+     * Run all the tests in the manifest
+     * @param reasonerF the factory for the reasoner to be tested
+     * @param testcase the JUnit test case which is requesting this test
+     * @param configuration optional configuration information
+     * @return true if all the tests pass
+     * @throws IOException if one of the test files can't be found
+     * @throws RDFException if the test can't be found or fails internally
+     */
+    public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Model configuration) throws IOException {
+        ResIterator tests = testManifest.listSubjectsWithProperty(RDF.type, PositiveEntailmentTest);
+        while (tests.hasNext()) {
+            String test = tests.next().toString();
+            System.out.println(test);
+            if (!runTest(test, reasonerF, testcase, configuration)) return false;
+        }
+        tests = testManifest.listSubjectsWithProperty(RDF.type, NegativeEntailmentTest);
+        while (tests.hasNext()) {
+            String test = tests.next().toString();
+            System.out.println(test);
+            if (!runTest(test, reasonerF, testcase, configuration)) return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Run a single designated test.
+     * @param uri the uri of the test, as defined in the manifest file
+     * @param reasonerF the factory for the reasoner to be tested
+     * @param testcase the JUnit test case which is requesting this test
+     * @param configuration optional configuration information
+     * @return true if the test passes
+     * @throws IOException if one of the test files can't be found
+     * @throws RDFException if the test can't be found or fails internally
+     */
+    public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase, Model configuration) throws IOException {
+        // Find the specification for the named test
+        Resource test = testManifest.getResource(uri);
+        Resource testType = (Resource)test.getProperty(RDF.type).getObject();
+        if (!(testType.equals(NegativeEntailmentTest) ||
+               testType.equals(PositiveEntailmentTest) ) ) {
+            throw new RDFException("Can't find test: " + uri);
+        }
+
+        String description = test.getProperty(descriptionP).getObject().toString();
+        String status = test.getProperty(statusP).getObject().toString();
+        //logger.info("WG test " + test.getURI() + " - " + description);
+        logger.debug("WG test " + test.getURI() + " - " + status);
+        
+        // Skip pending tests for now
+        /*
+        if (status.equalsIgnoreCase("PENDING")) {
+            return true;
+        }
+        */
+        
+        // Load up the premise documents
+        Model premises = new ModelMem();
+        for (StmtIterator premisesI = test.listProperties(premiseDocumentP); premisesI.hasNext(); ) {
+            premises.add(loadFile(premisesI.nextStatement().getObject().toString()));
+        }
+
+        // Load up the conclusions document
+        Model conclusions = null;
+        Resource conclusionsRes = (Resource) test.getProperty(conclusionDocumentP).getObject();
+        Resource conclusionsType = (Resource) conclusionsRes.getProperty(RDF.type).getObject();
+        if (!conclusionsType.equals(FalseDocument)) {
+            conclusions = loadFile(conclusionsRes.toString());
+        }
+        
+        // Construct the inferred graph
+        Reasoner reasoner = reasonerF.create(configuration);
+        InfGraph graph = reasoner.bind(premises.getGraph());
+        Model result = new ModelMem(graph);
+        
+        // Check the results against the official conclusions
+        boolean correct = true;
+        if (testType.equals(PositiveEntailmentTest)) {
+            if (conclusions == null) {
+                // Check that the result is flagged as semantically invalid
+                correct = ! graph.validate().isValid();
+            } else {
+                correct = testConclusions(conclusions.getGraph(), result.getGraph());
+                if (!graph.validate().isValid()) {
+                    correct = false;
+                }
+            }
+        } else {
+            // A negative entailment check
+            correct = !testConclusions(conclusions.getGraph(), result.getGraph());
+        }
+
+        // Debug output on failure
+        if (!correct) {
+            logger.debug("Premises: " );
+            for (StmtIterator i = premises.listStatements(); i.hasNext(); ) {
+                logger.debug("  - " + i.nextStatement());
+            }
+            logger.debug("Conclusions: " );
+            for (StmtIterator i = conclusions.listStatements(); i.hasNext(); ) {
+                logger.debug("  - " + i.nextStatement());
+            }
+        }
+        
+        // Signal the results        
+        if (testcase != null) {
+            testcase.assertTrue(description, correct);
+        }
+        return correct;
+    }
+    
+    /**
+     * Test a conclusions graph against a result graph. This works by
+     * translating the conclusions graph into a find query which contains one
+     * variable for each distinct bNode in the conclusions graph.
+     */
+    private boolean testConclusions(Graph conclusions, Graph result) {
+        QueryHandler qh = result.queryHandler();
+        Query query = graphToQuery(conclusions);
+        Iterator i = qh.prepareBindings(query, new Node[] {}).executeBindings();
+        return i.hasNext();
+    }
+
+ 
+    /**
+     * Translate a conclusions graph into a query pattern
+     */
+    public static Query graphToQuery(Graph graph) {
+        HashMap bnodeToVar = new HashMap();
+        Query query = new Query();
+        for (Iterator i = graph.find(null, null, null); i.hasNext(); ) {
+            Triple triple = (Triple)i.next();
+            query.addMatch(
+                translate(triple.getSubject(), bnodeToVar),
+                translate(triple.getPredicate(), bnodeToVar),
+                translate(triple.getObject(), bnodeToVar) );
+        }
+        return query;
+    }
+   
+    /**
+     * Translate a blank node to a variable node
+     * @param node the bNode to translate
+     * @param bnodeToVar a map of translations already known about
+     * @return a variable node
+     */
+    private static Node translate(Node node, HashMap bnodeToVar) {
+        String varnames = "abcdefghijklmnopqrstuvwxyz";
+        if (node.isBlank()) {
+            Node t = (Node)bnodeToVar.get(node);
+            if (t == null) {
+               int i = bnodeToVar.size();
+               if (i > varnames.length()) {
+                   throw new ReasonerException("Too many bnodes in query");
+               }
+               t = Node.makeVariable(varnames.substring(i, i+1));
+               bnodeToVar.put(node, t);
+            } 
+            return t;
+        } else {
+            return node;
+        }
+    }
+ 
+}
+
+/*
+    (c) Copyright Hewlett-Packard Company 2003
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+

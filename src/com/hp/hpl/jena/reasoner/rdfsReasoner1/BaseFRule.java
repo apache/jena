@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseFRule.java,v 1.1 2003-01-30 18:31:10 der Exp $
+ * $Id: BaseFRule.java,v 1.2 2003-02-10 10:14:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * match and then processed be descendant class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:31:10 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:14:12 $
  */
 public class BaseFRule {
 
@@ -56,7 +56,7 @@ public class BaseFRule {
      * Match the rule against a single triple.
      * Instantiating the variables then firing the consequent action.
      */
-    public void bindAndFire(Triple value, BoundRDFSReasoner reasoner) {
+    public void bindAndFire(Triple value, RDFSInfGraph reasoner) {
         // special case filter of reflexive subClass/subProp cases
         // somewhat hacky doing it here ...
         if ((value.getPredicate().equals(TransitiveReasoner.subPropertyOf) ||
@@ -84,7 +84,7 @@ public class BaseFRule {
      * Called when the rule fires.
      * Subclasses should override.
      */
-    void fire(TriplePattern[] body, BoundRDFSReasoner reasoner) {
+    void fire(TriplePattern[] body, RDFSInfGraph reasoner) {
     }
                     
     /**

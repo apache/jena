@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: AssertFRule.java,v 1.2 2003-01-31 10:17:34 der Exp $
+ * $Id: AssertFRule.java,v 1.3 2003-02-10 10:14:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.reasoner.*;
  * triples into the reasoner's cache.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-01-31 10:17:34 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-10 10:14:12 $
  */
 public class AssertFRule extends BaseFRule {
 
@@ -31,7 +31,7 @@ public class AssertFRule extends BaseFRule {
      * Assert each of the instantiated Triples into the reasoner
      * triple cache.
      */
-    void fire(TriplePattern[] body, BoundRDFSReasoner reasoner) {
+    void fire(TriplePattern[] body, RDFSInfGraph reasoner) {
         for (int i = 0; i < body.length; i++) {
             reasoner.assertTriple(body[i].asTriple());
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: InfGraph.java,v 1.1 2003-01-30 18:30:38 der Exp $
+ * $Id: InfGraph.java,v 1.2 2003-02-10 10:13:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * form more complex queries.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:30:38 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:13:25 $
  */
 public interface InfGraph extends Graph {
 
@@ -56,6 +56,14 @@ public interface InfGraph extends Graph {
      * a boolean result.
      */
     public boolean testGlobalProperty(Node property);
+    
+    /**
+     * Test the consistency of the bound data. This normally tests
+     * the validity of the bound instance data against the bound
+     * schema data. 
+     * @return a ValidityReport structure
+     */
+    public ValidityReport validate();
     
     /**
      * An extension of the Graph.find interface which allows the caller to 

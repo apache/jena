@@ -1,17 +1,18 @@
 /******************************************************************
- * File:        BoundRDFSReasoner.java
+ * File:        RDFSInfGraph.java
  * Created by:  Dave Reynolds
  * Created on:  21-Jan-03
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Graph.java,v 1.8 2002/11/29 23:21:13 jjc Exp $
+ * $Id: RDFSInfGraph.java,v 1.1 2003-02-10 10:14:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.dt.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -34,9 +35,9 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision$ on $Date: 2000/06/22 16:03:33 $
+ * @version $Revision: 1.1 $ on $Date: 2003-02-10 10:14:12 $
  */
-public class BoundRDFSReasoner implements Reasoner {
+public class RDFSInfGraph extends BaseInfGraph {
 
 //=======================================================================
 // variables
@@ -54,9 +55,6 @@ public class BoundRDFSReasoner implements Reasoner {
     /** Router which maps queries onto different cache components that can answer then */
     protected PatternRouter router;
     
-    /** The graph registered as the data */
-    protected Finder fdata = null;
-    
     /** Cache of axiomatci triples to be included in the tripleCache */
     protected FGraph axioms = new FGraph(new GraphMem());
 
@@ -64,15 +62,20 @@ public class BoundRDFSReasoner implements Reasoner {
      * the tbox, axioms and forward deductions */
     protected Finder tripleCache;
 
+    /** Optional map of property node to datatype ranges */
+    protected HashMap dtRange = null;
+    
     /** Flag to control whether properties are eagerly scanned */
-    /** TODO: Replace this with something set by means of the RDF Config file */
     protected boolean scanProperties = true;
+    
+    /** Note if datatype range checking is enabled for adds */
+    protected boolean checkDTRange = false;
     
 //=======================================================================
 // static rules and axioms
         
     /** log4j logger */
-    protected static Logger logger = Logger.getLogger(BoundRDFSReasoner.class);
+    protected static Logger logger = Logger.getLogger(RDFSInfGraph.class);
     
     /** The RDFS forward rule set */
     protected static BaseFRule[] rules = new BaseFRule[] {
@@ -137,15 +140,17 @@ public class BoundRDFSReasoner implements Reasoner {
      * @param data the raw data graph being bound to the reasoner
      * @param sPropertyCache a cache of subPropertyOf relations from the box
      * @param sClassCache a cache of subClassOf relations from the tbox
-     * @param scanProperties set to true to force an eager scan of statements looking for 
-     *                        container properties
+     * @param reasoner the RDFSReasoner which spawned this InfGraph
      */
-    public BoundRDFSReasoner( Finder tbox, Graph data,
+    public RDFSInfGraph( Finder tbox, Graph data,
                                TransitiveGraphCache sPropertyCache,
-                               TransitiveGraphCache sClassCache, boolean scanProperties) {
+                               TransitiveGraphCache sClassCache, 
+                               RDFSReasoner reasoner) {
+        super(data, reasoner);
         this.subPropertyCache = sPropertyCache.deepCopy();
         this.subClassCache = sClassCache;
-        this.scanProperties = scanProperties;
+        this.scanProperties = reasoner.scanProperties;
+        this.checkDTRange = reasoner.checkDTRange;
         
         // Combine a place to hold axioms and local deductions and the tbox into single cache
         if (tbox == null) {
@@ -343,10 +348,84 @@ public class BoundRDFSReasoner implements Reasoner {
         logger.debug("Reasoner called on isProperty");
         return subPropertyCache.isProperty(prop);
     }
+    
+    /**
+     * Test the consistency of the bound data. This normally tests
+     * the validity of the bound instance data against the bound
+     * schema data. 
+     * @return a ValidityReport structure
+     */
+    public ValidityReport validate() {
+        StandardValidityReport report = new StandardValidityReport();
+        HashMap dtRange = getDTRange();
+        for (Iterator props = dtRange.keySet().iterator(); props.hasNext(); ) {
+            Node prop = (Node)props.next();
+            for (Iterator i = find(null, prop, null); i.hasNext(); ) {
+                Triple triple = (Triple)i.next();
+                report.add(checkLiteral(prop, triple.getObject()));
+            }
+        }
+        return report;
+    }
 
 //=======================================================================
 // helper methods
     
+    /**
+     * Return a map from property nodes to a list of RDFDatatype objects
+     * which have been declared as the range of that property.
+     */
+    private HashMap getDTRange() {
+        if (dtRange == null) {
+            dtRange = new HashMap();
+            for (Iterator i = find(null, RDFS.range.asNode(), null); i.hasNext(); ) {
+                Triple triple = (Triple)i.next();
+                Node prop = triple.getSubject();
+                Node rangeValue = triple.getObject();
+                if (rangeValue.isURI()) {
+                    RDFDatatype dt = TypeMapper.getInstance().getTypeByName(rangeValue.getURI());
+                    if (dt != null) {
+                        List range = (ArrayList) dtRange.get(prop);
+                        if (range == null) {
+                            range = new ArrayList();
+                            dtRange.put(prop, range);
+                        }
+                        range.add(dt);
+                    }
+                }
+            }
+        }
+        return dtRange;
+    }
+    
+    /**
+     * Check a given literal value for a property against the set of
+     * known range constraints for it.
+     * @param prop the property node whose range is under scrutiny
+     * @param value the literal node whose value is to be checked
+     * @return null if the range is legal, otherwise a ValidityReport.Report
+     * which describes the problem.
+     */
+    private ValidityReport.Report checkLiteral(Node prop, Node value) {
+        List range = (List) getDTRange().get(prop);
+        if (range != null) {
+            if (!value.isLiteral()) {
+                return new ValidityReport.Report(true, "dtRange", 
+                    "Property " + prop + " has a typed range but was given a non literal value " + value);
+            }
+            LiteralLabel ll = value.getLiteral();   
+            for (Iterator i = range.iterator(); i.hasNext(); ) {
+                RDFDatatype dt = (RDFDatatype)i.next();
+                if (!dt.isValidLiteral(ll)) {
+                    return new ValidityReport.Report(true, "dtRange", 
+                        "Property " + prop + " has a typed range " + dt +
+                        "that is not compatible with " + value);
+                }
+            }
+        }
+        return null;
+    }
+
     /**
      * Run all the builtin forward rules, on all the elements in the tbox and data
      * graphs. Checkes for all subProperties of the properties mentioned in the

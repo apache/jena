@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PatternRouter.java,v 1.1 2003-01-30 18:30:41 der Exp $
+ * $Id: PatternRouter.java,v 1.2 2003-02-10 10:13:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -34,7 +34,7 @@ import java.util.*;
  * TODO: extend to support arbitrary pattern indexed triple caches.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:30:41 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:13:24 $
  */
 public class PatternRouter {
     
@@ -97,10 +97,10 @@ public class PatternRouter {
      * @param pattern the query to be processed
      * @param tripleCache a cascade of any generic caches which can supply additional answers
      * @param data the raw data graph being processed
-     * @param reasoner to originating reasoner, may be re-invoked after a pattern rewrite
+     * @param infGraph link to originating inference graph, may be re-invoked after a pattern rewrite
      */
-    public ExtendedIterator find(TriplePattern pattern, Finder tripleCache, Finder data, Reasoner reasoner) {
-        return find(pattern, tripleCache, data, reasoner, new HashSet());
+    public ExtendedIterator find(TriplePattern pattern, Finder tripleCache, Finder data, InfGraph infGraph) {
+        return find(pattern, tripleCache, data, infGraph, new HashSet());
     }
     
     /**
@@ -111,10 +111,10 @@ public class PatternRouter {
      * @param pattern the query to be processed
      * @param tripleCache a cascade of any generic caches which can supply additional answers
      * @param data the raw data graph being processed
-     * @param reasoner to originating reasoner, may be re-invoked after a pattern rewrite
+     * @param infGraph link to originating inference graph, may be re-invoked after a pattern rewrite
      * @param firedRules set of rules which have already been fired and should now be blocked
      */
-    public ExtendedIterator find(TriplePattern pattern, Finder tripleCache, Finder data, Reasoner reasoner, HashSet firedRules) {
+    public ExtendedIterator find(TriplePattern pattern, Finder tripleCache, Finder data, InfGraph infGraph, HashSet firedRules) {
         ExtendedIterator result = tripleCache.findWithContinuation(pattern, data);
         Node predicate = pattern.getPredicate();
         if (predicate.isVariable()) {
@@ -122,12 +122,12 @@ public class PatternRouter {
             // TODO: Add indexing on other elements, especially object
             for (Iterator i = patternIndex.values().iterator(); i.hasNext();) {
                 HashSet sats = (HashSet)i.next();
-                result = doFind(sats, result, pattern, tripleCache, data, reasoner, firedRules);
+                result = doFind(sats, result, pattern, tripleCache, data, infGraph, firedRules);
             }
             return result;
         } else {
             HashSet sats = (HashSet)patternIndex.get(predicate);
-            return doFind(sats, result, pattern, tripleCache, data, reasoner, firedRules);
+            return doFind(sats, result, pattern, tripleCache, data, infGraph, firedRules);
         }
     }
    
@@ -141,25 +141,25 @@ public class PatternRouter {
      * @param pattern the query to be processed
      * @param tripleCache a cascade of any generic caches which can supply additional answers
      * @param data the raw data graph being processed
-     * @param reasoner to originating reasoner, may be re-invoked after a pattern rewrite
+     * @param infGraph link to originating inference graph, may be re-invoked after a pattern rewrite
      * @param firedRules set of rules which have already been fired and should now be blocked
      */
     private ExtendedIterator doFind(HashSet rules, ExtendedIterator result, 
                                      TriplePattern pattern, Finder tripleCache, 
-                                     Finder data, Reasoner reasoner, HashSet firedRules) {
+                                     Finder data, InfGraph infGraph, HashSet firedRules) {
         if (rules != null) {
             // Scan all matches to check for complete solutions
             for (Iterator i = rules.iterator(); i.hasNext(); ) {
                 PatternEntry entry =  (PatternEntry) i.next();
                 if (entry.completeFor(pattern)) {
-                    return entry.fire(pattern, data, reasoner, firedRules);
+                    return entry.fire(pattern, data, infGraph, firedRules);
                 }
             }
             // Scan again and accumulate all non-complete solutions
             for (Iterator i = rules.iterator(); i.hasNext(); ) {
                 PatternEntry entry =  (PatternEntry) i.next();
                 if (entry.shouldFire(pattern)) {
-                    result = result.andThen(entry.fire(pattern, data, reasoner, firedRules));
+                    result = result.andThen(entry.fire(pattern, data, infGraph, firedRules));
                 }
             }
         }
@@ -223,10 +223,10 @@ public class PatternRouter {
          * Run the action
          * @param query the query to be processed
          * @param data the raw data graph being processed
-         * @param reasoner to originating reasoner, may be re-invoked after a pattern rewrite
+         * @param infGraph link to originating inference graph, may be re-invoked after a pattern rewrite
          * @param firedRules set of rules which have already been fired and should now be blocked
          */
-        public ExtendedIterator fire(TriplePattern query, Finder data, Reasoner reasoner, HashSet firedRules) {
+        public ExtendedIterator fire(TriplePattern query, Finder data, InfGraph infGraph, HashSet firedRules) {
             TriplePattern nquery = query;
             if (nquery.getPredicate().isVariable()) {
                 nquery = new TriplePattern(query.getSubject(), pattern.getPredicate(), query.getObject());
@@ -235,7 +235,7 @@ public class PatternRouter {
                 return ((TransitiveGraphCache)action).find(nquery);
             } else if (action instanceof BRWRule) {
                 logger.debug("Fire rule: " + action);
-                return ((BRWRule)action).execute(nquery, reasoner, data, firedRules);
+                return ((BRWRule)action).execute(nquery, infGraph, data, firedRules);
             } else {
                 throw new ReasonerException("Illegal router action entry");
             }

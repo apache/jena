@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRWRule.java,v 1.1 2003-01-30 18:31:10 der Exp $
+ * $Id: BRWRule.java,v 1.2 2003-02-10 10:14:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * the corresponding parts of the query being processed.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:31:10 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:14:13 $
  */
 public class BRWRule {
 
@@ -80,13 +80,13 @@ public class BRWRule {
      * against the whole reasoner+rawdata again and then rewrite the
      * results from that query according the rule.
      * @param query the query being processed
-     * @param reasoner the parent reasoner that invoked us, will be called recursively
+     * @param infGraph the parent infGraph that invoked us, will be called recursively
      * @param data the raw data graph which gets passed back to the reasoner as part of the recursive invocation
      * @param firedRules set of rules which have already been fired and should now be blocked
      * @return a ExtendedIterator which aggregates the matches and rewrites them
      * according to the rule
      */
-    public ExtendedIterator execute(TriplePattern query, Reasoner reasoner, Finder data, HashSet firedRules) {
+    public ExtendedIterator execute(TriplePattern query, InfGraph infGraph, Finder data, HashSet firedRules) {
         TriplePattern iBody = instantiate(body, query);
         BRWRule iRule = new BRWRule(head, iBody);
         if (firedRules.contains(iRule)) {
@@ -94,7 +94,7 @@ public class BRWRule {
             return new NiceIterator();
         } 
         firedRules.add(iRule);
-        Iterator it = ((BoundRDFSReasoner) reasoner).findNested(iBody, data, firedRules);
+        Iterator it = ((RDFSInfGraph) infGraph).findNested(iBody, data, firedRules);
         firedRules.remove(iRule);
         return new RewriteIterator(it, iRule);
     }    

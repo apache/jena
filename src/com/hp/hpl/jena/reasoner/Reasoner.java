@@ -5,12 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Reasoner.java,v 1.2 2003-01-31 08:50:14 der Exp $
+ * $Id: Reasoner.java,v 1.3 2003-02-10 10:13:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+//import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
  * The minimal interface to which all reasoners (or reasoner adaptors) conform. 
@@ -20,9 +20,9 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:50:14 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-10 10:13:22 $
  */
-public interface Reasoner extends Finder {
+public interface Reasoner {
     
     /**
      * This is most commonly used to attach an ontology (a set of tbox 
@@ -60,29 +60,6 @@ public interface Reasoner extends Finder {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException;
-
-    /**
-     * Basic pattern lookup interface used by the InfGraph, not normally called
-     * directly.
-     * @param pattern a TriplePattern to be matched against the data
-     * @return a ClosableIterator over all Triples in the data set
-     *  that match the pattern
-     */
-    ExtendedIterator find(TriplePattern pattern);
-    
-    /**
-     * Extended find interface used in situations where the implementator
-     * may or may not be able to answer the complete query. It will
-     * attempt to answer the pattern but if its answers are not known
-     * to be complete then it will also pass the request on to the nested
-     * Finder to append more results.
-     * <p>Not normally called directly but used by the InfGraph.</p>
-     * @param pattern a TriplePattern to be matched against the data
-     * @param continuation either a Finder or a normal Graph which
-     * will be asked for additional match results if the implementor
-     * may not have completely satisfied the query.
-     */
-    ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation);
 
 }
 
