@@ -1,38 +1,107 @@
 <html>
 <head>
-  <title>Jena 1 vs Jena 2 Performance test results</title>
+<title>Jena 1 vs Jena 2 Performance test results</title>
+<link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
   <h2>Jena 1 vs Jena 2 database space consumption comparison results</h2>
-  <p>The test was begun at Wed Apr 23 20:43:20 2003</p>
-  <table border='1' width='600' rules='rows'>
-    <tr align='right'><th>Model/Size</th><th>Jena 1</th><th>Jena 2</th><th>DB Space Consumption 
+  <p>The test was begun at Tue Aug 26 20:43:20 2003</p>
+  <table border='1' width='595' rules='rows'>
+    <tr align='right'><th width="199">Model/Size</th><th width="91">Jena 1</th>
+      <th width="92">Jena 2</th><th width="168">DB Space Consumption 
       Ratio<br>Jena2 / Jena1</th></tr>
-<tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Use RDQL to query for 'size' resources with a given rdf:type</td></tr>
-<tr align='right'><td>MySQL / 10</td><td>  21.68 KB</td><td> 17.19 KB</td><td>  0.79</td></tr>
-<tr align='right'><td>MySQL / 100</td><td>  40.70 KB</td><td> 47.31 KB</td><td>  1.16</td></tr>
-<tr align='right'><td>MySQL / 1000</td><td> 256.89 KB</td><td>370.48 KB</td><td>  1.44</td></tr>
-<tr align='right'><td>MySQL / 10000</td><td> 2421.28 KB</td><td>3673.36 KB</td><td>  1.52</td></tr>
-<tr align='right'><td>MySQL / 100000</td><td> 24150.15 KB</td><td>35832.36 KB</td><td>  1.48</td></tr>
-<tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Simple ARP throughput - read 'size' lines of DMOZ input</td></tr>
-<tr align='right'><td>MySQL / 10</td><td>  20.79 KB</td><td> 15.71 KB</td><td>  0.76</td></tr>
-<tr align='right'><td>MySQL / 100</td><td>  25.97 KB</td><td> 29.02 KB</td><td>  1.12</td></tr>
-<tr align='right'><td>MySQL / 1000</td><td> 126.22 KB</td><td>194.89 KB</td><td>  1.54</td></tr>
-<tr align='right'><td>MySQL / 10000</td><td> 1065.35 KB</td><td>1731.36 KB</td><td>  1.63</td></tr>
-<tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Create a model and add 'size' subjects - each with two properties</td></tr>
-<tr align='right'><td>MySQL / 10</td><td>  29.35 KB</td><td> 65.29 KB</td><td>  2.22</td></tr>
-<tr align='right'><td>MySQL / 100</td><td> 118.42 KB</td><td>193.45 KB</td><td>  1.63</td></tr>
-<tr align='right'><td>MySQL / 1000</td><td> 1043.08 KB</td><td>1862.46 KB</td><td>  1.79</td></tr>
-<tr align='right'><td>MySQL / 10000</td><td> 10299.89 KB</td><td>18025.29 KB</td><td>  1.75</td></tr>
-<tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Walk a chain of 'size' linked statements from beginning to end</td></tr>
-<tr align='right'><td>MySQL / 10</td><td>  17.13 KB</td><td> 16.38 KB</td><td>  0.96</td></tr>
-<tr align='right'><td>MySQL / 100</td><td>  26.84 KB</td><td> 30.11 KB</td><td>  1.12</td></tr>
-<tr align='right'><td>MySQL / 1000</td><td> 131.97 KB</td><td>184.46 KB</td><td>  1.40</td></tr>
-<tr align='right'><td>MySQL / 10000</td><td> 1168.26 KB</td><td>1744.89 KB</td><td>  1.49</td></tr>
-<tr bgcolor='#DDDDDD'><td colspan='4'>Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Dave's performance test - listStatements() in a model with 'size' statements</td></tr>
-<tr align='right'><td>MySQL / 10</td><td>  17.14 KB</td><td> 16.25 KB</td><td>  0.95</td></tr>
-<tr align='right'><td>MySQL / 100</td><td>  25.62 KB</td><td> 22.93 KB</td><td>  0.89</td></tr>
-<tr align='right'><td>MySQL / 1000</td><td> 121.45 KB</td><td>153.73 KB</td><td>  1.27</td></tr>
-</table>
+<tr bgcolor='#DDDDDD'><td colspan='4' width="583">
+  <p style="text-align: left">Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Write a model containing 'size' subjects - each with two properties - in RDF/XML</td></tr><tr align='right'>
+    <td style="text-align: left" width="199">WritePerfTest / 10</td>
+    <td style="text-align: right" width="91">    22.20 KB</td>
+    <td style="text-align: right" width="92">  262.14 KB</td><td width="168">    11.81</td></tr><tr align='right'>
+    <td style="text-align: left" width="199">WritePerfTest / 100</td>
+    <td style="text-align: right" width="91">    41.68 KB</td>
+    <td style="text-align: right" width="92">  344.06 KB</td><td width="168">     8.26</td></tr><tr align='right'>
+    <td style="text-align: left" width="199">WritePerfTest / 1000</td>
+    <td style="text-align: right" width="91">   263.06 KB</td>
+    <td style="text-align: right" width="92">  835.58 KB</td><td width="168">     3.18</td></tr><tr align='right'>
+    <td style="text-align: left" width="199">WritePerfTest / 10000</td>
+    <td style="text-align: right" width="91">  2479.39 KB</td>
+    <td style="text-align: right" width="92"> 8126.46 KB</td><td width="168">     3.28</td></tr><tr bgcolor='#DDDDDD'>
+    <td colspan='4' style="text-align: left" width="583">
+    <p style="text-align: left">Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Use RDQL to query for 'size' resources with a given rdf:type</td></tr><tr align='right'>
+      <td style="text-align: left" width="199">RDQLPerfTest / 10</td>
+      <td style="text-align: right" width="91">    22.20 KB</td>
+      <td style="text-align: right" width="92">  262.14 KB</td><td width="168">    11.81</td></tr><tr align='right'>
+      <td style="text-align: left" width="199">RDQLPerfTest / 100</td>
+      <td style="text-align: right" width="91">    41.68 KB</td>
+      <td style="text-align: right" width="92">  344.06 KB</td><td width="168">     8.26</td></tr><tr align='right'>
+      <td style="text-align: left" width="199">RDQLPerfTest / 1000</td>
+      <td style="text-align: right" width="91">   263.06 KB</td>
+      <td style="text-align: right" width="92">  835.58 KB</td><td width="168">     3.18</td></tr><tr align='right'>
+      <td style="text-align: left" width="199">RDQLPerfTest / 10000</td>
+      <td style="text-align: right" width="91">  2479.39 KB</td>
+      <td style="text-align: right" width="92"> 8126.46 KB</td><td width="168">     3.28</td></tr><tr bgcolor='#DDDDDD'>
+      <td colspan='4' style="text-align: left" width="583">
+      <p style="text-align: left">Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Simple ARP throughput - read 'size' lines of DMOZ input</td></tr><tr align='right'>
+        <td style="text-align: left" width="199">ARPPerfTest / 10</td>
+        <td style="text-align: right" width="91">    21.29 KB</td>
+        <td style="text-align: right" width="92">  294.91 KB</td>
+        <td width="168">    13.85</td></tr><tr align='right'>
+        <td style="text-align: left" width="199">ARPPerfTest / 100</td>
+        <td style="text-align: right" width="91">    26.59 KB</td>
+        <td style="text-align: right" width="92">  262.14 KB</td>
+        <td width="168">     9.86</td></tr><tr align='right'>
+        <td style="text-align: left" width="199">ARPPerfTest / 1000</td>
+        <td style="text-align: right" width="91">   129.25 KB</td>
+        <td style="text-align: right" width="92">  671.74 KB</td>
+        <td width="168">     5.20</td></tr><tr align='right'>
+        <td style="text-align: left" width="199">ARPPerfTest / 10000</td>
+        <td style="text-align: right" width="91">  1090.92 KB</td>
+        <td style="text-align: right" width="92"> 6078.46 KB</td>
+        <td width="168">     5.57</td></tr><tr bgcolor='#DDDDDD'>
+        <td colspan='4' style="text-align: left" width="583">
+        <p style="text-align: left">Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Create a model and add 'size' subjects - each with two properties</td></tr><tr align='right'>
+          <td style="text-align: left" width="199">ModelCreatePerfTest / 10</td>
+          <td style="text-align: right" width="91">    30.06 KB</td>
+          <td style="text-align: right" width="92">  376.83 KB</td>
+          <td width="168">    12.54</td></tr><tr align='right'>
+          <td style="text-align: left" width="199">ModelCreatePerfTest / 100</td>
+          <td style="text-align: right" width="91">   121.26 KB</td>
+          <td style="text-align: right" width="92">  589.82 KB</td>
+          <td width="168">     4.86</td></tr><tr align='right'>
+          <td style="text-align: left" width="199">ModelCreatePerfTest / 1000</td>
+          <td style="text-align: right" width="91">  1068.12 KB</td>
+          <td style="text-align: right" width="92"> 3866.62 KB</td>
+          <td width="168">     3.62</td></tr><tr align='right'>
+          <td style="text-align: left" width="199">ModelCreatePerfTest / 10000</td>
+          <td style="text-align: right" width="91">  10547.08 KB</td>
+          <td style="text-align: right" width="92"> 40763.39 KB</td>
+          <td width="168">     3.86</td></tr><tr bgcolor='#DDDDDD'>
+          <td colspan='4' style="text-align: left" width="583">
+          <p style="text-align: left">Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Walk a chain of 'size' linked statements from beginning to end</td></tr><tr align='right'>
+            <td style="text-align: left" width="199">WalkTest / 10</td>
+            <td style="text-align: right" width="91">    17.54 KB</td>
+            <td style="text-align: right" width="92">  262.14 KB</td>
+            <td width="168">    14.94</td></tr><tr align='right'>
+            <td style="text-align: left" width="199">WalkTest / 100</td>
+            <td style="text-align: right" width="91">    27.49 KB</td>
+            <td style="text-align: right" width="92">  262.14 KB</td>
+            <td width="168">     9.54</td></tr><tr align='right'>
+            <td style="text-align: left" width="199">WalkTest / 1000</td>
+            <td style="text-align: right" width="91">   135.14 KB</td>
+            <td style="text-align: right" width="92">  573.44 KB</td>
+            <td width="168">     4.24</td></tr><tr align='right'>
+            <td style="text-align: left" width="199">WalkTest / 10000</td>
+            <td style="text-align: right" width="91">  1196.30 KB</td>
+            <td style="text-align: right" width="92"> 3866.62 KB</td>
+            <td width="168">     3.23</td></tr><tr bgcolor='#DDDDDD'>
+            <td colspan='4' style="text-align: left" width="583">
+            <p style="text-align: left">Java HotSpot(TM) Client VM 1.4.1-b21 Windows 2000 x86<br />Dave's performance test - listStatements() in a model with 'size' statements</td></tr><tr align='right'>
+              <td style="text-align: left" width="199">DERPerfTest / 10</td>
+              <td style="text-align: right" width="91">    17.55 KB</td>
+              <td style="text-align: right" width="92">  262.14 KB</td>
+              <td width="168">    14.93</td></tr><tr align='right'>
+              <td style="text-align: left" width="199">DERPerfTest / 100</td>
+              <td style="text-align: right" width="91">    26.24 KB</td>
+              <td style="text-align: right" width="92">  262.14 KB</td>
+              <td width="168">     9.99</td></tr></table>
+  </table>
 </body>
 </html>
