@@ -47,7 +47,7 @@ abstract class AbsChecker implements Constants {
 	int monotoneLevel = Levels.Lite;
 	/**
 	 * Not in API.
-	 * @return
+	 * @return int
 	 */
 	public int getMonotoneLevel() {
 	    return monotoneLevel;
