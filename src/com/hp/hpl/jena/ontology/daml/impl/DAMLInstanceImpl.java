@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLInstanceImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:07 $
+ * Last modified on   $Date: 2003-06-21 12:35:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -31,15 +31,13 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.vocabulary.*;
 
-import java.util.Iterator;
-
 
 
 /**
  * Java representation of a DAML Instance.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLInstanceImpl.java,v 1.4 2003-06-18 21:56:07 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLInstanceImpl.java,v 1.5 2003-06-21 12:35:38 ian_dickinson Exp $
  */
 public class DAMLInstanceImpl
     extends DAMLCommonImpl
@@ -135,9 +133,8 @@ public class DAMLInstanceImpl
      *
      * @return an iterator whose values will all be DAMLInstance objects
      */
-    public Iterator getSameInstances() {
-        return new PropertyIterator( this, getVocabulary().sameIndividualAs(),
-                                     getVocabulary().sameIndividualAs(), true, true );
+    public ExtendedIterator getSameInstances() {
+        return listAs( getProfile().SAME_INDIVIDUAL_AS(), "SAME_INDIVIDUAL_AS", DAMLInstance.class );
     }
 
 
@@ -150,17 +147,8 @@ public class DAMLInstanceImpl
      * @return an iterator ranging over every equivalent DAML instance - each value of
      *         the iteration should be a DAMLInstance object.
      */
-    public Iterator getEquivalentValues() {
-        ConcatenatedIterator i = new ConcatenatedIterator(
-                       // first the iterator over the equivalentTo values
-                       super.getEquivalentValues(),
-                       // followed by the sameClassAs values
-                       new PropertyIterator( this, getVocabulary().sameIndividualAs(), getVocabulary().sameIndividualAs(), true, false, false ) );
-
-        // ensure that the iteration includes self
-        i.setDefaultValue( this );
-
-        return i;
+    public ExtendedIterator getEquivalentValues() {
+        return new UniqueExtendedIterator( listAs( getProfile().SAME_AS(), "SAME_AS", DAMLInstance.class ).andThen( getSameInstances() ) );
     }
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntologyImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:44 $
+ * Last modified on   $Date: 2003-06-21 12:35:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,12 +24,11 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.util.Iterator;
-
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 /**
@@ -40,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyImpl.java,v 1.8 2003-06-08 21:29:44 ian_dickinson Exp $
+ * @version CVS $Id: OntologyImpl.java,v 1.9 2003-06-21 12:35:38 ian_dickinson Exp $
  */
 public class OntologyImpl
     extends OntResourceImpl
@@ -135,7 +134,7 @@ public class OntologyImpl
      * @return An iterator over the ontology import resources
      * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.   
      */ 
-    public Iterator listImports() {
+    public ExtendedIterator listImports() {
         return listAs( getProfile().IMPORTS(), "IMPORTS", OntResource.class );
     }
 
@@ -198,7 +197,7 @@ public class OntologyImpl
      * @return An iterator over the ontology resources compatible with this ontology
      * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.   
      */ 
-    public Iterator listBackwardCompatibleWith() {
+    public ExtendedIterator listBackwardCompatibleWith() {
         return listAs( getProfile().BACKWARD_COMPATIBLE_WITH(), "BACKWARD_COMPATIBLE_WITH", OntResource.class );
     }
 
@@ -262,7 +261,7 @@ public class OntologyImpl
      * @return An iterator over the ontology resources superceded by this ontology
      * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.   
      */ 
-    public Iterator listPriorVersion() {
+    public ExtendedIterator listPriorVersion() {
         return listAs( getProfile().PRIOR_VERSION(), "PRIOR_VERSION", OntResource.class );
     }
 
@@ -325,7 +324,7 @@ public class OntologyImpl
      * @return An iterator over the ontology resources that this ontology is incompatible with
      * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.   
      */ 
-    public Iterator listIncompatibleWith() {
+    public ExtendedIterator listIncompatibleWith() {
         return listAs( getProfile().INCOMPATIBLE_WITH(), "INCOMPATIBLE_WITH", OntResource.class );
     }
 

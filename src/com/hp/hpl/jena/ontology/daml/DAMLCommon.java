@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommon.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:08 $
+ * Last modified on   $Date: 2003-06-21 12:35:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -23,11 +23,10 @@ package com.hp.hpl.jena.ontology.daml;
 
 // Imports
 ///////////////
-import java.util.Iterator;
-
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
 
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
 
 
@@ -39,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommon.java,v 1.6 2003-06-18 21:56:08 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLCommon.java,v 1.7 2003-06-21 12:35:34 ian_dickinson Exp $
  */
 public interface DAMLCommon
     extends OntResource
@@ -88,7 +87,7 @@ public interface DAMLCommon
      * types.
      * @return an iterator over the set of this value's classes
      */
-    public Iterator getRDFTypes( boolean complete );
+    public ExtendedIterator getRDFTypes( boolean complete );
 
 
     /**
@@ -111,7 +110,7 @@ public interface DAMLCommon
      *
      * @return An iterator ranging over every equivalent DAML value
      */
-    public Iterator getEquivalentValues();
+    public ExtendedIterator getEquivalentValues();
 
 
     /**
@@ -122,7 +121,7 @@ public interface DAMLCommon
      * @return An iteration ranging over the set of values that are equivalent to this
      *         value, but not itself.
      */
-    public Iterator getEquivalenceSet();
+    public ExtendedIterator getEquivalenceSet();
 
 
     // Properties

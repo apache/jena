@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClassImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:07 $
+ * Last modified on   $Date: 2003-06-21 12:35:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClassImpl.java,v 1.8 2003-06-18 21:56:07 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLClassImpl.java,v 1.9 2003-06-21 12:35:39 ian_dickinson Exp $
  */
 public class DAMLClassImpl
     extends OntClassImpl
@@ -137,7 +137,7 @@ public class DAMLClassImpl
     /** @deprecated */
     public void setRDFType( Resource rdfClass, boolean replace ) { m_common.setRDFType( rdfClass, replace ); }
     public DAMLModel getDAMLModel()                              { return m_common.getDAMLModel(); }
-    public Iterator getRDFTypes( boolean complete )              { return m_common.getRDFTypes( complete ); }
+    public ExtendedIterator getRDFTypes( boolean complete )      { return m_common.getRDFTypes( complete ); }
     public DAMLVocabulary getVocabulary()                        { return m_vocabulary; }
     public LiteralAccessor prop_label()                          { return m_common.prop_label(); }
     public LiteralAccessor prop_comment()                        { return m_common.prop_comment(); }
@@ -151,7 +151,7 @@ public class DAMLClassImpl
      *
      * @return an iterator ranging over every equivalent DAML class
      */
-    public Iterator getEquivalentValues() {
+    public ExtendedIterator getEquivalentValues() {
         ConcatenatedIterator i = new ConcatenatedIterator(
                        // first the iterator over the equivalentTo values
                        m_common.getEquivalentValues(),
@@ -170,14 +170,14 @@ public class DAMLClassImpl
      * @return An iteration ranging over the set of values that are equivalent to this
      *         value, but not itself.
      */
-    public Iterator getEquivalenceSet() {
+    public ExtendedIterator getEquivalenceSet() {
         Set s = new HashSet();
 
         s.add( this );
         for (Iterator i = getEquivalentValues();  i.hasNext();  s.add( i.next() ) );
         s.remove( this );
         
-        return s.iterator();
+        return WrappedIterator.create( s.iterator() );
     }
 
 
@@ -378,7 +378,7 @@ public class DAMLClassImpl
      * of the iterator will be {@link DAMLClass} objects.</p>
      * @return An iterator over all available sub-classes of this class
      */
-    public Iterator getSubClasses() {
+    public ExtendedIterator getSubClasses() {
         return getSubClasses( true );
     }
 
@@ -400,7 +400,7 @@ public class DAMLClassImpl
      * only local (direct) sub-classes. See note for details.
      * @return An iterator over this class's sub-classes.
      */
-    public Iterator getSubClasses( boolean closed ) {
+    public ExtendedIterator getSubClasses( boolean closed ) {
         return WrappedIterator.create( super.listSubClasses( !closed ) ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
@@ -413,7 +413,7 @@ public class DAMLClassImpl
      * of the iterator will be {@link DAMLClass} objects.</p>
      * @return An iterator over all available super-classes of this class
      */
-    public Iterator getSuperClasses() {
+    public ExtendedIterator getSuperClasses() {
         return getSuperClasses( true );
     }
 
@@ -435,7 +435,7 @@ public class DAMLClassImpl
      * only local (direct) super-classes. See note for details.
      * @return an iterator over this class's super-classes.
      */
-    public Iterator getSuperClasses( boolean closed ) {
+    public ExtendedIterator getSuperClasses( boolean closed ) {
         return WrappedIterator.create( super.listSuperClasses( !closed ) ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
@@ -452,7 +452,7 @@ public class DAMLClassImpl
      *
      * @return an iterator ranging over every equivalent DAML classes
      */
-    public Iterator getSameClasses() {
+    public ExtendedIterator getSameClasses() {
         return WrappedIterator.create( super.listEquivalentClasses() ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
@@ -466,7 +466,7 @@ public class DAMLClassImpl
      *         the classes to which they belong
      * @see com.hp.hpl.jena.ontology.daml.DAMLCommon#getRDFTypes
      */
-    public Iterator getInstances() {
+    public ExtendedIterator getInstances() {
         return WrappedIterator.create( listInstances() ).mapWith( new AsMapper( DAMLInstance.class ) );
     }
 
@@ -478,7 +478,7 @@ public class DAMLClassImpl
      *
      * @return An iteration of the properties that have this class in the domain
      */
-    public Iterator getDefinedProperties() {
+    public ExtendedIterator getDefinedProperties() {
         return getDefinedProperties( true );
     }
 
@@ -500,7 +500,7 @@ public class DAMLClassImpl
      * if false, only use local properties.
      * @return An iteration of the properties that have this class as domain
      */
-    public Iterator getDefinedProperties( boolean closed ) {
+    public ExtendedIterator getDefinedProperties( boolean closed ) {
         return WrappedIterator.create( listDeclaredProperties( closed ) ).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 

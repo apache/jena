@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClass.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 22:30:45 $
+ * Last modified on   $Date: 2003-06-21 12:35:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -23,9 +23,8 @@ package com.hp.hpl.jena.ontology.daml;
 
 // Imports
 ///////////////
-import java.util.Iterator;
-
 import com.hp.hpl.jena.ontology.OntClass;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 
@@ -34,7 +33,7 @@ import com.hp.hpl.jena.ontology.OntClass;
  * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClass.java,v 1.7 2003-06-18 22:30:45 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLClass.java,v 1.8 2003-06-21 12:35:34 ian_dickinson Exp $
  */
 public interface DAMLClass
     extends DAMLCommon, OntClass
@@ -128,7 +127,7 @@ public interface DAMLClass
      * of the iterator will be {@link DAMLClass} objects.</p>
      * @return An iterator over all available sub-classes of this class
      */
-    public Iterator getSubClasses();
+    public ExtendedIterator getSubClasses();
 
 
     /**
@@ -149,7 +148,7 @@ public interface DAMLClass
      * only local (direct) sub-classes. See note for details.
      * @return An iterator over this class's sub-classes.
      */
-    public Iterator getSubClasses( boolean closed );
+    public ExtendedIterator getSubClasses( boolean closed );
 
 
     /**
@@ -160,7 +159,7 @@ public interface DAMLClass
      * of the iterator will be {@link DAMLClass} objects.</p>
      * @return An iterator over all available super-classes of this class
      */
-    public Iterator getSuperClasses();
+    public ExtendedIterator getSuperClasses();
 
 
     /**
@@ -181,7 +180,7 @@ public interface DAMLClass
      * only local (direct) super-classes. See note for details.
      * @return an iterator over this class's super-classes.
      */
-    public Iterator getSuperClasses( boolean closed );
+    public ExtendedIterator getSuperClasses( boolean closed );
 
 
     /**
@@ -196,7 +195,7 @@ public interface DAMLClass
      *
      * @return an iterator ranging over every equivalent DAML classes
      */
-    public Iterator getSameClasses();
+    public ExtendedIterator getSameClasses();
 
 
     /**
@@ -206,7 +205,7 @@ public interface DAMLClass
      *
      * @return an iterator ranging over every equivalent DAML class
      */
-    public Iterator getEquivalentValues();
+    public ExtendedIterator getEquivalentValues();
 
 
     /**
@@ -217,7 +216,7 @@ public interface DAMLClass
      *         the classes to which they belong
      * @see com.hp.hpl.jena.ontology.daml.DAMLCommon#getRDFTypes
      */
-    public Iterator getInstances();
+    public ExtendedIterator getInstances();
 
 
     /**
@@ -227,7 +226,7 @@ public interface DAMLClass
      *
      * @return An iteration of the properties that have this class in the domain
      */
-    public Iterator getDefinedProperties();
+    public ExtendedIterator getDefinedProperties();
 
 
     /**
@@ -248,7 +247,7 @@ public interface DAMLClass
      * if false, only use local properties.
      * @return An iteration of the properties that have this class as domain
      */
-    public Iterator getDefinedProperties( boolean closed );
+    public ExtendedIterator getDefinedProperties( boolean closed );
     
     
     /**

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 22:30:44 $
+ * Last modified on   $Date: 2003-06-21 12:35:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  * TODO: these tests are not yet fully migrated to Jena2.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.7 2003-06-18 22:30:44 ian_dickinson Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.8 2003-06-21 12:35:39 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -391,8 +391,8 @@ public class DAMLTest
         // get the root object
         DAMLInstance root = m.getDAMLInstance( ns + "x0" );
         assertNotNull( "Instance x0 should not be null", root );
-        // should really be 4 under daml rules, but only 2 under rdfs
-        assertEquals( "Number of elements in equivalence class should be 2", 2,
+        // should really be 4 under daml rules, but only 1 under rdfs with no support for daml entailments
+        assertEquals( "Number of elements in equivalence class should be 1", 1,
                       countIteration( root.getEquivalentValues(), true, "Member of equivalence class to x0: " ) );
 
         // now it's the classes' turn ...

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:07 $
+ * Last modified on   $Date: 2003-06-21 12:35:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.9 2003-06-18 21:56:07 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.10 2003-06-21 12:35:38 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends OntModelImpl
@@ -343,10 +343,8 @@ public class DAMLModelImpl
      * @return An iterator over all currently defined DAML instances.
      */
     public ExtendedIterator listDAMLInstances() {
-        return new UniqueExtendedIterator(
-             ((ExtendedIterator) listIndividuals()).mapWith( 
-                    new Map1() {public Object map1(Object x){ return ((Resource) x).as( DAMLInstance.class );} } 
-                ) );
+        return new UniqueExtendedIterator( listIndividuals().mapWith( new Map1() {
+                        public Object map1(Object x){ return ((Resource) x).as( DAMLInstance.class );} } ) );
     }
 
 

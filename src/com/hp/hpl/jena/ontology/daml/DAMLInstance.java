@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLInstance.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:08 $
+ * Last modified on   $Date: 2003-06-21 12:35:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -24,11 +24,9 @@ package com.hp.hpl.jena.ontology.daml;
 // Imports
 ///////////////
 
-import com.hp.hpl.jena.ontology.daml.PropertyAccessor;
 
 import com.hp.hpl.jena.rdf.model.Property;
-
-import java.util.Iterator;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 
@@ -36,7 +34,7 @@ import java.util.Iterator;
  * Java representation of a DAML Instance.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLInstance.java,v 1.3 2003-06-18 21:56:08 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLInstance.java,v 1.4 2003-06-21 12:35:34 ian_dickinson Exp $
  */
 public interface DAMLInstance
     extends DAMLCommon
@@ -64,7 +62,7 @@ public interface DAMLInstance
      *
      * @return an iterator whose values will all be DAMLInstance objects
      */
-    public Iterator getSameInstances();
+    public ExtendedIterator getSameInstances();
 
 
     /**
@@ -75,7 +73,7 @@ public interface DAMLInstance
      * @return an iterator ranging over every equivalent DAML instance - each value of
      *         the iteration should be a DAMLInstance object.
      */
-    public Iterator getEquivalentValues();
+    public ExtendedIterator getEquivalentValues();
 
 
     /**

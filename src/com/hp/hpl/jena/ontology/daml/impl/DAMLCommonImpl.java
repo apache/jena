@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:07 $
+ * Last modified on   $Date: 2003-06-21 12:35:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.7 2003-06-18 21:56:07 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.8 2003-06-21 12:35:39 ian_dickinson Exp $
  */
 public class DAMLCommonImpl
     extends OntResourceImpl
@@ -166,7 +166,7 @@ public class DAMLCommonImpl
      * types.
      * @return an iterator over the set of this value's classes
      */
-    public Iterator getRDFTypes( boolean complete ) {
+    public ExtendedIterator getRDFTypes( boolean complete ) {
         return listRDFTypes( !complete );
     }
 
@@ -198,14 +198,13 @@ public class DAMLCommonImpl
      *
      * @return An iterator ranging over every equivalent DAML value
      */
-    public Iterator getEquivalentValues() {
-        ExtendedIterator i = (ExtendedIterator) listPropertyValues( getProfile().SAME_AS() );
-        
+    public ExtendedIterator getEquivalentValues() {
         // iterator of myself
         List me = new LinkedList();
         me.add( this );
         
-        return new UniqueExtendedIterator( WrappedIterator.create( me.iterator() ).andThen( i ) );
+        return new UniqueExtendedIterator( WrappedIterator.create( me.iterator() )
+                   .andThen( listPropertyValues( getProfile().SAME_AS() ) ) );
     }
 
 
@@ -217,14 +216,14 @@ public class DAMLCommonImpl
      * @return An iteration ranging over the set of values that are equivalent to this
      *         value, but not itself.
      */
-    public Iterator getEquivalenceSet() {
+    public ExtendedIterator getEquivalenceSet() {
         Set s = new HashSet();
 
         s.add( this );
         for (Iterator i = getEquivalentValues();  i.hasNext();  s.add( i.next() ) );
         s.remove( this );
         
-        return s.iterator();
+        return WrappedIterator.create( s.iterator() );
     }
 
 

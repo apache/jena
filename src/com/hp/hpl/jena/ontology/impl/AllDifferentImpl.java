@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: AllDifferentImpl.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:13 $
+ * Last modified on   $Date: 2003-06-21 12:35:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -31,6 +31,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 /**
@@ -40,7 +41,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferentImpl.java,v 1.11 2003-06-16 13:40:13 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferentImpl.java,v 1.12 2003-06-21 12:35:38 ian_dickinson Exp $
  */
 public class AllDifferentImpl
     extends OntResourceImpl
@@ -144,7 +145,7 @@ public class AllDifferentImpl
      * @return An iterator over distinct individuals.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
      */ 
-    public Iterator listDistinct() {
+    public ExtendedIterator listDistinct() {
         return getDistinct().iterator();
     }
 

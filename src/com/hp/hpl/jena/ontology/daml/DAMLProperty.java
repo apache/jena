@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLProperty.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 22:30:45 $
+ * Last modified on   $Date: 2003-06-21 12:35:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -24,8 +24,7 @@ package com.hp.hpl.jena.ontology.daml;
 // Imports
 ///////////////
 import com.hp.hpl.jena.ontology.*;
-
-import java.util.Iterator;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 /**
@@ -36,7 +35,7 @@ import java.util.Iterator;
  * as a sub-class of Property), so uniqueness is modelled here as an attribute of a DAMLProperty.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLProperty.java,v 1.4 2003-06-18 22:30:45 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLProperty.java,v 1.5 2003-06-21 12:35:34 ian_dickinson Exp $
  */
 public interface DAMLProperty
     extends DAMLCommon, OntProperty
@@ -116,7 +115,7 @@ public interface DAMLProperty
      *
      * @return an iterator ranging over every equivalent DAML property.
      */
-    public Iterator getSameProperties();
+    public ExtendedIterator getSameProperties();
 
 
     /**
@@ -126,7 +125,7 @@ public interface DAMLProperty
      *
      * @return an iterator ranging over every equivalent DAML property.
      */
-    public Iterator getEquivalentValues();
+    public ExtendedIterator getEquivalentValues();
 
 
     /**
@@ -138,7 +137,7 @@ public interface DAMLProperty
      * @return an iterator whose values will be the DAML classes that define the domain
      *         of the relation
      */
-    public Iterator getDomainClasses();
+    public ExtendedIterator getDomainClasses();
 
 
     /**
@@ -150,7 +149,7 @@ public interface DAMLProperty
      * @return an iterator whose values will be the DAML classes that define the range
      *         of the relation
      */
-    public Iterator getRangeClasses();
+    public ExtendedIterator getRangeClasses();
 
 
     /**
@@ -161,7 +160,7 @@ public interface DAMLProperty
      * @return An iterator over the super-properties of this property,
      *         whose values will be DAMLProperties.
      */
-    public Iterator getSuperProperties();
+    public ExtendedIterator getSuperProperties();
 
 
     /**
@@ -179,7 +178,7 @@ public interface DAMLProperty
      * only local (direct) super-properties. See note for details.
      * @return An iterator over this property's super-properties.
      */
-    public Iterator getSuperProperties( boolean closed );
+    public ExtendedIterator getSuperProperties( boolean closed );
 
 
     /**
@@ -187,7 +186,7 @@ public interface DAMLProperty
      *
      * @return An iterator over the sub-properties of this property.
      */
-    public Iterator getSubProperties();
+    public ExtendedIterator getSubProperties();
 
 
     /**
@@ -205,7 +204,7 @@ public interface DAMLProperty
      * only local (direct) sub-properties. See note for details.
      * @return An iterator over this property's sub-properties.
      */
-    public Iterator getSubProperties( boolean closed );
+    public ExtendedIterator getSubProperties( boolean closed );
 }
 
 

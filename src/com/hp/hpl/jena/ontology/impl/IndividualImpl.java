@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:44 $
+ * Last modified on   $Date: 2003-06-21 12:35:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,10 +24,9 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import java.util.Iterator;
-
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 
@@ -39,7 +38,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.7 2003-06-08 21:29:44 ian_dickinson Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.8 2003-06-21 12:35:38 ian_dickinson Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -126,7 +125,7 @@ public class IndividualImpl
      * @return An iterator over the resources equivalent to this individual.
      * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
      */ 
-    public Iterator listSameIndividualAs() {
+    public ExtendedIterator listSameIndividualAs() {
         return listAs( getProfile().SAME_INDIVIDUAL_AS(), "SAME_INDIVIDUAL_AS", OntResource.class );
     }
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Ontology.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:58 $
+ * Last modified on   $Date: 2003-06-21 12:35:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -25,9 +25,8 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import java.util.Iterator;
-
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 /**
@@ -39,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Ontology.java,v 1.5 2003-06-08 21:29:58 ian_dickinson Exp $
+ * @version CVS $Id: Ontology.java,v 1.6 2003-06-21 12:35:39 ian_dickinson Exp $
  */
 public interface Ontology
     extends OntResource
@@ -84,7 +83,7 @@ public interface Ontology
      * @return An iterator over the ontology import resources
      * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.   
      */ 
-    public Iterator listImports();
+    public ExtendedIterator listImports();
 
     /**
      * <p>Answer true if this ontology (the ontology represented by this 
@@ -135,7 +134,7 @@ public interface Ontology
      * @return An iterator over the ontology resources compatible with this ontology
      * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.   
      */ 
-    public Iterator listBackwardCompatibleWith();
+    public ExtendedIterator listBackwardCompatibleWith();
 
     /**
      * <p>Answer true if this ontology (the ontology represented by this 
@@ -187,7 +186,7 @@ public interface Ontology
      * @return An iterator over the ontology resources superceded by this ontology
      * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.   
      */ 
-    public Iterator listPriorVersion();
+    public ExtendedIterator listPriorVersion();
 
     /**
      * <p>Answer true if this ontology (the ontology represented by this 
@@ -237,7 +236,7 @@ public interface Ontology
      * @return An iterator over the ontology resources that this ontology is incompatible with
      * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.   
      */ 
-    public Iterator listIncompatibleWith();
+    public ExtendedIterator listIncompatibleWith();
 
     /**
      * <p>Answer true if this ontology (the ontology represented by this 

@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLPropertyImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:07 $
+ * Last modified on   $Date: 2003-06-21 12:35:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * as a sub-class of Property), so uniqueness is modelled here as an attribute of a DAMLProperty.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.4 2003-06-18 21:56:07 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.5 2003-06-21 12:35:38 ian_dickinson Exp $
  */
 public class DAMLPropertyImpl
     extends OntPropertyImpl
@@ -126,7 +126,7 @@ public class DAMLPropertyImpl
     /** @deprecated */
     public void setRDFType( Resource rdfClass, boolean replace ) { m_common.setRDFType( rdfClass, replace ); }
     public DAMLModel getDAMLModel()                              { return m_common.getDAMLModel(); }
-    public Iterator getRDFTypes( boolean complete )              { return m_common.getRDFTypes( complete ); }
+    public ExtendedIterator getRDFTypes( boolean complete )      { return m_common.getRDFTypes( complete ); }
     public DAMLVocabulary getVocabulary()                        { return m_vocabulary; }
     public LiteralAccessor prop_label()                          { return m_common.prop_label(); }
     public LiteralAccessor prop_comment()                        { return m_common.prop_comment(); }
@@ -140,7 +140,7 @@ public class DAMLPropertyImpl
      *
      * @return an iterator ranging over every equivalent DAML class
      */
-    public Iterator getEquivalentValues() {
+    public ExtendedIterator getEquivalentValues() {
         ConcatenatedIterator i = new ConcatenatedIterator(
                        // first the iterator over the equivalentTo values
                        m_common.getEquivalentValues(),
@@ -159,14 +159,14 @@ public class DAMLPropertyImpl
      * @return An iteration ranging over the set of values that are equivalent to this
      *         value, but not itself.
      */
-    public Iterator getEquivalenceSet() {
+    public ExtendedIterator getEquivalenceSet() {
         Set s = new HashSet();
 
         s.add( this );
         for (Iterator i = getEquivalentValues();  i.hasNext();  s.add( i.next() ) );
         s.remove( this );
         
-        return s.iterator();
+        return WrappedIterator.create( s.iterator() );
     }
 
 
@@ -259,7 +259,7 @@ public class DAMLPropertyImpl
      *
      * @return an iterator ranging over every equivalent DAML property.
      */
-    public Iterator getSameProperties() {
+    public ExtendedIterator getSameProperties() {
         return WrappedIterator.create( super.listEquivalentProperties() ).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 
@@ -272,7 +272,7 @@ public class DAMLPropertyImpl
      * @return An iterator over the super-properties of this property,
      *         whose values will be DAMLProperties.
      */
-    public Iterator getSuperProperties() {
+    public ExtendedIterator getSuperProperties() {
         return getSuperProperties( true );
     }
 
@@ -291,7 +291,7 @@ public class DAMLPropertyImpl
      * only local (direct) super-properties. See note for details.
      * @return An iterator over this property's super-properties.
      */
-    public Iterator getSuperProperties( boolean closed ) {
+    public ExtendedIterator getSuperProperties( boolean closed ) {
         return WrappedIterator.create( listSuperProperties( !closed ) ).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 
@@ -301,7 +301,7 @@ public class DAMLPropertyImpl
      *
      * @return An iterator over the sub-properties of this property.
      */
-    public Iterator getSubProperties() {
+    public ExtendedIterator getSubProperties() {
         return getSubProperties( true );
     }
 
@@ -320,7 +320,7 @@ public class DAMLPropertyImpl
      * only local (direct) sub-properties. See note for details.
      * @return An iterator over this property's sub-properties.
      */
-    public Iterator getSubProperties( boolean closed ) {
+    public ExtendedIterator getSubProperties( boolean closed ) {
         return WrappedIterator.create( listSubProperties( !closed ) ).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 
@@ -334,7 +334,7 @@ public class DAMLPropertyImpl
      * @return an iterator whose values will be the DAML classes that define the domain
      *         of the relation
      */
-    public Iterator getDomainClasses() {
+    public ExtendedIterator getDomainClasses() {
         return WrappedIterator.create( listPropertyValues( getProfile().DOMAIN() ) ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
@@ -348,7 +348,7 @@ public class DAMLPropertyImpl
      * @return an iterator whose values will be the DAML classes that define the range
      *         of the relation
      */
-    public Iterator getRangeClasses() {
+    public ExtendedIterator getRangeClasses() {
         return WrappedIterator.create( listPropertyValues( getProfile().RANGE() ) ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 

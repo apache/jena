@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:58 $
+ * Last modified on   $Date: 2003-06-21 12:35:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -24,9 +24,8 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import java.util.Iterator;
-
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 
@@ -37,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.9 2003-06-08 21:29:58 ian_dickinson Exp $
+ * @version CVS $Id: OntProperty.java,v 1.10 2003-06-21 12:35:39 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -80,7 +79,7 @@ public interface OntProperty
      * @return An iterator over the super-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
      */ 
-    public Iterator listSuperProperties();
+    public ExtendedIterator listSuperProperties();
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be super-properties of
@@ -91,7 +90,7 @@ public interface OntProperty
      * @return An iterator over the super-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
      */ 
-    public Iterator listSuperProperties( boolean direct );
+    public ExtendedIterator listSuperProperties( boolean direct );
 
     /**
      * <p>Answer true if the given property is a super-property of this property.</p>
@@ -140,7 +139,7 @@ public interface OntProperty
      * @return An iterator over the sub-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
      */ 
-    public Iterator listSubProperties();
+    public ExtendedIterator listSubProperties();
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be sub-properties of
@@ -151,7 +150,7 @@ public interface OntProperty
      * @return An iterator over the sub-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
      */ 
-    public Iterator listSubProperties( boolean direct );
+    public ExtendedIterator listSubProperties( boolean direct );
 
     /**
      * <p>Answer true if the given property is a sub-property of this property.</p>
@@ -202,7 +201,7 @@ public interface OntProperty
      * @return An iterator over the classes that form the domain of this property.
      * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.   
      */ 
-    public Iterator listDomain();
+    public ExtendedIterator listDomain();
 
     /**
      * <p>Answer true if the given resource a class specifying the domain of this property.</p>
@@ -252,7 +251,7 @@ public interface OntProperty
      * @return An iterator over the classes that form the range of this property.
      * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.   
      */ 
-    public Iterator listRange();
+    public ExtendedIterator listRange();
 
     /**
      * <p>Answer true if the given resource a class specifying the range of this property.</p>
@@ -304,7 +303,7 @@ public interface OntProperty
      * @return An iterator over the properties equivalent to this property.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.   
      */ 
-    public Iterator listEquivalentProperties();
+    public ExtendedIterator listEquivalentProperties();
 
     /**
      * <p>Answer true if the given property is equivalent to this property.</p>
@@ -355,7 +354,7 @@ public interface OntProperty
      * @return An iterator over the properties inverse to this property.
      * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
      */ 
-    public Iterator listInverseOf();
+    public ExtendedIterator listInverseOf();
 
     /**
      * <p>Answer true if this property is the inverse of the given property.</p>

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:13 $
+ * Last modified on   $Date: 2003-06-21 12:35:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.29 2003-06-16 13:40:13 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.30 2003-06-21 12:35:38 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -161,7 +161,7 @@ public class OntModelImpl
      * 
      * @return An iterator over ontology resources. 
      */
-    public Iterator listOntologies() {
+    public ExtendedIterator listOntologies() {
         checkProfileEntry( getProfile().ONTOLOGY(), "ONTOLOGY" );
         return findByTypeAs( getProfile().ONTOLOGY(), Ontology.class );
     }
@@ -187,7 +187,7 @@ public class OntModelImpl
      * 
      * @return An iterator over property resources. 
      */
-    public Iterator listOntProperties() {
+    public ExtendedIterator listOntProperties() {
         return findByTypeAs( RDF.Property, OntProperty.class );
     }
     
@@ -212,7 +212,7 @@ public class OntModelImpl
      * 
      * @return An iterator over object property resources. 
      */
-    public Iterator listObjectProperties() {
+    public ExtendedIterator listObjectProperties() {
         checkProfileEntry( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
         return findByTypeAs( getProfile().OBJECT_PROPERTY(), ObjectProperty.class );
     }
@@ -238,7 +238,7 @@ public class OntModelImpl
      * 
      * @return An iterator over datatype property resources. 
      */
-    public Iterator listDatatypeProperties() {
+    public ExtendedIterator listDatatypeProperties() {
         checkProfileEntry( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
         return findByTypeAs( getProfile().DATATYPE_PROPERTY(), DatatypeProperty.class );
     }
@@ -258,7 +258,7 @@ public class OntModelImpl
      * 
      * @return An iterator over Individuals. 
      */
-    public Iterator listIndividuals() {
+    public ExtendedIterator listIndividuals() {
         return queryFor( m_individualsQuery, null, Individual.class );
     }
     
@@ -279,7 +279,7 @@ public class OntModelImpl
      * 
      * @return An iterator over class description resources. 
      */
-    public Iterator listClasses() {
+    public ExtendedIterator listClasses() {
         return findByTypeAs( getProfile().getClassDescriptionTypes(), OntClass.class );
     }
     
@@ -299,7 +299,7 @@ public class OntModelImpl
      * @return An iterator over enumerated class resources. 
      * @see Profile#ONE_OF
      */
-    public Iterator listEnumeratedClasses()  {
+    public ExtendedIterator listEnumeratedClasses()  {
         checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
         return findByDefiningPropertyAs( getProfile().ONE_OF(), EnumeratedClass.class );
     }
@@ -320,7 +320,7 @@ public class OntModelImpl
      * @return An iterator over union class resources. 
      * @see Profile#UNION_OF
      */
-    public Iterator listUnionClasses() {
+    public ExtendedIterator listUnionClasses() {
         checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
         return findByDefiningPropertyAs( getProfile().UNION_OF(), UnionClass.class );
     }
@@ -341,7 +341,7 @@ public class OntModelImpl
      * @return An iterator over complement class resources. 
      * @see Profile#COMPLEMENT_OF
      */
-    public Iterator listComplementClasses() {
+    public ExtendedIterator listComplementClasses() {
         checkProfileEntry( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF" );
         return findByDefiningPropertyAs( getProfile().COMPLEMENT_OF(), ComplementClass.class );
     }
@@ -362,7 +362,7 @@ public class OntModelImpl
      * @return An iterator over complement class resources. 
      * @see Profile#INTERSECTION_OF
      */
-    public Iterator listIntersectionClasses() {
+    public ExtendedIterator listIntersectionClasses() {
         checkProfileEntry( getProfile().INTERSECTION_OF(), "INTERSECTION_OF" );
         return findByDefiningPropertyAs( getProfile().INTERSECTION_OF(), IntersectionClass.class );
     }
@@ -382,8 +382,8 @@ public class OntModelImpl
      * 
      * @return An iterator over named class resources. 
      */
-    public Iterator listNamedClasses() {
-        return ((ExtendedIterator) listClasses()).filterDrop(
+    public ExtendedIterator listNamedClasses() {
+        return listClasses().filterDrop(
             new Filter() {
                 public boolean accept( Object x ) {
                     return ((Resource) x).isAnon();
@@ -408,7 +408,7 @@ public class OntModelImpl
      * @return An iterator over restriction class resources. 
      * @see Profile#RESTRICTION
      */
-    public Iterator listRestrictions() {
+    public ExtendedIterator listRestrictions() {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
         return findByTypeAs( getProfile().RESTRICTION(), Restriction.class );
     }
@@ -427,7 +427,7 @@ public class OntModelImpl
      * 
      * @return An iterator over AllDifferent nodes. 
      */
-    public Iterator listAllDifferent() {
+    public ExtendedIterator listAllDifferent() {
         checkProfileEntry( getProfile().ALL_DIFFERENT(), "ALL_DIFFERENT" );
         return findByTypeAs( getProfile().ALL_DIFFERENT(), AllDifferent.class );
     }
@@ -448,12 +448,12 @@ public class OntModelImpl
      * @return An iterator over annotation properties. 
      * @see Profile#getAnnotationProperties()
      */
-    public Iterator listAnnotationProperties() {
+    public ExtendedIterator listAnnotationProperties() {
         checkProfileEntry( getProfile().ANNOTATION_PROPERTY(), "ANNOTATION_PROPERTY" );
         Resource r = (Resource) getProfile().ANNOTATION_PROPERTY();
         
         if (r == null) {
-            return new ArrayList().iterator(); 
+            return WrappedIterator.create( new ArrayList().iterator() ); 
         }
         else {
             return findByType( r )

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Individual.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:58 $
+ * Last modified on   $Date: 2003-06-21 12:35:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -29,6 +29,7 @@ package com.hp.hpl.jena.ontology;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 /**
@@ -42,7 +43,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Individual.java,v 1.6 2003-06-08 21:29:58 ian_dickinson Exp $
+ * @version CVS $Id: Individual.java,v 1.7 2003-06-21 12:35:39 ian_dickinson Exp $
  */
 public interface Individual
     extends OntResource
@@ -87,7 +88,7 @@ public interface Individual
      * @return An iterator over the resources equivalent to this individual.
      * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
      */ 
-    public Iterator listSameIndividualAs();
+    public ExtendedIterator listSameIndividualAs();
 
     /**
      * <p>Answer true if this individual is the same as the given resource.</p>

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:13 $
+ * Last modified on   $Date: 2003-06-21 12:35:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -30,6 +30,7 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 /**
@@ -39,7 +40,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.7 2003-06-16 13:40:13 ian_dickinson Exp $
+ * @version CVS $Id: ComplementClassImpl.java,v 1.8 2003-06-21 12:35:38 ian_dickinson Exp $
  */
 public class ComplementClassImpl 
     extends OntClassImpl
@@ -161,7 +162,7 @@ public class ComplementClassImpl
 	 * @return An iterator over the operands of the expression.
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
-	public Iterator listOperands() {
+	public ExtendedIterator listOperands() {
 		return listAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
 	}
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-May-2003
  * Filename           $RCSfile: BooleanClassDescriptionImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:13 $
+ * Last modified on   $Date: 2003-06-21 12:35:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -31,6 +31,7 @@ import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
 
@@ -41,7 +42,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: BooleanClassDescriptionImpl.java,v 1.4 2003-06-16 13:40:13 ian_dickinson Exp $
+ * @version CVS $Id: BooleanClassDescriptionImpl.java,v 1.5 2003-06-21 12:35:38 ian_dickinson Exp $
  */
 public abstract class BooleanClassDescriptionImpl 
     extends OntClassImpl
@@ -123,7 +124,7 @@ public abstract class BooleanClassDescriptionImpl
 	 * @return An iterator over the operands of the expression.
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 
-	public Iterator listOperands() {
+	public ExtendedIterator listOperands() {
 		return getOperands().iterator();
 	}
 
