@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Pattern.java,v 1.1.1.1 2002-12-19 19:13:54 bwm Exp $
+  $Id: Pattern.java,v 1.2 2003-01-08 15:31:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
-import java.util.*;
 
 /**
 	@author hedgehog
