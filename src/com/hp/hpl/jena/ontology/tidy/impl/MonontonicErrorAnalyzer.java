@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+   (c) Copyright 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MonontonicErrorAnalyzer.java,v 1.5 2003-12-10 10:13:34 jeremy_carroll Exp $
+  $Id: MonontonicErrorAnalyzer.java,v 1.6 2003-12-13 21:10:50 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import java.util.*;
@@ -658,7 +658,7 @@ class MonontonicErrorAnalyzer implements Constants {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2003
+   (c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

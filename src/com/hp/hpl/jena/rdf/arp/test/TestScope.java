@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+   (c) Copyright 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestScope.java,v 1.5 2003-12-08 20:41:02 jeremy_carroll Exp $
+  $Id: TestScope.java,v 1.6 2003-12-13 21:10:59 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp.test;
 import junit.framework.*;
@@ -70,7 +70,7 @@ public class TestScope extends TestCase {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2003
+   (c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.37 2003-12-11 12:17:20 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.38 2003-12-13 21:10:59 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -31,7 +31,7 @@ import java.io.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.37 $ $Date: 2003-12-11 12:17:20 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.38 $ $Date: 2003-12-13 21:10:59 $
  */
 
 public class TestXMLFeatures extends ModelTestBase {
@@ -148,6 +148,15 @@ public class TestXMLFeatures extends ModelTestBase {
 		});
 	}
 
+  public void testRelativeURI() {
+  	Model m = ModelFactory.createDefaultModel();
+  	m.createResource("foo").addProperty(
+  	RDF.value,
+  	"bar");
+  	m.write(new OutputStream(){
+		public void write(int b) throws IOException {
+		}},lang);
+  }
 	public void testPropertyURI() throws IOException {
 		doBadPropTest(lang);
 	}
@@ -1175,5 +1184,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.37 2003-12-11 12:17:20 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.38 2003-12-13 21:10:59 jeremy_carroll Exp $
  */

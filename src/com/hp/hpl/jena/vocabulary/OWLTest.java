@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-Sep-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
- * [See end of file]
- * $Id: OWLTest.java,v 1.4 2003-11-22 14:29:06 jeremy_carroll Exp $
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+* [See end of file]
+ * $Id: OWLTest.java,v 1.5 2003-12-13 21:10:59 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -110,7 +110,7 @@ public class OWLTest  {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+   (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+   (c) Copyright 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Lookup.java,v 1.3 2003-12-04 10:49:14 jeremy_carroll Exp $
+  $Id: Lookup.java,v 1.4 2003-12-13 21:10:50 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -74,7 +74,7 @@ public interface Lookup {
 	public int meet(int c0, int c1);
 }
 /*
-	(c) Copyright Hewlett-Packard Company 2003
+   (c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

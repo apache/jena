@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: PrettyWriterTest.java,v 1.7 2003-12-11 12:17:20 jeremy_carroll Exp $
+    $Id: PrettyWriterTest.java,v 1.8 2003-12-13 21:10:59 jeremy_carroll Exp $
 */
 
 // Package
@@ -15,8 +15,8 @@ package com.hp.hpl.jena.xmloutput.test;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.*;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.vocabulary.*;
-import java.util.*;
+//import com.hp.hpl.jena.vocabulary.*;
+//import java.util.*;
 
 import org.apache.oro.text.awk.AwkCompiler;
 import org.apache.oro.text.awk.AwkMatcher;
@@ -28,7 +28,7 @@ import java.io.*;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: PrettyWriterTest.java,v 1.7 2003-12-11 12:17:20 jeremy_carroll Exp $,
+ * @version CVS info: $Id: PrettyWriterTest.java,v 1.8 2003-12-13 21:10:59 jeremy_carroll Exp $,
  */
 
 public class PrettyWriterTest extends ModelTestBase {
@@ -164,9 +164,9 @@ public class PrettyWriterTest extends ModelTestBase {
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: PrettyWriterTest.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  *
- * Last modified on   $Date: 2003-12-11 12:17:20 $
+ * Last modified on   $Date: 2003-12-13 21:10:59 $
  *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2002 Hewlett-Packard Development Company, LP

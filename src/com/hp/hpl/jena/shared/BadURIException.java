@@ -1,13 +1,23 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BadURIException.java,v 1.2 2003-08-27 13:07:30 andy_seaborne Exp $
+  $Id: BadURIException.java,v 1.3 2003-12-13 21:10:59 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.shared;
 
 /**
-    A Jena exception for malformed URIs. (This one is an unchecked
+    A Jena exception for malformed URIs. 
+    <p>
+    Jena checks URIs sometimes, particularly on input and output.
+    It is however possible to have a Jena model which contains
+    bad URIs. Such a model cannot be written out very easily,
+    particularly in RDF/XML, try N-TRIPLE.
+    An input document, particularly when no base URL is known,
+    may introduce relative URIs into a model. These may later
+    cause this exception.
+    <p>
+    (This one is an unchecked
     exception, so we don't litter our code with try-catch blocks or throws
     declarations.)
     

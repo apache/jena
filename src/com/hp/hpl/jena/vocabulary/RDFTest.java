@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-Sep-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
- * [See end of file]
- * $Id: RDFTest.java,v 1.1 2003-09-12 16:31:48 der Exp $
+    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+* [See end of file]
+ * $Id: RDFTest.java,v 1.2 2003-12-13 21:10:59 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -118,7 +118,7 @@ public class RDFTest {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+   (c) Copyright 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
-  [See end of file]
-  $Id: ARPHandler.java,v 1.1 2003-12-06 21:46:59 jeremy_carroll Exp $
+   (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ [See end of file]
+  $Id: ARPHandler.java,v 1.2 2003-12-13 21:10:58 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -25,7 +25,7 @@ public interface ARPHandler extends StatementHandler, ExtendedHandler, Namespace
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2003
+   (c) Copyright 2003 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without
