@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.1 2004-09-03 15:06:28 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.2 2004-09-10 09:47:56 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 /**
     GraphTripleStore - the underlying triple-indexed triple store for GraphMem et al,
@@ -15,7 +17,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
     
     @author kers
  */
-public class GraphTripleStore
+public class GraphTripleStore implements TripleStore
     {
     protected NodeToTriplesMap subjects = new NodeToTriplesMap()
         { public Node getIndexNode( Triple t ) { return t.getSubject(); } };
@@ -32,7 +34,7 @@ public class GraphTripleStore
     /**
          Destroy this triple store - discard the indexes.
     */
-    public void destroy()
+    public void close()
         { subjects = predicates = objects = null; }
     
     /**
@@ -70,6 +72,12 @@ public class GraphTripleStore
     */
     public boolean isEmpty()
         { return subjects.isEmpty(); }
+    
+    public ExtendedIterator listSubjects()
+        { return WrappedIterator.create( subjects.domain() ); }
+    
+    public ExtendedIterator listObjects()
+        { return WrappedIterator.create( objects.domain() ); }
     
     /**
          Answer true iff this triple store contains the (concrete) triple <code>t</code>.

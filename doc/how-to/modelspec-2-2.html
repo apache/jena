@@ -1,6 +1,7 @@
 <html>
 <head>
 <title>ModelSpec 2.2 howto</title>
+<link href="../styles/doc.css" rel="stylesheet" type="text/css">
 <style>
 p.note {
     background-color: #eef;
@@ -12,7 +13,6 @@ pre {
     margin-left: 5mm;
 	margin-right: 5mm
     }
-<link href="../styles/doc.css" rel="stylesheet" type="text/css">
 </style>
 </head>
 <body>
@@ -66,7 +66,7 @@ and a few major ones, those being:
 
 <code>ModelSpec</code>s are created by calling one of the ModelFactory 
 methods named <code>createSpec</code>, which create a ModelSpec from
-an RDF description. There are four variants of <code>createSpec</code>:
+an RDF description. There are three variants of <code>createSpec</code>:
 
 <ul>
 <li>createSpec( Resource r , Model m ). This is the core method.
@@ -230,10 +230,6 @@ the (in-)security implications of the database password being stored
 in plain text in the ModelSpec description document - these are
 partly bypassed by using the <code>shared</code> property discussed
 later.
-
-<p class=note>[Consider lifting out connection as independantly specifiable
-    object, so it can be shared; this then subsumes the current
-	values-as-bnodes hack in ModelSpec.]
 	
 <p class=note>[Should contact Chris Bizer and ask him about the connections to
     databases needed for his RDB-to-graph connection.]
@@ -246,16 +242,11 @@ An inference model is characterised by having a reasoner specification
 as well as a (base) model-maker specification. The reasoner engine is
 specified by its URI (as known to the Jena ReasonerRegistry), and
 additional properties, such as schemas and rules.
- 
-<p>Inference models require a reasoner specification as well as a
-base ModelMaker. In the current ModelSpec implementation, the
-reasoner only requires the URI describing the necessary inference:
-other reasoner properties will be introduced in later revisions.
 
 <pre>
 _:this jms:maker _:maker .
 _:this jms:reasonsWith _:reasoner .
-_:reasoner jms:reasoner <http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner> .
+_:reasoner jms:reasoner &lt;http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner&gt; .
 </pre>
 
 <p class=note>[check that the URI remains correct]
@@ -271,7 +262,7 @@ applied to a particular model. Schemas can be specified by giving their
 URLs.
 
 <pre>
-_:reasoner jms:schemaURL <http://some.domain.xyz/RDFS/cunning> .
+_:reasoner jms:schemaURL &lt;http://some.domain.xyz/RDFS/cunning&gt; .
 </pre>
 
 If several schemas are supplied, they are merged into a single schema
@@ -290,7 +281,7 @@ additional rules. Those rules may be specified in the ModelSpec
 description, or be identified by URL.
 
 <pre>
-_:reasoner jms:ruleSetURL <http://some.domain.xyz/RULES/straight> .
+_:reasoner jms:ruleSetURL &lt;http://some.domain.xyz/RULES/straight&gt; .
 </pre>
 
 The URL identifies a resource containing the rules, written in
@@ -332,7 +323,7 @@ URL:
 
 <pre>
 _:set jms:hasRule "some proper rule text here" .
-_:set jms:ruleSetURL <http://some.domain/RULES/example> .
+_:set jms:ruleSetURL &lt;http://some.domain/RULES/example&gt; .
 </pre>
 
 Both <code>hasRule</code> and <code>ruleSetURL</code> may be

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.29 2004-07-09 11:02:38 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.30 2004-09-10 09:47:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -30,7 +30,6 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 public abstract class GraphBase implements GraphWithPerform 
 	{
-
     protected final ReificationStyle style;
     
     protected boolean closed = false;

@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.13 2004-08-05 07:38:44 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.14 2004-09-10 09:47:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -53,7 +53,7 @@ public class ModelReifier
         { 
         Graph mGraph = m.getGraph();
         Graph hiddenTriples = mGraph.getReifier().getHiddenTriples();
-        return new ModelCom( new Union( mGraph, hiddenTriples ) );
+        return new ModelCom( new DisjointUnion( mGraph, hiddenTriples ) );
         }
     
     /**
