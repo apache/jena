@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCacheNew.java,v 1.3 2004-11-26 17:24:31 der Exp $
+ * $Id: TransitiveGraphCacheNew.java,v 1.4 2004-11-28 16:34:49 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
@@ -24,23 +24,25 @@ import java.util.*;
  * <p>
  * The implementation stores the reduced and closed relations as real graph
  * (objects linked together by pointers). For each graph node we store its direct
- * predecessors and successors and its closed successors. A cost penalty 
+ * predecessors and successors and its closed successors.  A cost penalty 
  * is the storage turnover involved in turning the graph representation back into 
  * triples to answer queries. We could avoid this by optionally also storing the
- * manifested triples for the links. The storage cost thus
- * scales L^2 where L is the length of the relation chains (e.g. the depth in the
- * subClass hiearachy). This could be reduced by using interval indexes (Agrawal, 
- * Borigda and Jagadish 1989) at the cost of complicating incremental inserts 
- * and dynamic storage turnover.
+ * manifested triples for the links.
  * </p><p>
  * Cycles are currently handled by collapsing strongly connected components.
  * Incremental deletes would be possible but at the price of substanially 
  * more storage and code complexity. We compromise by doing the easy cases
  * incrementally but some deletes (those that break strongly connected components)
  * will trigger a fresh rebuild.
- * 
+ * </p><p>
+ * TODO Combine this with interval indexes (Agrawal, Borigda and Jagadish 1989) 
+ * for storing the closure of the predecessor relationship. Typical graphs
+ * will be nearly tree shaped so the successor closure is modest (L^2 where
+ * L is the depth of the tree branch) but the predecessor closure would be 
+ * expensive. The interval index would handle predecessor closure nicely.
+ * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 
 // TODO: This version is a compromise between bug fixing earlier code,
@@ -317,7 +319,41 @@ public class TransitiveGraphCacheNew {
          * Print node label to assist with debug.
          */
         public String toString() {
-            return "[" + rdfNode + "]";
+            return "[" + rdfNode.getLocalName() + "]";
+        }
+        
+        /**
+         * Full dump for debugging
+         */
+        public String dump() {
+        	String result = rdfNode.getLocalName();
+        	if (aliases != null) {
+        		if (aliases instanceof GraphNode) {
+        			result = result + " leader=" + aliases + ", ";
+        		} else {
+        			result = result + " SCC=" + dumpSet((Set)aliases) +", ";
+        		}
+        	}
+        	return result + " succ=" + dumpSet(succ) + ", succClose=" + dumpSet(succClosed) + ", pred=" + dumpSet(pred);
+        }
+        
+        /**
+         * Dump a set to a string for debug.
+         */
+        private String dumpSet(Set s) {
+        	StringBuffer sb = new StringBuffer();
+        	sb.append("{");
+        	boolean started = false;
+        	for (Iterator i = s.iterator(); i.hasNext(); ) {
+        		if (started) {
+        			sb.append(", ");
+        		} else {
+        			started = true;
+        		}
+        		sb.append(i.next().toString());
+        	}
+        	sb.append("}");
+        	return sb.toString();
         }
         
 	} // End of GraphNode inner class
@@ -652,6 +688,19 @@ public class TransitiveGraphCacheNew {
     		}
     	}
     	cacheTriples = enable;
+    }
+    
+    /**
+     * Dump a description of the cache to a string for debug.
+     */
+    public String dump() {
+    	StringBuffer sb = new StringBuffer();
+    	for (Iterator i = nodeMap.values().iterator(); i.hasNext(); ) {
+    		GraphNode n = (GraphNode)i.next();
+    		sb.append(n.dump());
+    		sb.append("\n");
+    	}
+    	return sb.toString();
     }
     
 //  ----------------------------------------------------------------------
