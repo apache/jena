@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: ARPFilter.java,v 1.20 2004-01-27 17:34:08 jeremy_carroll Exp $
+ * $Id: ARPFilter.java,v 1.21 2004-03-17 19:16:48 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -519,7 +519,7 @@ class ARPFilter
 		setErrorMode(WARN_UNKNOWN_PARSETYPE, warning);
 		//     setErrorMode(WARN_BAD_XML, nonErrorMode);
 		setErrorMode(WARN_PROCESSING_INSTRUCTION_IN_RDF, nonErrorMode);
-		setErrorMode(WARN_LEGAL_REUSE_OF_ID, nonErrorMode);
+//		setErrorMode(WARN_LEGAL_REUSE_OF_ID, nonErrorMode);
 		setErrorMode(WARN_RDF_NN_AS_TYPE, nonErrorMode);
 		setErrorMode(WARN_UNKNOWN_RDF_ELEMENT, warning);
 		setErrorMode(WARN_UNKNOWN_RDF_ATTRIBUTE, warning);

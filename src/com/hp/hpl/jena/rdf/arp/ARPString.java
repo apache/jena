@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPString.java,v 1.3 2003-08-27 13:05:52 andy_seaborne Exp $
+ * * $Id: ARPString.java,v 1.4 2004-03-17 19:16:48 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -65,11 +65,13 @@ class ARPString implements ALiteral {
     ARPString(Vector v,String lang) {
         this.lang = lang;
         this.isWellFormedXML = false;
+        StringBuffer buf = new StringBuffer(256);
         value = "";
         Iterator it = v.iterator();
         while (it.hasNext()) {
-        	value = value + ((StrToken)it.next()).value;
+        	buf.append( ((StrToken)it.next()).value );
         }
+        value = new String(buf.toString());
     }
     private String value;
     private String lang;

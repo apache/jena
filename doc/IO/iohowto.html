@@ -985,7 +985,7 @@ much of the grammar.
 </p>
 <p>
 The RDF/XML-ABBREV writer  exercises all of the
-grammar except <code>rdf:bagID</code> and is conformant except
+grammar and is conformant except
 that it uses the "daml:collection" construct for DAML ontologies.
 This non-conformant behaviour can be switched off using the
 "blockRules" property.</p>
@@ -1022,6 +1022,20 @@ The following creates a faster writer:
    fasterWriter.setProperty("allowBadURIs","true");
    fasterWriter.setProperty("relativeURIs","");
    fasterWriter.setProperty("tab","0");
+</pre>
+
+<p>
+When reading RDF/XML the check for reuse of rdf:ID has a
+memory overhead, which can be significant for very large files.
+In this case, this check can be suppressed by telling ARP to ignore 
+this error.
+</p>
+<pre>   Model m;
+   &hellip;
+   &hellip;
+   RDFReader bigFileReader = m.getReader("RDF/XML");
+   bigFileReader.setProperty("WARN_REDEFINITION_OF_ID","EM_IGNORE");
+   &hellip;
 </pre>
 
 

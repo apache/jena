@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: rdfcopy.java,v 1.7 2003-09-09 14:24:43 chris-dollin Exp $
+ * $Id: rdfcopy.java,v 1.8 2004-03-17 19:17:48 jeremy_carroll Exp $
  */
 
 package jena;
@@ -59,7 +59,7 @@ import java.io.*;
  *  </pre>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-09-09 14:24:43 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2004-03-17 19:17:48 $
  */
 public class rdfcopy extends java.lang.Object {
 
@@ -118,6 +118,16 @@ public class rdfcopy extends java.lang.Object {
                 rdr.read(m, new FileInputStream(in), base) ;
             }
 			//rdr.read(m, in);
+			try {
+				Runtime rt = Runtime.getRuntime();
+				rt.gc();
+				rt.gc();
+				System.err.println(rt.totalMemory()-rt.freeMemory());
+				System.err.println("Kill now!");
+				Thread.sleep(30000);
+			} 
+			catch (Exception e) {
+			}
 			RDFWriter w = m.getWriter(outlang);
 			j++;
 			for (; j < lastOutProp; j++) {
