@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.10 2003-11-05 12:16:46 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.11 2003-12-03 18:20:26 andy_seaborne Exp $
  */
 
 
@@ -347,12 +347,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
             return ;
         }
 
-        String propStr = null;
-
-        if (wellKnownPropsMap.containsKey(property.getURI()))
-            propStr = (String) wellKnownPropsMap.get(property.getURI());
-        else
-            propStr = formatProperty(property);
+        String propStr = formatProperty(property);
         
         // Find which objects are simple (i.e. not nested structures)             
 

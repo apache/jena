@@ -20,12 +20,12 @@ import java.io.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.14 2003-11-28 16:18:25 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.15 2003-12-03 18:20:26 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
 {
-    static Logger logger = Logger.getLogger(N3JenaWriterCommon.class.getName()) ;
+    static Logger logger = Logger.getLogger(N3JenaWriterCommon.class) ;
     
 	// N3 writing proceeds in 2 stages.
     // First, it analysis the model to be written to extract information
@@ -62,33 +62,35 @@ public class N3JenaWriterCommon implements RDFWriter
     String baseURIrefHash = null ;
 
     // Min spacing of items    
-    final int minGap = getIntValue("minGap", 1) ;
-    final String minGapStr = pad(minGap) ;
+    int minGap = getIntValue("minGap", 1) ;
+    String minGapStr = pad(minGap) ;
 
     // Gap from subject to property
-	final int indentProperty = getIntValue("indentProperty", 6) ;
+	int indentProperty = getIntValue("indentProperty", 6) ;
     
     // Width of property before wrapping.
     // This is not necessarily a control of total width
     // e.g. the pretty writer may be writing properties inside indented one ref bNodes 
-    final int widePropertyLen = getIntValue("widePropertyLen", 20) ;
+    int widePropertyLen = getIntValue("widePropertyLen", 20) ;
     
     // Column for property when an object follows a property on the same line
-    final int propertyCol = getIntValue("propertyColumn", 8) ;
+    int propertyCol = getIntValue("propertyColumn", 8) ;
     
     // Max width of property to align to.
     // Property may be longer and still go on same line but the columnization is broken. 
     // Allow for min gap.
     // Require propertyWidth < propertyCol (strict less than)
-    final int propertyWidth = propertyCol-minGap ;
+    int propertyWidth = propertyCol-minGap ;
 
     //  Gap from property to object when object on a new line.
-    final int indentObject = propertyCol ;
+    int indentObject = propertyCol ;
     
     // If a subject is shorter than this, the first property may go on same line.
-    final int subjectColumn = getIntValue("subjectColumn", indentProperty) ; 
+    int subjectColumn = getIntValue("subjectColumn", indentProperty) ; 
     // Require shortSubject < subjectCol (strict less than)
-    final int shortSubject = subjectColumn-minGap;
+    int shortSubject = subjectColumn-minGap;
+    
+    boolean useWellKnownPropertySymbols = getBooleanValue("usePropertySymbols", true) ;
 
     // ----------------------------------------------------
     // Jena RDFWriter interface
@@ -346,12 +348,12 @@ public class N3JenaWriterCommon implements RDFWriter
     
     protected void writeObjectList(Resource resource, Property property)
     {
-        String propStr = null;
+        String propStr = formatProperty(property) ;
 
-        if (wellKnownPropsMap.containsKey(property.getURI()))
-            propStr = (String) wellKnownPropsMap.get(property.getURI());
-        else
-            propStr = formatResource(property);
+//        if (wellKnownPropsMap.containsKey(property.getURI()))
+//            propStr = (String) wellKnownPropsMap.get(property.getURI());
+//        else
+//            propStr = formatResource(property);
 
         // Write with object lists as clusters of statements with the same property
         // Looks more like a machine did it but fewer bad cases.
@@ -478,7 +480,7 @@ public class N3JenaWriterCommon implements RDFWriter
     protected String formatProperty(Property p)
     {
         String prop = p.getURI() ;
-        if ( wellKnownPropsMap.containsKey(prop) )
+        if ( this.useWellKnownPropertySymbols && wellKnownPropsMap.containsKey(prop) )
             return (String)wellKnownPropsMap.get(prop);
 
         return formatURI(prop) ;
@@ -539,6 +541,7 @@ public class N3JenaWriterCommon implements RDFWriter
 		return "<"+uriStr+">" ;
 	}
 
+    final static String WS = "\n\r\t" ;
 
 	protected String formatLiteral(Literal literal)
 	{
@@ -564,15 +567,21 @@ public class N3JenaWriterCommon implements RDFWriter
         }
         // Format the text - with escaping.
         StringBuffer sbuff = new StringBuffer() ;
+        boolean oneLineLiteral = true ;
+        
         String quoteMarks = "\"" ;
         
+        // Things that force the use of """ strings
         if ( s.indexOf("\n") != -1 ||
              s.indexOf("\r") != -1 ||
              s.indexOf("\f") != -1 )
-             quoteMarks = "\"\"\"" ;
+        {
+            quoteMarks = "\"\"\"" ;
+            oneLineLiteral = false ;
+        }
         
         sbuff.append(quoteMarks);
-        string(sbuff, s) ;
+        string(sbuff, s, !oneLineLiteral) ;
         sbuff.append(quoteMarks);
 
         // Format the language tag 
@@ -591,33 +600,49 @@ public class N3JenaWriterCommon implements RDFWriter
         return sbuff.toString() ;
 	}
 
-	protected static void string(StringBuffer sbuff, String s)
+	protected static void string(StringBuffer sbuff, String s, boolean litWS)
     {
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
-            if (c == '\\' || c == '"') {
+
+            // Escape escapes and quotes
+            if (c == '\\' || c == '"')
+            {
                 sbuff.append('\\') ;
                 sbuff.append(c) ;
-                // Literals: We do this by using """ strings.
-                // Qnames: Does not occur.
-//            } else if (c == '\n') {
-//                sbuff.append("\\n");
-//            } else if (c == '\r') {
-//                sbuff.append("\\r");
-//            } else if (c == '\t') {
-//                sbuff.append("\\t");
-            } else if (c >= 32 && c < 127) {
-                sbuff.append(c) ;
-            } else {
-                String hexstr = Integer.toHexString(c).toUpperCase();
-                int pad = 4 - hexstr.length();
-                sbuff.append("\\u");
-                for (; pad > 0; pad--)
-                    sbuff.append("0");
-                sbuff.append(hexstr);
             }
+            
+            // Characters to literally output.
+            if (c >= 32 && c < 127)
+            {
+                sbuff.append(c) ;
+                continue;
+            }    
+
+            // Whitespace
+            if ( WS.indexOf(c) > -1 )
+            {
+                if ( litWS )
+                {    
+                    sbuff.append(c);
+                    continue ;
+                }
+                if (c == '\n') sbuff.append("\\n");
+                if (c == '\t') sbuff.append("\\t");
+                if (c == '\r') sbuff.append("\\r");
+                if (c == '\f') sbuff.append("\\f");
+                continue ;
+            }
+            
+            // Unicode escapes
+            // c < 32, c >= 127, not whitespace or other specials
+            String hexstr = Integer.toHexString(c).toUpperCase();
+            int pad = 4 - hexstr.length();
+            sbuff.append("\\u");
+            for (; pad > 0; pad--)
+                sbuff.append("0");
+            sbuff.append(hexstr);
         }
-        
     }
     
 	protected static String pad(int cols)
@@ -736,7 +761,7 @@ public class N3JenaWriterCommon implements RDFWriter
         }
     }
     
-    // Maybe the abolute or local form of the property name
+    // May be the absolute or local form of the property name
     
     protected String getPropValue(String prop)
     {
