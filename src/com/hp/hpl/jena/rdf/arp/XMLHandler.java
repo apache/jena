@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.1 2004-10-11 11:54:37 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.2 2004-10-19 14:46:29 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -38,6 +38,7 @@
 package com.hp.hpl.jena.rdf.arp;
 
 import java.util.*;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
@@ -64,7 +65,7 @@ import org.apache.xerces.util.EncodingMap;
  */
 abstract class XMLHandler
 	extends LexicalHandlerImpl 
-	implements RDFParserConstants, ARPErrorNumbers, LexicalHandler {
+	implements RDFParserConstants, ARPErrorNumbers {
 	static {
 		//    org.apache.xerces.utils.XMLCharacterProperties.initCharFlags();
 		CharacterModel.isFullyNormalizedConstruct(
@@ -246,7 +247,7 @@ abstract class XMLHandler
 	void parseWarning(Warn w) throws ParseException {
 		parseWarning(w.number, w.location, w.msg);
 	}
-	void putWarning(int no, Location where, String msg) {
+	void putWarning(int no, Location where, String msg) throws SAXParseException {
 		pipe.putNextToken(new Warn(no, where, msg));
 	}
 
@@ -527,7 +528,7 @@ abstract class XMLHandler
 
 
 
-	public void comment(char[] ch, int start, int length) {
+	public void comment(char[] ch, int start, int length) throws SAXParseException {
 		Location where = new Location(locator);
 		pipe.putNextToken(
 			new StrToken(COMMENT, where, new String(ch, start, length)));
@@ -544,23 +545,23 @@ abstract class XMLHandler
 		//     pipe.putNextToken( new ARPQname(E_RDF_N,where,uri,localName, q) );
 	}
 
-	public void error(SAXParseException e) {
+	public void error(SAXParseException e) throws SAXParseException {
 		saxError(ERR_SAX_ERROR, e);
 	}
-	public void warning(SAXParseException e) {
+	public void warning(SAXParseException e) throws SAXParseException {
 		saxError(WARN_SAX_WARNING, e);
 	}
-	public void fatalError(SAXParseException e) {
+	public void fatalError(SAXParseException e) throws SAXException {
 		saxError(ERR_SAX_FATAL_ERROR, e);
 		throw new FatalParsingErrorException();
 	}
-	void generalError(int i, Exception e) {
+	void generalError(int i, Exception e) throws SAXParseException {
 		Location where = new Location(locator);
 		//   System.err.println(e.getMessage());
 		pipe.putNextToken(new ExceptionToken(i, where, e));
 
 	}
-	private void saxError(int i, SAXParseException e) {
+	private void saxError(int i, SAXParseException e) throws SAXParseException {
 		Location where =
 			new Location(
 				e.getSystemId(),
@@ -608,6 +609,28 @@ abstract class XMLHandler
 
 	boolean ignoring(int eCode) {
 		return options.getErrorMode()[eCode]==EM_IGNORE;
+	}
+	protected void initParse(String base) throws MalformedURIException {
+		nodeIdUserData = new HashMap();
+		//String base = input.getSystemId();
+		if (base == null) {
+			warning(
+				IGN_NO_BASE_URI_SPECIFIED,
+				"Base URI not specified for input file; local URI references will be in error.");
+			documentContext =
+				new XMLNullContext(this, ERR_RESOLVING_URI_AGAINST_NULL_BASE);
+	
+		} else if (base.equals("")) {
+			warning(
+				IGN_NO_BASE_URI_SPECIFIED,
+				"Base URI specified as \"\"; local URI references will not be resolved.");
+			documentContext =
+				new XMLNullContext(this, WARN_RESOLVING_URI_AGAINST_EMPTY_BASE);
+		} else {
+			base = ParserSupport.truncateXMLBase(base);
+	
+			documentContext = new XMLContext(base);
+		}
 	}
 
 }

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: TokenPipe.java,v 1.8 2004-10-11 11:54:37 jeremy_carroll Exp $
+ * * $Id: TokenPipe.java,v 1.9 2004-10-19 14:46:29 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -37,6 +37,8 @@
 package com.hp.hpl.jena.rdf.arp;
 import java.util.*;
 import org.xml.sax.Locator;
+import org.xml.sax.SAXParseException;
+
 import java.io.*;
 
 /**
@@ -46,25 +48,24 @@ import java.io.*;
  */
 abstract class TokenPipe implements TokenManager {
 
-	final List pipe = createPipe();
-	final XMLHandler arp;
-    private Token last;
+	//final List pipe = createPipe();
+	private Token last;
 	/** Creates new TokenPipe */
-	TokenPipe(XMLHandler arp) {
-		this.arp = arp;
+	TokenPipe() {
 	}
 
-	abstract List createPipe();
-	abstract void putNextToken(Token t);
+	//abstract List createPipe();
+	abstract void putNextToken(Token t) throws SAXParseException;
 	abstract public Token  getNextToken();
 	void setLast(Token t) {
 		last = t;
 	}
 
     Locator getLocator() {
-        if ( pipe.size() > 0 ) {
-            return ((Token)pipe.get(getPosition()-1)).location;
-        } else if ( last != null )
+        //if ( pipe.size() > 0 ) {
+        //    return ((Token)pipe.get(getPosition()-1)).location;
+        //} else 
+        if ( last != null )
           return  last.location;
         else 
           return null;
@@ -74,5 +75,5 @@ abstract class TokenPipe implements TokenManager {
 	/**
 	 * @return Returns the position.
 	 */
-	abstract int getPosition();
+	//abstract int getPosition();
 }

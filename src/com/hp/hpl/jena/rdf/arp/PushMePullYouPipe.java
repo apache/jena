@@ -8,145 +8,201 @@ package com.hp.hpl.jena.rdf.arp;
 import java.io.InterruptedIOException;
 import java.util.*;
 
+import org.xml.sax.*;
+
+import EDU.oswego.cs.dl.util.concurrent.BoundedBuffer;
+
+import com.hp.hpl.jena.graph.query.Domain;
+import com.hp.hpl.jena.graph.query.BufferPipe.BoundedBufferPutException;
+import com.hp.hpl.jena.graph.query.BufferPipe.BoundedBufferTakeException;
+import com.hp.hpl.jena.shared.JenaException;
+
 /**
  * @author Jeremy J. Carroll
- *
+ *  
  */
 class PushMePullYouPipe extends TokenPipe {
 
-	static private final int PIPESIZE = 200;
-	private volatile int writePos = 0;
-	private volatile int readPos = 0;
-	private volatile boolean dying = false;
+	volatile private Throwable brokenPipe = null;
+
+	private boolean open = true;
+
+	private BoundedBuffer buffer = new BoundedBuffer(5);
+
+	private Object pending = null;
+
+	private static final String finished = "<finished>";
+
+	private static final RuntimeException naturalEnd = new RuntimeException();
+
+	final private Thread puller;
+
 	
-	
-	final private Thread pusher, puller;
-	
-	List createPipe() {
-		return Arrays.asList(new Token[PIPESIZE]);
-	}
-	/**
-	 * @param arp
-	 */
-	PushMePullYouPipe(XMLHandler arp, Thread pusher, Thread puller) {
-		super(arp);
-		this.pusher = pusher;
-		this.puller = puller;
+	PushMePullYouPipe(final ARPRunnable puller) {
+		this.puller =  
+				new Thread() {
+			public void run() {
+				//		pipe.pullerSleep();
+				try {
+					puller.run();
+					naturalDeath();
+				} catch (Throwable e) {
+					setException(e);
+				} finally {
+				}
+			}
+
+		};
+		this.puller.start();
 	}
 
-	void putNextToken(Token t) {
-   //    System.err.print(t.toString()+", ");
-		if (dying)
-			throw new FatalParsingErrorException();
-		pipe.add(writePos++,t);
-		if (writePos == PIPESIZE) {
-			readPos = 0;
-		    puller.interrupt();
-		    while ( readPos < PIPESIZE && !dying) {
-		    	try {
-		    		Thread.sleep(1000);
-		    		// TODO msg
-		    	}
-		    	catch (InterruptedException e){
-		            // TODO msg if pos < SIZE
-		    	}
-		    }
-			writePos = 0;
+	/**
+	 * get something from the pipe; take care of BoundedBuffer's checked
+	 * exceptions
+	 */
+	private Object fetch() {
+		try {
+			return buffer.take();
+		} catch (Exception e) {
+			throw new BoundedBufferTakeException(e);
 		}
 	}
-	
+
 	/**
-	 * The pipe needs to close things down.
-	 * <q>
-	 * Despair and deception<br/>
-	 * those ugly little twins<br/>
-	 * they came a knocking upon my door<br/>
-	 * and I let them in<br/>
-	 * Darling, you're the punishment for all my former sins,<br/>
-	 * I let love in<br/>
-	 * I let love in<br/>
-	 * </q>
-	 * Nick Cave, <em>I let love in</em>.
-	 *
-	 * Can be called after:
-	 * <ul>
-	 * <li>The last end element from SAX
-	 * <li>Fatal RDF parsing problem
-	 * <li>Fatal XML parsing problem
-	 * </ul>
-	 * <p>
-	 * After end of XML we want RDF to continue,
-	 * after fatal RDF problem, RDF won't try to continue,
-	 * so we set that up to do so.
-	 *  We also set a flag so that any more calls
-	 * to putNextToken will throw an exception, tearing
-	 * down the XML parse after an RDF error.
+	 * put something into the pipe; take care of BoundedBuffer's checked
+	 * exceptions
 	 */
-	void despairAndDeception() {
-		dying = true;
-		readPos = 0;
-		puller.interrupt();
-		pusher.interrupt();
+	private void putAny(Object d) throws SAXParseException {
+		try {
+			do {
+				if (d != finished)
+					isPipeBroken();
+			} while (!buffer.offer(d, 100));
+		} catch (InterruptedException e) {
+			throw new BoundedBufferPutException(e);
+		}
 	}
-	
-	public Token getNextToken() {
 
+	private void isPipeBroken() throws SAXParseException {
+		if (brokenPipe != null) {
+			try {
+				throw brokenPipe;
+			} catch (RuntimeException e) {
+				throw e;
+			} catch (Error e) {
+				throw e;
+			} catch (SAXParseException e) {
+				throw e;
+			} catch (Exception e) {
+				throw new WrappedException(e);
 
-			if (readPos >= writePos) {
-
-				pusher.interrupt();
-			    while ( (!dying) && readPos >= writePos) {
-			    	try {
-			    		Thread.sleep(1000);
-			    		// TODO msg
-			    	}
-			    	catch (InterruptedException e){
-			            // TODO msg if pos < SIZE
-			    	}
-			    }
-			    if (dying)
-					return new Token(RDFParserConstants.EOF, null);
+			} catch (Throwable t) {
+				throw new RuntimeException(t);
 			}
-		  
-			int p = readPos++;
-			Token rslt = (Token) pipe.get(p);
-			// next line probably not needed.
-			pipe.set(p,null);
-			return rslt;
-		
+			/*
+			pipe().naturalDeath();
+		} catch (WrappedException wrapped) {
+			pipe().setException(wrapped.inner);
+		} catch (ParseException parse) {
+			pipe().setException(parse.rootCause());
+		} catch (RuntimeException e) {
+			pipe().setException(e);
+		} catch (Error e) {
+			pipe().setException(e);
+		*/
+		}
 	}
 
-
-	int getPosition() {
-		return readPos;
+	public void putNextToken(Token d) throws SAXParseException {
+		putAny(d);
 	}
+
+	public void close() throws SAXParseException {
+		putAny(finished);
+		try {
+			puller.join();
+		} catch (InterruptedException e) {
+
+		}
+		if (brokenPipe != naturalEnd)
+			isPipeBroken();
+		// TODO check that pipe is exhausted.
+	}
+
+	private boolean hasNext() {
+		if (open) {
+			if (pending == null) {
+				pending = fetch();
+				if (pending == finished)
+					open = false;
+				return open;
+			} else
+				return true;
+		} else
+			return false;
+	}
+
+	public Token getNextToken() {
+		if (hasNext() == false)
+			return new Token(RDFParserConstants.EOF, null);
+		try {
+			return (Token) pending;
+		} finally {
+			pending = null;
+		}
+	}
+
+	void naturalDeath() {
+		setException(naturalEnd);
+	}
+
+	void setException(Throwable t) {
+		brokenPipe = t;
+	}
+
+	/**
+	 * Exception to throw if a <code>take</code> throws an exception.
+	 */
+	public static class BoundedBufferTakeException extends JenaException {
+		BoundedBufferTakeException(Exception e) {
+			super(e);
+		}
+	}
+
+	/**
+	 * Exception to throw if a <code>put</code> throws an exception.
+	 */
+	public static class BoundedBufferPutException extends JenaException {
+		BoundedBufferPutException(Exception e) {
+			super(e);
+		}
+	}
+
 }
 
-
 /*
- *  (c) Copyright 2004 Hewlett-Packard Development Company, LP
- *  All rights reserved.
- *
+ * (c) Copyright 2004 Hewlett-Packard Development Company, LP All rights
+ * reserved.
+ * 
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer. 2. Redistributions in
+ * binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or other
+ * materials provided with the distribution. 3. The name of the author may not
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+

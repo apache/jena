@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.3 2004-10-11 11:54:35 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.4 2004-10-19 14:46:29 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -74,9 +74,10 @@ implements ARPConfig {
      * {@link #getHandlers} or {@link #setHandlers} to provide
      * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
 	 * @return A new SAX2RDF
+	 * @throws MalformedURIException
 	 */
-	static public SAX2RDF newInstance(String base, Model m) { 
-		return new SAX2RDF(base,m,""); 
+	static public SAX2RDF newInstance(String base) throws MalformedURIException { 
+		return new SAX2RDF(base,""); 
 	}
 	/**
 	 * Factory method to create a new SAX2RDF.
@@ -87,16 +88,15 @@ implements ARPConfig {
      * Optionally, namespace prefixes can be passed from the
      * outer context using {@link #startPrefixMapping}.
 	 * @param base The retrieval URL, or the base URI to be 
-     * used while parsing.
-     * @param m A Jena Model in which to put the triples,
-     * this can be null. If it is null, then use
+     * used while parsing. Use
      * {@link #getHandlers} or {@link #setHandlers} to provide
      * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
 	 * @param lang The current value of xml:lang when parsing starts, usually "".
 	 * @return A new SAX2RDF
+	 * @throws MalformedURIException If base is bad.
 	 */
-	static public SAX2RDF newInstance(String base, Model m, String lang) { 
-		return new SAX2RDF(base,m,lang); 
+	static public SAX2RDF newInstance(String base, String lang) throws MalformedURIException { 
+		return new SAX2RDF(base,lang); 
 	}    
 	/**
      * Begin the scope of a prefix-URI Namespace mapping.
@@ -124,8 +124,10 @@ implements ARPConfig {
 	 { super.startPrefixMapping(prefix,uri);
     }
 
-    private SAX2RDF(String base, Model m, String lang) {
-    	super(base,m,lang);
+    SAX2RDF(String base,  String lang) throws MalformedURIException {
+    	super(base,lang);
+    	// TODO something with lang
+    	initParse(base);
     }
 	/** This is used when configuring a parser that
 	 * is not loading into a Jena Model, but is processing

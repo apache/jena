@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
  * 
  */
 public class ARPSaxErrorHandler extends Object implements org.xml.sax.ErrorHandler {
-    RDFErrorHandler errorHandler;
+    protected RDFErrorHandler errorHandler;
     
     public ARPSaxErrorHandler(RDFErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
@@ -60,6 +60,14 @@ public class ARPSaxErrorHandler extends Object implements org.xml.sax.ErrorHandl
             throw pe;
         }
     }
+
+	/**
+	 * @param errorHandler The errorHandler to set.
+	 */
+	void setErrorHandler(RDFErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
+	}
+
 }
 /*
  *  (c) Copyright 2001, 2002 Hewlett-Packard Development Company, LP

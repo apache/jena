@@ -70,7 +70,7 @@ class SingleThreadedParser extends XMLHandler {
 			String version,
 			String encoding,
 			String standalone,
-			Augmentations augs) {
+			Augmentations augs)  {
 			a.setEncoding(encoding == null ? "UTF" : encoding);
 			super.xmlDecl(version, encoding, standalone, augs);
 		}
@@ -93,10 +93,18 @@ class SingleThreadedParser extends XMLHandler {
 		try {
 			return pullParser.parse(false);
 		} catch (UTFDataFormatException e) {
-			generalError(ERR_UTF_ENCODING, e);
+			try {
+				generalError(ERR_UTF_ENCODING, e);
+			} catch (SAXParseException e1) {
+				// e1.printStackTrace();
+			}
 			return false;
 		} catch (IOException e) {
-			generalError(ERR_GENERIC_IO, e);
+			try {
+				generalError(ERR_GENERIC_IO, e);
+			} catch (SAXParseException e1) {
+				// e1.printStackTrace();
+			}
 			return false;
 		} catch (FatalParsingErrorException e) {
 			return false;
@@ -111,26 +119,7 @@ class SingleThreadedParser extends XMLHandler {
 		throws IOException, SAXException {
 		// Make sure we have a sane state for
 		// Namespace processing.
-		nodeIdUserData = new HashMap();
-		//String base = input.getSystemId();
-		if (base == null) {
-			warning(
-				IGN_NO_BASE_URI_SPECIFIED,
-				"Base URI not specified for input file; local URI references will be in error.");
-			documentContext =
-				new XMLNullContext(this, ERR_RESOLVING_URI_AGAINST_NULL_BASE);
-
-		} else if (base.equals("")) {
-			warning(
-				IGN_NO_BASE_URI_SPECIFIED,
-				"Base URI specified as \"\"; local URI references will not be resolved.");
-			documentContext =
-				new XMLNullContext(this, WARN_RESOLVING_URI_AGAINST_EMPTY_BASE);
-		} else {
-			base = ParserSupport.truncateXMLBase(base);
-
-			documentContext = new XMLContext(base);
-		}
+		initParse(base);
 		// Start the RDFParser
 		pipe = new PullingTokenPipe(this);
 		pullParser.setInputSource(convert(input));
@@ -191,7 +180,7 @@ class SingleThreadedParser extends XMLHandler {
 		return null;
 	}
 
-	void setEncoding(String e) {
+	void setEncoding(String e){
 		e = e.toUpperCase();
 		//  System.err.println("xmlEncoding = " + e);
 		if (e != null && xmlEncoding == null) {
@@ -204,14 +193,18 @@ class SingleThreadedParser extends XMLHandler {
 			}
 			xmlEncoding = e;
 			if (readerXMLEncoding != null && !readerXMLEncoding.equals(e)) {
-				this.putWarning(
-					WARN_ENCODING_MISMATCH,
-					new Location(locator),
-					"Encoding on InputStreamReader or FileReader does not match that of XML document. Use FileInputStream. ["
-						+ readerXMLEncoding
-						+ " != "
-						+ e
-						+ "]");
+				try {
+					this.putWarning(
+						WARN_ENCODING_MISMATCH,
+						new Location(locator),
+						"Encoding on InputStreamReader or FileReader does not match that of XML document. Use FileInputStream. ["
+							+ readerXMLEncoding
+							+ " != "
+							+ e
+							+ "]");
+				} catch (SAXParseException e1) {
+					//e1.printStackTrace();
+				}
 				encodingProblems = true;
 				/*
 				 * if ((readerXMLEncoding.indexOf("IBM") != -1) !=

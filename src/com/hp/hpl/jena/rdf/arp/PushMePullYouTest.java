@@ -3,60 +3,68 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp.test;
+package com.hp.hpl.jena.rdf.arp;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.io.*;
-
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.arp.*;
-import org.apache.xerces.parsers.SAXParser;
-import org.xml.sax.*;
+import java.util.*;
 
 /**
  * @author Jeremy J. Carroll
  *
  */
-public class SAX2RDFTest extends TestCase {
-	static public Test suite() {
-		TestSuite s = new TestSuite("SAX2RDF");
+public class PushMePullYouTest extends TestCase {
+	PushMePullYouPipe pipe;
+	
+	public void testBuf4()  throws Exception {
+		testBuffer(4);
+	}
+	public void testBuf5()  throws Exception {
+		testBuffer(5);
+	}
+	public void testBuf8()  throws Exception {
+		testBuffer(8);
+	}
+	public void testBuf10()  throws Exception {
+		testBuffer(10);
+	}
+	public void testBuf11()  throws Exception {
+		testBuffer(11);
+	}
+	public void testBuf12()  throws Exception {
+		testBuffer(12);
+	}
+	private void testBuffer(final int ii) throws Exception {
+		final Vector v = new Vector();
+		ARPRunnable puller = new ARPRunnable() {
+			public void run() {
+					for (int j=0; j<ii; j++) {
+						Token t = pipe.getNextToken();
+						v.add(t);
+				//		System.err.println(j + " " + (t==null?-1:t.kind));
+					}
+			}
+		};
+		pipe = new PushMePullYouPipe(puller);
+		
+		for (int i=0;i<ii;i++){
+			pipe.putNextToken(new Token(i,null));
+		}
+		pipe.close();
+		for (int i=0;i<ii;i++)
+			assertEquals("pos "+i, i, ((Token)v.get(i)).kind);
+	}
+		
+	public void testInterrupt() {
+		Thread t = Thread.currentThread();
+		t.interrupt();
+		assertTrue(t.isInterrupted());
+		try {
+			Thread.sleep(50);
+			fail("Wasn't interrupted");
+		}
+		catch (InterruptedException e){
 			
-		s.addTest(new SAX2RDFTest("wg/",ARPTests.wgTestDir.toString(),"Manifest.rdf"));
-		
-		return s;
-	}
-	
-	//final private String dir;
-	final private String base;
-	final private String file;
-	SAX2RDFTest(String dir, String base0, String file){
-		super(file);
-		//this.dir = dir;
-		this.base = base0+file;
-		this.file = "testing/" +dir+file;
-	}
-	
-	public void runTest() throws Exception {
-		
-		Model m = ModelFactory.createDefaultModel();
-		Model m2 = ModelFactory.createDefaultModel();
-		InputStream in = new FileInputStream( file);
-		m.read(in,base);
-		in.close();
-		in = new FileInputStream( file);
-		
-		XMLReader saxParser = new SAXParser();
-		SAX2RDF handler = SAX2Model.newInstance(base,m2);
-		SAX2RDF.initialize(saxParser,handler);
-		InputSource ins = new InputSource(in);
-		ins.setSystemId(base);
-		saxParser.parse(ins);
-		in.close();
-		
-		assertTrue("Not isomorphic",m.isIsomorphicWith(m2));
-		
+		}
 	}
 
 }

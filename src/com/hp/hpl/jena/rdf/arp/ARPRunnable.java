@@ -3,62 +3,16 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp.test;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-import java.io.*;
-
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.arp.*;
-import org.apache.xerces.parsers.SAXParser;
-import org.xml.sax.*;
+package com.hp.hpl.jena.rdf.arp;
 
 /**
+ * The java.lang.Runnable interface,
+ * except that arbitrary exceptions can be thrown.
  * @author Jeremy J. Carroll
  *
  */
-public class SAX2RDFTest extends TestCase {
-	static public Test suite() {
-		TestSuite s = new TestSuite("SAX2RDF");
-			
-		s.addTest(new SAX2RDFTest("wg/",ARPTests.wgTestDir.toString(),"Manifest.rdf"));
-		
-		return s;
-	}
-	
-	//final private String dir;
-	final private String base;
-	final private String file;
-	SAX2RDFTest(String dir, String base0, String file){
-		super(file);
-		//this.dir = dir;
-		this.base = base0+file;
-		this.file = "testing/" +dir+file;
-	}
-	
-	public void runTest() throws Exception {
-		
-		Model m = ModelFactory.createDefaultModel();
-		Model m2 = ModelFactory.createDefaultModel();
-		InputStream in = new FileInputStream( file);
-		m.read(in,base);
-		in.close();
-		in = new FileInputStream( file);
-		
-		XMLReader saxParser = new SAXParser();
-		SAX2RDF handler = SAX2Model.newInstance(base,m2);
-		SAX2RDF.initialize(saxParser,handler);
-		InputSource ins = new InputSource(in);
-		ins.setSystemId(base);
-		saxParser.parse(ins);
-		in.close();
-		
-		assertTrue("Not isomorphic",m.isIsomorphicWith(m2));
-		
-	}
-
+public interface ARPRunnable {
+   public void run() throws Exception;
 }
 
 

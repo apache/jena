@@ -16,9 +16,12 @@ class PullingTokenPipe extends TokenPipe {
 
 	private int position = 0;
 	private boolean atEOF = false;
+	final XMLHandler arp;
+	private final List pipe;
 
 	PullingTokenPipe(XMLHandler arp) {
-		super(arp);
+		this.arp = arp;
+		pipe = createPipe();
 	}
 
 	void putNextToken(Token t) {
@@ -32,6 +35,7 @@ class PullingTokenPipe extends TokenPipe {
 				int p = position++;
 				Token rslt = (Token) pipe.get(p);
 				pipe.set(p,null);
+				setLast(rslt);
 				return rslt;
 			}
 			if (atEOF)
@@ -39,8 +43,8 @@ class PullingTokenPipe extends TokenPipe {
 		  if (Thread.interrupted())
 		    throw new WrappedException(new InterruptedIOException("ARP interrupted"));
 			position=0;
-            if ( pipe.size() > 0 )
-                setLast((Token)pipe.get(pipe.size()-1));
+           // if ( pipe.size() > 0 )
+            //    setLast((Token)pipe.get(pipe.size()-1));
 			pipe.clear();
 			while (pipe.size() == 0)
 				if (!((SingleThreadedParser)arp).parseSome()) {
@@ -49,10 +53,10 @@ class PullingTokenPipe extends TokenPipe {
 				}
 		}
 	}
-	List createPipe() {
+	private List createPipe() {
 		return new ArrayList();
 	}
-	int getPosition() {
+	private int getPosition() {
 		return position;
 	}
 }
