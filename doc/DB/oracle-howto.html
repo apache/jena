@@ -1,0 +1,247 @@
+<html>
+<head>
+   <title>Jena 2.0 enhanced node howto</title>
+</head>
+<body>
+
+This version: 0.1<br/> Date: 14 July 2003
+
+<h1>HowTo Use Oracle Database System with Jena2</h1>
+
+<h2>What is Oracle</h2>
+
+<p>Oracle is one of the leading, commercially-available SQL relational database 
+management systems. It is available in a variety of configurations from small 
+personal versions to fault-tolerant, enterprise-class versions. It runs on a 
+variety of hardware/operating system platforms.&nbsp; See
+<a href="http://www.postfresql.org">http://www.oracle.com</a> for more 
+information. Jena2 has been tested with the Oracle 9i binary release, version 9.2.0.1.0. </p>
+
+<h2>Download and Installation of Oracle</h2>
+
+<p>As Oracle is commercially-available software, we cannot provide generic 
+download instructions. We assume that Jena users wishing to use Oracle have 
+access to an existing Oracle installation or access to the software. Below we 
+list some assumptions and post-installation instructions for using Oracle with 
+Jena. Currently, Jena2 has only been tested 
+with Oracle on Windows XP.</p>
+
+<font SIZE="2">
+<h3 ALIGN="LEFT">Windows Platforms</h3>
+</font>
+<p ALIGN="LEFT">Jena2 has been tested with Oracle on WindowsXP with the 
+following versions.</p>
+
+<font SIZE="2">
+
+<table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
+  <tr>
+    <td>&nbsp;&nbsp;&nbsp; <b>Server:</b>&nbsp; Oracle 9.2.0.1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td>&nbsp;&nbsp;&nbsp; <b>JDBC Thick Driver: </b>&nbsp;oci8</td>
+  </tr>
+</table>
+
+</font>
+<p ALIGN="LEFT">A user account and password are required to access the Oracle server. 
+Typically, Oracle is installed with a demo database and user account that may be 
+used for testing and experimentation. In the examples below, we assume the use 
+of this default account (user name is <i>scott</i> and password is <i>tiger</i>). 
+If you have your own Oracle user name and password, please use those values for 
+DB_USER, DB_PASSWD.&nbsp; The DB_URL value should be set as indicated below.</p>
+
+<table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1" height="83">
+  <tr>
+
+<font SIZE="2">
+
+    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:oci8:@&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td height="15">&nbsp;&nbsp;&nbsp; Uses the thick JDBC client and connects 
+    to the default local database.</td>
+
+</font>
+  </tr>
+  <tr>
+
+<font SIZE="2">
+
+    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:oci8:@&lt;tnsname&gt;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td height="15">&nbsp;&nbsp;&nbsp; Uses the thick JDBC client and connects 
+    to the specified database.</td>
+
+</font>
+  </tr>
+  <tr>
+
+<font SIZE="2">
+
+    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:thin:@&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td height="15">&nbsp;&nbsp;&nbsp; Uses the thin JDBC client and connects to 
+    the default local database (untested with Jena2).</td>
+
+</font>
+  </tr>
+  <tr>
+
+<font SIZE="2">
+
+    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:thin:@&lt;host&gt;:port:&lt;sid&gt;&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </td>
+    <td height="15">&nbsp;&nbsp;&nbsp; Uses the thin&nbsp; JDBC client and 
+    connects to a database with the specified sid on the specified host on the 
+    specified port
+
+<font SIZE="2">
+
+    (untested with Jena2)</font>.</td>
+
+</font>
+  </tr>
+
+<font SIZE="2">
+
+</font>
+</table>
+
+<p ALIGN="LEFT">In order to run Jena2 programs with Oracle, make sure that your 
+CLASSPATH includes the jar files for classes12.jar and nls_charset12.jar.</p>
+
+<h2>Connecting Your Jena Program to Oracle</h2>
+
+<p>Jena supports both memory models and database models. In general, a Jena program 
+may use both types of models identically. However, there are some differences 
+in how the models are created. Creating a memory model can be done with a single 
+Jena call. Creating a database model, or opening a previously created one, 
+requires several steps as as follows.</p>
+
+<blockquote>
+  <ol>
+    <li><em>Important:</em><br> Edit the source file <font face="Courier New" size="2">com.hp.hpl.jena.db.impl.Driver_Oracle.java</font>.<br>  Uncomment the Oracle import commands at the top of the file:<br>
+ &nbsp;&nbsp<font face="Courier New" size="2">import oracle.jdbc.OracleResultSet;</font><br>
+ &nbsp;&nbsp<font face="Courier New" size="2">import oracle.sql.BLOB;</font><br>
+Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
+    <li>Load the JDBC driver. This enables the Jena program to communicate with 
+    the database instance.</li>
+    <li>Create a database connection. This creates a Java object for a database 
+    connection.</li>
+    <li>Create or open a model on the connection. This connects to the database 
+    and creates an empty model or opens a previously created model.</li>
+  </ol>
+</blockquote>
+
+<p>Steps 2-4 are illustrated in the following Java code.</p>
+
+<blockquote>
+  <font SIZE="2" COLOR="#3f7f5f"></font>
+  <dl>
+    <dd><font face="Courier New" size="2">// Load the Driver</font></dd>
+    <font SIZE="2">
+    <dd><font face="Courier New">String className = &quot;oracle.jdbc.driver.DriverOracle&quot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // path of driver class</font></dd>
+    <dd><font face="Courier New">Class.forName (className);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // load driver</font></dd>
+  </dl>
+  </font>
+  <dl>
+    <font SIZE="2">
+    <dd><font face="Courier New">String DB_URL = &quot;jdbc:oracle:oci8:@&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // URL of database server</font></dd>
+    <dd><font face="Courier New">String DB_USER = &quot;scott&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // database user id</font></dd>
+    <dd><font face="Courier New">String DB_PASSWD = &quot;tiger&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // database password</font></dd>
+    <dd><font face="Courier New">String DB = &quot;Oracle&quot;;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    // database type</font></dd>
+    <dt>&nbsp;</dt>
+    <dd><font face="Courier New">// Create database connection</font></dd>
+    <dd><font face="Courier New">IDBConnection result&nbsp; =</font></font><font SIZE="2" face="Courier New"><b> 
+    new</b> DBConnection ( URL, DB_USER, DB_PASSWD, DB ); </font></dd>
+    <dd><font SIZE="2"><font face="Courier New">// Create a model in the 
+    database</font></dd>
+    <dd></dd>
+    <dd></dd>
+    <dd></dd>
+    <dd></dd>
+    <dd></dd>
+    <dd><font face="Courier New">ModelMaker maker = 
+    ModelFactory.createModelRDBMaker(conn);</font></dd>
+    <dd><font face="Courier New">ModelRDB m = maker.createModel ();
+    </font></dd>
+    <dd>&nbsp;</dd>
+    <dd><font face="Courier New">&lt; your Jena code to work with the model goes 
+    here &gt;</font></dd>
+    <dd>&nbsp;</dd>
+    <dd><font face="Courier New">// Remove the model. NOTE: this deletes the 
+    model from the database.</font></dd>
+    <dd>/<font face="Courier New">/ Subsequent attempts to open this model will 
+    fail.</font></dd>
+    <dd><font face="Courier New">m.remove();&nbsp;&nbsp;&nbsp;// NOTE: remove 
+    deletes the model from the database</font></dd>
+    </font><font SIZE="2">
+    <dd>&nbsp;</dd>
+    <dd><font face="Courier New">// Close the database connection&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; conn.close();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    </font></dd>
+    </font><font SIZE="2">
+    <dd>&nbsp;</dd>
+    <dd><font face="Courier New">// Alternative to creating an unnamed model ...</font></dd>
+    <dd><font face="Courier New">// Create a named model</font></dd>
+    <dd><font face="Courier New">ModelRDB m = maker.createModel(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;);</font></dd>
+    <dt>&nbsp;</dt>
+    <dd><font face="Courier New" size="2">...&nbsp; later, or in another Jena 
+    application ...</font></dd>
+    <dt>&nbsp;</dt>
+    <font SIZE="2">
+    <dd><font face="Courier New">// Open a named model.</font></dd>
+    <dd><font face="Courier New">ModelRDB m = maker.open(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;</font><font SIZE="2"><font face="Courier New">);</font></dd>
+  </dl>
+</blockquote>
+<p></p>
+</font>
+
+<p>&nbsp;</p>
+
+<h2>Usage Notes</h2>
+
+<p>Jena stores all models in a single database using whatever database (name) specified on the database connection. See the <a href="index.html">Jena Database Release Notes</a> for 
+details on the physical layout.</p>
+
+<h4>Oracle Utility Commands</h4>
+
+<p>Some Jena users may wish to occasionally access the Oracle database directly 
+to determine if changes have taken effect. Some useful Oracle commands are listed 
+here (replace the names in italics by names for your database instance). To use them, start the 
+Oracle command line interface:<font face="Courier New"> SQLPlus 
+username/password</font></p>
+
+<h4><font face="Times New Roman">List  Tables: </font>
+<span style="font-weight: 400"><font face="Courier New">select * from TAB;</font></span></h4>
+
+<h4><font face="Times New Roman">List Sequences: </font>
+<span style="font-weight: 400"><font face="Courier New">select * from SEQ;</font></span></h4>
+
+
+<h4><font face="Times New Roman">Count All Rows in a Table: </font>
+<span style="font-weight: 400"><font face="Courier New">select count(*) from <i>
+tableName</i>;</font></span></h4>
+
+<h4><font face="Times New Roman">List All Rows in a Table: </font>
+<span style="font-weight: 400"><font face="Courier New">select * from <i>
+tableName</i>;</font></span></h4>
+
+<h4><font face="Times New Roman">Execute a SQLPlus command file: </font>
+<span style="font-weight: 400"><font face="Courier New">@&lt;<i>filename</i>&gt;&nbsp;&nbsp;&nbsp; 
+where <i>&lt;filename&gt;</i> is the path of a file containing SQLPlus commands</font></span></h4>
+
+<h4><font face="Times New Roman">Exit SQLPlus: </font>
+<span style="font-weight: 400"><font face="Courier New">quit;</font></span></h4>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+<p>&nbsp;</p>
+
+</body>
+</html>
