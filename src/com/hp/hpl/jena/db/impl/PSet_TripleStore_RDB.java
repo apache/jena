@@ -16,7 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.CRC32;
@@ -53,7 +54,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.7 $ on $Date: 2003-05-03 06:15:18 $
+* @version $Revision: 1.8 $ on $Date: 2003-05-05 11:24:03 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -258,7 +259,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	/**
 	 * Return the database ID for the literal and allocate one of necessary
 	 */
-	public IDBID allocateLiteralID(Node_Literal l) throws RDFRDBException {
+	public IDBID allocateLiteralID() throws RDFRDBException {
 		return allocateID("allocateLiteralID");
 	}
 	
@@ -285,6 +286,10 @@ public  class PSet_TripleStore_RDB implements IPSet {
                 isInt = false;
             }
             String opname = isInt ? "insertLiteralInt" : "insertLiteral";
+            
+			if (!SKIP_ALLOCATE_ID) {
+				opname += "withId";
+			}
 			
 			String lit = l.toString();
 			int len = lit.length();
@@ -303,14 +308,13 @@ public  class PSet_TripleStore_RDB implements IPSet {
 				hasLang = true;
 			}
             
-            //DEBUG  System.out.println("opname was " + opname);
+            //DEBUG System.out.println("opname was " + opname);
             PreparedStatement ps = m_sql.getPreparedSQLStatement(opname);
             int argi = 1;
             if (!SKIP_ALLOCATE_ID) {
-                id = getLiteralID(l);
+                id = allocateLiteralID();
                 ps.setObject(argi++, id.getID());
             }
-            
             
             // always populate LiteralIdx (departure from Jena1)
 			// insert a subset for indexing and put whole into a blob
@@ -328,7 +332,36 @@ public  class PSet_TripleStore_RDB implements IPSet {
                 litData[2] = (byte)((lenb >> 16) & 0xff);
                 litData[3] = (byte)((lenb >> 24) & 0xff);
                 System.arraycopy(temp, 0, litData, 4, lenb);
-                ps.setBinaryStream(argi++, new ByteArrayInputStream(litData), litData.length);
+                
+                // Oracle has its own way to insert Blobs
+				if (m_driver.getDatabaseType().equalsIgnoreCase("Oracle")) {
+            		Connection dbcon = m_sql.getConnection();
+            		boolean saved = dbcon.getAutoCommit();
+            		dbcon.setAutoCommit(false);
+            		
+            		// insert a placeholder with an empty blob
+            		ps.executeUpdate();
+					m_sql.returnPreparedSQLStatement(ps, opname);
+            		
+            		// lock the new row for update
+            		PreparedStatement ops = m_sql.getPreparedSQLStatement("lockLiteralwithIdBlob");
+            		ops.setObject(1,id.getID());
+					ResultSet rs = ops.executeQuery();
+					rs.next();
+					oracle.sql.BLOB dbBlob = (oracle.sql.BLOB)rs.getBlob(1);
+					m_sql.returnPreparedSQLStatement(ops,"lockLiteralwithIdBlob");
+					
+					ops = dbcon.prepareStatement("updateBlobForLiteralID");
+					dbBlob.putBytes(1,litData);
+					ops.setObject(2,id.getID());
+					ops.setBlob(1,dbBlob);
+					dbcon.commit();
+					dbcon.setAutoCommit(saved);
+					m_sql.returnPreparedSQLStatement(ops, "updateBlobForLiteralID");
+					return(id);
+				} else {
+					ps.setBinaryStream(argi++, new ByteArrayInputStream(litData), litData.length);
+				}
             } 
             
             if (isInt) {
@@ -354,7 +387,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
             return id;
         } catch (Exception e1) {
             // /* DEBUG */ System.out.println("Problem on literal (l=" + l.toString().length() + "): " + l);
-            /* DEBUG */ System.out.println("Problem on literal (l=" + l.toString().length() + ") ");
+            /* DEBUG */ System.out.println("Problem on literal (l=" + l.toString().length() + ") " + e1 );
             // System.out.println("ID is: " + id);
             throw new RDFRDBException("Failed to register literal ", e1);
         }
@@ -497,7 +530,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
 					return null;
 				}
 				lit = extractLiteralFromRow(rs);
-				rs.close();
 				m_sql.returnPreparedSQLStatement(ps, "getLiteral");
 				literalCache.put(id, lit);
 				return lit;
@@ -520,6 +552,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	     while ( rs.next() ) {
 		  result = rs.getInt("COUNT(*)");
 	     } 
+		m_sql.returnPreparedSQLStatement(ps, "getRowCount");
 	} catch (SQLException e) {
 	 		Log.debug("tried to count rows in " + tName);
 		   	Log.debug("Caught exception: " + e);
@@ -557,8 +590,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
             IDBID result = null;
             if (rs.next()) {
                 result = wrapDBID(rs.getObject(1));
-            }
-            rs.close();
+            };
             m_sql.returnPreparedSQLStatement(ps, opName);
             return result;
         } catch (SQLException e1) {
@@ -679,7 +711,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 *
 	 **/
   public void deleteTriple(Triple t, IDBID graphID) {
-  	deleteTriple(t, graphID, false, new HashSet());
+  	deleteTriple(t, graphID, false, new Hashtable());
   }
   	
 	/**
@@ -698,7 +730,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
   public void deleteTriple(Triple t, 
   					IDBID graphID,
   					boolean isBatch, 
-  					HashSet batchedPreparedStatements) {
+  					Hashtable batchedPreparedStatements) {
 	String objURI;
 	Object obj_val;
 	   
@@ -723,12 +755,13 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	
 		if (isBatch) {
 			  ps.addBatch();
-			  batchedPreparedStatements.add(ps);
+			  batchedPreparedStatements.put("deleteStatementObjectURI",ps);
 		  } else {
 			ps.executeUpdate();
+			m_sql.returnPreparedSQLStatement(ps, "deleteStatementObjectURI");
 		  }
 	 } catch(SQLException e1) {
-		Log.debug("SQLException caught " + e1);
+		Log.debug("(in delete) SQLException caught " + e1);
 	 }
 	  
 	} else if (obj_node.isLiteral()) {
@@ -753,12 +786,13 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	
 		if (isBatch) {
 			  ps.addBatch();
-			  batchedPreparedStatements.add(ps);
+			  batchedPreparedStatements.put("deleteStatementLiteralVal",ps);
 		  } else {
 			ps.executeUpdate();
+			m_sql.returnPreparedSQLStatement(ps, "deleteStatementLiteralVal");
 		  }
 	   } catch(SQLException e1) {
-		Log.debug("SQLException caught " + e1);
+		Log.debug("(in delete) SQLException caught " + e1);
 	   }
 	  } else {
 	  	 // belongs in literal table
@@ -779,12 +813,13 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	
 		if (isBatch) {
 			  ps.addBatch();
-			  batchedPreparedStatements.add(ps);
+			  batchedPreparedStatements.put("deleteStatementLiteralRef",ps);
 		  } else {
 			ps.executeUpdate();
+			m_sql.returnPreparedSQLStatement(ps, "deleteStatementLiteralRef");
 		  }
 	   } catch(SQLException e1) {
-	  	Log.debug("SQLException caught " + e1);
+	  	Log.debug("(in delete) SQLException caught " + e1);
 	   }
 	  }
 
@@ -803,7 +838,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		 *
 		 **/
 	  public void storeTriple(Triple t, IDBID graphID) {
-	  	storeTriple(t,graphID,false, new HashSet());
+	  	storeTriple(t,graphID,false, new Hashtable());
 	  }
 
 
@@ -821,7 +856,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	  public void storeTriple(Triple t, 
 	  						IDBID graphID, 
 	  						boolean isBatch, 
-	  						HashSet batchedPreparedStatements) {
+	  						Hashtable batchedPreparedStatements) {
 		String objURI;
 		Object obj_val;
 		
@@ -855,12 +890,15 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		
 			if (isBatch) {
 				ps.addBatch();
-				batchedPreparedStatements.add(ps);
+				batchedPreparedStatements.put("insertStatementObjectURI", ps);
 			} else {
 		      ps.executeUpdate();
+			  m_sql.returnPreparedSQLStatement(ps, "insertStatementObjectURI");
 			}
 		 } catch(SQLException e1) {
-			Log.debug("SQLException caught " + e1);
+			if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
+				Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
+			}
 		 }
 		  
 		} else if (obj_node.isLiteral()) {
@@ -885,12 +923,15 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		
 			if (isBatch) {
 				ps.addBatch();
-				batchedPreparedStatements.add(ps);
+				batchedPreparedStatements.put("insertStatementLiteralVal",ps);
 			} else {
 			  ps.executeUpdate();
+			  m_sql.returnPreparedSQLStatement(ps, "insertStatementLiteralVal");
 			}
 		   } catch(SQLException e1) {
-			Log.debug("SQLException caught " + e1);
+			if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
+				  Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
+				}
 		   }
 		  } else {
 		  	 // belongs in literal table
@@ -911,12 +952,15 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		
 			if (isBatch) {
 				ps.addBatch();
-				batchedPreparedStatements.add(ps);
+				batchedPreparedStatements.put("insertStatementLiteralRef",ps);
 			} else {
 			  ps.executeUpdate();
+			  m_sql.returnPreparedSQLStatement(ps, "insertStatementLiteralRef");
 			}
 		   } catch(SQLException e1) {
-		  	Log.debug("SQLException caught " + e1);
+			if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
+				  Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
+			}
 		   }
 		  }
 	
@@ -944,7 +988,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			// MySQL also supports a multiple-row insert.
 			// For now, we support only jdbc 2.0 batched updates
 			/** Set of PreparedStatements that need executeBatch() **/
-			HashSet batchedPreparedStatements = new HashSet();
+			Hashtable batchedPreparedStatements = new Hashtable();
 			Triple t;
 			String cmd;
 			try {
@@ -957,14 +1001,16 @@ public  class PSet_TripleStore_RDB implements IPSet {
 					storeTriple(t, my_GID, true, batchedPreparedStatements);	
 				}
 				
-				it = batchedPreparedStatements.iterator();
-				
-				while (it.hasNext()) {
-					PreparedStatement p = (PreparedStatement)it.next();
+				Enumeration enum = batchedPreparedStatements.keys() ; 
+				while (enum.hasMoreElements()) {
+					String op = (String) enum.nextElement();
+					PreparedStatement p = (PreparedStatement) batchedPreparedStatements.get(op);
 					p.executeBatch();
+					m_sql.returnPreparedSQLStatement(p,op);
 				}
+
 				m_sql.getConnection().setAutoCommit(true);
-				batchedPreparedStatements = new HashSet();
+				batchedPreparedStatements = new Hashtable();
 				ArrayList c = new ArrayList(triples);
 				triples.removeAll(c);						
 		} catch(BatchUpdateException b) {
@@ -1006,7 +1052,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			// MySQL also supports a multiple-row insert.
 			// For now, we support only jdbc 2.0 batched updates
 			/** Set of PreparedStatements that need executeBatch() **/
-			HashSet batchedPreparedStatements = new HashSet();
+			Hashtable batchedPreparedStatements = new Hashtable();
 			Triple t;
 			String cmd;
 			try {
@@ -1019,14 +1065,16 @@ public  class PSet_TripleStore_RDB implements IPSet {
 					deleteTriple(t, my_GID, true, batchedPreparedStatements);	
 				}
 				
-				it = batchedPreparedStatements.iterator();
-				
-				while (it.hasNext()) {
-					PreparedStatement p = (PreparedStatement)it.next();
+				Enumeration enum = batchedPreparedStatements.keys() ; 
+				while (enum.hasMoreElements()) {
+					String op = (String) enum.nextElement();
+					PreparedStatement p = (PreparedStatement) batchedPreparedStatements.get(op);
 					p.executeBatch();
+					m_sql.returnPreparedSQLStatement(p,op);
 				}
+				
 				m_sql.getConnection().setAutoCommit(true);
-				batchedPreparedStatements = new HashSet();
+				batchedPreparedStatements = new Hashtable();
 				ArrayList c = new ArrayList(triples);
 				triples.removeAll(c);						
 		} catch(BatchUpdateException b) {
@@ -1185,22 +1233,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		 * @see com.hp.hpl.jena.graphRDB.IPSet#tableExists(java.lang.String)
 		 */
 		public boolean tableExists(String tName) {
-			boolean ok = false;
-		try {
-			DatabaseMetaData dbmd = m_driver.getConnection().getConnection().getMetaData();		
-			String[] tableTypes = { "TABLE" };
-			ResultSet alltables = dbmd.getTables(null, null, "JENA%", tableTypes);
-			List tablesPresent = new ArrayList(10);
-			while (alltables.next()) {
-				tablesPresent.add(alltables.getString("TABLE_NAME").toUpperCase());
-			}
-			alltables.close();
-			ok = true;
-			ok &= tablesPresent.contains(tName);
-		} catch (SQLException e1) {
-			throw new RDFRDBException("Internal SQL error in driver", e1);
-		}		
-		return ok;
+			return(doesTableExist(tName));
 		}
 
 }
