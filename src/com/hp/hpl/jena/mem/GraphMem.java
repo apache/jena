@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.31 2004-06-30 17:16:54 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.32 2004-07-07 15:42:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -28,8 +28,6 @@ import java.util.*;
 */
 public class GraphMem extends GraphBase implements Graph 
     {
-    /** the set storing all the triples in this GraphMem */
-    Set triples = HashUtils.createSet();
 
     NodeToTriplesMap subjects = new NodeToTriplesMap();
     NodeToTriplesMap predicates = new NodeToTriplesMap();
@@ -56,7 +54,6 @@ public class GraphMem extends GraphBase implements Graph
         {
         if (--count == 0)
             {
-            triples = null;
             subjects = predicates = objects = null;
             super.close();
             }
@@ -70,10 +67,11 @@ public class GraphMem extends GraphBase implements Graph
         
     public void performAdd( Triple t )
         {
-        if (getReifier().handledAdd( t ) || triples.contains( t ))
+        if (getReifier().handledAdd( t ))
             return;
-        else if (triples.add( t ))
-            { subjects.add( t.getSubject(), t );
+        else 
+            { 
+            subjects.add( t.getSubject(), t );
             predicates.add( t.getPredicate(), t );
             objects.add( t.getObject(), t ); }
         }
@@ -82,8 +80,9 @@ public class GraphMem extends GraphBase implements Graph
         {
         if (getReifier().handledRemove( t ))
             return;
-        else if (triples.remove( t ))
-            { subjects.remove( t.getSubject(), t );
+        else 
+            {
+            subjects.remove( t.getSubject(), t );
             predicates.remove( t.getPredicate(), t );
             objects.remove( t.getObject(), t ); }
         }
@@ -91,13 +90,13 @@ public class GraphMem extends GraphBase implements Graph
     public int size()  
         {
         checkOpen();
-        return triples.size();
+        return subjects.size();
         }
 
     public boolean isEmpty()
         {
         checkOpen();
-        return triples.isEmpty();
+        return subjects.isEmpty();
         }
         
     private QueryHandler q;
@@ -121,7 +120,7 @@ public class GraphMem extends GraphBase implements Graph
     */
     public boolean contains( Triple t ) {
         checkOpen();
-        return t.isConcrete() ? triples.contains( t ) : containsByFind( t );
+        return containsByFind( t ); // return t.isConcrete() ? triples.contains( t ) : containsByFind( t );
     }
 
     /**
@@ -156,8 +155,8 @@ public class GraphMem extends GraphBase implements Graph
     }
 
     protected TripleMatchIterator objectIterator(Triple tm, Node o)
-        { return new TripleFieldIterator
-            ( tm, objects.iterator( o ), triples, subjects, predicates ){
+        { return new TrackingTripleIterator( tm, objects.iterator( o ) )
+            {
             public void remove()
                 {
                 super.remove();
@@ -169,8 +168,7 @@ public class GraphMem extends GraphBase implements Graph
         }
 
     protected TripleMatchIterator subjectIterator(Triple tm, Node ms)
-        { return new TripleFieldIterator
-            ( tm, subjects.iterator( ms ), triples, predicates, objects )
+        { return new TrackingTripleIterator( tm, subjects.iterator( ms ) )
             {
             public void remove()
                 {
@@ -183,8 +181,8 @@ public class GraphMem extends GraphBase implements Graph
         }
 
     protected TripleMatchIterator predicateIterator(Triple tm, Node p)
-        { return new TripleFieldIterator
-            (tm, predicates.iterator( p ), triples, subjects, objects ){
+        { return new TrackingTripleIterator( tm, predicates.iterator( p ) )
+            {
             public void remove()
                 {
                 super.remove();
@@ -196,20 +194,17 @@ public class GraphMem extends GraphBase implements Graph
 
     protected ExtendedIterator baseIterator( Triple t )
         {
-        return new TrackingTripleIterator( t, triples.iterator() )
+        return new TrackingTripleIterator( t, subjects.iterator() )
             {
             public void remove()
                 {
                 super.remove();    
-                subjects.remove( current.getSubject(), current );
                 predicates.remove( current.getPredicate(), current );
                 objects.remove( current.getObject(), current );
                 }
             };
         }
-    
-
-}
+    }
 
 /*
  *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.17 2004-06-30 12:57:59 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.18 2004-07-07 15:42:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -62,6 +62,14 @@ public class GraphTestBase extends JenaTestBase
         StringTokenizer semis = new StringTokenizer( facts, ";" );
         while (semis.hasMoreTokens()) al.add( triple( semis.nextToken() ) );   
         return (Triple []) al.toArray( new Triple [al.size()] );
+        }
+    
+    public static Set tripleSet( String facts )
+        {
+        Set result = new HashSet();
+        StringTokenizer semis = new StringTokenizer( facts, ";" );
+        while (semis.hasMoreTokens()) result.add( triple( semis.nextToken() ) );   
+        return result;
         }
         
     public static Node [] nodes( String items )

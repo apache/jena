@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TripleFieldIterator.java,v 1.2 2004-01-16 16:06:17 chris-dollin Exp $
+  $Id: TripleFieldIterator.java,v 1.3 2004-07-07 15:42:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -11,6 +11,8 @@ import com.hp.hpl.jena.graph.Triple;
 import java.util.*;
 
 /**
+    OBSOLETE.
+    
     A subclass of TrackingTripleIterator that implements .remove() so that as well as
     removing the designated triple from the underlying source, it also removes it from
     a base triple set and from two other triple sets. [Thus GraphMem index iterators
@@ -22,12 +24,10 @@ public class TripleFieldIterator extends TrackingTripleIterator
     /**
         The other triple-maps to update 
     */
-    private NodeToTriplesMap A, B;
-    private Set triples;
     
     TripleFieldIterator
-        ( Triple t , Iterator it, Set triples, NodeToTriplesMap A, NodeToTriplesMap B )
-        { super( t, it ); this.triples = triples; this.A = A; this.B = B; }    
+        ( Triple t , Iterator it, NodeToTriplesMap A, NodeToTriplesMap B )
+        { super( t, it );  }    
         
     /**
         Remove the current triple from its source [using super.remove()], from the given
@@ -38,9 +38,6 @@ public class TripleFieldIterator extends TrackingTripleIterator
     public void remove()
         {
         super.remove();     
-        triples.remove( current );
-        // A.remove( current.getSubject(), current );
-        // B.remove( current.getObject(), current );
         }       
     }
 /*

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.7 2004-06-30 17:16:54 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.8 2004-07-07 15:42:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.HashUtils;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 import com.hp.hpl.jena.util.iterator.NullIterator;
 
 /**
@@ -20,33 +21,76 @@ public final class NodeToTriplesMap
     {
     private Map map = HashUtils.createMap();
     
+    private int size = 0;
+    
     public Iterator domain()
         { return map.keySet().iterator(); }
     
-    public void add( Node o, Triple t ) {
+    public void add( Node o, Triple t ) 
+        {
         Set s = (Set) map.get( o );
         if (s == null) map.put( o, s = HashUtils.createSet() );
-        s.add( t ); 
-    }
-
-    public void remove(Node o, Triple t ) {
-        Set s = (Set) map.get( o );
-        if (s != null) {
-            s.remove( t );
-            if (s.isEmpty()) map.put( o, null );
+        if (s.add( t )) size += 1; 
         }
-    }
 
-    public Iterator iterator(Node o) {
+    public void remove( Node o, Triple t ) 
+        {
+        Set s = (Set) map.get( o );
+        if (s != null) 
+            {
+            if (s.remove( t )) size -= 1;
+            if (s.isEmpty()) map.put( o, null );
+        	}
+        }
+
+    public Iterator iterator(Node o) 
+        {
         Set s = (Set) map.get( o );
         return s == null ? NullIterator.instance :  s.iterator();
         }
     
+    public Iterator iterator()
+        {
+        final Iterator nodes = domain();
+        return new NiceIterator()
+        	{
+            private Iterator current = NullIterator.instance;
+            
+            public Object next()
+                {
+                if (hasNext() == false) noElements( "NodeToTriples iterator" );
+                return current.next();
+                }
+            
+            public boolean hasNext()
+                {
+                while (true)
+                    {
+                    if (current.hasNext()) return true;
+                    if (nodes.hasNext() == false) return false;
+                    current = iterator( (Node) nodes.next() );
+                    }
+                }
+            
+            public void remove()
+                {
+                current.remove();
+                size -= 1;
+                }
+        	};
+        }
+    
     public void clear() 
-        { map.clear(); }
+        { map.clear(); size = 0; }
+    
+    public int size()
+        { return size; }
+    
+    public boolean isEmpty()
+        { return size == 0; }
     }
 /*
-    (c) Copyright 2003, Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
