@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-10 18:39:35 $
+ * Last modified on   $Date: 2003-10-22 09:39:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.17 2003-09-10 18:39:35 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.18 2003-10-22 09:39:46 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -159,6 +159,35 @@ public class TestBugReports
         m.read( "http://jena.hpl.hp.com/testing/ontology/relativenames" );
         assertTrue( "#A should be a class", m.getResource( "http://jena.hpl.hp.com/testing/ontology/relativenames#A" ).canAs( OntClass.class ) );
         assertFalse( "file: #A should not be a class", m.getResource( "file:testing/ontology/relativenames.rdf#A" ).canAs( OntClass.class ) );
+    }
+    
+    
+    /** Bug report from Holger Knublach: not all elements of a union are removed */
+    public void test_hk_05() {
+        OntModelSpec spec = new OntModelSpec(OntModelSpec.OWL_MEM);
+        spec.setReasoner(null);
+        OntModel ontModel = ModelFactory.createOntologyModel(spec, null);
+        String ns = "http://foo.bar/fu#";
+        OntClass a = ontModel.createClass(ns+"A");
+        OntClass b = ontModel.createClass(ns+"B");
+        System.err.println( "--------------------------------------------------");
+        System.err.println( "Stage 1");
+        ontModel.write( System.err, "RDF/XML-ABBREV" );
+        
+        int oldCount = getStatementCount( ontModel );
+        
+        RDFList members = ontModel.createList(new RDFNode[] {a, b});
+        IntersectionClass intersectionClass =
+            ontModel.createIntersectionClass(null, members);
+        System.err.println( "--------------------------------------------------");
+        System.err.println( "Stage 2");
+        ontModel.write( System.err, "RDF/XML" );
+        intersectionClass.remove();
+        System.err.println( "--------------------------------------------------");
+        System.err.println( "Stage 3");
+        
+        ontModel.write( System.err, "RDF/XML-ABBREV" );
+        assertEquals("Before and after statement counts are different", oldCount, getStatementCount( ontModel ));
     }
     
     /**
@@ -443,6 +472,15 @@ public class TestBugReports
      
     // Internal implementation methods
     //////////////////////////////////
+    
+    private int getStatementCount( OntModel ontModel ) {
+        int count = 0;
+        for (Iterator it = ontModel.listStatements(); 
+             it.hasNext(); it.next()) {
+            count++;
+        }
+        return count;
+    }
 
     //==============================================================================
     // Inner class definitions
