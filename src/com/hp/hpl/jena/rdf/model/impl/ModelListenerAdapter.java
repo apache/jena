@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelListenerAdapter.java,v 1.8 2003-07-11 11:20:28 chris-dollin Exp $
+  $Id: ModelListenerAdapter.java,v 1.9 2003-07-11 13:34:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -38,6 +38,10 @@ public class ModelListenerAdapter implements GraphListener
     public void notifyAdd( Iterator it )
         { L.addedStatements( m.asStatements( it ) ); }
         
+    public void notifyAdd( Graph g )
+        { 
+        }
+        
     public void notifyDelete( Iterator it )
         { L.removedStatements( m.asStatements( it ) ); }
         
@@ -50,6 +54,10 @@ public class ModelListenerAdapter implements GraphListener
     public void notifyDelete( List triples )
         { L.removedStatements( m.asStatements( triples ) ); }
 
+    public void notifyDelete( Graph g )
+        {
+        }
+        
     public boolean equals( Object other )
         { 
         return 

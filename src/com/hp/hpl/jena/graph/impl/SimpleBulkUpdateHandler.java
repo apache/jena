@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.5 2003-07-11 10:16:10 chris-dollin Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.6 2003-07-11 13:34:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -44,14 +44,18 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         if (notify) manager.notifyAdd( triples );
         }
         
+
+    public void add( Iterator it )
+        { addIterator( it, true ); }
+        
     /**
         Add all the elements of the iterator to the graph. Trickery to arrange that if
         the graph has no listeners, the iterator is not duplicated. Not sure how to
         test this yet.
-    */
-    public void add( Iterator it )
+    */    
+    public void addIterator( Iterator it, boolean notify )
         { 
-        if (manager.listening())
+        if (notify && manager.listening())
             {
             List s = GraphUtil.iteratorToList( it );
             add( s, false );
@@ -62,7 +66,10 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
         
     public void add( Graph g )
-        { add( GraphUtil.findAll( g ) );  }
+        { 
+        addIterator( GraphUtil.findAll( g ), false );  
+        manager.notifyAdd( g );
+        }
 
     public void delete( Triple [] triples )
         { 
@@ -80,8 +87,11 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
     
     public void delete( Iterator it )
+        { deleteIterator( it, true ); }
+        
+    public void deleteIterator( Iterator it, boolean notify )
         {  
-        if (manager.listening())
+        if (notify && manager.listening())
             {
             List L = GraphUtil.iteratorToList( it );
             delete( L, false );
@@ -92,7 +102,10 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
          }
     
     public void delete( Graph g )
-        { delete( GraphUtil.findAll( g ) ); }
+        { 
+        deleteIterator( GraphUtil.findAll( g ), false );
+        manager.notifyDelete( g );
+        }
     }
 
 

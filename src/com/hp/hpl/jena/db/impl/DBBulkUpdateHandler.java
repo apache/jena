@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.7 2003-07-11 10:15:53 chris-dollin Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.8 2003-07-11 13:33:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.db.*;
     handling for bulk updates.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.7 $
+ 	@version $Revision: 1.8 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -84,7 +84,8 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 
 	public void add( Graph g ) {
 		ExtendedIterator triplesToAdd = GraphUtil.findAll( g );
-		try { add(triplesToAdd); } finally { triplesToAdd.close(); }
+		try { addIterator( triplesToAdd ); } finally { triplesToAdd.close(); }
+        manager.notifyAdd( g );
 	}
 
     /**
@@ -139,7 +140,8 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 
 	public void delete(Graph g) {
 		ExtendedIterator triplesToDelete = GraphUtil.findAll( g );
-		try { delete( triplesToDelete ); } finally { triplesToDelete.close(); }
+		try { deleteIterator( triplesToDelete ); } finally { triplesToDelete.close(); }
+        manager.notifyDelete( g );
    	}
 }
 
