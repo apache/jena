@@ -43,13 +43,13 @@
   <li><a href="#ontResource">The generic ontology type: OntResource</a></li>
   <li><a href="#classesBasic">Handling ontology components: basic class expressions</a></li>
   <li><a href="#properties">Handling ontology components: properties</a></li>
-  <li><a href="#complexClasses">Handling ontology components: more complex class 
+  <li><a href="#classesComplex">Handling ontology components: more complex class 
     expressions</a></li>
   <li><a href="#metadata">Ontology meta-data</a></li>
-  <li><a href="inferenceIntro">Ontology inference: introduction</a></li>
-  <li><a href="builtinReasoners">Built-in Jena reasoners</a></li>
-  <li><a href="externalReasoners">Using external reasoners</a></li>
-  <li><a href="faq">FAQ, common problems and other tips</a></li>
+  <li><a href="#inferenceIntro">Ontology inference: introduction</a></li>
+  <li><a href="#builtinReasoners">Built-in Jena reasoners</a></li>
+  <li><a href="#externalReasoners">Using external reasoners</a></li>
+  <li><a href="#faq">FAQ, common problems and other tips</a></li>
 </ol>
 <h3>Further assistance</h3>
 <p> We hope that this documentation will be sufficient to help most readers to 
@@ -970,8 +970,142 @@ public InverseFunctionalProperty convertToInverseFunctionalProperty();</pre>
   allow the programmer to test whether a given property is already of a given 
   sub-type.</p>
 <h2 id="classesComplex">Handling ontology components: more complex class expressions</h2>
+<p>Previously, we introduced the handling of basic, named classes in the Jena 
+  ontology API. These are the only kind of class descriptions defined in RDFS. 
+  In DAML+OIL and OWL, however, there are a number of types of additional class 
+  expression that allow richer and more expressive descriptions of concepts. There 
+  are two main types of additional class expression: <i>restrictions </i>and <i>Boolean 
+  expressions</i>. We will examine each in turn.</p>
+<h3>Restriction class expressions</h3>
+<p>A restriction is defines a class by reference to one of the properties of the 
+  individuals that comprise the members of the class, and placing some constraint 
+  on that property. For example, in a simple view of animal taxonomy, we might 
+  say that mammals are covered in fur, and birds in feathers. Thus the property 
+  <code>hasCovering</code> is in one case restricted to have the value <code>fur</code>, 
+  in the other to have the value <code>feathers</code>. This is a <i>has value 
+  restriction</i>. Six restriction types are defined by OWL and DAML+OIL in total:</p>
+<table width="445" border="1" cellspacing="1" cellpadding="1">
+  <tr> 
+    <th width="147">Restriction type</th>
+    <th width="285">Meaning</th>
+  </tr>
+  <tr> 
+    <td width="147"> 
+      <div align="left">has value</div>
+    </td>
+    <td width="285"> 
+      <div align="left">The restricted property has exactly the given value.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="147"> 
+      <div align="left">all values from</div>
+    </td>
+    <td width="285"> 
+      <div align="left">All values of the restricted property, if it has any, 
+        are members of the given class.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="147"> 
+      <div align="left">some values from</div>
+    </td>
+    <td width="285"> 
+      <div align="left">The property has at least one value which is a member 
+        of the given class.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="147"> 
+      <div align="left">cardinality</div>
+    </td>
+    <td width="285"> 
+      <div align="left">The property has exacly <i>n</i> values, for some positive 
+        integer n.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="147"> 
+      <div align="left">min cardinality</div>
+    </td>
+    <td width="285"> 
+      <div align="left">The property has at least <i>n</i> values, for some positive 
+        integer n.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="147"> 
+      <div align="left">max cardinality</div>
+    </td>
+    <td width="285"> 
+      <div align="left">The property has at most <i>n</i> values, for some positive 
+        integer n.</div>
+    </td>
+  </tr>
+</table>
+<p>Note that in DAML+OIL terminology, an all values from restriction is a <i>toClass</i> 
+  restriction, while a some values from restriction is a <i>hasClass</i> restriction. 
+  Note also that, at present, the Jena ontology API does not directly support 
+  DAML's qualified cardinality restrictions (i.e. <code>cardinalityQ</code>, <code>minCardinalityQ</code> 
+  and <code>maxCardinalityQ</code>). This feature is likely to be supported in 
+  a future version of Jena.</p>
+<p>Jena provides a number of ways of creating restrictions, or retrieving them 
+  from a model. Firstly a general restriction may be retrieved from the model 
+  by its URI, or a new restriction created by nominating the property that the 
+  property applies to. For example:</p>
+<pre>// restriction with a given URI
+Restriction r = m.getRestriction( rURI );
+   
+// anonymous restriction on property p
+OntProperty p = m.createOntProperty( ns + &quot;p&quot; );
+Restriction anonR = m.createRestriction( p );</pre>
+<p>A general restriction can be converted to a specific type of restriction via 
+  asXXX methods (if the information is already in the model), or via createXXX 
+  methods if the information may not yet be in the model. For example, to convert 
+  the anonymous restriction from the previous example to an all values from restriction, 
+  we can do the following:</p>
+<pre>OntClass c = m.createClass( ns + &quot;C&quot; );
+AllValuesFromRestriction avf = anonR.convertToAllValuesFromRestriction( c );</pre>
+<p>For creating a particular restriction <i>ab initio</i>, we can use the creation 
+  methods defined on OntModel. For example:</p>
+<pre>OntClass c = m.createClass( ns + &quot;C&quot; );
+ObjectProperty p = m.createObjectProperty( ns + &quot;p&quot; ); 
+   
+// use a null URI to create an anonymous restriction
+AllValuesFromRestriction rst = m.createAllValuesFromRestriction( null, p, c );</pre>
+<p>Once we have a particular restriction object, there are methods following the 
+  standard add, get, set and test pattern to access the components of the declaration. 
+  For example, in the camera ontology, we find this definition of a class describing 
+  Large-Format cameras:</p>
+<pre>&lt;owl:Class rdf:ID=&quot;Large-Format&quot;&gt;
+  &lt;rdfs:subClassOf rdf:resource=&quot;#Camera&quot;/&gt;
+  &lt;rdfs:subClassOf&gt;
+    &lt;owl:Restriction&gt;
+      &lt;owl:onProperty rdf:resource=&quot;#body&quot;/&gt;
+      &lt;owl:allValuesFrom rdf:resource=&quot;#BodyWithNonAdjustableShutterSpeed&quot;/&gt;
+   &lt;/owl:Restriction&gt;
+  &lt;/rdfs:subClassOf&gt;
+&lt;/owl:Class&gt;</pre>
+<p>The following code shows one way to access the components of the all values 
+  from restriction. Assume m contains the camera ontology, read in as above.</p>
+<pre>OntClass LargeFormat = m.getOntClass( camNS + &quot;Large-Format&quot; );
+for (Iterator i = LargeFormat.listSuperClasses( true ); i.hasNext(); ) {
+  OntClass c = (OntClass) i.next();
+   
+  if (c.isRestriction()) {
+    Restriction r = c.asRestriction();
+   
+    if (r.isAllValuesFromRestriction()) {
+      AllValuesFromRestriction av = r.asAllValuesFromRestriction();
+      System.out.println( &quot;AllValuesFrom class &quot; + 
+                          av.getAllValuesFrom().getLocalName() +
+                          &quot; on property &quot; + av.getOnProperty().getLocalName() );
+    }
+  }
+}</pre>
+<h3>Boolean class expressions</h3>
 <p>&nbsp;</p>
-<h2 is="ontology">Ontology meta-data</h2>
+<h2 id="metadata">Ontology meta-data</h2>
 <p>&nbsp;</p>
 <h2 id="inferenceIntro">Ontology inference: introduction</h2>
 <p>&nbsp;</p>
@@ -981,5 +1115,6 @@ public InverseFunctionalProperty convertToInverseFunctionalProperty();</pre>
 <p>&nbsp;</p>
 <h2 id="faq">FAQ, common problems and other tips</h2>
 <p>&nbsp;</p>
+<p class="footnote">End of document. CVS: $Id: index.html,v 1.5 2003-06-27 16:23:49 ian_dickinson Exp $</p>
 </body>
 </html>

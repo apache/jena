@@ -110,3 +110,8 @@ pre {
 code {
     font-size: 10pt;
 }
+
+.footnote {
+    font-size: smaller;
+    border-top: thin solid gray;
+}
