@@ -105,6 +105,12 @@ to false write the declaration to an OutputStream before calling
 <td>positive integer "2" is the default</td>
 </tr>
   <tr BGCOLOR="white" CLASS="TableRowColor">
+ <td>width</td>
+ <td>A guide to the num of cols before inserting an arbitrary newline.</td>
+<td>String or Integer</td>
+<td>positive integer "60" is the default</td>
+</tr>
+  <tr BGCOLOR="white" CLASS="TableRowColor">
  <td>attributeQuoteChar</td>
 <td>How to write XML attributes.</td>
 <td>String</td>
@@ -158,15 +164,27 @@ This a list of
   <pre>
  w.setProperty("prettyTypes",
       new Resource[]{
-           DAML_OIL.Ontology,
-           DAML_OIL.Class,
-           DAML_OIL.Datatype,
-           DAML_OIL.Property,
-           DAML_OIL.ObjectProperty,
-           DAML_OIL.DatatypeProperty,
-           DAML_OIL.TransitiveProperty,
-           DAML_OIL.UnambigousProperty,
-           DAML_OIL.UniqueProperty,
+			DAML_OIL.Ontology,
+			OWL.Ontology,
+			DAML_OIL.Datatype,
+			OWL.Datatype,
+			RDFS.Datatype,
+			DAML_OIL.Class,
+			RDFS.Class,
+			OWL.Class,
+			DAML_OIL.Property,
+			OWL.ObjectProperty,
+			RDF.Property,
+			DAML_OIL.ObjectProperty,
+			OWL.DatatypeProperty,
+			DAML_OIL.DatatypeProperty,
+			OWL.TransitiveProperty,
+			OWL.SymmetricProperty,
+			OWL.FunctionalProperty,
+			OWL.InverseFunctionalProperty,
+			DAML_OIL.TransitiveProperty,
+			DAML_OIL.UnambiguousProperty,
+			DAML_OIL.UniqueProperty,
           });
   </pre>
   </td><td>Resource[]</td><td></td>

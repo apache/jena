@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.7 2003-04-22 13:43:47 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.8 2003-04-22 19:15:49 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -102,7 +102,7 @@ import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-04-22 13:43:47 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-04-22 19:15:49 $'
 
  */
 class Unparser {
@@ -395,7 +395,9 @@ class Unparser {
 		print("<");
 		wt.wTypeStart(prop);
 		wIdAttrReified(s);
+		maybeNewline();
 		wParseLiteral();
+		maybeNewline();
 		print(">");
 		print(r.toString());
 		print("</");
@@ -419,7 +421,9 @@ class Unparser {
 		print("<");
 		wt.wTypeStart(prop);
 		wIdAttrReified(s);
+		maybeNewline();
 		wDatatype(((Literal) r).getDatatypeURI());
+		maybeNewline();
 		print(">");
 		print(
 			Util.substituteEntitiesInElementContent(
@@ -494,8 +498,10 @@ class Unparser {
 			print("<");
 			wt.wTypeStart(prop);
 			wIdAttrReified(s);
+			maybeNewline();
 			if (lang != null && lang.length() > 0)
 				print(" xml:lang=" + q(lang));
+			maybeNewline();
 			print(">");
 			wValueString(lt);
 			print("</");
@@ -1018,6 +1024,7 @@ class Unparser {
 		print(" ");
 		printRdfAt("datatype");
 		print("=");
+		maybeNewline();
 		wURIreference(dtURI);
 	}
 	/*
@@ -1043,7 +1050,6 @@ class Unparser {
 	 ***/
 	private int indentLevel = 0;
 	private int currentColumn = 0;
-	private int maxWidth = 70;
 	static private String filler(int lgth) {
 		char rslt[] = new char[lgth];
 		Arrays.fill(rslt, ' ');
@@ -1051,8 +1057,8 @@ class Unparser {
 	}
 	private void tab() {
 		int desiredColumn = prettyWriter.tab * indentLevel;
-		if ( desiredColumn > maxWidth ) {
-			desiredColumn = 4 + (desiredColumn-4)%maxWidth;
+		if ( desiredColumn > prettyWriter.width ) {
+			desiredColumn = 4 + (desiredColumn-4)%prettyWriter.width;
 		}
 		if ((desiredColumn == 0 && currentColumn == 0)
 			|| desiredColumn > currentColumn) {
@@ -1063,6 +1069,11 @@ class Unparser {
 			out.print(filler(desiredColumn));
 		}
 		currentColumn = desiredColumn;
+	}
+	private void maybeNewline() {
+		if ( currentColumn > prettyWriter.width ) {
+			tab();
+		}
 	}
 
 	/**
