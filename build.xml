@@ -201,6 +201,24 @@
         </javadoc>
     </target>
 
+    <target name="javadoc-all">
+    	<!-- This is a javadoc task to build the javadoc for developers to look at -->
+        <delete dir="javadoc"/>
+        <mkdir dir="javadoc"/>
+
+        <javadoc
+	         sourcepath="${src.dir}"
+	         destdir="javadoc"
+	         author="true"
+	         version="true"
+	         windowtitle="${Name} Framework"
+	         doctitle="${Name} Framework"
+	         overview="${src.dir}/link2readme.html"
+	         bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved."
+	         packagenames="com.hp.hpl.*" 
+		/>
+    </target>
+
 
 <!-- Section: Create distribution area -->
 
