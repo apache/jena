@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.29 2004-12-06 13:50:25 andy_seaborne Exp $
+  $Id: ModelTestBase.java,v 1.30 2005-02-18 12:27:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -35,6 +35,9 @@ public class ModelTestBase extends GraphTestBase
         result.setNsPrefixes( PrefixMapping.Extended );
         return result;
         }
+    
+    protected static String nice( RDFNode n )
+        { return nice( n.asNode() ); }
     
      /**
         create a Statement in a given Model with (S, P, O) extracted by parsing a string.

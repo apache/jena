@@ -1,10 +1,11 @@
 # (c) Copyright 2004, Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: jena-model-spec.n3,v 1.2 2004-01-26 17:06:30 andy_seaborne Exp $
+# $Id: jena-model-spec.n3,v 1.3 2005-02-18 12:28:00 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix jms:        <http://jena.hpl.hp.com/2003/08/jms#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
 @prefix :           <#> .
 
 <>  rdfs:comment     "Vocabulary for describing Jena models" ;
@@ -57,7 +58,8 @@ jms:fileBase            rdf:type     rdf:Property .
 jms:MemMakerSpec        rdfs:subClassOf     jms:MakerSpec .
 jms:FileMakerSpec       rdfs:subClassOf     jms:MakerSpec .
 jms:RDBMakerSpec        rdfs:subClassOf     jms:MakerSpec .
-        
+       
+jms:DefaultModelSpec    rdfs:subClassOf     jms:ModelSpec . 
 jms:PlainModelSpec      rdfs:subClassOf     jms:ModelSpec .
 jms:InfModelSpec        rdfs:subClassOf     jms:PlainModelSpec .
 jms:OntModelSpec        rdfs:subClassOf     jms:InfModelSpec .

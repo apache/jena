@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.17 2004-11-25 10:17:31 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.18 2005-02-18 12:28:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -390,10 +390,9 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( bURI, A.getNsPrefixURI( "br" ) );
         }
     
-    public void testTrapNastyNamespace()
-        {
-        try { getMapping().setNsPrefix( "abc", "def" ); fail( "" ); }
-        catch (NamespaceEndsWithNameCharException e) { pass(); }
+    public void testAllowNastyNamespace()
+        { // we now allow namespaces to end with non-punctuational characters
+        getMapping().setNsPrefix( "abc", "def" ); 
         }
         
     public void testLock()

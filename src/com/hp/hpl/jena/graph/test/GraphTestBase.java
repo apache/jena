@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.23 2005-01-19 15:24:37 jeremy_carroll Exp $
+  $Id: GraphTestBase.java,v 1.24 2005-02-18 12:27:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -144,8 +144,11 @@ public class GraphTestBase extends JenaTestBase
             b.append( already );
             }
         else
-            b.append( n.toString( PrefixMapping.Extended, true ) );
+            b.append( nice( n ) );
         }
+    
+    protected static String nice( Node n )
+        { return n.toString( PrefixMapping.Extended, true ); }
             
     public static void assertIsomorphic( Graph expected, Graph got )
         { assertIsomorphic( "graphs must be isomorphic", expected, got ); }

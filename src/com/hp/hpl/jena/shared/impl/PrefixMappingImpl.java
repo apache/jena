@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.19 2004-11-25 10:17:30 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.20 2005-02-18 12:27:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -57,8 +57,8 @@ public class PrefixMappingImpl implements PrefixMapping
         { if (locked) throw new JenaLockedException( this ); }
         
     private void checkProper( String uri )
-        {
-        if (!isNiceURI( uri )) throw new NamespaceEndsWithNameCharException( uri );
+        { // suppressed by popular demand. TODO consider optionality
+        // if (!isNiceURI( uri )) throw new NamespaceEndsWithNameCharException( uri );
         }
         
     public static boolean isNiceURI( String uri )

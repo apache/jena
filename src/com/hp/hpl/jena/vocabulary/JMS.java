@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.26 2005-02-18 10:26:51 chris-dollin Exp $
+  $Id: JMS.java,v 1.27 2005-02-18 12:28:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.vocabulary;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.FileManager;
 
 /**
     The Jena Model Specification vocabulary, schema, and some conversion methods.
@@ -210,24 +211,7 @@ public class JMS
         
         TODO make this model immutable once created. 
     */
-    static final public Model schema = ModelFactory.createDefaultModel()
-        .add( JMS.MemMakerSpec, RDFS.subClassOf, JMS.MakerSpec )
-        .add( JMS.FileMakerSpec, RDFS.subClassOf, JMS.MakerSpec )
-        .add( JMS.RDBMakerSpec, RDFS.subClassOf, JMS.MakerSpec )
-        
-        .add( JMS.DefaultModelSpec, RDFS.subClassOf, JMS.ModelSpec )
-        .add( JMS.PlainModelSpec, RDFS.subClassOf, JMS.ModelSpec )
-        .add( JMS.InfModelSpec, RDFS.subClassOf, JMS.PlainModelSpec )
-        .add( JMS.OntModelSpec, RDFS.subClassOf, JMS.InfModelSpec )
-        
-        
-        .add( JMS.reificationMode, RDFS.domain, JMS.MakerSpec )
-        .add( JMS.maker, RDFS.domain, JMS.PlainModelSpec )
-        
-        .add( JMS.importMaker, RDFS.domain, JMS.OntModelSpec )
-        .add( JMS.ontLanguage, RDFS.domain, JMS.OntModelSpec )
-        .add( JMS.reasonsWith, RDFS.domain, JMS.InfModelSpec )
-        ;
+    static final public Model schema = FileManager.get().loadModel( "vocabularies/jena-model-spec.n3" );
 
     /**
         Utility: answer a plain literal string with the given value.
