@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: IsDType.java,v 1.4 2003-10-09 13:29:21 der Exp $
+ * $Id: IsDType.java,v 1.5 2003-10-10 08:24:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -14,13 +14,14 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 /**
  * Tests whether the first argument is an instance of the datatype defined
  * by the resource in the second argument.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-10-09 13:29:21 $
+ * @version $Revision: 1.5 $ on $Date: 2003-10-10 08:24:30 $
  */
 public class IsDType extends BaseBuiltin {
 
@@ -65,6 +66,8 @@ public class IsDType extends BaseBuiltin {
         if (!dt.isURI()) return false;
         if (val.isBlank()) return true;
         if (val.isLiteral()) {
+            LiteralLabel ll = val.getLiteral();
+            if (ll.getDatatype() != null && (! ll.isWellFormed())) return false;
             if (dt.equals(RDFS.Nodes.Literal)) {
                 return true;
             } else {
