@@ -56,7 +56,7 @@ import com.hp.hpl.jena.graph.Triple;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:18:04 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-03-26 12:20:44 $
  */
 public interface Statement  //extends Resource 
 {
@@ -404,9 +404,30 @@ public interface Statement  //extends Resource
 */ 
     boolean isReified();
     
-  
+    /**
+        answer a ReifiedStatement object that embodies this Statement and
+        is in the same Model (if any).
+    */
+    ReifiedStatement createReifiedStatement();
     
+    /**
+        answer a ReifiedStatement object that embodies this Statement, has
+        the same Model, and has the given _uri_.
+    */
+    ReifiedStatement createReifiedStatement( String uri );
+        
+    /**
+        answer an iterator which delivers all the reified statements in the model
+        this Statement belongs to that match this Statement.
+    */
+    RSIterator listReifiedStatements();
+    
+    /**
+        answer the Triple containing the appropriate Nodes corrsponding to
+        the subject, predicate, and object fields.
+    */
     Triple asTriple();
+    
     /**
      * Returns a resource representing the reification of this
      * statement. Such a resoruce is created and added to the model
@@ -414,6 +435,9 @@ public interface Statement  //extends Resource
      */
     Resource asResource();
     
+    /**
+        get the Model this Statement was created in.
+    */
     Model getModel();
     
     /**

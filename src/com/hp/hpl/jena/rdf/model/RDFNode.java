@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.Node;
  * <p>Chris added the _as_ method to allow RDFNodes to participate in polymorphic
  * conversions.
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-20 10:57:13 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-03-26 12:20:44 $'
  */
 public interface RDFNode {
     /** Return a String representation of the node.  The form of the string depends
@@ -54,7 +54,6 @@ public interface RDFNode {
     public Node asNode();
     
     /**
-    <p>
         RDFNodes can be converted to different implementation types. Convert
         this RDFNode to a type supporting the _view_ interface. The resulting
         RDFNode should be an instance of _view_ and should have any
@@ -65,4 +64,9 @@ public interface RDFNode {
         deliver a half-baked instance?
     */
     public RDFNode as( Class view );
+    
+    /**
+        return true iff this RDFNode can be viewed as a _view_.
+    */
+    public boolean canAs( Class view );
 }

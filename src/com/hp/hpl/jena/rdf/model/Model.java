@@ -1,40 +1,17 @@
 /*
- *  (c)   Copyright Hewlett-Packard Company 2000, 2001, 2002
- *   All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * $Id: Model.java,v 1.1.1.1 2002-12-19 19:17:43 bwm Exp $
- */
+  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: Model.java,v 1.2 2003-03-26 12:20:44 chris-dollin Exp $
+*/
+
 package com.hp.hpl.jena.rdf.model;
 
-//import com.hp.hpl.jena.rdf.model.personality.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.dt.*;
-import java.io.Reader;
-import java.io.Writer;
-import java.io.InputStream;
-import java.io.OutputStream;
+
+import java.io.*;
+
 /** An RDF Model.
  *
  * <p>An RDF model is a set of Statements.  Methods are provided for creating
@@ -73,7 +50,7 @@ import java.io.OutputStream;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1.1.1 $Date: 2002/12/09 09:57:27 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $Date: 2002/12/19 19:17:43 $'
  */
 public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	//    public BindingQueryPlan prepareBindings( Query q, Variable [] variables );
@@ -123,14 +100,6 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	StmtIterator listStatements() throws RDFException;
 
-	/** List all reified statements in the model.
-	 *
-	 * <p> Subsequent operations on those statements may modify this model.</p>
-	 * @throws RDFException Generic RDF Exception
-	 * @return an iterator over the set of all reified statements in the model
-	    StmtIterator listReifiedStatements() throws RDFException;
-	
-	*/
 	/** Return a Resource instance in this model.
 	 *
 	 * <p>Subsequent operations on the returned object may modify this model.</p>
@@ -564,30 +533,29 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	*/
 	boolean containsAll(Model model) throws RDFException;
 
-	/** Determine if the reification quad of this statement is 
-	 *  in this model
-	 * @param s The statement tested.
-	 * @return true if there a resource of type rdf:Statement with matching rdf:subject, rdf:predicate and rdf:object.
-	             false otherwise
+	/** 
+        determine if this Statement has been reified in this Model.
+        
+	   @param s The statement tested.
+	   @return true iff a ReifiedStatement(s) has been created in this model
 	*/
-	boolean isReified(Statement s);
+	boolean isReified( Statement s );
 
-	/** Returns a resource of type rdf:Statement which is the
-	 * reification of this statement.
-	 * This method creates such a resource if necessary.
-	 * @param s The statement to reify.
-	 * @return The reification.
+	/**
+        @param a Statement which may or may not already be reified
+        @return a Resource [ReifiedStatement] that reifies the specified Statement.
 	*/
-	Resource getReification(Statement s);
+	Resource getAnyReifiedStatement( Statement s );
 
-	/** Removes all reification quads that match this statement.
-	 * 
-	 */
-	void removeReification(Statement s);
-
-	/** Add a reification quad around r to represent s.
-	 */
-	void reifyAs(Statement s, Resource r);
+	/**
+        Remove all reifications (ie implicit reification quads) of _s_.
+    */
+	void removeAllReifications( Statement s );
+    
+    /**
+        remove a particular reificiation.
+    */
+    void removeReification( ReifiedStatement rs );
 
 	/** List the statements matching a selector.
 	 *
@@ -598,6 +566,32 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 * @throws RDFException Generic RDF exception.
 	 */
 	StmtIterator listStatements(Selector s) throws RDFException;
+    
+    /**
+        answer a ReifiedStatement that encodes _s_ and belongs to this Model.
+    <br>
+        result.getModel() == this
+    <br>
+        result.getStatement() .equals ( s )
+    */
+    ReifiedStatement createReifiedStatement( Statement s );
+    
+    /**
+        answer a ReifiedStatement that encodes _s_, belongs to this Model,
+        and is a Resource with that _uri_.
+    */
+    ReifiedStatement createReifiedStatement( String uri, Statement s );
+    
+    /**
+        answer an iterator delivering all the reified statements "in" this model
+    */
+    RSIterator listReifiedStatements();
+    
+    /**
+        answer an iterator delivering all the reified statements "in" this model
+        that match the statement _st_.
+    */
+    RSIterator listReifiedStatements( Statement st );
 
 	/** Create a new model containing the statements matching a query.
 	 *
@@ -712,3 +706,31 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	public void close();
 
 }
+
+/*
+ *  (c)   Copyright Hewlett-Packard Company 2000, 2001, 2002, 2003
+ *   All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * $Id: Model.java,v 1.2 2003-03-26 12:20:44 chris-dollin Exp $
+ */
