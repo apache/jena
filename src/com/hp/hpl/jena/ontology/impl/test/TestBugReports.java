@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.49 $
+ * Revision           $Revision: 1.50 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-12 22:31:40 $
+ * Last modified on   $Date: 2004-08-13 16:18:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -320,7 +320,7 @@ public class TestBugReports
         assertEquals(oldTripleCount + 1, getTripleCount(oldSubGraph));
 
         // TODO this workaround to be removed
-        SimpleGraphMaker sgm = (SimpleGraphMaker) ((ModelMakerImpl) spec.getModelMaker()).getGraphMaker();
+        SimpleGraphMaker sgm = (SimpleGraphMaker) ((ModelMakerImpl) spec.getImportModelMaker()).getGraphMaker();
         List toGo = new ArrayList();
         for (Iterator i = sgm.listGraphs(); i.hasNext(); toGo.add( i.next() ));
         for (Iterator i = toGo.iterator(); i.hasNext(); sgm.removeGraph( (String) i.next() ));
