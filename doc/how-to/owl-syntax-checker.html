@@ -30,7 +30,7 @@
 </ul>
 </li>
 <li><a href="#StreamingChecker">Streaming Checker</a></li>
-
+<li><a href="#Futures">Future Plans</a></li>
 </ul>
 
 <h2><a name="intro"> </a>Introduction</h2>
@@ -245,6 +245,38 @@ remember all the triples from start to finish
 but intelligently discards those which have been
 fully analysed. 
 </p>
- 
+ <h2><a name="Futures"></a>Future Plans</h2>
+<p>
+We have a design for "OWL Tidy" based on the syntax checker.
+This would take an OWL Full document, and produce a similar OWL DL
+document. The user would have fine-grain control as to whether
+they allow some information to be lost (incomplete) or some information
+to be added (unsound).
+</p>
+<p>Implementing this would also involve significant improvements in the
+error messages in the syntax checker.</p>
+<p>We also have a design for implementing a syntax checker that
+actually builds abstract syntax trees.</p>
+<p>Our current (May 2004) assessment, is that it is not a good use
+of our time to code up such designs.
+Building abstract syntax trees is adequately addressed by Bechhofer's
+syntax checker.
+OWL Tidy would be useful, if Jena users wanted to be able to interoperate
+with OWL DL systems. We see no such demand at the moment; this may be 
+partly explicable by the lack of widely used OWL DL systems.
+We are aware of some standards developers and similar who would like
+an OWL Tidy functionality; however as far as we can tell, they would
+require the modifications to be small modifications to the source files,
+not small modifications to the RDF graph. Since this more than doubles the
+amount of work required for OWL Tidy, it makes the cost/benefit analysis
+unfavourable.
+</p>
+<p>Users who would like more effort spent by the jena team in this
+area should indicate on jena-dev. Messages indicating unhappiness
+with the current syntax checker's error messages; or
+asking why is some file in OWL Full and not DL and 
+what can be done about it; or how to interoperate
+with some named OWL DL system; are likely to be the most effective.
+</p>
 </BODY>
 </HTML>
