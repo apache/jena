@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TripleMatchFilter.java,v 1.6 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: TripleMatchFilter.java,v 1.7 2004-07-08 12:59:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -28,6 +28,7 @@ public class TripleMatchFilter implements Filter {
      * @return true if the object is wanted.
      */
     public boolean accept(Object t) {
+        // System.err.println( ">> " + tMatch + " matches " + t + (tMatch.matches( (Triple) t ) ? "yes" : "no" ) );
         return tMatch.matches((Triple) t);
     }
     

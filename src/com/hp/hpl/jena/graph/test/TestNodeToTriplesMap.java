@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.1 2004-07-07 15:42:26 chris-dollin Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.2 2004-07-08 13:00:15 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -53,8 +53,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testAddOneTwice()
         {
-        nt.add( x, triple( "x P y" ) );
-        nt.add( x, triple( "x P y" ) );
+        addTriples( nt, "x P y; x P y" );
         testJustOne( x, nt );
         }
     
@@ -67,8 +66,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testAddTwoUnshared()
         {
-        nt.add( node( "x" ), triple( "x P a" ) );
-        nt.add( node( "y" ), triple( "y Q b" ) );
+        addTriples( nt, "x P a; y Q b" );
         assertEquals( 2, nt.size() );
         assertEquals( false, nt.isEmpty() );
         assertEquals( both( x, y ), iteratorToSet( nt.domain() ) );
@@ -76,8 +74,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testAddTwoShared()
         {
-        nt.add( x, triple( "x P a" ) );
-        nt.add( x, triple( "x Q b" ) );
+        addTriples( nt, "x P a; x Q b" );
         assertEquals( 2, nt.size() );
         assertEquals( false, nt.isEmpty() );
         assertEquals( just( x ), iteratorToSet( nt.domain() ) );
@@ -85,36 +82,28 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testClear()
         {
-        nt.add( x, triple( "x P a" ) );
-        nt.add( x, triple( "x Q b" ) );
-        nt.add( y, triple( "y R z" ) );
+        addTriples( nt, "x P a; x Q b; y R z" );
         nt.clear();
         testZeroSize( "cleared NTM", nt );
         }
     
     public void testAllIterator()
         {
-        Set triples = tripleSet( "x P b; y P d; y P f" );
-        nt.add( x, triple( "x P b" ) );
-        nt.add( y, triple( "y P d" ) );
-        nt.add( y, triple( "y P f " ) );
-        assertEquals( triples, iteratorToSet( nt.iterator() ) );
+        String triples = "x P b; y P d; y P f";
+        addTriples( nt, triples );
+        assertEquals( tripleSet( triples ), iteratorToSet( nt.iterator() ) );
         }
     
     public void testOneIterator()
         {
-        nt.add( x, triple( "x P b" ) );
-        nt.add( y, triple( "y P d" ) );
-        nt.add( y, triple( "y P f " ) );
+        addTriples( nt, "x P b; y P d; y P f" );
         assertEquals( tripleSet( "x P b" ), iteratorToSet( nt.iterator( x ) ) );
         assertEquals( tripleSet( "y P d; y P f" ), iteratorToSet( nt.iterator( y ) ) );
         }
     
     public void testRemove()
         {
-        nt.add( x, triple( "x P b" ) );
-        nt.add( y, triple( "y P d" ) );
-        nt.add( y, triple( "y R f " ) );
+        addTriples( nt, "x P b; y P d; y R f" );
         nt.remove( y, triple( "y P d" ) );
         assertEquals( 2, nt.size() );
         assertEquals( tripleSet( "x P b; y R f" ), iteratorToSet( nt.iterator() ) );
@@ -122,12 +111,8 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testRemoveByIterator()
         {
-        nt.add( x, triple( "x nice a" ) );
-        nt.add( x, triple( "x nasty b" ) );
-        nt.add( x, triple( "x nice c" ) );
-        nt.add( y, triple( "y nice d" ) );
-        nt.add( y, triple( "y nasty e" ) );
-        nt.add( y, triple( "y nice f" ) );
+        addTriples( nt, "x nice a; a nasty b; x nice c" );
+        addTriples( nt, "y nice d; y nasty e; y nice f" );
         Iterator it = nt.iterator();
         while (it.hasNext())
             {
@@ -137,7 +122,41 @@ public class TestNodeToTriplesMap extends GraphTestBase
         assertEquals( tripleSet( "x nice a; x nice c; y nice d; y nice f" ), iteratorToSet( nt.iterator() ) );
         }
     
+    public void testIteratorWIthPatternOnEmpty()
+        {
+        assertEquals( tripleSet( "" ), iteratorToSet( nt.iterator( triple( "a P b" ) ) ) );
+        }
+
+    public void testIteratorWIthPatternOnSomething()
+        {
+        addTriples( nt, "x P a; y P b; y R c" );
+        assertEquals( tripleSet( "x P a" ), iteratorToSet( nt.iterator( triple( "x P ??" ) ) ) );
+        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( nt.iterator( triple( "y ?? ??" ) ) ) );
+        assertEquals( tripleSet( "x P a; y P b" ), iteratorToSet( nt.iterator( triple( "?? P ??" ) ) ) );
+        assertEquals( tripleSet( "y R c" ), iteratorToSet( nt.iterator( triple( "?? ?? c" ) ) ) );
+        }
+    
+    public void testSpecificIteratorWithPatternOnEmpty()
+        {
+        assertEquals( tripleSet( "" ), iteratorToSet( nt.iterator( x, triple( "x P b" ) ) ) );
+        }
+    
+    public void testSpecificIteratorWithPatternOnSomething()
+        {
+        addTriples( nt, "x P a; y P b; y R c" );
+        assertEquals( tripleSet( "x P a" ), iteratorToSet( nt.iterator( x, triple( "x P ??" ) ) ) );
+        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( nt.iterator( y, triple( "y ?? ??" ) ) ) );
+        assertEquals( tripleSet( "x P a" ), iteratorToSet( nt.iterator( x, triple( "?? P ??" ) ) ) );
+        assertEquals( tripleSet( "y R c" ), iteratorToSet( nt.iterator( y, triple( "?? ?? c" ) ) ) );
+        }
+    
     // TODO more here
+    
+    protected void addTriples( NodeToTriplesMap nt, String facts )
+        {
+        Triple [] t = tripleArray( facts );
+        for (int i = 0; i < t.length; i += 1) nt.add( t[i].getSubject(), t[i] );
+        }
     
     protected static Set just( Object x )
         {

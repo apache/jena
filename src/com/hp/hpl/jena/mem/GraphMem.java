@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.32 2004-07-07 15:42:27 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.33 2004-07-08 13:00:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -154,8 +154,21 @@ public class GraphMem extends GraphBase implements Graph
         }
     }
 
-    protected TripleMatchIterator objectIterator(Triple tm, Node o)
-        { return new TrackingTripleIterator( tm, objects.iterator( o ) )
+    static class TrackCurrent extends WrappedIterator
+    	{
+        TrackCurrent( Iterator it )
+        	{ super( it ); }
+        
+        protected Triple current;
+        
+        public Object next()
+            { return current = (Triple) super.next(); }      
+
+    	}
+    
+    protected ExtendedIterator objectIterator(Triple tm, Node o)
+        { 
+        return new TrackCurrent( objects.iterator( o, tm ) )
             {
             public void remove()
                 {
@@ -167,9 +180,10 @@ public class GraphMem extends GraphBase implements Graph
             ; 
         }
 
-    protected TripleMatchIterator subjectIterator(Triple tm, Node ms)
-        { return new TrackingTripleIterator( tm, subjects.iterator( ms ) )
-            {
+    protected ExtendedIterator subjectIterator(Triple tm, Node ms)
+        { 
+        return new TrackCurrent( subjects.iterator( ms , tm) )
+            {            
             public void remove()
                 {
                 super.remove();
@@ -180,8 +194,9 @@ public class GraphMem extends GraphBase implements Graph
             ; 
         }
 
-    protected TripleMatchIterator predicateIterator(Triple tm, Node p)
-        { return new TrackingTripleIterator( tm, predicates.iterator( p ) )
+    protected ExtendedIterator predicateIterator( Triple tm, Node p )
+        { 
+        return new TrackCurrent( predicates.iterator( p, tm ) )
             {
             public void remove()
                 {
@@ -194,7 +209,7 @@ public class GraphMem extends GraphBase implements Graph
 
     protected ExtendedIterator baseIterator( Triple t )
         {
-        return new TrackingTripleIterator( t, subjects.iterator() )
+        return new TrackCurrent( subjects.iterator( t ) )
             {
             public void remove()
                 {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedIterator.java,v 1.4 2003-08-27 13:07:54 andy_seaborne Exp $
+  $Id: WrappedIterator.java,v 1.5 2004-07-08 13:00:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -54,7 +54,7 @@ public class WrappedIterator extends NiceIterator
         tests [that were] scattered through the code.
     */
     public static void close( Iterator it )
-        { if (it instanceof ClosableIterator) ((ClosableIterator) it).close(); }
+        { NiceIterator.close( it ); }
     }
 
 /*
