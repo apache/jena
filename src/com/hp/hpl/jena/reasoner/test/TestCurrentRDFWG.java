@@ -5,14 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestCurrentRDFWG.java,v 1.1 2003-07-25 16:32:39 der Exp $
+ * $Id: TestCurrentRDFWG.java,v 1.2 2003-08-19 09:25:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import com.hp.hpl.jena.mem.ModelMem;
-import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasoner;
-import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
-//import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
+//import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasoner;
+//import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * Test the default RDFS reasoner against the current set of working group tests
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-25 16:32:39 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-19 09:25:15 $
  */
 public class TestCurrentRDFWG extends TestCase {
     
@@ -55,9 +55,9 @@ public class TestCurrentRDFWG extends TestCase {
         TestSuite suite = new TestSuite();
         try {
             Resource config = new ModelMem().createResource().addProperty(ReasonerVocabulary.PROPenableCMPScan, true);
-//            config.addProperty(ReasonerVocabulary.PROPtraceOn, true);
-//            constructRDFWGtests(suite, RDFSRuleReasonerFactory.theInstance(), null);
-            constructRDFWGtests(suite, RDFSReasonerFactory.theInstance(), null);
+            config.addProperty(ReasonerVocabulary.PROPtraceOn, true);
+            constructRDFWGtests(suite, RDFSRuleReasonerFactory.theInstance(), null);
+//            constructRDFWGtests(suite, RDFSReasonerFactory.theInstance(), null);
                         
         } catch (IOException e) {
             // failed to even built the test harness

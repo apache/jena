@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LiteralLabel.java,v 1.5 2003-08-01 13:25:41 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.6 2003-08-19 09:25:06 der Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -58,7 +58,7 @@ final public class LiteralLabel {
 
     /**
      * The xml:lang tag. For xsd literals this is ignored and not part of
-     * equality. For xml and plain literals it is not ignored. The lang of a
+     * equality. For plain literals it is not ignored. The lang of a
      * literal is fixed when it is created.
      */
     final private String lang;
@@ -80,7 +80,7 @@ final public class LiteralLabel {
      * the form is not legal this will throw an exception.
      * 
      * @param lex the lexical form of the literal
-     * @param lang the optional language tag
+     * @param lang the optional language tag, only relevant for plain literals
      * @param dtype the type of the literal, null for old style "plain" literals
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
@@ -98,7 +98,7 @@ final public class LiteralLabel {
     /**
      * Build a plain literal label from its lexical form. 
      * @param lex the lexical form of the literal
-     * @param lang the optional language tag
+     * @param lang the optional language tag, only relevant for plain literals
      */
     public LiteralLabel(String lex, String lang) {
         this(lex, lang, null);
@@ -108,7 +108,7 @@ final public class LiteralLabel {
      * Build a typed literal label from its value form.
      * 
      * @param value the value of the literal
-     * @param lang the optional language tag
+     * @param lang the optional language tag, only relevant for plain literals
      * @param dtype the type of the literal, null for old style "plain" literals
      */
     public LiteralLabel(Object value, String lang, RDFDatatype dtype) {
@@ -122,7 +122,7 @@ final public class LiteralLabel {
      * 
      * @param lex the lexical form of the literal
      * @param value the value of the literal
-     * @param lang the optional language tag
+     * @param lang the optional language tag, only relevant for plain literals
      * @param dtype the type of the literal, null for old style "plain" literals
      */
     public LiteralLabel(String lex, Object value, String lang, RDFDatatype dtype) {
@@ -276,14 +276,14 @@ final public class LiteralLabel {
             (dtype == null
                 ? otherLiteral.dtype == null
                 : dtype.equals(otherLiteral.dtype));
+        boolean langEqual = 
+            (dtype == null ? lang.equalsIgnoreCase(otherLiteral.lang) : true);
         if (wellformed) {
-            return typeEqual
-                && value.equals(otherLiteral.value)
-                && lang.equalsIgnoreCase(otherLiteral.lang);
+            return typeEqual && langEqual 
+                && value.equals(otherLiteral.value);
         } else {
-            return typeEqual
-                && lexicalForm.equals(otherLiteral.lexicalForm)
-                && lang.equalsIgnoreCase(otherLiteral.lang);
+            return typeEqual && langEqual
+                && lexicalForm.equals(otherLiteral.lexicalForm);
         }
     }
 

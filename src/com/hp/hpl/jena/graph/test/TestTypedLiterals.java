@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.22 2003-07-23 07:20:02 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.23 2003-08-19 09:25:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -30,7 +30,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-07-23 07:20:02 $
+ * @version $Revision: 1.23 $ on $Date: 2003-08-19 09:25:15 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -82,7 +82,7 @@ public class TestTypedLiterals extends TestCase {
         
         // check equality function
         assertSame("language sensitive comparison", l1, l4);
-        assertDiffer("language sensitive", l1, l2);
+        assertSame("language sensitive", l1, l2);
         assertDiffer("datatype sensitive", l1, l5);
         assertDiffer("value sensitive", l1, l3);
         assertDiffer("typed and plain differ", l1, l6);
@@ -264,9 +264,9 @@ public class TestTypedLiterals extends TestCase {
         assertSame("Ignore language in integer", l1, l2);
         assertSame("Ignore language in integer", l1, l4);
         
-        l1 = m.createTypedLiteral("1", "", XSDDatatype.XSDint);
-        l2 = m.createTypedLiteral("1", "", XSDDatatype.XSDinteger);
-        l3 = m.createTypedLiteral("1", "", XSDDatatype.XSDnonNegativeInteger);
+        l1 = m.createTypedLiteral("1", XSDDatatype.XSDint);
+        l2 = m.createTypedLiteral("1", XSDDatatype.XSDinteger);
+        l3 = m.createTypedLiteral("1", XSDDatatype.XSDnonNegativeInteger);
         
         assertSame("numeric comparisons", l1, l2);
         assertSame("numeric comparisons", l3, l2);
@@ -276,11 +276,11 @@ public class TestTypedLiterals extends TestCase {
      * Test plain literal/xsd:string/xsd:int equality operations
      */
     public void testPlainSameValueAs() {
-        Literal lString = m.createTypedLiteral("10", "", XSDDatatype.XSDstring );
-        Literal lPlain = m.createTypedLiteral("10", "", (RDFDatatype)null );
-        Literal lPlain3 = m.createTypedLiteral("10", "", (String)null );
+        Literal lString = m.createTypedLiteral("10", XSDDatatype.XSDstring );
+        Literal lPlain = m.createTypedLiteral("10", (RDFDatatype)null );
+        Literal lPlain3 = m.createTypedLiteral("10", (String)null );
         Literal lPlain2 = m.createLiteral("10");
-        Literal lInt =  m.createTypedLiteral("10", "", XSDDatatype.XSDint );
+        Literal lInt =  m.createTypedLiteral("10", XSDDatatype.XSDint );
         
         assertSame("Null type = plain literal", lPlain, lPlain2);
         assertSame("Null type = plain literal", lPlain, lPlain3);
@@ -342,7 +342,7 @@ public class TestTypedLiterals extends TestCase {
      */
     public void testDateTime() {
         // Duration
-        Literal l1 = m.createTypedLiteral("P1Y2M3DT5H6M7.5S", "", XSDDatatype.XSDduration);
+        Literal l1 = m.createTypedLiteral("P1Y2M3DT5H6M7.5S", XSDDatatype.XSDduration);
         assertEquals("duration data type", XSDDatatype.XSDduration, l1.getDatatype());
         assertEquals("duration java type", XSDDuration.class, l1.getValue().getClass());
         assertEquals("duration value", 1, ((XSDDuration)l1.getValue()).getYears());
@@ -353,11 +353,11 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("duration value", 7, ((XSDDuration)l1.getValue()).getFullSeconds());
         assertFloatEquals("duration value", 18367.5, ((XSDDuration)l1.getValue()).getTimePart());
         assertEquals("serialization", "P1Y2M3DT5H6M7.5S", l1.getValue().toString());
-        assertEquals("equality test", l1, m.createTypedLiteral("P1Y2M3DT5H6M7.5S", "", XSDDatatype.XSDduration));
-        assertTrue("inequality test", l1 != m.createTypedLiteral("P1Y2M2DT5H6M7.5S", "", XSDDatatype.XSDduration));
+        assertEquals("equality test", l1, m.createTypedLiteral("P1Y2M3DT5H6M7.5S", XSDDatatype.XSDduration));
+        assertTrue("inequality test", l1 != m.createTypedLiteral("P1Y2M2DT5H6M7.5S", XSDDatatype.XSDduration));
         
         // dateTime
-        l1 = m.createTypedLiteral("1999-05-31T12:56:32Z", "", XSDDatatype.XSDdateTime);
+        l1 = m.createTypedLiteral("1999-05-31T12:56:32Z", XSDDatatype.XSDdateTime);
         XSDDateTime xdt = (XSDDateTime)l1.getValue();
         assertEquals("dateTime data type", XSDDatatype.XSDdateTime, l1.getDatatype());
         assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
@@ -381,11 +381,11 @@ public class TestTypedLiterals extends TestCase {
         */
         testCal.set(Calendar.MILLISECOND, 0);   // ms field can be undefined on Linux
         assertEquals("calendar value", cal, testCal);
-        assertEquals("equality test", l1, m.createTypedLiteral("1999-05-31T12:56:32Z", "", XSDDatatype.XSDdateTime));
-        assertTrue("inequality test", l1 != m.createTypedLiteral("1999-04-31T12:56:32Z", "", XSDDatatype.XSDdateTime));
+        assertEquals("equality test", l1, m.createTypedLiteral("1999-05-31T12:56:32Z", XSDDatatype.XSDdateTime));
+        assertTrue("inequality test", l1 != m.createTypedLiteral("1999-04-31T12:56:32Z", XSDDatatype.XSDdateTime));
         
         // date
-        l1 = m.createTypedLiteral("1999-05-31", "", XSDDatatype.XSDdate);
+        l1 = m.createTypedLiteral("1999-05-31", XSDDatatype.XSDdate);
         assertEquals("dateTime data type", XSDDatatype.XSDdate, l1.getDatatype());
         assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
         xdt = (XSDDateTime)l1.getValue();
@@ -398,7 +398,7 @@ public class TestTypedLiterals extends TestCase {
         } catch (IllegalDateTimeFieldException e) {}
         
         // time
-        l1 = m.createTypedLiteral("12:56:32", "", XSDDatatype.XSDtime);
+        l1 = m.createTypedLiteral("12:56:32", XSDDatatype.XSDtime);
         assertEquals("dateTime data type", XSDDatatype.XSDtime, l1.getDatatype());
         assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
         xdt = (XSDDateTime)l1.getValue();
@@ -411,7 +411,7 @@ public class TestTypedLiterals extends TestCase {
         } catch (IllegalDateTimeFieldException e) {}
         
         // gYearMonth
-        l1 = m.createTypedLiteral("1999-05", "", XSDDatatype.XSDgYearMonth);
+        l1 = m.createTypedLiteral("1999-05", XSDDatatype.XSDgYearMonth);
         assertEquals("dateTime data type", XSDDatatype.XSDgYearMonth, l1.getDatatype());
         assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
         xdt = (XSDDateTime)l1.getValue();
@@ -423,7 +423,7 @@ public class TestTypedLiterals extends TestCase {
         } catch (IllegalDateTimeFieldException e) {}
         
         // gYear
-        l1 = m.createTypedLiteral("1999", "", XSDDatatype.XSDgYear);
+        l1 = m.createTypedLiteral("1999", XSDDatatype.XSDgYear);
         assertEquals("dateTime data type", XSDDatatype.XSDgYear, l1.getDatatype());
         assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
         xdt = (XSDDateTime)l1.getValue();
@@ -434,7 +434,7 @@ public class TestTypedLiterals extends TestCase {
         } catch (IllegalDateTimeFieldException e) {}
         
         // gMonth
-        l1 = m.createTypedLiteral("--05--", "", XSDDatatype.XSDgMonth);
+        l1 = m.createTypedLiteral("--05--", XSDDatatype.XSDgMonth);
         assertEquals("dateTime data type", XSDDatatype.XSDgMonth, l1.getDatatype());
         assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
         xdt = (XSDDateTime)l1.getValue();
@@ -445,7 +445,7 @@ public class TestTypedLiterals extends TestCase {
         } catch (IllegalDateTimeFieldException e) {}
         
         // gMonthDay
-        l1 = m.createTypedLiteral("--05-25", "", XSDDatatype.XSDgMonthDay);
+        l1 = m.createTypedLiteral("--05-25", XSDDatatype.XSDgMonthDay);
         assertEquals("dateTime data type", XSDDatatype.XSDgMonthDay, l1.getDatatype());
         assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
         xdt = (XSDDateTime)l1.getValue();
@@ -457,7 +457,7 @@ public class TestTypedLiterals extends TestCase {
         } catch (IllegalDateTimeFieldException e) {}
         
         // gDay
-        l1 = m.createTypedLiteral("---25", "", XSDDatatype.XSDgDay);
+        l1 = m.createTypedLiteral("---25", XSDDatatype.XSDgDay);
         assertEquals("dateTime data type", XSDDatatype.XSDgDay, l1.getDatatype());
         assertEquals("dateTime java type", XSDDateTime.class, l1.getValue().getClass());
         xdt = (XSDDateTime)l1.getValue();
@@ -496,7 +496,7 @@ public class TestTypedLiterals extends TestCase {
      * Test the isValidLiteral machinery
      */
     public void testIsValidLiteral() {
-        Literal l = m.createTypedLiteral("1000", "", XSDDatatype.XSDinteger);
+        Literal l = m.createTypedLiteral("1000", XSDDatatype.XSDinteger);
         LiteralLabel ll = l.asNode().getLiteral();
         assertTrue(XSDDatatype.XSDlong.isValidLiteral(ll));
         assertTrue(XSDDatatype.XSDint.isValidLiteral(ll));
@@ -510,7 +510,7 @@ public class TestTypedLiterals extends TestCase {
         assertTrue( ! XSDDatatype.XSDbyte.isValidLiteral(ll));
         assertTrue( ! XSDDatatype.XSDnegativeInteger.isValidLiteral(ll));
         
-        l = m.createTypedLiteral("-2", "", XSDDatatype.XSDinteger);
+        l = m.createTypedLiteral("-2", XSDDatatype.XSDinteger);
         ll = l.asNode().getLiteral();
         assertTrue(XSDDatatype.XSDlong.isValidLiteral(ll));
         assertTrue(XSDDatatype.XSDint.isValidLiteral(ll));
@@ -524,12 +524,12 @@ public class TestTypedLiterals extends TestCase {
         assertTrue(XSDDatatype.XSDbyte.isValidLiteral(ll));
         assertTrue(XSDDatatype.XSDnegativeInteger.isValidLiteral(ll));
 
-        l = m.createTypedLiteral("4.5", "", XSDDatatype.XSDfloat);
+        l = m.createTypedLiteral("4.5", XSDDatatype.XSDfloat);
         ll = l.asNode().getLiteral();
         assertTrue(! XSDDatatype.XSDdouble.isValidLiteral(ll));
         assertTrue(! XSDDatatype.XSDdecimal.isValidLiteral(ll));
          
-        Literal l2 = m.createTypedLiteral("foo", "", XSDDatatype.XSDstring);
+        Literal l2 = m.createTypedLiteral("foo", XSDDatatype.XSDstring);
         assertTrue(XSDDatatype.XSDstring.isValidLiteral(l2.asNode().getLiteral()));
         assertTrue(XSDDatatype.XSDnormalizedString.isValidLiteral(l2.asNode().getLiteral()));
         assertTrue( ! XSDDatatype.XSDint.isValidLiteral(l2.asNode().getLiteral()));
@@ -566,7 +566,7 @@ public class TestTypedLiterals extends TestCase {
         
         // Check alternativ form doesn't provoke exceptions
         RDFDatatype dateType = XSDDatatype.XSDdate;
-        Literal l = m.createTypedLiteral("2003-05-21", "", dateType);
+        Literal l = m.createTypedLiteral("2003-05-21", dateType);
         
         // Check alt time times
         checkSerialization("2003-05-21", XSDDatatype.XSDdate);
@@ -605,7 +605,7 @@ public class TestTypedLiterals extends TestCase {
      */
     public void checkIllegalLiteral(String lex, RDFDatatype dtype) {
         try {
-            Literal l = m.createTypedLiteral(lex, "lang", dtype);
+            Literal l = m.createTypedLiteral(lex, dtype);
             l.getValue();
             assertTrue("Failed to catch '" + lex + "' as an illegal " + dtype, false);
         } catch (DatatypeFormatException e1) {
@@ -617,7 +617,7 @@ public class TestTypedLiterals extends TestCase {
      * Check can legally construct a literal with given lex, value and dtype
      */
     public void checkLegalLiteral(String lex, RDFDatatype dtype, Class jtype, Object value) {
-        Literal l = m.createTypedLiteral(lex, "lang", dtype);
+        Literal l = m.createTypedLiteral(lex, dtype);
         assertEquals(l.getValue().getClass(), jtype);
         assertEquals(l.getValue(), value);
         assertEquals(l.getDatatype(), dtype);
@@ -627,7 +627,7 @@ public class TestTypedLiterals extends TestCase {
      * Chek the serialization of the parse of a value.
      */
     public void checkSerialization(String lex, RDFDatatype dtype) {
-        Literal l = m.createTypedLiteral(lex, "", dtype);
+        Literal l = m.createTypedLiteral(lex, dtype);
         assertEquals(l.getValue().toString(), lex);
     }
     
