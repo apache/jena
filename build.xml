@@ -232,7 +232,7 @@
                 <package name="com.hp.hpl.jena.graph.compose"/>
                 <package name="com.hp.hpl.jena.graph.query"/>
                 <package name="com.hp.hpl.jena.reasoner.rulesys"/>
-                <package name="com.hp.hpl.jena.reasoner.builtins"/>
+                <package name="com.hp.hpl.jena.reasoner.rulesys.builtins"/>
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
 		<package name="com.hp.hpl.jena.shared"/>
