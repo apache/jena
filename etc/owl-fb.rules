@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.32 2003-09-25 13:18:13 der Exp $
+# $Id: owl-fb.rules,v 1.33 2003-09-29 20:45:24 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -289,11 +289,7 @@
 # someValuesFrom
 #------------------------------------------------------------------
 
-# Are all the guards still necessary?
-[some1: (?C rdfs:subClassOf some(?P, ?D)), notEqual(?P, owl:sameAs),
-					notEqual(?C, owl:Class), notEqual(?C, rdfs:Class), 
-					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
-					notEqual(?P, owl:equivalentProperty), notEqual(?P, owl:equivalentClass),
+[some1: (?C rdfs:subClassOf some(?P, ?D)), noValue(?D rdfs:subClassOf ?C)
    ->
     [some1b: (?X ?P ?T) <- (?X rdf:type ?C),  noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
     [some1b2: (?T rdf:type ?D) <- (?X rdf:type ?C), makeInstance(?X, ?P, ?D, ?T) ] 
@@ -303,6 +299,14 @@
 #    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
 #    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
     ]
+
+# Variant on the normal someValuesFrom rule from the case of recursive restrictions
+# will only handle ground queries to avoid infinite models.
+[some1x: (?C rdfs:subClassOf some(?P, ?D)) (?D rdfs:subClassOf ?C)
+   ->
+    [some1b: (?X ?P ?T) <- (?X rdf:type ?C),  noValue(?X, ?P), makeInstance(?X, ?P, ?C, ?T) ] 
+    [some1b2: (?T rdf:type ?C) <- bound(?T) (?X rdf:type ?C), makeInstance(?X, ?P, ?D, ?T) ] 
+]
     
 #[someRec: (?C owl:equivalentClass some(?P, ?D)), (?P rdfs:range ?D) ->
 #     [someRecb: (?X rdf:type ?C) <- (?X ?P ?A) ] ]
@@ -584,10 +588,10 @@
 -> (xsd:decimal rb:xsdBase xsd:decimal).
 -> (xsd:string rb:xsdBase xsd:string).
 -> (xsd:boolean rb:xsdBase xsd:boolean).
--> (xsd:date rdf:xsdBase xsd:date).
--> (xsd:time rdf:xsdBase xsd:time).
--> (xsd:dateTime rdf:xsdBase dateTime).
--> (xsd:duration rdf:duration xsd:duration).
+-> (xsd:date rb:xsdBase xsd:date).
+-> (xsd:time rb:xsdBase xsd:time).
+-> (xsd:dateTime rb:xsdBase xsd:dateTime).
+-> (xsd:duration rb:xsdBase xsd:duration).
 
 # Describe range (base type, signed, min bits)
 -> (xsd:byte    rb:xsdRange xsd(xsd:integer,1,8)).
