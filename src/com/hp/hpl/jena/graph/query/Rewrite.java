@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Rewrite.java,v 1.1 2004-07-21 13:12:06 chris-dollin Exp $
+  $Id: Rewrite.java,v 1.2 2004-07-21 13:45:12 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -18,9 +18,11 @@ public class Rewrite
         if (pattern == null)
             return e;
         else if (isStartsWith( pattern ))
-            return Rewrite.startsWith( L, pattern.substring( 1 ));
+            return startsWith( L, pattern.substring( 1 ));
+        else if (isContains( pattern ))
+            return contains( L, pattern );
         else if (isEndsWith( pattern ))
-            return Rewrite.endsWith( L, pattern.substring( 0, pattern.length() - 1 ) );
+            return endsWith( L, pattern.substring( 0, pattern.length() - 1 ) );
         return e;
         }
 
@@ -54,16 +56,29 @@ public class Rewrite
         final Expression R = new Expression.Fixed( S );
         return new Dyadic( L, ExpressionFunctionURIs.prefix + "J_startsWith", R )
             { 
-            public boolean valBool( Object l, Object r )
+            public boolean evalBool( Object l, Object r )
                 { return l.toString().startsWith( r.toString() ); }
             };            
         }
 
+    public static Expression contains( final Expression L, final String S )
+        {
+        final Expression R = new Expression.Fixed( S );
+        return new Dyadic( L, ExpressionFunctionURIs.prefix + "J_contains", R )
+            { 
+            public boolean evalBool( Object l, Object r )
+                { return l.toString().indexOf( r.toString() ) > -1; }
+            };            
+        }
+    
     public static boolean notSpecial( String pattern )
         {
         return pattern.matches( "[A-Za-z0-9-_ ]*" );
         }
 
+    public static boolean isContains( String pattern )
+        { return notSpecial( pattern ); }
+    
     public static boolean isStartsWith( String pattern )
         {
         return pattern.startsWith( "^" ) && notSpecial( pattern.substring( 1 ) );

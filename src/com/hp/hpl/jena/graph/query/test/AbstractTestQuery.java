@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.24 2004-07-21 13:12:07 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.25 2004-07-21 13:46:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -600,6 +600,19 @@ public abstract class AbstractTestQuery extends GraphTestBase
         String F = "Q_StringMatch";
         Expression provided = dyadic( L, "Q_StringMatch", R );
         Expression desired = dyadic( L, "J_endsWith", constant( "ends" ) );
+        q.addConstraint( provided );
+        Expression e2 = (Expression) q.getConstraints().iterator().next();
+        assertEquals( desired, e2 );
+        }
+
+    public void testRewriteContainsExpression()
+        {
+        Query q = new Query();
+        Expression L = constant( "x" );
+        Expression R = constant( "/contains/" );
+        String F = "Q_StringMatch";
+        Expression provided = dyadic( L, "Q_StringMatch", R );
+        Expression desired = dyadic( L, "J_contains", constant( "contains" ) );
         q.addConstraint( provided );
         Expression e2 = (Expression) q.getConstraints().iterator().next();
         assertEquals( desired, e2 );

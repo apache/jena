@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.4 2004-07-21 13:12:07 chris-dollin Exp $
+  $Id: TestExpressions.java,v 1.5 2004-07-21 13:46:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -39,7 +39,15 @@ public class TestExpressions extends GraphTestBase
     
     public void testDyadicEquality()
         {
-        
+        Expression A = lit( "Aaa" ), B = lit( "Bee" );
+        assertDiffer( A, B );
+        assertEquals( Rewrite.contains( A, "groo" ), Rewrite.contains( A, "groo" ) );
+        assertEquals( Rewrite.contains( B, "oops" ), Rewrite.contains( B, "oops" ) );
+        assertDiffer( Rewrite.contains( A, "groo" ), Rewrite.contains( A, "glue" ) );
+        assertDiffer( Rewrite.contains( A, "groo" ), Rewrite.contains( B, "groo" ) );
+        assertDiffer( Rewrite.contains( A, "blue" ), Rewrite.startsWith( A, "blue" ) );
+        assertDiffer( Rewrite.contains( A, "blue" ), Rewrite.endsWith( A, "blue" ) );
+        assertDiffer( Rewrite.endsWith( A, "blue" ), Rewrite.startsWith( A, "blue" ) );
         }
 
     public void testLiterals()
@@ -74,15 +82,15 @@ public class TestExpressions extends GraphTestBase
 
     protected void testFixed( Object value )
         {
-        Expression e = new Expression.Fixed( value );
+        Expression e = lit( value );
         assertEquals( value, e.getValue() );
-        assertEquals( value, e.prepare( empty ).evalObject( none ) );
+        assertEquals( value, evalObject( e ) );
         }
     
     public void testDyadic()
         {
-        Expression L = new Expression.Fixed( "a" );
-        Expression R = new Expression.Fixed( "b" );
+        Expression L = lit( "a" );
+        Expression R = lit( "b" );
         Expression e = new Dyadic( L, "eh:op", R )
         	{
             public Object evalObject( Object x, Object y )
@@ -92,8 +100,47 @@ public class TestExpressions extends GraphTestBase
         assertSame( L, e.getArg( 0 ) );
         assertSame( R, e.getArg( 1 ) );
         assertEquals( "eh:op", e.getFun() );
-        assertEquals( "a--b", e.prepare( empty ).evalObject( none ) );
+        assertEquals( "a--b", evalObject(e) );
         }
+
+    public void testStartsWith()
+        {
+        assertEquals( true, evalBool( Rewrite.startsWith( lit( "hello" ), "h" ) ) );
+        assertEquals( true, evalBool( Rewrite.startsWith( lit( "hello" ), "he" ) ) );
+        assertEquals( true, evalBool( Rewrite.startsWith( lit( "hello" ), "hel" ) ) );
+        assertEquals( false, evalBool( Rewrite.startsWith( lit( "hello" ), "e" ) ) );
+        assertEquals( false, evalBool( Rewrite.startsWith( lit( "hello" ), "llo" ) ) );
+        assertEquals( false, evalBool( Rewrite.startsWith( lit( "hello" ), "xhe" ) ) );
+        }
+
+    public void testContains()
+        {
+        assertEquals( true, evalBool( Rewrite.contains( lit( "hello" ), "h" ) ) );
+        assertEquals( true, evalBool( Rewrite.contains( lit( "hello" ), "e" ) ) );
+        assertEquals( true, evalBool( Rewrite.contains( lit( "hello" ), "ll" ) ) );
+        assertEquals( false, evalBool( Rewrite.contains( lit( "hello" ), "x" ) ) );
+        assertEquals( false, evalBool( Rewrite.contains( lit( "hello" ), "the" ) ) );
+        assertEquals( false, evalBool( Rewrite.contains( lit( "hello" ), "lot" ) ) );
+        }
+
+    public void testEndsWith()
+        {
+        assertEquals( true, evalBool( Rewrite.endsWith( lit( "hello" ), "o" ) ) );
+        assertEquals( true, evalBool( Rewrite.endsWith( lit( "hello" ), "lo" ) ) );
+        assertEquals( true, evalBool( Rewrite.endsWith( lit( "hello" ), "hello" ) ) );
+        assertEquals( false, evalBool( Rewrite.endsWith( lit( "hello" ), "ll" ) ) );
+        assertEquals( false, evalBool( Rewrite.endsWith( lit( "hello" ), "hel" ) ) );
+        assertEquals( false, evalBool( Rewrite.endsWith( lit( "hello" ), "quantum" ) ) );
+        }
+
+    private Object evalObject(Expression e)
+        { return e.prepare( empty ).evalObject( none ); }
+    
+    private boolean evalBool(Expression e)
+        { return e.prepare( empty ).evalBool( none ); }
+
+    protected Expression lit( Object x )
+        { return new Expression.Fixed( x ); }
     
     }
 
