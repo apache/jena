@@ -53,13 +53,13 @@ and the triples entailed from them via RDF+RDFS entailment.<br>
   in the example) and raw assertional information (<i>data</i> in the example) 
 is optional. Some reasoners may require a strict separation of terminology 
 and instance data, others may allow both binds but be lax about the allowed 
-contents of each, others may not support the <i>bindRuleset</i> stage. <br>
+contents of each, others may not support the <i>bindSchema</i> stage. <br>
 </p>
 <p>The existing built-in reasoners allow a single <i>tbox</i> together with 
-a single <i>data</i> but the <i>tbox</i> is optional and unrestricted. In 
-the case of the RDFSReasoner in the example some work is done at bindRuleset 
+a single <i>data</i> bind but the <i>tbox</i> is optional and unrestricted. In 
+the case of the RDFSReasoner in the example, some work is done at bindSchema time
 to cache information on property and class lattices that may be reused across 
-multiple data sets but the extent of that reuse is lessened if the data also 
+multiple data sets but the extent of that reuse is lessened if the data graph also 
 contains such schema assertions.</p>
 </body>
 </html>

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.1 2003-01-30 18:31:12 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.2 2003-03-30 20:52:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -24,8 +24,8 @@ import java.util.*;
  * of storage. 
  * <p>
  * The current implementation stores the direct relations as real graph
- * (objects link together by pointers). As relations are added redundant
- * ones which could be reconstructed from the closure are dropeed. To 
+ * (objects linked together by pointers). As relations are added redundant
+ * ones which could be reconstructed from the closure are dropped. To 
  * access the direct "minimal" version of the relation we just have to
  * read out these links. To access the transitively closed version we
  * have to walk the graph, however the results of these walks can be optionally
@@ -37,11 +37,9 @@ import java.util.*;
  * <p>
  * TODO - this file has got much too long, pull out the graph and
  * iterator machinery as separate top level classes. </p>
- * <p>
- * TODO - do a reflexive version or make reflexive all the time? </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:31:12 $
+ * @version $Revision: 1.2 $ on $Date: 2003-03-30 20:52:43 $
  */
 public class TransitiveGraphCache implements Finder {
 

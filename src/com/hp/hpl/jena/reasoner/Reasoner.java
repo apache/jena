@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Reasoner.java,v 1.3 2003-02-10 10:13:22 der Exp $
+ * $Id: Reasoner.java,v 1.4 2003-03-30 20:53:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.Graph;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-02-10 10:13:22 $
+ * @version $Revision: 1.4 $ on $Date: 2003-03-30 20:53:27 $
  */
 public interface Reasoner {
     
@@ -50,7 +50,7 @@ public interface Reasoner {
     public Reasoner bindSchema(Graph tbox) throws ReasonerException;
     
     /**
-     * Attach the reasoner to a set of RDF ddata to process.
+     * Attach the reasoner to a set of RDF data to process.
      * The reasoner may already have been bound to specific rules or ontology
      * axioms (encoded in RDF) through earlier bindRuleset calls.
      * @param data the RDF data to be processed, some reasoners may restrict
