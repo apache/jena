@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Dec-2003
  * Filename           $RCSfile: SimpleXMLPathIterator.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 09:28:14 $
+ * Last modified on   $Date: 2003-12-09 12:57:27 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -35,7 +35,7 @@ import org.w3c.dom.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SimpleXMLPathIterator.java,v 1.2 2003-12-08 09:28:14 ian_dickinson Exp $
+ * @version CVS $Id: SimpleXMLPathIterator.java,v 1.3 2003-12-09 12:57:27 ian_dickinson Exp $
  */
 public class SimpleXMLPathIterator 
     implements Iterator
@@ -148,6 +148,7 @@ public class SimpleXMLPathIterator
             else if (!j.hasNext()) {
                 // finished iterator
                 m_stack.add( i, null );
+                m_result = null;
                 i--;
             }
             else {
