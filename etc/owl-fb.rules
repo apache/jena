@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.21 2003-09-10 16:34:18 der Exp $
+# $Id: owl-fb.rules,v 1.22 2003-09-15 12:31:25 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -495,11 +495,15 @@
 # by the additional of a validation control triple to the graph.
 #------------------------------------------------------------------
 
-[validationMax0: (?v rb:validation on()), (?C owl:equivalentClass max(?P, 0))  ->
+[validationDomainMax0: (?v rb:validation on()), (?C rdfs:subClassOf max(?P, 0)), (?P rdfs:domain ?C)  ->
+    (?P rb:violation error('inconsistent property definition', 'Property defined with domain which has a max(0) restriction for that property (domain)', ?C) )
+]
+
+[validationMax0: (?v rb:validation on()), (?C rdfs:subClassOf max(?P, 0))  -> 
     [max2b: (?X rb:violation error('too many values', 'Value for max-0 property (prop, class)', ?P, ?C))
     			<- (?X rdf:type ?C), (?X ?P ?Y) ] ]
 
-[validationMaxN: (?v rb:validation on()), (?C owl:equivalentClass max(?P, ?N)) ->
+[validationMaxN: (?v rb:validation on()), (?C rdfs:subClassOf max(?P, ?N)) ->
     [max2b: (?X rb:violation error('too many values', 'Too many values on max-N property (prop, class)', ?P, ?C))
     			<- (?X rdf:type ?C), countLiteralValues(?X, ?P, ?M), lessThan(?N, ?M)  ] ]
 
@@ -523,7 +527,7 @@
 	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to range rdsf:Literal (prop, value)', ?P, ?V))
 				<- (?X ?P ?V), notLiteral(?V), notBNode(?V) ] ]
 
-[validationAllFrom: (?v rb:validation on()), (?C rdfs:subClassOF all(?P, ?R)) (?R rdf:type rdfs:Datatype) ->
+[validationAllFrom: (?v rb:validation on()), (?C rdfs:subClassOf all(?P, ?R)) (?R rdf:type rdfs:Datatype) ->
 	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to allValuesFrom (prop, value)', ?P, ?V))
 				<- (?X ?P ?V), (?X rdf:type ?C), notDType(?V, ?R) ] ]
 
