@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.io.*;
 import java.util.zip.*;
 
+import com.hp.hpl.jena.shared.*;
+
 /**
  * This class provides input streams that:
  * 1: can be from a URL or from a zip
@@ -96,10 +98,10 @@ class ARPTestInputStreamFactory {
 				}
 				return new LazyURLInputStream(url);
 			} catch (MalformedURLException e) {
-				throw new RuntimeException(e.getMessage());
+				throw new JenaException( e );
 			} catch (IOException e) {
 				e.printStackTrace();
-				throw new RuntimeException(e.getMessage());
+				throw new JenaException( e );
 			}
 		}
 		if (!in)

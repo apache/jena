@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.13 $ $Date: 2003-05-22 09:42:58 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.14 $ $Date: 2003-06-12 08:59:15 $
  */
 public class StatementImpl  implements Statement {
     
@@ -63,7 +63,6 @@ public class StatementImpl  implements Statement {
                          Model model) throws RDFException {
         this.model = model;
         this.subject = (Resource) subject.inModel( model ); 
-        if (this.subject.getModel() != model) throw new RuntimeException( "BOTHER "  + subject );
         this.predicate = (Property) predicate.inModel( model ); 
         this.object = object.inModel( model ); 
     }    

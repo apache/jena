@@ -24,20 +24,13 @@ class NTripleTestSuite extends WGTestSuite {
 	}
 
 	static  TestSuite suite(URI testDir, String d, String nm) {
-		try {
-			return new NTripleTestSuite(new ARPTestInputStreamFactory(testDir, d), nm, true);
-		} catch (RuntimeException e) {
-			throw new RuntimeException(e.getMessage());
-		}
+	   return new NTripleTestSuite(new ARPTestInputStreamFactory(testDir, d), nm, true);
 	}
 
 	static  TestSuite suite(URI testDir, URI d, String nm) {
-		try {
-			return new NTripleTestSuite(new ARPTestInputStreamFactory(testDir, d), nm, true);
-		} catch (RuntimeException e) {
-			throw new RuntimeException(e.getMessage());
-		}
+		return new NTripleTestSuite(new ARPTestInputStreamFactory(testDir, d), nm, true);
 	}
+    
 	Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
 		throws IOException, RDFException {
 		InputStream oldIn = System.in;

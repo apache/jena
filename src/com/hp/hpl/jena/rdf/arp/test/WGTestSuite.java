@@ -104,15 +104,11 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     static private Property warning;
     static private Property errorCodes;
     static {
-        try {
             status = new PropertyImpl(testNS, "status");
             input = new PropertyImpl(testNS, "inputDocument");
             output = new PropertyImpl(testNS, "outputDocument");
             warning = new PropertyImpl(testNS, "warning");
             errorCodes = new PropertyImpl(jjcNS, "error");
-        } catch (JenaException e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
     static private Resource rdfxml =
         new ResourceImpl(testNS, "RDF-XML-Document");
@@ -181,7 +177,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             m = loadRDF(in, null, base + file);
         } catch (JenaException e) {
             //	System.out.println(e.getMessage());
-            throw new RuntimeException(e.getMessage());
+            throw e;
         } catch (Exception e) {
             //	e.printStackTrace();
             if (file.equals("Manifest.rdf")) {
@@ -196,6 +192,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         data.
      */
     String createMe;
+    
     WGTestSuite(ARPTestInputStreamFactory fact, String name, boolean dynamic) {
         super(name);
         factory = fact;
@@ -243,31 +240,25 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 throw re;
             } catch (Exception e) {
                 e.printStackTrace();
-                throw new RuntimeException(e.getMessage());
+                throw new JenaException( e );
 
             }
     }
+    
     private ZipFile zip;
+    
     static TestSuite suite(URI testDir, String d, String nm) {
-        try {
-            return new WGTestSuite(
-                new ARPTestInputStreamFactory(testDir, d),
-                nm,
-                true);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        return new WGTestSuite(
+            new ARPTestInputStreamFactory(testDir, d),
+            nm,
+            true);
     }
 
     static TestSuite suite(URI testDir, URI d, String nm) {
-        try {
-            return new WGTestSuite(
-                new ARPTestInputStreamFactory(testDir, d),
-                nm,
-                true);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e.getMessage());
-        }
+        return new WGTestSuite(
+            new ARPTestInputStreamFactory(testDir, d),
+            nm,
+            true);
     }
 
     private Map parts = new HashMap();
@@ -460,7 +451,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                     m1.write(w, "N-TRIPLE");
                     w.close();
                 } catch (IOException e) {
-                    throw new RuntimeException(e.getMessage());
+                    throw new JenaException( e );
                 }
             }
         }

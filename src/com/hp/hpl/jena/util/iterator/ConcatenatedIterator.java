@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedIterator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-04-10 11:01:27 $
+ * Last modified on   $Date: 2003-06-12 08:59:38 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -59,7 +59,7 @@ import com.hp.hpl.jena.rdf.model.ResIterator;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedIterator.java,v 1.3 2003-04-10 11:01:27 chris-dollin Exp $
+ * @version CVS info: $Id: ConcatenatedIterator.java,v 1.4 2003-06-12 08:59:38 chris-dollin Exp $
  */
 public class ConcatenatedIterator
     implements Iterator
@@ -108,7 +108,7 @@ public class ConcatenatedIterator
             m_iter0 = (Iterator) iter0;
         }
         else if (iter0 instanceof NodeIterator) {
-            m_iter0 = new NodeIteratorWrapper( (NodeIterator) iter0 );
+            m_iter0 =  (NodeIterator) iter0;
         }
         else if (iter0 instanceof ResIterator) {
             m_iter0 = (ResIterator) iter0; 
@@ -122,7 +122,7 @@ public class ConcatenatedIterator
             m_iter1 = (Iterator) iter1;
         }
         else if (iter1 instanceof NodeIterator) {
-            m_iter1 = new NodeIteratorWrapper( (NodeIterator) iter1 );
+            m_iter1 =  (NodeIterator) iter1;
         }
         else if (iter1 instanceof ResIterator) {
             m_iter1 = (ResIterator) iter1;
