@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.5 2003-08-22 16:13:00 wkw Exp $
+  $Id: DBQueryHandler.java,v 1.6 2003-08-25 02:17:47 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -39,8 +39,8 @@ public class DBQueryHandler extends SimpleQueryHandler {
 		doFastpath = true;
 	}
 
-	public void setFastpath ( boolean val ) { doFastpath = val; }
-	public boolean getFastpath () { return doFastpath; }
+	public void setDoFastpath ( boolean val ) { doFastpath = val; }
+	public boolean getDoFastpath () { return doFastpath; }
 
 	public Stage patternStage(
 		Mapping varMap,

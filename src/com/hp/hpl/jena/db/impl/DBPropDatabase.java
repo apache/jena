@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -40,13 +40,21 @@ public class DBPropDatabase extends DBProp {
 	public static final Node_URI dbDriverVersion = (Node_URI)DB.driverVersion.getNode();
 	public static final Node_URI dbFormatDate = (Node_URI)DB.formatDate.getNode();
 	public static final Node_URI dbGraph = (Node_URI)DB.graph.getNode();
-	public static final Node_URI dbMaxLiteral = (Node_URI)DB.maxLiteral.getNode(); 
+	public static final Node_URI dbLongObjectLength = (Node_URI)DB.longObjectLength.getNode();
+	public static final Node_URI dbIndexKeyLength = (Node_URI)DB.indexKeyLength.getNode();
+	public static final Node_URI dbIsTransactionDb = (Node_URI)DB.isTransactionDb.getNode();
+	public static final Node_URI dbDoCompressURI = (Node_URI)DB.doCompressURI.getNode();
+	public static final Node_URI dbCompressURILength = (Node_URI)DB.compressURILength.getNode();
+	public static final Node_URI dbTableNamePrefix = (Node_URI)DB.tableNamePrefix.getNode();
 	
 	public static final String dbSystemGraphName = "SystemGraph";
 	
 	protected static SimpleDateFormat dateFormat = null;
 
-	public DBPropDatabase( SpecializedGraph g, String engineType, String driverVersion, String maxLiteral) {
+	public DBPropDatabase ( SpecializedGraph g, String engineType, String driverVersion,
+		String layoutVersion, String longObjectLength, String indexKeyLength,
+		String isTransactionDb, String doCompressURI, String compressURILength,
+		String tableNamePrefix ) {
 		super(g);
 		
 		if( dateFormat == null ) {
@@ -58,11 +66,14 @@ public class DBPropDatabase extends DBProp {
 		String today = dateFormat.format( new Date());
 		if( engineType != null ) putPropString(dbEngineType, engineType);
 		if( driverVersion != null ) putPropString(dbDriverVersion, driverVersion);
-		putPropString(dbLayoutVersion, "2.0");
-		if( maxLiteral != null ) putPropString(dbMaxLiteral, maxLiteral);
+		putPropString(dbLayoutVersion, layoutVersion);
 		putPropString(dbFormatDate, today);
-		
-		// Need a set of default graph properties here.
+		putPropString(dbLongObjectLength, longObjectLength);
+		putPropString(dbIndexKeyLength, indexKeyLength);
+		putPropString(dbIsTransactionDb, isTransactionDb);
+		putPropString(dbDoCompressURI, doCompressURI);
+		putPropString(dbCompressURILength, compressURILength);
+		putPropString(dbTableNamePrefix, tableNamePrefix);
 	}
 	
 	public DBPropDatabase( SpecializedGraph g, Node n) {
@@ -77,6 +88,13 @@ public class DBPropDatabase extends DBProp {
 	public String getEngineType() { return getPropString( dbEngineType); }
 	public String getDriverVersion() { return getPropString( dbDriverVersion);}
 	public String getFormatDate() { return getPropString( dbFormatDate); }
+	public String getLayoutVersion() { return getPropString( dbLayoutVersion); }
+	public String getLongObjectLength() { return getPropString( dbLongObjectLength); }
+	public String getIndexKeyLength() { return getPropString( dbIndexKeyLength); }
+	public String getIsTransactionDb() { return getPropString( dbIsTransactionDb); }
+	public String getDoCompressURI() { return getPropString( dbDoCompressURI); }
+	public String getCompressURILength() { return getPropString( dbCompressURILength); }
+	public String getTableNamePrefix() { return getPropString( dbTableNamePrefix); }
 	
 	public void addGraph( DBPropGraph g ) {
 		putPropNode( dbGraph, g.getNode() );
