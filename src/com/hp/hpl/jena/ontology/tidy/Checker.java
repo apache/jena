@@ -17,10 +17,11 @@ import com.hp.hpl.jena.shared.BrokenException;
 import java.util.*;
 
 /**
- * This class implements the OWL Syntax Checker from the OWL Test Cases WD.
+ * This class implements the OWL Syntax Checker from the 
+ * <a href="http://www.w3.org/TR/2003/CR-owl-test-20030818/#dfn-OWL-syntax-checker">OWL Test Cases</a> Candidate Recommendation.
  * <h4>Implementation issues concerning
- * <a href="http://www.w3.org/TR/2003/WD-owl-semantics-20030331/">OWL Semantics
- * &mp; Abstract Syntax</a></h4>
+ * <a href="http://www.w3.org/TR/2003/CR-owl-semantics-20030818/">OWL Semantics
+ * &amp; Abstract Syntax</a></h4>
  * <ul>
  * <li>S&AS does not seem to say that the object of an annotation triple
  * must be one of the IDs, it seems to allow an arbitrary URIref.
@@ -28,36 +29,30 @@ import java.util.*;
  *  "http://lists.w3.org/Archives/Public/www-webont-wg/2003Mar/0066.html" 
  * >decision on OWL DL
  * Syntax</a>.</li>
- * <li>The <a href= 
- * "http://lists.w3.org/Archives/Public/www-webont-wg/2003Apr/0003.html" 
- * >Hamiltonian path</a> constraint on owl:equivalentClass is not implemented,
- * instead this implements <a href= 
- * "http://lists.w3.org/Archives/Public/www-webont-wg/2003Apr/0004.html"
- * >fix 2</a>.</li>
- * <li>The rule of S&AS seems to be that 
+ * <li>TODO - check this has been fixed. In the Last Call 
  * <pre>owl:imports rdf:type owl:OntologyProperty .
  * </pre> is permitted only if there is a triple with 
  * owl:imports as predicate.
  * This is implemented</li>
- * <li>The phrase "In keeping with their definition in RDF, rdfs:label and rdfs:
- * comment can only be used with data literals." is implemented here but missing
- * from OWL DL as triples.</li>
- * <li>Unclear what the correct treatment of XMLLiteral is.
- * I permit it, and do not require a declaration.</li>
- * </ul>
  * 
  * 
- * @author jjc
+ * 
+ * @author Jeremy J. Carroll
  *
  */
 public class Checker extends AbsChecker {
-	private GraphMaker gf;
+//	private GraphMaker gf;
 	private Vector monotoneProblems = new Vector();
 	private Vector warnings = new Vector();
 
 	private Vector nonMonotoneProblems = null;
 	private int nonMonotoneLevel;
 
+
+    /**
+     * Answer an Iterator over {@link SyntaxProblem}'s which
+     * are errors found by the syntax checker.
+     */
 	public Iterator getErrors() {
 		nonMonotoneLevel = Levels.Lite;
 		if (monotoneProblems.size() > 0)
@@ -65,6 +60,11 @@ public class Checker extends AbsChecker {
 		snapCheck();
 		return nonMonotoneProblems.iterator();
 	}
+
+	/**
+	 * Answer an Iterator over {@link SyntaxProblem}'s which
+	 * are errors or warnings found by the syntax checker.
+	 */
 	public Iterator getProblems() {
 		return new ConcatenatedIterator(getErrors(), warnings.iterator());
 	}
@@ -268,17 +268,38 @@ public class Checker extends AbsChecker {
 
 		this.nonMonotoneProblems.add(new SyntaxProblem(shortD, enh, lvl));
 	}
-
+/**
+ * Build a syntax checker with custom GraphMaker
+ * @param lite True if the checker should indicate why this is not lite.
+ * @param gf  The GraphMaker to use for the SyntaxChecker internal scratch area.
+ */
 	public Checker(boolean lite, GraphMaker gf) {
 		super(lite, gf);
-		this.gf = gf;
+		//this.gf = gf;
 	}
+	
+	/**
+	 * Construct a syntax checker.
+	 * Will not explain why something is in DL rather than Lite.	 
+	 * */
 	public Checker() {
 		this(false);
 	}
+	/**
+	 * Construct a syntax checker.
+	 * If Lite is true, {@link Checker.getProblems()} will
+	 * explain why the graph is in DL rather than Lite.
+	 * @param lite
+	 */
 	public Checker(boolean lite) {
 		this(lite, new SimpleGraphMaker());
 	}
+	/**
+	 * Include this graph in the check.
+	 * Many graphs can be checked together.
+	 * Does not process imports.
+	 * @param g A graph to include in the check.
+	 */
 	public void add(Graph g) {
 		// Add every triple
 		ClosableIterator it = null;
@@ -292,7 +313,11 @@ public class Checker extends AbsChecker {
 				it.close();
 		}
 	}
-
+/**
+ * Include an ontology and its imports
+ * in the check.
+ * @param url Load the ontology from this URL.
+ */
 	public void load(String url) {
 		// create an ontology model with no reasoner and the default doc manager
 		OntModel m =
@@ -338,6 +363,10 @@ public class Checker extends AbsChecker {
 
 		}
 	}
+	/**
+	 * Which subLanguage is this document in.
+	 * @return "Lite", "DL" or "Full".
+	 */
 	public String getSubLanguage() {
 		if (monotoneLevel < Levels.Full && monotoneProblems.size() == 0)
 			snapCheck();
@@ -364,8 +393,15 @@ public class Checker extends AbsChecker {
 		}
 
 	}
+	/**
+	 * A command-line syntax checker.
+	 * First argument, URL of document to check,
+	 * Optional second argument is "Lite", "DL" or "Full"
+	 * and error messages will be generated if needed.
+	 * @param argv
+	 */
 	static public void main(String argv[]) {
-		GraphMaker gf = ModelFactory.createMemModelMaker().getGraphMaker();
+	//	GraphMaker gf = ModelFactory.createMemModelMaker().getGraphMaker();
 
 		// create an ontology model with no reasoner and the default doc manager
 		OntModel m =
@@ -388,8 +424,9 @@ public class Checker extends AbsChecker {
 
 		Checker chk =
 			new Checker(
-				argv.length == 2 && argv[1].equalsIgnoreCase("Lite"),
-				gf);
+				argv.length == 2 && argv[1].equalsIgnoreCase("Lite")
+				//gf
+				);
 		chk.add(g);
 		//  System.err.println("g added.");
 		String subLang = chk.getSubLanguage();
