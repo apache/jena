@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-02-19 10:53:39 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-03-26 12:33:05 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource, ResourceI {
@@ -157,7 +157,7 @@ public class ResourceImpl extends EnhNode implements Resource, ResourceI {
 
 	protected ModelCom mustHaveModel()
 		{
-                    ModelCom model = (ModelCom)getGraph();
+        ModelCom model = (ModelCom)getGraph();
 		if (model == null) throw new RDFException( RDFException.NOTRELATEDTOMODEL );
 		return model;
 		}

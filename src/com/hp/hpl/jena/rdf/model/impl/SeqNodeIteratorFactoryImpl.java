@@ -39,12 +39,12 @@ import java.util.Iterator;
  *  A factory for sequence node iterators.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:37 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-03-26 12:33:05 $'
  */
 public class SeqNodeIteratorFactoryImpl extends Object 
   implements NodeIteratorFactory {
 
-    public NodeIterator createIterator(Iterator iter,Object o,Container cont) throws Exception {
-        return new SeqNodeIteratorImpl(iter, o, (Seq) cont);
+    public NodeIterator createIterator(Iterator iter, Object ignored, Container cont) throws Exception {
+        return new SeqNodeIteratorImpl(iter, (Seq) cont);
     }
 }

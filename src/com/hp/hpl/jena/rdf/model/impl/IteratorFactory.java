@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: IteratorFactory.java,v 1.2 2003-02-19 10:53:39 chris-dollin Exp $
+  $Id: IteratorFactory.java,v 1.3 2003-03-26 12:33:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -64,7 +64,7 @@ public final class IteratorFactory {
 			public Object map1(Object o) {
 				return asStatement((Triple)o,m);
 			}
-		},i),null);
+		},i));
 	}
 
 	/**

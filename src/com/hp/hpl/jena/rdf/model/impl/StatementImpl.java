@@ -40,7 +40,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2003-02-20 10:57:13 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-03-26 12:33:05 $
  */
 public class StatementImpl //extends ResourceImpl 
           implements Statement {
@@ -69,29 +69,6 @@ public class StatementImpl //extends ResourceImpl
         this.object = ((ModelI)model).convert(object);
     }    
     
-    /** Creates new StatementImpl 
-    public StatementImpl(Resource subject,
-                         Property predicate,
-                         RDFNode object,
-                         AnonId id,
-                         Model model) throws RDFException {
-        super(id, model);
-        this.subject=((ModelI)model).convert(subject);
-        this.predicate = ((ModelI)model).convert(predicate);
-        this.object = ((ModelI)model).convert(object);
-    }    
-    */
-    
-    /** Creates new StatementImpl */
-    public StatementImpl(Resource subject,
-                         Property predicate,
-                         RDFNode  object,
-                         String   URI,
-                         Model    model) throws RDFException {
-        this(subject,predicate,object,model);                 	
-        model.reifyAs(this,model.getResource(URI));
-    }
-   
     public Resource getSubject() {
         return subject;
     }
@@ -191,14 +168,11 @@ public class StatementImpl //extends ResourceImpl
     
    /** I suspect that this is now not pulling its weight. */
    private EnhNode get( Class interf ) {
-        EnhNode rslt = (EnhNode) object.as( interf );
-        if ( ! rslt.supports( interf ))
-            throw new RDFException(RDFException.OBJECTWRONGTYPE);
-        return rslt;
+        return (EnhNode) object.as( interf );
     }
         
     public Bag getBag() throws RDFException {
-        return (Bag)get(Bag.class);
+        return (Bag) get(Bag.class);
     }
     
     public Alt getAlt() throws RDFException {
@@ -316,23 +290,61 @@ public class StatementImpl //extends ResourceImpl
     	return this;
     }
             
-    public boolean isReified() throws RDFException {
-    	return mustHaveModel().isReified( this );
-    }
-    
     public Model getModel() {
     	return model;
     }
     
     public Resource asResource() {
-    	return mustHaveModel().getReification(this);
+    	return mustHaveModel().getAnyReifiedStatement(this);
     }    
     
     public void removeReification() {
-    	mustHaveModel().removeReification(this);
+    	mustHaveModel().removeAllReifications(this);
     }
     
     public Triple asTriple() {
     	return new Triple( subject.asNode(), predicate.asNode(), object.asNode() );
     }
+    
+    public boolean isReified() throws RDFException {
+        return mustHaveModel().isReified( this );
+    }
+        
+    /**
+        create a ReifiedStatement corresponding to this Statement
+    */
+    public ReifiedStatement createReifiedStatement()
+        { return ReifiedStatementImpl.create( this ); }
+        
+    /**
+        create a ReifiedStatement corresponding to this Statement
+        and with the given _uri_.
+    */
+    public ReifiedStatement createReifiedStatement( String uri )
+        { return ReifiedStatementImpl.create( this.getModel(), uri, this ); }
+        
+    public RSIterator listReifiedStatements()
+        { return mustHaveModel().listReifiedStatements( this ); }
+
+    /**
+        create a Statement from the triple _t_ in the enhanced graph _eg_.
+        The Statement has subject, predicate, and object corresponding to
+        those of _t_.
+    */
+    public static Statement toStatement( Triple t, EnhGraph eg )
+        {
+        Resource s = new ResourceImpl( t.getSubject(), eg );
+        Property p = new PropertyImpl( t.getPredicate(), eg );
+        RDFNode o = createObject( t.getObject(), eg );
+        return new StatementImpl( s, p, o, (Model) eg );
+        }
+
+    /**
+        create an RDF node which might be a literal, or not.
+    */
+    public static RDFNode createObject( Node n, EnhGraph g )
+        {
+        return n.isLiteral() ? (RDFNode) new LiteralImpl( n, g ) : new ResourceImpl( n, g );
+        }
+    
 }

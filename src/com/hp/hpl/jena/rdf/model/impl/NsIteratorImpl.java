@@ -1,5 +1,42 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: NsIteratorImpl.java,v 1.3 2003-03-26 12:33:05 chris-dollin Exp $
+*/
+
+package com.hp.hpl.jena.rdf.model.impl;
+
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.rdf.model.*;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+/** An NsIterator implementation
+ *
+ * @author  bwm
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-03-26 12:33:05 $'
+ */
+public class NsIteratorImpl extends ClosableWrapper implements NsIterator {
+    
+    /** Creates new NsIteratorImpl, ignores _o_ */
+    public NsIteratorImpl(Iterator iter, Object o) {
+        super( iter ); 
+    }
+
+    /** the cast is probably unnecessary */
+    public Object next() {
+        return (String) super.next();
+    }
+    
+    public String nextNs() throws NoSuchElementException, RDFException {
+        return (String) super.next();
+    }
+    
+}
+
+/*
+ *  (c) Copyright Hewlett-Packard Company 2000, 2003 
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,59 +66,3 @@
  * Created on 07 August 2000, 06:55
  */
 
-package com.hp.hpl.jena.rdf.model.impl;
-
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.rdf.model.*;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-/** An NsIterator implementation
- *
- * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
- */
-public class NsIteratorImpl extends Object implements NsIterator {
-    
-    Iterator iterator;
-    Object   object;
-
-    /** Creates new NsIteratorImpl */
-    public NsIteratorImpl(Iterator iter, Object o) {
-        this.iterator = iter;
-        this.object   = o;
-    }
-
-    public boolean hasNext() throws RDFException {
-        if (iterator != null) {
-            return iterator.hasNext();
-        } else {
-            throw new RDFException(RDFException.ITERATORCLOSED);
-        }        
-    }
-    
-    public Object next() throws NoSuchElementException, RDFException {
-        if (iterator != null) {
-            return (String) iterator.next();
-        } else {
-            throw new RDFException(RDFException.ITERATORCLOSED);
-        }
-    }
-    
-    public String nextNs() throws NoSuchElementException, RDFException {
-        return (String) next();
-    }
-    
-    public void remove() throws NoSuchElementException, RDFException {
-        throw new RDFException(RDFException.UNSUPPORTEDOPERATION);
-    }
-    
-    public void close() throws RDFException {
-        if (iterator instanceof ClosableIterator) {
-            ((ClosableIterator) iterator).close();
-        }
-        iterator = null;
-        object   = null;
-    }
-}

@@ -38,11 +38,9 @@ import com.hp.hpl.jena.graph.dt.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.mem.*;
 
-import java.io.Writer;
-import java.io.Reader;
-import java.io.OutputStream;
-import java.io.InputStream;
+import java.io.*;
 import java.util.*;
 
 /** Common methods for model implementations.
@@ -53,14 +51,12 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-02-20 16:48:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-03-26 12:33:04 $'
  */
 
-import com.hp.hpl.jena.mem.*;
 abstract public class ModelCom extends EnhGraph
-  implements Model, ModelI {
-    //protected Graph graph = null;
- //   protected ModelPersonality personality = new PersonalityCore();
+    implements Model, ModelI {
+
       private RDFReaderF readerFactory = new RDFReaderFImpl();
       private RDFWriterF writerFactory = new RDFWriterFImpl();
     // next free error code = 3
@@ -74,22 +70,20 @@ abstract public class ModelCom extends EnhGraph
     public boolean isModel() {
     	return true;
     }
+    
     public QueryHandler queryHandler()
     	{ return getGraph().queryHandler(); }
 	
 	public ModelCom( Graph base, Personality personality )
-		{
-			super( base, personality, null );
-		}
+		{ super( base, personality ); }
 		
     public Graph getGraph()
         { return graph; }
-/*
-	protected void setTriples( Graph g ) {
-		if (graph != null) throw new RuntimeException( "ModelCom.setTriples: triples already set" );
-		graph = g;
-	}
-	*/
+               
+    /**
+        the ModelReifier does everything to do with reification.
+    */
+    protected ModelReifier modelReifier = new ModelReifier( this ); 
 	
     public Resource getResource(String uri, ResourceF f) throws RDFException {
         try {
@@ -97,10 +91,6 @@ abstract public class ModelCom extends EnhGraph
         } catch (Exception e) {
             throw new RDFException(e);
         }
-    }
-    public Model add(Resource s,Property p,RDFNode o) throws RDFException {
-        add(createStatement(s, p, o));
-        return this;
     }
     public Model add(Resource s, Property p, boolean o) throws RDFException {
         return add(s, p, String.valueOf( o ) );
@@ -187,40 +177,35 @@ abstract public class ModelCom extends EnhGraph
     
     public String setReaderClassName(String lang, String className) {
         return readerFactory.setReaderClassName(lang, className);
-    }
+    } 
     
     public Model read(String url) throws RDFException {
-        readerFactory.getReader()
-                     .read(this, url);
+        readerFactory .getReader() .read(this, url);
         return this;
     }
     
     public Model read(Reader reader, String base) throws RDFException {
-        readerFactory.getReader()
-                     .read(this, reader, base);
+        readerFactory .getReader() .read(this, reader, base);
         return this;
     }
   	public Model read(InputStream reader, String base) throws RDFException {
-  		readerFactory.getReader()
-  					 .read(this, reader, base);
+  		readerFactory .getReader() .read(this, reader, base);
   		return this;
   	} 
     public Model read(String url, String lang) throws RDFException {
-        readerFactory.getReader(lang)
-                     .read(this, url);
+        readerFactory. getReader(lang) .read(this, url);
         return this;
     }
     
     public Model read(Reader reader, String base, String lang)
       throws RDFException {
-        readerFactory.getReader(lang)
-                     .read(this, reader, base);
+        readerFactory .getReader(lang) .read(this, reader, base);
         return this;
     }
+    
   	public Model read(InputStream reader, String base, String lang)
   	  throws RDFException {
-  		readerFactory.getReader(lang)
-  					 .read(this, reader, base);
+  		readerFactory .getReader(lang) .read(this, reader, base);
   		return this;
   	}
 
@@ -245,7 +230,8 @@ abstract public class ModelCom extends EnhGraph
             throw new RDFException(e);
         }
     }
-    public Model write(Writer writer, String lang) throws RDFException {
+    
+    public Model write(Writer writer, String lang) {
         try {
             writerFactory.getWriter(lang)
                          .write(this, writer, "");
@@ -254,6 +240,7 @@ abstract public class ModelCom extends EnhGraph
             throw new RDFException(e);
         }
     }
+    
     public Model write(Writer writer, String lang, String base)
       throws RDFException {
         try {
@@ -264,6 +251,7 @@ abstract public class ModelCom extends EnhGraph
             throw new RDFException(e);
         }
     }
+    
   	public Model write(OutputStream writer) throws RDFException {
   		try {
   			writerFactory.getWriter()
@@ -273,6 +261,7 @@ abstract public class ModelCom extends EnhGraph
   			throw new RDFException(e);
   		}
   	}
+    
   	public Model write(OutputStream writer, String lang) throws RDFException {
   		try {
   			writerFactory.getWriter(lang)
@@ -282,6 +271,7 @@ abstract public class ModelCom extends EnhGraph
   			throw new RDFException(e);
   		}
   	}
+    
   	public Model write(OutputStream writer, String lang, String base)
   	  throws RDFException {
   		try {
@@ -292,10 +282,12 @@ abstract public class ModelCom extends EnhGraph
   			throw new RDFException(e);
   		}
   	}
+    
     public Model remove(Statement s) throws RDFException {
         graph.delete(s.asTriple());
         return this;
     }
+    
     /**
         BUG. Will likely not deal properly with rel=ving things from itself,
         but no tests catch this. *iter.remove() does not work*, it will
@@ -308,6 +300,7 @@ abstract public class ModelCom extends EnhGraph
         }
         return this;
     }
+    
     public Model remove(Model m) throws RDFException
         {
         StmtIterator iter = m.listStatements();
@@ -865,38 +858,74 @@ abstract public class ModelCom extends EnhGraph
     public StmtIterator listStatements() throws RDFException {
         return IteratorFactory.asStmtIterator(graph.find(null,null,null), this);
     }
-/*
-    public StmtIterator listReifiedStatements() throws RDFException {
-        Vector reifiedStatements = new Vector();
-        Iterator iter = triples.list();
-        Object subject;
-        while (iter.hasNext()) {
-            subject = ((Statement) iter.next()).getSubject();
-            if (subject instanceof Statement) {
-                reifiedStatements.add(subject);
-            }
-        }
-        if (iter instanceof ClosableIterator) {
-            ((ClosableIterator) iter).close();
-        }
-        return new StmtIteratorImpl(reifiedStatements.iterator(),
-                                    reifiedStatements);
-    }
-*/
+
+    /**
+        add a Statement to this Model by adding its SPO components.
+    */
     public Model add(Statement s) throws RDFException {
-        graph.add(s.asTriple());
+        return add( s.getSubject(), s.getPredicate(), s.getObject() );
+    }
+    
+    public Model add(Resource s,Property p,RDFNode o) throws RDFException {
+        modelReifier.noteIfReified( s, p, o );
+        graph.add( new Triple( s.asNode(), p.asNode(), o.asNode() ) );
         return this;
     }
+    
+    /**
+        @return an iterator which delivers all the ReifiedStatements in this model
+    */
+    public RSIterator listReifiedStatements()
+        { return modelReifier.listReifiedStatements(); }
+
+    /**
+        @return an iterator each of whose elements is a ReifiedStatement in this
+            model such that it's getStatement().equals( st )
+    */
+    public RSIterator listReifiedStatements( Statement st )
+        { return modelReifier.listReifiedStatements( st ); }
+                
+    /**
+        @return true iff this model has a reification of _s_ in some Statement
+    */
+    public boolean isReified( Statement s ) 
+        { return modelReifier.isReified( s ); }
+   
+    /**
+        get any reification of the given statement in this model; make
+        one if necessary.
+        
+        @param s for which a reification is sought
+        @return a ReifiedStatement that reifies _s_
+    */
+    public Resource getAnyReifiedStatement(Statement s) 
+        { return modelReifier.getAnyReifiedStatement( s ); }
+    
+    /**
+        remove any ReifiedStatements reifying the given statement
+        @param s the statement who's reifications are to be discarded
+    */
+    public void removeAllReifications( Statement s ) 
+        { modelReifier.removeAllReifications( s ); }
+        
+    public void removeReification( ReifiedStatement rs )
+        { modelReifier.removeReification( rs ); }
+    	
+    /**
+        create a ReifiedStatement that encodes _s_ and belongs to this Model.
+    */
+    public ReifiedStatement createReifiedStatement( Statement s )
+        { return modelReifier.createReifiedStatement( s ); }
+        
+    public ReifiedStatement createReifiedStatement( String uri, Statement s )
+        { return modelReifier.createReifiedStatement( uri, s ); }
     
     public boolean contains(Statement s) throws RDFException {
         return graph.contains( s.asTriple() );
     }
-    
+  
     public boolean contains(Resource s, Property p) throws RDFException {
-        ClosableIterator it = graph.find(
-          s.asNode(),
-          p.asNode(),
-          null);
+        ClosableIterator it = graph.find( s.asNode(), p.asNode(), null );
         boolean rslt = it.hasNext();
         it.close();
         return rslt;
@@ -906,52 +935,7 @@ abstract public class ModelCom extends EnhGraph
       throws RDFException {
         return graph.contains( s.asNode(), p.asNode(), o.asNode() );
     }
-    
-    private ClosableIterator findReifications(Statement s) {
-    	return null;
-    }
-   public boolean isReified(Statement s) {
-   	  ClosableIterator ci = findReifications(s);
-   	  boolean rslt = ci.hasNext();
-   	  ci.close();
-   	  return rslt;
-   }
-    public Resource getReification(Statement s) {
-   	  ClosableIterator ci = findReifications(s);
-   	  Resource r = null;
-   	  if ( ci.hasNext() ) {
-   	  	 r = (Resource)ci.next();
-   	  }
-   	  ci.close();
-   	  if ( r == null ) {
-   	  	r = createResource();
-   	  	reifyAs(s,r);
-   	  }
-   	  return r;
-    }
-    public void reifyAs(Statement s,Resource r) {
-    	add(r,RDF.type,RDF.Statement);
-    	add(r,RDF.subject,s.getSubject());
-    	add(r,RDF.predicate,s.getPredicate());
-    	add(r,RDF.object,s.getObject());
-    }
-    public void removeReification(Statement s) {
-   	  Vector v = new Vector();
-   	  ClosableIterator ci =findReifications(s);
-   	  while ( ci.hasNext() ) {
-   	  	v.add( ci.next() );
-   	  }
-   	  Iterator it = v.iterator();
-   	  while ( it.hasNext() ) {
-   	  	Resource r = (Resource)it.next();
-    	remove(createStatement(r,RDF.type,RDF.Statement));
-    	remove(createStatement(r,RDF.subject,s.getSubject()));
-    	remove(createStatement(r,RDF.predicate,s.getPredicate()));
-    	remove(createStatement(r,RDF.object,s.getObject()));
-   	  	
-   	  }
-    	
-    }
+        
     public Statement getProperty(Resource s,Property p) throws RDFException {
         StmtIterator iter = null;
         try {
@@ -973,20 +957,12 @@ abstract public class ModelCom extends EnhGraph
         {
         ClosableIterator xit = graph.queryHandler().objectsFor( asNode( s ), asNode( p ) );
         return IteratorFactory.asRDFNodeIterator( xit, this );
-//        HashSet objects = new HashSet();
-//        ClosableIterator it = graph.find( asNode( s ), asNode( p ), null );
-//        while (it.hasNext()) objects.add( ((Triple) it.next()).getObject() );
-//        return IteratorFactory.asRDFNodeIterator( objects.iterator(), this );
         }
 
     private ResIterator listSubjectsFor( RDFNode p, RDFNode o )
         {
         ClosableIterator xit = graph.queryHandler().subjectsFor( asNode( p ), asNode( o ) );
         return IteratorFactory.asResIterator( xit, this );
-//        HashSet subjects = new HashSet();
-//        ClosableIterator it = graph.find( null, asNode( p ), asNode( o ) );
-//        while (it.hasNext()) subjects.add( ((Triple) it.next()).getSubject() );
-//        return IteratorFactory.asResIterator( subjects.iterator(), this );
         }
                 
     public ResIterator listSubjects() throws RDFException {
@@ -1032,117 +1008,62 @@ abstract public class ModelCom extends EnhGraph
         return IteratorFactory.asStmtIterator(iter,this);
     }
 	
-	static final Object absent = new Object();
-    public static Graph toTriples( ModelCom g, Store s ) {
-    	return new GraphBaseTriples( g, s );
-    }
-    public static class GraphBaseTriples extends GraphBase
-    	{
-    	protected Store s;
-    	protected ModelCom g;
-    	
-    	public GraphBaseTriples( final ModelCom g, final Store s )
-    		{
-			this.s = s;
-			this.g = g;
-    		}
-
-        private final Reifier reifier = new SimpleReifier( this );
-        
-        public Reifier getReifier()
-            { return reifier; }
-        		
-		public void add(Triple t) {
-			// System.out.println( t );
-			s.add( IteratorFactory.asStatement( t, g ) );
-		}
-		
-        public int size() { return s.size(); }
-		public void delete( Triple t) {
-			s.remove( IteratorFactory.asStatement( t, g ) );
-		}
-        
-		public ExtendedIterator find( final TripleMatch m ) {
-			return new NiceIterator() {
-				Iterator it = s.list( null, null, null );
-				Object current = absent;
-				
-				public boolean hasNext() {
-					if (current == absent) {
-						while (it.hasNext()) {
-							Statement s = (Statement) it.next();
-							Node sub = s.getSubject().asNode();
-							Node pred = s.getPredicate().asNode();
-							Node obj = s.getObject().asNode();
-							if (m.subject( sub ) && m.predicate( pred ) && m.object( obj )) {
-								Triple t = new Triple( sub, pred, obj );
-								if (m.triple( t )) {
-									current = t;
-									return true;
-								}
-							}
-						}						
-						return false;
-					}
-					else
-						return true;
-				}
-				
-				public Object next() {
-					hasNext();
-					Object result = current;
-					current = absent;
-					return result;
-				}		
-			};
-    	}
-		public void close() {
-			s.close();
-		}
-	
-		public int capabilities() {
- 			return ADD | DELETE | SIZE;
- 		}
-    }
     public Model begin() throws RDFException {
         throw new RDFException(RDFException.UNSUPPORTEDOPERATION);
     }
+    
     public Model abort() throws RDFException {
         throw new RDFException(RDFException.UNSUPPORTEDOPERATION);
     }
+    
     public Model commit() throws RDFException {
         throw new RDFException(RDFException.UNSUPPORTEDOPERATION);
     }
+    
     public boolean independent() {
         return true;
     }
+    
     public Resource createResource() throws RDFException {
         return IteratorFactory.asResource(Node.createAnon(new AnonId()),this);
     }
+    
     public Resource createResource(String uri) throws RDFException {
         return getResource(uri);
     }
+    
     public Property createProperty(String uri) throws RDFException {
         return getProperty(uri);
     }
+    
     public Property createProperty(String nameSpace, String localName)
     throws RDFException {
         return getProperty(nameSpace, localName);
     }
+    
+    /**
+        create a Statement from the given r, p, and o. We go round the houses
+        (converting to Nodes, makeing a Triple, and invoking asStatement) so
+        that the resulting Statement's components are all in the correct model.
+    */
     public Statement createStatement(Resource r, Property p, RDFNode o)
     throws RDFException {
         return IteratorFactory.asStatement(
         new Triple(r.asNode(), p.asNode(), o.asNode()), this);
     }
+    
     public Bag createBag(String uri) throws RDFException {
         return (Bag) getBag(uri).addProperty(RDF.type, RDF.Bag);
     }
+    
     public Alt createAlt(String uri) throws RDFException {
         return (Alt) getAlt(uri).addProperty(RDF.type, RDF.Alt);
     }
+    
     public Seq createSeq(String uri) throws RDFException {
         return (Seq) getSeq(uri).addProperty(RDF.type, RDF.Seq);
     }
+    
     public NodeIterator listContainerMembers(Container cont,
                                              NodeIteratorFactory f)
                                                   throws RDFException {
@@ -1163,9 +1084,7 @@ abstract public class ModelCom extends EnhGraph
                 result.setElementAt(stmt, ordinal-1);
             }
         }
-        if (iter instanceof ClosableIterator) {
-            ((ClosableIterator) iter).close();
-        }
+        WrappedIterator.close( iter );
         try {
              return f.createIterator(result.iterator(), result, cont);
         } catch (Exception e) {
@@ -1189,9 +1108,7 @@ abstract public class ModelCom extends EnhGraph
                 result++;
             }
         }
-        if (iter instanceof ClosableIterator) {
-            ((ClosableIterator) iter).close();
-        }
+        WrappedIterator.close( iter );
         return result;
     }
 	
@@ -1225,21 +1142,23 @@ abstract public class ModelCom extends EnhGraph
                 break;
             }
         }
-        if (iter instanceof ClosableIterator) {
-            ((ClosableIterator) iter).close();
-        }
+        WrappedIterator.close( iter );
         return result;
     }
+    
    public boolean containerContains(Container cont, RDFNode n)
     throws RDFException {
         return containerIndexOf(cont, n) != 0;
     }
+    
     public Resource convert(Resource r) throws RDFException {
             return ((ResourceI)r).port(this);
     }
+    
     public Property convert(Property p) throws RDFException {
             return (Property) ((ResourceI)p).port(this);
     }
+    
     public RDFNode convert(RDFNode n) throws RDFException {
         if (n instanceof Property) {
             return convert((Property) n);
@@ -1249,11 +1168,15 @@ abstract public class ModelCom extends EnhGraph
             return n;
         }
     }
+    
     public void close() {
         graph.close();
     }
-        public boolean supportsTransactions() {return false;}
+    
+    public boolean supportsTransactions() {return false;}
+    
     public boolean supportsSetOperations() {return true;}
+    
     public Model query(Selector selector) throws RDFException {
         ModelMem model = new ModelMem();
         StmtIterator iter = null;
@@ -1269,10 +1192,12 @@ abstract public class ModelCom extends EnhGraph
             }
         }
     }
+    
     public Model union(Model model) throws RDFException {
         return (new ModelMem()).add(this)
                                .add(model);
     }
+    
     public Model intersection(Model model) throws RDFException {
         Model largerModel = this;
         Model smallerModel  = model;
@@ -1296,6 +1221,7 @@ abstract public class ModelCom extends EnhGraph
             iter.close();
         }
     }
+    
     public Model difference(Model model) throws RDFException {
         ModelMem resultModel = new ModelMem();
         StmtIterator iter = null;
@@ -1313,6 +1239,7 @@ abstract public class ModelCom extends EnhGraph
             iter.close();
         }
     }
+    
     public boolean isIsomorphicWith(Model m){
     	return isIsomorphicWith((EnhGraph)m);
     }
