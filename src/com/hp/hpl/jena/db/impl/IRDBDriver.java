@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.15 $
+* @version $Revision: 1.16 $
 */
 
 public interface IRDBDriver {
@@ -316,7 +316,7 @@ public interface IRDBDriver {
 	 * @return SQL string (not prefixed by "Select").
 	 */	
 	
-	public String genSQLResList( int resIndex[], VarIndex[] binding );
+	public String genSQLResList( int resIndex[], VarDesc[] binding );
 
 	/**
 	 * Generate an SQL string for a from list of a select stmt.

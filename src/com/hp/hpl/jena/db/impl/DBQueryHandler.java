@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.9 2003-10-06 05:37:29 chris-dollin Exp $
+  $Id: DBQueryHandler.java,v 1.10 2003-12-12 22:15:43 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -54,21 +54,22 @@ public class DBQueryHandler extends SimpleQueryHandler {
 		// find the specialized graphs for the patterns 	
 		int i;
 		Triple pat;
-		int patternsToDo = ptn.length;
+		List patternsToDo = new ArrayList();
+		for(i=0;i<ptn.length;i++) patternsToDo.add(new Integer(i));
 		DBPattern src;
 		int reifBehavior = graph.reificationBehavior();
 		
-		if ((patternsToDo == 1) || (doFastpath == false)) {
+		if ((patternsToDo.size() == 1) || (doFastpath == false)) {
 			// fastpath fastpath; assumes it's faster to do a find for single pattern queries		
-			for(i=0;i<patternsToDo;i++)
+			for(i=0;i<patternsToDo.size();i++)
 				stages[stageCnt++] =
 					super.patternStage( varMap, constraints, new Triple[] { ptn[i] });
 		} else {
 			for (i = 0; i < ptn.length; i++) {
 				pat = ptn[i];
-				src = new DBPattern(i, pat, varMap);
-				pat = ptn[i];
+				src = new DBPattern(pat, varMap);
 				Iterator it = graph.getSpecializedGraphs();
+				// find graphs that could match this pattern
 				while (it.hasNext()) {
 					SpecializedGraph sg = (SpecializedGraph) it.next();
 					char sub = sg.subsumes(pat,reifBehavior);
@@ -88,78 +89,79 @@ public class DBQueryHandler extends SimpleQueryHandler {
 
 			int minCost, minConnCost;
 			int cost;
-			DBPattern minSrc, unstagedSrc = null;
+			DBPattern minSrc, unstaged = null;
 			boolean isConnected = false;
-			// find the minimum cost ... but always choose a connected
-			// pattern over a disconnected pattern (to avoid cross-products)
-			while (patternsToDo > 0) {
-				// rank the patterns by cost
+			// find the minimum cost pattern ... but always choose a connected
+			// pattern over a disconnected pattern (to avoid cross-products).
+			// if no min cost pattern, take one at random.
+			while (patternsToDo.size() > 0) {
 				minCost = minConnCost = DBPattern.costMax;
 				isConnected = false;
 				minSrc = null;
-				for (i = 0; i < ptn.length; i++) {
-					src = source[i];
-					if (src.isStaged)
-						continue;
-					pat = ptn[i];
-					cost = src.cost(varMap);
-					if (isConnected || src.isConnected) {
-						if (src.isConnected && (cost < minConnCost)) {
-							minSrc = src;
+				int minIx = -1;
+				for (i = 0; i < patternsToDo.size(); i++) {
+					unstaged = source[((Integer)patternsToDo.get(i)).intValue()];
+					cost = unstaged.cost(varMap);
+					if (unstaged.isConnected) {
+						if (cost < minConnCost) {
+							minSrc = unstaged;
 							minConnCost = cost;
 							isConnected = true;
+							minIx = i;
 						}
-					} else if (cost < minCost) {
+					} else if ((cost < minCost) && !isConnected) {
 						minCost = cost;
-						minSrc = src;
-					} else
-						unstagedSrc = src;
+						minSrc = unstaged;
+						minIx = i;
+					}
 				}
-
-				// if disconnected query; take a pattern at random and create a new stage
-				src = (minSrc == null) ? unstagedSrc : minSrc;
+				if ( minSrc == null ) {
+					src = unstaged; minIx = i-1;
+				} else {
+					src = minSrc;
+				}
 				src.isStaged = true;
-				patternsToDo--;
+				patternsToDo.remove(minIx);
 
 				// now we have a pattern for the next stage.
+				List varList = new ArrayList(); // list of VarIndex
+				List qryPat = new ArrayList(); // list of DBPattern
+				qryPat.add(src);
+				boolean doQuery = false;
 				// fastpath is only supported for patterns over one table.
-				boolean doQuery = src.isSingleSource();
-				if (doQuery) {
+				if (src.isSingleSource()) {
 					// see if other patterns can join with it.
-					List varList = new ArrayList(); // list of VarIndex
-					List qryPat = new ArrayList(); // list of DBPattern
-					qryPat.add(src);
-					src.getVars(varList, varMap);
+					src.addFreeVars(varList);
 					boolean didJoin = false;
 					do {
 						didJoin = false;
-						for (i = 0; i < ptn.length; i++) {
-							if (source[i].isStaged)
-								continue;
-							if (source[i].joinsWith(src,varList,queryOnlyStmt,queryOnlyReif)) {
-								qryPat.add(source[i]);
-								patternsToDo--;
-								source[i].getVars(varList, varMap);
-								source[i].isStaged = true;
+						for (i = 0; i < patternsToDo.size(); i++) {
+							unstaged = source[((Integer)patternsToDo.get(i)).intValue()];
+							if (unstaged.joinsWith(src,varList,queryOnlyStmt,queryOnlyReif)) {
+								qryPat.add(unstaged);
+								patternsToDo.remove(i);
+								unstaged.addFreeVars(varList);
+								unstaged.isStaged = true;
 								didJoin = true;
 							}
 						}
-					} while ( didJoin && (patternsToDo > 0));
+					} while ( didJoin && (patternsToDo.size() > 0));
 					if (qryPat.size() > 1) {
 						// add result vars of query to varmap
 						for(i=0;i<varList.size();i++) {
-							VarIndex vx = (VarIndex) varList.get(i);
+							VarDesc vx = (VarDesc) varList.get(i);
 							if ( vx.isArgVar == false )
 								vx.bindToVarMap(varMap);						
 						}
+						doQuery = true;
+					}
+				}
+				if ( doQuery ) {
 						stages[stageCnt] =
 							new DBQueryStage(graph,src.singleSource(),varList,qryPat, constraints);
-					} else
-						stages[stageCnt] =
-							super.patternStage(varMap,constraints, new Triple[]{ptn[src.index]});
 				} else {
 					stages[stageCnt] =
-						super.patternStage(varMap,constraints,new Triple[]{ptn[src.index]});
+							super.patternStage(varMap,constraints, new Triple[]{src.pattern});
 				}
 				stageCnt++;
 			}

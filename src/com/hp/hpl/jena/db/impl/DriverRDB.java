@@ -49,7 +49,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.35 $ on $Date: 2003-12-08 10:47:59 $
+* @version $Revision: 1.36 $ on $Date: 2003-12-12 22:14:01 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -492,7 +492,6 @@ public abstract class DriverRDB implements IRDBDriver {
 	private IPSet createIPSetInstanceFromName(String className, String tblName) {
 		IPSet pSet = null;		
 		try {
-			String tblname;
 			// get PSet
 			pSet = (IPSet) Class.forName(className).newInstance();
 			pSet.setDriver(this);
@@ -1752,11 +1751,11 @@ public abstract class DriverRDB implements IRDBDriver {
 			colAliasToString(rhsAlias,rhsCol);
 	}
 	
-	public String genSQLResList( int resIndex[], VarIndex[] binding ) {
+	public String genSQLResList( int resIndex[], VarDesc[] binding ) {
 		String resList = "";
 		int i,j;
 		for(i=0,j=0;i<binding.length;i++) {
-			VarIndex b = binding[i];
+			VarDesc b = binding[i];
 			if ( !b.isArgVar() ) {
 				// next result variable
 				resList += (j>0?", ":"") + colAliasToString(b.alias,b.column);

@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.query.Query;
 
 
 public class DBPattern  {
-	int index;
+	Triple pattern;
 	Element S;
 	Element P;
 	Element O;
@@ -33,8 +33,8 @@ public class DBPattern  {
 	List source; // specialized graphs with triples for this pattern
 	char subsumed;
 	
-	public DBPattern ( int i, Triple pattern, Mapping varMap ) {
-		index = i;
+	public DBPattern ( Triple pat, Mapping varMap ) {
+		pattern = pat;
 		source = new ArrayList();
 		isStaged = false;
 		isConnected = false;
@@ -49,7 +49,7 @@ public class DBPattern  {
 	}
 	
 	/**
-		the code below is pretty much identical to that of
+		this nodeToElement is pretty much identical to that of
 		graph.query.patternstagecompiler.compile.
 	*/
 	private Element nodeToElement( Node X, Mapping map )
@@ -87,36 +87,36 @@ public class DBPattern  {
 	public boolean isSingleSource() { return isSingleSource; }
 	public SpecializedGraph singleSource() { return (SpecializedGraph) source.get(0); }
 
-	protected void getVars ( List varList, Mapping varMap ) {
+	protected void addFreeVars ( List varList ) {
 		if (freeVarCnt > 0) {
 			if (S instanceof Free)
-				addVar(varList, (Free) S, varMap);
+				addVar(varList, (Free) S);
 			if (P instanceof Free)
-				addVar(varList, (Free) P, varMap);
+				addVar(varList, (Free) P);
 			if (O instanceof Free)
-				addVar(varList, (Free) O, varMap);
+				addVar(varList, (Free) O);
 		}
 	}
 	
 	private int findVar ( List varList, Node_Variable var ) {
 		int i;
 		for ( i=0; i<varList.size(); i++ ) {
-			Node_Variable v = ((VarIndex) varList.get(i)).var;
+			Node_Variable v = ((VarDesc) varList.get(i)).var;
 			if ( var.equals(v) )
 				return i;
 		}
 		return -1;		
 	}
 
-	private void addVar ( List varList, Free var, Mapping varMap ) {
+	private void addVar ( List varList, Free var ) {
 		int i = findVar(varList,var.var());
 		if ( i < 0 ) {
 			i = varList.size();
-			VarIndex vx;
+			VarDesc vx;
 			if ( var.isArg() ) {
-				vx = new VarIndex (var.var(), var.getMapping(), i);
+				vx = new VarDesc (var.var(), var.getMapping(), i);
 			} else {
-				vx = new VarIndex (var.var(), i);
+				vx = new VarDesc (var.var(), i);
 			}
 			varList.add(vx);
 		}

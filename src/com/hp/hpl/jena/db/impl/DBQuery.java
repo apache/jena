@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQuery.java,v 1.4 2003-08-27 12:56:39 andy_seaborne Exp $
+  $Id: DBQuery.java,v 1.5 2003-12-12 22:15:55 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -21,7 +21,7 @@ public class DBQuery
 	int varCnt;         // number of variables in query
 	int aliasCnt;        // number of tables aliases (scans) in from clause
 	String stmt;        // query string
-	VarIndex[] binding;  // list of VarIndex, variables referenced in this query
+	VarDesc[] vars;  // list of VarIndex, variables referenced in this query
 	int[] resList;		// indexes of result columns in mapping
 	int graphId;        // id of graph to query
 	String table;   // name of table to query
@@ -30,7 +30,7 @@ public class DBQuery
 	boolean qryOnlyStmt; // if true, ignore reified statements
 	boolean qryOnlyReif; // if true, ignore asserted statements
 	boolean qryFullReif; // if true, ignore partially reified statements
-	DriverRDB.GenSQLAnd ga;
+	DriverRDB.GenSQLAnd sqlAnd;
 
 	boolean isMultiModel;   // true if graph is multi-model
 	boolean isSingleValued; // true if property table is single-valued
@@ -53,20 +53,20 @@ public class DBQuery
 		isCacheable = true;
 		isReifier = sg instanceof SpecializedGraphReifier;
 		driver = pset.driver();
-		ga = new IRDBDriver.GenSQLAnd();
+		sqlAnd = new IRDBDriver.GenSQLAnd();
 		qryOnlyStmt = queryOnlyStmt;
 		qryOnlyReif = queryOnlyReif;
 		qryFullReif = queryFullReif;
 		// array of variable bound by query
-		binding = new VarIndex[varList.size()];
+		vars = new VarDesc[varList.size()];
 		for ( varCnt=0; varCnt<varList.size(); varCnt++ ) {
-			binding[varCnt] = (VarIndex) varList.get(varCnt);
+			vars[varCnt] = (VarDesc) varList.get(varCnt);
 		}
 
 	}
 	
-	public VarIndex getBinding ( int i ) {
-		return binding[i];
+	public VarDesc getBinding ( int i ) {
+		return vars[i];
 	}
 		
 	public void newAlias() {
