@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.2 2003-01-31 08:48:51 der Exp $
+ * $Id: TransitiveReasoner.java,v 1.3 2003-02-10 10:05:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -32,7 +32,7 @@ import java.util.HashSet;
  * of RDFS processing.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:48:51 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-10 10:05:48 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -57,20 +57,12 @@ public class TransitiveReasoner implements Reasoner {
     /** The normal subClassOf property */
     public static Node subClassOf;
     
-    /** The set of special predicates handled by this reasoner */
-    protected static HashSet specialPredicates;
-    
     // Static initializer
     static {
         directSubPropertyOf = ReasonerRegistry.makeDirect(RDFS.subPropertyOf.getNode());
         directSubClassOf    = ReasonerRegistry.makeDirect(RDFS.subClassOf.getNode());
         subPropertyOf = RDFS.subPropertyOf.getNode();
         subClassOf = RDFS.subClassOf.getNode();
-        specialPredicates = new HashSet();
-        specialPredicates.add(directSubClassOf);
-        specialPredicates.add(directSubPropertyOf);
-        specialPredicates.add(subPropertyOf);
-        specialPredicates.add(subClassOf);
     }
     
     /** Constructor */
@@ -241,66 +233,8 @@ public class TransitiveReasoner implements Reasoner {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException {
-        TransitiveReasoner reasoner = this;
-        if (data != null && 
-                    (checkOccurance(subPropertyOf, data, subPropertyCache) ||
-                    checkOccurance(subClassOf, data, subPropertyCache))) {
-            // The data graph contains some ontology knowledge so create a new
-            // reasoner instance that binds in both data sets 
-            // - not the most efficient route but safe
-            Finder newTbox = null;
-            if (tbox != null) {
-                newTbox = FinderUtil.cascade(tbox, new FGraph(data));
-            } else {
-                newTbox = new FGraph(data);
-            }
-            reasoner = new TransitiveReasoner();
-            reasoner.bindSchema(newTbox);
-        }            
-        // Cache the closures of subPropertyOf because these are likely to be
-        // small and accessed a lot
-        subPropertyCache.setCaching(true);
-        return new BaseInfGraph(data, reasoner);            
+        return new TransitiveInfGraph(data, this);
     }   
-
-    /**
-     * Basic pattern lookup interface.
-     * @param pattern a TriplePattern to be matched against the data
-     * @return a ExtendedIterator over all Triples in the data set
-     *  that match the pattern
-     */
-    public ExtendedIterator find(TriplePattern pattern) {
-        return findWithContinuation(pattern, null);
-    }
-    
-    /**
-     * Extended find interface used in situations where the implementator
-     * may or may not be able to answer the complete query. It will
-     * attempt to answer the pattern but if its answers are not known
-     * to be complete then it will also pass the request on to the nested
-     * Finder to append more results.
-     * @param pattern a TriplePattern to be matched against the data
-     * @param continuation either a Finder or a normal Graph which
-     * will be asked for additional match results if the implementor
-     * may not have completely satisfied the query.
-     */
-    public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
-        Node predicate = pattern.getPredicate();
-        Finder resultF = null;
-        if (predicate.isVariable()) {
-            // Want everything in the cache, the tbox and the continuation
-            resultF = FinderUtil.cascade(subPropertyCache, subClassCache, tbox, continuation);
-        } else if (specialPredicates.contains(predicate)) {
-            if (predicate.equals(directSubPropertyOf) || predicate.equals(subPropertyOf)) {
-                resultF = subPropertyCache;
-            } else {
-                resultF = subClassCache;
-            }
-        } else {
-            resultF = FinderUtil.cascade(continuation, tbox);
-        }
-        return resultF.find(pattern);
-    }
     
 }
 
