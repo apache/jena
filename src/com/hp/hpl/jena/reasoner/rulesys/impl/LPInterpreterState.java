@@ -1,53 +1,32 @@
 /******************************************************************
- * File:        TestPackage.java
+ * File:        LPInterpreterState.java
  * Created by:  Dave Reynolds
- * Created on:  30-Mar-03
+ * Created on:  09-Aug-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestPackage.java,v 1.12 2003-08-21 12:04:46 der Exp $
+ * $Id: LPInterpreterState.java,v 1.1 2003-08-21 12:04:45 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.test;
-
-
-import junit.framework.*;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 /**
- * Aggregate tester that runs all the test associated with the rulesys package.
+ * Marker interface for classes than can be used to initialize the
+ * state of an LP interpreter - either an initial context (which
+ * in turn is either a top level iterator or an generator being
+ * run for the first time), or a previaous saved context (i.e. a
+ * ConsumerChoicePointFrame).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-21 12:04:46 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
  */
-
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
-    
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("RuleSys");
-        
-        addTest( "TestBasics", TestBasics.suite() );
-        addTest( "TestBackchainer", TestBackchainer.suite() );
-        addTest( "TestLPBasics", TestBasicLP.suite() );
-        addTest( "TestFBRules", TestFBRules.suite() );
-        addTest( "TestGenericRules", TestGenericRules.suite() );
-        addTest( "TestRETE", TestRETE.suite() );
-        addTest( "TestOWLRules", TestOWLRules.suite() );
-    }
-
-    // helper method
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
+public interface LPInterpreterState {
 
 }
 
+
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

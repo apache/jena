@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.17 2003-08-18 16:54:53 der Exp $
+ * $Id: TestOWLRules.java,v 1.18 2003-08-21 12:04:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.oldCode.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -20,7 +21,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-08-18 16:54:53 $
+ * @version $Revision: 1.18 $ on $Date: 2003-08-21 12:04:46 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -103,6 +104,10 @@ public class TestOWLRules extends TestCase {
         suite.addTest(new TestOWLRules("localtests/Manifest001.rdf"));      // bx - long but terminates
         suite.addTest(new TestOWLRules("localtests/Manifest002.rdf"));   // bx - long but terminates
         suite.addTest(new TestOWLRules("cardinality/Manifest001-mod.rdf")); // bx gets lost
+        suite.addTest(new TestOWLRules("cardinality/Manifest002-mod.rdf")); // bx gets lost
+        suite.addTest(new TestOWLRules("cardinality/Manifest002-mod.rdf")); // bx gets lost
+        suite.addTest(new TestOWLRules("cardinality/Manifest002-mod.rdf")); // bx gets lost
+        suite.addTest(new TestOWLRules("cardinality/Manifest002-mod.rdf")); // bx gets lost
         suite.addTest(new TestOWLRules("cardinality/Manifest002-mod.rdf")); // bx gets lost
         suite.addTest(new TestOWLRules("cardinality/Manifest003-mod.rdf")); // bx gets lost
         suite.addTest(new TestOWLRules("cardinality/Manifest004-mod.rdf")); // bx gets lost

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.21 2003-08-13 10:46:12 der Exp $
+ * $Id: TestFBRules.java,v 1.22 2003-08-21 12:04:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-08-13 10:46:12 $
+ * @version $Revision: 1.22 $ on $Date: 2003-08-21 12:04:46 $
  */
 public class TestFBRules extends TestCase {
     
@@ -75,7 +75,7 @@ public class TestFBRules extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestFBRules.class ); 
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestFBRules( "testHybrid2" ));
+//        suite.addTest(new TestFBRules( "testBackchain1" ));
 //        return suite;
     }  
 
@@ -83,7 +83,11 @@ public class TestFBRules extends TestCase {
      * Override in subclasses to test other reasoners.
      */
     public Reasoner createReasoner(List rules) {
-        return new FBRuleReasoner(rules);
+        FBRuleReasoner reasoner = new FBRuleReasoner(rules); 
+        reasoner.tablePredicate(RDFS.Nodes.subClassOf);
+        reasoner.tablePredicate(RDF.Nodes.type);
+        reasoner.tablePredicate(p);
+        return reasoner;
     }
 
     /**

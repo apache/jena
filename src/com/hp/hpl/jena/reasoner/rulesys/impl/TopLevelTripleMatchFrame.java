@@ -1,59 +1,67 @@
 /******************************************************************
- * File:        BackwardRuleInfGraphI.java
+ * File:        TopLeveTripleMatchFrame.java
  * Created by:  Dave Reynolds
- * Created on:  28-May-2003
+ * Created on:  11-Aug-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BackwardRuleInfGraphI.java,v 1.6 2003-08-21 12:04:45 der Exp $
+ * $Id: TopLevelTripleMatchFrame.java,v 1.1 2003-08-21 12:04:45 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.reasoner.InfGraph;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
- * This interface collects together those operations that the backchaining
- * engine needs to invoke in the parent InfGraph. This allows different inf graphs
- * to exploit the same core backchaining engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-21 12:04:45 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
  */
-public interface BackwardRuleInfGraphI extends SilentAddI, InfGraph {
-            
-    /**
-     * Process a call to a builtin predicate
-     * @param clause the term representing the call
-     * @param env the BindingEnvironment for this call
-     * @param rule the rule which is invoking this call
-     * @return true if the predicate succeeds
-     */
-    public boolean processBuiltin(ClauseEntry clause, Rule rule, BindingEnvironment env);
+public class TopLevelTripleMatchFrame extends GenericChoiceFrame {
 
-    /**
-     * Match a pattern just against the stored data (raw data, schema,
-     * axioms) but no backchaining derivation.
-     */
-    public ExtendedIterator findDataMatches(TriplePattern pattern);
-
-    /**
-     * Log a dervivation record against the given triple.
-     */
-    public void logDerivation(Triple t, Object derivation);
-
-    /**
-     * Retrieve or create a bNode representing an inferred property value.
-     * @param instance the base instance node to which the property applies
-     * @param prop the property node whose value is being inferred
-     * @param pclass the (optional, can be null) class for the inferred value.
-     * @return the bNode representing the property value 
-     */
-    public Node getTemp(Node instance, Node prop, Node pclass);
+    /** The last returned triple */
+    protected Triple lastMatch;
     
+    /** An iterator over triples matching a goal */
+    ExtendedIterator matchIterator;
+
+    /** Used for debug/tracing only */
+    protected TriplePattern goal;
+        
+    /**
+     * Constructor.
+     * Initialize the triple match to preserve the current context of the given
+     * LPInterpreter and search for the match defined by the current argument registers
+     * @param intepreter the interpreter instance whose env, trail and arg values are to be preserved
+     */
+    public TopLevelTripleMatchFrame(LPInterpreter interpreter, TriplePattern goal) {
+        init(interpreter);
+        this.matchIterator = interpreter.getEngine().getInfGraph().findDataMatches(goal);
+        this.goal = goal;
+    }
+
+    /**
+     * Find the next result triple and bind the result vars appropriately.
+     * @param interpreter the calling interpreter whose trail should be used
+     * @return false if there are no more matches in the iterator.
+     */
+    public boolean nextMatch(LPInterpreter interpreter) {
+        if (matchIterator.hasNext()) {
+            lastMatch = (Triple)matchIterator.next();
+            return true;
+        } else {
+            return false;
+        }
+    }
+        
+    /**
+     * Override close method to reclaim the iterator.
+     */
+    public void close() {
+        if (matchIterator != null) matchIterator.close();
+    }
+        
 }
 
 

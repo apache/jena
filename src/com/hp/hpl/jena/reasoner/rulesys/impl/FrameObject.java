@@ -1,53 +1,61 @@
 /******************************************************************
- * File:        TestPackage.java
+ * File:        FrameObject.java
  * Created by:  Dave Reynolds
- * Created on:  30-Mar-03
+ * Created on:  18-Jul-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestPackage.java,v 1.12 2003-08-21 12:04:46 der Exp $
+ * $Id: FrameObject.java,v 1.1 2003-08-21 12:04:45 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.test;
-
-
-import junit.framework.*;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 /**
- * Aggregate tester that runs all the test associated with the rulesys package.
- * 
+ * Base class for stack frame objects. Originally this was used to provide
+ * pool-based allocated but it turns out the normal Java GC outperforms
+ * manual pool-based allocation anyway.
+ *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-21 12:04:46 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
  */
+public class FrameObject {
 
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
+    /** Used to link the frame to the prior frame in the (tree) stack or the pool */
+    FrameObject link;
+        
+    /**
+     * Link this frame to an existing frame. In the future this might do some ref count
+     * tricks.
+     */
+    public void linkTo(FrameObject prior) {
+        link = prior;
     }
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("RuleSys");
-        
-        addTest( "TestBasics", TestBasics.suite() );
-        addTest( "TestBackchainer", TestBackchainer.suite() );
-        addTest( "TestLPBasics", TestBasicLP.suite() );
-        addTest( "TestFBRules", TestFBRules.suite() );
-        addTest( "TestGenericRules", TestGenericRules.suite() );
-        addTest( "TestRETE", TestRETE.suite() );
-        addTest( "TestOWLRules", TestOWLRules.suite() );
+    /**
+     * Link this frame to an existing frame. This will never do any funny ref count tricks.
+     */
+    public void fastLinkTo(FrameObject prior) {
+        link = prior;
     }
-
-    // helper method
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+    
+    /**
+     * Return the prior frame in the tree.
+     */
+    public FrameObject getLink() {
+        return link;
     }
-
+    
+    /**
+     * Close the frame actively. This frees any internal resources, frees this frame and
+     * frees the frame to which this is linked.
+     */
+    public void close() {
+    }
+    
 }
 
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

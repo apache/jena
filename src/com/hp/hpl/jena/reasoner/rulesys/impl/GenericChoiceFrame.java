@@ -1,53 +1,63 @@
 /******************************************************************
- * File:        TestPackage.java
+ * File:        GenericChoiceFrame.java
  * Created by:  Dave Reynolds
- * Created on:  30-Mar-03
+ * Created on:  07-Aug-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestPackage.java,v 1.12 2003-08-21 12:04:46 der Exp $
+ * $Id: GenericChoiceFrame.java,v 1.1 2003-08-21 12:04:45 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.test;
-
-
-import junit.framework.*;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 /**
- * Aggregate tester that runs all the test associated with the rulesys package.
+ * Core properties of choice frames used use to represent the OR state of
+ * the backtracking search. Specific variants of this need to preserve additional
+ * choice state.
+ * <p>
+ * This is used in the inner loop of the interpreter and so is a pure data structure
+ * not an abstract data type and assumes privileged access to the interpreter state.
+ * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-21 12:04:46 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
  */
+public class GenericChoiceFrame extends FrameObject {
 
-public class TestPackage extends TestSuite {
+    /** The environment frame describing the state of the AND tree at this choice point */
+    EnvironmentFrame envFrame;
 
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
+    /** The top of the trail stack at the time of the call */
+    int trailIndex;
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("RuleSys");
-        
-        addTest( "TestBasics", TestBasics.suite() );
-        addTest( "TestBackchainer", TestBackchainer.suite() );
-        addTest( "TestLPBasics", TestBasicLP.suite() );
-        addTest( "TestFBRules", TestFBRules.suite() );
-        addTest( "TestGenericRules", TestGenericRules.suite() );
-        addTest( "TestRETE", TestRETE.suite() );
-        addTest( "TestOWLRules", TestOWLRules.suite() );
+    /** The continuation program counter offet in the parent clause's byte code */
+    int cpc;
+    
+    /** The continuation argument counter offset in the parent clause's arg stream */
+    int cac;
+
+    /**
+     * Initialize a choice point to preserve the current context of the given intepreter 
+     * and then call the given set of predicates.
+     * @param interpreter the LPInterpreter whose state is to be preserved
+     */
+    public void init(LPInterpreter interpreter) {
+        envFrame = interpreter.envFrame;
+        trailIndex = interpreter.trail.size();
     }
 
-    // helper method
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+    /**
+     * Set the continuation point for this frame.
+     */
+    public void setContinuation(int pc, int ac) {
+        cpc = pc;
+        cac = ac; 
     }
 
 }
 
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

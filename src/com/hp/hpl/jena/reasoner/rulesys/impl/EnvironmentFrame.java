@@ -1,59 +1,81 @@
 /******************************************************************
- * File:        AllTabled.java
+ * File:        LPEnvironment.java
  * Created by:  Dave Reynolds
- * Created on:  19-Aug-2003
+ * Created on:  22-Jul-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TableAll.java,v 1.2 2003-08-21 12:04:46 der Exp $
+ * $Id: EnvironmentFrame.java,v 1.1 2003-08-21 12:04:45 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.builtins;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.rulesys.Rule;
 
 /**
- * Arrange that all backchaining goals should be tabled (aka memoized)
- * by the LP engine.
+ * Represents a single frame in the LP interpreter's environment stack. The
+ * environment stack represents the AND part of the search tree - it is a sequence
+ * of nested predicate calls.
+ * <p>
+ * This is used in the inner loop of the interpreter and so is a pure data structure
+ * not an abstract data type and assumes privileged access to the interpreter state.
+ * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-21 12:04:46 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
  */
-public class TableAll extends BaseBuiltin {
+public class EnvironmentFrame extends FrameObject {
 
-    /**
-     * Return a name for this builtin, normally this will be the name of the 
-     * functor that will be used to invoke it.
+    /** The set of permanent variables Y(i) in use by this frame.  */
+    Node[] pVars;
+    
+    /** The code the the clause currently being processed */
+    RuleClauseCode clause;
+    
+    /** The continuation program counter offet in the parent clause's byte code */
+    int cpc;
+    
+    /** The continuation argument counter offset in the parent clause's arg stream */
+    int cac;
+    
+     /** 
+     * Constructor 
+     * @param clause the compiled code being interpreted by this env frame 
      */
-    public String getName() {
-        return "tableAll";
+    public EnvironmentFrame(RuleClauseCode clause) {
+        this.clause = clause;
     }
-
+        
     /**
-     * This method is invoked when the builtin is called in a rule body.
-     * @param args the array of argument values for the builtin, this is an array 
-     * of Nodes, some of which may be Node_RuleVariables.
-     * @param length the length of the argument list, may be less than the length of the args array
-     * for some rule engines
-     * @param context an execution context giving access to other relevant data
-     * @return return true if the buildin predicate is deemed to have succeeded in
-     * the current environment
+     * Allocate a vector of permanent variables for use in the rule execution.
      */
-    public void headAction(Node[] args, int length, RuleContext context) {
-        InfGraph infgraph = context.getGraph();
-        if (infgraph instanceof FBRuleInfGraph) {
-            ((FBRuleInfGraph)infgraph).setTabled(Node.ANY);
-        } else if (infgraph instanceof LPBackwardRuleInfGraph) {
-            ((LPBackwardRuleInfGraph)infgraph).setTabled(Node.ANY);
+    public void allocate(int n) {
+            pVars = new Node[n];
+    }
+           
+    /**
+     * Return the rule associated with this environment, null if no such rule.
+     */
+    public Rule getRule() {
+        if (clause != null) {
+            return clause.rule;
         } else {
-            // Quietly ignore as an irrelevant directive
-            // Could log or throw exception but currently I want to be able to use
-            // the same rule base from different contexts which do and do not need
-            // to know about this.
+            return null;
+        }
+    }
+    
+    /**
+     * Printable string for debugging.
+     */
+    public String toString() {
+        if (clause == null || clause.rule == null) {
+            return "[anon]";
+        } else {
+            return "[" + clause.rule.toShortString() + "]";
         }
     }
 }
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

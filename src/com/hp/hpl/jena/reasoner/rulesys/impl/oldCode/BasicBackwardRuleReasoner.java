@@ -1,86 +1,80 @@
 /******************************************************************
- * File:        FBRuleReasoner.java
+ * File:        BasicBackwardRuleReasoner.java
  * Created by:  Dave Reynolds
- * Created on:  29-May-2003
+ * Created on:  29-Apr-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.7 2003-08-21 12:04:45 der Exp $
+ * $Id: BasicBackwardRuleReasoner.java,v 1.1 2003-08-21 12:04:45 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys;
+package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.RuleStore;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
 /**
- * Rule-based reasoner interface. This is the default rule reasoner to use.
- * It supports both forward reasoning and backward reasoning, including use
- * of forward rules to generate and instantiate backward rules.
+ * Reasoner implementation which augments or transforms an RDF graph
+ * according to a set of rules. The rules are processed using a
+ * tabled backchaining interpreter which is implemented by the
+ * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-21 12:04:45 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
  */
-public class FBRuleReasoner implements Reasoner {
-    
+public class BasicBackwardRuleReasoner implements Reasoner {
+
     /** The parent reasoner factory which is consulted to answer capability questions */
     protected ReasonerFactory factory;
-
-    /** The rules to be used by this instance of the forward engine */
+    
+    /** The rules to be used by this instance of the backward engine */
     protected List rules;
     
-    /** A precomputed set of schema deductions */
+    /** Indexed, normalized copy of the rule list */
+    protected RuleStore ruleStore;
+    
+    /** A cache set of schema data used in partial binding chains */
     protected Graph schemaGraph;
     
     /** Flag to set whether the inference class should record derivations */
     protected boolean recordDerivations = false;
-
+    
     /** Flag which, if true, enables tracing of rule actions to logger.info */
     boolean traceOn = false;
-//    boolean traceOn = true;
 
-    /** Flag, if true we cache the closure of the pure rule set with its axioms */
-    protected static final boolean cachePreload = true;
-    
-    /** The cached empty closure, if wanted */
-    protected InfGraph preload;  
-     
     /**
      * Constructor. This is the raw version that does not reference a ReasonerFactory
      * and so has no capabilities description. 
      * @param rules a list of Rule instances which defines the ruleset to process
      */
-    public FBRuleReasoner(List rules) {
+    public BasicBackwardRuleReasoner(List rules) {
         this.rules = rules;
+        ruleStore = new RuleStore(rules);
     }
-    
-    /**
-     * Constructor
-     * @param factory the parent reasoner factory which is consulted to answer capability questions
-     */
-    public FBRuleReasoner(ReasonerFactory factory) {
-        this(null, factory);
-    }
-    
+
     /**
      * Constructor
      * @param rules a list of Rule instances which defines the ruleset to process
      * @param factory the parent reasoner factory which is consulted to answer capability questions
      */
-    public FBRuleReasoner(List rules, ReasonerFactory factory) {
-        this(rules);
+    public BasicBackwardRuleReasoner(List rules, ReasonerFactory factory) {
+        this.rules = rules;
         this.factory = factory;
+        ruleStore = new RuleStore(rules);
     }
     
     /**
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    protected FBRuleReasoner(List rules, Graph schemaGraph, ReasonerFactory factory) {
-        this(rules, factory);
+    protected BasicBackwardRuleReasoner(BasicBackwardRuleReasoner parent, Graph schemaGraph) {
+        rules = parent.rules;
+        ruleStore = parent.ruleStore;
         this.schemaGraph = schemaGraph;
+        this.factory = parent.factory;
     }
 
     /**
@@ -116,15 +110,7 @@ public class FBRuleReasoner implements Reasoner {
      * will be combined with the data when the final InfGraph is created.
      */
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
-        if (schemaGraph != null) {
-            throw new ReasonerException("Can only bind one schema at a time to an OWLRuleReasoner");
-        }
-        FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, getPreload(), tbox);
-        graph.prepare();
-        FBRuleReasoner fbr  = new FBRuleReasoner(rules, graph, factory);
-        fbr.setDerivationLogging(recordDerivations);
-        fbr.setTraceOn(traceOn);
-        return fbr;
+        return new BasicBackwardRuleReasoner(this, tbox);
     }
     
     /**
@@ -132,7 +118,7 @@ public class FBRuleReasoner implements Reasoner {
      * will be combined with the data when the final InfGraph is created.
      */
     public Reasoner bindSchema(Model tbox) throws ReasonerException {
-        return bindSchema(tbox.getGraph());
+        return new BasicBackwardRuleReasoner(this, tbox.getGraph());
     }
     
     /**
@@ -147,21 +133,9 @@ public class FBRuleReasoner implements Reasoner {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException {
-        Graph schemaArg = schemaGraph == null ? getPreload() : (FBRuleInfGraph)schemaGraph; 
-        FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, schemaArg);
+        BasicBackwardRuleInfGraph graph = new BasicBackwardRuleInfGraph(this, ruleStore, data, schemaGraph);
         graph.setDerivationLogging(recordDerivations);
-        graph.setTraceOn(traceOn);
-        graph.rebind(data);
         return graph;
-    }
-    
-    /**
-     * Set (or change) the rule set that this reasoner should execute.
-     * @param rules a list of Rule objects
-     */
-    public void setRules(List rules) {
-        this.rules = rules;
-        preload = null;
     }
     
     /**
@@ -171,33 +145,7 @@ public class FBRuleReasoner implements Reasoner {
     public List getRules() {
         return rules;
     } 
-    
-    /**
-     * Register an RDF predicate as one whose presence in a goal should force
-     * the goal to be tabled. This is better done directly in the rule set.
-     */
-    public synchronized void tablePredicate(Node predicate) {
-        // Create a dummy rule which tables the predicate ...
-        Rule tablePredicateRule = new Rule("", 
-                new ClauseEntry[]{
-                    new Functor("table", new Node[] { predicate })
-                }, 
-                new ClauseEntry[]{});
-        // ... end append the rule to the ruleset
-        rules.add(tablePredicateRule);
-    }
-    
-    /**
-     * Get the single static precomputed rule closure.
-     */
-    protected synchronized InfGraph getPreload() {
-        if (cachePreload && preload == null) {
-            preload = (new FBRuleInfGraph(this, rules, null));
-            preload.prepare();
-        }
-        return preload;
-    }
-       
+   
     /**
      * Switch on/off drivation logging.
      * If set to true then the InfGraph created from the bind operation will start
@@ -219,36 +167,20 @@ public class FBRuleReasoner implements Reasoner {
     }
     
     /**
-     * Return the state of the trace flag.If set to true then rule firings
-     * are logged out to the Logger at "INFO" level.
-     */
-    public boolean isTraceOn() {
-        return traceOn;
-    } 
-
-    /**
-     * Set a configuration paramter for the reasoner. The supported parameters
-     * are:
-     * <ul>
-     * <li>PROPderivationLogging - set to true to enable recording all rule derivations</li>
-     * <li>PROPtraceOn - set to true to enable verbose trace information to be sent to the logger INFO channel</li>
-     * </ul> 
+     * Set a configuration paramter for the reasoner. In the case of the this
+     * reasoner there are no configuration parameters and this method is simply 
+     * here to meet the interfaces specification
      * 
      * @param parameterUri the uri identifying the parameter to be changed
      * @param value the new value for the parameter, typically this is a wrapped
      * java object like Boolean or Integer.
      */
     public void setParameter(String parameterUri, Object value) {
-        if (parameterUri.equals(ReasonerVocabulary.PROPderivationLogging.getURI())) {
-            recordDerivations = Util.convertBooleanPredicateArg(parameterUri, value);
-        } else if (parameterUri.equals(ReasonerVocabulary.PROPtraceOn.getURI())) {
-            traceOn =  Util.convertBooleanPredicateArg(parameterUri, value);
-        } else {
-            throw new IllegalParameterException("Don't recognize configuration parameter " + parameterUri + " for rule-based reasoner");
-        }
+        throw new IllegalParameterException(parameterUri);
     }
 
 }
+
 
 
 /*
@@ -280,3 +212,4 @@ public class FBRuleReasoner implements Reasoner {
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+

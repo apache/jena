@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleStore.java,v 1.11 2003-08-15 16:09:37 der Exp $
+ * $Id: RuleStore.java,v 1.12 2003-08-21 12:04:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * </p> 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-15 16:09:37 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-21 12:04:45 $
  */
 public class RuleStore {
 
@@ -108,10 +108,11 @@ public class RuleStore {
         if (isAdd && ruleIndex.contains(rule)) return;
         if (isAdd) {
             ruleIndex.add(rule);
+            if (allRules != null) allRules.add(rule);
         } else {
             ruleIndex.remove(rule);
+            if (allRules != null) allRules.remove(rule);
         }
-        if (allRules != null) allRules.add(rule);
         Object headClause = rule.getHeadElement(0);
         if (headClause instanceof TriplePattern) {
             TriplePattern headpattern = (TriplePattern)headClause;

@@ -1,16 +1,21 @@
 /******************************************************************
- * File:        FBRuleReasoner.java
+ * File:        FBLPRuleReasoner.java
  * Created by:  Dave Reynolds
- * Created on:  29-May-2003
+ * Created on:  26-Jul-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.7 2003-08-21 12:04:45 der Exp $
+ * $Id: FBLPRuleReasoner.java,v 1.1 2003-08-21 12:04:45 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys;
+package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
+
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.ClauseEntry;
+import com.hp.hpl.jena.reasoner.rulesys.Functor;
+import com.hp.hpl.jena.reasoner.rulesys.Rule;
+import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
@@ -20,10 +25,13 @@ import java.util.*;
  * It supports both forward reasoning and backward reasoning, including use
  * of forward rules to generate and instantiate backward rules.
  * 
+ * This version is purely temporary during development of the LP engine and will get
+ * replaced by the upgraded FBRuleReasoner when the LP section is released.
+ * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-21 12:04:45 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
  */
-public class FBRuleReasoner implements Reasoner {
+public class FBLPRuleReasoner implements Reasoner {
     
     /** The parent reasoner factory which is consulted to answer capability questions */
     protected ReasonerFactory factory;
@@ -38,8 +46,7 @@ public class FBRuleReasoner implements Reasoner {
     protected boolean recordDerivations = false;
 
     /** Flag which, if true, enables tracing of rule actions to logger.info */
-    boolean traceOn = false;
-//    boolean traceOn = true;
+    protected boolean traceOn = false;
 
     /** Flag, if true we cache the closure of the pure rule set with its axioms */
     protected static final boolean cachePreload = true;
@@ -52,7 +59,7 @@ public class FBRuleReasoner implements Reasoner {
      * and so has no capabilities description. 
      * @param rules a list of Rule instances which defines the ruleset to process
      */
-    public FBRuleReasoner(List rules) {
+    public FBLPRuleReasoner(List rules) {
         this.rules = rules;
     }
     
@@ -60,7 +67,7 @@ public class FBRuleReasoner implements Reasoner {
      * Constructor
      * @param factory the parent reasoner factory which is consulted to answer capability questions
      */
-    public FBRuleReasoner(ReasonerFactory factory) {
+    public FBLPRuleReasoner(ReasonerFactory factory) {
         this(null, factory);
     }
     
@@ -69,7 +76,7 @@ public class FBRuleReasoner implements Reasoner {
      * @param rules a list of Rule instances which defines the ruleset to process
      * @param factory the parent reasoner factory which is consulted to answer capability questions
      */
-    public FBRuleReasoner(List rules, ReasonerFactory factory) {
+    public FBLPRuleReasoner(List rules, ReasonerFactory factory) {
         this(rules);
         this.factory = factory;
     }
@@ -78,7 +85,7 @@ public class FBRuleReasoner implements Reasoner {
      * Internal constructor, used to generated a partial binding of a schema
      * to a rule reasoner instance.
      */
-    protected FBRuleReasoner(List rules, Graph schemaGraph, ReasonerFactory factory) {
+    protected FBLPRuleReasoner(List rules, Graph schemaGraph, ReasonerFactory factory) {
         this(rules, factory);
         this.schemaGraph = schemaGraph;
     }
@@ -119,9 +126,9 @@ public class FBRuleReasoner implements Reasoner {
         if (schemaGraph != null) {
             throw new ReasonerException("Can only bind one schema at a time to an OWLRuleReasoner");
         }
-        FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, getPreload(), tbox);
+        FBLPRuleInfGraph graph = new FBLPRuleInfGraph(this, rules, getPreload(), tbox);
         graph.prepare();
-        FBRuleReasoner fbr  = new FBRuleReasoner(rules, graph, factory);
+        FBLPRuleReasoner fbr  = new FBLPRuleReasoner(rules, graph, factory);
         fbr.setDerivationLogging(recordDerivations);
         fbr.setTraceOn(traceOn);
         return fbr;
@@ -147,8 +154,8 @@ public class FBRuleReasoner implements Reasoner {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException {
-        Graph schemaArg = schemaGraph == null ? getPreload() : (FBRuleInfGraph)schemaGraph; 
-        FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, schemaArg);
+        Graph schemaArg = schemaGraph == null ? getPreload() : (FBLPRuleInfGraph)schemaGraph; 
+        FBLPRuleInfGraph graph = new FBLPRuleInfGraph(this, rules, schemaArg);
         graph.setDerivationLogging(recordDerivations);
         graph.setTraceOn(traceOn);
         graph.rebind(data);
@@ -192,7 +199,7 @@ public class FBRuleReasoner implements Reasoner {
      */
     protected synchronized InfGraph getPreload() {
         if (cachePreload && preload == null) {
-            preload = (new FBRuleInfGraph(this, rules, null));
+            preload = (new FBLPRuleInfGraph(this, rules, null));
             preload.prepare();
         }
         return preload;
@@ -219,14 +226,6 @@ public class FBRuleReasoner implements Reasoner {
     }
     
     /**
-     * Return the state of the trace flag.If set to true then rule firings
-     * are logged out to the Logger at "INFO" level.
-     */
-    public boolean isTraceOn() {
-        return traceOn;
-    } 
-
-    /**
      * Set a configuration paramter for the reasoner. The supported parameters
      * are:
      * <ul>
@@ -249,6 +248,7 @@ public class FBRuleReasoner implements Reasoner {
     }
 
 }
+
 
 
 /*

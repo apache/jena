@@ -1,53 +1,50 @@
 /******************************************************************
- * File:        TestPackage.java
+ * File:        LPRuleSyntaxException.java
  * Created by:  Dave Reynolds
- * Created on:  30-Mar-03
+ * Created on:  25-Jul-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestPackage.java,v 1.12 2003-08-21 12:04:46 der Exp $
+ * $Id: LPRuleSyntaxException.java,v 1.1 2003-08-21 12:04:45 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.test;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-
-import junit.framework.*;
+import com.hp.hpl.jena.reasoner.ReasonerException;
+import com.hp.hpl.jena.reasoner.rulesys.Rule;
 
 /**
- * Aggregate tester that runs all the test associated with the rulesys package.
+ * Exception used to indicate syntactic errors the LP version of the
+ * backward chaining rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-21 12:04:46 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
  */
+public class LPRuleSyntaxException extends ReasonerException {
 
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
+    
+    /**
+     * Constructor.
+     * @param msg a free-text message describing the problem
+     */
+    public LPRuleSyntaxException(String msg, Rule rule) {
+        super("Syntax error in backward rule: " + rule.toShortString() 
+                +"\n" + msg);
     }
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("RuleSys");
-        
-        addTest( "TestBasics", TestBasics.suite() );
-        addTest( "TestBackchainer", TestBackchainer.suite() );
-        addTest( "TestLPBasics", TestBasicLP.suite() );
-        addTest( "TestFBRules", TestFBRules.suite() );
-        addTest( "TestGenericRules", TestGenericRules.suite() );
-        addTest( "TestRETE", TestRETE.suite() );
-        addTest( "TestOWLRules", TestOWLRules.suite() );
+    /**
+     * Constructor.
+     * @param msg a free-text message describing the problem
+     * @param cause a nested exception which prompted this error
+     */
+    public LPRuleSyntaxException(String msg, Rule rule, Throwable cause) {
+        super("Syntax error in backward rule: " + rule.toShortString() 
+                +"\n" + msg, cause);
     }
-
-    // helper method
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
 }
 
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

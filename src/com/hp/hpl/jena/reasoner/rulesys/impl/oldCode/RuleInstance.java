@@ -1,59 +1,64 @@
 /******************************************************************
- * File:        AllTabled.java
+ * File:        RuleInstance.java
  * Created by:  Dave Reynolds
- * Created on:  19-Aug-2003
+ * Created on:  03-May-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TableAll.java,v 1.2 2003-08-21 12:04:46 der Exp $
+ * $Id: RuleInstance.java,v 1.1 2003-08-21 12:04:45 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.builtins;
+package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.graph.*;
 
 /**
- * Arrange that all backchaining goals should be tabled (aka memoized)
- * by the LP engine.
+ * Part of the backward chaining rule interpreter. A RuleInstance
+ * links an instance of a rule to the GoalResults object for which it is
+ * generating results. It is a simple data structure which is shared amongst
+ * a set of RuleSets to reduce the store turn over needed for RuleState creation.
+ * <p>
+ * Encapuslation warning: this object is used in the tight inner loop of the engine so we access its
+ * field pointers directly rather than through accessor methods.
+ * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-21 12:04:46 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
  */
-public class TableAll extends BaseBuiltin {
+public class RuleInstance {
 
+    /** The rule being processed */
+    protected Rule rule;
+    
+    /** The parent goal table entry which contains this continuation point */
+    protected GoalResults generator;
+    
+    /** The enclosing rule engine */
+    protected BRuleEngine engine;
+    
+    /** The head clause whose bindings are being sought */
+    protected TriplePattern head;
+    
+    /** Set to true if the first two body clauses were reordered for performance */
+    protected boolean clausesReordered = false;
+    
+    /** If the clauses are reordered this contains the index of the second clause */
+    protected int secondClause = -1;
+    
     /**
-     * Return a name for this builtin, normally this will be the name of the 
-     * functor that will be used to invoke it.
+     * Constructor. Create a new continuation point for a rule in
+     * the context of a specific goal represented by the table entry.
      */
-    public String getName() {
-        return "tableAll";
+    RuleInstance(GoalResults results, Rule rule, TriplePattern head) {
+        this.generator = results;
+        this.rule = rule;
+        this.engine = results.getEngine();
+        this.head = head;
     }
-
-    /**
-     * This method is invoked when the builtin is called in a rule body.
-     * @param args the array of argument values for the builtin, this is an array 
-     * of Nodes, some of which may be Node_RuleVariables.
-     * @param length the length of the argument list, may be less than the length of the args array
-     * for some rule engines
-     * @param context an execution context giving access to other relevant data
-     * @return return true if the buildin predicate is deemed to have succeeded in
-     * the current environment
-     */
-    public void headAction(Node[] args, int length, RuleContext context) {
-        InfGraph infgraph = context.getGraph();
-        if (infgraph instanceof FBRuleInfGraph) {
-            ((FBRuleInfGraph)infgraph).setTabled(Node.ANY);
-        } else if (infgraph instanceof LPBackwardRuleInfGraph) {
-            ((LPBackwardRuleInfGraph)infgraph).setTabled(Node.ANY);
-        } else {
-            // Quietly ignore as an irrelevant directive
-            // Could log or throw exception but currently I want to be able to use
-            // the same rule base from different contexts which do and do not need
-            // to know about this.
-        }
-    }
+     
 }
+
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

@@ -5,20 +5,19 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Table.java,v 1.3 2003-08-08 16:11:43 der Exp $
+ * $Id: Table.java,v 1.4 2003-08-21 12:04:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.implb.FBLPRuleInfGraph;
 import com.hp.hpl.jena.graph.*;
 
 /**
  * Arrange that the given predicate is tabled by the backchaining engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-08 16:11:43 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-21 12:04:46 $
  */
 public class Table extends BaseBuiltin {
 
@@ -42,9 +41,13 @@ public class Table extends BaseBuiltin {
      */
     public void headAction(Node[] args, int length, RuleContext context) {
         InfGraph infgraph = context.getGraph();
-        if (infgraph instanceof FBLPRuleInfGraph) {
+        if (infgraph instanceof FBRuleInfGraph) {
             for (int i = 0; i < length; i++) {
-                ((FBLPRuleInfGraph)infgraph).setTabled(args[i]);
+                ((FBRuleInfGraph)infgraph).setTabled(args[i]);
+            }
+        } else if (infgraph instanceof LPBackwardRuleInfGraph) {
+            for (int i = 0; i < length; i++) {
+                ((LPBackwardRuleInfGraph)infgraph).setTabled(args[i]);
             }
         } else {
             // Quietly ignore as an irrelevant directive
