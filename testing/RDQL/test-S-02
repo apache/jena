@@ -1,8 +1,7 @@
 // (c) Copyright 2003 Hewlett-Packard Development Company, LP
 // Extra syntax checks
-// Test S-01 and S-02 are the same query, using different prefixes.
 
 SELECT *
 FROM <modelA.nt>
-WHERE (é:r ?p ?v)
-USING é FOR <http://rdf.hp.com/>
+WHERE (Ã©:r ?p ?v)
+USING Ã© FOR <http://rdf.hp.com/>
