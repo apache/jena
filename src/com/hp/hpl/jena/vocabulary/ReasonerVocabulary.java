@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.5 2003-06-19 12:54:45 der Exp $
+ * $Id: ReasonerVocabulary.java,v 1.6 2003-06-19 20:47:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.reasoner.ReasonerRegistry;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-19 12:54:45 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-19 20:47:39 $
  */
 public class ReasonerVocabulary {
     
@@ -75,8 +75,8 @@ public class ReasonerVocabulary {
      *  caching in a generic rule reasoner. Set to "true" to enable caching. */
     public static Property PROPenableTGCCaching;
     
-    /** Property enable scanning of source data for container membership properites
-     *  during RDFS reasoning. Set to "true" to enable caching. */
+    /** Property used to switch on/off scanning of data for container membership
+     * properties in RDFS preprocessing. */
     public static Property PROPenableCMPScan;
     
     /** A namespace used for Rubric specific properties */
