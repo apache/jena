@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: EnvironmentFrame.java,v 1.4 2003-08-07 17:02:30 der Exp $
+ * $Id: EnvironmentFrame.java,v 1.5 2003-08-12 17:01:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,11 +21,11 @@ import com.hp.hpl.jena.graph.Node;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-07 17:02:30 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-12 17:01:27 $
  */
 public class EnvironmentFrame extends FrameObject {
 
-    /** The set of permanent variables Yi) in use by this frame.  */
+    /** The set of permanent variables Y(i) in use by this frame.  */
     Node[] pVars;
     
     /** The code the the clause currently being processed */

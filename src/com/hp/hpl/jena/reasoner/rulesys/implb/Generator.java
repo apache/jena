@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Generator.java,v 1.5 2003-08-10 21:49:41 der Exp $
+ * $Id: Generator.java,v 1.6 2003-08-12 17:01:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-10 21:49:41 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-12 17:01:27 $
  */
 public class Generator implements LPAgendaEntry, LPInterpreterContext {
 
@@ -51,6 +51,9 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     
     /** The list of active consumer choice points consuming results from this generator */
     protected Set consumingCPs = new HashSet();
+    
+    /** Flags whether the generator is live/dead/unknown during completion checking */
+    protected LFlag completionState;
     
     /**
      * Constructor.
@@ -116,6 +119,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
             interpreter = null;
             resultSet = null;
             isReady = false;
+            completionState = LFlag.DEAD;
             generatingCPs = null;
             for (Iterator i = consumingCPs.iterator(); i.hasNext(); ) {
                 ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame)i.next();
@@ -210,36 +214,97 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * Check for deadlocked states where none of the generators we are (indirectly)
      * dependent on can run.
      */
-    protected boolean checkForCompletions() {
+    protected void checkForCompletions() {
         HashSet visited = new HashSet();
-        return runCompletionCheck(visited);
+        if (runCompletionCheck(visited) != LFlag.LIVE) {
+            // The scan may have left some nodes as unknown so need to 
+            // propagate LIVE flags back up to decide if they are a closed loop.
+            HashSet suspects = new HashSet();
+            HashSet newLive = new HashSet();
+            for (Iterator iv = visited.iterator(); iv.hasNext(); ) {
+                Generator g = (Generator)iv.next();
+                if (g.completionState == LFlag.UNKNOWN) {
+                    suspects.add(g);
+                } else if (g.completionState == LFlag.LIVE) {
+                    newLive.add(g);
+                }
+            }
+            while (newLive.size() > 0) {
+                HashSet temp = new HashSet();
+                for (Iterator il = newLive.iterator(); il.hasNext(); ) {
+                    Generator g = (Generator)il.next();
+                    for (Iterator id = g.consumingCPs.iterator(); id.hasNext(); ) {
+                        Generator dep = (Generator)id.next();
+                        if (suspects.contains(dep)) {
+                            suspects.remove(dep);
+                            dep.completionState = LFlag.LIVE;
+                            temp.add(dep);
+                        }
+                    }
+                }
+                newLive = temp;
+            }
+            // Any remaining suspects are DEAD, have no indirect live generators
+            for (Iterator ic = suspects.iterator(); ic.hasNext(); ) {
+                Generator g = (Generator)ic.next();
+                g.setComplete();
+            }
+        } else {
+            // We are known to be live. We could also check for dead branches of
+            // subgraph we have searched but don't think there will be any. Worst
+            // that happens if I'm wrong is the those will get completed when someone
+            // pumps them.
+        }
     }
     
     /**
      * Check for deadlocked states where none of the generators we are (indirectly)
      * dependent on can run.
      */
-    protected boolean runCompletionCheck(Set visited) {
-        if (isComplete()) return true;
+    protected LFlag runCompletionCheck(Set visited) {
+        if (isComplete()) return LFlag.DEAD;
+        if (! visited.add(this)) return this.completionState;
+        completionState = LFlag.UNKNOWN;
         if (isReady()) {
-            return false;
-        } else if (visited.add(this)) {
+            completionState = LFlag.LIVE;
+        } else {
             for (Iterator i = generatingCPs.iterator(); i.hasNext(); ) {
                 ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame)i.next();
                 if (ccp.isReady()) {
-                    return false;
-                } else if ( ! ccp.generator.runCompletionCheck(visited)) {
-                    return false;
+                    completionState = LFlag.LIVE;
+                    break;
+                } else if ( ccp.generator.runCompletionCheck(visited) == LFlag.LIVE) {
+                    completionState = LFlag.LIVE;
+                    break;
                 }
             }
-            // Gets here if all descendents are mutually blocked
-            // Mark as complete now, though this might be moved to a second pass over the visited set 
-            setComplete();
-            return true;
-        } else {
-            return true;
+        }
+        return completionState;
+    }
+    
+    /**
+     * Inner classes to flag generator states during completeness check.
+     */
+    private static class LFlag {
+    
+        /** Label for printing */
+        private String label;
+
+        public static final LFlag LIVE = new LFlag("Live");
+        public static final LFlag DEAD = new LFlag("Dead");
+        public static final LFlag UNKNOWN = new LFlag("Unknown");
+    
+        /** Constructor */
+        private LFlag(String label) {
+            this.label = label;
+        }
+    
+        /** Print string */
+        public String toString() {
+            return label;
         }
     }
+
     
 }
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.16 2003-08-12 09:31:56 der Exp $
+ * $Id: TestBasicLP.java,v 1.17 2003-08-12 17:01:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-08-12 09:31:56 $
+ * @version $Revision: 1.17 $ on $Date: 2003-08-12 17:01:27 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -67,12 +67,11 @@ public class TestBasicLP  extends TestCase {
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite( TestBasicLP.class );
+//        return new TestSuite( TestBasicLP.class );
         
-//        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBasicLP( "testBaseRules5" ));
-//        suite.addTest(new TestBasicLP( "testProblem4" ));
-//        return suite;
+        TestSuite suite = new TestSuite();
+        suite.addTest(new TestBasicLP( "testProblem7" ));
+        return suite;
     }  
    
     /**
@@ -935,6 +934,96 @@ public class TestBasicLP  extends TestCase {
                 new Object[] {
                     new Triple(c, r, b)
                 } );
+    }
+
+    /**
+     * A problem from the original backchainer tests - RDFS example which threw an NPE 
+     */
+    public void testProblem5() {
+        String ruleSrc = 
+        "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" + 
+        "[rdfs9:   (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x)]" +
+        "[(rdf:type rdfs:range rdfs:Class) <-]" +
+        "[rdfs3:  (?y rdf:type ?c) <- (?x ?p ?y), (?p rdfs:range ?c)]" +
+        "[rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class)]";
+        doTest( ruleSrc,
+                new Node[] { ty, sC },
+                new Triple[] {
+                    new Triple(p, sP, q),
+                    new Triple(q, sP, r),
+                    new Triple(C1, sC, C2),
+                    new Triple(C2, sC, C3),
+                    new Triple(a, ty, C1)
+                },
+                new Triple(a, ty, Node.ANY),
+                new Object[] {
+                    new Triple(a, ty, C1),
+                    new Triple(a, ty, C2),
+                    new Triple(a, ty, C3)
+                } );
+    }
+
+    /**
+     * A problem from the original backchainer tests - RDFS example which threw an NPE 
+     */
+    public void testProblem6() {
+        String ruleSrc = 
+        "[rdfs9:   (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x)]" +
+        "[restriction2: (?C owl:equivalentClass all(?P, ?D)) <- (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)]" +
+        "[rs2: (?X rdf:type all(?P,?C)) <- (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D)]" +
+        "[rp4: (?Y rdf:type ?C) <- (?X rdf:type all(?P, ?C)), (?X ?P ?Y)]";
+        doTest( ruleSrc,
+                new Node[] { ty, sC, OWL.equivalentClass.asNode() },
+                new Triple[] {
+                    new Triple(a, ty, r),
+                    new Triple(a, p, b),
+                    new Triple(r, sC, C1),
+                    new Triple(C1, ty, OWL.Restriction.asNode()),
+                    new Triple(C1, OWL.onProperty.asNode(), p),
+                    new Triple(C1, OWL.allValuesFrom.asNode(), c)
+                },
+                new Triple(b, ty, c),
+                new Object[] {
+                    new Triple(b, ty, c)
+                } );
+    }
+
+    /**
+     * A problem from the original backchainer tests - incorrect additional deduction
+     */
+    public void testProblem7() {
+        String ruleSrc = 
+        "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" + 
+        "[rdfs9:   (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), (?a rdf:type ?x)]" +
+//        "[(rdf:type rdfs:range rdfs:Class) <-]" +
+//        "[rdfs3:  (?y rdf:type ?c) <- (?x ?p ?y), (?p rdfs:range ?c)]" +
+        "[rdfs3:  (?y rdf:type rdfs:Class) <- (?x rdf:type ?y)]" +
+        "[rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class)]";
+        List rules = Rule.parseRules(ruleSrc);
+        Node[] tabled = new Node[] { ty, sC }; 
+        Triple[] triples = new Triple[] {
+                    new Triple(C1, sC, C2),
+                    new Triple(C2, sC, C3),
+                    new Triple(a, ty, C1)
+                };
+        Graph data = new GraphMem();
+        for (int i = 0; i < triples.length; i++) {
+            data.add(triples[i]);
+        }
+        InfGraph infgraph =  makeInfGraph(rules, data, tabled);
+        ExtendedIterator it = infgraph.find(a, ty, null);
+        Triple result = (Triple)it.next();
+        assertEquals(result.getSubject(), a);
+        assertEquals(result.getPredicate(), ty);
+        it.close();
+        // Make sure if we start again we get the full listing.
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(a, ty, null), 
+            new Object[] {
+                new Triple(a, ty, C1),
+                new Triple(a, ty, C2),
+                new Triple(a, ty, C3)
+            } );
     }
     
     /** 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.17 2003-08-11 22:08:31 der Exp $
+ * $Id: RuleClauseCode.java,v 1.18 2003-08-12 17:01:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-08-11 22:08:31 $
+ * @version $Revision: 1.18 $ on $Date: 2003-08-12 17:01:27 $
  */
 public class RuleClauseCode {
     
@@ -686,7 +686,8 @@ public class RuleClauseCode {
             String test14 = "(?x p ?z) <- (?x e ?z), (?z q ?z).";
             String test15 = "(?x p ?y ) <- bound(?x), (?x p ?y).";
             String test16 = "(a p b ) <- unbound(?x).";
-            store.addRule(Rule.parseRule(test16));
+            String test17 = "(?a p ?a) <- (?a q class).";
+            store.addRule(Rule.parseRule(test17));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);

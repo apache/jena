@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.20 2003-08-12 09:31:56 der Exp $
+ * $Id: LPInterpreter.java,v 1.21 2003-08-12 17:01:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-08-12 09:31:56 $
+ * @version $Revision: 1.21 $ on $Date: 2003-08-12 17:01:27 $
  */
 public class LPInterpreter {
 
@@ -183,6 +183,7 @@ public class LPInterpreter {
             return topTMFrame.lastMatch;
         } else {
             Triple t = new Triple(deref(pVars[0]), deref(pVars[1]), derefPossFunctor(pVars[2]));
+            System.out.println("Ans: " + t);
             return t;
         }
     }
@@ -599,6 +600,11 @@ public class LPInterpreter {
      * Restore the interpter state according to the given consumer choice point.
      */
     public void restoreState(ConsumerChoicePointFrame ccp) {
+        // Temp
+        Node s = ccp.goal.getSubject(); 
+        if (s.isURI() && s.getURI().equals("C1")) {
+            System.out.println("Restore of " + ccp.goal);
+        }
         cpFrame = ccp;
         System.arraycopy(ccp.argVars, 0, argVars, 0, argVars.length);
         unwindTrail(0);
@@ -672,6 +678,11 @@ public class LPInterpreter {
     public static Node derefPossFunctor(Node node) {
         if (node instanceof Node_RuleVariable) {
             Node dnode = ((Node_RuleVariable)node).deref();
+            if (dnode.isVariable()) {
+                // Problem with variable in return result
+                // Temp debug ...
+                System.out.println("Hit problem");
+            }
             if (Functor.isFunctor(dnode)) {
                 Functor f = (Functor) dnode.getLiteral().getValue();
                 Node[] fargs = f.getArgs();
