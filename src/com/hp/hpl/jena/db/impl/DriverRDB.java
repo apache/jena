@@ -34,7 +34,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.1 $ on $Date: 2003-04-25 02:57:17 $
+* @version $Revision: 1.2 $ on $Date: 2003-04-30 21:18:24 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -401,7 +401,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			// remove from system properties table
 			// It is sufficient just to remove the lSet properties (it will
 			// take care of deleting any pset properties automatically).			
-			lProp.remove(m_sysProperties);
+			lProp.remove();
 			
 		}
 		

@@ -28,7 +28,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DBPropGraph extends DBProp {
 
@@ -39,6 +39,7 @@ public class DBPropGraph extends DBProp {
 	public static String graphNamePrefix = DB.getURI() + "Graph.";
 	public static Node_URI graphType = (Node_URI)DB.graphType.getNode();
 	public static Node_URI graphLSet = (Node_URI)DB.graphLSet.getNode();
+	public static Node_URI graphPrefix = (Node_URI)DB.graphPrefix.getNode();
 	
 	public DBPropGraph( SpecializedGraph g, String name, String type) {
 		super(g, new Node_URI(graphNamePrefix+name));
@@ -60,6 +61,27 @@ public class DBPropGraph extends DBProp {
 	public void addLSet( DBPropLSet lset ) {
 		putPropNode( graphLSet, lset.getNode() );
 	}
+
+	public void addPrefix( DBPropPrefix prefix ) {
+		// First check it doesn't already exist
+		DBPropPrefix existing = getPrefix( prefix.getValue());
+		if( existing != null)
+			removePrefix( existing);
+		putPropNode( graphPrefix, prefix.getNode() );
+	}
+	
+	public void removePrefix( DBPropPrefix prefix ) {
+		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
+		TripleMatch match = new StandardTripleMatch(self, graphPrefix, prefix.getNode());
+		Iterator matches = graph.find( match, complete);
+		if( matches.hasNext() )
+			graph.delete( (Triple)(matches.next()), complete );
+		prefix.remove();
+	}
+	
+	public void addPrefix( String prefix, String uri ) {
+		addPrefix( new DBPropPrefix( graph, prefix, uri) );
+	}
 	
 	public String getName() { return self.getURI().substring(graphNamePrefix.length()); }
 	public String getType() { return getPropString( graphType); };
@@ -71,6 +93,23 @@ public class DBPropGraph extends DBProp {
 		return new Map1Iterator(new MapToLSet(), matches);
 	}
 	
+	public ExtendedIterator getAllPrefixes() {
+		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
+		TripleMatch match = new StandardTripleMatch(self, graphPrefix, null);
+		Iterator matches = graph.find( match, complete);
+		return new Map1Iterator(new MapToPrefix(), matches);
+	}
+	
+	public DBPropPrefix getPrefix( String value ) {
+		ExtendedIterator prefixes = getAllPrefixes();
+		while( prefixes.hasNext() ) {
+			DBPropPrefix prefix = (DBPropPrefix)prefixes.next();
+			if( prefix.getValue().matches(value)) 
+				return prefix;
+		}
+		return null;
+	}
+	
 	public ExtendedIterator listTriples() {
 		// First get all the triples that directly desrcribe this graph
 		ExtendedIterator result = DBProp.listTriples( graph, self );
@@ -80,6 +119,12 @@ public class DBPropGraph extends DBProp {
 		while( lsets.hasNext()) {
 			result = result.andThen( ((DBPropLSet)lsets.next()).listTriples() );
 		}
+
+		// Now get all the triples that describe any prefixes
+		ExtendedIterator prefixes = getAllPrefixes();
+		while( prefixes.hasNext()) {
+			result = result.andThen( ((DBPropPrefix)prefixes.next()).listTriples() );
+		}
 		return result;
 	}
 	
@@ -87,6 +132,13 @@ public class DBPropGraph extends DBProp {
 		public Object map1( Object o) {
 			Triple t = (Triple) o;
 			return new DBPropLSet( graph, t.getObject() );			
+		}
+	}
+	
+	private class MapToPrefix implements Map1 {
+		public Object map1( Object o) {
+			Triple t = (Triple) o;
+			return new DBPropPrefix( graph, t.getObject() );			
 		}
 	}
 	
@@ -100,12 +152,16 @@ public class DBPropGraph extends DBProp {
 			return null;
 	}
 	
-	public void remove( SpecializedGraph graph) {
-		Iterator it = getAllLSets();
+	public void remove() {
+		Iterator it = getAllPrefixes();
 		while( it.hasNext()) {
-			((DBPropLSet)it.next()).remove(graph);			
+			((DBPropPrefix)it.next()).remove();			
 		}
-		super.remove( graph);
+		it = getAllLSets();
+		while( it.hasNext()) {
+			((DBPropLSet)it.next()).remove();			
+		}
+		super.remove();
 	}
 	
 }

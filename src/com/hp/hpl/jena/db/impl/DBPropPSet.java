@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
-* @version $Revision: 1.1 $
+* @version $Revision: 1.2 $
  */
 public class DBPropPSet extends DBProp {
 
@@ -47,9 +47,6 @@ public class DBPropPSet extends DBProp {
 	public String getName() { return self.getURI().substring(DB.getURI().length()); }
 	public String getType() { return getPropString( pSetType); };
 
-	public void remove( SpecializedGraph graph) {
-		super.remove( graph);
-	}
 }
 
 /*

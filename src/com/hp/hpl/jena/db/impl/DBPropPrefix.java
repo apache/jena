@@ -9,11 +9,9 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.DB;
 
-import java.util.*;
-
 /**
  *
- * DBStoreDesc
+ * DBPropPrefix
  * 
  * A wrapper to assist in getting and setting DB information from 
  * a persistent store.
@@ -29,61 +27,30 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.1 $
  */
-public class DBPropLSet extends DBProp {
+public class DBPropPrefix extends DBProp {
 
-	public static Node_URI lSetType = (Node_URI)DB.lSetType.getNode();
-	public static Node_URI lSetPSet = (Node_URI)DB.lSetPSet.getNode();
+	public static Node_URI prefixValue = (Node_URI)DB.prefixValue.getNode();
+	public static Node_URI prefixURI = (Node_URI)DB.prefixURI.getNode();
 	
-	public DBPropLSet( SpecializedGraph g, String name, String type) {
-		super( g, new Node_URI(DB.getURI()+name));
-		putPropString(lSetType, type);
+	public DBPropPrefix( SpecializedGraph g, String value, String uri) {
+		super( g, Node.createAnon());
+		putPropString(prefixValue, value);
+		putPropString(prefixURI, uri);
 	}
 	
-	public DBPropLSet( SpecializedGraph g, Node n) {
+	public DBPropPrefix( SpecializedGraph g, Node n) {
 		super(g,n);
 	}	
+		
+	public String getValue() { return getPropString( prefixValue); }
+	public String getURI() { return getPropString( prefixURI); };
 	
-	public void setPSet( DBPropPSet pset ) {
-		putPropNode( lSetPSet, pset.getNode() );
-	}
-	
-	public String getName() { return self.getURI().substring(DB.getURI().length()); }
-	public String getType() { return getPropString( lSetType); };
-	
-	public DBPropPSet getPset() {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch( self, lSetPSet, null);
-		Iterator matches = graph.find(match, complete);
-		if( matches.hasNext() ) {
-			Triple t = (Triple)matches.next();
-			return new DBPropPSet(graph, t.getObject());
-		}
-		else
-			return null;
-	}
-
-	public void remove() {
-		DBPropPSet pSet = getPset();
-		if (pSet != null )
-			pSet.remove();
-		super.remove();
-	}
 
 	public ExtendedIterator listTriples() {
-		// First get all the triples that directly desrcribe this graph
-		ExtendedIterator result = DBProp.listTriples(graph, self);
-		
-		// Now get all the triples that describe the pset
-		DBPropPSet pset = getPset();
-		if( pset != null )
-			result = result.andThen( DBProp.listTriples(graph, getPset().getNode()) );
-
-		return result;
-	}
-	
-	
+		return DBProp.listTriples(graph, self);
+	}	
 }
 
 /*

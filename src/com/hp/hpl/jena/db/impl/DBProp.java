@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public abstract class DBProp {
 
@@ -48,11 +48,6 @@ public abstract class DBProp {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Triple t = new Triple( self, predicate, node);
 		graph.add( t, complete);
-		
-		// TODO - remove the following debugging statements
-		if( ! graph.contains(t, complete)) {
-			throw new RuntimeException("Internal error - call to graph.contains(t) should not fail immediately after calling graph.add(t)");
-		}
 	}			
 	
 	protected String getPropString( Node_URI predicate) {
@@ -68,12 +63,12 @@ public abstract class DBProp {
 		return result.toString();
 	}			
 	
-	protected void remove( SpecializedGraph g ) {
+	protected void remove() {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		TripleMatch match = new StandardTripleMatch(self, null, null);
 		ClosableIterator it = graph.find(match, complete);
 		while( it.hasNext() )
-			g.delete( (Triple) it.next(), complete);
+			graph.delete( (Triple) it.next(), complete);
 		it.close();
 		self = null;
 		graph = null;

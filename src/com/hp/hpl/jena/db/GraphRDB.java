@@ -7,6 +7,7 @@ package com.hp.hpl.jena.db;
 
 import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -45,7 +46,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -54,6 +55,7 @@ public class GraphRDB extends GraphBase implements Graph {
 	protected List m_specializedGraphs = null;
 	protected IRDBDriver m_driver = null;
 	protected DBPropGraph m_properties = null; 
+	protected DBPrefixMappingImpl m_prefixMapping = null;
 
 	/**
 	 * Construct a new GraphRDB
@@ -285,6 +287,16 @@ public class GraphRDB extends GraphBase implements Graph {
 	 *******/
 
 	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.graph.Graph#getPrefixMapping()
+	 */
+	public PrefixMapping getPrefixMapping() { 
+		if( m_prefixMapping == null)
+			m_prefixMapping = new DBPrefixMappingImpl( m_properties );
+		return m_prefixMapping; 
+	}
+
+
+	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#close()
 	 */
 	public synchronized void close() {
@@ -313,7 +325,7 @@ public class GraphRDB extends GraphBase implements Graph {
     		throw new RDFRDBException("Error - attempt to call remove on a Graph that has already been closed");
     	// First we ask the driver to remove the specialized graphs
     	m_driver.removeSpecializedGraphs( m_properties );
-    	m_properties.remove( m_driver.getSystemSpecializedGraph());
+    	m_properties.remove();
     	m_properties = null;
     	m_specializedGraphs.clear();
     }
