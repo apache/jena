@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13 May 2004
  * Filename           $RCSfile: DIGQueryRoleFillerTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 09:56:35 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-02-10 18:18:39 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -34,7 +34,9 @@ import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.util.xml.SimpleXMLPath;
+import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 
 
@@ -48,7 +50,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryRoleFillerTranslator.java,v 1.3 2004-12-07 09:56:35 andy_seaborne Exp $
+ * @version CVS $Id: DIGQueryRoleFillerTranslator.java,v 1.4 2005-02-10 18:18:39 ian_dickinson Exp $
  */
 public class DIGQueryRoleFillerTranslator 
     extends DIGQueryTranslator
@@ -139,9 +141,14 @@ public class DIGQueryRoleFillerTranslator
 
     public boolean checkPredicate( com.hp.hpl.jena.graph.Node predicate, DIGAdapter da, Model premises ) {
         // check that the predicate is not a datatype property
+        // and that it is not an RDF or OWL reserved predicate
         if (predicate.isConcrete()) {
             Resource p = (Resource) da.m_sourceData.getRDFNode( predicate );
-            return !da.m_sourceData.contains( p, RDF.type, da.m_sourceData.getProfile().DATATYPE_PROPERTY() );
+            String pNS = p.getNameSpace();
+            return !(da.m_sourceData.contains( p, RDF.type, da.m_sourceData.getProfile().DATATYPE_PROPERTY() ) ||
+                     RDFS.getURI().equals( pNS ) ||
+                     RDF.getURI().equals( pNS ) ||
+                     OWL.getURI().equals( pNS ));
         }
         else {
             return false;

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryRoleFillersTranslator.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 09:56:35 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-02-10 18:18:39 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -30,6 +30,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 
@@ -44,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryRoleFillersTranslator.java,v 1.6 2004-12-07 09:56:35 andy_seaborne Exp $
+ * @version CVS $Id: DIGQueryRoleFillersTranslator.java,v 1.7 2005-02-10 18:18:39 ian_dickinson Exp $
  */
 public class DIGQueryRoleFillersTranslator 
     extends DIGQueryTranslator
@@ -112,7 +113,11 @@ public class DIGQueryRoleFillersTranslator
         // check that the predicate is not a datatype property
         if (predicate.isConcrete()) {
             Resource p = (Resource) da.m_sourceData.getRDFNode( predicate );
-            return !da.m_sourceData.contains( p, RDF.type, da.m_sourceData.getProfile().DATATYPE_PROPERTY() );
+            String pNS = p.getNameSpace();
+            return !(da.m_sourceData.contains( p, RDF.type, da.m_sourceData.getProfile().DATATYPE_PROPERTY() ) ||
+                     RDFS.getURI().equals( pNS ) ||
+                     RDF.getURI().equals( pNS ) ||
+                     OWL.getURI().equals( pNS ));
         }
         else {
             return false;

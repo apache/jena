@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 09:56:37 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-02-10 18:15:28 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -25,8 +25,9 @@ package com.hp.hpl.jena.reasoner.dig.test;
 
 // Imports
 ///////////////
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.*;
 import org.w3c.dom.*;
+
 
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
@@ -52,7 +53,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.18 2004-12-07 09:56:37 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.19 2005-02-10 18:15:28 ian_dickinson Exp $)
  */
 public class TestDigReasoner 
     extends TestCase
@@ -63,6 +64,8 @@ public class TestDigReasoner
     // Static variables
     //////////////////////////////////
 
+    private static Log log = LogFactory.getLog( TestDigReasoner.class );
+    
     // Instance variables
     //////////////////////////////////
 
@@ -571,6 +574,38 @@ public class TestDigReasoner
         assertFalse( "i0 should now not be an F2", i0.hasRDFType( F2 ) );
     }
     
+    public void testRemoveIndividual() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass F0 = m.createClass( NS + "F0" );
+        Individual i0 = m.getIndividual( NS + "i0" );
+        
+        boolean sawI0 = false;
+        for (Iterator i = F0.listInstances(); i.hasNext(); ) {
+            Resource r0 = (Resource) i.next();
+            log.debug( "Pre remove, saw F0 instance " + r0 );
+            sawI0 = sawI0 || r0.getURI().equals( i0.getURI() );
+        }
+        assertTrue( sawI0 );
+        
+        i0.remove();
+        
+        sawI0 = false;
+        for (Iterator i = F0.listInstances(); i.hasNext(); ) {
+            Resource r0 = (Resource) i.next();
+            log.debug( "Post remove, saw F0 instance " + r0 );
+            sawI0 = sawI0 || r0.getURI().equals( i0.getURI() );
+        }
+        assertFalse( sawI0 );
+    }
+    
     
     // User bug reports
     
@@ -653,6 +688,55 @@ public class TestDigReasoner
         assertEquals( "Should be only one i0", 1, iCount );
     }
     
+    /* Bug report from Michele Orlando - failure on getLabel */
+    public void test_bug_mo_2() {
+        boolean ex0 = false;
+        boolean ex1 = false;
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel model = ModelFactory.createOntologyModel( spec, null );
+    
+        OntClass a = model.createClass( NS + "A" );
+        Individual b = model.createIndividual( NS + "b", a );
+        
+        
+        Model base = model.getBaseModel();
+        Literal lbl = base.createLiteral( "fubar", "en" );
+        base.add( b, RDFS.label, lbl );
+        
+        // ensure we have the model we want
+        model.write( System.out, "N3" );
+        
+        for ( Iterator instances = model.listIndividuals(); instances.hasNext(); ) {
+            Individual inst = (Individual) instances.next();
+    
+            System.out.println( "Looking at " + inst );
+            try {
+                System.out.println( "Label try #1: " + "  "+inst.getLabel("en"));
+            }
+            catch (Exception e) {
+                System.out.println( "First attempt failed: " + e.getMessage() );
+                ex0 = true;
+            }
+            
+            try {
+                Resource baseInst = (Resource) inst.inModel( base );
+                String label = baseInst.getProperty( RDFS.label ).getString();
+                System.out.println("Label try #2: " +  label );
+            }
+            catch (Exception e) {
+                System.out.println( "Second attempt failed " + e.getMessage() );
+                ex1 = true;
+            }
+        }
+    
+        // Junit
+        assertTrue( !(ex0 || ex1) );
+    }
     
     public void xxtestDebug1() {
         String NS = "http://example.org/foo#";
@@ -891,7 +975,7 @@ public class TestDigReasoner
             Document queryD = builder.parse( m_query );
             Document targetD = builder.parse( m_target );
 
-            LogFactory.getLog( getClass() ).debug( "DIG test " + m_source.getPath() );
+            log.debug( "DIG test " + m_source.getPath() );
             Document resultD = da.getConnection().sendDigVerb( queryD, da.getProfile() );
             
             da.getConnection().errorCheck( resultD );
