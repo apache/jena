@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedIterator.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:07:54 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-09-09 14:47:44 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -25,16 +25,13 @@ package com.hp.hpl.jena.util.iterator;
 ///////////////
 import java.util.*;
 
-import com.hp.hpl.jena.rdf.model.*;
-
-
 /**
  * An iterator that represents the concatenation of two individual iterators.
  * The concatenated iterator will range over the elements of the first iterator,
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedIterator.java,v 1.7 2003-08-27 13:07:54 andy_seaborne Exp $
+ * @version CVS info: $Id: ConcatenatedIterator.java,v 1.8 2003-09-09 14:47:44 chris-dollin Exp $
  */
 public class ConcatenatedIterator
     implements Iterator

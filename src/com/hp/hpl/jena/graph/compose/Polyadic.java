@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 15:17:52 $
+ * Last modified on   $Date: 2003-09-09 14:47:49 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -25,7 +25,6 @@ package com.hp.hpl.jena.graph.compose;
 // Imports
 ///////////////
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.SimpleReifier;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -44,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.8 2003-08-27 15:17:52 chris-dollin Exp $
+ * @version CVS $Id: Polyadic.java,v 1.9 2003-09-09 14:47:49 chris-dollin Exp $
  */
 public abstract class Polyadic
     extends CompositionBase

@@ -2,16 +2,13 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.23 2003-08-27 13:09:18 andy_seaborne Exp $
+ *  $Id: BaseXMLWriter.java,v 1.24 2003-09-09 14:47:49 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
 
 import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
-import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
-import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.rdf.model.impl.ModelCom;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import org.apache.xerces.util.XMLChar;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
@@ -60,7 +57,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2003-08-27 13:09:18 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2003-09-09 14:47:49 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
