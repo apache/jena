@@ -5,9 +5,9 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            11-Mar-2003
- * Filename           $RCSfile: OntReadState.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            14-Mar-2003
+ * Filename           $RCSfile: NamedUnitPathExpr.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-03-25 10:11:47 $
@@ -19,25 +19,29 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology;
+package com.hp.hpl.jena.ontology.path.impl;
 
 
 // Imports
 ///////////////
-import java.util.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.path.*;
 
 
 
 /**
  * <p>
- * Helper class to hold state during ontology read operations
+ * Path expression for unit (length one) named paths
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntReadState.java,v 1.2 2003-03-25 10:11:47 ian_dickinson Exp $
+ * @version CVS $Id: NamedUnitPathExpr.java,v 1.1 2003-03-25 10:11:47 ian_dickinson Exp $
  */
-public class OntReadState {
+public class NamedUnitPathExpr
+    extends AnyUnitPathExpr 
+{
     // Constants
     //////////////////////////////////
 
@@ -47,50 +51,63 @@ public class OntReadState {
     // Instance variables
     //////////////////////////////////
 
-    /** The queue of uri's to load */    
-    private List m_queue;
+    /** The named property that forms this unit path */
+    protected Property m_predicate;
     
-    /** The ont model we're reading in to */
-    private OntModel m_model;
-    
-    /** The ontology serialisation syntax */
-    private String m_syntax;
     
     // Constructors
     //////////////////////////////////
 
-    public OntReadState( String syntax, OntModel m ) {
-        m_syntax = syntax; 
-        m_model = m;
+    /**
+     * <p>
+     * Construct an expression for the unit path with the named predicate as the edge.
+     * </p>
+     */
+    public NamedUnitPathExpr( Property predicate ) {
+        m_predicate = predicate;
     }
-
-
+    
+    
     // External signature methods
     //////////////////////////////////
-        
-    public String getSyntax() {
-        return m_syntax;
+
+    /**
+     * <p>
+     * Add the given value to the given root, using this path (if possible).  Not
+     * all paths evaluate to a form that makes add possible; in this case an
+     * exception is thrown.
+     * </p>
+     * 
+     * @param root The resource that the path is to start from
+     * @param value The value to add to the root
+     * @exception PathException if this path expression cannot perform an add operation
+     */
+    public void add( Resource root, RDFNode value ) {
+        root.addProperty( m_predicate, value );
+    }
+    
+
+    /**
+     * <p>
+     * Evaluate the path expression against the given root, which will result in a set of paths
+     * that can be iterated through
+     * </p>
+     * 
+     * @param root
+     * @return StmtIterator
+     */
+    public PathIterator evaluate( Resource root ) {
+        return new UnitPathIterator( root.listProperties( m_predicate ) );
     }
 
-    public void setQueue( List q ) {
-        m_queue = q;
-    }
-    
-    public List getQueue() {
-        return m_queue;
-    }
-    
-    public OntModel getModel() {
-        return m_model;
-    }
-    
-    
+
     // Internal implementation methods
     //////////////////////////////////
 
     //==============================================================================
     // Inner class definitions
     //==============================================================================
+
 
 }
 
@@ -124,4 +141,3 @@ public class OntReadState {
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-

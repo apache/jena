@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            11-Mar-2003
- * Filename           $RCSfile: OntReadState.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            14-Mar-2003
+ * Filename           $RCSfile: AbstractPathExpr.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 10:11:47 $
+ * Last modified on   $Date: 2003-03-25 10:11:42 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -19,25 +19,30 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology;
+package com.hp.hpl.jena.ontology.path.impl;
 
 
 // Imports
 ///////////////
-import java.util.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.path.*;
+import com.hp.hpl.jena.rdf.model.*;
 
+import java.util.*;
 
 
 /**
  * <p>
- * Helper class to hold state during ontology read operations
+ * Base implementation for path expressions
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntReadState.java,v 1.2 2003-03-25 10:11:47 ian_dickinson Exp $
+ * @version CVS $Id: AbstractPathExpr.java,v 1.1 2003-03-25 10:11:42 ian_dickinson Exp $
  */
-public class OntReadState {
+public abstract class AbstractPathExpr
+    implements PathExpr
+{
     // Constants
     //////////////////////////////////
 
@@ -47,47 +52,60 @@ public class OntReadState {
     // Instance variables
     //////////////////////////////////
 
-    /** The queue of uri's to load */    
-    private List m_queue;
+    /** Stack of subjects seen so far, to implement occurs check to prevent looping */
+    protected List m_occurs = new ArrayList();
     
-    /** The ont model we're reading in to */
-    private OntModel m_model;
     
-    /** The ontology serialisation syntax */
-    private String m_syntax;
-    
-    // Constructors
+    // Constructor
     //////////////////////////////////
-
-    public OntReadState( String syntax, OntModel m ) {
-        m_syntax = syntax; 
-        m_model = m;
-    }
-
 
     // External signature methods
     //////////////////////////////////
-        
-    public String getSyntax() {
-        return m_syntax;
+
+    /**
+     * <p>
+     * Default action is to throw an exception ruling out the add operation
+     * </p>
+     * 
+     * @param root The resource that the path is to start from
+     * @param value The value to add to the root
+     * @exception PathException if this path expression cannot perform an add operation
+     */
+    public void add( Resource root, RDFNode value ) {
+        throw new PathException( "Cannot add to the " + getClass().getName() + " path expression" );
     }
 
-    public void setQueue( List q ) {
-        m_queue = q;
+    
+    /**
+     * <p>
+     * For convenience in accessing the contents of a path expression, answer a path set
+     * of the paths defined from the given root.  The {@link PathSet} is really just a 
+     * set of wrapper functions for {@link #evaluate()}. 
+     * </p>
+     * 
+     * @return A set of the paths this path expression defines from the given root.
+     */
+    public PathSet asPathSet( Resource root ) {
+        return new PathSet( root, this );
     }
     
-    public List getQueue() {
-        return m_queue;
-    }
-    
-    public OntModel getModel() {
-        return m_model;
-    }
-    
-    
+
     // Internal implementation methods
     //////////////////////////////////
 
+    protected void push( List stack, Resource subj ) {
+        stack.add( subj );
+    }
+    
+    protected Resource pop( List stack ) {
+        return (Resource) stack.remove( stack.size() - 1 );
+    }
+    
+    protected boolean empty( List stack ) {
+        return stack.isEmpty();
+    }
+    
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
@@ -124,4 +142,5 @@ public class OntReadState {
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+
 

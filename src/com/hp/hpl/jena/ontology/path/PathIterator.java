@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            11-Mar-2003
- * Filename           $RCSfile: OntReadState.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            14-Mar-2003
+ * Filename           $RCSfile: PathIterator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 10:11:47 $
+ * Last modified on   $Date: 2003-03-25 10:11:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -19,79 +19,43 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology;
+package com.hp.hpl.jena.ontology.path;
+
 
 
 // Imports
 ///////////////
-import java.util.*;
-
+import com.hp.hpl.jena.util.iterator.*;
 
 
 /**
  * <p>
- * Helper class to hold state during ontology read operations
+ * Class comment
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntReadState.java,v 1.2 2003-03-25 10:11:47 ian_dickinson Exp $
+ * @version CVS $Id: PathIterator.java,v 1.1 2003-03-25 10:11:40 ian_dickinson Exp $
  */
-public class OntReadState {
+public interface PathIterator
+    extends ExtendedIterator 
+{
     // Constants
     //////////////////////////////////
-
-    // Static variables
-    //////////////////////////////////
-
-    // Instance variables
-    //////////////////////////////////
-
-    /** The queue of uri's to load */    
-    private List m_queue;
-    
-    /** The ont model we're reading in to */
-    private OntModel m_model;
-    
-    /** The ontology serialisation syntax */
-    private String m_syntax;
-    
-    // Constructors
-    //////////////////////////////////
-
-    public OntReadState( String syntax, OntModel m ) {
-        m_syntax = syntax; 
-        m_model = m;
-    }
 
 
     // External signature methods
     //////////////////////////////////
-        
-    public String getSyntax() {
-        return m_syntax;
-    }
 
-    public void setQueue( List q ) {
-        m_queue = q;
-    }
-    
-    public List getQueue() {
-        return m_queue;
-    }
-    
-    public OntModel getModel() {
-        return m_model;
-    }
-    
-    
-    // Internal implementation methods
-    //////////////////////////////////
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
-
+    /**
+     * <p>
+     * Answer the next path in the iteration.
+     * </p>
+     * 
+     * @return A path object
+     * @exception java.util.NoSuchElementException if the iterator has no more entries.
+     */
+    public Path nextPath();
 }
 
 

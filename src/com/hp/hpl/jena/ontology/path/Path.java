@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            11-Mar-2003
- * Filename           $RCSfile: OntReadState.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            14-Mar-2003
+ * Filename           $RCSfile: Path.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 10:11:47 $
+ * Last modified on   $Date: 2003-03-25 10:11:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -19,79 +19,111 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology;
+package com.hp.hpl.jena.ontology.path;
 
 
 // Imports
 ///////////////
-import java.util.*;
+import com.hp.hpl.jena.rdf.model.*;
+
+import java.util.List;
 
 
 
 /**
  * <p>
- * Helper class to hold state during ontology read operations
+ * A path encodes a series of edges in the underlying graph as an ordered
+ * list of statements.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntReadState.java,v 1.2 2003-03-25 10:11:47 ian_dickinson Exp $
+ * @version CVS $Id: Path.java,v 1.1 2003-03-25 10:11:39 ian_dickinson Exp $
  */
-public class OntReadState {
+public interface Path {
     // Constants
     //////////////////////////////////
-
-    // Static variables
-    //////////////////////////////////
-
-    // Instance variables
-    //////////////////////////////////
-
-    /** The queue of uri's to load */    
-    private List m_queue;
-    
-    /** The ont model we're reading in to */
-    private OntModel m_model;
-    
-    /** The ontology serialisation syntax */
-    private String m_syntax;
-    
-    // Constructors
-    //////////////////////////////////
-
-    public OntReadState( String syntax, OntModel m ) {
-        m_syntax = syntax; 
-        m_model = m;
-    }
 
 
     // External signature methods
     //////////////////////////////////
-        
-    public String getSyntax() {
-        return m_syntax;
-    }
 
-    public void setQueue( List q ) {
-        m_queue = q;
-    }
-    
-    public List getQueue() {
-        return m_queue;
-    }
-    
-    public OntModel getModel() {
-        return m_model;
-    }
+    /**
+     * <p>
+     * Answer the value of the path, interpreted as the object of the last
+     * statement.
+     * </p>
+     * 
+     * @return The object of the last statement in the path
+     */
+    public RDFNode getValue();
     
     
-    // Internal implementation methods
-    //////////////////////////////////
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
-
+    /**
+     * <p>
+     * Answer an iterator over the statements in the path, starting with the 
+     * root node.
+     * </p>
+     * 
+     * @return A statement iterator over the statements in the path, in order
+     */
+    public StmtIterator iterator();
+    
+    
+    /**
+     * <p>
+     * Answer the length of the path.
+     * </p>
+     * 
+     * @return The number of statements in the path
+     */
+    public int length();
+    
+    
+    /**
+     * <p>
+     * Answer true if the path is empty (has length zero).
+     * </p>
+     * 
+     * @return True if this path is empty
+     */
+    public boolean isEmpty();
+    
+    
+    /**
+     * <p>
+     * Answer the path as a list of statements
+     * </p>
+     * 
+     * @return A List whose values are the statements in the path
+     */
+    public List asList();
+    
+    
+    /**
+     * <p>
+     * Answer true if any of the statements on the path have <code>s</code>
+     * as a subject.
+     * </p>
+     * 
+     * @param s A resource
+     * @return True if s is an existing subject on the path.
+     */
+    public boolean containsSubject( Resource s );
+    
+    
+    /**
+     * <p>
+     * Answer the i'th statement from the path, where the first statement in
+     * the path (closest to the root node) has index 0.
+     * </p>
+     * 
+     * @param i An integer index into the statements on the path
+     * @return The i'th statement along the path, from zero.
+     * @exception IndexOutOfBoundsException if i is less than zero, or there are not
+     * <code>i - 1</code> statements in the path.
+     */
+    public Statement getStatement( int i );
 }
 
 

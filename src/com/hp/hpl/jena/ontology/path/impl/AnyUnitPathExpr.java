@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            11-Mar-2003
- * Filename           $RCSfile: OntReadState.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            14-Mar-2003
+ * Filename           $RCSfile: AnyUnitPathExpr.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 10:11:47 $
+ * Last modified on   $Date: 2003-03-25 10:11:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -19,25 +19,29 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology;
+package com.hp.hpl.jena.ontology.path.impl;
 
 
 // Imports
 ///////////////
-import java.util.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.path.*;
 
 
 
 /**
  * <p>
- * Helper class to hold state during ontology read operations
+ * Path expression for unit (length one) named paths
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntReadState.java,v 1.2 2003-03-25 10:11:47 ian_dickinson Exp $
+ * @version CVS $Id: AnyUnitPathExpr.java,v 1.1 2003-03-25 10:11:46 ian_dickinson Exp $
  */
-public class OntReadState {
+public class AnyUnitPathExpr
+    extends AbstractPathExpr 
+{
     // Constants
     //////////////////////////////////
 
@@ -47,44 +51,28 @@ public class OntReadState {
     // Instance variables
     //////////////////////////////////
 
-    /** The queue of uri's to load */    
-    private List m_queue;
-    
-    /** The ont model we're reading in to */
-    private OntModel m_model;
-    
-    /** The ontology serialisation syntax */
-    private String m_syntax;
     
     // Constructors
     //////////////////////////////////
 
-    public OntReadState( String syntax, OntModel m ) {
-        m_syntax = syntax; 
-        m_model = m;
-    }
-
-
+    
     // External signature methods
     //////////////////////////////////
-        
-    public String getSyntax() {
-        return m_syntax;
+
+    /**
+     * <p>
+     * Evaluate the path expression against the given root, which will result in a set of paths
+     * that can be iterated through.
+     * </p>
+     * 
+     * @param root The root resource to start from
+     * @return A path iterator through all of the unit-length paths from <code>root</code>.
+     */
+    public PathIterator evaluate( Resource root ) {
+        return new UnitPathIterator( root.listProperties() );
     }
 
-    public void setQueue( List q ) {
-        m_queue = q;
-    }
-    
-    public List getQueue() {
-        return m_queue;
-    }
-    
-    public OntModel getModel() {
-        return m_model;
-    }
-    
-    
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -92,6 +80,30 @@ public class OntReadState {
     // Inner class definitions
     //==============================================================================
 
+    /**
+     * <p>A path iterator for unit paths represented by the given statement iterator</p>
+     */
+    protected class UnitPathIterator
+        extends PathIteratorImpl
+    {
+        protected StmtIterator m_si;
+        
+        protected UnitPathIterator( StmtIterator si ) { 
+            m_si = si;
+        }
+        
+        public boolean hasNext() { 
+            return m_si.hasNext();
+        }
+       
+        public void remove() { 
+            m_si.remove();
+        }
+        
+        public Object next() {
+            return new PathImpl( m_si.nextStatement() );
+        }
+    }
 }
 
 
@@ -124,4 +136,3 @@ public class OntReadState {
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-
