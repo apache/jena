@@ -152,10 +152,10 @@ which has four flavours:
 
 When <code>desc</code> is a resource, its URI identifies where the model
 to be used is loaded from. When <code>root</code> is omitted, it is
-implied as the unique resource in the description with type 
+implied as the unique resource in the description with type
 <code>jms:ModelSpec</code>.
 
-<pre>    
+<pre>
 <b>class</b> PlainModelSpec <b>implements</b> ModelSpec
     PlainModelSpec( Model description )
     PlainModelSpec( Resource root, Model description )
@@ -184,9 +184,9 @@ tweaking to the class-specific getters and setters. This choice can be revisted
 if necessary.]
 
 <p>The constructors taking a <code>(Resource, Model)</code> pair use the sub-graph
-rooted at the Resource as the description; the Resource must have <code>rdf:type</code> 
-<code>jms:ModelSpec</code>. Thus a single model may contain multiple descriptions. 
-The constructors taking just a Model require that there be a single Resource with 
+rooted at the Resource as the description; the Resource must have <code>rdf:type</code>
+<code>jms:ModelSpec</code>. Thus a single model may contain multiple descriptions.
+The constructors taking just a Model require that there be a single Resource with
 that type, which is used as the root of the description.
 
 <p>The design also allows multiple Specs to be described by a single Model, and to
@@ -214,7 +214,7 @@ The existing implementation does not provide this functionality.
 
 <p>The already-existing <code>ModelFactory</code> methods remain
 as convenience methods but the single <code>createModel</code> call now covers
-most of the existing uses, except for the final casting of the returned 
+most of the existing uses, except for the final casting of the returned
 <code>Model</code> to the appropriate static type.
 
 <h2>Extensions and design notes</h2>
@@ -232,7 +232,7 @@ call on the <code>ModelSpec</code>). To cope with this, the <code>ModelSpecImpl<
 class provides a way to create a new <code>Resource</code> object associated with
 a Java value, and to retrieve that object from the resource. This allows descriptions
 to indirectly refer to computed values. [Serialising such models loses the value.]
-  
+
 <h2>RDF Schema</h2>
 
 <p>A suggested RDFS representation of specifications is outlined below.
@@ -255,7 +255,7 @@ We have used an informal syntax in which:
 <code>jms</code> is the namespace prefix used for the specifcations; Jena binds
 it to <b>http://jena.hpl.hp.com/2003/08/jms#</b>.
 
-<pre>  
+<pre>
 <b>class</b> ModelSpec
     maker : MakerSpec
 
@@ -267,9 +267,9 @@ it to <b>http://jena.hpl.hp.com/2003/08/jms#</b>.
     importMaker : MakerSpec
     docManger : DocManager
 
-<b>class</b> DocManager 
+<b>class</b> DocManager
     policyPath : String
-    
+
 <b>class</b> MakerSpec
     reificationMode : String
 

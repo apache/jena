@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.27 $
+ * Revision           $Revision: 1.28 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-06-18 14:18:02 $
+ * Last modified on   $Date: 2004-06-21 15:00:00 $
  *               by   $Author: chris-dollin $
  *
- * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -25,6 +25,7 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
+
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
@@ -42,12 +43,11 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.27 2004-06-18 14:18:02 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.28 2004-06-21 15:00:00 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
     //////////////////////////////////
-
     // Static variables
     //////////////////////////////////
 
@@ -118,7 +118,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Instance variables
     //////////////////////////////////
     
-    /** The specifcation document manager */
+    /** The specification document manager */
     protected OntDocumentManager m_docManager = null;
     
     /** The specification reasoner */
@@ -133,20 +133,37 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     /** The reasoner factory for creating the reasoner on demand */
     protected ReasonerFactory m_rFactory = null;
     
+    /** The ModelMaker used for creating imported models */
+    protected ModelMaker importsMaker;
+    
     
     // Constructors
     //////////////////////////////////
 
     /**
      * <p>Construct a new ontology model specification with the given specification parameters</p>
-     * @param maker The model maker, which will be used to construct stores for statements in the 
+     * @param importsMaker The model maker, which will be used to construct stores for statements in the 
      * imported ontologies and the base ontology. Use null to get a default (memory) model maker.
      * @param docMgr The document manager, or null for the default document manager.
      * @param rFactory The factory for the reasoner to use to infer additional triples in the model, or null for no reasoner
      * @param languageURI The URI of the ontology language. Required.
      */
-    public OntModelSpec( ModelMaker maker, OntDocumentManager docMgr, ReasonerFactory rFactory, String languageURI ) {
-        super( maker == null ? ModelFactory.createMemModelMaker(): maker );
+    public OntModelSpec( ModelMaker importsMaker, OntDocumentManager docMgr, ReasonerFactory rFactory, String languageURI ) {
+        this( ModelFactory.createMemModelMaker(), importsMaker, docMgr, rFactory, languageURI );
+    }
+    
+    /**
+     * Construct a new ontology model specification from the supplied components.
+     * @param baseMaker the model-maker to use for the base model
+     * @param importsMaker the model-maker to use for imported models
+     * @param docMgr the document manager (null for the default manager)
+     * @param rFactory the reasoner (null for no reasoner)
+     * @param languageURI the ontology language URI (must not be null)
+    */
+    public OntModelSpec( ModelMaker baseMaker, ModelMaker importsMaker, OntDocumentManager docMgr, 
+            ReasonerFactory rFactory, String languageURI ) {
+        super( baseMaker );
+        this.importsMaker = importsMaker == null ? ModelFactory.createMemModelMaker(): importsMaker;
         setDocumentManager( docMgr );
         setReasonerFactory( rFactory );
         
@@ -172,8 +189,31 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
      * @param spec
      */
     public OntModelSpec( OntModelSpec spec ) {
-        this( spec.getModelMaker(), spec.getDocumentManager(), 
+        this( spec.getBaseModelMaker(), spec.getImportModelMaker(), spec.getDocumentManager(), 
             spec.getReasonerFactory(), spec.getLanguage() );
+    }
+    
+    /**
+     * Answer the model maker used for creating imported models.
+     * @deprecated use getImportModelMaker 
+    */
+    public ModelMaker getModelMaker() {
+        if (false) throw new RuntimeException( "get rid of calls to this method" );
+        return getImportModelMaker();
+    }
+    
+    /**
+     * Answer the model maker used for creating imported models.
+    */
+    public ModelMaker getImportModelMaker() {
+        return super.getModelMaker();
+    }
+    
+    /**
+     * Answer the model maker used for creating base models.
+    */
+    public ModelMaker getBaseModelMaker() {
+        return super.getModelMaker();
     }
     
     /**
@@ -197,7 +237,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @param root the root of the sub-graph to use for the specification
     */    
     public OntModelSpec( Resource root, Model description )  { 
-        this( getImportMaker( description, root ), getDocumentManager( description, root ),
+        this( getBaseMaker( description, root ), getImportMaker( description, root ), getDocumentManager( description, root ),
             getReasonerFactory( description, root ), getLanguage( description, root )  );
         
     }
@@ -270,8 +310,26 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
      * an additional container for an imported ontology</p>
      * @param maker The new model maker to use
      */
-    public void setModelMaker( ModelMaker maker ) {
+    public void setImportModelMaker( ModelMaker maker ) {
         this.maker = maker;
+    }
+    
+    /**
+        Set the model maker used for imported models. OntModelSpecs now have
+        separate model makers for imported vs base models - use the correct
+        one. (Originally they shared the same maker; this was a mistake.)
+        
+     	@deprecated use setImportModelMaker or setBaseModelMaker
+     */
+    public void setModelMaker( ModelMaker m ) {
+        setImportModelMaker( m );
+    }
+    
+    /**
+       Set the model maker used for base models.
+   */
+    public void setBaseModelMaker( ModelMaker m ) {
+        this.maker = m;
     }
     
     /**
@@ -387,7 +445,30 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
      	@return a ModelMaker fitting the importMaker description
      */
     public static ModelMaker getImportMaker( Model description, Resource root ) {
-        Statement mStatement = description.getProperty( root, JMS.importMaker );
+        return getMaker( description, root, JMS.importMaker );
+    }   
+    
+    /**
+		Answer the ModelMaker to be used to construct base models of an
+	    OntModel. The ModelMaker is specified by the properties of
+	    the resource which is the object of the root's JMS.maker property.
+	    If no maker is specified, a MemModelMaker is constructed and used.
+	    
+	 	@param description the description model for [at least] this OntModel
+	 	@param root the root of the description for the OntModel
+	 	@return a ModelMaker fitting the maker description
+	 */
+    public static ModelMaker getBaseMaker( Model description, Resource root ) {
+	        return getMaker( description, root, JMS.maker );
+	    }
+    
+    /**
+     	Answer a ModelMaker described by the <code>makerProperty</code> of
+     	<code>root</code> in <code>description</code>; if there is no such statement,
+     	answer a memory-model maker.
+    */
+    protected static ModelMaker getMaker( Model description, Resource root, Property makerProperty ) 	{
+        Statement mStatement = description.getProperty( root, makerProperty );
         return mStatement == null
             ? ModelFactory.createMemModelMaker()
             : createMaker( mStatement.getResource(), description ); 
@@ -451,6 +532,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     */
     public Model addDescription( Model d, Resource self )  {
         super.addDescription( d, self );
+        addImportsDescription( d, self, importsMaker );
         addLanguageDescription( d, self, m_languageURI );
         addManagerDescription( d, self, getDocumentManager() );
         addReasonerDescription( d, self, getReasonerFactory() );
@@ -477,6 +559,12 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         d.add( me, JMS.ontLanguage, d.createLiteral( langURI ) );
     }
     
+    protected void addImportsDescription( Model d, Resource me, ModelMaker m ) {
+        Resource importSelf = d.createResource();
+        d.add( me, JMS.importMaker, importSelf );
+        m.addDescription( d, importSelf );
+    }
+    
     /**
         Augment the description with that of our document manager [as a Java value]
         @param d the description to augment
@@ -494,25 +582,25 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @param me the resource to use to represent this OntModelSpec
         @param rf the reasoner factory to describe 
     */        
-    protected void addReasonerDescription( Model d, Resource me, ReasonerFactory rf )
-        {
+    protected void addReasonerDescription( Model d, Resource me, ReasonerFactory rf ) {
         Resource reasonerSelf = d.createResource();
         d.add( me, JMS.reasonsWith, reasonerSelf );  
         d.add( reasonerSelf, JMS.reasoner, d.createResource( rf.getURI() ) );  
-        }
+    }
+
+    /**
+     	Answer a base model constructed according to this specificiation. This is used for the
+     	"base" (ie non-imported) model for an OntModel.
+    */
+    public Model createBaseModel()  {
+        return ModelFactory.createDefaultModel();
+    }
     
-    // Internal implementation methods
-    //////////////////////////////////
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
-
 }
 
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

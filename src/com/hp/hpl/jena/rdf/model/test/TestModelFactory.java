@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelFactory.java,v 1.20 2003-11-25 10:51:39 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.21 2004-06-21 15:00:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -76,14 +76,19 @@ public class TestModelFactory extends ModelTestBase
     public void testCreateOntSpec()
         {
         Resource root = ResourceFactory.createResource();
-        Resource maker = ResourceFactory.createResource();
+        Resource importsMaker = ResourceFactory.createResource();
+        Resource baseMaker = ResourceFactory.createResource();
         Resource reasoner = ResourceFactory.createResource();
         OntDocumentManager docManager = new OntDocumentManager();
         Resource reasonerURI = ResourceFactory.createResource( DAMLMicroReasonerFactory.URI );
         Model desc = ModelFactory.createDefaultModel()
-            .add( root, JMS.importMaker, maker )
-            .add( maker, RDF.type, JMS.MemMakerSpec )
-            .add( maker, JMS.reificationMode, JMS.rsMinimal )
+        	.add( root, JMS.maker, baseMaker )
+        	.add( root, JMS.importMaker, importsMaker )
+            .add( baseMaker, RDF.type, JMS.FileMakerSpec )
+            .add( baseMaker, JMS.fileBase, "/tmp/example" )
+            .add( baseMaker, JMS.reificationMode, JMS.rsMinimal )
+            .add( importsMaker, RDF.type, JMS.MemMakerSpec )
+            .add( importsMaker, JMS.reificationMode, JMS.rsMinimal )
             .add( root, JMS.ontLanguage, ProfileRegistry.DAML_LANG )
             .add( root, JMS.docManager, ModelSpecImpl.createValue( docManager ) )
             .add( root, JMS.reasonsWith, reasoner )
@@ -94,6 +99,16 @@ public class TestModelFactory extends ModelTestBase
         assertTrue( spec.createModel() instanceof OntModel );
         }
         
+    public void testCreateOntologyModelFromSpecOnly()
+        {
+        Resource root = ResourceFactory.createResource();
+        Model desc = ModelFactory.createDefaultModel()
+            .add( root, JMS.ontLanguage, ProfileRegistry.DAML_LANG )
+        	;
+        OntModelSpec spec = (OntModelSpec) ModelFactory.createSpec( desc );
+        OntModel m = ModelFactory.createOntologyModel( spec );
+        }
+    
     public void testCreateInfSpec()
         {
         Model desc = TestModelSpec.createInfModelDesc( DAMLMicroReasonerFactory.URI );

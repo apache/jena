@@ -5,19 +5,11 @@ $$
 */
 package com.hp.hpl.jena.rdf.model.test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.util.ModelLoader;
-import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.TestSuite;
 

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.65 $
+ * Revision           $Revision: 1.66 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-10 13:50:28 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-06-21 15:00:02 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.65 2004-05-10 13:50:28 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.66 2004-06-21 15:00:02 chris-dollin Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -98,8 +98,6 @@ public class OntModelImpl
     /** The event manager for ontology events on this model */
     protected OntEventManager m_ontEventMgr = null;
     
-    
-    
     // Constructors
     //////////////////////////////////
 
@@ -117,7 +115,15 @@ public class OntModelImpl
      *              ontology model to be constructed.
      */
     public OntModelImpl( OntModelSpec spec, Model model ) {
-        this( spec, model == null ? ModelFactory.createDefaultModel() : model, false );
+        this( spec, makeBaseModel( spec, model ), false ); 
+    }
+
+    /**
+     * Construct a new ontology model from the given specification. The base model is 
+     * produced using the baseModelMaker.
+    */
+    public OntModelImpl( OntModelSpec spec ) {
+        this( spec, spec.createBaseModel(), false );
     }
     
     /**
@@ -1849,11 +1855,17 @@ public class OntModelImpl
      * 
      * @return The local graph factory
      */
-    public ModelMaker getModelMaker() {
-        return m_spec.getModelMaker();
+    public ModelMaker getImportModelMaker() {
+        return m_spec.getImportModelMaker();
     }
     
-
+    /**
+     	@deprecated use getImportModelMaker instead.
+    */
+    public ModelMaker getModelMaker() {
+        return getImportModelMaker();
+    }
+    
     /**
      * <p>If this OntModel is presenting an OWL model, answer the minimum OWL language 
      * level that the constructs
@@ -2739,7 +2751,14 @@ public class OntModelImpl
             throw new LanguageConsistencyException( "The members of the given list are expected to be of rdf:type " + rdfType.toString() );
         }
     }
-
+    
+    /**
+     	Answer the supplied model, unless it's null, in which case answer a new model
+     	constructed as per spec.
+    */
+    private static Model makeBaseModel( OntModelSpec spec, Model model ) {
+        return model == null ? spec.createBaseModel() : model;
+    }
     
     //==============================================================================
     // Inner class definitions

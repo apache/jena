@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.26 2004-06-18 14:18:44 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.27 2004-06-21 15:00:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -184,7 +184,7 @@ public abstract class ModelSpecImpl implements ModelSpec
     public Model addDescription( Model desc, Resource root )
         {
         Resource makerRoot = desc.createResource();
-        desc.add( root, getMakerProperty(), makerRoot );
+        desc.add( root, JMS.maker, makerRoot );
         maker.addDescription( desc, makerRoot );
         return desc;
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.18 2004-06-18 14:18:46 chris-dollin Exp $
+  $Id: JMS.java,v 1.19 2004-06-21 15:00:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -190,11 +190,11 @@ public class JMS
         
         .add( JMS.reificationMode, RDFS.domain, JMS.MakerSpec )
         .add( JMS.maker, RDFS.domain, JMS.PlainModelSpec )
+        
         .add( JMS.importMaker, RDFS.domain, JMS.OntModelSpec )
         .add( JMS.ontLanguage, RDFS.domain, JMS.OntModelSpec )
         .add( JMS.reasonsWith, RDFS.domain, JMS.InfModelSpec )
         
-        .add( JMS.importMaker, RDFS.subPropertyOf, JMS.maker )
         ;
     
     /**

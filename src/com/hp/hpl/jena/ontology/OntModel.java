@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.38 $
+ * Revision           $Revision: 1.39 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-10 13:50:28 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2004-06-21 15:00:00 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -70,7 +70,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.38 2004-05-10 13:50:28 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.39 2004-06-21 15:00:00 chris-dollin Exp $
  */
 public interface OntModel
     extends InfModel
@@ -1257,11 +1257,22 @@ public interface OntModel
      * Answer the model maker associated with this model (used for constructing the
      * constituent models of the imports closure).
      * </p>
+     * @deprecated use getImportModelMaker instead for consistency with name
+     * changes to OntModelSpec to avoid ambiguity with base vs import makers.
      * 
      * @return The local model maker
      */
     public ModelMaker getModelMaker();
-    
+
+    /**
+     * <p>
+     * Answer the model maker associated with this model (used for constructing the
+     * constituent models of the imports closure).
+     * </p> 
+     * 
+     * @return The local model maker
+     */
+    public ModelMaker getImportModelMaker();
     
     /**
      * <p>

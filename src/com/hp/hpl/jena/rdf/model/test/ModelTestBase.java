@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.22 2004-06-17 10:48:13 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.23 2004-06-21 15:00:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -172,16 +172,43 @@ public class ModelTestBase extends GraphTestBase
     public void assertIsoModels( String title, Model wanted, Model got )
         {
         if (wanted.isIsomorphicWith( got ) == false)
-            fail( title + ": expected " + nice(wanted) + "\n but had " + nice(got) );
+            {
+            Map map = new HashMap();
+            fail( title + ": expected " + nice( map, wanted ) + "\n but had " + nice( map, got ) );
+            }
         }
         
-    protected String nice( Model m )
+    protected String nice( Map bnodes, Model m )
         {
         StringBuffer b = new StringBuffer( (int) m.size() * 100 );
         StmtIterator it = m.listStatements();
-        while (it.hasNext()) b.append( "\n    " + it.nextStatement().asTriple().toString( PrefixMapping.Extended ) );
+        while (it.hasNext()) niceTriple( b, bnodes, it.nextStatement().asTriple() );
         return b.toString();
         }
+    
+    protected void niceTriple( StringBuffer b, Map bnodes, Triple t )
+        {
+        b.append( "\n    " );
+        appendNode( b, bnodes, t.getSubject() );
+        appendNode( b, bnodes, t.getPredicate() );
+        appendNode( b, bnodes, t.getObject() );
+        }
+
+    int bnc = 1000;
+    
+    protected void appendNode( StringBuffer b, Map bnodes, Node n )
+        {
+        b.append( ' ' );
+        if (n.isBlank())
+            {
+            Object already = bnodes.get( n );
+            if (already == null) bnodes.put( n, already = "_b" + bnc++ );
+            b.append( already );
+            }
+        else
+            b.append( n.toString( PrefixMapping.Extended ) );
+        }
+    
     /**
         Fail if the two models are not isomorphic. See assertIsoModels(String,Model,Model).
     */
