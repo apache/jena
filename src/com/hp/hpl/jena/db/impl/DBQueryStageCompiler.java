@@ -59,7 +59,7 @@ public final class DBQueryStageCompiler
 			Element obj = dbpat.O;
 			Element pred = dbpat.P;
 			String qual = null;
-			int alias = query.aliasCnt;;
+			int alias = query.aliasCnt;
 
         	if ( query.isReifier ) {
         		boolean newAlias = true;
@@ -72,7 +72,6 @@ public final class DBQueryStageCompiler
 				else if ( p.equals(RDF.Nodes.object) ) reifProp = 'O';
 				else if ( p.equals(RDF.Nodes.type) ) {
 					reifProp = 'T';
-					// need to check here the value of object and adjust appropriately
 				} 
 				else throw new JenaException("Unexpected reifier predicate");
 				if ( !subj.equals(Element.ANY) ) {
@@ -104,8 +103,11 @@ public final class DBQueryStageCompiler
 		private static String getQual(DBQuery query,int alias,char pred, Element spo) {
 			String qual = "";
 			if (spo instanceof Fixed) {
-				qual = query.driver.genSQLQualConst(alias,pred,
-						((Fixed) spo).asNodeMatch((Domain) null));
+				Node obj = ((Fixed) spo).asNodeMatch((Domain) null);
+				if ( query.isReifier )
+					qual = query.driver.genSQLReifQualConst(alias,pred,obj);
+				else
+					qual = query.driver.genSQLQualConst(alias,pred,obj);
 			} else if (spo instanceof Free){
 				Free v = (Free) spo;
 				VarDesc bind = query.getBinding(v.getListing());
