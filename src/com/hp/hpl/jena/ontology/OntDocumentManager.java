@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.37 $
+ * Revision           $Revision: 1.38 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-07-16 13:15:01 $
+ * Last modified on   $Date: 2004-08-11 22:29:04 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -51,12 +51,12 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.37 2004-07-16 13:15:01 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.38 2004-08-11 22:29:04 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
 	/** The default path for searching for the metadata on locally cached ontologies */
-    public static final String DEFAULT_METADATA_PATH = "file:etc/ont-policy.rdf;file:ont-policy.rdf";
+    public static final String DEFAULT_METADATA_PATH = "file:ont-policy.rdf;file:etc/ont-policy.rdf";
 
     /** Delimiter between path entries */
     public static final String PATH_DELIMITER = ";";
@@ -995,8 +995,6 @@ public class OntDocumentManager
                 catch (IOException e) {
                     throw new JenaException( e);
                 }
-    
-                // TODO remove model.read( resolvableURI, lang );
             }
             else {
                 try {
