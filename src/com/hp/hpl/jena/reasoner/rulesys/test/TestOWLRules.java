@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.19 2003-08-27 13:11:16 andy_seaborne Exp $
+ * $Id: TestOWLRules.java,v 1.20 2003-09-08 13:18:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,7 +21,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-08-27 13:11:16 $
+ * @version $Revision: 1.20 $ on $Date: 2003-09-08 13:18:56 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -118,6 +118,9 @@ public class TestOWLRules extends TestCase {
         
         // Needs prototype creation rule
         suite.addTest(new TestOWLRules("someValuesFrom/Manifest001.rdf")); // bx needs creation rule
+    
+        // New local tests
+        suite.addTest(new TestOWLRules("localtests/Manifest003.rdf"));
         
         // Duplications of tests included earlier
 //        suite.addTest(new TestOWLRules("differentFrom/Manifest002.rdf"));  // Duplication of AllDifferent#1
