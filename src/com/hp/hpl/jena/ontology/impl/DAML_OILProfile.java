@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:36:22 $
+ * Last modified on   $Date: 2003-04-07 09:34:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.5 2003-04-04 20:36:22 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.6 2003-04-07 09:34:38 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -163,7 +163,6 @@ public class DAML_OILProfile
     public Property CARDINALITY() {                 return m_cardinality; }
     public Property INVERSE_OF() {                  return m_inverseOf; }
     public Property IMPORTS() {                     return m_imports; }
-    public Property VERSION_INFO() {                return m_versionInfo; }
     public Property PRIOR_VERSION() {               return m_priorVersion; }
     public Property BACKWARD_COMPATIBLE_WITH() {    return m_backwardsCompatibleWith; }
     public Property INCOMPATIBLE_WITH() {           return m_incompatibleWith; }
@@ -172,6 +171,14 @@ public class DAML_OILProfile
     public Property DOMAIN() {                      return m_domain; }
     public Property RANGE() {                       return m_range; }
     
+
+    // Annotations    
+    public Property VERSION_INFO() {                return m_versionInfo; }
+    public Property LABEL() {                       return RDFS.label; }
+    public Property COMMENT() {                     return RDFS.comment; }
+    public Property SEE_ALSO() {                    return RDFS.seeAlso; }
+    public Property IS_DEFINED_BY() {               return RDFS.isDefinedBy; }
+
     protected Resource[][] aliasTable() {
         return new Resource[][] {
             {DAML_OIL.subClassOf,                   RDFS.subClassOf},

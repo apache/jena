@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:37:06 $
+ * Last modified on   $Date: 2003-04-07 09:33:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -45,7 +45,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.6 2003-04-04 20:37:06 ian_dickinson Exp $
+ * @version CVS $Id: Profile.java,v 1.7 2003-04-07 09:33:39 ian_dickinson Exp $
  */
 public interface Profile
 {
@@ -533,6 +533,46 @@ public interface Profile
      * @return The property that denotes the property range
      */
     public Property RANGE();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes <code>label</code> annotation on an ontology element
+     * </p>
+     * 
+     * @return The property that denotes the label annotation
+     */
+    public Property LABEL();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes <code>comment</code> annotation on an ontology element
+     * </p>
+     * 
+     * @return The property that denotes the comment annotation
+     */
+    public Property COMMENT();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes <code>seeAlso</code> annotation on an ontology element
+     * </p>
+     * 
+     * @return The property that denotes the seeAlso annotation
+     */
+    public Property SEE_ALSO();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes <code>isDefinedBy</code> annotation on an ontology element
+     * </p>
+     * 
+     * @return The property that denotes the isDefiendBy annotation
+     */
+    public Property IS_DEFINED_BY();
     
     
     // Particular language syntax categories

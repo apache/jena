@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:36:19 $
+ * Last modified on   $Date: 2003-04-07 09:34:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.6 2003-04-04 20:36:19 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.7 2003-04-07 09:34:37 ian_dickinson Exp $
  */
 public class OWLProfile
     extends AbstractProfile
@@ -101,7 +101,6 @@ public class OWLProfile
     public Property CARDINALITY() {                 return OWL.cardinality; }
     public Property INVERSE_OF() {                  return OWL.inverseOf; }
     public Property IMPORTS() {                     return OWL.imports; }
-    public Property VERSION_INFO() {                return OWL.versionInfo; }
     public Property PRIOR_VERSION() {               return OWL.priorVersion; }
     public Property BACKWARD_COMPATIBLE_WITH() {    return OWL.backwardCompatibleWith; }
     public Property INCOMPATIBLE_WITH() {           return OWL.incompatibleWith; }
@@ -109,6 +108,14 @@ public class OWLProfile
     public Property SUB_CLASS_OF() {                return RDFS.subClassOf; }
     public Property DOMAIN() {                      return RDFS.domain; }
     public Property RANGE() {                       return RDFS.range; }
+
+    // Annotations    
+    public Property VERSION_INFO() {                return OWL.versionInfo; }
+    public Property LABEL() {                       return RDFS.label; }
+    public Property COMMENT() {                     return RDFS.comment; }
+    public Property SEE_ALSO() {                    return RDFS.seeAlso; }
+    public Property IS_DEFINED_BY() {               return RDFS.isDefinedBy; }
+    
     
     protected Resource[][] aliasTable() {
         return new Resource[][] {

@@ -12,6 +12,10 @@
 <daml:Ontology rdf:about="">
   <daml:versionInfo>test version info</daml:versionInfo>
   <daml:imports rdf:resource="http://www.w3.org/2000/01/rdf-schema"/>
+  <rdfs:comment>a comment</rdfs:comment>
+  <rdfs:seeAlso>xyz</rdfs:seeAlso>
+  <rdfs:isDefinedBy>abc</rdfs:isDefinedBy>
+  <rdfs:label>a label</rdfs:label>
 </daml:Ontology>
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 16:06:12 $
+ * Last modified on   $Date: 2003-04-07 09:34:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.2 2003-04-01 16:06:12 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.3 2003-04-07 09:34:34 ian_dickinson Exp $
  */
 public abstract class OntResourceImpl
     extends ResourceImpl
@@ -137,6 +137,81 @@ public abstract class OntResourceImpl
     }
 
 
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>versionInfo</code>
+     * property of any instance. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the owl:versionInfo annotation property
+     */
+    public PathSet p_versionInfo() {
+        return asPathSet( getProfile().VERSION_INFO() );
+    }
+
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>label</code>
+     * property of any instance. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the rdfs:label annotation property
+     */
+    public PathSet p_label() {
+        return asPathSet( getProfile().LABEL() );
+    }
+
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>comment</code>
+     * property of any instance. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the rdfs:comment annotation property
+     */
+    public PathSet p_comment() {
+        return asPathSet( getProfile().COMMENT() );
+    }
+
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>seeAlso</code>
+     * property of any instance. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the rdfs:seeAlso annotation property
+     */
+    public PathSet p_seeAlso() {
+        return asPathSet( getProfile().SEE_ALSO() );
+    }
+
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>isDefinedBy</code>
+     * property of any instance. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the rdfs:isDefinedBy annotation property
+     */
+    public PathSet p_isDefinedBy() {
+        return asPathSet( getProfile().IS_DEFINED_BY() );
+    }
+    
+    
 
     // Internal implementation methods
     //////////////////////////////////

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:36:21 $
+ * Last modified on   $Date: 2003-04-07 09:34:35 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.4 2003-04-04 20:36:21 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.5 2003-04-07 09:34:35 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -142,6 +142,21 @@ public class OntModelImpl
     // External signature methods
     //////////////////////////////////
 
+    /**
+     * <p>
+     * Answer a reference to the document manager that this model is using to manage
+     * ontology &lt;-&gt; mappings, and to load the imports closure. <strong>Note</strong>
+     * by default, an ontology model is constructed with a reference to the shared,
+     * global document manager.  Thus changing the settings via this model's document
+     * manager may affect other models also using the same instance.
+     * </p>
+     * @return A reference to this model's document manager
+     */
+    public OntDocumentManager getDocumentManager() {
+        return m_docMgr;
+    }
+    
+    
     /**
      * <p>
      * Answer an iterator that ranges over the ontology resources in this model, i&#046;e&#046; 

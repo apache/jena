@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestOntology.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:37:07 $
+ * Last modified on   $Date: 2003-04-07 09:34:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntology.java,v 1.2 2003-04-04 20:37:07 ian_dickinson Exp $
+ * @version CVS $Id: TestOntology.java,v 1.3 2003-04-07 09:34:39 ian_dickinson Exp $
  */
 public class TestOntology
     extends OntTestCase 
@@ -154,6 +154,70 @@ public class TestOntology
                 null
             },
             {   
+                "OWL Ontology.comment",
+                new PS() { 
+                    public PathSet ps( OntModel m ) { 
+                        return ((Ontology) m.getResource( BASE )
+                               .as( Ontology.class )).p_comment(); } 
+                },
+                RDFS.comment,
+                ProfileRegistry.OWL_LANG,
+                "file:testing/ontology/owl/Ontology/test.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                null,
+                "a comment"
+            },
+            {   
+                "OWL Ontology.label",
+                new PS() { 
+                    public PathSet ps( OntModel m ) { 
+                        return ((Ontology) m.getResource( BASE )
+                               .as( Ontology.class )).p_label(); } 
+                },
+                RDFS.label,
+                ProfileRegistry.OWL_LANG,
+                "file:testing/ontology/owl/Ontology/test.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                null,
+                "a label"
+            },
+            {   
+                "OWL Ontology.seeAlso",
+                new PS() { 
+                    public PathSet ps( OntModel m ) { 
+                        return ((Ontology) m.getResource( BASE )
+                               .as( Ontology.class )).p_seeAlso(); } 
+                },
+                RDFS.seeAlso,
+                ProfileRegistry.OWL_LANG,
+                "file:testing/ontology/owl/Ontology/test.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                null,
+                "xyz"
+            },
+            {   
+                "OWL Ontology.isDefinedBy",
+                new PS() { 
+                    public PathSet ps( OntModel m ) { 
+                        return ((Ontology) m.getResource( BASE )
+                               .as( Ontology.class )).p_isDefinedBy(); } 
+                },
+                RDFS.isDefinedBy,
+                ProfileRegistry.OWL_LANG,
+                "file:testing/ontology/owl/Ontology/test.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                null,
+                "abc"
+            },
+            {   
                 "DAML Ontology.imports",
                 new PS() { 
                     public PathSet ps( OntModel m ) { 
@@ -232,7 +296,71 @@ public class TestOntology
                 null,
                 null,
                 null
-            }
+            },
+            {   
+                "DAML Ontology.comment",
+                new PS() { 
+                    public PathSet ps( OntModel m ) { 
+                        return ((Ontology) m.getResource( BASE )
+                               .as( Ontology.class )).p_comment(); } 
+                },
+                RDFS.comment,
+                ProfileRegistry.DAML_LANG,
+                "file:testing/ontology/daml/Ontology/test.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                null,
+                "a comment"
+            },
+            {   
+                "DAML Ontology.label",
+                new PS() { 
+                    public PathSet ps( OntModel m ) { 
+                        return ((Ontology) m.getResource( BASE )
+                               .as( Ontology.class )).p_label(); } 
+                },
+                RDFS.label,
+                ProfileRegistry.DAML_LANG,
+                "file:testing/ontology/daml/Ontology/test.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                null,
+                "a label"
+            },
+            {   
+                "DAML Ontology.seeAlso",
+                new PS() { 
+                    public PathSet ps( OntModel m ) { 
+                        return ((Ontology) m.getResource( BASE )
+                               .as( Ontology.class )).p_seeAlso(); } 
+                },
+                RDFS.seeAlso,
+                ProfileRegistry.DAML_LANG,
+                "file:testing/ontology/daml/Ontology/test.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                null,
+                "xyz"
+            },
+            {   
+                "DAML Ontology.isDefinedBy",
+                new PS() { 
+                    public PathSet ps( OntModel m ) { 
+                        return ((Ontology) m.getResource( BASE )
+                               .as( Ontology.class )).p_isDefinedBy(); } 
+                },
+                RDFS.isDefinedBy,
+                ProfileRegistry.DAML_LANG,
+                "file:testing/ontology/daml/Ontology/test.rdf",
+                T,
+                new Integer( 1 ),
+                null,
+                null,
+                "abc"
+            },
       };
     }
     

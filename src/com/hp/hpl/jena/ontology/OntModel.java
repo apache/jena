@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-04 20:37:07 $
+ * Last modified on   $Date: 2003-04-07 09:33:41 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -59,7 +59,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.5 2003-04-04 20:37:07 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.6 2003-04-07 09:33:41 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -641,6 +641,19 @@ public interface OntModel
      * @see #strictMode()
      */
     public void setStrictMode( boolean strict );
+    
+    
+    /**
+     * <p>
+     * Answer a reference to the document manager that this model is using to manage
+     * ontology &lt;-&gt; mappings, and to load the imports closure. <strong>Note</strong>
+     * by default, an ontology model is constructed with a reference to the shared,
+     * global document manager.  Thus changing the settings via this model's document
+     * manager may affect other models also using the same instance.
+     * </p>
+     * @return A reference to this model's document manager
+     */
+    public OntDocumentManager getDocumentManager();
 }
 
 
