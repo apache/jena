@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.24 2004-07-07 15:41:22 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.25 2004-11-25 10:17:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -76,6 +76,13 @@ public interface PrefixMapping
         @return this PrefixMapping
     */
     PrefixMapping setNsPrefixes( Map map );
+    
+    /**
+         Update this PrefixMapping with the bindings in <code>map</code>, only
+         adding those (p, u) pairs for which neither p nor u appears in this mapping.
+         Answer this PrefixMapping.
+    */
+    PrefixMapping withDefaultMappings( PrefixMapping map );
        
     /**
         Get the URI bound to a specific prefix, null if there isn't one.

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.96 2004-11-22 12:24:26 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.97 2004-11-25 10:16:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -880,6 +880,12 @@ public class ModelCom
     public PrefixMapping setNsPrefixes( Map map )
         { 
         getPrefixMapping().setNsPrefixes( map ); 
+        return this;
+        }
+    
+    public PrefixMapping withDefaultMappings( PrefixMapping other )
+        {
+        getPrefixMapping().withDefaultMappings( other );
         return this;
         }
         

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.16 2004-11-05 11:59:11 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.17 2004-11-25 10:17:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
 
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.graph.test.*;
 
 import java.util.*;
@@ -299,6 +300,22 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         b.setNsPrefix( "butter", butterURI );
         b.setNsPrefixes( map );
         checkContainsMapping( b );
+        }
+    
+    public void testAddDefaultMap()
+        {
+        PrefixMapping pm = getMapping();
+        PrefixMapping root = new PrefixMappingImpl();
+        pm.setNsPrefix( "a", "aPrefix:" );
+        pm.setNsPrefix( "b", "bPrefix:" );
+        root.setNsPrefix( "a", "pootle:" );
+        root.setNsPrefix( "z", "bPrefix:" );
+        root.setNsPrefix( "c", "cootle:" );
+        assertSame( pm, pm.withDefaultMappings( root ) );
+        assertEquals( "aPrefix:", pm.getNsPrefixURI( "a" ) );
+        assertEquals( null, pm.getNsPrefixURI( "z" ) );
+        assertEquals( "bPrefix:", pm.getNsPrefixURI( "b" ) );
+        assertEquals( "cootle:", pm.getNsPrefixURI( "c" ) );
         }
         
     /**
