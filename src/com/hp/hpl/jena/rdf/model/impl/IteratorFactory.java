@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: IteratorFactory.java,v 1.6 2003-05-22 09:42:58 chris-dollin Exp $
+  $Id: IteratorFactory.java,v 1.7 2003-06-23 10:14:58 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.graph.*;
  *  Builds Jena Iterators and other things (RDFNode and Statement)
  *  needed in a Model.
  */
-public final class IteratorFactory {
+final class IteratorFactory {
 
     private IteratorFactory(){}
 	/**
