@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.21 2003-07-29 14:37:54 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.22 2003-08-01 14:12:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -31,14 +31,38 @@ public class ModelFactory extends ModelFactoryBase
     private ModelFactory()
         {}
         
+    /**
+        The standard reification style; quadlets contribute to reified statements,
+        and are visible to listStatements().
+    */
+    public static final Reifier.Style Standard = Reifier.Standard;
+    
+    /**
+        The convenient reification style; quadlets contribute to reified statements,
+        but are invisible to listStatements().
+    */
+    public static final Reifier.Style Convenient = Reifier.Convenient;
+    
+    /**
+        The minimal reification style; quadlets do not contribute to reified statements,
+        and are visible to listStatements(). 
+    */
+    public static final Reifier.Style Minimal = Reifier.Minimal;
+    
     /** 
         construct a new memory-based model with the standard reification style
         (reification triples contribute to ReifiedStatements, and are visible to
         listStatements etc).
     */
     public static Model createDefaultModel()
-        { return new ModelCom( new GraphMem( Reifier.Standard ) ); }
+        { return createDefaultModel( Standard ); }
         
+    /** 
+        construct a new memory-based model with the given reification style
+    */
+    public static Model createDefaultModel( Reifier.Style style )
+        { return new ModelCom( new GraphMem( style ) ); }
+                
     /**
         Answer a read-only Model with all the statements of this Model and any
         statements "hidden" by reification. That model is dynamic, ie
@@ -52,7 +76,7 @@ public class ModelFactory extends ModelFactoryBase
         (but still handles reifyAs() and .as(ReifiedStatement).
     */
     public static Model createNonreifyingModel()
-        { return new ModelCom( new GraphMem( Reifier.Minimal ) );}
+        { return new ModelCom( new GraphMem( Minimal ) );}
         
     /** 
      * Answer a model that encapsulates the given graph.
@@ -73,7 +97,7 @@ public class ModelFactory extends ModelFactoryBase
         @return a ModelMaker linked to the files in the root
     */
     public static ModelMaker createFileModelMaker( String root )
-        { return createFileModelMaker( root, Reifier.Standard ); }
+        { return createFileModelMaker( root, Standard ); }
     
     /**
         Answer a ModelMaker that constructs memory-based Models that
@@ -95,7 +119,7 @@ public class ModelFactory extends ModelFactoryBase
         @return a ModelMaker that constructs memory-based models
     */
     public static ModelMaker createMemModelMaker()
-        { return createMemModelMaker( Reifier.Standard ); }
+        { return createMemModelMaker( Standard ); }
         
     /**
         Answer a ModelMaker that constructs memory-based Models that do
@@ -116,7 +140,7 @@ public class ModelFactory extends ModelFactoryBase
         @return a ModelMaker whose Models are held in the database at c
     */
     public static ModelMaker createModelRDBMaker( IDBConnection c )
-        { return createModelRDBMaker( c, Reifier.Standard ); }
+        { return createModelRDBMaker( c, Standard ); }
         
     /**
         Answer a ModelMaker that accesses database-backed Models on

@@ -6,8 +6,8 @@
 <body>
 <h1>reification howto</h1>
 <b>author</b>: Chris Dollin
-<br><b>version</b>: 0.2
-<br><b>id</b>: $Id: reification.html,v 1.2 2003-07-31 15:22:03 chris-dollin Exp $
+<br><b>version</b>: 1.0
+<br><b>id</b>: $Id: reification.html,v 1.3 2003-08-01 14:11:52 chris-dollin Exp $
 
 <h2>introduction</h2>
 
@@ -38,10 +38,13 @@ particular RDF properties and objects: the statement
 <p>We shall call these four such statements a <i>reification quad</i>
 and the components <i>quadlets</i>. Users of reification in Jena
 may, by default, simply manipulate reified statements as these quads.
-However, just as for <code>Bag</code>, <code>Seq</code>, <code>Alt</code> and
-<code>RDF lists</code> in ordinary models, or ontology classes and 
-individuals in <code>OntModel</code>s, Jena has additional support for
-manipulating reified statements.
+However, just as for <code>Bag</code>, <code>Seq</code>, 
+<code>Alt</code> and <code>RDF lists</code> in ordinary models, 
+or ontology classes and individuals in <code>OntModel</code>s, 
+Jena has additional support for manipulating reified statements. 
+It also optimises the storage for complete reification quads,
+avoiding having to store the extra four statements merely to
+represent one reification.
 
 <p>The interface <code>ReifiedStatement</code> is used to represent
 a reified statement as a Jena <code>Resource</code> that has direct access to
@@ -136,7 +139,7 @@ the identical statement). If the creation method passed
 in a (non-null) <code>String</code>, the <code>ReifiedStatement</code> 
 is a named resource and that string is its URI. Otherwise it is a newly-minted
 bnode. The methods on <code>Statement</code> create a reified statement
-in that statements model; those on Model create a reified statement
+in that statements model; those on <code>Model</code> create a reified statement
 in that model.
 
 <p>It is not permitted for two different (non-equals) statements 
@@ -157,7 +160,7 @@ this is not desired, there is a two-argument form:
 <ul><li>Model::add(Model m, boolean suppress)</li></ul>
 
 If <code>suppress</code> is <code>true</code>, then the reified statements are
-not copied. (This choice arose from comments on earlier verions
+not copied. (This choice arose from comments on earlier versions
 of the Jena 2 API; users expected the reified statements to be copied.)
 
 <h2>removing reified statements</h2>
@@ -183,52 +186,46 @@ of <code>m</code> from <code>model</code>, and the two-argument form
 
 <h2>reification styles</h2>
 
-There is a world of <code>ReifiedStatement</code>s, and a world of
-reification quads. They have met, so far, only at input and output.
+By default and as you might expect, Jena models allow reification
+quads to be manifested as <code>ReifiedStatement</code>s. Similarly,
+explicitly created <code>ReifiedStatement</code>s are visible as
+statement quads (<b>bug: they are not at the moment</b>).
 
-<p>Jena provides control over how reification quads interact with
-<code>ReifiedStatements</code>. The first part of this control is through
-the notion of a <i>reification style</i>, of which there are three:
+<p>Sometimes this is not desirable. For example, in an application
+that reifies large numbers of statements in the same model as those
+statements, most of the results from <code>listStatements()</code>
+will be quadlets; this is inefficient and confusing. One choice is
+to reify the statements in a <i>different</i> model. Another is
+to take advantage of <i>reification styles</i>.
+
+<p>Each model has a reification style, described by constants in
+<code>ModelFactory</code>. The default style is called 
+<code>Standard</code> because it behaves mostly closely to
+the RDF standard. There are two other reification styles to choose
+from:
 
 <ul>
-<li><code>Reifier.Minimal</code>: a Model with this style has no 
-interaction between reification quads put into the model and its
-<code>ReifiedStatement</code>s except on read and write. [This is
-the style most similar to Jena 1.]
-</li>
+<li><code>Convenient</code>: reification quadlets are not visible
+in the results of <code>listStatements)()</code>. Otherwise
+everything is normal; quadlets that are added to the model contribute
+to <code>ReifiedStatement</code> construction.</li>
 
-<li><code>Reifier.Standard</code>: a Model with this style will note
-reification quads as they arrive in (or depart from) the Model 
-and allow <code>ReifiedStatement</code>s to be built for complete
-unambiguous quads. However, explicitly created reifications do
-not materialise as quads.
+<li><code>Minimal</code>: reification quadlets play no role at
+all in the construction of <code>ReifiedStatement</code>s, which
+can only be created by the methods discussed earlier. This style is
+most similar to that of Jena 1.
 </li>
-
-<li><code>Reifier.Convenient</code>: as for <code>Standard</code>, except that
-the quads do not appear in the Model at all.</li>
 </ul>
 
-If it's further required that all the reified statements be visible as
-quads, the method <code>ModelFactory.withHiddenStatements(Model m)</code> produces
-a new model which has the reified statements of <code>m</code> exposed as
-reification quads.
+The method <code>ModelFactory.createDefaultModel()</code> takes an
+optional <code>Style</code> argument, which defaults to 
+<code>Standard</code>. Similarly, <code>createFileModelMaker()</code>
+and <code>createMemModelMaker()</code> can take <code>Style</code>
+arguments which are applied to every model they create.
 
-<h2>persistance and visibility</h2>
-
-The reified statements of a model are written out with it. 
-
-However, these quads <i>need not be visible</i> in a Model;
-they can be hidden to avoid them cluttering up the model. See
-the later section on reification styles. Further, even if
-they are visible, they need not be explicitly stored in the
-Model as quads. In the current implementation, both memory-based
-and RDB-based models will store complete reified statements 
-"efficiently" rather than as reification quads.
-
-<p>When a model is written out, the reification quads are
-unpacked and written out as part of the model. When a model
-with reification quads is read back in, the reified statements
-are reconstituted from the quads in the input. 
+<p>To take a model with hidden reification quads and expose them as
+statements, the method <code>ModelFactory.withHiddenStatements(Model m)</code> 
+produces a new model which does just that.
 
 </body>
 </html>
