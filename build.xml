@@ -207,7 +207,7 @@
             depends="bin,javadoc,distribution-init,copy,zip"/>
 
     <target name="distribution-init">
-        <delete includeEmptyDir="true">
+        <delete includeEmptyDirs="true">
             <fileset dir="${dist.dir}"/>
         </delete>
         <mkdir dir="${dist.dir}"/>
@@ -329,7 +329,7 @@
     </target>
 
     <target name="clean">
-        <delete includeEmptyDir="true">
+        <delete includeEmptyDirs="true">
             <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
         </delete>
     </target>
