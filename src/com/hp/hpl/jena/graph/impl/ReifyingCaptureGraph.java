@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ReifyingCaptureGraph.java,v 1.5 2003-07-24 09:09:35 chris-dollin Exp $
+  $Id: ReifyingCaptureGraph.java,v 1.6 2003-07-31 15:22:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -20,13 +20,13 @@ public class ReifyingCaptureGraph extends WrappedGraph
     /**
         The capturing reifier that this graph uses instead of the base.
     */
-    protected Reifier reifier = new SimpleReifier( this, true );
+    protected Reifier reifier = new SimpleReifier( this, Reifier.Standard );
     
     /**
         Initialise the capture graph with the base graph.
         @param base the graph to which all real work is deferred
     */
-    ReifyingCaptureGraph( Graph base )
+    ReifyingCaptureGraph( Graph base, Reifier.Style style )
         { super( base ); }
         
     /**

@@ -1,135 +1,221 @@
 <html>
-<head><title>reification howto</title></head>
+<head>
+<title>reification howto</title>
+<link href="../tutorial/tutorial.css" rel="stylesheet" type="text/css">
+</head>
 <body>
 <h1>reification howto</h1>
 <b>author</b>: Chris Dollin
-<br><b>version</b>: 0.1
-<br><b>id</b>: $Id: reification.html,v 1.1 2003-07-29 14:38:48 chris-dollin Exp $
+<br><b>version</b>: 0.2
+<br><b>id</b>: $Id: reification.html,v 1.2 2003-07-31 15:22:03 chris-dollin Exp $
 
-<p>
+<h2>introduction</h2>
+
 This document describes the Jena 2 reification API and how to use it.
-Theer have been significant changes since Jena 1, so users of 
-Jena 1's reification should read this document to see how to
-translate their existing code to the new form.
+New users of Jena should read this to understand Jena's special support
+for reification. Since there have been significant changes to this
+support since Jena 1, users of Jena 1's reification should also read 
+this document to see how to translate their existing code to the new form.
+As always, consult the Javadoc for interface details.
 
-<h2>creating reified statements</h2>
-
-Reification in RDF and Jena is the ability to treat a Statement
-as a Resource, and hence to make assertions <i>about</i> a
-Statement. A Statement may be reified as many different
+<p>Reification in RDF and Jena is the ability to treat a <code>Statement</code>
+as a <code>Resource</code>, and hence to make assertions <i>about</i> that
+statement. A statement may be reified as many different
 resources, allowing different manifestations ("statings") of
-that Statement to be treated differently if required.
+that statement to be treated differently if required.
 
-<p>A Statement is converted into a Resource using one of the 
-methods
-
-<ul>
-<li>Statement::createReifiedStatement()</li>
-<li>Statement::createReifiedStatement(String)</li>
-<li>Model::createReifiedStatement(Statement)</li>
-<li>Model::createReifiedStatement(String,Statement)</li>
-</ul>
-
-Each of these returns a <i>ReifiedStatement</i> object, which 
-is a subtype of <i>Resource</i>. If the creation method passed
-in a (non-null) <i>String</i>, the resource is a named resource
-and that string is its URI. Otherwise the resource is a newly-minted
-bnode. The methods on <i>Statement</i> create a reified statement
-in that statements model; those on Model create a reified statement
-in that model.
-
-<p>It is not permitted for two different (non-equals) statements 
-to be reified onto the same resource. An attempt to do so will 
-generate an <i>AlreadyReifiedException</i>.
-
-<p>The additional method <i>Model::getAnyReifiedStatement(Statement)</i>
-returns some reification of the supplied <i>Statement</i>; an
-existing one if possible, otherwise a fresh one (reified by a 
-fresh bnode).
-
-<p>The single method that <i>ReifiedStatement</i> adds to 
-<i>Resource</i>is <code>getStatement()</code>, which delivers a 
-<i>Statement</i> object <code>.equals()</code> to that used to create 
-the reified statement.
-
-So, to say something about some statement, we reify it and then make
-an assertion about the resulting resource:
-
-<pre>
-    Model m = ModelFactory.createDefaultModel();
-    RDFNode chris = m.createResource( "eg:people/chris" );
-    Property P = m.createProperty( "eg:likes" );
-    RDFNode O = m.createResource( "eg:tea" );
-    Statement s = m.createStatement( chris, P, O );
-    m.add( s );
-    ReifiedStatement rs = s.createReifiedStatement();
-    Property saidBy = m.createProperty( "eg:saidBy" );
-    Statement about = m.createStatement( rs, saidBy, chris );
-    m.add( about );
-</pre>
- 
-<h2>finding reified statements</h2>
-
-<h3>listing reified statements</h3>
-
-There are three methods for listing reified statements:
+<p>RDF represents a reified statement as four statements with
+particular RDF properties and objects: the statement 
+<code>(S, P, O)</code>, reified by resource <code>R</code>, is represented by:
 
 <ul>
-<li>Statement::listReifiedStatements()</li>
-<li>Model::listReifiedStatements()</li>
-<li>Model::listReifiedStatements(Statement)</li>
+<li><code>R rdf:type rdf:Statement</code></li>
+<li><code>R rdf:subject S</code></li>
+<li><code>R rdf:predicate P</code></li>
+<li><code>R rdf:object O</code></li>
 </ul>
 
-Each of these returns an <i>RSIterator</i> object, which is an
-iterator each of who's elements are <i>ReifiedStatement</i>s and
-for which the convenience method <i>nextRS()</i> will deliver
-a suitably-cast reified statement.
+<p>We shall call these four such statements a <i>reification quad</i>
+and the components <i>quadlets</i>. Users of reification in Jena
+may, by default, simply manipulate reified statements as these quads.
+However, just as for <code>Bag</code>, <code>Seq</code>, <code>Alt</code> and
+<code>RDF lists</code> in ordinary models, or ontology classes and 
+individuals in <code>OntModel</code>s, Jena has additional support for
+manipulating reified statements.
 
-<p>The <i>Statement</i> method delivers all the reifications of
-that statement in its model. The <i>Model</i> () method delivers
-all reified statements in that model; the (Statement) method
-delivers all reified statements which reify the argument.
+<p>The interface <code>ReifiedStatement</code> is used to represent
+a reified statement as a Jena <code>Resource</code> that has direct access to
+the statement it reifies. The method
 
-<h3>converting resources to reified statements</h3>
+<ul><li><code>ReifiedStatement::getStatement()</code></li></ul>
 
-If a resource <i>R</i> is associated with a reified statement,
-but might not itself be a <i>ReifiedStatement</i> object, the
-conversion method <i>RDFNode::as(Class)</i> can be used to
-find (or create) a <i>ReifiedStatement</i>:
+returns the <code>Statement</code> that the resource is reifying.
+All the other <code>Resource</code> methods, of course, may be applied
+to a <code>ReifiedStatement</code>.
 
-<ul><li>(ReifiedStatement) R.as(ReifiedStatement.class)</li></ul>
+<h2>converting resources to reified statements</h2>
+
+If a resource <code>R</code> is associated with a reified statement,
+but might not itself be a <code>ReifiedStatement</code> object, the
+conversion method <code>RDFNode::as(Class)</code> can be used to
+find (or create) a <code>ReifiedStatement</code>:
+
+<ul><li><code>(ReifiedStatement) R.as(ReifiedStatement.class)</code></li></ul>
 
 For example, a model that has been read in from an RDF/XML file
 may have reified statements: knowing the name of the resource
 allows a ReifiedStatement object to be constructed without
 knowing the statement itself.
 
-<p>If there is no such associated <i>ReifiedStatement</i>,
-a <i>CannotReifyException</i> is thrown. To find out in
+<p>If there is no such associated reified statement,
+a <code>CannotReifyException</code> is thrown. To find out in
 advance if the conversion is possible, use the predicate
-<i>RDFNode::canAs(ReifiedStatement.class)</i>.
+<code>RDFNode::canAs(ReifiedStatement.class)</code>. (Jena
+only counts as "an associated reified statement" a resource
+with exactly one <code>rdf:subject</code>, <code>rdf:predicate</code>,
+ and <code>rdf:object</code> which has <code>rdf:type rdf:Statement</code>.
+ It can of course have <i>other</i> properties.)
 
-<h3>isReified()</h3>
+<p>Once the <code>ReifiedStatement</code> has been constructed,
+it retains its <code>Statement</code> even if some (or all)
+of the original quadlets are removed from the model. This is
+a feature of the current implementation that might go away; do
+not rely on it.
 
-<p>The methods <i>Statement::isReified()</i> and 
-<i>Model::isreified(Statement)</i> return true if (and only if)
-the statement has been reified in the model.
+<h2>testing statements for reification</h2>
 
+You may wish to know if some <code>Statement</code> is reified.
+The methods <code>Statement::isReified()</code> and 
+<code>Model::isreified(Statement)</code> return true if (and only if)
+the statement has been reified in the model. Note that the
+<code>Statement</code> method tests to see if the statement
+is reified in its own model, and the model method tests to 
+see if the <code>Statement</code> is reified in <i>that</i>
+model; there is no test to see if a <code>Statement</code>
+is reified in any other models.
 
+<h2>listing reified statements</h2>
+
+Just as <code>listStatements</code> is used to find the
+statements present in some model, there are methods for
+finding the reified statements of a model. Each of them returns 
+a <code>RSIterator</code> object, which is an
+iterator each of who's elements are <code>ReifiedStatement</code>s and
+for which the convenience method <code>nextRS()</code> will deliver
+a suitably-cast reified statement.
+
+<ul>
+<li><code>Statement::listReifiedStatements()</code> -
+all the reifications of this statement in its model.
+</li>
+<li><code>Model::listReifiedStatements()</code> -
+all the reified statements in this model.
+</li>
+<li><code>Model::listReifiedStatements(Statement s)</code> -
+all the reified statements reifiying <code>s</code> in this model.
+</li>
+</ul>
+
+<h2>creating reified statements directly</h2>
+
+You do not have to create reified statements by asserting their
+quads into a <code>Model</code>; they can be created directly 
+from their <code>Statement</code>s using one of the methods:
+
+<ul>
+<li><code>Statement::createReifiedStatement()</code></li>
+<li><code>Statement::createReifiedStatement(String)</code></li>
+<li><code>Model::createReifiedStatement(Statement)</code></li>
+<li><code>Model::createReifiedStatement(String,Statement)</code></li>
+</ul>
+
+Each of these returns a <code>ReifiedStatement</code> who's
+<code>getStatement()</code> method delivers the original statement
+(actually, a <code>.equals()</code> statement; it may not be
+the identical statement). If the creation method passed
+in a (non-null) <code>String</code>, the <code>ReifiedStatement</code> 
+is a named resource and that string is its URI. Otherwise it is a newly-minted
+bnode. The methods on <code>Statement</code> create a reified statement
+in that statements model; those on Model create a reified statement
+in that model.
+
+<p>It is not permitted for two different (non-equals) statements 
+to be reified onto the same resource. An attempt to do so will 
+generate an <code>AlreadyReifiedException</code>.
+
+<p>The additional method <code>Model::getAnyReifiedStatement(Statement)</code>
+returns some reification of the supplied <code>Statement</code>; an
+existing one if possible, otherwise a fresh one (reified by a 
+fresh bnode).
+
+<h2>reification and Model::add(Model)</h2>
+
+When one model is added to another, as well as the ordinary statements
+of the model being added, the reified statements are copied across. If
+this is not desired, there is a two-argument form:
+
+<ul><li>Model::add(Model m, boolean suppress)</li></ul>
+
+If <code>suppress</code> is <code>true</code>, then the reified statements are
+not copied. (This choice arose from comments on earlier verions
+of the Jena 2 API; users expected the reified statements to be copied.)
+
+<h2>removing reified statements</h2>
+
+There are two methods which remove all the reifications of a
+<code>Statement</code> in some <code>Model</code>:
+
+<ul>
+<li><code>Statement::removeReification()</code></li>
+<li><code>Model::removeAllReifications(Statement)</code></li>
+</ul>
+
+All the reified statements in the model that reify
+the given statement are removed, whatever their reifying resource.
+To remove a particular reified statement only, use
+
+<ul><li><code>Model::removeReification(ReifiedStatement)</code></li></ul>
+
+Similarly to <code>Model::add(Model)</code>, the method 
+<code>model.remove(Model m)</code> will remove all the reified statements
+of <code>m</code> from <code>model</code>, and the two-argument form
+<code>model.remove(m,true)</code> will not.
+
+<h2>reification styles</h2>
+
+There is a world of <code>ReifiedStatement</code>s, and a world of
+reification quads. They have met, so far, only at input and output.
+
+<p>Jena provides control over how reification quads interact with
+<code>ReifiedStatements</code>. The first part of this control is through
+the notion of a <i>reification style</i>, of which there are three:
+
+<ul>
+<li><code>Reifier.Minimal</code>: a Model with this style has no 
+interaction between reification quads put into the model and its
+<code>ReifiedStatement</code>s except on read and write. [This is
+the style most similar to Jena 1.]
+</li>
+
+<li><code>Reifier.Standard</code>: a Model with this style will note
+reification quads as they arrive in (or depart from) the Model 
+and allow <code>ReifiedStatement</code>s to be built for complete
+unambiguous quads. However, explicitly created reifications do
+not materialise as quads.
+</li>
+
+<li><code>Reifier.Convenient</code>: as for <code>Standard</code>, except that
+the quads do not appear in the Model at all.</li>
+</ul>
+
+If it's further required that all the reified statements be visible as
+quads, the method <code>ModelFactory.withHiddenStatements(Model m)</code> produces
+a new model which has the reified statements of <code>m</code> exposed as
+reification quads.
 
 <h2>persistance and visibility</h2>
 
-The reified statements of a model are written out with it. The
-RDF implementation of a reified statement is as a quad of reification
-statements: the statement <i>(S, P, O)</i>, reified by resource 
-<i>R</i>, is represented by:
-
-<ul>
-<li>R rdf:type rdf:Statement</li>
-<li>R rdf:subject S</li>
-<li>R rdf:predicate P</li>
-<li>R rdf:object O</li>
-</ul>
+The reified statements of a model are written out with it. 
 
 However, these quads <i>need not be visible</i> in a Model;
 they can be hidden to avoid them cluttering up the model. See
@@ -143,64 +229,6 @@ and RDB-based models will store complete reified statements
 unpacked and written out as part of the model. When a model
 with reification quads is read back in, the reified statements
 are reconstituted from the quads in the input. 
-
-<h2>removing reified statements</h2>
-
-To remove reifications of a particular statement, either of
-
-<ul>
-<li>Statement::removeReification()</li>
-<li>Model::removeAllReifications(Statement)</li>
-</ul>
-
-can be used. All the reified statements in the model that reify
-the given statement are removed, whatever their associated resource.
-To remove a particular reified statement only, use
-<i>Model::removeReification(ReifiedStatement)</i>.
-
-<h2>reification and Model::add(Model)</h2>
-
-When one model is added to another, as well as the ordinary statements
-of the model being added, the reified statements are copied across. If
-this is not desired, there is a two-argument form:
-
-<ul><li>Model::add(Model m, boolean suppress)</li></ul>
-
-If <i>suppress</i> is <i>true</i>, then the reified statements are
-not copied. (This choice arose from comments on earlier verions
-of the Jena 2 API; users expected the reified statements to be copied.)
-
-<h2>reification styles</h2>
-
-There is a world of <i>ReifiedStatement</i>s, and a world of
-reification quads. They have met, so far, only at input and output.
-
-<p>Jena provides control over how reification quads interact with
-<i>ReifiedStatements</i>. The first part of this control is through
-the notion of a <i>reification style</i>, of which there are three:
-
-<ul>
-<li><i>Reifier.Minimal</i>: a Model with this style has no 
-interaction between reification quads put into the model and its
-<i>ReifiedStatement</i>s except on read and write. [This is
-the style most similar to Jena 1.]
-</li>
-
-<li><i>Reifier.Standard</i>: a Model with this style will note
-reification quads as they arrive in (or depart from) the Model 
-and allow <i>ReifiedStatement</i>s to be built for complete
-unambiguous quads. However, explicitly created reifications do
-not materialise as quads.
-</li>
-
-<li><i>Reifier.Convenient</i>: as for <i>Standard</i>, except that
-the quads do not appear in the Model at all.</li>
-</ul>
-
-If it's further required that all the reified statements be visible as
-quads, the method <i>ModelFactory.withHiddenStatements(Model m)</i> produces
-a new model which has the reified statements of <i>m</i> exposed as
-reification quads.
 
 </body>
 </html>

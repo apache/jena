@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.8 2003-07-29 14:37:54 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.9 2003-07-31 15:22:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -23,20 +23,22 @@ import com.hp.hpl.jena.vocabulary.RDF;
 public class SimpleReifier implements Reifier
     {
     private Graph parent;
-    private boolean passing = false;
+    private boolean intercepting = false;
+    private boolean concealing = false;
     private FragmentMap nodeMap;
     
     /** 
         construct a simple reifier that is bound to the parent graph .
         
         @param parent the Graph which we're reifiying for
-        @param intercepting true iff this reifier should capture reification triples
+        @param style the reification style to use
     */
-    public SimpleReifier( Graph parent, boolean intercepting )
+    public SimpleReifier( Graph parent, Reifier.Style style )
         {
         this.parent = parent;
         this.nodeMap = new FragmentMap();
-        this.passing = !intercepting;
+        this.intercepting = style.intercepts();
+        this.concealing = true; // style.conceals();
         }
             
     /** return the parent graph we are bound to */
@@ -127,16 +129,38 @@ public class SimpleReifier implements Reifier
           
     public boolean handledAdd( Triple t )
         {
-        int s = Fragments.getFragmentSelector( t );       
-         if (passing || s < 0)
-            return false;
-        else
+        if (intercepting)
             {
-            getFragment( t ).add( s, t.getObject() );
-            return true;
+            int s = Fragments.getFragmentSelector( t );  
+            if (s < 0)
+                return false;
+            else     
+                {
+                getFragment( t ).add( s, t.getObject() );
+                return concealing;
+                }
             }
+        else
+            return false;
         }
         
+    public boolean handledRemove( Triple t )
+        {
+        if (intercepting)
+            {
+            int s = Fragments.getFragmentSelector( t );  
+            if (s < 0)
+                return false;
+            else     
+                {
+                getFragment( t ).remove( s, t.getObject() );
+                return concealing;
+                }
+            }
+        else
+            return false;
+        }
+                  
     private Fragments getFragment( Triple t )
         {
         Node s = t.getSubject();
@@ -150,18 +174,6 @@ public class SimpleReifier implements Reifier
     private Fragments explode( Node s, Triple t )
         { return nodeMap.putFragments( s, new Fragments( s, t ) ); }
 
-    public boolean handledRemove( Triple t )
-        {
-        int s = Fragments.getFragmentSelector( t );
-        if (passing || s < 0)
-            return false;
-        else
-            {
-            getFragment( t ).remove( s, t.getObject() );
-            return true;
-            }
-        }
-          
     public void remove( Triple t )
         {     
         // horrid code. we don't likes it, my precious.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.15 2003-07-25 11:41:57 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.16 2003-07-31 15:22:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -183,7 +183,7 @@ public abstract class GraphBase implements Graph {
 	protected Reifier reifier = null;
 	
 	public Reifier getReifier() {
-		if (reifier == null) reifier = new SimpleReifier( this, style.intercepts() );
+		if (reifier == null) reifier = new SimpleReifier( this, style );
 		return reifier;
 	}
     
@@ -235,9 +235,10 @@ public abstract class GraphBase implements Graph {
         inbound reification triples)
     */
     public static Graph withReification( Graph g )
-        {
-        return new ReifyingCaptureGraph( g ); 
-        }
+        { return withReification( g, Reifier.Standard ); }
+        
+    public static Graph withReification( Graph g, Reifier.Style style )
+        { return new ReifyingCaptureGraph( g, style ); }
         
 }
 

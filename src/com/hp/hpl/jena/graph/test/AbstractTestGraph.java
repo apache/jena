@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.26 2003-07-24 15:29:31 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.27 2003-07-31 15:22:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -130,7 +130,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public void testReificationControl()
         {
         Graph g1 = graphWith( "x rdf:subject S" );
-        Graph g2 = GraphBase.withReification( g1 );
+        Graph g2 = GraphBase.withReification( g1, Reifier.Standard );
         assertEquals( "should not hide reification triple", 1, g1.size() );
         assertEquals( "should not hide reification triple", 1, g2.size() );
         g2.add( triple( "x rdf:object O" ) );
