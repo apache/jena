@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.19 2003-08-08 15:12:35 chris-dollin Exp $
+  $Id: Query.java,v 1.20 2003-08-11 15:30:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -100,7 +100,7 @@ public class Query
         { return addNamedMatch( anon, s, p, o ); }     
         
     /**
-        Add a triple to thw query's collection of match triples. Return this query
+        Add a triple to the query's collection of match triples. Return this query
         for cascading.
         @param t an (S, P, O) triple to add to the collection of matches
         @return this Query, for cascading
@@ -266,7 +266,7 @@ public class Query
     public void setTripleSorter( TripleSorter ts )
         { sortMethod = ts == null ? dontSort : ts; }
         
-    private static final TripleSorter dontSort = new TripleSorter()
+    public static final TripleSorter dontSort = new TripleSorter()
         { public void sort( Triple [] ts ) {} };
         
     private TripleSorter sortMethod = dontSort;

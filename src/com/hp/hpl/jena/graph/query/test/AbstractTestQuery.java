@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.4 2003-08-11 02:39:51 wkw Exp $
+  $Id: AbstractTestQuery.java,v 1.5 2003-08-11 15:30:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -557,6 +557,125 @@ public abstract class AbstractTestQuery extends GraphTestBase
         for (int i = 0; i < stages.size(); i += 1) assertFalse( ((Stage) stages.get(i)).isClosed() );
         it.close();
         for (int i = 0; i < stages.size(); i += 1) assertTrue( ((Stage) stages.get(i)).isClosed() );
+        }
+        
+    /**
+        Test that a variety of triple-sorters make no difference to the results of a query
+        over a moderately interesting graph.
+    */
+    public void testTripleSorting()
+        {
+        Graph g = dataGraph();
+        Map answer = getAnswer( g, Query.dontSort );
+        assertEquals( 1, answer.size() );
+        assertEquals( new Integer(1), answer.get( Arrays.asList( nodes( "a d" ) ) ) );
+    /* */
+        assertEquals( answer, getAnswer( g, Query.dontSort ) );
+        assertEquals( answer, getAnswer( g, fiddle( 0, 2, 1 ) ) );
+        assertEquals( answer, getAnswer( g, fiddle( 1, 0, 2 ) ) );
+        assertEquals( answer, getAnswer( g, fiddle( 1, 2, 0 ) ) );
+        assertEquals( answer, getAnswer( g, fiddle( 2, 1, 0 ) ) );
+        assertEquals( answer, getAnswer( g, fiddle( 2, 0, 1 ) ) );
+        }
+        
+    protected TripleSorter fiddle( final int a, final int b, final int c )
+        {
+        return new TripleSorter()
+            {
+            public void sort( Triple [] triples )
+                {
+                Triple [] copy = new Triple[] {triples[0], triples[1], triples[2]};
+                triples[0] = copy[a];
+                triples[1] = copy[b];
+                triples[2] = copy[c];
+                }    
+            };    
+        }
+        
+    protected static final TripleSorter sortReverse = new TripleSorter()
+        {
+        public void sort( Triple [] triples )
+            { 
+            for (int i = 0, j = triples.length; i < triples.length / 2; i += 1) 
+                { Triple t = triples[i]; triples[i] = triples[--j]; triples[j] = t; }    
+            }
+        };
+        
+    protected Graph dataGraph()
+        {
+        Graph result = getGraph();
+        graphAdd( result, "a SPOO d; a X b; b Y c" );
+        return result;
+        }
+        
+    protected Map getAnswer( Graph g, TripleSorter sorter )
+        {
+        Map result = new HashMap();
+        Query q = new Query();
+        q.addMatch( triple( "?a ?? ?d " ) ).addMatch( triple( "?a X ?b" ) ).addMatch( triple( "?b Y ?c" ) );
+        q.addConstraint( node( "?d" ), Query.NE, node( "?b" ) );
+        Node [] answers = nodes( "?a ?d" );
+        q.setTripleSorter( sorter );
+        ExtendedIterator it = q.executeBindings( g, answers );    
+        while (it.hasNext()) addAnswer( result, (List) it.next(), answers.length );
+        return result;
+        }
+        
+    protected void addAnswer( Map result, List bindings, int limit )
+        {
+        List key = bindings.subList( 0, limit );
+        Integer already = (Integer) result.get( key );
+        if (already == null) already = new Integer( 0 );
+        result.put( key, new Integer( already.intValue() + 1 ) );  
+        }
+        
+    TripleSorter optimisedSort = Query.dontSort;
+    
+    public void testQueryOptimisation()
+        {
+        int dontCount = queryCount( Query.dontSort );
+        int optimCount = queryCount( optimisedSort );
+        // System.err.println( ">> dontCount = " + dontCount );
+        if (optimCount > dontCount) 
+            fail( "optimisation " + optimCount + " yet plain " + dontCount );   
+        }
+      
+    int queryCount( TripleSorter sort )
+        {
+        CountingGraph g = bigCountingGraph();
+        graphAdd( g, "a SPOO d; a X b; b Y c" );
+        getAnswer( g, sort );
+        return g.getCount();
+        }
+        
+    static class CountingGraph extends WrappedGraph
+        {
+        int counter;
+        private QueryHandler qh;
+        public QueryHandler queryHandler( ) { return qh; }
+        CountingGraph( Graph base ) 
+            { super( base ); qh = new SimpleQueryHandler( this ); }
+        public ExtendedIterator find( Node s, Node p, Node o ) 
+            { return find( Triple.createMatch( s, p, o )  ); }
+        public ExtendedIterator find( TripleMatch tm )
+            { return count( base.find( tm ) ); }
+        ExtendedIterator count( ExtendedIterator it )
+            {
+            return new WrappedIterator( it )
+                { 
+                public Object next() { try { return super.next(); } finally { counter += 1; } }
+                };        
+            }
+        int getCount() 
+            { return counter; }
+        public String toString()
+            { return base.toString(); }
+        }
+        
+    CountingGraph bigCountingGraph()
+        {
+        Graph bigGraph = getGraph();
+        return new CountingGraph( bigGraph );    
         }
     }
 
