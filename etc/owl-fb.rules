@@ -8,9 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# TODO: Replace current owl:Nothing usage by an inconsistency mechanism
-#
-# $Id: owl-fb.rules,v 1.16 2003-08-22 16:31:01 der Exp $
+# $Id: owl-fb.rules,v 1.17 2003-08-24 21:11:13 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -180,7 +178,7 @@
 						-> (?C owl:equivalentClass min(?P, ?X))]
 		
 [restriction4: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:maxCardinality ?X)
-						-> (?C owl:equivalentClass max(?P, ?X))]
+						-> (?C owl:equivalentClass max(?P, ?X)) ]
 		
 [restriction5: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:cardinality ?X)
 						-> (?C owl:equivalentClass card(?P, ?X)), 
@@ -238,9 +236,6 @@
 #------------------------------------------------------------------
 # max cardinality 0
 #------------------------------------------------------------------
-
-[max2: (?C rdfs:subClassOf max(?P, 0)) ->
-    [max2b: (?X rdf:type owl:Nothing) <- (?X rdf:type ?C), (?X ?P ?Y) ] ]
 
 # For completeness this requires iff version of rdfs:domain working forwards which it does not just now
 [maxRec2: (?C owl:equivalentClass max(?P, 0)), (?P rdfs:domain ?D), (?E owl:disjointWith ?D)
@@ -323,9 +318,6 @@
 # This is better handled by a dedicated equality reasoner any.
 [distinct2: (?w owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
 
-# Example version of validation rule, more TBD
-[validation1: (?X rdf:type owl:Nothing) <- (?X owl:differentFrom ?Y), (?X owl:sameIndividualAs ?Y) ]
-
 #------------------------------------------------------------------
 # Class equality
 #------------------------------------------------------------------
@@ -390,6 +382,8 @@
 
 [sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
 
+[sameIndividualAs7: (?X owl:sameIndividualAs ?X) <- (?X rdf:type owl:Thing) ]
+
 # Equality processing rules
 
 [equality1: (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y) ->
@@ -448,4 +442,80 @@
 								[ (?x ?P ?V) <- (?x rdf:type ?C) ]
 								[ (?x rdf:type ?C) <- (?x ?P ?V) ]
 								]
-								
+#------------------------------------------------------------------
+# Declaration of main XSD datatypes
+#------------------------------------------------------------------
+
+-> (xsd:float rdf:type rdfs:Datatype).
+-> (xsd:double rdf:type rdfs:Datatype).
+-> (xsd:int rdf:type rdfs:Datatype).
+-> (xsd:long rdf:type rdfs:Datatype).
+-> (xsd:short rdf:type rdfs:Datatype).
+-> (xsd:byte rdf:type rdfs:Datatype).
+-> (xsd:unsignedByte rdf:type rdfs:Datatype).
+-> (xsd:unsignedShort rdf:type rdfs:Datatype).
+-> (xsd:unsignedInt rdf:type rdfs:Datatype).
+-> (xsd:unsignedLong rdf:type rdfs:Datatype).
+-> (xsd:decimal rdf:type rdfs:Datatype).
+-> (xsd:integer rdf:type rdfs:Datatype).
+-> (xsd:nonPositiveInteger rdf:type rdfs:Datatype).
+-> (xsd:nonNegativeInteger rdf:type rdfs:Datatype).
+-> (xsd:positiveInteger rdf:type rdfs:Datatype).
+-> (xsd:negativeInteger rdf:type rdfs:Datatype).
+-> (xsd:boolean rdf:type rdfs:Datatype).
+-> (xsd:string rdf:type rdfs:Datatype).
+-> (xsd:anyURI rdf:type rdfs:Datatype).
+-> (xsd:hexBinary rdf:type rdfs:Datatype).
+-> (xsd:base64Binary  rdf:type rdfs:Datatype).
+-> (xsd:date rdf:type rdfs:Datatype).
+-> (xsd:time rdf:type rdfs:Datatype).
+-> (xsd:dateTime rdf:type rdfs:Datatype).
+-> (xsd:duration rdf:type rdfs:Datatype).
+-> (xsd:gDay rdf:type rdfs:Datatype).
+-> (xsd:gMonth rdf:type rdfs:Datatype).
+-> (xsd:gYear rdf:type rdfs:Datatype).
+-> (xsd:gYearMonth rdf:type rdfs:Datatype).
+-> (xsd:gMonthDay rdf:type rdfs:Datatype).
+							
+#------------------------------------------------------------------
+# Validation rules. These are dormant by default but are triggered
+# by the additional of a validation control triple to the graph.
+#------------------------------------------------------------------
+
+[validationMax0: (?v rb:validation on()), (?C owl:equivalentClass max(?P, 0))  ->
+    [max2b: (?X rb:violation error('too many values', 'Value for max-0 property (prop, class)', ?P, ?C))
+    			<- (?X rdf:type ?C), (?X ?P ?Y) ] ]
+
+[validationMaxN: (?v rb:validation on()), (?C owl:equivalentClass max(?P, ?N)) ->
+    [max2b: (?X rb:violation error('too many values', 'Too many values on max-N property (prop, class)', ?P, ?C))
+    			<- (?X rdf:type ?C), countLiteralValues(?X, ?P, ?M), lessThan(?N, ?M)  ] ]
+
+[validationIndiv: (?v rb:validation on())  ->
+	[validationIndiv: (?X rb:violation error('conflict', 'Two individuals both same and different, may be due to disjoint classes or functional properties', ?Y)) 
+				<- (?X owl:differentFrom ?Y), (?X owl:sameIndividualAs ?Y) ] ]
+
+[validationDTP: (?v rb:validation on()), (?P rdf:type owl:DatatypeProperty) ->
+	[validationDTP: (?X rb:violation error('range check', 'Object value for datatype property (prop, value)', ?P, ?V))
+				<- (?X ?P ?V), notLiteral(?V), notBNode(?V) ] ]
+
+[validationOP: (?v rb:validation on()), (?P rdf:type owl:ObjectProperty) ->
+	[validationDTP: (?X rb:violation error('range check', 'Literal value for datatype property (prop, value)', ?P, ?V))
+				<- (?X ?P ?V), isLiteral(?V) ] ]
+
+[validationDTRange: (?v rb:validation on()), (?P rdfs:range ?R) (?R rdf:type rdfs:Datatype) ->
+	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to range (prop, value)', ?P, ?V))
+				<- (?X ?P ?V), notDType(?V, ?R) ] ]
+
+[validationDTRange: (?v rb:validation on()), (?P rdfs:range rdfs:Literal)  ->
+	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to range rdsf:Literal (prop, value)', ?P, ?V))
+				<- (?X ?P ?V), notLiteral(?V), notBNode(?V) ] ]
+
+[validationAllFrom: (?v rb:validation on()), (?C rdfs:subClassOF all(?P, ?R)) (?R rdf:type rdfs:Datatype) ->
+	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to allValuesFrom (prop, value)', ?P, ?V))
+				<- (?X ?P ?V), (?X rdf:type ?C), notDType(?V, ?R) ] ]
+
+[validationAllFrom: (?v rb:validation on()), (?C owl:equivalentClass all(?P, rdfs:Literal)) -> 
+	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to allValuesFrom rdfs:Literal (prop, value)', ?P, ?V))
+				<- (?X ?P ?V), (?X rdf:type ?C), notDType(?V, rdfs:Literal) ] ]
+
+				
