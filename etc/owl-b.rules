@@ -134,10 +134,10 @@
 
 [restriction1: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:someValuesFrom ?D)
 						-> (?C owl:equivalentClass some(?P, ?D))]
-		
+						
 [restriction2: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D)
 						-> (?C owl:equivalentClass all(?P, ?D))]
-		
+						
 [restriction3: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:minCardinality ?X)
 						-> (?C owl:equivalentClass min(?P, ?X))]
 		
@@ -151,7 +151,7 @@
 		
 [restriction6: (?C rdfs:subClassOf min(?P, ?X)), (?C rdfs:subClassOf max(?P, ?X)) 
        					-> (?C rdfs:subClassOf card(?P, ?X))]
-       					
+
 # Needed for the case where ?R is a restriction literal and so does not appear in the subject position
 
 [restrictionSubclass1: bound(?D) (?D owl:equivalentClass ?R), isFunctor(?R), 
@@ -171,12 +171,21 @@
 [restrictionProc1: (?X rdf:type, max(?P, '1')), (?X, rdf:type, some(?P, ?C)) 
 						-> (?X rdf:type all(?P, ?C))]
 
-[restrictionProc2: (?P rdf:type owl:FunctionalProperty), (?X, rdf:type, some(?P, ?C)) 
+[restrictionProc2a: unbound(?X), (?P rdf:type owl:FunctionalProperty), (?X, rdf:type, some(?P, ?C)) 
 						-> (?X rdf:type all(?P, ?C))]
 
-[restrictionProc4: (?X rdf:type all(?P, ?C)), (?X ?P ?Y), notEqual(?P, rdf:type) 
-						-> (?X rdf:type some(?P, ?C)), (?Y rdf:type ?C)]
+[restrictionProc2b: bound(?X),(?X, rdf:type, some(?P, ?C)), (?P rdf:type owl:FunctionalProperty), 
+						-> (?X rdf:type all(?P, ?C))]
 
+[restrictionProc4a: (?X rdf:type all(?P, ?C)), (?X ?P ?Y), notEqual(?P, rdf:type) 
+						-> (?X rdf:type some(?P, ?C))]
+
+[restrictionProc4b: unbound(?Y), (?X rdf:type all(?P, ?C)), (?X ?P ?Y), notEqual(?P, rdf:type) 
+						-> (?Y rdf:type ?C)]
+
+[restrictionProc4c: bound(?Y), (?X ?P ?Y), (?X rdf:type all(?P, ?C)), notEqual(?P, rdf:type) 
+						-> (?Y rdf:type ?C)]       					
+		
 [restrictionProc5: (?P rdfs:range ?C), (?X ?P *), notFunctor(?C) -> (?X rdf:type some(?P, ?C))]
 
 [restrictionProc6: (?D owl:equivalentClass all(?P, ?C)) (?P rdfs:range ?C)
@@ -205,8 +214,8 @@
 
 # There is a problem with this when used backward chaining -
 # if we supported (* type *) matches then we are doing search over all data.
-[card3: bound(?X), (?X ?P ?V), (?V rdf:type ?C), notFunctor(?C) -> (?X rdf:type some(?P, ?C))]
-[card3: bound(?P), (?X ?P ?V), (?V rdf:type ?C), notFunctor(?C) -> (?X rdf:type some(?P, ?C))]
+#[card3: (?X ?P ?V), (?V rdf:type ?C), notFunctor(?C) -> (?X rdf:type some(?P, ?C))]
+[card3: bound(?P), bound(?X), (?X ?P ?V), (?V rdf:type ?C) -> (?X rdf:type some(?P, ?C))]
 
 #------------------------------------------------------------------
 # Disjointness and equivalence rules
