@@ -10,6 +10,9 @@ Post Jena 2.1 change list
       o Fixed XSDDouble isValidValue test to check for Double
       o Fixed XSDbase64Binary, XSDhexBinary returning strings instead of byte[]
 
+  Database
+      o Fixed user-reported problem where removeNsPrefix() wasn't persistent
+
   Model & Graph removeAll(), remove(S, P, O)
       o added new API operation Model::removeAll() which removes "all" statements
         from a model [currently there are issues about inference models]
@@ -44,6 +47,7 @@ Post Jena 2.1 change list
       o added new graph.GraphEvents as holder of event constants with one
         such, .removeAll, issued by BulkUpdateHandler for removeAll(), and
         a static method for creating removed-by-pattern triple values.
+      o the standard Jena readers generate startRead and finishRead events
       o all the Graph events now come with their source Graph attached as an
         argument to the event method.
 
