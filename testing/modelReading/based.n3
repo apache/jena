@@ -1,0 +1,14 @@
+# (c) Copyright 2004, Hewlett-Packard Development Company, LP
+# All rights reserved.
+# $Id: based.n3,v 1.1 2004-11-22 12:24:27 chris-dollin Exp $
+
+# based.n3: a test file for a "based" model
+
+@prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:	    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix jms:        <http://jena.hpl.hp.com/2003/08/jms#> .
+@prefix dc:         <http://purl.org/dc/elements/1.1/> .
+
+@prefix :           <#> .
+
+<> jms:predicate jms:object .  

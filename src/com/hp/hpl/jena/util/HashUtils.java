@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: HashUtils.java,v 1.3 2004-11-19 14:38:15 chris-dollin Exp $
+  $Id: HashUtils.java,v 1.4 2004-11-22 12:24:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.util;
 
@@ -12,7 +12,7 @@ import java.util.*;
      @author kers
      @deprecated use CollectionFactory methods
 */
-public class HashUtils extends CollectionFactory
+public class HashUtils
     {
     public static Map createMap() { return new HashMap(); }
     
