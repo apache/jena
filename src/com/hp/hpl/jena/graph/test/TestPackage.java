@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.16 2004-08-07 15:45:58 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.17 2004-09-14 12:41:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -28,6 +28,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestNode", TestNode.suite() );
         addTest( "TestTriple", TestTriple.suite() );
         addTest( TestNodeToTriplesMap.suite() );
+        addTest( TestSimpleReifierTripleMap.suite() );   
         addTest( "TestReifier", TestReifier.suite() );   
         addTest( "TestTypedLiterals", TestTypedLiterals.suite() );
         addTest( "TestGraphQuery", TestGraphQueryPackage.suite() );
