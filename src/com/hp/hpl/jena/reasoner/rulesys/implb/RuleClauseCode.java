@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.15 2003-08-08 09:25:43 der Exp $
+ * $Id: RuleClauseCode.java,v 1.16 2003-08-11 16:25:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-08-08 09:25:43 $
+ * @version $Revision: 1.16 $ on $Date: 2003-08-11 16:25:39 $
  */
 public class RuleClauseCode {
     
@@ -391,7 +391,7 @@ public class RuleClauseCode {
             emitBodyPut(goal.getSubject(), 0);
             emitBodyPut(goal.getPredicate(), 1);
             emitBodyPut(goal.getObject(), 2);
-            Collection predicateCode = store.codeFor(goal);
+            List predicateCode = store.codeFor(goal);
             if (predicateCode == null || predicateCode.size() == 0) {
                 code[p++] = CALL_TRIPLE_MATCH;
             } else {
@@ -682,7 +682,7 @@ public class RuleClauseCode {
             String test12 = "(?x p ?y) <- (?x p foo(?z, ?y)).";
             String test13 = "(?x p foo(?y,?z)) <- (?x q ?y), (?x q ?z).";
             String test14 = "(?x p ?z) <- (?x e ?z), (?z q ?z).";
-            store.addRule(Rule.parseRule(test14));
+            store.addRule(Rule.parseRule(test1));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);

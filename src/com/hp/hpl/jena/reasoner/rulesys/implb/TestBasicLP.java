@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.13 2003-08-10 21:49:41 der Exp $
+ * $Id: TestBasicLP.java,v 1.14 2003-08-11 16:25:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -17,6 +17,7 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -27,7 +28,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-08-10 21:49:41 $
+ * @version $Revision: 1.14 $ on $Date: 2003-08-11 16:25:39 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -46,9 +47,13 @@ public class TestBasicLP  extends TestCase {
     Node C1 = Node.createURI("C1");
     Node C2 = Node.createURI("C2");
     Node C3 = Node.createURI("C3");
+    Node C4 = Node.createURI("C4");
     Node D1 = Node.createURI("D1");
     Node D2 = Node.createURI("D2");
     Node D3 = Node.createURI("D3");
+    Node sP = RDFS.subPropertyOf.getNode();
+    Node sC = RDFS.subClassOf.getNode();
+    Node ty = RDF.type.getNode();
 
     /**
      * Boilerplate for junit
@@ -65,7 +70,7 @@ public class TestBasicLP  extends TestCase {
         return new TestSuite( TestBasicLP.class );
         
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBasicLP( "testTabled6" ));
+//        suite.addTest(new TestBasicLP( "testBaseRules2" ));
 //        return suite;
     }  
    
@@ -785,6 +790,54 @@ public class TestBasicLP  extends TestCase {
                     new Triple(a, p, c),
                     new Triple(b, p, d),
                     new Triple(a, p, d),
+                } );
+    }
+   
+    /**
+     * Test RDFS example.
+     */
+    public void testRDFS1() {
+        doTest(
+    "[ (?a rdf:type C1) <- (?a rdf:type C2) ]" +
+    "[ (?a rdf:type C2) <- (?a rdf:type C3) ]" +
+    "[ (?a rdf:type C3) <- (?a rdf:type C4) ]",
+                new Node[] { ty },
+                new Triple[] {
+                    new Triple(a, ty, C1),
+                    new Triple(b, ty, C2),
+                    new Triple(c, ty, C3),
+                    new Triple(d, ty, C4),
+                },
+                new Triple(Node.ANY, ty, C1),
+                new Object[] {
+                    new Triple(a, ty, C1),
+                    new Triple(b, ty, C1),
+                    new Triple(c, ty, C1),
+                    new Triple(d, ty, C1),
+                } );
+    }
+   
+    /**
+     * Test RDFS example - branched version
+     */
+    public void testRDFS2() {
+        doTest(
+    "[ (?a rdf:type C1) <- (?a rdf:type C2) ]" +
+    "[ (?a rdf:type C1) <- (?a rdf:type C3) ]" +
+    "[ (?a rdf:type C1) <- (?a rdf:type C4) ]",
+                new Node[] { ty },
+                new Triple[] {
+                    new Triple(a, ty, C1),
+                    new Triple(b, ty, C2),
+                    new Triple(c, ty, C3),
+                    new Triple(d, ty, C4),
+                },
+                new Triple(Node.ANY, ty, C1),
+                new Object[] {
+                    new Triple(a, ty, C1),
+                    new Triple(b, ty, C1),
+                    new Triple(c, ty, C1),
+                    new Triple(d, ty, C1),
                 } );
     }
 

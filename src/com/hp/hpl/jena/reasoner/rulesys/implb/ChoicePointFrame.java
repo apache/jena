@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ChoicePointFrame.java,v 1.7 2003-08-07 17:02:30 der Exp $
+ * $Id: ChoicePointFrame.java,v 1.8 2003-08-11 16:25:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,14 +22,14 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-07 17:02:30 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-11 16:25:39 $
  */
 public class ChoicePointFrame extends GenericChoiceFrame {
 
     /** The set of argument variables for the call */
     Node[] argVars = new Node[RuleClauseCode.MAX_ARGUMENT_VARS];
 
-    /** Iterator over the set of clause code objects comprising the set of choices */
+    /** Iterator over the clauses being searched */
     Iterator clauseIterator;
     
     /**
@@ -39,7 +39,7 @@ public class ChoicePointFrame extends GenericChoiceFrame {
      * @param interpreter the LPInterpreter whose state is to be preserved
      * @param predicateClauses the list of predicates for this choice point
      */
-    public ChoicePointFrame(LPInterpreter interpreter, Collection predicateClauses) {
+    public ChoicePointFrame(LPInterpreter interpreter, List predicateClauses) {
         init(interpreter, predicateClauses);
     }
 
@@ -49,10 +49,24 @@ public class ChoicePointFrame extends GenericChoiceFrame {
      * @param interpreter the LPInterpreter whose state is to be preserved
      * @param predicateClauses the list of predicates for this choice point
      */
-    public void init(LPInterpreter interpreter, Collection predicateClauses) {
+    public void init(LPInterpreter interpreter, List predicateClauses) {
         super.init(interpreter);
         System.arraycopy(interpreter.argVars, 0, argVars, 0, argVars.length);
         clauseIterator = predicateClauses.iterator();
+    }
+    
+    /**
+     * Is there another clause in the sequence?
+     */
+    public boolean hasNext() {
+        return clauseIterator.hasNext();
+    }
+    
+    /**
+     * Return the next clause in the sequence.
+     */
+    public RuleClauseCode nextClause() {
+        return (RuleClauseCode) clauseIterator.next();
     }
 
 }

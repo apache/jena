@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.5 2003-08-10 21:49:41 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.6 2003-08-11 16:25:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-10 21:49:41 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-11 16:25:39 $
  */
 public class LPBRuleEngine {
     
@@ -214,7 +214,7 @@ public class LPBRuleEngine {
      * @param goal the goal whose results are to be generated
      * @param clauses the precomputed set of code blocks used to implement the goal
      */
-    public synchronized Generator generatorFor(TriplePattern goal, Collection clauses) {
+    public synchronized Generator generatorFor(TriplePattern goal, List clauses) {
         Generator generator = (Generator) tabledGoals.get(goal);
         if (generator == null) {
             LPInterpreter interpreter = new LPInterpreter(this, goal, clauses);

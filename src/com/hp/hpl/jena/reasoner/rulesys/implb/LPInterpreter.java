@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.16 2003-08-10 21:49:41 der Exp $
+ * $Id: LPInterpreter.java,v 1.17 2003-08-11 16:25:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-08-10 21:49:41 $
+ * @version $Revision: 1.17 $ on $Date: 2003-08-11 16:25:39 $
  */
 public class LPInterpreter {
 
@@ -63,6 +63,9 @@ public class LPInterpreter {
     /** The execution context description to be passed to builtins */
     protected RuleContext context;
         
+    /** Experimental: cache of last looked up triple to avoid store turn over in top level results */
+//    protected Triple lastTriple;
+    
     /** log4j logger*/
     static Logger logger = Logger.getLogger(LPInterpreter.class);
 
@@ -84,7 +87,7 @@ public class LPInterpreter {
      * @param goal the query to be satisfied
      * @param clauses the set of code blocks needed to implement this goal
      */
-    public LPInterpreter(LPBRuleEngine engine, TriplePattern goal, Collection clauses) {
+    public LPInterpreter(LPBRuleEngine engine, TriplePattern goal, List clauses) {
         this.engine = engine;
         
         // Construct dummy top environemnt which is a call into the clauses for this goal
@@ -144,6 +147,7 @@ public class LPInterpreter {
      * @return either a StateFlag or  a result Triple
      */
     public synchronized Object next() {
+        boolean fastReturn = (cpFrame instanceof TripleMatchFrame) && (((TripleMatchFrame)cpFrame).envFrame.clause == RuleClauseCode.returnCodeBlock);
         StateFlag answer = run();
         if (answer == StateFlag.FAIL || answer == StateFlag.SUSPEND) {
             return answer;
@@ -197,13 +201,13 @@ public class LPInterpreter {
             // restore choice point
             if (cpFrame instanceof ChoicePointFrame) {
                 choice = (ChoicePointFrame)cpFrame;
-                if (!choice.clauseIterator.hasNext()) {
+                if (!choice.hasNext()) {
                     // No more choices left in this choice point
                     cpFrame = choice.getLink();
                     continue main;
                 }
                 
-                clause = (RuleClauseCode)choice.clauseIterator.next();
+                clause = (RuleClauseCode)choice.nextClause();
                 // Create an execution environment for the new choice of clause
                 envFrame = new EnvironmentFrame(clause);
                 envFrame.linkTo(choice.envFrame);
@@ -408,7 +412,7 @@ public class LPInterpreter {
                         case RuleClauseCode.LAST_CALL_PREDICATE:
                             // TODO: improved implementation of last call case
                         case RuleClauseCode.CALL_PREDICATE:
-                            Collection clauses = (List)args[ac++];
+                            List clauses = (List)args[ac++];
                             setupClauseCall(pc, ac, clauses);
                             setupTripleMatchCall(pc, ac);
                             continue main;
@@ -498,7 +502,7 @@ public class LPInterpreter {
     /**
      * Set up a clause choice point as part of a CALL.
      */
-    private void setupClauseCall(int pc, int ac, Collection clauses) {
+    private void setupClauseCall(int pc, int ac, List clauses) {
         ChoicePointFrame newChoiceFrame = new ChoicePointFrame(this, clauses);
         newChoiceFrame.linkTo(cpFrame);
         newChoiceFrame.setContinuation(pc, ac);
@@ -520,7 +524,9 @@ public class LPInterpreter {
      * of the choice point tree.
      */
     public void preserveState(ConsumerChoicePointFrame ccp) {
+        // Save the args
         System.arraycopy(argVars, 0, ccp.argVars, 0, argVars.length);
+        // Save the trail state
         int trailLen = trail.size();
         if (trailLen > ccp.trailLength) {
             ccp.trailValues = new Node[trailLen];
@@ -540,7 +546,7 @@ public class LPInterpreter {
     public void restoreState(ConsumerChoicePointFrame ccp) {
         cpFrame = ccp;
         System.arraycopy(ccp.argVars, 0, argVars, 0, argVars.length);
-        trail.clear();
+        unwindTrail(0);
         for (int i = 0; i < ccp.trailLength; i++) {
             bind(ccp.trailVars[i], ccp.trailValues[i]);
         }

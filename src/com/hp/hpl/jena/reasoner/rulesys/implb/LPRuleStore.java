@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.7 2003-08-07 17:02:30 der Exp $
+ * $Id: LPRuleStore.java,v 1.8 2003-08-11 16:25:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-07 17:02:30 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-11 16:25:39 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -89,7 +89,7 @@ public class LPRuleStore extends RuleStore {
      * query pattern. This may use indexing to narrow the rule set more that the predicate-only case. 
      * @param goal the triple pattern that makes up the query
      */
-    public Collection codeFor(TriplePattern goal) {
+    public List codeFor(TriplePattern goal) {
         List allRules = codeFor(goal.getPredicate());
         if (allRules == null) {
             return allRules;

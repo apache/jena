@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ConsumerChoicePointFrame.java,v 1.4 2003-08-10 21:49:41 der Exp $
+ * $Id: ConsumerChoicePointFrame.java,v 1.5 2003-08-11 16:25:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-10 21:49:41 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-11 16:25:39 $
  */
 public class ConsumerChoicePointFrame extends GenericTripleMatchFrame 
                 implements LPAgendaEntry, LPInterpreterState {
@@ -46,6 +46,9 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
     
     /** The length of the preserved trail */
     protected int trailLength;
+    
+    /** The stack of preserved choice point status */
+    protected int[] choicePointStates = new int[10];
     
     /** The generator or top iterator we are producting results for */
     protected LPInterpreterContext context;
@@ -117,10 +120,14 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame
     }
     
     /**
-     * Reactivate this choice point to generate new results.
+     * Reactivate this choice point to return new results.
      */
     public void pump() {
-        generator.pump(this);
+        if (context instanceof Generator) {
+            ((Generator)context).pump(this);
+        } else {
+            // The top level iterator is in charge and will restore and run this choice point itself
+        }
     }
     
 }
