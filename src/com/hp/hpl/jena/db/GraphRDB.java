@@ -45,7 +45,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -109,7 +109,11 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * 
 	 * @since Jena 2.0
 	 */	
-	public Node getNode() { return m_properties.getNode(); }
+	public Node getNode() { 
+		if(m_properties == null)
+			throw new RDFRDBException("Error - attempt to call getNode() on a GraphRDB that has already been removed");
+		return m_properties.getNode(); 
+	}
 
 	/** 
 	 * Returns triples that describe this graph in the system properties graph.
@@ -121,6 +125,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * @since Jena 2.0
 	 */	
 	public ExtendedIterator getPropertyTriples() {
+		if(m_properties == null)
+			throw new RDFRDBException("Error - attempt to call getPropertyTriples on a GraphRDB that has been removed.");
 		return m_properties.listTriples();
 	}
 
@@ -128,6 +134,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#add(com.hp.hpl.jena.graph.Triple)
 	 */
 	public void add(Triple t) {
+		if(m_specializedGraphs == null)
+			throw new RDFRDBException("Error - attempt to call add on a GraphRDB that has already been closed");
 
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
@@ -146,7 +154,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#delete(com.hp.hpl.jena.graph.Triple)
 	 */
 	public void delete(Triple t) {
-
+		if(m_specializedGraphs == null)
+			throw new RDFRDBException("Error - attempt to call delete on a GraphRDB that has already been closed");
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
@@ -164,6 +173,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#size()
 	 */
 	public int size() {
+		if(m_specializedGraphs == null)
+			throw new RDFRDBException("Error - attempt to call size on a GraphRDB that has already been closed");
 		int result =0;		
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
@@ -177,7 +188,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#contains(com.hp.hpl.jena.graph.Triple)
 	 */
 	public boolean contains(Triple t) {
-
+		if(m_specializedGraphs == null)
+			throw new RDFRDBException("Error - attempt to call contains on a GraphRDB that has already been closed");
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
@@ -201,6 +213,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.TripleMatch)
 	 */
 	public ExtendedIterator find(TripleMatch m) {
+		if(m_specializedGraphs == null)
+			throw new RDFRDBException("Error - attempt to call find on a GraphRDB that has already been closed");
 		ExtendedIterator result = null;
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
@@ -220,13 +234,15 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#close()
 	 */
-	public void close() {
-		Iterator it = m_specializedGraphs.iterator();
-		while( it.hasNext() ) {
-			SpecializedGraph sg = (SpecializedGraph) it.next();
-			sg.close();
+	public synchronized void close() {
+		if( m_specializedGraphs != null) {
+			Iterator it = m_specializedGraphs.iterator();
+			while( it.hasNext() ) {
+				SpecializedGraph sg = (SpecializedGraph) it.next();
+				sg.close();
+			}
+			m_specializedGraphs = null;
 		}
-		m_specializedGraphs = null;
 	}
 	
 	/**
@@ -238,7 +254,10 @@ public class GraphRDB extends GraphBase implements Graph {
      * (there is no other useful operation that may be 
      * performed, and so no reason to keep the Graph around).
      */
-    public void remove() {
+    public synchronized void remove() {
+    	
+    	if(m_specializedGraphs == null)
+    		throw new RDFRDBException("Error - attempt to call remove on a Graph that has already been closed");
     	// First we ask the driver to remove the specialized graphs
     	m_driver.removeSpecializedGraphs( m_properties );
     	m_properties.remove( m_driver.getSystemSpecializedGraph());
