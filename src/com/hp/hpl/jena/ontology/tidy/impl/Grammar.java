@@ -1,7 +1,7 @@
 /* (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   All rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.8 2005-01-05 23:48:18 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.9 2005-01-24 15:00:15 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 public class Grammar implements Constants {
@@ -91,7 +91,7 @@ public class Grammar implements Constants {
     static final int rdfsrange = 84;
     static final int rdfssubClassOf = 85;
     static final int rdfssubPropertyOf = 86;
- static String catNames[] = { "--not used--",
+ static public String catNames[] = { "--not used--",
       "orphan",
       "notype",
       "cyclicRest",

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Q.java,v 1.4 2004-12-29 21:16:35 jeremy_carroll Exp $
+  $Id: Q.java,v 1.5 2005-01-24 15:00:15 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import java.util.*;
@@ -9,7 +9,7 @@ import java.util.*;
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-abstract class Q {
+abstract public class Q {
 	private Q(){}
 	public static final boolean member(int m, int a[]) {
 		return Arrays.binarySearch(a, m) >= 0;
@@ -20,7 +20,18 @@ abstract class Q {
 				return true;
 		return false;
 	}
-
+	public static final int[] intersection(int a[], int b[]) {
+	    int rslt[] = new int[a.length];
+	    int ix = 0;
+		for (int i = 0; i < a.length; i++)
+			if (member(a[i], b))
+				rslt[ix++]=a[i];
+		if (ix==rslt.length)
+		    return rslt;
+		int r[] = new int[ix];
+		System.arraycopy(rslt,0,r,0,ix);
+		return r;
+	}
 	public static final boolean subset(int a[], int b[]) {
 		for (int i = 0; i < a.length; i++)
 			if (!member(a[i], b))

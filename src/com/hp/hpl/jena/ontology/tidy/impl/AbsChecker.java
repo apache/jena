@@ -106,6 +106,7 @@ abstract class AbsChecker implements Constants {
 		eMessage = m;
 		eGrammarMismatch = misMatch;
 	}
+	// TODO refactor to extract meet case logic for use in MonotonicErrorAnalyzer
 	/**0 on failure, 1 on trivial, 2 on refinement.
 		 * @param topLevelCall True if t has not already been checked, false if t is being rechecked, as a result of some other changes
 		 * @param t A triple from a graph being checked.

@@ -14,7 +14,7 @@ import com.hp.hpl.jena.shared.ReificationStyle;
  * @author Jeremy J. Carroll
  *
  */
-class SimpleChecker extends AbsChecker {
+public class SimpleChecker extends AbsChecker {
 
 
     public SimpleChecker(Graph g) {
@@ -74,7 +74,14 @@ class SimpleChecker extends AbsChecker {
         else
              cn.setCategories( newCat, true );
         
+        
     }
+    public int getCategory(Node n) {
+        return super.getCategory(n);
+    }
+    
+    
+    
 }
 
 

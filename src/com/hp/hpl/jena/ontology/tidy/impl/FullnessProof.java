@@ -210,7 +210,7 @@ class FullnessProof implements Constants {
             return false;
 
         MonotonicProblem mp = new MonotonicErrorAnalyzer().getErrorCode(s, p,
-                o, sx, px, ox);
+                o, t);
         boolean ok = extendWith(t,n,mp);
         if (mp.nextProblem()!=null)
             ok = extendWith(t,n,mp.nextProblem()) || ok;

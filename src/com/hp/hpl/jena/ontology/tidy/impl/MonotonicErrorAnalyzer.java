@@ -1,13 +1,14 @@
 /*
  (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: MonotonicErrorAnalyzer.java,v 1.14 2005-01-19 15:27:57 jeremy_carroll Exp $
+ $Id: MonotonicErrorAnalyzer.java,v 1.15 2005-01-24 15:00:14 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
 import java.util.*;
 
 import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.ontology.tidy.Levels;
 import com.hp.hpl.jena.ontology.tidy.errors.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.*;
@@ -104,19 +105,37 @@ public class MonotonicErrorAnalyzer implements Constants {
      * @return
      */
     static public MonotonicProblem[] getProblem(AbsChecker g, Triple t) {
-        SimpleChecker empty = new SimpleChecker();
-        MonotonicProblem r = new MonotonicErrorAnalyzer().getErrorCode(g
-                .getCategory(t.getSubject()), g.getCategory(t.getPredicate()),
-                g.getCategory(t.getObject()),
-                empty.getCategory(t.getSubject()), empty.getCategory(t
-                        .getPredicate()), empty.getCategory(t.getObject()));
-        MonotonicProblem rslt[] = r.nextProblem() == null ? new MonotonicProblem[] { r }
-                : new MonotonicProblem[] { r, r.nextProblem() };
+
+        int s = g
+                .getCategory(t.getSubject());
+        int p = g.getCategory(t.getPredicate());
+        int o = g.getCategory(t.getObject());
+        MonotonicErrorAnalyzer monotonicErrorAnalyzer = new MonotonicErrorAnalyzer();
+        MonotonicProblem r = monotonicErrorAnalyzer.getErrorCode(s, 
+                p,
+                o,t);
+        return flattenProblem(t, r);
+    }
+public static MonotonicProblem[] flattenProblem(Triple t, MonotonicProblem r) {
+        int lg = 0;
+        MonotonicProblem x = r;
+        while (x!=null){
+            lg++;
+            x = x.nextProblem();
+        }
+        
+        MonotonicProblem rslt[] = new MonotonicProblem[lg];
+        lg = 0;
+        x = r;
+        while (x!=null){
+            rslt[lg++] =x;
+            x = x.nextProblem();
+        }
         for (int i = 0; i < rslt.length; i++)
             rslt[i].setTriple(t);
         return rslt;
     }
-/*
+    /*
     static int assess(Graph g, MonotonicProblem p, Graph t) {
         if (p instanceof MultipleTripleProblem) {
             MultipleTripleProblem mtp = (MultipleTripleProblem) p;
@@ -163,16 +182,48 @@ public class MonotonicErrorAnalyzer implements Constants {
 
     }
 */
-    public MonotonicProblem getErrorCode(int s, int p, int o, int sx, int px,
-            int ox) {
+    /**
+     * Public for testing purposes, entry point is with Triple
+     * allProblems() or getProblems()
+     */
+    public MonotonicProblem getErrorCode(int s, int p, int o, Triple t) {
         //  Throws array access error if not 0 <= s,p,o,sx,px,ox < SZ.
-        if (look.qrefine(s, p, o) != Failure)
-            throw new IllegalArgumentException("triple is not in error");
+        SimpleChecker empty = new SimpleChecker();
+        int sx = empty.getCategory(t.getSubject());
+        int px = empty.getCategory(t
+                        .getPredicate());
+        int ox = empty.getCategory(t.getObject());
+        int key = look.qrefine(s, p, o);
+        int meetCase = 0;
+        if (t!=null){
+            Node sn = t.getSubject();
+            Node pn = t.getPredicate();
+            Node on = t.getObject();
+    		meetCase = ( pn.equals(on) ? 1 : 0 ) | ( sn.equals(on) ? 2 : 0 ) | ( sn.equals(pn) ? 4 : 0 );
+        }
+        if (key != Failure) {
+            if (t!=null){
+                int meet = qrefineWithMeet(s, p, o, meetCase);
+				if ( meet == Failure ) {
+					if (qrefineWithMeet(sx,px,ox,meetCase)==Failure) {
+					    return singleTripleMeetError(meetCase,sx,px,ox);
+					} else {
+					    return multiTripleMeetError(meetCase,key,s,p,o,sx,px,ox);
+					}
+				} 
+                
+            }
+            throw new IllegalArgumentException("Null triple, and categories fit together.");
+        }
         rslt = null;
-        int key = look.qrefine(sx, px, ox);
+        key = look.qrefine(sx, px, ox);
         if (key == Failure) {
             return singleTripleError(sx, px, ox);
         }
+        if (meetCase != 0 &&
+                qrefineWithMeet(sx,px,ox,meetCase)==Failure) {
+		    singleTripleMeetError(meetCase,sx,px,ox);
+		}
         int given[] = { s, p, o };
         int general[] = { look.subject(sx, key), look.prop(px, key),
                 look.object(ox, key) };
@@ -190,6 +241,66 @@ public class MonotonicErrorAnalyzer implements Constants {
 
     }
 
+    /**
+ * @param meetCase
+ * @param key
+ * @param s
+ * @param p
+ * @param o
+ * @param sx
+ * @param px
+ * @param ox
+ * @return
+ */
+private MonotonicProblem multiTripleMeetError(int meetCase, int key, int s, int p, int o, int sx, int px, int ox) {
+    addResult(new MultiTripleDuplicateNodeProblem(meetCase));
+    // TODO more work here
+    return rslt;
+}
+    /**
+     * @param meetCase
+     * @param sx
+     * @param px
+     * @param ox
+     * @return
+     */
+    private MonotonicProblem singleTripleMeetError(int meetCase, int sx, int px, int ox) {
+        addResult(new SingleTripleDuplicateNodeProblem(meetCase));
+        // TODO more work here
+        return rslt;
+    }
+    private int qrefineWithMeet(int s, int p, int o, int meetCase) {
+        int key2 = look.qrefine(s, p, o);
+        int s0 = look.subject(s, key2);
+        int p0 = look.prop(p, key2);
+        int o0 = look.object(o, key2);
+        int meet;
+        switch (meetCase) {
+        	case 0:
+        	  meet = 0;
+        	break;
+        	case 1:
+        	 meet= p0 = o0 = look.meet(p0,o0);
+        	 break;
+        	case 2:
+        	meet= s0 = o0 = look.meet(s0,o0);
+        	break;
+        	case 4:
+        	meet= s0 = p0 = look.meet(s0,p0);
+        	break;
+        	case 7:
+        	int msp = look.meet(s0,p0);
+        	
+        	meet= s0 = p0 = o0 = 
+        	    (msp==Failure) ? Failure :
+        	    
+        	    look.meet(msp , o0 );
+        	break;
+        	default:
+        	throw new BrokenException("Impossible meetcase");
+        }
+        return meet;
+    }
     static private int spo(int f, int old, int key) {
         switch (f) {
         case 0:

@@ -60,6 +60,10 @@ public abstract class SyntaxProblem2 {
     final static public int INCOMPATIBLE_SO = DC_DOM_RANGE + 5;
 
     final static public int INCOMPATIBLE_PO = DC_DOM_RANGE + 6;
+    
+    final static public int SINGLE_TRIPLE_DUPLICATE_NODE = 50;
+    final static public int MULTIPLE_TRIPLE_DUPLICATE_NODE = 60;
+    
 
     abstract public int getTypeCode();
     abstract public String getMessage();
