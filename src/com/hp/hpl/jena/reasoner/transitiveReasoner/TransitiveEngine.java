@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveEngine.java,v 1.4 2003-08-27 13:11:18 andy_seaborne Exp $
+ * $Id: TransitiveEngine.java,v 1.5 2004-11-29 14:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * lattice and use them within a larger inference graph.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-27 13:11:18 $
+ * @version $Revision: 1.5 $ on $Date: 2004-11-29 14:35:49 $
  */
 public class TransitiveEngine {
     
@@ -227,10 +227,10 @@ public class TransitiveEngine {
         int triageClass = triage(t);
         switch (triageClass & UPDATE_MASK) {
             case SUBCLASS:
-                subClassCache.addRelation(t.getSubject(), t.getObject());
+                subClassCache.addRelation(t);
                 break;
             case SUBPROPERTY:
-                subPropertyCache.addRelation(t.getSubject(), t.getObject());
+                subPropertyCache.addRelation(t);
                 break;
             case NOT_RELEVANT:
                 return false;
@@ -255,10 +255,10 @@ public class TransitiveEngine {
         int triageClass = triage(t);
         switch (triageClass & UPDATE_MASK) {
             case SUBCLASS:
-                subClassCache.removeRelation(t.getSubject(), t.getObject());
+                subClassCache.removeRelation(t);
                 break;
             case SUBPROPERTY:
-                subPropertyCache.removeRelation(t.getSubject(), t.getObject());
+                subPropertyCache.removeRelation(t);
                 break;
             case NOT_RELEVANT:
                 return false;

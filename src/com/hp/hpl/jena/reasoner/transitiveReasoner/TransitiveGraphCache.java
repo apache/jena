@@ -1,65 +1,555 @@
 /******************************************************************
- * File:        TransitiveGraphCache.java
+ * File:        TransitiveGraphCacheNew.java
  * Created by:  Dave Reynolds
- * Created on:  13-Jan-03
+ * Created on:  16-Nov-2004
  * 
- * (c) Copyright 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.15 2004-11-02 15:57:29 chris-dollin Exp $
+ * $Id: TransitiveGraphCache.java,v 1.16 2004-11-29 14:35:49 der Exp $
  *****************************************************************/
+
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.reasoner.*;
+
 import java.util.*;
 
 /**
  * Datastructure used to represent a closed transitive reflexive relation.
- * This should be more efficient than dynamically computing the relation
- * from a triple store. Designed to be space efficient and not too
- * time inefficient - though more work could be done to pick a real
- * closure algorithm. The cost of space efficiency is that we have to
- * reconstruct the triple set from the core graph which turns over a lot
- * of storage. 
+ * It (mostly) incrementally maintains a transitive reduction and transitive
+ * closure of the relationship and so queries should be faster than dynamically 
+ * computing the closed or reduced relations.
  * <p>
- * The current implementation stores the direct relations as real graph
- * (objects linked together by pointers). As relations are added redundant
- * ones which could be reconstructed from the closure are dropped. To 
- * access the direct "minimal" version of the relation we just have to
- * read out these links. To access the transitively closed version we
- * have to walk the graph, however the results of these walks can be optionally
- * cached (switch on using setCaching method). An alternative implementation
- * would represent the closure using adjacency matrices and construct
- * the complete closure in one go using the standard algorithm. This would
- * be more efficient but require more space unless we have a good sparse binary
- * matrix package.</p>
- * <p>
- * 
+ * The implementation stores the reduced and closed relations as real graph
+ * (objects linked together by pointers). For each graph node we store its direct
+ * predecessors and successors and its closed successors.  A cost penalty 
+ * is the storage turnover involved in turning the graph representation back into 
+ * triples to answer queries. We could avoid this by optionally also storing the
+ * manifested triples for the links.
+ * </p><p>
+ * Cycles are currently handled by collapsing strongly connected components.
+ * Incremental deletes would be possible but at the price of substanially 
+ * more storage and code complexity. We compromise by doing the easy cases
+ * incrementally but some deletes (those that break strongly connected components)
+ * will trigger a fresh rebuild.
+ * </p><p>
+ * TODO Combine this with interval indexes (Agrawal, Borigda and Jagadish 1989) 
+ * for storing the closure of the predecessor relationship. Typical graphs
+ * will be nearly tree shaped so the successor closure is modest (L^2 where
+ * L is the depth of the tree branch) but the predecessor closure would be 
+ * expensive. The interval index would handle predecessor closure nicely.
+ * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2004-11-02 15:57:29 $
+ * @version $Revision: 1.16 $
  */
+
+// Note to maintainers. The GraphNode object is treated as a record structure
+// rather than an abstract datatype by the rest of the GraphCache code - which
+// directly access its structure. I justify this on the flimsy grounds that it is a
+// private inner class.
+
 public class TransitiveGraphCache implements Finder {
 
+	/** Flag controlling the whether the triples 
+	 *  representing the closed relation should also be cached. */
+	protected boolean cacheTriples = false;
+	
     /** Map from RDF Node to the corresponding Graph node. */
     protected HashMap nodeMap = new HashMap();
-    
-    /** If caching enable then this maps RDF Node to its 
-     *  closure (a List of Triples) */
-    protected HashMap cacheClosureForward = null;
-    
-    /** If caching enable then this maps RDF Node to its 
-     *  closure (a List of Triples) */
-    protected HashMap cacheClosureBackward = null;
-    
-    /** Set to true if caching of full closure is enabled */
-    protected boolean cacheOn = false;
     
     /** The RDF predicate representing the direct relation */
     protected Node directPredicate;
     
     /** The RDF predicate representing the closed relation */
     protected Node closedPredicate;
+	
+    /** A list of pending deletes which break the cycle-free normal form */
+    protected Set deletesPending;
+    
+	/** The original triples, needed for processing delete operations
+	 * because some information is lost in the SCC process */ 
+	protected Set originalTriples = new HashSet();
+	
+    /**
+     * Inner class used to represent vistors than can be applied to each
+     * node in a graph walk.
+     */
+    static interface Visitor {
+    	void visit(GraphNode node, Object arg1, Object arg2);
+    }
+    
+	/**
+	 * Inner class used to represent the graph node structure.
+	 * Rather fat nodes (four sets)
+	 */
+	private static class GraphNode {
+        /** The RDF Graph Node this corresponds to */
+        protected Node rdfNode;
+        
+		/** The list of direct successor nodes to this node */
+		protected Set succ = new HashSet();
+		
+		/** The list of direct predecessors nodes */
+		protected Set pred = new HashSet();
+		
+		/** The set of all transitive successor nodes to this node */
+		protected Set succClosed = new HashSet();
+		
+		/** An optional cache of the triples that represent succClosed */
+		protected List succClosedTriples;
+		
+		/** Null for simple nodes. For the lead node in a SCC will be a list
+		 * of all the nodes in the SCC. For non-lead nodes it will be a ref to the lead node. */
+		protected Object aliases;
+
+        /**
+         * Constructor.
+         */
+        public GraphNode(Node node) {
+            rdfNode = node;
+        }
+        
+        /**
+         * Return true if there is a path from this node to the argument node.
+         */
+        public boolean pathTo(GraphNode A) {
+            if (this == A) return true;
+            return succClosed.contains(A);
+        }
+
+        /**
+         * Return true if there is a direct path from this node to the argument node.
+         */
+        public boolean directPathTo(GraphNode A) {
+            if (this == A) return true;
+            return succ.contains(A);
+        }
+		
+		/**
+		 * Return the lead node in the strongly connected component containing this node.
+		 * It will be the node itself if it is a singleton or the lead node. 
+		 */
+		public GraphNode leadNode() {
+			if (aliases != null && aliases instanceof GraphNode) {
+				return ((GraphNode)aliases).leadNode();
+			} else {
+				return this;
+			}
+		}
+		
+		/**
+		 * Visit each predecessor of this node applying the given visitor.
+		 */
+		public void visitPredecessors(Visitor visitor, Object arg1, Object arg2) {
+            visitor.visit(this, arg1, arg2);
+			doVisitPredecessors(visitor, arg1, arg2, new HashSet());
+		}
+		
+		/**
+		 * Visit each predecessor of this node applying the given visitor.
+         * Breadth first.
+		 */
+		private void doVisitPredecessors(Visitor visitor, Object arg1, Object arg2, Set seen) {
+			if (seen.add(this)) {
+                for (Iterator i = pred.iterator(); i.hasNext(); ) {
+                    GraphNode pred = (GraphNode)i.next();
+                    visitor.visit(pred, arg1, arg2);
+                }
+                for (Iterator i = pred.iterator(); i.hasNext(); ) {
+                    GraphNode pred = (GraphNode)i.next();
+                    pred.doVisitPredecessors(visitor, arg1, arg2, seen);
+                }
+			}
+		}
+		
+		/**
+		 * Return an iterator over all the indirect successors of this node.
+         * This does NOT include aliases of successors and is used for graph maintenance.
+		 */
+		public Iterator iteratorOverSuccessors() {
+			return succClosed.iterator();
+		}
+		
+		/**
+		 * Assert a direct link between this node and this given target.
+		 * Does not update the closed successor cache
+		 */
+		public void assertLinkTo(GraphNode target) {
+            if (this == target) return;
+			succ.add(target);
+			target.pred.add(this);
+			clearTripleCache();
+		}
+		
+		/**
+		 * Remove a direct link currently from this node to the given target.
+		 * Does not update the closed successor cache.
+		 */
+		public void retractLinkTo(GraphNode target) {
+            if (this == target) return;
+			succ.remove(target);
+			target.pred.remove(this);
+			clearTripleCache();
+		}
+		
+		/**
+		 * Assert an inferred indirect link from this node to the given traget
+		 */
+		public void assertIndirectLinkTo(GraphNode target) {
+//            if (this == target) return;
+			succClosed.add(target);
+			clearTripleCache();
+		}
+		
+		/**
+		 * Clear the option cache of the closure triples.
+		 */
+		public void clearTripleCache() {
+			succClosedTriples = null;
+		}
+        
+		/**
+		 * Propagate the results of adding a link from this
+		 * node to the target node.
+		 */
+		public void propagateAdd(GraphNode target) {
+			Set sc = target.succClosed;
+			visitPredecessors(new Visitor() {
+				public void visit(GraphNode node, Object arg1, Object target) {
+					Set sc = (Set)arg1;
+					// Add closure
+					node.succClosed.addAll(sc);
+					node.succClosed.add(target);
+					// Scan for redundant links
+					for (Iterator i = node.succ.iterator(); i.hasNext();) {
+						GraphNode s = (GraphNode)i.next();
+						if (sc.contains(s)) {
+							i.remove();
+							s.pred.remove(node);
+						}
+					}
+				}
+		    }, sc, target);
+		}
+        
+		/**
+		 * Propagate the results of creating a new SCC with this
+		 * node as lead.
+		 */
+		public void propagateSCC() {
+			Set visited = new HashSet();
+			visited.add(this);
+			// Scan predecessors not including ourselves
+			doVisitPredecessors(new Visitor() {
+				public void visit(GraphNode node, Object arg1, Object arg2) {
+					Set sc = (Set)arg1;
+					// Add closure
+					node.succClosed.addAll(sc);
+					// Scan for redundant links
+					for (Iterator i = node.succ.iterator(); i.hasNext();) {
+						GraphNode s = (GraphNode)i.next();
+						if (sc.contains(s)) {
+							i.remove();
+							s.pred.remove(node);
+						}
+					}
+				}
+		    }, succClosed, null, visited);
+		}
+		
+        /**
+         * Given a set of SCC nodes make this the lead member of the SCC and
+         * reroute all incoming and outgoing links accordingly.
+         * This eager rewrite is based on the assumption that there are few cycles
+         * so it is better to rewrite once and keep the graph easy to traverse.
+         */
+        public void makeLeadNodeFor(Set members) {
+            // Accumulate all successors
+            Set newSucc = new HashSet();
+            Set newSuccClosed = new HashSet();
+            for (Iterator i = members.iterator(); i.hasNext(); ) {
+                GraphNode n = (GraphNode)i.next();
+                newSucc.addAll(n.succ);
+                newSuccClosed.addAll(n.succClosed);
+            }
+            newSucc.removeAll(members);
+            newSuccClosed.removeAll(members);
+            succ = newSucc;
+            succClosed = newSuccClosed;
+            
+            // Rewrite all direct successors to have us as predecessor
+            for (Iterator i = succ.iterator(); i.hasNext();) {
+                GraphNode n = (GraphNode)i.next();
+                n.pred.removeAll(members);
+                n.pred.add(this);
+            }
+            
+            // Find all predecessor nodes and relink link them to point to us
+            Set done = new HashSet();
+            Set newAliases = new HashSet();
+            for (Iterator i = members.iterator(); i.hasNext(); ) {
+            	GraphNode m = (GraphNode)i.next();
+            	if (m.aliases instanceof Set) {
+            		newAliases.addAll((Set)m.aliases);
+            	} else {
+            		newAliases.add(m);
+            	}
+            }
+            this.aliases = newAliases;
+            for (Iterator i = members.iterator(); i.hasNext(); ) {
+                GraphNode n = (GraphNode)i.next();
+                if (n != this) {
+                    pred.addAll(n.pred);
+                    n.relocateAllRefTo(this, done);
+                    n.aliases = this;
+                }
+            }
+            pred.removeAll(members);
+        }
+		
+        /**
+         * This node is being absorbed into an SCC with the given node as the
+         * new lead node. Trace out all predecessors to this node and relocate
+         * them to point to the new lead node.
+         */
+        private void relocateAllRefTo(GraphNode lead, Set done) {
+            visitPredecessors(new Visitor(){
+                public void visit(GraphNode node, Object done, Object leadIn) {
+                    if (((Set)done).add(node)) {
+                        GraphNode lead = (GraphNode)leadIn;
+                        Set members = (Set)lead.aliases;
+                        int before = node.succ.size();
+                        node.succ.removeAll(members);
+                        node.succClosed.removeAll(members);
+                        node.succClosed.add(lead);
+                        if (node.succ.size() != before) {
+                            node.succ.add(lead);
+                        }
+                    }
+                }
+            }, done, lead);
+        }
+        
+        /**
+         * Return an iterator over all of the triples representing outgoing links
+         * from this node.  
+         * @param closed if set to true it returns triples in the transitive closure,
+         * if set to false it returns triples in the transitive reduction
+         * @param cache the enclosing TransitiveGraphCache
+         */
+        public ExtendedIterator listTriples(boolean closed, TransitiveGraphCache tgc) {
+            if (tgc.cacheTriples) {
+                // TODO implement - for now default to non-cached
+                return WrappedIterator.create(leadNode().triplesForSuccessors(rdfNode, closed, tgc).iterator());
+            } else {
+                return WrappedIterator.create(leadNode().triplesForSuccessors(rdfNode, closed, tgc).iterator());
+            }
+        }
+        
+        /**
+         * Create a list of triples for a given set of successors to this node.
+         */
+        private List triplesForSuccessors(Node base, boolean closed, TransitiveGraphCache tgc) {
+            Set successors = closed ? succClosed : succ;
+            ArrayList result = new ArrayList(successors.size() + 10);
+            result.add(new Triple(base, tgc.closedPredicate, base));    // implicit reflexive case 
+            for (Iterator i = successors.iterator(); i.hasNext(); ) {
+                GraphNode s = (GraphNode)i.next();
+                result.add(new Triple(base, tgc.closedPredicate, s.rdfNode));
+                if (s.aliases instanceof Set) {
+                    for (Iterator j = ((Set)s.aliases).iterator(); j.hasNext(); ) {
+                        result.add(new Triple(base, tgc.closedPredicate, ((GraphNode)j.next()).rdfNode));
+                    }
+                }
+            }
+            if (aliases instanceof Set) {
+                for (Iterator j = ((Set)aliases).iterator(); j.hasNext(); ) {
+                    result.add(new Triple(base, tgc.closedPredicate, ((GraphNode)j.next()).rdfNode));
+                }
+            }
+            return result;
+        }
+        
+        /**
+         * Return an iterator over all of the triples representing incoming links to this node.
+         * Currently no caching enabled.
+         */
+        public ExtendedIterator listPredecessorTriples(boolean closed, TransitiveGraphCache tgc) {
+            return new GraphWalker(leadNode(), rdfNode, closed, tgc.closedPredicate);
+        }
+        
+        /**
+         * Print node label to assist with debug.
+         */
+        public String toString() {
+            return "[" + rdfNode.getLocalName() + "]";
+        }
+        
+        /**
+         * Full dump for debugging
+         */
+        public String dump() {
+        	String result = rdfNode.getLocalName();
+        	if (aliases != null) {
+        		if (aliases instanceof GraphNode) {
+        			result = result + " leader=" + aliases + ", ";
+        		} else {
+        			result = result + " SCC=" + dumpSet((Set)aliases) +", ";
+        		}
+        	}
+        	return result + " succ=" + dumpSet(succ) + ", succClose=" + dumpSet(succClosed) + ", pred=" + dumpSet(pred);
+        }
+        
+        /**
+         * Dump a set to a string for debug.
+         */
+        private String dumpSet(Set s) {
+        	StringBuffer sb = new StringBuffer();
+        	sb.append("{");
+        	boolean started = false;
+        	for (Iterator i = s.iterator(); i.hasNext(); ) {
+        		if (started) {
+        			sb.append(", ");
+        		} else {
+        			started = true;
+        		}
+        		sb.append(i.next().toString());
+        	}
+        	sb.append("}");
+        	return sb.toString();
+        }
+        
+	} // End of GraphNode inner class
+	
+    /**
+     * Inner class used to walk backward links of the graph.
+     * <p> The triples are dynamically allocated which is costly. 
+     */
+    private static class GraphWalker extends NiceIterator implements ExtendedIterator {
+        
+        /** Indicate if this is a shallow or deep walk */
+        boolean isDeep;
+        
+        /** The current node being visited */
+        GraphNode node;
+        
+        /** The root node for reconstructing triples */
+        Node root;
+        
+        /** The predicate for reconstructing triples */
+        Node predicate; 
+        
+        /** Iterator over the predecessors to the current node bein walked */
+        Iterator iterator = null;
+        
+        /** Iterator over the aliases of the current predecessor being output */
+        Iterator aliasIterator = null;
+        
+        /** stack of graph nodes being walked */
+        ArrayList nodeStack = new ArrayList();
+        
+        /** stack of iterators for the higher nodes in the walk */
+        ArrayList iteratorStack = new ArrayList();
+        
+        /** The next value to be returned */
+        Triple next;
+        
+        /** The set of junction nodes already visited */
+        HashSet visited = new HashSet();
+        
+        /** 
+         * Constructor. Creates an iterator which will walk
+         * the graph, returning triples.
+         * @param node the starting node for the walk
+         * @param rdfNode the rdfNode we are try to find predecessors for
+         * @param closed set to true of walking the whole transitive closure
+         * @param predicate the predicate to be walked
+         */
+        GraphWalker(GraphNode node, Node rdfNode, boolean closed, Node predicate) {
+            isDeep = closed;
+            this.node = node;
+            this.root = rdfNode;
+            this.predicate = predicate;
+            this.iterator = node.pred.iterator();
+            if (node.aliases instanceof Set) {
+                aliasIterator = ((Set)node.aliases).iterator();
+            }
+            next = new Triple(root, predicate, root);   // implicit reflexive case 
+        }
+        
+        /** Iterator interface - test if more values available */
+        public boolean hasNext() {
+            return next != null;
+        }
+        
+        /** Iterator interface - get next value */
+        public Object next() {
+            Object toReturn = next;
+            walkOne();
+            return toReturn;
+        }
+                
+        /**
+         * Walk one step
+         */
+        protected void walkOne() {
+            if (aliasIterator != null) {
+                if (aliasIterator.hasNext()) {
+                    GraphNode nextNode = (GraphNode)aliasIterator.next();
+                    next =  new Triple(nextNode.rdfNode, predicate, root);
+                    return;
+                } else {
+                    aliasIterator = null;
+                }
+            }
+            if (iterator.hasNext()) {
+                GraphNode nextNode = (GraphNode)iterator.next();
+                if (visited.add(nextNode)) {
+                    // Set up for depth-first visit next
+                    if (isDeep)
+                        pushStack(nextNode);
+                    next =  new Triple(nextNode.rdfNode, predicate, root);
+                    if (nextNode.aliases instanceof Set) {
+                        aliasIterator = ((Set)nextNode.aliases).iterator();
+                    }
+                } else { 
+                    // Already visited this junction, skip it
+                    walkOne();
+                    return;
+                }
+            } else {
+                // Finished this node
+                if (nodeStack.isEmpty()) {
+                    next = null;
+                    return;
+                }
+                popStack();
+                walkOne();
+            }
+        }
+        
+        /**
+         * Push the current state onto the stack
+         */
+        protected void pushStack(GraphNode next) {
+            nodeStack.add(node);
+            iteratorStack.add(iterator);
+            iterator = next.pred.iterator();
+            node = next;
+        }
+        
+        /**
+         * Pop the prior state back onto the stack
+         */
+        protected void popStack() {
+            int i = nodeStack.size()-1;
+            iterator = (Iterator) iteratorStack.remove(i);
+            node = (GraphNode) nodeStack.remove(i);
+        }
+        
+    } // End of GraphWalker inner class    
     
     /**
      * Constructor - create a new cache to hold the given relation information.
@@ -72,188 +562,147 @@ public class TransitiveGraphCache implements Finder {
     }
     
     /**
+     * Returns the closedPredicate.
+     * @return Node
+     */
+    public Node getClosedPredicate() {
+        return closedPredicate;
+    }
+
+    /**
+     * Returns the directPredicate.
+     * @return Node
+     */
+    public Node getDirectPredicate() {
+        return directPredicate;
+    }
+     
+    /**
      * Register a new relation instance in the cache
      */
-    public void addRelation(Node start, Node end) {
-        clearClosureCache();
-        getGraphNode(start).addDirectLink(getGraphNode(end));
+    public synchronized void addRelation(Triple t) {
+    	originalTriples.add(t);
+    	addRelation(t.getSubject(), t.getObject());
+    }
+    
+    /**
+     * Register a new relation instance in the cache
+     */
+    private void addRelation(Node start, Node end) {
+        if (start.equals(end)) return;      // Reflexive case is built in
+        GraphNode startN = getLead(start);
+        GraphNode endN = getLead(end);
+    	
+    	// Check if this link is already known about
+    	if (startN.pathTo(endN)) {
+    		// yes, so no work to do
+    		return;
+    	}
+
+    	boolean needJoin = endN.pathTo(startN);
+        Set members = null;
+        if (needJoin) {
+        	// Reduce graph to DAG by factoring out SCCs
+//	        startN.assertLinkTo(endN);
+            // First find all the members of the new component
+            members = new HashSet();
+            members.add(endN);
+            startN.visitPredecessors(new Visitor() {
+                public void visit(GraphNode node, Object members, Object endN) {
+                    if (((GraphNode)endN).pathTo(node)) ((Set)members).add(node);
+                } }, members, endN);
+            // Then create the SCC
+            startN.makeLeadNodeFor(members);
+            // Now propagate the closure in the normalized graph
+            startN.propagateSCC();
+        } else {
+	    	// Walk all predecessors of start retracting redundant direct links
+	    	// and adding missing closed links
+	        startN.propagateAdd(endN);
+	        startN.assertLinkTo(endN);
+        }
+        
+    	if (needJoin) {
+    		// Create a new strongly connected component
+    	}
     }
     
     /**
      * Remove an instance of a relation from the cache.
      */
-    public void removeRelation(Node start, Node end) {
-        clearClosureCache();
-        getGraphNode(start).removeLink(getGraphNode(end));
-    }
-    
-    /**
-     * Clear the entire cache contents. 
-     */
-    public void clear() {
-        clearClosureCache();
-        nodeMap.clear();
-    }
-    
-    /**
-     * Clear the closure cache, if any.
-     */
-    private synchronized void clearClosureCache() {
-        if (cacheOn) {
-            // blow away the cache, don't try to do incremental updates
-            if (cacheClosureBackward.size() > 0) cacheClosureBackward.clear();
-            if (cacheClosureForward.size() > 0) cacheClosureForward.clear();
-        }
-    }
-    
-    /**
-     * Switch on/off caching of transitive closures.
-     * Any time a closure is requested the complete result set
-     * will be cached for future reuse.
-     * @param cacheOn set to true to start cache, to false to stop caching
-     */
-    public synchronized void setCaching(boolean cacheOn) {
-        if (this.cacheOn != cacheOn) {
-            this.cacheOn = cacheOn;
-            if (cacheOn) {
-                cacheClosureBackward = new HashMap();
-                cacheClosureForward = new HashMap();
-            } else {
-                cacheClosureBackward = null;
-                cacheClosureBackward = null;
-            }
-        }
-    }
-    
-    /**
-     * Cache all instances of the given predicate which are
-     * present in the given Graph.
-     * @param graph the searchable set of triples to cache
-     * @param predicate the predicate to cache, need not be the registered
-     * predicate due to subProperty declarations
-     * @return returns true if new information has been cached
-     */
-    public boolean cacheAll(Finder graph, Node predicate) {
-        ExtendedIterator it = graph.find(new TriplePattern(null, predicate, null));
-        boolean foundsome = it.hasNext();
-        while (it.hasNext()) {
-            Triple triple = (Triple) it.next();
-            addRelation(triple.getSubject(), triple.getObject());
-        }
-        it.close();
-        return foundsome;
-    }
-    
-    /**
-     * Basic pattern lookup interface.
-     * @param pattern a TriplePattern to be matched against the data
-     * @return a ExtendedIterator over all Triples in the data set
-     *  that match the pattern
-     */
-    public ExtendedIterator find(TriplePattern pattern) {
-        Node s = pattern.getSubject();
-        Node p = pattern.getPredicate();
-        Node o = pattern.getObject();
-        
-        if (p.isVariable() || p.equals(directPredicate) || p.equals(closedPredicate)) {
-            boolean closed = !p.equals(directPredicate);
-            Node pred = closedPredicate; // p.isVariable() ? closedPredicate : p;
-            if (s.isVariable()) {
-                if (o.isVariable()) {
-                    // list all the graph contents
-                    Iterator i = new ListAll(nodeMap.values().iterator(), closed, pred);
-                    return WrappedIterator.create(i);
-                } else {
-                    // list all backwards from o
-                    GraphNode gn_o = (GraphNode)nodeMap.get(o);
-                    if (gn_o == null) return NullIterator.instance;
-                    return new GraphWalker(gn_o, false, closed, pred);
-                }
-            } else {
-                GraphNode gn_s = (GraphNode)nodeMap.get(s);
-                if (gn_s == null) return NullIterator.instance;
-                if (o.isVariable()) {
-                    // list forward from s
-                    return new GraphWalker(gn_s, true, closed, pred);
-                } else {
-                    // Singleton test
-                    GraphNode gn_o = (GraphNode)nodeMap.get(o);
-                    if (gn_o == null) return NullIterator.instance;
-                    if (gn_s.linksTo(gn_o)) {
-                        return new SingletonIterator(new Triple(s, pred, o));
-                    } else {
-                        return NullIterator.instance;
-                    }
-                }
-            }
-        } else {
-            // No matching triples in this cache
-            return NullIterator.instance;
-        }
+    public void removeRelation(Triple t) {
+    	Node start = t.getSubject();
+    	Node end = t.getObject();
+    	if (start == end) {
+    		return;		// Reflexive case is built in
+    	}
+    	GraphNode startN = getLead(start);
+    	GraphNode endN = getLead(end);
+    	if (startN != endN && !(startN.directPathTo(endN))) {
+    		// indirect link can't be removed by itself
+    		return;
+    	}
+    	// This is a remove of a direct link possibly within an SCC
+    	// Delay as long as possible and do deletes in a batch
+    	if (deletesPending == null) {
+    		deletesPending = new HashSet();
+    	}
+    	deletesPending.add(t);
     }
 
     /**
-     * Return true if the given pattern occurs somewhere in the find sequence.
+     * Process outstanding delete actions
      */
-    public boolean contains(TriplePattern pattern) {
-        ClosableIterator it = find(pattern);
-        boolean result = it.hasNext();
-        it.close();
-        return result;
+    private void processDeletes() {
+    	// The kernel is the set of start nodes of deleted links
+    	Set kernel = new HashSet();
+    	for (Iterator i = deletesPending.iterator(); i.hasNext(); ) {
+    		Triple t = (Triple)i.next();
+    		GraphNode start = (GraphNode)nodeMap.get(t.getSubject());
+    		kernel.add(start);
+    	}
+    	
+    	// The predecessor set of kernel
+    	Set pKernel = new HashSet();
+    	pKernel.addAll(kernel);
+    	for (Iterator i = nodeMap.values().iterator(); i.hasNext(); ) {
+    		GraphNode n = (GraphNode)i.next();
+    		for (Iterator j = kernel.iterator(); j.hasNext();) {
+    			GraphNode target = (GraphNode)j.next();
+    			if (n.pathTo(target)) {
+    				pKernel.add(n); break;
+    			}
+    		}
+    	}
+    	
+    	// Cut the pKernel away from the finge of nodes that it connects to
+    	for (Iterator i = pKernel.iterator(); i.hasNext(); ) {
+    		GraphNode n = (GraphNode)i.next();
+    		for (Iterator j = n.succ.iterator(); j.hasNext(); ) {
+    			GraphNode fringe = (GraphNode)j.next();
+    			if (! pKernel.contains(fringe)) {
+    				fringe.pred.remove(n);
+    			}
+    		}
+    		n.succ.clear();
+    		n.succClosed.clear();
+    		n.pred.clear();
+    	}
+    	
+    	// Delete the triples
+    	originalTriples.removeAll(deletesPending);
+    	deletesPending.clear();
+    	
+    	// Reinsert the remaining links
+    	for (Iterator i = originalTriples.iterator(); i.hasNext(); ) {
+    		Triple t = (Triple)i.next();
+    		GraphNode n = (GraphNode)nodeMap.get(t.getSubject());
+    		if (pKernel.contains(n)) {
+    			addRelation(t);
+    		}
+    	}
     }
     
-    /**
-     * Return an iterator over all registered property nodes
-     */
-    public ExtendedIterator listAllProperties() {
-        return WrappedIterator.create(nodeMap.keySet().iterator());
-    }
-   
-    /**
-     * Return true if the given Node is registered as a property
-     */
-    public boolean isProperty(Node node) {
-        return nodeMap.keySet().contains(node);
-    }
-    
-    /**
-     * Create a deep copy of the cache contents.
-     * Works by creating a completely new cache and just adding in the
-     * direct links.
-     */
-    public TransitiveGraphCache deepCopy() {
-        TransitiveGraphCache copy = new TransitiveGraphCache(directPredicate, closedPredicate);
-        Iterator i = find(new TriplePattern(null, directPredicate, null));
-        while (i.hasNext()) {
-            Triple t = (Triple)i.next();
-            copy.addRelation(t.getSubject(), t.getObject());
-        }
-        return copy;
-    }
-    
-    /**
-     * Return an iterator over all the forward or backward links to 
-     * a given node. May be cached.
-     */
-    private synchronized ExtendedIterator walk(GraphNode node, boolean forward, boolean closed, Node predicate) {
-        if (cacheOn && closed) {
-            // Check cache
-            Map cache = forward ? cacheClosureForward : cacheClosureBackward;
-            List closure = (List) cache.get(node);
-            if (closure == null) {
-                Iterator it = new GraphWalker(node, forward, closed, predicate);
-                closure = new ArrayList();
-                while (it.hasNext()) {
-                    closure.add(it.next());
-                }
-                cache.put(node, closure);
-            }
-            return WrappedIterator.create(closure.iterator());
-        } else {
-            return new GraphWalker(node, forward, closed, predicate);
-        }
-    }
-
     /**
      * Extended find interface used in situations where the implementator
      * may or may not be able to answer the complete query. 
@@ -280,400 +729,188 @@ public class TransitiveGraphCache implements Finder {
         }
         
     }
+    
+    /**
+     * Return true if the given pattern occurs somewhere in the find sequence.
+     */
+    public boolean contains(TriplePattern pattern) {
+        ClosableIterator it = find(pattern);
+        boolean result = it.hasNext();
+        it.close();
+        return result;
+    }
+    /**
+     * Return an iterator over all registered subject nodes
+     */
+    public ExtendedIterator listAllSubjects() {
+        return WrappedIterator.create(nodeMap.keySet().iterator());
+    }
    
     /**
-     * Returns the closedPredicate.
-     * @return Node
+     * Return true if the given Node is registered as a subject node
      */
-    public Node getClosedPredicate() {
-        return closedPredicate;
-    }
-
-    /**
-     * Returns the directPredicate.
-     * @return Node
-     */
-    public Node getDirectPredicate() {
-        return directPredicate;
+    public boolean isSubject(Node node) {
+        return nodeMap.keySet().contains(node);
     }
     
     /**
-     * Return the GraphNode corresponding to the given RDF node, creating
-     * it if necessary.
+     * Cache all instances of the given predicate which are
+     * present in the given Graph.
+     * @param graph the searchable set of triples to cache
+     * @param predicate the predicate to cache, need not be the registered
+     * predicate due to subProperty declarations
+     * @return returns true if new information has been cached
      */
-    protected GraphNode getGraphNode(Node n) {
-        GraphNode gn = (GraphNode)nodeMap.get(n);
+    public boolean cacheAll(Finder graph, Node predicate) {
+        ExtendedIterator it = graph.find(new TriplePattern(null, predicate, null));
+        boolean foundsome = it.hasNext();
+        while (it.hasNext()) {
+            Triple triple = (Triple) it.next();
+            addRelation(triple);
+        }
+        it.close();
+        return foundsome;
+    }
+    
+    /**
+     * Basic pattern lookup interface.
+     * @param pattern a TriplePattern to be matched against the data
+     * @return a ExtendedIterator over all Triples in the data set
+     *  that match the pattern
+     */
+    public ExtendedIterator find(TriplePattern pattern) {
+    	if (deletesPending != null && deletesPending.size() > 0) {
+    		processDeletes();
+    	}
+
+    	Node s = pattern.getSubject();
+        Node p = pattern.getPredicate();
+        Node o = pattern.getObject();
+        
+        if (p.isVariable() || p.equals(directPredicate) || p.equals(closedPredicate)) {
+            boolean closed = !p.equals(directPredicate);
+            Node pred = closedPredicate; // p.isVariable() ? closedPredicate : p;
+            if (s.isVariable()) {
+                if (o.isVariable()) {
+                    // list all the graph contents
+                    ExtendedIterator result = null;
+                    for (Iterator i = nodeMap.values().iterator(); i.hasNext(); ) {
+                        ExtendedIterator nexti = ((GraphNode)i.next()).listTriples(closed, this);
+                        if (result == null) {
+                            result = nexti;
+                        } else {
+                            result = result.andThen(nexti);
+                        }
+                    }
+                    if (result == null) {
+                        return NullIterator.instance;
+                    }
+                    return result;
+                } else {
+                    // list all backwards from o
+                    GraphNode gn_o = (GraphNode)nodeMap.get(o);
+                    if (gn_o == null) return NullIterator.instance;
+                    return gn_o.listPredecessorTriples(closed, this);
+                }
+            } else {
+                GraphNode gn_s = (GraphNode)nodeMap.get(s);
+                if (gn_s == null) return NullIterator.instance;
+                if (o.isVariable()) {
+                    // list forward from s
+                    return gn_s.listTriples(closed, this);
+                } else {
+                    // Singleton test
+                    GraphNode gn_o = (GraphNode)nodeMap.get(o);
+                    gn_s = gn_s.leadNode();
+                    if (gn_o == null) return NullIterator.instance;
+                    gn_o = gn_o.leadNode();
+                    if ( closed ? gn_s.pathTo(gn_o) : gn_s.directPathTo(gn_o) ) {
+                        return new SingletonIterator(new Triple(s, pred, o));
+                    } else {
+                        return NullIterator.instance;
+                    }
+                }
+            }
+        } else {
+            // No matching triples in this cache
+            return NullIterator.instance;
+        }
+    }
+    
+    /**
+     * Create a deep copy of the cache contents.
+     * Works by creating a completely new cache and just adding in the
+     * direct links.
+     */
+    public TransitiveGraphCache deepCopy() {
+        TransitiveGraphCache copy = new TransitiveGraphCache(directPredicate, closedPredicate);
+        Iterator i = find(new TriplePattern(null, directPredicate, null));
+        while (i.hasNext()) {
+            Triple t = (Triple)i.next();
+            copy.addRelation(t.getSubject(), t.getObject());
+        }
+        return copy;
+    }
+    
+    /**
+     * Clear the entire cache contents. 
+     */
+    public void clear() {
+        nodeMap.clear();
+    }
+	
+    /**
+     * Enable/disabling caching of the Triples representing the relationships. If this is
+     * enabled then a number of triples quadratic in the graph depth will be stored. If it
+     * is disabled then all queries will turn over storage dynamically creating the result triples.
+     */
+    public void setCaching(boolean enable) {
+    	if (! enable && cacheTriples) {
+    		// Switching off so clear the existing cache
+    		for (Iterator i = nodeMap.values().iterator(); i.hasNext(); ) {
+    			((GraphNode)i.next()).clearTripleCache();
+    		}
+    	}
+    	cacheTriples = enable;
+    }
+    
+    /**
+     * Dump a description of the cache to a string for debug.
+     */
+    public String dump() {
+    	StringBuffer sb = new StringBuffer();
+    	for (Iterator i = nodeMap.values().iterator(); i.hasNext(); ) {
+    		GraphNode n = (GraphNode)i.next();
+    		sb.append(n.dump());
+    		sb.append("\n");
+    	}
+    	return sb.toString();
+    }
+    
+//  ----------------------------------------------------------------------
+//  Internal utility methods    
+//  ----------------------------------------------------------------------
+    
+    /**
+     * Return the lead node of the strongly connected component corresponding
+     * to the given RDF node. 
+     */
+    private GraphNode getLead(Node n) {
+    	GraphNode gn = (GraphNode)nodeMap.get(n);
         if (gn == null) {
             gn = new GraphNode(n);
             nodeMap.put(n, gn);
-            // Add reflexive version
-            gn.addDirectLink(gn);
-        }
-        return gn;
-    }
-    
-    /**
-     * Print a dump of the cache
-     */
-    protected void printAll() {
-        for (Iterator i = nodeMap.values().iterator(); i.hasNext(); ) {
-            GraphNode gn = (GraphNode)i.next();
-            System.out.println(gn.longString());
+            return gn;
+        } else {
+            return gn.leadNode();
         }
     }
     
-    /**
-     * Inner class. Implements an iterator over all stored relations.
-     */
-    private static class ListAll implements Iterator {
-        
-        /** set to true to list the close relation rather then just the direct version */
-        boolean closed;
-        
-        /** an iterator over all the graph nodes */
-        Iterator nodes;
-        
-        /** the predicate used to report the relations */
-        Node predicate;
-        
-        /** iterator which is walking the relation for the current node */
-        Iterator listRelated;
-        
-        /** the current root node */
-        GraphNode current;
-        
-        /** The next triple to return */
-        Triple next;
-        
-        /** 
-         * constructor 
-         * @param closed set to true to list the close relation rather
-         * then just the direct version
-         * @param nodes an iterator over all the graph nodes
-         * @param the predicate used to report the relations
-         */
-        ListAll(Iterator nodes, boolean closed, Node predicate) {
-            this.nodes = nodes;
-            this.closed = closed;
-            this.predicate = predicate;
-            listRelated = null;
-            walkOne();
-        }
-        
-        /** Iterator interface - test if more values available */
-        public boolean hasNext() {
-            return next != null;
-        }
-        
-        /** Iterator interface - get next value */
-        public Object next() {
-            Object toReturn = next;
-            walkOne();
-            return toReturn;
-        }
-        
-        /** Iterator interface - remove the current value - blocked */
-        public void remove() {
-            throw new UnsupportedOperationException("GraphCache does not yet implement remove operation");
-        }
-        
-        /** Step the iterator forward one */
-        private void walkOne() {
-            if (listRelated != null && listRelated.hasNext()) {
-                next = (Triple) listRelated.next();
-            } else {
-                if (nodes.hasNext()) {
-                    current = (GraphNode) nodes.next();
-                    listRelated = new GraphWalker(current, true, closed, predicate);
-                    walkOne();
-                } else {
-                    // end
-                    next = null;
-                    return;
-                }
-            }
-        }   
-    }
-    
-    /**
-     * Inner class. Instances of this are used to represent
-     * nodes in the graph. They are bidirectinally linked becase
-     * we want to be able to lookup the inverse relationship as well.
-     * Links are only established to represent the minimal direct relationship,
-     * the closure is determined by walking the graph on request.
-     * <p>I justify the direct accesses to GraphNode fields on the grounds
-     * that this is a private inner class ...</p>
-     */
-    private static class GraphNode {
-        /** Pointer to the RDF Node this graph node describes */
-        Node node;
-        
-        /** forward links to successor nodes */
-        List successors;
-        
-        /** backward links to predecessors */
-        List predecessors;        
-        
-        /** Construct a Graph node to represent node */
-        GraphNode(Node n) {
-            node = n;
-            successors = new ArrayList(2);
-            predecessors = new ArrayList(2);
-        }
-        
-        /** Add a new forward link pointing to the given graph node */
-        void addLink(GraphNode n) {
-            if (!successors.contains(n)) {
-                successors.add(n);
-                n.predecessors.add(this);
-            }
-        }
-        
-        /** Remove a link, if any, from this node to the given graph node */
-        void removeLink(GraphNode n) {
-            successors.remove(n);
-            n.predecessors.remove(this);
-        }
-               
-        /** Add a new forward link retaining only direct links */
-        void addDirectLink(GraphNode n) {
-            if (this == n) {
-                // Reflexive case 
-                addLink(n);
-                return;
-            }
-            if (linksTo(n)) {
-                // Link is already derivable from current graph
-                return;
-            }
-            // Check current successors to see if any would now be indirect
-            Collection redundant = accessible(n, successors, this);
-            for (Iterator it = redundant.iterator(); it.hasNext(); ) {
-                GraphNode suc = (GraphNode)it.next();
-                successors.remove(suc);
-                suc.predecessors.remove(this);
-            }
-            addLink(n);
-        }
-        
-        /** Check if the given node is on the forward link path */
-        boolean linksTo(GraphNode n) {
-            return linksToInternal(n, new HashSet());
-        }
-        
-        /** internal version of linksTo */
-        private boolean linksToInternal(GraphNode n, HashSet visited) {
-            for (Iterator it = successors.iterator(); it.hasNext(); ) {
-                GraphNode suc = (GraphNode)it.next();
-                // Check for duplicate visits to junction nodes
-                if (suc == n) {
-                    return true;
-                }
-                if ( ! visited.add(suc) ) continue;
-                if (suc.linksToInternal(n, visited)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-        
-        /**
-         * Check if any of the given list of nodes is accessible from
-         * start without going through block. Returns a collection
-         * of accessible nodes.
-         */
-        Collection accessible(GraphNode start, List targets, GraphNode block) {
-            List found = new ArrayList();
-            Set targetSet = new HashSet(targets);
-            doAccessible(start, targetSet, block, found, new HashSet());
-            return found;
-        }
-        
-        /**
-         * Internal implementation of accessible.
-         */
-        void doAccessible(GraphNode start, Collection targets, GraphNode block, List found, Set visited) {
-            visited.add(start);
-            for (Iterator it = start.successors.iterator(); it.hasNext(); ) {
-                GraphNode suc = (GraphNode)it.next();
-                if ( ! visited.add(suc) ) continue;
-                if (suc == block) return;
-                if (targets.contains(suc)) {
-                    found.add(suc);
-                }
-                doAccessible(suc, targets, block, found, visited);
-            }
-        }
-        
-        /** Printable representation */
-        public String toString() {
-            return node.toString();
-        }
-        
-        /** Longer printable representation */
-        public String longString() {
-            StringBuffer display = new StringBuffer();
-            display.append(node.toString());
-            display.append(" [");
-            for (Iterator i = successors.iterator(); i.hasNext(); ) {
-                display.append(i.next().toString() + " ");
-            }
-            display.append("]");
-            return display.toString();
-        }
-        
-    } // End of GraphNode inner class
-    
-    /**
-     * Inner class used to walk to forward or backward links 
-     * of the graph.
-     * <p> The triples are dynamically allocated which is costly. 
-     * <p>I justify the direct accesses to GraphNode fields on the grounds
-     * that this is a private inner class ...</p>
-     */
-    private static class GraphWalker extends NiceIterator implements ExtendedIterator {
-        /** Indicate if this is a forward or backward walk */
-        boolean isForward;
-        
-        /** Indicate if this is a shallow or deep walk */
-        boolean isDeep;
-        
-        /** The current node being visited */
-        GraphNode node;
-        
-        /** The root node for reconstructing triples */
-        Node root;
-        
-        /** The predicate for reconstructing triples */
-        Node predicate; 
-        
-        /** The current successor to this node being checked */
-        int index;
-        
-        /** stack of graph nodes being walked */
-        ArrayList nodeStack = new ArrayList();
-        
-        /** stack of link index for the corresponding node */
-        int[] indexStack;
-        
-        /** The next value to be returned */
-        Triple next;
-        
-        /** The set of junction nodes already visited */
-        HashSet visited = new HashSet();
-        
-        /** 
-         * Constructor. Creates an iterator which will walk
-         * the graph, returning triples.
-         * @param node the starting node for the walk
-         * @param forward set to true if walking the forward links
-         * @param closed set to true of walking the whole transitive closure
-         * @param predicate the predicate to be walked
-         */
-        GraphWalker(GraphNode node, boolean forward, boolean closed, Node predicate) {
-            isForward = forward;
-            isDeep = closed;
-            indexStack = new int[20];
-            this.node = node;
-            this.root = node.node;
-            this.predicate = predicate;
-            index = -1;
-            walkOne();
-        }
-        
-        /** Iterator interface - test if more values available */
-        public boolean hasNext() {
-            return next != null;
-        }
-        
-        /** Iterator interface - get next value */
-        public Object next() {
-            Object toReturn = next;
-            walkOne();
-            return toReturn;
-        }
-                
-        /**
-         * Walk one step
-         */
-        protected void walkOne() {
-            index++;
-            if (index >= (isForward ? node.successors.size() : node.predecessors.size())) {
-                // Finished this node
-                if (nodeStack.isEmpty()) {
-                    next = null;
-                    return;
-                }
-                popStack();
-                walkOne();
-            } else {
-                GraphNode nextNode = (GraphNode) (isForward ? node.successors.get(index) 
-                                                            : node.predecessors.get(index));
-                if (visited.contains(nextNode)) {
-                    // Already visited this junction, skip it
-                    walkOne();
-                    return;
-                } else {
-                    visited.add(nextNode);
-                }
-                // Set up for depth-first visit next
-                if (isDeep) pushStack(nextNode);
-                next = isForward ? new Triple(root, predicate, nextNode.node)
-                                 : new Triple(nextNode.node, predicate, root);
-            }
-        }
-        
-        /**
-         * Push the current state onto the stack
-         */
-        protected void pushStack(GraphNode next) {
-            nodeStack.add(node);
-            node = next;
-            int len = indexStack.length;
-            if (nodeStack.size() > len) {
-                // Grow index stack
-                int[] newStack = new int[len + len/2];
-                for (int i = 0; i < len; i++) {
-                    newStack[i] = indexStack[i];
-                }
-                indexStack = newStack;
-            }
-            indexStack[nodeStack.size()-1] = index;
-            index = -1;
-        }
-        
-        /**
-         * Pop the prior state back onto the stack
-         */
-        protected void popStack() {
-            int i = nodeStack.size()-1;
-            index = indexStack[i];
-            node = (GraphNode) nodeStack.get(i);
-            nodeStack.remove(i);
-        }
-        
-    } // End of GraphWalker inner class
-
-    /**
-     * Temporary testing method.
-     * Prints all the matches to a given find
-     */
-    private static void listFind(TransitiveGraphCache cache, Node s, Node p, Node o) {
-        System.out.print("Checking triple pattern: ");
-        System.out.print(" " + s);
-        System.out.print(" " + p);
-        System.out.print(" " + o + "\n");
-
-        Iterator i = cache.find(new TriplePattern(s, p, o));
-        while (i.hasNext()) {
-            System.out.println("  - " + i.next());
-        }
-    }    
- 
 }
 
+
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -701,4 +938,3 @@ public class TransitiveGraphCache implements Finder {
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-

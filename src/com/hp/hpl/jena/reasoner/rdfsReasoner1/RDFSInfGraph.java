@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSInfGraph.java,v 1.17 2003-12-08 10:48:26 andy_seaborne Exp $
+ * $Id: RDFSInfGraph.java,v 1.18 2004-11-29 14:35:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -37,7 +37,7 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-12-08 10:48:26 $
+ * @version $Revision: 1.18 $ on $Date: 2004-11-29 14:35:50 $
  */
 public class RDFSInfGraph extends BaseInfGraph {
 
@@ -261,6 +261,7 @@ public class RDFSInfGraph extends BaseInfGraph {
            ExtendedIterator it = tripleCache.findWithContinuation(new TriplePattern(null, null, null), fdata);
            HashSet properties = new HashSet();
            String memberPrefix = RDF.getURI() + "_";
+           Node sP = RDF.Property.getNode();
            while (it.hasNext()) {
                Triple triple = (Triple)it.next();
                Node prop = triple.getPredicate();
@@ -269,11 +270,11 @@ public class RDFSInfGraph extends BaseInfGraph {
                }
                if (properties.add(prop)) {
                    // Unseen property - add the subPropertyOf statement
-                   subPropertyCache.addRelation(prop, prop);
+                   subPropertyCache.addRelation(new Triple(prop, sP, prop));
                    if (prop.getURI().startsWith(memberPrefix)) {
                        // A container property
                        axioms.getGraph().add(new Triple(prop, RDF.type.getNode(), RDFS.ContainerMembershipProperty.getNode()));
-                       subPropertyCache.addRelation(prop, RDFS.member.getNode());
+                       subPropertyCache.addRelation( new Triple(prop, sP, RDFS.member.getNode()));
                    }
                }
            }
@@ -335,7 +336,7 @@ public class RDFSInfGraph extends BaseInfGraph {
      * not triples.
      */
     public ExtendedIterator findProperties() {
-        return subPropertyCache.listAllProperties();
+        return subPropertyCache.listAllSubjects();
     }
     
     /**
@@ -343,7 +344,7 @@ public class RDFSInfGraph extends BaseInfGraph {
      * to list check for a specific preregistered property.
      */
     public boolean isProperty(Node prop) {
-        return subPropertyCache.isProperty(prop);
+        return subPropertyCache.isSubject(prop);
     }
     
     /**

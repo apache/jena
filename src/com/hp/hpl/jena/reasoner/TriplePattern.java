@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TriplePattern.java,v 1.21 2004-11-19 14:38:14 chris-dollin Exp $
+ * $Id: TriplePattern.java,v 1.22 2004-11-29 14:35:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.*;
@@ -34,7 +33,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2004-11-19 14:38:14 $
+ * @version $Revision: 1.22 $ on $Date: 2004-11-29 14:35:50 $
  */
 public class TriplePattern implements ClauseEntry {
 
