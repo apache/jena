@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP [See end of
- * file] $Id: XMLMemTest.java,v 1.1 2004-03-16 17:28:10 jeremy_carroll Exp $
+ * file] $Id: XMLMemTest.java,v 1.2 2004-12-23 16:05:23 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.rdf.arp.test;
 
@@ -13,6 +13,8 @@ import java.net.*;
 /**
  * The purpose of this class is to be a minimal example which exercises the
  * memory leak problems reported in "Streaming OWL DL" by Jeremy Carroll.
+ * 
+ * I don't believe it is though ...
  * 
  * @author jjc
  * 

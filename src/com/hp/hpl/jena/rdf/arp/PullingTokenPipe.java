@@ -23,7 +23,10 @@ class PullingTokenPipe extends TokenPipe {
 	PullingTokenPipe(XMLHandler arp) {
 		this.arp = arp;
 		pipe = createPipe();
-		lastMade = this;
+		if (Token.COUNT)
+		  lastMade = this;
+		else
+			lastMade = null;
 	}
 
 	void putNextToken(Token t) {

@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Token.java,v 1.5 2004-12-23 15:26:51 jeremy_carroll Exp $
+ * * $Id: Token.java,v 1.6 2004-12-23 16:05:23 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -36,6 +36,11 @@ import java.util.*;
 /**
  * This class is not part of the API. It is public for test purposes only.
  * Token's are passed from the XML parser to the RDF parser.
+ * An important part of the contract is that you must not keep a reference
+ * to any token for too long, since each token has a reference to the next
+ * token, and hence to the rest of the file.
+ * If it is necessary to keep a token, clone it, and set the next field to
+ * null.
  * 
  */
 
@@ -69,14 +74,25 @@ public class Token implements RDFParserConstants, Cloneable {
 	static private boolean GIVEUP = true;
 
 	/**
-	 * The maximum number of tokens ever alive. Set to 0 before testing. Only
-	 * set when COUNTTEST is true.
+	 * The maximum number of tokens ever alive. Call
+	 * {@link #reinitHighTide} before testing. Only
+	 * set when {@link #COUNTTEST} is true.
 	 */
 	static public int highTide;
 
 	static private int dead = 0;
 
 	static private int alive = 0;
+	
+	static public void reinitHighTide() {
+		PullingTokenPipe.lastMade = null;
+		Runtime.getRuntime().gc();
+		Runtime.getRuntime().gc();
+		
+		highTide = 0;
+		dead=0;
+		alive=0;
+	}
 
 	static private Map countMap = new HashMap();
 
@@ -122,6 +138,8 @@ public class Token implements RDFParserConstants, Cloneable {
 			Runtime.getRuntime().gc();
 			if (COUNTTEST) {
 				int inUse = alive - dead;
+
+		//		System.err.println(dead + "/" + alive + " ("+inUse+")");
 				if (highTide < inUse)
 					highTide = inUse;
 			} else {
