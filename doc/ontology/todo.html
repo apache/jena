@@ -26,11 +26,41 @@
     </h2>
     <p>
     The ontology API for Jena 2 is a work in progress.  This page lists the primary known issues
-    and limitations for the current release (Jena 2, preview 1 aka J2P1).
+    and limitations for the current release (Jena 2, preview 1 aka J2P1). Please review these
+    issues before reporting bugs.  Bug reports should be sent to the
+    <a href="http://groups.yahoo.com/group/jena-dev/">jena-dev</a> support list,
+    hosted by YahooGroups
     </p>
-    <p>
-    <i>TODO</i>
-    </p>
+    <h3>Open issues (J2P2)</h3>
+    <ol>
+    <li>Inference<br />This release includes only limited inferencing, approximately of the same power
+    of the legacy DAML API.  However, this is achieved using the new inferencing plug-in machinery. To get
+    sub-class and sub-property entailments from DAML documents, you must import the daml+owl base
+    ontology so that the appropriate aliases for subClassOf and subPropertyOf can be determined.
+    </li>
+    <li>
+    Persistence<br />This release does not include any persistent models, so it is not possible to
+    use ontology models with persistent stores.
+    </li>
+    <li>
+    Legacy DAML API<br />We plan to port the DAML API from Jena 1 to Jena 2, though it will be adapted
+    to use the new ontology model behind the scenes. This will make it easier for Jena 1 users to
+    migrate to Jena 2.  While the DAML API will be supported, users are recommended to gradually
+    migrate to the new API, and to begin new projects using only the new API.  The port of the Jena 1
+    DAML API is not part of this release.
+    </li>
+    <li>
+    OWL conformance<br />We are planning to include a conformance checker that will ascertain which
+    of the three OWL species (Lite, DL and Full) an ontology is using, and to assist users to remain
+    at their chosen language level. This conformance support is not part of this release.
+    </li>
+    </ol>
+    <p />
+    <h3>Closed issues from previous releases</h3>
+    <p>None</p>
+    <!--ol>
+    <li></li>
+    </ol-->
 
     <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#a0a0ff">
       <tr valign="top">
