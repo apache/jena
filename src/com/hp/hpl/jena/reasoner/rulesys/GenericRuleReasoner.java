@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.15 2003-08-27 13:09:40 andy_seaborne Exp $
+ * $Id: GenericRuleReasoner.java,v 1.16 2004-06-14 10:31:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-08-27 13:09:40 $
+ * @version $Revision: 1.16 $ on $Date: 2004-06-14 10:31:01 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -130,6 +130,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     
     /**
      * Set (or change) the rule set that this reasoner should execute.
+     * This will not affect inference models already created from this reasoner.
      * @param rules a list of Rule objects
      */
     public void setRules(List rules) {
