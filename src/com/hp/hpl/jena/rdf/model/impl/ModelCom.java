@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.46 $' Date='$Date: 2003-06-13 15:28:36 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.47 $' Date='$Date: 2003-06-16 09:16:58 $'
  */
 
 public class ModelCom 
@@ -1019,7 +1019,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
             if (iter.hasNext()) {
                 return iter.nextStatement();
             } else {
-                throw new RDFException(RDFException.PROPERTYNOTFOUND);
+                throw new JenaPropertyNotFoundException( p );
             }
         } finally {
             iter.close();

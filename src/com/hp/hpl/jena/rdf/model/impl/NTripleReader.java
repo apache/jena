@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleReader.java,v 1.6 2003-06-13 14:23:47 chris-dollin Exp $
+ * $Id: NTripleReader.java,v 1.7 2003-06-16 09:16:58 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -42,7 +42,7 @@ import java.util.*;
 /** N-Triple Reader
  *
  * @author  Brian McBride, Jeremy Carroll, Dave Banks
- * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-06-13 14:23:47 $
+ * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-06-16 09:16:58 $
  */
 public class NTripleReader extends Object implements RDFReader {
     static final Logger log = Logger.getLogger(NTripleReader.class);
@@ -81,7 +81,7 @@ public class NTripleReader extends Object implements RDFReader {
         in = new IStream(reader);
         readRDF();
         if (errCount != 0) {
-            throw new RDFException(RDFException.SYNTAXERROR);
+            throw new JenaSyntaxError( "unknown" );
         }
     }
 
@@ -95,7 +95,7 @@ public class NTripleReader extends Object implements RDFReader {
             throw new JenaException(e);
         } finally {
             if (errCount != 0) {
-                throw new RDFException(RDFException.SYNTAXERROR);
+                throw new JenaSyntaxError( "unknown" );
             }
         }
     }
@@ -310,8 +310,7 @@ public class NTripleReader extends Object implements RDFReader {
     }
     private void deprecated(String s) {
         errorHandler.warning(
-            new RDFException(
-                RDFException.SYNTAXERROR,
+            new JenaSyntaxError(
                 syntaxErrorMessage(
                     "Deprecation warning",
                     s,
@@ -321,8 +320,7 @@ public class NTripleReader extends Object implements RDFReader {
 
     private void syntaxError(String s) {
         errorHandler.error(
-            new RDFException(
-                RDFException.SYNTAXERROR,
+            new JenaSyntaxError(
                 syntaxErrorMessage(
                     "Syntax error",
                     s,

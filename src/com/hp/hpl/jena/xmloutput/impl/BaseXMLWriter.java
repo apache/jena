@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.16 2003-06-13 15:30:43 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.17 2003-06-16 09:16:59 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2003-06-13 15:30:43 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2003-06-16 09:16:59 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -592,7 +592,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 					showXmlDeclaration = Boolean.FALSE;
 				else
 					// Also overloading the error condition.
-					throw new RDFException(RDFException.INVALIDBOOLEANFORMAT);
+					throw new JenaBadBooleanException( propValueStr );
 			}
 			return oldValue;
 		} else if (propName.equalsIgnoreCase("xmlbase")) {

@@ -9,14 +9,14 @@ package com.hp.hpl.jena.n3;
  *  N3 to RDF
  *   
  * @author		Andy Seaborne
- * @version 	$Id: N3Exception.java,v 1.2 2003-03-06 09:45:42 andy_seaborne Exp $
+ * @version 	$Id: N3Exception.java,v 1.3 2003-06-16 09:16:41 chris-dollin Exp $
  */
 
-import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.shared.*;
 
-public class N3Exception extends RDFException
+public class N3Exception extends JenaSyntaxError
 {
-    public N3Exception(String message) { super(RDFException.SYNTAXERROR, message) ; }
+    public N3Exception(String message) { super( message ) ; }
     
     public String getMessage() { return message ; }
 }
