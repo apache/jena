@@ -16,7 +16,7 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.11 2003-06-17 14:39:31 chris-dollin Exp $
+ * @version 	$Id: N3toRDF.java,v 1.12 2003-06-17 15:21:50 chris-dollin Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -203,7 +203,7 @@ public class N3toRDF implements N3ParserEventHandler
 		}
 		catch (JenaException rdfEx)
 		{
-			error("Line "+line+": RDFException: " + rdfEx);
+			error("Line "+line+": JenaException: " + rdfEx);
 		}
 	}
 	

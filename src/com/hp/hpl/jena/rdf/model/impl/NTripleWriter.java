@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleWriter.java,v 1.11 2003-06-17 14:53:35 chris-dollin Exp $
+ * $Id: NTripleWriter.java,v 1.12 2003-06-17 15:21:51 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -43,7 +43,7 @@ import java.io.UnsupportedEncodingException;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-06-17 14:53:35 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-06-17 15:21:51 $'
  */
 public class NTripleWriter extends Object implements RDFWriter {
 
@@ -104,7 +104,7 @@ public class NTripleWriter extends Object implements RDFWriter {
     /** Set a property to control the writer's behaviour.
      *
      * <p>This writer currently recognises no properties.  Invoking this
-     * method always causes an <CODE>UNKNOWNPROPERTY RDFException</CODE>
+     * method always causes an <CODE>JenaUnknownPropertyException</CODE>
      * to be raised.</p>?
      * @param propName The name of the property to be set
      * @param propValue The new value of the property

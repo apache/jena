@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Mar-2003
  * Filename           $RCSfile: OntologyException.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:38 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-06-17 15:21:50 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -21,7 +21,7 @@
 ///////////////
 package com.hp.hpl.jena.ontology;
 
-import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.shared.*;
 
 
 // Imports
@@ -34,10 +34,10 @@ import com.hp.hpl.jena.rdf.model.RDFException;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyException.java,v 1.1 2003-03-12 17:16:38 ian_dickinson Exp $
+ * @version CVS $Id: OntologyException.java,v 1.2 2003-06-17 15:21:50 chris-dollin Exp $
  */
 public class OntologyException
-    extends RDFException 
+    extends JenaException 
 {
     // Constants
     //////////////////////////////////

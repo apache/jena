@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-21 15:30:44 $
+ * Last modified on   $Date: 2003-06-17 15:21:50 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.16 2003-05-21 15:30:44 chris-dollin Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.17 2003-06-17 15:21:50 chris-dollin Exp $
  */
 public class OntDocumentManager
 {
@@ -694,7 +694,7 @@ public class OntDocumentManager
         catch (JenaException e) {
             if (warn) {
                 Logger.getLogger( OntDocumentManager.class )
-                      .warn( "RDFException while reading model from " + resolvableURI + ", with message: " + e.getMessage(), e );
+                      .warn( "JenaException while reading model from " + resolvableURI + ", with message: " + e.getMessage(), e );
             }
             return false;
         }

@@ -5,7 +5,7 @@
 
 /** Class used by original, Jena1, external query engine
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.12 2003-06-17 14:53:35 chris-dollin Exp $
+ * @version  $Id: TriplePattern.java,v 1.13 2003-06-17 15:21:51 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -359,7 +359,7 @@ import com.hp.hpl.jena.shared.*;
                 sIter = m.listStatements(s, p, o) ;
             } catch (JenaException rdfEx)
             {
-                QSys.unhandledException(rdfEx, "TriplePattern.BindingIterator(RDFException)", "BindingIterator") ;
+                QSys.unhandledException(rdfEx, "TriplePattern.BindingIterator(JenaException)", "BindingIterator") ;
             }
             catch (Throwable exEx)
             {
@@ -541,7 +541,7 @@ import com.hp.hpl.jena.shared.*;
                     return binding ;
                 }
             }
-            catch (JenaException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern.BindingIterator(RDFException)", "next") ; }
+            catch (JenaException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern.BindingIterator(JenaException)", "next") ; }
             catch (Throwable t) { QSys.unhandledException(t, "TriplePattern.BindingIterator(Throwable)", "next") ; }
             return null ;
         }

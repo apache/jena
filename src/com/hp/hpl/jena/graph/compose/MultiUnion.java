@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-05 10:30:59 $
+ * Last modified on   $Date: 2003-06-17 15:21:50 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.5 2003-05-05 10:30:59 chris-dollin Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.6 2003-06-17 15:21:50 chris-dollin Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -104,7 +104,7 @@ public class MultiUnion
      * </p>
      * 
      * @param t A triple to add to the union graph
-     * @exception RDFException if the union does not contain any sub-graphs yet
+     * @exception JenaException if the union does not contain any sub-graphs yet
      */
     public void add( Triple t ) {
         try {
@@ -123,7 +123,7 @@ public class MultiUnion
      * </p>
      * 
      * @param t A triple to from the union graph
-     * @exception RDFException if the union does not contain any sub-graphs yet
+     * @exception JenaException if the union does not contain any sub-graphs yet
      */
     public void delete( Triple t ) {
         try {

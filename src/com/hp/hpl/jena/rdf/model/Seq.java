@@ -60,7 +60,7 @@ package com.hp.hpl.jena.rdf.model;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-17 12:25:04 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-06-17 15:21:50 $'
  */
 public interface Seq extends Container {
     
@@ -443,10 +443,10 @@ public interface Seq extends Container {
     /** Set the value at a given index in the sequence.
      *
      * <p>If the index is not in the range 1 to the size of the
-     * sequence, then an RDFException is raised.</p>
+     * sequence, then an exception is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     .
+     * @throws JenaSeqIndexBoundsException
      * @return this object to enable cascading method calls.
      */
     public Seq set(int index, RDFNode o) ;
@@ -454,10 +454,10 @@ public interface Seq extends Container {
     /** Set the value at a given index in the sequence.
      *
      * <p>If the index is not in the range 1 to the size of the
-     * sequence, then an RDFException is raised.</p>
+     * sequence, then a Jena exception is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     .
+     * @throws JenaSeqIndexBoundsException
      * @return this object to enable cascading method calls.
      */
     public Seq set(int index, boolean o) ;
@@ -465,10 +465,10 @@ public interface Seq extends Container {
     /** Set the value at a given index in the sequence.
      *
      * <p>If the index is not in the range 1 to the size of the
-     * sequence, then an RDFException is raised.</p>
+     * sequence, then a Jena exception is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     .
+     * @throws JenaSeqIndexBoundsException
      * @return this object to enable cascading method calls.
      */
     public Seq set(int index, long o) ;
@@ -476,10 +476,10 @@ public interface Seq extends Container {
     /** Set the value at a given index in the sequence.
      *
      * <p>If the index is not in the range 1 to the size of the
-     * sequence, then an RDFException is raised.</p>
+     * sequence, then a Jena exception is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     .
+     * @throws JenaSeqIndexBoundsException
      * @return this object to enable cascading method calls.
      */
     public Seq set(int index, char o) ;
@@ -487,10 +487,10 @@ public interface Seq extends Container {
     /** Set the value at a given index in the sequence.
      *
      * <p>If the index is not in the range 1 to the size of the
-     * sequence, then an RDFException is raised.</p>
+     * sequence, then a Jena exception is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     .
+     * @throws JenaSeqIndexBoundsException
      * @return this object to enable cascading method calls.
      */
     public Seq set(int index, float o) ;
@@ -498,10 +498,10 @@ public interface Seq extends Container {
     /** Set the value at a given index in the sequence.
      *
      * <p>If the index is not in the range 1 to the size of the
-     * sequence, then an RDFException is raised.</p>
+     * sequence, then a Jena exception is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     .
+     * @throws JenaSeqIndexBoundsException
      * @return this object to enable cascading method calls.
      */
     public Seq set(int index, double o) ;
@@ -509,10 +509,10 @@ public interface Seq extends Container {
     /** Set the value at a given index in the sequence.
      *
      * <p>If the index is not in the range 1 to the size of the
-     * sequence, then an RDFException is raised.</p>
+     * sequence, then a Jena exception is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     .
+     * @throws JenaSeqIndexBoundsException
      * @return this object to enable cascading method calls.
      */
     public Seq set(int index, String o) ;
@@ -520,11 +520,11 @@ public interface Seq extends Container {
     /** Set the value at a given index in the sequence.
      *
      * <p>If the index is not in the range 1 to the size of the
-     * sequence, then an RDFException is raised.</p>
+     * sequence, then a Jena exception is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
      * @param l The language of the value set.
-     .
+     * @throws JenaSeqIndexBoundsException
      * @return this object to enable cascading method calls.
      */
     public Seq set(int index, String o, String l) ;
@@ -532,10 +532,10 @@ public interface Seq extends Container {
     /** Set the value at a given index in the sequence.
      *
      * <p>If the index is not in the range 1 to the size of the
-     * sequence, then an RDFException is raised.</p>
+     * sequence, then a Jena exception is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     .
+     * @throws JenaSeqIndexBoundsException
      * @return this object to enable cascading method calls.
      */
     public Seq set(int index, Object o) ;

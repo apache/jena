@@ -5,11 +5,11 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: IllegalDateTimeFieldException.java,v 1.6 2003-04-15 22:00:30 jeremy_carroll Exp $
+ * $Id: IllegalDateTimeFieldException.java,v 1.7 2003-06-17 15:21:50 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
-import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.shared.*;
 
 /**
  * Exception thrown when attempting to access a field of an XSDDateTime 
@@ -17,9 +17,9 @@ import com.hp.hpl.jena.rdf.model.RDFException;
  * accessing the day from a gYearMonth object.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-04-15 22:00:30 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-17 15:21:50 $
  */
-public class IllegalDateTimeFieldException extends RDFException {
+public class IllegalDateTimeFieldException extends JenaException {
     
     /** Constructor */
     public IllegalDateTimeFieldException(String msg) {

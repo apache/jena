@@ -40,7 +40,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.16 $ $Date: 2003-06-16 10:47:09 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.17 $ $Date: 2003-06-17 15:21:51 $
  */
 public class StatementImpl  implements Statement {
     
@@ -120,7 +120,7 @@ public class StatementImpl  implements Statement {
         
     /**
         get the object field of this statement, insisting that it be a Literal.
-        If it isn't, throw RDFException.OBJECTNOTLITERAL.
+        If it isn't, throw JenaLiteralRequiredException.
     */
     public Literal getLiteral()  {        
         if (object instanceof Literal) {

@@ -26,7 +26,7 @@ import com.hp.hpl.jena.vocabulary.* ;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.9 2003-06-17 09:18:10 chris-dollin Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.10 2003-06-17 15:21:51 chris-dollin Exp $
  */
 
 
@@ -322,7 +322,7 @@ public class QueryTestScripts extends TestSuite
                 throw qEx ;
             }
             catch (IOException ioEx){ pw.println("IOException: "+ioEx) ; ioEx.printStackTrace(pw) ; pw.flush() ; }
-            //catch (JenaException rdfEx) { pw.println("RDFException: "+rdfEx) ; rdfEx.printStackTrace(pw) ; pw.flush() ; }
+            //catch (JenaException rdfEx) { pw.println("JenaException: "+rdfEx) ; rdfEx.printStackTrace(pw) ; pw.flush() ; }
             catch (Exception ex)
             {
                 pw.println("Exception: "+ex) ;
