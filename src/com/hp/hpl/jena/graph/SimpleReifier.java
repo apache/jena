@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.8 2003-04-04 13:59:51 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.9 2003-04-04 15:10:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -22,46 +22,16 @@ import java.util.*;
 public class SimpleReifier implements Reifier
     {
     private Graph parent;
-    private Graph triples;    
     private boolean passing = false;
-          
-    public FragmentMap nodeMap;
+    private FragmentMap nodeMap;
     
-    /* construct a simple reifier that is bound to the parent graph */
+    /** construct a simple reifier that is bound to the parent graph */
     public SimpleReifier( Graph parent )
         {
         this.parent = parent;
-        this.triples = new GraphMem();
         this.nodeMap = new FragmentMap();
         }
             
-    public Graph getHiddenTriples()
-        { // TODO: turn into a dynamic graph
-        Graph result = new GraphMem();
-        ((SimpleReifier) result.getReifier()).passing = true;
-        Iterator it = nodeMap.keySet().iterator();
-        while (it.hasNext()) include( result, (Node) it.next() );
-        return result;
-        }
-        
-    // include into g the reification triples of f
-    private void include( Graph g, Node node )
-        {
-        Object f = nodeMap.get( node );
-        if (f instanceof Triple)
-            { includeInto( g, node, (Triple) f ); }
-        else
-            { ((Fragments) f).includeInto( g ); }
-        }
-        
-    private void includeInto( Graph g, Node node, Triple t )
-        {
-        g.add( new Triple( node, Reifier.subject, t.getSubject() ) );
-        g.add( new Triple( node, Reifier.predicate, t.getPredicate() ) );
-        g.add( new Triple( node, Reifier.object, t.getObject() ) );
-        g.add( new Triple( node, Reifier.type, Reifier.Statement ) );
-        }
-        
     /** return the parent graph we are bound to */
     public Graph getParentGraph()
         { return parent; }
@@ -70,19 +40,15 @@ public class SimpleReifier implements Reifier
     public Triple getTriple( Node n )        
         {
         Object partial = nodeMap.get( n );
-        // System.err.println( "SR::getTriple( " + n + " = " + partial  + ")" );
-        if (partial == null)
-            return null;
-        else if (partial instanceof Triple) 
-            return (Triple) partial;
-        else
-            return getTriple( n, (Fragments) partial );
+        return
+            partial == null ? null
+            : partial instanceof Triple ? (Triple) partial
+            : getTriple( n, (Fragments) partial )
+            ;
         }
         
-    private Triple getTriple( Node n, Fragments w )
-        { 
-            // System.err.println( "| getTriple: " + w.isComplete() );
-            return w.isComplete() ? nodeMap.putTriple( n, w.asTriple() ) : null; }
+    private Triple getTriple( Node n, Fragments f )
+        { return f.isComplete() ? nodeMap.putTriple( n, f.asTriple() ) : null; }
         
     /** true iff there is a triple bound to _n_ */
     public boolean hasTriple( Node n )
@@ -91,10 +57,10 @@ public class SimpleReifier implements Reifier
     /** */
     public ExtendedIterator allNodes()
         {
-        return WrappedIterator.create( nodeMap.keySet().iterator() ) .filterKeep ( completeWomble );
+        return WrappedIterator.create( nodeMap.keySet().iterator() ) .filterKeep ( completeFragment );
         }
         
-    private Filter completeWomble = new Filter()
+    private Filter completeFragment = new Filter()
         { public boolean accept( Object x ) { return isComplete( (Node) x ); } };
         
     private boolean isComplete( Node n )
@@ -109,25 +75,13 @@ public class SimpleReifier implements Reifier
     */
     public Node reifyAs( Node tag, Triple t )
     	{
-        Triple already = getTriple( tag );
-        if (already != null && !already.equals( t ))
+        Object partial = nodeMap.get( tag );
+        if (partial == null)
+            nodeMap.putTriple( tag, t );
+        else if (partial instanceof Fragments)
+            graphAddQuad( parent, tag, t );
+        else if (!t.equals( partial )) 
             throw new Reifier.AlreadyReifiedException( tag );
-        Object mapped = nodeMap.get( tag );
-        if (mapped == null)
-            {
-            nodeMap.put( tag, t );
-            }
-        else if (mapped.equals( t ))
-            { /* that's easy */
-            }
-        else
-            {
-            parent.add( new Triple( tag, type, Statement ) );
-            parent.add( new Triple( tag, subject, t.getSubject() ) );
-            parent.add( new Triple( tag, predicate, t.getPredicate() ) );
-            parent.add( new Triple( tag, object, t.getObject() ) ); 
-            }
-        triples.add( t );
         return tag; 
     	}
         
@@ -138,12 +92,7 @@ public class SimpleReifier implements Reifier
         if (x instanceof Triple)
             { if (x.equals( t )) nodeMap.remove( n ); }
         else
-            {
-            parent.delete( new Triple( n, type, Statement ) );
-            parent.delete( new Triple( n, subject, t.getSubject() ) );
-            parent.delete( new Triple( n, predicate, t.getPredicate() ) );
-            parent.delete( new Triple( n, object, t.getObject() ) ); 
-            }
+            parentRemoveQuad( n, t );
         }
         
     public boolean hasTriple( Triple t )
@@ -177,7 +126,7 @@ public class SimpleReifier implements Reifier
         }
         
     private Fragments explode( Node s, Triple t )
-        { return nodeMap.putFragments( s, new Fragments( s ) .addTriple( t ) ); }
+        { return nodeMap.putFragments( s, new Fragments( s, t ) ); }
 
     public boolean handledRemove( Triple t )
         {
@@ -190,12 +139,9 @@ public class SimpleReifier implements Reifier
             return true;
             }
         }
-
-           
+          
     public void remove( Triple t )
-        {
-        triples.delete( t );        
-    /* */
+        {     
         // horrid code. we don't likes it, my precious.
         Set nodes = new HashSet();
         Iterator it = allNodes();
@@ -208,10 +154,61 @@ public class SimpleReifier implements Reifier
         while (them.hasNext()) remove( (Node) them.next(), t );
         }
         
-    public String toString()
-        {
-        return "<R " + nodeMap + ">";
+    public Graph getHiddenTriples()
+        { // TODO: turn into a dynamic graph
+        Graph result = new GraphMem();
+        ((SimpleReifier) result.getReifier()).passing = true;
+        Iterator it = nodeMap.keySet().iterator();
+        while (it.hasNext()) include( result, (Node) it.next() );
+        return result;
         }
+    
+    /**
+        include into g all of the reification components
+        associated with node.
+        
+        @param g the graph to add triples to
+        @param node the node whose components to add
+    */
+    private void include( Graph g, Node node )
+        {
+        Object f = nodeMap.get( node );
+        if (f instanceof Triple)
+            graphAddQuad( g, node, (Triple) f ); 
+        else
+            ((Fragments) f).includeInto( g ); 
+        }       
+        
+    /**
+        remove from the parent all of the triples that correspond to a reification
+        of t on tag.
+    */
+    private void parentRemoveQuad( Node n, Triple t )
+        {
+        parent.delete( new Triple( n, type, Statement ) );
+        parent.delete( new Triple( n, subject, t.getSubject() ) );
+        parent.delete( new Triple( n, predicate, t.getPredicate() ) );
+        parent.delete( new Triple( n, object, t.getObject() ) ); 
+        }        
+              
+    /**
+        add to the graph all of the triples that correspond to a reification
+        of t on tag.
+    */         
+    private void graphAddQuad( Graph g, Node node, Triple t )
+        {
+        g.add( new Triple( node, Reifier.subject, t.getSubject() ) );
+        g.add( new Triple( node, Reifier.predicate, t.getPredicate() ) );
+        g.add( new Triple( node, Reifier.object, t.getObject() ) );
+        g.add( new Triple( node, Reifier.type, Reifier.Statement ) );
+        }
+                
+    /**
+        our string representation is <R ...> wrapped round the string representation
+        of our node map.
+    */
+    public String toString()
+        { return "<R " + nodeMap + ">"; }
     }
     
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Fragments.java,v 1.2 2003-04-04 13:59:51 chris-dollin Exp $
+  $Id: Fragments.java,v 1.3 2003-04-04 15:10:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -50,6 +50,12 @@ public class Fragments
     */
     public Fragments( Node n ) 
         { this.n = n; }
+        
+    public Fragments( Node n, Triple t )
+        {
+        this( n );
+        addTriple( t ); 
+        }
         
     /**
         true iff this is a complete fragment; every component is present with exactly
