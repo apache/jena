@@ -5,10 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: InfModelImpl.java,v 1.3 2003-06-17 14:39:38 chris-dollin Exp $
+ * $Id: InfModelImpl.java,v 1.4 2003-08-25 08:31:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model.impl;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import java.util.Iterator;
@@ -18,7 +19,7 @@ import java.util.Iterator;
  * an InfGraph.
 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-17 14:39:38 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-25 08:31:30 $
  */
 public class InfModelImpl extends ModelCom implements InfModel {
 
@@ -76,6 +77,16 @@ public class InfModelImpl extends ModelCom implements InfModel {
     }
     
     /**
+     * Reset any internal caches. Some systems, such as the tabled backchainer, 
+     * retain information after each query. A reset will wipe this information preventing
+     * unbounded memory use at the expense of more expensive future queries. A reset
+     * does not cause the raw data to be reconsulted and so is less expensive than a rebind.
+     */
+    public void reset() {
+        getInfGraph().reset();
+    }
+    
+    /**
      * Test the consistency of the underlying data. This normally tests
      * the validity of the bound instance data against the bound
      * schema data. 
@@ -127,6 +138,28 @@ public class InfModelImpl extends ModelCom implements InfModel {
         return getInfGraph().getDerivation(statement.asTriple());
     }
     
+    /**
+     * Returns a derivations model. The rule reasoners typically create a 
+     * graph containing those triples added to the base graph due to rule firings.
+     * In some applications it can useful to be able to access those deductions
+     * directly, without seeing the raw data which triggered them. In particular,
+     * this allows the forward rules to be used as if they were rewrite transformation
+     * rules.
+     * @return the deductions model, if relevant for this class of inference
+     * engine or null if not.
+     */
+    public Model getDeductionsModel() {
+        if (deductionsModel == null) {
+            Graph deductionsGraph = getInfGraph().getDeductionsGraph();
+            if (deductionsGraph != null) {
+                deductionsModel = new ModelCom(deductionsGraph);
+            }
+        }
+        return deductionsModel;
+    }
+    
+    /** Cached deductions model */
+    private Model deductionsModel = null;
 }
 
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.19 2003-08-22 16:04:40 der Exp $
+ * $Id: BaseInfGraph.java,v 1.20 2003-08-25 08:31:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -19,7 +19,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-08-22 16:04:40 $
+ * @version $Revision: 1.20 $ on $Date: 2003-08-25 08:31:08 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -104,6 +104,20 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     public void prepare() {
         // Default is to do no preparation
         isPrepared = true;
+    }
+    
+    /**
+     * Returns a derivations graph. The rule reasoners typically create a 
+     * graph containing those triples added to the base graph due to rule firings.
+     * In some applications it can useful to be able to access those deductions
+     * directly, without seeing the raw data which triggered them. In particular,
+     * this allows the forward rules to be used as if they were rewrite transformation
+     * rules.
+     * @return the deductions graph, if relevant for this class of inference
+     * engine or null if not.
+     */
+    public Graph getDeductionsGraph() {
+        return null;
     }
 
     /**

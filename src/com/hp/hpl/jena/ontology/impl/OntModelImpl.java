@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.43 $
+ * Revision           $Revision: 1.44 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-20 11:38:44 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-25 08:31:30 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -50,7 +50,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.43 2003-08-20 11:38:44 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.44 2003-08-25 08:31:30 der Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1806,6 +1806,31 @@ public class OntModelImpl
         if (getGraph() instanceof InfGraph) {
             ((InfGraph) getGraph()).prepare();
         }
+    }
+    
+    /**
+     * Reset any internal caches. Some systems, such as the tabled backchainer, 
+     * retain information after each query. A reset will wipe this information preventing
+     * unbounded memory use at the expense of more expensive future queries. A reset
+     * does not cause the raw data to be reconsulted and so is less expensive than a rebind.
+     */
+    public void reset() {
+        if (getGraph() instanceof InfGraph) {
+            ((InfGraph) getGraph()).reset();
+        }
+    }
+    
+    /**
+     * Returns a derivations model. The rule reasoners typically create a 
+     * graph containing those triples added to the base graph due to rule firings.
+     * In some applications it can useful to be able to access those deductions
+     * directly, without seeing the raw data which triggered them. In particular,
+     * this allows the forward rules to be used as if they were rewrite transformation
+     * rules.
+     * @return null always because this functionality is rarely relevant to ontology models
+     */
+    public Model getDeductionsModel() {
+        return null;
     }
     
     /**
