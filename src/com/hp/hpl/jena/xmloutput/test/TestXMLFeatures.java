@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002   
  * All rights reserved.
   [See end of file]
-  $Id: TestXMLFeatures.java,v 1.1.1.1 2002-12-19 19:22:09 bwm Exp $
+  $Id: TestXMLFeatures.java,v 1.2 2003-02-12 19:10:59 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -24,7 +24,7 @@ import java.io.*;
 
 /** 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:22:09 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-02-12 19:10:59 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -80,16 +80,30 @@ public class TestXMLFeatures extends TestCase {
 		String regexAbsent,
 		Change code)
 		throws IOException, MalformedPatternException {
-		check(filename, null, regexPresent, regexAbsent, code);
+		check(filename, null, regexPresent, regexAbsent, false, code);
 	}
+
+    private void check(
+        String filename,
+        String encoding,
+        String regexPresent,
+        String regexAbsent,
+        Change code)
+    throws IOException, MalformedPatternException {
+      check(filename,encoding,regexPresent,regexAbsent,false,code);
+    }
 	private void check(
 		String filename,
 		String encoding,
 		String regexPresent,
 		String regexAbsent,
+        boolean errorExpected,
 		Change code)
 		throws IOException, MalformedPatternException {
-		Model m = new ModelMem();
+		PrintStream oldErr = System.err;
+        ByteArrayOutputStream bosErr = new ByteArrayOutputStream();
+        System.setErr(new PrintStream(bosErr));
+        Model m = new ModelMem();
 		m.read(filename);
 		Writer sw;
 		ByteArrayOutputStream bos = null;
@@ -125,6 +139,7 @@ public class TestXMLFeatures extends TestCase {
 					!matcher.contains(contents, awk.compile(regexAbsent)));
 			contents = null;
 		} finally {
+            System.setErr(oldErr);
 			System.setProperties(p);
 			if (contents != null) {
 				System.err.println("===================");
@@ -134,6 +149,8 @@ public class TestXMLFeatures extends TestCase {
 				System.err.println("===================");
 			}
 		}
+        assertEquals("Errors (not) detected.",errorExpected,bosErr.size()!=0);
+        
 	}
 
 	void doBadPropTest(String lang) throws IOException {
@@ -216,8 +233,7 @@ public class TestXMLFeatures extends TestCase {
 	public void testBadPrefixNamespace()
 		throws IOException, MalformedPatternException {
 		// Trying to set the prefix should generate a warning.
-		// TODO check that a warning is generated.
-		check(file1, null, "xmlns:3", new Change() {
+    	check(file1, null, null, "xmlns:3", true, new Change() {
 			public void code(RDFWriter writer) {
 				writer.setNsPrefix("3", "http://example.org/#");
 			}
@@ -325,7 +341,7 @@ public class TestXMLFeatures extends TestCase {
 
 	public void testUTF16DeclAbsent()
 		throws IOException, MalformedPatternException {
-		check(file1, "utf-16", null, "<\\?xml", new Change() {
+		check(file1, "utf-16", null, "<\\?xml", false, new Change() {
 			public void code(RDFWriter writer) {
 			}
 		});
@@ -416,5 +432,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.1.1.1 2002-12-19 19:22:09 bwm Exp $
+ * $Id: TestXMLFeatures.java,v 1.2 2003-02-12 19:10:59 jeremy_carroll Exp $
  */
