@@ -25,7 +25,9 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Node_URI;
+import com.hp.hpl.jena.graph.Node_Variable;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.graph.query.Element;
 
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.impl.Util;
@@ -47,7 +49,7 @@ import org.apache.log4j.Logger;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.23 $ on $Date: 2003-07-23 07:19:48 $
+* @version $Revision: 1.24 $ on $Date: 2003-08-11 02:43:18 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -420,7 +422,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			pSet.setSkipDuplicateCheck(SKIP_DUPLICATE_CHECK);
 			pSet.setSQLCache(m_sql);
 			pSet.setCachePreparedStatements(CACHE_PREPARED_STATEMENTS);
-			pSet.setASTname(tblName);
+			pSet.setTblName(tblName);
 		} catch (Exception e) {
 			logger.warn("Unable to create IPSet instance ", e);
 		}
@@ -934,7 +936,19 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * 		other notation same as above
 	 * 		blank node encoding should always fit within a statement table
 	 * 		Note: currently, blank nodes are always stored uncompressed (pfix_dbid is null). 
+	 *
+	 * Variable Node Encoding in Statement Tables
+	 * 	Variable Node:	Vv:name
 	 * 
+	 * Comments:
+	 * 		V indicates a variable node
+	 * 		v indicates a value
+	 * 		name is the variable name
+	 * 		Note: the length must be less than LONG_OBJECT_LENGTH
+	 * 
+	 * ANY Node Encoding in Statement Tables
+	 * 	Variable Node:	Av:
+	 *  
 	 * Prefix Encoding in Prefix Table
 	 * 	Prefix:	Pv:val[:] [hash] [tail]
 	 * 
@@ -950,11 +964,15 @@ public abstract class DriverRDB implements IRDBDriver {
 	protected static String RDBCodeURI = "U";
 	protected static String RDBCodeBlank = "B";
 	protected static String RDBCodeLiteral = "L";
+	protected static String RDBCodeVariable = "V";
+	protected static String RDBCodeANY = "A";
 	protected static String RDBCodePrefix = "P";
 	protected static String	RDBCodeValue = "v";
 	protected static String RDBCodeRef = "r";
 	protected static String RDBCodeDelim = ":";
 	protected static char RDBCodeDelimChar = ':';
+	protected static String RDBCodeInvalid = "X";
+
 
 		
     
@@ -1030,7 +1048,15 @@ public abstract class DriverRDB implements IRDBDriver {
 			// TODO: prefix compression for blank nodes.
 			res = new String(RDBCodeBlank + RDBCodeValue + RDBCodeDelim + RDBCodeDelim
 							+ node.getBlankNodeId().toString()+ EOS);
-		}else {
+		} else if ( node.isVariable() ){
+			String name = ((Node_Variable)node).getName();
+			int len = name.length();
+			if ( (len + 3 + EOS_LEN) > LONG_OBJECT_LENGTH )
+				throw new JenaException ("Variable name too long: " + name );
+			res = RDBCodeVariable + RDBCodeValue + RDBCodeDelim + name + EOS;
+		} else if ( node.equals(Node.ANY) ) {
+			res = RDBCodeANY +  RDBCodeValue + RDBCodeDelim;
+		} else {
 			throw new RDFRDBException ("Expected Concrete Node, got " + node.toString() );	
 		}
 		return res;
@@ -1049,7 +1075,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		String nodeType = RDBString.substring(0,1);
 		String valType = RDBString.substring(1,2);
 		if ( (!(valType.equals(RDBCodeRef) || valType.equals(RDBCodeValue))) ||
-				(RDBString.charAt(2) != RDBCodeDelimChar) || (len < 4) )
+				(RDBString.charAt(2) != RDBCodeDelimChar) )
 				throw new RDFRDBException("Bad RDBString Header: " + RDBString);
 
 		int pos = 3;
@@ -1122,6 +1148,14 @@ public abstract class DriverRDB implements IRDBDriver {
 			// TODO: implement prefix compression for blank nodes
 			String bstr = RDBString.substring(4,len-EOS_LEN);
 			res = Node.createAnon( new AnonId (bstr) );
+			
+		} else if ( nodeType.equals(RDBCodeVariable) ) {
+			String vname = RDBString.substring(3,len-EOS_LEN);
+			res = Node.createVariable(vname);
+			
+		} else if ( nodeType.equals(RDBCodeANY) ) {
+			res = Node.ANY;
+			
 		} else
 			throw new RDFRDBException ("Invalid RDBString Prefix, " + RDBString );	
 		return res;
@@ -1483,6 +1517,92 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		return qual;	
 	}
+	
+	protected String colidToColname ( char colid ) {
+		if ( colid == 'P' ) return "Prop";
+		if ( colid == 'S' ) return "Subj";
+		if ( colid == 'O' ) return "Obj";
+		if ( colid == 'N' ) return "Stmt";
+		if ( colid == 'T' ) return "HasType";
+		throw new JenaException("Invalid column identifer: '" + colid + "\'");
+	}
+	
+	protected String aliasToString ( int alias ) {
+		return "A" + alias;
+	}
+	
+	protected String colAliasToString ( int alias, char colid ) {
+		return aliasToString(alias) + "." + colidToColname(colid);
+	}
+
+	/*
+	 * there's a bug in the code below in that the literal is converted to
+	 * a string BEFORE the query is run. consequently, there's a race
+	 * condition. if the (long) literal is not in the database
+	 * when the query is compiled but is added prior to running the
+	 * query, then the query will (incorrectly) return no results.
+	 * for now, we'll ignore this case and document it as a bug.
+	 */
+	
+	public String genSQLQualConst ( int alias, char pred, Node lit ) {
+		String val = nodeToRDBString(lit, false);
+		if ( val == "" )
+			// constant not in database.
+			// should really optimize this and not
+			// even run the query but ok for now.
+			val = RDBCodeInvalid;
+		return colAliasToString(alias,pred) + "=" + "\"" + val + "\"";		
+	}
+	
+	public String genSQLQualParam( int alias, char pred ) {
+		return colAliasToString(alias,pred) + "=?";			
+	}
+
+	public String genSQLJoin( int lhsAlias, char lhsCol,
+		int rhsAlias, char rhsCol ) {
+			return colAliasToString(lhsAlias,lhsCol) + "=" +
+			colAliasToString(rhsAlias,rhsCol);
+	}
+	
+	public String genSQLResList( DBQuery.Var[] binding ) {
+		int i;
+		String resList = "";
+		for(i=0;i<binding.length;i++) {
+			resList += (i>0?", ":"") + colAliasToString(binding[i].alias,binding[i].column);
+		}
+		return resList;
+	}
+	
+	public String genSQLFromList( int aliasCnt, String table ) {
+		int i;
+		String resList = "";
+		for(i=0;i<aliasCnt;i++) {
+			resList += (i>0?", ":"") + table + " " + aliasToString(i);
+		}
+		return resList;
+
+	}
+	
+	public String genSQLSelectKW() {
+		return "Select ";
+	}
+	
+	public String genSQLFromKW() {
+		return "From ";
+	}
+	
+	public String genSQLWhereKW() {
+		return "Where ";
+	}
+	
+
+	
+	public String genSQLSelectStmt( String res, String from, String where ) {
+		return genSQLSelectKW() + res + " " + 
+			genSQLFromKW() + from + " " + 
+			genSQLWhereKW() + where;
+	}
+
 	
 	protected int getTableCount ( int graphId ) {		
 	try {
