@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelMaker.java,v 1.1 2003-05-09 13:29:49 chris-dollin Exp $
+  $Id: ModelMaker.java,v 1.2 2003-05-09 14:03:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -10,6 +10,8 @@ package com.hp.hpl.jena.rdf.model;
     The interface for things that operate on named collections of Models.
  	@author kers
 */
+
+import com.hp.hpl.jena.graph.*;
 
 public interface ModelMaker
     {
@@ -71,6 +73,12 @@ public interface ModelMaker
         can be done.
     */
     public void close();
+    
+    /**
+        Answer a GraphMaker that makes graphs the same way this ModelMaker
+        makes models. In general this will be an underlying GraphMaker.
+    */
+    public GraphMaker getGraphMaker();
     }
 
 
