@@ -28,7 +28,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public abstract class DBProp {
 
@@ -59,8 +59,7 @@ public abstract class DBProp {
 	
 	protected String getPropString( Node_URI predicate) {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch(self, predicate, null);
-		ClosableIterator it = graph.find(match, complete);
+		ClosableIterator it = graph.find(self, predicate, null, complete);
 		if( !it.hasNext() ) {
 			it.close();
 			return null;
@@ -72,8 +71,7 @@ public abstract class DBProp {
 	
 	protected void remove() {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch(self, null, null);
-		ClosableIterator it = graph.find(match, complete);
+		ClosableIterator it = graph.find( self, null, null, complete);
 		while( it.hasNext() )
 			graph.delete( (Triple) it.next(), complete);
 		it.close();
@@ -84,12 +82,11 @@ public abstract class DBProp {
 	public static ExtendedIterator listTriples( SpecializedGraph g, Node self ) {
 		// Get all the triples about the requested node.
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		return g.find(new StandardTripleMatch(self, null, null), complete);
+		return g.find( self, null, null, complete);
 	}
 		
 	protected static Node findProperty( Graph graph, Node_URI predicate ) {
-		TripleMatch match = new StandardTripleMatch(null, predicate, null);
-		ClosableIterator it = graph.find(match);
+		ClosableIterator it = graph.find( null, predicate, null );
 		Node result = null;
 		if( it.hasNext() )
 			result = ((Triple)it.next()).getObject();

@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -71,8 +71,7 @@ public class DBPropGraph extends DBProp {
 	
 	public void removePrefix( DBPropPrefix prefix ) {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch(self, graphPrefix, prefix.getNode());
-		Iterator matches = graph.find( match, complete);
+		Iterator matches = graph.find( self, graphPrefix, prefix.getNode(), complete);
 		if( matches.hasNext() ) {
 			graph.delete( (Triple)(matches.next()), complete );
 			prefix.remove();
@@ -88,15 +87,13 @@ public class DBPropGraph extends DBProp {
 	
 	public ExtendedIterator getAllLSets() {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch(self, graphLSet, null);
-		Iterator matches = graph.find( match, complete);
+		Iterator matches = graph.find( self, graphLSet, null, complete);
 		return new Map1Iterator(new MapToLSet(), matches);
 	}
 	
 	public ExtendedIterator getAllPrefixes() {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch(self, graphPrefix, null);
-		Iterator matches = graph.find( match, complete);
+		Iterator matches = graph.find( self, graphPrefix, null, complete);
 		return new Map1Iterator(new MapToPrefix(), matches);
 	}
 	
@@ -147,7 +144,7 @@ public class DBPropGraph extends DBProp {
 		
 		Node myNode = new Node_Literal( new LiteralLabel(name, ""));
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator it =  graph.find(new StandardTripleMatch(null, graphName, myNode), complete);
+		Iterator it =  graph.find( null, graphName, myNode, complete);
 		if( it.hasNext() )
 			return new DBPropGraph( graph, ((Triple)it.next()).getSubject());
 		else

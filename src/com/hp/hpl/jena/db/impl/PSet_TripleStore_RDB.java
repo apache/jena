@@ -51,7 +51,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.21 $ on $Date: 2003-06-12 15:10:01 $
+* @version $Revision: 1.22 $ on $Date: 2003-06-13 10:57:42 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -1230,10 +1230,7 @@ public void deleteTripleAR(
 	 * @return boolean result to indicte if the tripple was contained
 	 */
 	public boolean statementTableContains(IDBID graphID, Triple t) {
-	   PreparedStatement ps;
-	   StandardTripleMatch tm = new StandardTripleMatch(t.getSubject(), t.getPredicate(), t.getObject());
-			 
-	   ExtendedIterator it = find(tm, graphID);
+	   ExtendedIterator it = find( t,  graphID );
 	   return (it.hasNext());
 	}
 	

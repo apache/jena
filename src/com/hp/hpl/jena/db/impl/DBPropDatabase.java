@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -82,8 +82,7 @@ public class DBPropDatabase extends DBProp {
 
 	public void removeGraph( DBPropGraph g ) {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch(self, dbGraph, g.getNode());
-		Iterator matches = graph.find( match, complete);
+		Iterator matches = graph.find( self, dbGraph, g.getNode(), complete);
 		if( matches.hasNext() ) {
 			graph.delete( (Triple)(matches.next()), complete );
 			g.remove();
@@ -92,8 +91,7 @@ public class DBPropDatabase extends DBProp {
 	
 	public ExtendedIterator getAllGraphs() {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch(self, dbGraph, null);
-		Iterator matches = graph.find( match, complete );
+		Iterator matches = graph.find( self, dbGraph, null, complete );
 		return new Map1Iterator(new MapToLSet(), matches);
 	}
 	
@@ -115,8 +113,7 @@ public class DBPropDatabase extends DBProp {
 	}
 	static Node findDBPropNode( SpecializedGraph g) {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch(null, dbEngineType, null);
-		Iterator matches = g.find( match, complete );
+		Iterator matches = g.find( null, dbEngineType, null, complete );
 		if( matches.hasNext())
 			return ((Triple)matches.next()).getSubject();
 		return null;		

@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * This is mostly used to simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.4 $
+* @version $Revision: 1.5 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -229,7 +229,7 @@ public class DBConnection implements IDBConnection {
 		ModelMem resultModel = new ModelMem();
 		copySpecializedGraphToModel( m_driver.getSystemSpecializedGraph(),
 			                         resultModel,
-			                         new StandardTripleMatch(null, null, null));
+			                         Triple.createMatch( null, null, null ));
 		return resultModel;
 	}
 	
@@ -250,7 +250,7 @@ public class DBConnection implements IDBConnection {
 		ModelMem resultModel = new ModelMem();
 		copySpecializedGraphToModel( m_driver.getSystemSpecializedGraph(),
 			                         resultModel,
-			                         new StandardTripleMatch(defaultProps.getNode(), null, null));
+			                         Triple.createMatch(defaultProps.getNode(), null, null));
 		return resultModel;
 	}
 	

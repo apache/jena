@@ -398,7 +398,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 */
 	public int tripleCount() {
 		// A very inefficient, but simple implementation
-		ExtendedIterator it = find(new StandardTripleMatch(null, null, null), new CompletionFlag());
+		ExtendedIterator it = find( null, null, null, new CompletionFlag());
 		int count = 0;
 		while (it.hasNext()) {
 			it.next(); count++;
@@ -407,6 +407,9 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 		return count;
 	}
 
+    public ExtendedIterator find( Node s, Node p, Node o, CompletionFlag complete )
+        { return find( Triple.createMatch( s, p, o ), complete ); }
+        
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
@@ -489,17 +492,13 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 * Tests if a triple is contained in the specialized graph.
 	 * @param t is the triple to be tested
 	 * @param complete is true if the graph can guarantee that 
-	 *  no other specialized graph 
-	 * could hold any matching triples.
-	 * @return boolean result to indicte if the tripple was contained
+	 *  no other specialized graph  could hold any matching triples.
+	 * @return boolean result to indicate if the triple was contained
 	 */
 	public boolean contains(Triple t, CompletionFlag complete) {
 		// A very inefficient, but simple implementation
-		TripleMatch m = new StandardTripleMatch(t.getSubject(), t.getPredicate(), t.getObject());
-		ExtendedIterator it = find(m, complete);
-		boolean result = it.hasNext();
-		it.close();
-		return result;
+		ExtendedIterator it = find( t, complete );
+		try { return it.hasNext(); } finally { it.close(); }
 	}
 
 	/*

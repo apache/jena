@@ -24,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -181,8 +181,7 @@ public class DBReifierGraph implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
 	 */
 	public ExtendedIterator find(Node s, Node p, Node o) {
-		StandardTripleMatch m = new StandardTripleMatch(s,p,o);
-		return find(m);
+		return find( Triple.createMatch( s, p, o ) );
 	}
 
 	/* (non-Javadoc)
