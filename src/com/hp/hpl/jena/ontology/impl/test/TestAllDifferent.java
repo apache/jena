@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            01-Apr-2003
- * Filename           $RCSfile: TestAxioms.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            27-May-2003
+ * Filename           $RCSfile: TestAllDifferent.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 17:34:21 $
+ * Last modified on   $Date: 2003-05-27 17:34:20 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -22,24 +22,26 @@
 package com.hp.hpl.jena.ontology.impl.test;
 
 
+
 // Imports
 ///////////////
-import junit.framework.TestSuite;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 
-
+import junit.framework.*;
 
 
 /**
  * <p>
- * Unit tests for all different declaration
+ * Class comment
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestAxioms.java,v 1.3 2003-05-27 17:34:21 ian_dickinson Exp $
+ * @version CVS $Id: TestAllDifferent.java,v 1.1 2003-05-27 17:34:20 ian_dickinson Exp $
  */
-public class TestAxioms
-    extends PathTestCase 
+public class TestAllDifferent
+    extends OntTestBase 
 {
     // Constants
     //////////////////////////////////
@@ -52,61 +54,50 @@ public class TestAxioms
 
     // Constructors
     //////////////////////////////////
-
-    public TestAxioms( String s ) {
-        super( s );
+    
+    static public TestSuite suite() {
+        return new TestAllDifferent( "TestAllDifferent" );
     }
     
+    public TestAllDifferent( String name ) {
+        super( name );
+    }
+    
+
     // External signature methods
     //////////////////////////////////
 
-    protected String getTestName() {
-        return "TestAxioms";
-    }
-    
-    public static TestSuite suite() {
-        return new TestAxioms( "TestAxioms" ).getSuite();
-    }
-    
-    
-    /** Fields are testID, pathset, property, profileURI, sourceData, expected, count, valueURI, rdfTypeURI, valueLit */
-    protected Object[][] psTestData() {
-        return new Object[][] {
-/*            {   
-                "OWL AllDifferent.distinctMembers",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        Resource r = m.listSubjectsWithProperty( RDF.type, m.getProfile().ALL_DIFFERENT() ).nextResource();
-                        return ((AllDifferent) r.as( AllDifferent.class )).p_distinctMembers(); } 
-                },
-                OWL.distinctMembers,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Axioms/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                OWL.List,
-                null
+    public OntTestCase[] getTests() {
+        return new OntTestCase[] {
+            new OntTestCase( "AllDifferent.distinctMembers", true, true, false ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    AllDifferent a = m.createAllDifferent();
+                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
+                    OntResource c = (OntResource) m.getResource( NS + "c" ).as( OntResource.class );
+                    
+                    a.addDistinct( b );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DISTINCT_MEMBERS() ) );
+                    assertEquals( "List size should be 1", 1, a.getDistinct().size() );
+                    assertTrue( "a should have b as distinct", a.hasDistinctMember( b ) );
+                    
+                    a.addDistinct( c );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DISTINCT_MEMBERS() ) );
+                    assertEquals( "List size should be 2", 2, a.getDistinct().size() );
+                    iteratorTest( a.listDistinct(), new Object[] {b, c} );
+                    
+                    assertTrue( "a should have b as distinct", a.hasDistinctMember( b ) );
+                    assertTrue( "a should have c as distinct", a.hasDistinctMember( c ) );
+                    
+                    a.setDistinct( m.createList( new RDFNode[] {b} ) );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DISTINCT_MEMBERS() ) );
+                    assertEquals( "List size should be 1", 1, a.getDistinct().size() );
+                    assertTrue( "a should have b as distinct", a.hasDistinctMember( b ) );
+                    assertTrue( "a should not have c as distinct", !a.hasDistinctMember( c ) );
+                }
             },
-            {   
-                "DAML AllDifferent.distinctMembers",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        Resource r = m.createResource();  // there's no resource of rdf:type AllDifferent in the test file
-                        return ((AllDifferent) r.as( AllDifferent.class )).p_distinctMembers(); } 
-                },
-                OWL.distinctMembers,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Axioms/test.rdf",
-                F,
-                null,
-                null,
-                null,
-                null
-            },*/
         };
     }
-    
     
     // Internal implementation methods
     //////////////////////////////////
@@ -148,3 +139,9 @@ public class TestAxioms
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/* TODO delete me
+public class TestAllDifferent{
+
+}
+
+*/

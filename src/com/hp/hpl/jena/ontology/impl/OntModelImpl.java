@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:12:51 $
+ * Last modified on   $Date: 2003-05-27 17:34:53 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.19 2003-05-23 11:12:51 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.20 2003-05-27 17:34:53 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1050,7 +1050,7 @@ public class OntModelImpl
         AllDifferent ad = (AllDifferent) createOntResource( AllDifferent.class, getProfile().ALL_DIFFERENT(), null );
         
         if (differentMembers != null) {
-            ad.p_distinctMembers().add( differentMembers );
+            ad.setDistinct( differentMembers );
         }
         
         return ad;
