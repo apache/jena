@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.38 2004-07-14 08:52:01 chris-dollin Exp $
+  $Id: Node.java,v 1.39 2004-07-14 09:52:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -99,7 +99,7 @@ public abstract class Node {
     
     private static LiteralLabel literal( String spelling, String langOrType )
         {
-        String content = escape( spelling );
+        String content = unEscape( spelling );
         int colon = langOrType.indexOf( ':' );
         return colon < 0 
             ? new LiteralLabel( content, langOrType, false )
@@ -107,7 +107,7 @@ public abstract class Node {
             ;
         }
     
-    private static String escape( String spelling )
+    private static String unEscape( String spelling )
         {
         if (spelling.indexOf( '\\' ) < 0) return spelling;
         StringBuffer result = new StringBuffer( spelling.length() );
@@ -117,7 +117,7 @@ public abstract class Node {
             int b = spelling.indexOf( '\\', start );
             if (b < 0) break;
             result.append( spelling.substring( start, b ) );
-            result.append( escape( spelling.charAt( b + 1 ) ) );
+            result.append( unEscape( spelling.charAt( b + 1 ) ) );
             start = b + 2;
             }
         result.append( spelling.substring( start ) );
@@ -125,7 +125,7 @@ public abstract class Node {
         return result.toString();
         }
     
-    private static char escape( char ch )
+    private static char unEscape( char ch )
         {
         switch (ch)
         	{
