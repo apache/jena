@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: NullListener.java,v 1.1 2003-07-28 13:07:47 chris-dollin Exp $
+  $Id: NullListener.java,v 1.2 2003-07-29 08:37:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.listeners;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
     A listener that ignores everything you tell it; intended as a base class
-    or an identity element.
+    or an identity element. Each method is implemented as {}.
     
  	@author kers
 */

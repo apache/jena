@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: StatementListener.java,v 1.1 2003-07-28 14:50:46 chris-dollin Exp $
+  $Id: StatementListener.java,v 1.2 2003-07-29 08:37:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.listeners;
@@ -10,17 +10,19 @@ import com.hp.hpl.jena.rdf.model.*;
 import java.util.*;
 
 /**
-    A listener that filters all its listening down to the single-statement level
+    A listener that filters all its listening down to the single-statement level. Users of this
+    class override <code>addedStatement(Statement)</code> and 
+    <code>removedStatement(Statement)</code>.
  	@author kers
 */
 public class StatementListener implements ModelChangedListener
     {
     /**
-        Override this to listen to all incoming added triples
+        Override this to listen to all incoming added statements
     */
     public void addedStatement( Statement s ) {}
     /**
-        Override this to listen to all incoming removed triples
+        Override this to listen to all incoming removed statements
     */
     public void removedStatement( Statement s ) {}   
 /* */

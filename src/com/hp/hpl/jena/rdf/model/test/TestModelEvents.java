@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelEvents.java,v 1.12 2003-07-28 14:51:06 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.13 2003-07-29 08:38:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -279,10 +279,26 @@ public class TestModelEvents extends ModelTestBase
         public void removedStatement( Statement s )
             { statements.add( s ); addOrRem = "rem"; }
         }
-               
+        
+    public void another( Map m, Object x )
+        {
+        Integer n = (Integer) m.get( x );
+        if (n == null) n = new Integer(0);
+        m.put( x, new Integer( n.intValue() + 1 ) ); 
+        }
+    public Map asBag( List l )
+        {
+        Map result = new HashMap();
+        for (int i = 0; i < l.size(); i += 1) another( result, l.get(i) );
+        return result;    
+        }       
+        
+    public void assertSameBag( List wanted, List got )
+        { assertEquals( asBag( wanted ), asBag( got ) ); }
+        
     public void testGot( WatchStatementListener sl, String how, String template )
         {
-        assertEquals( Arrays.asList( statements( model, template ) ), sl.contents() );
+        assertSameBag( Arrays.asList( statements( model, template ) ), sl.contents() );
         assertEquals( how, sl.getAddOrRem() );
         assertTrue( sl.contents().size() == 0 );
         }
@@ -295,42 +311,29 @@ public class TestModelEvents extends ModelTestBase
         testGot( sl, "add", "b C d" );
         model.remove( statement( model, "e F g" ) );
         testGot( sl, "rem", "e F g" );
+    /* */    
         model.add( statements( model, "h I j; k L m" ) );
         testGot( sl, "add", "h I j; k L m" );
         model.remove( statements( model, "n O p; q R s" ) );
         testGot( sl, "rem", "n O p; q R s" );
+    /* */    
         model.add( Arrays.asList( statements( model, "t U v; w X y" ) ) );
         testGot( sl, "add", "t U v; w X y" );
         model.remove( Arrays.asList( statements( model, "z A b; c D e" ) ) );
         testGot( sl, "rem", "z A b; c D e" );
+    /* */    
         model.add( asIterator( statements( model, "f G h; i J k" ) ) );
         testGot( sl, "add", "f G h; i J k" );
         model.remove( asIterator( statements( model, "l M n; o P q" ) ) );
         testGot( sl, "rem", "l M n; o P q" );
-        // TODO get these right [ordering issues in testGot]
-//        model.add( modelWithStatements( "r S t; u V w; x Y z" ) );
-//        testGot( sl, "add", "r S t; u V w; x Y z" );
-//        model.remove( modelWithStatements( "a E i; o U y" ) );
-//        testGot( sl, "add", "a E i; o U y" );
-        }
-        
-    static class ObjectListener implements ModelChangedListener
-        {
-        public void added( Object x ) {}
-        public void removed( Object x ) {}
     /* */
-        public void addedStatement( Statement s ) { added( s ); }
-        public void addedStatements( Statement [] statements ) {}
-        public void addedStatements( List statements ) {}
-        public void addedStatements( StmtIterator statements ) {}
-        public void addedStatements( Model m ) {}
-        public void removedStatement( Statement s ) { removed( s ); }   
-        public void removedStatements( Statement [] statements ) {}
-        public void removedStatements( List statements ) {}
-        public void removedStatements( StmtIterator statements ) {}
-        public void removedStatements( Model m ) {}               
+        model.add( modelWithStatements( "r S t; u V w; x Y z" ) );
+        testGot( sl, "add", "r S t; u V w; x Y z" );
+        model.remove( modelWithStatements( "a E i; o U y" ) );
+        testGot( sl, "rem", "a E i; o U y" );
         }
         
+
     static class OL extends ObjectListener
         {
         private Object recorded;
@@ -341,16 +344,23 @@ public class TestModelEvents extends ModelTestBase
             
         public void removed( Object x )
             { recorded = x; how = "rem"; }
+        
+        private Object comparable( Object x )
+            {
+            if (x instanceof Statement []) return Arrays.asList( (Statement []) x );
+            if (x instanceof Iterator) return iteratorToList( (Iterator) x );
+            return x;
+            }    
             
         public void recent( String wantHow, Object value ) 
             { 
-            assertEquals( value, recorded ); 
+            assertEquals( comparable( value ), comparable( recorded ) ); 
             assertEquals( wantHow, how );
-            value = how = null;
+            recorded = how = null;
             }
         }
         
-    public void testLumpListener()
+    public void testObjectListener()
         {
         OL ll = new OL();
         model.register( ll );
@@ -359,6 +369,34 @@ public class TestModelEvents extends ModelTestBase
         ll.recent( "add", s );
         model.remove( s2 );
         ll.recent( "rem", s2 );
+    /* */
+        List sList = Arrays.asList( statements( model, "gg HH ii; jj KK ll" ) );
+        model.add( sList );
+        ll.recent( "add", sList );
+        List sList2 = Arrays.asList( statements( model, "mm NN oo; pp QQ rr; ss TT uu" ) );
+        model.remove( sList2 );
+        ll.recent( "rem", sList2 );
+    /* */
+        Model m1 = modelWithStatements( "vv WW xx; yy ZZ aa" );
+        model.add( m1 );
+        ll.recent( "add", m1 );
+        Model m2 = modelWithStatements( "a B g; d E z" );
+        model.remove( m2 );
+        ll.recent( "rem", m2 );
+    /* */
+        Statement [] sa1 = statements( model, "th i k; l m n" );
+        model.add( sa1 );
+        ll.recent( "add", sa1 );
+        Statement [] sa2 = statements( model, "x o p; r u ch" );
+        model.remove( sa2 );
+        ll.recent( "rem", sa2 );
+    /* */
+        Statement [] si1 = statements( model, "u ph ch; psi om eh" );
+        model.add( asIterator( si1 ) );
+        ll.recent( "add", asIterator( si1 ) );
+        Statement [] si2 = statements( model, "at last the; end of these; tests ok guv" );
+        model.remove( asIterator( si2 ) );
+        ll.recent( "rem", asIterator( si2 ) );
         }
     }
 

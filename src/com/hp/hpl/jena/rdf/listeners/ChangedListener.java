@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ChangedListener.java,v 1.1 2003-07-28 14:50:45 chris-dollin Exp $
+  $Id: ChangedListener.java,v 1.2 2003-07-29 08:37:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.listeners;
@@ -11,7 +11,9 @@ import com.hp.hpl.jena.rdf.model.*;
 import java.util.*;
 
 /**
-    Class that merely notes that a change has occurred.
+    Class that merely notes that a change has occurred. The only method its user
+    should be interested in is <code>hasChanged()</code>.
+    
  	@author kers
 */
 public class ChangedListener implements ModelChangedListener
@@ -23,7 +25,7 @@ public class ChangedListener implements ModelChangedListener
     /**
         Record that a change has occurred by setting <code>changed</code> true.
     */
-    public void setChanged() { changed = true; }
+    protected void setChanged() { changed = true; }
     /**
         Answer true iff a change has occurred since the last hasChanged and set changed
         false.
