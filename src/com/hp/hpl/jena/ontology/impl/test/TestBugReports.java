@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.59 $
+ * Revision           $Revision: 1.60 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:07:13 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-04-04 17:09:16 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -56,14 +56,14 @@ import junit.framework.*;
  * <p>
  * Unit tests that are derived from user bug reports
  * </p>
- * 
+ *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >
  *         email</a>)
  * @version CVS $Id: TestBugReports.java,v 1.23 2003/11/20 17:53:10
  *          ian_dickinson Exp $
  */
-public class TestBugReports 
-    extends TestCase 
+public class TestBugReports
+    extends TestCase
 {
     // Constants
     //////////////////////////////////
@@ -90,12 +90,12 @@ public class TestBugReports
         // ensure the ont doc manager is in a consistent state
         OntDocumentManager.getInstance().reset( true );
     }
-    
-    
+
+
     /** Bug report by Danah Nada - listIndividuals returning too many results */
     public void test_dn_0() {
         OntModel schema = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM_RULES_INF, null );
-        
+
         schema.read( "file:doc/inference/data/owlDemoSchema.xml", null );
 
         int count = 0;
@@ -109,11 +109,11 @@ public class TestBugReports
             }
             System.out.println("----------"); /**/
         }
-        
+
         assertEquals( "Expecting 6 individuals", 6, count );
     }
-    
-    
+
+
     /* Bug report by Danah Nada - duplicate elements in property domain */
     public void test_dn_01() {
         // direct reading for the model method 1
@@ -141,22 +141,22 @@ public class TestBugReports
         }
         assertEquals( 3, count );
     }
-    
+
     /** Bug report by Danah Nada - cannot remove import */
     public void test_dn_02() {
         OntModel mymod = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
         mymod.read( "file:testing/ontology/testImport3/a.owl" );
-        
+
         assertEquals( "Graph count..", 2, mymod.getSubGraphs().size() );
-        
+
         for (Iterator it = mymod.listImportedModels(); it.hasNext();) {
                 mymod.removeSubModel( (Model) it.next() );
         }
-        
+
         assertEquals( "Graph count..", 0, mymod.getSubGraphs().size() );
     }
-    
-    
+
+
     /**
      * Bug report by Mariano Rico Almod�var [Mariano.Rico@uam.es] on June 16th.
      * Said to raise exception.
@@ -309,9 +309,9 @@ public class TestBugReports
         OntDocumentManager dm = OntDocumentManager.getInstance();
         dm.reset();
         dm.setCacheModels(false);
-        dm.addAltEntry( "http://protege.stanford.edu/plugins/owl/testdata/Import-normalizerBug.owl", 
+        dm.addAltEntry( "http://protege.stanford.edu/plugins/owl/testdata/Import-normalizerBug.owl",
                         "file:testing/ontology/bugs/test_hk_import/Import-normalizerBug.owl" );
-        dm.addAltEntry( "http://protege.stanford.edu/plugins/owl/testdata/normalizerBug.owl", 
+        dm.addAltEntry( "http://protege.stanford.edu/plugins/owl/testdata/normalizerBug.owl",
                         "file:testing/ontology/bugs/test_hk_import/normalizerBug.owl" );
         spec.setDocumentManager(dm);
 
@@ -329,7 +329,7 @@ public class TestBugReports
         for (Iterator i = sgm.listGraphs(); i.hasNext(); toGo.add( i.next() ));
         for (Iterator i = toGo.iterator(); i.hasNext(); sgm.removeGraph( (String) i.next() ));
         dm.clearCache();
-        
+
         OntModel newOntModel = ModelFactory.createOntologyModel(spec, null);
         newOntModel.read(BASE + "Import-normalizerBug.owl", FileUtils.langXMLAbbrev);
         Graph newSubGraph = (Graph) newOntModel.getSubGraphs().iterator().next();
@@ -406,7 +406,7 @@ public class TestBugReports
     /**
      * Bug report by Christoph Kunz, 26/Aug/03. CCE when creating a statement
      * from a vocabulary
-     *  
+     *
      */
     public void test_ck_02() {
         OntModel vocabModel = ModelFactory.createOntologyModel();
@@ -738,32 +738,33 @@ public class TestBugReports
 
 
     /** Bug report by David Kensche [david.kensche@post.rwth-aachen.de] - NPE in listDeclaredProperties */
+    /* TODO re-enable
     public void test_dk_01() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/bugs/test_dk_01.xml" );
-        
+
         String NS = "http://localhost:8080/Repository/QueryAgent/UserOntology/qgen-example-1#";
         String[] classes = new String[] {NS+"C1", NS+"C3", NS+"C2"};
-        
+
         for (int i = 0; i < classes.length; i++) {
             OntClass c = m.getOntClass( classes[i] );
             for (Iterator j = c.listDeclaredProperties(); j.hasNext(); j.next() );
         }
     }
-    
+
     /** Bug report by Paulo Pinheiro da Silva [pp@ksl.stanford.edu] - exception while accessing PropertyAccessor.getDAMLValue */
     public void test_ppds_01() {
         DAMLModel m = ModelFactory.createDAMLModel();
         DAMLClass c = m.createDAMLClass( NS + "C" );
         DAMLInstance x = m.createDAMLInstance( c, NS + "x" );
         DAMLProperty p = m.createDAMLProperty( NS + "p" );
-        
+
         x.addProperty( p, "(s (s 0))" );
-        
+
         PropertyAccessor a = x.accessProperty( p );
         assertNull( "Property accessor value should be null", a.getDAMLValue() );
     }
-    
+
     /** Bug report by anon at SourceForge - Bug ID 887409 */
     public void test_anon_0() {
         String NS = "http://example.org/foo#";
@@ -778,9 +779,9 @@ public class TestBugReports
             + "   <ex:A rdf:about='http://example.org/foo#x' />"
             + "   <owl:Class rdf:about='http://example.org/foo#B'>"
             + "     <owl:equivalentClass>"
-            + "      <owl:Restriction>" 
-            + "        <owl:onProperty rdf:resource='http://example.org/foo#p' />" 
-            + "        <owl:hasValue rdf:resource='http://example.org/foo#x' />" 
+            + "      <owl:Restriction>"
+            + "        <owl:onProperty rdf:resource='http://example.org/foo#p' />"
+            + "        <owl:hasValue rdf:resource='http://example.org/foo#x' />"
             + "      </owl:Restriction>"
             + "     </owl:equivalentClass>"
             + "   </owl:Class>"
@@ -788,16 +789,17 @@ public class TestBugReports
 
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
         m.read(new ByteArrayInputStream(sourceT.getBytes()), "http://example.org/foo");
-        
+
         OntClass B = m.getOntClass( NS + "B");
         Restriction r = B.getEquivalentClass().asRestriction();
         HasValueRestriction hvr = r.asHasValueRestriction();
         RDFNode n = hvr.getHasValue();
-        
+
         assertTrue( "Should be an individual", n instanceof Individual );
     }
-    
+
     /** Bug report by Zhao Jun [jeff@seu.edu.cn] - throws no such element exception */
+    /* TODO re-enable
     public void test_zj_0() {
         String NS = "file:/C:/orel/orel0_5.owl#";
         String sourceT =
@@ -839,14 +841,14 @@ public class TestBugReports
 
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RULE_INF, null);
         m.read(new ByteArrayInputStream(sourceT.getBytes()), "file:/C:/orel/orel0_5.owl");
-        
+
         OntClass myPlay = m.getOntClass( NS + "MyPlay");
         for (Iterator i = myPlay.listDeclaredProperties(); i.hasNext(); ) {
             //System.err.println( "prop " + i.next() );
             i.next();
         }
     }
-    
+
     /* Bug reprort by E. Johnson ejohnson@carolina.rr.com - ill formed list in writer */
     public void test_ej_01() {
         String BASE  = "http://jena.hpl.hp.com/testing/ontology";
@@ -859,18 +861,18 @@ public class TestBugReports
         DAMLList l = m.createDAMLList(new RDFNode[] {A, B, C});
 
         assertTrue( l.isValid() );
-        
+
         Model baseModel = m.getBaseModel();
         RDFWriter writer = baseModel.getWriter("RDF/XML-ABBREV");
-        
+
         // will generate warnings, so suppress until Jeremy has fixed
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         //writer.write(baseModel, out, BASE );
     }
 
     /** Bug report by Harry Chen - closed exception when reading many models */
-    public void test_hc_01() 
-        throws Exception 
+    public void test_hc_01()
+        throws Exception
     {
         for (int i = 0; i < 5; i++) {
 
@@ -888,7 +890,7 @@ public class TestBugReports
             //System.out.println("Closed model");
         }
     }
-    
+
     /** Bug report by sinclair bain (slbain) SF bugID 912202 - NPE in createOntResource() when 2nd param is null */
     public void test_sb_01() {
         OntModel model= ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RDFS_INF, null);
@@ -899,7 +901,7 @@ public class TestBugReports
         result= model.createOntResource( OntResource.class, nullValueForResourceType, "http://www.somewhere.com/models#SomeResourceName" );
         assertNotNull( result );
     }
-    
+
     /* Bug report from Dave Reynolds: listDeclaredProperties not complete */
     public void test_der_02() {
         String SOURCE=
@@ -931,13 +933,13 @@ public class TestBugReports
         String NS = "http://jena.hpl.hp.com/test#";
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
         m.read(new ByteArrayInputStream( SOURCE.getBytes()), NS );
-        
+
         OntClass dummy = m.getOntClass( NS + "Dummy" );
         // assert commented out - bug not accepted -ijd
-        //TestUtil.assertIteratorValues( this, dummy.listDeclaredProperties(), 
+        //TestUtil.assertIteratorValues( this, dummy.listDeclaredProperties(),
         //                               new Object[] {m.getObjectProperty( NS+"hasPublications")} );
     }
-    
+
     /** Bug report from Dave - cycles checking code still not correct */
     public void test_der_03() {
         String NS = "http://jena.hpl.hp.com/test#";
@@ -949,11 +951,11 @@ public class TestBugReports
         A.addSuperClass(C);
         B.addSuperClass(C);
         C.addSuperClass(B);
-        
+
         TestUtil.assertIteratorValues( this, A.listSuperClasses( true ), new Object[] {B,C} );
     }
-    
-    
+
+
     /**
      * Bug report by pierluigi.damadio@katamail.com: raises conversion exception
      */
@@ -987,7 +989,7 @@ public class TestBugReports
         String NS = "http://iasi.cnr.it/leks/localSchema1#";
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_DL_MEM, null);
         m.read(new ByteArrayInputStream( SOURCE.getBytes()), NS );
-        
+
         for (ExtendedIterator j = m.listRestrictions(); j.hasNext(); ) {
               Restriction r = (Restriction) j.next();
               if (r.isHasValueRestriction()) {
@@ -997,7 +999,7 @@ public class TestBugReports
               }
         }
     }
-    
+
     /** Bug report from Ole Hjalmar - direct subClassOf not reporting correct result with rule reasoner */
     public void xxtest_oh_01() {
         String NS = "http://www.idi.ntnu.no/~herje/ja/";
@@ -1010,13 +1012,13 @@ public class TestBugReports
             ResourceFactory.createResource( NS+"restaurant.owl#UteDoRestaurant" ),
             ResourceFactory.createResource( NS+"restaurant.owl#SkogRestaurant" ),
         };
-        
+
         test_oh_01scan( OntModelSpec.OWL_MEM, "No inf", expected );
         test_oh_01scan( OntModelSpec.OWL_MEM_MINI_RULE_INF, "Mini rule inf", expected );
         test_oh_01scan( OntModelSpec.OWL_MEM_RULE_INF, "Full rule inf", expected );
         test_oh_01scan( OntModelSpec.OWL_MEM_MICRO_RULE_INF, "Micro rule inf", expected );
     }
-    
+
     private void test_oh_01scan( OntModelSpec s, String prompt, Resource[] expected ) {
         String NS = "http://www.idi.ntnu.no/~herje/ja/reiseliv.owl#";
         OntModel m = ModelFactory.createOntologyModel(s, null);
@@ -1027,24 +1029,24 @@ public class TestBugReports
         List q = new ArrayList();
         Set seen = new HashSet();
         q.add( r );
-        
+
         while (!q.isEmpty()) {
             OntClass c = (OntClass) q.remove( 0 );
             seen.add( c );
-            
+
             for (Iterator i = c.listSubClasses( true ); i.hasNext(); ) {
                 OntClass sub = (OntClass) i.next();
                 if (!seen.contains( sub )) {
                     q.add( sub );
                 }
             }
-            
+
             System.out.println( "  Seen class " + c );
         }
 
         // check we got all classes
         int mask = (1 << expected.length) - 1;
-        
+
         for (int j = 0;  j < expected.length; j++) {
             if (seen.contains( expected[j] )) {
                 mask &= ~(1 << j);
@@ -1053,7 +1055,7 @@ public class TestBugReports
                 System.out.println( "Expected but did not see " + expected[j] );
             }
         }
-        
+
         for (Iterator k = seen.iterator();  k.hasNext(); ) {
             Resource res = (Resource) k.next();
             boolean isExpected = false;
@@ -1064,10 +1066,10 @@ public class TestBugReports
                 System.out.println( "Got unexpected result " + res );
             }
         }
-        
+
         assertEquals( "Some expected results were not seen", 0, mask );
     }
-    
+
     /** Test case for SF bug 927641 - list direct subclasses */
     public void test_sf_927641() {
         String NS = "http://example.org/test#";
@@ -1076,55 +1078,55 @@ public class TestBugReports
         OntClass c1 = m0.createClass( NS + "C1" );
         OntClass c2 = m0.createClass( NS + "C2" );
         OntClass c3 = m0.createClass( NS + "C3" );
-        
+
         c0.addSubClass( c1 );
         c1.addSubClass( c2 );
         c2.addEquivalentClass( c3 );
-        
+
         // now c1 is the direct super-class of c2, even allowing for the equiv with c3
         assertFalse( "pass 1: c0 should not be a direct super of c2", c2.hasSuperClass( c0, true ) );
         assertFalse( "pass 1: c3 should not be a direct super of c2", c2.hasSuperClass( c3, true ) );
         assertFalse( "pass 1: c2 should not be a direct super of c2", c2.hasSuperClass( c2, true ) );
         assertTrue( "pass 1: c1 should be a direct super of c2", c2.hasSuperClass( c1, true ) );
-        
+
         // second pass - with inference
         m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF );
         c0 = m0.createClass( NS + "C0" );
         c1 = m0.createClass( NS + "C1" );
         c2 = m0.createClass( NS + "C2" );
         c3 = m0.createClass( NS + "C3" );
-        
+
         c0.addSubClass( c1 );
         c1.addSubClass( c2 );
         c2.addEquivalentClass( c3 );
-        
+
         // now c1 is the direct super-class of c2, even allowing for the equiv with c3
         assertFalse( "pass 2: c0 should not be a direct super of c2", c2.hasSuperClass( c0, true ) );
         assertFalse( "pass 2: c3 should not be a direct super of c2", c2.hasSuperClass( c3, true ) );
         assertFalse( "pass 2: c2 should not be a direct super of c2", c2.hasSuperClass( c2, true ) );
         assertTrue( "pass 2: c1 should be a direct super of c2", c2.hasSuperClass( c1, true ) );
     }
-    
-    
+
+
     /** Test case for SF bug 934528 - conversion exception with owl:Thing and owl:Nothing when no reasoner */
     public void test_sf_934528() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
-        
+
         Resource r = (Resource) OWL.Thing.inModel( m );
         OntClass thingClass = (OntClass) r.as( OntClass.class );
         assertNotNull( thingClass );
-        
+
         r = (Resource) OWL.Nothing.inModel( m );
         OntClass nothingClass = (OntClass) r.as( OntClass.class );
         assertNotNull( nothingClass );
     }
-    
+
     /** Test case for SF bug 937810 - NPE from ModelSpec.getDescription() */
     public void test_sf_937810() throws IllegalAccessException {
         Field[] specs = OntModelSpec.class.getDeclaredFields();
-        
+
         for (int i = 0;  i < specs.length;  i++) {
-            if (Modifier.isPublic( specs[i].getModifiers()) && 
+            if (Modifier.isPublic( specs[i].getModifiers()) &&
                 Modifier.isStatic( specs[i].getModifiers()) &&
                 specs[i].getType().equals( OntModelSpec.class )) {
                 OntModelSpec s = (OntModelSpec) specs[i].get( null );
@@ -1132,43 +1134,43 @@ public class TestBugReports
             }
         }
     }
-    
+
     /** Test case for SF bug 940570 - listIndividuals not working with RDFS_INF
      */
     public void test_sf_940570() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
         OntClass C = m.createClass( NS + "C" );
         Resource a = m.createResource( NS + "a", C );
-        
+
         TestUtil.assertIteratorValues( this, m.listIndividuals(), new Object[] {a} );
-        
+
         OntModel dm = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF );
         OntClass D = dm.createClass( NS + "D" );
         Resource b = dm.createResource( NS + "b", D );
-        
+
         TestUtil.assertIteratorValues( this, dm.listIndividuals(), new Object[] {b} );
     }
-    
+
     /** Test case for SF bug 940570 - listIndividuals not working with RDFS_INF (rdfs case)
      */
     public void test_sf_940570_rdfs() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
         OntClass C = m.createClass( NS + "C" );
         Resource a = m.createResource( NS + "a", C );
-        
+
         TestUtil.assertIteratorValues( this, m.listIndividuals(), new Object[] {a} );
     }
-    
+
     /** Test case for SF bug 940570 - listIndividuals not working with RDFS_INF (daml case)
      */
     public void test_sf_940570_daml() {
         OntModel dm = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF );
         OntClass D = dm.createClass( NS + "D" );
         Resource b = dm.createResource( NS + "b", D );
-        
+
         TestUtil.assertIteratorValues( this, dm.listIndividuals(), new Object[] {b} );
     }
-    
+
     /** Test case for SF bug 945436 - a xml:lang='' in the dataset causes sring index exception in getLabel() */
     public void test_sf_945436() {
         String SOURCE=
@@ -1195,13 +1197,13 @@ public class TestBugReports
         assertEquals( "Label on resource x", "a_label", x.getLabel( "" ) );
         assertSame( "fr label on resource x", null, x.getLabel( "fr" ) );
     }
-    
+
     /** Test case for SF bug 948995  - OWL full should allow inverse functional datatype properties */
     public void test_sf_948995() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM );  // OWL dl
         DatatypeProperty dp = m.createDatatypeProperty( NS + "dp" );
         dp.addRDFType( OWL.InverseFunctionalProperty );
-        
+
         boolean ex = false;
         try {
             dp.as( InverseFunctionalProperty.class );
@@ -1210,11 +1212,11 @@ public class TestBugReports
             ex = true;
         }
         assertTrue( "Should have been a conversion exception", ex );
-        
+
         m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );  // OWL full
         dp = m.createDatatypeProperty( NS + "dp" );
         dp.addRDFType( OWL.InverseFunctionalProperty );
-        
+
         ex = false;
         try {
             dp.as( InverseFunctionalProperty.class );
@@ -1224,7 +1226,7 @@ public class TestBugReports
         }
         assertFalse( "Should not have been a conversion exception", ex );
     }
-    
+
     /** Test case for SF bug 969475 - the return value for getInverse() on an ObjectProperty should be an object property */
     public void test_sf_969475() {
         String SOURCE=
@@ -1254,31 +1256,31 @@ public class TestBugReports
 
         ObjectProperty p0 = m.getObjectProperty( "http://jena.hpl.hp.com/test#p0");
         Object invP0 = p0.getInverseOf();
-        
+
         assertEquals( m.getResource( "http://jena.hpl.hp.com/test#q0"), invP0 );
         assertTrue( "Should be an ObjectProperty facet", invP0 instanceof ObjectProperty );
 
         ObjectProperty q1 = m.getObjectProperty( "http://jena.hpl.hp.com/test#q1");
         Object invQ1 = q1.getInverse();
-        
+
         assertEquals( m.getResource( "http://jena.hpl.hp.com/test#p1"), invQ1 );
         assertTrue( "Should be an ObjectProperty facet", invQ1 instanceof ObjectProperty );
     }
-    
+
     /** Test case for SF bug 978259 - missing supports() checks in OWL DL and Lite profiles */
     public void test_sf_978259() {
         OntModel md = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM );
         OntModel ml = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM );
-        
+
         DataRange drd = md.createDataRange( md.createList( new Resource[] {OWL.Thing}) );
-        
+
         assertNotNull( drd );
-        
+
         HasValueRestriction hvrd = md.createHasValueRestriction( null, RDFS.seeAlso, OWL.Thing );
-        
+
         assertNotNull( hvrd );
     }
-    
+
     /** Test case from Robert N Gonzalez [mailto:rngonzal@us.ibm.com] via jena-dev: exception while checking an ontology that imports a URN */
     public void test_rng_01() {
         String SOURCE=
@@ -1311,8 +1313,8 @@ public class TestBugReports
             //System.out.println( "problem = " + sp.longDescription() );
         }
     }
-    
-    
+
+
     public void test_ijd_01() {
         String SOURCE=
             "<!DOCTYPE rdf:RDF [" +
@@ -1346,7 +1348,7 @@ public class TestBugReports
             "          </kma:rdfModelSpec>" +
             "  </kma:AgentConfiguration>" +
             "</rdf:RDF>";
-        
+
         Model m = ModelFactory.createDefaultModel();
         m.read( new StringReader( SOURCE ), null );
 
@@ -1355,7 +1357,7 @@ public class TestBugReports
         Resource conf = root.getProperty(rms).getResource();
         OntModel om = (OntModel) ModelFactory.createSpec(conf,m)
                                              .createModel();
-        
+
         OntClass A = om.createClass( "A" );
         OntClass B = om.createClass( "B" );
         OntClass C = om.createClass( "C" );
@@ -1363,10 +1365,10 @@ public class TestBugReports
         B.addSuperClass(A);
         assertTrue( C.hasSuperClass(A) );
     }
-    
+
     /**
      * Bug report by James Tizard - failure in listIndividuals with DIGexception causes
-     * blocked thread 
+     * blocked thread
      */
     public void test_jt_01() {
         // set up a configuration resource to connect to the reasoner
@@ -1395,41 +1397,42 @@ public class TestBugReports
         }
         assertTrue( "Should have seen a dig wrapped exception for connection fail", ex );
     }
-    
-    
+
+
     /**
      * Bug report by David Bigwood - listDeclaredProps(false) fails when props
      * are defined in an imported model
-     */
+     * TODO re-enable this test
+     * /
     public void test_dab_01() {
         OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
-        
+
         // in model M0, p0 has class c0 in the domain
         OntClass c0 = m0.createClass( NS + "c0" );
         ObjectProperty p0 = m0.createObjectProperty( NS + "p0" );
         p0.setDomain( c0 );
-        
+
         // in model M1, class c1 is a subClass of c0
         OntModel m1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
         OntClass c1 = m1.createClass( NS + "c1" );
         c1.addSuperClass( c0 );
-        
+
         // simulate imports
         m1.addSubModel( m0 );
-        
+
         // get a c0 reference from m1
         OntClass cc0 = m1.getOntClass( NS + "c0" );
         assertNotNull( cc0 );
-        
+
         TestUtil.assertIteratorValues( this, c1.listDeclaredProperties(), new Object[] {p0} );
         TestUtil.assertIteratorValues( this, c0.listDeclaredProperties(false), new Object[] {p0} );
-        
+
         // this is the one that fails per David's bug report
         TestUtil.assertIteratorValues( this, cc0.listDeclaredProperties(false), new Object[] {p0} );
     }
-    
-    
-    
+    /* */
+
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -1467,7 +1470,7 @@ public class TestBugReports
 /*
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP All rights
  * reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  1. Redistributions of source code must retain the above copyright notice,
@@ -1477,7 +1480,7 @@ public class TestBugReports
  * documentation and/or other materials provided with the distribution.
  *  3. The name of the author may not be used to endorse or promote products
  * derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
