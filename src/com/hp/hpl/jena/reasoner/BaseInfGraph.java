@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.8 2003-05-05 15:16:00 der Exp $
+ * $Id: BaseInfGraph.java,v 1.9 2003-05-12 15:17:26 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,7 +17,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-05-05 15:16:00 $
+ * @version $Revision: 1.9 $ on $Date: 2003-05-12 15:17:26 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -178,14 +178,6 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         boolean contained =  i.hasNext();
         i.close();
         return contained;
-    }
-    
-    /** 
-        returns this Graph's reifier. Each call on a given Graph gets the same
-        Reifier object.
-    */
-    public Reifier getReifier() {
-        return null;
     }
     
     /**
