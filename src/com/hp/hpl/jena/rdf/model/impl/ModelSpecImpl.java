@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.33 2004-08-03 11:20:22 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.34 2004-08-04 10:42:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -9,13 +9,11 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.test.TestSetRules;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.*;
 
 /**
@@ -303,7 +301,9 @@ public abstract class ModelSpecImpl implements ModelSpec
          <code>R</code> in the model <code>rs</code>. Will throw 
          NoReasonerSuppliedException if no jms:reasoner is supplied, or
          NoSuchReasonerException if the reasoner value isn't known to
-         ReasonerRegistry. 
+         ReasonerRegistry. If any <code>ruleSetURL</code>s are supplied, the
+         reasoner factory must be a RuleReasonerFactory, and is wrapped so that
+         the supplied rules are specific to this Factory.
     */
     public static ReasonerFactory getReasonerFactory( Resource R, Model rs )
         {
@@ -313,30 +313,25 @@ public abstract class ModelSpecImpl implements ModelSpec
         String rrs = rr.getURI();
         ReasonerFactory rf = ReasonerRegistry.theRegistry().getFactory( rrs );
         if (rf == null) throw new NoSuchReasonerException( rrs );
+        // System.err.println( ">> getReasonerFactory " + R );
         StmtIterator rulesets = rs.listStatements( R, JMS.ruleSetURL, (RDFNode) null );
-        while (rulesets.hasNext()) load( rf, rulesets.nextStatement().getResource() );
+        if (rulesets.hasNext())
+            {
+            TestSetRules.WrappedRuleReasoner f = new TestSetRules.WrappedRuleReasoner( (RuleReasonerFactory) rf );
+            while (rulesets.hasNext()) load( f, rulesets.nextStatement().getResource() );
+            rf = f;
+            }
         return rf;
         }
     
-   
-
     /**
          @param rf
          @param resource
          Rule.parseRules(Util.loadResourceFile(RULE_FILE))
     */
-    private static void load( ReasonerFactory rf, Resource u )
+    private static void load( RuleReasonerFactory rf, Resource u )
         {
-        RuleReasonerFactory rrf = (RuleReasonerFactory) rf;
-        String uri = u.getURI();
-        try { 
-            InputStream is = new URL( uri ).openStream();
-            BufferedReader bis = new BufferedReader( new InputStreamReader( is ) );
-            bis.close();
-        }
-            // rrf.setRules( Rule.parseRules( Util.loadResourceFile( uri ) ) ); } 
-        catch (MalformedURLException e) { throw new RulesetNotFoundException( uri ); }
-        catch (IOException e) { throw new RulesetNotFoundException( uri ); }
+        rf.addRules( Rule.rulesFromURL( u.getURI() ) ); 
         }
                 
     }

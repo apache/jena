@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: BaseRuleReasonerFactory.java,v 1.1 2004-07-30 15:16:02 chris-dollin Exp $
+  $Id: BaseRuleReasonerFactory.java,v 1.2 2004-08-04 10:43:10 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,8 +26,8 @@ public class BaseRuleReasonerFactory
          Set the rules-list to be <code>rules</code>, which must be a List of 
          <code>Rule</code> objects.
     */
-    public void setRules(List rules)
-        { this.rules = rules; }
+    public void addRules(List rules)
+        { this.rules.addAll( rules ); }
     }
 
 /*

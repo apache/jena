@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.20 2004-08-03 11:20:59 chris-dollin Exp $
+ * $Id: Util.java,v 1.21 2004-08-04 10:43:10 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -16,13 +16,11 @@ import com.hp.hpl.jena.reasoner.Finder;
 import com.hp.hpl.jena.reasoner.IllegalParameterException;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 
 import java.io.*;
-import java.net.*;
 import java.util.*;
 
 //Thanks to Bradley Schatz (Bradley@greystate.com) for code patches
@@ -32,7 +30,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2004-08-03 11:20:59 $
+ * @version $Revision: 1.21 $ on $Date: 2004-08-04 10:43:10 $
  */
 public class Util {
 
@@ -225,36 +223,15 @@ public class Util {
      * Treats lines starting with # as comment lines, as per stringFromReader
      */
     public static String loadResourceFile( String filename ) {
-        return stringFromReader( FileUtils.openResourceFile( filename ) );
+        return Rule.rulesStringFromReader( FileUtils.openResourceFile( filename ) );
     }
     
-    /**
-         Answer a String which is the concatenation (with newline glue) of all the
-         non-comment lines readable from <code>src</code>. A comment line is
-         one starting "#" or "//".
-     */
-    private static String stringFromReader( BufferedReader src ) {
-        try
-            {
-            StringBuffer result = new StringBuffer();
-            String line;
-            while ((line = src.readLine()) != null) {
-                if (line.startsWith( "#" ) || line.startsWith( "//" )) continue;     // Skip comment lines
-                result.append( line );
-                result.append( "\n" );
-            }
-            return result.toString();
-            }
-        catch (IOException e) 
-            { throw new WrappedIOException( e ); }
-        }
-
     /**
      * Open a file defined by a URL and read all of it into a single string.
      * If the URL fails it will try a plain file name as well.
      */
     public static String loadURLFile(String urlStr) throws IOException {
-        BufferedReader dataReader = readerFromURL( urlStr );
+        BufferedReader dataReader = FileUtils.readerFromURL( urlStr );
         StringWriter sw = new StringWriter(1024);
         char buff[] = new char[1024];
         while (dataReader.ready()) {
@@ -268,24 +245,6 @@ public class Util {
         return sw.toString();
     }
     
-    /**
-         Answer a BufferedReader that reads from the contents of the suppied
-         URL string or, if that is a malformed URL, treats it as a plain file name.
-    */
-    private static BufferedReader readerFromURL( String urlStr ) throws FileNotFoundException
-        {
-        try {
-            URL url = new URL(urlStr);
-            return new BufferedReader( new InputStreamReader( url.openStream() ) ) ;
-            
-        } catch (java.net.MalformedURLException e) {
-            // Try as a file.
-            return new BufferedReader(new FileReader(urlStr));
-        }
-        catch (IOException e)
-        { throw new WrappedIOException( e ); }
-        }
-
     /**
      * Helper method - extracts the truth of a boolean configuration
      * predicate.

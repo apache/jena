@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RuleReasonerFactory.java,v 1.1 2004-07-30 15:16:02 chris-dollin Exp $
+  $Id: RuleReasonerFactory.java,v 1.2 2004-08-04 10:43:10 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,12 +18,12 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
 public interface RuleReasonerFactory extends ReasonerFactory
     {
     /**
-         Replace the current set of rules in this factory with a new set of
+         Augment the current set of rules in this factory with a new set of
          rules, to be used in future invocations of <code>create</code>.
          
          @param rules a List of Rule objects
     */
-    void setRules( List rules );
+    void addRules( List rules );
     }
 
 /*

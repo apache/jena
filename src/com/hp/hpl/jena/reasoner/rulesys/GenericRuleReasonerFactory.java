@@ -5,11 +5,9 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasonerFactory.java,v 1.6 2004-07-30 15:16:02 chris-dollin Exp $
+ * $Id: GenericRuleReasonerFactory.java,v 1.7 2004-08-04 10:43:09 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
-
-import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
@@ -22,13 +20,13 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * calls to the created reasoner or though parameters in the configuration Model.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2004-07-30 15:16:02 $
+ * @version $Revision: 1.7 $ on $Date: 2004-08-04 10:43:09 $
  */
 public class GenericRuleReasonerFactory extends BaseRuleReasonerFactory 
     implements RuleReasonerFactory {
     
     /** Single global instance of this factory */
-    private static ReasonerFactory theInstance = new GenericRuleReasonerFactory();
+    private static GenericRuleReasonerFactory theInstance = new GenericRuleReasonerFactory();
     
     /** Static URI for this reasoner type */
     public static final String URI = "http://jena.hpl.hp.com/2003/GenericRuleReasoner";
@@ -39,7 +37,7 @@ public class GenericRuleReasonerFactory extends BaseRuleReasonerFactory
     /**
      * Return the single global instance of this factory
      */
-    public static ReasonerFactory theInstance() {
+    public static GenericRuleReasonerFactory theInstance() {
         return theInstance;
     }
     

@@ -7,9 +7,11 @@ package com.hp.hpl.jena.util;
 
 import java.io.*;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.*;
+
+import java.net.URL;
 import java.nio.charset.Charset ;
+
 import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.WrappedIOException;
@@ -195,6 +197,23 @@ public class FileUtils {
     	}
     	return is;
     }
+
+    /**
+         Answer a BufferedReader that reads from the contents of the suppied
+         URL string or, if that is a malformed URL, treats it as a plain file name.
+         UTF-8 encoding is used.
+    */
+    public static BufferedReader readerFromURL( String urlStr ) 
+        {
+        try { return asBufferedUTF8( new URL(urlStr).openStream() ); }    
+        catch (java.net.MalformedURLException e) 
+            { // Try as a plain filename.
+            try { return asBufferedUTF8( new FileInputStream( urlStr ) ); }
+            catch (FileNotFoundException f) { throw new WrappedIOException( f ); }
+            }
+        catch (IOException e)
+            { throw new WrappedIOException( e ); }
+        }
 
 }
 

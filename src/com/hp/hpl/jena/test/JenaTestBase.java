@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.11 2004-07-30 15:16:03 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.12 2004-08-04 10:43:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -106,6 +106,11 @@ public class JenaTestBase extends TestCase
         if (hasAsParent( subClass, superClass ) == false)
             fail( "" + subClass + " should have " + superClass + " as a parent" );
         }
+
+    public List append(List L, List R)
+        { List result = new ArrayList( L );
+        result.addAll( R );
+        return result; }
 
     }
 
