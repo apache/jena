@@ -41,7 +41,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:18:39 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-02-11 15:10:15 $
  */
 public class StatementImpl //extends ResourceImpl 
           implements Statement {
@@ -325,7 +325,7 @@ public class StatementImpl //extends ResourceImpl
         { return stringReplace( s, "", false ); };
 
     protected StatementImpl stringReplace( String s, String lang, boolean wellFormed )
-        { return replace( new LiteralImpl( Node.makeLiteral( s, lang, wellFormed ), model ) ); };
+        { return replace( new LiteralImpl( Node.createLiteral( s, lang, wellFormed ), model ) ); };
             
     /** it turns out to be handy to return this StatementImpl as the result */ 
     protected StatementImpl replace(RDFNode n) throws RDFException {

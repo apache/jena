@@ -41,7 +41,7 @@ import com.hp.hpl.jena.enhanced.*;
  *  A base class on which the other containers are built.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:07 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-11 15:10:16 $'
  */
 public class ContainerImpl extends ResourceImpl
                            implements Container, ContainerI {
@@ -159,7 +159,7 @@ public class ContainerImpl extends ResourceImpl
     }
 
     private Literal literal( String s, String lang )
-        { return new LiteralImpl( Node.makeLiteral( s, lang, false ), (Model) getModel() ); }
+        { return new LiteralImpl( Node.createLiteral( s, lang, false ), (Model) getModel() ); }
             
     public NodeIterator iterator() throws RDFException {
         return ((ModelI)getModel()).listContainerMembers(this, iteratorFactory);

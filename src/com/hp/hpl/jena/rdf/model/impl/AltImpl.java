@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Alt.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-11 15:10:14 $'
  */
 public class AltImpl extends ContainerImpl implements Alt {
     
@@ -201,12 +201,12 @@ public class AltImpl extends ContainerImpl implements Alt {
     }    
     
     public Alt setDefault(String o, String l) throws RDFException {
-        return setDefault( new LiteralImpl( Node.makeLiteral( o,l, false ), (Model) getModel()) );
+        return setDefault( new LiteralImpl( Node.createLiteral( o,l, false ), (Model) getModel()) );
     }      
         
     protected Statement getDefaultStatement() throws RDFException {
         StmtIterator iter = getModel().listStatements(
-                             new SelectorImpl(this, RDF.li(1), (RDFNode) null));
+                             new SimpleSelector(this, RDF.li(1), (RDFNode) null));
         if (!iter.hasNext()) {
             return null;
         }

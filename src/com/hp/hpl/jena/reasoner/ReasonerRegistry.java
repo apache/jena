@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.3 2003-02-10 10:13:20 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.4 2003-02-11 15:11:19 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -32,7 +32,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-02-10 10:13:20 $
+ * @version $Revision: 1.4 $ on $Date: 2003-02-11 15:11:19 $
  */
 public class ReasonerRegistry {
 
@@ -192,7 +192,7 @@ public class ReasonerRegistry {
      */
     public static Node makeDirect(Node node) {
         String directName = "urn:x-hp-direct-predicate:" + node.getURI().replace(':','_') ;
-        return Node.makeURI(directName);
+        return Node.createURI(directName);
     }
     
 }

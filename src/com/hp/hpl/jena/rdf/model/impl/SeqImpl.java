@@ -40,7 +40,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:36 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-11 15:10:14 $' 
  */
 public class SeqImpl extends ContainerImpl implements Seq {
 
@@ -301,7 +301,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     }
         
     private Literal literal( String s, String lang )
-        { return new LiteralImpl( Node.makeLiteral( s, lang, false ), (Model) getModel() ); }
+        { return new LiteralImpl( Node.createLiteral( s, lang, false ), (Model) getModel() ); }
         
     protected void shiftUp(int start, int finish) throws RDFException {
         Statement stmt = null;

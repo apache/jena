@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-02-10 09:57:38 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-02-11 15:10:17 $'
  */
 
 import com.hp.hpl.jena.mem.*;
@@ -138,7 +138,7 @@ abstract public class ModelCom extends EnhGraph
     }
     
     private Literal literal( String s, String lang, boolean wellFormed )
-        { return new LiteralImpl( Node.makeLiteral( s, lang, wellFormed), (Model) this ); }
+        { return new LiteralImpl( Node.createLiteral( s, lang, wellFormed), (Model) this ); }
     
     public Model add(Resource s, Property p, String o, String l)
        throws RDFException {
@@ -528,7 +528,7 @@ abstract public class ModelCom extends EnhGraph
      */
     public Literal createTypedLiteral(String v) throws RDFException {
         LiteralLabel ll = new LiteralLabel(v);
-        return new LiteralImpl(Node.makeLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
     }
 
         
@@ -545,7 +545,7 @@ abstract public class ModelCom extends EnhGraph
     public Literal createTypedLiteral(String lex, String lang, RDFDatatype dtype) 
                                         throws DatatypeFormatException {
         LiteralLabel ll = new LiteralLabel(lex, lang, dtype);
-        return new LiteralImpl(Node.makeLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
     }
     
     /**
@@ -557,7 +557,7 @@ abstract public class ModelCom extends EnhGraph
      */
     public Literal createTypedLiteral(Object value, String lang, RDFDatatype dtype) {
         LiteralLabel ll = new LiteralLabel(value, lang, dtype);
-        return new LiteralImpl(Node.makeLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
     }
 
     /**
@@ -573,7 +573,7 @@ abstract public class ModelCom extends EnhGraph
     public Literal createTypedLiteral(String lex, String lang, String typeURI) throws RDFException {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = new LiteralLabel(lex, lang, dt);
-        return new LiteralImpl(Node.makeLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
     }
         
     /**
@@ -586,7 +586,7 @@ abstract public class ModelCom extends EnhGraph
     public Literal createTypedLiteral(Object value, String lang, String typeURI) {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
         LiteralLabel ll = new LiteralLabel(value, lang, dt);
-        return new LiteralImpl(Node.makeLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
     }
     
     /**
@@ -597,7 +597,7 @@ abstract public class ModelCom extends EnhGraph
      */
     public Literal createTypedLiteral(Object value) {
         LiteralLabel ll = new LiteralLabel(value);
-        return new LiteralImpl(Node.makeLiteral(ll), (Model)this);
+        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
     }
 
 
@@ -746,9 +746,9 @@ abstract public class ModelCom extends EnhGraph
     
     static private Node makeURI(String uri) {
         if ( uri == null )
-            return Node.makeAnon(new AnonId());
+            return Node.createAnon(new AnonId());
         else
-            return Node.makeURI(uri);
+            return Node.createURI(uri);
     }
     
     public Alt getAlt(String uri) throws RDFException {
@@ -901,7 +901,7 @@ abstract public class ModelCom extends EnhGraph
     public Statement getProperty(Resource s,Property p) throws RDFException {
         StmtIterator iter = null;
         try {
-            iter = listStatements(new SelectorImpl(s, p, (RDFNode) null));
+            iter = listStatements(new SimpleSelector(s, p, (RDFNode) null));
             if (iter.hasNext()) {
                 return iter.nextStatement();
             } else {
@@ -965,8 +965,8 @@ abstract public class ModelCom extends EnhGraph
     public StmtIterator listStatements(final Selector selector)
       throws RDFException {
         Iterator iter;
-        if (selector instanceof SelectorImpl) {
-            SelectorImpl s = (SelectorImpl) selector;
+        if (selector instanceof SimpleSelector) {
+            SimpleSelector s = (SimpleSelector) selector;
             iter = graph.find(s.asTripleMatch(this));
         } else {
             iter = graph.find(new StandardTripleMatch(null,null,null){
@@ -1063,7 +1063,7 @@ abstract public class ModelCom extends EnhGraph
         return true;
     }
     public Resource createResource() throws RDFException {
-        return IteratorFactory.asResource(Node.makeAnon(new AnonId()),this);
+        return IteratorFactory.asResource(Node.createAnon(new AnonId()),this);
     }
     public Resource createResource(String uri) throws RDFException {
         return getResource(uri);

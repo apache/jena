@@ -41,7 +41,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-30 10:25:18 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-11 15:10:15 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
 //    private Node node;
@@ -136,7 +136,7 @@ public class LiteralImpl extends EnhNode implements Literal {
      *Model implementors should use Literal instructors which include the Model.
      */
     public LiteralImpl(String s, String l, boolean wellFormed,Model m) {    	
-        this(Node.makeLiteral(s,l,wellFormed),m);
+        this(Node.createLiteral(s,l,wellFormed),m);
     }
     
     /**
