@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-18 21:00:58 $
+ * Last modified on   $Date: 2004-02-24 22:01:27 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.29 2004-02-18 21:00:58 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.30 2004-02-24 22:01:27 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -759,7 +759,18 @@ public class schemagen {
             return ns;
         }
 
-        // if we are using an ontology model, get the namespace URI from the ontology element
+        // alternatively, the default namespace may be set in the prefix mapping read from the input document
+        String defaultNS = m_source.getNsPrefixURI( "" );
+        if (defaultNS == null) {
+            defaultNS = m_source.getBaseModel().getNsPrefixURI( "" );
+        }
+        
+        if (defaultNS != null) {
+            m_includeURI.add( defaultNS );
+            return defaultNS;
+        }
+        
+        // if we are using an ontology model, we can get the namespace URI from the ontology element
         try {
             Resource ont = m_source.getBaseModel()
                                    .listStatements( null, RDF.type, m_source.getProfile().ONTOLOGY() )
