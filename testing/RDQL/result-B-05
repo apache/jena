@@ -1,0 +1,5 @@
+# Variables:
+?z .
+# Data:
+?z "value" .
+?z "value"^^<http://rdf.hp.com/ns#someType> .

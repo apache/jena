@@ -1,0 +1,5 @@
+# Variables:
+?givenName .
+# Data:
+?givenName "John" .
+?givenName "Rebecca" .

@@ -1,0 +1,5 @@
+# Variables:
+?z ?x .
+# Data:
+?z <http://rdf.hp.com/uri1> ?x <http://rdf.hp.com/uri1> .
+?z <http://rdf.hp.com/uri-r> ?x <http://rdf.hp.com/uri-p> .

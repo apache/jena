@@ -1,0 +1,5 @@
+# Variables:
+?a ?z ?d .
+# Data:
+?a <http://rdf.hp.com/s1> ?z <http://rdf.hp.com/s2> ?d "Value" .
+?a <http://rdf.hp.com/r> ?z <http://rdf.hp.com/r> ?d <http://rdf.hp.com/r> .

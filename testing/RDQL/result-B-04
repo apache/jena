@@ -1,0 +1,4 @@
+# Variables:
+?x ?y .
+# Data:
+?x <http://rdf.hp.com/r> ?y <http://rdf.hp.com/p> .

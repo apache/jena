@@ -1,0 +1,9 @@
+# Variables:
+?a ?b ?z ?c ?d .
+# Data:
+?a <http://rdf.hp.com/s1> ?b <http://rdf.hp.com/p> ?z <http://rdf.hp.com/s2> ?c <http://rdf.hp.com/p> ?d "Value" .
+?a <http://rdf.hp.com/r> ?b <http://rdf.hp.com/p> ?z <http://rdf.hp.com/r> ?c <http://rdf.hp.com/p> ?d <http://rdf.hp.com/r> .
+?a <http://rdf.hp.com/r-2> ?b <http://rdf.hp.com/p-r-2-1> ?z <http://rdf.hp.com/r-1> ?c <http://rdf.hp.com/p-r-1-2> ?d <http://rdf.hp.com/r-2> .
+?a <http://rdf.hp.com/r-1> ?b <http://rdf.hp.com/p-r-1-2> ?z <http://rdf.hp.com/r-2> ?c <http://rdf.hp.com/p-r-2-1> ?d <http://rdf.hp.com/r-1> .
+?a <http://rdf.hp.com/r-1> ?b <http://rdf.hp.com/p-r-1-2> ?z <http://rdf.hp.com/r-2> ?c <http://rdf.hp.com/p-r-2-3> ?d <http://rdf.hp.com/r-3a> .
+?a <http://rdf.hp.com/r-1> ?b <http://rdf.hp.com/p-r-1-2> ?z <http://rdf.hp.com/r-2> ?c <http://rdf.hp.com/p-r-2-3> ?d <http://rdf.hp.com/r-3b> .

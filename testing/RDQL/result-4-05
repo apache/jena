@@ -1,0 +1,5 @@
+# Variables:
+?y ?a ?b .
+# Data:
+?y <http://rdf.hp.com/p> ?a <http://rdf.hp.com/p1> ?b "v-a-1" .
+?y <http://rdf.hp.com/p> ?a <http://rdf.hp.com/p2> ?b "v-a-2" .

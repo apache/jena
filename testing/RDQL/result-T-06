@@ -1,0 +1,4 @@
+# Variables:
+?resource ?familyName .
+# Data:
+?resource <http://somewhere/JohnSmith/> ?familyName "Smith" .

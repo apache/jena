@@ -1,0 +1,11 @@
+# Variables:
+?x ?y ?z ?a ?b .
+# Data:
+?x <http://rdf.hp.com/r-2> ?y <http://rdf.hp.com/p-1> ?z "v-2-1" ?a <http://rdf.hp.com/p-1> ?b "v-2-1" .
+?x <http://rdf.hp.com/r-2> ?y <http://rdf.hp.com/p-1> ?z "v-2-1" ?a <http://rdf.hp.com/p-2> ?b "v-2-2" .
+?x <http://rdf.hp.com/r-1> ?y <http://rdf.hp.com/p-2> ?z "v-1-2" ?a <http://rdf.hp.com/p-1> ?b "v-1-1" .
+?x <http://rdf.hp.com/r-1> ?y <http://rdf.hp.com/p-2> ?z "v-1-2" ?a <http://rdf.hp.com/p-2> ?b "v-1-2" .
+?x <http://rdf.hp.com/r-1> ?y <http://rdf.hp.com/p-1> ?z "v-1-1" ?a <http://rdf.hp.com/p-1> ?b "v-1-1" .
+?x <http://rdf.hp.com/r-1> ?y <http://rdf.hp.com/p-1> ?z "v-1-1" ?a <http://rdf.hp.com/p-2> ?b "v-1-2" .
+?x <http://rdf.hp.com/r-2> ?y <http://rdf.hp.com/p-2> ?z "v-2-2" ?a <http://rdf.hp.com/p-1> ?b "v-2-1" .
+?x <http://rdf.hp.com/r-2> ?y <http://rdf.hp.com/p-2> ?z "v-2-2" ?a <http://rdf.hp.com/p-2> ?b "v-2-2" .
