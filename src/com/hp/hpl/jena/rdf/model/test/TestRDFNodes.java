@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestRDFNodes.java,v 1.2 2003-07-02 09:00:21 chris-dollin Exp $
+  $Id: TestRDFNodes.java,v 1.3 2003-07-10 08:29:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -82,6 +82,25 @@ public class TestRDFNodes extends ModelTestBase
         Model m2 = modelWithStatements( "x P a; y Q b" );
         resource( m2, "x" ).removeAll( property( m2, "Z" ) );
         assertIsoModels( "m2 should be unchanged", m1, m2 );
+        }
+        
+    public void testInModel()
+        {
+        Model m1 = modelWithStatements( "" );
+        Model m2 = modelWithStatements( "" );
+        Resource r1 = resource( m1, "r1" );
+        Resource r2 = resource( m1, "_r2" );
+    /* */
+        assertTrue( r1.getModel() == m1 );
+        assertTrue( r2.getModel() == m1 );
+        assertFalse( r1.isAnon() );
+        assertTrue( r2.isAnon() );
+    /* */
+        assertTrue( ((Resource) r1.inModel( m2 )).getModel() == m2 );
+        assertTrue( ((Resource) r2.inModel( m2 )).getModel() == m2 );
+    /* */
+        assertEquals( r1, r1.inModel( m2 ) );
+        assertEquals( r2, r2.inModel( m2 ) );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelTestBase.java,v 1.8 2003-05-30 13:50:14 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.9 2003-07-10 08:29:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -49,6 +49,9 @@ public class ModelTestBase extends GraphTestBase
         
     public static Property property( Model m, String s )
         { return (Property) rdfNode( m, s, Property.class ); }
+        
+    public static Literal literal( Model m, String s )
+        { return (Literal) rdfNode( m, s, Literal.class ); }
         
     public static RDFNode rdfNode( Model m, String s, Class c )
         {
