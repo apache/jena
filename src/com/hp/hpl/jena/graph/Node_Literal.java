@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Literal.java,v 1.10 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Node_Literal.java,v 1.11 2004-03-19 16:33:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.shared.*;
 */
 public class Node_Literal extends Node_Concrete
 {
-    public Node_Literal( Object label )
+    /* package */ Node_Literal( Object label )
         { super( label ); }
 
     public LiteralLabel getLiteral()

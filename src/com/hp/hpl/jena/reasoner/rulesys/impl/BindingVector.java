@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BindingVector.java,v 1.18 2003-08-27 13:09:19 andy_seaborne Exp $
+ * $Id: BindingVector.java,v 1.19 2004-03-19 16:33:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.util.PrintUtil;
@@ -25,7 +24,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-08-27 13:09:19 $
+ * @version $Revision: 1.19 $ on $Date: 2004-03-19 16:33:36 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -91,9 +90,8 @@ public class BindingVector implements BindingEnvironment {
                 }
                 boundargs.add(binding);
             }
-            Functor newf = new Functor(functor.getName(), boundargs);
-            LiteralLabel ll = new LiteralLabel(newf, null, Functor.FunctorDatatype.theFunctorDatatype);
-            return new Node_Literal(ll);
+            Functor newf = new Functor( functor.getName(), boundargs );
+            return Functor.makeFunctorNode( newf );
         } else {
             return node;
         }

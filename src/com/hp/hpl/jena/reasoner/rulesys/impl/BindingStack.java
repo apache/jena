@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BindingStack.java,v 1.4 2003-08-27 13:09:19 andy_seaborne Exp $
+ * $Id: BindingStack.java,v 1.5 2004-03-19 16:33:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
 import com.hp.hpl.jena.reasoner.rulesys.Functor;
@@ -22,7 +21,7 @@ import java.util.*;
  * Provides a trail of possible variable bindings for a forward rule.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-27 13:09:19 $
+ * @version $Revision: 1.5 $ on $Date: 2004-03-19 16:33:36 $
  */
 public class BindingStack implements BindingEnvironment {
     
@@ -136,8 +135,7 @@ public class BindingStack implements BindingEnvironment {
                 boundargs.add(binding);
             }
             Functor newf = new Functor(functor.getName(), boundargs);
-            LiteralLabel ll = new LiteralLabel(newf, null, Functor.FunctorDatatype.theFunctorDatatype);
-            return new Node_Literal(ll);
+            return Functor.makeFunctorNode( newf );
         } else {
             return node;
         }

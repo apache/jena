@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Functor.java,v 1.15 2003-12-08 10:48:26 andy_seaborne Exp $
+ * $Id: Functor.java,v 1.16 2004-03-19 16:33:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -29,7 +29,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-12-08 10:48:26 $
+ * @version $Revision: 1.16 $ on $Date: 2004-03-19 16:33:36 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -260,9 +260,7 @@ public class Functor implements ClauseEntry {
      * accidental structure sharing
      */
     public static Node makeFunctorNode(String name, Node[] args) {
-        Functor f = new Functor(name, args);
-        LiteralLabel ll = new LiteralLabel(f, null, FunctorDatatype.theFunctorDatatype);
-        return new Node_Literal(ll);
+        return makeFunctorNode( new Functor( name, args ) );
     }
     
     /**
@@ -270,8 +268,7 @@ public class Functor implements ClauseEntry {
      * @param f the functor data structure to be wrapped in a node.
      */
     public static Node makeFunctorNode(Functor f) {
-        LiteralLabel ll = new LiteralLabel(f, null, FunctorDatatype.theFunctorDatatype);
-        return new Node_Literal(ll);
+        return Node.createUncachedLiteral(f, null, FunctorDatatype.theFunctorDatatype);
     }
     
    /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.21 2003-12-08 10:48:26 andy_seaborne Exp $
+ * $Id: Rule.java,v 1.22 2004-03-19 16:33:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -57,7 +57,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.21 $ on $Date: 2003-12-08 10:48:26 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.22 $ on $Date: 2004-03-19 16:33:36 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -572,8 +572,7 @@ public class Rule implements ClauseEntry {
                 return Node.createURI(exp);
             } else if (peekToken().equals("(")) {
                 Functor f = new Functor(token, parseNodeList(), BuiltinRegistry.theRegistry);
-                LiteralLabel ll = new LiteralLabel(f, null, Functor.FunctorDatatype.theFunctorDatatype);
-                return new Node_Literal(ll);
+                return Functor.makeFunctorNode( f );
             } else if (token.equals("'")) {
                 // A plain literal
                 String lit = nextToken();
