@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            3 Mar 2003
  * Filename           $RCSfile: OWL.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-03 22:33:04 $
+ * Last modified on   $Date: 2003-03-04 11:07:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWL.java,v 1.1 2003-03-03 22:33:04 ian_dickinson Exp $
+ * @version CVS $Id: OWL.java,v 1.2 2003-03-04 11:07:10 ian_dickinson Exp $
  */
 public class OWL
 {
@@ -51,119 +51,119 @@ public class OWL
     public static final String NAMESPACE = "http://www.w3c.org/2002/07/owl#";
     
     /** Resource denoting the class of OWL classes */
-    public Resource Class                        = m_vocabModel.createResource( OWL.NAMESPACE + "Class"                     );
+    public static final Resource Class                        = m_vocabModel.createResource( OWL.NAMESPACE + "Class"                     );
     
     /** Resource denoting the class of OWL restrictions */
-    public Resource Restriction                  = m_vocabModel.createResource( OWL.NAMESPACE + "Restriction"               );
+    public static final Resource Restriction                  = m_vocabModel.createResource( OWL.NAMESPACE + "Restriction"               );
     
     /** Resource denoting the universal set containing all OWL individuals */
-    public Resource Thing                        = m_vocabModel.createResource( OWL.NAMESPACE + "Thing"                     );
+    public static final Resource Thing                        = m_vocabModel.createResource( OWL.NAMESPACE + "Thing"                     );
     
     /** Resource denoting the empty set containing no OWL individuals */
-    public Resource Nothing                      = m_vocabModel.createResource( OWL.NAMESPACE + "Nothing"                   );
+    public static final Resource Nothing                      = m_vocabModel.createResource( OWL.NAMESPACE + "Nothing"                   );
     
     /** Resource denoting the class of OWL properties that have individuals as their range */
-    public Resource ObjectProperty               = m_vocabModel.createResource( OWL.NAMESPACE + "ObjectProperty"            );
+    public static final Resource ObjectProperty               = m_vocabModel.createResource( OWL.NAMESPACE + "ObjectProperty"            );
     
     /** Resource denoting the class of OWL properties that have typed literals as their range */
-    public Resource DatatypeProperty             = m_vocabModel.createResource( OWL.NAMESPACE + "DatatypeProperty"          );
+    public static final Resource DatatypeProperty             = m_vocabModel.createResource( OWL.NAMESPACE + "DatatypeProperty"          );
     
     /** Resource denoting the class of OWL properties that are transitive */
-    public Resource TransitiveProperty           = m_vocabModel.createResource( OWL.NAMESPACE + "TransitiveProperty"        );
+    public static final Resource TransitiveProperty           = m_vocabModel.createResource( OWL.NAMESPACE + "TransitiveProperty"        );
     
     /** Resource denoting the class of OWL properties that are symmetric */
-    public Resource SymmetricProperty            = m_vocabModel.createResource( OWL.NAMESPACE + "SymmetricProperty"         );
+    public static final Resource SymmetricProperty            = m_vocabModel.createResource( OWL.NAMESPACE + "SymmetricProperty"         );
     
     /** Resource denoting the class of OWL properties that are functional (have a unique range element for a given domain element) */
-    public Resource FunctionalProperty           = m_vocabModel.createResource( OWL.NAMESPACE + "FunctionalProperty"        );
+    public static final Resource FunctionalProperty           = m_vocabModel.createResource( OWL.NAMESPACE + "FunctionalProperty"        );
     
     /** Resource denoting the class of OWL properties that are inverse functional (have a unique domain element for a given range element) */
-    public Resource InverseFunctionalProperty    = m_vocabModel.createResource( OWL.NAMESPACE + "InverseFunctionalProperty" );
+    public static final Resource InverseFunctionalProperty    = m_vocabModel.createResource( OWL.NAMESPACE + "InverseFunctionalProperty" );
     
     /** Resource denoting the class of OWL axioms stating that a set of classes are pairwise disjoint */
-    public Resource AllDifferent                 = m_vocabModel.createResource( OWL.NAMESPACE + "AllDifferent"              );
+    public static final Resource AllDifferent                 = m_vocabModel.createResource( OWL.NAMESPACE + "AllDifferent"              );
     
     /** Resource denoting the class of OWL ontology nodes */
-    public Resource Ontology                     = m_vocabModel.createResource( OWL.NAMESPACE + "Ontology"                  );
+    public static final Resource Ontology                     = m_vocabModel.createResource( OWL.NAMESPACE + "Ontology"                  );
     
     /** Resource denoting the class of OWL classes that have been deprecated */
-    public Resource DeprecatedClass              = m_vocabModel.createResource( OWL.NAMESPACE + "DeprecatedClass"           );
+    public static final Resource DeprecatedClass              = m_vocabModel.createResource( OWL.NAMESPACE + "DeprecatedClass"           );
     
     /** Resource denoting the class of OWL properties that have been deprecated */
-    public Resource DeprecatedProperty           = m_vocabModel.createResource( OWL.NAMESPACE + "DeprecatedProperty"        );
+    public static final Resource DeprecatedProperty           = m_vocabModel.createResource( OWL.NAMESPACE + "DeprecatedProperty"        );
     
     
     /** Property denoting the OWL predicate that states that two given properties are equivalent */
-    public Property samePropertyAs               = m_vocabModel.createProperty( OWL.NAMESPACE, "samePropertyAs"         );
+    public static final Property samePropertyAs               = m_vocabModel.createProperty( OWL.NAMESPACE, "samePropertyAs"         );
     
     /** Property denoting the OWL predicate that states that two given classes are equivalent */
-    public Property sameClassAs                  = m_vocabModel.createProperty( OWL.NAMESPACE, "sameClassAs"            );
+    public static final Property sameClassAs                  = m_vocabModel.createProperty( OWL.NAMESPACE, "sameClassAs"            );
     
     /** Property denoting the OWL predicate that states that one class has no instances in common with another */
-    public Property disjointWith                 = m_vocabModel.createProperty( OWL.NAMESPACE, "disjointWith"               );
+    public static final Property disjointWith                 = m_vocabModel.createProperty( OWL.NAMESPACE, "disjointWith"               );
     
     /** Property denoting the OWL predicate that states that two given indviduals are the same object */
-    public Property sameIndividualAs             = m_vocabModel.createProperty( OWL.NAMESPACE, "sameIndividualAs"           );
+    public static final Property sameIndividualAs             = m_vocabModel.createProperty( OWL.NAMESPACE, "sameIndividualAs"           );
     
     /** Property denoting the OWL predicate that states that two given values are equivalent */
-    public Property sameAs                       = m_vocabModel.createProperty( OWL.NAMESPACE, "sameAs"                     );
+    public static final Property sameAs                       = m_vocabModel.createProperty( OWL.NAMESPACE, "sameAs"                     );
     
     /** Property denoting the OWL predicate that states that two given values are different */
-    public Property differentFrom                = m_vocabModel.createProperty( OWL.NAMESPACE, "differentFrom"              );
+    public static final Property differentFrom                = m_vocabModel.createProperty( OWL.NAMESPACE, "differentFrom"              );
     
     /** Property denoting the OWL predicate that states that two given classes have different members */
-    public Property distinctMembers              = m_vocabModel.createProperty( OWL.NAMESPACE, "distinctMembers"            );
+    public static final Property distinctMembers              = m_vocabModel.createProperty( OWL.NAMESPACE, "distinctMembers"            );
     
     /** Property denoting the OWL predicate that states that a given class is same as the union of a list of give class descriptions */
-    public Property unionOf                      = m_vocabModel.createProperty( OWL.NAMESPACE, "unionOf"                    );
+    public static final Property unionOf                      = m_vocabModel.createProperty( OWL.NAMESPACE, "unionOf"                    );
     
     /** Property denoting the OWL predicate that states that a given class is same as the intersection of a list of give class descriptions */
-    public Property intersectionOf               = m_vocabModel.createProperty( OWL.NAMESPACE, "intersectionOf"             );
+    public static final Property intersectionOf               = m_vocabModel.createProperty( OWL.NAMESPACE, "intersectionOf"             );
     
     /** Property denoting the OWL predicate that states that a given class is the complement of another class description */
-    public Property complementOf                 = m_vocabModel.createProperty( OWL.NAMESPACE, "complementOf"               );
+    public static final Property complementOf                 = m_vocabModel.createProperty( OWL.NAMESPACE, "complementOf"               );
     
     /** Property denoting the OWL predicate that states that a given class is constructed from a closed enumeration of values */
-    public Property oneOf                        = m_vocabModel.createProperty( OWL.NAMESPACE, "oneOf"                      );
+    public static final Property oneOf                        = m_vocabModel.createProperty( OWL.NAMESPACE, "oneOf"                      );
     
     /** Property denoting the OWL predicate that states that names the property that a property restriction applies to */
-    public Property onProperty                   = m_vocabModel.createProperty( OWL.NAMESPACE, "onProperty"                 );
+    public static final Property onProperty                   = m_vocabModel.createProperty( OWL.NAMESPACE, "onProperty"                 );
     
     /** Property denoting the OWL predicate that states that a class is in a given restriction if all values of the restricted property are in the given class  */
-    public Property allValuesFrom                = m_vocabModel.createProperty( OWL.NAMESPACE, "allValuesFrom"              );
+    public static final Property allValuesFrom                = m_vocabModel.createProperty( OWL.NAMESPACE, "allValuesFrom"              );
     
     /** Property denoting the OWL predicate that nominates the value the restricted property must have for the class to be in the restriction */
-    public Property hasValue                     = m_vocabModel.createProperty( OWL.NAMESPACE, "hasValue"                   );
+    public static final Property hasValue                     = m_vocabModel.createProperty( OWL.NAMESPACE, "hasValue"                   );
     
     /** Property denoting the OWL predicate that states that a class is in a given restriction if at least one value of the restricted property is in the given class  */
-    public Property someValuesFrom               = m_vocabModel.createProperty( OWL.NAMESPACE, "someValuesFrom"             );
+    public static final Property someValuesFrom               = m_vocabModel.createProperty( OWL.NAMESPACE, "someValuesFrom"             );
     
     /** Property denoting the OWL predicate that states that a property should have a given minimum cardinality  */
-    public Property minCardinality               = m_vocabModel.createProperty( OWL.NAMESPACE, "minCardinality"             );
+    public static final Property minCardinality               = m_vocabModel.createProperty( OWL.NAMESPACE, "minCardinality"             );
     
     /** Property denoting the OWL predicate that states that a property should have a given maximum cardinality  */
-    public Property maxCardinality               = m_vocabModel.createProperty( OWL.NAMESPACE, "maxCardinality"             );
+    public static final Property maxCardinality               = m_vocabModel.createProperty( OWL.NAMESPACE, "maxCardinality"             );
     
     /** Property denoting the OWL predicate that states that a property should have a given cardinality  */
-    public Property cardinality                  = m_vocabModel.createProperty( OWL.NAMESPACE, "cardinality"                );
+    public static final Property cardinality                  = m_vocabModel.createProperty( OWL.NAMESPACE, "cardinality"                );
     
     /** Property denoting the OWL predicate that states that one property is the inverse of another  */
-    public Property inverseOf                    = m_vocabModel.createProperty( OWL.NAMESPACE, "inverseOf"                  );
+    public static final Property inverseOf                    = m_vocabModel.createProperty( OWL.NAMESPACE, "inverseOf"                  );
     
     /** Property denoting the OWL predicate that states that a given ontology imports another  */
-    public Property imports                      = m_vocabModel.createProperty( OWL.NAMESPACE, "imports"                    );
+    public static final Property imports                      = m_vocabModel.createProperty( OWL.NAMESPACE, "imports"                    );
     
     /** Property denoting the OWL predicate that states the version metadata for a given ontology  */
-    public Property versionInfo                  = m_vocabModel.createProperty( OWL.NAMESPACE, "versionInfo"                );
+    public static final Property versionInfo                  = m_vocabModel.createProperty( OWL.NAMESPACE, "versionInfo"                );
     
     /** Property denoting the OWL predicate that states that a given ontology is a prior version of the ontology given by the domain  */
-    public Property priorVersion                 = m_vocabModel.createProperty( OWL.NAMESPACE, "priorVersion"               );
+    public static final Property priorVersion                 = m_vocabModel.createProperty( OWL.NAMESPACE, "priorVersion"               );
     
     /** Property denoting the OWL predicate that states that a given ontology is a backwardly compatible prior version of the ontology given by the domain  */
-    public Property backwardCompatibleWith      = m_vocabModel.createProperty( OWL.NAMESPACE, "backwardCompatibleWith"    );
+    public static final Property backwardCompatibleWith      = m_vocabModel.createProperty( OWL.NAMESPACE, "backwardCompatibleWith"    );
     
     /** Property denoting the OWL predicate that states that a given ontology is a backwardly incompatible version of the ontology given by the domain  */
-    public Property incompatibleWith             = m_vocabModel.createProperty( OWL.NAMESPACE, "incompatibleWith"           );
+    public static final Property incompatibleWith             = m_vocabModel.createProperty( OWL.NAMESPACE, "incompatibleWith"           );
 
     
     // the following aren't strictly relevant, since they are just the RDF/RDFS vocab elements
