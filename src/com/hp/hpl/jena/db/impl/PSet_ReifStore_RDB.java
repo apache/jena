@@ -37,7 +37,7 @@ import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.4 $ on $Date: 2003-05-28 11:13:48 $
+* @version $Revision: 1.5 $ on $Date: 2003-05-29 19:49:19 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -290,7 +290,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		StmtMask fragMask,
 		IDBID my_GID) {
 		Node subj = fragMask.hasSubj() ? frag.getObject() : Node.ANY;
-		Node prop = fragMask.hasProp() ? frag.getObject() : Node.ANY;
+		Node prop = fragMask.hasPred() ? frag.getObject() : Node.ANY;
 		Node obj = fragMask.hasObj() ? frag.getObject() : Node.ANY;
 		Triple t = new Triple(subj, prop, obj);
 		storeTripleAR(t, my_GID, stmtURI, fragMask.hasType(), false, null);
@@ -314,7 +314,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			if ( fragMask.hasSubj() ) {
 				stmtStr = "updateReifSubj";
 				if ( !nullify ) val = frag.getObject();
-			} else if ( fragMask.hasProp() ) {
+			} else if ( fragMask.hasPred() ) {
 				stmtStr = "updateReifProp";
 				if ( !nullify ) val = frag.getObject();
 			} else if ( fragMask.hasObj() ) {
@@ -327,7 +327,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			try {
 				ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
 				ps.clearParameters();
-				if ( fragMask.hasSubj() || fragMask.hasProp() ) {
+				if ( fragMask.hasSubj() || fragMask.hasPred() ) {
 					if (nullify)
 						ps.setNull(argc++,java.sql.Types.VARCHAR);
 					else
@@ -422,7 +422,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			if ( fragMask.hasSubj() ) {
 				stmtStr = "FindFragSubj";
 				val = frag.getSubject();
-			} else if ( fragMask.hasProp() ) {
+			} else if ( fragMask.hasPred() ) {
 				stmtStr = "FindFragProp";
 				val = frag.getSubject();
 			} else if ( fragMask.hasObj() ) {
@@ -437,7 +437,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 				ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
 				ps.clearParameters();
 				ps.setString(argc++,nodeToRDBString(stmtURI));
-				if ( fragMask.hasSubj() || fragMask.hasProp() ) {
+				if ( fragMask.hasSubj() || fragMask.hasPred() ) {
 					ps.setString(argc++,nodeToRDBString(val));
 					ps.setString(argc++,my_GID.getID().toString());
 				} else if ( fragMask.hasObj() ){
