@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.39 2003-08-20 13:15:29 jeremy_carroll Exp $
+  $Id: Model.java,v 1.40 2003-08-22 16:02:56 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -63,7 +63,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.39 $Date: 2003/08/19 09:33:02 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.40 $Date: 2003/08/20 13:15:29 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -75,11 +75,15 @@ public interface Model
 	/** Every Model has a QueryHandler */
 	QueryHandler queryHandler();
 
-	/** (Unwise) Computes the number of statements in the model.
-	 * Many implementations cannot do this efficiently.
-	 
-	 * @return the number of statements in the model
-	 */
+    /** 
+     * size will return the number of statements in a concrete model, 
+     * for a virtualized model such as one created by an inference engine, 
+     * it will return an estimated lower bound for the numberof statements 
+     * in the model but it is possible for a subsequent listStatements on 
+     * such a model to discover more statements than size() indicated.
+     * @return the number of statements in a concrete model or an estimated
+     * lower bound on the number of statements in an virtualized model
+     */
 	long size() ;
 
     /**
@@ -946,5 +950,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.39 2003-08-20 13:15:29 jeremy_carroll Exp $
+ * $Id: Model.java,v 1.40 2003-08-22 16:02:56 der Exp $
  */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.18 2003-08-22 14:34:01 chris-dollin Exp $
+  $Id: Graph.java,v 1.19 2003-08-22 16:03:09 der Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -119,6 +119,11 @@ public interface Graph  extends GraphAdd
     */
     boolean isEmpty();
     
+    /**
+     * For a concrete graph this returns the number of triples in the graph. For graphs which
+     * might infer additional triples it results an estimated lower bound of the number of triples.
+     * For example, an inference graph might return the number of triples in the raw data graph. 
+     */
 	 int size() throws UnsupportedOperationException;
 	 
 	 int ADD     = 1;
