@@ -1,14 +1,10 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Stage.java,v 1.1.1.1 2002-12-19 19:14:04 bwm Exp $
+  $Id: Stage.java,v 1.2 2003-01-09 15:27:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
-
-import com.hp.hpl.jena.graph.*;
-import java.util.*;
-import com.hp.hpl.jena.util.iterator.*;
 
 /**
 	a processing stage in the query pipeline. Each stage

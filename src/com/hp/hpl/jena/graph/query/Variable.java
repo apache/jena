@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Variable.java,v 1.1.1.1 2002-12-19 19:14:05 bwm Exp $
+  $Id: Variable.java,v 1.2 2003-01-09 15:28:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
-
-import java.util.*;
 
 /**
 	@author hedgehog

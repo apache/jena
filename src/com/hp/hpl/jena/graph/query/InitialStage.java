@@ -1,12 +1,11 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: InitialStage.java,v 1.1.1.1 2002-12-19 19:13:53 bwm Exp $
+  $Id: InitialStage.java,v 1.2 2003-01-09 15:28:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
-import java.util.*;
 import com.hp.hpl.jena.graph.*;
 
 /**

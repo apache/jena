@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PatternStage.java,v 1.1.1.1 2002-12-19 19:13:55 bwm Exp $
+  $Id: PatternStage.java,v 1.2 2003-01-09 15:28:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
-import java.util.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
