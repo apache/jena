@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.2 2003-01-27 15:11:27 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.3 2003-01-27 15:30:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -9,13 +9,11 @@ package com.hp.hpl.jena.mem;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphBase;
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Reifier;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.TripleMatchIterator;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
