@@ -1,7 +1,7 @@
 /* Jena web site style sheet */
 
 /* (c) Copyright 2003, Hewlett-Packard Development Company LP */
-/* $Id: site.css,v 1.4 2003-08-25 09:42:59 andy_seaborne Exp $ */
+/* $Id: site.css,v 1.5 2003-08-25 09:43:56 andy_seaborne Exp $ */
 
 
 body {
@@ -48,8 +48,7 @@ body {
 .right   { float: right }
 .center: { text-align: center ; }
 
-#main { margin:0 ; padding: 0; background: white ;
-        border: 1 solid #DDD ; }
+#main { margin:0 ; padding: 0; background: white ; }
 
 #content { font-size:10pt ;
            margin-top: 2ex ;
