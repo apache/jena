@@ -102,9 +102,9 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 	/** Creates new JenaReader
 	 */
 	public JenaReader() {
-		arpf = ARPFilter.create();
+		arpf = SingleThreadedParser.create();
 	}
-	private ARPFilter arpf;
+	private SingleThreadedParser arpf;
 	private Model model;
 	
 	public void read(Model model, String url) throws JenaException {
@@ -201,7 +201,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 					errorHandler.error(e);
 				}
 			}
-			arpf.setNamespaceHandler(new NamespaceHandler() {
+			arpf.getHandlers().setNamespaceHandler(new NamespaceHandler() {
 
 				public void startPrefixMapping(String prefix, String uri) {
 			  	if (PrefixMappingImpl.isNiceURI(uri))
@@ -221,9 +221,9 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 			final BulkUpdateHandler bulk = g.getBulkUpdateHandler();
 			inputS.setSystemId(xmlBase);
 			JRStatementHandler handler =new JRStatementHandler(bulk); 
-			arpf.setStatementHandler(handler);
+			arpf.getHandlers().setStatementHandler(handler);
 		
-			arpf.setErrorHandler(new ARPSaxErrorHandler(errorHandler));
+			arpf.getHandlers().setErrorHandler(new ARPSaxErrorHandler(errorHandler));
 			arpf.parse(inputS, xmlBase);
 			handler.bulkUpdate();
 		} catch (IOException e) {
@@ -420,7 +420,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 				|| str.startsWith(apachePropertiesURL)) {
 				Object old;
 				try {
-					old = arpf.getProperty(str);
+					old = arpf.getSAXParser().getProperty(str);
 				} catch (SAXNotSupportedException ns) {
 					old = null;
 				} catch (SAXNotRecognizedException nr) {
@@ -428,7 +428,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 					return null;
 				}
 				try {
-					arpf.setProperty(str, obj);
+					arpf.getSAXParser().setProperty(str, obj);
 				} catch (SAXNotSupportedException ns) {
 					errorHandler.error(new JenaException(ns));
 				} catch (SAXNotRecognizedException nr) {
@@ -442,7 +442,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 				|| str.startsWith(apacheFeaturesURL)) {
 				Boolean old;
 				try {
-					old = new Boolean(arpf.getFeature(str));
+					old = new Boolean(arpf.getSAXParser().getFeature(str));
 				} catch (SAXNotSupportedException ns) {
 					old = null;
 				} catch (SAXNotRecognizedException nr) {
@@ -450,7 +450,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 					return null;
 				}
 				try {
-					arpf.setFeature(str, ((Boolean) obj).booleanValue());
+					arpf.getSAXParser().setFeature(str, ((Boolean) obj).booleanValue());
 				} catch (SAXNotSupportedException ns) {
 					errorHandler.error(new JenaException(ns));
 				} catch (SAXNotRecognizedException nr) {
@@ -501,6 +501,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 	 * WARN_*     ditto
 	 */
 	private Object setArpProperty(String str, Object v) {
+		ARPOptions options = arpf.getOptions();
 		str = str.toUpperCase();
 		if (v == null)
 			v = "";
@@ -511,31 +512,31 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 			if (v instanceof String) {
 				String val = (String) v;
 				if (val.equals("LAX")) {
-					arpf.setLaxErrorMode();
+					options.setLaxErrorMode();
 					return null;
 				}
 				if (val.equals("DEFAULT")) {
-					arpf.setDefaultErrorMode();
+					options.setDefaultErrorMode();
 					return null;
 				}
 				if (val.equals("STRICT")) {
-					arpf.setStrictErrorMode();
+					options.setStrictErrorMode();
 					return null;
 				}
 				if (val.equals("STRICT-WARNING")) {
-					arpf.setStrictErrorMode(EM_WARNING);
+					options.setStrictErrorMode(EM_WARNING);
 					return null;
 				}
 				if (val.equals("STRICT-FATAL")) {
-					arpf.setStrictErrorMode(EM_FATAL);
+					options.setStrictErrorMode(EM_FATAL);
 					return null;
 				}
 				if (val.equals("STRICT-IGNORE")) {
-					arpf.setStrictErrorMode(EM_IGNORE);
+					options.setStrictErrorMode(EM_IGNORE);
 					return null;
 				}
 				if (val.equals("STRICT-ERROR")) {
-					arpf.setStrictErrorMode(EM_ERROR);
+					options.setStrictErrorMode(EM_ERROR);
 					return null;
 				}
 			}
@@ -553,12 +554,12 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 				// Illegal value.
 				errorHandler.error(
 					new IllegalArgumentException("Property \"EMBEDDING\" requires a boolean value."));
-				boolean old = arpf.setEmbedding(false);
-				arpf.setEmbedding(old);
+				boolean old = options.setEmbedding(false);
+				options.setEmbedding(old);
 				return new Boolean(old);
 			} else {
 				return new Boolean(
-					arpf.setEmbedding(((Boolean) v).booleanValue()));
+						options.setEmbedding(((Boolean) v).booleanValue()));
 			}
 		}
 		if (str.startsWith("ERR_")
@@ -576,7 +577,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 						if (val == -1) {
 							// error, see below.
 						} else {
-							int rslt = arpf.setErrorMode(cond, val);
+							int rslt = options.setErrorMode(cond, val);
 							return new Integer(rslt);
 						}
 					}
@@ -587,7 +588,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 						case EM_WARNING :
 						case EM_ERROR :
 						case EM_FATAL :
-							int rslt = arpf.setErrorMode(cond, val);
+							int rslt = options.setErrorMode(cond, val);
 							return new Integer(rslt);
 						default :
 							// error, see below.
@@ -600,8 +601,8 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 							+ str
 							+ "\" cannot have value: "
 							+ v.toString()));
-				int old = arpf.setErrorMode(cond, EM_ERROR);
-				arpf.setErrorMode(cond, old);
+				int old = options.setErrorMode(cond, EM_ERROR);
+				options.setErrorMode(cond, old);
 				return new Integer(old);
 			}
 		}
@@ -647,7 +648,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.25 2004-10-05 15:49:52 jeremy_carroll Exp $
+ * * $Id: JenaReader.java,v 1.26 2004-10-11 11:54:36 jeremy_carroll Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */

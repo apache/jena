@@ -50,7 +50,7 @@ public class TestErrorMsg extends TestCase {
 		throws IOException, MalformedPatternException {
 		final StringBuffer buf = new StringBuffer();
 		ARP arp = new ARP();
-		arp.setErrorHandler(new ErrorHandler() {
+		arp.getHandlers().setErrorHandler(new ErrorHandler() {
 
 			public void warning(SAXParseException exception) {
 				buf.append(exception.getMessage());
@@ -136,5 +136,5 @@ public class TestErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestErrorMsg.java,v 1.2 2003-12-05 14:47:17 jeremy_carroll Exp $
+ * $Id: TestErrorMsg.java,v 1.3 2004-10-11 11:55:10 jeremy_carroll Exp $
  */

@@ -2,7 +2,7 @@
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, 
   all rights reserved.
   [See end of file]
-  $Id: RDFCollection.java,v 1.4 2003-12-08 20:21:31 jeremy_carroll Exp $
+  $Id: RDFCollection.java,v 1.5 2004-10-11 11:54:35 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -28,10 +28,10 @@ class RDFCollection extends CollectionAction {
     private AResourceInternal rslt[];
 	static {
 		try {
-     		nil        = new URIReference(ARPFilter.rdfns+"nil");
+     		nil        = new URIReference(XMLHandler.rdfns+"nil");
             
-			first = new URIReference(ARPFilter.rdfns+"first");
-			rest       = new URIReference(ARPFilter.rdfns+"rest");
+			first = new URIReference(XMLHandler.rdfns+"first");
+			rest       = new URIReference(XMLHandler.rdfns+"rest");
 		}
 		catch (MalformedURIException e) {
 			System.err.println("Internal error: " + e.toString());

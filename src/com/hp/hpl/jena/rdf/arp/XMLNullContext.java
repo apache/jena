@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: XMLNullContext.java,v 1.2 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: XMLNullContext.java,v 1.3 2004-10-11 11:54:37 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 import java.util.Map;
@@ -11,11 +11,11 @@ import java.util.Map;
  *
 */
 class XMLNullContext extends XMLContext implements ARPErrorNumbers {
-	final ARPFilter forErrors;
+	final XMLHandler forErrors;
 	final int errno;
 	final String errmsg;
 	
-	XMLNullContext(ARPFilter f, int eno) {
+	XMLNullContext(XMLHandler f, int eno) {
 		super(null,null);
 		forErrors = f;
 		errno = eno;

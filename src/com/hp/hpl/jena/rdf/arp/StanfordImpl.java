@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: StanfordImpl.java,v 1.2 2003-08-27 13:05:52 andy_seaborne Exp $
+ * * $Id: StanfordImpl.java,v 1.3 2004-10-11 11:54:34 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -62,7 +62,7 @@ public class StanfordImpl implements org.w3c.rdf.syntax.RDFParser {
      * @param consumer For callbacks from the parser.
      */
     synchronized public void parse(InputSource source,final RDFConsumer consumer) throws SAXException {
-        arp.setStatementHandler(new StanfordStatementHandler(consumer) );
+        arp.getHandlers().setStatementHandler(new StanfordStatementHandler(consumer) );
         try {
            arp.load(source);
         }
@@ -76,7 +76,7 @@ public class StanfordImpl implements org.w3c.rdf.syntax.RDFParser {
      */
     public void setErrorHandler(ErrorHandler handler) {
         errorHandler = handler;
-        arp.setErrorHandler(handler);
+        arp.getHandlers().setErrorHandler(handler);
     }
     
     private class StanfordStatementHandler implements StatementHandler {

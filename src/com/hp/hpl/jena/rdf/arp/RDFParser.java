@@ -31,7 +31,7 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: RDFParser.java,v 1.14 2003-12-09 10:31:09 jeremy_carroll Exp $
+ * * $Id: RDFParser.java,v 1.15 2004-10-11 11:54:37 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -72,11 +72,11 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
      tokenImage[X_SAX_EX] = ""; // suppress messages about this ...
    }
 
-   ARPFilter arp;
+   XMLHandler arp;
    ParserSupport X;
    // For creating syntax error messages.
    Token startAttr;
-   RDFParser(TokenPipe pipe, ARPFilter arp) {
+   RDFParser(TokenPipe pipe, XMLHandler arp) {
      this(pipe);
      this.arp = arp;
      X = new ParserSupport(arp);

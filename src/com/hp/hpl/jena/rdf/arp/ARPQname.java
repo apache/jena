@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPQname.java,v 1.3 2003-08-27 13:05:52 andy_seaborne Exp $
+ * * $Id: ARPQname.java,v 1.4 2004-10-11 11:54:37 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -62,7 +62,7 @@ class ARPQname extends Token {
     	int ix = qName.indexOf(':');
     	return ix==-1?"":qName.substring(0,ix);
     }
-    URIReference asURIReference(ARPFilter arp) throws ParseException {
+    URIReference asURIReference(XMLHandler arp) throws ParseException {
         URIReference uri;
         try {
             uri = new URIReference(nameSpace+local);
@@ -79,19 +79,19 @@ class ARPQname extends Token {
                 // May have been relative namespace, since this is now OK.
                 // Or maybe unqualified element.
                 if ( nameSpace.length() == 0 ) {
-                  arp.parseWarning(ARPFilter.WARN_UNQUALIFIED_ELEMENT,
+                  arp.parseWarning(XMLHandler.WARN_UNQUALIFIED_ELEMENT,
                    location,
                    "Element node must be qualified.");
                 
                 } else {
-                  arp.parseWarning(ARPFilter.WARN_RELATIVE_NAMESPACE_URI_DEPRECATED,
+                  arp.parseWarning(XMLHandler.WARN_RELATIVE_NAMESPACE_URI_DEPRECATED,
                    location,
                    "The use of relative URIs in namespaces has been deprecated by the World Wide Web Consortium.");
                 }
             }
             catch ( MalformedURIException mal2 ) {
                 // Was other problem
-               arp.parseWarning(ARPFilter.WARN_MALFORMED_URI,location,"Bad URI <"+nameSpace+local+"> in qname: " + mal.getMessage());
+               arp.parseWarning(XMLHandler.WARN_MALFORMED_URI,location,"Bad URI <"+nameSpace+local+"> in qname: " + mal.getMessage());
             }
             uri = new BadURIReference(nameSpace+local);
         }

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.10 2004-03-16 17:27:58 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.11 2004-10-11 11:54:35 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -113,13 +113,14 @@ public class NTriple implements ARPErrorNumbers {
 		//SH sh = new SH();
 		int i;
 		arp = new ARP();
-		arp.setStatementHandler(getSH(true));
+		ARPHandlers handlers = arp.getHandlers();
+		handlers.setStatementHandler(getSH(true));
 		if (ap != null) {
-			arp.setNamespaceHandler(ap);
-			arp.setExtendedHandler(ap);
+			handlers.setNamespaceHandler(ap);
+			handlers.setExtendedHandler(ap);
 		}
 		if (eh != null)
-			arp.setErrorHandler(eh);
+			handlers.setErrorHandler(eh);
 
 		for (i = 0; i < args.length - 1; i++) {
 			if (args[i].startsWith("-")) {
@@ -234,6 +235,7 @@ public class NTriple implements ARPErrorNumbers {
     static private int startMem = -1;
 	static private int processOpts(String opts, String nextArg) {
 		boolean usedNext = false;
+		ARPOptions options = arp.getOptions();
 		for (int i = 0; i < opts.length(); i++) {
 			char opt = opts.charAt(i);
 			if ("beiwD".indexOf(opt) != -1) {
@@ -246,7 +248,7 @@ public class NTriple implements ARPErrorNumbers {
 					final int nStatements = Integer.parseInt(nextArg);
  rt.gc(); rt.gc(); 
  startMem = (int)(rt.totalMemory()-rt.freeMemory());
-				arp.setStatementHandler(new StatementHandler(){
+				arp.getHandlers().setStatementHandler(new StatementHandler(){
 int debugC = 0;
 
 					public void statement(AResource subj, AResource pred, AResource obj) {
@@ -283,16 +285,16 @@ int debugC = 0;
 				});
 				  break;
 				case 'x' :
-					arp.setLaxErrorMode();
+					options.setLaxErrorMode();
 					break;
 				case 's' :
-					arp.setStrictErrorMode();
+					options.setStrictErrorMode();
 					break;
 				case 't' :
-					arp.setStatementHandler(getSH(false));
+					arp.getHandlers().setStatementHandler(getSH(false));
 					break;
 				case 'r' :
-					arp.setEmbedding(false);
+					options.setEmbedding(false);
 					break;
 				case 'n' :
 					numbers = true;
@@ -311,13 +313,13 @@ int debugC = 0;
 					break;
 				case 'f' :
 					for (int j = 0; j < 400; j++) {
-						if (arp.setErrorMode(j, -1) == EM_ERROR)
-							arp.setErrorMode(j, EM_FATAL);
+						if (options.setErrorMode(j, -1) == EM_ERROR)
+							options.setErrorMode(j, EM_FATAL);
 					}
 					break;
 				case 'u' :
-					arp.setErrorMode(WARN_UNQUALIFIED_ATTRIBUTE, EM_IGNORE);
-					arp.setErrorMode(WARN_UNQUALIFIED_RDF_ATTRIBUTE, EM_IGNORE);
+					options.setErrorMode(WARN_UNQUALIFIED_ATTRIBUTE, EM_IGNORE);
+					options.setErrorMode(WARN_UNQUALIFIED_RDF_ATTRIBUTE, EM_IGNORE);
 					break;
 				default :
 					usage();
@@ -356,7 +358,7 @@ int debugC = 0;
 						case 0 :
 							break;
 						case 3 :
-							arp.setErrorMode(
+							arp.getOptions().setErrorMode(
 								n[0] * 100 + n[1] * 10 + n[2],
 								mode);
 							j = 0;

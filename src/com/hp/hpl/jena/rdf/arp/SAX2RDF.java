@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.2 2004-10-06 15:04:39 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.3 2004-10-11 11:54:35 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -35,160 +35,152 @@ import org.xml.sax.ext.*;
 import org.xml.sax.*;
 
 /**
+ * <p>
  * Allows connecting an arbitrary source of SAX events with ARP.
- * See <a href="http://javaalmanac.com/egs/javax.xml.transform.sax/Dom2Sax.html">
+ * </p>
+ * <p>For use with a DOM tree,
+ * see <a href="http://javaalmanac.com/egs/javax.xml.transform.sax/Dom2Sax.html">
  * The Java Developer's Almanac</a> for a discussion of how to transform a DOM
  * into a source of SAX events.
+ * </p>
  * 
- * 
- * Use pattern, create and initialize one of these,
+ * <p>
+ * The use pattern is to create and initialize one of these,
  * then set it as the content, lexical and error handler
  * for some source of SAX events (e.g. from a parser).
- * When parsing has finished call {@link #finishRDFParsing()}.
- * All the triples have now been processed.
- * 
+ * It must be configured to use namespaces, and namespace
+ * prefixes. This initializing can be done for XMLReaders
+ * using {@link #initialize}.
+ * </p>
+ * <p>
  * Triples and errors are reported on a different thread.
- * 
- * 
+ * Do not expect synchronous behaviour between the SAX events
+ * and the triples or errors being generated.
+ * </p>
+ * <p>
+ * This class does not support multithreaded SAX sources, nor IO interruption.
+ * </p>
  *  
  * @author Jeremy Carroll
  * */
-public class SAX2RDF extends LexicalHandlerImpl implements ContentHandler, LexicalHandler, ErrorHandler{
+public class SAX2RDF extends SAX2RDFImpl
+implements ARPConfig {
 	/**
 	 * Factory method to create a new SAX2RDF.
+	 * @param base The retrieval URL, or the base URI to be 
+     * used while parsing.
+     * @param m A Jena Model in which to put the triples,
+     * this can be null. If it is null, then use
+     * {@link #getHandlers} or {@link #setHandlers} to provide
+     * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
 	 * @return A new SAX2RDF
 	 */
-	static public SAX2RDF newInstance() { return null; }
-    /**
-     * Sets the retrieval URL, or the base URI to be 
-     * used while parsing.
-     * @param base
-	 * @return Old value, if any.
-     */
-	public String setBaseURI(String base){ return null; }
-    /**
-     * Sets the value of xml:lang, particularly
-     * for use when parsing a non-root element within
+	static public SAX2RDF newInstance(String base, Model m) { 
+		return new SAX2RDF(base,m,""); 
+	}
+	/**
+	 * Factory method to create a new SAX2RDF.
+	 * This is particularly
+     * intended for when parsing a non-root element within
      * an XML document. In which case the application
      * needs to find this value in the outer context.
-     * @param lang
-	 * @return Old value, if any.
-     */
-	public String setLang(String lang){ return null; }
-	/**
-	 * Sets the triple handler.
-	 * Either a triple handler or a model can be used.
-	 * @param ah The handler to use.
-	 * @see #setModel
-	 * @return Old value, if any.
-	 * */
-	public ARPHandler setTripleHandler(ARPHandler ah){ return null;}
-	/**
-	 * Sets the Jena Model to load the triples into.
-	 * Either a triple handler or a model can be used.
-	 * @param m
-	 * @see #setTripleHandler
-	 * @return Old value, if any.
+     * Optionally, namespace prefixes can be passed from the
+     * outer context using {@link #startPrefixMapping}.
+	 * @param base The retrieval URL, or the base URI to be 
+     * used while parsing.
+     * @param m A Jena Model in which to put the triples,
+     * this can be null. If it is null, then use
+     * {@link #getHandlers} or {@link #setHandlers} to provide
+     * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
+	 * @param lang The current value of xml:lang when parsing starts, usually "".
+	 * @return A new SAX2RDF
 	 */
-	public Model setModel(Model m){ return null; }
+	static public SAX2RDF newInstance(String base, Model m, String lang) { 
+		return new SAX2RDF(base,m,lang); 
+	}    
 	/**
-	 * Sets the extended handler, for complex interactions
-	 * with the RDF parser.
-	 * @param eh The extended handler to use.
-	 * @return Old value, if any.
-	 */
-	public ExtendedHandler setExtendedHandler(ExtendedHandler eh){ return null; }
-	
-
-    /**
      * Begin the scope of a prefix-URI Namespace mapping.
      *
-     * <p>The information from this event is not necessary for
-     * normal Namespace processing: the SAX XML reader will 
-     * automatically replace prefixes for element and attribute
-     * names when the <code>http://xml.org/sax/features/namespaces</code>
-     * feature is <var>true</var> (the default).</p>
-     *
-     * <p>There are cases, however, when applications need to
-     * use prefixes in character data or in attribute values,
-     * where they cannot safely be expanded automatically; the
-     * start/endPrefixMapping event supplies the information
-     * to the application to expand prefixes in those contexts
-     * itself, if necessary.</p>
-     *
-     * <p>Note that start/endPrefixMapping events are not
-     * guaranteed to be properly nested relative to each-other:
-     * all startPrefixMapping events will occur before the
-     * corresponding {@link #startElement startElement} event, 
-     * and all {@link #endPrefixMapping endPrefixMapping}
-     * events will occur after the corresponding {@link #endElement
-     * endElement} event, but their order is not otherwise 
-     * guaranteed.</p>
-     *
-     * <p>There should never be start/endPrefixMapping events for the
-     * "xml" prefix, since it is predeclared and immutable.</p>
-     *
+     *<p>This is passed to any {@link NamespaceHandler} associated
+     *with this parser.
+     *It can be called before the initial 
+     *{@link #startElement} event, or other events associated
+     *with the elements being processed.
+     *When building a Jena Model, it is not required to match this
+     *with corresponding {@link #endPrefixMapping} events.
+     *Other {@link NamespaceHandler}s may be fussier.
+     *When building a Jena Model, the prefix bindings are
+     *remembered with the Model, and may be used in some
+     *output routines. It is permitted to not call this method
+     *for prefixes declared in the outer context, in which case,
+     *any output routine will need to use a gensym for such 
+     *namespaces.
+     *</p>
      * @param prefix The Namespace prefix being declared.
      * @param uri The Namespace URI the prefix is mapped to.
-     * @exception org.xml.sax.SAXException The client may throw
-     *            an exception during processing.
-     * @see #endPrefixMapping
-     * @see #startElement
+     * 
      */
     public void startPrefixMapping (String prefix, String uri)
-	throws SAXException {
+	 { super.startPrefixMapping(prefix,uri);
     }
 
-    /**
-     * End the scope of a prefix-URI mapping.
-     *
-     * <p>See {@link #startPrefixMapping startPrefixMapping} for 
-     * details.  This event will always occur after the corresponding 
-     * {@link #endElement endElement} event, but the order of 
-     * {@link #endPrefixMapping endPrefixMapping} events is not otherwise
-     * guaranteed.</p>
-     *
-     * @param prefix The prefix that was being mapping.
-     * @exception org.xml.sax.SAXException The client may throw
-     *            an exception during processing.
-     * @see #startPrefixMapping
-     * @see #endElement
-     */
-    public void endPrefixMapping (String prefix)
-	throws SAXException {}
-/**
- * This method must be called after the last SAX event.
- *
- */
-    public void finishRDFParsing() {}
-    
-    /**
-     * Allow an application to register an error event handler.
-     *
-     * <p>If the application does not register an error handler, all
-     * error events get logged.</p>
-     *
-     * <p>Applications may register a new or different handler in the
-     * middle of a parse, but because of the asynchronicity between the
-     * XML parsing and the RDF parsing, the precise behaviour is not
-     * well-defined.</p>
-     *
-     * @param handler The error handler.
-     * @exception java.lang.NullPointerException If the handler 
-     *            argument is null.
-     * @see #getErrorHandler
-     */
-    public void setErrorHandler (ErrorHandler handler) {}
+    private SAX2RDF(String base, Model m, String lang) {
+    	super(base,m,lang);
+    }
+	/** This is used when configuring a parser that
+	 * is not loading into a Jena Model, but is processing
+	 * the triples etc. in some other way.
 
-
-    /**
-     * Return the current error handler.
-     *
-     * @return The current error handler.
-     * @see #setErrorHandler
-     */
-    public ErrorHandler getErrorHandler () {return null;}
+	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#getHandlers()
+	 */
+	public ARPHandlers getHandlers() {
+		return super.getHandlers();
+	}
+	/** This is used when configuring a parser that
+	 * is not loading into a Jena Model, but is processing
+	 * the triples etc. in some other way.
 	
+	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setHandlers(com.hp.hpl.jena.rdf.arp.ARPHandlers)
+	 */
+	public void setHandlers(ARPHandlers handlers) {
+		super.setHandlers(handlers);
+	}
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#getOptions()
+	 */
+	public ARPOptions getOptions() {
+		return super.getOptions();
+	}
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setOptions(com.hp.hpl.jena.rdf.arp.ARPOptions)
+	 */
+	public void setOptions(ARPOptions opts) {
+		super.setOptions(opts);
+		
+	}
+	/**
+	 * Initializes an XMLReader to use the SAX2RDF object
+	 * as its handler for all events, and to use namespaces
+	 * and namespace prefixes.
+	 * @param rdr The XMLReader to initialize.
+	 * @param sax2rdf The SAX2RDF instance to use.
+	 */
+	static public void initialize(XMLReader rdr, XMLHandler sax2rdf) 
+	throws SAXException 
+	{
+		rdr.setEntityResolver(sax2rdf);
+		rdr.setDTDHandler(sax2rdf);
+		rdr.setContentHandler(sax2rdf);
+		rdr.setErrorHandler(sax2rdf);
+		rdr.setFeature("http://xml.org/sax/features/namespaces", true);
+		rdr.setFeature(
+			"http://xml.org/sax/features/namespace-prefixes",
+			true);
+		rdr.setProperty(
+			"http://xml.org/sax/properties/lexical-handler",
+			sax2rdf);
+	
+	}
 }
     
 	

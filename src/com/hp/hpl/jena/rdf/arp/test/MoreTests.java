@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.14 2004-01-29 18:45:02 ian_dickinson Exp $
+ *  $Id: MoreTests.java,v 1.15 2004-10-11 11:55:11 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -179,7 +179,7 @@ public class MoreTests
 		InputStream in;
 		long start = System.currentTimeMillis();
 		in = new FileInputStream("testing/wg/miscellaneous/consistent001.rdf");
-		a.setStatementHandler(new StatementHandler() {
+		a.getHandlers().setStatementHandler(new StatementHandler() {
 			int countDown = 10;
 			public void statement(
 				AResource subj,

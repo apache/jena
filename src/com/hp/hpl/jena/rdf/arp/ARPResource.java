@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPResource.java,v 1.8 2003-12-09 10:31:09 jeremy_carroll Exp $
+ * * $Id: ARPResource.java,v 1.9 2004-10-11 11:54:37 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -88,7 +88,7 @@ class ARPResource implements  AResourceInternal {
         }
     }
     
-    private ARPFilter arp;
+    private XMLHandler arp;
     
     String nodeID = null;
     
@@ -102,7 +102,7 @@ class ARPResource implements  AResourceInternal {
     static String dummy = "http://jena.hpl.hp.com/arp/not/a/real/uri/";
 	static String nullDummy = "nullpointerexception://jena.hpl.hp.com/arp/";
     
-    ARPResource(ARPFilter parent) {
+    ARPResource(XMLHandler parent) {
         arp = parent;
     }
     
@@ -181,13 +181,13 @@ class ARPResource implements  AResourceInternal {
     private void tripleRes(final AResourceInternal s,final AResourceInternal p,final AResourceInternal o ) {
         s.setHasBeenUsed();
         o.setHasBeenUsed();
-        arp.statementHandler.statement(s,p,o);
+        arp.getStatementHandler().statement(s,p,o);
         
     }
     
     private void tripleLit( AResourceInternal s, final AResourceInternal p, final ALiteral o ) {
 		   s.setHasBeenUsed();
-       arp.statementHandler.statement(s,p,o);
+       arp.getStatementHandler().statement(s,p,o);
     }
     
     static private URIReference _rdf_n[] = new URIReference[0];

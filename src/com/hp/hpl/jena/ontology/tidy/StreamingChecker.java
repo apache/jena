@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP [See end of
- * file] $Id: StreamingChecker.java,v 1.2 2004-04-22 12:42:28 chris-dollin Exp $
+ * file] $Id: StreamingChecker.java,v 1.3 2004-10-11 11:55:11 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -179,9 +179,9 @@ public class StreamingChecker extends CheckerImpl implements CheckerResults {
 		 {
 		try {
 			ARP arp = new ARP();
-			arp.setStatementHandler(sh);
+			arp.getHandlers().setStatementHandler(sh);
 
-			arp.setExtendedHandler(eh);
+			arp.getHandlers().setExtendedHandler(eh);
 			arp.load(in, url);
 
 		} catch (Exception e) {
@@ -193,9 +193,9 @@ public class StreamingChecker extends CheckerImpl implements CheckerResults {
 	public void load(Reader rdr, String url)  {
 		try {
 			ARP arp = new ARP();
-			arp.setStatementHandler(sh);
+			arp.getHandlers().setStatementHandler(sh);
 
-			arp.setExtendedHandler(eh);
+			arp.getHandlers().setExtendedHandler(eh);
 			arp.load(rdr, url);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XMLLiteralType.java,v 1.7 2003-09-03 15:07:30 jeremy_carroll Exp $
+ * $Id: XMLLiteralType.java,v 1.8 2004-10-11 11:55:11 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -23,7 +23,7 @@ import java.io.*;
  * by use of <code>rdf:parsetype='literal'</code>.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-09-03 15:07:30 $
+ * @version $Revision: 1.8 $ on $Date: 2004-10-11 11:55:11 $
  */
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
     /** Singleton instance */
@@ -75,7 +75,8 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
         // status[2] the result (good if status[1] and not status[0]).
         
         ARP arp = new ARP();
-        arp.setErrorHandler(new ErrorHandler(){
+        
+        arp.getHandlers().setErrorHandler(new ErrorHandler(){
         	public void fatalError(SAXParseException e){
         		status[0] = true;
         	}
@@ -86,7 +87,7 @@ public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
 				status[0] = true;
 			}
         });
-        arp.setStatementHandler(new StatementHandler(){
+        arp.getHandlers().setStatementHandler(new StatementHandler(){
         public void statement(AResource a, AResource b, ALiteral l){
         	/* this method is invoked exactly once
         	 * while parsing the dummy document.

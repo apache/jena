@@ -1,5 +1,16 @@
 /*
- *  (c) Copyright 2001-2004  Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004 Hewlett-Packard Development Company, LP
+ * [See end of file]
+ */
+
+package com.hp.hpl.jena.rdf.arp;
+
+
+class FatalParsingErrorException extends RuntimeException {
+}
+
+/*
+ *  (c) Copyright 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -12,7 +23,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
-
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -23,56 +34,5 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
- * * $Id: TokenPipe.java,v 1.8 2004-10-11 11:54:37 jeremy_carroll Exp $
-   
-   AUTHOR:  Jeremy J. Carroll
-*/
-/*
- * TokenPipe.java
- *
- * Created on June 22, 2001, 12:32 AM
  */
-
-package com.hp.hpl.jena.rdf.arp;
-import java.util.*;
-import org.xml.sax.Locator;
-import java.io.*;
-
-/**
- *
- * @author  jjc
  
- */
-abstract class TokenPipe implements TokenManager {
-
-	final List pipe = createPipe();
-	final XMLHandler arp;
-    private Token last;
-	/** Creates new TokenPipe */
-	TokenPipe(XMLHandler arp) {
-		this.arp = arp;
-	}
-
-	abstract List createPipe();
-	abstract void putNextToken(Token t);
-	abstract public Token  getNextToken();
-	void setLast(Token t) {
-		last = t;
-	}
-
-    Locator getLocator() {
-        if ( pipe.size() > 0 ) {
-            return ((Token)pipe.get(getPosition()-1)).location;
-        } else if ( last != null )
-          return  last.location;
-        else 
-          return null;
-    }
-
-
-	/**
-	 * @return Returns the position.
-	 */
-	abstract int getPosition();
-}
