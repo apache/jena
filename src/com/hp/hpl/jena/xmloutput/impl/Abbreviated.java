@@ -2,15 +2,13 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.4 2003-04-15 21:33:06 jeremy_carroll Exp $
+ *  $Id: Abbreviated.java,v 1.5 2003-04-22 13:43:46 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.vocabulary.RDFS;
-import com.hp.hpl.jena.vocabulary.RDFSyntax;
-import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import com.hp.hpl.jena.vocabulary.*;
 
 import java.io.*;
 //Writer;
@@ -26,19 +24,30 @@ import java.io.*;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-15 21:33:06 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-22 13:43:46 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
 	private Resource types[] =
 		new Resource[] {
 			DAML_OIL.Ontology,
+			OWL.Ontology,
 			DAML_OIL.Datatype,
+			OWL.Datatype,
+			RDFS.Datatype,
 			DAML_OIL.Class,
 			RDFS.Class,
+			OWL.Class,
 			DAML_OIL.Property,
+			OWL.ObjectProperty,
+			RDF.Property,
 			DAML_OIL.ObjectProperty,
+			OWL.DatatypeProperty,
 			DAML_OIL.DatatypeProperty,
+			OWL.TransitiveProperty,
+			OWL.SymmetricProperty,
+			OWL.FunctionalProperty,
+			OWL.InverseFunctionalProperty,
 			DAML_OIL.TransitiveProperty,
 			DAML_OIL.UnambiguousProperty,
 			DAML_OIL.UniqueProperty,
