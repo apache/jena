@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.8 2003-06-17 15:51:17 der Exp $
+ * $Id: BFRuleContext.java,v 1.9 2003-06-18 11:15:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-17 15:51:17 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-18 11:15:52 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -41,6 +41,9 @@ public class BFRuleContext implements RuleContext {
     
     /** A temporary list of Triples which will be added to the stack and triples at the end of a rule scan */
     protected List pending;
+
+    /** A temporary list of Triples which will be removed from the graph at the end of a rule scan */
+    protected List deletesPending = new ArrayList();
 
     /** A searchable index into the pending triples */
     protected Graph pendingCache;
@@ -147,6 +150,12 @@ public class BFRuleContext implements RuleContext {
             // pendingCache.delete(t);
         }
         pending.clear();
+        // Flush out pending removes as well
+        for (Iterator i = deletesPending.iterator(); i.hasNext(); ) {
+            Triple t = (Triple)i.next();
+            graph.delete(t);
+        }
+        deletesPending.clear();
     }
     
     /**
@@ -212,7 +221,8 @@ public class BFRuleContext implements RuleContext {
      * Remove a triple from the deduction graph (and the original graph if relevant).
      */
     public void remove(Triple t) {
-        graph.delete(t);
+        deletesPending.add(t);
+//        graph.delete(t);
     }
 
 }
