@@ -160,7 +160,7 @@ Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
     // database type</font></dd>
     <dt>&nbsp;</dt>
     <dd><font face="Courier New">// Create database connection</font></dd>
-    <dd><font face="Courier New">IDBConnection result&nbsp; =</font></font><font SIZE="2" face="Courier New"><b> 
+    <dd><font face="Courier New">IDBConnection conn =</font></font><font SIZE="2" face="Courier New"><b> 
     new</b> DBConnection ( URL, DB_USER, DB_PASSWD, DB ); </font></dd>
     <dd><font SIZE="2"><font face="Courier New">// Create a model in the 
     database</font></dd>
@@ -240,7 +240,9 @@ tableName</i>;</font></span></h4>
 
 <h4><font face="Verdana">Execute a SQLPlus command file: </font>
 <span style="font-weight: 400"><font face="Courier New">@&lt;<i>filename</i>&gt;&nbsp;&nbsp;&nbsp; 
-where <i>&lt;filename&gt;</i> is the path of a file containing SQLPlus commands</font></span></h4>
+ 
+</font><font face="Verdana">where </font><font face="Courier New"> <i>&lt;filename&gt;</i> </font>
+<font face="Verdana">is the path of a file containing SQLPlus commands</font></span></h4>
 
 <h4><font face="Verdana">Exit SQLPlus:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">quit;</font></span></h4>
