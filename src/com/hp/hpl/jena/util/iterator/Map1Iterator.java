@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2000, 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Map1Iterator.java,v 1.5 2004-12-06 13:50:15 andy_seaborne Exp $
+  $Id: Map1Iterator.java,v 1.6 2005-02-21 12:19:16 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -12,7 +12,7 @@ import java.util.Iterator;
     An iterator that consumes an underlying iterator and maps its results before
     delivering them; supports remove if the underlying iterator does.
     @author jjc + kers
-    @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2004-12-06 13:50:15 $'
+    @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2005-02-21 12:19:16 $'
 */
 
 public class Map1Iterator extends WrappedIterator implements ClosableIterator
@@ -33,7 +33,7 @@ public class Map1Iterator extends WrappedIterator implements ClosableIterator
         { return map.map1( super.next() ); }
     }
 /*
- * (c) Copyright 2000, 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

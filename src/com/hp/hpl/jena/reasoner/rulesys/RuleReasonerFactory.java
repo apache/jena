@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RuleReasonerFactory.java,v 1.3 2004-11-30 16:10:15 chris-dollin Exp $
+  $Id: RuleReasonerFactory.java,v 1.4 2005-02-21 12:17:07 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -20,7 +20,7 @@ public interface RuleReasonerFactory extends ReasonerFactory
     }
 
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.n3;
  *  N3 to RDF
  *   
  * @author		Andy Seaborne
- * @version 	$Id: N3Exception.java,v 1.6 2004-12-06 13:50:12 andy_seaborne Exp $
+ * @version 	$Id: N3Exception.java,v 1.7 2005-02-21 12:04:04 andy_seaborne Exp $
  */
 
 import com.hp.hpl.jena.shared.*;
@@ -23,7 +23,7 @@ public class N3Exception extends SyntaxError
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

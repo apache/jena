@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCache.java,v 1.5 2004-12-01 14:51:04 chris-dollin Exp $
+  $Id: TestCache.java,v 1.6 2005-02-21 12:19:21 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -116,7 +116,7 @@ public class TestCache extends TestCase
         
 }
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

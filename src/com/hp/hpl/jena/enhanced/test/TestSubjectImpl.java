@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSubjectImpl.java,v 1.5 2003-08-27 12:59:59 andy_seaborne Exp $
+  $Id: TestSubjectImpl.java,v 1.6 2005-02-21 12:03:42 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -42,7 +42,7 @@ public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
 }
 
 /*
-	(c) Copyright 2002 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

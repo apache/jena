@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
  * the lexical form back into the appropriate object type.</p>
  * 
  * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2003-08-27 13:05:52 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2005-02-21 12:14:03 $
  */
 public interface Literal extends RDFNode {
         

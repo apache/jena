@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SeqImpl.java,v 1.17 2004-12-06 13:50:17 andy_seaborne Exp $
+  $Id: SeqImpl.java,v 1.18 2005-02-21 12:14:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2004-12-06 13:50:17 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2005-02-21 12:14:54 $' 
 */
 
 public class SeqImpl extends ContainerImpl implements Seq {
@@ -312,7 +312,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     }
 }
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestContains.java,v 1.7 2003-11-13 16:36:32 chris-dollin Exp $
+  $Id: TestContains.java,v 1.8 2005-02-21 12:15:00 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -69,7 +69,7 @@ public class TestContains extends ModelTestBase
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: RDFList.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2005-02-10 11:06:17 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-02-21 12:14:21 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -54,7 +54,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: RDFList.java,v 1.9 2005-02-10 11:06:17 ian_dickinson Exp $)
+ * @version Release ($Id: RDFList.java,v 1.10 2005-02-21 12:14:21 andy_seaborne Exp $)
  */
 public interface RDFList
     extends Resource
@@ -550,7 +550,7 @@ public interface RDFList
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

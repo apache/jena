@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  11-Apr-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.29 2004-12-07 09:56:34 andy_seaborne Exp $
+ * $Id: TestOWLRules.java,v 1.30 2005-02-21 12:18:12 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,7 +21,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2004-12-07 09:56:34 $
+ * @version $Revision: 1.30 $ on $Date: 2005-02-21 12:18:12 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -222,7 +222,7 @@ public class TestOWLRules extends TestCase {
 }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

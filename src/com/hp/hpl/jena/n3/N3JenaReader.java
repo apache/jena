@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.shared.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaReader.java,v 1.14 2004-12-06 13:50:12 andy_seaborne Exp $
+ * @version 	$Id: N3JenaReader.java,v 1.15 2005-02-21 12:04:04 andy_seaborne Exp $
  */
 
 
@@ -134,7 +134,7 @@ public class N3JenaReader implements RDFReader
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

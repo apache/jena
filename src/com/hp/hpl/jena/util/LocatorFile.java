@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -18,7 +18,7 @@ import org.apache.commons.logging.*;
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.4 2004-12-07 18:51:18 andy_seaborne Exp $
+ * @version $Id: LocatorFile.java,v 1.5 2005-02-21 12:18:57 andy_seaborne Exp $
  */
 
 public class LocatorFile implements Locator
@@ -131,7 +131,7 @@ public class LocatorFile implements Locator
     }
 }
 /*
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

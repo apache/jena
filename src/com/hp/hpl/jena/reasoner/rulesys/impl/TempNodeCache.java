@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Jul-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TempNodeCache.java,v 1.7 2004-12-07 09:56:32 andy_seaborne Exp $
+ * $Id: TempNodeCache.java,v 1.8 2005-02-21 12:18:00 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * to a deductions graph due to the risk of concurrent access.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2004-12-07 09:56:32 $
+ * @version $Revision: 1.8 $ on $Date: 2005-02-21 12:18:00 $
  */
 
 // Implementation note: We need to map from a pair of values (instance and prop).
@@ -132,7 +132,7 @@ public class TempNodeCache {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

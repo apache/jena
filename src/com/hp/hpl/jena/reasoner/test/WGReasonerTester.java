@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Feb-03
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.23 2004-12-07 09:56:37 andy_seaborne Exp $
+ * $Id: WGReasonerTester.java,v 1.24 2005-02-21 12:18:17 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -44,7 +44,7 @@ import java.net.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2004-12-07 09:56:37 $
+ * @version $Revision: 1.24 $ on $Date: 2005-02-21 12:18:17 $
  */
 public class WGReasonerTester {
 
@@ -417,7 +417,7 @@ public class WGReasonerTester {
 }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

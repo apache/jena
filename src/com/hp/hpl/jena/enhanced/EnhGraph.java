@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhGraph.java,v 1.15 2004-12-01 14:49:51 chris-dollin Exp $
+  $Id: EnhGraph.java,v 1.16 2005-02-21 12:03:38 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -180,7 +180,7 @@ public class EnhGraph
 }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhNode.java,v 1.9 2003-11-25 10:51:25 chris-dollin Exp $
+  $Id: EnhNode.java,v 1.10 2005-02-21 12:03:38 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -139,7 +139,7 @@ public class EnhNode extends Polymorphic implements FrontsNode
 }
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.12 2003-12-12 22:17:26 wkw Exp $
+  $Id: TestBasicOperations.java,v 1.13 2005-02-21 12:03:15 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -416,7 +416,7 @@ public class TestBasicOperations extends TestCase {
     	
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

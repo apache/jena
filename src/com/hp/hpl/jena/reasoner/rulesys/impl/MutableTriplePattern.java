@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  22-Jul-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: MutableTriplePattern.java,v 1.3 2004-12-07 09:56:32 andy_seaborne Exp $
+ * $Id: MutableTriplePattern.java,v 1.4 2005-02-21 12:17:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * to avoid store turn over. This is specific to the LP system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2004-12-07 09:56:32 $
+ * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:17:56 $
  */
 public class MutableTriplePattern extends TriplePattern {
 
@@ -41,7 +41,7 @@ public class MutableTriplePattern extends TriplePattern {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestReaderEvents.java,v 1.3 2004-08-03 08:32:03 chris-dollin Exp $
+  $Id: TestReaderEvents.java,v 1.4 2005-02-21 12:15:17 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -56,7 +56,7 @@ public class TestReaderEvents extends ModelTestBase
 
 
 /*
-(c) Copyright 2004, Hewlett-Packard Development Company, LP
+(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

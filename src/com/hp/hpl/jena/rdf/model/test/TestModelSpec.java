@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.36 2005-02-03 10:30:31 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.37 2005-02-21 12:15:14 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -469,7 +469,7 @@ public class TestModelSpec extends ModelTestBase
     }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

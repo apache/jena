@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2005-02-10 11:00:31 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-02-21 12:05:33 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -43,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
  * Legacy JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.25 2005-02-10 11:00:31 ian_dickinson Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.26 2005-02-21 12:05:33 andy_seaborne Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -1026,7 +1026,7 @@ public class DAMLTest
 
 
 /*
-    (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

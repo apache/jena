@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  08-May-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: InfModel.java,v 1.8 2005-02-14 18:09:07 der Exp $
+ * $Id: InfModel.java,v 1.9 2005-02-21 12:14:01 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model;
 
@@ -35,7 +35,7 @@ import java.util.Iterator;
  * and Derivations are not yet stable.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-02-14 18:09:07 $
+ * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:14:01 $
  */
 public interface InfModel extends Model {
 
@@ -140,7 +140,7 @@ public interface InfModel extends Model {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

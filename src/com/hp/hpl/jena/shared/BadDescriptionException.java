@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BadDescriptionException.java,v 1.4 2005-02-02 16:35:12 chris-dollin Exp $
+  $Id: BadDescriptionException.java,v 1.5 2005-02-21 12:18:42 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -23,7 +23,7 @@ public class BadDescriptionException extends JenaException
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

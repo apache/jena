@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Dec-02
  * 
- * (c) Copyright 2002, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDatatype.java,v 1.8 2004-05-04 08:09:59 der Exp $
+ * $Id: XSDDatatype.java,v 1.9 2005-02-21 12:02:15 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes.xsd;
@@ -40,7 +40,7 @@ import org.apache.xerces.xni.grammars.XSGrammar;
  * XSD implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2004-05-04 08:09:59 $
+ * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:02:15 $
  */
 public class XSDDatatype extends BaseDatatype {
 
@@ -571,7 +571,7 @@ public class XSDDatatype extends BaseDatatype {
 }
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

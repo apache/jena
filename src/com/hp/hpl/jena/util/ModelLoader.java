@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.23 2004-10-05 16:12:43 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.24 2005-02-21 12:18:57 andy_seaborne Exp $
  */
 
 public class ModelLoader
@@ -245,7 +245,7 @@ public class ModelLoader
 
 
 /*
- *  (c) Copyright 2002 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

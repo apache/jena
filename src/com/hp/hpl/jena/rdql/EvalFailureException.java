@@ -1,11 +1,11 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 /** Exception for things going wrong in the evaluation of a filter expression
  * @author		Andy Seaborne
- * @version 	$Id: EvalFailureException.java,v 1.5 2004-05-28 16:56:15 andy_seaborne Exp $
+ * @version 	$Id: EvalFailureException.java,v 1.6 2005-02-21 12:15:21 andy_seaborne Exp $
  */
 
 
@@ -18,7 +18,7 @@ public class EvalFailureException extends RuntimeException
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

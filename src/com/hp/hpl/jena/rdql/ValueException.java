@@ -1,11 +1,11 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: ValueException.java,v 1.5 2004-05-28 16:56:15 andy_seaborne Exp $
+ * @version  $Id: ValueException.java,v 1.6 2005-02-21 12:15:28 andy_seaborne Exp $
  */
 
 
@@ -18,7 +18,7 @@ public class ValueException extends EvalTypeException
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

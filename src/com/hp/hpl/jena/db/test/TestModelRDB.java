@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRDB.java,v 1.1 2004-06-18 10:20:45 chris-dollin Exp $
+  $Id: TestModelRDB.java,v 1.2 2005-02-21 12:03:17 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.db.test;
 
@@ -38,7 +38,7 @@ public class TestModelRDB extends AbstractTestModel
 
 
 /*
-(c) Copyright 2004, Hewlett-Packard Development Company, LP
+(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-	 (c) Copyright 2004, Hewlett-Packard Development Company, LP
+	 (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 	 [See end of file]
-	 $Id: StatementBase.java,v 1.4 2004-08-05 07:38:44 chris-dollin Exp $
+	 $Id: StatementBase.java,v 1.5 2005-02-21 12:14:54 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -218,7 +218,7 @@ public abstract class StatementBase
 	}
 
 /*
-	 (c) Copyright 2004 Hewlett-Packard Development Company, LP All rights
+	 (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP All rights
 	 reserved. Redistribution and use in source and binary forms, with or without
 	 modification, are permitted provided that the following conditions are met:
 	 1. Redistributions of source code must retain the above copyright notice,

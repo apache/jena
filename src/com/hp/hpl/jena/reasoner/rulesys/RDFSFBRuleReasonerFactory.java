@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-May-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSFBRuleReasonerFactory.java,v 1.7 2004-12-07 09:56:28 andy_seaborne Exp $
+ * $Id: RDFSFBRuleReasonerFactory.java,v 1.8 2005-02-21 12:17:03 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * Factory class for creating blank instances of the hybrid rule RDFS reasoner. 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2004-12-07 09:56:28 $
+ * @version $Revision: 1.8 $ on $Date: 2005-02-21 12:17:03 $
  */
 public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
     
@@ -79,7 +79,7 @@ public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

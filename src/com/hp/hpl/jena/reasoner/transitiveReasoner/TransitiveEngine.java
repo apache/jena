@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  23-Jun-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveEngine.java,v 1.7 2004-12-17 11:27:14 der Exp $
+ * $Id: TransitiveEngine.java,v 1.8 2005-02-21 12:18:19 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * lattice and use them within a larger inference graph.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2004-12-17 11:27:14 $
+ * @version $Revision: 1.8 $ on $Date: 2005-02-21 12:18:19 $
  */
 public class TransitiveEngine {
     
@@ -402,7 +402,7 @@ public class TransitiveEngine {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-   (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP
+   (c) Copyright 2003,2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Checker.java,v 1.49 2004-12-14 13:30:38 jeremy_carroll Exp $
+  $Id: Checker.java,v 1.50 2005-02-21 12:08:00 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -148,7 +148,7 @@ public class Checker extends CheckerImpl implements CheckerResults {
 
 }
 /*
-   (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP
+   (c) Copyright 2003,2004, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

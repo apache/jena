@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ import com.hp.hpl.jena.graph.Node;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2004-04-27 14:52:03 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2005-02-21 12:14:23 $'
  */
 public interface Resource extends RDFNode {
       

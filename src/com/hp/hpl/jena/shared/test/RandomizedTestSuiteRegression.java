@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2001, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RandomizedTestSuiteRegression.java,v 1.1 2003-12-04 17:26:44 jeremy_carroll Exp $
+ * $Id: RandomizedTestSuiteRegression.java,v 1.2 2005-02-21 12:18:50 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.shared.test;
@@ -34,7 +34,7 @@ import junit.framework.*;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2003-12-04 17:26:44 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2005-02-21 12:18:50 $
  */
 public class RandomizedTestSuiteRegression extends Object {
 

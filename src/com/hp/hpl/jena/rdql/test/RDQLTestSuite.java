@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -10,7 +10,7 @@ import junit.framework.*;
 /**
  * All the RDQL tests 
  * @author		Andy Seaborne
- * @version 	$Id: RDQLTestSuite.java,v 1.6 2004-05-28 16:57:33 andy_seaborne Exp $
+ * @version 	$Id: RDQLTestSuite.java,v 1.7 2005-02-21 12:16:08 andy_seaborne Exp $
  */
 
 public class RDQLTestSuite extends TestSuite
@@ -33,7 +33,7 @@ public class RDQLTestSuite extends TestSuite
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

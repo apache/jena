@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
 */
 
@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -557,7 +557,7 @@ public class GraphRDB extends GraphBase implements Graph {
 }
 
 /*
- *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

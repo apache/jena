@@ -3,10 +3,10 @@
  * Created by:  Dave Reynolds
  * Created on:  04-Dec-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: XSDMonthDayType.java,v 1.2 2004-12-06 13:50:31 andy_seaborne Exp $
+ * $Id: XSDMonthDayType.java,v 1.3 2005-02-21 12:02:24 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
  * base XSDAbstractDateTimeType class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2004-12-06 13:50:31 $
+ * @version $Revision: 1.3 $ on $Date: 2005-02-21 12:02:24 $
  */
 public class XSDMonthDayType extends XSDAbstractDateTimeType {
 
@@ -67,7 +67,7 @@ public class XSDMonthDayType extends XSDAbstractDateTimeType {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

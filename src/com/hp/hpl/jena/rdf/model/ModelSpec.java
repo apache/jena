@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpec.java,v 1.12 2005-02-15 12:17:50 chris-dollin Exp $
+  $Id: ModelSpec.java,v 1.13 2005-02-21 12:14:11 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -49,7 +49,7 @@ public interface ModelSpec extends ModelSource
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  10-Dec-02
  * 
- * (c) Copyright 2002, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDByteType.java,v 1.6 2003-12-04 11:01:52 der Exp $
+ * $Id: XSDByteType.java,v 1.7 2005-02-21 12:02:20 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * Datatype template used to define XSD int types
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-12-04 11:01:52 $
+ * @version $Revision: 1.7 $ on $Date: 2005-02-21 12:02:20 $
  */
 public class XSDByteType extends XSDBaseNumericType {
 
@@ -51,7 +51,7 @@ public class XSDByteType extends XSDBaseNumericType {
 }
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

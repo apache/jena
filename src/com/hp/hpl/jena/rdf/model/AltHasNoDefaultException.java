@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AltHasNoDefaultException.java,v 1.3 2004-12-06 13:50:11 andy_seaborne Exp $
+  $Id: AltHasNoDefaultException.java,v 1.4 2005-02-21 12:13:49 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -18,7 +18,7 @@ public class AltHasNoDefaultException extends RDFException
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -12,7 +12,7 @@ import java.io.InputStream;
  *  Interface to things that open streams by some string reference
  * 
  * @author Andy Seaborne
- * @version $Id: Locator.java,v 1.1 2004-08-31 09:49:50 andy_seaborne Exp $
+ * @version $Id: Locator.java,v 1.2 2005-02-21 12:18:56 andy_seaborne Exp $
  */
 
 public interface Locator
@@ -24,7 +24,7 @@ public interface Locator
 }
 
 /*
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

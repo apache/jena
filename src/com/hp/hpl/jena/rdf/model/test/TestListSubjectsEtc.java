@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestListSubjectsEtc.java,v 1.1 2004-12-03 14:56:42 chris-dollin Exp $
+  $Id: TestListSubjectsEtc.java,v 1.2 2005-02-21 12:15:01 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -45,7 +45,7 @@ public class TestListSubjectsEtc extends ModelTestBase
     }
 
 /*
-	(c) Copyright 2004, Hewlett-Packard Development Company, LP
+	(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

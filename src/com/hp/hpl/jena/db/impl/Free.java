@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Free.java,v 1.4 2004-12-06 13:50:20 andy_seaborne Exp $
+  $Id: Free.java,v 1.5 2005-02-21 12:02:53 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -79,7 +79,7 @@ public class Free extends Element
 	}
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -16,7 +16,7 @@ import org.apache.commons.logging.*;
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.6 2005-02-11 13:44:55 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.7 2005-02-21 12:18:57 andy_seaborne Exp $
  */
 
 public class LocatorURL implements Locator
@@ -104,7 +104,7 @@ public class LocatorURL implements Locator
 
 }
 /*
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  23-Jul-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DAMLMicroReasoner.java,v 1.5 2004-12-07 09:56:28 andy_seaborne Exp $
+ * $Id: DAMLMicroReasoner.java,v 1.6 2005-02-21 12:16:57 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * that correspond roughly to what was there in Jena1. We hope.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2004-12-07 09:56:28 $
+ * @version $Revision: 1.6 $ on $Date: 2005-02-21 12:16:57 $
  */
 public class DAMLMicroReasoner  extends GenericRuleReasoner {
    
@@ -62,7 +62,7 @@ public class DAMLMicroReasoner  extends GenericRuleReasoner {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedException.java,v 1.1 2004-06-19 18:47:40 chris-dollin Exp $
+  $Id: WrappedException.java,v 1.2 2005-02-21 12:18:46 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -20,7 +20,7 @@ public class WrappedException extends JenaException
     }
 
 /*
-    (c) Copyright 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

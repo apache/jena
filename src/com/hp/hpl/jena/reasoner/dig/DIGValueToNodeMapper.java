@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Dec-2003
  * Filename           $RCSfile: DIGValueToNodeMapper.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 09:56:36 $
+ * Last modified on   $Date: 2005-02-21 12:16:24 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  *****************************************************************************/
 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.iterator.Map1;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGValueToNodeMapper.java,v 1.2 2004-12-07 09:56:36 andy_seaborne Exp $
+ * @version CVS $Id: DIGValueToNodeMapper.java,v 1.3 2005-02-21 12:16:24 andy_seaborne Exp $
  */
 public class DIGValueToNodeMapper 
     implements Map1
@@ -113,7 +113,7 @@ public class DIGValueToNodeMapper
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

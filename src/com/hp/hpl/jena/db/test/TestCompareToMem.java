@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCompareToMem.java,v 1.8 2003-12-08 10:48:23 andy_seaborne Exp $
+  $Id: TestCompareToMem.java,v 1.9 2005-02-21 12:03:16 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -200,7 +200,7 @@ public class TestCompareToMem extends TestCase
     	
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

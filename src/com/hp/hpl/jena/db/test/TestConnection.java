@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.21 2004-12-06 13:50:09 andy_seaborne Exp $
+  $Id: TestConnection.java,v 1.22 2005-02-21 12:03:16 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -661,7 +661,7 @@ public class TestConnection extends TestCase {
     	
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

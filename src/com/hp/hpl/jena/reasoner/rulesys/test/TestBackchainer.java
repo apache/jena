@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  04-May-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.29 2004-12-07 09:56:33 andy_seaborne Exp $
+ * $Id: TestBackchainer.java,v 1.30 2005-02-21 12:18:08 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import junit.framework.TestSuite;
  * LP engine, though the bulk of such tests are really done by TestBasicLP.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2004-12-07 09:56:33 $
+ * @version $Revision: 1.30 $ on $Date: 2005-02-21 12:18:08 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -908,7 +908,7 @@ public class TestBackchainer extends TestCase {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

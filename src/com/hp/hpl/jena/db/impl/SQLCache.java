@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  */
@@ -46,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.13 $ on $Date: 2004-11-19 14:37:35 $
+* @version $Revision: 1.14 $ on $Date: 2005-02-21 12:03:11 $
 */
 
 public class SQLCache {
@@ -832,7 +832,7 @@ public class SQLCache {
 }
 
 /*
- *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

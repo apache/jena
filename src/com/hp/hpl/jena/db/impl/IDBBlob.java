@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  *
@@ -22,7 +22,7 @@ import java.sql.SQLException;
 * Interface for database blob objects.
 * 
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.3 $ on $Date: 2004-12-06 13:50:20 $
+* @version $Revision: 1.4 $ on $Date: 2005-02-21 12:03:04 $
 */
 
 public interface IDBBlob {
@@ -39,7 +39,7 @@ public interface IDBBlob {
 
 
 /*
- *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

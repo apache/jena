@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Redirect.java,v 1.2 2004-12-13 17:17:57 jeremy_carroll Exp $
+  $Id: Redirect.java,v 1.3 2005-02-21 12:08:12 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import java.util.*;
@@ -36,7 +36,7 @@ public class Redirect {
 }
 
 /*
-  (c) Copyright 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -51,7 +51,7 @@ public class LocatorClassLoader  implements Locator
     public String getName() { return "ClassLoaderLocator" ; }
 }
 /*
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  28-Apr-03
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BindingVector.java,v 1.20 2004-12-07 09:56:32 andy_seaborne Exp $
+ * $Id: BindingVector.java,v 1.21 2005-02-21 12:17:39 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2004-12-07 09:56:32 $
+ * @version $Revision: 1.21 $ on $Date: 2005-02-21 12:17:39 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -374,7 +374,7 @@ public class BindingVector implements BindingEnvironment {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

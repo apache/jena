@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 18:10:19 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-02-21 12:04:29 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  * ****************************************************************************/
 
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.21 2004-12-07 18:10:19 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.22 2005-02-21 12:04:29 andy_seaborne Exp $
  */
 public interface OntClass
     extends OntResource
@@ -527,7 +527,7 @@ public interface OntClass
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

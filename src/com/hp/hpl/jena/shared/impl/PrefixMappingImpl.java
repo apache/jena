@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.20 2005-02-18 12:27:59 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.21 2005-02-21 12:18:48 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -241,7 +241,7 @@ public class PrefixMappingImpl implements PrefixMapping
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,9 +1,9 @@
 /*
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
-/* CVS $Id: LocationMappingVocab.java,v 1.2 2004-11-29 18:44:47 andy_seaborne Exp $ */
+/* CVS $Id: LocationMappingVocab.java,v 1.3 2005-02-21 12:21:31 andy_seaborne Exp $ */
 
 package com.hp.hpl.jena.vocabulary;
 import com.hp.hpl.jena.rdf.model.*;
@@ -40,7 +40,7 @@ public class LocationMappingVocab {
 }
 
 /*
- *  (c) Copyright 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

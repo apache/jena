@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceFactory.java,v 1.7 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: ResourceFactory.java,v 1.8 2005-02-21 12:14:25 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -199,7 +199,7 @@ public class ResourceFactory {
 }
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-10 11:06:55 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-02-21 12:15:01 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.9 2005-02-10 11:06:55 ian_dickinson Exp $
+ * @version CVS $Id: TestList.java,v 1.10 2005-02-21 12:15:01 andy_seaborne Exp $
  */
 public class TestList
     extends TestCase
@@ -971,7 +971,7 @@ public class TestList
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003 Hewlett-Packard Development Company, LP All
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP All
  * rights reserved. [See end of file] $Id: TestXMLFeatures.java,v 1.35
  * 2003/11/29 15:07:53 jeremy_carroll Exp $
  */
@@ -113,7 +113,7 @@ public class TestErrorMsg extends TestCase {
 	}
 }
 /*
- * (c) Copyright  2003 Hewlett-Packard Development Company, LP All
+ * (c) Copyright  2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP All
  * rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -137,5 +137,5 @@ public class TestErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestErrorMsg.java,v 1.4 2005-01-19 15:26:06 jeremy_carroll Exp $
+ * $Id: TestErrorMsg.java,v 1.5 2005-02-21 12:11:08 andy_seaborne Exp $
  */

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  *
@@ -18,7 +18,7 @@ package com.hp.hpl.jena.db.impl;
 * are needed but could specialize it to RDFNodes.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.3 $ on $Date: 2004-12-06 13:50:20 $
+* @version $Revision: 1.4 $ on $Date: 2005-02-21 12:02:53 $
 */
 
 
@@ -55,7 +55,7 @@ public interface ICache {
 }
 
 /*
- *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

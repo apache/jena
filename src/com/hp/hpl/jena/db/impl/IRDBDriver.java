@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [see end of file]
  */
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.20 $
+* @version $Revision: 1.21 $
 */
 
 public interface IRDBDriver {
@@ -561,7 +561,7 @@ public interface IRDBDriver {
 }
 
 /*
- *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

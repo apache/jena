@@ -1,7 +1,7 @@
 /*
-	(c) Copyright 2004, Hewlett-Packard Development Company, LP
+	(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: StatementImpl.java,v 1.28 2004-08-05 07:38:44 chris-dollin Exp $
+	$Id: StatementImpl.java,v 1.29 2005-02-21 12:14:55 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model.impl;
 
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.28 $ $Date: 2004-08-05 07:38:44 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.29 $ $Date: 2005-02-21 12:14:55 $
  */
 public class StatementImpl  extends StatementBase implements Statement {
     
@@ -214,7 +214,7 @@ public class StatementImpl  extends StatementBase implements Statement {
 }
 
 /*
-	 (c) Copyright 2000, 2001, 2004 Hewlett-Packard Development Company, LP
+	 (c) Copyright 2000, 2001, 2004, 2005 Hewlett-Packard Development Company, LP
 	 All rights reserved.
 	 
 	 Redistribution and use in source and binary forms, with or without

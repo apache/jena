@@ -1,7 +1,7 @@
 /*
-	(c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: TestSmallGraphMem.java,v 1.3 2004-08-03 08:32:03 chris-dollin Exp $
+	$Id: TestSmallGraphMem.java,v 1.4 2005-02-21 12:04:01 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -28,7 +28,7 @@ public class TestSmallGraphMem extends TestGraphMem
     }
 
 /*
-	 *  (c) Copyright 2004 Hewlett-Packard Development Company, LP
+	 *  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 	 *  All rights reserved.
 	 *
 	 * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -9,7 +9,7 @@ import junit.framework.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3TestSuite.java,v 1.7 2004-12-06 13:50:26 andy_seaborne Exp $
+ * @version 	$Id: N3TestSuite.java,v 1.8 2005-02-21 12:04:11 andy_seaborne Exp $
  */
 public class N3TestSuite extends TestSuite
 {
@@ -30,7 +30,7 @@ public class N3TestSuite extends TestSuite
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /** An internal interface, not normally of interest to application developers.
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-08-27 13:05:53 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2005-02-21 12:14:31 $'
  */
 interface ContainerI {
 

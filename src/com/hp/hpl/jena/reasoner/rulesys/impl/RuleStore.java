@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  04-May-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleStore.java,v 1.14 2004-12-07 09:56:32 andy_seaborne Exp $
+ * $Id: RuleStore.java,v 1.15 2005-02-21 12:18:00 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * </p> 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2004-12-07 09:56:32 $
+ * @version $Revision: 1.15 $ on $Date: 2005-02-21 12:18:00 $
  */
 public class RuleStore {
 
@@ -180,7 +180,7 @@ public class RuleStore {
 }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

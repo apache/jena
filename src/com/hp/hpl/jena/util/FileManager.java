@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.16 2005-02-17 14:31:41 chris-dollin Exp $
+ * @version    $Id: FileManager.java,v 1.17 2005-02-21 12:18:54 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -406,7 +406,7 @@ public class FileManager
 
 
 /*
- *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

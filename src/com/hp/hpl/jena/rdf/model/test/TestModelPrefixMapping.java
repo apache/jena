@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelPrefixMapping.java,v 1.6 2004-12-06 13:50:25 andy_seaborne Exp $
+  $Id: TestModelPrefixMapping.java,v 1.7 2005-02-21 12:15:13 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -89,7 +89,7 @@ public class TestModelPrefixMapping extends AbstractTestPrefixMapping
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

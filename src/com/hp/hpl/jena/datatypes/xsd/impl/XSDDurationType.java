@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  16-Dec-02
  * 
- * (c) Copyright 2002, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDurationType.java,v 1.7 2003-12-04 15:58:00 der Exp $
+ * $Id: XSDDurationType.java,v 1.8 2005-02-21 12:02:22 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * </p>
  *            
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-12-04 15:58:00 $
+ * @version $Revision: 1.8 $ on $Date: 2005-02-21 12:02:22 $
  */
 public class XSDDurationType extends XSDAbstractDateTimeType {
     
@@ -128,7 +128,7 @@ public class XSDDurationType extends XSDAbstractDateTimeType {
 }
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

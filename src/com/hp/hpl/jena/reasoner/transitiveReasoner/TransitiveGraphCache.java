@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  16-Nov-2004
  * 
- * (c) Copyright 2004, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.17 2005-02-13 16:56:33 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.18 2005-02-21 12:18:36 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
@@ -42,7 +42,7 @@ import java.util.*;
  * expensive. The interval index would handle predecessor closure nicely.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 
 // Note to maintainers. The GraphNode object is treated as a record structure
@@ -997,7 +997,7 @@ public class TransitiveGraphCache implements Finder {
 
 
 /*
-    (c) Copyright 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

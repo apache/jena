@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-Sep-2003
  * 
-   (c) Copyright 2003 Hewlett-Packard Development Company, LP
+   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLResults.java,v 1.3 2003-12-13 21:10:59 jeremy_carroll Exp $
+ * $Id: OWLResults.java,v 1.4 2005-02-21 12:21:32 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -84,7 +84,7 @@ public class OWLResults {
 
 
 /*
-   (c) Copyright 2003 Hewlett-Packard Development Company, LP
+   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

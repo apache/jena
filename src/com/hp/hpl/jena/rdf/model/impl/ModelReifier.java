@@ -1,7 +1,7 @@
 /*
-	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+	(c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.18 2004-12-01 07:22:22 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.19 2005-02-21 12:14:35 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -210,7 +210,7 @@ public class ModelReifier
     }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

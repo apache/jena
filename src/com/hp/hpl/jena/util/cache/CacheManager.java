@@ -1,9 +1,9 @@
 /*
-     (c) Copyright 2002, 2004 Hewlett-Packard Development Company, LP
+     (c) Copyright 2002, 2004, 2005 Hewlett-Packard Development Company, LP
      All rights reserved.
      See end of file.
      
-     $Id: CacheManager.java,v 1.5 2004-12-01 14:51:04 chris-dollin Exp $
+     $Id: CacheManager.java,v 1.6 2005-02-21 12:19:12 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.util.cache;
 
@@ -44,7 +44,7 @@ public class CacheManager {
     }
 }
 /*
-     (c) Copyright 2002, 2004 Hewlett-Packard Development Company, LP
+     (c) Copyright 2002, 2004, 2005 Hewlett-Packard Development Company, LP
      
      All rights reserved.
      
@@ -71,5 +71,5 @@ public class CacheManager {
      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
      THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
      
-     $Id: CacheManager.java,v 1.5 2004-12-01 14:51:04 chris-dollin Exp $
+     $Id: CacheManager.java,v 1.6 2005-02-21 12:19:12 andy_seaborne Exp $
 */

@@ -1,8 +1,8 @@
 /*
-    (c) Copyright 2001, 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: TestPackage.java,v 1.12 2004-11-12 10:39:08 chris-dollin Exp $
+    $Id: TestPackage.java,v 1.13 2005-02-21 12:22:52 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
@@ -19,7 +19,7 @@ import junit.framework.*;
  * JUnit regression tests for output
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: TestPackage.java,v 1.12 2004-11-12 10:39:08 chris-dollin Exp $,
+ * @version CVS info: $Id: TestPackage.java,v 1.13 2005-02-21 12:22:52 andy_seaborne Exp $,
  */
 public class TestPackage {
 
@@ -86,7 +86,7 @@ public class TestPackage {
 }
 
 /*
- *  (c)   Copyright 2001,2002 Hewlett-Packard Development Company, LP
+ *  (c)   Copyright 2001,2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *    All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -111,5 +111,5 @@ public class TestPackage {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestPackage.java,v 1.12 2004-11-12 10:39:08 chris-dollin Exp $
+ * $Id: TestPackage.java,v 1.13 2005-02-21 12:22:52 andy_seaborne Exp $
  */

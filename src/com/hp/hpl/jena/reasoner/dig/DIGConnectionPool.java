@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGConnectionPool.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 09:56:35 $
+ * Last modified on   $Date: 2005-02-21 12:16:18 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  *****************************************************************************/
 
@@ -37,7 +37,7 @@ import java.util.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGConnectionPool.java,v 1.4 2004-12-07 09:56:35 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGConnectionPool.java,v 1.5 2005-02-21 12:16:18 andy_seaborne Exp $)
  */
 public class DIGConnectionPool {
     // Constants
@@ -124,7 +124,7 @@ public class DIGConnectionPool {
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

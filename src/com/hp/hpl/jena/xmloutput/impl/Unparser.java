@@ -1,8 +1,8 @@
 /*
- *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.33 2005-01-19 15:26:07 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.34 2005-02-21 12:22:32 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.33 $' Date='$Date: 2005-01-19 15:26:07 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.34 $' Date='$Date: 2005-02-21 12:22:32 $'
 
  */
 class Unparser {
@@ -1773,7 +1773,7 @@ class Unparser {
 }
 
 /*
-    (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

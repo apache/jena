@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryMapper.java,v 1.3 2004-04-22 12:42:29 chris-dollin Exp $
+  $Id: QueryMapper.java,v 1.4 2005-02-21 12:18:57 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util;
@@ -78,7 +78,7 @@ public class QueryMapper
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

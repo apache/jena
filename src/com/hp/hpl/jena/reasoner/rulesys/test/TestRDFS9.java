@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  24-Jun-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFS9.java,v 1.3 2004-12-07 09:56:35 andy_seaborne Exp $
+ * $Id: TestRDFS9.java,v 1.4 2005-02-21 12:18:13 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,7 +26,7 @@ import junit.framework.TestSuite;
  * of modified versions of rule rdfs9.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2004-12-07 09:56:35 $
+ * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:18:13 $
  */
 public class TestRDFS9 extends TestCase {
     
@@ -109,7 +109,7 @@ public class TestRDFS9 extends TestCase {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.50 $
+ * Revision           $Revision: 1.51 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-10 11:05:44 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-02-21 12:06:45 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -53,7 +53,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.50 2005-02-10 11:05:44 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.51 2005-02-21 12:06:45 andy_seaborne Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1630,7 +1630,7 @@ public class OntResourceImpl
 
 
 /*
-    (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.rdql.test;
  *  not a failure of the test itself (.e.g manifest problems)
  *  
  * @author		Andy Seaborne
- * @version 	$Id: QueryTestException.java,v 1.2 2004-11-01 16:48:03 andy_seaborne Exp $
+ * @version 	$Id: QueryTestException.java,v 1.3 2005-02-21 12:15:56 andy_seaborne Exp $
  */
 
 
@@ -22,7 +22,7 @@ public class QueryTestException extends RuntimeException
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

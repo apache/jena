@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP [See end of file]
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP [See end of file]
  */
 
 package com.hp.hpl.jena.rdf.arp;
@@ -95,7 +95,7 @@ final class JenaHandler extends ARPSaxErrorHandler implements StatementHandler,
 }
 
 /*
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP All rights
  * reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

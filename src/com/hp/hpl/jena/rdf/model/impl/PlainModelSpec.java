@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PlainModelSpec.java,v 1.9 2004-08-13 08:42:51 chris-dollin Exp $
+  $Id: PlainModelSpec.java,v 1.10 2005-02-21 12:14:47 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -62,7 +62,7 @@ public class PlainModelSpec extends ModelSpecImpl implements ModelSpec
     }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

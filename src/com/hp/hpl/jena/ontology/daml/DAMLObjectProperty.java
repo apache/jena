@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLObjectProperty.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:18 $
+ * Last modified on   $Date: 2005-02-21 12:05:00 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -36,7 +36,7 @@ package com.hp.hpl.jena.ontology.daml;
  * modelled as attributes of the DAMLObjectProperty object.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLObjectProperty.java,v 1.6 2004-12-06 13:50:18 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLObjectProperty.java,v 1.7 2005-02-21 12:05:00 andy_seaborne Exp $
  */
 public interface DAMLObjectProperty
     extends DAMLProperty
@@ -99,7 +99,7 @@ public interface DAMLObjectProperty
 
 
 /*
-    (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

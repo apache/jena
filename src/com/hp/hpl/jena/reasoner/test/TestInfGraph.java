@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestInfGraph.java,v 1.3 2004-11-29 16:39:01 der Exp $
+  $Id: TestInfGraph.java,v 1.4 2005-02-21 12:18:16 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.reasoner.test;
@@ -59,7 +59,7 @@ public class TestInfGraph extends AbstractTestGraph
     }
 
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

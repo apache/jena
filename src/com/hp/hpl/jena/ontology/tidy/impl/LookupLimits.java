@@ -1,7 +1,7 @@
 /*
-   (c) Copyright 2003 Hewlett-Packard Development Company, LP
+   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LookupLimits.java,v 1.2 2003-12-13 21:10:50 jeremy_carroll Exp $
+  $Id: LookupLimits.java,v 1.3 2005-02-21 12:08:32 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -185,7 +185,7 @@ public interface LookupLimits {
 }
 
 /*
-   (c) Copyright 2003 Hewlett-Packard Development Company, LP
+   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

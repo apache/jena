@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  19-Mar-2004
  * 
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP, all rights reserved.
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLUnitTest.java,v 1.8 2005-02-20 11:49:13 der Exp $
+ * $Id: OWLUnitTest.java,v 1.9 2005-02-21 12:18:08 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -24,7 +24,7 @@ import java.io.IOException;
  * Version of the OWL unit tests used during development of the mini ruleset.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-02-20 11:49:13 $
+ * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:18:08 $
  */
 public class OWLUnitTest extends TestCase {
     
@@ -260,7 +260,7 @@ public class OWLUnitTest extends TestCase {
 
 
 /*
-    (c) Copyright 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

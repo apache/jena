@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            3 August 2001
  * Filename           $RCSfile: VocabularyManager.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:18 $
+ * Last modified on   $Date: 2005-02-21 12:05:32 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.impl.*;
  * with managing the different versions of the namespace.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: VocabularyManager.java,v 1.6 2004-12-06 13:50:18 andy_seaborne Exp $
+ * @version CVS info: $Id: VocabularyManager.java,v 1.7 2005-02-21 12:05:32 andy_seaborne Exp $
  */
 public class VocabularyManager
 {
@@ -119,7 +119,7 @@ public class VocabularyManager
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

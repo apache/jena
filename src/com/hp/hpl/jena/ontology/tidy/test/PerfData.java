@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PerfData.java,v 1.1 2004-01-11 21:20:15 jeremy_carroll Exp $
+  $Id: PerfData.java,v 1.2 2005-02-21 12:08:38 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 import java.util.*;
@@ -73,7 +73,7 @@ class PerfData {
 }
 
 /*
-  (c) Copyright 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

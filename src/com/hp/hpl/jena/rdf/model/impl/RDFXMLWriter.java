@@ -1,5 +1,5 @@
 /*
- *  (c)      Copyright 2002 Hewlett-Packard Development Company, LP
+ *  (c)      Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *    All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.xmloutput.impl.Basic;
 /** Writes out an XML serialization of a model.
  * @deprecated {@link com.hp.hpl.jena.xmloutput.impl.Basic }
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-08-27 13:05:53 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2005-02-21 12:14:50 $'
  */
 public class RDFXMLWriter extends Basic {
 }

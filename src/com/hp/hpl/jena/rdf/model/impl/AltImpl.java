@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Alt.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2004-06-15 14:00:49 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2005-02-21 12:14:30 $'
  */
 public class AltImpl extends ContainerImpl implements Alt {
     

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: InvalidListException.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:11 $
+ * Last modified on   $Date: 2005-02-21 12:14:01 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.shared.JenaException;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release ($Id: InvalidListException.java,v 1.5 2004-12-06 13:50:11 andy_seaborne Exp $)
+ * @version Release ($Id: InvalidListException.java,v 1.6 2005-02-21 12:14:01 andy_seaborne Exp $)
  */
 public class InvalidListException
     extends JenaException
@@ -90,7 +90,7 @@ public class InvalidListException
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2000  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Bag
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2004-06-15 14:00:33 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2005-02-21 12:14:30 $' 
  */
 public class BagImpl extends ContainerImpl implements Bag {
     

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  29-Mar-03
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Functor.java,v 1.18 2004-12-07 09:56:28 andy_seaborne Exp $
+ * $Id: Functor.java,v 1.19 2005-02-21 12:16:59 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2004-12-07 09:56:28 $
+ * @version $Revision: 1.19 $ on $Date: 2005-02-21 12:16:59 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -286,7 +286,7 @@ public class Functor implements ClauseEntry {
 }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

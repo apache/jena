@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP All rights
  * reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -23,7 +23,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestCaseBasic.java,v 1.6 2003-12-12 10:13:52 der Exp $
+ * $Id: TestCaseBasic.java,v 1.7 2005-02-21 12:18:40 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -52,7 +52,7 @@ import junit.framework.TestCase;
  * </p>
  * 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-12-12 10:13:52 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2005-02-21 12:18:40 $
  */
 public class TestCaseBasic extends TestCase {
 

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001, 2002 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -113,7 +113,7 @@ public class ARPTests extends java.lang.Object {
 		Test ts = suite();
         PrintWriter pw = new PrintWriter(new FileWriter("src/com/hp/hpl/jena/rdf/arp/test/TestPackage.java"));
         pw.println("/*");
-        pw.println(" *  (c) Copyright 2002-2003 Hewlett-Packard Development Company, LP") ;
+        pw.println(" *  (c) Copyright 2002-2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP") ;
         pw.println(" *  All rights reserved.");
         pw.println(" *");
         pw.println(" * Redistribution and use in source and binary forms, with or without");

@@ -7,13 +7,13 @@
  * Web site           http://jena.sourceforge.net
  * Created            07-Dec-2004
  * Filename           $RCSfile: TestOntClass.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 18:12:50 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-02-21 12:07:20 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: TestOntClass.java,v 1.2 2004-12-07 18:12:50 ian_dickinson Exp $
+ * @version CVS $Id: TestOntClass.java,v 1.3 2005-02-21 12:07:20 andy_seaborne Exp $
  */
 public class TestOntClass 
     extends ModelTestBase
@@ -101,7 +101,7 @@ public class TestOntClass
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-   (c) Copyright 2003 Hewlett-Packard Development Company, LP
+   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LookupTable.java,v 1.11 2005-01-19 15:27:57 jeremy_carroll Exp $
+  $Id: LookupTable.java,v 1.12 2005-02-21 12:08:33 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import java.util.*;
@@ -248,7 +248,7 @@ public class LookupTable
 }
 
 /*
-   (c) Copyright 2003 Hewlett-Packard Development Company, LP
+   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:18 $
+ * Last modified on   $Date: 2005-02-21 12:05:25 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.15 2004-12-06 13:50:18 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.16 2005-02-21 12:05:25 andy_seaborne Exp $
  */
 public class DAMLModelImpl
     extends OntModelImpl
@@ -586,7 +586,7 @@ public class DAMLModelImpl
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Restriction.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:11 $
+ * Last modified on   $Date: 2005-02-21 12:04:42 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  * ****************************************************************************/
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Restriction.java,v 1.10 2004-12-06 13:50:11 andy_seaborne Exp $
+ * @version CVS $Id: Restriction.java,v 1.11 2005-02-21 12:04:42 andy_seaborne Exp $
  */
 public interface Restriction
     extends OntClass
@@ -243,7 +243,7 @@ public interface Restriction
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

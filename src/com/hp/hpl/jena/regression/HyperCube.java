@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: HyperCube.java,v 1.3 2003-08-27 13:07:11 andy_seaborne Exp $
+ * $Id: HyperCube.java,v 1.4 2005-02-21 12:18:39 andy_seaborne Exp $
  *
    HyperCube.java
  *
@@ -50,7 +50,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-08-27 13:07:11 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2005-02-21 12:18:39 $'
  */
 class HyperCube extends java.lang.Object {
     final private Resource corners[];

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  17-Dec-2002
  * 
- * (c) Copyright 2002, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.16 2004-07-21 15:28:51 der Exp $
+ * $Id: XSDDateTime.java,v 1.17 2005-02-21 12:02:16 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2004-07-21 15:28:51 $
+ * @version $Revision: 1.17 $ on $Date: 2005-02-21 12:02:16 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -234,7 +234,7 @@ public class XSDDateTime extends AbstractDateTime {
 }
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

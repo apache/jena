@@ -1,6 +1,6 @@
 /*
- * (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP [See end of
- * file] $Id: StreamingChecker.java,v 1.4 2004-12-13 17:17:57 jeremy_carroll Exp $
+ * (c) Copyright 2003,2004, 2005 Hewlett-Packard Development Company, LP [See end of
+ * file] $Id: StreamingChecker.java,v 1.5 2005-02-21 12:08:12 andy_seaborne Exp $
  */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -240,7 +240,7 @@ public class StreamingChecker extends CheckerImpl implements CheckerResults {
 	private int tripleCnt = 0;
 }
 /*
- * (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2003,2004, 2005 Hewlett-Packard Development Company, LP All rights
  * reserved.
  * 
  * Redistribution and use in source and binary forms, with or without

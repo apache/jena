@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQuery.java,v 1.7 2004-09-17 21:44:07 wkw Exp $
+  $Id: DBQuery.java,v 1.8 2005-02-21 12:02:50 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -95,7 +95,7 @@ public class DBQuery
 }		
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  21-Jul-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.8 2005-02-18 12:20:47 der Exp $
+ * $Id: LPInterpreter.java,v 1.9 2005-02-21 12:17:55 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-02-18 12:20:47 $
+ * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:17:55 $
  */
 public class LPInterpreter {
 
@@ -805,7 +805,7 @@ public class LPInterpreter {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-May-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSFBRuleReasoner.java,v 1.6 2004-12-07 09:56:28 andy_seaborne Exp $
+ * $Id: RDFSFBRuleReasoner.java,v 1.7 2005-02-21 12:17:02 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * based upon the basic backward rule interpreter. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2004-12-07 09:56:28 $
+ * @version $Revision: 1.7 $ on $Date: 2005-02-21 12:17:02 $
  */
 public class RDFSFBRuleReasoner extends FBRuleReasoner {
     
@@ -60,7 +60,7 @@ public class RDFSFBRuleReasoner extends FBRuleReasoner {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

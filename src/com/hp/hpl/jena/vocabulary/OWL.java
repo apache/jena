@@ -5,13 +5,13 @@
  * Web site           http://jena.sourceforge.net
  * Created            13 Aug 2004 15:35
  * Filename           $RCSfile: OWL.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:17 $
+ * Last modified on   $Date: 2005-02-21 12:21:32 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -149,7 +149,7 @@ public class OWL {
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

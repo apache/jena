@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: ObjectPropertyImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-15 21:43:37 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-02-21 12:06:38 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ObjectPropertyImpl.java,v 1.8 2004-12-15 21:43:37 ian_dickinson Exp $
+ * @version CVS $Id: ObjectPropertyImpl.java,v 1.9 2005-02-21 12:06:38 andy_seaborne Exp $
  */
 public class ObjectPropertyImpl
     extends OntPropertyImpl
@@ -138,7 +138,7 @@ public class ObjectPropertyImpl
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

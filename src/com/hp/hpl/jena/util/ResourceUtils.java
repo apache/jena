@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-07 16:07:55 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-02-21 12:18:57 $
+ *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.11 2004-12-07 16:07:55 ian_dickinson Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.12 2005-02-21 12:18:57 andy_seaborne Exp $
  */
 public class ResourceUtils {
     // Constants
@@ -291,7 +291,7 @@ public class ResourceUtils {
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

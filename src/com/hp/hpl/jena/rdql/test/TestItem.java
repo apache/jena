@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdql.QueryPrintUtils;
  *  test query vocabulary.
  *  
  *  @author      Andy Seaborne
- *  @version     $Id: TestItem.java,v 1.2 2004-12-06 13:50:29 andy_seaborne Exp $
+ *  @version     $Id: TestItem.java,v 1.3 2005-02-21 12:16:09 andy_seaborne Exp $
  */
 class TestItem
 {
@@ -203,7 +203,7 @@ class TestItem
 
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

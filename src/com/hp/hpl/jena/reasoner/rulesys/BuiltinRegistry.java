@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  11-Apr-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BuiltinRegistry.java,v 1.16 2004-12-07 09:56:28 andy_seaborne Exp $
+ * $Id: BuiltinRegistry.java,v 1.17 2005-02-21 12:16:56 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * This is currently implemented as a singleton to simply any future
  * move to support different sets of builtins.
  * 
- * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.16 $ on $Date: 2004-12-07 09:56:28 $ */
+ * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.17 $ on $Date: 2005-02-21 12:16:56 $ */
 public class BuiltinRegistry {
 
     /** The single global static registry */
@@ -124,7 +124,7 @@ public class BuiltinRegistry {
 }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

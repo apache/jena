@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 /** rdql2.ResultBinding
  * 
  * @author Andy Seaborne
- * @version $Id: ResultBinding.java,v 1.14 2004-07-30 17:11:00 andy_seaborne Exp $
+ * @version $Id: ResultBinding.java,v 1.15 2005-02-21 12:15:25 andy_seaborne Exp $
  */
 
 public interface ResultBinding
@@ -42,7 +42,7 @@ public interface ResultBinding
 }
 
 /*
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLOntology.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:18 $
+ * Last modified on   $Date: 2005-02-21 12:05:01 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdf.model.NodeIterator;
  * Encapsulates the properties known for a given source ontology.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLOntology.java,v 1.4 2004-12-06 13:50:18 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLOntology.java,v 1.5 2005-02-21 12:05:01 andy_seaborne Exp $
  */
 public interface DAMLOntology
     extends DAMLCommon
@@ -73,7 +73,7 @@ public interface DAMLOntology
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.15 2004-10-05 15:10:22 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.16 2005-02-21 12:08:55 andy_seaborne Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*

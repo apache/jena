@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryStageException.java,v 1.1 2004-11-30 20:18:55 chris-dollin Exp $
+  $Id: QueryStageException.java,v 1.2 2005-02-21 12:18:45 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -18,7 +18,7 @@ public class QueryStageException extends JenaException
     }
 
 /*
-    (c) Copyright 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

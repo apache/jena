@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestInfPrefixMapping.java,v 1.2 2004-01-29 12:34:04 chris-dollin Exp $
+  $Id: TestInfPrefixMapping.java,v 1.3 2005-02-21 12:18:16 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.reasoner.test;
@@ -39,7 +39,7 @@ public class TestInfPrefixMapping extends ModelTestBase
     }
 
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
-/* (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+/* (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   All rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.9 2005-01-24 15:00:15 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.10 2005-02-21 12:08:31 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 public class Grammar implements Constants {
@@ -654,7 +654,7 @@ static final int disjointWith = CategorySet.find( disjointWithX,false);
   }
 }
  /*
- 	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ 	(c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
  
 	Redistribution and use in source and binary forms, with or without

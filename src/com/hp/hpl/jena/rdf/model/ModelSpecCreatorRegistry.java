@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreatorRegistry.java,v 1.9 2005-02-16 13:39:08 chris-dollin Exp $
+  $Id: ModelSpecCreatorRegistry.java,v 1.10 2005-02-21 12:14:20 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -118,7 +118,7 @@ public class ModelSpecCreatorRegistry
     }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

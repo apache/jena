@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  29-Nov-2004
  * 
- * (c) Copyright 2004, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestCapabilities.java,v 1.1 2004-11-29 16:38:43 der Exp $
+ * $Id: TestCapabilities.java,v 1.2 2005-02-21 12:18:11 andy_seaborne Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.test;
@@ -25,7 +25,7 @@ import junit.framework.TestSuite;
  * reasoners report the correct capabilities to things like the RDF writer.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 public class TestCapabilities extends TestCase {
@@ -71,7 +71,7 @@ public class TestCapabilities extends TestCase {
 
 
 /*
-    (c) Copyright 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  09-Jun-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETETerminal.java,v 1.11 2004-12-07 09:56:32 andy_seaborne Exp $
+ * $Id: RETETerminal.java,v 1.12 2005-02-21 12:17:59 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2004-12-07 09:56:32 $
+ * @version $Revision: 1.12 $ on $Date: 2005-02-21 12:17:59 $
  */
 public class RETETerminal implements RETESinkNode {
 
@@ -172,7 +172,7 @@ public class RETETerminal implements RETESinkNode {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

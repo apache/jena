@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RDFVisitor.java,v 1.2 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: RDFVisitor.java,v 1.3 2005-02-21 12:14:23 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -38,7 +38,7 @@ public interface RDFVisitor
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

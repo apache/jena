@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.15 2004-11-19 14:38:13 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.16 2005-02-21 12:03:46 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -165,7 +165,7 @@ public abstract class NodeToTriplesMap
     }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

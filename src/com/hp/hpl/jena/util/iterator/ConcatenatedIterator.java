@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedIterator.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:15 $
+ * Last modified on   $Date: 2005-02-21 12:19:14 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -31,7 +31,7 @@ import java.util.*;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedIterator.java,v 1.9 2004-12-06 13:50:15 andy_seaborne Exp $
+ * @version CVS info: $Id: ConcatenatedIterator.java,v 1.10 2005-02-21 12:19:14 andy_seaborne Exp $
  */
 public class ConcatenatedIterator
     implements Iterator
@@ -184,7 +184,7 @@ public class ConcatenatedIterator
 
 
 /*
-    (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

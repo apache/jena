@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  28-May-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BackwardRuleInfGraphI.java,v 1.8 2004-12-07 09:56:22 andy_seaborne Exp $
+ * $Id: BackwardRuleInfGraphI.java,v 1.9 2005-02-21 12:16:54 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * to exploit the same core backchaining engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2004-12-07 09:56:22 $
+ * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:16:54 $
  */
 public interface BackwardRuleInfGraphI extends SilentAddI, InfGraph {
             
@@ -58,7 +58,7 @@ public interface BackwardRuleInfGraphI extends SilentAddI, InfGraph {
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

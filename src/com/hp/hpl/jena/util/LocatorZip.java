@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2004, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
  */
@@ -14,7 +14,7 @@ import org.apache.commons.logging.*;
 /** Location files in a zip file
  *  
  * @author Andy Seaborne
- * @version $Id: LocatorZip.java,v 1.2 2004-11-20 21:35:43 andy_seaborne Exp $
+ * @version $Id: LocatorZip.java,v 1.3 2005-02-21 12:18:57 andy_seaborne Exp $
  */
  
 
@@ -70,7 +70,7 @@ class LocatorZip implements Locator
 
 }
 /*
- * (c) Copyright 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.33 $
+ * Revision           $Revision: 1.34 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-11-16 16:01:47 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2005-02-21 12:04:33 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.33 2004-11-16 16:01:47 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.34 2005-02-21 12:04:33 andy_seaborne Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -601,7 +601,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

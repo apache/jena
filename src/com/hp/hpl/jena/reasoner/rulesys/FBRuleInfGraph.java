@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  28-May-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.48 2005-02-18 15:33:35 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.49 2005-02-21 12:16:58 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.48 $ on $Date: 2005-02-18 15:33:35 $
+ * @version $Revision: 1.49 $ on $Date: 2005-02-21 12:16:58 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
     
@@ -845,7 +845,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

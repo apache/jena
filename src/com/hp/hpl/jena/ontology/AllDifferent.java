@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: AllDifferent.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:10 $
+ * Last modified on   $Date: 2005-02-21 12:04:12 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  * ****************************************************************************/
 
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferent.java,v 1.13 2004-12-06 13:50:10 andy_seaborne Exp $
+ * @version CVS $Id: AllDifferent.java,v 1.14 2005-02-21 12:04:12 andy_seaborne Exp $
  */
 public interface AllDifferent
     extends OntResource
@@ -115,7 +115,7 @@ public interface AllDifferent
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: StatementBoundaryBase.java,v 1.1 2004-08-09 13:31:10 chris-dollin Exp $
+  $Id: StatementBoundaryBase.java,v 1.2 2005-02-21 12:14:28 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.model;
 
@@ -49,7 +49,7 @@ public abstract class StatementBoundaryBase implements StatementBoundary
     }
 
 /*
-    (c) Copyright 2004, Hewlett-Packard Development Company, LP
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     
     Redistribution and use in source and binary forms, with or without

@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  22-Jan-2003
  * 
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BRWRule.java,v 1.9 2004-12-07 09:56:19 andy_seaborne Exp $
+ * $Id: BRWRule.java,v 1.10 2005-02-21 12:16:35 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * the corresponding parts of the query being processed.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2004-12-07 09:56:19 $
+ * @version $Revision: 1.10 $ on $Date: 2005-02-21 12:16:35 $
  */
 public class BRWRule {
 
@@ -234,7 +234,7 @@ public class BRWRule {
 }
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

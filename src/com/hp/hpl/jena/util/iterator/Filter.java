@@ -1,14 +1,14 @@
 /*
- * (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Filter.java,v 1.3 2003-08-27 13:07:54 andy_seaborne Exp $
+ * $Id: Filter.java,v 1.4 2005-02-21 12:19:15 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.util.iterator;
 
 /** A boolean function for filtering.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-08-27 13:07:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2005-02-21 12:19:15 $'
  */
 public interface Filter
 {
@@ -29,7 +29,7 @@ public interface Filter
 }
 
 /*
- *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,6 @@ public interface Filter
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Filter.java,v 1.3 2003-08-27 13:07:54 andy_seaborne Exp $
+ * $Id: Filter.java,v 1.4 2005-02-21 12:19:15 andy_seaborne Exp $
  *
  */

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestResourceImpl.java,v 1.4 2005-01-19 15:27:03 jeremy_carroll Exp $
+  $Id: TestResourceImpl.java,v 1.5 2005-02-21 12:15:17 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -66,7 +66,7 @@ public class TestResourceImpl extends ModelTestBase
 
 
 /*
-    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

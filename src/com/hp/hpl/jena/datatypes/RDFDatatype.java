@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  07-Dec-02
  * 
- * (c) Copyright 2002, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFDatatype.java,v 1.5 2003-08-27 12:54:03 andy_seaborne Exp $
+ * $Id: RDFDatatype.java,v 1.6 2005-02-21 12:01:51 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * and value forms. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-27 12:54:03 $
+ * @version $Revision: 1.6 $ on $Date: 2005-02-21 12:01:51 $
  */
 public interface RDFDatatype {
 
@@ -86,7 +86,7 @@ public interface RDFDatatype {
 }
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

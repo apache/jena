@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestSimpleSelector.java,v 1.4 2003-08-27 12:56:20 andy_seaborne Exp $
+  $Id: TestSimpleSelector.java,v 1.5 2005-02-21 12:03:34 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -136,7 +136,7 @@ public class TestSimpleSelector extends TestCase
     	
 
 /*
-    (c) Copyright 2002 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
    [See end of file]
-  $Id: NamespaceHandler.java,v 1.2 2003-12-13 21:10:58 jeremy_carroll Exp $
+  $Id: NamespaceHandler.java,v 1.3 2005-02-21 12:09:15 andy_seaborne Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
@@ -36,7 +36,7 @@ public interface NamespaceHandler {
 }
 
 /*
-   (c) Copyright 2003 Hewlett-Packard Development Company, LP
+   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -6,13 +6,13 @@
  * Package            Jena
  * Created            11 Sept 2001
  * Filename           $RCSfile: PropertyIterator.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:18 $
+ * Last modified on   $Date: 2005-02-21 12:05:04 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -56,7 +56,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyIterator.java,v 1.13 2004-12-06 13:50:18 andy_seaborne Exp $
+ * @version CVS info: $Id: PropertyIterator.java,v 1.14 2005-02-21 12:05:04 andy_seaborne Exp $
  * @since Jena 1.3.0 (was previously in package com.hp.hpl.jena.ontology.daml.impl).
  */
 public class PropertyIterator
@@ -612,7 +612,7 @@ public class PropertyIterator
 }
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

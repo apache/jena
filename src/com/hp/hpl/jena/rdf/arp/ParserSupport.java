@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2001-2003  Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.17 2004-10-11 11:54:35 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.18 2005-02-21 12:09:15 andy_seaborne Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */

@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  *
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.util.CollectionFactory;
 * the same as SimpleCache.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.6 $ on $Date: 2004-11-19 14:37:26 $
+* @version $Revision: 1.7 $ on $Date: 2005-02-21 12:03:06 $
 */
 
 public class LRUCache implements ICache {
@@ -140,7 +140,7 @@ public class LRUCache implements ICache {
 
 }
 /*
- *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

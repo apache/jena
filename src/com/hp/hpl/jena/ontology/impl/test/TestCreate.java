@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            03-Apr-2003
  * Filename           $RCSfile: TestCreate.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:27 $
+ * Last modified on   $Date: 2005-02-21 12:07:17 $
  *               by   $Author: andy_seaborne $
  *
- * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -38,7 +38,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestCreate.java,v 1.12 2004-12-06 13:50:27 andy_seaborne Exp $
+ * @version CVS $Id: TestCreate.java,v 1.13 2005-02-21 12:07:17 andy_seaborne Exp $
  */
 public class TestCreate 
     extends TestCase
@@ -569,7 +569,7 @@ public class TestCreate
 
 
 /*
-    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

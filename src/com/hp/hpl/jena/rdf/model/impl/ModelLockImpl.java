@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -23,7 +23,7 @@ import org.apache.commons.logging.*;
  * @see com.hp.hpl.jena.rdf.model.ModelLock
  *   
  * @author		Andy Seaborne
- * @version 	$Id: ModelLockImpl.java,v 1.7 2004-06-22 14:06:51 andy_seaborne Exp $
+ * @version 	$Id: ModelLockImpl.java,v 1.8 2005-02-21 12:14:35 andy_seaborne Exp $
  */
 
 public class ModelLockImpl implements ModelLock
@@ -243,7 +243,7 @@ public class ModelLockImpl implements ModelLock
 }   
 
 /*
- *  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

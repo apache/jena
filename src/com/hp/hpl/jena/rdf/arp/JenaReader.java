@@ -1,5 +1,5 @@
 /*
- (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  [See end of file]
  */
 
@@ -588,7 +588,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 }
 
 /*
- * (c) Copyright 2001 Hewlett-Packard Development Company, LP All rights
+ * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP All rights
  * reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -611,7 +611,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: JenaReader.java,v 1.29 2004-12-13 23:04:59 jeremy_carroll Exp $
+ *  * $Id: JenaReader.java,v 1.30 2005-02-21 12:09:09 andy_seaborne Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */

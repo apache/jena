@@ -1,5 +1,5 @@
 /*
-  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
 */
 
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class ModelRDB extends ModelCom implements Model {    
     
@@ -429,7 +429,7 @@ public class ModelRDB extends ModelCom implements Model {
 }
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
