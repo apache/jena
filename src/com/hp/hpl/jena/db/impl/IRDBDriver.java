@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.11 $
+* @version $Revision: 1.12 $
 */
 
 public interface IRDBDriver {
@@ -296,6 +296,15 @@ public interface IRDBDriver {
 	public String genSQLQualParam( int alias, char col );
 	
 	/**
+	 * Generate an SQL string to match a graph id. 
+	 * @param alias The table alias for this match.
+	 * @param graphId The identifer of the graph to match.
+	 * @return SQL string.
+	 */	
+
+	public String genSQLQualGraphId( int alias, int graphId );
+	
+	/**
 	 * Generate an SQL string to joing two table columns.
 	 * @param lhsAlias The left side table alias for the join.
 	 * @param lhsCol The left side column to join, one of
@@ -314,7 +323,7 @@ public interface IRDBDriver {
 	 * @return SQL string (not prefixed by "Select").
 	 */	
 	
-	public String genSQLResList( DBQuery.Var[] binding );
+	public String genSQLResList( int resIndex[], VarIndex[] binding );
 
 	/**
 	 * Generate an SQL string for a from list of a select stmt.

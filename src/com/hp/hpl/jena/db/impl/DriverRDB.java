@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.25 $ on $Date: 2003-08-12 02:37:11 $
+* @version $Revision: 1.26 $ on $Date: 2003-08-19 02:29:22 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1521,6 +1521,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	}
 	
 	protected String colidToColname ( char colid ) {
+		if ( colid == 'G' ) return "GraphID";
 		if ( colid == 'P' ) return "Prop";
 		if ( colid == 'S' ) return "Subj";
 		if ( colid == 'O' ) return "Obj";
@@ -1560,17 +1561,28 @@ public abstract class DriverRDB implements IRDBDriver {
 		return colAliasToString(alias,pred) + "=?";			
 	}
 
+	public String genSQLQualGraphId( int alias, int graphId ) {
+		return colAliasToString(alias,'G') + "=" + graphId;			
+	}
+
 	public String genSQLJoin( int lhsAlias, char lhsCol,
 		int rhsAlias, char rhsCol ) {
 			return colAliasToString(lhsAlias,lhsCol) + "=" +
 			colAliasToString(rhsAlias,rhsCol);
 	}
 	
-	public String genSQLResList( DBQuery.Var[] binding ) {
-		int i;
+	public String genSQLResList( int resIndex[], VarIndex[] binding ) {
 		String resList = "";
-		for(i=0;i<binding.length;i++) {
-			resList += (i>0?", ":"") + colAliasToString(binding[i].alias,binding[i].column);
+		int i,j;
+		for(i=0,j=0;i<binding.length;i++) {
+			VarIndex b = binding[i];
+			if ( !b.isArgVar() ) {
+				// next result variable
+				resList += (j>0?", ":"") + colAliasToString(b.alias,b.column);
+				if ( j >= resIndex.length )
+					throw new JenaException("Too many result columns");
+				resIndex[j++] = b.mapIx;
+			}
 		}
 		return resList;
 	}
@@ -1599,10 +1611,10 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 
 	
-	public String genSQLSelectStmt( String res, String from, String where ) {
+	public String genSQLSelectStmt( String res, String from, String qual ) {
 		return genSQLSelectKW() + res + " " + 
-			genSQLFromKW() + from + " " + 
-			genSQLWhereKW() + where;
+			genSQLFromKW() + from + " " +
+			(qual.length() == 0 ? qual :genSQLWhereKW()) + qual;
 	}
 
 	
