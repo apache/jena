@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.14 2004-03-19 09:52:21 der Exp $
+ * $Id: XSDDateTime.java,v 1.15 2004-05-04 08:09:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
 import java.util.*;
+
 
 /**
  * Represent an XSD date/time value. Rather than have a separate type for each
@@ -17,7 +18,7 @@ import java.util.*;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2004-03-19 09:52:21 $
+ * @version $Revision: 1.15 $ on $Date: 2004-05-04 08:09:59 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -70,7 +71,8 @@ public class XSDDateTime extends AbstractDateTime {
      */
     private static int[] convertCalendar(Calendar date) {
         int[] data = new int[TOTAL_SIZE];
-        int offset = date.get(Calendar.ZONE_OFFSET);
+        int offset = date.get(Calendar.ZONE_OFFSET) + date.get(Calendar.DST_OFFSET);
+                                        //  Thanks to Greg Shueler for DST patch
         Calendar cal = date;
         if (offset != 0) {
             cal = (Calendar)date.clone();

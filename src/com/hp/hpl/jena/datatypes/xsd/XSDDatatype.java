@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDatatype.java,v 1.7 2004-03-02 17:17:06 der Exp $
+ * $Id: XSDDatatype.java,v 1.8 2004-05-04 08:09:59 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes.xsd;
@@ -40,7 +40,7 @@ import org.apache.xerces.xni.grammars.XSGrammar;
  * XSD implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2004-03-02 17:17:06 $
+ * @version $Revision: 1.8 $ on $Date: 2004-05-04 08:09:59 $
  */
 public class XSDDatatype extends BaseDatatype {
 
@@ -141,10 +141,10 @@ public class XSDDatatype extends BaseDatatype {
     public static final XSDDatatype XSDNOTATION = new XSDDatatype("NOTATION");
 
     /** Datatype representing xsd:hexBinary */
-    public static final XSDDatatype XSDhexBinary = new XSDDatatype("hexBinary");
+    public static final XSDDatatype XSDhexBinary = new XSDhexBinary("hexBinary");
 
     /** Datatype representing xsd:base64Binary */
-    public static final XSDDatatype XSDbase64Binary = new XSDDatatype("base64Binary");
+    public static final XSDDatatype XSDbase64Binary = new XSDbase64Binary("base64Binary");
 
     /** Datatype representing xsd:date */
     public static final XSDDatatype XSDdate = new XSDDateType("date");
@@ -370,14 +370,14 @@ public class XSDDatatype extends BaseDatatype {
         switch (validatedInfo.actualValueType) {
             case XSConstants.BASE64BINARY_DT:
                 byte[] decoded = Base64.decode(validatedInfo.normalizedValue);
-                return new String(decoded);
+                return (Object)(decoded);
                 
             case XSConstants.BOOLEAN_DT:
                 return (Boolean)validatedInfo.actualValue;
                                 
             case XSConstants.HEXBINARY_DT:
                 decoded = HexBin.decode(validatedInfo.normalizedValue);
-                return new String(decoded);
+                return (Object)(decoded);
 
             case XSConstants.UNSIGNEDSHORT_DT:
             case XSConstants.INT_DT:

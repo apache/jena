@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: XSDDouble.java,v 1.2 2004-03-02 17:17:09 der Exp $
+ * $Id: XSDDouble.java,v 1.3 2004-05-04 08:11:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * XSDDatatype because the equality function needs overriding.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2004-03-02 17:17:09 $
+ * @version $Revision: 1.3 $ on $Date: 2004-05-04 08:11:57 $
  */
 public class XSDDouble extends XSDDatatype {
     /**
@@ -60,7 +60,7 @@ public class XSDDouble extends XSDDatatype {
       * of this datatype. Brute force implementation.
       */
      public boolean isValidValue(Object valueForm) {
-         return (valueForm instanceof Float);
+         return (valueForm instanceof Double);
      }
    
      /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.37 2004-03-19 09:53:38 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.38 2004-05-04 08:11:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -26,13 +26,16 @@ import junit.framework.TestSuite;
 import java.math.*;
 import java.util.*;
 import java.io.*;
+
+import org.apache.xerces.impl.dv.util.Base64;
+import org.apache.xerces.impl.dv.util.HexBin;
    
 /**
  * Unit test for the typed literal machinery - including RDFDatatype,
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.37 $ on $Date: 2004-03-19 09:53:38 $
+ * @version $Revision: 1.38 $ on $Date: 2004-05-04 08:11:58 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -542,6 +545,35 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("DateTime from date", XSDDateTime.class, l1.getValue().getClass());
         assertEquals("DateTime from date", "2003-12-08T10:50:42Z", l1.getValue().toString());
         
+        // Thanks to Greg Shueler for DST patch and test case
+        //////some of below code from java.util.GregorianCalendar javadoc///////
+        // create a Pacific Standard Time time zone
+        SimpleTimeZone pdt = new SimpleTimeZone(-8 * 60 * 60 * 1000,  "America/Los_Angeles");
+
+        // set up rules for daylight savings time
+        pdt.setStartRule(Calendar.APRIL, 1, Calendar.SUNDAY, 2 * 60 *  60 * 1000);
+        pdt.setEndRule(Calendar.OCTOBER, -1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
+
+        // create a GregorianCalendar with the Pacific Daylight time  zone
+        ncal = new GregorianCalendar(pdt);
+        ncal.set(2004, 02, 21, 12, 50, 42);//before daylight savings time
+        ncal.set(Calendar.MILLISECOND, 0);
+        //System.err.println("cal is: "+ncal);
+        l1 = m.createTypedLiteral(ncal);
+        assertEquals("DateTime from date", XSDDatatype.XSDdateTime, l1.getDatatype());
+        assertEquals("DateTime from date", XSDDateTime.class, l1.getValue().getClass());
+        assertEquals("DateTime from date", "2004-03-21T20:50:42Z", l1.getValue().toString());
+        //System.err.println("date is: "+ncal.getTime());
+        ncal = new GregorianCalendar(pdt);
+        ncal.set(2004, 03, 21, 12, 50, 42);//within daylight savings time
+        ncal.set(Calendar.MILLISECOND, 0);
+        //System.err.println("cal is: "+ncal);
+        l1 = m.createTypedLiteral(ncal);
+        assertEquals("DateTime from date", XSDDatatype.XSDdateTime, l1.getDatatype());
+        assertEquals("DateTime from date", XSDDateTime.class, l1.getValue().getClass());
+        assertEquals("DateTime from date", "2004-04-21T19:50:42Z", l1.getValue().toString());
+        //System.err.println("date is: "+ncal.getTime());
+
     }
       
     /**
@@ -624,6 +656,88 @@ public class TestTypedLiterals extends TestCase {
        assertTrue(XSDDatatype.XSDnonNegativeInteger.isValidValue(new Integer(10)));
        assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue(new Long(-10)));
        assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue("10"));
+       
+       // The correct behaviour on float/double is unclear but will be clarified
+       // by the SWBP working group task force on XML schema.
+       // For now we leave that float, double and the decimal tree are all distinct
+       assertTrue(XSDDatatype.XSDfloat.isValidValue(new Float("2.3")));
+       assertTrue(XSDDatatype.XSDdouble.isValidValue(new Double("2.3")));
+       assertTrue( ! XSDDatatype.XSDfloat.isValidValue(new Integer("2")));
+       assertTrue( ! XSDDatatype.XSDfloat.isValidValue(new Double("2.3")));
+    }
+    
+    /**
+     * Test binary types base64 and hexbinary
+     */
+    public void testBinary() {
+        // Check byte[] maps onto a binary type
+        byte[] data = new byte[]{12,42,99};
+        Literal l = m.createTypedLiteral(data);
+        LiteralLabel ll = l.asNode().getLiteral();
+        assertEquals("binary test 1", ll.getDatatype(), XSDDatatype.XSDbase64Binary);
+        assertEquals("binary test 2", Base64.encode(data), ll.getLexicalForm());
+        
+        // Check round tripping from value
+        LiteralLabel l2 = m.createTypedLiteral(ll.getLexicalForm(), XSDDatatype.XSDbase64Binary).asNode().getLiteral();
+        Object data2 = l2.getValue();
+        assertTrue("binary test 3", data2 instanceof byte[]);
+        byte[] data2b = (byte[])data2;
+        assertEquals("binary test 4", data2b[0], 12);
+        assertEquals("binary test 5", data2b[1], 42);
+        assertEquals("binary test 6", data2b[2], 99);
+        assertEquals(l2, ll);
+        
+        l2 = m.createTypedLiteral("DCpj", XSDDatatype.XSDbase64Binary).asNode().getLiteral();
+        data2 = l2.getValue();
+        assertTrue("binary test 3", data2 instanceof byte[]);
+        data2b = ((byte[])data2);
+        assertEquals("binary test 4", data2b[0], 12);
+        assertEquals("binary test 5", data2b[1], 42);
+        assertEquals("binary test 6", data2b[2], 99);
+        
+        // Check hexBinary
+        l = m.createTypedLiteral(data, XSDDatatype.XSDhexBinary);
+        ll = l.asNode().getLiteral();
+        assertEquals("binary test 1b", ll.getDatatype(), XSDDatatype.XSDhexBinary);
+        assertEquals("binary test 2b", HexBin.encode(data), ll.getLexicalForm());
+        
+        // Check round tripping from value
+        l2 = m.createTypedLiteral(ll.getLexicalForm(), XSDDatatype.XSDhexBinary).asNode().getLiteral();
+        data2 = l2.getValue();
+        assertTrue("binary test 3b", data2 instanceof byte[]);
+        data2b = ((byte[])data2);
+        assertEquals("binary test 4b", data2b[0], 12);
+        assertEquals("binary test 5b", data2b[1], 42);
+        assertEquals("binary test 6b", data2b[2], 99);
+        assertEquals(l2, ll);
+
+        Literal la = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
+        Literal lb = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
+        assertTrue("equality test", la.sameValueAs(lb));
+    }
+    
+    /**
+     * Attempt to isolate a JDK-dependent bug that only appears under 1.4.1_*
+     */
+    public void testBinaryBug() throws IOException {
+        Model orig = ModelFactory.createDefaultModel();
+        Resource r = orig.createResource("http://jena.hpl.hp.com/test#r");
+        Property p = orig.createProperty("http://jena.hpl.hp.com/test#p");
+        Literal l  = orig.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
+        orig.add(r, p, l);
+//        orig.read("file:modules/rdf/regression/testWriterAndReader/t6000.rdf");
+        for (int i = 0; i < 150; i++) {
+            l  = orig.createTypedLiteral(new byte[]{(byte)i, (byte)i, (byte)i});
+            orig.add(orig.createResource("urn:x-hp:" + i), p, l);
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream(1000);
+        orig.write(out, "RDF/XML-ABBREV");
+        out.close();
+        InputStream ins = new ByteArrayInputStream(out.toByteArray());
+        Model m2 = ModelFactory.createDefaultModel();
+        m2.read(ins, null);
+        ins.close();
+        assertTrue(orig.isIsomorphicWith(m2));
     }
     
     /**
