@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 17:17:42 $
+ * Last modified on   $Date: 2003-06-02 10:20:47 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.12 2003-05-30 17:17:42 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.13 2003-06-02 10:20:47 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -597,6 +597,21 @@ public class OntResourceImpl
      */
     public PathSet accessor( Property p, String name ) {
         return asPathSet( p, name );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the given
+     * property of any ontology value. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @param p A property
+     * @return An abstract accessor for the property p
+     */
+    public PathSet accessor( Property p ) {
+        return asPathSet( p, "unknown property" );
     }
     
     

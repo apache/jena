@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 17:17:24 $
+ * Last modified on   $Date: 2003-06-02 10:21:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.11 2003-05-30 17:17:24 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.12 2003-06-02 10:21:45 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -401,6 +401,19 @@ public interface OntResource
      * @return An abstract accessor for the property p
      */
     public PathSet accessor( Property p, String name );
+    
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the given
+     * property of any ontology value. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @param p A property
+     * @return An abstract accessor for the property p
+     */
+    public PathSet accessor( Property p );
     
     
     /**
