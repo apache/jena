@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:34 $
+ * Last modified on   $Date: 2003-04-02 20:33:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -59,7 +59,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.2 2003-03-12 17:16:34 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.3 2003-04-02 20:33:30 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -214,7 +214,7 @@ public interface OntModel
      * 
      * @return An iterator over class description resources. 
      */
-    public Iterator listClassDescriptions();
+    public Iterator listClasses();
     
 
     /**
@@ -303,7 +303,7 @@ public interface OntModel
      * 
      * @return An iterator over named class resources. 
      */
-    public Iterator listOntClasses();
+    public Iterator listNamedClasses();
     
 
     /**
@@ -322,6 +322,24 @@ public interface OntModel
      * @see Profile#RESTRICTION
      */
     public Iterator listRestrictions();
+    
+    
+    /**
+     * <p>
+     * Answer an iterator that ranges over the properties in this model that are declared
+     * to be annotation properties. Not all supported languages define annotation properties
+     * (the category of annotation properties is chiefly an OWL innovation).
+     * </p>
+     * <p>
+     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
+     * the completeness of the deductive extension of the underlying graph.  See class
+     * overview for more details.
+     * </p>
+     * 
+     * @return An iterator over annotation properties. 
+     * @see Profile#getAnnotationProperties()
+     */
+    public Iterator listAnnotationProperties();
     
     
     /**

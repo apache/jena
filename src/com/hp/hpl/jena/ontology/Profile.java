@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 10:31:04 $
+ * Last modified on   $Date: 2003-04-02 20:33:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -27,6 +27,9 @@ package com.hp.hpl.jena.ontology;
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
 
+import java.util.Iterator;
+
+
 
 /**
  * <p>
@@ -40,7 +43,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.4 2003-04-01 10:31:04 ian_dickinson Exp $
+ * @version CVS $Id: Profile.java,v 1.5 2003-04-02 20:33:30 ian_dickinson Exp $
  */
 public interface Profile
 {
@@ -216,6 +219,16 @@ public interface Profile
      * @return The resource that represents the concept of a deprecated property.
      */
     public Resource DEPRECATED_PROPERTY();
+    
+    
+    /**
+     * <p>
+     * Answer the class that denotes an annotation property
+     * </p>
+     * 
+     * @return The AnnotationProperty class
+     */
+    public Resource ANNOTATION_PROPERTY();
     
     
     /**
@@ -520,6 +533,78 @@ public interface Profile
     public Property RANGE();
     
     
+    // Particular language syntax categories
+    
+    /**
+     * <p>
+     * Answer an iterator over the rdf:types in this language that denote stand-alone
+     * axioms.
+     * </p>
+     * 
+     * @return An iterator over axiom types.
+     */
+    public Iterator getAxiomTypes();
+    
+    
+    /**
+     * <p>
+     * Answer an iterator over the properties in this language that are denoted
+     * annotation properties.  Not all languages have distinguished annotation
+     * properties.
+     * </p>
+     * 
+     * @return An iterator over annotation properties.
+     */
+    public Iterator getAnnotationProperties();
+    
+    
+    /**
+     * <p>
+     * Answer an iterator over the various types of class description defined
+     * in the language.
+     * </p>
+     * 
+     * @return An iterator over the various rdf:types of class descriptions.
+     */
+    public Iterator getClassDescriptionTypes();
+    
+    
+    // Alias management
+    
+    /**
+     * <p>
+     * Answer true if the given resource has an alias in this profile.
+     * </p>
+     * 
+     * @param res A resource (including properties) to test for an alias
+     * @return True if there is an alias for <code>res</code>
+     */
+    public boolean hasAliasFor( Resource res );
+    
+    /**
+     * <p>
+     * Answer an alias for the given resource.  If there is more than
+     * one such alias, a choice is made non-deterministically between the
+     * alternatives.
+     * </p>
+     * 
+     * @param res A resource (including properties) to test for an alias
+     * @return The alias for <code>res</code>, or one of the aliases for <code>res</code> if more
+     * than one is defined, or null if no alias is defined for <code>res</code>.
+     * 
+     */
+    public Resource getAliasFor( Resource res );
+    
+    /**
+     * <p>
+     * Answer an iterator over the defined aliases for a resource.
+     * </p>
+     * 
+     * @param res A resource (including properties)
+     * @return An iterator over the aliases for <code>res</code>. If there are
+     * no aliases, the empty iterator is returned.
+     */
+    public Iterator listAliasesFor( Resource res );
     
 }
 

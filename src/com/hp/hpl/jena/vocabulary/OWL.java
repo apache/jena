@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            3 Mar 2003
  * Filename           $RCSfile: OWL.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:20:01 $
+ * Last modified on   $Date: 2003-04-02 20:33:24 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWL.java,v 1.6 2003-03-28 22:20:01 ian_dickinson Exp $
+ * @version CVS $Id: OWL.java,v 1.7 2003-04-02 20:33:24 ian_dickinson Exp $
  */
 public class OWL
 {
@@ -91,6 +91,9 @@ public class OWL
 
     /** Resource denoting the class of OWL properties that have been deprecated */
     public static final Resource DeprecatedProperty           = m_vocabModel.createResource( OWL.NAMESPACE + "DeprecatedProperty"        );
+
+    /** Resource denoting the class of OWL properties that are annotations */
+    public static final Resource AnnotationProperty           = m_vocabModel.createResource( OWL.NAMESPACE + "AnnotationProperty"        );
 
 
     /** Property denoting the OWL predicate that states that two given properties are equivalent */

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 10:31:06 $
+ * Last modified on   $Date: 2003-04-02 20:33:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,9 +24,10 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.rdf.model.*;
+
+import java.util.*;
 
 
 
@@ -37,10 +38,10 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.4 2003-04-01 10:31:06 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.5 2003-04-02 20:33:29 ian_dickinson Exp $
  */
 public class OWLProfile
-    implements Profile
+    extends AbstractProfile
 {
     // Constants
     //////////////////////////////////
@@ -77,6 +78,9 @@ public class OWLProfile
     public Resource ONTOLOGY() {                    return OWL.Ontology; }
     public Resource DEPRECATED_CLASS() {            return OWL.DeprecatedClass; }
     public Resource DEPRECATED_PROPERTY() {         return OWL.DeprecatedProperty; }
+    public Resource ANNOTATION_PROPERTY() {         return OWL.AnnotationProperty; }
+    
+    
 
     public Property EQUIVALENT_PROPERTY() {         return OWL.equivalentProperty; }
     public Property EQUIVALENT_CLASS() {            return OWL.equivalentClass; }
@@ -107,7 +111,42 @@ public class OWLProfile
     public Property DOMAIN() {                      return RDFS.domain; }
     public Property RANGE() {                       return RDFS.range; }
     
+    protected Resource[][] aliasTable() {
+        return new Resource[][] {
+            { OWL.sameAs, OWL.sameIndividualAs }
+        };
+    }
     
+    /** The only first-class axiom type in OWL is AllDifferent */ 
+    public Iterator getAxiomTypes() {
+        return Arrays.asList(
+            new Resource[] {
+                OWL.AllDifferent
+            }
+        ).iterator();
+    }
+
+    /** The annotation properties of OWL */
+    public Iterator getAnnotationProperties() {
+        return Arrays.asList(
+            new Resource[] {
+                OWL.versionInfo,
+                RDFS.label, 
+                RDFS.seeAlso,
+                OWL.comment,
+                RDFS.isDefinedBy
+            }
+        ).iterator();
+    }
+    
+    public Iterator getClassDescriptionTypes() {
+        return Arrays.asList(
+            new Resource[] {
+                OWL.Class,
+                OWL.Restriction
+            }
+        ).iterator();
+    }
 
     // Internal implementation methods
     //////////////////////////////////

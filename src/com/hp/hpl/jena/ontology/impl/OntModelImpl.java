@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:17:04 $
+ * Last modified on   $Date: 2003-04-02 20:33:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -26,10 +26,12 @@ package com.hp.hpl.jena.ontology.impl;
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.enhanced.*;
 
 import java.io.*;
@@ -45,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.1 2003-03-12 17:17:04 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.2 2003-04-02 20:33:28 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -74,6 +76,11 @@ public class OntModelImpl
     /** List of URI strings of documents that have been imported into this one */
     protected Set m_imported = new HashSet();
     
+    /** Query that will access nodes with types whose type is Class */
+    protected BindingQueryPlan m_individualsQuery;
+    
+    /** Query that will access nodes with types whose type is Class */
+    protected List m_individualsQueryAlias = null;
     
     
     // Constructors
@@ -110,6 +117,19 @@ public class OntModelImpl
         m_docMgr = docMgr;
         m_graphFactory = gf;
         
+        // cache the query plan for individuals
+        m_individualsQuery = queryXTypeOfType( lang.CLASS() );
+        
+        // cache the query plan for individuals using class alias (if defined)
+        if (lang.hasAliasFor( lang.CLASS() )) {
+            m_individualsQueryAlias = new ArrayList();
+            
+            for (Iterator j = lang.listAliasesFor( lang.CLASS() );  j.hasNext(); ) {
+                // add to the list of alternates for this query
+                m_individualsQueryAlias.add( queryXTypeOfType( (Resource) j.next() ) );
+            }
+        }        
+        
         // load the imports closure, according to the policies in my document manager
         m_docMgr.loadImports( this, new OntReadState( null, this ) );
     }
@@ -139,7 +159,7 @@ public class OntModelImpl
      * @return An iterator over ontology resources. 
      */
     public Iterator listOntologies() {
-        return null;  // TODO: stub
+        return findByTypeAs( getProfile().ONTOLOGY(), Ontology.class );
     }
     
 
@@ -165,7 +185,7 @@ public class OntModelImpl
      * @return An iterator over property resources. 
      */
     public Iterator listOntProperties() {
-        return null;  // TODO: stub
+        return findByTypeAs( RDF.Property, OntProperty.class );
     }
     
 
@@ -190,7 +210,7 @@ public class OntModelImpl
      * @return An iterator over object property resources. 
      */
     public Iterator listObjectProperties() {
-        return null;  // TODO: stub
+        return findByTypeAs( getProfile().OBJECT_PROPERTY(), ObjectProperty.class );
     }
     
 
@@ -215,7 +235,7 @@ public class OntModelImpl
      * @return An iterator over datatype property resources. 
      */
     public Iterator listDatatypeProperties() {
-        return null;  // TODO: stub
+        return findByTypeAs( getProfile().DATATYPE_PROPERTY(), DatatypeProperty.class );
     }
     
 
@@ -231,10 +251,10 @@ public class OntModelImpl
      * overview for more details.
      * </p>
      * 
-     * @return An iterator over individual resources. 
+     * @return An iterator over Individuals. 
      */
     public Iterator listIndividuals() {
-        return null;  // TODO: stub
+        return queryFor( m_individualsQuery, m_individualsQueryAlias, Individual.class );
     }
     
 
@@ -254,7 +274,31 @@ public class OntModelImpl
      * @return An iterator over axiom resources. 
      */
     public Iterator listAxioms()  {
-        return null;  // TODO: stub
+        // Build a list queries for the axiom types in the language
+        // note I haven't pre-cached this query because it seems that it will not
+        // be called often! -ijd
+         
+        List queries = new ArrayList();
+        Iterator i = getProfile().getAxiomTypes();
+        
+        if (i.hasNext()) {
+            while (i.hasNext()) {
+                // create a query for each axiom type
+                Query q = new Query();
+                q.addMatch( Query.X, RDF.type.asNode(), ((Resource) i.next()).asNode() );
+                queries.add( queryHandler().prepareBindings( q, new Node[] {Query.X} ) );
+            }
+            
+            // take the first query first
+            BindingQueryPlan first = (BindingQueryPlan) queries.remove( 0 );
+            
+            // perform the query, mapping each result to an Axiom
+            return queryFor( first, queries, Axiom.class );
+        }
+        else {
+            // we can use i to indicate that there are no axioms 
+            return i;
+        }
     }
     
 
@@ -274,8 +318,8 @@ public class OntModelImpl
      * 
      * @return An iterator over class description resources. 
      */
-    public Iterator listClassDescriptions() {
-        return null;  // TODO: stub
+    public Iterator listClasses() {
+        return findByTypeAs( getProfile().getClassDescriptionTypes(), ClassDescription.class );
     }
     
 
@@ -295,7 +339,7 @@ public class OntModelImpl
      * @see Profile#ONE_OF
      */
     public Iterator listEnumeratedClasses()  {
-        return null;  // TODO: stub
+        return findByDefiningPropertyAs( getProfile().ONE_OF(), ClassDescription.class );
     }
     
 
@@ -315,7 +359,7 @@ public class OntModelImpl
      * @see Profile#UNION_OF
      */
     public Iterator listUnionClasses() {
-        return null;  // TODO: stub
+        return findByDefiningPropertyAs( getProfile().UNION_OF(), ClassDescription.class );
     }
     
 
@@ -335,7 +379,7 @@ public class OntModelImpl
      * @see Profile#COMPLEMENT_OF
      */
     public Iterator listComplementClasses() {
-        return null;  // TODO: stub
+        return findByDefiningPropertyAs( getProfile().COMPLEMENT_OF(), ClassDescription.class );
     }
     
 
@@ -355,7 +399,7 @@ public class OntModelImpl
      * @see Profile#INTERSECTION_OF
      */
     public Iterator listIntersectionClasses() {
-        return null;  // TODO: stub
+        return findByDefiningPropertyAs( getProfile().INTERSECTION_OF(), ClassDescription.class );
     }
     
 
@@ -373,8 +417,14 @@ public class OntModelImpl
      * 
      * @return An iterator over named class resources. 
      */
-    public Iterator listOntClasses() {
-        return null;  // TODO: stub
+    public Iterator listNamedClasses() {
+        return ((ExtendedIterator) listClasses()).filterDrop(
+            new Filter() {
+                public boolean accept( Object x ) {
+                    return ((Resource) x).isAnon();
+                }
+            }
+        );
     }
     
 
@@ -394,10 +444,32 @@ public class OntModelImpl
      * @see Profile#RESTRICTION
      */
     public Iterator listRestrictions() {
-        return null;  // TODO: stub
+        return findByTypeAs( getProfile().RESTRICTION(), Restriction.class );
     }
 
 
+    /**
+     * <p>
+     * Answer an iterator that ranges over the properties in this model that are declared
+     * to be annotation properties. Not all supported languages define annotation properties
+     * (the category of annotation properties is chiefly an OWL innovation). 
+     * </p>
+     * <p>
+     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
+     * the completeness of the deductive extension of the underlying graph.  See class
+     * overview for more details.
+     * </p>
+     * 
+     * @return An iterator over annotation properties. 
+     * @see Profile#getAnnotationProperties()
+     */
+    public Iterator listAnnotationProperties() {
+        return findByType( getProfile().ANNOTATION_PROPERTY() )
+               .andThen( WrappedIterator.create( getProfile().getAnnotationProperties() ) )
+               .mapWith( new SubjectNodeAs( AnnotationProperty.class ) );
+    }
+    
+    
     /**
      * <p>
      * Answer the language profile (for example, OWL or DAML+OIL) that this model is 
@@ -624,11 +696,220 @@ public class OntModelImpl
     // Internal implementation methods
     //////////////////////////////////
 
+    /**
+     * <p>
+     * Answer an iterator over all of the resources that have 
+     * <code>rdf:type</code> type.  No alias processing.
+     * </p>
+     * 
+     * @param type The resource that is the value of <code>rdf:type</code> we
+     * want to match
+     * @return An iterator over all triples <code>_x rdf:type type</code>
+     */
+    protected ExtendedIterator findByType( Resource type ) {
+        return getGraph().find( null, RDF.type.asNode(), type.asNode() );
+    }
+    
 
+    /**
+     * <p>
+     * Answer an iterator over all of the resources that have 
+     * <code>rdf:type type</code>, or optionally, one of the alternative types.
+     * </p>
+     * 
+     * @param type The resource that is the value of <code>rdf:type</code> we
+     * want to match
+     * @param types An iterator over alternative types to search for, or null
+     * @return An iterator over all triples <code>_x rdf:type t</code> where t
+     * is <code>type</code> or one of the values from <code>types</code>.
+     */
+    protected ExtendedIterator findByType( Resource type, Iterator types ) {
+        ExtendedIterator i = findByType( type );
+        
+        // compose onto i the find iterators for the aliases
+        if (types != null) {
+            while (types.hasNext()) {
+                i = i.andThen( findByType( (Resource) types.next() ) );
+            }
+        }
+        
+        return i;
+    }
+    
+
+    /**
+     * <p>
+     * Answer an iterator over all of the resources that have 
+     * <code>rdf:type type</code>, or optionally, one of its aliases.
+     * </p>
+     * 
+     * @param type The resource that is the value of <code>rdf:type</code> we
+     * want to match
+     * @param aliased If true, check for aliases for <code>type</code> in the profile.
+     * @return An iterator over all triples <code>_x rdf:type type</code>
+     */
+    protected ExtendedIterator findByType( Resource type, boolean aliases ) {
+        return findByType( type, aliases ? getProfile().listAliasesFor( type ) : null );
+    }
+    
+
+    /**
+     * <p>
+     * Answer an iterator over all of the resources that have 
+     * <code>rdf:type type</code>, or optionally, one of the alternative types, 
+     * and present the results <code>as()</code> the given class.
+     * </p>
+     * 
+     * @param type The resource that is the value of <code>rdf:type</code> we
+     * want to match
+     * @param types An iterator over alternative types to search for, or null
+     * @param asKey The value to use to present the polymorphic results
+     * @return An iterator over all triples <code>_x rdf:type type</code>
+     */
+    protected ExtendedIterator findByTypeAs( Resource type, Iterator types, Class asKey ) {
+        return findByType( type, types ).mapWith( new SubjectNodeAs( asKey ) );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer an iterator over all of the resources that has an 
+     * <code>rdf:type</code> from the types iterator, 
+     * and present the results <code>as()</code> the given class.
+     * </p>
+     * 
+     * @param types An iterator over types to search for.  An exception will
+     * be raised if this iterator does not have at least one next() element.
+     * @param asKey The value to use to present the polymorphic results
+     * @return An iterator over all triples <code>_x rdf:type type</code>
+     */
+    protected ExtendedIterator findByTypeAs( Iterator types, Class asKey ) {
+        return findByTypeAs( (Resource) types.next(), types, asKey );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer an iterator over resources with the given rdf:type; for each value
+     * in the iterator, ensure that is is presented <code>as()</code> the
+     * polymorphic object denoted by the given class key.  Will process aliases.
+     * </p>
+     * 
+     * @param type The rdf:type to search for
+     * @param asKey The key to pass to as() on the subject nodes
+     * @return An iterator over subjects with the given type, presenting as
+     * the given polymorphic class.
+     */
+    protected ExtendedIterator findByTypeAs( Resource type, Class asKey ) {
+        return findByType( type, true ).mapWith( new SubjectNodeAs( asKey ) );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer the iterator over the resources from the graph that satisfy the given
+     * query, followed by the answers to the alternative queries (if specified). A
+     * typical scenario is that the main query gets resources of a given class (say,
+     * <code>rdfs:Class</code>), while the altQueries query for aliases for that
+     * type (such as <code>daml:Class</code>).
+     * </p>
+     * 
+     * @param query A query to run against the model
+     * @param altQueries An optional list of subsidiary queries to chain on to the first 
+     * @return ExtendedIterator An iterator over the (assumed single) results of 
+     * executing the queries.
+     */
+    protected ExtendedIterator queryFor( BindingQueryPlan query, List altQueries, Class asKey ) {
+        GetBinding firstBinding  = new GetBinding( 0 );
+        
+        // get the results from the main query
+        ExtendedIterator mainQuery = query.executeBindings().mapWith( firstBinding );
+        
+        // now add the alias queries, if defined
+        if (altQueries != null) {
+            for (Iterator i = altQueries.iterator();  i.hasNext();  ) {
+                ExtendedIterator aliasQuery = ((BindingQueryPlan) i.next()).executeBindings().mapWith( firstBinding );
+                mainQuery = mainQuery.andThen( aliasQuery );
+            }
+        }
+        
+        // map each answer value to the appropriate ehnanced node
+        return mainQuery.mapWith( new SubjectNodeAs( asKey ) );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer a binding query that will search for 'an X that has an 
+     * rdf:type whose rdf:type is C' for some given resource C.
+     * </p>
+     * 
+     * @param type The type of the type of the resources we're searching for
+     * @return BindingQueryPlan A binding query for the X resources.
+     */
+    protected BindingQueryPlan queryXTypeOfType( Resource type ) {
+        Query q = new Query();
+        q.addMatch( Query.X, RDF.type.asNode(), Query.Y );
+        q.addMatch( Query.Y, RDF.type.asNode(), type.asNode() );
+        
+        return queryHandler().prepareBindings( q, new Node[] {Query.X} );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer an iterator over nodes that have p as a subject
+     * </p>
+     * 
+     * @param p A property
+     * @return ExtendedIterator over subjects of p.
+     */
+    protected ExtendedIterator findByDefiningProperty( Property p ) {
+        return getGraph().find( null, p.getNode(), null );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer an iterator over nodes that have p as a subject, presented as 
+     * polymorphic enh resources of the given facet.
+     * </p>
+     * 
+     * @param p A property
+     * @param asKey A facet type
+     * @return ExtendedIterator over subjects of p, presented as the facet.
+     */
+    protected ExtendedIterator findByDefiningPropertyAs( Property p, Class asKey ) {
+        return findByDefiningProperty( p ).mapWith( new SubjectNodeAs( asKey ) );
+    }
+    
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
+    /** Map triple subjects or single nodes to subject enh nodes, presented as() the given class */
+    protected class SubjectNodeAs implements Map1 
+    {
+        protected Class m_asKey;
+        
+        protected SubjectNodeAs( Class asKey ) { m_asKey = asKey; }
+        
+        public Object map1( Object x ) {
+            Node n = (x instanceof Triple) 
+                         ? ((Triple) x).getSubject() 
+                         : ((x instanceof EnhNode) ? ((EnhNode) x).asNode() :  (Node) x);
+            return getNodeAs( n, m_asKey );
+        }
+    }
+    
+    /** Project out the first element of a list of bindings */
+    protected class GetBinding implements Map1
+    {
+        protected int m_index;
+        protected GetBinding( int index ) { m_index = index; }
+        public Object map1( Object x )    { return ((List) x).get( m_index );  }
+    }
 }
 
 

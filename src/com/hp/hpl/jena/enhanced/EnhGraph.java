@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhGraph.java,v 1.4 2003-03-26 12:39:08 chris-dollin Exp $
+  $Id: EnhGraph.java,v 1.5 2003-04-02 20:33:32 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -9,7 +9,6 @@ package com.hp.hpl.jena.enhanced;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.cache.*;
-import com.hp.hpl.jena.graph.compose.*;
 
 /**
  * <p>

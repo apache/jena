@@ -5,9 +5,9 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: OWLDLProfile.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            02-Apr-2003
+ * Filename           $RCSfile: AbstractProfile.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-04-02 20:33:28 $
@@ -24,53 +24,125 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.*;
+import com.hp.hpl.jena.ontology.*;
+
+import java.util.*;
 
 
 
 /**
  * <p>
- * Ontology language profile implementation for the DL variant of the OWL 2002/07 language.
+ * Abstract base class to provide shared implementation for ontology language profiles. 
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLDLProfile.java,v 1.3 2003-04-02 20:33:28 ian_dickinson Exp $
+ * @version CVS $Id: AbstractProfile.java,v 1.1 2003-04-02 20:33:28 ian_dickinson Exp $
  */
-public class OWLDLProfile
-    extends OWLProfile
+public abstract class AbstractProfile
+    implements Profile 
 {
     // Constants
     //////////////////////////////////
 
-
     // Static variables
     //////////////////////////////////
-
 
     // Instance variables
     //////////////////////////////////
 
-
+    /** Map of aliases for resources */
+    protected OneToManyMap m_aliasesMap;
+    
+    
     // Constructors
     //////////////////////////////////
 
-
     // External signature methods
     //////////////////////////////////
+    
+    /**
+     * <p>
+     * Answer true if the given resource has an alias in this profile.
+     * </p>
+     * 
+     * @param res A resource (including properties) to test for an alias
+     * @return True if there is an alias for <code>res</code>
+     */
+    public boolean hasAliasFor( Resource res ) {
+        return aliasMap().containsKey( res );
+    }
+    
+    /**
+     * <p>
+     * Answer an alias for the given resource.  If there is more than
+     * one such alias, a choice is made non-deterministically between the
+     * alternatives.
+     * </p>
+     * 
+     * @param res A resource (including properties) to test for an alias
+     * @return The alias for <code>res</code>, or one of the aliases for <code>res</code> if more
+     * than one is defined, or null if no alias is defined for <code>res</code>.
+     * 
+     */
+    public Resource getAliasFor( Resource res ) {
+        return (Resource) aliasMap().get( res );
+    }
+    
+    /**
+     * <p>
+     * Answer an iterator over the defined aliases for a resource.
+     * </p>
+     * 
+     * @param res A resource (including properties)
+     * @return An iterator over the aliases for <code>res</code>. If there are
+     * no aliases, the empty iterator is returned.
+     */
+    public Iterator listAliasesFor( Resource res ) {
+        return aliasMap().getAll( res );
+    }
 
 
     // Internal implementation methods
     //////////////////////////////////
+
+    /**
+     * Answer a table of binary mappings denoting that one resource is the
+     * alias for another (for example daml:Class and rdfs:Class).
+     */
+    protected abstract Resource[][] aliasTable();
+    
+    
+    /**
+     * <p>
+     * Prepare the local alias map by reading the alias table from the concrete sub-class.
+     * </p>
+     */
+    protected OneToManyMap aliasMap() {
+        if (m_aliasesMap == null) {
+            // aliases map not prepared yet, so initialise using the data from
+            // the concrete profile class
+            m_aliasesMap = new OneToManyMap();
+            Resource[][] aliases = aliasTable();
+            
+            for (int i = 0;  i < aliases.length;  i++) {
+                // since alias relationship is symmetric, we record both directions
+                m_aliasesMap.put( aliases[i][0], aliases[i][1] );
+                m_aliasesMap.put( aliases[i][1], aliases[i][0] );
+            }
+        }
+        
+        return m_aliasesMap;
+    }
 
 
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
-
 }
-
-
 
 
 /*
@@ -103,3 +175,9 @@ public class OWLDLProfile
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/* TODO delete me
+public class AbstractProfile{
+
+}
+
+*/
