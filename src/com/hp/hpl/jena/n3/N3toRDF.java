@@ -16,12 +16,11 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.26 2004-12-06 13:50:12 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.27 2004-12-16 17:46:06 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
     protected static Log logger = LogFactory.getLog( N3toRDF.class );
-	static public boolean VERBOSE = false ;
 	
 	Model model ;
 
@@ -89,7 +88,6 @@ public class N3toRDF implements N3ParserEventHandler
 //	}
 	
     
-	
 	public void startDocument() { }
 	public void endDocument()   { }
 	
@@ -132,15 +130,11 @@ public class N3toRDF implements N3ParserEventHandler
 			}
 			
 			String uriref = args[1].getText() ;
-			if ( uriref.equals("") )
-				uriref = base ;
-
-			if ( uriref.equals("#") )
-				uriref = base+"#" ;
-
-			if ( VERBOSE )
-				System.out.println(prefix+" => "+uriref) ;
-
+            uriref = expandURIRef(uriref, line) ;
+            
+            if ( uriref == null )
+			    error("Line "+line+": N3toRDF: Relative URI can't be resolved in in @prefix directive") ;  
+                
             setPrefixMapping(model, prefix, uriref) ;
 			return ;
 		}
@@ -223,7 +217,7 @@ public class N3toRDF implements N3ParserEventHandler
                     pNode = model.createProperty(uriref) ;
                     break ;
 				case N3Parser.URIREF:
-                    propStr = expandURIRef(propStr) ;
+                    propStr = expandURIRef(propStr, line) ;
                     break ;
                 case N3Parser.TK_LIST_FIRST:
                     pNode = RDF.first ;
@@ -257,8 +251,6 @@ public class N3toRDF implements N3ParserEventHandler
 			RDFNode oNode = createNode(line, obj);
 			
 			Statement stmt = model.createStatement((Resource)sNode, pNode, oNode) ;
-			if ( VERBOSE )
-				System.out.println("Statement: "+stmt) ;
 			model.add(stmt) ;
 		}
 		catch (JenaException rdfEx)
@@ -348,7 +340,7 @@ public class N3toRDF implements N3ParserEventHandler
                     typeURI = typeURI2 ;
                 }
 
-                typeURI = expandURIRef(typeURI);
+                typeURI = expandURIRef(typeURI, line);
                 // 2003-08 - Ignore lang tag when there is an type. 
                 return model.createTypedLiteral(text, typeURI) ;
 
@@ -368,11 +360,11 @@ public class N3toRDF implements N3ParserEventHandler
                     error("Line "+line+": N3toRDF: Undefined qname namespace: " + text);
                     return null ;
                 }
-                return model.createResource(expandURIRef(uriref)) ;
+                return model.createResource(expandURIRef(uriref, line)) ;
 
             // Normal URIref - may be <> or <#>
             case N3Parser.URIREF :
-                return model.createResource(expandURIRef(text)) ;
+                return model.createResource(expandURIRef(text, line)) ;
 
             // Lists
             case N3Parser.TK_LIST_NIL:
@@ -397,15 +389,23 @@ public class N3toRDF implements N3ParserEventHandler
 	}
 
     // Expand shorthand forms (not QNames) for URIrefs.
-    private String expandURIRef(String text)
+    private String expandURIRef(String text, int line)
     {
         // Not a "named" bNode (start with _:)
+        if ( text.equals("") && base == null )
+            error("Line "+line+": N3toRDF: Relative URI but no base for <>") ;
+        
+        if ( text.equals("#") && base == null )
+            error("Line "+line+": N3toRDF: Relative URI but no base for <#>") ;
+        
         if ( text.equals("") )
             // The case of <>.
             return base ;
+        
         if ( text.equals("#") )
             // The case of <#>.
             return base+"#" ;
+        
         if ( base != null && ! hasURIscheme(text) )
         {
             if ( ! base.startsWith("file:"))
