@@ -241,6 +241,8 @@ public class WGTests extends java.lang.Object {
 		// Use local copy in directory WWW
 		manifestURI = "file://localhost/home/jjc/WWW/2002/03owlt/editors-draft/draft/Manifest.rdf";
 		manifestInFactory = false;
+		doLargeTests = true;
+		skipThese = new String[0];
 		factory = new TestInputStreamFactory( wgTestDir,
 		    URI.create("file://localhost/home/jjc/WWW/2002/03owlt/."));
 		initResults();

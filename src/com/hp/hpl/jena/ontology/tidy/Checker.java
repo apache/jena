@@ -60,16 +60,13 @@ public class Checker extends AbsChecker {
 
 	public Iterator getErrors() {
 		nonMonotoneLevel = Levels.Lite;
-		if ( monotoneProblems.size() > 0 )
-		  return monotoneProblems.iterator();
+		if (monotoneProblems.size() > 0)
+			return monotoneProblems.iterator();
 		snapCheck();
 		return nonMonotoneProblems.iterator();
 	}
 	public Iterator getProblems() {
-		return new ConcatenatedIterator(
-		   getErrors(),
-		   warnings.iterator()
-		);
+		return new ConcatenatedIterator(getErrors(), warnings.iterator());
 	}
 
 	private void snapCheck() {
@@ -77,86 +74,104 @@ public class Checker extends AbsChecker {
 			nonMonotoneProblems = new Vector();
 			nonMonotoneLevel = Levels.Lite;
 			Model m = ModelFactory.createModelForGraph(asGraph());
-		
-		/*
-		 * Easy problems to check.
-		 */	
-			check(CategorySet.untypedSets,new NodeAction() {
-				public void apply(Node n){
-					nonMonProblem("Untyped node",n);
+
+			/*
+			 * Easy problems to check.
+			 */
+			check(CategorySet.untypedSets, new NodeAction() {
+				public void apply(Node n) {
+					nonMonProblem("Untyped node", n);
 				}
 			}, m);
-			check(CategorySet.orphanSets,new NodeAction() {
-			public void apply(Node n){
-				nonMonProblem("Orphaned rdf:List or owl:OntologyProperty node",n);
-			}
-		}, m);
-		if ( wantLite )
-		check(CategorySet.dlOrphanSets,new NodeAction() {
-		public void apply(Node n){
-			nonMonProblem("Orphaned blank owl:Class or owl:Restriction is in OWL DL",n,Levels.Lite);
-		}
-	}, m);
-		/*
-		 * Slightly harder
-		 */
-		 check(CategorySet.structuredOne,new NodeAction() {
-			 public void apply(Node n){
-			 	if (getCNode(n).asOne().incomplete())
-				  nonMonProblem("Incomplete blank owl:Class or owl:AllDifferent",n);
-			 }
-		 }, m);
-		 check(CategorySet.structuredTwo,new NodeAction() {
-			 public void apply(Node n){
-				if (getCNode(n).asTwo().incomplete())
-				  nonMonProblem("Incomplete rdf:List or owl:Restriction",n);
-			 }
-		 }, m);
-		 
-		 /*
-		  * Getting harder ...
-		  * We could optimise by first find non-cyclic orphaned unnamed 
-		  * individuals,
-		  * mark those as non-cyclic - but that's too much like hardwork.
-		  * 
-		  * We check the potentially cyclic
-		  * nodes.
-		  */ 
-		 clearProperty( Vocab.cyclicState);  
-		 check(CategorySet.cyclicSets, new NodeAction() {
-			public void apply(Node n){
-			// If this is a description then it's busted.
-			  CNodeI cn = getCNode(n);
-			  if (
-			  Q.intersect(Grammar.descriptionsX,CategorySet.getSet(cn.getCategories()))
-			 || Q.intersect(Grammar.restrictionsX,CategorySet.getSet(cn.getCategories())) ) {
+			check(CategorySet.orphanSets, new NodeAction() {
+				public void apply(Node n) {
+					nonMonProblem(
+						"Orphaned rdf:List or owl:OntologyProperty node",
+						n);
+				}
+			}, m);
 
-				nonMonProblem("Cyclic blank owl:Class or owl:Restriction",n);
-			 }
-			 
-			 if (
-			 Q.intersect(Grammar.listsX,CategorySet.getSet(cn.getCategories()))
-			 ) {
+			check(CategorySet.dlOrphanSets, new NodeAction() {
+				public void apply(Node n) {
+					nonMonProblem(
+						"Orphaned blank owl:Class or owl:Restriction is in OWL DL",
+						n,
+						Levels.Lite);
+				}
+			}, m);
 
-			   nonMonProblem("Cyclic rdf:List",n);
-			}
-			
-			// If this is an individual then we have to check it.
-			
-			if ( 
-			Q.member(Grammar.unnamedIndividual,CategorySet.getSet(cn.getCategories()))
-			) {
-              isCyclic((CBlank)cn,n);
-		   }
-			}
-		  }, m);
-		 
+			/*
+			 * Slightly harder
+			 */
+			check(CategorySet.structuredOne, new NodeAction() {
+				public void apply(Node n) {
+					if (getCNode(n).asOne().incomplete())
+						nonMonProblem(
+							"Incomplete blank owl:Class or owl:AllDifferent",
+							n);
+				}
+			}, m);
+			check(CategorySet.structuredTwo, new NodeAction() {
+				public void apply(Node n) {
+					if (getCNode(n).asTwo().incomplete())
+						nonMonProblem(
+							"Incomplete rdf:List or owl:Restriction",
+							n);
+				}
+			}, m);
+
+			/*
+			 * Getting harder ...
+			 * We could optimise by first find non-cyclic orphaned unnamed 
+			 * individuals,
+			 * mark those as non-cyclic - but that's too much like hardwork.
+			 * 
+			 * We check the potentially cyclic
+			 * nodes.
+			 */
+			clearProperty(Vocab.cyclicState);
+			check(CategorySet.cyclicSets, new NodeAction() {
+				public void apply(Node n) {
+					// If this is a description then it's busted.
+					CNodeI cn = getCNode(n);
+					if (Q
+						.intersect(
+							Grammar.descriptionsX,
+							CategorySet.getSet(cn.getCategories()))
+						|| Q.intersect(
+							Grammar.restrictionsX,
+							CategorySet.getSet(cn.getCategories()))) {
+
+						nonMonProblem(
+							"Cyclic blank owl:Class or owl:Restriction",
+							n);
+					}
+
+					if (Q
+						.intersect(
+							Grammar.listsX,
+							CategorySet.getSet(cn.getCategories()))) {
+
+						nonMonProblem("Cyclic rdf:List", n);
+					}
+
+					// If this is an individual then we have to check it.
+
+					if (Q
+						.member(
+							Grammar.unnamedIndividual,
+							CategorySet.getSet(cn.getCategories()))) {
+						isCyclic((CBlank) cn, n);
+					}
+				}
+			}, m);
+
 			/*
 			* Hardest
 			* Check the disjointUnion blank nodes
 			*/
-		    /* Not needed
-		    clearProperty(Vocab.transDisjointWith);
+			/* Not needed
+			clearProperty(Vocab.transDisjointWith);
 			Iterator i = asGraph().find(Node.ANY,Vocab.disjointWith,Node.ANY);
 			while ( i.hasNext()) {
 				Triple t = (Triple)i.next();
@@ -167,93 +182,91 @@ public class Checker extends AbsChecker {
 			}
 			*/
 			check(CategorySet.disjointWithSets, new NodeAction() {
-						public void apply(Node n){
+				public void apply(Node n) {
 
-							Iterator i = asGraph().find(Node.ANY,Vocab.disjointWith,n);
-							while ( i.hasNext()) {
-								Triple ti = (Triple)i.next();
-								Iterator j = asGraph().find(n,Vocab.disjointWith,Node.ANY);
-								while (j.hasNext()) {
-									Triple tj = (Triple)j.next();
-									Node tis = ti.getSubject();
-									Node tjo = tj.getObject();
-									if (!( tis.equals(tjo) ||
-									asGraph().contains(new Triple(tis,
-									              Vocab.disjointWith,
-									             tjo )) ) )
-									nonMonProblem("Ill-formed owl:disjointWith",n);  
-								}
-							}
+					Iterator i =
+						asGraph().find(Node.ANY, Vocab.disjointWith, n);
+					while (i.hasNext()) {
+						Triple ti = (Triple) i.next();
+						Iterator j =
+							asGraph().find(n, Vocab.disjointWith, Node.ANY);
+						while (j.hasNext()) {
+							Triple tj = (Triple) j.next();
+							Node tis = ti.getSubject();
+							Node tjo = tj.getObject();
+							if (!(tis.equals(tjo)
+								|| asGraph().contains(
+									new Triple(tis, Vocab.disjointWith, tjo))))
+								nonMonProblem("Ill-formed owl:disjointWith", n);
 						}
-						}, m);
+					}
+				}
+			}, m);
 		}
 	}
 	private void clearProperty(Node p) {
-		 Iterator it =
-		  asGraph().find(Node.ANY,p,Node.ANY);
-		  List list = new Vector();
-		  while ( it.hasNext() )
-		    list.add(it.next());
-		  asGraph().getBulkUpdateHandler().delete(list);
-		
+		Iterator it = asGraph().find(Node.ANY, p, Node.ANY);
+		List list = new Vector();
+		while (it.hasNext())
+			list.add(it.next());
+		asGraph().getBulkUpdateHandler().delete(list);
+
 	}
-	
-	private boolean isCyclic( CBlank blk, Node n ){
+
+	private boolean isCyclic(CBlank blk, Node n) {
 		int st = blk.getCyclicState();
-		switch ( st ) {
-			case CBlank.Checking:
-			blk.setCyclicState(CBlank.IsCyclic);
-			nonMonProblem("Cyclic unnamed individual",n);
-			case CBlank.IsCyclic:
-			  return true;
-			case CBlank.Undefined:
-			  blk.setCyclicState(CBlank.Checking);
-			  Triple t = blk.get(2);
-			  boolean rslt;
-			  if ( t == null )
-			     rslt = false;
-			  else
-			    rslt = isCyclic( (CBlank)getCNode(t.getSubject()), n);
-			  blk.setCyclicState( rslt ? CBlank.IsCyclic : CBlank.NonCyclic );
-			  return rslt;
-			case CBlank.NonCyclic:
-			  return false;
-			default:
-			  throw new BrokenException("Impossible case in switch.");
+		switch (st) {
+			case CBlank.Checking :
+				blk.setCyclicState(CBlank.IsCyclic);
+				nonMonProblem("Cyclic unnamed individual", n);
+			case CBlank.IsCyclic :
+				return true;
+			case CBlank.Undefined :
+				blk.setCyclicState(CBlank.Checking);
+				Triple t = blk.get(2);
+				boolean rslt;
+				if (t == null)
+					rslt = false;
+				else
+					rslt = isCyclic((CBlank) getCNode(t.getSubject()), n);
+				blk.setCyclicState(rslt ? CBlank.IsCyclic : CBlank.NonCyclic);
+				return rslt;
+			case CBlank.NonCyclic :
+				return false;
+			default :
+				throw new BrokenException("Impossible case in switch.");
 		}
-		   
+
 	}
-	private void check(Q q,NodeAction a, Model m){
+	private void check(Q q, NodeAction a, Model m) {
 		Query rdql = q.asRDQL();
 		rdql.setSource(m);
 		QueryExecution qe = new QueryEngine(rdql);
 		QueryResults results = qe.exec();
-		while ( results.hasNext() ) {
-			ResultBinding rb = (ResultBinding)results.next() ;
-			RDFNode nn = (RDFNode)rb.get("x");
+		while (results.hasNext()) {
+			ResultBinding rb = (ResultBinding) results.next();
+			RDFNode nn = (RDFNode) rb.get("x");
 			a.apply(nn.asNode());
 		}
 	}
-	private void nonMonProblem(String shortD,Node n) {
-		nonMonProblem(shortD, n,Levels.DL);
+	private void nonMonProblem(String shortD, Node n) {
+		nonMonProblem(shortD, n, Levels.DL);
 	}
-	private void nonMonProblem(String shortD,Node n, int lvl) {
+	private void nonMonProblem(String shortD, Node n, int lvl) {
 		Model m = ModelFactory.createDefaultModel();
 		Graph mg = m.getGraph();
-		if ( nonMonotoneLevel <= lvl )
-		   nonMonotoneLevel = lvl + 1;
-		   
-		if ( lvl == Levels.Lite && !wantLite )
-		  return;
-		  
-		EnhNode enh = ((EnhGraph)m).getNodeAs(n,RDFNode.class);
-		Iterator it = this.hasBeenChecked.find(n,null,null);
-		while ( it.hasNext() )
-		  mg.add((Triple)it.next());
-		   
-		this.nonMonotoneProblems.add(
-		  new SyntaxProblem(shortD,enh,lvl)
-		);
+		if (nonMonotoneLevel <= lvl)
+			nonMonotoneLevel = lvl + 1;
+
+		if (lvl == Levels.Lite && !wantLite)
+			return;
+
+		EnhNode enh = ((EnhGraph) m).getNodeAs(n, RDFNode.class);
+		Iterator it = this.hasBeenChecked.find(n, null, null);
+		while (it.hasNext())
+			mg.add((Triple) it.next());
+
+		this.nonMonotoneProblems.add(new SyntaxProblem(shortD, enh, lvl));
 	}
 
 	public Checker(boolean lite, GraphMaker gf) {
@@ -279,25 +292,31 @@ public class Checker extends AbsChecker {
 				it.close();
 		}
 	}
-	
-	public void load(String url){
-        // create an ontology model with no reasoner and the default doc manager
-        OntModel m = ModelFactory.createOntologyModel( new OntModelSpec( ModelFactory.createMemModelMaker(),
-                                                                         null, null, ProfileRegistry.OWL_LANG ), null );
+
+	public void load(String url) {
+		// create an ontology model with no reasoner and the default doc manager
+		OntModel m =
+			ModelFactory.createOntologyModel(
+				new OntModelSpec(
+					ModelFactory.createMemModelMaker(),
+					null,
+					null,
+					ProfileRegistry.OWL_LANG),
+				null);
 		//OntModel m = ModelFactory.createOntologyModel();
-        m.getDocumentManager().setProcessImports( true );
-	
+		m.getDocumentManager().setProcessImports(true);
+
 		m.read(url);
-        
-        // since we specified the null reasoner, the graph of the model is the union graph
-        add( m.getGraph() );
+
+		// since we specified the null reasoner, the graph of the model is the union graph
+		add(m.getGraph());
 	}
 	//private boolean wantLite = true;
 
 	void addProblem(int lvl, Triple t) {
-		super.addProblem(lvl,t);
-		if ( lvl == Levels.Lite && !wantLite )
-		  return;
+		super.addProblem(lvl, t);
+		if (lvl == Levels.Lite && !wantLite)
+			return;
 		Graph min =
 			new MinimalSubGraph(lvl == Levels.Lite, t, this).getContradiction();
 		addProblem(
@@ -308,23 +327,24 @@ public class Checker extends AbsChecker {
 	}
 	void addProblem(SyntaxProblem sp) {
 		super.addProblem(sp);
-		switch ( sp.level ) {
-			case Levels.Warning:
-			warnings.add(sp);
-			case Levels.Lite:
-			   if (!wantLite )
-			      return;
-			default:
-			monotoneProblems.add(sp);
-			  
+		switch (sp.level) {
+			case Levels.Warning :
+				warnings.add(sp);
+			case Levels.Lite :
+				if (!wantLite)
+					return;
+			default :
+				monotoneProblems.add(sp);
+
 		}
 	}
 	public String getSubLanguage() {
-		if ( monotoneLevel < Levels.Full && monotoneProblems.size() == 0)
-   		   snapCheck();
-   		int m = monotoneLevel < nonMonotoneLevel ? nonMonotoneLevel : monotoneLevel;
-   		if ( wantLite && m == Levels.DL)
-   		   return "DL or Full";
+		if (monotoneLevel < Levels.Full && monotoneProblems.size() == 0)
+			snapCheck();
+		int m =
+			monotoneLevel < nonMonotoneLevel ? nonMonotoneLevel : monotoneLevel;
+		if (wantLite && m == Levels.DL)
+			return "DL or Full";
 		return Levels.toString(m);
 	}
 	void actions(long key, CNodeI s, CNodeI o, Triple t) {
@@ -342,27 +362,36 @@ public class Checker extends AbsChecker {
 				s.asTwo().second(t);
 				break;
 		}
-		
+
 	}
 	static public void main(String argv[]) {
 		GraphMaker gf = ModelFactory.createMemModelMaker().getGraphMaker();
-        
-        // create an ontology model with no reasoner and the default doc manager
-		OntModel m = ModelFactory.createOntologyModel( new OntModelSpec( ModelFactory.createMemModelMaker(),
-                                                                         null, null, ProfileRegistry.OWL_LANG ), null );
-        m.getDocumentManager().setProcessImports( true );
-	
+
+		// create an ontology model with no reasoner and the default doc manager
+		OntModel m =
+			ModelFactory.createOntologyModel(
+				new OntModelSpec(
+					ModelFactory.createMemModelMaker(),
+					null,
+					null,
+					ProfileRegistry.OWL_LANG),
+				null);
+		m.getDocumentManager().setProcessImports(true);
+
 		//Model m = ModelFactory.createDefaultModel();
 		m.read(argv[0]);
-        //m.write(System.out);
+		//m.write(System.out);
 		// m.getDocumentManager();
-        
-        // the ont model graph must be the union graph, since we specified the null reasoner (hence no inf graph)
-        Graph g = m.getGraph();
 
-		Checker chk = new Checker(argv.length==2 && argv[1].equalsIgnoreCase("Lite"), gf);
+		// the ont model graph must be the union graph, since we specified the null reasoner (hence no inf graph)
+		Graph g = m.getGraph();
+
+		Checker chk =
+			new Checker(
+				argv.length == 2 && argv[1].equalsIgnoreCase("Lite"),
+				gf);
 		chk.add(g);
-      //  System.err.println("g added.");
+		//  System.err.println("g added.");
 		String subLang = chk.getSubLanguage();
 		System.out.println(subLang);
 
@@ -376,16 +405,15 @@ public class Checker extends AbsChecker {
 			}
 		}
 
-			Iterator it = chk.getProblems();
-			while (it.hasNext()) {
-				SyntaxProblem sp = (SyntaxProblem) it.next();
-				System.err.println(sp.longDescription());
-			}
+		Iterator it = chk.getProblems();
+		while (it.hasNext()) {
+			SyntaxProblem sp = (SyntaxProblem) it.next();
+			System.err.println(sp.longDescription());
+		}
 
 	}
 
 }
-
 
 /*
  * (c) Copyright 2003 Hewlett-Packard Development Company, LP

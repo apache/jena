@@ -107,6 +107,14 @@ abstract class AbsChecker extends EnhGraph {
 			p.setCategories(pOrig, false);
 			o.setCategories(oOrig, false);
 		}
+		if ( success && p1 == Grammar.owldisjointWith) {
+			if ( s.equals(o)) {
+				addProblem(Levels.DL, t);
+				success = false;
+			}
+			else
+			   s.addDisjoint(o);
+		}
 		int rr;
 		if (!success) {
 			setMonotoneLevel(wantLite ? Levels.DL : Levels.Full);
@@ -115,9 +123,6 @@ abstract class AbsChecker extends EnhGraph {
 			rr = 1;
 		else
 			rr = 2;
-	    if ( p1 == Grammar.owldisjointWith) {
-	    	s.addDisjoint(o);
-	    }
 		//	System.err.println("* " + t.toString() + "[" + rr + "]");
 		return rr;
 	}
