@@ -27,7 +27,7 @@ import EDU.oswego.cs.dl.util.concurrent.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: QueryEngineExt.java,v 1.1 2003-03-19 17:16:55 andy_seaborne Exp $
+ * @version 	$Id: QueryEngineExt.java,v 1.2 2003-06-18 15:26:20 andy_seaborne Exp $
  */
 
 
@@ -161,7 +161,7 @@ public class QueryEngineExt implements QueryExecution
                 for ( Iterator cIter = query.constraints.iterator() ; cIter.hasNext() ; )
                 {
                     Constraint constraint = (Constraint)cIter.next() ;
-                    if ( ! constraint.isSatified(query, env) )
+                    if ( ! constraint.isSatisfied(query, env) )
                     {
                         passesTests = false ;
                         break ;

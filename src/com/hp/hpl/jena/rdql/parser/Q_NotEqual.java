@@ -18,10 +18,10 @@ import java.io.PrintWriter;
 
 /** 
  * @author: Automatically generated class: Operator: NotEqual
- * @version: $Id: Q_NotEqual.java,v 1.2 2003-02-20 16:46:28 andy_seaborne Exp $
+ * @version: $Id: Q_NotEqual.java,v 1.3 2003-06-18 15:26:41 andy_seaborne Exp $
  */
 
-class Q_NotEqual extends SimpleNode implements Expr, ExprBoolean
+public class Q_NotEqual extends SimpleNode implements Expr, ExprBoolean
 {
     Expr left ;
     Expr right ;

@@ -17,7 +17,7 @@ public class ConstraintExpr implements Constraint
         expr = _expr ;
     }
 
-    public boolean isSatified(Query q, ResultBinding env)
+    public boolean isSatisfied(Query q, ResultBinding env)
     {
         if ( expr == null )
             // This expression is in error

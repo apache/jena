@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_ArgList extends SimpleNode {
+public class Q_ArgList extends SimpleNode {
   Q_ArgList(int id) {
     super(id);
   }

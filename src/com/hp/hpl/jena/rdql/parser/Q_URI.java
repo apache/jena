@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_URI extends ParsedLiteral {
+public class Q_URI extends ParsedLiteral {
 
     Q_URI(int id)
     {

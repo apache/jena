@@ -7,7 +7,7 @@ package com.hp.hpl.jena.rdql.parser;
 
 import com.hp.hpl.jena.rdql.* ;
 
-class Q_StringNotEqual extends Q_StringEqual implements Expr, ExprBoolean
+public class Q_StringNotEqual extends Q_StringEqual implements Expr, ExprBoolean
 {
     static {
         printName = "str!=" ;

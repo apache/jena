@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_QuotedURI extends Q_URI {
+public class Q_QuotedURI extends Q_URI {
     // Also supports old-style "quoted qnames" (i.e. qnames inside <>)
     // Old RDQL used to always use quoted items for qnames and full URIs.  
 

@@ -18,10 +18,10 @@ import java.io.PrintWriter;
 
 /** 
  * @author: Automatically generated class: Operator: BitOr
- * @version: $Id: Q_BitOr.java,v 1.3 2003-06-13 17:04:28 andy_seaborne Exp $
+ * @version: $Id: Q_BitOr.java,v 1.4 2003-06-18 15:26:41 andy_seaborne Exp $
  */
 
-class Q_BitOr extends SimpleNode implements Expr, ExprNumeric
+public class Q_BitOr extends SimpleNode implements Expr, ExprNumeric
 {
     Expr left ;
     Expr right ;

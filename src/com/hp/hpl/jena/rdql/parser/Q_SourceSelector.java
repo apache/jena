@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_SourceSelector extends SimpleNode {
+public class Q_SourceSelector extends SimpleNode {
   Q_SourceSelector(int id) {
     super(id);
   }

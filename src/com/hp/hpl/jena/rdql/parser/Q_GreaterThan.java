@@ -18,10 +18,10 @@ import java.io.PrintWriter;
 
 /** 
  * @author: Automatically generated class: Operator: GreaterThan
- * @version: $Id: Q_GreaterThan.java,v 1.2 2003-02-20 16:46:26 andy_seaborne Exp $
+ * @version: $Id: Q_GreaterThan.java,v 1.3 2003-06-18 15:26:41 andy_seaborne Exp $
  */
 
-class Q_GreaterThan extends SimpleNode implements Expr, ExprBoolean
+public class Q_GreaterThan extends SimpleNode implements Expr, ExprBoolean
 {
     Expr left ;
     Expr right ;

@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_SourceClause extends SimpleNode {
+public class Q_SourceClause extends SimpleNode {
   Q_SourceClause(int id) {
     super(id);
   }

@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import org.apache.oro.text.regex.Perl5Compiler ;
 
 
-class Q_PatternLiteral extends SimpleNode implements Expr
+public class Q_PatternLiteral extends SimpleNode implements Expr
 {
     String patternString = null ;
     String modifiers = "" ;

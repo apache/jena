@@ -8,7 +8,7 @@
 package com.hp.hpl.jena.rdql.parser;
 
 
-class Q_BooleanLiteral extends ParsedLiteral implements ExprBoolean
+public class Q_BooleanLiteral extends ParsedLiteral implements ExprBoolean
 {
   Q_BooleanLiteral(int id) {
     super(id);

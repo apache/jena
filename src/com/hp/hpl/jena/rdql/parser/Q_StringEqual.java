@@ -10,7 +10,7 @@ import com.hp.hpl.jena.rdf.model.Literal ;
 
 import java.io.PrintWriter;
 
-class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
+public class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
 {
     Expr left ;
     Expr right ;

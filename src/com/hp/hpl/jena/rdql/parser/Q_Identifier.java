@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_Identifier extends SimpleNode {
+public class Q_Identifier extends SimpleNode {
 
     String id ;
     RDQLParser parser ;

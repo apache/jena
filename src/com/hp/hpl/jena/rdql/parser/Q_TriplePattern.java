@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_TriplePattern extends SimpleNode {
+public class Q_TriplePattern extends SimpleNode {
   Q_TriplePattern(int id) {
     super(id);
   }

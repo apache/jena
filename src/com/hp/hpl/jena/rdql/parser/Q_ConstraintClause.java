@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_ConstraintClause extends SimpleNode {
+public class Q_ConstraintClause extends SimpleNode {
   Q_ConstraintClause(int id) {
     super(id);
   }

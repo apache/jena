@@ -9,7 +9,7 @@ package com.hp.hpl.jena.rdql.parser;
 
 import com.hp.hpl.jena.rdf.model.* ;
 
-class Q_TextLiteral extends ParsedLiteral {
+public class Q_TextLiteral extends ParsedLiteral {
 
     Q_URI datatype = null ;
     String langTag = null ;

@@ -14,7 +14,7 @@ import org.apache.oro.text.regex.* ;
 //import org.apache.oro.text.perl.MalformedPerl5PatternException ;
 
 
-class Q_StringNoMatch extends SimpleNode implements Expr, ExprBoolean
+public class Q_StringNoMatch extends SimpleNode implements Expr, ExprBoolean
 {
     Expr left ;
     Expr right ;

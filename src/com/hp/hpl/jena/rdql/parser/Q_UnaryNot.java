@@ -10,7 +10,7 @@ package com.hp.hpl.jena.rdql.parser;
 import com.hp.hpl.jena.rdql.* ;
 import java.io.PrintWriter ;
 
-class Q_UnaryNot extends SimpleNode implements Expr, ExprBoolean {
+public class Q_UnaryNot extends SimpleNode implements Expr, ExprBoolean {
     private String printName = "unaryminus" ;
     private String opSymbol = "!" ;
     Expr expr ;

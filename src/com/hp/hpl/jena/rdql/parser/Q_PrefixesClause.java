@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_PrefixesClause extends SimpleNode {
+public class Q_PrefixesClause extends SimpleNode {
   Q_PrefixesClause(int id) {
     super(id);
   }

@@ -14,7 +14,7 @@ import com.hp.hpl.jena.util.iterator.*;
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryEngine.java,v 1.5 2003-03-19 17:16:55 andy_seaborne Exp $
+ * @version    $Id: QueryEngine.java,v 1.6 2003-06-18 15:26:20 andy_seaborne Exp $
  */
  
 public class QueryEngine implements QueryExecution
@@ -164,7 +164,7 @@ public class QueryEngine implements QueryExecution
                 for (Iterator cIter = query.constraints.iterator(); cIter.hasNext();)
                 {
                     Constraint constraint = (Constraint) cIter.next();
-                    if (!constraint.isSatified(query, nextBinding))
+                    if (!constraint.isSatisfied(query, nextBinding))
                     {
                         passesTests = false;
                         break;

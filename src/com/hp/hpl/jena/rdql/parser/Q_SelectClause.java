@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_SelectClause extends SimpleNode {
+public class Q_SelectClause extends SimpleNode {
   Q_SelectClause(int id) {
     super(id);
   }

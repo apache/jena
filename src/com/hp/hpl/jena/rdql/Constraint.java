@@ -6,14 +6,14 @@
 /** 
  * Interface representing something that evaluates to true or false.
  * @author		Andy Seaborne
- * @version 	$Id: Constraint.java,v 1.2 2003-02-20 16:45:46 andy_seaborne Exp $
+ * @version 	$Id: Constraint.java,v 1.3 2003-06-18 15:26:20 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
 
 public interface Constraint
 {
-    public boolean isSatified(Query q, ResultBinding env) ;
+    public boolean isSatisfied(Query q, ResultBinding env) ;
 }
 
 /*

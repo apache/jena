@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_NullLiteral extends SimpleNode {
+public class Q_NullLiteral extends SimpleNode {
   Q_NullLiteral(int id) {
     super(id);
   }

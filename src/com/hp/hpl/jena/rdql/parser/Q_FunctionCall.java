@@ -7,7 +7,7 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-class Q_FunctionCall extends SimpleNode {
+public class Q_FunctionCall extends SimpleNode {
   Q_FunctionCall(int id) {
     super(id);
   }
