@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.11 2003-08-03 20:45:59 der Exp $
+ * $Id: RuleClauseCode.java,v 1.12 2003-08-04 17:08:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-03 20:45:59 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-04 17:08:21 $
  */
 public class RuleClauseCode {
     
@@ -78,8 +78,11 @@ public class RuleClauseCode {
     /** call a predicate code object with run time indexing (predicateCodeList) */
     public static final byte CALL_PREDICATE_INDEX = 0x17;
     
-    /** call a predicate code object with special case of wildcard predicate */
-    public static final byte CALL_WILD_PREDICATE = 0xa;
+//    /** call a predicate code object with special case of wildcard predicate */
+//    public static final byte CALL_WILD_PREDICATE = 0xa;
+
+    /** Unify the predicate argument (A1) with the current clause head's predicate value */
+    public static final byte UNIFY_PREDICATE = 0xa;
     
     /** call a pure triple match (predicate) */
     public static final byte CALL_TRIPLE_MATCH = 0x11;
@@ -248,9 +251,9 @@ public class RuleClauseCode {
                 case CALL_TRIPLE_MATCH:
                         out.println("CALL_TRIPLE_MATCH");
                         break;
-                case CALL_WILD_PREDICATE:
-                    out.println("CALL_WILD_PREDICATE " + args[argi++]);
-                    break;
+//                case CALL_WILD_PREDICATE:
+//                    out.println("CALL_WILD_PREDICATE " + args[argi++]);
+//                    break;
                 case PROCEED:
                     out.println("PROCEED");
                     break;
@@ -326,7 +329,7 @@ public class RuleClauseCode {
         void emitHead(TriplePattern head) {
             if (permanentVars.size() > 0) code[p++] = ALLOCATE;
             emitHeadGet(head.getSubject(), 0);
-            // TODO: Add predicate test in variable predicate case
+            emitHeadGet(head.getPredicate(), 1);
             emitHeadGet(head.getObject(), 2);
         }
         
@@ -378,9 +381,10 @@ public class RuleClauseCode {
             if (predicateCode == null || predicateCode.size() == 0) {
                 code[p++] = CALL_TRIPLE_MATCH;
             } else {
-                if (goal.getPredicate().isVariable()) {
-                    code[p++] = CALL_WILD_PREDICATE;
-                } else {
+//                if (goal.getPredicate().isVariable()) {
+//                    code[p++] = CALL_WILD_PREDICATE;
+//                    // TODO: add indexed version?
+//                } else {
                     if (permanentVars.size() == 0) {
                         code[p++] = LAST_CALL_PREDICATE;
                     } else {
@@ -391,7 +395,7 @@ public class RuleClauseCode {
                             code[p++] = CALL_PREDICATE;
                         }
                     }
-                }
+//                }
                 args.add(predicateCode);
             }
         }
@@ -650,7 +654,8 @@ public class RuleClauseCode {
             String test8 = "(?x p ?y) <- (?x p ?z) addOne(?z, ?y).";
             String test9 = "(?x p ?y) <- (?x p ?z) sum(?z, 2, ?y).";
             String test10 = "(?x p ?y) <- (?x p ?v), sum(?v 2 ?y).";
-            store.addRule(Rule.parseRule(test1));
+            String test11 = "(b p ?y) <- (a ?y ?v).";
+            store.addRule(Rule.parseRule(test5));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);

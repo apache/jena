@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.7 2003-08-03 09:39:18 der Exp $
+ * $Id: TestBasicLP.java,v 1.8 2003-08-04 17:08:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-03 09:39:18 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-04 17:08:21 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -37,6 +37,7 @@ public class TestBasicLP  extends TestCase {
     Node r = Node.createURI("r");
     Node s = Node.createURI("s");
     Node t = Node.createURI("t");
+    Node u = Node.createURI("u");
     Node a = Node.createURI("a");
     Node b = Node.createURI("b");
     Node c = Node.createURI("c");
@@ -470,6 +471,116 @@ public class TestBasicLP  extends TestCase {
                 } );
     }
     
+    /**
+     * Test wildcard predicate usage - simple triple search.
+     * Rules look odd because we have to hack around the recursive loops.
+     */
+    public void testWildPredicate1() {
+        doTest("[r1: (b r ?y) <- (a ?y ?v)]",
+                new Triple[] {
+                    new Triple(a, p, C1),
+                    new Triple(a, q, C2),
+                    new Triple(a, q, C3),
+                },
+                new Triple(b, r, Node.ANY),
+                new Object[] {
+                    new Triple(b, r, p),
+                    new Triple(b, r, q)
+                } );
+    }
+    
+    /**
+     * Test wildcard predicate usage - combind triple search and multiclause matching.
+     * Rules look odd because we have to hack around the recursive loops.
+     */
+    public void testWildPredicate2() {
+        doTest("[r1: (a r ?y) <- (b ?y ?v)]" +
+                "[r2: (?x q ?y) <- (?x p ?y)]" +
+                "[r3: (?x s C1) <- (?x p C1)]" +
+                "[r4: (?x t C2) <- (?x p C2)]",
+                new Triple[] {
+                    new Triple(b, p, C1),
+                    new Triple(b, q, C2),
+                    new Triple(b, q, C3),
+                    new Triple(a, p, C1),
+                    new Triple(a, p, C2),
+                    new Triple(c, p, C1),
+                },
+                new Triple(a, Node.ANY, Node.ANY),
+                new Object[] {
+                    new Triple(a, r, p),
+                    new Triple(a, r, q),
+                    new Triple(a, q, C1),
+                    new Triple(a, q, C2),
+                    new Triple(a, s, C1),
+                    new Triple(a, t, C2),
+                    new Triple(a, p, C1),
+                    new Triple(a, p, C2),
+                    new Triple(a, r, s),
+                } );
+    }
+    
+    /**
+     * Test wildcard predicate usage - combind triple search and multiclause matching.
+     * Rules look odd because we have to hack around the recursive loops.
+     */
+    public void testWildPredicate3() {
+        String rules = "[r1: (a r ?y) <- (b ?y ?v)]" +
+                "[r2: (?x q ?y) <- (?x p ?y)]" +
+                "[r3: (?x s C1) <- (?x p C1)]" +
+                "[r4: (?x t ?y) <- (?x ?y C1)]";
+        Triple[] data =
+                new Triple[] {
+                    new Triple(b, p, C1),
+                    new Triple(b, q, C2),
+                    new Triple(b, q, C3),
+                    new Triple(a, p, C1),
+                    new Triple(a, p, C2),
+                    new Triple(c, p, C1),
+                };
+        doTest(rules, data,
+                new Triple(a, Node.ANY, C1),
+                new Object[] {
+                    new Triple(a, q, C1),
+                    new Triple(a, s, C1),
+                    new Triple(a, p, C1),
+                } );
+        doTest(rules, data,
+                new Triple(a, t, Node.ANY),
+                new Object[] {
+                    new Triple(a, t, q),
+                    new Triple(a, t, s),
+                    new Triple(a, t, p),
+                } );
+        doTest(rules, data,
+                new Triple(Node.ANY, t, q),
+                new Object[] {
+                    new Triple(a, t, q),
+                    new Triple(b, t, q),
+                    new Triple(c, t, q)
+                } );
+    }
+    
+    /**
+     * Test wildcard predicate usage - wildcard in head as well
+     * Rules look odd because we have to hack around the recursive loops.
+     */
+    public void testWildPredicate4() {
+        doTest("[r1: (a ?p ?x) <- (b ?p ?x)]",
+                new Triple[] {
+                    new Triple(b, p, C1),
+                    new Triple(b, q, C2),
+                    new Triple(b, q, C3),
+                    new Triple(c, q, d),
+                },
+                new Triple(a, Node.ANY, Node.ANY),
+                new Object[] {
+                    new Triple(a, p, C1),
+                    new Triple(a, q, C2),
+                    new Triple(a, q, C3),
+                } );
+    }
+
     /** 
      * Generic test operation.
      * @param ruleSrc the source of the rules
