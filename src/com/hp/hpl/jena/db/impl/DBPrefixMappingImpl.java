@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.7 2005-02-10 14:35:07 chris-dollin Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.8 2005-02-11 16:20:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -19,7 +19,7 @@ import java.util.*;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.7 $
+ 	@version $Revision: 1.8 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -65,7 +65,7 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 	 * @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefix(java.lang.String, java.lang.String)
 	 */
 	public PrefixMapping setNsPrefix(String prefix, String uri) {
-        // this avoids touching the 
+        // this avoids touching the database for existing maplets.
         if (uri.equals( super.getNsPrefixURI( prefix ) )) return this;
 		// Ordering is important here - we need to add it to the prefixMappingImpl
 		// first since it checks the validity of the prefix (it will throw

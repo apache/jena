@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpec.java,v 1.10 2004-12-06 13:50:12 andy_seaborne Exp $
+  $Id: ModelSpec.java,v 1.11 2005-02-11 16:23:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -12,12 +12,7 @@ package com.hp.hpl.jena.rdf.model;
  	@author kers
 */
 public interface ModelSpec extends ModelSource
-    {
-    /**
-        Answer a new Model which fits the specification of this ModelSpec.
-    */
-    Model createModel();
-    
+    {    
     /**
         Answer a Model that fits the specification of this ModelSpec and is built over some
         underlying model with the given name. [It is not necessary for the resulting model
