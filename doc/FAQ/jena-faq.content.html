@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.5 2003-09-12 08:31:16 der Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.6 2003-09-25 11:22:24 der Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -38,7 +38,8 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h3>Reasoner and inference models</h3>
 <ul>
-  <li>no entries yet</li>
+  <li><a href="#reasoner-0">I want to develop my own rules, how do I get started?</a></li>
+  <li><a href="#reasoner-1">Why are there two different arrows ( -&gt; and &lt;- ) in the rule syntax?</a></li>
 </ul>
 <h3>Ontology API</h3>
 <ul>
@@ -72,9 +73,10 @@ Jena 2 &ndash; Frequently Asked Questions
   where $JENA refers to the directory in which you installed Jena, should be on
   your classpath. Consult the documentation for your JDK for details on setting
   the classpath for your system.</p>
+  
 <h3>RDF model API</h3>
-    <p id="api-0"><strong>Q. Why does the localname part of my URI look wrong?</strong><br>
-      In Jena it is possible to retrieve the localname part of a Resource or Property 
+    <p id="api-0"><strong>Q. Why does the localname part of my URI look wrong?</strong><br />
+      A: In Jena it is possible to retrieve the localname part of a Resource or Property 
       URI. Sometimes developers create Resources with a full URI reference but 
       find that the result of a getLocalName call is not quite what they expected. 
       This is usually because the URI is ill-formed or cannot be correctly split 
@@ -87,8 +89,42 @@ Jena 2 &ndash; Frequently Asked Questions
       anyway. In general, it is best to not use the localname split to encode 
       any information, you should only be concerned with it if you are coding 
       a parser or writer.</p>
-    <h3>Reasoner and inference models</h3>
-<p>no entries yet</p>
+      
+<h3>Reasoner and inference models</h3>
+  <p id="reasoner-0"><strong>Q. I want to develop my own rules, how do I get started?</strong><br />
+    A: The GenericRuleReasoner is the place to start. You can create instances of this reasoner by
+    supplying either an explict set of Rule objects or a configuration description (as a Jena Model)
+    that points to a local rule file. See the inference documentation for more details: <br />
+    <a href="inference/index.html#rules">inference/index.html#rules</a>
+  </p>
+
+  <p id="reasoner-1"><strong>Q. Why are there two different arrows ( -&gt; and &lt;- ) in the rule syntax?</strong><br />
+    A: As explained in the documentation there are two rule systems available - a 
+    forward chainer and a backward chainer. You can chose to use either or 
+    use the two together in a hybrid mode. <br />
+
+    So if we use Ti as short hand for triple patterns like (?x rdf:type ?C), 
+    and if we ignore functors and procedural call out for now, then the syntax:<br />
+    <code>&nbsp;&nbsp;&nbsp;&nbsp;    T1, T2, ... TN -> T0 .    </code> <br />
+    means that if the triple patterns T1 to TN match in the data set then 
+    then the triple T0 can be deduced as a consequence. Similarly <br />
+    <code> &nbsp;&nbsp;&nbsp;&nbsp;   T0 <- T1, T2, ... TN .    </code> <br />
+    means the same thing - the consequence is always on the "pointy" end of 
+    the arrow. <br />
+
+    Now if you are just using pure forward or backward rules then you could 
+    chose to use either syntax interchangeably. This allows you to write a 
+    rule set and use it in either mode. Though in practice "-&gt;" is the more 
+    conventional direction in forward systems and "&lt;-" is the more 
+    conventional one in backward systems. <br />
+
+    The hybrid configuration allows you to create new backward rules as a 
+    result of forward rules firing so that the syntax: <br />
+    <code> &nbsp;&nbsp;&nbsp;&nbsp;    T1, T2 -> [T0 <- T3, T4] .     </code> <br />
+    Is saying that if both T1 and T2 match in the dataset then add the 
+    backward rule "[T0 &lt;- T3, T4]" after instantiating any bound variables.
+  </p>
+
 <h3>Ontology API</h3>
 <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
   etc) work?</strong><br />
@@ -102,6 +138,7 @@ Jena 2 &ndash; Frequently Asked Questions
   is that relative URI's change depending where you read the model from. Try adding
   an <code>xml:base</code> declaration to the document to ensure that URI's are
   correctly specified.</p>
+  
 <p id="ontology-1"><strong>Q: Why doesn't the ontlogy API handle <code>sub-class</code> 
 	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc) 
   	relationships in a DAML model?</strong><br />
