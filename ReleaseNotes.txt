@@ -86,6 +86,8 @@ Post Jena 2.1 change list
         argument to the event method.
 
   Reasoners
+      o Implemented capabilities interface to work around find contact problems
+        in bug 858163 in those cases which can avoid it
       o Fixed bug 927644, mishandling of cycles in transitive reasoner
       o Fixed ommission in handling of someValuesFrom applied to an rdfs:Datatype.
       o Fixed bug in hide() table not being carried across from prebuilt
