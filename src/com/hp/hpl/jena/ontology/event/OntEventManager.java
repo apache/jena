@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Sep-2003
  * Filename           $RCSfile: OntEventManager.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-04 10:47:01 $
+ * Last modified on   $Date: 2004-01-08 15:44:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.vocabulary.OntEvents;
+import com.hp.hpl.jena.vocabulary.OntEventsVocab;
 
 
 /**
@@ -75,7 +75,7 @@ import com.hp.hpl.jena.vocabulary.OntEvents;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntEventManager.java,v 1.2 2003-12-04 10:47:01 ian_dickinson Exp $
+ * @version CVS $Id: OntEventManager.java,v 1.3 2004-01-08 15:44:00 ian_dickinson Exp $
  */
 public class OntEventManager 
     extends StatementListener
@@ -88,51 +88,51 @@ public class OntEventManager
 
     /** Initialisation data for the rdf:type to event type table */
     private static Object[][] s_rdfTypeInit = {
-        {OntEvents.classDeclaration,                       new ProfileAccessor() {public Resource get(Profile p) {return p.CLASS();} } },
-        {OntEvents.datarangeDeclaration,                   new ProfileAccessor() {public Resource get(Profile p) {return p.DATARANGE();} } }, 
-        {OntEvents.propertyDeclaration,                    new ProfileAccessor() {public Resource get(Profile p) {return p.PROPERTY();} } }, 
-        {OntEvents.objectPropertyDeclaration,             new ProfileAccessor() {public Resource get(Profile p) {return p.OBJECT_PROPERTY();} } }, 
-        {OntEvents.datatypePropertyDeclaration,           new ProfileAccessor() {public Resource get(Profile p) {return p.DATATYPE_PROPERTY();} } }, 
-        {OntEvents.transitivePropertyDeclaration,         new ProfileAccessor() {public Resource get(Profile p) {return p.TRANSITIVE_PROPERTY();} } }, 
-        {OntEvents.symmetricPropertyDeclaration,          new ProfileAccessor() {public Resource get(Profile p) {return p.SYMMETRIC_PROPERTY();} } }, 
-        {OntEvents.functionalPropertyDeclaration,         new ProfileAccessor() {public Resource get(Profile p) {return p.FUNCTIONAL_PROPERTY();} } }, 
-        {OntEvents.inverseFunctionalPropertyDeclaration, new ProfileAccessor() {public Resource get(Profile p) {return p.INVERSE_FUNCTIONAL_PROPERTY();} } }, 
-        {OntEvents.annotationPropertyDeclaration,         new ProfileAccessor() {public Resource get(Profile p) {return p.ANNOTATION_PROPERTY();} } }, 
-        {OntEvents.ontologyPropertyDeclaration,           new ProfileAccessor() {public Resource get(Profile p) {return p.ONTOLOGY_PROPERTY();} } }, 
-        {OntEvents.restrictionDeclaration,                 new ProfileAccessor() {public Resource get(Profile p) {return p.RESTRICTION();} } }, 
-        {OntEvents.allDifferentDeclaration,               new ProfileAccessor() {public Resource get(Profile p) {return p.ALL_DIFFERENT();} } }, 
-        {OntEvents.ontologyDeclaration,                    new ProfileAccessor() {public Resource get(Profile p) {return p.ONTOLOGY();} } }, 
+        {OntEventsVocab.classDeclaration,                       new ProfileAccessor() {public Resource get(Profile p) {return p.CLASS();} } },
+        {OntEventsVocab.datarangeDeclaration,                   new ProfileAccessor() {public Resource get(Profile p) {return p.DATARANGE();} } }, 
+        {OntEventsVocab.propertyDeclaration,                    new ProfileAccessor() {public Resource get(Profile p) {return p.PROPERTY();} } }, 
+        {OntEventsVocab.objectPropertyDeclaration,             new ProfileAccessor() {public Resource get(Profile p) {return p.OBJECT_PROPERTY();} } }, 
+        {OntEventsVocab.datatypePropertyDeclaration,           new ProfileAccessor() {public Resource get(Profile p) {return p.DATATYPE_PROPERTY();} } }, 
+        {OntEventsVocab.transitivePropertyDeclaration,         new ProfileAccessor() {public Resource get(Profile p) {return p.TRANSITIVE_PROPERTY();} } }, 
+        {OntEventsVocab.symmetricPropertyDeclaration,          new ProfileAccessor() {public Resource get(Profile p) {return p.SYMMETRIC_PROPERTY();} } }, 
+        {OntEventsVocab.functionalPropertyDeclaration,         new ProfileAccessor() {public Resource get(Profile p) {return p.FUNCTIONAL_PROPERTY();} } }, 
+        {OntEventsVocab.inverseFunctionalPropertyDeclaration, new ProfileAccessor() {public Resource get(Profile p) {return p.INVERSE_FUNCTIONAL_PROPERTY();} } }, 
+        {OntEventsVocab.annotationPropertyDeclaration,         new ProfileAccessor() {public Resource get(Profile p) {return p.ANNOTATION_PROPERTY();} } }, 
+        {OntEventsVocab.ontologyPropertyDeclaration,           new ProfileAccessor() {public Resource get(Profile p) {return p.ONTOLOGY_PROPERTY();} } }, 
+        {OntEventsVocab.restrictionDeclaration,                 new ProfileAccessor() {public Resource get(Profile p) {return p.RESTRICTION();} } }, 
+        {OntEventsVocab.allDifferentDeclaration,               new ProfileAccessor() {public Resource get(Profile p) {return p.ALL_DIFFERENT();} } }, 
+        {OntEventsVocab.ontologyDeclaration,                    new ProfileAccessor() {public Resource get(Profile p) {return p.ONTOLOGY();} } }, 
     };
     
     /** Initialisation data for the predicate to event type table */
     private static Object[][] s_predicateInit = {
-        {OntEvents.intersectionOf,                         new ProfileAccessor() {public Resource get(Profile p) {return p.INTERSECTION_OF();} } }, 
-        {OntEvents.equivalentClass,                        new ProfileAccessor() {public Resource get(Profile p) {return p.EQUIVALENT_CLASS();} } }, 
-        {OntEvents.disjointWith,                           new ProfileAccessor() {public Resource get(Profile p) {return p.DISJOINT_WITH();} } }, 
-        {OntEvents.equivalentProperty,                     new ProfileAccessor() {public Resource get(Profile p) {return p.EQUIVALENT_PROPERTY();} } }, 
-        {OntEvents.sameAs,                                 new ProfileAccessor() {public Resource get(Profile p) {return p.SAME_AS();} } }, 
-        {OntEvents.differentFrom,                          new ProfileAccessor() {public Resource get(Profile p) {return p.DIFFERENT_FROM();} } }, 
-        {OntEvents.distinctMembers,                        new ProfileAccessor() {public Resource get(Profile p) {return p.DISTINCT_MEMBERS();} } }, 
-        {OntEvents.unionOf,                                new ProfileAccessor() {public Resource get(Profile p) {return p.UNION_OF();} } }, 
-        {OntEvents.intersectionOf,                         new ProfileAccessor() {public Resource get(Profile p) {return p.INTERSECTION_OF();} } }, 
-        {OntEvents.complementOf,                           new ProfileAccessor() {public Resource get(Profile p) {return p.COMPLEMENT_OF();} } }, 
-        {OntEvents.oneOf,                                  new ProfileAccessor() {public Resource get(Profile p) {return p.ONE_OF();} } }, 
-        {OntEvents.onProperty,                             new ProfileAccessor() {public Resource get(Profile p) {return p.ON_PROPERTY();} } }, 
-        {OntEvents.allValuesFrom,                         new ProfileAccessor() {public Resource get(Profile p) {return p.ALL_VALUES_FROM();} } }, 
-        {OntEvents.hasValue,                               new ProfileAccessor() {public Resource get(Profile p) {return p.HAS_VALUE();} } }, 
-        {OntEvents.someValuesFrom,                        new ProfileAccessor() {public Resource get(Profile p) {return p.SOME_VALUES_FROM();} } }, 
-        {OntEvents.minCardinality,                         new ProfileAccessor() {public Resource get(Profile p) {return p.MIN_CARDINALITY();} } }, 
-        {OntEvents.maxCardinality,                         new ProfileAccessor() {public Resource get(Profile p) {return p.MAX_CARDINALITY();} } }, 
-        {OntEvents.cardinalityQ,                           new ProfileAccessor() {public Resource get(Profile p) {return p.CARDINALITY_Q();} } }, 
-        {OntEvents.minCardinalityQ,                       new ProfileAccessor() {public Resource get(Profile p) {return p.MIN_CARDINALITY_Q();} } }, 
-        {OntEvents.maxCardinalityQ,                       new ProfileAccessor() {public Resource get(Profile p) {return p.MAX_CARDINALITY_Q();} } }, 
-        {OntEvents.cardinality,                             new ProfileAccessor() {public Resource get(Profile p) {return p.CARDINALITY();} } }, 
-        {OntEvents.inverseOf,                              new ProfileAccessor() {public Resource get(Profile p) {return p.INVERSE_OF();} } }, 
-        {OntEvents.imports,                                 new ProfileAccessor() {public Resource get(Profile p) {return p.IMPORTS();} } }, 
-        {OntEvents.versionInfo,                            new ProfileAccessor() {public Resource get(Profile p) {return p.VERSION_INFO();} } }, 
-        {OntEvents.priorVersion,                           new ProfileAccessor() {public Resource get(Profile p) {return p.PRIOR_VERSION();} } }, 
-        {OntEvents.backwardCompatibleWith,                new ProfileAccessor() {public Resource get(Profile p) {return p.BACKWARD_COMPATIBLE_WITH();} } }, 
-        {OntEvents.incompatibleWith,                       new ProfileAccessor() {public Resource get(Profile p) {return p.INCOMPATIBLE_WITH();} } }, 
+        {OntEventsVocab.intersectionOf,                         new ProfileAccessor() {public Resource get(Profile p) {return p.INTERSECTION_OF();} } }, 
+        {OntEventsVocab.equivalentClass,                        new ProfileAccessor() {public Resource get(Profile p) {return p.EQUIVALENT_CLASS();} } }, 
+        {OntEventsVocab.disjointWith,                           new ProfileAccessor() {public Resource get(Profile p) {return p.DISJOINT_WITH();} } }, 
+        {OntEventsVocab.equivalentProperty,                     new ProfileAccessor() {public Resource get(Profile p) {return p.EQUIVALENT_PROPERTY();} } }, 
+        {OntEventsVocab.sameAs,                                 new ProfileAccessor() {public Resource get(Profile p) {return p.SAME_AS();} } }, 
+        {OntEventsVocab.differentFrom,                          new ProfileAccessor() {public Resource get(Profile p) {return p.DIFFERENT_FROM();} } }, 
+        {OntEventsVocab.distinctMembers,                        new ProfileAccessor() {public Resource get(Profile p) {return p.DISTINCT_MEMBERS();} } }, 
+        {OntEventsVocab.unionOf,                                new ProfileAccessor() {public Resource get(Profile p) {return p.UNION_OF();} } }, 
+        {OntEventsVocab.intersectionOf,                         new ProfileAccessor() {public Resource get(Profile p) {return p.INTERSECTION_OF();} } }, 
+        {OntEventsVocab.complementOf,                           new ProfileAccessor() {public Resource get(Profile p) {return p.COMPLEMENT_OF();} } }, 
+        {OntEventsVocab.oneOf,                                  new ProfileAccessor() {public Resource get(Profile p) {return p.ONE_OF();} } }, 
+        {OntEventsVocab.onProperty,                             new ProfileAccessor() {public Resource get(Profile p) {return p.ON_PROPERTY();} } }, 
+        {OntEventsVocab.allValuesFrom,                         new ProfileAccessor() {public Resource get(Profile p) {return p.ALL_VALUES_FROM();} } }, 
+        {OntEventsVocab.hasValue,                               new ProfileAccessor() {public Resource get(Profile p) {return p.HAS_VALUE();} } }, 
+        {OntEventsVocab.someValuesFrom,                        new ProfileAccessor() {public Resource get(Profile p) {return p.SOME_VALUES_FROM();} } }, 
+        {OntEventsVocab.minCardinality,                         new ProfileAccessor() {public Resource get(Profile p) {return p.MIN_CARDINALITY();} } }, 
+        {OntEventsVocab.maxCardinality,                         new ProfileAccessor() {public Resource get(Profile p) {return p.MAX_CARDINALITY();} } }, 
+        {OntEventsVocab.cardinalityQ,                           new ProfileAccessor() {public Resource get(Profile p) {return p.CARDINALITY_Q();} } }, 
+        {OntEventsVocab.minCardinalityQ,                       new ProfileAccessor() {public Resource get(Profile p) {return p.MIN_CARDINALITY_Q();} } }, 
+        {OntEventsVocab.maxCardinalityQ,                       new ProfileAccessor() {public Resource get(Profile p) {return p.MAX_CARDINALITY_Q();} } }, 
+        {OntEventsVocab.cardinality,                             new ProfileAccessor() {public Resource get(Profile p) {return p.CARDINALITY();} } }, 
+        {OntEventsVocab.inverseOf,                              new ProfileAccessor() {public Resource get(Profile p) {return p.INVERSE_OF();} } }, 
+        {OntEventsVocab.imports,                                 new ProfileAccessor() {public Resource get(Profile p) {return p.IMPORTS();} } }, 
+        {OntEventsVocab.versionInfo,                            new ProfileAccessor() {public Resource get(Profile p) {return p.VERSION_INFO();} } }, 
+        {OntEventsVocab.priorVersion,                           new ProfileAccessor() {public Resource get(Profile p) {return p.PRIOR_VERSION();} } }, 
+        {OntEventsVocab.backwardCompatibleWith,                new ProfileAccessor() {public Resource get(Profile p) {return p.BACKWARD_COMPATIBLE_WITH();} } }, 
+        {OntEventsVocab.incompatibleWith,                       new ProfileAccessor() {public Resource get(Profile p) {return p.INCOMPATIBLE_WITH();} } }, 
     };
     
     
@@ -337,7 +337,7 @@ public class OntEventManager
             }
             else {
                 // must be an individual
-                raise( OntEvents.individualDeclaration, added, s.getModel(), s.getSubject(), type, null );
+                raise( OntEventsVocab.individualDeclaration, added, s.getModel(), s.getSubject(), type, null );
             }
         }
         else {
@@ -351,7 +351,7 @@ public class OntEventManager
             }
             else {
                 // default - assume user data
-                raise( OntEvents.userData, added, s.getModel(), s.getSubject(), pred, s.getObject() );
+                raise( OntEventsVocab.userData, added, s.getModel(), s.getSubject(), pred, s.getObject() );
             }
         }
     }
