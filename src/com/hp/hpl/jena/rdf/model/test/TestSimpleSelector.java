@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSimpleSelector.java,v 1.7 2003-04-15 21:16:14 jeremy_carroll Exp $
+  $Id: TestSimpleSelector.java,v 1.8 2003-07-01 14:55:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -13,8 +13,7 @@ package com.hp.hpl.jena.rdf.model.test;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 public class TestSimpleSelector extends TestCase
     {    
@@ -24,10 +23,6 @@ public class TestSimpleSelector extends TestCase
     
     public static TestSuite suite()
         { return new TestSuite( TestSimpleSelector.class ); }   
- /*           
-    public void assertFalse( String name, boolean b )
-        { assertTrue( name, !b ); } */
-        
     
     Model model = null;    
         
@@ -48,6 +43,18 @@ public class TestSimpleSelector extends TestCase
     	model = null;
     }
     
+    /**
+        A plain SimpleSelector must be simple.
+    */
+    public void testSimpleIsSimple()
+        { assertTrue( new SimpleSelector( null, null, (RDFNode) null ).isSimple() ); }
+        
+    /**
+        A random sub-class of SimpleSelector must not be simple.
+    */
+    public void testSimpleSubclassIsntSimple()
+        { assertFalse( new SimpleSelector( null, null, (RDFNode) null ){}.isSimple() ); }
+        
     public void testAll() {
     	StmtIterator iter = model.listStatements(
     	  new SimpleSelector(null, null, (RDFNode) null));

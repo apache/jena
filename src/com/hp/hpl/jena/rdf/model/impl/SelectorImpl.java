@@ -57,10 +57,10 @@ import com.hp.hpl.jena.rdf.model.*;
  * selects</CODE> method to test for any application supplied constraint.  The
  * default <CODE>selects</CODE> method simply returns true.</p>
  * @author bwm, kers
- * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-04-04 19:28:21 $
+ * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2003-07-01 14:55:46 $
  */
 
-public class SelectorImpl extends SimpleSelector  {
+public final class SelectorImpl extends SimpleSelector  {
 
     /** Create a selector.  Since no subject, predicate or object constraints are
      * specified a model will test all statements.
@@ -214,5 +214,12 @@ public class SelectorImpl extends SimpleSelector  {
     public SelectorImpl(Resource subject, Property predicate, Object object) {
         super( subject, predicate, object );
     }
+        
+    /**
+        Answer true to the question "is this a simple selector". Otherwise the default for
+        SimpleSelector subclasses, false, would apply.
+    */
+    public boolean isSimple()
+        { return true; }
     
 }

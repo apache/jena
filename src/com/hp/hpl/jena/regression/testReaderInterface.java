@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testReaderInterface.java,v 1.9 2003-07-01 12:48:28 chris-dollin Exp $
+ * $Id: testReaderInterface.java,v 1.10 2003-07-01 14:55:47 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -33,6 +33,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 
 import java.net.*;
+import java.io.*;
 
 import com.hp.hpl.jena.shared.*;
 
@@ -41,7 +42,7 @@ import org.apache.log4j.Logger;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class testReaderInterface extends Object {
 
@@ -99,6 +100,7 @@ public class testReaderInterface extends Object {
                     if (jx.getCause() instanceof NoRouteToHostException
                         || jx.getCause() instanceof UnknownHostException
                         || jx.getCause() instanceof ConnectException
+                        || jx.getCause() instanceof IOException
                         )
                         {logger.warn("Cannot access public internet - part of test not executed" );
                         }

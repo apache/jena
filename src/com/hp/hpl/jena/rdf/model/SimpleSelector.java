@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleSelector.java,v 1.8 2003-06-06 09:28:19 chris-dollin Exp $
+  $Id: SimpleSelector.java,v 1.9 2003-07-01 14:55:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.graph.*;
  * selects</CODE> method to test for any application supplied constraint.  The
  * default <CODE>selects</CODE> method simply returns true.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2003-06-06 09:28:19 $
+ * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2003-07-01 14:55:40 $
  */
 public class SimpleSelector extends Object implements Selector {
 
@@ -224,13 +224,14 @@ public class SimpleSelector extends Object implements Selector {
     
     /**
         Answer true iff this Selector is completely characterised by its
-        S/P/O triple. Subclasses that implement more complex tests *must*
-        over-ride this to return false.
+        S/P/O triple. Subclasses will by default return false, so this method need not
+        be over-ridden (the only reason for subclassing SimpleSelector is to make
+        a test not dependent only on the S/P/O identity).
         
         @return true iff this selector only depends on S/P/O identity.
     */
     public boolean isSimple()
-        { return true; }
+        { return this.getClass() == SimpleSelector.class; }
         
     /** Test whether a statement should be included in a selection.  This method
      * tests whether the supplied statement satisfies the subject, predicate and
