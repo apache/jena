@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.11 2003-12-10 18:03:47 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.12 2003-12-11 11:10:33 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -166,7 +166,7 @@ public class MoreTests
 		checkExpected();
 	}
 
-	public void testInterrupt() throws IOException, SAXException {
+	public void testInterrupt() throws SAXException, IOException {
 		ARP a = new ARP();
 		InputStream in;
 		long start = System.currentTimeMillis();
@@ -174,7 +174,7 @@ public class MoreTests
 		a.load(in);
 		in.close();
 		final long tim = (System.currentTimeMillis() - start) / 3;
-		if (tim < 10) {
+		if (tim < 5) {
 			logger.warn("Jena is too quick on this machine for this test");
 			return;
 		}
@@ -190,14 +190,15 @@ public class MoreTests
 				//	System.err.println("Interrupted");
 			}
 		});
-		killt.start();
 		try {
+			killt.start();
 			in =
 				new FileInputStream("testing/wg/miscellaneous/consistent001.rdf");
 			a.load(in);
 			in.close();
 			fail("Thread was not interrupted.");
 		} catch (InterruptedIOException e) {
+		} catch (SAXParseException e) {
 		}
 		// System.err.println("Finished "+Thread.interrupted());
 
