@@ -5,16 +5,18 @@
 <body>
 <h1>event handling in Jena 2</h1>
 
-<b>id</b>: $Id: event-handler.html,v 1.2 2003-07-28 15:20:59 chris-dollin Exp $
+<b>id</b>: $Id: event-handler.html,v 1.3 2003-07-29 09:18:09 chris-dollin Exp $
 <br><b>author</b>: Chris Dollin
 
 <h2>ModelChangedListener</h2>
-<p>
+
 In Jena 2 it is possible to monitor a Model for changes,
 so that code can be run after changes are applied without
 the coding for that Model having to do anything special.
 We call these changes "events". (They have nothing to do
-with GUI events.)
+with GUI events.) This first design and implementation is
+open for user comment and we may refine or reduce the
+implemtation as more experience is gained with it.
 
 <p>To monitor a Model, you must <i>register</i> a 
 <i>ModelChangedListener</i> with that Model:
@@ -70,7 +72,7 @@ adding it that fires the listener.
 There is no guarantee that the statement, array, list, or model that
 is added or removed is the same one that is passed to the appropriate
 listener method, and the <i>StmtIterator</i> will never be the same
-one. However,
+one. However, in the current design:
 
 <ul>
 <li>a single Statement will be .equals to the original Statement</li>
@@ -82,10 +84,22 @@ one. However,
 <li>a Model will contain the same statements</li>
 </ul>
 
+We advise not relying on these ordering properties; instead assume
+that for any bulk update operation on the model, the listener will
+be told the method of update and the statements added or removed,
+but that the order may be different and duplicate statements may
+have been removed. 
+
+<p>Note in particular that a Model with any Listeners will have
+to record the complete contents of any <i>StmtIterator</i> that
+is added or removed to the model, so that the Model and the
+Listener can both see all the statements. 
+
 <p>
-Further, there is no guarantee that <i>only</i> Statements etc added
-through the Model API will be presented to the listener; anything added
-to its underlying Graph will also be presented to the listener.
+Finally, there is no guarantee that <i>only</i> Statements etc added
+through the Model API will be presented to the listener; any Triples
+added to its underlying Graph will also be presented to the listener 
+as statements.
 
 <h2>Utility classes</h2>
 
@@ -94,28 +108,65 @@ use, especially for the creation of inline classes. There are four
 utility classes in <i>com.hp.hpl.jena.rdf.listeners:</i>
 
 <ul>
-<li>NullListener. This class implements ModelChangedListener and
-all its methods do nothing. This is useful when you want to intercept
-only certain ways of updating a Model.
+<li><i>NullListener</i>. This class's methods do nothing.
+This is useful when you want to subclass and intercept
+only specific ways of updating a Model.
 </li>
-<li>ChangedListener. This class implements ModelChangedListener and
-records only whether some change has been made since the last inquiry
-using the method <i>hasChanged()</i>.
+
+<li><i>ChangedListener</i>. This class only records whether some change
+has been made, but not what it is. The method <i>hasChanged()</i>
+returns <i>true</i> if some change has been made since the last call
+of <i>hasChanged()</i> [or since the listener was created].
 </li>
-<li>StatementListener. This class translates all bulk update calls
-(ie the ones other than addedStatement() and removedStatement()) into
-a call to addedStatement()/removedStatement() for each Statement in the
-collection. This allows statements to be tracked whether they are added
-one at a time or in bulk.
+
+<li><i>StatementListener</i>. This class translates all bulk update calls
+(ie the ones other than <i>addedStatement()</i> and 
+<i>removedStatement()</i>) into calls to <i>addedStatement()/removedStatement()</i>
+for each Statement in the collection. This allows statements to be tracked whether 
+they are added one at a time or in bulk.
 </li>
-<li>ObjectListener. This class translates all the listener calls into
+
+<li><i>ObjectListener</i>. This class translates all the listener calls into
 <i>added(Object)</i> or <i>removed(Object)</i> as appropriate; it
 is left to the user code to distinguish among the types of argument.
 </li>
 </ul>
 
+<h2>when listeners are called</h2>
 
-TRANSACTION ISSUES
+In the current implementation, listener methods are called immediately
+the additions or removals are made, in the same thread as the one making
+the update. If a model has multiple listeners registered, the order in
+which they are informed about an update is unspecified and may change
+from update to update. If any listener throws an exception, that exception
+is thrown through the update call, and other listeners may not be informed
+of the update.
+
+<p>Hence listener code should be brief and exception-free if at all 
+possible. 
+
+<h2>registering and unregistering</h2>
+
+<p>A listener may be registered with the same model multiple times. If 
+so, it will be invoked as many times as it is registered for each update
+event on the model. 
+
+<p>A listener <i>L</i> may be <i>unregistered</i> from a Model using the
+method <code>unregister(L)</code>. If <i>L</i> is not registered with
+the model, nothing happens.
+
+<p>If a listener is registered multiple times with the same model, each
+<code>unregister()</code> for that listener will remove just one of the
+registrations.
+
+<h2>transactions and databases</h2>
+
+In the current design, listeners are not informed of transaction boundaries,
+and all events are fed to listeners as soon as they happen.
+
+<p>In the current implementation, if an RDB model <i>M</i> is modified
+by some other client of the database, those changes are not seen and thus 
+are not reported to listeners.  
 
 </body>
 </html>
