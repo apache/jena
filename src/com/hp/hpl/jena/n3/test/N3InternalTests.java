@@ -11,7 +11,7 @@ import java.io.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3InternalTests.java,v 1.8 2003-11-28 16:18:46 andy_seaborne Exp $
+ * @version 	$Id: N3InternalTests.java,v 1.9 2003-12-01 13:20:28 andy_seaborne Exp $
  */
 public class N3InternalTests extends TestSuite
 {
@@ -245,8 +245,9 @@ public class N3InternalTests extends TestSuite
         
         Test(String s, boolean leaveStoppingPoint)
         {
-			//super("N3 Internal test: "+(s!=null?s.replace(',','_'):"<skipped test>")) ;
-            super("N3 Internal test: "+(s!=null?s:"<skipped test>")) ;
+            // Some ealier Eclipse versions have problems with comma in CV Stest names. 
+			super("N3 Internal test: "+(s!=null?s.replace(',','_'):"<skipped test>")) ;
+            //super("N3 Internal test: "+(s!=null?s:"<skipped test>")) ;
 			testString = s ; 
 			if ( VERBOSE )
 				handler = new N3EventPrinter(pw) ;
