@@ -10,7 +10,6 @@ import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset ;
 
-import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.shared.WrappedIOException;
 import com.hp.hpl.jena.JenaRuntime ;
