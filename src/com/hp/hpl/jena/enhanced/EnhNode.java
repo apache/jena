@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhNode.java,v 1.4 2003-03-26 12:39:08 chris-dollin Exp $
+  $Id: EnhNode.java,v 1.5 2003-05-19 12:21:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -114,7 +114,10 @@ public class EnhNode
      */
     protected Polymorphic convertTo( Class t ) 
         {
-        Polymorphic result = getPersonality().getImplementation( t ).wrap( asNode(), getGraph() );          
+        EnhGraph eg = getGraph();
+        Implementation imp = getPersonality().getImplementation( t );
+        if (imp == null) throw new UnsupportedPolymorphismException( eg, t );
+        Polymorphic result = imp.wrap( asNode(), eg );          
         this.addView( result );
         return result;
         }

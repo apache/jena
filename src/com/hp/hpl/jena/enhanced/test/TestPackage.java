@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.7 2003-04-24 14:20:13 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.8 2003-05-19 12:21:47 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -90,6 +90,7 @@ public class TestPackage extends GraphTestBase  {
         /* */ suite.addTest( new TestPackage( "testBitOfBothSurprise" ) ); /* */
         /* */ suite.addTest( new TestPackage( "testBrokenBasic" ) );  /* */
         /* */ suite.addTest( new TestPackage( "testSimple" ) );  /* */
+        suite.addTest( new TestSuite( TestPackage.class ) );
         return suite;
         }
         
@@ -386,6 +387,28 @@ public class TestPackage extends GraphTestBase  {
         EnhNode eBlank = new EnhNode( Node.createAnon(), eg );
         assertTrue( "URI node can be an Example", eNode.supports( Example.class ) );
         assertFalse( "Blank node cannot be an Example", eBlank.supports( Example.class ) );
+        }
+        
+    /**
+        Test that an attempt to polymorph an enhanced node into a class that isn't
+        supported by the enhanced graph generates an UnsupportedPolymorphism
+        exception. 
+    */
+    public void testNullPointerTrap()
+        {
+        EnhGraph eg = new EnhGraph( new GraphMem(), BuiltinPersonalities.model );
+        Node n = Node.create( "eh:something" );
+        EnhNode en = new EnhNode( n, eg );
+        try 
+            { 
+            en.as( TestPackage.class ); 
+            fail( "oops" ); 
+            }
+        catch (UnsupportedPolymorphismException e) 
+            {
+            assertTrue( "exception should have cuplprit graph", eg == e.getBadGraph() );
+            assertTrue( "exception should have culprit class", TestPackage.class == e.getBadClass() );
+            }
         }
 
 }

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: MegaTestSuite.java,v 1.6 2003-04-09 09:31:14 chris-dollin Exp $
+ * $Id: MegaTestSuite.java,v 1.7 2003-05-19 12:21:47 chris-dollin Exp $
  */
 
 /*
@@ -52,7 +52,6 @@ public class MegaTestSuite extends TestSuite {
     }
     private MegaTestSuite() {
         super("Jena");
-        addTest("GraphTestBase", com.hp.hpl.jena.graph.GraphTestBase.suite());
         /* redundant ? */
         addTest("basic Node tests", com.hp.hpl.jena.graph.test.TestNode.suite());
         /* redundant ? */
