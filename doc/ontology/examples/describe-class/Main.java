@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22-Aug-2003
  * Filename           $RCSfile: Main.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-10-14 13:52:52 $
+ * Last modified on   $Date: 2003-11-19 12:13:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Main.java,v 1.2 2003-10-14 13:52:52 ian_dickinson Exp $
+ * @version CVS $Id: Main.java,v 1.3 2003-11-19 12:13:38 ian_dickinson Exp $
  */
 public class Main {
     // Constants
@@ -55,7 +55,7 @@ public class Main {
 
     public static void main( String[] args ) {
         // read the argument file, or the default
-        String source = (args.length == 0) ? "http://www.w3.org/2001/sw/WebOnt/guide-src/wine" : args[0];
+        String source = (args.length == 0) ? "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine" : args[0];
         
         // guess if we're using a daml source
         boolean isDAML = source.endsWith( ".daml" );
@@ -65,10 +65,10 @@ public class Main {
                      );
 
         // we have a local copy of the wine ontology
-        m.getDocumentManager().addAltEntry( "http://www.w3.org/2001/sw/WebOnt/guide-src/wine",
-                                            "file:doc/ontology/examples/describe-class/wine.owl" );
-        m.getDocumentManager().addAltEntry( "http://www.w3.org/2001/sw/WebOnt/guide-src/food",
-                                            "file:doc/ontology/examples/describe-class/food.owl" );
+        m.getDocumentManager().addAltEntry( "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine",
+                                            "file:wine.owl" );
+        m.getDocumentManager().addAltEntry( "http://www.w3.org/TR/2003/CR-owl-guide-20030818/food",
+                                            "file:food.owl" );
 
         // read the source document
         m.read( source );
