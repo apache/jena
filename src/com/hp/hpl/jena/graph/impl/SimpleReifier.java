@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.31 2004-09-16 17:18:18 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.32 2004-09-17 15:00:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -27,7 +27,7 @@ public class SimpleReifier implements Reifier
     protected final boolean concealing;
     protected final ReificationStyle style;
     
-    protected ReifierFragmentsMap nodeMap;
+    protected ReifierFragmentsMap fragmentsMap;
     protected ReifierTripleMap tripleMap;
     
     protected Graph reificationTriples;
@@ -45,7 +45,7 @@ public class SimpleReifier implements Reifier
         ( GraphBase parent, ReifierTripleMap tm, ReifierFragmentsMap fm, ReificationStyle style )
         {
         this.parent = parent;
-        this.nodeMap = fm;
+        this.fragmentsMap = fm;
         this.tripleMap = tm;
         this.intercepting = style.intercepts();
         this.concealing = style.conceals();
@@ -83,7 +83,7 @@ public class SimpleReifier implements Reifier
     public Node reifyAs( Node tag, Triple t )
     	{
         Triple existing = (Triple) tripleMap.getTriple( tag );
-        Fragments partial = nodeMap.getFragments( tag );
+        Fragments partial = fragmentsMap.getFragments( tag );
         if (existing != null)
             { if (!t.equals( existing )) throw new AlreadyReifiedException( tag ); }
         else if (partial == null)
@@ -116,65 +116,61 @@ public class SimpleReifier implements Reifier
     public boolean hasTriple( Triple t )
         { return tripleMap.hasTriple( t ); }
           
-    public boolean handledAdd( Triple t )
+    public boolean handledAdd( Triple fragment )
         {
         if (intercepting)
             {
-            Fragments.Slot s = Fragments.getFragmentSelector( t );  
+            Fragments.Slot s = fragmentsMap.getFragmentSelector( fragment );  
             if (s == null)
                 return false;
             else     
                 {
-                Node tag = t.getSubject();
-                Triple reified = tripleMap.getTriple( tag );
-                if (reified == null)
-                    {
-                    Fragments partial = nodeMap.getFragments( tag );
-                    if (partial == null) nodeMap.putFragments( tag, partial = new Fragments( tag ) );
-                    partial.add( s, t.getObject() );
-                    if (partial.isComplete())
-                        {
-                        tripleMap.putTriple( t.getSubject(), partial.asTriple() );
-                        nodeMap.removeFragments( t.getSubject() );
-                        }
-                    }
-                else
-                    {
-                    if (s.clashesWith( t.getObject(), reified ))
-                        {
-                        Fragments partial = new Fragments( tag, reified );
-                        partial.add( s, t.getObject() );
-                        nodeMap.putFragments( tag, partial );
-                        tripleMap.removeTriple( tag, reified );
-                        }
-                    }
+                addFragment( s, fragment );
                 return concealing;
                 }
             }
         else
             return false;
         }
-        
+
     /**
-    	@param t
-    	@param reified
-    	@return
-    */
-    private boolean overspecifies( Triple t, Triple reified )
+         Add <code>fragment</code> to the fragments already present. This may
+         create a complete triple, or over-specify.
+     * @param s
+     * @param fragment
+     */
+    protected void addFragment( Fragments.Slot s, Triple fragment )
         {
-        Node p = t.getPredicate(), o = t.getObject();
-        return
-            p.equals( RDF.Nodes.subject ) ? !o.equals( reified.getSubject() )
-            : p.equals( RDF.Nodes.predicate ) ? !o.equals( reified.getPredicate() )
-            : p.equals( RDF.Nodes.object ) ? !o.equals( reified.getObject() )
-            : false;
+        Node tag = fragment.getSubject();
+        Triple reified = tripleMap.getTriple( tag );
+        if (reified == null)
+            {
+            Fragments partial = fragmentsMap.getFragments( tag );
+            if (partial == null) fragmentsMap.putFragments( tag, partial = new Fragments( tag ) );
+            partial.add( s, fragment.getObject() );
+            if (partial.isComplete())
+                {
+                tripleMap.putTriple( fragment.getSubject(), partial.asTriple() );
+                fragmentsMap.removeFragments( fragment.getSubject() );
+                }
+            }
+        else
+            {
+            if (s.clashesWith( fragment.getObject(), reified ))
+                {
+                Fragments partial = new Fragments( tag, reified );
+                partial.add( s, fragment.getObject() );
+                fragmentsMap.putFragments( tag, partial );
+                tripleMap.removeTriple( tag, reified );
+                }
+            }
         }
 
     public boolean handledRemove( Triple t )
         {
         if (intercepting)
             {
-            Fragments.Slot s = Fragments.getFragmentSelector( t );  
+            Fragments.Slot s = fragmentsMap.getFragmentSelector( t );  
             if (s == null)
                 return false;
             else     
@@ -184,12 +180,12 @@ public class SimpleReifier implements Reifier
                 if (fs.isComplete()) 
                     {
                     tripleMap.putTriple( t.getSubject(), fs.asTriple() );
-                    nodeMap.removeFragments( t.getSubject() );
+                    fragmentsMap.removeFragments( t.getSubject() );
                     }
                 else 
                     {
                     tripleMap.removeTriple( t.getSubject() );
-                    if (fs.isEmpty()) nodeMap.removeFragments( t.getSubject() );
+                    if (fs.isEmpty()) fragmentsMap.removeFragments( t.getSubject() );
                     }
                 return concealing;
                 }
@@ -202,21 +198,21 @@ public class SimpleReifier implements Reifier
         {
         Node s = t.getSubject();
         Triple already = (Triple) tripleMap.getTriple( s );
-        Fragments partial = nodeMap.getFragments( s );
+        Fragments partial = fragmentsMap.getFragments( s );
         return
             already != null ? explode( s, already )
-            : partial == null ? nodeMap.putFragments( s, new Fragments( s ) )
+            : partial == null ? fragmentsMap.putFragments( s, new Fragments( s ) )
             : (Fragments) partial;
         }
         
     private Fragments explode( Node s, Triple t )
-        { return nodeMap.putFragments( s, new Fragments( s, t ) ); }
+        { return fragmentsMap.putFragments( s, new Fragments( s, t ) ); }
 
     public Graph getHiddenTriples()
         { return style == ReificationStyle.Standard ? Graph.emptyGraph : getReificationTriples(); }
     
     public Graph getReificationTriples()
-        { if (reificationTriples == null) reificationTriples = new DisjointUnion( tripleMap.asGraph(), nodeMap.asGraph() ); 
+        { if (reificationTriples == null) reificationTriples = new DisjointUnion( tripleMap.asGraph(), fragmentsMap.asGraph() ); 
         return reificationTriples; }
         
     /**
@@ -244,7 +240,7 @@ public class SimpleReifier implements Reifier
         of our node map.
     */
     public String toString()
-        { return "<R " + nodeMap + "|" + tripleMap + ">"; }
+        { return "<R " + fragmentsMap + "|" + tripleMap + ">"; }
     }
     
 /*

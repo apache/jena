@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.4 2004-09-15 14:03:35 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.5 2004-09-17 15:00:39 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -9,8 +9,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.Fragments.Slot;
 import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDF.Nodes;
 
 /**
     SimpleReifierFragmentsMap - a map from nodes to the incompleteb(or 
@@ -78,6 +81,18 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         {
         return new GraphBase()
             { public ExtendedIterator find( TripleMatch tm ) { return allTriples( tm ); } };
+        }
+
+    /**
+        given a triple t, see if it's a reification triple and if so return the internal seelctor;
+        oterwise return null.
+    */ 
+    public Fragments.Slot getFragmentSelector( Triple t )
+        {
+        Node p = t.getPredicate();
+        Fragments.Slot x = (Fragments.Slot) Fragments.selectors.get( p );
+        if (x == null || (p.equals( RDF.Nodes.type ) && !t.getObject().equals( RDF.Nodes.Statement ) ) ) return null;
+        return x;
         }
     
     }
