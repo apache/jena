@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.28 2005-02-15 16:28:04 der Exp $
+ * $Id: TestBugs.java,v 1.29 2005-02-18 12:19:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2005-02-15 16:28:04 $
+ * @version $Revision: 1.29 $ on $Date: 2005-02-18 12:19:28 $
  */
 public class TestBugs extends TestCase {
 
@@ -521,12 +521,12 @@ public class TestBugs extends TestCase {
     }
     
     /** Problem with bindSchema and validation rules */
-    public void xxtest_der_validation() {
+    public void test_der_validation() {
         Model abox = FileManager.get().loadModel("file:testing/reasoners/owl/nondetbug.rdf");
         List rules = FBRuleReasoner.loadRules("testing/reasoners/owl/nondetbug.rules");
         GenericRuleReasoner r = new GenericRuleReasoner(rules);
-        r.setTraceOn(true);
-        for (int i = 0; i < 1; i++) {
+//        r.setTraceOn(true);
+        for (int i = 0; i < 10; i++) {
             InfModel im = ModelFactory.createInfModel(r, abox);
             assertTrue("failed on count " + i, im.contains(null, ReasonerVocabulary.RB_VALIDATION_REPORT, (RDFNode)null));
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.7 2004-12-07 09:56:32 andy_seaborne Exp $
+ * $Id: LPInterpreter.java,v 1.8 2005-02-18 12:20:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2004-12-07 09:56:32 $
+ * @version $Revision: 1.8 $ on $Date: 2005-02-18 12:20:47 $
  */
 public class LPInterpreter {
 
@@ -254,7 +254,7 @@ public class LPInterpreter {
                 if (!choice.hasNext()) {
                     // No more choices left in this choice point
                     cpFrame = choice.getLink();
-                    if (traceOn) logger.info("FAIL clause choices exhausted");
+                    if (traceOn) logger.info("FAIL in clause " + choice.envFrame.clause + " choices exhausted");
                     continue main;
                 }
                 
