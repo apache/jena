@@ -122,9 +122,17 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#tripleCount()
 	 */
 	public int tripleCount() {
-		return 0;
+		return(m_pset.tripleCount());
 	}
 	
+	/* (non-Javadoc)
+ 	* @see com.hp.hpl.jena.db.impl.SpecializedGraph#contains(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
+ 	*/
+	public boolean contains(Triple t, CompletionFlag complete) {
+		complete.setDone(); 
+		return (m_pset.statementTableContains(my_GID, t));
+	}
+ 	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
@@ -145,6 +153,27 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	 */
 	public void clear() {
 		m_pset.removeStatementsFromDB(my_GID);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#graphIdGet()
+	 */
+	public int getGraphId() {
+		return ((DBIDInt)my_GID).getIntID();
+	}
+    
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#PSetGet()
+	 */
+	public IPSet getPSet() {
+		return m_pset;
+	}
+    	
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#DBPropLSetGet()
+	 */
+	public DBPropLSet getDBPropLSet() {
+		return m_dbPropLSet;
 	}
 
 }
