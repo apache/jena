@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: RestrictionImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:12:51 $
+ * Last modified on   $Date: 2003-05-30 14:35:31 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,7 +28,7 @@ package com.hp.hpl.jena.ontology.impl;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.*;
+import com.hp.hpl.jena.rdf.model.Property;
 
 
 /**
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.ontology.path.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RestrictionImpl.java,v 1.8 2003-05-23 11:12:51 ian_dickinson Exp $
+ * @version CVS $Id: RestrictionImpl.java,v 1.9 2003-05-30 14:35:31 ian_dickinson Exp $
  */
 public class RestrictionImpl 
     extends OntClassImpl
@@ -95,108 +95,37 @@ public class RestrictionImpl
     // External signature methods
     //////////////////////////////////
 
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>onProperty</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_onProperty() {
-        return asPathSet( getProfile().ON_PROPERTY(), "ON_PROPERTY" );
-    }
+    // onProperty
     
+    /**
+     * <p>Assert that the property that this restriction applies to is the given property. Any existing 
+     * statements for <code>onProperty</code> will be removed.</p>
+     * @param prop The property that this restriction applies to
+     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.   
+     */ 
+    public void setOnProperty( Property prop ) {
+        setPropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
+    }
 
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>allValuesFrom</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_allValuesFrom() {
-        return asPathSet( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM" );
+     * <p>Answer the property that this property restriction applies to. If there is
+     * more than one such resource, an arbitrary selection is made (though well-defined property restrictions
+     * should not have more than one <code>onProperty</code> statement.</p>
+     * @return The property that this property restriction applies to
+     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.   
+     */ 
+    public OntProperty getOnProperty() {
+        return (OntProperty) objectAs( getProfile().ON_PROPERTY(), "ON_PROPERTY", OntProperty.class );
     }
-    
 
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>someValuesFrom</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
+     * <p>Answer true if this restriction is a property restriction on the given property.</p>
+     * @param prop A property to test against
+     * @return True if this restriction is a restriction on <code>prop</code>
+     * @exception OntProfileException If the {@link Profile#ON_PROPERTY()} property is not supported in the current language profile.   
      */
-    public PathSet p_someValuesFrom() {
-        return asPathSet( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM" );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>hasValue</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_hasValue() {
-        return asPathSet( getProfile().HAS_VALUE(), "HAS_VALUE" );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>cardinality</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_cardinality() {
-        return asPathSet( getProfile().CARDINALITY(), "CARDINALITY" );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>minCardinality</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_minCardinality() {
-        return asPathSet( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY" );
-    }
-    
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>maxCardinality</code>
-     * property of a restriction. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the imports of an ontology element
-     */
-    public PathSet p_maxCardinality() {
-        return asPathSet( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY" );
+    public boolean onProperty( Property prop ) {
+        return hasPropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
     }
     
 

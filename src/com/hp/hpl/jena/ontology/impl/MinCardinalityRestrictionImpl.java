@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-May-2003
  * Filename           $RCSfile: MinCardinalityRestrictionImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:26 $
+ * Last modified on   $Date: 2003-05-30 14:35:32 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MinCardinalityRestrictionImpl.java,v 1.1 2003-05-08 14:45:26 ian_dickinson Exp $
+ * @version CVS $Id: MinCardinalityRestrictionImpl.java,v 1.2 2003-05-30 14:35:32 ian_dickinson Exp $
  */
 public class MinCardinalityRestrictionImpl 
     extends RestrictionImpl
@@ -93,6 +93,40 @@ public class MinCardinalityRestrictionImpl
 
     // External signature methods
     //////////////////////////////////
+
+    // minCardinality
+    
+    /**
+     * <p>Assert that this restriction restricts the property to have the given
+     * minimum cardinality. Any existing statements for <code>minCardinality</code>
+     * will be removed.</p>
+     * @param cardinality The minimum cardinality of the restricted property
+     * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY()} property is not supported in the current language profile.   
+     */ 
+    public void setMinCardinality( int cardinality ) {
+        setPropertyValue( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
+    }
+
+    /**
+     * <p>Answer the minimum cardinality of the restricted property.</p>
+     * @return The minimum cardinality of the restricted property
+     * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY()} property is not supported in the current language profile.   
+     */ 
+    public int getMinCardinality() {
+        return objectAsInt( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY" );
+    }
+
+    /**
+     * <p>Answer true if this property restriction has the given minimum cardinality.</p>
+     * @param cardinality The cardinality to test against 
+     * @return True if the given cardinality is the min cardinality of the restricted property in this restriction
+     * @exception OntProfileException If the {@link Profile#MIN_CARDINALITY()} property is not supported in the current language profile.   
+     */
+    public boolean hasMinCardinality( int cardinality ) {
+        return hasPropertyValue( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
+    }
+    
+
 
     // Internal implementation methods
     //////////////////////////////////

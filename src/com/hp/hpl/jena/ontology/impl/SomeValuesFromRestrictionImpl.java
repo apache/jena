@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: SomeValuesFromRestrictionImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:30 $
+ * Last modified on   $Date: 2003-05-30 14:35:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,6 +28,7 @@ package com.hp.hpl.jena.ontology.impl;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 
 /**
@@ -37,7 +38,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SomeValuesFromRestrictionImpl.java,v 1.2 2003-05-08 14:45:30 ian_dickinson Exp $
+ * @version CVS $Id: SomeValuesFromRestrictionImpl.java,v 1.3 2003-05-30 14:35:33 ian_dickinson Exp $
  */
 public class SomeValuesFromRestrictionImpl
     extends RestrictionImpl
@@ -94,6 +95,40 @@ public class SomeValuesFromRestrictionImpl
 
     // External signature methods
     //////////////////////////////////
+
+    // someValuesFrom
+    
+    /**
+     * <p>Assert that this restriction restricts the property to have at least one value
+     * that is a member of the given class. Any existing statements for <code>someValuesFrom</code>
+     * will be removed.</p>
+     * @param cls The class that at least one value of the property must belong to
+     * @exception OntProfileException If the {@link Profile#SOME_VALUES_FROM()} property is not supported in the current language profile.   
+     */ 
+    public void setSomeValuesFrom( Resource cls ) {
+        setPropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
+    }
+
+    /**
+     * <p>Answer the class that at least one value of the restricted property must belong to.</p>
+     * @return A class that some values from the restricted property must belong to
+     * @exception OntProfileException If the {@link Profile#SOME_VALUES_FROM()} property is not supported in the current language profile.   
+     */ 
+    public OntClass getSomeValuesFrom() {
+        return (OntClass) objectAs( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", OntClass.class );
+    }
+
+    /**
+     * <p>Answer true if this property restriction has the given class as the class to which at least one 
+     * value of the restricted property must belong.</p>
+     * @param cls A class to test 
+     * @return True if the given class is the class to which at least one value must belong
+     * @exception OntProfileException If the {@link Profile#SOME_VALUES_FROM()} property is not supported in the current language profile.   
+     */
+    public boolean hasSomeValuesFrom( Resource cls ) {
+        return hasPropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
+    }
+    
 
     // Internal implementation methods
     //////////////////////////////////

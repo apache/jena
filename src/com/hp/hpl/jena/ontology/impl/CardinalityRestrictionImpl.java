@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-May-2003
  * Filename           $RCSfile: CardinalityRestrictionImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:29 $
+ * Last modified on   $Date: 2003-05-30 14:35:32 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: CardinalityRestrictionImpl.java,v 1.1 2003-05-08 14:45:29 ian_dickinson Exp $
+ * @version CVS $Id: CardinalityRestrictionImpl.java,v 1.2 2003-05-30 14:35:32 ian_dickinson Exp $
  */
 public class CardinalityRestrictionImpl 
     extends RestrictionImpl
@@ -93,6 +93,39 @@ public class CardinalityRestrictionImpl
 
     // External signature methods
     //////////////////////////////////
+
+    // cardinality
+    
+    /**
+     * <p>Assert that this restriction restricts the property to have the given
+     * cardinality. Any existing statements for <code>cardinality</code>
+     * will be removed.</p>
+     * @param cardinality The cardinality of the restricted property
+     * @exception OntProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.   
+     */ 
+    public void setCardinality( int cardinality ) {
+        setPropertyValue( getProfile().CARDINALITY(), "CARDINALITY", getModel().createTypedLiteral( cardinality ) );
+    }
+
+    /**
+     * <p>Answer the cardinality of the restricted property.</p>
+     * @return The cardinality of the restricted property
+     * @exception OntProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.   
+     */ 
+    public int getCardinality() {
+        return objectAsInt( getProfile().CARDINALITY(), "CARDINALITY" );
+    }
+
+    /**
+     * <p>Answer true if this property restriction has the given cardinality.</p>
+     * @param cardinality The cardinality to test against 
+     * @return True if the given cardinality is the cardinality of the restricted property in this restriction
+     * @exception OntProfileException If the {@link Profile#CARDINALITY()} property is not supported in the current language profile.   
+     */
+    public boolean hasCardinality( int cardinality ) {
+        return hasPropertyValue( getProfile().CARDINALITY(), "CARDINALITY", getModel().createTypedLiteral( cardinality ) );
+    }
+    
 
     // Internal implementation methods
     //////////////////////////////////

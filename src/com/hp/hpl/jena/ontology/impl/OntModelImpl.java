@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-28 16:20:42 $
+ * Last modified on   $Date: 2003-05-30 14:35:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.22 2003-05-28 16:20:42 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.23 2003-05-30 14:35:33 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -963,7 +963,7 @@ public class OntModelImpl
                 
         checkProfileEntry( getProfile().CARDINALITY(), "CARDINALITY" );
         r.addProperty( getProfile().ON_PROPERTY(), prop );
-        r.addProperty( getProfile().CARDINALITY(), cardinality );
+        r.addProperty( getProfile().CARDINALITY(), createTypedLiteral( cardinality ) );
                 
         return (CardinalityRestriction) r.as( CardinalityRestriction.class );
     }
@@ -989,7 +989,7 @@ public class OntModelImpl
                     
         checkProfileEntry( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY" );
         r.addProperty( getProfile().ON_PROPERTY(), prop );
-        r.addProperty( getProfile().MIN_CARDINALITY(), cardinality );
+        r.addProperty( getProfile().MIN_CARDINALITY(), createTypedLiteral( cardinality ) );
                     
         return (MinCardinalityRestriction) r.as( MinCardinalityRestriction.class );
     }
@@ -1015,7 +1015,7 @@ public class OntModelImpl
                         
         checkProfileEntry( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY" );
         r.addProperty( getProfile().ON_PROPERTY(), prop );
-        r.addProperty( getProfile().MAX_CARDINALITY(), cardinality );
+        r.addProperty( getProfile().MAX_CARDINALITY(), createTypedLiteral( cardinality ) );
                         
         return (MaxCardinalityRestriction) r.as( MaxCardinalityRestriction.class );
     }

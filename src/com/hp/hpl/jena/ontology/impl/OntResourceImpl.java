@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 22:26:38 $
+ * Last modified on   $Date: 2003-05-30 14:35:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.10 2003-05-27 22:26:38 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.11 2003-05-30 14:35:33 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -889,6 +889,13 @@ public class OntResourceImpl
     /** Answer the object of a statement with the given property, .as() an OntProperty */
     protected OntProperty objectAsProperty( Property p, String name ) {
         return (OntProperty) objectAs( p, name, OntProperty.class );
+    }
+
+    
+    /** Answer the int value of a statement with the given property */
+    protected int objectAsInt( Property p, String name ) {
+        checkProfile( p, name );
+        return getProperty( p ).getInt();
     }
 
     
