@@ -9,7 +9,7 @@
                           rs:variable "p"
                         ] ;
                 rs:binding
-                        [ rs:value "value-é" ;
+                        [ rs:value "value-\u00E9" ;
                           rs:variable "v"
                         ]
               ] .
