@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.4 2003-06-18 08:41:05 der Exp $
+ * $Id: ReasonerVocabulary.java,v 1.5 2003-06-19 12:54:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.reasoner.ReasonerRegistry;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-18 08:41:05 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-19 12:54:45 $
  */
 public class ReasonerVocabulary {
     
@@ -75,6 +75,10 @@ public class ReasonerVocabulary {
      *  caching in a generic rule reasoner. Set to "true" to enable caching. */
     public static Property PROPenableTGCCaching;
     
+    /** Property enable scanning of source data for container membership properites
+     *  during RDFS reasoning. Set to "true" to enable caching. */
+    public static Property PROPenableCMPScan;
+    
     /** A namespace used for Rubric specific properties */
     public static final String RBNamespace = "urn:x-hp-jena:rubrik/";
             
@@ -109,6 +113,7 @@ public class ReasonerVocabulary {
             PROPruleSet = ResourceFactory.createProperty(PropURI+"#", "ruleSet");
             PROPenableOWLTranslation = ResourceFactory.createProperty(PropURI+"#", "enableOWLTranslation");
             PROPenableTGCCaching = ResourceFactory.createProperty(PropURI+"#", "enableTGCCaching");
+            PROPenableCMPScan = ResourceFactory.createProperty(PropURI+"#", "enableCMPScan");
         } catch (Exception e) {
             System.err.println("Initialization error: " + e);
             e.printStackTrace(System.err);
