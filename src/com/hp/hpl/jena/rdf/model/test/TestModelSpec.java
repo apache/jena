@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.25 2003-11-04 09:54:40 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.26 2003-11-27 16:16:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -38,11 +38,6 @@ public class TestModelSpec extends ModelTestBase
 
     public static TestSuite suite()
         { return new TestSuite( TestModelSpec.class ); }
-        
-    protected static final Model aModel = ModelFactory.createDefaultModel();
-        
-    protected static Resource resource( String URI )
-        { return aModel.createResource( URI ); }
         
     protected static Resource resource()
         { return ResourceFactory.createResource(); }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.8 2003-09-08 10:54:45 chris-dollin Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.9 2003-11-27 16:16:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -187,23 +187,13 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
         }
     
     /**
-        utility method: make a Set from all the elements of an array.
-    */
-    public static Set arrayToSet( Object [] array )
-        {
-        HashSet s = new HashSet();
-        for (int i = 0; i < array.length; i += 1) s.add( array[i] );
-        return s;
-        }
-  
-    /**
         utility method: get a set of all the elements delivered by
         _m.listReifiedStatements_.
     */  
     public Set getSetRS( Model m )
         { return GraphTestBase.iteratorToSet( m.listReifiedStatements() ); }
    
-    protected static Set empty = arrayToSet( new Object [] {} );
+    protected static Set empty = new HashSet();
     
     /**
         test that listReifiedStatements produces an iterator that contains

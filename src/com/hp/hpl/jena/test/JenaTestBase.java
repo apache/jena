@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.7 2003-09-29 14:54:08 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.8 2003-11-27 16:16:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
 
 import java.lang.reflect.*;
 import junit.framework.*;
+import java.util.*;
 
 /**
     A basis for Jena test cases which provides assertFalse and assertDiffer.
@@ -41,6 +42,12 @@ public class JenaTestBase extends TestCase
     public static void assertDiffer( Object x, Object y )
         { assertDiffer( null, x, y ); }
         
+    /**
+    	Answer a Set formed from the elements of the List <code>L</code>.
+    */
+    public static Set listToSet( List L )
+        { return new HashSet( L ); }
+    
     /**
         Do nothing; a way of notating that a test has succeeded, useful in the body of a
         catch-block to silence excessively [un]helpful disgnostics. 

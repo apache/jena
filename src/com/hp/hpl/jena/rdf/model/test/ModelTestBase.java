@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.17 2003-09-09 10:59:09 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.18 2003-11-27 16:16:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -26,6 +26,7 @@ public class ModelTestBase extends GraphTestBase
     public ModelTestBase(String name)
         { super(name); }
      
+    private static Model aModel = ModelFactory.createDefaultModel();
      /**
         create a Statement in a given Model with (S, P, O) extracted by parsing a string.
         
@@ -48,9 +49,15 @@ public class ModelTestBase extends GraphTestBase
         return (RDFNode) ((ModelCom) m).getNodeAs( n, (n.isLiteral() ? Literal.class : Resource.class) );
         }
         
+    public static Resource resource( String s )
+        { return resource( aModel, s ); }
+    
     public static Resource resource( Model m, String s )
         { return (Resource) rdfNode( m, s ); }
         
+    public static Property property( String s )
+        { return property( aModel, s ); }
+    
     public static Property property( Model m, String s )
         { return (Property) rdfNode( m, s, Property.class ); }
         
