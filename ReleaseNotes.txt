@@ -1,85 +1,100 @@
 Release Notes
 =============
 
-Post Jena 2.1 bug fix list
+Post Jena 2.1 change list
 
   RDF API
-      o Fixed bug in typed literals support which caused isValidLiteral tests 
+      o Fixed bug in typed literals support which caused isValidLiteral tests
         to fail on user defined types derived indirectly from simple types.
       o Fixed bugs in conversion of Calendar to XSDDateTime
       o Fixed XSDDouble isValidValue test to check for Double
       o Fixed XSDbase64Binary, XSDhexBinary returning strings instead of byte[]
-      
+
   Reasoners
       o Fixed ommission in handling of someValuesFrom applied to an rdfs:Datatype.
-      o Fixed bug in hide() table not being carried across from prebuilt 
-        reasoner caches, which resulted in the prototypical instance of 
+      o Fixed bug in hide() table not being carried across from prebuilt
+        reasoner caches, which resulted in the prototypical instance of
         owl:Thing being visible in listIndividuals.
       o Fixed bug in TransitiveReasoner reported by wangxiao
       o Changed delete for RETE reasoner to be non-incremental to work around
         bug without demanding full reference counting
       o Added experimental OWLMini and OWLMicro reasoners
-   
+
+  PrefixMappings
+      o Standard no longer contains vcard, jms, or rss.
+      o Extended introduced = Standard + vcard, jms, rss.
+      o usePrefix deprecated - use shortForm instead.
+      o qnameFor added; result is legal qname or null.
+
+  Node
+      o Node cache hash table replaced by specialised implementation
+      o new Node methods getNameSpace, getLocalName, hasURI(String)
+
+  Triple
+      o Triple.create now uses a cache
+
+  Resource
+      o new method hasURI(String)
+
    Ontology API
    	  o Added a new method getOWLLanguageLevel() to OntModel, which returns the
    	    OWL sublanguage - lite, DL or full - and error messages
    	  o Fixed ont language profiles to allow .as() on e.g. owl:SymmetricProperty as
    	    OntProperty.class.  Previously this relied on the reasoner; the change was
    	    needed to support the DIG interface.
-   	     
-      
+
 Jena 2.1 - Main changes from Jena 2.0
   Installation
       The names of some jars have changed be sure to update your classpath.
 	  The name of the xerces jars are now: xercesImpl.jar and xml-apis.jar
 	  We also require Jakarta commons logging: commons-logging.jar
 	  See readme.html for the full list of jars.
-      
+
   OWL Syntax Checker
-      Major update from alpha version (Jena 2.0), to production 
+      Major update from alpha version (Jena 2.0), to production
       version (Jena 2.1).
       API created.
-      Many fold performance improvement (orders of 
+      Many fold performance improvement (orders of
       magnitude)
       Now conformant with OWL Recommendation.
       Streaming mode added, suitable for lower memory
       environments or large input.
       Command-Line jena.owlsyntax program added.
       Still to do: better error messages.
-     
+
   RDF/XML-ABBREV output
       Changes default configuration to not use property
       attributes, which seem unpopular.
-      
+
   ARP
       Extended API to show bnode scope and XML Namespaces.
       Discovered memory leak which has been present since
-      the beginning. This is not fixed. Users of ARP and 
-      Jena in memory limited, or long-running applications, 
-      or reading lots of varied RDF/XML, should read the 
-      updated Javadoc for the package 
+      the beginning. This is not fixed. Users of ARP and
+      Jena in memory limited, or long-running applications,
+      or reading lots of varied RDF/XML, should read the
+      updated Javadoc for the package
       com.hp.hpl.jena.rdf.arp.
 
   Reasoner
       Small bug fixes (see below).
-      
+
   Xerces
       Now requires Xerces 2.6.0 or better. The included jars are Xerces 2.6.1.
 
   Ontology API
       General bug fixes and improvements based on jena-dev feedback.
-      
+
       The default document manager policy (etc/ont-policy.rdf) no longer
       re-directs imports of owl.owl and daml+oil.daml to a cached copy in
       the 'vocabulary' directory. This is becuase the vocabulary directory
       is not included in jena.jar, and this default re-direction was causing
-      problems in some applet or web service environments. The Jena 2.0 
+      problems in some applet or web service environments. The Jena 2.0
       behaviour can be restored by replacing ont-policy.rdf with ont-policy-test.rdf.
-      
+
       Instance detection has been improved, with the side-effect that DAML
       ontologies using the DAML micro rule reasoner may now report that
       instances have rdf:type daml:Thing in addition to other types.
-      	 
+      	
 Jena 2.1 changes from Jena 2.1-dev-3
   Minor bug fixes in OWL Syntax Checker.
   Streaming mode in OWL Syntax Checker.
@@ -93,13 +108,13 @@ Jena 2.1-dev-3
   ARP new extended handler for scope of blank nodes and namespace handler
   ARP improved syntax error messages
   OWL Syntax checker prolog source included in download (see tools dir)
-   
+
 Jena 2.1-dev-2:
   Developers' release to include recent bug fixes (notably
   handling of typed literals in validation rules).
   Do not use this version unless you need one or more bug
   fixes not in Jena 2.0.
-  
+
 Jena 2.1-dev-1:
   This is a developers' release, particularly
   intended for users of the OWL Syntax Checker.
@@ -129,7 +144,7 @@ o ModelFactory improvements:
 
 Reasoner subsystem:
 
-o Fixed delete bug in FORWARD_RETE configurations, remove of statements 
+o Fixed delete bug in FORWARD_RETE configurations, remove of statements
   should now remove the consequents of that statement.
 o Added a check for constructing one OWL reasoner instance layered on top
   of another because this can have a large performance impact to no benefit.
@@ -137,7 +152,7 @@ o Added a "hide" primitive which marks nodes as hidden. When querying an
   inference model no triples containing hidden subject or object nodes will
   be included in the result iterator.
   Used this to hide class-prototype instances
-o Extended the comparision builtins (equal, le etc) to support comparison of 
+o Extended the comparision builtins (equal, le etc) to support comparison of
   XSDDataTime instances. Many thanks to Bradley Schatz (Bradley@greystate.com)
   for supply the patches for this.
 o Extended OWL rules to include more explicit representation of XSD knowledge.
@@ -168,9 +183,8 @@ N3
 o Improved handling of character sets in qnames
 
 
-    
+
 Graph query SPI [NB NOT visible at the model level]
 
 o replaced use of Graph for constraints by new Expression interface as
   part of ongoing query improvement.
-
