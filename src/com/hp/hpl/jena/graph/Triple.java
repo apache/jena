@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.15 2004-11-05 11:59:08 chris-dollin Exp $
+  $Id: Triple.java,v 1.16 2004-11-30 20:17:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -174,12 +174,11 @@ public class Triple implements TripleMatch {
         return Triple.create( sub, pred, obj );
         }
   
-    public static final TripleMatch ANY = Triple.create( Node.ANY, Node.ANY, Node.ANY );
-            
+    public static final Triple ANY = Triple.create( Node.ANY, Node.ANY, Node.ANY );
     }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

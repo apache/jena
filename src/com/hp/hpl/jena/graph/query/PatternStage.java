@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.21 2004-11-19 14:38:12 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.22 2004-11-30 20:18:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -115,7 +115,8 @@ public class PatternStage extends Stage
         
     protected void run( Pipe source, Pipe sink )
         {
-        while (stillOpen && source.hasNext()) nest( sink, source.get(), 0 );
+        try { while (stillOpen && source.hasNext()) nest( sink, source.get(), 0 ); }
+        catch (Exception e) { sink.close( e ); return; }
         sink.close();
         }        
         

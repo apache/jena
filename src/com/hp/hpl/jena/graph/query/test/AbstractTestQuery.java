@@ -1,13 +1,15 @@
   /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.33 2004-11-19 14:38:12 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.34 2004-11-30 20:18:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.QueryStageException;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.impl.*;
@@ -632,6 +634,25 @@ public abstract class AbstractTestQuery extends QueryTestBase
         q.addConstraint( provided );
         Expression e2 = (Expression) q.getConstraints().iterator().next();
         assertEquals( desired, e2 );
+        }
+
+    protected static class BangException extends JenaException
+        {
+        public BangException() { super( "bang!" ); }
+        }
+    
+    public void testQueryExceptionCleanlyExits()
+        {
+        Query q = new Query().addMatch( Triple.ANY );
+        Graph g = new GraphBase() 
+            {
+            protected ExtendedIterator graphBaseFind( TripleMatch m )
+                { throw new BangException(); }
+            };
+        ExtendedIterator it = eb( g, q, new Node[] {} );
+        try { it.next(); fail( "should fail because graph explodes" ); }
+        catch (QueryStageException e) { assertTrue( e.getCause() instanceof BangException ); }
+        catch (Exception e) { fail( "should throw QueryStageException" ); }
         }
     
     protected static class PL extends Expression.Fixed implements PatternLiteral
