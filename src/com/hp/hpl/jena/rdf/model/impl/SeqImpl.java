@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SeqImpl.java,v 1.13 2003-07-24 12:01:07 chris-dollin Exp $
+  $Id: SeqImpl.java,v 1.14 2003-07-24 12:40:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,8 +15,9 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-07-24 12:01:07 $' 
- */
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2003-07-24 12:40:48 $' 
+*/
+
 public class SeqImpl extends ContainerImpl implements Seq {
 
     final static public Implementation factory = new Implementation() {
@@ -27,11 +28,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
         }
     };
     
-    static NodeIteratorFactory iteratorFactory;
-    
-    static {
-        iteratorFactory = new SeqNodeIteratorFactoryImpl();
-    }
+    static NodeIteratorFactory seqIteratorFactory = new SeqNodeIteratorFactoryImpl();
 
     /** Creates new SeqMem */
     public SeqImpl(Model model)  {
@@ -230,7 +227,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     }   
         
      public NodeIterator iterator()  
-        { return listContainerMembers( iteratorFactory ); }
+        { return listContainerMembers( seqIteratorFactory ); }
     
     public Container remove(Statement s) {
         getModel().remove(s);
