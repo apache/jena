@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.30 2003-11-29 15:07:53 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.31 2003-11-29 15:12:13 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -25,7 +25,7 @@ import java.util.*;
 
 import org.apache.xerces.util.*;
 import org.apache.oro.text.regex.*;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 /** 
  * This is not part of the public API.
@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.30 $' Date='$Date: 2003-11-29 15:07:53 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.31 $' Date='$Date: 2003-11-29 15:12:13 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
