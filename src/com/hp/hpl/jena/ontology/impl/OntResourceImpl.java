@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:21:40 $
+ * Last modified on   $Date: 2003-06-28 21:22:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -49,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.31 2003-06-22 19:21:40 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.32 2003-06-28 21:22:22 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1281,7 +1281,7 @@ public class OntResourceImpl
                 s.add( this );
             }
             
-            return new UniqueExtendedIterator( s.iterator() );
+            return new UniqueExtendedIterator( s.iterator() ).mapWith( mapper );
         }
     }
     
