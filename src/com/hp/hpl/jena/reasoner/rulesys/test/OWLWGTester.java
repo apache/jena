@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.11 2003-06-22 16:10:50 der Exp $
+ * $Id: OWLWGTester.java,v 1.12 2003-07-09 17:11:29 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.12 $ on $Date: 2003-07-09 17:11:29 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -70,7 +70,7 @@ public class OWLWGTester {
     protected ReasonerFactory reasonerF;
     
     /** The configuration information for the reasoner */
-    protected Model configuration;
+    protected Resource configuration;
     
     /** The test case which has invoke this test */
     protected TestCase testcase;
@@ -100,7 +100,7 @@ public class OWLWGTester {
      * @param testcase the JUnit test case which is requesting this test
      * @param configuration optional configuration information
      */
-    public OWLWGTester(ReasonerFactory reasonerF, TestCase testcase, Model configuration) {
+    public OWLWGTester(ReasonerFactory reasonerF, TestCase testcase, Resource configuration) {
         this.reasonerF = reasonerF;
         this.testcase = testcase;
         this.configuration = configuration;
@@ -162,11 +162,12 @@ public class OWLWGTester {
         
         // Construct the inferred graph
         // Optional logging
-        Resource configuration = null;
         if (log) {
-            Model m = ModelFactory.createDefaultModel();
-            configuration = m.createResource()
-                         .addProperty(ReasonerVocabulary.PROPtraceOn, "true")
+            if (configuration == null) {
+                Model m = ModelFactory.createDefaultModel();
+                configuration = m.createResource();
+            }
+            configuration.addProperty(ReasonerVocabulary.PROPtraceOn, "true")
                          .addProperty(ReasonerVocabulary.PROPderivationLogging, "true");
         }
         Reasoner reasoner = reasonerF.create(configuration);
