@@ -21,7 +21,7 @@ import com.hp.hpl.jena.db.* ;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.7 2003-06-17 14:39:39 chris-dollin Exp $
+ * @version $Id: ModelLoader.java,v 1.8 2003-06-24 16:26:21 andy_seaborne Exp $
  */
 
 public class ModelLoader
@@ -232,16 +232,14 @@ public class ModelLoader
 //        System.out.println("driver     = "+driverName) ;
             
         try {
-            // Hack
             IDBConnection conn = 
                 ModelFactory.createSimpleRDBConnection(urlStr, dbUser, dbPassword, dbType) ;
             return ModelRDB.open(conn, modelName) ;
         } catch (JenaException rdfEx)
         {
             Log.severe("Failed to open SQL database", "ModelLoader", "loadModel", rdfEx) ;
-            System.exit(1) ;
+            throw rdfEx ;
         }
-        return null ;
     }
 
     private static FileReader tryFile( String baseName, String fileName ) throws FileNotFoundException
