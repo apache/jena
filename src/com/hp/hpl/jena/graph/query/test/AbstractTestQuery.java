@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.5 2003-08-11 15:30:55 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.6 2003-08-12 09:06:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -629,7 +629,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
         result.put( key, new Integer( already.intValue() + 1 ) );  
         }
         
-    TripleSorter optimisedSort = Query.dontSort;
+    TripleSorter optimisedSort = new SimpleTripleSorter();
     
     public void testQueryOptimisation()
         {

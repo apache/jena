@@ -1,50 +1,32 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.12 2003-08-12 09:07:09 chris-dollin Exp $
+  $Id: TestGraphQueryPackage.java,v 1.1 2003-08-12 09:06:34 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph.test;
+package com.hp.hpl.jena.graph.query.test;
 
 import junit.framework.*;
-import com.hp.hpl.jena.graph.query.test.*;
 
 /**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
+ 	@author kers
 */
-
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
-    
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("graph");
-        addTest( "TestNode", TestNode.suite() );
-        addTest( "TestTriple", TestTriple.suite() );
-        addTest( "TestReifier", TestReifier.suite() );   
-        addTest( "TestTypedLiterals", TestTypedLiterals.suite() );
-        addTest( "TestGraphQuery", TestGraphQueryPackage.suite() );
-        // addTest( "TestFactory", TestFactory.suite() );
-        addTest( "TestSimpleGraphFactory", TestSimpleGraphMaker.suite() );
-        addTest( "TestFileGraph", TestFileGraph.suite() );
-        addTest( "TestFileGraphFactory", TestFileGraphMaker.suite() );
-        addTest( "TestCapabilities", TestCapabilities.suite() );
-        addTest( "TestGraphUtils", TestGraphUtils.suite() );
-        addTest( "TestGraphPrefixMapping", TestGraphPrefixMapping.suite() );       }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+public class TestGraphQueryPackage
+    {
+    public TestGraphQueryPackage()
+        {}
+    public static TestSuite suite()
+        {
+        TestSuite result = new TestSuite();
+        result.addTest( QueryTest.suite() );
+        result.addTest( TestSimpleTripleSorter.suite() );
+        return result;
+        }
     }
 
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
