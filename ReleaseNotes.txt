@@ -27,3 +27,20 @@ Persistent Storage:
 4) The prefix for database table names may be redefined.
 5) Oracle is now fully supported.
 6) New factory methods for persistent models are available, deprecating the existing ModelRDB constructors.
+
+Reasoning subsystem:
+1) Replaced the backward chaining reasoner by a more stable, more space efficient
+   LP engine (loosely based on SLG-WAM).
+2) Updated the RDFS rule sets as a result, with x2 speed improvement on test data.
+3) Updated the OWL rule set to be more complete, fix all reported bugs, add
+   support for hasValue. More development still required.
+4) Added a mechanism for rule-based validation and added validation rules to
+   the OWL rule set.
+5) Replaced the documentation completely.
+6) Fixed various misc bugs report on jena-dev and CVS - many thanks to all those
+   took to time to report these problems.
+
+RDF API:
+1) Replaced the createTypedLiterals calls which versions that do not allow
+   xml:lang tags, in keeping with working group changes.
+   Deprecated the version of createLiteral that takes both xml:lang and xml:wellFormed.
