@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Union.java,v 1.6 2004-09-06 17:31:29 chris-dollin Exp $
+  $Id: Union.java,v 1.7 2004-11-01 16:38:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -47,7 +47,7 @@ public class Union extends Dyadic implements Graph
         duplicates. That last is a performance penalty, but I see no way to remove it
         unless we know the graphs do not overlap.
     */
-	public ExtendedIterator find( final TripleMatch t ) 
+	public ExtendedIterator graphBaseFind( final TripleMatch t ) 
 	    {
 	    Set seen = HashUtils.createSet();
         return recording( L.find( t ), seen ).andThen( rejecting( R.find( t ), seen ) ); 

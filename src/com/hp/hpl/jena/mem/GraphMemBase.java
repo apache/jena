@@ -1,14 +1,12 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphMemBase.java,v 1.2 2004-08-03 08:32:02 chris-dollin Exp $
+  $Id: GraphMemBase.java,v 1.3 2004-11-01 16:38:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
-import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.shared.ReificationStyle;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
      GraphMemBase - a common base class for GraphMem and SmallGraphMem.
@@ -36,11 +34,6 @@ public abstract class GraphMemBase extends GraphBase
         super( style ); 
         count = 1; 
         }
-    
-    /**
-         Sub-classes must over-ride this method.
-    */
-    public abstract ExtendedIterator find( TripleMatch m );
 
     /**
          Note a re-opening of this graph by incrementing the count. Answer

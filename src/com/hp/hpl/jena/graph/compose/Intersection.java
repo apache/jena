@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Intersection.java,v 1.4 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Intersection.java,v 1.5 2004-11-01 16:38:26 chris-dollin Exp $
 */
 
 /*
@@ -40,7 +40,7 @@ public class Intersection extends Dyadic implements Graph
 		if (this.contains( t )) L.delete( t );
 		}
 		
-	public ExtendedIterator find( TripleMatch s )
+	public ExtendedIterator graphBaseFind( TripleMatch s )
 		{
         return L.find( s ) .filterKeep(  ifIn( R ) );
 		}

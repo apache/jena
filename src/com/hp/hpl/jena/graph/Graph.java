@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Graph.java,v 1.24 2004-06-24 14:45:39 chris-dollin Exp $
+  $Id: Graph.java,v 1.25 2004-11-01 16:38:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -28,7 +28,7 @@ public interface Graph  extends GraphAdd
         An immutable empty graph. 
     */
     public static final Graph emptyGraph = new GraphBase()
-        { public ExtendedIterator find( TripleMatch tm ) { return new NiceIterator(); } };
+        { public ExtendedIterator graphBaseFind( TripleMatch tm ) { return NullIterator.instance; } };
     	
     /** 
         true if this graph's content depends on the other graph. May be

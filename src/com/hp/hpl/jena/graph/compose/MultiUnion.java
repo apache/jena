@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-06-30 12:57:57 $
+ * Last modified on   $Date: 2004-11-01 16:38:26 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.13 2004-06-30 12:57:57 chris-dollin Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.14 2004-11-01 16:38:26 chris-dollin Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -171,7 +171,7 @@ public class MultiUnion
      * @param t The matcher to match against
      * @return An iterator of all triples matching t in the union of the graphs.
      */
-    public ExtendedIterator find( final TripleMatch t ) {
+    public ExtendedIterator graphBaseFind( final TripleMatch t ) {
         // anything in this model?
         if (m_subGraphs.size() == 0) {
             // the default NiceIterator has no elements

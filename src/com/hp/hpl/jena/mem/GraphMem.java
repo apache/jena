@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.44 2004-09-13 15:21:05 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.45 2004-11-01 16:38:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -72,7 +72,7 @@ public class GraphMem extends GraphMemBase implements Graph
          Answer an ExtendedIterator over all the triples in this graph that match the
          triple-pattern <code>m</code>. Delegated to the store.
      */
-    public ExtendedIterator find( TripleMatch m ) 
+    public ExtendedIterator graphBaseFind( TripleMatch m ) 
         {
         checkOpen();
         return store.find( m.asTriple() );

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OrigFBRuleInfGraph.java,v 1.3 2003-12-08 10:48:27 andy_seaborne Exp $
+ * $Id: OrigFBRuleInfGraph.java,v 1.4 2004-11-01 16:38:29 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-12-08 10:48:27 $
+ * @version $Revision: 1.4 $ on $Date: 2004-11-01 16:38:29 $
  */
 public class OrigFBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -499,7 +499,7 @@ public class OrigFBRuleInfGraph  extends BasicForwardRuleInfGraph implements Bac
      * This implementation assumes that the underlying findWithContinuation 
      * will have also consulted the raw data.
      */
-    public ExtendedIterator find(Node subject, Node property, Node object) {
+    public ExtendedIterator graphBaseFind(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), null);
     }
 

@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -392,7 +392,7 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#find(com.hp.hpl.jena.graph.TripleMatch)
 	 */
-	public ExtendedIterator find(TripleMatch m) {
+	public ExtendedIterator graphBaseFind(TripleMatch m) {
 		checkOpen();
         ExtendedIterator result = new NiceIterator();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();

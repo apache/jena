@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.22 2004-07-09 11:02:42 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.23 2004-11-01 16:38:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -78,8 +78,8 @@ public class TestGraph extends GraphTestBase
         
         Graph g = new GraphMem()
             {
-            public ExtendedIterator find( Node s, Node p, Node o )
-                { called[0] = true; return super.find( s, p, o ); }
+            public ExtendedIterator graphBaseFind( TripleMatch m )
+                { called[0] = true; return super.find( m ); }
             };
         
         ExtendedIterator subjects = g.queryHandler().subjectsFor( null, null );
@@ -94,8 +94,8 @@ public class TestGraph extends GraphTestBase
         
         Graph g = new GraphMem()
             {
-            public ExtendedIterator find( Node s, Node p, Node o )
-                { called[0] = true; return super.find( s, p, o ); }
+            public ExtendedIterator graphBaseFind( TripleMatch m )
+                { called[0] = true; return super.find( m ); }
             };
         
         ExtendedIterator subjects = g.queryHandler().objectsFor( null, null );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.3 2004-11-01 14:20:27 chris-dollin Exp $
+  $Id: MixedGraphMem.java,v 1.4 2004-11-01 16:38:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -230,9 +230,8 @@ public class MixedGraphMem extends GraphMemBase implements Graph
         return bulkHandler;
         }
     
-    public ExtendedIterator find( TripleMatch m ) 
+    public ExtendedIterator graphBaseFind( TripleMatch m ) 
         {
-        checkOpen();
         Triple t = m.asTriple();
         Node S = t.getSubject(), P = t.getPredicate(), O = t.getObject();
         return 

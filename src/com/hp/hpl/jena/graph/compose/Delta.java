@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Delta.java,v 1.6 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Delta.java,v 1.7 2004-11-01 16:38:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -64,7 +64,7 @@ public class Delta extends Dyadic implements Graph
         Find all the base triples matching tm, exclude the ones that are deleted, add the ones
         that  have been added.
     */
-	public ExtendedIterator find( TripleMatch tm ) 
+	public ExtendedIterator graphBaseFind( TripleMatch tm ) 
 		{
         return base.find( tm ) .filterDrop( ifIn( GraphUtil.findAll( R ) ) ) .andThen( L.find( tm ) );
 		}

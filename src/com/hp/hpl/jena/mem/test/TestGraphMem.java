@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.8 2004-07-20 10:15:14 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.9 2004-11-01 16:38:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -82,10 +82,7 @@ public class TestGraphMem extends AbstractTestGraph
     
     protected final class GraphMemWithoutFind extends GraphMem
         {
-        public ExtendedIterator find( Node s, Node p, Node o )
-            { throw new JenaException( "find is Not Allowed" ); }
-
-        public ExtendedIterator find( TripleMatch t )
+        public ExtendedIterator graphBaseFind( TripleMatch t )
             { throw new JenaException( "find is Not Allowed" ); }
         }
     }

@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.30 2004-08-31 13:17:58 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.31 2004-11-01 16:38:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -474,7 +474,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         final Triple [][] tripleses = new Triple[1][];
         final Graph g = new GraphBase()
             {
-            public ExtendedIterator find( TripleMatch tm )
+            public ExtendedIterator graphBaseFind( TripleMatch tm )
                 { return new NiceIterator(); }
             public QueryHandler queryHandler()
                 {

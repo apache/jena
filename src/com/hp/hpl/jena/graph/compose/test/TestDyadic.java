@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDyadic.java,v 1.6 2004-07-21 15:25:17 chris-dollin Exp $
+  $Id: TestDyadic.java,v 1.7 2004-11-01 16:38:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -56,7 +56,7 @@ public class TestDyadic extends GraphTestBase
         Graph g = new GraphMem(), h = new GraphMem();
         Dyadic d = new Dyadic( g, h )
             {
-            public ExtendedIterator find( TripleMatch m ) { return null; }
+            public ExtendedIterator graphBaseFind( TripleMatch m ) { return null; }
             };
         assertSame( g, d.getL() );
         assertSame( h, d.getR() );

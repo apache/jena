@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.1 2004-07-09 11:02:43 chris-dollin Exp $
+  $Id: SmallGraphMem.java,v 1.2 2004-11-01 16:38:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -79,9 +79,8 @@ public class SmallGraphMem extends GraphMemBase
         return bulkHandler;
         }
     
-    public ExtendedIterator find( TripleMatch m ) 
+    public ExtendedIterator graphBaseFind( TripleMatch m ) 
         {
-        checkOpen();
         return WrappedIterator.create( triples.iterator() ) .filterKeep ( new TripleMatchFilter( m.asTriple() ) );
         }
     }

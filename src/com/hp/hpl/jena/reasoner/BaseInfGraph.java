@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.34 2004-11-01 14:20:27 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.35 2004-11-01 16:38:28 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.34 $ on $Date: 2004-11-01 14:20:27 $
+ * @version $Revision: 1.35 $ on $Date: 2004-11-01 16:38:28 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -265,12 +265,30 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     
     /** 
      * Returns an iterator over Triples.
+     * 
+     * <p>This code used to have the .filterKeep component uncommented. We
+     * think this is because of earlier history, before .matches on a literal node
+     * was implemented as sameValueAs rather than equals. If it turns out that
+     * the filter is needed, it can be commented back in, AND a corresponding
+     * filter added to find(Node x 3) -- and test cases, of course. 
+     * 
+     * <p>[Chris, after discussion with Dave]
      */
-    public ExtendedIterator find(TripleMatch m) {
-        return find(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject())
-             .filterKeep(new TripleMatchFilter(m.asTriple()));
+    public ExtendedIterator graphBaseFind(TripleMatch m) {
+        return graphBaseFind(m.getMatchSubject(), m.getMatchPredicate(), m.getMatchObject())
+             // .filterKeep(new TripleMatchFilter(m.asTriple()))
+             ;
     }
-      
+    
+    /** 
+     * Returns an iterator over Triples.
+     * This implementation assumes that the underlying findWithContinuation 
+     * will have also consulted the raw data.
+     */
+    public ExtendedIterator graphBaseFind(Node subject, Node property, Node object) {
+        return findWithContinuation(new TriplePattern(subject, property, object), fdata);
+    }
+    
     /**
      * Extended find interface used in situations where the implementator
      * may or may not be able to answer the complete query. It will
@@ -283,16 +301,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * may not have completely satisfied the query.
      */
     abstract public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation);
-   
-    /** 
-     * Returns an iterator over Triples.
-     * This implementation assumes that the underlying findWithContinuation 
-     * will have also consulted the raw data.
-     */
-    public ExtendedIterator find(Node subject, Node property, Node object) {
-        checkOpen();
-        return findWithContinuation(new TriplePattern(subject, property, object), fdata);
-    }
+
 
     /**
      * Basic pattern lookup interface.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Difference.java,v 1.4 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Difference.java,v 1.5 2004-11-01 16:38:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -40,7 +40,7 @@ public class Difference extends Dyadic implements Graph
 	public void performDelete( Triple t )
 		{ L.delete( t ); }
 
-	public ExtendedIterator find( TripleMatch t ) 
+	public ExtendedIterator graphBaseFind( TripleMatch t ) 
 		{ return L.find( t ). filterDrop ( ifIn( R ) ); }
 	}
 

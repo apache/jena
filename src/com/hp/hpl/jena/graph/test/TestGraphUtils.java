@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphUtils.java,v 1.2 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: TestGraphUtils.java,v 1.3 2004-11-01 16:38:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -34,16 +34,15 @@ public class TestGraphUtils extends GraphTestBase
         final Bool foundAll = new Bool( false );
         Graph mock = new GraphBase() 
             {
-            public ExtendedIterator find( Node s, Node p, Node o )
+            public ExtendedIterator graphBaseFind( TripleMatch m )
                 { 
-                assertEquals( Node.ANY, s ); 
-                assertEquals( Node.ANY, p );
-                assertEquals( Node.ANY, o );
+                Triple t = m.asTriple();
+                assertEquals( Node.ANY, t.getSubject() ); 
+                assertEquals( Node.ANY, t.getPredicate() );
+                assertEquals( Node.ANY, t.getObject() );
                 foundAll.value = true;
                 return null;
                 }
-            public ExtendedIterator find( TripleMatch tm )
-                { return null; }
             };
         GraphUtil.findAll( mock );
         assertTrue( "find(ANY, ANY, ANY) called", foundAll.value );
