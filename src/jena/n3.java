@@ -16,8 +16,9 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.n3.* ;
 
 /**
+    Read N3 files and print in a variery of formats.
  * @author		Andy Seaborne
- * @version 	$Id: n3.java,v 1.7 2003-07-01 14:43:53 andy_seaborne Exp $
+ * @version 	$Id: n3.java,v 1.8 2003-08-04 10:55:06 chris-dollin Exp $
  */
 public class n3
 {
