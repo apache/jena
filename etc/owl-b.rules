@@ -2,7 +2,7 @@
 # OWL rule set v0.1
 # This rule set is design to implement owl(f)lite using pure
 # tabled backward chaining. It is experimental and not fully debugged.
-# $Id: owl-b.rules,v 1.6 2003-07-25 12:17:28 der Exp $
+# $Id: owl-b.rules,v 1.7 2004-07-02 08:08:21 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -256,7 +256,7 @@
 [equivalentProperty2: (?P rdfs:subPropertyOf ?Q), (?Q rdfs:subPropertyOf ?P) 
 						-> (?P owl:equivalentProperty ?Q) ]
 						
-[equivalentProperty3: (?P owl:sameAs ?Q), (?P rdf:type rdfs:Property), (?Q rdf:type rdfs:Property) 
+[equivalentProperty3: (?P owl:sameAs ?Q), (?P rdf:type rdf:Property), (?Q rdf:type rdf:Property) 
 						-> (?P owl:equivalentProperty ?Q) ]
 						
 # equivalentClass

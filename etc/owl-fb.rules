@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.47 2004-03-09 18:36:30 der Exp $
+# $Id: owl-fb.rules,v 1.48 2004-07-02 08:08:21 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -490,7 +490,7 @@
 [equivalentProperty2: (?P rdfs:subPropertyOf ?Q), (?Q rdfs:subPropertyOf ?P) 
 						-> (?P owl:equivalentProperty ?Q) ]
 						
-[equivalentProperty3: (?P owl:sameAs ?Q), (?P rdf:type rdfs:Property), (?Q rdf:type rdfs:Property) 
+[equivalentProperty3: (?P owl:sameAs ?Q), (?P rdf:type rdf:Property), (?Q rdf:type rdf:Property) 
 						-> (?P owl:equivalentProperty ?Q) ]
 
 # SymmetricProperty

@@ -228,7 +228,7 @@
 [equivalentProperty2: (?P rdfs:subPropertyOf ?Q), (?Q rdfs:subPropertyOf ?P) 
 						-> (?P owl:equivalentProperty ?Q) ]
 						
-[equivalentProperty3: (?P owl:sameAs ?Q), (?P rdf:type rdfs:Property), (?Q rdf:type rdfs:Property) 
+[equivalentProperty3: (?P owl:sameAs ?Q), (?P rdf:type rdf:Property), (?Q rdf:type rdf:Property) 
 						-> (?P owl:equivalentProperty ?Q) ]
 
 # equivalentClass

@@ -6,7 +6,7 @@
 # Warning: This version is under active development and the moment
 # and should NOT be regard as stable or usable.
 #
-# $Id: owl-fb-old.rules,v 1.1 2003-08-21 12:01:02 der Exp $
+# $Id: owl-fb-old.rules,v 1.2 2004-07-02 08:08:21 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -347,7 +347,7 @@
 [equivalentProperty2: (?P rdfs:subPropertyOf ?Q), (?Q rdfs:subPropertyOf ?P) 
 						-> (?P owl:equivalentProperty ?Q) ]
 						
-[equivalentProperty3: (?P owl:sameAs ?Q), (?P rdf:type rdfs:Property), (?Q rdf:type rdfs:Property) 
+[equivalentProperty3: (?P owl:sameAs ?Q), (?P rdf:type rdf:Property), (?Q rdf:type rdf:Property) 
 						-> (?P owl:equivalentProperty ?Q) ]
 
 # symmetric
