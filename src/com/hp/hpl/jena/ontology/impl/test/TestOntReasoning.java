@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: TestOntReasoning.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-19 14:37:22 $
+ * Last modified on   $Date: 2003-06-21 10:41:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntReasoning.java,v 1.3 2003-06-19 14:37:22 ian_dickinson Exp $
+ * @version CVS $Id: TestOntReasoning.java,v 1.4 2003-06-21 10:41:45 ian_dickinson Exp $
  */
 public class TestOntReasoning 
     extends TestCase
@@ -218,7 +218,7 @@ public class TestOntReasoning
     }
     
     // not in place for now
-    public void blocked_testListDefinedProperties() {
+    public void testListDefinedProperties() {
         OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF, null );
         
         // a simple class hierarchy  organism -> vertebrate -> mammal -> dog
@@ -253,7 +253,19 @@ public class TestOntReasoning
         iteratorTest( vertebrate.listDeclaredProperties(), new Object[] {limbsCount} );
         iteratorTest( mammal.listDeclaredProperties(), new Object[] {limbsCount, hasCovering, numYoung} );
         iteratorTest( dog.listDeclaredProperties(), new Object[] {limbsCount, hasCovering, numYoung} );
-        iteratorTest( r.listDeclaredProperties(), new Object[] {hasCovering, numYoung} );
+        iteratorTest( r.listDeclaredProperties(), new Object[] {hasCovering} );
+              
+        iteratorTest( organism.listDeclaredProperties(true), new Object[] {} );
+        iteratorTest( vertebrate.listDeclaredProperties(true), new Object[] {limbsCount} );
+        iteratorTest( mammal.listDeclaredProperties(true), new Object[] {limbsCount, hasCovering, numYoung} );
+        iteratorTest( dog.listDeclaredProperties(true), new Object[] {limbsCount, hasCovering, numYoung} );
+        iteratorTest( r.listDeclaredProperties(true), new Object[] {hasCovering} );
+              
+        iteratorTest( organism.listDeclaredProperties(false), new Object[] {} );
+        iteratorTest( vertebrate.listDeclaredProperties(false), new Object[] {limbsCount} );
+        iteratorTest( mammal.listDeclaredProperties(false), new Object[] {numYoung} );
+        iteratorTest( dog.listDeclaredProperties(false), new Object[] {} );
+        iteratorTest( r.listDeclaredProperties(false), new Object[] {hasCovering} );
     }
     
     
@@ -281,7 +293,7 @@ public class TestOntReasoning
         }
         
         if (!(expList.size() == 0)) {
-            logger.debug( getName() + "Expected iterator results not found" );
+            logger.debug( getName() + " Expected iterator results not found" );
             for (Iterator j = expList.iterator(); j.hasNext(); ) {
                 logger.debug( getName() + " - missing: " + j.next() );
             }

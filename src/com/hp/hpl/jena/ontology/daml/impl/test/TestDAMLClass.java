@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-Jun-2003
  * Filename           $RCSfile: TestDAMLClass.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 21:56:21 $
+ * Last modified on   $Date: 2003-06-21 10:41:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLClass.java,v 1.4 2003-06-17 21:56:21 ian_dickinson Exp $
+ * @version CVS $Id: TestDAMLClass.java,v 1.5 2003-06-21 10:41:38 ian_dickinson Exp $
  */
 public class TestDAMLClass 
     extends DAMLTestBase
@@ -356,7 +356,7 @@ public class TestDAMLClass
                     r.prop_domain().add( A );
                     
                     iteratorTest( A.getDefinedProperties(), new Object[] {r} );
-                    iteratorTest( B.getDefinedProperties(), new Object[] {p,q} );   // note no inference
+                    iteratorTest( B.getDefinedProperties(), new Object[] {p,q,r} );   // note no inference
                 }
             },
             new OntTestCase( "DAMLRestriction.prop_onProperty" ) {
