@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.33 2003-12-10 18:04:06 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.34 2003-12-11 12:17:20 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -48,7 +48,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.33 $' Date='$Date: 2003-12-10 18:04:06 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.34 $' Date='$Date: 2003-12-11 12:17:20 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -427,7 +427,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @param base the base URI for relative URI calculations.  <code>
 	 * null</code> means use only absolute URI's.
 	 */
-	final synchronized public void write(Model baseModel, Writer out, String base)
+	synchronized public void write(Model baseModel, Writer out, String base)
 		 {        
         Model model = ModelFactory.withHiddenStatements( baseModel );
 		this.namespacesNeeded = new HashSet();
