@@ -13,10 +13,10 @@ package com.hp.hpl.jena.db.impl;
 // Imports
 import java.sql.*;
 import java.util.*;
-import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.*;
-
 import com.hp.hpl.jena.shared.*;
+
+import org.apache.log4j.Logger;
 
 //=======================================================================
 /**
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.shared.*;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.3 $ on $Date: 2003-06-23 13:55:45 $
+* @version $Revision: 1.4 $ on $Date: 2003-07-01 12:48:12 $
 */
 
 public class ResultSetIterator implements ExtendedIterator {
@@ -60,6 +60,7 @@ public class ResultSetIterator implements ExtendedIterator {
     /** Flag if we have prefeteched the next row but not yet returned it */
     protected boolean m_prefetched = false;
 
+    protected static Logger logger = Logger.getLogger( ResultSetIterator.class );
     /**
      * Create an empty iterator.
      * Needs to be initialized by reset
@@ -152,7 +153,7 @@ public class ResultSetIterator implements ExtendedIterator {
             }
         } catch (Exception e) {
             //  TODO do we need this catch at all?
-            Log.warning("Problem in iterator over db result set, op = " + m_opname, e);
+            logger.warn("Problem in iterator over db result set, op = " + m_opname, e);
             // Added by kers for debugging
             throw new JenaException( e );
         }
@@ -192,7 +193,7 @@ public class ResultSetIterator implements ExtendedIterator {
                     m_resultSet.close();
                     m_resultSet = null;
                 } catch (SQLException e) {
-                    Log.warning("Error while finalizing result set iterator", e);
+                    logger.warn("Error while finalizing result set iterator", e);
                 }
             }
             if (m_sqlCache != null && m_opname != null) {
@@ -201,7 +202,7 @@ public class ResultSetIterator implements ExtendedIterator {
                 try {
                     m_statement.close();
                 } catch (SQLException e) {
-                    Log.warning("Error while finalizing result set iterator", e);
+                    logger.warn("Error while finalizing result set iterator", e);
                 }
             }
         }

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
     [See end of file]
-    $Id: Regression.java,v 1.9 2003-07-01 09:06:58 chris-dollin Exp $
+    $Id: Regression.java,v 1.10 2003-07-01 12:48:27 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-07-01 09:06:58 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-07-01 12:48:27 $'
  */
 public class Regression extends Object {
 
@@ -3739,9 +3739,7 @@ public class Regression extends Object {
                 if ( th instanceof NoRouteToHostException
                  || th instanceof UnknownHostException
                  || th instanceof ConnectException) {
-                    Log.warning("Cannot access public internet" +
-                                 "- part of test note executed",
-                                                     "Regression", "test18");
+                    logger.warn( "Cannot access public internet- part of test not executed" );
                 } else {
                     throw rdfx;
                 }
@@ -4879,5 +4877,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.9 2003-07-01 09:06:58 chris-dollin Exp $
+ * $Id: Regression.java,v 1.10 2003-07-01 12:48:27 chris-dollin Exp $
  */

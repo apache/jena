@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCompareToMem.java,v 1.4 2003-05-06 17:31:07 csayers Exp $
+  $Id: TestCompareToMem.java,v 1.5 2003-07-01 12:48:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -28,12 +28,9 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.Log;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-
+import junit.framework.*;
+import org.apache.log4j.Logger;
 
 public class TestCompareToMem extends TestCase
     {    
@@ -43,6 +40,8 @@ public class TestCompareToMem extends TestCase
     
     public static TestSuite suite()
         { return new TestSuite( TestCompareToMem.class ); }   
+     
+     static Logger logger = Logger.getLogger( TestCompareToMem.class );
      
     Model modelrdf = null;    
     Model modelmem = null;
@@ -87,7 +86,7 @@ public class TestCompareToMem extends TestCase
 		while( it.hasNext()) {
 			Statement s = (Statement)it.next();
 			if( ! modelrdf.contains(s)) {
-				Log.severe("Statment:"+s+" is in mem but not rdf");
+				logger.error("Statment:"+s+" is in mem but not rdf");
 				logModel(modelmem, "Mem");
 				logModel(modelrdf, "RDF");
 			}
@@ -97,7 +96,7 @@ public class TestCompareToMem extends TestCase
 		while( it.hasNext()) {
 			Statement s = (Statement)it.next();
 			if( ! modelmem.contains(s)) {
-				Log.severe("Statment:"+s+" is in rdf but not memory");
+				logger.error("Statment:"+s+" is in rdf but not memory");
 				logModel(modelmem, "Mem");
 				logModel(modelrdf, "RDF");
 			}
@@ -106,15 +105,15 @@ public class TestCompareToMem extends TestCase
     }
     
     private void logModel(Model m, String name) {
-    	Log.debug("Model");
+    	logger.debug("Model");
 		Iterator it = m.listStatements();
 		while( it.hasNext()) { 
 			Statement s = (Statement)it.next();
 			RDFNode object = s.getObject();
 			if( object instanceof Literal )
-				Log.debug(name+": "+s.getSubject()+s.getPredicate()+((Literal)object).getValue()+" "+((Literal)object).getDatatype()+" "+((Literal)object).getLanguage());
+				logger.debug(name+": "+s.getSubject()+s.getPredicate()+((Literal)object).getValue()+" "+((Literal)object).getDatatype()+" "+((Literal)object).getLanguage());
 			else
-				Log.debug(name+": "+it.next()); 	
+				logger.debug(name+": "+it.next()); 	
     	}
     }
     

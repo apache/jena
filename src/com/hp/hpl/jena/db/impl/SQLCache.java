@@ -14,9 +14,9 @@ import java.sql.*;
 import java.util.*;
 import java.io.*;
 
-import com.hp.hpl.jena.db.IDBConnection;
-import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.util.Log;
+import com.hp.hpl.jena.db.*;
+
+import org.apache.log4j.Logger;
 
 //=======================================================================
 /**
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.Log;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.3 $ on $Date: 2003-06-19 08:47:03 $
+* @version $Revision: 1.4 $ on $Date: 2003-07-01 12:48:12 $
 */
 
 public class SQLCache {
@@ -67,6 +67,7 @@ public class SQLCache {
     /** Set to true to enable cache of pre-prepared statements. */
     protected boolean CACHE_PREPARED_STATEMENTS = true;
 
+    static protected Logger logger = Logger.getLogger( SQLCache.class );
 //=======================================================================
 // Public interface
 
@@ -147,7 +148,7 @@ public class SQLCache {
     public String getSQLStatement(String opname, String attr) throws SQLException {
     	String cmd = m_sql.getProperty(opname);
     	if (cmd == null) {
-    		Log.severe("Unable to find SQL for operation: " + opname);
+    		logger.error("Unable to find SQL for operation: " + opname);
 			throw new SQLException("Unable to find SQL for operation: " + opname); 
     	}
         return substitute(cmd, "${a}", attr);
@@ -282,7 +283,7 @@ public class SQLCache {
             try {
                 ps.close();
             } catch (SQLException e) {
-                Log.warning("Problem discarded prepared statement", e);
+                logger.warn("Problem discarded prepared statement", e);
             }
             return;
         }
@@ -295,7 +296,7 @@ public class SQLCache {
             try {
                 ps.close();
             } catch (SQLException e) {
-                Log.warning("Problem discarded prepared statement", e);
+                logger.warn("Problem discarded prepared statement", e);
             }
         } else {
             psl.add(ps);

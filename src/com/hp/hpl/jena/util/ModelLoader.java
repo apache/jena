@@ -21,7 +21,7 @@ import com.hp.hpl.jena.db.* ;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.8 2003-06-24 16:26:21 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.9 2003-07-01 12:48:28 chris-dollin Exp $
  */
 
 public class ModelLoader
@@ -237,7 +237,7 @@ public class ModelLoader
             return ModelRDB.open(conn, modelName) ;
         } catch (JenaException rdfEx)
         {
-            Log.severe("Failed to open SQL database", "ModelLoader", "loadModel", rdfEx) ;
+            logger.error("Failed to open SQL database: ModelLoader.connectToDB", rdfEx) ;
             throw rdfEx ;
         }
     }

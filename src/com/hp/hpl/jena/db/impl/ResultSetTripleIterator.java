@@ -14,16 +14,16 @@ package com.hp.hpl.jena.db.impl;
 import java.sql.*;
 
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.util.Log;
+import com.hp.hpl.jena.graph.*;
+
+import org.apache.log4j.Logger;
 
 //=======================================================================
 /**
 * Version of ResultSetIterator that extracts database rows as Triples.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.5 $ on $Date: 2003-06-18 20:58:48 $
+* @version $Revision: 1.6 $ on $Date: 2003-07-01 12:48:12 $
 */
 public class ResultSetTripleIterator extends ResultSetIterator {
 
@@ -45,6 +45,8 @@ public class ResultSetTripleIterator extends ResultSetIterator {
     /** HasType flag if iterating over reified statements */
     protected boolean m_hasType;
 
+    static protected Logger logger = Logger.getLogger( ResultSetTripleIterator.class );
+    
 	// Constructor
 	public ResultSetTripleIterator(IPSet p, IDBID graphID) {
 		m_pset = p;
@@ -110,7 +112,7 @@ public class ResultSetTripleIterator extends ResultSetIterator {
 		try {
         t = m_pset.extractTripleFromRowData(subj, pred, obj);
 		} catch (RDFRDBException e) {
-			Log.debug("Extracting triple from row encountered exception: " + e);
+			logger.debug("Extracting triple from row encountered exception: ", e);
 		}
 		
 		m_triple = t;

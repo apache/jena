@@ -24,42 +24,43 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFDefaultErrorHandler.java,v 1.2 2003-06-12 15:10:30 chris-dollin Exp $
+ * $Id: RDFDefaultErrorHandler.java,v 1.3 2003-07-01 12:48:27 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.arp.ParseException;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.shared.*;
 
+import org.apache.log4j.*;
 /**
  * The default error handler for I/O.
- * This uses the Log utility.
+ * This uses log4j as its utility.
  * @see     com.hp.hpl.jena.util.Log
  * @author  jjc,bwm
- * @version $Revision: 1.2 $ $Date: 2003-06-12 15:10:30 $
+ * @version $Revision: 1.3 $ $Date: 2003-07-01 12:48:27 $
  */
 public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
 
+    protected static Logger logger = Logger.getLogger( RDFDefaultErrorHandler.class );
+    
     /** Creates new RDFDefaultErrorHandler */
     public RDFDefaultErrorHandler() {
     }
 
     public void warning(Exception e) {
-        Log.warning(ParseException.formatMessage(e));
+        logger.warn(ParseException.formatMessage(e));
     }
 
     public void error(Exception e) {
-        Log.severe(ParseException.formatMessage(e));
+        logger.error(ParseException.formatMessage(e));
     }
 
     public void fatalError(Exception e) {
-        Log.severe(ParseException.formatMessage(e));
-        if ( e instanceof RuntimeException)
-           throw (RuntimeException)e;
-           
-        throw new JenaException(e);
+        logger.error(ParseException.formatMessage(e));
+        throw e instanceof RuntimeException 
+            ? (RuntimeException) e
+            : new JenaException( e );
     }
 }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifierCompareToMem.java,v 1.1 2003-05-08 21:33:10 csayers Exp $
+  $Id: TestReifierCompareToMem.java,v 1.2 2003-07-01 12:48:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -28,13 +28,10 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-
+import junit.framework.*;
+import org.apache.log4j.Logger;
 
 public class TestReifierCompareToMem extends TestCase
     {    
@@ -45,6 +42,8 @@ public class TestReifierCompareToMem extends TestCase
     public static TestSuite suite()
         { return new TestSuite( TestReifierCompareToMem.class ); }   
      
+     protected static Logger logger = Logger.getLogger( TestReifierCompareToMem.class );
+
     Model modelrdb = null;    
     Model modelmem = null;
     
@@ -82,7 +81,7 @@ public class TestReifierCompareToMem extends TestCase
 		while( it.hasNext()) {
 			Statement s = (Statement)it.next();
 			if( ! modelrdb.contains(s)) {
-				Log.severe("Statment:"+s+" is in mem but not rdf");
+				logger.error( "Statment:"+s+" is in mem but not rdf");
 				logModel(modelmem, "Mem");
 				logModel(modelrdb, "RDF");
 			}
@@ -92,7 +91,7 @@ public class TestReifierCompareToMem extends TestCase
 		while( it.hasNext()) {
 			Statement s = (Statement)it.next();
 			if( ! modelmem.contains(s)) {
-				Log.severe("Statment:"+s+" is in rdf but not memory");
+				logger.error("Statment:"+s+" is in rdf but not memory");
 				logModel(modelmem, "Mem");
 				logModel(modelrdb, "RDF");
 			}
@@ -103,15 +102,15 @@ public class TestReifierCompareToMem extends TestCase
     }
     
     private void logModel(Model m, String name) {
-    	Log.debug("Model");
+    	logger.debug("Model");
 		Iterator it = m.listStatements();
 		while( it.hasNext()) { 
 			Statement s = (Statement)it.next();
 			RDFNode object = s.getObject();
 			if( object instanceof Literal )
-				Log.debug(name+": "+s.getSubject()+s.getPredicate()+((Literal)object).getValue()+" "+((Literal)object).getDatatype()+" "+((Literal)object).getLanguage());
+				logger.debug(name+": "+s.getSubject()+s.getPredicate()+((Literal)object).getValue()+" "+((Literal)object).getDatatype()+" "+((Literal)object).getLanguage());
 			else
-				Log.debug(name+": "+it.next()); 	
+				logger.debug(name+": "+it.next()); 	
     	}
     }
     

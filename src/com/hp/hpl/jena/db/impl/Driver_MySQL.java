@@ -13,9 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.hp.hpl.jena.db.IDBConnection;
-import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.util.Log;
+import com.hp.hpl.jena.db.*;
 
 
 /**
@@ -67,7 +65,7 @@ public class Driver_MySQL extends DriverRDB {
 			m_sql = new SQLCache(SQL_FILE, defaultSQL, dbcon, ID_SQL_TYPE);
 		} catch (Exception e) {
             e.printStackTrace( System.err );
-			Log.severe("Unable to set connection for Driver:" + e);
+			logger.error("Unable to set connection for Driver:", e);
 		}
 	}
 	

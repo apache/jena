@@ -12,11 +12,12 @@ import java.util.List;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.Map1;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
+
+import org.apache.log4j.Logger;
 
 //=======================================================================
 /**
@@ -36,7 +37,7 @@ import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.8 $ on $Date: 2003-06-18 20:58:48 $
+* @version $Revision: 1.9 $ on $Date: 2003-07-01 12:48:12 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -48,7 +49,9 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 
 	//=======================================================================
 	// Internal variables
-
+    
+    protected static Logger logger = Logger.getLogger( PSet_ReifStore_RDB.class );
+    
 	//=======================================================================
 	// Constructors and accessors
 
@@ -113,11 +116,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 
 		} catch (Exception e) {
 			notFound = true;
-			Log.warning(
-				"Getting prepared statement for "
-					+ stmtStr
-					+ " Caught exception "
-					+ e);
+			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
 		}
 
 		if ( notFound )
@@ -126,7 +125,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			try {
 			m_sql.executeSQL(ps, stmtStr, result);
 			} catch (Exception e) {
-				Log.debug("find encountered exception " + e);
+				logger.debug( "find encountered exception ", e);
 			}
 		}
 		return result;
@@ -168,11 +167,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 				ps.setString(argc, my_GID.getID().toString());
 		} catch (Exception e) {
 			notFound = true;
-			Log.warning(
-				"Getting prepared statement for "
-					+ stmtStr
-					+ " Caught exception "
-					+ e);
+			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ",  e);
 		}
 
 		// find on object field
@@ -182,7 +177,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		try {
 			m_sql.executeSQL(ps, stmtStr, result);
 		} catch (Exception e) {
-			Log.debug("find encountered exception " + e);
+			logger.debug("find encountered exception ", e);
 		}
 		}
 		return result.mapWith(new MapResultSetToNode());
@@ -229,11 +224,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 
 		} catch (Exception e) {
 			notFound = true;
-			Log.warning(
-				"Getting prepared statement for "
-					+ stmtStr
-					+ " Caught exception "
-					+ e);
+			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
 		}
 
 		if ( notFound )
@@ -241,7 +232,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		else try {
 			result = m_sql.executeSQL(ps, stmtStr, result);
 		} catch (Exception e) {
-			Log.debug("find encountered exception " + e);
+			logger.debug("find encountered exception ", e);
 		}
 		return result;
 	}
@@ -313,16 +304,12 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 
 				ps.setString(argc++,my_GID.getID().toString());
 			} catch (Exception e) {
-				Log.warning(
-					"Getting prepared statement for "
-						+ stmtStr
-						+ " Caught exception "
-						+ e);
+				logger.warn( "Getting prepared statement for "	+ stmtStr + " Caught exception ", e);
 			}
 			try {
 	  			ps.executeUpdate();
  			 } catch (SQLException e1) {
-				 Log.severe("SQLException caught during reification update" + e1.getErrorCode() + ": " + e1);
+				 logger.error("SQLException caught during reification update" + e1.getErrorCode(), e1);
 	 		}
 		}
 
@@ -391,11 +378,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 				ps.setString(argc,my_GID.getID().toString());
 				
 			} catch (Exception e) {
-				Log.warning(
-					"Getting prepared statement for "
-						+ stmtStr
-						+ " Caught exception "
-						+ e);
+				logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
 			}
 
 			if ( notFound )
@@ -404,7 +387,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			try {
 				m_sql.executeSQL(ps, stmtStr, result);
 			} catch (Exception e) {
-				Log.debug("find encountered exception " + e);
+				logger.debug("find encountered exception ", e);
 			}
 		return result;
 	}

@@ -24,31 +24,30 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleWriter.java,v 1.12 2003-06-17 15:21:51 chris-dollin Exp $
+ * $Id: NTripleWriter.java,v 1.13 2003-07-01 12:48:27 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.shared.*;
 
-import java.io.PrintWriter;
-import java.io.Writer;
-import java.io.OutputStreamWriter;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+
+import org.apache.log4j.*;
 
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-06-17 15:21:51 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-07-01 12:48:27 $'
  */
 public class NTripleWriter extends Object implements RDFWriter {
 
     RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
 
+    protected static Logger logger = Logger.getLogger( NTripleWriter.class );
+    
     public NTripleWriter() {
     }
     public void write(Model model, OutputStream out, String base)
@@ -58,11 +57,7 @@ public class NTripleWriter extends Object implements RDFWriter {
             try {
                 w = new OutputStreamWriter(out, "ascii");
             } catch (UnsupportedEncodingException e) {
-                Log.warning(
-                    "ASCII is not supported!",
-                    "NTripleWriter",
-                    "write",
-                    e);
+                logger.warn( "ASCII is not supported: in NTripleWriter.write", e );
                 w = FileUtils.asUTF8(out);
             }
             write(model, w, base);

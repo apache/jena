@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCompareDMOZ.java,v 1.2 2003-05-04 17:36:13 hkuno Exp $
+  $Id: TestCompareDMOZ.java,v 1.3 2003-07-01 12:48:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -29,12 +29,9 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.Log;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-
+import junit.framework.*;
+import org.apache.log4j.*;
 
 public class TestCompareDMOZ extends TestCase 
     {    
@@ -46,7 +43,15 @@ public class TestCompareDMOZ extends TestCase
     
     public static TestSuite suite()
         { return new TestSuite( TestCompareDMOZ.class ); }   
-     
+
+    static Logger logger = Logger.getLogger( TestCompareDMOZ.class );
+    
+    private static class Log
+        {
+        static void severe( String s ) {}
+        static void debug( String s ) {}
+        }
+             
     Model modelrdf = null;    
     Model modelmem = null;
     

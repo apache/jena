@@ -2,7 +2,7 @@
     (c) Copyright Hewlett-Packard Company 2001-2003
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.16 2003-06-17 13:39:28 chris-dollin Exp $
+    $Id: testWriterAndReader.java,v 1.17 2003-07-01 12:48:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -12,7 +12,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.shared.*;
 
-import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.vocabulary.RDFSyntax;
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
 
@@ -20,6 +19,7 @@ import java.io.*;
 
 import java.util.*;
 import junit.framework.*;
+import org.apache.log4j.Logger;
 
 /**
  * This will test any Writer and Reader pair.
@@ -28,7 +28,7 @@ import junit.framework.*;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2003-06-17 13:39:28 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2003-07-01 12:48:28 $'
  */
 public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 	static private boolean showProgress = false;
@@ -37,6 +37,9 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 	static private int firstTest = 5;
 	static private int lastTest = 9;
 	static private int repetitionsJ = 6;
+    
+    protected static Logger logger = Logger.getLogger( testWriterAndReader.class );
+    
 	String lang;
 	String test;
 	int fileNumber;
@@ -465,7 +468,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 	 * @param e an exception representing the error
 	 */
 	public void warning(Exception e) {
-		Log.warning(toString() + " " + e.getMessage());
+		logger.warn( toString() + " " + e.getMessage(), e );
 		throw new JenaException( e );
 	}
 	public void error(Exception e) {
@@ -518,5 +521,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.16 2003-06-17 13:39:28 chris-dollin Exp $
+ * $Id: testWriterAndReader.java,v 1.17 2003-07-01 12:48:28 chris-dollin Exp $
  */

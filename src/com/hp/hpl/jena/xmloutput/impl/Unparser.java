@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.17 2003-06-19 15:22:37 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.18 2003-07-01 12:48:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -92,25 +92,28 @@ package com.hp.hpl.jena.xmloutput.impl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.util.Log;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.Util;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.arp.*;
-import org.apache.xerces.util.XMLChar;
-
 import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 import java.io.*;
 
+import org.apache.log4j.Logger;
+import org.apache.xerces.util.XMLChar;
+
+
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2003-06-19 15:22:37 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2003-07-01 12:48:28 $'
 
  */
 class Unparser {
 	static private Property LI = new PropertyImpl(RDF.getURI(), "li");
 	static private Property DESCRIPTION =
 		new PropertyImpl(RDF.getURI(), "Description");
+        
+    static protected Logger logger = Logger.getLogger( Unparser.class );
+    
 	/** Creates an Unparser for the specified model.
 	 * The localName is the URI (typical URL) intended for
 	 * the output file. No trailing "#" should be used.
@@ -1134,10 +1137,7 @@ class Unparser {
 	}
 	private String getNameSpace(Resource r) {
 		if (r.isAnon()) {
-			Log.severe(
-				"Internal error - giving up",
-				"Unparser",
-				"getNameSpace");
+			logger.error( "Internal error - Unparser.getNameSpace; giving up" );
 			throw new JenaBrokenException( "Internal error: getNameSpace(bNode)" );
 		} else {
 			String uri = r.getURI();
@@ -1181,10 +1181,7 @@ class Unparser {
 	}
 	private String getLocalName(Resource r)  {
 		if (r.isAnon()) {
-			Log.severe(
-				"Internal error - giving up",
-				"Unparser",
-				"getLocalName");
+			logger.error( "Internal error - giving up - Unparser.getLocalName" );
 			throw new JenaBrokenException( "Internal error: getLocalName(bNode)" );
 		} else {
 			String uri = r.getURI();

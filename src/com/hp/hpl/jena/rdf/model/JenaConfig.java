@@ -24,14 +24,14 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: JenaConfig.java,v 1.2 2003-04-03 12:14:25 jeremy_carroll Exp $
+ * $Id: JenaConfig.java,v 1.3 2003-07-01 12:48:27 chris-dollin Exp $
  *
  * Created on 27 June 2002, 08:49
  */
 
 package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.util.Log;
+import org.apache.log4j.Logger;
 
 /** A Class for configuring Jena's behaviour.
  *
@@ -48,7 +48,7 @@ import com.hp.hpl.jena.util.Log;
        See <code>setOldLiteralCompare</code> below.</li>
  * </ul>
  * @author bwm
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  *
  */
 public class JenaConfig {
@@ -56,6 +56,8 @@ public class JenaConfig {
     /** Creates new JenaConfig */
     private JenaConfig() {
     }
+    
+    protected static Logger logger = Logger.getLogger( JenaConfig.class );
     
     private static boolean oldLiteralCompare;
     
@@ -100,7 +102,7 @@ public class JenaConfig {
         } catch (Exception e) {
             // other exceptions are unexpected
             // log and ignore
-            Log.warning("Unexpected Exception", "JenaConfig", "Static Init", e);
+            logger.warn("Unexpected Exception: JenaConfig.<Static Init>", e);
             oldLiteralCompare = false;
         }
     }

@@ -17,6 +17,8 @@ import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.vocabulary.ResultSet ;
 
+import org.apache.log4j.*;
+
 //import com.hp.hpl.jena.mem.ModelMem ;
 //import com.hp.hpl.jena.reasoner.* ;
 
@@ -43,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.ResultSet ;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.11 2003-06-25 16:54:14 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.12 2003-07-01 12:48:28 chris-dollin Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -75,11 +77,11 @@ public class rdfquery
     static Model vocabulary = null ;
 
     static boolean applyRDFS = false ;
+    
+    static protected Logger logger = Logger.getLogger( rdfquery.class );
 
     public static void main (String [] argv)
     {
-        //Log.getInstance().setConsoleHandler();
-        Log.getInstance().setHandler(new PlainLogHandler());
 
         if ( argv.length == 0 )
         {
@@ -342,8 +344,8 @@ public class rdfquery
 
         if ( debug )
         {
-            Log.getInstance().setLevel(Log.DEBUG);
-            Log.debug("Debug on");
+            logger.setLevel( Level.DEBUG );
+            logger.debug("Debug on");
         }
 
         String queryString = null ;
@@ -466,7 +468,7 @@ public class rdfquery
                 w.write(model, pw, "http://unset/") ;
                 pw.println("# Model --------------------------------------------------------------------------------") ;
                 pw.flush() ;
-            } catch (JenaException refEx) { Log.severe("rdfquery: Failed to write model") ; System.exit(1) ; }
+            } catch (JenaException refEx) { logger.error("rdfquery: Failed to write model") ; System.exit(1) ; }
         }
         QueryResults results = qe.exec() ;
         QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;

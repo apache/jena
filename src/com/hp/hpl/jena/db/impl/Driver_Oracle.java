@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Driver_Oracle.java,v 1.6 2003-06-18 21:38:14 wkw Exp $
+  $Id: Driver_Oracle.java,v 1.7 2003-07-01 12:48:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -10,10 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.hp.hpl.jena.db.IDBConnection;
-import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.util.Log;
-
+import com.hp.hpl.jena.db.*;
 
 /**
  * @author hkuno based on code by Dave Reynolds
@@ -73,7 +70,7 @@ public abstract class Driver_Oracle extends DriverRDB {
 			m_sql = new SQLCache(SQL_FILE, defaultSQL, dbcon, ID_SQL_TYPE);
 		} catch (Exception e) {
             e.printStackTrace( System.err );
-			Log.severe("Unable to set connection for Driver:" + e);
+			logger.error("Unable to set connection for Driver:", e);
 		}
 	}
 	

@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.24 2003-06-16 12:35:52 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.25 2003-07-01 12:48:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.shared.*;
 
 import junit.framework.*;
@@ -26,14 +25,19 @@ import java.util.*;
 
 import java.io.*;
 import com.hp.hpl.jena.util.TestLogger;
+import org.apache.log4j.Logger;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.24 $ $Date: 2003-06-16 12:35:52 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.25 $ $Date: 2003-07-01 12:48:28 $
  */
+
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
 	static AwkMatcher matcher = PrettyWriterTest.matcher;
+    
+    static protected Logger logger = Logger.getLogger( TestXMLFeatures.class );
+    
 	static private class Change {
 		void code(RDFWriter w) {
         }
@@ -627,9 +631,7 @@ public class TestXMLFeatures extends TestCase {
 		throws IOException {
 		// create triple and graph.
         //BaseXMLWriter.dbg = true;
-        int oldLogLevel = Log.getInstance().getLevel();
-        Log.getInstance().setLevel(Log.OFF);
-            TestLogger tl = new TestLogger(BaseXMLWriter.class);
+        TestLogger tl = new TestLogger(BaseXMLWriter.class);
 		Node blank = Node.createAnon();
 		Node prop = Node.createURI(s);
 		Graph g = new GraphMem();
@@ -678,7 +680,6 @@ public class TestXMLFeatures extends TestCase {
             throw e;
 		} finally {
           //          BaseXMLWriter.dbg = false;
-          Log.getInstance().setLevel(oldLogLevel);
           tl.end();
         }
 	}
@@ -1050,5 +1051,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.24 2003-06-16 12:35:52 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.25 2003-07-01 12:48:28 chris-dollin Exp $
  */

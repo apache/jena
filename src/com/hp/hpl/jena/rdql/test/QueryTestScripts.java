@@ -13,7 +13,6 @@ import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
 
 import junit.framework.* ;
-import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.util.* ;
 import com.hp.hpl.jena.shared.*;
@@ -21,12 +20,14 @@ import com.hp.hpl.jena.rdql.* ;
 
 import com.hp.hpl.jena.vocabulary.* ;
 
+import org.apache.log4j.Logger;
+
 /** Test scripts for RDQL - loads, executes and checks (with JUnit) a collection of
  *  queries.  New tests added as new featues appera and bugs are reported by
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.10 2003-06-17 15:21:51 chris-dollin Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.11 2003-07-01 12:48:27 chris-dollin Exp $
  */
 
 
@@ -40,6 +41,8 @@ public class QueryTestScripts extends TestSuite
     public String basename = null ;
     static public boolean printDetails = false ;
     static public boolean displayTime = false ;
+
+    static protected Logger logger = Logger.getLogger( QueryTestScripts.class );
 
     // Instance variables.
     String controlFilename = null ;
@@ -353,7 +356,7 @@ public class QueryTestScripts extends TestSuite
             }
             sIter.close() ;
         } catch ( JenaException rdfEx)
-        { Log.severe("Failed to empty model", "com.hp.hpl.jena.rdf.query.Test.QueryTest", "emptyModel", rdfEx) ; }
+        { logger.error( "Failed to empty model (com.hp.hpl.jena.rdf.query.Test.QueryTest.emptyModel)", rdfEx) ; }
     }
 
     static String convertFilename(String filename, String directory)

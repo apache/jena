@@ -25,11 +25,12 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Node_URI;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.util.Log;
 
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.shared.*;
+
+import org.apache.log4j.Logger;
 
 //=======================================================================
 /**
@@ -45,7 +46,7 @@ import com.hp.hpl.jena.shared.*;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.18 $ on $Date: 2003-06-27 20:18:47 $
+* @version $Revision: 1.19 $ on $Date: 2003-07-01 12:48:12 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -184,8 +185,9 @@ public abstract class DriverRDB implements IRDBDriver {
         
    /** Driver version number */
    protected final String VERSION = "2.0alpha";
+   
+   protected static Logger logger = Logger.getLogger( PSet_ReifStore_RDB.class );
     
-
 // =======================================================================
 //	Instance variables
 // =======================================================================
@@ -275,7 +277,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			m_sql.runSQLGroup("initDBgenerators");
 //			m_sql.runSQLGroup("initDBprocedures");
 		} catch (SQLException e) {
-			com.hp.hpl.jena.util.Log.warning("Problem formatting database", e);
+			logger.warn("Problem formatting database", e);
 			throw new RDFRDBException("Failed to format database", e);
 		}
 		
@@ -414,7 +416,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			pSet.setCachePreparedStatements(CACHE_PREPARED_STATEMENTS);
 			pSet.setASTname(tblName);
 		} catch (Exception e) {
-			Log.warning("Unable to create IPSet instance " + e);
+			logger.warn("Unable to create IPSet instance ", e);
 		}
 		return pSet;
 	}	
@@ -428,7 +430,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			Object[] args = {pset, new Integer(dbGraphID)};
 			sg = (SpecializedGraph) con.newInstance(args);
 		} catch (Exception e) {
-			Log.severe("Unable to create instance of SpecializedGraph " + e);
+			logger.error("Unable to create instance of SpecializedGraph ", e);
 		}
 		return sg;
 	}
@@ -518,7 +520,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		SpecializedGraph sg = getSystemSpecializedGraph();
 		DBPropGraph result = DBPropGraph.findPropGraphByName(sg, DEFAULT_PROPS);
 		if (result == null) {
-			Log.severe("No default Model Properties found");
+			logger.error("No default Model Properties found");
 			// Construct the parameters that will be the
 			// default settings for any graph added to this database
 			//new DBPropGraph( m_sysProperties, "default", "generic");
@@ -583,7 +585,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			try {
 				m_sql.runSQLGroup("DropSequence",seqName);
 			} catch (Exception e) {
-				Log.warning("Unable to drop sequence " + seqName + ": " + e);
+				logger.warn("Unable to drop sequence " + seqName, e);
 			}
 		}
 	}
@@ -597,7 +599,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		try {
 		    it = m_sql.runSQLQuery("SelectSequenceName",args);
 		} catch (Exception e) {
-		  Log.severe("Unable to select sequence " + seqName + ": " + e);
+		  logger.error("Unable to select sequence " + seqName,  e);
 			}
 		if (it != null) {
 			return (it.hasNext());
@@ -620,7 +622,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		    }
 		    it.close();
 		} catch (Exception e) {
-		  Log.severe("Unable to select Jena sequences: " + e);
+		  logger.error("Unable to select Jena sequences: ", e);
 		 }
 		return results;
 	}
@@ -655,7 +657,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			} catch (SQLException e) {
 				i++;
 				if ( i > 5 ) {
-					com.hp.hpl.jena.util.Log.warning("Problem creating table", e);
+					logger.warn("Problem creating table", e);
 					throw new RDFRDBException("Failed to create table: " + params[0], e);
 				}
 			}
@@ -788,7 +790,7 @@ public abstract class DriverRDB implements IRDBDriver {
 					return(m_transactionsSupported.booleanValue());
 				}
 			} catch (SQLException e) {
-				Log.severe("SQL Exception caught " + e);
+				logger.error("SQL Exception caught ", e);
 			}
 		}
 		return (false);

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.30 2003-07-01 10:30:57 chris-dollin Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.31 2003-07-01 12:48:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.30 $ on $Date: 2003-07-01 10:30:57 $
+* @version $Revision: 1.31 $ on $Date: 2003-07-01 12:48:12 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -197,7 +197,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
     	
 		try {m_sql.runSQLGroup("createStatementTable", getASTname(), String.valueOf(MAX_LITERAL));
 		} catch (SQLException e) {
-			com.hp.hpl.jena.util.Log.warning("Problem formatting database", e);
+			logger.warn("Problem formatting database", e);
 			throw new RDFRDBException("Failed to format database", e);
 		}
     }
