@@ -6,8 +6,8 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
- * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.25 $
+ * Filename           $RCSfile: DAML_OILLegacyProfile.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2004-12-07 17:40:34 $
@@ -36,20 +36,18 @@ import java.util.*;
 
 /**
  * <p>
- * Vocabulary constants for DAML+OIL, March 2001 version. This version of the DAML
- * vocabulary uses RDFS namespace terms for subClass, subProperty, etc. This was not
- * the case up to and including Jena 2.1.  In Jena 2.1, all of the constants in the
- * DAML vocabulary used the DAML namespace.  The DAML langauge defines both as 
- * equivalent, but recognising this equivalence requires the use of the DAML micro
- * reasoner.  For backwards compatability with Jena 2.1, developers should use 
- * {@link DAML_OILLegacyProfile} with the OntModelSpec. 
+ * Vocabulary constants for DAML+OIL March 2001 version. This version of the vocabulary is
+ * the one that was in use up to Jena 2.1.  It has been replaced by a new version that
+ * uses RDFS namespace terms for subClass and subProperty, which is more normal practice
+ * in DAML ontologies. This version is retained for backwards compatability with Jena 2.1
+ * programs.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.25 2004-12-07 17:40:34 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILLegacyProfile.java,v 1.1 2004-12-07 17:40:34 ian_dickinson Exp $
  */
-public class DAML_OILProfile
+public class DAML_OILLegacyProfile
     extends AbstractProfile
 {
     // Constants
@@ -112,10 +110,10 @@ public class DAML_OILProfile
     private Property m_priorVersion                 = null;
     private Property m_backwardsCompatibleWith      = null;
     private Property m_incompatibleWith             = null;
-    private Property m_subPropertyOf                = m_vocabModel.createProperty( RDFS.subPropertyOf.getURI() );
-    private Property m_subClassOf                   = m_vocabModel.createProperty( RDFS.subClassOf.getURI() );
-    private Property m_domain                       = m_vocabModel.createProperty( RDFS.domain.getURI() );
-    private Property m_range                        = m_vocabModel.createProperty( RDFS.range.getURI() );
+    private Property m_subPropertyOf                = m_vocabModel.createProperty( DAML_OIL.subPropertyOf.getNameSpace(),           DAML_OIL.subPropertyOf.getLocalName() );
+    private Property m_subClassOf                   = m_vocabModel.createProperty( DAML_OIL.subClassOf.getNameSpace(),              DAML_OIL.subClassOf.getLocalName() );
+    private Property m_domain                       = m_vocabModel.createProperty( DAML_OIL.subClassOf.getNameSpace(),              DAML_OIL.domain.getLocalName() );
+    private Property m_range                        = m_vocabModel.createProperty( DAML_OIL.subClassOf.getNameSpace(),              DAML_OIL.range.getLocalName() );
     private Property m_first                        = m_vocabModel.createProperty( DAML_OIL.first.getNameSpace(),                   DAML_OIL.first.getLocalName() );
     private Property m_rest                         = m_vocabModel.createProperty( DAML_OIL.rest.getNameSpace(),                    DAML_OIL.rest.getLocalName() );
     private Property m_minCardinalityQ              = m_vocabModel.createProperty( DAML_OIL.minCardinalityQ.getNameSpace(),         DAML_OIL.minCardinalityQ.getLocalName() );

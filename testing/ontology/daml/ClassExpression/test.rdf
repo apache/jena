@@ -11,7 +11,7 @@
 
 
 <daml:Class rdf:ID="ClassA">
-	<daml:subClassOf rdf:resource="#ClassB" />
+	<rdfs:subClassOf rdf:resource="#ClassB" />
 	<daml:sameClassAs rdf:resource="#ClassC" />
 	<daml:disjointWith rdf:resource="#ClassD" />
 </daml:Class>

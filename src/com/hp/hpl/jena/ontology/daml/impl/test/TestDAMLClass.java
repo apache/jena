@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-Jun-2003
  * Filename           $RCSfile: TestDAMLClass.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:19 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 17:40:32 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -30,6 +30,7 @@ import junit.framework.*;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 
 
@@ -40,7 +41,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLClass.java,v 1.10 2004-12-06 13:50:19 andy_seaborne Exp $
+ * @version CVS $Id: TestDAMLClass.java,v 1.11 2004-12-07 17:40:32 ian_dickinson Exp $
  */
 public class TestDAMLClass 
     extends DAMLTestBase
@@ -77,7 +78,7 @@ public class TestDAMLClass
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
                     
-                    assertEquals( "prop_subClassOf property", DAML_OIL.subClassOf, A.prop_subClassOf().getProperty() );
+                    assertEquals( "prop_subClassOf property", RDFS.subClassOf, A.prop_subClassOf().getProperty() );
                     
                     assertEquals( "sub-class cardinality", 2, A.prop_subClassOf().count() );
                     A.prop_subClassOf().add( B );
@@ -196,8 +197,6 @@ public class TestDAMLClass
                    
                     A.prop_subClassOf().add( B );
                     B.prop_subClassOf().add( C );
-                    
-                    assertEquals( "subClassOf A", B, A.getSuperClass() );
                     
                     iteratorTest( A.getSuperClasses(), new Object[] {B,C,DAML_OIL.Thing} );
                     iteratorTest( A.getSuperClasses( false ), new Object[] {B} );

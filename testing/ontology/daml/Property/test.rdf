@@ -15,15 +15,15 @@
 
 
 <daml:Property rdf:ID="p">
-	<daml:subPropertyOf>
+	<rdfs:subPropertyOf>
 		<daml:Property rdf:ID="q" />
-	</daml:subPropertyOf>
-	<daml:domain>
+	</rdfs:subPropertyOf>
+	<rdfs:domain>
 		<daml:Class rdf:ID="ClassA" />
-	</daml:domain>
-	<daml:range>
+	</rdfs:domain>
+	<rdfs:range>
 		<daml:Class rdf:ID="ClassB" />
-	</daml:range>
+	</rdfs:range>
 	<daml:samePropertyAs>
 		<daml:Property rdf:ID="r" />
 	</daml:samePropertyAs>

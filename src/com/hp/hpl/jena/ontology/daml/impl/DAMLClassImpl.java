@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClassImpl.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:18 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 17:40:33 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClassImpl.java,v 1.12 2004-12-06 13:50:18 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLClassImpl.java,v 1.13 2004-12-07 17:40:33 ian_dickinson Exp $
  */
 public class DAMLClassImpl
     extends OntClassImpl
@@ -82,28 +82,28 @@ public class DAMLClassImpl
     //////////////////////////////////
 
     /** Property accessor for onProperty */
-    private PropertyAccessor m_propSubClassOf = new PropertyAccessorImpl( DAML_OIL.subClassOf, this );
+    private PropertyAccessor m_propSubClassOf = new PropertyAccessorImpl( getProfile().SUB_CLASS_OF(), this );
 
     /** Property accessor for disjointWith */
-    private PropertyAccessor m_propDisjointWith = new PropertyAccessorImpl( DAML_OIL.disjointWith, this );
+    private PropertyAccessor m_propDisjointWith = new PropertyAccessorImpl( getProfile().DISJOINT_WITH(), this );
 
     /** Property accessor for disjointUnionOf */
     private PropertyAccessor m_propDisjointUnionOf = new PropertyAccessorImpl( DAML_OIL.disjointUnionOf, this );
 
     /** Property accessor for sameClassAs */
-    private PropertyAccessor m_propSameClassAs = new PropertyAccessorImpl( DAML_OIL.sameClassAs, this );
+    private PropertyAccessor m_propSameClassAs = new PropertyAccessorImpl( getProfile().EQUIVALENT_CLASS(), this );
 
     /** Property accessor for oneOf */
-    private PropertyAccessor m_propOneOf = new PropertyAccessorImpl( DAML_OIL.oneOf, this );
+    private PropertyAccessor m_propOneOf = new PropertyAccessorImpl( getProfile().ONE_OF(), this );
 
     /** Property accessor for unionOf */
-    private PropertyAccessor m_propUnionOf = new PropertyAccessorImpl( DAML_OIL.unionOf, this );
+    private PropertyAccessor m_propUnionOf = new PropertyAccessorImpl( getProfile().UNION_OF(), this );
 
     /** Property accessor for intersectionOf */
-    private PropertyAccessor m_propIntersectionOf = new PropertyAccessorImpl( DAML_OIL.intersectionOf, this );
+    private PropertyAccessor m_propIntersectionOf = new PropertyAccessorImpl( getProfile().INTERSECTION_OF(), this );
 
     /** Property accessor for complementOf */
-    private PropertyAccessor m_propComplementOf = new PropertyAccessorImpl( DAML_OIL.complementOf, this );
+    private PropertyAccessor m_propComplementOf = new PropertyAccessorImpl( getProfile().COMPLEMENT_OF(), this );
 
     /** DAML common delegate */
     protected DAMLCommon m_common = null;
