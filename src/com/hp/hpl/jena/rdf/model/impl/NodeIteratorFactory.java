@@ -38,11 +38,10 @@ import java.util.Iterator;
 /** An internal class not normally of interest to application developers.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:24 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-07-24 12:01:07 $'
  */
 public interface NodeIteratorFactory {
     
-    NodeIterator createIterator(Iterator iter, Object o, Container cont)
-      throws Exception;
+    NodeIterator createIterator(Iterator iter, Object o, Container cont);
 
 }

@@ -36,9 +36,9 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
-public class ModelRDB extends ModelCom implements Model, ModelI {    
+public class ModelRDB extends ModelCom implements Model {    
     
     protected GraphRDB m_graphRDB = null;
 

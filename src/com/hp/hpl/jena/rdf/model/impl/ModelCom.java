@@ -1,33 +1,9 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001-2003
- *  All rights reserved.
-*
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * Model.java
- *
- * Created on 11 March 2001, 16:07
- */
- 
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: ModelCom.java,v 1.68 2003-07-24 12:01:07 chris-dollin Exp $
+*/
+
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -54,12 +30,12 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.67 $' Date='$Date: 2003-07-23 07:34:50 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.68 $' Date='$Date: 2003-07-24 12:01:07 $'
  */
 
 public class ModelCom 
 extends EnhGraph
-implements Model, ModelI, PrefixMapping, ModelLock
+implements Model, PrefixMapping, ModelLock
 {
 
       private RDFReaderF readerFactory = new RDFReaderFImpl();
@@ -1201,53 +1177,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     public Seq createSeq(String uri)  {
         return (Seq) getSeq(uri).addProperty(RDF.type, RDF.Seq);
     }
-    
-    public NodeIterator listContainerMembers(Container cont,
-                                             NodeIteratorFactory f)
-                                                   {
-        Iterator iter = listBySubject(cont);
-        Statement    stmt;
-        Vector       result = new Vector();
-        int          maxOrdinal = 0;
-        int          ordinal;
-        while (iter.hasNext()) {
-            stmt = (Statement) iter.next();
-            ordinal = stmt.getPredicate().getOrdinal();
-            if (stmt.getSubject().equals(cont) && ordinal != 0) {
-                if (ordinal > maxOrdinal) {
-                    maxOrdinal = ordinal;
-                    result.setSize(ordinal);
-                }
-                result.setElementAt(stmt, ordinal-1);
-            }
-        }
-        WrappedIterator.close( iter );
-        try {
-             return f.createIterator(result.iterator(), result, cont);
-        } catch (Exception e) {
-            throw new JenaException(e);
-        }
-    }
-	
-	
-    public int containerSize(Container cont)  {
-        int result = 0;
-        Iterator iter = listBySubject(cont);
-        Property     predicate;
-        Statement    stmt;
-        while (iter.hasNext()) {
-            stmt = (Statement) iter.next();
-            predicate = stmt.getPredicate();
-            if (stmt.getSubject().equals(cont)
-             && predicate.getOrdinal() != 0
-               ) {
-                result++;
-            }
-        }
-        WrappedIterator.close( iter );
-        return result;
-    }
-	
+
     /**
         Answer a Statement in this Model whcih encodes the given Triple.
         @param t a triple to wrap as a statement
@@ -1280,35 +1210,10 @@ implements Model, ModelI, PrefixMapping, ModelLock
     protected Map1 mapAsStatement = new Map1()
         { public Object map1( Object t ) { return asStatement( (Triple) t ); } };
 	
-	private Iterator listBySubject( Container cont ) {
-		return asStatements( graph.find( cont.asNode(), null, null ) );
+	public StmtIterator listBySubject( Container cont ) {
+		return listStatements( cont, null, (RDFNode) null ); // return asStatements( graph.find( cont.asNode(), null, null ) );
 	}
-	
-    public int containerIndexOf(Container cont, RDFNode n)  {
-        int result = 0;
-        Iterator iter = listBySubject(cont);
-        Property     predicate;
-        Statement    stmt;
-        while (iter.hasNext()) {
-            stmt = (Statement) iter.next();
-            predicate = stmt.getPredicate();
-            if (stmt.getSubject().equals(cont)
-             && predicate.getOrdinal() != 0
-             && n.equals(stmt.getObject())
-              ) {
-                result = predicate.getOrdinal();
-                break;
-            }
-        }
-        WrappedIterator.close( iter );
-        return result;
-    }
-    
-   public boolean containerContains(Container cont, RDFNode n)
-     {
-        return containerIndexOf(cont, n) != 0;
-    }
-    
+
     public void close() {
         graph.close();
     }
@@ -1456,3 +1361,34 @@ implements Model, ModelI, PrefixMapping, ModelLock
     public GraphListener adapt( final ModelChangedListener L )
         { return new ModelListenerAdapter( this, L ); }
 }
+
+/*
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
+ *  All rights reserved.
+*
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Model.java
+ *
+ * Created on 11 March 2001, 16:07
+ */
+ 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SeqImpl.java,v 1.12 2003-07-23 07:34:50 chris-dollin Exp $
+  $Id: SeqImpl.java,v 1.13 2003-07-24 12:01:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-07-23 07:34:50 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-07-24 12:01:07 $' 
  */
 public class SeqImpl extends ContainerImpl implements Seq {
 
@@ -229,9 +229,8 @@ public class SeqImpl extends ContainerImpl implements Seq {
         return this;
     }   
         
-     public NodeIterator iterator()  {
-        return ((ModelI)getModel()).listContainerMembers(this, iteratorFactory);
-    }
+     public NodeIterator iterator()  
+        { return listContainerMembers( iteratorFactory ); }
     
     public Container remove(Statement s) {
         getModel().remove(s);
@@ -249,8 +248,8 @@ public class SeqImpl extends ContainerImpl implements Seq {
         return remove(getModel().createStatement(this, RDF.li(index), o).remove());
     }
     
-    public int indexOf(RDFNode o)  {
-        return ((ModelI)getModel()).containerIndexOf(this, o);
+    public int indexOf( RDFNode o )  {
+        return containerIndexOf( o );
     }    
     
     public int indexOf(boolean o)  {
