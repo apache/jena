@@ -44,7 +44,7 @@ class SingleThreadedParser extends XMLHandler {
 		SAX2RDF.installHandlers(rdr,this);
 		}
 		catch (SAXException e){
-			throw new RuntimeException(e);
+			throw new RuntimeException("Supposedly impossible:",e);
 		}
 	//	setErrorHandler(new DefaultErrorHandler());
 	}

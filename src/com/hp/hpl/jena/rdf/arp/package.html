@@ -6,8 +6,13 @@
 <p>A parser for <a href="http://www.w3.org/TR/rdf-syntax-grammar">RDF/XML</a>.
 </p>
 <p>
-See the ARP documentation and the I/O mini howto for more information.
+See the 
+<a href="../../../../../../../ARP/index.html">ARP documentation</a> 
+and 
+the 
+<a href="../../../../../../../IO/iohowto.html#input">I/O mini howto</a> for more information.
 </p>
+<!--
 <p>The interaction between ARP and Xerces 
 seems to include a significant
 memory leak possibly caused by Xerces interning some strings, on behalf of ARP.
@@ -22,7 +27,8 @@ form an open set in RDF/XML, unlike most XML applications.
 </p>
 <p>
 A potential work around is to use a SAX parser other than Xerces and then
-use {@link SAX2Model} or {@link SAX2RDF} to parse the SAX event stream as RDF.
+use {@link com.hp.hpl.jena.rdf.arp.SAX2Model SAX2Model} or 
+{@link com.hp.hpl.jena.rdf.arp.SAX2RDF SAX2RDF} to parse the SAX event stream as RDF.
 </p>
 <p>
 The size of the leak is presumably highly dependent on the actual
@@ -30,5 +36,6 @@ RDF/XML documents read. As an example the OWL Guide wine ontology,
 (using the version from the OWL Test Cases) contains about 2000 triples
 and leaks about 180K.
 </p>
+-->
 </body>
 </html>

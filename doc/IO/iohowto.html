@@ -642,10 +642,10 @@ An ARP property is
  <tr BGCOLOR="white" CLASS="TableRowColor">
  <td><CODE>error-mode</CODE></td>
  <td>
- <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setDefaultErrorMode()"><CODE>ARP.setDefaultErrorMode()</CODE></A><br>
- <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setLaxErrorMode()"><CODE>ARP.setLaxErrorMode()</CODE></A><br>
- <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setStrictErrorMode()"><CODE>ARP.setStrictErrorMode()</CODE></A><br>
- <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setStrictErrorMode(int)"><CODE>ARP.setStrictErrorMode(int)</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPOptions.html#setDefaultErrorMode()"><CODE>ARPOptions.setDefaultErrorMode()</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPOptions.html#setLaxErrorMode()"><CODE>ARPOptions.setLaxErrorMode()</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPOptions.html#setStrictErrorMode()"><CODE>ARPOptions.setStrictErrorMode()</CODE></A><br>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPOptions.html#setStrictErrorMode(int)"><CODE>ARPOptions.setStrictErrorMode(int)</CODE></A><br>
 This allows a coarse-grained approach to control of error handling.
 Setting this property is equivalent to setting many of the fine-grained error handling
 properties.
@@ -662,7 +662,7 @@ properties.
  <tr BGCOLOR="white" CLASS="TableRowColor">
  <td><CODE>embedding</CODE></td>
  <td>
- <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setEmbedding(boolean)"><CODE>ARP.setEmbedding(boolean)</CODE></A><br/>
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPOptions.html#setEmbedding(boolean)"><CODE>ARPOptions.setEmbedding(boolean)</CODE></A><br/>
 This sets ARP to look for RDF embedded within an enclosing XML document.
  </td>
  <td>String or Boolean</td>
@@ -679,7 +679,7 @@ See
 for a complete list
 of the error conditions detected.<br>
 Setting one of these properties is equivalent to the method
- <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#setErrorMode(int, int)"><CODE>ARP.setErrorMode(int, int)</CODE></A>.
+ <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPOptions.html#setErrorMode(int, int)"><CODE>ARPOptions.setErrorMode(int, int)</CODE></A>.
 Thus fine-grained control over the behaviour in response to specific error conditions
 is possible.
  </td>

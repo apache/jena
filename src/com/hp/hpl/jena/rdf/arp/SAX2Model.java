@@ -12,6 +12,10 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 
 /**
+ * Use arbitrary SAX input to Jena.
+ * See
+ * <a href="../../../../../../../ARP/sax.html">ARP SAX documentation</a>.
+ * 
  * @author Jeremy J. Carroll
  *
  */

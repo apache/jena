@@ -24,12 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.7 2004-10-21 14:40:24 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.8 2004-10-25 13:25:26 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
 package com.hp.hpl.jena.rdf.arp;
-import com.hp.hpl.jena.rdf.model.Model;
 import org.xml.sax.helpers.*;
 import org.xml.sax.ext.*;
 import org.xml.sax.*;
@@ -60,7 +59,12 @@ import org.xml.sax.*;
  * <p>
  * This class does not support multithreaded SAX sources, nor IO interruption.
  * </p>
- *  
+ * <p>
+ * There is further documentation:
+ * <a href="../../../../../../../ARP/standalone.html#not-jena">here</a>
+ * and
+ * <a href="../../../../../../../ARP/sax.html#sax2rdf">here</a>.
+ * </p>
  * @author Jeremy Carroll
  * */
 public class SAX2RDF extends SAX2RDFImpl

@@ -108,7 +108,7 @@ class PushMePullYouPipe extends TokenPipe {
 				throw new WrappedException(e);
 
 			} catch (Throwable t) {
-				throw new RuntimeException(t);
+				throw new RuntimeException("Exception from RDF thread.",t);
 			}
 			/*
 			pipe().naturalDeath();

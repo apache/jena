@@ -33,6 +33,7 @@ a stream of SAX events.
 <li><a href="#options">5. Options</a></li>
 <li><a href="#xmllang">6. XML Lang and Namespaces</a></li>
 <li><a href="#not-jena">7. Using your own statement handler</a></li>
+<li><a href="#dom">8. Using a DOM as input</a></li<
 
 </ul>
 <h2><a name="overview">1. Overview</a></h2>
@@ -209,18 +210,27 @@ As with ARP, it is possible to use this functionality,
 without using other Jena features, in particular,
 without using a Jena Model.
 Instead of using the class SAX2Model,
-you use its superclass SAX2RDF.
-The newInstance method on this class does not
+you use its superclass <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2RDF.html">
+SAX2RDF</A>.
+The <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2RDF.html#newInstance(java.lang.String)">
+newInstance</A>
+ method on this class does not
 provide any means of specifying what to do with
-the triples. Instead, the class implements the ARPConfig
+the triples. Instead, the class implements the <A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2RDF.html">
+ARPConfig</A>
 interface, which permits the setting of handlers
-and parser options.
+and parser options, as described in the
+documentation for using 
+<a href="standalone.html">ARP without Jena</a>.
 </p>
 <p>
 Thus you need to:
 </p>
 <ol>
-<li>Create a SAX2RDF using SAX2RDF.newInstance()</li>
+<li>Create a SAX2RDF using 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2RDF.html#newInstance(java.lang.String)">
+SAX2RDF.newInstance()</A>
+</li>
 <li>Attach your StatementHandler and SAXErrorHandler
 and optionally your NamespaceHandler and
 ExtendedHandler to the SAX2RDF instance.</li>
@@ -228,5 +238,48 @@ ExtendedHandler to the SAX2RDF instance.</li>
 on your SAX source.</li>
 <li>Follow the remainder of the code sample above.</li>
 </ol>
+
+<h2><a name="dom">8. Using a DOM as Input</a></h2>
+<p>
+A DOM can be transformed into a SAX stream using the
+recipe found in 
+<a href="http://www.cafeconleche.org/books/xmljava/chapters/ch09s11.html">
+Choosing between SAX and DOM</a>.
+</p>
+<p>Putting this recipe together with the documentation above, we
+get a complete <a href="DOM2Jena.java">code sample</a>,
+reproduced here:
+</p>
+<pre>
+		// Create DOM:
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+	    // DOM must have namespace information inside it!
+		factory.setNamespaceAware(true);
+		DocumentBuilder domParser = factory.newDocumentBuilder();
+		Document document = domParser
+				.parse(new File("testing/wg/Manifest.rdf"));
+		// Make DOM into transformer input
+		Source input = new DOMSource(document);
+		
+		// Make SAX2Model SAX event handler
+		Model m = ModelFactory.createDefaultModel();
+		SAX2Model handler = SAX2Model.newInstance(
+				"http://www.w3.org/2000/10/rdf-tests/rdfcore/Manifest.rdf", m);
+
+		
+		// Make a SAXResult object using this handler
+		SAXResult output = new SAXResult(handler);
+		output.setLexicalHandler(handler);
+		
+		// Run transform
+		TransformerFactory xformFactory = TransformerFactory.newInstance();
+		Transformer idTransform = xformFactory.newTransformer();
+		idTransform.transform(input, output);
+
+		// Use Model
+		m.write(System.out, "N-TRIPLE");
+</pre>
+
  </BODY>
 </HTML>

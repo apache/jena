@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import com.hp.hpl.jena.rdf.model.Model;
 import org.xml.sax.*;
 import org.xml.sax.ext.*;
 

@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.16 2004-10-21 14:40:24 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.17 2004-10-25 13:25:26 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */
@@ -84,6 +84,7 @@ import org.apache.xerces.util.EncodingMap;
  * returns false or when the {@link AResource#setUserData} method has been
  * used. In these cases ARP needs to remember the <code>rdf:nodeID</code>
  * usage through the file life time. </p>
+ * <p>See <a href="../../../../../../../ARP/index.html">ARP documentation</a> for more information.</p>
  * @author  Jeremy Carroll with contributions from Simon Raboczi
  *   and Andrew Newman
  */

@@ -20,15 +20,15 @@ This document gives a quick guide to using ARP standalone.
 </p>
 <h2>Contents</h2>
 
-TODO
-
-this doc
-
-links with package.html
-
-cross-links with sax.html
-
-cross-links from ARP javadoc into this.
+<ul>
+ <li><a href="#overview">1. Overview</a></li>
+ <li><a href="#sample">2. Sample Code</a></li>
+ <li><a href="#handlers">3. ARP Event Handling</a></li>
+ <li><a href="#config">4. Configuring ARP</a></li>
+ <li><a href="#interrupt">5. Interrupting ARP</a></li>
+ <li><a href="#sax2rdf">6. Using Other SAX Sources</a></li>
+ <li><a href="#memory">7. Memory usage</a></li>
+ </ul>
 
 
 <h2><a name="overview">1. Overview</a></h2>
@@ -36,17 +36,30 @@ cross-links from ARP javadoc into this.
 To load an RDF file:
 </p>
 <ol>
-<li>Create an ARP.</li>
+<li>Create an 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#ARP()">
+ARP</a> instance.</li>
 <li>Set parse options, particularly error detection control,
-using getOptions or setOptionsWith.</li>
-<li>Set its handlers, by calling the 
-getHandlers or setHandlersWith
+using 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPConfig.html#getOptions()">
+getOptions</A> or 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPConfig.html#setOptionsWith(com.hp.hpl.jena.rdf.arp.ARPOptions)">
+setOptionsWith</A>.</li>
+<li>Set its handlers, by calling the
+
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPConfig.html#getHandlers()">
+getHandlers</A> or 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPConfig.html#setHandlersWith(com.hp.hpl.jena.rdf.arp.ARPHandlers)">
+setHandlersWith<A>
 methods, and then.<ul>
-<li>Setting the statement handler.</li>
+<li>Setting the 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPHandlers.html#setStatementHandler(com.hp.hpl.jena.rdf.arp.StatementHandler)">
+statement handler</A>.</li>
 <li>Optionally setting the other handlers.</li>
 </ul>
 </li>
-<li>Call a load method.</li>
+<li>Call a 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARP.html#load(java.io.InputStream, java.lang.String)">load</A> method</li>
 </ol>
 <p>
 Xerces is used for parsing the XML.
@@ -58,123 +71,206 @@ use a different source of SAX events.
 Errors may occur
 in either the XML or the RDF part.</p>
 
-<h2><a name="sample">Sample Code</a></h2>
+<h2><a name="sample">2. Sample Code</a></h2>
 <pre>
-        ARP arp = new ARP();
+    ARP arp = new ARP();
         
  // initialisation - uses ARPConfig interface only.
  
-        arp.getOptions().setLaxErrorMode();
+    arp.getOptions().setLaxErrorMode();
         
-        arp.getHandlers().setErrorHandler(new ErrorHandler(){
-        	public void fatalError(SAXParseException e){
-        		status[0] = true;
-        	}
-			public void error(SAXParseException e){
-				status[0] = true;
-			}
-			public void warning(SAXParseException e){
-				status[0] = true;
-			}
-        });
-        arp.getHandlers().setStatementHandler(new StatementHandler(){
-        public void statement(AResource a, AResource b, ALiteral l){
-        	/* this method is invoked exactly once
-        	 * while parsing the dummy document.
-        	 * The l argument is in exclusive canonical XML and
-        	 * corresponds to where the lexical form has been 
-        	 * in the dummy document. The lexical form is valid
-        	 * iff it is unchanged.
-        	 */
-        	if (status[1] || !l.isWellFormedXML()) {
-				status[0] = true;
-			}
-			//throw new BrokenException("plain literal in XMLLiteral code.");
-            status[1] = true;
-            status[2] = l.toString().equals(lexicalForm);
-        }
-		public void statement(AResource a, AResource b, AResource l){
-	      status[0] = true;
-	      //throw new BrokenException("resource valued RDF/XML in XMLLiteral code.");
-	    }
-        });
+    arp.getHandlers().setErrorHandler(new ErrorHandler(){
+    	public void fatalError(SAXParseException e){
+               // TODO code
+    	}
+		public void error(SAXParseException e){
+				// TODO code
+		}
+		public void warning(SAXParseException e){
+				// TODO code
+		}
+    });
+    arp.getHandlers().setStatementHandler(new StatementHandler(){
+    public void statement(AResource a, AResource b, ALiteral l){
+        	// TODO code
+    }
+	public void statement(AResource a, AResource b, AResource l){
+	        // TODO code
+    }
+    });
  
  // parsing.
  
-        try {
-        
+    try {
+    // Loading fixed input ...
         arp.load(new StringReader(
-        "<rdf:RDF  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>\n"
-        +"<rdf:Description><rdf:value rdf:parseType='Literal'>"
-        +lexicalForm+"</rdf:value>\n"
-        +"</rdf:Description></rdf:RDF>"
+        "&lt;rdf:RDF  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>\n"
+        +"&lt;rdf:Description>&lt;rdf:value rdf:parseType='Literal'>"
+        +"&lt;b>hello&lt;/b>&lt;/rdf:value>\n"
+        +"&lt;/rdf:Description>&lt;/rdf:RDF>"
         ));
         
-        }
-        catch (IOException ioe){
-           throw new BrokenException(ioe);	
-        }
-        catch (SAXException s){
-        	return false;
-        }
+    }
+    catch (IOException ioe){
+           // something unexpected went wrong	
+    }
+    catch (SAXParseException s){
+        	// This error will have been reported
+    }
+    catch (SAXException ss) {
+            // This error will not have been reported.
+    }
 </pre>        
 
-<h2><a name="config">Configuring ARP</a></h2>
 
-See I/O how to ...
+<h2><a name="handlers">3. ARP Event Handling</a></h2>
 
-<h2><a name="errors">Error Handling</a></h2>
+<p>
+ARP reports events concerning:
+</p>
+<ul>
+<li>Triples found in the input.</li>
+<li>Errors in the input.</li>
+<li>Namespace declarations.</li>
+<li>Scope of blank nodes.</li>
+</ul>
+<p>
+User code is needed to respond to any of these events
+of interest. This is written by implementing any of the
+relevant interfaces:
 
-
-Interrupting ARP
-<p>See 
-{@link ARPHandlers#setErrorHandler} for details
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/StatementHandler.html">
+StatementHandler</A>,
+<a href="saxdoc/org/xml/sax/ErrorHandler.html">
+org.xml.sax.ErrorHandler</a>,
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/NamespaceHandler.html">
+NamespaceHandler</A>,
+and
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ExtendedHandler.html">
+ExtendedHandler</A>.
+</p>
+ or 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPConfig.html#setHandlersWith(com.hp.hpl.jena.rdf.arp.ARPHandlers)">
+setHandlersWith<A>
+methods, and then.<ul>
+<li>Setting the 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPHandlers.html#setStatementHandler(com.hp.hpl.jena.rdf.arp.StatementHandler)">
+statement handler</A>.</li>
+<p>
+An individual handler is set by calling the
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPConfig.html#getHandlers()">
+getHandlers</A>
+ method on the ARP instance. This returns an encapsulation
+of all the handlers being used. A specific handler 
+is set by
+calling the appropriate set...Handler method on that object,
+e.g. 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPHandlers.html#setStatementHandler(com.hp.hpl.jena.rdf.arp.StatementHandler)">
+setStatementHandler</A>.
+</p>
+<p>
+All the handlers can be copied from one ARP instance to another
+by using the 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPConfig.html#setHandlersWith(com.hp.hpl.jena.rdf.arp.ARPHandlers)">
+setHandlersWith<A>
+ method:
+</p>
+<pre>
+   ARP from, to;
+   // initialize from and to
+   // ...
+   
+   to.setHandlersWith(from.getHandlers());
+</pre>
+<p>
+The error handler reports both XML and RDF errors, the former detected
+by Xerces.
+See 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPHandlers.html#setErrorHandler(org.xml.sax.ErrorHandler)">
+ARPHandlers.setErrorHandler</A> for details
 of how to distinguish between them.</p>
 
+<h2><a name="config">4. Configuring ARP</a></h2>
 
-<h2><a name="sax2rdf">Using Other SAX Sources</a></h2>
+<p>
+ARP can be configured to treat most error conditions as warnings
+or to be ignored, and to treat some non-error conditions as
+warnings or errors.
+</p>
+<p>
+In addition, the behaviour in response to input that does not have an
+<code>&lt;rdf:RDF&gt;</code> root element is configurable: either to
+treat the whole file as RDF anyway, or to scan the file looking
+for embedded  <code>&lt;rdf:RDF&gt;</code> elements.
+</p>
+<p>
+As with the handlers, there is an options object that encapsulates
+these settings. It can be accessed using 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPConfig.html#getOptions()">
+getOptions</A>, 
+and then individual settings can be made using the methods in
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ARPOptions.html">
+ARPOptions</A>.
+</p>
+<p>
+It is also possible to copy all the option settings
+from one ARP instance to another:
+</p>
+<pre>
+   ARP from, to;
+   // initialize from and to
+   // ...
+   
+   to.setOptionsWith(from.getOptions());
+</pre>
+<p>
+The 
+<a href="../IO/iohowto.html#arp-properties">I/O how-to</a> gives some more detail about the options
+settings, although it assumes the use of the Jena RDFReader interface.
+</p>
 
 
-<h2><a name="memory">Memory usage</a></h2>
+<h2><a name="interrupt">5. Interrupting ARP</a></h2>
+<p>
+It is possible to interrupt an ARP thread.
+See the <a href="../IO/iohowto.html#arp-interrupt">I/O how-to</a> for details.
+</p> 
 
+<h2><a name="sax2rdf">6. Using Other SAX Sources</a></h2>
+
+<p>
+It is possible to use ARP with other SAX input sources,
+e.g. from a non-Xerces parser, or from an in-memory XML
+source, such as a DOM tree.
+</p>
+<p>
+Instead of an ARP instance, you create an instance
+of
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2RDF.html">
+SAX2RDF</A> using the<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2RDF.html#newInstance(java.lang.String)">
+newInstance</A> method. This can be configured just like an ARP instance,
+following the initialization section of the 
+<a href="#sample">sample code</a>.
+</p>
+<p>
+This is used like a SAX2Model instance as 
+<a href="sax.html">described elsewhere</a>.
+<h2><a name="memory">7. Memory usage</a></h2>
 <p>
 For very large files, ARP does not use any additional
 memory except when either the 
-{@link ExtendedHandler#discardNodesWithNodeID}
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/ExtendedHandler.html#discardNodesWithNodeID()">
+ExtendedHandler.discardNodesWithNodeID</A>
 returns false or when the 
-{@link AResource#setUserData} 
+
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/AResource.html#setUserData(java.lang.Object)">
+AResource.setUserData</A> 
 method has been
 used. 
 In these cases ARP needs to remember the <code>rdf:nodeID</code>
 usage through the file life time. </p>
-        
-
-
-<ul>
-<li><a href="#rush">1. Rush Guide - Jena1 Migration (Must Read)</a>
-<ul>
-<li><a href="#rdfxml">1.1 RDF/XML, RDF/XML-ABBREV</a>
-</li>
-<li><a href="#n3">1.2 N3</a>
-</li>
-<li><a href="#ntriple">1.3 N-TRIPLE</a>
-</li>
-</ul>
-<li><a href="#encoding">2. Character Encoding in Java and XML</a></li>
-<li><a href="#reader-writer">3. When to Use Reader and Writer?</a></li>
-<li><a href="#intro-advanced">4. Introduction to Advanced Jena I/O</a></li>
-<li><a href="#input">5. Advanced RDF/XML Input</a>
-<ul><li><a href="#arp-properties">
-5.1 ARP properties</a></li>
-<li><a href="#arp-interrupt">
-5.2 Interrupting ARP</a></li>
-</ul></li>
-<li><a href="#output">6. Advanced RDF/XML Output</a></li>
-<li><a href="#conformance">7. Conformance</a></li>
-<li><a href="#speed">8. Faster RDF/XML I/O</a></li>
-
-</ul>
-
-
+ <p>However, there is a <a href="issues.html#leak">memory leak</a> 
+ involving the interaction
+ between ARP and Xerces.</p>  
  </BODY>
 </HTML>
