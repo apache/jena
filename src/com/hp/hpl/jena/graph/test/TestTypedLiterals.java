@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.3 2003-01-30 10:25:18 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.4 2003-01-31 10:26:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -27,10 +27,15 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-01-30 10:25:18 $
+ * @version $Revision: 1.4 $ on $Date: 2003-01-31 10:26:35 $
  */
 public class TestTypedLiterals extends TestCase {
-      
+    
+    // Temporary debug - to be integrated into tests
+    static {
+        // Locale.setDefault(Locale.ITALY);
+    }
+          
     /** dummy model used as a literal factory */
     private Model m = new ModelMem();
     
@@ -225,6 +230,8 @@ public class TestTypedLiterals extends TestCase {
         checkLegalLiteral("12345", XSDDatatype.XSDdecimal, Long.class, new Long("12345"));
         checkLegalLiteral("42.45", XSDDatatype.XSDdecimal, BigDecimal.class, new BigDecimal("42.45"));
         checkLegalLiteral("9223372036854775808.1234", XSDDatatype.XSDdecimal, BigDecimal.class, new BigDecimal("9223372036854775808.1234"));
+        checkLegalLiteral("123.4", XSDDatatype.XSDdecimal, BigDecimal.class, new BigDecimal("123.4"));
+        checkIllegalLiteral("123,4", XSDDatatype.XSDdecimal);
         
         // Booleans
         checkLegalLiteral("true", XSDDatatype.XSDboolean, Boolean.class, new Boolean(true));

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDBigNumberType.java,v 1.1.1.1 2002-12-19 19:13:41 bwm Exp $
+ * $Id: XSDBigNumberType.java,v 1.2 2003-01-31 10:25:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.dt;
 
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * and default to a Long when possible.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:41 $
+ * @version $Revision: 1.2 $ on $Date: 2003-01-31 10:25:57 $
  */
 public class XSDBigNumberType extends XSDDatatype {
     
@@ -54,7 +54,7 @@ public class XSDBigNumberType extends XSDDatatype {
      */
     public Object parse(String lexicalForm) throws DatatypeFormatException {
         Object xsdValue = super.parse(lexicalForm);
-        if (decimalDV.getFractionDigits(xsdValue) > 1) {
+        if (decimalDV.getFractionDigits(xsdValue) >= 1) {
             return new BigDecimal(xsdValue.toString());
         } else if (decimalDV.getTotalDigits(xsdValue) > 18) {
             return new BigInteger(xsdValue.toString());
