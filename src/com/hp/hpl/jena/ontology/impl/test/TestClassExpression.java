@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 23:11:12 $
+ * Last modified on   $Date: 2003-06-19 14:37:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.18 2003-06-10 23:11:12 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.19 2003-06-19 14:37:22 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -949,7 +949,11 @@ public class TestClassExpression
                     C.addSuperClass( r0 );
                     
                     iteratorTest( A.listDeclaredProperties(), new Object[] {p, q} );
-                    iteratorTest( C.listDeclaredProperties(), new Object[] {s, r} );
+                    
+                    // no longer counted, since this now relies on inference which is turned off
+                    //iteratorTest( C.listDeclaredProperties(), new Object[] {s, r} );
+                    
+                    iteratorTest( r0.listDeclaredProperties(), new Object[] {r} );
                 }
             },
             

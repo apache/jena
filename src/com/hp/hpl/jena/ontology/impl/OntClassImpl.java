@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 15:57:32 $
+ * Last modified on   $Date: 2003-06-19 14:37:17 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -30,6 +30,7 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.ResourceUtils;
 import com.hp.hpl.jena.util.iterator.*;
@@ -45,7 +46,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.20 2003-06-18 15:57:32 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.21 2003-06-19 14:37:17 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -518,17 +519,53 @@ public class OntClassImpl
      * @return An iteration of the properties that have this class as domain
      */
     public ExtendedIterator listDeclaredProperties( boolean all ) {
-        // TODO: how to use all?
-        List altQuery = null;
-        if (m_restrictionPropQuery != null) {
-            altQuery = new ArrayList();
-            altQuery.add( m_restrictionPropQuery );
+        // decide which model to use, based on whether we want entailments
+        Model m = all ? getModel() : ((OntModel) getModel()).getBaseModel();
+
+        // list properties that have this class as domain
+        ExtendedIterator results0 = m.listStatements( null, getProfile().DOMAIN(), this )
+                                    .mapWith( new SubjectMapper() );
+        
+        // if defined, add the restrictions on this property
+        if (getProfile().ON_PROPERTY() != null) {
+            // a filter for restrictions with an upper cardinality of zero
+            Filter zeroCard = new Filter() {
+                public boolean accept( Object x ) {
+                    Resource subj = nodeAsResource( (Node) ((List) x).get( 0 ) );
+                    return subj.hasProperty( getProfile().MAX_CARDINALITY(), 0 ) || 
+                           subj.hasProperty( getProfile().CARDINALITY(), 0 );
+                }
+            };
+            
+            // partial modality
+            Query q0 = new Query();
+            q0.addMatch( asNode(), getProfile().SUB_CLASS_OF().asNode(), Query.X );
+            q0.addMatch( Query.X, getProfile().ON_PROPERTY().asNode(), Query.Y );
+            
+            // complete modality
+            Query q1 = new Query();
+            q1.addMatch( asNode(), getProfile().EQUIVALENT_CLASS().asNode(), Query.X );
+            q1.addMatch( Query.X, getProfile().ON_PROPERTY().asNode(), Query.Y );
+            
+            // extract the results
+            ExtendedIterator qr0 = m.queryHandler().prepareBindings( q0, new Node[] {Query.X, Query.Y} ).executeBindings();
+            ExtendedIterator qr1 = m.queryHandler().prepareBindings( q1, new Node[] {Query.Y, Query.Y} ).executeBindings();
+            
+            // we rely on the reasoner for sub-class and equivalence reasoning
+            ExtendedIterator results1 = qr0.andThen( qr1 ).filterDrop( zeroCard );
+            
+            Map1 bind1 = new Map1() {public Object map1( Object x ) { return nodeAsResource( (Node) ((List) x).get( 1 ) );} };
+            results0 = results0.andThen( results1.mapWith( bind1 ) );
         }
         
-        return new UniqueExtendedIterator( ((OntModel) getModel()).queryFor( m_domainQuery, altQuery, OntProperty.class ) );
+        // map each answer value to the appropriate ehnanced node
+        return new UniqueExtendedIterator( results0 );
     }
 
-
+    // TODO: replace this with the new method Chris is going to add to Model
+    private Resource nodeAsResource( Node n ) { return (Resource) ResourceImpl.rdfNodeFactory.wrap( n, (EnhGraph) getModel() ); }
+    
+    
     /**
      * <p>Answer an iterator over the individuals in the model that have this
      * class among their types.<p>

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.27 $
+ * Revision           $Revision: 1.28 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:08 $
+ * Last modified on   $Date: 2003-06-19 14:37:17 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -49,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.27 2003-06-18 21:56:08 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.28 2003-06-19 14:37:17 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1303,6 +1303,15 @@ public class OntResourceImpl
             else {
                 return x;
             }
+        }
+    }
+    
+    /** Implementation of Map1 that extracts the subject of a statement */
+    protected class SubjectMapper
+        implements Map1
+    {
+        public Object map1( Object x ) { 
+            return (x instanceof Statement) ? ((Statement) x).getSubject() : x; 
         }
     }
     
