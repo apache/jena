@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:20:43 $
+ * Last modified on   $Date: 2003-03-28 22:29:52 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.1 2003-03-28 22:20:43 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.2 2003-03-28 22:29:52 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -164,9 +164,3 @@ public class OntClassImpl
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* TODO delete me
-public class OntClassImpl{
-
-}
-
-*/

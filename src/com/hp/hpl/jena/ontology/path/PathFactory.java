@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Mar-2003
  * Filename           $RCSfile: PathFactory.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 10:11:39 $
+ * Last modified on   $Date: 2003-03-28 22:28:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -26,7 +26,6 @@ package com.hp.hpl.jena.ontology.path;
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.Profile;
-import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.ontology.path.impl.*;
 
 
@@ -37,7 +36,7 @@ import com.hp.hpl.jena.ontology.path.impl.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: PathFactory.java,v 1.1 2003-03-25 10:11:39 ian_dickinson Exp $
+ * @version CVS $Id: PathFactory.java,v 1.2 2003-03-28 22:28:58 ian_dickinson Exp $
  */
 public class PathFactory {
     // Constants

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            20-Mar-2003
  * Filename           $RCSfile: ClosurePathExpr.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 10:11:47 $
+ * Last modified on   $Date: 2003-03-28 22:30:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -25,7 +25,6 @@ package com.hp.hpl.jena.ontology.path.impl;
 // Imports
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.path.*;
 
 import java.util.*;
@@ -46,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClosurePathExpr.java,v 1.1 2003-03-25 10:11:47 ian_dickinson Exp $
+ * @version CVS $Id: ClosurePathExpr.java,v 1.2 2003-03-28 22:30:25 ian_dickinson Exp $
  */
 public class ClosurePathExpr
     extends AbstractPathExpr 
