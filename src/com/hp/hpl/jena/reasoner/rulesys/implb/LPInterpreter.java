@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.7 2003-07-25 12:16:46 der Exp $
+ * $Id: LPInterpreter.java,v 1.8 2003-07-25 16:34:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-07-25 12:16:46 $
+ * @version $Revision: 1.8 $ on $Date: 2003-07-25 16:34:34 $
  */
 public class LPInterpreter {
 
@@ -94,7 +94,9 @@ public class LPInterpreter {
         tmFrame.linkTo(cpFrame);
         cpFrame = tmFrame;
         
-        context = new BBRuleContext(engine.getInfGraph());
+        BBRuleContext bbcontext = new BBRuleContext(engine.getInfGraph());
+        bbcontext.setEnv(new LPBindingEnvironment(this));
+        context = bbcontext;
     }
 
     //  =======================================================================

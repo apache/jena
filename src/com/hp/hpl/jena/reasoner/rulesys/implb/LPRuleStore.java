@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.3 2003-07-21 16:22:47 der Exp $
+ * $Id: LPRuleStore.java,v 1.4 2003-07-25 16:34:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-21 16:22:47 $
+ * @version $Revision: 1.4 $ on $Date: 2003-07-25 16:34:34 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -37,6 +37,21 @@ public class LPRuleStore extends RuleStore {
     
     /** The list of all RuleClauseCode objects, used to implement wildcard queries */
     protected ArrayList allRuleClauseCodes;
+    
+    /**
+     * Construct a rule store containing the given rules.
+     * @param rules the rules to initialize the store with.
+     */
+    public LPRuleStore(List rules) {
+        super(rules);
+    }
+    
+    /**
+     * Construct an empty rule store
+     */
+    public LPRuleStore() {
+        super();
+    }
     
     /**
      * Return an ordered list of RuleClauseCode objects to implement the given 

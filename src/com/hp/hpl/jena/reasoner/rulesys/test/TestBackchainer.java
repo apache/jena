@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.22 2003-07-25 12:16:47 der Exp $
+ * $Id: TestBackchainer.java,v 1.23 2003-07-25 16:34:54 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,9 +28,10 @@ import junit.framework.TestSuite;
 
 /**
  * Test harness for the backward chainer. 
+ * Parameterizable in subclasses by overriding createReasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-07-25 12:16:47 $
+ * @version $Revision: 1.23 $ on $Date: 2003-07-25 16:34:54 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -83,6 +84,13 @@ public class TestBackchainer extends TestCase {
 //        return suite;
     }  
 
+    /**
+     * Override in subclasses to test other reasoners.
+     */
+    public Reasoner createReasoner(List rules) {
+        return new BasicBackwardRuleReasoner(rules);
+    }
+    
     /**
      * Test parser modes to support backarrow notation are working
      */
@@ -211,7 +219,7 @@ public class TestBackchainer extends TestCase {
         schema.add(new Triple(c, p, c));
         
         // Case of schema and data but no rule axioms
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(new ArrayList());
+        Reasoner reasoner =  createReasoner(new ArrayList());
         InfGraph infgraph = reasoner.bindSchema(schema).bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, null, null), 
@@ -223,7 +231,7 @@ public class TestBackchainer extends TestCase {
                 
         // Case of data and rule axioms but no schema
         List rules = Rule.parseRules("-> (d p d).");
-        reasoner =  new BasicBackwardRuleReasoner(rules);
+        reasoner =  createReasoner(rules);
         infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, null, null), 
@@ -255,9 +263,8 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(a, p, b));
         data.add(new Triple(b, p, c));
         data.add(new Triple(b, p, d));
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, r, null), 
             new Object[] {
@@ -280,9 +287,8 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(b, q, c));
         data.add(new Triple(a, s, b));
         data.add(new Triple(b, s, d));
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, r, null), 
             new Object[] {
@@ -307,9 +313,8 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(b, q, c));
         data.add(new Triple(a, s, b));
         data.add(new Triple(b, s, d));
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, r, null), 
             new Object[] {
@@ -324,7 +329,7 @@ public class TestBackchainer extends TestCase {
      */
     public void testBaseRules3() {    
         List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         Graph data = new GraphMem();
         data.add(new Triple(p, sP, q) );
         data.add(new Triple(q, sP, r) );
@@ -332,7 +337,6 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(s, sP, t) );
         data.add(new Triple(a,  p, b) );
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, RDFS.subPropertyOf.asNode(), null), 
             new Object[] {
@@ -350,14 +354,13 @@ public class TestBackchainer extends TestCase {
      */
     public void testBaseRules3b() {    
         List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         Graph data = new GraphMem();
         data.add(new Triple(p, sP, q) );
         data.add(new Triple(q, sP, r) );
         data.add(new Triple(r, sP, t) );
         data.add(new Triple(q, sP, s) );
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, RDFS.subPropertyOf.asNode(), null), 
             new Object[] {
@@ -386,9 +389,8 @@ public class TestBackchainer extends TestCase {
                         "[r1: (?x p ?y) <- (?x r ?y)]" +
                         "[r2: (?x p ?z) <- (?x p ?y), (?y r ?z)]" 
                         );        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, p, null), 
             new Object[] {
@@ -413,9 +415,8 @@ public class TestBackchainer extends TestCase {
             "[r3: (?x b ?y) <- (?x d ?y)]" +
             "[r4: (?x b ?y) <- (?x a ?z), (?z d ?y)]"
         );
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(p, a, null), 
             new Object[] {
@@ -435,9 +436,8 @@ public class TestBackchainer extends TestCase {
             "[r1: (?x r f(?y,?z)) <- (?x p ?y), (?x q ?z)]" +
             "[r2: (?x s ?y) <- (?x r f(?y, ?z))]"
         );
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, s, null), 
             new Object[] {
@@ -459,9 +459,8 @@ public class TestBackchainer extends TestCase {
             "[r3: (?x r g(?y,?z)) <- (?x p ?y), (?x t ?z)]" +
             "[r4: (?x s ?z) <- (?x r g(?y, ?z))]"
         );
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, s, null), 
             new Object[] {
@@ -482,9 +481,8 @@ public class TestBackchainer extends TestCase {
             "[r2: (a p ?x) <- (a q ?x)]" +
             "[r3: (a r ?y) <- (a p f(?x, ?y))]"
         );
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, r, null), 
             new Object[] {
@@ -502,9 +500,8 @@ public class TestBackchainer extends TestCase {
             "[a2: -> (a q 3) ]" +
             "[r1: (?x r ?s) <- (?x p ?y), (?x q ?z), sum(?y, ?z, ?s)]"
         );
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, r, null), 
             new Object[] {
@@ -523,9 +520,8 @@ public class TestBackchainer extends TestCase {
             "[r1: (?x r ?y ) <- bound(?x), (?x p ?y) ]" +
             "[r2: (?x r ?y) <- unbound(?x), (?x q ?y)]"
         );
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, r, null), 
             new Object[] {
@@ -546,9 +542,8 @@ public class TestBackchainer extends TestCase {
         List rules = Rule.parseRules(
             "[r1: (a p b ) <- unbound(?x) ]"
         );
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, null, null), 
             new Object[] {
@@ -565,9 +560,8 @@ public class TestBackchainer extends TestCase {
         List rules = Rule.parseRules(
             "[r1: (a p b ) <- (a r b) ]"
         );
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, null, null), 
             new Object[] {
@@ -586,9 +580,8 @@ public class TestBackchainer extends TestCase {
         List rules = Rule.parseRules(
             "[r1: (?x s ?z), (?z s ?x) <- (?x p ?y) (?y r ?z) ]"
         );
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, s, null), 
             new Object[] {
@@ -606,9 +599,8 @@ public class TestBackchainer extends TestCase {
         data.add(new Triple(a, p, b));
         data.add(new Triple(b, p, c));
         data.add(new Triple(b, p, d));
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, r, null), 
             new Object[] {
@@ -641,9 +633,8 @@ public class TestBackchainer extends TestCase {
         "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
         "[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]"
                         );        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(null, sC, null), 
             new Object[] {
@@ -673,9 +664,8 @@ public class TestBackchainer extends TestCase {
         "[rdfs3:  (?x ?p ?y), (?p rdfs:range ?c) -> (?y rdf:type ?c)]" +
         "[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]"
                         );        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, ty, null), 
             new Object[] {
@@ -699,9 +689,8 @@ public class TestBackchainer extends TestCase {
             "[r1: (c r ?x) <- (?x p f(?x b))]" +
             "[r2: (?y p f(a ?y)) <- (c q ?y)]"
                           );        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), new Object[] { } );
               
@@ -710,9 +699,8 @@ public class TestBackchainer extends TestCase {
         "[r1: (c r ?x) <- (?x p f(?x a))]" +
         "[r2: (?y p f(a ?y)) <- (c q ?y)]"
                           );        
-        reasoner =  new BasicBackwardRuleReasoner(rules);
+        reasoner =  createReasoner(rules);
         infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
               new Object[] {
@@ -729,9 +717,8 @@ public class TestBackchainer extends TestCase {
           "[r1: (c r ?x) <- (?x p ?x)]" +
           "[r2: (?x p ?y) <- (a q ?x), (b q ?y)]"
                           );        
-        reasoner =  new BasicBackwardRuleReasoner(rules);
+        reasoner =  createReasoner(rules);
         infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
               new Object[] {
@@ -742,9 +729,8 @@ public class TestBackchainer extends TestCase {
           "[r1: (c r ?x) <- (?x p ?x)]" +
           "[r2: (a p ?x) <- (a q ?x)]"
                           );        
-        reasoner =  new BasicBackwardRuleReasoner(rules);
+        reasoner =  createReasoner(rules);
         infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
               new Object[] {
@@ -769,9 +755,8 @@ public class TestBackchainer extends TestCase {
     "[rs2: (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D) -> (?X rdf:type all(?P,?C))]" +
     "[rp4: (?X rdf:type all(?P, ?C)), (?X ?P ?Y) -> (?Y rdf:type ?C)]"
                           );        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(b, ty, c), new Object[] {
                   new Triple(b, ty, c)
@@ -811,9 +796,8 @@ public class TestBackchainer extends TestCase {
         "[restrictionSubclass2: bound(?R), isFunctor(?R), (?D owl:equivalentClass ?R),(?X rdf:type ?D) -> (?X rdf:type ?R)]" +
         "[restrictionSubclass2: unbound(?R), (?X rdf:type ?D), (?D owl:equivalentClass ?R) isFunctor(?R) -> (?X rdf:type ?R)]" +
                        ""  );        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(a, ty, C1), new Object[] {
                   new Triple(a, ty, C1)
@@ -844,9 +828,8 @@ public class TestBackchainer extends TestCase {
         "[restrictionProc4b: bound(?Y) (?X ?P ?Y), notEqual(?P, rdf:type), (?X rdf:type all(?P, ?C)),-> (?Y rdf:type ?C)]" +
         "[restrictionProc4b: unbound(?Y), (?X rdf:type all(?P, ?C)), (?X ?P ?Y), notEqual(?P, rdf:type),-> (?Y rdf:type ?C)]" +
                        ""  );        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(null, ty, c), new Object[] {
               } );
@@ -869,9 +852,8 @@ public class TestBackchainer extends TestCase {
         "[rdfs3:  (?x ?p ?y), (?p rdfs:range ?c) -> (?y rdf:type ?c)]" +
         "[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]"
                         );        
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         // Get just one result
         ExtendedIterator it = infgraph.find(a, ty, null);
         Triple result = (Triple)it.next();
@@ -898,9 +880,8 @@ public class TestBackchainer extends TestCase {
         Node C1 = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#C1");
         data.add(new Triple(a, p, b));
         List rules = Rule.parseRules(Util.loadResourceFile("testing/reasoners/bugs/rdfs-error1.brules"));
-        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
-        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(b, ty, C1), 
             new Object[] {

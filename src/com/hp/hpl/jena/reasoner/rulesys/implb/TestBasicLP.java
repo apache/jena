@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.5 2003-07-25 12:16:46 der Exp $
+ * $Id: TestBasicLP.java,v 1.6 2003-07-25 16:34:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-07-25 12:16:46 $
+ * @version $Revision: 1.6 $ on $Date: 2003-07-25 16:34:34 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -61,6 +61,7 @@ public class TestBasicLP  extends TestCase {
      */
     public static TestSuite suite() {
         return new TestSuite( TestBasicLP.class );
+        
 //        TestSuite suite = new TestSuite();
 //        suite.addTest(new TestBasicLP( "testBaseRules5" ));
 //        return suite;
@@ -426,12 +427,15 @@ public class TestBasicLP  extends TestCase {
      * Test simple invocation of a builtin
      */
     public void testBuiltin1() {
-        doTest("[r1: (?x r ?y) <- print(?x, ?y)]",
+        doTest("[r1: (?x r ?y) <- (?x p ?v), sum(?v 2 ?y)]",
                 new Triple[] {
+                    new Triple(a, p, Util.makeIntNode(3)),
+                    new Triple(b, p, Util.makeIntNode(4))
                 },
-                new Triple(a, r, b),
+                new Triple(Node.ANY, r, Node.ANY),
                 new Object[] {
-                    new Triple(a, r, b),
+                    new Triple(a, r, Util.makeIntNode(5)),
+                    new Triple(b, r, Util.makeIntNode(6)),
                 } );
     }
     
