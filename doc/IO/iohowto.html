@@ -42,7 +42,7 @@ subsystem.
 Jena1 used Reader's and Writer's.</p>
 <p>
 The main I/O methods to use in Jena
- are found on the 
+ are found on the
 <A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A>
 interface. These are:
 </p>
@@ -103,25 +103,25 @@ interface. These are:
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;write a serialized represention of a model in a specified language.</TD>
 </TR>
 </TABLE>
-<p>The built-in languages are 
+<p>The built-in languages are
 <code>"RDF/XML"</code>,
 <code>"RDF/XML-ABBREV"</code>,
 <code>"N-TRIPLE"</code> and
 <code>"N3"</code>.
 </p>
-<p>The Jena1 developer will note that all but one of these methods 
+<p>The Jena1 developer will note that all but one of these methods
 are new
  in Jena2. Jena1 mistakenly required the use of java.io.Reader
 and java.io.Writer. While these classes work well on a single machine,
 the way they address character encoding problems differs significantly
-from the solution offered by XML. 
-A typical use of the Jena1 
-input interface such as 
+from the solution offered by XML.
+A typical use of the Jena1
+input interface such as
 <code><b>mdl.read(new&nbsp;FileReader(fName));</b></code>
 is incorrect, and will give the wrong results
 if the file contains non-ASCII data.
 Also, in Jena1, <code><b>mdl.write(new&nbsp;FileWriter(fName));</b></code>
-wrote incorrect XML for non-ASCII data (now fixed). 
+wrote incorrect XML for non-ASCII data (now fixed).
 However, these two
 bugs in Jena1  canceled each other out, as long
 as the system doing the reading had the same default
@@ -136,8 +136,8 @@ and are not deprecated. They are useful, see
 <a href="#reader-writer">below</a>; and there
 is every intention to continue to support them.
 However, the RDF/XML parser now checks to see
-if the 
-<code><b>Model.read(Reader &hellip;)</b></code> 
+if the
+<code><b>Model.read(Reader &hellip;)</b></code>
 calls are being abused,
 and issues
 <CODE><B>
@@ -149,46 +149,46 @@ errors. A naive Jena1 to Jena2 port will almost certainly
 result in such errors.
 This reflects code that had bugs in Jena1, which would
 exhibit themselves by misreading certain (non-ASCII) input files.
-The old output routines 
-<code><b>Model.write(Writer &hellip;)</b></code> 
+The old output routines
+<code><b>Model.write(Writer &hellip;)</b></code>
  are not suitable
-for N3, except as indicated 
+for N3, except as indicated
 <a href="#reader-writer">below</a>. With RDF/XML by default
 they produce correct XML by using an appropriate XML declaration
-giving the encoding - e.g. 
-<code>&lt?xml&nbsp;version='1.0'&nbsp;encoding='ISO-8859-15'?></code> 
+giving the encoding - e.g.
+<code>&lt?xml&nbsp;version='1.0'&nbsp;encoding='ISO-8859-15'?></code>
 on my system.
 However, such XML is less portable than XML in UTF-8.
-Using the 
-<code><b>Model.write(OutputStream &hellip;)</b></code> 
+Using the
+<code><b>Model.write(OutputStream &hellip;)</b></code>
 methods allows the Jena system code to choose UTF-8 encoding,
 which is the best choice.
 </p>
 <h3><a name="rdfxml">1.1 RDF/XML, RDF/XML-ABBREV</a></h3>
 <p>
 For input, both of these are the same, and fully implement
-the 
+the
 <a href="http://www.w3.org/TR/2003/WD-rdf-syntax-grammar-20030123/">
-RDF Syntax Last Call Working Draft</a>, see 
+RDF Syntax Last Call Working Draft</a>, see
 <a href="#conformance">conformance</a>.
 </p>
 <p>
 For output, <code>"RDF/XML"</code>, produces regular output reasonably
 efficiently, but it is not readable.
-In contrast, <code>"RDF/XML-ABBREV"</code>, produces readable output 
+In contrast, <code>"RDF/XML-ABBREV"</code>, produces readable output
 without much regard to efficiency.
 </p>
-<p>All the readers and writers for RDF/XML are 
+<p>All the readers and writers for RDF/XML are
 configurable, see below,
 <a href="#input">input</a> and <a href="#output">output</a>.</p>
 <h3><a name="n3">1.2 N3</a></h3>
-<p>The N3 readers and writers implement 
+<p>The N3 readers and writers implement
 <a href=
 "http://www.w3.org/2000/10/swap/Primer.html">Tim Berners-Lee's N3</a> language.
 They are not configurable.
 </p>
 <h3><a name="ntriple">1.3 N-TRIPLE</a></h3>
-<p>The N-TRIPLE readers and writers implement 
+<p>The N-TRIPLE readers and writers implement
 <a href=
 "http://www.w3.org/TR/2003/WD-rdf-testcases-20030123/#ntriples">RDF Core's
 N-Triples</a> language. They are not configurable.</p>
@@ -205,7 +205,7 @@ The encoding attribute in the XML declaration
 at the top of an XML document is intended to help us avoid
 encoding problems.
 Unfortunately, these are two different approaches; and Jena1 went with
-the Java conventions, whereas the 
+the Java conventions, whereas the
 Web scalable conventions are those used by XML.
 
 </p>
@@ -301,23 +301,23 @@ correctly control the encoding.
 </TR>
 </TABLE>
 <p>
-Incorrect use of these 
+Incorrect use of these
 <code><b>read(Reader,&nbsp;&hellip;)</b></code> methods results in warnings and errors with RDF/XML and RDF/XML-ABBREV
 (except in a few cases where the incorrect use cannot be automatically detected).
-Incorrect use of the  
+Incorrect use of the
 <code><b>write(Writer,&nbsp;&hellip;)</b></code> methods results in
 peculiar XML declarations such as <code>%lt?xml version="1.0" encoding="WINDOWS-1252"?></code>.
 This would reflect that the character encoding you used (probably without realizing)
  in your Writer is registered with IANA under the name "WINDOWS-1252".
-The resulting XML is of 
+The resulting XML is of
 reduced portability
  as a result. Glenn Marcy <a href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=4456">notes</a>:
 </p>
 <quote>
-since UTF-8 and 
-UTF-16 are the only encodings REQUIRED to be understood by all conformant XML 
-processors, even ISO-8859-1 would technically be on shaky ground if not for the 
-fact that it is in such widespread use that every reasonable XML processor 
+since UTF-8 and
+UTF-16 are the only encodings REQUIRED to be understood by all conformant XML
+processors, even ISO-8859-1 would technically be on shaky ground if not for the
+fact that it is in such widespread use that every reasonable XML processor
 supports it.
 </quote>
 <p>
@@ -377,7 +377,7 @@ simpler interface above.
 Each of these calls returns an RDFReader or RDFWriter that can
 be used to read or write any Model (not just the one
 which created it).
-As well as the necessary 
+As well as the necessary
 <CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html#read(com.hp.hpl.jena.rdf.model.Model, java.io.InputStream, java.lang.String)">read</A></B></CODE>
 and
 <CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFWriter.html#write(com.hp.hpl.jena.rdf.model.Model, java.io.OutputStream, java.lang.String)">write</A></B></CODE>
@@ -411,7 +411,7 @@ so that it behaves exactly as required in your system, and
 then to do all subsequent I/O through it.
 </p>
 <pre>
-    Model m = new ModelMem();
+    Model m = Modelfactory.createDefaultModel();
     RDFWriter writer = m.getRDFWriter();
     m = null; // m is no longer needed.
     writer.setErrorHandler(myErrorHandler);
@@ -468,9 +468,9 @@ This
 changes the properties for parsing RDF/XML.
 Many of the properties change the RDF parser, some change the XML parser.
 (The Jena RDF/XML parser, ARP, is built using a fairly direct implementation
-of the 
+of the
 <a href="http://www.w3.org/TR/2003/WD-rdf-syntax-grammar-20030123/#section-Infoset-Grammar">
-RDF grammar</a> over a 
+RDF grammar</a> over a
 <a href="http://xml.apache.org/xerces2-j/index.html">Xerces2-J</a> XML parser).
 However, changing the features and properties of the XML parser
  is not likely to be useful, but weas easy to implement.
@@ -594,7 +594,7 @@ the following code is appropriate:
 </p>
 
 <pre>
-    Model m = new ModelMem();
+    Model m = Modelfactory.createDefaultModel();
     RDFReader arp = m.getRDFReader();
     m = null; // m is no longer needed.
     // initialize arp
@@ -609,7 +609,7 @@ the following code is appropriate:
 <p>As a second example, suppose you wish to work in strict mode,
 but allow <code>"daml:collection"</code>, the following works:
 </p>
- 
+
 <pre>
      &hellip;
      arp.setProperty("error-mode", "strict" );
@@ -624,7 +624,7 @@ but allow <code>"daml:collection"</code>, the following works:
      arp.setProperty("error-mode", "strict" );
      &hellip;
 </pre>
-<p>This is because in strict mode 
+<p>This is because in strict mode
 <CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/arp/ARPErrorNumbers.html#IGN_DAML_COLLECTION">IGN_DAML_COLLECTION</A></B></CODE>
 is treated as an error, and so the second call to setProperty overwrites the effect of
 the first.
@@ -640,7 +640,7 @@ is slower, but should produce more readable XML.
 </p>
 <p>
 For access to advanced features, first
-get an RDFWriter object, of the appropriate language, by using 
+get an RDFWriter object, of the appropriate language, by using
 <CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFWriterF.html#getWriter(java.lang.String)">getWriter</A></B>("RDF/XML")</CODE>
 or
 <CODE><B><A HREF="../../javadoc/com/hp/hpl/jena/rdf/model/RDFWriterF.html#getWriter(java.lang.String)">getWriter</A></B>("RDF/XML-ABBREV")</CODE>
@@ -720,7 +720,7 @@ changes the properties for writing RDF/XML.
    no XML declaration is included.
    The default behaviour only gives an XML Declaration when
    asked to write to an OutputStreamWriter that uses some
-   encoding other than UTF-8 or UTF-16. 
+   encoding other than UTF-8 or UTF-16.
  In this case the encoding is shown
    in the XML declaration.
  To ensure that the encoding attribute is shown in the XML declaration
@@ -778,7 +778,7 @@ changes the properties for writing RDF/XML.
   <a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeLiteralPropertyElt">parseTypeLiteralPropertyElt</a>
   has any affect, since none of the other rules are implemented by that writer.
  </td><td>Resource[] or String</td><td></td>
-  
+
   <tr BGCOLOR="white" CLASS="TableRowColor">
   <td>prettyTypes</td>
   <td>Only for the RDF/XML-ABBREV writer.
@@ -818,28 +818,28 @@ As an example,
        "daml:collection,parseTypeLiteralPropertyElt,"
        +"parseTypeResourcePropertyElt,parseTypeCollectionPropertyElt");
 </pre>
-<p>creates a writer that does not use rdf:parseType (preferring rdf:datatype for 
+<p>creates a writer that does not use rdf:parseType (preferring rdf:datatype for
 rdf:XMLLiteral), indents only a little, and produces the XMLDeclaration. Attributes
 are used, and are quoted with "'".</p>
 
 <h2><a name="conformance">7. Conformance</a></h2>
-<p>The RDF/XML I/O endeavours to conform with the 
+<p>The RDF/XML I/O endeavours to conform with the
 <a href="http://www.w3.org/TR/2003/WD-rdf-syntax-grammar-20030123/">
 RDF Syntax Last Call Working Draft</a>.</p>
 <p>The parser must be set to strict mode, in which case
 it's only non-conformant behaviour is that it treats
 <code>rdf:parseType="daml:collection"</code> as an error.
-(The conformant behaviour is to silently turn 
+(The conformant behaviour is to silently turn
 <code>"daml:collection"</code> into <code>"Literal"</code>).
 </p>
 <p>The RDF/XML writer is conformant. But does not exercise
 much of the grammar.
 </p>
 <p>
-The RDF/XML-ABBREV writer  exercises all of the 
+The RDF/XML-ABBREV writer  exercises all of the
 grammar except <code>rdf:bagID</code> and is conformant except
 that it uses the "daml:collection" construct for DAML ontologies.
-This non-conformant behaviour can be switched off using the 
+This non-conformant behaviour can be switched off using the
 "blockRules" property.</p>
 <p>To create such conformant readers and writers use the following:
 </p>
@@ -856,7 +856,7 @@ This non-conformant behaviour can be switched off using the
 <p>
 ARP in Jena2 is significantly faster than in Jena1.
 Future optimizations may allow error checking to be suppressed
-in response to setting the properties on specific errors. 
+in response to setting the properties on specific errors.
 Currently only error messages get suppressed. Errors are
 checked for, whether or not the message is actually desired.
 </p>
@@ -879,6 +879,6 @@ The following creates a faster writer:
 </pre>
 
 
- 
+
  </BODY>
 </HTML>
