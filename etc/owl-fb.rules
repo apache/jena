@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.20 2003-09-08 17:29:24 der Exp $
+# $Id: owl-fb.rules,v 1.21 2003-09-10 16:34:18 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -108,6 +108,12 @@
 #------------------------------------------------------------------
 # OWL axioms
 #------------------------------------------------------------------
+
+-> (owl:FunctionalProperty rdfs:subClassOf rdf:Property).
+-> (owl:ObjectProperty rdfs:subClassOf rdf:Property).
+-> (owl:InverseFunctionalProperty rdfs:subClassOf owl:ObjectProperty).
+-> (owl:TransitiveProperty rdfs:subClassOf owl:ObjectProperty).
+-> (owl:SymmetricProperty rdfs:subClassOf owl:ObjectProperty).
 
 -> (rdf:first rdf:type owl:FunctionalProperty).
 -> (rdf:rest rdf:type owl:FunctionalProperty).
