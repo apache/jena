@@ -1,12 +1,11 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelFactory.java,v 1.7 2003-05-28 10:28:58 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.8 2003-05-30 13:50:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
 

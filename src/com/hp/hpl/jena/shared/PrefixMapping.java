@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMapping.java,v 1.5 2003-05-05 11:09:08 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.6 2003-05-30 13:50:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -22,8 +22,12 @@ import java.util.*;
 public interface PrefixMapping
     {
     /**
-        Specify the prefix name for a URI prefix string. Any existing use of that name
-        is discarded. We have to decide what happens if there are overlapping URIs.
+        Specify the prefix name for a URI prefix string. Any existing use of that prefix
+        name is overwritten. Any existing prefix for the same URI is removed.
+        (We still have to decide what happens if there are *overlapping* URIs.)
+  <p>      
+        The empty string is allowed as a prefix, for internal historical reasons.
+        Do not rely on this continuing.
         
         @param prefix the string to be used for the prefix.
         @param uri the URI prefix to be named

@@ -1,14 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.5 2003-05-28 10:28:59 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.6 2003-05-30 13:50:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
 
 import com.hp.hpl.jena.shared.*;
-
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 
 import java.util.*;
@@ -218,6 +216,34 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         b.setNsPrefix( "butter", butterURI );
         b.setNsPrefixes( map );
         checkContainsMapping( b );
+        }
+        
+    /**
+        Test that adding a new prefix mapping with the same URI as the old
+        one throws that old one away.
+    */
+    public void testSameURI()
+        {
+        PrefixMapping pm = getMapping();
+        pm.setNsPrefix( "crisp", crispURI );
+        pm.setNsPrefix( "sharp", crispURI );
+        assertEquals( null, pm.getNsPrefixURI( "crisp" ) );
+        assertEquals( crispURI, pm.getNsPrefixURI( "sharp" ) );
+        }
+        
+    /**
+        Test that adding a new prefix mapping for U from another prefix
+        map throws away any existing prefix for U.
+    */
+    public void testSameURIMaply()
+        {
+        PrefixMapping A = getMapping();
+        PrefixMapping B = getMapping();
+        A.setNsPrefix( "crisp", crispURI );
+        B.setNsPrefix( "sharp", crispURI );
+        A.setNsPrefixes( B );
+        assertEquals( crispURI, A.getNsPrefixURI( "sharp" ) );
+        assertEquals( null, A.getNsPrefixURI( "crisp" ) );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFSOld.java,v 1.2 2003-05-28 10:28:53 chris-dollin Exp $
+  $Id: RDFSOld.java,v 1.3 2003-05-30 13:50:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -230,13 +230,6 @@ public class RDFSOld extends Dyadic implements Vocabulary
     		};
     	ExtendedIterator it = g.find( matcher );
     	return it .mapWith( new Map1() { public Object map1( Object x ) { return ((Triple) x).getSubject(); } } );
-    	}
-    	
-    private static HashSet asSet( ExtendedIterator it )
-    	{
-    	HashSet result = new HashSet();
-    	while (it.hasNext()) result.add( it.next() );
-    	return result;
     	}
     	
     public ExtendedIterator typedBySubclass( final TripleMatch m, Graph g )

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.6 2003-05-28 10:28:55 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.7 2003-05-30 13:50:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -39,13 +39,6 @@ public class QueryTest extends GraphTestBase
         Q = new Query();
         empty = graphWith( "" );
         single = graphWith( "spindizzies drive cities" );
-        }
-        
-    private void checkQueryVariables()
-        {
-        assertEquals( X, Query.X );
-        assertEquals( Y, Query.Y );
-        assertEquals( Z, Query.Z );
         }
         
 	private void testTreeQuery( String title, String content, String pattern, String correct )

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNamespace.java,v 1.5 2003-05-03 07:44:50 chris-dollin Exp $
+  $Id: TestNamespace.java,v 1.6 2003-05-30 13:50:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -36,6 +36,7 @@ public class TestNamespace extends ModelTestBase
         Model m = ModelFactory.createDefaultModel();
         m.read( "file:testing/wg/rdf-ns-prefix-confusion/test0014.rdf" );
         Map ns = m.getNsPrefixMap(); 
+        // System.err.println( ">> " + ns );
         assertEquals( "namespace eg", "http://example.org/", ns.get( "eg" ) );
         assertEquals( "namespace rdf", "http://www.w3.org/1999/02/22-rdf-syntax-ns#", ns.get( "rdf" ) );
         assertEquals( "not present", null, ns.get( "spoo" ) );

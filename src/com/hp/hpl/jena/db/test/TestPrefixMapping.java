@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPrefixMapping.java,v 1.2 2003-05-05 11:07:32 chris-dollin Exp $
+  $Id: TestPrefixMapping.java,v 1.3 2003-05-30 13:50:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -20,7 +20,7 @@ import junit.framework.*;
  * (Tests for the persistence of prefix maps are in TestNSPrefix).
  *
  *	@author csayers based on testGraphRDB by kers
- *	@version $Revision: 1.2 $
+ *	@version $Revision: 1.3 $
  */
 public class TestPrefixMapping extends AbstractTestPrefixMapping {
 
@@ -57,11 +57,35 @@ public class TestPrefixMapping extends AbstractTestPrefixMapping {
 		}
 	}
 
+    private String getModelName()
+        { return "test" + count++; }
+        
+    private Model getModel()
+        {
+        Model model = ModelRDB.createModel( theConnection, getModelName() );
+        models.add( model );
+        return model;
+        }
+        
 	public PrefixMapping getMapping() {
-		Model model = ModelRDB.createModel(theConnection, "test"+count++);
-		models.add(model);
+		Model model = getModel();
 		return model.getGraph().getPrefixMapping();
 	}
+    
+    public void testPrefixesPersist()
+        {
+        String name = "prefix-testing-model"; // getModelName();
+        Model m = ModelRDB.createModel( theConnection, name );
+        m.setNsPrefix( "hello", "eh:/someURI" );
+        m.setNsPrefix( "bingo", "eh:/otherURI" );
+        m.setNsPrefix( "yendi", "eh:/otherURI" );
+        m.close();
+        Model m1 = ModelRDB.open( theConnection, name );
+        assertEquals( "eh:/someURI", m1.getNsPrefixURI( "hello" ) );
+        assertEquals( "eh:/otherURI", m1.getNsPrefixURI( "yendi" ) );
+        assertEquals( null, m1.getNsPrefixURI( "bingo" ) );
+        m1.close();
+        }
 
 }
 
