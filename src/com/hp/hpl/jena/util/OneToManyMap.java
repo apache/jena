@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-11-19 14:38:15 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2005-01-21 16:58:19 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  * See end of file for details
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.util.iterator.NullIterator;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.10 2004-11-19 14:38:15 chris-dollin Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.11 2005-01-21 16:58:19 ian_dickinson Exp $
  */
 public class OneToManyMap
     implements Map
@@ -120,7 +120,10 @@ public class OneToManyMap
         for (Iterator values = m_table.values().iterator();  values.hasNext(); ) {
             Object x = values.next();
 
-            if (x == value) {
+            if (x.equals( value )) {
+                return true;
+            }
+            else if (x instanceof List && ((List) x).contains( value )) {
                 return true;
             }
         }
@@ -129,6 +132,24 @@ public class OneToManyMap
     }
 
 
+    /**
+     * <p>Answer true if this mapping contains the pair
+     * <code>(key,&nbsp;value)</code>.</p>
+     * @param key A key object
+     * @param value A value object
+     * @return True if <code>key</code> has <code>value</code>
+     * as one of its values in this mapping
+     */
+    public boolean contains( Object key, Object value ) {
+        for (Iterator i = getAll( key ); i.hasNext(); ) {
+            if (i.next().equals( value )) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    
     /**
      * Answer a set of the mappings in this map.  Each member of the set will
      * be a Map.Entry value.
@@ -221,7 +242,7 @@ public class OneToManyMap
         int hc = 0;
 
         for (Iterator i = entrySet().iterator();  i.hasNext(); ) {
-            hc += i.next().hashCode();
+            hc ^= i.next().hashCode();
         }
 
         return hc;
@@ -271,12 +292,24 @@ public class OneToManyMap
 
 
     /**
-     * Put all entries from one map into this. Not implemented.
+     * <p>Put all entries from one map into this map. Tests for m being a 
+     * OneToManyMap, and, if so, copies all of the entries for each key.</p>
+     * @param m The map whose contents are to be copied into this map
      */
-    public void putAll( Map m )
-        throws UnsupportedOperationException
-    {
-        throw new UnsupportedOperationException( "not implemented" );
+    public void putAll( Map m ) {
+        boolean many = (m instanceof OneToManyMap);
+        
+        for (Iterator i = m.keySet().iterator(); i.hasNext(); ) {
+            Object key = i.next();
+            if (many) {
+                for (Iterator j = ((OneToManyMap) m).getAll( key ); j.hasNext(); ) {
+                    put( key, j.next() );
+                }
+            }
+            else {
+                put( key, m.get( key ) );
+            }
+        }
     }
 
 
@@ -287,7 +320,8 @@ public class OneToManyMap
      * single specific association with the key is defined, this method always
      * returns null.
      *
-     * @param key All associations with this key will be removed.
+     * @param key All associations with this key will be removed
+     * @return null
      */
     public Object remove( Object key ) {
         m_table.remove( key );
@@ -296,31 +330,36 @@ public class OneToManyMap
 
 
     /**
-     * Remove the specific association between the given key and value. Has
-     * no effect if the association is not present in the map.
+     * <p>Remove the specific association between the given key and value. Has
+     * no effect if the association is not present in the map. If all values
+     * for a particular key have been removed post removing this particular
+     * association, the key will no longer appear as a key in the map.</p>
      *
      * @param key The key object
      * @param value The value object
      */
     public void remove( Object key, Object value ) {
-        ArrayList entries = (ArrayList) m_table.get( key );
+        List entries = (List) m_table.get( key );
 
         if (entries != null) {
             entries.remove( value );
+            
+            if (entries.isEmpty()) {
+                m_table.remove( key );
+            }
         }
     }
 
 
     /**
-     * Answer the number of key-value mappings in the map
-     *
+     * <p>Answer the number of key-value mappings in the map</p>
      * @return The number of key-value pairs.
      */
     public int size() {
         int size = 0;
 
-        for (Iterator e = m_table.keySet().iterator();  e.hasNext();  ) {
-            size += ((ArrayList) e.next()).size();
+        for (Iterator i = m_table.keySet().iterator();  i.hasNext();  ) {
+            size += ((List) m_table.get( i.next() )).size();
         }
 
         return size;
@@ -328,22 +367,56 @@ public class OneToManyMap
 
 
     /**
-     * Returns a collection view of the values contained in this map.
-     *
-     * @return A collection view of the values contained in this map.
+     * <p>Returns a collection view of the values contained in this map.
+     * Specifically, this will be a set, so duplicate values that appear
+     * for multiple keys are suppressed.</p>
+     * @return A set of the values contained in this map.
      */
     public Collection values() {
         Set s = CollectionFactory.createHashedSet();
 
         for (Iterator e = m_table.keySet().iterator();  e.hasNext();  ) {
-            s.addAll( (ArrayList) m_table.get(e.next()) );
+            s.addAll( (List) m_table.get(e.next()) );
         }
 
         return s;
     }
 
+    /**
+     * <p>Answer a string representation of this map. This can be quite a long string for
+     * large maps.<p>
+     */
+    public String toString() {
+        StringBuffer buf = new StringBuffer( "OneToManyMap{" );
+        String sep = "";
+        
+        for (Iterator i = keySet().iterator(); i.hasNext(); ) {
+            Object key = i.next();
+            buf.append( sep );
+            buf.append( key );
+            buf.append( "={" );
+            
+            String sep1 = "";
+            for (Iterator j = getAll(key); j.hasNext(); ) {
+                buf.append( sep1 );
+                buf.append( j.next() );
+                sep1=",";
+            }
+            buf.append("}");
+            sep=",";
+        }
+        buf.append("}");
+        return buf.toString();
+    }
 
     // Internal implementation methods
+    //////////////////////////////////////
+    
+    
+    // Inner classes 
+    //////////////////////////////////////
+    
+    
     //////////////////////////////////
 
 
@@ -354,7 +427,7 @@ public class OneToManyMap
     /**
      * Helper class to implement the Map.Entry interface to enumerate entries in the map
      */
-    public class Entry
+    public static class Entry
         implements Map.Entry
     {
         /** My key object */
