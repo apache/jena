@@ -9,16 +9,16 @@ package com.hp.hpl.jena.rdql.test;
  *  not a failure of the test itself (.e.g manifest problems)
  *  
  * @author		Andy Seaborne
- * @version 	$Id: QueryTestException.java,v 1.1 2004-08-31 10:01:31 andy_seaborne Exp $
+ * @version 	$Id: QueryTestException.java,v 1.2 2004-11-01 16:48:03 andy_seaborne Exp $
  */
 
 
 public class QueryTestException extends RuntimeException
 {
     public QueryTestException() { super() ; }
-    public QueryTestException(Throwable cause) { super(cause) ; }
+    // public QueryTestException(Throwable cause) { super(cause) ; }  // Not in Java 1.3
     public QueryTestException(String msg) { super(msg) ; }
-    public QueryTestException(String msg, Throwable cause) { super(msg, cause) ; }
+    // public QueryTestException(String msg, Throwable cause) { super(msg, cause) ; }  // Not in Java 1.3
 }
 
 /*
