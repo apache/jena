@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.29 2003-06-27 20:19:17 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.30 2003-07-01 10:30:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -22,8 +22,9 @@ import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+
+import org.apache.log4j.Logger;
 
 //=======================================================================
 /**
@@ -43,7 +44,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.29 $ on $Date: 2003-06-27 20:19:17 $
+* @version $Revision: 1.30 $ on $Date: 2003-07-01 10:30:57 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -113,6 +114,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		m_driver = driver;
 	}
 
+    protected static Logger logger = Logger.getLogger(PSet_TripleStore_RDB.class);
+    
 	public void setMaxLiteral(int value) { MAX_LITERAL = value; }
 	public void setSQLType(String value) { ID_SQL_TYPE = value; }
 	public void setSkipDuplicateCheck(boolean value) { SKIP_DUPLICATE_CHECK = value;}
@@ -208,7 +211,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
     	try {
     		m_sql.runSQLGroup("dropStatementTable",getASTname());
     	} catch (SQLException e) {
-			Log.warning("Problem dropping table " + getASTname() + e);
+			logger.warn( "Problem dropping table " + getASTname(), e );
 			throw new RDFRDBException("Failed to drop table ", e);
 		}
     		        
@@ -310,8 +313,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	     } 
 	//	m_sql.returnPreparedSQLStatement(ps, "getRowCount");
 	} catch (SQLException e) {
-	 		Log.debug("tried to count rows in " + tName);
-		   	Log.debug("Caught exception: " + e);
+	 		logger.debug("tried to count rows in " + tName);
+		   	logger.debug("Caught exception: ", e);
 	}
 	return(result);
 	}
@@ -433,7 +436,7 @@ public void deleteTripleAR(
 		ps.clearParameters();
 
 	} catch (SQLException e1) {
-		Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
+		logger.debug( "SQLException caught " + e1.getErrorCode(), e1);
 	}
 
 	// now fill in parameters
@@ -449,7 +452,7 @@ public void deleteTripleAR(
 			ps.setString(argc++, stmtURI);
 		}
 	} catch (SQLException e1) {
-		Log.debug("(in delete) SQLException caught " + e1);
+		logger.debug("(in delete) SQLException caught ", e1);
 	}
 
 	try {
@@ -459,7 +462,7 @@ public void deleteTripleAR(
 			ps.executeUpdate();
 		}
 	} catch (SQLException e1) {
-		Log.severe("Exception executing delete: " + e1);
+		logger.error("Exception executing delete: ", e1);
 	}
 }
 
@@ -506,7 +509,7 @@ public void deleteTripleAR(
 		}
 	 	 
 		if (ps == null) {
-			Log.severe("prepared statement not found for insertStatementObjectURI");
+			logger.error("prepared statement not found for insertStatementObjectURI");
 		}
 		return ps;
 	  }
@@ -594,7 +597,7 @@ public void deleteTripleAR(
 			ps.clearParameters();
 
 		} catch (SQLException e1) {
-			Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
+			logger.debug("SQLException caught " + e1.getErrorCode(), e1);
 		}
 		// now fill in parameters
 		try {
@@ -623,7 +626,7 @@ public void deleteTripleAR(
 			}
 
 		} catch (SQLException e1) {
-			Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
+			logger.debug("SQLException caught " + e1.getErrorCode(), e1);
 		}
 
 		try {
@@ -636,11 +639,10 @@ public void deleteTripleAR(
 			// we let Oracle handle duplicate checking
 			if (!((e1.getErrorCode() == 1)
 				&& (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
-				Log.severe(
+				logger.error(
 					"SQLException caught during insert"
-						+ e1.getErrorCode()
-						+ ": "
-						+ e1);
+						+ e1.getErrorCode(),
+						e1);
 			}
 		}
 	}
@@ -855,8 +857,7 @@ public void deleteTripleAR(
 				m_sql.executeSQL(ps, op, result);
 			} catch (Exception e) {
 				notFound = true;
-				Log.debug(
-					"find encountered exception: args=" + args + " err: " + e);
+				logger.debug( "find encountered exception: args=" + args + " err: ",  e);
 			}
 
 		if ( notFound ) result.close();
@@ -876,7 +877,7 @@ public void deleteTripleAR(
 				  ps.setString(1,gid);
 				  ps.executeUpdate();
 				 } catch (SQLException e) {
-					Log.severe("Problem removing statements from table: ", e);
+					logger.error("Problem removing statements from table: ", e);
 				 }
 		}
 
