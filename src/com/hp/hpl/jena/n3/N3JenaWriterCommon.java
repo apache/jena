@@ -20,7 +20,7 @@ import java.io.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.13 2003-11-05 12:16:45 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.14 2003-11-28 16:18:25 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -534,7 +534,8 @@ public class N3JenaWriterCommon implements RDFWriter
 		}
 
 		// Not as a qname - write as a quoted URIref
-		// URIref
+		// Should we unicode escape here?
+        // It should be right - the writer should be UTF-8 on output.
 		return "<"+uriStr+">" ;
 	}
 
@@ -562,9 +563,6 @@ public class N3JenaWriterCommon implements RDFWriter
             }
         }
         // Format the text - with escaping.
-		int j = 0 ;
-		int i = -1 ;
-
         StringBuffer sbuff = new StringBuffer() ;
         String quoteMarks = "\"" ;
         
@@ -574,21 +572,7 @@ public class N3JenaWriterCommon implements RDFWriter
              quoteMarks = "\"\"\"" ;
         
         sbuff.append(quoteMarks);
-        
-		for(;;)
-		{
-			i = s.indexOf('"',j) ;
-
-			if (i == -1)
-			{
-                sbuff.append(s.substring(j));
-				break;
-			}
-            sbuff.append(s.substring(j, i));
-            sbuff.append("\\\"");
-			j = i + 1;
-		}
-
+        string(sbuff, s) ;
         sbuff.append(quoteMarks);
 
         // Format the language tag 
@@ -607,7 +591,35 @@ public class N3JenaWriterCommon implements RDFWriter
         return sbuff.toString() ;
 	}
 
-
+	protected static void string(StringBuffer sbuff, String s)
+    {
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '\\' || c == '"') {
+                sbuff.append('\\') ;
+                sbuff.append(c) ;
+                // Literals: We do this by using """ strings.
+                // Qnames: Does not occur.
+//            } else if (c == '\n') {
+//                sbuff.append("\\n");
+//            } else if (c == '\r') {
+//                sbuff.append("\\r");
+//            } else if (c == '\t') {
+//                sbuff.append("\\t");
+            } else if (c >= 32 && c < 127) {
+                sbuff.append(c) ;
+            } else {
+                String hexstr = Integer.toHexString(c).toUpperCase();
+                int pad = 4 - hexstr.length();
+                sbuff.append("\\u");
+                for (; pad > 0; pad--)
+                    sbuff.append("0");
+                sbuff.append(hexstr);
+            }
+        }
+        
+    }
+    
 	protected static String pad(int cols)
 	{
 		StringBuffer sb = new StringBuffer() ;

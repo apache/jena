@@ -1,4 +1,4 @@
-// $ANTLR 2.7.2: "n3.g" -> "N3AntlrParser.java"$
+// $ANTLR : "n3.g" -> "N3AntlrParser.java"$
 
 package com.hp.hpl.jena.n3 ;
 
@@ -77,4 +77,6 @@ public interface N3AntlrParserTokenTypes {
 	int QUOTE3D = 73;
 	int ESCAPE = 74;
 	int ESC_CHAR = 75;
+	int HEX_DIGIT = 76;
+	int HEX4 = 77;
 }

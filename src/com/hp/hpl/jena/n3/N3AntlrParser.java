@@ -1,4 +1,4 @@
-// $ANTLR 2.7.2: "n3.g" -> "N3AntlrParser.java"$
+// $ANTLR : "n3.g" -> "N3AntlrParser.java"$
 
 package com.hp.hpl.jena.n3 ;
 import antlr.TokenStreamRecognitionException ;
@@ -132,7 +132,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				startDocument() ;
 			}
 			{
-			_loop3:
+			_loop1521:
 			do {
 				switch ( LA(1)) {
 				case AT_PREFIX:
@@ -155,7 +155,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop3;
+					break _loop1521;
 				}
 				}
 			} while (true);
@@ -463,7 +463,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 		n_AST = (AST)returnAST;
 		astFactory.addASTChild(currentAST, returnAST);
 		{
-		_loop21:
+		_loop1539:
 		do {
 			switch ( LA(1)) {
 			case PATH:
@@ -498,7 +498,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 			}
 			default:
 			{
-				break _loop21;
+				break _loop1539;
 			}
 			}
 		} while (true);
@@ -1182,10 +1182,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 		AST literalModifier1_AST = null;
 		AST dt_AST = null;
 		
-		boolean synPredMatched37 = false;
+		boolean synPredMatched1555 = false;
 		if (((LA(1)==AT_LANG))) {
-			int _m37 = mark();
-			synPredMatched37 = true;
+			int _m1555 = mark();
+			synPredMatched1555 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1193,12 +1193,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched37 = false;
+				synPredMatched1555 = false;
 			}
-			rewind(_m37);
+			rewind(_m1555);
 			inputState.guessing--;
 		}
-		if ( synPredMatched37 ) {
+		if ( synPredMatched1555 ) {
 			AST tmp30_AST = null;
 			tmp30_AST = astFactory.create(LT(1));
 			astFactory.addASTChild(currentAST, tmp30_AST);
@@ -1206,10 +1206,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 			literalModifier1_AST = (AST)currentAST.root;
 		}
 		else {
-			boolean synPredMatched39 = false;
+			boolean synPredMatched1557 = false;
 			if (((LA(1)==DATATYPE))) {
-				int _m39 = mark();
-				synPredMatched39 = true;
+				int _m1557 = mark();
+				synPredMatched1557 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -1217,12 +1217,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched39 = false;
+					synPredMatched1557 = false;
 				}
-				rewind(_m39);
+				rewind(_m1557);
 				inputState.guessing--;
 			}
-			if ( synPredMatched39 ) {
+			if ( synPredMatched1557 ) {
 				AST tmp31_AST = null;
 				tmp31_AST = astFactory.create(LT(1));
 				astFactory.addASTChild(currentAST, tmp31_AST);
@@ -1387,7 +1387,9 @@ public N3AntlrParser(ParserSharedInputState state) {
 		"QUOTE3S",
 		"QUOTE3D",
 		"ESCAPE",
-		"ESC_CHAR"
+		"ESC_CHAR",
+		"HEX_DIGIT",
+		"HEX4"
 	};
 	
 	protected void buildTokenTypeASTClassMap() {

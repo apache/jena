@@ -681,13 +681,23 @@ ESC_CHAR:
 		| 'a'  { $setText("\007") ; }
 			// UNICODE escape
 			// @@TODO
-		//| 'u'  { $setText("\\u") ; }
+		| 'u'  h:HEX4
+			   {
+				char ch = (char)Integer.parseInt(h.getText(), 16) ;
+				$setText(ch) ;
+				}
 		| '"'  { $setText("\"") ; }
 		| '\\' { $setText("\\") ; }
 		| '\'' { $setText("'") ; }
 		)
 		; 
 
+protected
+HEX_DIGIT
+	:	('0'..'9'|'A'..'F'|'a'..'f')
+	;
+protected
+HEX4 : HEX_DIGIT HEX_DIGIT HEX_DIGIT HEX_DIGIT ;
 /*
  *  (c) Copyright Hewlett-Packard Company 2002-2003
  *  All rights reserved.

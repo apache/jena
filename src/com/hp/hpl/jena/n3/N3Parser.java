@@ -11,9 +11,9 @@ import antlr.TokenStreamException;
 
 /** The formal interface to the N3 parser.  Wraps up the antlr parser and lexer.
  * @author		Andy Seaborne
- * @version 	$Id: N3Parser.java,v 1.3 2003-08-27 13:01:45 andy_seaborne Exp $
+ * @version 	$Id: N3Parser.java,v 1.4 2003-11-28 16:18:25 andy_seaborne Exp $
  */
-public class N3Parser /*extends N3AntlrParser*/ implements N3AntlrParserTokenTypes
+public class N3Parser implements N3AntlrParserTokenTypes
 {
 	N3AntlrLexer lexer = null ;
 	N3AntlrParser parser = null ;
@@ -33,11 +33,16 @@ public class N3Parser /*extends N3AntlrParser*/ implements N3AntlrParserTokenTyp
 		parser.setEventHandler(h) ;
 		parser.setLexer(lexer) ;
     }
-
+    
 	public N3Parser(InputStream in, N3ParserEventHandler h)
 	{
-		lexer = new N3AntlrLexer(in) ;
-		parser = new N3AntlrParser(lexer) ;
+        Reader r = null ;
+        try { 
+            // UTF-8 always exists.
+            r = new InputStreamReader(in, "UTF-8") ;
+        } catch (UnsupportedEncodingException ex) {}
+        lexer = new N3AntlrLexer(r) ;
+        parser = new N3AntlrParser(lexer) ;
 		parser.setEventHandler(h) ;
 		parser.setLexer(lexer) ;
     }
