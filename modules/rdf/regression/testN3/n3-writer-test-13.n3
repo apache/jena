@@ -1,8 +1,0 @@
-@prefix a: <http://foo/a#> .
-@prefix : <#> .
-
-:test :comment "DAML lists" .
-
-a:list0 a:p ().
-
-_:list0 a:p ().

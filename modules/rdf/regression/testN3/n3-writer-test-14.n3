@@ -1,6 +1,0 @@
-@prefix a: <http://foo/a#> .
-@prefix : <#> .
-
-:test :comment "DAML List: nil list with property".
-
-() a:prop "nilProp" .

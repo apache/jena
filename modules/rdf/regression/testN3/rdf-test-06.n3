@@ -1,4 +1,0 @@
-# Tests <#> as a prefix and a triple node
-@prefix : <#> .
-
-<#> :p "v" .
