@@ -48,7 +48,40 @@ allBuiltins(Q,N,[Q:N],0) :-
 :-dynamic expg/2.
 
 wTripleTable :-
-  wlist(['static final int triples[] = new int[]{};',nl]).
+  wlist(['static final private int SPOA(int s, int p, int o, int a) {',nl,
+  ' return (((((s << W) | p) << W) | o) << ActionShift ) | a;',nl,
+  '}',nl]),
+  wlist(['static final int triples[] = new int[]{',nl]),
+  tt(S,P,O,A),
+  gname([S],SS),
+  gname([P],PP),
+  gname([O],OO),
+  objectAction(P,O,AA),
+  dlPart(A,DL),
+  pp(A,Pos),
+  wlist(['SPOA( ',SS,', ',PP,', ',OO,', ',AA,DL,Pos,' ),',nl]),
+  fail.
+wTripleTable :-
+  wlist(['};',nl,
+  'static { Arrays.sort(triples); }',nl]).
+  
+objectAction(P,O,'ObjectAction') :-
+   \+ comparative(P),
+   expg(B,blank),
+   member(O,B),
+   !.
+objectAction(_,_,0).
+   
+dlPart(lite,'') :- !.
+dlPart(lite/_,'') :- !.
+dlPart(_,'|DL').
+
+pp(_/property(0),'') :- !.
+pp(_/property(1),'|FirstOfOne') :- !.
+pp(_/property(2),'|SecondOfTwo') :- !.
+pp(_/property(3),'|FirstOfTwo') :- !.
+pp(_,'').
+
 
 category(orphan).
 category(notype).
@@ -93,7 +126,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.9 2003-04-15 19:47:15 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.10 2003-04-15 21:57:37 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
@@ -145,6 +178,7 @@ gogo :-
   tell(JF),
   copyrightHead,
   wlist(['package com.hp.hpl.jena.ontology.tidy;',nl,
+         'import java.util.Arrays;',nl,
          'class Grammar {',nl]),
   flag(catID,_,1),
   category(C),
@@ -163,9 +197,9 @@ gogo :-
   told.
   
 wInitSingletons :-
-  countx(category(_),N),
+  flag(catID,N,N),
   wlist(['static {',nl,
-  'for (int i=0; i<=',N,'; i++) {',nl,
+  'for (int i=0; i<',N,'; i++) {',nl,
    'if ( i != CategorySet.find(new int[]{i},true) )',nl,
    '      System.err.println("initialization problem");',nl,
    '}',nl,
@@ -353,51 +387,12 @@ wsfi(Name,Val) :-
   wlist(['    static final int ',Name,' = ',Val,';',nl]).
 
 
-extra(SS,PP,OO,XX) :-
-  setof(D,[S,P,O]^(member(S,SS),member(P,PP),member(O,OO),tt(S,P,O,D)),DD),
-  dlPart(DD,DL),
-  positionPart(DD,Pos),
-%  disjointWith(PP,SS,OO,DJ),
-  XX is DL \/ Pos.
-
-
-disjointWith([owl:disjointWith],SS,_OO,'| DisjointAction') :-
-    expg(GG,blank),
-    xsub(SS,GG),
-    !.
-
-disjointWith([owl:disjointWith],_SS,OO,'| DisjointAction') :-
-    expg(GG,blank),
-    xsub(OO,GG),
-    !.
-disjointWith(_,_,_,'').
-
-dlPart(D,0) :- member(lite,D),!.
-dlPart(D,0) :- member(lite/_,D),!.
-dlPart(_,1).
-
-positionPart(D,0) :-
-  member(X,D),
-  \+ X = _/_,
-  !.
-positionPart(D,0) :-
-  setof(X,Y^member(Y/X,D),[_,_|_]),!.
-positionPart(D,DP) :-
-  setof(X,Y^member(Y/X,D),[P]),
-  pp(P,DP),!.
-positionPart(D,_) :-
-  throw(positionPart(D)).
-
 xsub([],_).
 xsub([H|T],[H|TT]) :-
   !,
   xsub(T,TT).
 xsub(L,[_|TT]) :-
   xsub(L,TT).
-pp(property(0),0).
-pp(property(1),2).
-pp(property(2),4).
-pp(property(3),6).
 /*
 spo(S,P,O) :-
    gn(S,SN),wlist(['( /* subject */',SN,'<<(2*W))|',nl]),
@@ -438,50 +433,3 @@ dull(_:_).
 dull(literal).
 dull(dlInteger).
 dull(liteInteger).
-
-/*
-switch(As,Bs,Cs,AA,BB,CC,DL) :-
-   setof(A,[B,C,D]^(member(A,As),member(B,Bs),member(C,Cs),tt(A,B,C,D)),AA),
-   setof(B,[A,C,D]^(member(A,As),member(B,Bs),member(C,Cs),tt(A,B,C,D)),BB),
-   setof(C,[A,B,D]^(member(A,As),member(B,Bs),member(C,Cs),tt(A,B,C,D)),CC),
-   (member(A,AA),member(B,BB),member(C,CC),tt(A,B,C,lite)->DL=lite;DL=dl),
-   !.
-*/
-  /*
-switch(As,Bs,Cs,AA,BB,CC,lite) :-
-  ignore((As=[A],dull(A),AA=[A])),
-  ignore((Bs=[B],dull(B),BB=[B])),
-  ignore((Cs=[C],dull(C),CC=[C])),
-  tt(A,B,C,_),
-  ignore(AA=[]),
-  ignore(BB=[]),
-  ignore(CC=[]),
-  !.
-
-*/
-/*
-[annotationPropID, classID, dataAnnotationPropID, dataPropID, 
-datatypeID, individualID, listOfIndividualID, 
-objectPropID, ontologyID, ontologyPropertyID, transitivePropID]
-*/
-
-
-/*
-[allDifferent, description, listOfDataLiteral, listOfDescription, 
-literal, nonNegativeInteger, restriction, unnamedDataRange, unnamedIndividual]
-
-[owl:'AllDifferent', owl:'AnnotationProperty', owl:'Class', owl:'DataRange', 
-owl:'DatatypeProperty', owl:'DeprecatedClass', owl:'DeprecatedProperty', 
-owl:'FunctionalProperty', owl:'InverseFunctionalProperty', owl:'ObjectProperty', 
-owl:'Ontology', owl:'OntologyProperty', owl:'Restriction', 
-owl:'SymmetricProperty', owl:'TransitiveProperty', owl:allValuesFrom, 
-owl:cardinality, owl:complementOf, owl:differentFrom, owl:disjointWith, 
-owl:distinctMembers, owl:equivalentClass, owl:equivalentProperty, owl:hasValue, 
-owl:intersectionOf, owl:inverseOf, owl:maxCardinality, owl:minCardinality, 
-owl:onProperty, owl:oneOf, owl:sameIndividualAs, owl:someValuesFrom, 
-owl:unionOf, 
-rdf:'List', rdf:'Property', rdf:first, rdf:nil, rdf:rest, rdf:type, 
-rdfs:'Class', rdfs:'Datatype', rdfs:domain, rdfs:range, rdfs:subClassOf, 
-rdfs:subPropertyOf, 
-0^^ (xsd:nonNegativeInteger), 1^^ (xsd:nonNegativeInteger)]
-*/
