@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.39 $
+ * Revision           $Revision: 1.40 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:08 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 13:17:06 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -46,7 +46,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.39 2004-12-06 13:50:08 andy_seaborne Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.40 2004-12-07 13:17:06 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -197,6 +197,16 @@ public class OntClassImpl
     }
     
     /**
+     * <p>Answer true if this class has any super-class in the model. Note that
+     * when using a reasoner, all OWL classes have owl:Thing as a super-class.</p>
+     * @return True if this class has any known super-class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */
+    public boolean hasSuperClass() {
+        return getSuperClass() != null;
+    }
+    
+    /**
      * <p>Answer true if the given class is a super-class of this class.
      * See {@link #listSubClasses( boolean )} for a full explanation of the <em>direct</em>
      * parameter.
@@ -274,16 +284,28 @@ public class OntClassImpl
 
     /**
      * <p>Answer a class that is the sub-class of this class. If there is
-     * more than one such class, an arbitrary selection is made.</p>
-     * @return A sub-class of this class
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     * more than one such class, an arbitrary selection is made. If
+     * there is no such class, return null.</p>
+     * @return A sub-class of this class or null
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} 
+     * property is not supported in the current language profile.   
      */ 
     public OntClass getSubClass() {
         checkProfile( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF" );
-        return (OntClass) getModel().listStatements( null, getProfile().SUB_CLASS_OF(), this )
-                          .nextStatement()
-                          .getSubject()
-                          .as( OntClass.class );                  
+        StmtIterator i = getModel().listStatements( null, getProfile().SUB_CLASS_OF(), this );
+        try {
+            if (i.hasNext()) {
+                return (OntClass) i.nextStatement()
+                                   .getSubject()
+                                   .as( OntClass.class );                  
+            }
+            else {
+                return null;
+            }
+        }
+        finally {
+            i.close();
+        }
     }
 
     /**
@@ -355,6 +377,16 @@ public class OntClassImpl
      */
     public boolean hasSubClass( Resource cls ) {
         return hasSubClass( cls, false );
+    }
+    
+    /**
+     * <p>Answer true if this class has any sub-class in the model. Note that
+     * when using a reasoner, all OWL classes have owl:Nothing as a sub-class.</p>
+     * @return True if this class has any known sub-class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */
+    public boolean hasSubClass() {
+        return getSubClass() != null;
     }
     
     /**

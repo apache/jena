@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:10 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 13:15:02 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.19 2004-12-06 13:50:10 andy_seaborne Exp $
+ * @version CVS $Id: OntClass.java,v 1.20 2004-12-07 13:15:02 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -70,9 +70,11 @@ public interface OntClass
 
     /**
      * <p>Answer a class that is the super-class of this class. If there is
-     * more than one such class, an arbitrary selection is made.</p>
-     * @return A super-class of this class
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     * more than one such class, an arbitrary selection is made. If there
+     * is no such super-class, return null.</p>
+     * @return A super-class of this class or null
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} 
+     * property is not supported in the current language profile.   
      */ 
     public OntClass getSuperClass();
 
@@ -106,6 +108,14 @@ public interface OntClass
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
     public boolean hasSuperClass( Resource cls );
+    
+    /**
+     * <p>Answer true if this class has any super-class in the model. Note that
+     * when using a reasoner, all OWL classes have owl:Thing as a super-class.</p>
+     * @return True if this class has any known super-class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */
+    public boolean hasSuperClass();
     
     /**
      * <p>Answer true if the given class is a super-class of this class.
@@ -146,9 +156,11 @@ public interface OntClass
 
     /**
      * <p>Answer a class that is the sub-class of this class. If there is
-     * more than one such class, an arbitrary selection is made.</p>
-     * @return A sub-class of this class
-     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     * more than one such class, an arbitrary selection is made. If
+     * there is no such class, return null.</p>
+     * @return A sub-class of this class or null
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} 
+     * property is not supported in the current language profile.   
      */ 
     public OntClass getSubClass();
 
@@ -215,6 +227,14 @@ public interface OntClass
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
     public boolean hasSubClass( Resource cls );
+    
+    /**
+     * <p>Answer true if this class has any sub-class in the model. Note that
+     * when using a reasoner, all OWL classes have owl:Nothing as a sub-class.</p>
+     * @return True if this class has any known sub-class.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */
+    public boolean hasSubClass();
     
     /**
      * <p>Answer true if the given class is a sub-class of this class.
