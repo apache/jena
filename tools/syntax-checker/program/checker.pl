@@ -55,7 +55,7 @@ grouping(
 
 grouping([orphan, ontologyPropertyID], ontologyPropertyHack ).
 grouping([allDifferent, description, listOfDataLiteral, listOfDescription, 
-listOfIndividualID, orphan, unnamedOntology,
+listOfIndividualID, orphan, unnamedOntology,cyclic,
 restriction, unnamedDataRange, unnamedIndividual,notype
 ],blank).
 
@@ -84,9 +84,7 @@ allBuiltins(Q,N,[Q:N],0) :-
 gogo :-
    buildChecker,
    gname,
-   tell('Grammar.java'),
-   classfile,
-   told.
+   classfile.
 
 :-dynamic tt/4.
 :- dynamic g/1.
@@ -235,8 +233,11 @@ buildChecker :-
 
 buildChecker :-
    tell('tmpSubCategorizationInput'),
+   /*
    wlist([orphan,nl]),
    wlist([notype,nl]),
+   wlist([cyclic,nl]),
+   */
    g([A]),
    writeq(A),nl,
    fail.
@@ -257,7 +258,7 @@ buildChecker :-
   write('%%'),nl,told,
   (
   shell(echo) ->
-   shell('precompute < tmpSubCategorizationInput > tmpSubCategorizationOutput.pl');
+   shell('./precompute < tmpSubCategorizationInput > tmpSubCategorizationOutput.pl');
   shell('precomp.bat')),
   [tmpSubCategorizationOutput].
 
@@ -337,14 +338,19 @@ gn1(X,XX) :-
 
 
 classfile :-
+  telling(Tell),
+  ignore((
+  jfile('Grammar',G),
+  tell(G),
   wlist(['package com.hp.hpl.jena.ontology.tidy;',nl,nl]),
   wlist(['/** automatically generated. */',nl]),
   wlist(['class Grammar {',nl]),
   wCategories,
   wGetBuiltinID,
   wActions,
-  wAddTriple,
-  wlist(['}',nl]).
+  wAddTriple )),
+  %wlist(['}',nl]) )),
+  tell(Tell).
 
 wGetBuiltinID :-
   wsfi('NotQuiteBuiltin','1<<W'),
@@ -398,6 +404,8 @@ specialBuiltin(bad,'| BadXSD').
 specialBuiltin(0,'').
 specialBuiltin(notQuite,'| NotQuiteBuiltin').
 
+jfile(Nm,Nmx) :-
+  concat_atom(['../../src/com/hp/hpl/jena/ontology/tidy/',Nm,'.java'],Nmx).
   
 
 wActions :-
@@ -469,11 +477,12 @@ wAddTripleMain(Split) :-
    nth0(Ix,Split,[F=_|_]),
    Ix > 0,
    wlist(['     else if ( triple < ',F,' )',nl,
-          '          return addTriple',Ix,'( triple );',nl]),
+          '          return Sub',Ix,'.addTriple( triple );',nl]),
    fail.
 wAddTripleMain(Split) :-
    length(Split,Ix),
-   wlist(['     else return addTriple',Ix,'( triple );',nl,'   }',nl]).
+   wlist(['     else return Sub',Ix,'.addTriple( triple );',nl,'   }',nl,'}',nl]),
+   told.
    
    
    
@@ -488,8 +497,14 @@ wAddTriple :-
 wAddTriple.
    
 wAddTriple(Ix,Pairs) :-
-  wlist(['   static private int addTriple',Ix,'( int triple ) {',nl]),
+  atom_concat('Sub',Ix,SubIx),
+  jfile(SubIx,SSF),
+  tell(SSF),
+  wlist(['package com.hp.hpl.jena.ontology.tidy;',nl,
+         'class Sub',Ix,' {',nl]),
+  wlist(['   static final int addTriple( int triple ) {',nl]),
   wlist(['       switch (triple) {',nl]),
+  wlist(['case -1:',nl]),
   sublist(call,Pairs,Equals),
   member(Eq=_,Equals),
   wlist(['case ',Eq,':',nl]),
@@ -501,8 +516,8 @@ wAddTriple(_Ix,Pairs) :-
   wlist(['case ',A,':return ',B,';',nl]),
   fail.
 wAddTriple(_Ix,_Pairs) :-
-   wlist(['      default: return Failure;',nl,'   }',nl,
-         '}',nl]).
+   wlist(['      default: return Grammar.Failure;',nl,'   }',nl,
+         '}',nl,'}',nl]), told.
 
 extra(SS,PP,OO,XX) :-
   setof(D,[S,P,O]^(member(S,SS),member(P,PP),member(O,OO),tt(S,P,O,D)),DD),

@@ -36,6 +36,8 @@ Not clear what real max is. 3 or 4 MB?
 */
 int orphan = -1;
 int notype = -1;
+int cyclic = -1;
+#define SPECIALSYM(n) ((n)<3)
 int rdffirst;
 int rdfrest;
 int rdftype;
@@ -46,21 +48,28 @@ int rdfList;
 int owlOntologyProperty;
 
 int notType[5];
+int rdfsSubClassOf;
+int owldisjointWith;
+int owlequivalentClass;
 
 #define DIM(array) (sizeof(array)/sizeof(array[0]))
 struct { char * str; int * sym; } specials[] = {
   { "orphan", &orphan },
   { "notype", &notype },
+  { "cyclic", &cyclic },
   { "rdf:type", &rdftype },
   { "rdf:first", &rdffirst },
   { "rdf:rest", &rdfrest },
-  { "rdf:List", &rdfList },
-  { "owl:OntologyProperty", &owlOntologyProperty },
-  { "rdf:Property", notType },
-  { "rdfs:Class", notType+1 },
-  { "owl:FunctionalProperty", notType+2 },
-  { "owl:DeprecatedProperty", notType+3 },
-  { "owl:DeprecatedClass", notType+4 },
+  { "rdf:'List'", &rdfList },
+  { "owl:'OntologyProperty'", &owlOntologyProperty },
+  { "rdf:'Property'", notType },
+  { "rdfs:'Class'", notType+1 },
+  { "owl:'FunctionalProperty'", notType+2 },
+  { "owl:'DeprecatedProperty'", notType+3 },
+  { "owl:'DeprecatedClass'", notType+4 },
+  { "rdfs:subClassOf", &rdfsSubClassOf },
+  { "owl:disjointWith", &owldisjointWith },
+  { "owl:equivalentClass", &owlequivalentClass },
   };
   
 
@@ -194,6 +203,11 @@ int symlookup(const char * str) {
 	return -1;
 }
 
+void addSym(char * b) {
+               specialCases(b);
+               symbols[symCnt++] = allocStr(b);
+}
+
 void read(void) {
    char buf[2560];
    char buf1[256];
@@ -202,8 +216,7 @@ void read(void) {
    int s,p,o;
    while ( gets(buf) != null ) {
 	   if ( strcmp(buf,"%%") ) {
-               specialCases(buf);
-               symbols[symCnt++] = allocStr(buf);
+	      addSym(buf);
 	   } else break;
    }
    fprintf(stderr,"Specials: %s=%d %s=%d %s=%d %s=%d\n",
@@ -270,23 +283,46 @@ void dump(void) {
 
 int pseudotriple( int subj, int prop,int obj) {
    int i;
-   if ( subj == orphan ) {
+   switch ( SPECIALSYM(subj)+SPECIALSYM(prop)+SPECIALSYM(obj) ) {
+     case 0:
+       return 0;
+     case 1:
+       if ( subj == orphan ) return 1;
+   /*
       return obj != orphan && 
               ( prop == rdfrest || prop == rdffirst
                 || ( prop == rdftype && 
                         ( obj == rdfList || 
                           obj == owlOntologyProperty ) ) );
-   } 
-   if ( prop == orphan || obj == orphan ) return 0;
-   
-   if ( subj == notype ) {
-      if ( prop != rdftype ) return 1;
-      for (i = 0; i< DIM(notType); i++)
-        if ( obj == notType[i] )
-           return 1;
-      return 0;
-   }
-   return prop == notype ||  obj == notype; 
+                          */
+      if ( prop == orphan || obj == orphan ) return 0;
+      if ( subj == notype ) {
+          if ( prop != rdftype ) return 1;
+          for (i = 0; i< DIM(notType); i++)
+             if ( obj == notType[i] )
+                return 1;
+          return 0;
+      }
+      if ( prop == notype || obj == notype )
+         return 1;
+      if ( subj == cyclic )
+         return 
+            prop != rdfsSubClassOf 
+            && prop != owldisjointWith 
+            && prop != owlequivalentClass;
+      if ( prop == cyclic )
+          return 0;
+      if ( obj == cyclic )
+          return 0;
+      assert(!"All cases not exhausted");
+    case 2:
+      return cyclic==obj && subj==cyclic &&
+            prop != rdfsSubClassOf 
+            && prop != owldisjointWith 
+            && prop != owlequivalentClass;
+    case 3:
+       return 0;
+    }
 }
 
 void xform(int s, int p, int o) {
@@ -317,17 +353,11 @@ void xform(int s, int p, int o) {
       return;
     }
    for (i=0;i<subj->sz;i++)
-    if (oks[i] 
-       || subj->syms[i]==orphan 
-       || subj->syms[i]==notype )
+    if (oks[i]  || SPECIALSYM(subj->syms[i]) )
       for (j=0; j<prop->sz;j++)
-    if (okp[j] 
-       || prop->syms[j]==orphan 
-       || prop->syms[j]==notype )
+    if (okp[j] || SPECIALSYM(prop->syms[j]) )
        for (k=0; k<obj->sz; k++)
-        if (oko[k] 
-       || obj->syms[k]==orphan 
-       || obj->syms[k]==notype )   {
+        if (oko[k] || SPECIALSYM(obj->syms[k]) )   {
          if ( pseudotriple( subj->syms[i],prop->syms[j],obj->syms[i]) ) {
              oks[i] = okp[j] = oko[k] = 1;
          }
@@ -409,8 +439,19 @@ void pResults(void) {
    }
 }
 int main(int argc,char**argv) {
+    int i;
+	for (i=0; i<DIM(specials) ;i++)
+	  *specials[i].sym = -1 ;
+    addSym( "orphan");
+    addSym("notype");
+    addSym("cyclic");
 	read();
 	
+	for (i=0; i<DIM(specials) ;i++)
+	  if (*specials[i].sym == -1 ) {
+	    fprintf(stderr,"%s\n",*specials[i].str);
+	    assert(!"Symbol not founr");
+	  }
     addSingletons();
     qsort( sortedSets, setCnt, sizeof(Set), setCmp );
     /* dump(); */
