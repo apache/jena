@@ -6,8 +6,8 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
- * Filename           $RCSfile: DIGQueryEquivalentsTranslator.java,v $
- * Revision           $Revision: 1.2 $
+ * Filename           $RCSfile: DIGQueryIsEquivalentTranslator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-12 00:08:05 $
@@ -27,8 +27,10 @@ package com.hp.hpl.jena.reasoner.dig;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.xml.SimpleXMLPath;
 
 
 /**
@@ -37,9 +39,9 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.2 2003-12-12 00:08:05 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryIsEquivalentTranslator.java,v 1.1 2003-12-12 00:08:05 ian_dickinson Exp $
  */
-public class DIGQueryEquivalentsTranslator 
+public class DIGQueryIsEquivalentTranslator 
     extends DIGQueryTranslator
 {
     // Constants
@@ -51,9 +53,6 @@ public class DIGQueryEquivalentsTranslator
     // Instance variables
     //////////////////////////////////
 
-    /** Flag for whether the free variable is on the lhs or the rhs */
-    protected boolean m_subjectFree;
-    
     
     // Constructors
     //////////////////////////////////
@@ -63,9 +62,8 @@ public class DIGQueryEquivalentsTranslator
      * @param predicate The predicate URI to trigger on
      * @param lhs If true, the free variable is the subject of the triple
      */
-    public DIGQueryEquivalentsTranslator( String predicate, boolean subjectFree ) {
+    public DIGQueryIsEquivalentTranslator( String predicate ) {
         super( null, predicate, null );
-        m_subjectFree = subjectFree;
     }
     
 
@@ -80,7 +78,7 @@ public class DIGQueryEquivalentsTranslator
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
         
         Element equivalents = da.addElement( query.getDocumentElement(), DIGProfile.EQUIVALENTS );
-        da.addClassDescription( equivalents, m_subjectFree ? pattern.getObject() : pattern.getSubject() );
+        da.addClassDescription( equivalents, pattern.getSubject() );
         
         return query;
     }
@@ -90,16 +88,34 @@ public class DIGQueryEquivalentsTranslator
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
     public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        return translateConceptSetResponse( response, query, da, !m_subjectFree );
+        // evaluate a path through the return value to give us an iterator over catom names
+        ExtendedIterator catomNames = new SimpleXMLPath( true )
+                                          .appendElementPath( DIGProfile.CONCEPT_SET )
+                                          .appendElementPath( DIGProfile.SYNONYMS )
+                                          .appendElementPath( DIGProfile.CATOM )
+                                          .appendAttrPath( DIGProfile.NAME )
+                                          .getAll( response );
+                                          
+        // search for the object name
+        String oName = da.getNodeID( query.getObject() );
+        boolean found = false;
+        
+        while (!found && catomNames.hasNext()) {
+            found = oName.equals( catomNames.next() );
+        }
+
+        // the resulting iterator is either of length 0 or 1
+        return found ? (ExtendedIterator) new SingletonIterator( new Triple( query.getSubject(), query.getPredicate(), query.getObject() ) )
+                     : NullIterator.instance;
     }
     
     
     public boolean checkSubject( com.hp.hpl.jena.graph.Node subject ) {
-        return m_subjectFree || subject.isConcrete();
+        return subject.isConcrete();
     }
     
     public boolean checkObject( com.hp.hpl.jena.graph.Node object ) {
-        return !m_subjectFree || object.isConcrete();
+        return object.isConcrete();
     }
 
 

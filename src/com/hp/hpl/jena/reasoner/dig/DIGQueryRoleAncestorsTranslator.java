@@ -2,12 +2,12 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       ian.dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10-Dec-2003
- * Filename           $RCSfile: DIGQueryEquivalentsTranslator.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            July 19th 2003
+ * Filename           $RCSfile: DIGQueryRoleAncestorsTranslator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-12 00:08:05 $
@@ -15,7 +15,7 @@
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- *****************************************************************************/
+ * ****************************************************************************/
 
 // Package
 ///////////////
@@ -24,24 +24,31 @@ package com.hp.hpl.jena.reasoner.dig;
 
 // Imports
 ///////////////
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.w3c.dom.*;
 
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.reasoner.TriplePattern;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.*;
+
 
 
 /**
  * <p>
- * Translator to map owl:equivalentClass to the DIG &lt;equivalents&gt; query.
+ * Translator that generates DIG role ancestors/desendants queries in response to a find queries:
+ * <pre>
+ * :X rdf:subPropertyOf *
+ * *  rdf:subPropertyOf :X
+ * </pre>
+ * or similar.
  * </p>
  *
- * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.2 2003-12-12 00:08:05 ian_dickinson Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version Release @release@ ($Id: DIGQueryRoleAncestorsTranslator.java,v 1.1 2003-12-12 00:08:05 ian_dickinson Exp $)
  */
-public class DIGQueryEquivalentsTranslator 
+public class DIGQueryRoleAncestorsTranslator 
     extends DIGQueryTranslator
 {
+
     // Constants
     //////////////////////////////////
 
@@ -51,26 +58,27 @@ public class DIGQueryEquivalentsTranslator
     // Instance variables
     //////////////////////////////////
 
-    /** Flag for whether the free variable is on the lhs or the rhs */
-    protected boolean m_subjectFree;
+    /** Flag for querying for ancestors */
+    protected boolean m_ancestors;
     
     
     // Constructors
     //////////////////////////////////
 
     /**
-     * <p>Construct a translator for the DIG query 'equivalents'.</p>
+     * <p>Construct a translator for the DIG query 'parents'.</p>
      * @param predicate The predicate URI to trigger on
-     * @param lhs If true, the free variable is the subject of the triple
+     * @param ancestors If true, we are searching for parents of the class; if false, the descendants
      */
-    public DIGQueryEquivalentsTranslator( String predicate, boolean subjectFree ) {
-        super( null, predicate, null );
-        m_subjectFree = subjectFree;
+    public DIGQueryRoleAncestorsTranslator( String predicate, boolean ancestors ) {
+        super( (ancestors ? null : ALL), predicate, (ancestors ? ALL : null) );
+        m_ancestors = ancestors;
     }
     
 
     // External signature methods
     //////////////////////////////////
+
 
     /**
      * <p>Answer a query that will generate the class hierachy for a concept</p>
@@ -79,8 +87,14 @@ public class DIGQueryEquivalentsTranslator
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
         
-        Element equivalents = da.addElement( query.getDocumentElement(), DIGProfile.EQUIVALENTS );
-        da.addClassDescription( equivalents, m_subjectFree ? pattern.getObject() : pattern.getSubject() );
+        if (m_ancestors) {
+            Element parents = da.addElement( query.getDocumentElement(), DIGProfile.RANCESTORS );
+            da.addClassDescription( parents, pattern.getSubject() );
+        }
+        else {
+            Element descendants = da.addElement( query.getDocumentElement(), DIGProfile.RDESCENDANTS );
+            da.addClassDescription( descendants, pattern.getObject() );
+        }
         
         return query;
     }
@@ -90,16 +104,21 @@ public class DIGQueryEquivalentsTranslator
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
     public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        return translateConceptSetResponse( response, query, da, !m_subjectFree );
+        // translate the concept set to triples, but then we must add :a rdfs:subPropertyOf :a to match owl semantics
+        return translateRoleSetResponse( response, query, da, m_ancestors )
+               .andThen( new SingletonIterator( 
+                            new Triple( m_ancestors ? query.getSubject() : query.getObject(),
+                                        query.getPredicate(),
+                                        m_ancestors ? query.getSubject() : query.getObject() ) ) );
     }
     
     
     public boolean checkSubject( com.hp.hpl.jena.graph.Node subject ) {
-        return m_subjectFree || subject.isConcrete();
+        return !m_ancestors || subject.isConcrete();
     }
     
     public boolean checkObject( com.hp.hpl.jena.graph.Node object ) {
-        return !m_subjectFree || object.isConcrete();
+        return m_ancestors || object.isConcrete();
     }
 
 

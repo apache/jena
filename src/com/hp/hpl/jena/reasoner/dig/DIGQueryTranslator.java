@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryTranslator.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-11 22:59:10 $
+ * Last modified on   $Date: 2003-12-12 00:08:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPath;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.5 2003-12-11 22:59:10 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.6 2003-12-12 00:08:05 ian_dickinson Exp $)
  */
 public abstract class DIGQueryTranslator {
     // Constants
@@ -250,6 +250,37 @@ public abstract class DIGQueryTranslator {
         }
         else {
             return catomNodes.mapWith( new TripleSubjectFiller( query.getPredicate(), query.getObject() ) );
+        }
+    }
+    
+
+    /**
+     * <p>Translate a role set document into an extended iterator
+     * of triples, placing the concept identities into either the subject
+     * or object position in the returned triple.</p>
+     * @param response The response XML document
+     * @param query The original query
+     * @param da The DIG adapter object being used
+     * @param object Flag to indicate that the role names should occupy the subject field
+     * of the returned triple, or the object
+     */
+    protected ExtendedIterator translateRoleSetResponse( Document response, TriplePattern query, DIGAdapter da, boolean object ) {
+        // evaluate a path through the return value to give us an iterator over catom names
+        ExtendedIterator ratomNames = new SimpleXMLPath( true )
+                                          .appendElementPath( DIGProfile.ROLE_SET )
+                                          .appendElementPath( DIGProfile.SYNONYMS )
+                                          .appendElementPath( DIGProfile.RATOM )
+                                          .appendAttrPath( DIGProfile.NAME )
+                                          .getAll( response );
+        
+        ExtendedIterator ratomNodes = ratomNames.mapWith( new NameToNodeMapper() );
+        
+        // return the results as triples
+        if (object) {
+            return ratomNodes.mapWith( new TripleObjectFiller( query.getSubject(), query.getPredicate() ) );
+        }
+        else {
+            return ratomNodes.mapWith( new TripleSubjectFiller( query.getPredicate(), query.getObject() ) );
         }
     }
     

@@ -2,12 +2,12 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       ian.dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10-Dec-2003
- * Filename           $RCSfile: DIGQueryEquivalentsTranslator.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            July 19th 2003
+ * Filename           $RCSfile: DIGQueryAllRolesTranslator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-12 00:08:05 $
@@ -15,33 +15,37 @@
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- *****************************************************************************/
+ * ****************************************************************************/
 
 // Package
 ///////////////
 package com.hp.hpl.jena.reasoner.dig;
 
-
-// Imports
-///////////////
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
+// Imports
+///////////////
+
 /**
  * <p>
- * Translator to map owl:equivalentClass to the DIG &lt;equivalents&gt; query.
+ * Translator that generates DIG allroleNames queries in response to a find query:
+ * <pre>
+ * * rdf:type owl:ObjectProperty
+ * </pre>
+ * or similar.
  * </p>
  *
- * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.2 2003-12-12 00:08:05 ian_dickinson Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version Release @release@ ($Id: DIGQueryAllRolesTranslator.java,v 1.1 2003-12-12 00:08:05 ian_dickinson Exp $)
  */
-public class DIGQueryEquivalentsTranslator 
+public class DIGQueryAllRolesTranslator 
     extends DIGQueryTranslator
 {
+
     // Constants
     //////////////////////////////////
 
@@ -51,37 +55,30 @@ public class DIGQueryEquivalentsTranslator
     // Instance variables
     //////////////////////////////////
 
-    /** Flag for whether the free variable is on the lhs or the rhs */
-    protected boolean m_subjectFree;
-    
-    
     // Constructors
     //////////////////////////////////
 
     /**
-     * <p>Construct a translator for the DIG query 'equivalents'.</p>
+     * <p>Construct a translator for the DIG query all role names.</p>
      * @param predicate The predicate URI to trigger on
-     * @param lhs If true, the free variable is the subject of the triple
+     * @param object The object URI to trigger on
      */
-    public DIGQueryEquivalentsTranslator( String predicate, boolean subjectFree ) {
-        super( null, predicate, null );
-        m_subjectFree = subjectFree;
+    public DIGQueryAllRolesTranslator( String predicate, String object ) {
+        super( ALL, predicate, object );
     }
     
 
     // External signature methods
     //////////////////////////////////
 
+
     /**
-     * <p>Answer a query that will generate the class hierachy for a concept</p>
+     * <p>Answer a query that will list all concept names</p>
      */
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        
-        Element equivalents = da.addElement( query.getDocumentElement(), DIGProfile.EQUIVALENTS );
-        da.addClassDescription( equivalents, m_subjectFree ? pattern.getObject() : pattern.getSubject() );
-        
+        da.addElement( query.getDocumentElement(), DIGProfile.ALL_ROLE_NAMES );
         return query;
     }
 
@@ -90,18 +87,8 @@ public class DIGQueryEquivalentsTranslator
      * <p>Answer an iterator of triples that match the original find query.</p>
      */
     public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        return translateConceptSetResponse( response, query, da, !m_subjectFree );
+        return translateRoleSetResponse( response, query, da, false );
     }
-    
-    
-    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject ) {
-        return m_subjectFree || subject.isConcrete();
-    }
-    
-    public boolean checkObject( com.hp.hpl.jena.graph.Node object ) {
-        return !m_subjectFree || object.isConcrete();
-    }
-
 
     // Internal implementation methods
     //////////////////////////////////

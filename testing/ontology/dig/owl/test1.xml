@@ -56,4 +56,15 @@
 	<owl:equivalentClass rdf:resource="#F0" />
 </owl:Class>
 
+<owl:ObjectProperty rdf:ID="p0">
+	<rdfs:subPropertyOf>
+		<owl:ObjectProperty rdf:ID="p1">
+			<rdfs:subPropertyOf>
+				<owl:ObjectProperty rdf:ID="p2">
+				</owl:ObjectProperty>
+			</rdfs:subPropertyOf>
+		</owl:ObjectProperty>
+	</rdfs:subPropertyOf>
+</owl:ObjectProperty>
+
 </rdf:RDF>

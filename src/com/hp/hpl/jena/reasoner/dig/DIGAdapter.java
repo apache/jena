@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-11 22:59:10 $
+ * Last modified on   $Date: 2003-12-12 00:08:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.5 2003-12-11 22:59:10 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.6 2003-12-12 00:08:05 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -108,6 +108,23 @@ public class DIGAdapter
         new DIGQueryEquivalentsTranslator( OWL.equivalentClass.getURI(), false ),
         new DIGQueryEquivalentsTranslator( DAML_OIL.sameClassAs.getURI(), true ),
         new DIGQueryEquivalentsTranslator( DAML_OIL.sameClassAs.getURI(), false ),
+
+        new DIGQueryIsEquivalentTranslator( OWL.equivalentClass.getURI() ),
+        new DIGQueryIsEquivalentTranslator( DAML_OIL.sameClassAs.getURI() ),
+
+        // rancestors and rparents when testing for a named and variable node
+        new DIGQueryRoleAncestorsTranslator( RDFS.subPropertyOf.getURI(), true ),
+        new DIGQueryRoleAncestorsTranslator( RDFS.subPropertyOf.getURI(), false ),
+        new DIGQueryRoleAncestorsTranslator( DAML_OIL.subPropertyOf.getURI(), true ),
+        new DIGQueryRoleAncestorsTranslator( DAML_OIL.subPropertyOf.getURI(), false ),
+        
+        new DIGQueryRoleParentsTranslator( ReasonerVocabulary.directSubPropertyOf.getURI(), true ),
+        new DIGQueryRoleParentsTranslator( ReasonerVocabulary.directSubPropertyOf.getURI(), false ),
+        
+        // the entire role hierarchy
+        new DIGQueryRoleHierarchyTranslator( RDFS.subPropertyOf.getURI() ),
+        new DIGQueryRoleHierarchyTranslator( DAML_OIL.subPropertyOf.getURI() ),
+        
     };
     
     
