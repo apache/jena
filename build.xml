@@ -14,8 +14,8 @@
 
     <property name="dist.name"       value="${Name}-${version}"/>
     
-	  <property name="web.site"        value="http://jena.sourceforge.net/" />
-	
+    <property name="web.site"        value="http://jena.sourceforge.net/" />
+  
     <property name="debug"           value="true"/>
     <property name="debuglevel"      value="source,lines"/>
     <property name="deprecation"     value="false"/>
@@ -29,7 +29,7 @@
     <property name="lib.dir"         value="lib"/>
 
     <property name="doc.dir"         value="doc"/>
-    <property name="vocab.dir"	     value="vocabularies"/>
+    <property name="vocab.dir"       value="vocabularies"/>
     <property name="javadoc.dir"     value="doc/javadoc"/>
     <property name="etc.dir"         value="etc"/>
     <property name="test.dir"        value="testing"/>
@@ -98,9 +98,9 @@
         <!-- Ensure clean source build -->
         <delete dir="${src.dir}"/>
         <mkdir  dir="${src.dir}"/>
-		<tstamp>
-    		<format property="BUILD_TIME" pattern="d-MMMM-yyyy HH:mm"/>
-  		</tstamp>
+    <tstamp>
+        <format property="BUILD_TIME" pattern="d-MMMM-yyyy HH:mm"/>
+      </tstamp>
         <copy todir="${src.dir}">
             <fileset dir="${orig-src.dir}"
                      includes="*"/>
@@ -142,7 +142,7 @@
                      includes="jena/**"/>
             <filterset>
               <filterset refid="filters.shared" />
-	          <filter token="build-time"    value="${BUILD_TIME}" />
+            <filter token="build-time"    value="${BUILD_TIME}" />
             </filterset>
         </copy>
 
@@ -201,6 +201,7 @@
 
         <!-- sourcefiles="" -->
         <!-- Overview="overview.html" -->
+        <!-- was: overview="src/link2readme.html" -->
 
         <javadoc
                  sourcepath="${src.dir}"
@@ -212,7 +213,6 @@
                  doctitle="${Name} Framework"
                  Public="true"
                  Use="true"
-                 overview="src/link2readme.html"
                  bottom="Copyright &#169; 2000-2003 Hewlett-Packard. All Rights Reserved."
                  additionalparam="-breakiterator"
          >
@@ -220,13 +220,14 @@
             <classpath refid="classpath"/>
                 <package name="com.hp.hpl.jena.db"/>
                 <package name="com.hp.hpl.jena.rdf.model"/>
-		<package name="com.hp.hpl.jena.rdf.listeners"/>
+                <package name="com.hp.hpl.jena.rdf.listeners"/>
                 <package name="com.hp.hpl.jena.rdf.arp"/>
                 <package name="com.hp.hpl.jena.rdf.arp.lang"/>
                 <package name="com.hp.hpl.jena.rdql"/>
                 <package name="com.hp.hpl.jena.vocabulary"/>
                 <package name="com.hp.hpl.jena.xmloutput"/>
                 <package name="com.hp.hpl.jena.ontology"/>
+                <package name="com.hp.hpl.jena.ontology.daml"/>
                 <package name="com.hp.hpl.jena.enhanced"/>
                 <package name="com.hp.hpl.jena.graph"/>
                 <package name="com.hp.hpl.jena.graph.compose"/>
@@ -235,9 +236,9 @@
                 <package name="com.hp.hpl.jena.reasoner.rulesys.builtins"/>
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
-		<package name="com.hp.hpl.jena.shared"/>
+                <package name="com.hp.hpl.jena.shared"/>
                 <package name="com.hp.hpl.jena.datatypes"/>
-	        <package name="com.hp.hpl.jena.datatypes.xsd"/>
+                <package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.util"/>
                 <package name="com.hp.hpl.jena.util.iterator"/>
                 <package name="jena"/>
@@ -245,14 +246,20 @@
             <group title="API - Application Programming Interface">
                 <package name="com.hp.hpl.jena.db"/>
                 <package name="com.hp.hpl.jena.rdf.model"/>
-		<package name="com.hp.hpl.jena.rdf.listeners"/>
+                <package name="com.hp.hpl.jena.rdf.listeners"/>
                 <package name="com.hp.hpl.jena.rdf.arp"/>
                 <package name="com.hp.hpl.jena.rdf.arp.lang"/>
+                <package name="com.hp.hpl.jena.datatypes"/>
+                <package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.rdql"/>
-		<package name="com.hp.hpl.jena.shared"/>
+                <package name="com.hp.hpl.jena.shared"/>
                 <package name="com.hp.hpl.jena.vocabulary"/>
                 <package name="com.hp.hpl.jena.xmloutput"/>
                 <package name="com.hp.hpl.jena.ontology"/>
+                <package name="com.hp.hpl.jena.ontology.daml"/>
+                <package name="com.hp.hpl.jena.reasoner"/>
+                <package name="com.hp.hpl.jena.reasoner.rulesys"/>
+                <package name="com.hp.hpl.jena.reasoner.rulesys.builtins"/>
             </group>
 
             <group title="SPI - System Programming Interface">
@@ -260,11 +267,7 @@
                 <package name="com.hp.hpl.jena.graph"/>
                 <package name="com.hp.hpl.jena.graph.compose"/>
                 <package name="com.hp.hpl.jena.graph.query"/>
-                <package name="com.hp.hpl.jena.reasoner.rdfsReasoner1"/>
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
-                <package name="com.hp.hpl.jena.reasoner"/>
-                <package name="com.hp.hpl.jena.datatypes"/>
-	        <package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.util"/>
                 <package name="com.hp.hpl.jena.util.iterator"/>
             </group>
@@ -276,24 +279,24 @@
     </target>
 
     <target name="javadoc-all" depends="build-src">
-    	<!-- This is a javadoc task to build the javadoc for developers to look at -->
+      <!-- This is a javadoc task to build the javadoc for developers to look at -->
         <delete dir="${javadoc.dir}"/>
         <mkdir dir="${javadoc.dir}"/>
 
         <javadoc
-	     sourcepath="${src.dir}"
-	     destdir="${javadoc.dir}"
-	     author="true"
-	     version="true"
+       sourcepath="${src.dir}"
+       destdir="${javadoc.dir}"
+       author="true"
+       version="true"
              classpathref="classpath"
-	     windowtitle="${Name} Framework"
-	     doctitle="${Name} Framework"
-	     overview="${src.dir}/link2readme.html"
-	     bottom="Copyright &#169; 2000-2003 Hewlett-Packard. All Rights Reserved."
-	     packagenames="com.hp.hpl.*"
+       windowtitle="${Name} Framework"
+       doctitle="${Name} Framework"
+       overview="${src.dir}/link2readme.html"
+       bottom="Copyright &#169; 2000-2003 Hewlett-Packard. All Rights Reserved."
+       packagenames="com.hp.hpl.*"
              additionalparam="-breakiterator"
              Use="true"
-		/>
+    />
     </target>
 
 
