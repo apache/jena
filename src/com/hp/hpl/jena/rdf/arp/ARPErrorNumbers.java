@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.14 2004-03-17 19:16:48 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.15 2004-10-05 15:10:22 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -154,7 +154,7 @@ public interface ARPErrorNumbers {
      and subsequent occurrences.
      This check is expensive in memory. When processing very large files,
      it may be sensible to switch the check off by using
-     {@link ARP.setErrorMode(int,int)} to ignore this condition.
+     {@link ARP#setErrorMode(int,int)} to ignore this condition.
      * (W105).
      @see #WARN_LEGAL_REUSE_OF_ID
     
