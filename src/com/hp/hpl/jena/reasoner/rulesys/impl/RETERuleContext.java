@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETERuleContext.java,v 1.3 2003-06-10 22:26:38 der Exp $
+ * $Id: RETERuleContext.java,v 1.4 2003-06-12 14:17:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.*;
  * The RuleContext is used to supply context information to the builtin operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-10 22:26:38 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-12 14:17:00 $
  */
 public class RETERuleContext implements RuleContext {
     
@@ -134,6 +134,13 @@ public class RETERuleContext implements RuleContext {
     public void remove(Triple t) {
         graph.delete(t);
         engine.deleteTriple(t, true);
+    }
+
+    /**
+     * Assert a new triple in the deduction graph, triggering any consequent processing as appropriate.
+     */
+    public void add(Triple t) {
+        engine.addTriple(t, true);
     }
 
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.10 2003-06-11 08:14:35 der Exp $
+ * $Id: FRuleEngine.java,v 1.11 2003-06-12 14:17:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-11 08:14:35 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-12 14:17:00 $
  */
 public class FRuleEngine implements FRuleEngineI {
     
@@ -384,7 +384,7 @@ public class FRuleEngine implements FRuleEngineI {
                         // E.g. RDFS rules can create assertions about literals
                         // that we can't record in RDF
                         if ( ! context.contains(t)  ) {
-                            context.addPending(t);
+                            context.add(t);
                             if (recordDerivations) {
                                 infGraph.logDerivation(t, new RuleDerivation(rule, t, matchList, infGraph));
                             }

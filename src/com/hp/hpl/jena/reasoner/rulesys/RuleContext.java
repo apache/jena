@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleContext.java,v 1.5 2003-06-10 22:26:34 der Exp $
+ * $Id: RuleContext.java,v 1.6 2003-06-12 14:13:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.*;
  * currently known triples. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-10 22:26:34 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-12 14:13:39 $
  */
 public interface RuleContext {
     /**
@@ -70,6 +70,11 @@ public interface RuleContext {
      */
     public void silentAdd(Triple t);
 
+    /**
+     * Assert a new triple in the deduction graph, triggering any consequent processing as appropriate.
+     */
+    public void add(Triple t);
+    
     /**
      * Remove a triple from the deduction graph (and the original graph if relevant).
      */

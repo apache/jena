@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSRuleReasonerFactory.java,v 1.4 2003-06-08 17:49:16 der Exp $
+ * $Id: RDFSRuleReasonerFactory.java,v 1.5 2003-06-12 14:13:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 import com.hp.hpl.jena.reasoner.*;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /** * Factory class for creating blank instances of the RDFS reasoner.
- * * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.4 $ on $Date: 2003-06-08 17:49:16 $ */
+ * * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.5 $ on $Date: 2003-06-12 14:13:40 $ */
 public class RDFSRuleReasonerFactory implements ReasonerFactory {    
     /** Single global instance of this factory */
     private static ReasonerFactory theInstance = new RDFSRuleReasonerFactory();
@@ -38,7 +38,7 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
      * is not configurable and will ignore this parameter.
      */
     public Reasoner create(Model configuration) {
-        return new RDFSRuleReasoner();
+        return new RDFSRuleReasoner(this);
     }
    
     /**

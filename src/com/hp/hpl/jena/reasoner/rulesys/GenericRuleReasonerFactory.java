@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasonerFactory.java,v 1.1 2003-06-08 17:49:17 der Exp $
+ * $Id: GenericRuleReasonerFactory.java,v 1.2 2003-06-12 14:13:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * calls to the created reasoner or though parameters in the configuration Model.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-08 17:49:17 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-12 14:13:39 $
  */
 public class GenericRuleReasonerFactory implements ReasonerFactory {
     
@@ -42,8 +42,7 @@ public class GenericRuleReasonerFactory implements ReasonerFactory {
     /**
      * Constructor method that builds an instance of the associated Reasoner
      * @param configuration a set of arbitrary configuration information to be 
-     * passed the reasoner encoded within an RDF graph, the current implemenation
-     * is not configurable and will ignore this parameter.
+     * passed the reasoner encoded within an RDF graph.
      */
     public Reasoner create(Model configuration) {
         return new GenericRuleReasoner(this, configuration);

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.6 2003-06-10 22:26:36 der Exp $
+ * $Id: BFRuleContext.java,v 1.7 2003-06-12 14:17:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-10 22:26:36 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-12 14:17:01 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -122,7 +122,7 @@ public class BFRuleContext implements RuleContext {
      * <p>This is needed to prevent concurrrent modification exceptions which searching
      * the deductions for matches to a given rule.
      */
-    public void addPending(Triple t) {
+    public void add(Triple t) {
         if (graph.shouldTrace()) {
             if (rule != null) {
                 logger.debug("Adding to pending (" + rule.toShortString() + "): " + PrintUtil.print(t));

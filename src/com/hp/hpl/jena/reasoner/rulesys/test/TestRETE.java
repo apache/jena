@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRETE.java,v 1.4 2003-06-11 17:06:29 der Exp $
+ * $Id: TestRETE.java,v 1.5 2003-06-12 14:15:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -24,7 +24,7 @@ import junit.framework.TestSuite;
 /**
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-11 17:06:29 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-12 14:15:37 $
  */
 public class TestRETE  extends TestCase {
      
@@ -235,6 +235,47 @@ public class TestRETE  extends TestCase {
         }
         engine.runAll();
         TestUtil.assertIteratorValues(this, infgraph.find(null, null, null), expected);
+    }
+    
+    /**
+     * Check that the rulestate cloning keeps two descendent graphs independent.
+     * 
+     */
+    public void testRuleClone() {
+        String rules = "[testRule1: (a p ?x) (b p ?x) -> (n1 p ?x) ]" +
+                       "[testRule2: (?x q ?y) -> (?x p ?y)]";
+        List ruleList = Rule.parseRules(rules);
+        Graph schema = new GraphMem();
+        schema.add(new Triple(a, q, c));
+        schema.add(new Triple(a, q, d));
+
+        Graph data1 = new GraphMem();
+        data1.add(new Triple(b, q, c));
+        
+        Graph data2 = new GraphMem();
+        data2.add(new Triple(b, q, d));
+        
+        GenericRuleReasoner reasoner =  new GenericRuleReasoner(ruleList);
+        reasoner.setMode(GenericRuleReasoner.FORWARD_RETE);
+        Reasoner boundReasoner = reasoner.bindSchema(schema);
+        InfGraph infgraph1 = boundReasoner.bind(data1);
+        InfGraph infgraph2 = boundReasoner.bind(data2);
+
+        TestUtil.assertIteratorValues(this, infgraph1.find(null, p, null),
+            new Triple[] {
+                new Triple(a, p, c),
+                new Triple(a, p, d),
+                new Triple(b, p, c),
+                new Triple(n1, p, c)
+            });
+
+        TestUtil.assertIteratorValues(this, infgraph2.find(null, p, null),
+            new Triple[] {
+                new Triple(a, p, c),
+                new Triple(a, p, d),
+                new Triple(b, p, d),
+                new Triple(n1, p, d)
+            });
     }
 }
 

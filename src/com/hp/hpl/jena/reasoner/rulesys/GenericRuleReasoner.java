@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.2 2003-06-11 08:17:11 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.3 2003-06-12 14:13:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-11 08:17:11 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-12 14:13:39 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -44,13 +44,16 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     protected boolean enableOWLTranslation = false;
     
     /** Constant - the mode description for pure forward chaining */
-    public static final RuleMode FORWARD = new RuleMode("Forward mode");
+    public static final RuleMode FORWARD = new RuleMode("forward");
+    
+    /** Constant - the mode description for pure forward chaining, using RETE engine */
+    public static final RuleMode FORWARD_RETE = new RuleMode("forwardRETE");
     
     /** Constant - the mode description for pure backward chaining */
-    public static final RuleMode BACKWARD = new RuleMode("Backward mode");
+    public static final RuleMode BACKWARD = new RuleMode("backward");
     
     /** Constant - the mode description for mixed forward/backward */
-    public static final RuleMode HYBRID = new RuleMode("Hybrid mode");
+    public static final RuleMode HYBRID = new RuleMode("hybrid");
     
 //  =======================================================================
 //  Constructors
@@ -180,14 +183,16 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             enableOWLTranslation =  Util.convertBooleanPredicateArg(parameterUri, value);
             
         } else if (parameterUri.equals(ReasonerVocabulary.PROPruleMode.getURI())) {
-            if (value.equals("forward")) {
+            if (value.equals(FORWARD.name)) {
                 mode = FORWARD;
-            } else if (value.equals("backward")) {
+            } else if (value.equals(FORWARD_RETE.name)) {
+                mode = FORWARD_RETE;
+            } else if (value.equals(BACKWARD.name)) {
                 mode = BACKWARD;
-            } else if (value.equals("hybrid")) {
+            } else if (value.equals(HYBRID.name)) {
                 mode = HYBRID;
             } else {
-                throw new IllegalParameterException("PROPruleMode can only be 'forward', 'backward', 'hybrid', not " + value);
+                throw new IllegalParameterException("PROPruleMode can only be 'forward'm 'forwardRETE', 'backward', 'hybrid', not " + value);
             }
             
         } else if (parameterUri.equals(ReasonerVocabulary.PROPruleSet.getURI())) {
@@ -222,6 +227,9 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         if (mode == FORWARD) {
             graph = new BasicForwardRuleInfGraph(this, rules, null, tbox);
             ((InfGraph)graph).prepare();
+        } else if (mode == FORWARD_RETE) {
+                graph = new RETERuleInfGraph(this, rules, null, tbox);
+                ((InfGraph)graph).prepare();
         } else if (mode == BACKWARD) {
             graph = tbox;
         } else {
@@ -255,6 +263,9 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         if (mode == FORWARD) {
             graph = new BasicForwardRuleInfGraph(this, rules, schemaArg);
             ((BasicForwardRuleInfGraph)graph).setTraceOn(traceOn);
+        } else if (mode == FORWARD_RETE) {
+                graph = new RETERuleInfGraph(this, rules, schemaArg);
+                ((BasicForwardRuleInfGraph)graph).setTraceOn(traceOn);
         } else if (mode == BACKWARD) {
             graph = new BasicBackwardRuleInfGraph(this, getBruleStore(), data, schemaArg);
             ((BasicBackwardRuleInfGraph)graph).setTraceOn(traceOn);
@@ -280,6 +291,8 @@ public class GenericRuleReasoner extends FBRuleReasoner {
                 preload = new FBRuleInfGraph(this, rules, null);
             } else if (mode == FORWARD) {
                 preload = new BasicForwardRuleInfGraph(this, rules, null);
+            } else if (mode == FORWARD_RETE) {
+                preload = new RETERuleInfGraph(this, rules, null);
             }
             preload.prepare();
         }

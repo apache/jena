@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.9 2003-06-11 08:17:13 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.10 2003-06-12 14:13:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-11 08:17:13 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-12 14:13:40 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -46,8 +46,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     /** The original rule set as supplied */
     protected List rules;
     
-    /** A temporary list of prototypes that should be checked during f->b transistion */
-    protected List prototypes = new ArrayList();
+    /** Static switch from Basic to RETE implementation of the forward component */
+    public static final boolean useRETE = true;
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(FBRuleInfGraph.class);
@@ -88,6 +88,27 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         super(reasoner, rules, schema, data);
         this.rules = rules;        
         bEngine = new BRuleEngine(this);
+    }
+
+    /**
+     * Instantiate the forward rule engine to use.
+     * Subclasses can override this to switch to, say, a RETE imlementation.
+     * @param rules the rule set or null if there are not rules bound in yet.
+     */
+    protected void instantiateRuleEngine(List rules) {
+        if (rules != null) {
+            if (useRETE) {
+                engine = new RETEEngine(this, rules);
+            } else {
+                engine = new FRuleEngine(this, rules);
+            }
+        } else {
+            if (useRETE) {
+                engine = new RETEEngine(this);
+            } else {
+                engine = new FRuleEngine(this);
+            }
+        }
     }
     
 //  =======================================================================
