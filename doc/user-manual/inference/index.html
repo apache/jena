@@ -19,16 +19,15 @@ the documentation is ready.</p>
 
 <h2>Overview of the inference support machinery</h2>
 
-<p>The Jena2 reasoner subsystem is designed to allow a range of inference 
-engines to be plugged into Jena. Such engines are used to 
-derive additional RDF assertions which are entailed from some base RDF 
-together with any optional ontology information and the axioms and rules 
-associated with the reasoner. The primary use of this mechamism is to
-support the use of languages such as RDFS and OWL which allow additional
-facts to be inferred from instance data and class descriptions. 
-However, the machinery is designed to
-be quite general and, in particular, it includes a generic rule engine
-that can be used for many RDF processing or transformation tasks.</p>
+<p>The Jena2 reasoner subsystem is designed to allow a range of inference engines 
+  to be plugged into Jena. Such engines are used to derive additional RDF assertions 
+  which are entailed from some base RDF together with any optional ontology information 
+  and the axioms and rules associated with the reasoner. The primary use of this 
+  mechanism is to support the use of languages such as RDFS and OWL which allow 
+  additional facts to be inferred from instance data and class descriptions. However, 
+  the machinery is designed to be quite general and, in particular, it includes 
+  a generic rule engine that can be used for many RDF processing or transformation 
+  tasks.</p>
 
 <p>We will try to use the term <em>inference</em> to refer to the abstract process of deriving
 additional information and the term <em>reasoner</em> to refer to a specific
@@ -39,13 +38,13 @@ please forgive us. </p>
 <p>The overall structure of the inference machinery is illustrated below. </p>
 <p class="centered"><img src="../../images/reasoner-overview.png" width="544" height="305" alt="Overall structure of inference machinery"></p>
 
-<p>As illustrated the inference machinery is implemented at the level of the Graph SPI 
-[TODO:cross link to that section]. One or more Graphs containing RDF data can
-be attached to a specific reasoner to generate a derived graph of type InfGraph
-[TODO: links to javadoc?]. The InfGraph acts as if it is a graph containing 
-all of the triples in the base data graph(s) together with any addtional triples
-which the reasoner is able to infer. However, many of these triple will be
-virtual in the sense that they are only generated in response to access requests. </p>
+<p>As illustrated the inference machinery is implemented at the level of the Graph 
+  SPI [TODO:cross link to that section]. One or more Graphs containing RDF data 
+  can be attached to a specific reasoner to generate a derived graph of type <code>InfGraph</code> 
+  [TODO: links to javadoc]. The InfGraph acts as if it is a graph containing all 
+  of the triples in the base data graph(s) together with any additional triples 
+  which the reasoner is able to infer. However, many of these triple will be virtual 
+  in the sense that they are only generated in response to access requests. </p>
 
 <p>The derived InfGraph can then be viewed through any
 of the Jena supported APIs, specifically the general RDF Model API and the
@@ -76,15 +75,14 @@ reasoners are worth noting:</p>
 <h2>Generic reasoner API</h2>
 <h3>Finding a reasoner</h3>
 <p>For each type of reasoner there is a factory class (which conforms to the interface 
-  <code>ReasonerFactory</code>) which has a singleton instance through which instances 
-  of the <code>Reasoner</code> can be constructed. The factory instances can be 
-  located by going directly to a known factory class and finding the singleton 
-  instance (<code>theInstance</code>) or by retrieving from a single global <code>ReasonerRegistry</code> 
-  which stores factory instances indexed by some URI assigned to the reasoner. 
-</p>
+  <code>ReasonerFactory</code>) which has one or more instances through which 
+  instances of the <code>Reasoner</code> can be constructed. The factory instances 
+  can be located by going directly to a known factory class and finding and use 
+  <code>theInstance</code>() method or by retrieval from a global <code>ReasonerRegistry</code> 
+  which stores factory instances indexed by URI assigned to the reasoner. </p>
 <p>In addition, there are convenience methods on the <code>ReasonerRegistry</code> 
   for locating a prebuilt instance of each of the main reasoners (<code>getTransitiveReasoner</code>, 
-  <code>getRDFSReasoner</code>, <code>getTransitivereasoner</code>, <code>getRDFSSimpleReasoner</code>).</p>
+  <code>getRDFSReasoner</code>, <code>getOWLReasoner</code>, <code>getRDFSSimpleReasoner</code>).</p>
 <p>Finally the accessAPIs include convenience support for creating Models or Ontology 
   models with supporting reasoners. See <code>ModelFactory.createRDFSModel</code> 
   and [TODO: cross ref to ontology documentation].</p>
@@ -94,7 +92,7 @@ reasoners are worth noting:</p>
   configuration information. The <code>ReasonerFactory.create</code> method can 
   be passed a Jena <code>Resource</code> object, the properties of that object 
   will be used to configure the created reasoner.</p>
-<p>To simplify the code requried for simple cases we also provide a direct java 
+<p>To simplify the code required for simple cases we also provide a direct Java 
   method to set a single configuration parameter, <code>Reasoner.setParameter</code>. 
   The parameter being set is identified by the URI of the corresponding configuration 
   property.</p>
@@ -129,9 +127,9 @@ reasoners are worth noting:</p>
   but to illustrate the code required to set one up.</p>
 <p>Let us first create a Jena model containing the statements that some property 
   &quot;p&quot; is a subproperty of another property &quot;q&quot; and that we 
-  have a resource &quot;a&quot; with value &quot;foo&quot;. This could be done 
-  by writing an RDF/XML or N3 file and reading that in but we have chosen to use 
-  the RDF API:</p>
+  have a resource &quot;a&quot; with value &quot;foo&quot; for &quot;p&quot;. 
+  This could be done by writing an RDF/XML or N3 file and reading that in but 
+  we have chosen to use the RDF API:</p>
   
 <pre>        String NS = "urn:x-hp-jena:eg/";
         
@@ -155,6 +153,8 @@ reasoners are worth noting:</p>
 <pre>        Statement: [urn:x-hp-jena:eg/a, urn:x-hp-jena:eg/q, Literal<foo>]
 </pre>
 <p></p>
+<p>Alternatively we could have created an empty inference model and then added 
+  in the statements directly to that model.</p>
 <p>If we wanted to use a different reasoner which is not available as a convenience 
   method or wanted to configure one we would change line [1].</p>
 <p>To create the same set up manually we could replace [1] by:</p>
@@ -162,15 +162,15 @@ reasoners are worth noting:</p>
         InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
 </pre>
 <p>Then we could set properties of the reasoner before use. For example, if we 
-  were to a listStatements on inf Model we would see that it also &quot;includes&quot; 
+  were to listStatements on inf Model we would see that it also &quot;includes&quot; 
   all the RDFS axioms, of which there are quite a lot. It is sometimes useful 
-  to supress these and only see the &quot;interesting&quot; entailments. This 
-  can be done by setting the processing level parameter be creating a description 
+  to suppress these and only see the &quot;interesting&quot; entailments. This 
+  can be done by setting the processing level parameter by creating a description 
   of a new reasoner configuration and passing that to the factory method:</p>
 <pre>        Resource config = ModelFactory.createDefaultModel()
                           .createResource()
                           .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "simple");
-        Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(config);
+        Reasoner reasoner = RDFSRuleReasonerFactory.theInstance()Create(config);
         InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
 </pre>
 <p>This is a rather long winded way of setting a single parameter, though it can 
@@ -178,7 +178,7 @@ reasoners are worth noting:</p>
   in a separate (RDF) configuration file. For hardwired uses the following alternative 
   is often simpler:</p>
 <h2></h2>
-<pre>        Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
+<pre>        Reasoner reasoner = RDFSRuleReasonerFactory.theInstance()Create(null);
         reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel.getURI(), 
                               ReasonerVocabulary.RDFS_SIMPLE);
         InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
@@ -200,41 +200,90 @@ reasoners are worth noting:</p>
 <p>The TransitiveReasoner provides support for storing and traversing class and 
   property lattices. This implements just the <i>transitive</i> and <i>symmetric</i> 
   properties of <code>rdfs:subPropertyOf</code> and <code>rdfs:subClassOf</code>. 
-  It is not all that powerful on its own but is one of the building blocks used 
-  for the more complex reasoners. The functionality it offers is roughly that 
-  same as the hardwired inferences available through the Jena1 DAML API.</p>
+  It is not all that exciting on its own but is one of the building blocks used 
+  for the more complex reasoners. The functionality it offers is roughly equivalent 
+  to the hardwired inferences available through the Jena1 DAML API.</p>
 <p>It has no configuration options.</p>
 <h2>RDFSRuleReasoner</h2>
 <p>The RDSFRuleReasoner implements the RDFS entailment rules by using a combination 
-  of the TransitiveReasoner and a generate rule based inferance engine.</p>
-<p>The rules are defined in a text file in the class path and it is easy to construct 
-  new RDFS engines with different rule variants.</p>
+  of the TransitiveReasoner and a generate rule based engine.</p>
+<p>The rules are defined in a text file located on the classpath and it is possible 
+  to construct new RDFS engines with different rule variants.</p>
 <p>The most important configuration parameter is the RDFSLevel parameter illustrated 
   in the example above. The levels are:</p>
 <dl> 
+  <dt>Full</dt>
+  <dd>This implements all of the RDFS axioms and closure rules with the exception 
+    of bNode entailments and datatypes (rdfD 1). See below for comments on these. 
+    This is an expensive mode because all statements in the data graph need to 
+    be checked for possible use of container membership properties. It also generates 
+    type assertions for all resources and properties mentioned in the data (rdf1, 
+    rdfs4a, rdfs4b).</dd>
+  <dt>Default</dt>
+  <dd>This omits the expensive checks for container membership properties and 
+    the &quot;everything is a resource&quot; and &quot;everything used as a property 
+    is one&quot; rules (rdf1, rdfs4a, rdfs4b). The latter information is available 
+    through the Jena API and creating virtual triples to this effect has little 
+    practical value.</dd>
   <dt>Simple</dt>
   <dd>This implements just the transitive closure of subPropertyOf and subClassOf 
     relations, the domain and range entailments and the implications of subPropertyOf 
-    and subTypeOf.</dd>
-  <dt>Default</dt>
-  <dd>This implements all the RDFS axioms, along with most of the RDFS entailments. 
-    It omits the rules concerning container membership properties, ...</dd>
+    and subClassOf. It omits all of the axioms. This is probably the most useful 
+    mode but is not the default because it is a less complete implementation of 
+    the standard. </dd>
 </dl>
-<p>Notes on bNodes and interpolation lemma</p>
+<p>[TODO: more detail required on this either here or in a later section and expand 
+  on all the cryptic references like rdfD-1]</p>
+<p>Note: In the Jena Model API we do not treat bNodes as variables. This enables 
+  code to, for example, retrieve the properties of specific bNodes from a Model. 
+  In order to determine if Model B is entailed by Model A one would need to translate 
+  model B in a query replacing bNodes by query variables and then apply the query 
+  to Model A. This will be expensive for large B's. </p>
+<p>Given this property that bNodes have real existence as Java objects in a Jena 
+  Model, and given that the reasoners are intended to be access through the normal 
+  Model API, we decided that implementing the RDFS closure rules that generate 
+  bNodes for all literals in the graph would be confusing and pointless. So we 
+  didn't. </p>
+<p>Similarly, the Jena API allows provides direct means to discover the datatype 
+  of a typed literal and reflecting this through the rdfD-1 closure rule is pointless.</p>
 <h2>GenericRuleReasoner</h2>
-<p>TBD</p>
+<p>The RDFS (and indeed OWL) reasoner is built using a general purpose rule engine. 
+  This engine supports forward chaining rules, tabled (aka memoized) backward 
+  chaining rules or a hybrid mode in which forward rules can create new backward 
+  rules that are used to answer queries.</p>
+<p>This engine is available for general use in applications that wish to perform 
+  rule based processing of RDF data. </p>
+<p>At this release the engine is exposed via the <code>GenericRuleReasoner</code> 
+  and is complete enough to support the RDFS reasoner but is not yet stable. In 
+  particular the backward chaining component is being revised. As the RuleReasoner 
+  stabilizes will generate documentation and sample code for how to use it in 
+  applications. At the moment rules can only be created either programmatically 
+  or via a text format, though in principle it would be possible to define an 
+  RDF encoding for them. </p>
+<p>[TODO lots more details]</p>
 <h2>OWLFBReasoner</h2>
-<p>TBD</p>
+<p>We also include an early prototype of a rule-based implementation of an OWL/Lite 
+  reasoner - OWLFBReasoner. The current implementation is sufficient to pass the 
+  relevant core normative WebONT test cases. On such small scale test cases, where 
+  the query to the inference graph is a test for a ground triple, performance 
+  is good. However, we have concerns over scalability of the current solution 
+  and intend to do further performance work and validation before recommending 
+  this reasoner for use.</p>
+<p>[TODO lots more details]</p>
 <h2>Advanced usage</h2>
 <p>TODO. Describe:</p>
 <ul>
-  <li>query with premises using the 4 arg version of list premises</li>
+  <li>query with premises using the 4 arg version of listStatements</li>
   <li>validation</li>
   <li>access to derivation information</li>
   <li>control of when the expensive processing happens</li>
 </ul>
 <h2>Extension point - the reasoner registry</h2>
-<p>TODO</p>
+<p>The Jena reasoner API is intended to support plug in access to appropriate 
+  external reasoners and we plan to construct example adapters for one or two 
+  openly available reasoners. This work has not yet been done and no external 
+  reasoner support is included within this release.</p>
+<p>[TODO lots more details]</p>
 
 </body>
 </html>
