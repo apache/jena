@@ -26,9 +26,9 @@
   was performed using the jena-perf benchmark (available 
   from <a href="http://sourceforge.net/projects/jena/">
   http://sourceforge.net/projects/jena/</a>). This showed Jena2 to be up to three times 
-  faster than Jena1 (see <a href="perftestWin32.html">perftest</a>). 
+  faster than Jena1 (see <a href="perftestWin32.html">PerfTest</a>). 
   However, Jena2 models may consume more disk space than Jena1 models. This is due to the different table layouts used in Jena1 and 
-  Jena2 (see <a href="perftestSpaceWin32.html">perftestSpace</a>). In Jena1, all resources
+  Jena2 (see <a href="perftestSpaceWin32.html">PerfTestSpace</a>). In Jena1, all resources
   and literals were stored in separate tables that were referenced 
   from the statement table. This greatly reduced space 
   consumption since resources and literals that appeared in multiple statements 
@@ -37,8 +37,9 @@
 
 
 
-  <p>In Jena2, <i>short</i> resources and <i>short</i> literals are stored directly in the statement table.
-  Separate tables for resources and literals exist but are only used for objects
+<p>In Jena2, <i>short</i> resources and <i>short</i> literals are stored directly in the statement table.
+  Separate tables for resources and literals exist but are only used for <i>long</i>
+objects
   whose length exceeds some threshold. The threshold has a database-dependent 
   default but may be redefined by users (see <a href="options.html">LongObjectLength</a>). Consequently, Jena2 requires fewer join operations than 
   Jena1 at the expense of greater memory consumption. Reducing the value of
@@ -77,7 +78,9 @@
   using MySQL on WindowsXP. For this data set, the table below shows how the
   various option settings enable trade-offs between space and time. The results
   should not be considered representative because the impact of these option
-  settings is dependent on the characteristics of the data set.</p>
+  settings is dependent on the characteristics of the data set. Although this
+  table only shows individual option settings, these options may be set in any
+  combination.</p>
 
 
 
@@ -101,7 +104,7 @@
     <td style="text-align: left" width="260">Duplicate checking disabled</td>
     <td width="138" style="text-align: right">16.38 MB</td>
     <td width="111" style="text-align: right">16.3 sec.</td>
-    <td width="426" style="text-align: left">Only usable if no duplicates in 
+    <td width="426" style="text-align: left">Use only if no duplicates in 
     load set.</td>
   </tr>
   <tr>
