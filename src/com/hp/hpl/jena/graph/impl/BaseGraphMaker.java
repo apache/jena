@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BaseGraphMaker.java,v 1.4 2003-08-18 15:26:13 chris-dollin Exp $
+  $Id: BaseGraphMaker.java,v 1.5 2003-08-19 09:53:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -64,7 +64,7 @@ public abstract class BaseGraphMaker implements GraphMaker
         {
         Graph result = new GraphMem();
         Node self = Node.createAnon();
-        Node mode = Node.createLiteral( style.toString(), "", false );
+        Node mode = JMS.rsStandard.asNode();
         result.add( Triple.create( self, JMS.reificationMode.asNode(), mode ) );
         return result;    
         }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-18 15:26:49 $
+ * Last modified on   $Date: 2003-08-19 09:53:27 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.12 2003-08-18 15:26:49 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.13 2003-08-19 09:53:27 chris-dollin Exp $
  */
 public class OntModelSpec implements ModelSpec {
     // Constants
@@ -168,14 +168,31 @@ public class OntModelSpec implements ModelSpec {
      * @param spec
      */
     public OntModelSpec( OntModelSpec spec ) {
-        setDocumentManager( spec.getDocumentManager() );
-        setModelMaker( spec.getModelMaker() );
-        setReasonerFactory( spec.getReasonerFactory() );
-        setLanguage( spec.getLanguage() );
+        this
+            ( 
+            spec.getModelMaker(), 
+            spec.getDocumentManager(), 
+            spec.getReasonerFactory(), 
+            spec.getLanguage() 
+            );
+//        setDocumentManager( spec.getDocumentManager() );
+//        setModelMaker( spec.getModelMaker() );
+//        setReasonerFactory( spec.getReasonerFactory() );
+//        setLanguage( spec.getLanguage() );
     }
     
-    public OntModelSpec( Model description )
-        { this( createSpec( description ) ); }
+    /**
+        Initialise an OntModelSpec from an RDF description using the JMS vocabulary.
+    */
+    public OntModelSpec( Model description )  { 
+        this
+            ( 
+            getModelMaker( description ),
+            getDocumentManager( description ),
+            getReasonerFactory( description ),
+            getLanguage( description)
+            );
+    }
     
     
     // External signature methods
@@ -350,18 +367,38 @@ public class OntModelSpec implements ModelSpec {
         return new OntModelImpl( this, m_maker.createModel() );
     }
     
-    public static OntModelSpec createSpec( Model description ) {
-        Statement langStatement = description.getProperty( JMS.current, JMS.ontLanguage );
-        Statement manStatement = description.getProperty( JMS.current, JMS.docManager );
-        Statement factStatement = description.getProperty( JMS.current, JMS.reasonsWith );
-        ModelMaker maker = ModelFactory.createMemModelMaker();
-        OntDocumentManager manager = null;
-        String factoryURI = null;
-        ReasonerFactory factory = ReasonerRegistry.theRegistry().getFactory( factoryURI );
-        String language = null;
-        return new OntModelSpec( maker, manager, factory, language );
+    public static ModelMaker getModelMaker( Model description ) {
+        Statement makStatement = description.getProperty( JMS.current, JMS.importMaker );
+        return ModelFactory.createMemModelMaker();
     }
     
+    /**
+        Answer the URI string of the ontology language in this description
+     
+        @param description the Model from which to extract the description
+        @return the language string
+        @exception NullPointerException if there's no ontLanguage property
+        @exception something if the value isn't a URI resource
+    */
+    public static String getLanguage( Model description ) {
+        Statement langStatement = description.getProperty( JMS.current, JMS.ontLanguage );
+        return langStatement.getResource().getURI();
+    }
+    
+    public static OntDocumentManager getDocumentManager ( Model description ) {
+        Statement docStatement = description.getProperty( JMS.current, JMS.docManager );
+        Literal lit = docStatement.getLiteral();
+        return (OntDocumentManager) lit.getObject( null );
+    }
+    
+    public static ReasonerFactory getReasonerFactory( Model description ) {
+        Statement factStatement = description.getProperty( JMS.current, JMS.reasonsWith );
+        Statement reStatement = description.getProperty( factStatement.getResource(), JMS.reasoner );
+        String factoryURI = reStatement.getResource().getURI();
+        ReasonerFactory rf = ReasonerRegistry.theRegistry().getFactory( factoryURI );
+        return rf;
+    }
+
     /**
         Answer an RDF description of this OntModelSpec, faking a few things for the 
         moment (MakerSpecs).

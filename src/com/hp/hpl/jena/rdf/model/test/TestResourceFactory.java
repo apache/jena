@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestResourceFactory.java,v 1.3 2003-04-15 21:15:26 jeremy_carroll Exp $
+  $Id: TestResourceFactory.java,v 1.4 2003-08-19 09:53:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -80,6 +80,10 @@ public class TestResourceFactory extends TestCase {
         }
 
         public Resource createResource(String uriref) {
+            return null;
+        }
+        
+        public Literal createPlainLiteral( String string ) {
             return null;
         }
 

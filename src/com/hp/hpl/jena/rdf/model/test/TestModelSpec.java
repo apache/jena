@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelSpec.java,v 1.4 2003-08-18 15:26:49 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.5 2003-08-19 09:53:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.ontology.*;
 import java.util.*;
 
@@ -93,8 +94,28 @@ public class TestModelSpec extends ModelTestBase
         
     public void testCreateOntSpec()
         {
+        OntModelSpec oms = OntModelSpec.OWL_MEM_RULE_INF;
         Model spec = ModelFactory.createDefaultModel();
-        // OntModelSpec ms = new OntModelSpec( spec );
+        Resource lang = spec.createResource(  oms.getLanguage() );
+        Resource factory = spec.createResource( oms.getReasonerFactory().getURI() );
+        spec.add( JMS.current, JMS.ontLanguage, lang );
+        Resource r = spec.createResource();
+        spec.add( r, JMS.reasoner, factory );
+        spec.add( JMS.current, JMS.reasonsWith, r );
+        Resource m = spec.createResource();
+        Model modelMaker = ModelFactory.createDefaultModel();
+        modelMaker.add( m, JMS.reificationMode, JMS.rsStandard );
+        spec.add( JMS.current, JMS.importMaker, m );
+        spec.add( modelMaker );
+        OntDocumentManager odm = oms.getDocumentManager();
+        Literal dm = spec.createTypedLiteral( odm, "", "jms:types/DocumentManager" );
+        spec.add( JMS.current, JMS.docManager, dm );
+    /* */
+        OntModelSpec ms = new OntModelSpec( spec );
+        assertEquals( lang.getURI(), ms.getLanguage() );
+        assertEquals( factory.getURI(), ms.getReasonerFactory().getURI() );
+        assertIsoModels( "", modelMaker, ms.getModelMaker().getDescription() );
+        assertSame( odm, ms.getDocumentManager() );
         }
     }
 

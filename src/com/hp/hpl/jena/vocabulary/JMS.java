@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JMS.java,v 1.2 2003-08-18 15:26:50 chris-dollin Exp $
+  $Id: JMS.java,v 1.3 2003-08-19 09:53:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -29,6 +29,11 @@ public class JMS
     
     public static final Resource TypeMemMaker = resource( "type/MemMaker");
     
+    public static final Literal rsStandard = literal( "Standard" );
+    
+    public static Literal literal( String lex )
+        { return ResourceFactory.createPlainLiteral( lex ); }
+        
     public static Resource resource( String ln )
         { return ResourceFactory.createResource( baseURI + ln ); }
         
