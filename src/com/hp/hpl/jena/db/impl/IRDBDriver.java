@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.12 $
+* @version $Revision: 1.13 $
 */
 
 public interface IRDBDriver {
@@ -258,13 +258,6 @@ public interface IRDBDriver {
 	 */	
 	
 	public String genSQLReifQualObj ( char reifProp, boolean hasObj );
-
-	/**
-	 * Indicate whether or not table with name is present in database.
-	 * @param tName name of the table.
-	 * @return true if the table exists.
-	 */
-	public boolean doesTableExist(String tName);
 	
 	/**
 	 * Generate an SQL string to match a table column value to a constant.
@@ -358,6 +351,107 @@ public interface IRDBDriver {
 				return " AND " + qual;
 		 }  	 
 	}
+	
+	/**
+	 * Get the value of LongObjectLength
+	 * @return int
+	 */
+	public int getLongObjectLength();
+
+	/**
+	* Set the value of LongObjectLength. Throws an exception if
+	* the database has been initialized.
+	* @param int
+	*/
+	public void setLongObjectLength(int len);
+
+	/**
+	 * Get the value of IndexKeyLength
+	 * @return int
+	 */
+	public int getIndexKeyLength();
+
+	/**
+	* Set the value of IndexKeyLength. Throws an exception if
+	* the database has been initialized.
+	* @param int
+	*/
+	public void setIndexKeyLength(int len);
+
+	/**
+	* Get the value of IsTransactionDb
+	* @return bool
+	*/
+	public boolean getIsTransactionDb();
+
+	/**
+	* Set the value of IsTransactionDb. Throws an exception if
+	* the database has been initialized.
+	* @param bool
+	*/
+	public void setIsTransactionDb(boolean bool);
+
+	/**
+	* Get the value of DoCompressURI
+	* @return bool
+	*/
+	public boolean getDoCompressURI();
+
+	/**
+	* Set the value of DoCompressURI. Throws an exception if
+	* the database has been initialized.
+	* @param bool
+	*/
+	public void setDoCompressURI(boolean bool);
+
+	/**
+		* Get the value of CompressURILength
+		* @return int
+		*/
+	public int getCompressURILength();
+
+	/**
+	* Set the value of CompressURILength. Throws an exception if
+	* the database has been initialized.
+	* @param int
+	*/
+	public void setCompressURILength(int len);
+
+	/**
+	* Get the value of DoDuplicateCheck
+	* @return bool
+	*/
+	public boolean getDoDuplicateCheck();
+
+	/**
+	* Set the value of DoDuplicateCheck.
+	* @param bool
+	*/
+	public void setDoDuplicateCheck(boolean bool);
+
+	/**
+	* Get the value of TableNamePrefix
+	* @return String
+	*/
+	public String getTableNamePrefix();
+
+	/**
+	* Set the value of TableNamePrefix.
+	* @param String
+	*/
+	public void setTableNamePrefix(String prefix);
+	
+	/**
+	* Get the value of StoreWithModel
+	* @return String
+	*/
+	public String getStoreWithModel();
+
+	/**
+	* Set the value of StoreWithModel.
+	* @param String
+	*/
+	public void setStoreWithModel( String modelName );
 
 }
 
