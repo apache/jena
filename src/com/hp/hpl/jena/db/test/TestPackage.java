@@ -12,7 +12,7 @@ import com.hp.hpl.jena.util.Log;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.9 $
+ * @version 	$Revision: 1.10 $
  */
 public class TestPackage extends TestSuite
 {
@@ -48,6 +48,7 @@ public class TestPackage extends TestSuite
 		addTest( "TestCompatability", TestCompatability.suite() );
 		addTest( "TestCompareToMem", TestCompareToMem.suite() );
 		addTest( "TestGraphRDB", TestGraphRDB.suite());
+		addTest( "TestGraphRDBMaker", TestGraphRDB.suite());
 		addTest( "TestNsPrefix", TestNsPrefix.suite());
 		addTest( "TestPrefixMapping", TestPrefixMapping.suite());
 		addTest( "TestTransactions", TestTransactions.suite() );
