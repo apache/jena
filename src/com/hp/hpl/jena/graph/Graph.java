@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.11 2003-06-24 15:27:48 chris-dollin Exp $
+  $Id: Graph.java,v 1.12 2003-06-25 13:23:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.graph;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
 
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.*;
 
 
 /**
