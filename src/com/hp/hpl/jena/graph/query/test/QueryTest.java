@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.12 2003-07-17 14:56:54 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.13 2003-07-17 15:11:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -472,23 +472,32 @@ public class QueryTest extends GraphTestBase
         assertCount( 0, "" );
         assertCount( 0, "x R y" );
         assertCount( 1, "?x R y" );
+        assertCount( 1, "?x R y", "?x" );
+        assertCount( 2, "?x R y", "?z" );
         assertCount( 1, "?x R ?x" );
         assertCount( 2, "?x R ?y" );
+        assertCount( 3, "?x R ?y", "?z" );
         assertCount( 3, "?x ?R ?y" );
         assertCount( 6, "?x ?R ?y; ?a ?S ?c" );
+        assertCount( 6, "?x ?R ?y; ?a ?S ?c", "?x" );
+        assertCount( 6, "?x ?R ?y; ?a ?S ?c", "?x ?c" );
+        assertCount( 6, "?x ?R ?y; ?a ?S ?c", "?x ?y ?c" );
+        assertCount( 7, "?x ?R ?y; ?a ?S ?c", "?dog" );
+        assertCount( 8, "?x ?R ?y; ?a ?S ?c", "?dog ?cat ?x" );
         assertCount( 18, "?a ?b ?c; ?d ?e ?f; ?g ?h ?i; ?j ?k ?l; ?m ?n ?o; ?p ?q ?r" );
         }
     
     public void assertCount( int expected, String query )
+        { assertCount( expected, query, "" ); }
+        
+    public void assertCount( int expected, String query, String vars )
         {
         Graph g = graphWith( "" );
         Query q = new Query();
         Triple [] triples = tripleArray( query );
         for (int i = 0; i < triples.length; i += 1) q.addMatch( triples[i] );
-        q.executeBindings( g, new Node [] {} );
+        q.executeBindings( g, nodes( vars ) );
         assertEquals( expected, q.getVariableCount() );
-        q.executeBindings( g, nodes( "?notPresentInQuery" ) );
-        assertEquals( expected + 1, q.getVariableCount() );
         }
         
     /**
