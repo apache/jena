@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.24 2004-03-16 15:00:33 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.25 2004-03-17 10:15:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -137,7 +137,11 @@ public abstract class ModelSpecImpl implements ModelSpec
         
     public static Resource getMaker( Resource root, Model desc )
         {
-        return desc.listStatements( root, JMS.maker, (RDFNode) null ).nextStatement().getResource();
+        StmtIterator it = desc.listStatements( root, JMS.maker, (RDFNode) null );
+        if (it.hasNext())
+        	return it.nextStatement().getResource();
+        else 
+            throw new BadDescriptionException( "no jms:maker for " + root, desc );
         }
         
     /**
