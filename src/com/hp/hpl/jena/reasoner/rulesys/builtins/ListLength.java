@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  22-Sep-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: ListLength.java,v 1.2 2003-10-05 15:35:49 der Exp $
+ * $Id: ListLength.java,v 1.3 2003-12-04 14:08:22 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * Fails if the list is malformed.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-10-05 15:35:49 $
+ * @version $Revision: 1.3 $ on $Date: 2003-12-04 14:08:22 $
  */
 public class ListLength extends BaseBuiltin {
 
@@ -87,7 +87,7 @@ public class ListLength extends BaseBuiltin {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright Hewlett-Packard Development Company, LP 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

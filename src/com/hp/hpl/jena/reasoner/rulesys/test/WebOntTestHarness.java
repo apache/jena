@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  12-Sep-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.19 2003-09-25 15:18:12 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.20 2003-12-04 14:07:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-09-25 15:18:12 $
+ * @version $Revision: 1.20 $ on $Date: 2003-12-04 14:07:31 $
  */
 public class WebOntTestHarness {
 
@@ -151,10 +151,19 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/description-logic/Manifest206#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest207#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest208#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest209#test",
+        
+        "http://www.w3.org/2002/03owlt/miscellaneous/Manifest010#test",
+        "http://www.w3.org/2002/03owlt/miscellaneous/Manifest011#test",
+        "http://www.w3.org/2002/03owlt/SymmetricProperty/Manifest002#test",
+        
+        "http://www.w3.org/2002/03owlt/Thing/Manifest005#test",
         
         // Temporary block - incomplete (OOM eventually in some cases)
+        "http://www.w3.org/2002/03owlt/TransitiveProperty/Manifest002#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest661#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest662#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest663#test",
         
         "http://www.w3.org/2002/03owlt/description-logic/Manifest608#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest611#test",
@@ -163,6 +172,7 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/description-logic/Manifest626#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest627#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest630#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest668#test",
     };
             
     /** The list of status values to include. If approvedOnly then only the first
@@ -239,8 +249,14 @@ public class WebOntTestHarness {
             resultFile = args[0];
         }
         WebOntTestHarness harness = new WebOntTestHarness();
-//        harness.runTests();
-        harness.runTest("http://www.w3.org/2002/03owlt/description-logic/Manifest663#test");
+        harness.runTests();
+//        harness.runTest("http://www.w3.org/2002/03owlt/AnnotationProperty/Manifest004#test");
+//        harness.runTest("http://www.w3.org/2002/03owlt/AnnotationProperty/Manifest003#test");
+//        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest001#test");
+//        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest002#test");
+//        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest003#test");
+//        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest004#test");
+//        harness.runTest("http://www.w3.org/2002/03owlt/Thing/Manifest005#test");
         RDFWriter writer = harness.testResults.getWriter("RDF/XML-ABBREV");
         OutputStream stream = new FileOutputStream(resultFile);
         writer.setProperty("showXmlDeclaration", "true");
@@ -366,7 +382,20 @@ public class WebOntTestHarness {
             long t2 = System.currentTimeMillis();
             lastTestDuration = t2 - t1; 
             return correct;
+        } else if (test.hasProperty(RDF.type, OWLTest.ConsistencyTest)) {
+            // Not used normally becase we are not complete enough to prove consistency
+//            System.out.println("Starting: " + test);
+            Model input = getDoc(test, RDFTest.inputDocument);
+            long t1 = System.currentTimeMillis();
+            InfGraph graph = reasoner.bind(input.getGraph());
+            boolean correct = graph.validate().isValid();
+            long t2 = System.currentTimeMillis();
+            lastTestDuration = t2 - t1; 
+            return correct;
         } else {
+            for (StmtIterator i = test.listProperties(RDF.type); i.hasNext(); ) {
+                System.out.println("Test type = " + i.nextStatement().getObject());
+            }
             throw new ReasonerException("Unknown test type");
         }
     }
@@ -553,7 +582,7 @@ public class WebOntTestHarness {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright Hewlett-Packard Development Company, LP 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

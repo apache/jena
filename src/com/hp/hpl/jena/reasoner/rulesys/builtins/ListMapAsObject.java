@@ -3,9 +3,9 @@
  * Created by:  Dave Reynolds
  * Created on:  23-Sep-2003
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: ListMapAsObject.java,v 1.2 2003-10-05 15:35:49 der Exp $
+ * $Id: ListMapAsObject.java,v 1.3 2003-12-04 14:08:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * forward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-10-05 15:35:49 $
+ * @version $Revision: 1.3 $ on $Date: 2003-12-04 14:08:21 $
  */
 public class ListMapAsObject extends BaseBuiltin {
 
@@ -65,7 +65,7 @@ public class ListMapAsObject extends BaseBuiltin {
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2003
+    (c) Copyright Hewlett-Packard Development Company, LP 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
