@@ -117,8 +117,13 @@ public class FileUtils
             return null ;
 
         String fn = filenameOrURI ;
+        if ( fn.startsWith("file://localhost/") )
+            // NB Leaves the leading slash on. 
+            return fn.substring("file://localhost".length()) ;
+            
         if ( fn.startsWith("file:") )
-            fn = fn.substring("file:".length()) ;
+            return fn.substring("file:".length()) ;
+        
         return fn ;
     }
     
