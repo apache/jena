@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-08 22:51:21 $
+ * Last modified on   $Date: 2003-07-21 13:36:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -29,6 +29,7 @@ import java.util.ArrayList;
 
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
 import junit.framework.*;
 
@@ -40,7 +41,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.21 2003-07-08 22:51:21 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.22 2003-07-21 13:36:40 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -221,6 +222,10 @@ public class TestClassExpression
 					assertEquals( "Size should be 2", 2, A.getOperands().size() );
 					iteratorTest( A.listOperands(), new Object[] {B,C} );
                     
+                    ClosableIterator i = A.listOperands();
+                    assertTrue( "Argument should be an OntClass", i.next() instanceof OntClass );
+                    i.close();
+                    
 					A.setOperands( m.createList( new RDFNode[] {C} ) );
 					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.INTERSECTION_OF() ) );
 					assertEquals( "Size should be 1", 1, A.getOperands().size() );
@@ -249,6 +254,10 @@ public class TestClassExpression
 					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.UNION_OF() ) );
 					assertEquals( "Size should be 2", 2, A.getOperands().size() );
 					iteratorTest( A.listOperands(), new Object[] {B,C} );
+                    
+                    ClosableIterator i = A.listOperands();
+                    assertTrue( "Argument should be an OntClass", i.next() instanceof OntClass );
+                    i.close();
                     
 					A.setOperands( m.createList( new RDFNode[] {C} ) );
 					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.UNION_OF() ) );
