@@ -285,10 +285,8 @@ public class ParsedLiteral extends ExprNode implements Expr, NodeValue
         if ( isInt ) return Long.toString(valInt) ;
         if ( isDouble ) return Double.toString(valDouble) ;
         if ( isBoolean ) return (valBoolean?"true":"false") ;
-        // TODO Is this right?
         if ( isURI ) return valURI ;
         if ( isString ) return valString ;
-        // TODO Is this right?
         if ( isGraphNode ) return valGraphNode.toString() ;
 
         return "literal:unknown" ;

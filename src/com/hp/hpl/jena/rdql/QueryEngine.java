@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.ModelLoader ;
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryEngine.java,v 1.12 2004-06-15 14:02:06 chris-dollin Exp $
+ * @version    $Id: QueryEngine.java,v 1.13 2004-07-01 10:13:38 andy_seaborne Exp $
  */
  
 public class QueryEngine implements QueryExecution
@@ -184,7 +184,6 @@ public class QueryEngine implements QueryExecution
                     nextBinding.add(name, rdfNode) ;
                 }
                 
-                // TODO Confirm no longer needed due to move to graph query system
 //                // Verify constraints
 //                boolean passesTests = true;
 //                for (Iterator cIter = query.constraints.iterator(); cIter.hasNext();)
