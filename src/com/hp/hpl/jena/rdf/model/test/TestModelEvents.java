@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelEvents.java,v 1.15 2004-03-23 13:47:42 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.16 2004-06-29 14:42:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -26,75 +26,22 @@ public class TestModelEvents extends ModelTestBase
         { return new TestSuite( TestModelEvents.class ); }
         
     protected Model model;
-    protected SimpleListener SL;
+    protected RecordingModelListener SL;
     
     public void setUp()
         { 
         model = ModelFactory.createDefaultModel(); 
-        SL = new SimpleListener();
-        }
-        
-    static class SimpleListener implements ModelChangedListener
-        {
-        List history = new ArrayList();
-        
-        public void addedStatement( Statement s )
-            { record( "add", s ); }
-            
-        public void addedStatements( Statement [] statements )
-            { record( "add[]", Arrays.asList( statements ) ); }
-            
-        public void addedStatements( List statements )
-            { record( "addList", statements ); }
-            
-        public void addedStatements( StmtIterator statements )
-            { record( "addIterator", iteratorToList( statements ) ); }
-            
-        public void addedStatements( Model m )
-            { record( "addModel", m ); }
-            
-        public void removedStatements( Statement [] statements )
-            { record( "remove[]", Arrays.asList( statements ) ); }
-        
-       public void removedStatement( Statement s )
-            { record( "remove", s ); }
-            
-        public void removedStatements( List statements )
-            { record( "removeList", statements ); }
-            
-        public void removedStatements( StmtIterator statements )
-            { record( "removeIterator", iteratorToList( statements ) ); }
-            
-        public void removedStatements( Model m )
-            { record( "removeModel", m ); }
-        
-        public void notifyEvent( Model m, Object event )
-            { record( "someEvent", m, event ); }
-        
-        protected void record( String tag, Object x, Object y )
-            { history.add( tag ); history.add( x ); history.add( y ); }
-            
-        protected void record( String tag, Object info )
-            { history.add( tag ); history.add( info ); }
-            
-        boolean has( Object [] things ) 
-            { return history.equals( Arrays.asList( things ) ); }
-            
-        void assertHas( Object [] things )
-            {
-            if (has( things ) == false)
-                fail( "expected " + Arrays.asList( things ) + " but got " + history );
-            }
+        SL = new RecordingModelListener();
         }
         
     public void testRegistrationCompiles()
         {
-        assertSame( model, model.register( new SimpleListener() ) );
+        assertSame( model, model.register( new RecordingModelListener() ) );
         }
         
     public void testUnregistrationCompiles()
         {
-        model.unregister( new SimpleListener() );
+        model.unregister( new RecordingModelListener() );
         }
         
     public void testAddSingleStatements()
@@ -114,8 +61,8 @@ public class TestModelEvents extends ModelTestBase
     public void testTwoListeners()
         {
         Statement S = statement( model, "S P O" );
-        SimpleListener SL1 = new SimpleListener();
-        SimpleListener SL2 = new SimpleListener();
+        RecordingModelListener SL1 = new RecordingModelListener();
+        RecordingModelListener SL2 = new RecordingModelListener();
         model.register( SL1 ).register( SL2 );
         model.add( S );
         SL2.assertHas( new Object[] { "add", S } );

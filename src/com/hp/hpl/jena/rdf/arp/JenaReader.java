@@ -105,7 +105,6 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 	private Model model;
 	
 	public void read(Model model, String url) throws JenaException {
-
 		try {
 			URLConnection conn = new URL(url).openConnection();
 			String encoding = conn.getContentEncoding();
@@ -120,7 +119,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 		    throw new DoesNotExistException( url );
 		} catch (IOException e) {
 			throw new JenaException(e);
-		}
+		} 
 	}
 
 
@@ -209,12 +208,13 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 				public void endPrefixMapping(String prefix) {
 				}
 			});
-read(model.getGraph(), inputS, xmlBase);
+			read(model.getGraph(), inputS, xmlBase);
 	}
 
 	synchronized private void read(final Graph g, InputSource inputS, String xmlBase) {
 		
 			try {
+			g.getEventManager().notifyEvent( g, GraphEvents.startRead );
 			final BulkUpdateHandler bulk = g.getBulkUpdateHandler();
 			inputS.setSystemId(xmlBase);
 			JRStatementHandler handler =new JRStatementHandler(bulk); 
@@ -227,6 +227,8 @@ read(model.getGraph(), inputS, xmlBase);
 			throw new JenaException(e);
 		} catch (SAXException e) {
 			throw new JenaException(e);
+		} finally {
+		    g.getEventManager().notifyEvent( g, GraphEvents.finishRead );
 		}
 	}
 
@@ -642,7 +644,7 @@ read(model.getGraph(), inputS, xmlBase);
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.22 2004-06-18 14:18:43 chris-dollin Exp $
+ * * $Id: JenaReader.java,v 1.23 2004-06-29 14:42:03 chris-dollin Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RecordingListener.java,v 1.9 2004-06-29 09:43:21 chris-dollin Exp $
+  $Id: RecordingListener.java,v 1.10 2004-06-29 14:42:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -64,7 +64,7 @@ public class RecordingListener implements GraphListener
     public boolean has( Object [] things )
         { return history.equals( Arrays.asList( things ) ); } 
         
-    void assertHas( Object [] things )
+    public void assertHas( Object [] things )
         {
         if (has( things ) == false)
             Assert.fail( "expected " + Arrays.asList( things ) + " but got " + history );

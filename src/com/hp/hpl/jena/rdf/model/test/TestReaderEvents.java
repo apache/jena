@@ -1,43 +1,44 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphEvents.java,v 1.3 2004-06-29 14:41:11 chris-dollin Exp $
+  $Id: TestReaderEvents.java,v 1.1 2004-06-29 14:42:03 chris-dollin Exp $
 */
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.rdf.model.test;
+
+import java.io.StringReader;
+import java.util.ArrayList;
+
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.test.RecordingListener;
+import com.hp.hpl.jena.rdf.model.*;
+
+import junit.framework.TestSuite;
 
 /**
-    GraphEvents is the base class for Jena general graph events. Each graph event
-    has a title and some content.
-    
-    @author kers
- */
-public class GraphEvents
+ 	TestReaderEvents - test that reader events are issued
+ 	@author kers
+*/
+public class TestReaderEvents extends ModelTestBase
 	{
-	public static final GraphEvents removeAll = new GraphEvents( "removeAll", "" );
-	
-	public static final GraphEvents startRead = new GraphEvents( "startRead", "" );
-	
-	public static final GraphEvents finishRead = new GraphEvents( "finishRead", "" );
-	
-    private String title;
-    private Object content;
+    public TestReaderEvents( String name )
+        { super(name); }
+
+    public static TestSuite suite()
+        { return new TestSuite( TestReaderEvents.class ); }
     
-    public GraphEvents( String title, Object content )
-        { this.title = title;
-        this.content = content; }
-    
-    public boolean equals( Object o )
-        { return o instanceof GraphEvents && same( (GraphEvents) o ); }
-    
-    public boolean same( GraphEvents o )
-        { return title.equals( o.title ) && content.equals( o.content ); }
-   
-	public static Object remove( Node s, Node p, Node o )
-	    { return new GraphEvents( "remove", Triple.create( s, p, o ) ); }
-	
-	public String toString()
-	    { return "<GE " + title + ">"; }
-	}
+    public void testReaderEvent()
+        {
+        Model m = ModelFactory.createDefaultModel();
+        Graph g = m.getGraph();
+        RecordingListener L = new RecordingListener();
+        g.getEventManager().register( L );
+        RDFReader r = m.getReader( "RDF/XML" );
+        StringReader stringReader = new StringReader( "<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'></rdf:RDF>" );
+        r.read( m, stringReader, "" );
+        L.assertHas( new Object[] {"someEvent", g, GraphEvents.startRead, "addList", g, new ArrayList(), "someEvent", g, GraphEvents.finishRead } );
+        }
+    }
+
 
 /*
 (c) Copyright 2004, Hewlett-Packard Development Company, LP
