@@ -14,7 +14,7 @@
 
 
 
-<h3>10 May, 2003</h3>
+<h3>27 June, 2003</h3>
 
 
 
@@ -163,6 +163,12 @@ release or in the final, full featured Jena2 release.</p>
 
 
 
+  <p>In Jena2, all databases are multi-model. However, by default, each model is 
+  stored in separate tables. To share tables among models, see
+  <a href="#migrating">migrating</a>, below.</p>
+
+
+
   <p>Performance of Jena2 
   persistent models is no worse than Jena1 and often better. However, Jena2 
   persistent models may consume more database space. See the <a href="#notes">Performance Notes</a>.</p>
@@ -196,13 +202,20 @@ release or in the final, full featured Jena2 release.</p>
 
   <p><font face="Times New Roman">The 
   vocabulary for these properties is given in </font>
-  <font face="Courier New" size="2">jena.vocabulary.DB</font><font face="Times New Roman">. 
-  This preliminary release does not support setting configuration properties 
-  however a future preliminary release will support it. The current default 
-  configuration properties should suffice for experimentation. Note that only a 
+  <font face="Courier New" size="2">jena.vocabulary.DB</font><font face="Times New Roman">.&nbsp; Note that only a 
   few configuration parameters are defined in the default configuration property 
-  model provided in this release. This was done for experimentation. A complete 
-  set of configuration properties will be provided in the final release.</font></p>
+  model provided in this preview release. This was done for experimentation. A 
+  richer 
+  set of configuration properties will be provided in the final release. A 
+  configuration property is used to enable models to share database tables. By 
+  default, each model is stored in its own tables. To enable graphs to share 
+  tables, add the property </font><font face="Courier New" size="2">
+  DB.graphDBSchema</font><font face="Times New Roman">. to the configuration 
+  model. The property value should be the name of some other existing model, or 
+  &quot;DEFAULT&quot; to share the tables with the default model. For an example of how 
+  this is done, see the test program </font><font size="2" face="Courier New">
+  testConstructNamedModelSchema</font><font face="Times New Roman"> in </font>
+  <font face="Courier New" size="2">jena.db.test.testConnection</font><font face="Times New Roman">.</font></p>
 
 
 
@@ -223,7 +236,7 @@ release or in the final, full featured Jena2 release.</p>
 
 
   <p>Very little tuning or performance analysis has been done. Early 
-  experiments performed using the jena-perf benchmark (available as a package 
+  measurements of the Jena2 preview 1 release using the jena-perf benchmark (available as a package 
   from <a href="http://sourceforge.net/projects/jena/">
   http://sourceforge.net/projects/jena/</a>) show Jena2 to be up to three times 
   faster than Jena1 (see <a href="perftestWin32.html">perftest.html</a>). 

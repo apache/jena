@@ -16,8 +16,11 @@ the graph SPI.
 Database:
 
 The database layout has changed from preview 3 based on feedback and
-further experimentation.  It wil be necessary to dump a databse built with
-preview 3 and rebuild it.
+further experimentation. The new layout supports long URIs and enables
+models to share database tables. See <Jena>/doc/DB/index.html for more
+information. Note that existing Jena databases (including preview 3)
+cannot be accessed by preview 4. It will be necessary to dump and
+rebuild them.
 
 Ontology API:
 
