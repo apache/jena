@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.12 2005-02-13 18:02:50 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.13 2005-02-13 18:18:12 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -280,7 +280,7 @@ public class FileManager
         {
             if ( log.isTraceEnabled() )
                 log.trace("Failed to locate '"+mappedURI+"'") ;
-            throw new JenaException("Can't open: "+filenameOrURI) ;
+            throw new NotFoundException("Nout found: "+filenameOrURI) ;
         }
         model.read(in, baseURI, syntax) ;
         return model ;
