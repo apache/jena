@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.2 2003-07-24 09:10:18 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.3 2003-07-25 09:03:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -181,7 +181,27 @@ public abstract class AbstractTestReifier extends GraphTestBase
             fail( "X already has subject Y: cannot make it a" );
             }
         catch (Reifier.CannotReifyException e)
-            { /* as requried */ }
+            { /* as required */ }
+        }
+        
+    /**
+        Test that the hidden triples graph is dynamic, not static.
+    */
+    public void testDynamicHiddenTriples()
+        {
+        Graph g = getGraph();
+        Reifier r = g.getReifier();
+        Graph h = r.getHiddenTriples();
+        Graph wanted = graphWith
+            ( 
+            "x rdf:type rdf:Statement" 
+            + "; x rdf:subject a"
+            + "; x rdf:predicate B"
+            + "; x rdf:object c"
+            );
+        assertEquals( "", graphWith( "" ), h );
+        r.reifyAs( node( "x" ), triple( "a B c" ) );
+        assertEquals( "", wanted, h );
         }
 
 //    public void testKevinCaseC()

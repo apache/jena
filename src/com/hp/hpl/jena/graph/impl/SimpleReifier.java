@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.5 2003-07-21 15:09:46 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.6 2003-07-25 09:03:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -178,11 +178,12 @@ public class SimpleReifier implements Reifier
         
     public Graph getHiddenTriples()
         { // TODO: turn into a dynamic graph
-        Graph result = new GraphMem();
-        ((SimpleReifier) result.getReifier()).passing = true;
-        Iterator it = nodeMap.keySet().iterator();
-        while (it.hasNext()) include( result, (Node) it.next() );
-        return result;
+//        Graph result = new GraphMem();
+//        ((SimpleReifier) result.getReifier()).passing = true;
+//        Iterator it = nodeMap.keySet().iterator();
+//        while (it.hasNext()) include( result, (Node) it.next() );
+//        return result;
+        return nodeMap.asGraph();
         }
     
     /**

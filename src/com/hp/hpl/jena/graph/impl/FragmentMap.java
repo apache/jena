@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FragmentMap.java,v 1.2 2003-05-30 13:50:12 chris-dollin Exp $
+  $Id: FragmentMap.java,v 1.3 2003-07-25 09:03:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -9,6 +9,11 @@ package com.hp.hpl.jena.graph.impl;
 import java.util.HashMap;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.vocabulary.*;
+
+import java.util.*;
 
 /**
     a FragmentMap is a Map where the domain elements are Nodes
@@ -42,6 +47,79 @@ public class FragmentMap extends HashMap
         put( key, value );
         return value;
         }        
+        
+    public ExtendedIterator allTriples()
+        {
+        final Iterator it = this.entrySet().iterator();
+        return new NiceIterator()
+            {
+            private List pending = new ArrayList();
+            
+            public boolean hasNext() { return pending.size() > 0 || checkNext(); }
+            
+            private boolean checkNext()
+                {
+                if (it.hasNext() == false) return false;
+                refill();
+                return pending.size() > 0 || checkNext();    
+                }
+            
+            private void refill()
+                {
+                Map.Entry e  = (Map.Entry) it.next();
+                Node n = (Node) e.getKey();
+                Object x = e.getValue();
+                if (x instanceof Triple)
+                    {
+                    Triple t = (Triple) x;
+                    pending.add( Triple.create( n, RDF.Nodes.subject, t.getSubject() ) );
+                    pending.add( Triple.create( n, RDF.Nodes.predicate, t.getPredicate() ) );
+                    pending.add( Triple.create( n, RDF.Nodes.object, t.getObject() ) );
+                    pending.add( Triple.create( n, RDF.Nodes.type, RDF.Nodes.Statement ) );
+                    }
+                else
+                    {
+                    Fragments f = (Fragments) x;
+                    Graph temp = new GraphMem();
+                    f.includeInto( temp );
+                    Iterator xx = temp.find( Node.ANY, Node.ANY, Node.ANY );
+                    while (xx.hasNext()) pending.add( xx.next() );
+                    }
+                }
+                
+            public Object next()
+                {
+                if (pending.size() > 0)
+                    {
+                    return pending.remove( pending.size() - 1 );
+                    }
+                else
+                    {
+                    refill();
+                    return next();
+                    }
+                }
+            };
+        }
+        
+    public Graph asGraph()
+        {
+        return new GraphBase()
+            {
+            public int size()
+                {
+                ExtendedIterator it = allTriples();
+                int result = 0;
+                while (it.hasNext()) { it.next(); result += 1; }
+                return result;    
+                }
+                
+            public ExtendedIterator find( TripleMatch tm )
+                {
+                return new TripleMatchIterator( tm.asTriple(), allTriples() );
+                }
+            };
+        }
     }
 
 /*
