@@ -1,7 +1,7 @@
 /*
    (c) Copyright 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Lookup.java,v 1.4 2003-12-13 21:10:50 jeremy_carroll Exp $
+  $Id: Lookup.java,v 1.5 2003-12-15 09:15:04 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -21,41 +21,41 @@ public interface Lookup {
 	public abstract int qrefine(int s, int p, int o);
 	/**
 	  * 
-	  * @param refinement The result of {@link #refineTriple(int,int,int)}
+	  * @param refinement The result of {@link #qrefine(int,int,int)}
 	  * @param subj The old subcategory for the subject.
 	  * @return The new subcategory for the subject.
 	  */
 	public abstract int subject(int old, int refinement);
 	/**
 	  * 
-	  * @param refinement The result of {@link #refineTriple(int,int,int)}
+	  * @param refinement The result of {@link #qrefine(int,int,int)}
 	  * @param prop The old subcategory for the property.
 	  * @return The new subcategory for the property.
 	  */
 	public abstract int prop(int old, int refinement);
 	/**
 	  * 
-	  * @param refinement The result of {@link #refineTriple(int,int,int)}
+	  * @param refinement The result of {@link #qrefine(int,int,int)}
 	  * @param obj The old subcategory for the object.
 	  * @return The new subcategory for the object.
 	  */
 	public abstract int object(int old, int refinement);
 	/**
 	  * 
-	  * @param refinement The result of {@link #refineTriple(int,int,int)}
+	  * @param refinement The result of {@link #qrefine(int,int,int)}
 	  * @return An integer reflecting an action needed in response to this triple.
 	  */
 	public abstract int action(int k);
 	/**
 	 * 
-	 * @param refinement The result of {@link #refineTriple(int,int,int)}
+	 * @param refinement The result of {@link #qrefine(int,int,int)}
 	 * @return True if this triple is <em>the</em> triple for the blank node object.
 	 */
 	public abstract boolean tripleForObject(int k);
 	public abstract boolean tripleForSubject(int k);
 	public abstract boolean removeTriple(int k);
 	/**
-	 *@param refinement The result of {@link #refineTriple(int,int,int)}
+	 *@param refinement The result of {@link #qrefine(int,int,int)}
 	 * @return Is this triple in DL?.
 	 */
 	public abstract boolean dl(int k);
