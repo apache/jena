@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            03-Apr-2003
  * Filename           $RCSfile: TestCreate.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 18:48:39 $
+ * Last modified on   $Date: 2003-06-02 11:27:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestCreate.java,v 1.6 2003-05-30 18:48:39 ian_dickinson Exp $
+ * @version CVS $Id: TestCreate.java,v 1.7 2003-06-02 11:27:28 ian_dickinson Exp $
  */
 public class TestCreate 
     extends TestCase
@@ -356,11 +356,11 @@ public class TestCreate
         // Restrictions
         
         new CreateTestCase( "OWL create restriction", ProfileRegistry.OWL_LANG, NS + "C" ) {
-            public OntResource doCreate( OntModel m )   { return m.createRestriction( NS + "C" ); }
+            public OntResource doCreate( OntModel m )   { return m.createRestriction( NS + "C", null ); }
             public boolean test( OntResource r )        { return r instanceof Restriction;}
         },
         new CreateTestCase( "OWL create anon restriction", ProfileRegistry.OWL_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { return m.createRestriction(); }
+            public OntResource doCreate( OntModel m )   { return m.createRestriction( null ); }
             public boolean test( OntResource r )        { return r instanceof Restriction;}
         },
         
@@ -419,11 +419,11 @@ public class TestCreate
         },
         
         new CreateTestCase( "DAML create restriction", ProfileRegistry.DAML_LANG, NS + "C" ) {
-            public OntResource doCreate( OntModel m )   { return m.createRestriction( NS + "C" ); }
+            public OntResource doCreate( OntModel m )   { return m.createRestriction( NS + "C", null ); }
             public boolean test( OntResource r )        { return r instanceof Restriction;}
         },
         new CreateTestCase( "DAML create anon restriction", ProfileRegistry.DAML_LANG, null ) {
-            public OntResource doCreate( OntModel m )   { return m.createRestriction(); }
+            public OntResource doCreate( OntModel m )   { return m.createRestriction( null ); }
             public boolean test( OntResource r )        { return r instanceof Restriction;}
         },
         

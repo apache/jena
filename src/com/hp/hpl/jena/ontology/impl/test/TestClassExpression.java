@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 18:48:39 $
+ * Last modified on   $Date: 2003-06-02 11:27:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.14 2003-05-30 18:48:39 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.15 2003-06-02 11:27:28 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -477,7 +477,7 @@ public class TestClassExpression
             },
             new OntTestCase( "OntClass.isRestriction", true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
-                    OntClass a = m.createRestriction();
+                    OntClass a = m.createRestriction( null );
                     
                     assertTrue( "enumerated class test not correct",    m_owlLiteLang || !a.isEnumeratedClass() );
                     assertTrue( "intersection class test not correct",  !a.isIntersectionClass() );
@@ -590,6 +590,229 @@ public class TestClassExpression
                     assertTrue( "union class test not correct",         m_owlLiteLang || !a.isUnionClass() );
                     assertTrue( "complement class test not correct",    m_owlLiteLang || !a.isComplementClass() );
                     assertTrue( "restriction test not correct",         a.isRestriction() );
+                }
+            },
+            
+            
+            // restriction type testing
+            new OntTestCase( "Restriction.isAllValuesFrom", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass b = m.createClass( NS + "B" );
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createAllValuesFromRestriction( null, p, b );
+                    
+                    assertTrue( "all values from test not correct",   a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "Restriction.isSomeValuesFrom", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass b = m.createClass( NS + "B" );
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createSomeValuesFromRestriction( null, p, b );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "Restriction.isHasValue", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass b = m.createClass( NS + "B" );
+                    Individual x = m.createIndividual( b );
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createHasValueRestriction( null, p, x );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "Restriction.isCardinality", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createCardinalityRestriction( null, p, 3 );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "Restriction.isMinCardinality", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createMinCardinalityRestriction( null, p, 1 );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "Restriction.isMaxCardinality", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createMaxCardinalityRestriction( null, p, 5 );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   a.isMaxCardinalityRestriction() );
+                }
+            },
+            
+            // restriction conversions
+            new OntTestCase( "Restriction.convertToAllValuesFrom", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createRestriction( p );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    
+                    OntClass b = m.createClass( NS + "B" );
+                    a = a.convertToAllValuesFromRestriction( b );
+                    
+                    assertTrue( "all values from test not correct",   a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "Restriction.convertToSomeValuesFrom", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createRestriction( p );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    
+                    OntClass b = m.createClass( NS + "B" );
+                    a = a.convertToSomeValuesFromRestriction( b );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "Restriction.convertToHasValue", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createRestriction( p );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    
+                    OntClass b = m.createClass( NS + "B" );
+                    Individual x = m.createIndividual( b );
+                    a = a.convertToHasValueRestriction( x );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "Restriction.convertCardinality", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createRestriction( p );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    
+                    a = a.convertToCardinalityRestriction( 3 );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "Restriction.convertMinCardinality", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createRestriction( p );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    
+                    a = a.convertToMinCardinalityRestriction( 3 );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                }
+            },
+            new OntTestCase( "Restriction.convertMaxCardinality", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    Restriction a = m.createRestriction( p );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   !a.isMaxCardinalityRestriction() );
+                    
+                    a = a.convertToMaxCardinalityRestriction( 3 );
+                    
+                    assertTrue( "all values from test not correct",   !a.isAllValuesFromRestriction() );
+                    assertTrue( "some values from test not correct",  !a.isSomeValuesFromRestriction() );
+                    assertTrue( "has value test not correct",         m_owlLiteLang || !a.isHasValueRestriction() );
+                    assertTrue( "cardinality test not correct",       !a.isCardinalityRestriction() );
+                    assertTrue( "min cardinality test not correct",   !a.isMinCardinalityRestriction() );
+                    assertTrue( "max cardinality test not correct",   a.isMaxCardinalityRestriction() );
                 }
             },
             

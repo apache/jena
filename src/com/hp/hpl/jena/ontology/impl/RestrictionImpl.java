@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: RestrictionImpl.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:35:31 $
+ * Last modified on   $Date: 2003-06-02 11:27:04 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -29,6 +29,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.Resource;
 
 
 /**
@@ -38,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.Property;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RestrictionImpl.java,v 1.9 2003-05-30 14:35:31 ian_dickinson Exp $
+ * @version CVS $Id: RestrictionImpl.java,v 1.10 2003-06-02 11:27:04 ian_dickinson Exp $
  */
 public class RestrictionImpl 
     extends OntClassImpl
@@ -189,6 +190,146 @@ public class RestrictionImpl
         return (MaxCardinalityRestriction) as( MaxCardinalityRestriction.class );
     }
 
+
+    // type tests
+    
+    /** 
+     * <p>Answer true if this restriction is an all values from restriction</p>
+     * @return True if this is an allValuesFrom property restriction
+     * @exception ProfileException if {@link Profile#ALL_VALUES_FROM()} is not supported in the current profile
+     */
+    public boolean isAllValuesFromRestriction() {
+        checkProfile( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM" );
+        return canAs( AllValuesFromRestriction.class );
+    }
+         
+    /** 
+     * <p>Answer true if this restriction is a some values from restriction</p>
+     * @return True if this is a someValuesFrom property restriction
+     * @exception ProfileException if {@link Profile#SOME_VALUES_FROM()} is not supported in the current profile
+     */
+    public boolean isSomeValuesFromRestriction() {
+        checkProfile( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM" );
+        return canAs( SomeValuesFromRestriction.class );
+    }
+         
+    /** 
+     * <p>Answer true if this restriction is a has value restriction</p>
+     * @return True if this is a hasValue property restriction
+     * @exception ProfileException if {@link Profile#HAS_VALUE()} is not supported in the current profile
+     */
+    public boolean isHasValueRestriction() {
+        checkProfile( getProfile().HAS_VALUE(), "HAS_VALUE" );
+        return canAs( HasValueRestriction.class );
+    }
+         
+    /** 
+     * <p>Answer true if this restriction is a cardinality restriction (ie is a property restriction
+     * constructed with an <code>owl:cardinality</code> operator, or similar). This is not a test for
+     * a restriction that tests cardinalities in general.</p>
+     * @return True if this is a cardinality property restriction
+     * @exception ProfileException if {@link Profile#CARDINALITY()} is not supported in the current profile
+     */
+    public boolean isCardinalityRestriction() {
+        checkProfile( getProfile().CARDINALITY(), "CARDINALITY" );
+        return canAs( CardinalityRestriction.class );
+    }
+
+    /** 
+     * <p>Answer true if this restriction is a min cardinality restriction (ie is a property restriction
+     * constructed with an <code>owl:minCardinality</code> operator, or similar). This is not a test for
+     * a restriction that tests cardinalities in general.</p>
+     * @return True if this is a minCardinality property restriction
+     * @exception ProfileException if {@link Profile#MIN_CARDINALITY()} is not supported in the current profile
+     */
+    public boolean isMinCardinalityRestriction() {
+        checkProfile( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY" );
+        return canAs( MinCardinalityRestriction.class );
+    }
+
+    /** 
+     * <p>Answer true if this restriction is a max cardinality restriction (ie is a property restriction
+     * constructed with an <code>owl:maxCardinality</code> operator, or similar). This is not a test for
+     * a restriction that tests cardinalities in general.</p>
+     * @return True if this is a maxCardinality property restriction
+     * @exception ProfileException if {@link Profile#MAX_CARDINALITY()} is not supported in the current profile
+     */
+    public boolean isMaxCardinalityRestriction() {
+        checkProfile( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY" );
+        return canAs( MaxCardinalityRestriction.class );
+    }
+
+
+    // conversions
+    
+    /** 
+     * <p>Convert this restriction to an all values from class expression.</p>
+     * @param cls The class to which all values of the restricted property must belong, to be in the
+     * extension of this restriction
+     * @return This class, but converted to a AllValuesFromRestriction class expression
+     * @exception ProfileException if {@link Profile#ALL_VALUES_FROM()} is not supported in the current profile
+     */
+    public AllValuesFromRestriction convertToAllValuesFromRestriction( Resource cls ) {
+        setPropertyValue( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM", cls );
+        return (AllValuesFromRestriction) as( AllValuesFromRestriction.class );
+    }
+         
+    /** 
+     * <p>Convert this restriction to a some values from class expression</p>
+     * @param cls The class to which at least one value of the restricted property must belong, to be in the
+     * extension of this restriction
+     * @return This class, but converted to a SomeValuesFromRestriction node
+     * @exception ProfileException if {@link Profile#SOME_VALUES_FROM()} is not supported in the current profile
+     */
+    public SomeValuesFromRestriction convertToSomeValuesFromRestriction( Resource cls ) {
+        setPropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
+        return (SomeValuesFromRestriction) as( SomeValuesFromRestriction.class );
+    }
+         
+    /** 
+     * <p>Convert this restriction to a has value class expression</p>
+     * @param individual The value which the restricted property must have, for resource to be
+     * in the extension of this restriction
+     * @return This class, but converted to a HasValueRestriction
+     * @exception ProfileException if {@link Profile#HAS_VALUE()} is not supported in the current profile
+     */
+    public HasValueRestriction convertToHasValueRestriction( Resource individual ) {
+        setPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", individual );
+        return (HasValueRestriction) as( HasValueRestriction.class );
+    }
+         
+    /** 
+     * <p>Convert this restriction to a cardinality restriction class expression</p>
+     * @param cardinality The exact cardinality for the restricted property
+     * @return This class, but converted to a CardinalityRestriction node
+     * @exception ProfileException if {@link Profile#CARDINALITY()} is not supported in the current profile
+     */
+    public CardinalityRestriction convertToCardinalityRestriction( int cardinality ) {
+        setPropertyValue( getProfile().CARDINALITY(), "CARDINALITY", getModel().createTypedLiteral( cardinality ) );
+        return (CardinalityRestriction) as( CardinalityRestriction.class );
+    }
+
+    /** 
+     * <p>Convert this restriction to a min cardinality restriction class expression</p>
+     * @param cardinality The minimum cardinality for the restricted property
+     * @return This class, but converted to a MinCardinalityRestriction node
+     * @exception ProfileException if {@link Profile#MIN_CARDINALITY()} is not supported in the current profile
+     */
+    public MinCardinalityRestriction convertToMinCardinalityRestriction( int cardinality ) {
+        setPropertyValue( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
+        return (MinCardinalityRestriction) as( MinCardinalityRestriction.class );
+    }
+
+    /** 
+     * <p>Convert this restriction to a max cardinality restriction class expression</p>
+     * @param cardinality The maximum cardinality for the restricted property
+     * @return This class, but converted to a MaxCardinalityRestriction node
+     * @exception ProfileException if {@link Profile#MAX_CARDINALITY()} is not supported in the current profile
+     */
+    public MaxCardinalityRestriction convertToMaxCardinalityRestriction( int cardinality ) {
+        setPropertyValue( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
+        return (MaxCardinalityRestriction) as( MaxCardinalityRestriction.class );
+    }
 
 
     // Internal implementation methods

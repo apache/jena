@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 18:47:51 $
+ * Last modified on   $Date: 2003-06-02 11:27:04 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.24 2003-05-30 18:47:51 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.25 2003-06-02 11:27:04 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -841,11 +841,17 @@ public class OntModelImpl
      * language profile.
      * </p>
      * 
+     * @param p The property that is restricted by this restriction
      * @return An anonymous Restriction resource.
      */
-    public Restriction createRestriction() {
+    public Restriction createRestriction( Property p ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        return (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), null );
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), null );
+        if (p != null) {
+            r.setOnProperty( p );
+        } 
+        
+        return r;
     }
     
    
@@ -857,11 +863,17 @@ public class OntModelImpl
      * </p>
      * 
      * @param uri The uri for the restriction node, or null for an anonymous restriction.
+     * @param p The property that is restricted by this restriction
      * @return A Restriction resource.
      */
-    public Restriction createRestriction( String uri ) {
+    public Restriction createRestriction( String uri, Property p ) {
         checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
-        return (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+        if (p != null) {
+            r.setOnProperty( p );
+        } 
+        
+        return r;
     }
     
     

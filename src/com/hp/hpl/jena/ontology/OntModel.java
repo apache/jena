@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 18:48:39 $
+ * Last modified on   $Date: 2003-06-02 11:27:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -57,7 +57,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.18 2003-05-30 18:48:39 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.19 2003-06-02 11:27:29 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -575,10 +575,10 @@ public interface OntModel
      * anonymous resource of <code>rdf:type R</code>, where R is the restriction type from the
      * language profile.
      * </p>
-     * 
+     * @param p The property that is restricted by this restriction, or null to omit from the restriction
      * @return An anonymous Restriction resource.
      */
-    public Restriction createRestriction();
+    public Restriction createRestriction( Property p );
     
    
     /**
@@ -589,9 +589,10 @@ public interface OntModel
      * </p>
      * 
      * @param uri The uri for the restriction node, or null for an anonymous restriction.
+     * @param p The property that is restricted by this restriction, or null to omit from the restriction
      * @return A Restriction resource.
      */
-    public Restriction createRestriction( String uri );
+    public Restriction createRestriction( String uri, Property p );
     
     
     /**
