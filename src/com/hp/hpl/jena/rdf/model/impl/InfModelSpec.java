@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.8 2004-08-06 08:01:39 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.9 2004-08-06 13:39:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -10,7 +10,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedRuleReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedReasonerFactory;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.*;
@@ -123,7 +123,7 @@ public class InfModelSpec extends ModelSpecImpl
     */
     private static ReasonerFactory loadFactory( ReasonerFactory rf, Model rs, Resource R )
         {
-        WrappedRuleReasonerFactory f = new WrappedRuleReasonerFactory( rf );
+        WrappedReasonerFactory f = new WrappedReasonerFactory( rf );
     	loadSchemas( rs, R, f );
         loadRulesets( rs, R, f );
         return f;
@@ -133,7 +133,7 @@ public class InfModelSpec extends ModelSpecImpl
         load the factory <code>f</code> with all the rulesets given by the jms:ruleSet and 
         jms:ruleSetURL properties of <code>R</code> in the model <code>rs</code>.
 	*/
-	private static void loadRulesets( Model rs, Resource R, WrappedRuleReasonerFactory f )
+	private static void loadRulesets( Model rs, Resource R, WrappedReasonerFactory f )
 		{
 		StmtIterator rulesets = rs.listStatements( R, JMS.ruleSetURL, (RDFNode) null );
 		StmtIterator others = rs.listStatements( R, JMS.ruleSet, (RDFNode) null );
@@ -145,7 +145,7 @@ public class InfModelSpec extends ModelSpecImpl
 	 	load the factory <code>f</code> with the schemas given by the jms:schemaURL
 	 	properties of <code>R</code> in <code>rs</code>.
 	*/
-	private static void loadSchemas( Model rs, Resource R, WrappedRuleReasonerFactory f )
+	private static void loadSchemas( Model rs, Resource R, WrappedReasonerFactory f )
 		{
 		StmtIterator schemas = rs.listStatements( R, JMS.schemaURL, (RDFNode) null );
 		while (schemas.hasNext())

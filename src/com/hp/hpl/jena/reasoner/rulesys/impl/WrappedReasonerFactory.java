@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedRuleReasonerFactory.java,v 1.2 2004-08-06 08:02:31 chris-dollin Exp $
+  $Id: WrappedReasonerFactory.java,v 1.1 2004-08-06 13:39:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -13,19 +13,19 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 
 /**
-    WrappedRuleReasonerFactory - a wrapper round RuleReasonerFactories that
-    allowed rules to be accumulated that will be applied to any Reasoner it
-    generates.
+    WrappedReasonerFactory - a wrapper round ReasonerFactories that
+    allowed rules and schemas to be accumulated that will be applied to any 
+    Reasoner it generates.
     
     @author kers
- */
-public final class WrappedRuleReasonerFactory extends BaseRuleReasonerFactory 
+*/
+public final class WrappedReasonerFactory extends BaseRuleReasonerFactory 
     implements RuleReasonerFactory
     {
     private final ReasonerFactory factory;
     private List schemas = new ArrayList();
     
-    public WrappedRuleReasonerFactory( ReasonerFactory rrf )
+    public WrappedReasonerFactory( ReasonerFactory rrf )
         { super();
         this.factory = rrf; }
     
