@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Continuation.java,v 1.1 2003-07-22 16:55:04 der Exp $
+ * $Id: Continuation.java,v 1.2 2003-07-22 17:00:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -19,13 +19,17 @@ package com.hp.hpl.jena.reasoner.rulesys.implb;
  * completes the prior continuation can be invoked.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-22 16:55:04 $
+ * @version $Revision: 1.2 $ on $Date: 2003-07-22 17:00:34 $
  */
 public interface Continuation {
 
     /**
      * Return the next value from the generator.
-     * @return ??
+     * @return an object representing the next available value, or StateFlag.FAIL if there are no
+     * futher returns, or StateFlag.SUSPEND if the generate can generate no values at this time but 
+     * is not known to have completed. The returned object is may be a Triple (in the case of a
+     * graph iterator, or top level goal) or simply be null (in the case on an LP choice point which
+     * returns the data in the global variable bindings).
      */
     public Object next();
     
