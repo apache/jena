@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.1 2003-02-10 10:14:16 der Exp $
+ * $Id: WGReasonerTester.java,v 1.2 2003-02-10 10:58:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -40,7 +40,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-02-10 10:14:16 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:58:23 $
  */
 public class WGReasonerTester {
 
@@ -190,16 +190,8 @@ public class WGReasonerTester {
 
         String description = test.getProperty(descriptionP).getObject().toString();
         String status = test.getProperty(statusP).getObject().toString();
-        //logger.info("WG test " + test.getURI() + " - " + description);
         logger.debug("WG test " + test.getURI() + " - " + status);
-        
-        // Skip pending tests for now
-        /*
-        if (status.equalsIgnoreCase("PENDING")) {
-            return true;
-        }
-        */
-        
+                
         // Load up the premise documents
         Model premises = new ModelMem();
         for (StmtIterator premisesI = test.listProperties(premiseDocumentP); premisesI.hasNext(); ) {
