@@ -5,14 +5,14 @@
 
   <RDF:Description RDF:about="NC:ispinfo">
     <NC:providers RDF:ID="reify" RDF:parseType="Resource">
-    <!--
+    
             <NC:hostName RDF:ID="hooray">imap.mail.aol.com</NC:hostName>
             <NC:type>imap</NC:type>
             <NC:rememberPassword RDF:ID="foobar">
                   <RDF:Description RDF:about="NC:trickMe"/>
             </NC:rememberPassword>
             <NC:redirectorType>aol</NC:redirectorType>
-      -->
+      
     </NC:providers>
   </RDF:Description>
 

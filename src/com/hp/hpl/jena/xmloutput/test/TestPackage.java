@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.4 2003-04-04 15:22:46 jeremy_carroll Exp $
+  $Id: TestPackage.java,v 1.5 2003-04-04 21:00:27 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
@@ -14,7 +14,7 @@ import junit.framework.*;
  * JUnit regression tests for output
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: TestPackage.java,v 1.4 2003-04-04 15:22:46 jeremy_carroll Exp $,
+ * @version CVS info: $Id: TestPackage.java,v 1.5 2003-04-04 21:00:27 jeremy_carroll Exp $,
  */
 public class TestPackage {
 
@@ -24,8 +24,9 @@ public class TestPackage {
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
         String langs[] =
-            new String[] { //"RDF/XML", //"RDF/XML-ABBREV", 
-             //   "N-TRIPLE",
+            new String[] { "RDF/XML", "RDF/XML-ABBREV", 
+                //
+               "N-TRIPLE",
             //"N3" 
         };
         // add all the tests defined in this class to the suite
@@ -82,5 +83,5 @@ public class TestPackage {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestPackage.java,v 1.4 2003-04-04 15:22:46 jeremy_carroll Exp $
+ * $Id: TestPackage.java,v 1.5 2003-04-04 21:00:27 jeremy_carroll Exp $
  */
