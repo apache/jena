@@ -2,7 +2,7 @@
 # RDFS rule set v0.1.
 # This is a direct implementation of the RDFS closure rules using
 # the hybrid f/b rule system. Modified for use with the f/lp-b hybrid.
-# $Id: rdfs-fb-lp-expt.rules,v 1.1 2003-08-03 09:38:30 der Exp $
+# $Id: rdfs-fb-lp-expt.rules,v 1.2 2003-08-13 10:50:48 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -53,45 +53,23 @@
 # RDFS Closure rules
 #------------------------------------------------------------------
 
+-> table(rdf:type).
+
 # This one could be omitted since the results are not really very interesting!
 #[rdf1and4: (?x ?p ?y) -> (?p rdf:type rdf:Property), (?x rdf:type rdfs:Resource), (?y rdf:type rdfs:Resource)]
 
+     
 [rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
-
 [rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
-[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y), notFunctor(?y)] ] 
+[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ] 
 [rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
 [rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)] 
 [rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] 
 [rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]
-# omit rdfs8, derivable from rdfs9 and prototype2 - but
-[rdfs9:  (?x rdfs:subClassOf ?y), notEqual(?x,?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
+[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
+#[rdfs9:  (?x rdfs:subClassOf ?y), notEqual(?x, ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
+[rdfs9-alt:  (?a rdf:type ?y) <- (?x rdfs:subClassOf ?y), notEqual(?x, ?y), (?a rdf:type ?x) ]
 [rdfs10: (?x rdf:type rdfs:ContainerMembershipProperty) -> (?x rdfs:subPropertyOf rdfs:member)] 
-
 [rdfs2-partial: (?p rdfs:domain ?c) -> (?c rdf:type rdfs:Class)]
 [rdfs3-partial: (?p rdfs:range ?c)  -> (?c rdf:type rdfs:Class)]
-
-#------------------------------------------------------------------
-# Prototype rules to convert instance reasoning to class subsumption checking
-#------------------------------------------------------------------
-
-[prototype1: (?c rdf:type rdfs:Class), noValue(?c, rb:prototype), makeTemp(?t)
-  	    				-> (?c rb:prototype ?t), (?t rdf:type ?c) ]
-    
-[prototype2: (?c rb:prototype ?p) ->
-                [prototype2b: (?c rdfs:subClassOf ?d) <- (?p rdf:type ?d)] ]  
-                                
-# Alt rules = full forward closure of class/prop hierarchy                
-#[rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
-#[rdfs2:  (?p rdfs:domain ?c) -> [(?x rdf:type ?c) <- (?x ?p ?y)] ] 
-#[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ] 
-#[rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
-#[rdfs5b: (?a rdf:type rdf:Property) -> (?a rdfs:subPropertyOf ?a)] 
-#[rdfs6:  (?p rdfs:subPropertyOf ?q), notEqual(?p,?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ] 
-#[rdfs7:  (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf ?a)]
-#[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
-#[rdfs9:  (?x rdfs:subClassOf ?y), notEqual(?x, ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ] 
-#[rdfs10: (?x rdf:type rdfs:ContainerMembershipProperty) -> (?x rdfs:subPropertyOf rdfs:member)] 
-#[rdfs2-partial: (?p rdfs:domain ?c) -> (?c rdf:type rdfs:Class)]
-#[rdfs3-partial: (?p rdfs:range ?c)  -> (?c rdf:type rdfs:Class)]
                   
