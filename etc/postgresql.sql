@@ -275,7 +275,7 @@ AND Stmt = ? AND HasType is null)
 # that has only a type.
 deleteReifiedT
 Delete FROM ${a} WHERE (Subj is null AND Prop is null AND Obj is null AND GraphID = ?
-AND Stmt = ? AND HasType = "T")
+AND Stmt = ? AND HasType = 'T')
 
 #-------------------------------------------------------------------
 # Insert an all-URI triple into a Statement table,
