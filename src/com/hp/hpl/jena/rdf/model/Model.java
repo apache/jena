@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.47 2003-11-13 16:36:32 chris-dollin Exp $
+  $Id: Model.java,v 1.48 2003-11-28 16:17:25 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -63,7 +63,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.47 $Date: 2003/09/08 11:28:23 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.48 $Date: 2003/11/13 16:36:32 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -131,7 +131,7 @@ public interface Model
 
 	/** 
         Return a Property instance with the given URI in this model. <i>This method
-        behaves identically to <code>createProperty(String,String)</code><i> and exists as
+        behaves identically to <code>createProperty(String,String)</code></i> and exists as
         legacy: createProperty is now capable of, and allowed to, reuse existing objects.
     <p>
         Subsequent operations on the returned property may modify this model.
@@ -958,5 +958,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.47 2003-11-13 16:36:32 chris-dollin Exp $
+ * $Id: Model.java,v 1.48 2003-11-28 16:17:25 andy_seaborne Exp $
  */
