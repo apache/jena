@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22-Jun-2003
  * Filename           $RCSfile: RDFSProfile.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:24:25 $
+ * Last modified on   $Date: 2003-07-31 20:18:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFSProfile.java,v 1.1 2003-06-22 19:24:25 ian_dickinson Exp $
+ * @version CVS $Id: RDFSProfile.java,v 1.2 2003-07-31 20:18:25 ian_dickinson Exp $
  */
 public class RDFSProfile 
     extends AbstractProfile
@@ -185,7 +185,7 @@ public class RDFSProfile
                 SupportsCheck check = (SupportsCheck) s_supportsChecks.get( type );
                 
                 // a check must be defined for the test to succeed
-                return (check != null)  && check.doCheck( n, g );  
+                return (check == null)  || check.doCheck( n, g );  
             }
         }
         else {
