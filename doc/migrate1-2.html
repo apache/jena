@@ -8,112 +8,125 @@
 </head>
 
 <body xml:lang="en" lang="en" bgcolor="#FFFFFF">
-		<h1 style="text-align: center; line-height: 18pt">Migrating from Jena1  to Jena 2</h1>
-		<p>Jena 2 supports the Jena 1 API. However a number of changes have been made that will cause existing code not to run out of the box. The Jena team expect that there will be tools to help with the migration of Jena 1 code, but they don't exist yet, as we are not encouraging folks to migrate.</p>
-		<p>The changes are conceptually minor, mostly just renaming things into a more sensible pattern.
-        Exceptions are reification and a bug fix on the I/O API.
-                </p>
-		<h2>What Must be changed:</h2>
-		
-		<h3>package renaming:</h3>
-		<ul>
-			<li>com.hp.hpl.mesa.rdf.jena.model -&gt; com.hp.hpl.jena.rdf.model</li>
-			<li>com.hp.hpl.mesa.rdf.jena.vocabulary -&gt; com.hp.hpl.jena.vocabulary</li>
-		</ul>
-		
-		<h3>logging uses log4j</h3>
 
-		The old logging package in <strong>.util.Log</strong> has been
-		removed. Jena now uses <strong>log4j</strong> for its logging. Any
-		users who used the old logging package should switch to log4j.
-		
-		<h3>new model factory:</h3>
-		<ul>
-			<li>Models in Jena 1 were created using new on the model class.
-			With Jena 2 there is factory for creating new models
-			com.hp.hpl.jena.rdf.model.ModelFactory. Use that instead of new.
-			If for some reason you cannot do that, the memory model
-			class has moved to com.hp.hpl.jena.mem.</li>
-		</ul>
-		
-		<h3>iterators now implement java.util.iterator</h3>
-		<ul>
-			<li>which means the .next() method returns an Object rather than a typed object.
-			You need to either cast the return from the .next() method to the
-			appropriate type or use the .next<i>Type</i>() (where <i>Type</i>
-			is Resource, Literal, Ns, RDFNode or Statement depending on the
-			iterator) to avoid casting.</li>
-		</ul>
-		
-		<h3>DAMLSelector has gone</h3>
-		<ul>
-		<li>
-			DAMLSelector has been eliminated; SimpleSelector on a DAML (or
-			OWL) model will do an almost equivalent job, because those
-			models infer the necessary transitive triples.
-		</li>
-		</ul>
-		
-		<h3>I/O bug fix</h3>
-		<ul>
-			<li>java.io.Reader -&gt; java.io.InputStream etc.</li>
-			<li>java.io.Writer -&gt; java.io.OutputStream etc.</li>
-		</ul>
-                <p>Changes in the RDF/XML parser now mean that (the frequent)
-                character encoding problems related to use of java.io.FileReader
-                are reported. Changes in the RDF/XML output means that the
-                not-so-very-portable character encoding used in a java.io.FileWriter
-                is explicit in the XML document. See
-				<a href="IO/iohowto.html#rush">the IO mini HowTo</a>
-                for more explanation.</p>
+<h1 style="text-align: center; line-height: 18pt">Migrating from Jena1  to Jena 2</h1>
 
-		<h3>reification changes</h3>
-			Statements are no longer Resources. Instead Statements can be
-			converted into Resources using the asResource() method. These
-			new Resources are <i>ReifiedStatement</i> objects. See
-			<a href="reify-api.html">the API proposal</a> document for
-			the moment.
+<p>Jena 2 supports the Jena 1 API. However a number of changes have been made
+that will cause existing code not to run out of the box. The Jena team expect
+that there will be tools to help with the migration of Jena 1 code, but they
+don't exist yet, as we are not encouraging folks to migrate.</p>
 
-		<h3>Statement.set</h3>
-			The <i>Statement.set(X)</i> methods have been removed. In its
-			place we have the <i>Statement.changeObject(X)</i> methods.
-			These methods update the model in the same way, but they do
-			<i>not</i> alter the Statement object - they construct a new
-			one and return it. This avoids certain technical difficulties
-			which arose from having mutable Statement objects.
+<p>The changes are conceptually minor, mostly just renaming things into a more
+sensible pattern. Exceptions are reification and a bug fix on the I/O API.
 
-		<h2>What Should be Changed</h2>
 
-		<h3>new SimpleSelector</h3>
-		<ul>
-			<li>SelectorImpl was the only case (other than creating models - see above)
-			where applications had to use a specific implementation class
-			rather than a class defined in the API.  A new SimpleSelector
-			class has been added into the API package.  This is a clone of the
-			old SelectorImpl class. The old class still exists in the
-			com.hp.hpl.jena.rdf.model.impl package so existing code won't
-			break with the right import, but moving to the new class is
-			encouraged.  The old one will eventually be deprecated.</li>
-		</ul>
+<h2>What Must be changed:</h2>
 
-		<h3>*Impl classes</h3>
-		<ul>
-			<li>Some folks have used  some of the implementation classes directly
-			instead of using the factory methods provided in, e.g. Model.  We
-			are tidying up the javadoc so that the implementation classes are
-			no longer so visible.  Rather than renaming the import, it would
-			be better to switch to using the factory methods.  However, the
-			*Impl classes still exist, and if you need a quick fix, many of
-			them can be found in com.hp.hpl.jena.rdf.model.impl.</li></ul>
+<h3>package renaming</h3>
 
-		<h3>Exceptions</h3>
+The old <b>mesa.rdf</b> part of the package names has been eliminated.
 
-		The old RDFException is still available, but only to support legacy
-		code. See the jena2-api-changes document for more details. Jena
-		now throws <i>unchecked</i> exceptions, so various uses of try-catch
-		to catch non-Runtime Jena Exceptions and convert them to runtime
-		exceptions can be removed.
+<ul>
+	<li>com.hp.hpl.mesa.rdf.jena.model -&gt; com.hp.hpl.jena.rdf.model</li>
+	<li>com.hp.hpl.mesa.rdf.jena.vocabulary -&gt; com.hp.hpl.jena.vocabulary</li>
+</ul>
 
-		
-	</body>
+<h3>logging uses log4j</h3>
+
+The old logging package in <strong>.util.Log</strong> has been removed. Jena
+now uses <strong>log4j</strong> for its logging. Any users who used the old
+logging package should switch to log4j.
+
+<h3>new model factory:</h3>
+
+Models in Jena 1 were created using new on the model class. With Jena 2 there
+is factory for creating new models com.hp.hpl.jena.rdf.model.ModelFactory. Use
+that instead of new. If for some reason you cannot do that, the memory model
+class has moved to com.hp.hpl.jena.mem.
+
+
+<h3>DAMLSelector has gone</h3>
+
+DAMLSelector has been eliminated; SimpleSelector on a DAML (or OWL) model will
+do an almost equivalent job, because those models infer the necessary
+transitive triples.
+
+<h3>I/O bug fix</h3>
+
+Changes in the RDF/XML parser now mean that (the frequent) character encoding
+problems related to use of java.io.FileReader are reported. Changes in the
+RDF/XML output means that the not-so-very-portable character encoding used in
+a java.io.FileWriter is explicit in the XML document. See <a
+href="IO/iohowto.html#rush">the IO mini HowTo</a> for more explanation.
+
+<ul>
+	<li>java.io.Reader -&gt; java.io.InputStream etc.</li>
+	<li>java.io.Writer -&gt; java.io.OutputStream etc.</li>
+</ul>
+
+<h3>reification changes</h3>
+
+Statements are no longer Resources. Instead Statements can be converted into
+Resources using the asResource() method. These new Resources are
+<i>ReifiedStatement</i> objects. See <a href="reify-api.html">the API
+proposal</a> document for the moment.
+
+<h3>Statement.set</h3>
+
+The <i>Statement.set(X)</i> methods have been removed. In its place we have
+the <i>Statement.changeObject(X)</i> methods. These methods update the model
+in the same way, but they do <i>not</i> alter the Statement object - they
+construct a new one and return it. This avoids certain technical difficulties
+which arose from having mutable Statement objects.
+
+<h2>What Should be Changed</h2>
+
+<h3>new SimpleSelector</h3>
+
+SelectorImpl was the only case (other than creating models - see above) where
+applications had to use a specific implementation class rather than a class
+defined in the API.  A new SimpleSelector class has been added into the API
+package.  This is a clone of the old SelectorImpl class. The old class still
+exists in the com.hp.hpl.jena.rdf.model.impl package so existing code won't
+break with the right import, but moving to the new class is encouraged.  The
+old one will eventually be deprecated.
+
+
+<h3>*Impl classes</h3>
+
+Some folks have used  some of the implementation classes directly instead of
+using the factory methods provided in, e.g. Model.  We are tidying up the
+javadoc so that the implementation classes are no longer so visible.  Rather
+than renaming the import, it would be better to switch to using the factory
+methods.  However, the *Impl classes still exist, and if you need a quick fix,
+many of them can be found in com.hp.hpl.jena.rdf.model.impl.
+
+<h3>getProperty does not throw exceptions</h3>
+
+<p>Previously (right up to and including J2Beta1, in fact), the methods
+<code>Resource::getProperty(Property)</code> and
+<code>Model::getProperty(Resource, Property)</code> would throw an exception
+if no statement with the given resource and property were found in the model.
+In Jena2.0, if no statement is found, they will deliver <code>null</code>.
+
+<p>The original behaviour has been retained in the new methods
+<code>Resource::getRequiredProperty(Property)</code> and
+<code>Model::getRequiredProperty(Resource, Property)</code>.
+
+<h3>iterators now implement java.util.iterator</h3>
+
+which means the .next() method returns an Object rather than a typed object.
+You need to either cast the return from the .next() method to the appropriate
+type or use the .next<i>Type</i>() (where <i>Type</i> is Resource, Literal,
+Ns, RDFNode or Statement depending on the iterator) to avoid casting.
+
+
+<h3>Exceptions</h3>
+
+The old RDFException is still available, but only to support legacy code. See
+the jena2-api-changes document for more details. Jena now throws
+<i>unchecked</i> exceptions, so various uses of try-catch to catch non-Runtime
+Jena Exceptions and convert them to runtime exceptions can be removed.
+
+</body>
 </html>
