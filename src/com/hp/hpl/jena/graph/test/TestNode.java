@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.9 2003-05-19 10:27:57 chris-dollin Exp $
+  $Id: TestNode.java,v 1.10 2003-05-19 16:06:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -133,6 +133,7 @@ public class TestNode extends GraphTestBase
                 }
             }
         }
+        
     private void testEquality( boolean testEq, Object L, Object R )
         {
         String testName = getType( L ) + " " + L + " and " + getType( R ) + " " + R;

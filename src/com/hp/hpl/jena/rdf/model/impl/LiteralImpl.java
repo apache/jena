@@ -41,7 +41,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-04-14 10:57:26 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-05-19 16:06:52 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
 //    private Node node;
@@ -196,7 +196,7 @@ public class LiteralImpl extends EnhNode implements Literal {
      * Return the lexical form of the literal.
      */
     public String getLexicalForm() {
-        return asNode().getLiteral().toString();
+        return asNode().getLiteral().getLexicalForm();
     }
 
     public boolean getBoolean() throws RDFException {
@@ -286,7 +286,7 @@ public class LiteralImpl extends EnhNode implements Literal {
     }
 
     public String getString() throws RDFException {
-        return asNode().getLiteral().toString();
+        return asNode().getLiteral().getLexicalForm();
     }
     
     public Object getObject(ObjectF f) throws RDFException {

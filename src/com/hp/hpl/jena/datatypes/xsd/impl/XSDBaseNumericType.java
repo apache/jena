@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.5 2003-04-15 21:04:04 jeremy_carroll Exp $
+ * $Id: XSDBaseNumericType.java,v 1.6 2003-05-19 16:06:00 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-04-15 21:04:04 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-19 16:06:00 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -59,7 +59,7 @@ public class XSDBaseNumericType extends XSDDatatype {
         RDFDatatype dt = lit.getDatatype();
         if (this.equals(dt)) return true;
         if (dt instanceof XSDBaseNumericType) {
-            return isValid(lit.toString());
+            return isValid(lit.getLexicalForm());
         } else {
             return false;
         }

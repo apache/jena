@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LiteralLabel.java,v 1.6 2003-04-08 22:11:59 ian_dickinson Exp $
+  $Id: LiteralLabel.java,v 1.7 2003-05-19 16:06:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -188,23 +188,28 @@ final public class LiteralLabel {
     }
 
     /**
+        Answer a human-acceptable representation of this literal value.
+        TODO: ensure nothing uses this for machine processing. 
+    */
+    public String toString() {
+        String lf = getLexicalForm();
+        // if (true) throw new RuntimeException( "aha" );
+        return lf; // return dtype == null ? lf : lf + "^^" + dtype;
+    }
+    
+    /**
      *  Returns the string component of the LiteralLabel.
      *  Note that different LiteralLabels may have the
      *  same string component.
      *  A canonical form is returned using the
      *  asNTriple() method.
      */
-    public String toString() {
-        if (lexicalForm == null) {
-            if (dtype == null) {
-                lexicalForm = value.toString();
-            } else {
-                lexicalForm = dtype.unparse(value);
-            }
-        }
+    public String getLexicalForm() {
+        if (lexicalForm == null)
+            lexicalForm = (dtype == null ? value.toString() : dtype.unparse( value ) );
         return lexicalForm;
     }
-
+    
     /** An RFC 3066 lang tag or "".
      *  These are case insensitive,
      *  mixed case is returned from this method.
@@ -315,7 +320,7 @@ final public class LiteralLabel {
      * that is simply a hash collision, does not invalidate the invariants.
      */
     public int hashCode() {
-        return (wellformed ? value : toString()).hashCode();
+        return (wellformed ? value : getLexicalForm()).hashCode();
     }
 
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDBaseStringType.java,v 1.3 2003-04-15 21:04:27 jeremy_carroll Exp $
+ * $Id: XSDBaseStringType.java,v 1.4 2003-05-19 16:06:00 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * to support the isValidLiteral tests across string types.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:04:27 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-19 16:06:00 $
  */
 public class XSDBaseStringType extends XSDDatatype {
 
@@ -55,7 +55,7 @@ public class XSDBaseStringType extends XSDDatatype {
         RDFDatatype dt = lit.getDatatype();
         if (dt == null || this.equals(dt)) return true;
         if (dt instanceof XSDBaseStringType) {
-            return isValid(lit.toString());
+            return isValid(lit.getLexicalForm());
         } else {
             return false;
         }
