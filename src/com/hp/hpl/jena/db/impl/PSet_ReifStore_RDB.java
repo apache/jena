@@ -7,6 +7,7 @@ package com.hp.hpl.jena.db.impl;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.hp.hpl.jena.graph.LiteralLabel;
 import com.hp.hpl.jena.graph.Node;
@@ -14,6 +15,8 @@ import com.hp.hpl.jena.graph.Node_Literal;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.Map1;
+import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
 
 //=======================================================================
@@ -34,7 +37,7 @@ import com.hp.hpl.jena.db.impl.SpecializedGraphReifier_RDB.StmtMask;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.2 $ on $Date: 2003-05-07 21:29:32 $
+* @version $Revision: 1.3 $ on $Date: 2003-05-08 05:52:29 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -57,6 +60,24 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	}
 
 	//=======================================================================
+	
+	/**
+	 * Create a table for storing reified statements.
+	 * 
+	 * @param astName name of table.
+	 */
+	public void createASTable(String astName) {
+    	
+		try {m_sql.runSQLGroup("createReifStatementTable", getASTname());
+		} catch (SQLException e) {
+			com.hp.hpl.jena.util.Log.warning("Problem formatting database", e);
+			throw new RDFRDBException("Failed to format database", e);
+		}
+		m_tablenames.add(astName);
+	}
+
+
+	
 	// Database operations
 
 	public void storeReifStmt(Node n, Triple t, IDBID my_GID) {
@@ -70,13 +91,16 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.IPSet#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.IDBID)
 	 */
-	public ResultSetTripleIterator findReifStmt(
+	public ResultSetIterator findReifStmt(
 		Node stmtURI,
 		boolean hasType,
-		IDBID graphID) {
+		IDBID graphID, boolean useRSI) {
 		String astName = getASTname();
 		String gid = graphID.getID().toString();
-		ResultSetTripleIterator result =
+		ResultSetIterator result;
+		if ( useRSI ) 
+		 result = new ResultSetIterator();
+		else  result =
 			new ResultSetTripleIterator(this, true, graphID);
 
 		PreparedStatement ps = null;
@@ -84,25 +108,23 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		boolean objIsBlankOrURI = false;
 		int args = 1;
 		String stmtStr;
-		boolean findAll = stmtURI == null;
+		boolean findAll = (stmtURI == null) || stmtURI.equals(Node.ANY);
 
-		stmtStr =
-			findAll
-				? "SelectAllReifStatement"
-				: hasType
-				? "SelectReifTypeStatement"
-				: "SelectReifStatement";
+		if ( findAll )
+			stmtStr = hasType ? "SelectAllReifTypeStmt" :  "SelectAllReifStatement";
+		else
+			stmtStr = hasType ? "SelectReifTypeStatement" : "SelectReifStatement";
 		try {
 			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
 
-			if (findAll) {
+			if (!findAll) {
 				String stmt_uri = nodeToRDBString(stmtURI);
-				ps.setString(1, stmt_uri);
-				if (hasType)
-					ps.setInt(2, 1);
+				ps.setString(args++, stmt_uri);
 			}
+			if (hasType)
+				ps.setInt(args++, 1);
 
-			ps.setString(3, gid);
+			ps.setString(args++, gid);
 
 		} catch (Exception e) {
 			Log.warning(
@@ -132,38 +154,63 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		PreparedStatement ps = null;
 		ResultSetIterator result = new ResultSetIterator();
 
-		stmtStr = "SelectReifURIByTriple";
-		try {
-			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
-			ps.clearParameters();
-			ps.setString(argc++, nodeToRDBString(t.getSubject()));
-			ps.setString(argc++, nodeToRDBString(t.getPredicate()));
-			Node obj = t.getObject();
+		Node_Literal litNode = null;
+		LiteralLabel ll = null;
+		String lval = null;
+		boolean litIsPlain = false;
+		Node obj = null;
+
+		stmtStr = "SelectReifURI";
+
+		if (t != null) {
+
+			obj = t.getObject();
 			// find on object field
 			if (obj.isURI() || obj.isBlank()) {
-				stmtStr += "OU";
-				ps.setString(argc++, nodeToRDBString(obj));
+				stmtStr += "ByOU";
 			} else {
-				Node_Literal litNode = (Node_Literal) obj;
-				LiteralLabel ll = litNode.getLiteral();
-				String lval = (String) ll.getValue();
-				boolean litIsPlain = literalIsPlain(ll);
+				litNode = (Node_Literal) obj;
+				ll = litNode.getLiteral();
+				lval = (String) ll.getValue();
+				litIsPlain = literalIsPlain(ll);
 
 				if (litIsPlain) {
 					// object literal can fit in statement table
-					stmtStr += "OV";
-					ps.setString(argc++, lval);
+					stmtStr += "ByOV";
 				} else {
 					// belongs in literal table
-					stmtStr += "OR";
-					String litIdx = getLiteralIdx(lval);
-					// TODO This happens in several places?
-					IDBID lid = getLiteralID(litNode);
-					if (lid == null) {
-						lid = addLiteral(litNode);
+					stmtStr += "ByOR";
+				}
+			}
+		}
+
+		try {
+			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+			ps.clearParameters();
+
+			if (t != null) {
+
+				ps.setString(argc++, nodeToRDBString(t.getSubject()));
+				ps.setString(argc++, nodeToRDBString(t.getPredicate()));
+
+				// find on object field
+				if (obj.isURI() || obj.isBlank()) {
+					ps.setString(argc++, nodeToRDBString(obj));
+				} else {
+					if (litIsPlain) {
+						// object literal can fit in statement table
+						ps.setString(argc++, lval);
+					} else {
+						// belongs in literal table
+						String litIdx = getLiteralIdx(lval);
+						// TODO This happens in several places?
+						IDBID lid = getLiteralID(litNode);
+						if (lid == null) {
+							lid = addLiteral(litNode);
+						}
+						ps.setString(argc++, litIdx);
+						ps.setString(argc++, lid.getID().toString());
 					}
-					ps.setString(argc++, litIdx);
-					ps.setString(argc++, lid.getID().toString());
 				}
 			}
 			ps.setString(argc, my_GID.getID().toString());
@@ -181,7 +228,21 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		} catch (Exception e) {
 			Log.debug("find encountered exception " + e);
 		}
-		return result;
+		return result.mapWith(new MapResultSetToNode());
+	}
+	
+	private class MapResultSetToNode implements Map1 {
+
+		/* (non-Javadoc)
+		 * @see com.hp.hpl.jena.util.iterator.Map1#map1(java.lang.Object)
+		 */
+		public Object map1(Object o) {
+			// TODO Auto-generated method stub
+			List l = (List) o;
+			Node n = RDBStringToNode((String) l.get(0));
+			return n;
+		}
+		
 	}
 
 	/* (non-Javadoc)
@@ -228,8 +289,8 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		Triple frag,
 		StmtMask fragMask,
 		IDBID my_GID) {
-		Node subj = fragMask.hasSubj() ? frag.getSubject() : Node.ANY;
-		Node prop = fragMask.hasProp() ? frag.getPredicate() : Node.ANY;
+		Node subj = fragMask.hasSubj() ? frag.getObject() : Node.ANY;
+		Node prop = fragMask.hasProp() ? frag.getObject() : Node.ANY;
 		Node obj = fragMask.hasObj() ? frag.getObject() : Node.ANY;
 		Triple t = new Triple(subj, prop, obj);
 		storeTripleAR(t, my_GID, stmtURI, fragMask.hasType(), false, null);
@@ -251,17 +312,16 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			PreparedStatement ps = null;
 
 			if ( fragMask.hasSubj() ) {
-				stmtStr = "UpdateReifSubj";
-				if ( !nullify ) val = frag.getSubject();
+				stmtStr = "updateReifSubj";
+				if ( !nullify ) val = frag.getObject();
 			} else if ( fragMask.hasProp() ) {
-				stmtStr = "UpdateReifProp";
-				if ( !nullify ) val = frag.getSubject();
+				stmtStr = "updateReifProp";
+				if ( !nullify ) val = frag.getObject();
 			} else if ( fragMask.hasObj() ) {
-				stmtStr = "UpdateReifObj";
-				if ( !nullify ) val = frag.getSubject();
+				stmtStr = "updateReifObj";
+				if ( !nullify ) val = frag.getObject();
 			} else if ( fragMask.hasType() ) {
-				stmtStr = "UpdateReifHasType";
-				if ( !nullify ) val = frag.getSubject();
+				stmtStr = "updateReifHasType";
 			} 
 				
 			try {
@@ -272,7 +332,6 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 						ps.setNull(argc++,java.sql.Types.VARCHAR);
 					else
 						ps.setString(argc++,nodeToRDBString(val));
-					ps.setString(argc++,my_GID.getID().toString());
 				} else if ( fragMask.hasObj() ){
 					// update object field
 					if (nullify) {

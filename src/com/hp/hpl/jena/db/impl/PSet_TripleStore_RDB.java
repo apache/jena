@@ -56,7 +56,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.13 $ on $Date: 2003-05-07 21:30:32 $
+* @version $Revision: 1.14 $ on $Date: 2003-05-08 05:52:42 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -679,8 +679,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		String objVal,
 		String objRef) throws RDFException {
 		
-		Node subjNode = RDBStringToNode(subjURI);
-		Node predNode = RDBStringToNode(predURI);
+		Node subjNode = subjURI == null ? null : RDBStringToNode(subjURI);
+		Node predNode = predURI == null ? null : RDBStringToNode(predURI);
 		Node objNode = null;
 		
 		if (objURI != null) {
@@ -693,7 +693,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			objNode = new Node_Literal(llabel);
 		} else {
 			//no object?
-			throw new RDFRDBException("No object found in Asserted Statement Table");
+			// throw new RDFRDBException("No object found in Asserted Statement Table");
 		}
 		
 		return (new Triple(subjNode, predNode, objNode));
@@ -756,103 +756,124 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * @param complete is true if this handler is capable of adding this triple.
 	 *
 	 **/
-  public void deleteTripleAR(Triple t, 
-  					IDBID graphID, 
-					Node reifNode,					 
-					boolean isBatch, 
-  					Hashtable batchedPreparedStatements) {
+public void deleteTripleAR(
+	Triple t,
+	IDBID graphID,
+	Node reifNode,
+	boolean isBatch,
+	Hashtable batchedPreparedStatements) {
 	String objURI;
 	Object obj_val;
 	boolean isReif = reifNode != null;
-	   
-	String obj_res, obj_lex, obj_lit;
-	String subjURI =  nodeToRDBString(t.getSubject());
-	String predURI =  nodeToRDBString(t.getPredicate());
-	Node obj_node = t.getObject();
-	String gid = graphID.getID().toString();
-   	   
-   PreparedStatement ps = null;
-   String stmtStr;
 
-   if ( obj_node.isURI() || obj_node.isBlank() ) {
-	 objURI = nodeToRDBString(obj_node);
-	 try {
-		stmtStr = isReif ? "deleteReifStatementObjectURI" : "deleteStatementObjectURI";
-	 	ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
-		
-		ps.clearParameters();	
-	     ps.setString(1,subjURI);
-	     ps.setString(2,predURI);
-	     ps.setString(3,objURI);
-	     ps.setString(4,gid);
-	     
-		if ( isReif ) {
-				String stmtURI = nodeToRDBString(reifNode);
-				ps.setString(5,stmtURI);
-		 }
-	 } catch(SQLException e1) {
-		Log.debug("(deleteStatementObjectURI) SQLException caught " + e1);
-	 }
-	} else if (obj_node.isLiteral()) {
-	  Node_Literal litNode = (Node_Literal)obj_node;
-	  LiteralLabel ll = litNode.getLiteral();
-	  String lval = (String)ll.getValue();
-	  boolean litIsPlain = literalIsPlain(ll);
-	  
-	  if (litIsPlain) {
-	  	// object literal can fit in statement table
-		try {
-			stmtStr = isReif ? "deleteReifStatementLiteralVal" : "deleteStatementLiteralVal";
-			ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
-			ps.clearParameters();
-			ps.setString(1,subjURI);
-			ps.setString(2,predURI);
-			ps.setString(3, lval);
-			ps.setString(4,gid);
-			if ( isReif ) {
-				  String stmtURI = nodeToRDBString(reifNode);
-				  ps.setString(5,stmtURI);
-			}
-	   } catch(SQLException e1) {
-		Log.debug("(deleteStatementObjectURI) SQLException caught " + e1);
-	   }
-	  } else {
-	  	 // belongs in literal table
-		IDBID lid = getLiteralID(litNode);
-		if (lid == null) {
-		  // return, because if literalid does not exist, then statement
-		  // can't be in store.
-		  return;
+	String obj_res, obj_lex, obj_lit;
+
+	String subjURI =
+		t.getSubject() == Node.ANY ? null : nodeToRDBString(t.getSubject());
+	String predURI =
+		t.getPredicate() == Node.ANY ? null : nodeToRDBString(t.getPredicate());
+	Node obj_node = t.getObject() == Node.ANY ? null : t.getObject();
+	String gid = graphID.getID().toString();
+
+	int argc = 1;
+	String stmtStr;
+	Node_Literal litNode = null;
+	// have to init these next 4 vars to prevent java warnings
+	LiteralLabel ll = null;
+	String lval = null;
+	boolean litIsPlain = true;
+
+	if ((subjURI == null) || (predURI == null) || (obj_node == null)) {
+		throw new RuntimeException("Attempt to delete triple with missing values");
+	}
+
+	// get statement string	   	   
+	PreparedStatement ps = null;
+	if ((obj_node == null) || obj_node.isURI() || obj_node.isBlank()) {
+		stmtStr =
+			isReif
+				? "deleteReifStatementObjectURI"
+				: "deleteStatementObjectURI";
+	} else {
+		litNode = (Node_Literal) obj_node;
+		ll = litNode.getLiteral();
+		lval = (String) ll.getValue();
+		litIsPlain = literalIsPlain(ll);
+		if (litIsPlain) {
+			// object literal can fit in statement table
+			stmtStr =
+				isReif
+					? "deleteReifStatementLiteralVal"
+					: "deleteStatementLiteralVal";
+		} else {
+			stmtStr =
+				isReif
+					? "deleteReifStatementLiteralRef"
+					: "deleteStatementLiteralRef";
 		}
-		try {
-			stmtStr = isReif ? "deleteReifStatementLiteralRef" : "deleteStatementLiteralRef";
-			ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
-		
-			ps.clearParameters();	
-			ps.setString(1,subjURI);
-			ps.setString(2,predURI);
-			ps.setString(3,lid.getID().toString());
-			ps.setString(4,gid);
-			
-			if ( isReif ) {
-				 String stmtURI = nodeToRDBString(reifNode);
-				 ps.setString(5,stmtURI);
+	}
+	try {
+		ps =
+			getPreparedStatement(
+				stmtStr,
+				getASTname(),
+				isBatch,
+				batchedPreparedStatements);
+		ps.clearParameters();
+
+	} catch (SQLException e1) {
+		Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
+	}
+
+	// now fill in parameters
+	try {
+		ps.setString(argc++, subjURI);
+		ps.setString(argc++, predURI);
+
+		if (obj_node.isURI() || obj_node.isBlank()) {
+			objURI = nodeToRDBString(obj_node);
+			ps.setString(argc++, objURI);
+
+		} else if (obj_node.isLiteral()) {
+			litNode = (Node_Literal) obj_node;
+			ll = litNode.getLiteral();
+			lval = (String) ll.getValue();
+			litIsPlain = literalIsPlain(ll);
+
+			if (litIsPlain) {
+				// object literal can fit in statement table
+
+				ps.setString(argc++, lval);
+			} else {
+				// belongs in literal table
+				IDBID lid = getLiteralID(litNode);
+				if (lid == null) {
+					// return, because if literalid does not exist, then statement
+					// can't be in store.
+					return;
+				}
+				ps.setString(argc++, lid.getID().toString());
 			}
-	   } catch(SQLException e1) {
-	  	Log.debug("(in delete) SQLException caught " + e1);
-	   }
-	  }
-     }
-	  
-	 try {
+		}
+		ps.setString(argc++, gid);
+
+		if (isReif) {
+			String stmtURI = nodeToRDBString(reifNode);
+			ps.setString(argc++, stmtURI);
+		}
+	} catch (SQLException e1) {
+		Log.debug("(in delete) SQLException caught " + e1);
+	}
+
+	try {
 		if (isBatch) {
 			ps.addBatch();
 		} else {
 			ps.executeUpdate();
 		}
-	  } catch (SQLException e1) {
-	  	Log.severe("Exception executing delete: " + e1);
-	  }
+	} catch (SQLException e1) {
+		Log.severe("Exception executing delete: " + e1);
+	}
 }
 
 		/**
@@ -935,139 +956,154 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		 * @param isBatch is true if this request is part of a batch operation.
 		 *
 		 **/
-	  public void storeTripleAR(Triple t, 
-	  						IDBID graphID,
-	  						Node reifNode,
-	  						boolean hasType, 
-	  						boolean isBatch, 
-	  						Hashtable batchedPreparedStatements) {
+	public void storeTripleAR(
+		Triple t,
+		IDBID graphID,
+		Node reifNode,
+		boolean hasType,
+		boolean isBatch,
+		Hashtable batchedPreparedStatements) {
 		String objURI;
 		Object obj_val;
 		boolean isReif = reifNode != null;
-		
-		
+
 		//	if database doesn't perform duplicate check
 		if (!SKIP_DUPLICATE_CHECK && !isReif) {
-		 // if statement already in table
-		 if (statementTableContains(graphID, t)) {
-			return;
-		 }
+			// if statement already in table
+			if (statementTableContains(graphID, t)) {
+				return;
+			}
 		}
-		   
+		
 		String obj_res, obj_lex, obj_lit;
 		// TODO: Node.ANY is only valid for reif triple stores. should check this.
-		String subjURI =  t.getSubject() == Node.ANY ? null : nodeToRDBString(t.getSubject());
-		String predURI =   t.getSubject() == Node.ANY ? null : nodeToRDBString(t.getPredicate());
-		Node obj_node =  t.getSubject() == Node.ANY ? null : t.getObject();
+		String subjURI =
+			t.getSubject() == Node.ANY ? null : nodeToRDBString(t.getSubject());
+		String predURI =
+			t.getPredicate() == Node.ANY
+				? null
+				: nodeToRDBString(t.getPredicate());
+		Node obj_node = t.getObject() == Node.ANY ? null : t.getObject();
 		String gid = graphID.getID().toString();
-		String	stmtStr;
-		
-		if ( (subjURI == null) || (predURI == null) || (obj_node == null) )
-			if ( !isReif )
+
+		int argc = 1;
+		String stmtStr;
+		Node_Literal litNode = null; // have to init these next 4 vars to prevent java warnings
+		LiteralLabel ll = null;
+		String lval = null;
+		boolean litIsPlain = true;
+
+		if ((subjURI == null) || (predURI == null) || (obj_node == null)) {
+			if (!isReif)
 				throw new RuntimeException("Attempt to assert triple with missing values");
-	   	   
-	   PreparedStatement ps = null;
-	
-	   if ( (obj_node == null) || obj_node.isURI() || obj_node.isBlank() ) {
-		 objURI = obj_node == null ? null : nodeToRDBString(obj_node);
-		 try {
-				stmtStr = isReif ? "insertReifStatementObjectURI" : "insertStatementObjectURI";
-		 	    ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
-		 	
-		  	  	ps.clearParameters();	
-		      	ps.setString(1,subjURI);
-		      	ps.setString(2,predURI);
-		      	if ( objURI == null )
-		      		ps.setNull(3,java.sql.Types.VARCHAR);
-		      	else 
-		      		ps.setString(3,objURI);
-		      	ps.setString(4,gid);
-		      	
-			if ( isReif ) {
-				String stmtURI = nodeToRDBString(reifNode);
-				ps.setString(5,stmtURI);
-				if ( hasType == true)
-					ps.setInt(6,1);
-				else
-					ps.setNull(6,java.sql.Types.INTEGER);
-			}
-		 } catch(SQLException e1) {
-				Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
-		 }
-		  
-		} else if (obj_node.isLiteral()) {
-			
-		  Node_Literal litNode = (Node_Literal)obj_node;
-		  LiteralLabel ll = litNode.getLiteral();
-		  String lval = (String)ll.getValue();
-		  boolean litIsPlain = literalIsPlain(ll);
-		  
-		  if (litIsPlain) {
-		  	// object literal can fit in statement table
-			try {
-				stmtStr = isReif ? "insertReifStatementLiteralVal" : "insertStatementLiteralVal";
-				ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
-				
-				ps.clearParameters();
-				ps.setString(1,subjURI);
-				ps.setString(2,predURI);
-				ps.setString(3, lval);
-				ps.setString(4,gid);
-				
-				if ( isReif ) {
-					String stmtURI = nodeToRDBString(reifNode);
-					ps.setString(5,stmtURI);
-					if ( hasType == true)
-							ps.setInt(6,1);
-						else
-							ps.setNull(6,java.sql.Types.INTEGER);
-				}
-		   	} catch(SQLException e1) {
-			  Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
-		   }
-		  } else {
-		  	 // belongs in literal table
-			String litIdx = getLiteralIdx(lval); // TODO This happens in several places?
-			IDBID lid = getLiteralID(litNode);
-			if (lid == null) {
-			  lid = addLiteral(litNode);
-			}
-			try {
-				stmtStr = isReif ? "insertReifStatementLiteralRef" : "insertStatementLiteralRef";
-				ps = getPreparedStatement(stmtStr, getASTname(), isBatch, batchedPreparedStatements);
-				ps.clearParameters();	
-				ps.setString(1,subjURI);
-				ps.setString(2,predURI);
-				ps.setString(3, lid.getID().toString());
-				ps.setString(4, litIdx); // TODO should this be here?  Seems redundant to store litIdx?
-				ps.setString(5,gid);
-				
-				if ( isReif ) {
-					 String stmtURI = nodeToRDBString(reifNode);
-					  ps.setString(6,stmtURI);
-					  if ( hasType == true)
-							  ps.setInt(7,1);
-						 else
-							 ps.setNull(7,java.sql.Types.INTEGER);
-				}
-		   } catch(SQLException e1) {
-			Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
-		   }
-		  }
-	
-	   }
-	   try {
-		 if (isBatch) {
-			 ps.addBatch();
-		 } else {
-		  	ps.executeUpdate();
-		 }
-	 } catch (SQLException e1) {
-	 	// we let Oracle handle duplicate checking
-		if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
-			Log.severe("SQLException caught during insert" + e1.getErrorCode() + ": " + e1);
 		}
-	 }
+		// get statement string
+
+		PreparedStatement ps = null;
+		if ((obj_node == null) || obj_node.isURI() || obj_node.isBlank()) {
+			stmtStr =
+				isReif
+					? "insertReifStatementObjectURI"
+					: "insertStatementObjectURI";
+		} else {
+			litNode = (Node_Literal) obj_node;
+			ll = litNode.getLiteral();
+			lval = (String) ll.getValue();
+			litIsPlain = literalIsPlain(ll);
+			if (litIsPlain) {
+				// object literal can fit in statement table
+				stmtStr =
+					isReif
+						? "insertReifStatementLiteralVal"
+						: "insertStatementLiteralVal";
+			} else {
+				stmtStr =
+					isReif
+						? "insertReifStatementLiteralRef"
+						: "insertStatementLiteralRef";
+			}
+		}
+		try {
+			ps =
+				getPreparedStatement(
+					stmtStr,
+					getASTname(),
+					isBatch,
+					batchedPreparedStatements);
+			ps.clearParameters();
+
+		} catch (SQLException e1) {
+			Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
+		}
+		// now fill in parameters
+		try {
+			if (subjURI == null)
+				ps.setNull(argc++, java.sql.Types.VARCHAR);
+			else
+				ps.setString(argc++, subjURI);
+			if (predURI == null)
+				ps.setNull(argc++, java.sql.Types.VARCHAR);
+			else
+				ps.setString(argc++, predURI);
+
+			// add object
+			if ((obj_node == null) || obj_node.isURI() || obj_node.isBlank()) {
+				objURI = obj_node == null ? null : nodeToRDBString(obj_node);
+				if (objURI == null)
+					ps.setNull(argc++, java.sql.Types.VARCHAR);
+				else
+					ps.setString(argc++, objURI);
+			} else if (obj_node.isLiteral()) {
+
+				if (litIsPlain) {
+					// object literal can fit in statement table
+					ps.setString(argc++, lval);
+
+				} else {
+					// belongs in literal table
+					String litIdx = getLiteralIdx(lval);
+					// TODO This happens in several places?
+					IDBID lid = getLiteralID(litNode);
+					if (lid == null) {
+						lid = addLiteral(litNode);
+					}
+					ps.setString(argc++, lid.getID().toString());
+					ps.setString(argc++, litIdx);
+					// TODO should this be here?  Seems redundant to store litIdx?
+				}
+			}
+			// add graph id and, if reifying, stmturi and hastype
+			ps.setString(argc++, gid);
+			if (isReif) {
+				String stmtURI = nodeToRDBString(reifNode);
+				ps.setString(argc++, stmtURI);
+				if (hasType == true)
+					ps.setInt(argc++, 1);
+				else
+					ps.setNull(argc++, java.sql.Types.INTEGER);
+			}
+
+		} catch (SQLException e1) {
+			Log.debug("SQLException caught " + e1.getErrorCode() + ": " + e1);
+		}
+
+		try {
+			if (isBatch) {
+				ps.addBatch();
+			} else {
+				ps.executeUpdate();
+			}
+		} catch (SQLException e1) {
+			// we let Oracle handle duplicate checking
+			if (!((e1.getErrorCode() == 1)
+				&& (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
+				Log.severe(
+					"SQLException caught during insert"
+						+ e1.getErrorCode()
+						+ ": "
+						+ e1);
+			}
+		}
 	}
 	
 	/** 

@@ -54,8 +54,8 @@ CREATE INDEX ${a}_IDX_OBJ ON ${a}(ObjRes);;
 # Create a blank reified statement table - and indexes - compound statement group
 createReifStatementTable
 CREATE TABLE ${a} (
- SubjRes       VARCHAR(250) NOT NULL,
- PropRes       VARCHAR(250) NOT NULL,
+ SubjRes       VARCHAR(250),
+ PropRes       VARCHAR(250),
  ObjRes        VARCHAR(250),
  ObjStr        TINYBLOB,
  ObjLiteral    INT,
@@ -63,9 +63,9 @@ CREATE TABLE ${a} (
  StmtRes		VARCHAR(250) NOT NULL,
  HasType		INTEGER
 ) TYPE  = INNODB;;
-CREATE UNIQUE INDEX JENA_IDX_STMT ON JENA_SYS_STMTREIFIED(StmtRes, HasType);;
-CREATE INDEX JENA_IDX_SUBJ_PROP ON JENA_SYS_STMTREIFIED(SubjRes, PropRes);;
-CREATE INDEX JENA_IDX_OBJ ON JENA_SYS_STMTREIFIED(ObjRes);;
+CREATE UNIQUE INDEX ${a}_IDX_STMT ON ${a}(StmtRes, HasType);;
+CREATE INDEX ${a}_IDX_SUBJ_PROP ON ${a}(SubjRes, PropRes);;
+CREATE INDEX ${a}_IDX_OBJ ON ${a}(ObjRes);;
  
 #-------------------------------------------------------------------
 # Delete all rows from named AST table
@@ -323,24 +323,30 @@ SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral
 FROM ${a} S WHERE S.PropRes = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
-# Select all the statements in an Asserted Statement (triple store) graph
+# Select all the statements in an Reified Statement (triple store) graph
 SelectAllReifStatement
 SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
 FROM ${a} S WHERE S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Select all the statements in an reified Statement (triple store) graph
+SelectAllReifTypeStmt
+SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
+FROM ${a} S WHERE HasType = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
 # with the given statement URI
 SelectReifStatement
 SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.StmtURI = ? AND S.GraphID = ?
+FROM ${a} S WHERE S.StmtRes = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
 # with the given statement URI and that have the HasType property defined
 SelectReifTypeStatement
 SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.StmtURI = ? AND HasType = ? AND S.GraphID = ?
+FROM ${a} S WHERE S.StmtRes = ? AND HasType = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Delete an all-URI triple into a Statement table, 
@@ -354,8 +360,8 @@ AND StmtRes = ?)
 # Delete an triple with a Simple String literal into a Statement table, 
 # substituting Statement table name 
 # and taking values as arguments
-deleteReifStatementLiteralRef
-Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjLiteral = ? AND GraphID = ?
+deleteReifStatementLiteralVal
+Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjStr = ? AND ObjLiteral is null AND GraphID = ?
 AND StmtRes = ?)
 
 #-------------------------------------------------------------------
@@ -446,23 +452,30 @@ FROM ${a} S WHERE S.StmtRes = ? AND S.HasType = ? AND S.GraphID = ?
 #-------------------------------------------------------------------
 # Select all the statement URI's in a Reified Statement (triple store) graph
 # with the specified subject, property and literal (resource) 
-SelectReifURIbyTripleOU
+SelectReifURIByOU
 SELECT S.StmtRes
 FROM ${a} S WHERE S.SubjRes = ? AND S.PropRes = ? and S.ObjRes = ? AND S.GraphID = ? AND S.HasType = 1
 
 #-------------------------------------------------------------------
 # Select all the statement URI's in a Reified Statement (triple store) graph
 # with the specified subject, property and literal (string) 
-SelectReifURIbyTripleOV
+SelectReifURIByOV
 SELECT S.StmtRes
 FROM ${a} S WHERE S.SubjRes = ? AND S.PropRes = ? and S.ObjStr = ? AND S.GraphID = ? AND S.HasType = 1
 
 #-------------------------------------------------------------------
 # Select all the statement URI's in a Reified Statement (triple store) graph
 # with the specified subject, property and literal (reference) 
-SelectReifURIbyTripleOR
+SelectReifURIByOR
 SELECT S.StmtRes
 FROM ${a} S WHERE S.SubjRes = ? AND S.PropRes = ? and S.ObjLiteral = ? AND S.GraphID = ? AND S.HasType = 1
+
+#-------------------------------------------------------------------
+# Select all the statement URI's in a Reified Statement (triple store) graph
+# with the specified subject, property and literal (reference) 
+SelectReifURI
+SELECT S.StmtRes
+FROM ${a} S WHERE S.GraphID = ? AND S.HasType = 1
 
 #-------------------------------------------------------------------
 # Select all the statement URI's in a Reified Statement (triple store) graph
