@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.* ;
  *  Don't keep QueryResultsFormatter's around unnecessarily!
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsFormatter.java,v 1.11 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version  $Id: QueryResultsFormatter.java,v 1.12 2003-09-28 19:07:39 andy_seaborne Exp $
  */
 
 public class QueryResultsFormatter
@@ -435,7 +435,7 @@ public class QueryResultsFormatter
             {
                 Literal l = (Literal)obj ;
                 StringBuffer sb = new StringBuffer() ;
-                sb.append('"').append(l.toString()).append('"') ;
+                sb.append('"').append(l.getLexicalForm()).append('"') ;
                 
                 if ( ! l.getLanguage().equals(""))
                     sb.append("@").append(l.getLanguage()) ;
