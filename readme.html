@@ -9,17 +9,16 @@
 
 <body xml:lang="en" lang="en" bgcolor="#FFFFFF">
 
-<h1 style="text-align: center; line-height: 18pt">Jena: A Java API for
-RDF</h1>
-
-<h3 style="text-align: center; line-height: 18pt">Readme for version 1.6.1</h3>
+<h1 style="text-align: center; line-height: 18pt">Jena 2 Preview 1 Release</h1>
+		<h1 style="text-align: center; line-height: 18pt">Jena: A Java API for Semantic Web Applications</h1>
+		<h3 style="text-align: center; line-height: 18pt">Readme for version j2p1</h3>
 
 <p style="text-align: center; line-height: 18pt; font-style: italic"><span
 style="font-style: italic">Hewlett Packard Laboratories, Bristol</span></p>
 
 <h2>Overview</h2>
 
-<p>Jena is a java API for manipulating RDF models. Its features include:</p>
+<p>Jena is a java API for manipulating RDF graphs. Its features include:</p>
 <ul>
   <li>statement centric methods for manipulating an RDF model as a set of RDF
     triples</li>
@@ -29,21 +28,21 @@ style="font-style: italic">Hewlett Packard Laboratories, Bristol</span></p>
   <li>built in support for RDF containers - bag, alt and seq</li>
   <li>enhanced resources - the application can extend the behaviour of
     resources</li>
-  <li>integrated parsers (ARP and David Megginson's RDFFilter)</li>
+  <li>integrated parsers and writers for RDF/XML (ARP), N3 and N-TRIPLES</li>
 </ul>
 
-<p>The jena toolkit includes a number of components:</p>
-<ul>
-  <li>persistent storage of jena models in relational databases</li>
-  <li>ARP parser compliant with latest working group recommendations</li>
-  <li>integrated query language (RDQL)</li>
-  <li>support for storing DAML ontologies in a model</li>
-  <li>persistent storage module based on a relational database</li>
-  <li>persistent storage module based on Berkeley DB</li>
-  <li>open architecture supporting other storage implementations</li>
-</ul>
-		<p>More recent versions may be available from the Jena web site - <a
-href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb</a>.</p>
+<p>This jena toolkit includes a number of components:</p>
+		<ul>
+			<li>RDF Model API</li>
+			<li>ARP parser compliant with latest working group recommendations</li>
+			<li>integrated query language (RDQL)</li>
+			<li>Support for datatype literals</li>
+			<li>Experimental support for  RDFS inferernce</li>
+		</ul>
+		<p>This version of  the Jena toolkit is a preview release of Jena 2.  It has considerably less functionality than the current Jena 1 release (no DAML support, no persistenence support, no reification support).  It is newer and thus less well tested in the field.  However, it does have fully compliant support for datatyped literals, parsers and writers that are fully conformant with the RDFCore WG last call drafts and a preview of the proposed support for RDFS inference.  The RDFCore team intend to complete the functionality missing from Jena 1 as possible.</p>
+		<p>The RDFCore team do not recommend migrating from Jena 1 to Jena 2 at this time.  However, we do encourage folks to try out Jena 2 and provide feedback on ease of migrating existing code and experience, especialy with the new features such as datatypes and inference.</p>
+		<p>Whilst the intention is maintain the present API through the migration from Jena 1 to Jena 2, we are taking the opportunity to make some minor changes that folks have requested.  These are described in the document <a href="migrating1-2.html">Migrating from Jena 1 to Jena2</a>.  You may notice the javadoc is a lot smaller.  This is largely because we are trying to not include classes which are internal to the operation of Jena.  We do intend to publish an SPI in future versions, for developers who want to extend Jena itself.</p>
+		<p>Earlier and more recent versions may be available from the Jena web site - <a href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb</a>.</p>
 		<h2>Installation</h2>
 		<ul>
   <li>unzip the distribution file into a convenient directory, JENAROOT.</li>
@@ -59,82 +58,50 @@ href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb</a>.</p>
   JENAROOT/lib/sesame-client.jar      // if using Jena-Sesame query engine
   JENAROOT/lib/junit.jar
   JENAROOT/lib/rdf-api-2001-01-19.jar
-</pre></li>
-			
-<li>Test the distribution by running one of the sample applications:
-			<pre><span style="font-family: courier">   java com.hp.hpl.mesa.rdf.jena.sample.Sample5</span></pre>
-			<p>For windows systems there are two .bat files in the
-    JENAROOT/modules/rdf directory, test.bat and regression.bat which will
-    run a test application and the regression tests respectively.</p>
-  </li>
-</ul>
+</pre>
+			</li>
+			<li>Test the distribution by running the regression tests, either:</li>
+			<pre>ant test                      // if you have ant configured to run junit
 
-<h2>Getting started with jena</h2>
+test.bat                      // on windows
 
-<p>For the core java API the key package to look at is
-com.hp.hpl.mesa.rdf.jena.model. This package defines all of the key
-interfaces which the different implementations (jena.mem, jena.bdb,
-jena.common) conform to.</p>
-
-<p>The easiest way to get started is to work through the tutorial. Start at
-<a href="JenaTutorial.html">JenaTutorial.html</a>. Semantic Web expertise is
-not assumed.</p>
-
-<h2>The jena subsystems</h2>
-<dl>
+test.sh                       // on unix</pre>
+			<p>You may see some warnings, but the tests should run.</p>
+		</ul>
+		<h2>Applications</h2>
+		<p>The Jena distribution includes some convenience applications.</p>
+		<p><span style="font-family: courier">jena.rdfcopy </span>will read an RDF file in either RDF/XML, N3 or n-triple format and write it to standard out in either RDF/XML, N3 or n-triple format. It can be used to translate between different RDF serialization formats.</p>
+		<p><span style="font-family: courier">jena.rdfcompare</span> will read two RDF files, in either RDF/XML, N3 or n-triple format and test whether they are equal.</p>
+		<p><span style="font-family: courier">jena.rdfquery </span>will execute an RDQL query on an RDF data file, in either RDF/XML or n-triple format and print the table of results in text or HTML. It can also be used to query a Jena model held in a BerkeleyDB persistent store.</p>
+		<p><code>jena.rdfparse</code> is command line interface to the ARP RDF/XML parser.</p>
+		<p><code>jena.n3</code> is a command line interfacec to Jena's N3 parser.</p>
+		<p><code>jena.shemagen</code> takes and RDF Schema and generates the java source code for a constant class containing constants for all the classes and properties defined in that schema.</p>
+		<p>These programs can be set use use a proxy to traverse a firewall by setting system properties. To use a socks proxy include the following in the command line:</p>
+		<pre>   -DsocksProxyHost=&lt;your-proxy-domain-name-or-ip-address&gt;</pre>
+		<p>To use an http proxy include the following on the command line:</p>
+		<pre>   -DproxySet=true -DproxyHost=&lt;your-proxy&gt; -DproxyPort=&lt;your-proxy-port-number&gt;</pre>
+		<h2>Getting started with jena</h2>
+		<p>For the core java RDF API the key package to look at is com.hp.hpl.rdf..model. This package defines all of the key interfaces which the different implementations (jena.mem, jena.bdb, jena.common) conform to.</p>
+		<p>The jena subsystems</p>
+		<dl>
   <dt><b>ARP parser</b></dt>
-    <dd>ARP is a new RDF parser designed to be compliant with the latest
-      working group recommendations. ARP is the default parser for jena. For
-      more information on ARP see the documentation in <a
+    <dd>ARP is a new RDF parser designed to be compliant with the latest working group recommendations. ARP is the default parser for jena. It can also be run standalone.  For more information on ARP see the documentation in <a
       href="doc/ARP/index.html">doc/ARP</a>.</dd>
   <dt><b>RDQL query language</b></dt>
-    <dd>RDQL is a query engine for Jena. It provides the SquishQL language
-      (see the grammar file for exact details). To get started using RDQL see
-      <a href="doc/tutorial/RDQL/index.html">the RDQL section</a> of the
-      tutorial. Or see <a href="doc/RDQL/README-RDQL.txt">README_RDQL</a>, <a
+			<dd>RDQL is a query engine for Jena. It provides the SquishQL language (see the grammar file for exact details).  See <a href="doc/RDQL/README-RDQL.txt">README_RDQL</a>, <a
       href="doc/RDQL/RDQL_Usage.html">RDQL_Usage.html</a>, <a
       href="doc/RDQL/RDQL_Examples.html">RDQL_Examples.html</a> and <a
       href="doc/RDQL/rdql_grammar.html">rdql_grammar.html</a>, for condensed
       documentation.</dd>
-  <dt><b>DAML API</b></dt>
-    <dd>DAML+OIL is an emerging standard for encoding ontologies for use by
-      web and other online services, agents, digital libraries or meta-data
-      repositories. DAML+OIL defines a conceptualisation for the terms used
-      in, say, an RDF document. Jena now provides an API for accessing and
-      manipulating DAML ontologies. It supports ontology loading, traversal
-      of property and class hierarchies and mapping to XSD concrete
-      datatypes. It does <b>not</b> include reasoning capabilities at this
-      stage. For more information on how to get started with the DAML API see
-      <a href="doc/tutorial/DAML/index.html">the DAML section</a> of the
-      tutorial and/or <a
-    href="doc/DAML+OIL/daml-intro.html">doc/DAML+OIL</a>.</dd>
-  <dt><b>Berkeley DB persistent storage</b></dt>
-    <dd>This jena release also includes an experimental persistent storage
-      mechanism based on SleepyCat BerkeleyDB. See the SleepyCat site <a
-      href="http://www.sleepycat.com/download.html">http://www.sleepycat.com/download.html</a>
-      for access to Berkeley DB implementations suitable for your platform.
-      This jena release includes the necessary java adapter file (<font
-      face="Courier New, Courier, mono" size="-1">lib\db3-3-11.jar</font>),
-      see the javadoc for package <a
-      href="javadoc/com/hp/hpl/mesa/rdf/jena/bdb/package-summary.html">com.hp.hpl.mesa.rdf.jena.bdb</a>
-      for more information on using the BDB support.</dd>
-  <dt><b>RDB</b></dt>
-    <dd>The RDB module provides for&nbsp; persistent storage of jena models
-      in relational databases. The module is&nbsp; designed to support
-      different data layouts and different databases&nbsp; fairly flexibly.
-      Porting to a new database often involves just editing&nbsp; of separate
-      sql and configuration files without the need for rewriting&nbsp; the
-      java drivers. Out of the box, we have support for postgresql,
-      mysql&nbsp; and some support for Oracle and Interbase. See <a
-      href="doc/rdb/rdb-intro.html">doc/rdb/rdb-intro.html</a> for more
-      information on&nbsp; getting starting. See the companion documents in
-      the same directory for&nbsp; information on porting and some
-      performance data.</dd>
-</dl>
-
-<h2>License</h2>
-
-<p>Jena is distributed under a BSD style open source <a
+		</dl>
+		<dl>
+			<dt><b>Reasoning Subsystem</b></dt>
+			<dd>The Jena2 reasoner subsystem is designed to allow a range of inference engines to be plugged into Jena. Such reasoners are primarily used to derive additional RDF assertions which are entailed from some base RDF together with any optional ontology information and the axioms and rules associated with the reasoner. In addition, they can be used to test global properties of an RDF graph such as consistency.</dd>
+			<dd />
+			<dd>Currently, the reasoning subsystem requires using the SPI layer code.  See the <a href="src/com/hp/hpl/jena/reasoner/package.html">reasoner documentation</a> for more details. </dd>
+		</dl>
+		<h2>License</h2>
+		<p>Jena is distributed under a BSD style open source <a
 href="copyright.txt">license</a>.</p>
 
 <p>It includes software developed by the Apache Software Foundation
@@ -144,40 +111,13 @@ href="copyright.txt">license</a>.</p>
 
 <p>Jena is built on top of other sub-systems which we gratefully
 acknowledge:</p>
-<ul>
+		<ul>
   <li><a href="http://xml.apache.org/xerces-j/index.html">Xerces</a></li>
-  <li><a href="http://www.junit.org/">JUnit</a></li>
-  <li><a href="http://www.sleepycat.com/">BerkeleyDB</a></li>
+			<li><a href="http://www.junit.org/">JUnit</a></li>
 			<li><a href="http://jakarta.apache.org/oro/">Jakarta ORO</a></li>
 			<li><a
     href="http://gee.cs.oswego.edu/dl/classes/EDU/oswego/cs/dl/util/concurrent/">util.concurrent</a>
     from <a href="http://gee.cs.oswego.edu/dl">Doug Lea</a></li>
 		</ul>
-
-<h2>Applications</h2>
-
-<p>The Jena distribution includes three convenience applications.</p>
-
-<p><span style="font-family: courier">jena.rdfcopy </span>will read an RDF
-file in either RDF/XML or n-triple format and write it to standard out in
-either RDF/XML or n-triple format. It can be used to translate between
-different RDF serialization formats.</p>
-
-<p><span style="font-family: courier">jena.rdfcompare</span> will read two
-RDF files, in either RDF/XML or n-triple format and test whether they are
-equal.</p>
-
-<p><span style="font-family: courier">jena.rdfquery </span>will execute an
-RDQL query on an RDF data file, in either RDF/XML or n-triple format and
-print the table of results in text or HTML. It can also be used to query a
-Jena model held in a BerkeleyDB persistent store.</p>
-
-<p>These programs can be set use use a proxy to traverse a firewall by
-setting system properties. To use a socks proxy include the following in the
-command line:</p>
-<pre>   -DsocksProxyHost=&lt;your-proxy-domain-name-or-ip-address&gt;</pre>
-
-<p>To use an http proxy include the following on the command line:</p>
-<pre>   -DproxySet=true -DproxyHost=&lt;your-proxy&gt; -DproxyPort=&lt;your-proxy-port-number&gt;</pre>
-</body>
+	</body>
 </html>
