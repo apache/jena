@@ -3,7 +3,7 @@
 
     <property name="Name"            value="Jena"/>
     <property name="name"            value="jena"/>
-    <property name="version"         value="2p2-RC4a"/>
+    <property name="version"         value="2p2+delta"/>
 
     <property name="dist.name"       value="${Name}-${version}"/>
 
@@ -19,7 +19,7 @@
     <property name="lib.dir"         value="lib"/>
 
     <property name="doc.dir"         value="doc"/>
-	<property name="vocab.dir"		 value="vocabularies"/>
+    <property name="vocab.dir"	     value="vocabularies"/>
     <property name="javadoc.dir"     value="javadoc"/>
     <property name="etc.dir"         value="etc"/>
     <property name="test.dir"        value="testing"/>
@@ -199,7 +199,7 @@
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
                 <package name="com.hp.hpl.jena.datatypes"/>
-				<package name="com.hp.hpl.jena.datatypes.xsd"/>
+		<package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.util"/>
                 <package name="com.hp.hpl.jena.util.iterator"/>
 
@@ -222,7 +222,7 @@
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
                 <package name="com.hp.hpl.jena.datatypes"/>
-				<package name="com.hp.hpl.jena.datatypes.xsd"/>
+		<package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.util"/>
                 <package name="com.hp.hpl.jena.util.iterator"/>
             </group>
