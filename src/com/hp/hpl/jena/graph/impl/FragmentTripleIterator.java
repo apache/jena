@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentTripleIterator.java,v 1.6 2004-09-21 09:19:38 chris-dollin Exp $
+  $Id: FragmentTripleIterator.java,v 1.7 2004-09-24 11:01:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -67,12 +67,17 @@ public abstract class FragmentTripleIterator extends NiceIterator
         to be found in it, or we've run out of elements in the original iterator.
     */
     private void refill()
+        { while (pending.size() == 0 && it.hasNext()) refillFrom( pending, it.next() );  }
+
+    /**
+         Refill the buffer <code>pending</code> from the iterator element 
+         <code>next</code>. The default behaviour is to assume that this object is 
+         a Map.Entry; over-ride if it's something else.
+    */
+    protected void refillFrom( GraphAdd pending, Object next )
         {
-        while (pending.size() == 0 && it.hasNext()) 
-            {
-            Map.Entry e  = (Map.Entry) it.next();
-            fill( pending, (Node) e.getKey(), e.getValue() );
-            }
+        Map.Entry e  = (Map.Entry) next;
+        fill( pending, (Node) e.getKey(), e.getValue() );
         }
 }
 
