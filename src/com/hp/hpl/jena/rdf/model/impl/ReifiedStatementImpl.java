@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: ReifiedStatementImpl.java,v 1.1 2003-03-26 11:54:44 chris-dollin Exp $
+	$Id: ReifiedStatementImpl.java,v 1.2 2003-04-04 19:26:30 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -10,7 +10,6 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 
-import java.util.*;
 
 /**
     A ReifiedStatementImpl encodes a Statement and behaves as a Resource.

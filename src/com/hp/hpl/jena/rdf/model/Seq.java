@@ -31,7 +31,6 @@
 
 package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.enhanced.*;
 
 /** RDF Sequence container.
  *
@@ -61,7 +60,7 @@ import com.hp.hpl.jena.enhanced.*;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-03 12:22:35 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-04 19:25:01 $'
  */
 public interface Seq extends Container {
     

@@ -46,10 +46,9 @@ package com.hp.hpl.jena.rdf.model;
  * algorithm.</p>
  *
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-19 10:54:23 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-04 19:24:58 $'
  */
 
-import com.hp.hpl.jena.enhanced.*;
 
 public interface Bag extends Container {
     

@@ -31,7 +31,6 @@
 
 package com.hp.hpl.jena.rdf.model;
 import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.enhanced.*;
 
 /** An RDF Literal.
  * 
@@ -59,7 +58,7 @@ import com.hp.hpl.jena.enhanced.*;
  * the lexical form back into the appropriate object type.</p>
  * 
  * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2003-03-31 10:01:15 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-04-04 19:24:59 $
  */
 public interface Literal extends RDFNode {
         

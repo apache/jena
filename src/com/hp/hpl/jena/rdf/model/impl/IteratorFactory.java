@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: IteratorFactory.java,v 1.3 2003-03-26 12:33:04 chris-dollin Exp $
+  $Id: IteratorFactory.java,v 1.4 2003-04-04 19:26:29 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -11,12 +11,10 @@ import java.util.*;
 
 
 
-import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.enhanced.*;
 //import com.hp.hpl.jena.rdf.model.personality.*;
 import com.hp.hpl.jena.rdf.model.*;
 

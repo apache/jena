@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: ModelReifier.java,v 1.2 2003-04-04 11:31:08 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.3 2003-04-04 19:26:30 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -10,7 +10,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.enhanced.*;
 
 public class ModelReifier
     {
