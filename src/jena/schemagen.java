@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-09 17:09:27 $
+ * Last modified on   $Date: 2003-05-11 17:51:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.13 2003-05-09 17:09:27 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.14 2003-05-11 17:51:46 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -730,7 +730,7 @@ public class schemagen {
     protected void writeNamespace() {
         String nsURI = determineNamespaceURI();
         
-        writeln( 1, "/** <p>The namespace of the vocabalary as a string {@value}</p> */" );
+        writeln( 1, "/** <p>The namespace of the vocabalary as a string ({@value})</p> */" );
         writeln( 1, "public static final String NS = \"" + nsURI + "\";" );
         writeln( 1 );
         
@@ -739,7 +739,7 @@ public class schemagen {
         writeln( 1, "public static String getURI() {return NS;}" );
         writeln( 1 );
         
-        writeln( 1, "/** <p>The namespace of the vocabalary as a resource {@value}</p> */" );
+        writeln( 1, "/** <p>The namespace of the vocabalary as a resource</p> */" );
         writeln( 1, "public static final Resource NAMESPACE = m_model.createResource( NS );" );
         writeln( 1 );
     }
