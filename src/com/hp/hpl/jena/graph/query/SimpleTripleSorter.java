@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleTripleSorter.java,v 1.3 2003-08-12 12:52:48 chris-dollin Exp $
+  $Id: SimpleTripleSorter.java,v 1.4 2003-08-12 14:32:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -15,53 +15,67 @@ import java.util.*;
 */
 public class SimpleTripleSorter implements TripleSorter
     {
-
-    private Triple [] triples;
-    private Triple [] copy;
-    private int here;
+    private Triple [] result;
+    private int putIndex;
     private Set bound;
-    private Set remaining;
+    private List remaining;
+    private int currentWeight;
         
+    /**
+        A public SimpleTripleSorter needs no arguments (we imagine more sophisticated
+        ones might).
+    */
     public SimpleTripleSorter()
         {}
         
+    /**
+        Sort the triple array so that more-bound triples come before less-bound triples.
+        Preserve the order of the elements unless they <i>have<i> to move. Return 
+        a new permuted copy of the original array. The work is done by a new instance
+        of SimpleTripleSorter specialised to this triple array (and with helpful state). 
+    */
+    public Triple [] sort( Triple[] ts )
+        { return new SimpleTripleSorter( ts ) .sort(); }        
+        
+    /**
+        Initialise a working SimpleTripleSorter from the triple array to sort. The working 
+        copy has an empty set of bound variables and a mutable (and mutated) list of the
+        original triple array, in the same order. 
+    */
     protected SimpleTripleSorter( Triple [] triples )
         {
         this(); 
-        this.triples = triples;
         this.bound = new HashSet();
-        this.copy = new Triple[triples.length]; 
-        this.remaining = new HashSet( Arrays.asList( triples ) );       
+        this.result = new Triple[triples.length]; 
+        this.remaining = new ArrayList( Arrays.asList( triples ) );       
         }
 
     /**
         Sort the triple array so that more-bound triples come before less-bound triples.
         Preserve the order of the elements unless they <i>have<i> to move. 
+    <p>      
+        The algorithm just repeatedly looks for the lightest triples, moves them into the result
+        array, and re-weighs triples in the light of the new bindings that makes.
     */
-    public Triple [] sort( Triple[] ts )
-        { return new SimpleTripleSorter( ts ) .sort(); }        
-        
     protected Triple [] sort() 
         {
-        int limit = 1;
-        bound.clear();
-        here = 0;
         while (remaining.size() > 0)
             {
-            for (int i = 0; i < triples.length; i += 1) consider( triples[i], limit );
-            limit += 1;
+                
+                
+                
+            for (int i = 0; i < remaining.size(); i += 1) consider( (Triple) remaining.get(i) );
+            currentWeight += 1;
             }
-        return copy;
+        return result;
         }
 
-    protected void consider( Triple t, int limit )
-        {     
-        if (remaining.contains( t ) && weight( t ) < limit) accept( t );
-        }
+    protected void consider( Triple t )
+        { if (weight( t ) <= currentWeight) accept( t ); }
         
     protected void accept( Triple t )
         {
-        copy[here++] = t;
+        result[putIndex++] = t;
         bind( t );
         remaining.remove( t );  
         }
@@ -73,13 +87,23 @@ public class SimpleTripleSorter implements TripleSorter
         bound.add( t.getObject() );    
         }
         
+    /**
+        In this simple sorter, the weight of a triple is the sum of the weights of its nodes.
+        None of the positions get weighted differently. One might choose to weigh 
+        positions that were more search-intensive more heavily.
+    */
     protected int weight( Triple t )
         {
         return weight( t.getSubject() ) + weight( t.getPredicate() ) + weight( t.getObject() );    
         }
         
+    /**
+        In this simple sorter, concrete nodes weigh nothing. [This is, after all, computing
+        rather than building.] ANYs cost the most, because they cannot be bound, and
+        variable nodes cost a little if they are bound and a lot if they are not. 
+    */
     protected int weight( Node n )
-        { return n.isConcrete() ? 0 : bound.contains( n ) ? 1 : 4; }
+        { return n.isConcrete() ? 0 : n.equals( Node.ANY ) ? 5 : bound.contains( n ) ? 1 : 4; }
     }
 
 
