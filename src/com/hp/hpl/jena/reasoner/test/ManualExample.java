@@ -5,24 +5,30 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ManualExample.java,v 1.3 2003-08-22 09:48:40 der Exp $
+ * $Id: ManualExample.java,v 1.4 2003-08-25 20:58:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.util.ModelLoader;
+import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
+
+import java.io.PrintWriter;
+import java.util.*;
 
 /**
  * Some code samples from the user manual.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-22 09:48:40 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-25 20:58:04 $
  */
 public class ManualExample {
 
+    /** Illustrate different ways of finding a reasoner */
     public void test1() {
         String NS = "urn:x-hp-jena:eg/";
         
@@ -36,21 +42,76 @@ public class ManualExample {
         
         // Create an RDFS inference model the easy way
 //        InfModel inf = ModelFactory.createRDFSModel(rdfsExample);
+        // Create an RDFS inference model the hard way
         Resource config = ModelFactory.createDefaultModel()
                           .createResource()
                           .addProperty(ReasonerVocabulary.PROPsetRDFSLevel, "simple");
         Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(config);
-        reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, 
-                              ReasonerVocabulary.RDFS_SIMPLE);
+        // Set the parameter the easier way
+//        reasoner.setParameter(ReasonerVocabulary.PROPsetRDFSLevel, 
+//                              ReasonerVocabulary.RDFS_SIMPLE);
         InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
         Resource a = inf.getResource(NS+"a");
-        System.out.println("Statement: " + a.getRequiredProperty(q));
-                   
+        Statement s = a.getProperty(q);
+        System.out.println("Statement: " + s);
+    }
+    
+    /** illustrate validation */
+    public void test2(String fname) {
+        System.out.println("Testing " + fname);
+        Model data = ModelLoader.loadModel(fname);
+        InfModel infmodel = ModelFactory.createRDFSModel(data);
+        ValidityReport validity = infmodel.validate();
+        if (validity.isValid()) {
+            System.out.println("OK");
+        } else {
+            System.out.println("Conflicts");
+            for (Iterator i = validity.getReports(); i.hasNext(); ) {
+                ValidityReport.Report report = (ValidityReport.Report)i.next();
+                System.out.println(" - " + report);
+//                System.out.println(" - " + i.next());
+            }
+        }
+    }
+    
+    /** illustrate generic rules and derivation tracing */
+    public void test3() {
+        // Test data
+        String egNS = PrintUtil.egNS;   // Namespace for examples
+        Model rawData = ModelFactory.createDefaultModel();
+        Property p = rawData.createProperty(egNS, "p");
+        Resource A = rawData.createResource(egNS + "A");
+        Resource B = rawData.createResource(egNS + "B");
+        Resource C = rawData.createResource(egNS + "C");
+        Resource D = rawData.createResource(egNS + "D");
+        A.addProperty(p, B);
+        B.addProperty(p, C);
+        C.addProperty(p, D);
+        
+        // Rule example
+        String rules = "[rule1: (?a eg:p ?b) (?b eg:p ?c) -> (?a eg:p ?c)]";
+        Reasoner reasoner = new GenericRuleReasoner(Rule.parseRules(rules));
+        reasoner.setDerivationLogging(true);
+        InfModel inf = ModelFactory.createInfModel(reasoner, rawData);
+        
+        PrintWriter out = new PrintWriter(System.out);
+        for (StmtIterator i = inf.listStatements(A, p, D); i.hasNext(); ) {
+            Statement s = i.nextStatement(); 
+            System.out.println("Statement is " + s);
+            for (Iterator id = inf.getDerivation(s); id.hasNext(); ) {
+                Derivation deriv = (Derivation) id.next();
+                deriv.printTrace(out, true);
+            }
+        }
+        out.flush();
     }
     
     public static void main(String[] args) {
         try {
-            new ManualExample().test1();
+//            new ManualExample().test1();
+//            new ManualExample().test2("file:testing/reasoners/rdfs/dttest2.nt");
+//            new ManualExample().test2("file:testing/reasoners/rdfs/dttest3.nt");
+            new ManualExample().test3();
         } catch (Exception e) {
             System.out.println("Problem: " + e);
             e.printStackTrace();
