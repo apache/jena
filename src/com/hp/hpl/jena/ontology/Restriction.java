@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Restriction.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-02 11:27:29 $
+ * Last modified on   $Date: 2003-06-08 18:53:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Restriction.java,v 1.6 2003-06-02 11:27:29 ian_dickinson Exp $
+ * @version CVS $Id: Restriction.java,v 1.7 2003-06-08 18:53:29 ian_dickinson Exp $
  */
 public interface Restriction
     extends OntClass
@@ -75,6 +75,15 @@ public interface Restriction
      */
     public boolean onProperty( Property prop );
     
+    /**
+     * <p>Remove the given property as the property that this restriction applies to.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param prop The property to be removed as a the property that this restriction applies to
+     */
+    public void removeOnProperty( Property prop );
+    
+
+
     // facets
     
     /** 

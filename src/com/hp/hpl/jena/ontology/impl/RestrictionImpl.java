@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: RestrictionImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-02 11:27:04 $
+ * Last modified on   $Date: 2003-06-08 18:52:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RestrictionImpl.java,v 1.10 2003-06-02 11:27:04 ian_dickinson Exp $
+ * @version CVS $Id: RestrictionImpl.java,v 1.11 2003-06-08 18:52:43 ian_dickinson Exp $
  */
 public class RestrictionImpl 
     extends OntClassImpl
@@ -127,6 +127,15 @@ public class RestrictionImpl
      */
     public boolean onProperty( Property prop ) {
         return hasPropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
+    }
+    
+    /**
+     * <p>Remove the given property as the property that this restriction applies to.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param prop The property to be removed as a the property that this restriction applies to
+     */
+    public void removeOnProperty( Property prop ) {
+        removePropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );
     }
     
 

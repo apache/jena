@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-May-2003
  * Filename           $RCSfile: MinCardinalityRestriction.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:36:17 $
+ * Last modified on   $Date: 2003-06-08 18:53:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -34,7 +34,7 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MinCardinalityRestriction.java,v 1.2 2003-05-30 14:36:17 ian_dickinson Exp $
+ * @version CVS $Id: MinCardinalityRestriction.java,v 1.3 2003-06-08 18:53:30 ian_dickinson Exp $
  */
 public interface MinCardinalityRestriction
     extends Restriction 
@@ -72,8 +72,14 @@ public interface MinCardinalityRestriction
      */
     public boolean hasMinCardinality( int cardinality );
     
-
-
+    /**
+     * <p>Remove the statement that this restriction has the given minimum cardinality 
+     * for the restricted property.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cardinality A min cardinality value to be removed from this restriction
+     */
+    public void removeMinCardinality( int cardinality );
+    
 
 }
 

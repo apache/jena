@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 11:06:44 $
+ * Last modified on   $Date: 2003-06-08 18:53:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -38,7 +38,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.8 2003-06-06 11:06:44 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.9 2003-06-08 18:53:29 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -114,6 +114,15 @@ public interface OntClass
      */
     public boolean hasSuperClass( Resource cls, boolean direct );
     
+    /**
+     * <p>Remove the given class from the super-classes of this class.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A class to be removed from the super-classes of this class
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.   
+     */
+    public void removeSuperClass( Resource cls);
+    
+
     /**
      * <p>Assert that this class is super-class of the given class. Any existing 
      * statements for <code>subClassOf</code> on <code>prop</code> will be removed.</p>
@@ -207,6 +216,15 @@ public interface OntClass
      */
     public boolean hasSubClass( Resource cls, boolean direct );
     
+    /**
+     * <p>Remove the given class from the sub-classes of this class.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A class to be removed from the sub-classes of this class
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.   
+     */
+    public void removeSubClass( Resource cls );
+    
+
     // equivalentClass
     
     /**
@@ -247,6 +265,15 @@ public interface OntClass
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
      */
     public boolean hasEquivalentClass( Resource cls );
+    
+    /**
+     * <p>Remove the statement that this class and the given class are
+     * equivalent.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A class that may be declared to be equivalent to this class, and which is no longer equivalent 
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()()} property is not supported in the current language profile.   
+     */
+    public void removeEquivalentClass( Resource cls );
     
 
     // disjointWith
@@ -289,6 +316,15 @@ public interface OntClass
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.   
      */
     public boolean isDisjointWith( Resource cls );
+    
+    /**
+     * <p>Remove the statement that this class and the given class are
+     * disjoint.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A class that may be declared to be disjoint with this class, and which is no longer disjoint 
+     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()()()} property is not supported in the current language profile.   
+     */
+    public void removeDisjointWith( Resource cls );
     
 
     // access to facets

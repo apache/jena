@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-May-2003
  * Filename           $RCSfile: BooleanClassDescriptionImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-28 16:20:42 $
+ * Last modified on   $Date: 2003-06-08 18:52:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: BooleanClassDescriptionImpl.java,v 1.1 2003-05-28 16:20:42 ian_dickinson Exp $
+ * @version CVS $Id: BooleanClassDescriptionImpl.java,v 1.2 2003-06-08 18:52:43 ian_dickinson Exp $
  */
 public abstract class BooleanClassDescriptionImpl 
     extends OntClassImpl
@@ -137,6 +137,14 @@ public abstract class BooleanClassDescriptionImpl
 		return getOperands().contains( cls );
 	}
     
+    
+    /**
+     * <p>Remove the given resource from the operands of this class expression.</p>
+     * @param res An resource to be removed from the operands of this class expression
+     */
+    public void removeOperand( Resource res ) {
+        setOperands( getOperands().remove( res ) );
+    }
     
 	/**
 	 * <p>Answer the property that is used to construct this boolean expression, for example

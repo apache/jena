@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 14:45:25 $
+ * Last modified on   $Date: 2003-06-08 18:52:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.14 2003-06-06 14:45:25 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.15 2003-06-08 18:52:43 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -192,6 +192,16 @@ public class OntClassImpl
     }
     
     /**
+     * <p>Remove the given class from the super-classes of this class.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A class to be removed from the super-classes of this class
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.   
+     */
+    public void removeSuperClass( Resource cls ) {
+        removePropertyValue( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", cls );
+    }
+    
+    /**
      * <p>Assert that this class is super-class of the given class. Any existing 
      * statements for <code>subClassOf</code> on <code>prop</code> will be removed.</p>
      * @param cls The class that is a sub-class of this class
@@ -304,6 +314,17 @@ public class OntClassImpl
         return ((OntClass) cls.as( OntClass.class )).hasSuperClass( this, direct );
     }
     
+    /**
+     * <p>Remove the given class from the sub-classes of this class.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A class to be removed from the sub-classes of this class
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} class is not supported in the current language profile.   
+     */
+    public void removeSubClass( Resource cls ) {
+        ((OntClass) cls.as( OntClass.class)).removeSuperClass( this );
+    }
+    
+
     // equivalentClass
     
     /**
@@ -352,7 +373,18 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
      */
     public boolean hasEquivalentClass( Resource cls ) {
-        return hasPropertyValue(  getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", cls );
+        return hasPropertyValue( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", cls );
+    }
+    
+    /**
+     * <p>Remove the statement that this class and the given class are
+     * equivalent.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A class that may be declared to be equivalent to this class, and which is no longer equivalent 
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()()} property is not supported in the current language profile.   
+     */
+    public void removeEquivalentClass( Resource cls ) {
+        removePropertyValue( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS", cls );
     }
     
     // disjointWith
@@ -404,6 +436,17 @@ public class OntClassImpl
      */
     public boolean isDisjointWith( Resource cls ) {
         return hasPropertyValue( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", cls );
+    }
+    
+    /**
+     * <p>Remove the statement that this class and the given class are
+     * disjoint.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A class that may be declared to be disjoint with this class, and which is no longer disjoint 
+     * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()()()} property is not supported in the current language profile.   
+     */
+    public void removeDisjointWith( Resource cls ) {
+        removePropertyValue( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", cls );
     }
     
 

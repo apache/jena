@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: EnumeratedClass.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 22:26:39 $
+ * Last modified on   $Date: 2003-06-08 18:53:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: EnumeratedClass.java,v 1.5 2003-05-27 22:26:39 ian_dickinson Exp $
+ * @version CVS $Id: EnumeratedClass.java,v 1.6 2003-06-08 18:53:29 ian_dickinson Exp $
  */
 public interface EnumeratedClass 
     extends OntClass
@@ -99,7 +99,13 @@ public interface EnumeratedClass
      */
     public boolean hasOneOf( Resource res );
     
-
+    /**
+     * <p>Remove the statement that this enumeration includes <code>res</code> among its members.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to be part of this enumeration, and which is
+     * no longer one of the enumeration values.
+     */
+    public void removeOneOf( Resource res );
     
 
 }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestResource.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 14:46:06 $
+ * Last modified on   $Date: 2003-06-08 18:53:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.3 2003-06-06 14:46:06 ian_dickinson Exp $
+ * @version CVS $Id: TestResource.java,v 1.4 2003-06-08 18:53:15 ian_dickinson Exp $
  */
 public class TestResource 
     extends OntTestBase
@@ -94,6 +94,11 @@ public class TestResource
                     a.setSameAs( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.SAME_AS() ) );
                     assertEquals( "a should be sameAs b", b, a.getSameAs() );
+                    
+                    a.removeSameAs( c );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.SAME_AS() ) );
+                    a.removeSameAs( b );
+                    assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.SAME_AS() ) );
                 }
             },
             new OntTestCase( "OntResource.differentFrom", true, true, true ) {
@@ -117,6 +122,11 @@ public class TestResource
                     a.setDifferentFrom( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DIFFERENT_FROM() ) );
                     assertEquals( "a should be differentFrom b", b, a.getDifferentFrom() );
+                    
+                    a.removeDifferentFrom( c );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.DIFFERENT_FROM() ) );
+                    a.removeDifferentFrom( b );
+                    assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.DIFFERENT_FROM() ) );
                 }
             },
             new OntTestCase( "OntResource.seeAlso", true, true, true ) {
@@ -140,6 +150,11 @@ public class TestResource
                     a.setSeeAlso( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.SEE_ALSO() ) );
                     assertEquals( "a should be seeAlso b", b, a.getSeeAlso() );
+                    
+                    a.removeSeeAlso( c );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.SEE_ALSO() ) );
+                    a.removeSeeAlso( b );
+                    assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.SEE_ALSO() ) );
                 }
             },
             new OntTestCase( "OntResource.isDefinedBy", true, true, true ) {
@@ -163,7 +178,12 @@ public class TestResource
                     a.setIsDefinedBy( b );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.IS_DEFINED_BY() ) );
                     assertEquals( "a should be isDefinedBy b", b, a.getIsDefinedBy() );
-                }
+                                    
+                    a.removeDefinedBy( c );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.IS_DEFINED_BY() ) );
+                    a.removeDefinedBy( b );
+                    assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.IS_DEFINED_BY() ) );
+            }
             },
             new OntTestCase( "OntResource.versionInfo", true, true, true ) {
                 public void ontTest( OntModel m ) throws Exception {
@@ -184,6 +204,11 @@ public class TestResource
                     a.setVersionInfo( "new info" );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.VERSION_INFO() ) );
                     assertEquals( "a has wrong version info", "new info", a.getVersionInfo() );
+                    
+                    a.removeVersionInfo( "old info" );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.VERSION_INFO() ) );
+                    a.removeVersionInfo( "new info" );
+                    assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.VERSION_INFO() ) );
                 }
             },
             new OntTestCase( "OntResource.label.nolang", true, true, true ) {
@@ -205,6 +230,11 @@ public class TestResource
                     a.setLabel( "new info", null );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.LABEL() ) );
                     assertEquals( "a has wrong label", "new info", a.getLabel( null ) );
+                    
+                    a.removeLabel( "foo", null );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.LABEL() ) );
+                    a.removeLabel( "new info", null );
+                    assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.LABEL() ) );
                 }
             },
             new OntTestCase( "OntResource.label.lang", true, true, true ) {
@@ -234,6 +264,11 @@ public class TestResource
                     a.addLabel( "abcdef", "AB-CD" );
                     assertEquals( "wrong label", "abcdef", a.getLabel( "AB" ) );
                     assertEquals( "wrong label", null, a.getLabel( "AB-XY" ) );
+                    
+                    a.removeLabel( "abcde", "AB-CD" );
+                    assertEquals( "Cardinality should be 5", 5, a.getCardinality( a.getProfile().LABEL() ) );
+                    a.removeLabel( "abcdef", "AB-CD" );
+                    assertEquals( "Cardinality should be 4", 4, a.getCardinality( a.getProfile().LABEL() ) );
                 }
             },
             new OntTestCase( "OntResource.comment.nolang", true, true, true ) {
@@ -255,6 +290,11 @@ public class TestResource
                     a.setComment( "new info", null );
                     assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.COMMENT() ) );
                     assertEquals( "a has wrong comment", "new info", a.getComment( null ) );
+                    
+                    a.removeComment( "foo", null );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( prof.COMMENT() ) );
+                    a.removeComment( "new info", null );
+                    assertEquals( "Cardinality should be 0", 0, a.getCardinality( prof.COMMENT() ) );
                 }
             },
             new OntTestCase( "OntResource.comment.lang", true, true, true ) {
@@ -284,6 +324,11 @@ public class TestResource
                     a.addComment( "abcdef", "AB-CD" );
                     assertEquals( "wrong comment", "abcdef", a.getComment( "AB" ) );
                     assertEquals( "wrong comment", null, a.getComment( "AB-XY" ) );
+                    
+                    a.removeComment( "abcde", "AB-CD" );
+                    assertEquals( "Cardinality should be 5", 5, a.getCardinality( a.getProfile().COMMENT() ) );
+                    a.removeComment( "abcdef", "AB-CD" );
+                    assertEquals( "Cardinality should be 4", 4, a.getCardinality( a.getProfile().COMMENT() ) );
                 }
             },
             new OntTestCase( "OntResource.type (no inference)", true, true, true ) {
@@ -314,6 +359,11 @@ public class TestResource
                     assertTrue( "a should be of class C", a.hasRDFType( C, false ));
                     assertTrue( "a should not be of class A", !a.hasRDFType( A, false ));
                     assertTrue( "a should not be of class B", !a.hasRDFType( B, false ));
+                                    
+                    a.removeRDFType( B );
+                    assertEquals( "Cardinality should be 1", 1, a.getCardinality( RDF.type ) );
+                    a.removeRDFType( C );
+                    assertEquals( "Cardinality should be 0", 0, a.getCardinality( RDF.type ) );
                 }
             },
         };

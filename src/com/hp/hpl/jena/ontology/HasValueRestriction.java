@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: HasValueRestriction.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:36:17 $
+ * Last modified on   $Date: 2003-06-08 18:53:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: HasValueRestriction.java,v 1.2 2003-05-30 14:36:17 ian_dickinson Exp $
+ * @version CVS $Id: HasValueRestriction.java,v 1.3 2003-06-08 18:53:29 ian_dickinson Exp $
  */
 public interface HasValueRestriction
     extends Restriction 
@@ -73,6 +73,14 @@ public interface HasValueRestriction
      * @exception OntProfileException If the {@link Profile#HAS_VALUE()} property is not supported in the current language profile.   
      */
     public boolean hasValue( Resource individual );
+    
+    /**
+     * <p>Remove the statement that this restriction requires the restricted property to have
+     * the given value.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that is to be removed as the required value for the restricted property
+     */
+    public void removeHasValue( Resource res );
     
 
 }

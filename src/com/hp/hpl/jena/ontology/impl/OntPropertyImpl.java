@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 14:45:25 $
+ * Last modified on   $Date: 2003-06-08 18:52:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.11 2003-06-06 14:45:25 ian_dickinson Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.12 2003-06-08 18:52:43 ian_dickinson Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -182,6 +182,16 @@ public class OntPropertyImpl
         return hasPropertyValue( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", prop );
     }
     
+    /**
+     * <p>Remove the given property from the super-properties of this property.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param prop A property to be removed from the super-properties of this property
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */
+    public void removeSuperProperty( Property prop ) {
+        removePropertyValue( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", prop );
+    }
+    
 
     /**
      * <p>Assert that this property is super-property of the given property. Any existing 
@@ -256,6 +266,16 @@ public class OntPropertyImpl
         return ((OntProperty) prop.as( OntProperty.class )).hasSuperProperty( this, direct );
     }
     
+    /**
+     * <p>Remove the given property from the sub-properties of this property.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param prop A property to be removed from the sub-properties of this property
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */
+    public void removeSubProperty( Property prop ) {
+        ((OntProperty) prop.as( OntProperty.class )).removeSuperProperty( this );
+    }
+    
     // domain
     
     /**
@@ -304,6 +324,16 @@ public class OntPropertyImpl
      */
     public boolean hasDomain( Resource res ) {
         return hasPropertyValue( getProfile().DOMAIN(), "DOMAIN", res );
+    }
+    
+    /**
+     * <p>Remove the given class from the stated domain(s) of this property.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A class to be removed from the declared domain(s) of this property
+     * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.   
+     */
+    public void removeDomain( Resource cls ) {
+        removePropertyValue( getProfile().DOMAIN(), "DOMAIN", cls );
     }
     
 
@@ -355,6 +385,16 @@ public class OntPropertyImpl
      */
     public boolean hasRange( Resource res ) {
         return hasPropertyValue( getProfile().RANGE(), "RANGE", res );
+    }
+    
+    /**
+     * <p>Remove the given class from the stated range(s) of this property.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A class to be removed from the declared range(s) of this property
+     * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.   
+     */
+    public void removeRange( Resource cls ) {
+        removePropertyValue( getProfile().RANGE(), "RANGE", cls );
     }
     
 
@@ -410,6 +450,17 @@ public class OntPropertyImpl
         return hasPropertyValue( getProfile().EQUIVALENT_PROPERTY(), "EQUIVALENT_PROPERTY", prop );
     }
     
+    /**
+     * <p>Remove the statement that this property and the given property are
+     * equivalent.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param prop A property that may be declared to be equivalent to this property 
+     * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.   
+     */
+    public void removeEquivalentProperty( Property prop ) {
+        removePropertyValue( getProfile().EQUIVALENT_PROPERTY(), "EQUIVALENT_PROPERTY", prop  );
+    }
+    
     // inverseProperty
     
     /**
@@ -458,6 +509,16 @@ public class OntPropertyImpl
      */
     public boolean isInverseOf( Property prop ) {
         return hasPropertyValue( getProfile().INVERSE_OF(), "INVERSE_OF", prop );
+    }
+    
+    /**
+     * <p>Remove the statement that this property is the inverse of the given property.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param prop A property that may be declared to be inverse to this property 
+     * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
+     */
+    public void removeInverseProperty( Property prop ) {
+        removePropertyValue( getProfile().INVERSE_OF(), "INVERSE_OF", prop );
     }
     
 

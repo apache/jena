@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            08-May-2003
  * Filename           $RCSfile: MinCardinalityRestrictionImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:35:32 $
+ * Last modified on   $Date: 2003-06-08 18:52:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MinCardinalityRestrictionImpl.java,v 1.2 2003-05-30 14:35:32 ian_dickinson Exp $
+ * @version CVS $Id: MinCardinalityRestrictionImpl.java,v 1.3 2003-06-08 18:52:43 ian_dickinson Exp $
  */
 public class MinCardinalityRestrictionImpl 
     extends RestrictionImpl
@@ -124,6 +124,16 @@ public class MinCardinalityRestrictionImpl
      */
     public boolean hasMinCardinality( int cardinality ) {
         return hasPropertyValue( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
+    }
+    
+    /**
+     * <p>Remove the statement that this restriction has the given minimum cardinality 
+     * for the restricted property.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cardinality A min cardinality value to be removed from this restriction
+     */
+    public void removeMinCardinality( int cardinality ) {
+        removePropertyValue( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY", getModel().createTypedLiteral( cardinality ) );
     }
     
 

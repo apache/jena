@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-16 13:13:00 $
+ * Last modified on   $Date: 2003-06-08 18:53:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.10 2003-05-16 13:13:00 ian_dickinson Exp $
+ * @version CVS $Id: TestList.java,v 1.11 2003-06-08 18:53:15 ian_dickinson Exp $
  */
 public class TestList
     extends TestCase
@@ -689,6 +689,7 @@ public class TestList
             
             Resource r0 = m.createResource( NS + "x" );
             Resource r1 = m.createResource( NS + "y" );
+            Resource r2 = m.createResource( NS + "z" );
             
             for (int i = 0;  i < 10;  i++) {
                 list0 = list0.cons( r0 );
@@ -707,6 +708,32 @@ public class TestList
             
             // model should now be empty
             assertEquals( "Model should be empty after deleting two lists", 0, m.size() );
+            
+            // selective remove
+            OntList list2 = ((OntList) nil.as( OntList.class ))
+                            .cons( r2 )
+                            .cons( r1 )
+                            .cons( r0 );
+           
+            assertTrue( "list should contain x ", list2.contains( r0 ));
+            assertTrue( "list should contain y ", list2.contains( r1 ));
+            assertTrue( "list should contain z ", list2.contains( r2 ));
+            
+            list2 = list2.remove( r1 );
+            assertTrue( "list should contain x ", list2.contains( r0 ));
+            assertTrue( "list should contain y ", !list2.contains( r1 ));
+            assertTrue( "list should contain z ", list2.contains( r2 ));
+            
+            list2 = list2.remove( r0 );
+            assertTrue( "list should contain x ", !list2.contains( r0 ));
+            assertTrue( "list should contain y ", !list2.contains( r1 ));
+            assertTrue( "list should contain z ", list2.contains( r2 ));
+            
+            list2 = list2.remove( r2 );
+            assertTrue( "list should contain x ", !list2.contains( r0 ));
+            assertTrue( "list should contain y ", !list2.contains( r1 ));
+            assertTrue( "list should contain z ", !list2.contains( r2 ));
+            assertTrue( "list should be empty", list2.isEmpty() );
         }
     }
     

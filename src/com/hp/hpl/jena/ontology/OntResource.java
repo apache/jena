@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 14:46:06 $
+ * Last modified on   $Date: 2003-06-08 18:53:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.13 2003-06-06 14:46:06 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.14 2003-06-08 18:53:28 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -103,6 +103,12 @@ public interface OntResource
      */
     public boolean isSameAs( Resource res );
     
+    /**
+     * <p>Remove the statement that this resource is the same as the given resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to be the sameAs this resource
+     */
+    public void removeSameAs( Resource res );
     
     // differentFrom
     
@@ -144,6 +150,13 @@ public interface OntResource
      */
     public boolean isDifferentFrom( Resource res );
     
+    /**
+     * <p>Remove the statement that this resource is different the given resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to be differentFrom this resource
+     */
+    public void removeDifferentFrom( Resource res );
+    
     // seeAlso
     
     /**
@@ -182,6 +195,14 @@ public interface OntResource
      * @return True if the <code>res</code> provides more information on this resource.
      */
     public boolean hasSeeAlso( Resource res );
+    
+    /**
+     * <p>Remove the statement indicating the given resource as a source of additional information
+     * about this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to provide additional information about this resource
+     */
+    public void removeSeeAlso( Resource res );
     
     // is defined by
     
@@ -223,6 +244,13 @@ public interface OntResource
      */
     public boolean isDefinedBy( Resource res );
     
+    /**
+     * <p>Remove the statement that this resource is defined by the given resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to define this resource
+     */
+    public void removeDefinedBy( Resource res );
+    
     // version info
 
     /**
@@ -261,6 +289,14 @@ public interface OntResource
      * @return True if this resource has <code>info</code> as version information.
      */
     public boolean hasVersionInfo( String info );
+    
+    /**
+     * <p>Remove the statement that the given string provides version information about
+     * this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param info A version information string to be removed
+     */
+    public void removeVersionInfo( String info );
     
     // label
     
@@ -321,6 +357,23 @@ public interface OntResource
      */
     public boolean hasLabel( Literal label );
 
+    /**
+     * <p>Remove the statement that the given string is a label for
+     * this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param label A label string to be removed
+     * @param lang A lang tag, or null if not specified
+     */
+    public void removeLabel( String label, String lang );
+    
+    /**
+     * <p>Remove the statement that the given string is a label for
+     * this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param label A label literal to be removed
+     */
+    public void removeLabel( Literal label );
+    
     // comment
 
     /**
@@ -381,6 +434,24 @@ public interface OntResource
     public boolean hasComment( Literal comment );
     
     /**
+     * <p>Remove the statement that the given string is a comment on
+     * this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param comment A comment string to be removed
+     * @param lang A lang tag, or null if not specified
+     */
+    public void removeComment( String comment, String lang );
+    
+    /**
+     * <p>Remove the statement that the given string is a comment on
+     * this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param comment A comment literal to be removed
+     */
+    public void removeComment( Literal comment );
+    
+
+    /**
      * <p>Answer the cardinality of the given property on this resource. The cardinality
      * is the number of distinct values there are for the property.</p>
      * @param p A property
@@ -430,16 +501,6 @@ public interface OntResource
      *              effectively remove this property.
      */
     public void setPropertyValue( Property property, RDFNode value );
-
-
-    /**
-     * <p>
-     * Remove any values for a given property from this resource.
-     * </p>
-     *
-     * @param property The RDF resource that defines the property to be removed
-     */
-    public void removeAll( Property property );
 
 
     // rdf:type 
@@ -512,6 +573,24 @@ public interface OntResource
      * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
      */
     public boolean hasRDFType( Resource ontClass, boolean direct );
+
+    /**
+     * <p>Remove the statement that this resource is of the given RDF type.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A resource denoting a class that that is to be removed from the classes of this resource
+     */
+    public void removeRDFType( Resource cls );
+    
+
+
+    /**
+     * <p>
+     * Remove any values for a given property from this resource.
+     * </p>
+     *
+     * @param property The RDF resource that defines the property to be removed
+     */
+    public void removeAll( Property property );
 
 
     // Conversion methods

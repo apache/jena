@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: HasValueRestrictionImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:35:33 $
+ * Last modified on   $Date: 2003-06-08 18:52:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: HasValueRestrictionImpl.java,v 1.3 2003-05-30 14:35:33 ian_dickinson Exp $
+ * @version CVS $Id: HasValueRestrictionImpl.java,v 1.4 2003-06-08 18:52:43 ian_dickinson Exp $
  */
 public class HasValueRestrictionImpl
     extends RestrictionImpl
@@ -130,6 +130,17 @@ public class HasValueRestrictionImpl
         return hasPropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", individual );
     }
     
+    /**
+     * <p>Remove the statement that this restriction requires the restricted property to have
+     * the given value.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param individual A resource that is to be removed as the required value for the restricted property
+     */
+    public void removeHasValue( Resource individual ) {
+        removePropertyValue( getProfile().HAS_VALUE(), "HAS_VALUE", individual );
+    }
+    
+
     // Internal implementation methods
     //////////////////////////////////
 

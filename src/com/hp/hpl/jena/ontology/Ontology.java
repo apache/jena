@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Ontology.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 23:05:13 $
+ * Last modified on   $Date: 2003-06-08 18:53:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Ontology.java,v 1.3 2003-05-23 23:05:13 ian_dickinson Exp $
+ * @version CVS $Id: Ontology.java,v 1.4 2003-06-08 18:53:29 ian_dickinson Exp $
  */
 public interface Ontology
     extends OntResource
@@ -94,6 +94,13 @@ public interface Ontology
      */
     public boolean imports( Resource res );
     
+    /**
+     * <p>Remove the statement that this ontology imports the ontology represented by the given resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that represents an ontology that is no longer to be imported
+     */
+    public void removeImport( Resource res );
+    
 
     // backwardCompatibleWith
     
@@ -138,6 +145,15 @@ public interface Ontology
      */
     public boolean isBackwardCompatibleWith( Resource res );
     
+    /**
+     * <p>Remove the statement that this ontology is backwards compatible with
+     * the ontology represented by the given resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that represents an ontology that is no longer to be imported
+     */
+    public void removeBackwardCompatibleWith( Resource res );
+    
+
     // priorVersion
     
     /**
@@ -181,6 +197,13 @@ public interface Ontology
      */
     public boolean hasPriorVersion( Resource res );
     
+    /**
+     * <p>Remove the statement that the given ontology is a prior version of this ontology.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that represents an ontology that is no longer a prior version of this ontology
+     */
+    public void removePriorVersion( Resource res );
+    
     // incompatibleWith
 
     /**
@@ -223,6 +246,13 @@ public interface Ontology
      * @return True if this ontology is incompatible with the ontology represented by <code>res</code>
      */
     public boolean isIncompatibleWith( Resource res );
+    
+    /**
+     * <p>Remove the statement that the given ontology is incompatible with this ontology.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that represents an ontology that is no longer incompatible with this ontology
+     */
+    public void removeIncompatibleWith( Resource res );
     
 }
 

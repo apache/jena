@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: AllValuesFromRestriction.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:36:17 $
+ * Last modified on   $Date: 2003-06-08 18:53:28 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllValuesFromRestriction.java,v 1.2 2003-05-30 14:36:17 ian_dickinson Exp $
+ * @version CVS $Id: AllValuesFromRestriction.java,v 1.3 2003-06-08 18:53:28 ian_dickinson Exp $
  */
 public interface AllValuesFromRestriction
     extends Restriction 
@@ -74,6 +74,14 @@ public interface AllValuesFromRestriction
      * @exception OntProfileException If the {@link Profile#ALL_VALUES_FROM()} property is not supported in the current language profile.   
      */
     public boolean hasAllValuesFrom( Resource cls );
+    
+    /**
+     * <p>Remove the statement that this restriction has all values from the given class among
+     * the values for the restricted property.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A Resource the denotes the class to be removed from this restriction
+     */
+    public void removeAllValuesFrom( Resource cls );
     
 
 }

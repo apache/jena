@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-28 16:20:42 $
+ * Last modified on   $Date: 2003-06-08 18:52:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.4 2003-05-28 16:20:42 ian_dickinson Exp $
+ * @version CVS $Id: ComplementClassImpl.java,v 1.5 2003-06-08 18:52:44 ian_dickinson Exp $
  */
 public class ComplementClassImpl 
     extends OntClassImpl
@@ -183,6 +183,15 @@ public class ComplementClassImpl
 	public OntClass getOperand() {
 		return (OntClass) objectAs( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", OntClass.class );
 	}
+    
+    /**
+     * <p>Remove the given resource from the operands of this class expression.</p>
+     * @param res An resource to be removed from the operands of this class expression
+     */
+    public void removeOperand( Resource res ) {
+        removePropertyValue( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF", res );
+    }
+    
     
 	/**
 	 * <p>Answer the property that is used to construct this boolean expression, for example

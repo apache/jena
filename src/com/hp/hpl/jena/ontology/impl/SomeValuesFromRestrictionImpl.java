@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: SomeValuesFromRestrictionImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 14:35:33 $
+ * Last modified on   $Date: 2003-06-08 18:52:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: SomeValuesFromRestrictionImpl.java,v 1.3 2003-05-30 14:35:33 ian_dickinson Exp $
+ * @version CVS $Id: SomeValuesFromRestrictionImpl.java,v 1.4 2003-06-08 18:52:44 ian_dickinson Exp $
  */
 public class SomeValuesFromRestrictionImpl
     extends RestrictionImpl
@@ -127,6 +127,16 @@ public class SomeValuesFromRestrictionImpl
      */
     public boolean hasSomeValuesFrom( Resource cls ) {
         return hasPropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
+    }
+    
+    /**
+     * <p>Remove the statement that this restriction has some values from the given class among
+     * the values for the restricted property.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A Resource the denotes the class to be removed from this restriction
+     */
+    public void removeSomeValuesFrom( Resource cls ) {
+        removePropertyValue( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM", cls );
     }
     
 

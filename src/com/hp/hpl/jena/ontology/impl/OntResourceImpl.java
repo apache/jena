@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 14:45:25 $
+ * Last modified on   $Date: 2003-06-08 18:52:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.15 2003-06-06 14:45:25 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.16 2003-06-08 18:52:44 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -166,6 +166,15 @@ public class OntResourceImpl
         return hasPropertyValue( getProfile().SAME_AS(), "SAME_AS", res );
     }
 
+    /**
+     * <p>Remove the statement that this resource is the same as the given resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to be the sameAs this resource
+     */
+    public void removeSameAs( Resource res ) {
+        removePropertyValue( getProfile().SAME_AS(), "SAME_AS", res );
+    }
+    
     // differentFrom
     
     /**
@@ -216,6 +225,138 @@ public class OntResourceImpl
         return hasPropertyValue( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", res );
     }
     
+    /**
+     * <p>Remove the statement that this resource is different the given resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to be differentFrom this resource
+     */
+    public void removeDifferentFrom( Resource res ) {
+        removePropertyValue( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM", res );
+    }
+    
+    // seeAlso
+    
+    /**
+     * <p>Assert that the given resource provides additional information about the definition of this resource</p>
+     * @param res A resource that can provide additional information about this resource
+     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
+     */ 
+    public void setSeeAlso( Resource res ) {
+        setPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
+    }
+
+    /**
+     * <p>Add a resource that is declared to provided additional information about the definition of this resource</p>
+     * @param res A resource that provides extra information on this resource
+     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
+     */ 
+    public void addSeeAlso( Resource res ) {
+        addPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
+    }
+
+    /**
+     * <p>Answer a resource that provides additional information about this resource. If more than one such resource
+     * is defined, make an arbitrary choice.</p>
+     * @return res A resource that provides additional information about this resource
+     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
+     */ 
+    public Resource getSeeAlso() {
+        return objectAsResource( getProfile().SEE_ALSO(), "SEE_ALSO" );
+    }
+
+    /**
+     * <p>Answer an iterator over all of the resources that are declared to provide addition
+     * information about this resource.</p>
+     * @return An iterator over the resources providing additional definition on this resource.
+     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listSeeAlso() {
+        checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
+        return WrappedIterator.create( listProperties( getProfile().SEE_ALSO() ) )
+               .mapWith( new ObjectMapper() );
+    }
+
+    /**
+     * <p>Answer true if this resource has the given resource as a source of additional information.</p>
+     * @param res A resource to test against
+     * @return True if the <code>res</code> provides more information on this resource.
+     */
+    public boolean hasSeeAlso( Resource res ) {
+        return hasPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
+    }
+    
+    /**
+     * <p>Remove the statement indicating the given resource as a source of additional information
+     * about this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to provide additional information about this resource
+     */
+    public void removeSeeAlso( Resource res ) {
+        removePropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
+    }
+    
+    // is defined by
+    
+    /**
+     * <p>Assert that the given resource provides a source of definitions about this resource. Any existing 
+     * statements for <code>isDefinedBy</code> will be removed.</p>
+     * @param res The resource that is declared to be a definition of this resource.
+     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
+     */ 
+    public void setIsDefinedBy( Resource res ) {
+        setPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
+    }
+
+    /**
+     * <p>Add a resource that is declared to provide a definition of this resource.</p>
+     * @param res A defining resource 
+     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
+     */ 
+    public void addIsDefinedBy( Resource res ) {
+        addPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
+    }
+
+    /**
+     * <p>Answer a resource that is declared to provide a definition of this resource. If there is
+     * more than one such resource, an arbitrary selection is made.</p>
+     * @return res An ont resource that is declared to provide a definition of this resource
+     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
+     */ 
+    public Resource getIsDefinedBy() {
+        return objectAsResource( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
+    }
+
+    /**
+     * <p>Answer an iterator over all of the resources that are declared to define
+     * this resource. </p>
+     * @return An iterator over the resources defining this resource.
+     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listIsDefinedBy() {
+        checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
+        return WrappedIterator.create( listProperties( getProfile().IS_DEFINED_BY() ) )
+               .mapWith( new ObjectMapper() );
+    }
+
+    /**
+     * <p>Answer true if this resource is defined by the given resource.</p>
+     * @param res A resource to test against
+     * @return True if <code>res</code> defines this resource.
+     */
+    public boolean isDefinedBy( Resource res ) {
+        return hasPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
+    }
+    
+    /**
+     * <p>Remove the statement that this resource is defined by the given resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to define this resource
+     */
+    public void removeDefinedBy( Resource res ) {
+        removePropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
+    }
+    
+
     // version info
 
     /**
@@ -270,6 +411,23 @@ public class OntResourceImpl
     public boolean hasVersionInfo( String info ) {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
         return hasProperty( getProfile().VERSION_INFO(), info );
+    }
+    
+    /**
+     * <p>Remove the statement that the given string provides version information about
+     * this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param info A version information string to be removed
+     */
+    public void removeVersionInfo( String info ) {
+        checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
+        
+        StmtIterator i = getModel().listStatements( this, getProfile().VERSION_INFO(), info );
+        if (i.hasNext()) {
+            i.nextStatement().remove();
+        }
+        
+        i.close();
     }
     
     // label
@@ -368,6 +526,27 @@ public class OntResourceImpl
         return found;
     }
     
+    /**
+     * <p>Remove the statement that the given string is a label for
+     * this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param label A label string to be removed
+     * @param lang A lang tag
+     */
+    public void removeLabel( String label, String lang ) {
+        removeLabel( getModel().createTypedLiteral( label, lang, XSDDatatype.XSDstring ) );
+    }
+    
+    /**
+     * <p>Remove the statement that the given string is a label for
+     * this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param label A label literal to be removed
+     */
+    public void removeLabel( Literal label ) {
+        removePropertyValue( getProfile().LABEL(), "LABEL", label );
+    }
+    
     // comment
 
     /**
@@ -464,111 +643,28 @@ public class OntResourceImpl
         return found;
     }
     
-    
-    // seeAlso
-    
     /**
-     * <p>Assert that the given resource provides additional information about the definition of this resource</p>
-     * @param res A resource that can provide additional information about this resource
-     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
-     */ 
-    public void setSeeAlso( Resource res ) {
-        setPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
-    }
-
-    /**
-     * <p>Add a resource that is declared to provided additional information about the definition of this resource</p>
-     * @param res A resource that provides extra information on this resource
-     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
-     */ 
-    public void addSeeAlso( Resource res ) {
-        addPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
-    }
-
-    /**
-     * <p>Answer a resource that provides additional information about this resource. If more than one such resource
-     * is defined, make an arbitrary choice.</p>
-     * @return res A resource that provides additional information about this resource
-     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
-     */ 
-    public Resource getSeeAlso() {
-        return objectAsResource( getProfile().SEE_ALSO(), "SEE_ALSO" );
-    }
-
-    /**
-     * <p>Answer an iterator over all of the resources that are declared to provide addition
-     * information about this resource.</p>
-     * @return An iterator over the resources providing additional definition on this resource.
-     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
-     */ 
-    public Iterator listSeeAlso() {
-        checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
-        return WrappedIterator.create( listProperties( getProfile().SEE_ALSO() ) )
-               .mapWith( new ObjectMapper() );
-    }
-
-    /**
-     * <p>Answer true if this resource has the given resource as a source of additional information.</p>
-     * @param res A resource to test against
-     * @return True if the <code>res</code> provides more information on this resource.
+     * <p>Remove the statement that the given string is a comment on
+     * this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param comment A comment string to be removed
+     * @param lang A lang tag
      */
-    public boolean hasSeeAlso( Resource res ) {
-        return hasPropertyValue( getProfile().SEE_ALSO(), "SEE_ALSO", res );
+    public void removeComment( String comment, String lang ) {
+        removeComment( getModel().createTypedLiteral( comment, lang, XSDDatatype.XSDstring ) );
     }
     
-    // is defined by
-    
     /**
-     * <p>Assert that the given resource provides a source of definitions about this resource. Any existing 
-     * statements for <code>isDefinedBy</code> will be removed.</p>
-     * @param res The resource that is declared to be a definition of this resource.
-     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
-     */ 
-    public void setIsDefinedBy( Resource res ) {
-        setPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
-    }
-
-    /**
-     * <p>Add a resource that is declared to provide a definition of this resource.</p>
-     * @param res A defining resource 
-     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
-     */ 
-    public void addIsDefinedBy( Resource res ) {
-        addPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
-    }
-
-    /**
-     * <p>Answer a resource that is declared to provide a definition of this resource. If there is
-     * more than one such resource, an arbitrary selection is made.</p>
-     * @return res An ont resource that is declared to provide a definition of this resource
-     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
-     */ 
-    public Resource getIsDefinedBy() {
-        return objectAsResource( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
-    }
-
-    /**
-     * <p>Answer an iterator over all of the resources that are declared to define
-     * this resource. </p>
-     * @return An iterator over the resources defining this resource.
-     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
-     */ 
-    public Iterator listIsDefinedBy() {
-        checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
-        return WrappedIterator.create( listProperties( getProfile().IS_DEFINED_BY() ) )
-               .mapWith( new ObjectMapper() );
-    }
-
-    /**
-     * <p>Answer true if this resource is defined by the given resource.</p>
-     * @param res A resource to test against
-     * @return True if <code>res</code> defines this resource.
+     * <p>Remove the statement that the given string is a comment on
+     * this resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param comment A comment literal to be removed
      */
-    public boolean isDefinedBy( Resource res ) {
-        return hasPropertyValue( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY", res );
+    public void removeComment( Literal comment ) {
+        removePropertyValue( getProfile().COMMENT(), "COMMENT", comment );
     }
     
-
+    
     /**
      * <p>Answer the cardinality of the given property on this resource. The cardinality
      * is the number of distinct values there are for the property.</p>
@@ -636,21 +732,6 @@ public class OntResourceImpl
 
         // now set the new value
         addProperty( property, value );
-    }
-
-
-    /**
-     * <p>
-     * Remove any values for a given property from this resource.
-     * </p>
-     *
-     * @param property The RDF resource that defines the property to be removed
-     */
-    public void removeAll( Property property ) {
-        for (StmtIterator i = listProperties( property );  i.hasNext();  ) {
-            i.next();
-            i.remove();
-        }
     }
 
 
@@ -776,6 +857,30 @@ public class OntResourceImpl
                     ((ClosableIterator) i).close();
                 }
             }
+        }
+    }
+
+    /**
+     * <p>Remove the statement that this resource is of the given RDF type.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param cls A resource denoting a class that that is to be removed from the classes of this resource
+     */
+    public void removeRDFType( Resource cls ) {
+        removePropertyValue( RDF.type, "rdf:type", cls );
+    }
+    
+
+    /**
+     * <p>
+     * Remove any values for a given property from this resource.
+     * </p>
+     *
+     * @param property The RDF resource that defines the property to be removed
+     */
+    public void removeAll( Property property ) {
+        for (StmtIterator i = listProperties( property );  i.hasNext();  ) {
+            i.next();
+            i.remove();
         }
     }
 
@@ -1068,6 +1173,17 @@ public class OntResourceImpl
         }
     }
     
+    /** Remove a specified property-value pair, if it exists */
+    protected void removePropertyValue( Property prop, String name, RDFNode value ) {
+        checkProfile( prop, name );
+        
+        StmtIterator i = getModel().listStatements( this, prop, value );
+        if (i.hasNext()) {
+            i.nextStatement().remove();
+        }
+        
+        i.close();
+    }
     
     //==============================================================================
     // Inner class definitions

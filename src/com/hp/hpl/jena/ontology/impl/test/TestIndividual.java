@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestIndividual.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 21:11:19 $
+ * Last modified on   $Date: 2003-06-08 18:53:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestIndividual.java,v 1.1 2003-05-23 21:11:19 ian_dickinson Exp $
+ * @version CVS $Id: TestIndividual.java,v 1.2 2003-06-08 18:53:16 ian_dickinson Exp $
  */
 public class TestIndividual 
     extends OntTestBase 
@@ -89,6 +89,11 @@ public class TestIndividual
                     x.setSameIndividualAs( z );
                     assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.SAME_INDIVIDUAL_AS() ) );
                     assertEquals( "x should be same indiv. as z", z, x.getSameIndividualAs() );
+                    
+                    x.removeSameIndividualAs( y );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.SAME_INDIVIDUAL_AS() ) );
+                    x.removeSameIndividualAs( z );
+                    assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.SAME_INDIVIDUAL_AS() ) );
                 }
             },
         };

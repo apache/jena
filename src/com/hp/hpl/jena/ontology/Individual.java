@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Individual.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 21:11:37 $
+ * Last modified on   $Date: 2003-06-08 18:53:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Individual.java,v 1.4 2003-05-23 21:11:37 ian_dickinson Exp $
+ * @version CVS $Id: Individual.java,v 1.5 2003-06-08 18:53:29 ian_dickinson Exp $
  */
 public interface Individual
     extends OntResource
@@ -95,6 +95,13 @@ public interface Individual
      * @return True if the resources are declared the same via a <code>sameIndividualAs</code> statement.
      */
     public boolean isSameIndividualAs( Resource res );
+    
+    /**
+     * <p>Remove the statement that this individual is the same as the given individual.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to be the sameIndividualAs this resource
+     */
+    public void removeSameIndividualAs( Resource res );
     
 
 

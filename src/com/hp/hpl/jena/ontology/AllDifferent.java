@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: AllDifferent.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 17:34:54 $
+ * Last modified on   $Date: 2003-06-08 18:53:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -44,7 +44,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferent.java,v 1.6 2003-05-27 17:34:54 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferent.java,v 1.7 2003-06-08 18:53:29 ian_dickinson Exp $
  */
 public interface AllDifferent
     extends OntResource
@@ -102,8 +102,12 @@ public interface AllDifferent
      */
     public boolean hasDistinctMember( Resource res );
     
-    
-
+    /**
+     * <p>Remove the given resource from the list of distinct individuals.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that is no longer distinct from the other listed individuals
+     */
+    public void removeDistinctMember( Resource res );
     
 }
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 11:07:02 $
+ * Last modified on   $Date: 2003-06-08 18:53:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.16 2003-06-06 11:07:02 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.17 2003-06-08 18:53:15 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -90,6 +90,11 @@ public class TestClassExpression
                     assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.SUB_CLASS_OF() ) );
                     assertEquals( "A shuold have super-class C", C, A.getSuperClass() );
                     assertTrue( "A shuold not have super-class B", !A.hasSuperClass( B, false ) );
+                    
+                    A.removeSuperClass( B );
+                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.SUB_CLASS_OF() ) );
+                    A.removeSuperClass( C );
+                    assertEquals( "Cardinality should be 0", 0, A.getCardinality( prof.SUB_CLASS_OF() ) );
                 }
             },
             new OntTestCase( "OntClass.sub-class", true, true, true ) {
@@ -111,6 +116,11 @@ public class TestClassExpression
                     assertEquals( "Cardinality should be 1", 1, B.getCardinality( prof.SUB_CLASS_OF() ) + C.getCardinality( prof.SUB_CLASS_OF() ) );
                     assertEquals( "A shuold have sub-class C", C, A.getSubClass() );
                     assertTrue( "A shuold not have sub-class B", !A.hasSubClass( B, false ) );
+                    
+                    A.removeSubClass( B );
+                    assertTrue( "A should have sub-class C", A.hasSubClass( C, false ) );
+                    A.removeSubClass( C );
+                    assertTrue( "A should not have sub-class C", !A.hasSubClass( C, false ) );
                 }
             },
             new OntTestCase( "OntClass.equivalentClass", true, true, true ) {
@@ -132,6 +142,11 @@ public class TestClassExpression
                     assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.EQUIVALENT_CLASS() ) );
                     assertEquals( "A should have equivalentClass C", C, A.getEquivalentClass() );
                     assertTrue( "A should not have equivalentClass B", !A.hasEquivalentClass( B ) );
+                    
+                    A.removeEquivalentClass( B );
+                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.EQUIVALENT_CLASS() ) );
+                    A.removeEquivalentClass( C );
+                    assertEquals( "Cardinality should be 0", 0, A.getCardinality( prof.EQUIVALENT_CLASS() ) );
                 }
             },
             new OntTestCase( "OntClass.disjointWith", true, false, true ) {
@@ -153,6 +168,11 @@ public class TestClassExpression
                     assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.DISJOINT_WITH() ) );
                     assertEquals( "A should be disjoint with C", C, A.getDisjointWith() );
                     assertTrue( "A should not be disjoint with B", !A.isDisjointWith( B ) );
+                    
+                    A.removeDisjointWith( B );
+                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.DISJOINT_WITH() ) );
+                    A.removeDisjointWith( C );
+                    assertEquals( "Cardinality should be 0", 0, A.getCardinality( prof.DISJOINT_WITH() ) );
                 }
             },
 			new OntTestCase( "EnumeratedClass.oneOf", true, false, true ) {
@@ -177,6 +197,11 @@ public class TestClassExpression
 					assertEquals( "Size should be 1", 1, A.getOneOf().size() );
 					assertTrue( "A should have b in the enum", A.hasOneOf( b ) );
 					assertTrue( "A should not have a in the enum", !A.hasOneOf( a ) );
+                    
+                    A.removeOneOf( a );
+                    assertTrue( "Should have b as an enum value", A.hasOneOf( b ) );
+                    A.removeOneOf( b );
+                    assertTrue( "Should not have b as an enum value", !A.hasOneOf( b ) );
 				}
 			},
 			new OntTestCase( "IntersectionClass.intersectionOf", true, true, true ) {
@@ -201,6 +226,11 @@ public class TestClassExpression
 					assertEquals( "Size should be 1", 1, A.getOperands().size() );
 					assertTrue( "A should have C in the intersection", A.hasOperand( C ) );
 					assertTrue( "A should not have B in the intersection", !A.hasOperand( B ) );
+                    
+                    A.removeOperand( B );
+                    assertTrue( "Should have C as an operand", A.hasOperand( C ) );
+                    A.removeOperand( C );
+                    assertTrue( "Should not have C as an operand", !A.hasOperand( C ) );
 				}
 			},
 			new OntTestCase( "UnionClass.unionOf", true, false, true ) {
@@ -225,6 +255,11 @@ public class TestClassExpression
 					assertEquals( "Size should be 1", 1, A.getOperands().size() );
 					assertTrue( "A should have C in the union", A.hasOperand( C ) );
 					assertTrue( "A should not have B in the union", !A.hasOperand( B ) );
+                    
+                    A.removeOperand( B );
+                    assertTrue( "Should have C as an operand", A.hasOperand( C ) );
+                    A.removeOperand( C );
+                    assertTrue( "Should not have C as an operand", !A.hasOperand( C ) );
 				}
 			},
             new OntTestCase( "ComplementClass.complementOf", true, false, true ) {
@@ -255,6 +290,11 @@ public class TestClassExpression
                     assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.COMPLEMENT_OF() ) );
                     assertTrue( "A should have C in the complement", A.hasOperand( C ) );
                     assertTrue( "A should not have B in the complement", !A.hasOperand( B ) );
+                    
+                    A.removeOperand( B );
+                    assertTrue( "Should have C as an operand", A.hasOperand( C ) );
+                    A.removeOperand( C );
+                    assertTrue( "Should not have C as an operand", !A.hasOperand( C ) );
                 }
             },
             new OntTestCase( "Restriction.onProperty", true, true, true ) {
@@ -277,6 +317,11 @@ public class TestClassExpression
                     assertTrue( "Restriction should not be on property p", !A.onProperty( p ) );
                     assertTrue( "Restriction should not on property q", A.onProperty( q ) );
                     assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ON_PROPERTY() ));
+                    
+                    A.removeOnProperty( p );
+                    assertTrue( "Should have q as on property", A.onProperty( q ) );
+                    A.removeOnProperty( q );
+                    assertTrue( "Should not have q as on property", !A.onProperty( q ) );
                 }
             },
             new OntTestCase( "AllValuesFromRestriction.allValuesFrom", true, true, true ) {
@@ -300,6 +345,40 @@ public class TestClassExpression
                     assertTrue( "Restriction should be all values from C", A.hasAllValuesFrom( C ) );
                     assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.ALL_VALUES_FROM() ));
                     
+                    A.removeAllValuesFrom( C );
+
+                    assertTrue( "Restriction should not be some values from C", !A.hasAllValuesFrom( C ) );
+                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.SOME_VALUES_FROM() ));
+                }
+            },
+            new OntTestCase( "HasValueRestriction.hasValue", true, false, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    Profile prof = m.getProfile();
+                    OntProperty p = m.createObjectProperty( NS + "p" );
+                    OntClass B = m.createClass( NS + "B" );
+                    Individual b = m.createIndividual( B );
+                    OntClass C = m.createClass( NS + "C" );
+                    Individual c = m.createIndividual( C );
+
+                    HasValueRestriction A = m.createHasValueRestriction( NS + "A", p, b  );
+                    
+                    assertEquals( "Restriction should be has value b", b, A.getHasValue() );
+                    assertTrue( "Restriction should be to have value b", A.hasValue( b ) );
+                    assertTrue( "Restriction should not be have value c", !A.hasValue( c ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.HAS_VALUE() ));
+                    
+                    A.setHasValue( c );
+
+                    assertEquals( "Restriction should be has value c", c, A.getHasValue() );
+                    assertTrue( "Restriction should not be to have value b", !A.hasValue( b ) );
+                    assertTrue( "Restriction should not be have value c", A.hasValue( c ) );
+                    assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.HAS_VALUE() ));
+                    
+                    A.removeHasValue( c );
+
+                    assertTrue( "Restriction should not be to have value b", !A.hasValue( b ) );
+                    assertTrue( "Restriction should not be have value c", !A.hasValue( c ) );
+                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.HAS_VALUE() ));
                 }
             },
             new OntTestCase( "SomeValuesFromRestriction.someValuesFrom", true, true, true ) {
@@ -323,6 +402,10 @@ public class TestClassExpression
                     assertTrue( "Restriction should be some values from C", A.hasSomeValuesFrom( C ) );
                     assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.SOME_VALUES_FROM() ));
                     
+                    A.removeSomeValuesFrom( C );
+
+                    assertTrue( "Restriction should not be some values from C", !A.hasSomeValuesFrom( C ) );
+                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.SOME_VALUES_FROM() ));
                 }
             },
             new OntTestCase( "CardinalityRestriction.cardinality", true, true, true ) {
@@ -343,6 +426,12 @@ public class TestClassExpression
                     assertTrue( "Restriction should not be cardinality 3", !A.hasCardinality( 3 ) );
                     assertTrue( "Restriction should be cardinality 2", A.hasCardinality( 2 ) );
                     assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.CARDINALITY() ));
+                    
+                    A.removeCardinality( 2 );
+
+                    assertTrue( "Restriction should not be cardinality 3", !A.hasCardinality( 3 ) );
+                    assertTrue( "Restriction should not be cardinality 2", !A.hasCardinality( 2 ) );
+                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.CARDINALITY() ));
                 }
             },
             new OntTestCase( "MinCardinalityRestriction.minCardinality", true, true, true ) {
@@ -363,6 +452,12 @@ public class TestClassExpression
                     assertTrue( "Restriction should not be min cardinality 3", !A.hasMinCardinality( 3 ) );
                     assertTrue( "Restriction should be min cardinality 2", A.hasMinCardinality( 2 ) );
                     assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.MIN_CARDINALITY() ));
+                    
+                    A.removeMinCardinality( 2 );
+
+                    assertTrue( "Restriction should not be cardinality 3", !A.hasMinCardinality( 3 ) );
+                    assertTrue( "Restriction should not be cardinality 2", !A.hasMinCardinality( 2 ) );
+                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.MIN_CARDINALITY() ));
                 }
             },
             new OntTestCase( "MaxCardinalityRestriction.maxCardinality", true, true, true ) {
@@ -383,6 +478,12 @@ public class TestClassExpression
                     assertTrue( "Restriction should not be max cardinality 3", !A.hasMaxCardinality( 3 ) );
                     assertTrue( "Restriction should be max cardinality 2", A.hasMaxCardinality( 2 ) );
                     assertEquals( "cardinality should be 1 ", 1, A.getCardinality( prof.MAX_CARDINALITY() ));
+                    
+                    A.removeMaxCardinality( 2 );
+
+                    assertTrue( "Restriction should not be cardinality 3", !A.hasMaxCardinality( 3 ) );
+                    assertTrue( "Restriction should not be cardinality 2", !A.hasMaxCardinality( 2 ) );
+                    assertEquals( "cardinality should be 0 ", 0, A.getCardinality( prof.MAX_CARDINALITY() ));
                 }
             },
             

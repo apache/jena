@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntologyImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 23:04:41 $
+ * Last modified on   $Date: 2003-06-08 18:52:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyImpl.java,v 1.6 2003-05-23 23:04:41 ian_dickinson Exp $
+ * @version CVS $Id: OntologyImpl.java,v 1.7 2003-06-08 18:52:44 ian_dickinson Exp $
  */
 public class OntologyImpl
     extends OntResourceImpl
@@ -149,6 +149,15 @@ public class OntologyImpl
         return hasPropertyValue( getProfile().IMPORTS(), "IMPORTS", res );
     }
     
+    /**
+     * <p>Remove the statement that this ontology imports the ontology represented by the given resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that represents an ontology that is no longer to be imported
+     */
+    public void removeImport( Resource res ) {
+        removePropertyValue( getProfile().IMPORTS(), "IMPORTS", res );
+    }
+    
 
     // backwardCompatibleWith
     
@@ -203,6 +212,17 @@ public class OntologyImpl
         return hasPropertyValue( getProfile().BACKWARD_COMPATIBLE_WITH(), "BACKWARD_COMPATIBLE_WITH", res );
     }
     
+    /**
+     * <p>Remove the statement that this ontology is backwards compatible with
+     * the ontology represented by the given resource.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that represents an ontology that is no longer to be imported
+     */
+    public void removeBackwardCompatibleWith( Resource res ) {
+        removePropertyValue( getProfile().BACKWARD_COMPATIBLE_WITH(), "BACKWARD_COMPATIBLE_WITH", res );
+    }
+    
+
     // priorVersion
     
     /**
@@ -256,6 +276,16 @@ public class OntologyImpl
         return hasPropertyValue( getProfile().PRIOR_VERSION(), "PRIOR_VERSION", res );
     }
     
+    /**
+     * <p>Remove the statement that the given ontology is a prior version of this ontology.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that represents an ontology that is no longer a prior version of this ontology
+     */
+    public void removePriorVersion( Resource res ) {
+        removePropertyValue( getProfile().PRIOR_VERSION(), "PRIOR_VERSION", res );
+    }
+    
+
     // incompatibleWith
 
     /**
@@ -308,6 +338,16 @@ public class OntologyImpl
     public boolean isIncompatibleWith( Resource res ) {
         return hasPropertyValue( getProfile().INCOMPATIBLE_WITH(), "INCOMPATIBLE_WITH", res );
     }
+    
+    /**
+     * <p>Remove the statement that the given ontology is incompatible with this ontology.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that represents an ontology that is no longer incompatible with this ontology
+     */
+    public void removeIncompatibleWith( Resource res ) {
+        removePropertyValue( getProfile().INCOMPATIBLE_WITH(), "INCOMPATIBLE_WITH", res );
+    }
+    
     
     // Internal implementation methods
     //////////////////////////////////

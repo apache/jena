@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 21:11:37 $
+ * Last modified on   $Date: 2003-06-08 18:52:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.5 2003-05-23 21:11:37 ian_dickinson Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.6 2003-06-08 18:52:43 ian_dickinson Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -137,6 +137,15 @@ public class IndividualImpl
      */
     public boolean isSameIndividualAs( Resource res ) {
         return hasPropertyValue( getProfile().SAME_INDIVIDUAL_AS(), "SAME_INDIVIDUAL_AS", res );
+    }
+    
+    /**
+     * <p>Remove the statement that this individual is the same as the given individual.  If this statement
+     * is not true of the current model, nothing happens.</p>
+     * @param res A resource that may be declared to be the sameIndividualAs this resource
+     */
+    public void removeSameIndividualAs( Resource res ) {
+        removePropertyValue( getProfile().SAME_INDIVIDUAL_AS(), "SAME_INDIVIDUAL_AS", res );
     }
     
      

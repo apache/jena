@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntListImpl.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-09 16:03:55 $
+ * Last modified on   $Date: 2003-06-08 18:52:43 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntListImpl.java,v 1.11 2003-05-09 16:03:55 ian_dickinson Exp $
+ * @version CVS $Id: OntListImpl.java,v 1.12 2003-06-08 18:52:43 ian_dickinson Exp $
  */
 public class OntListImpl
     extends OntResourceImpl
@@ -575,6 +575,51 @@ public class OntListImpl
         return tail;
     }
     
+    
+    /**
+     * <p>Remove the given value from this list. If <code>val</code> does not occur in
+     * the list, no action is taken.  Since removing the head of the list will invalidate
+     * the list head cell, in general the list must return the list that results from this
+     * operation. However, in many cases the return value will be the same as the object
+     * that this method is invoked on</p>
+     * 
+     * @param val The value to be removed from the list
+     * @return The resulting list, which will be the same as the current list in most
+     * cases, except when <code>val</code> occurs at the head of the list.
+     */
+    public OntList remove( RDFNode val ) {
+        if (m_checkValid) {
+            checkValid();
+        }
+        
+        OntList prev = null;
+        OntList cell = this;
+        boolean searching = true;
+        
+        while (searching && !cell.isEmpty()) {
+            if (cell.getHead().equals( val )) {
+                // found the value to be removed
+                OntList tail = cell.getTail();
+                if (prev != null) {
+                    prev.setTail( tail );
+                }
+                
+                cell.removeProperties();
+                
+                // return this unless we have removed the head element
+                return (prev == null) ? tail : this;
+            }
+            else {
+                // not found yet
+                prev = cell;
+                cell = cell.getTail();
+            }
+        }
+        
+        // not found
+        return this;
+    }
+        
     
     /**
      * Remove all of the elements of this list from the model.

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestAllDifferent.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-28 16:26:21 $
+ * Last modified on   $Date: 2003-06-08 18:53:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestAllDifferent.java,v 1.2 2003-05-28 16:26:21 ian_dickinson Exp $
+ * @version CVS $Id: TestAllDifferent.java,v 1.3 2003-06-08 18:53:15 ian_dickinson Exp $
  */
 public class TestAllDifferent
     extends OntTestBase 
@@ -94,6 +94,9 @@ public class TestAllDifferent
                     assertEquals( "List size should be 1", 1, a.getDistinct().size() );
                     assertTrue( "a should have b as distinct", a.hasDistinctMember( b ) );
                     assertTrue( "a should not have c as distinct", !a.hasDistinctMember( c ) );
+                    
+                    a.removeDistinctMember( b );
+                    assertTrue( "a should have not b as distinct", !a.hasDistinctMember( b ) );
                 }
             },
         };

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestOntology.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 23:05:13 $
+ * Last modified on   $Date: 2003-06-08 18:53:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntology.java,v 1.5 2003-05-23 23:05:13 ian_dickinson Exp $
+ * @version CVS $Id: TestOntology.java,v 1.6 2003-06-08 18:53:16 ian_dickinson Exp $
  */
 public class TestOntology
     extends OntTestBase 
@@ -89,6 +89,11 @@ public class TestOntology
                     x.setImport( z );
                     assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.IMPORTS() ) );
                     assertEquals( "x should import z", z, x.getImport() );
+                    
+                    x.removeImport( y );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.IMPORTS() ) );
+                    x.removeImport( z );
+                    assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.IMPORTS() ) );
                 }
             },
             new OntTestCase( "Ontology.backwardCompatibleWith", true, true, false ) {
@@ -109,6 +114,11 @@ public class TestOntology
                     x.setBackwardCompatibleWith( z );
                     assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
                     assertEquals( "x should be back comp with z", z, x.getBackwardCompatibleWith() );
+                    
+                    x.removeBackwardCompatibleWith( y );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
+                    x.removeBackwardCompatibleWith( z );
+                    assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.BACKWARD_COMPATIBLE_WITH() ) );
                 }
             },
             new OntTestCase( "Ontology.priorVersion", true, true, false ) {
@@ -129,6 +139,11 @@ public class TestOntology
                     x.setPriorVersion( z );
                     assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.PRIOR_VERSION() ) );
                     assertEquals( "x should have prior z", z, x.getPriorVersion() );
+                    
+                    x.removePriorVersion( y );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.PRIOR_VERSION() ) );
+                    x.removePriorVersion( z );
+                    assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.PRIOR_VERSION() ) );
                 }
             },
             new OntTestCase( "Ontology.incompatibleWith", true, true, false ) {
@@ -149,6 +164,11 @@ public class TestOntology
                     x.setIncompatibleWith( z );
                     assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
                     assertEquals( "x should be incomp with z", z, x.getIncompatibleWith() );
+                    
+                    x.removeIncompatibleWith( y );
+                    assertEquals( "Cardinality should be 1", 1, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
+                    x.removeIncompatibleWith( z );
+                    assertEquals( "Cardinality should be 0", 0, x.getCardinality( prof.INCOMPATIBLE_WITH() ) );
                 }
             },
         };

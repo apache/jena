@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: BooleanClassDescription.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-28 16:25:51 $
+ * Last modified on   $Date: 2003-06-08 18:53:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: BooleanClassDescription.java,v 1.2 2003-05-28 16:25:51 ian_dickinson Exp $
+ * @version CVS $Id: BooleanClassDescription.java,v 1.3 2003-06-08 18:53:30 ian_dickinson Exp $
  */
 public interface BooleanClassDescription 
     extends OntClass
@@ -98,6 +98,12 @@ public interface BooleanClassDescription
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */
 	public boolean hasOperand( Resource cls );
+    
+    /**
+     * <p>Remove the given resource from the operands of this class expression.</p>
+     * @param res An resource to be removed from the operands of this class expression
+     */
+    public void removeOperand( Resource res );
     
     
  	/**

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 17:13:37 $
+ * Last modified on   $Date: 2003-06-08 18:53:16 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.6 2003-05-30 17:13:37 ian_dickinson Exp $
+ * @version CVS $Id: TestProperty.java,v 1.7 2003-06-08 18:53:16 ian_dickinson Exp $
  */
 public class TestProperty
     extends OntTestBase 
@@ -90,6 +90,11 @@ public class TestProperty
                     p.setSuperProperty( r );
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.SUB_PROPERTY_OF() ) );
                     assertEquals( "p shuold have super-prop r", r, p.getSuperProperty() );
+                    
+                    p.removeSuperProperty( q );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.SUB_PROPERTY_OF() ) );
+                    p.removeSuperProperty( r );
+                    assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.SUB_PROPERTY_OF() ) );
                 }
             },
             new OntTestCase( "OntProperty.sub-property", true, true, true ) {
@@ -112,6 +117,11 @@ public class TestProperty
                     p.setSubProperty( r );
                     assertEquals( "Cardinality should be 1", 1, q.getCardinality( prof.SUB_PROPERTY_OF() ) + r.getCardinality( prof.SUB_PROPERTY_OF() ) );
                     assertEquals( "p should have sub-prop r", r, p.getSubProperty() );
+                    
+                    p.removeSubProperty( q );
+                    assertTrue( "Should have sub-prop r", p.hasSubProperty( r, false ) );
+                    p.removeSubProperty( r );
+                    assertTrue( "Should not have sub-prop r", !p.hasSubProperty( r, false ) );
                 }
             },
             new OntTestCase( "OntProperty.domain", true, true, true ) {
@@ -132,6 +142,11 @@ public class TestProperty
                     p.setDomain( b );
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.DOMAIN() ) );
                     assertEquals( "p should have domain b", b, p.getDomain() );
+                    
+                    p.removeDomain( a );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.DOMAIN() ) );
+                    p.removeDomain( b );
+                    assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.DOMAIN() ) );
                 }
             },
             new OntTestCase( "OntProperty.range", true, true, true ) {
@@ -152,6 +167,11 @@ public class TestProperty
                     p.setRange( b );
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.RANGE() ) );
                     assertEquals( "p should have range b", b, p.getRange() );
+                    
+                    p.removeRange( a );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.RANGE() ) );
+                    p.removeRange( b );
+                    assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.RANGE() ) );
                 }
             },
             new OntTestCase( "OntProperty.equivalentProperty", true, true, true ) {
@@ -172,6 +192,11 @@ public class TestProperty
                     p.setEquivalentProperty( r );
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.EQUIVALENT_PROPERTY() ) );
                     assertEquals( "p should have equivalentProperty r", r, p.getEquivalentProperty() );
+                    
+                    p.removeEquivalentProperty( q );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.EQUIVALENT_PROPERTY() ) );
+                    p.removeEquivalentProperty( r );
+                    assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.EQUIVALENT_PROPERTY() ) );
                 }
             },
             new OntTestCase( "OntProperty.inverseOf", true, true, true ) {
@@ -192,6 +217,11 @@ public class TestProperty
                     p.setInverseOf( r );
                     assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.INVERSE_OF() ) );
                     assertEquals( "p should have inverse r", r, p.getInverseOf() );
+                    
+                    p.removeInverseProperty( q );
+                    assertEquals( "Cardinality should be 1", 1, p.getCardinality( prof.INVERSE_OF() ) );
+                    p.removeInverseProperty( r );
+                    assertEquals( "Cardinality should be 0", 0, p.getCardinality( prof.INVERSE_OF() ) );
                 }
             },
             new OntTestCase( "OntProperty.subproperty.fromFile", true, true, true ) {
