@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.48 $
+ * Revision           $Revision: 1.49 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-08 16:18:11 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-09-18 15:16:47 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.48 2003-09-08 16:18:11 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.49 2003-09-18 15:16:47 der Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1653,13 +1653,9 @@ public class OntModelImpl
         // list the ontology nodes
         if (getProfile().ONTOLOGY() != null  &&  getProfile().IMPORTS() != null) {
             // for efficiency (specifically, avoiding the reasoner), we do the query directly on the base graph
-            for (StmtIterator i = getBaseModel().listStatements( null, RDF.type, getProfile().ONTOLOGY() );  i.hasNext(); ) {
-                Resource ontology = i.nextStatement().getSubject();
-                
-                for (StmtIterator j = ontology.listProperties( getProfile().IMPORTS() ); j.hasNext();  ) {
-                    // add the imported URI to the list
-                    imports.add( j.nextStatement().getResource().getURI() );
-                }
+            StmtIterator i = getBaseModel().listStatements(null, getProfile().IMPORTS(), (RDFNode)null);
+            while (i.hasNext()) {
+                imports.add( i.nextStatement().getResource().getURI() );
             }
         }
                 
