@@ -5,19 +5,19 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.7 2003-06-30 15:07:49 der Exp $
+ * $Id: TestRDFSReasoners.java,v 1.8 2003-07-25 16:32:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import com.hp.hpl.jena.mem.ModelMem;
-import com.hp.hpl.jena.reasoner.rdfsReasoner1.*;
+//import com.hp.hpl.jena.reasoner.rdfsReasoner1.*;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Iterator;
 
 import junit.framework.TestCase;
@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-30 15:07:49 $
+ * @version $Revision: 1.8 $ on $Date: 2003-07-25 16:32:39 $
  */
 public class TestRDFSReasoners extends TestCase {
     
@@ -54,8 +54,8 @@ public class TestRDFSReasoners extends TestCase {
         TestSuite suite = new TestSuite();
         try {
             // Even though it is deprecated, maintain the tests for now
-            constructRDFWGtests(suite, RDFSReasonerFactory.theInstance(), null);
-            constructQuerytests(suite, "rdfs/manifest.rdf", RDFSReasonerFactory.theInstance(), null);
+//            constructRDFWGtests(suite, RDFSReasonerFactory.theInstance(), null);
+//            constructQuerytests(suite, "rdfs/manifest.rdf", RDFSReasonerFactory.theInstance(), null);
 
             // FB reasoner doesn't support validation so the full set of wg tests are
             // commented out            
@@ -251,7 +251,15 @@ public class TestRDFSReasoners extends TestCase {
          * and returns error status of the result
          */
         private boolean doTestRDFSDTRange(String file, ReasonerFactory rf) throws IOException {
-            Model m = WGReasonerTester.loadFile("../reasoners/rdfs/" + file);
+            String langType = "RDF/XML";
+            if (file.endsWith(".nt")) {
+                langType = "N-TRIPLE";
+            } else if (file.endsWith("n3")) {
+                langType = "N3";
+            }
+            Model m = ModelFactory.createNonreifyingModel();
+            Reader reader = new BufferedReader(new FileReader("testing/reasoners/rdfs/"+file));
+            m.read(reader, WGReasonerTester.BASE_URI + file, langType);
             InfGraph g = rf.create(null).bind(m.getGraph());
             ValidityReport report = g.validate();
             if (!report.isValid()) {

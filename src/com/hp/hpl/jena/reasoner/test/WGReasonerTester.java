@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.15 2003-07-18 12:50:50 chris-dollin Exp $
+ * $Id: WGReasonerTester.java,v 1.16 2003-07-25 16:32:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -41,7 +41,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-07-18 12:50:50 $
+ * @version $Revision: 1.16 $ on $Date: 2003-07-25 16:32:39 $
  */
 public class WGReasonerTester {
 
@@ -51,8 +51,11 @@ public class WGReasonerTester {
     /** The base URI in which the files are purported to reside */
     public static final String BASE_URI = "http://www.w3.org/2000/10/rdf-tests/rdfcore/";
     
+    /** Default location for the test data */
+    public static final String DEFAULT_BASE_DIR = "testing/wg/";
+    
     /** The base directory in which the test data is actually stored */
-    public static final String baseDir = "testing/wg/";
+    protected String baseDir = DEFAULT_BASE_DIR;
     
     /** The rdf class for positive tests */
     public static final Resource PositiveEntailmentTest;
@@ -106,6 +109,17 @@ public class WGReasonerTester {
      * Constructor.
      * @param manifest the name of the manifest file defining these
      * tests - relative to baseDir
+     * @param baseDir override default base directory for the tests and manifest
+     */
+    public WGReasonerTester(String manifest, String baseDir) throws IOException {
+        this.baseDir = baseDir;
+        testManifest = loadFile(manifest);
+    }
+    
+    /**
+     * Constructor.
+     * @param manifest the name of the manifest file defining these
+     * tests - relative to baseDir
      */
     public WGReasonerTester(String manifest) throws IOException {
         testManifest = loadFile(manifest);
@@ -117,7 +131,7 @@ public class WGReasonerTester {
      * @param file the file name, relative to baseDir
      * @return the loaded Model
      */
-    public static Model loadFile(String file) throws IOException {
+    public Model loadFile(String file) throws IOException {
         String langType = "RDF/XML";
         if (file.endsWith(".nt")) {
             langType = "N-TRIPLE";
@@ -203,9 +217,13 @@ public class WGReasonerTester {
             throw new JenaException("Can't find test: " + uri);
         }
 
-        String description = test.getRequiredProperty(descriptionP).getObject().toString();
+        Statement descriptionS = test.getProperty(descriptionP);
+        String description = (descriptionS == null) ? "no description" : descriptionS.getObject().toString();
         String status = test.getRequiredProperty(statusP).getObject().toString();
         logger.debug("WG test " + test.getURI() + " - " + status);
+        if (! status.equals("APPROVED")) {
+            return true;
+        }
         
         // Skip the test designed for only non-datatype aware processors
         for (int i = 0; i < blockedTests.length; i++) {
@@ -233,19 +251,37 @@ public class WGReasonerTester {
         
         // Check the results against the official conclusions
         boolean correct = true;
+        boolean noisy = !(baseDir.equals(DEFAULT_BASE_DIR));
         if (testType.equals(PositiveEntailmentTest)) {
             if (conclusions == null) {
                 // Check that the result is flagged as semantically invalid
                 correct = ! graph.validate().isValid();
+                if (noisy) {
+                    System.out.println("PositiveEntailmentTest of FalseDoc " + test.getURI() + (correct ? " - OK" : " - FAIL"));
+                }
             } else {
                 correct = testConclusions(conclusions.getGraph(), result.getGraph());
                 if (!graph.validate().isValid()) {
                     correct = false;
                 }
+                if (noisy) {
+                    System.out.println("PositiveEntailmentTest " + test.getURI() + (correct ? " - OK" : " - FAIL"));
+                }
             }
         } else {
             // A negative entailment check
-            correct = !testConclusions(conclusions.getGraph(), result.getGraph());
+            if (conclusions == null) {
+                // Check the result is not flagged as invalid
+                correct = graph.validate().isValid();
+                if (noisy) {
+                    System.out.println("NegativentailmentTest of FalseDoc " + test.getURI() + (correct ? " - OK" : " - FAIL"));
+                }
+            } else {
+                correct = !testConclusions(conclusions.getGraph(), result.getGraph());
+                if (noisy) {
+                    System.out.println("NegativeEntailmentTest " + test.getURI() + (correct ? " - OK" : " - FAIL"));
+                }
+            }
         }
 
         // Debug output on failure
