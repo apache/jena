@@ -61,6 +61,14 @@ In addition, the existing <i>add(Model)</i> and <i>remove(Model)</i>
 implementations have been modified to use the bulk update interface if
 possible.
 
+<h1>Exceptions</h1>
+
+The root of the Jena exception hierarchy is now
+<i>com.hp.hpl.jena.shared.JenaException</i>. <i>RDFException</i> still exists
+but will be deprecated and the error-code functionality it provided will be
+replaced by specific sub-classes of JenaException (so that they may be
+specifically caught).
+
 <h1>inference support</h1>
 
 [To Be Done]
@@ -86,6 +94,22 @@ of the interface that is being converted to.
 
 The boolean method <i>canAs(Class)</i> returns true iff it's possible
 to convert this resource to one of the given class.
+
+<h1>aModel.executeTransactionIn(Command cmd)</h1>
+
+This new method executes the Command [defined in
+<strong>com.hp.hpl.jena.shared</strong>] within a new transaction. If the
+command fails (ie, throws an exception), then the transaction is aborted;
+otherwise it is committed. This operation is built on the transaction
+primitives.
+
+<h1>Resource.visitWith(RDFVisitor rv)</h1>
+
+An RDFVisitor defines visitURI, visitBlank, and visitLiteral; the appropriate
+one of these is called when visitWith is run. Allows type-dependant decisions
+to be made about what to do to a Node without needing to dance around
+instanceof, and the "essential information" about the node (URI, AnonId, or
+Literal) to be obtained without casting.
 
 <h1>aModel.containsResource(RDFNode r)</h1>
 
