@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:14:30 $
+ * Last modified on   $Date: 2003-07-08 22:51:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.23 2003-06-22 19:14:30 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.24 2003-07-08 22:51:13 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -519,7 +519,8 @@ public class OntClassImpl
      */
     public ExtendedIterator listDeclaredProperties( boolean all ) {
         // decide which model to use, based on whether we want entailments
-        Model m = all ? getModel() : ((OntModel) getModel()).getBaseModel();
+        OntModel mOnt = (OntModel) getModel();
+        Model m = all ? mOnt : mOnt.getBaseModel();
 
         Set supers = new HashSet();
         Set props= new HashSet();
@@ -532,10 +533,7 @@ public class OntClassImpl
         
         // now iterate over the super-classes (all) or just myself (not all)
         for (Iterator i = all ? supers.iterator() : new SingletonIterator(this); i.hasNext(); ) {
-            // TODO - work around a bug in the RDF reasoner
-            //Resource supClass = (Resource) i.next();
-            Object x = i.next();  if (x instanceof Literal) {continue;}
-            Resource supClass = (Resource) x;
+            Resource supClass = (Resource) i.next();
             
             // is this super-class a restriction?
             if (supClass.canAs( Restriction.class )) {
@@ -548,7 +546,7 @@ public class OntClassImpl
                     if (!(r.hasProperty( getProfile().MAX_CARDINALITY(), 0 ) ||
                           r.hasProperty( getProfile().CARDINALITY(), 0))) {
                         // p is a property that can apply to this restriction
-                        props.add( p );
+                        collectProperty( p, props, mOnt );//props.add( p );
                     }
                 }
             }
@@ -567,7 +565,7 @@ public class OntClassImpl
                         }
                         
                         if (domainOK) {
-                            props.add( prop );
+                            collectProperty( (Property) prop.as( Property.class ), props, mOnt );//props.add( prop );
                         }
                         
                         // we must ensure that the iterator is closed, since we may not have reached the end
@@ -578,7 +576,7 @@ public class OntClassImpl
         }
 
         // map each answer value to the appropriate ehnanced node
-        return WrappedIterator.create( props.iterator() ).mapWith( new AsMapper( Property.class ) );
+        return WrappedIterator.create( props.iterator() ).mapWith( new AsMapper( OntProperty.class ) );
     }
 
     
@@ -754,6 +752,13 @@ public class OntClassImpl
     // Internal implementation methods
     //////////////////////////////////
 
+
+    private void collectProperty( Property p, Set props, OntModel m ) {
+        // make sure that the property is attached to the right model
+        props.add( m.getProperty( p.getURI() ) );
+    }
+    
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-22 19:20:44 $
+ * Last modified on   $Date: 2003-07-08 22:51:21 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.20 2003-06-22 19:20:44 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.21 2003-07-08 22:51:21 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -962,6 +962,27 @@ public class TestClassExpression
                     
                         iteratorTest( r0.listDeclaredProperties(), new Object[] {r} );
                     }
+                }
+            },
+            new OntTestCase( "OntClass.listDefinedProperties.notAll", true, true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntClass A = m.createClass( NS + "A" );
+                    OntClass C = m.createClass( NS + "C" );
+                    C.addSuperClass(A);
+                    
+                    OntProperty p = m.createOntProperty( NS + "p" );
+                    OntProperty q = m.createOntProperty( NS + "q" );
+                    OntProperty s = m.createOntProperty( NS + "s" );
+                    
+                    p.setDomain( A );
+                    q.setDomain( A );
+                    s.setDomain( C );
+                    
+                    iteratorTest( C.listDeclaredProperties( true ), new Object[] {p, q, s} );
+                    iteratorTest( C.listDeclaredProperties( false ), new Object[] {s} );
+                    
+                    assertTrue( "declared property should be an ont prop", C.listDeclaredProperties( true ).next() instanceof OntProperty );
+                    assertTrue( "declared property should be an ont prop", C.listDeclaredProperties( false ).next() instanceof OntProperty );
                 }
             },
             
