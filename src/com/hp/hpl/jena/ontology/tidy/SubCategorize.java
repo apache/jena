@@ -1,14 +1,11 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.15 2003-11-25 11:32:44 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.16 2003-11-25 16:01:13 chris-dollin Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
 import java.util.*;
-
-
-import compiler.*;
 
 /**
  * This file is a front-end onto the Grammar.java file.
