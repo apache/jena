@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 12:35:39 $
+ * Last modified on   $Date: 2003-06-21 15:12:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -28,6 +28,7 @@ import com.hp.hpl.jena.graph.query.BindingQueryPlan;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
+import java.io.*;
 import java.util.*;
 
 
@@ -59,7 +60,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.23 2003-06-21 12:35:39 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.24 2003-06-21 15:12:50 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -897,6 +898,153 @@ public interface OntModel
      * executing the queries.
      */
     public ExtendedIterator queryFor( BindingQueryPlan query, List altQueries, Class asKey );
+
+    // output operations
+    
+    /** 
+     * <p>Write the model as an XML document.
+     * It is often better to use an OutputStream rather than a Writer, since this
+     * will avoid character encoding errors.  
+     * <strong>Note:</strong> This method is adapted for the ontology
+     * model to write out only the base model (which contains the asserted data).  To write 
+     * all triples, including imported data and inferred triples, use 
+     * {@link #writeAll{ Writer, String, String }.
+     * </p>
+     * 
+     * @param writer A writer to which the XML will be written
+     * @return this model
+     */
+    public Model write( Writer writer ) ;
+    
+    /** 
+     * <p>Write a serialized represention of a model in a specified language.
+     * It is often better to use an OutputStream rather than a Writer, since this
+     * will avoid character encoding errors.
+     * <strong>Note:</strong> This method is adapted for the ontology
+     * model to write out only the base model (which contains the asserted data).  To write 
+     * all triples, including imported data and inferred triples, use 
+     * {@link #writeAll{ Writer, String, String }.
+     * </p>
+     * <p>The language in which to write the model is specified by the
+     * <code>lang</code> argument.  Predefined values are "RDF/XML",
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * represented by <code>null</code> is "RDF/XML".</p>
+     * @param writer The output writer
+     * @param lang The output language
+     * @return this model
+     */
+    public Model write( Writer writer, String lang ) ;
+
+    /** 
+     * <p>Write a serialized represention of a model in a specified language.
+     * It is often better to use an OutputStream rather than a Writer,
+     * since this will avoid character encoding errors.
+     * <strong>Note:</strong> This method is adapted for the ontology
+     * model to write out only the base model (which contains the asserted data).  To write 
+     * all triples, including imported data and inferred triples, use 
+     * {@link #writeAll{ Writer, String, String }.
+     * </p>
+     * <p>The language in which to write the model is specified by the
+     * <code>lang</code> argument.  Predefined values are "RDF/XML",
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * represented by <code>null</code>, is "RDF/XML".</p>
+     * @param writer The output writer
+     * @param base The base uri for relative URI calculations.
+     * <code>null</code> means use only absolute URI's.
+     * @param lang The language in which the RDF should be written
+     * @return this model
+     */
+    public Model write( Writer writer, String lang, String base );
+
+    /** 
+     * <p>Write a serialization of this model as an XML document.
+     * <strong>Note:</strong> This method is adapted for the ontology
+     * model to write out only the base model (which contains the asserted data).  To write 
+     * all triples, including imported data and inferred triples, use 
+     * {@link #writeAll{ OutputStream, String, String }.
+     * </p>
+     * <p>The language in which to write the model is specified by the
+     * <code>lang</code> argument.  Predefined values are "RDF/XML",
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value is
+     * represented by <code>null</code> is "RDF/XML".</p>
+     * @param out The output stream to which the XML will be written
+     * @return This model
+     */
+    public Model write( OutputStream out );
+
+    /** 
+     * <p>Write a serialized represention of this model in a specified language.
+     * <strong>Note:</strong> This method is adapted for the ontology
+     * model to write out only the base model (which contains the asserted data).  To write 
+     * all triples, including imported data and inferred triples, use 
+     * {@link #writeAll{ OutputStream, String, String }.
+     * </p>
+     * <p>The language in which to write the model is specified by the
+     * <code>lang</code> argument.  Predefined values are "RDF/XML",
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * represented by <code>null</code>, is "RDF/XML".</p>
+     * @param out The output stream to which the RDF is written
+     * @param lang The output langauge
+     * @return This model
+     */
+    public Model write( OutputStream out, String lang );
+
+    /** 
+     * <p>Write a serialized represention of a model in a specified language.
+     * <strong>Note:</strong> This method is adapted for the ontology
+     * model to write out only the base model (which contains the asserted data).  To write 
+     * all triples, including imported data and inferred triples, use 
+     * {@link #writeAll{ OutputStream, String, String }.
+     * </p>
+     * <p>The language in which to write the model is specified by the
+     * <code>lang</code> argument.  Predefined values are "RDF/XML",
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * represented by <code>null</code>, is "RDF/XML".</p>
+     * @param out The output stream to which the RDF is written
+     * @param base The base uri to use when writing relative URI's. <code>null</code>
+     * means use only absolute URI's.
+     * @param lang The language in which the RDF should be written
+     * @return This model
+     */
+    public Model write( OutputStream out, String lang, String base );
+
+    /** 
+     * <p>Write a serialized represention of all of the contents of the model,
+     * including inferred statements and statements imported from other
+     * documents.  To write only the data asserted in the base model, use
+     * {@link #write( Writer, String, String}. 
+     * It is often better to use an OutputStream rather than a Writer,
+     * since this will avoid character encoding errors.
+     * </p>
+     * <p>The language in which to write the model is specified by the
+     * <code>lang</code> argument.  Predefined values are "RDF/XML",
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * represented by <code>null</code>, is "RDF/XML".</p>
+     * @param writer The output writer
+     * @param base The base uri for relative URI calculations.
+     * <code>null</code> means use only absolute URI's.
+     * @param lang The language in which the RDF should be written
+     * @return This model
+     */
+    public Model writeAll( Writer writer, String lang, String base );
+    
+    /** 
+     * <p>Write a serialized represention of all of the contents of the model,
+     * including inferred statements and statements imported from other
+     * documents.  To write only the data asserted in the base model, use
+     * {@link #write( OutputStream, String, String}. 
+     * </p>
+     * <p>The language in which to write the model is specified by the
+     * <code>lang</code> argument.  Predefined values are "RDF/XML",
+     * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value,
+     * represented by <code>null</code>, is "RDF/XML".</p>
+     * @param out The output stream to which the RDF is written
+     * @param base The base uri to use when writing relative URI's. <code>null</code>
+     * means use only absolute URI's.
+     * @param lang The language in which the RDF should be written
+     * @return This model
+     */
+    public Model writeAll( OutputStream out, String lang, String base );
 
 }
 

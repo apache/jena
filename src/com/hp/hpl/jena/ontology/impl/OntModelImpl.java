@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.30 $
+ * Revision           $Revision: 1.31 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 12:35:38 $
+ * Last modified on   $Date: 2003-06-21 15:12:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.30 2003-06-21 12:35:38 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.31 2003-06-21 15:12:50 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1399,6 +1399,24 @@ public class OntModelImpl
         // map each answer value to the appropriate ehnanced node
         return mainQuery.mapWith( new SubjectNodeAs( asKey ) );
     }
+    
+    // output operations - delegate to base model
+    
+    public Model write( Writer writer )                             { return getBaseModel().write( writer ); }
+    public Model write( Writer writer, String lang )                { return getBaseModel().write( writer, lang ); }
+    public Model write( Writer writer, String lang, String base )   { return getBaseModel().write( writer, lang, base ); }
+    public Model write( OutputStream out )                          { return getBaseModel().write( out ); }
+    public Model write( OutputStream out, String lang )             { return getBaseModel().write( out, lang ); }
+    public Model write( OutputStream out, String lang, String base) { return getBaseModel().write( out, lang, base ); }
+
+    public Model writeAll( Writer writer, String lang, String base ) {
+        return super.write( writer, lang, base );
+    }
+    
+    public Model writeAll( OutputStream out, String lang, String base ) {
+        return super.write( out, lang, base );
+    }
+    
     
     
     // Internal implementation methods
