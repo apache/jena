@@ -1,33 +1,7 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2001, 2002
- *  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
-
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- *
- * WGTestSuite.java
- *
- * Created on November 28, 2001, 10:00 AM
+    (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+    [See end of file]
+    $Id: WGTestSuite.java,v 1.10 2003-06-17 12:25:04 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -139,7 +113,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         });
         behaviours
             .put(new ResourceImpl(testNS + "NegativeParserTest"), new Act() {
-            public void act(Resource r) throws RDFException {
+            public void act(Resource r)  {
                 //		if (r.getProperty(status).getString().equals(approved))
                 addTest(r, new NegativeTest(r));
             }
@@ -262,7 +236,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     }
 
     private Map parts = new HashMap();
-    private void addTest(Resource key, TestCase test) throws RDFException {
+    private void addTest(Resource key, TestCase test)  {
         String keyName =
             key.hasProperty(status)
                 ? key.getProperty(status).getString()
@@ -282,7 +256,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     final static String errorLevelName[] =
         new String[] { "warning", "error", "fatal error" };
     interface Act {
-        void act(Resource r) throws RDFException;
+        void act(Resource r) ;
     }
     abstract class Test extends TestCase implements RDFErrorHandler {
         Resource testID;
@@ -310,7 +284,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 return "Unrecognized file type: " + t;
             }
         }
-        Model read(Property p) throws RDFException, IOException {
+        Model read(Property p) throws IOException {
             Resource file = testID.getProperty(p).getResource();
             Resource t = file.getProperty(RDF.type).getResource();
             String uri = file.getURI();
@@ -378,7 +352,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         String createMe() {
             return createURI() + "," + create(input) + "," + create(output);
         }
-        PositiveTest(Resource nm) throws RDFException {
+        PositiveTest(Resource nm)  {
             super(nm);
             expectedLevel = -1;
         }
@@ -396,7 +370,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 fail(e.getMessage());
             }
         }
-        void initExpected() throws RDFException {
+        void initExpected()  {
             expected = new HashSet();
         }
     }
@@ -410,11 +384,11 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 + ","
                 + createExpected();
         }
-        WarningTest(Resource nm) throws RDFException {
+        WarningTest(Resource nm)  {
             super(nm);
             expectedLevel = 0;
         }
-        void initExpected() throws RDFException {
+        void initExpected()  {
             initExpectedFromModel();
         }
     }
@@ -436,11 +410,11 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         String createMe() {
             return createURI() + "," + create(input) + "," + createExpected();
         }
-        NegativeTest(Resource nm) throws RDFException {
+        NegativeTest(Resource nm)  {
             super(nm);
             initExpected();
         }
-        void save(Property p) throws RDFException {
+        void save(Property p)  {
             if (factory.savable()) {
                 String uri = testID.getProperty(p).getResource().getURI();
                 int suffix = uri.lastIndexOf('.');
@@ -455,7 +429,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 }
             }
         }
-        void initExpectedFromModel() throws RDFException {
+        void initExpectedFromModel()  {
             StmtIterator si = testID.listProperties(errorCodes);
             if (si.hasNext()) {
                 expected = new HashSet();
@@ -466,7 +440,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 }
             }
         }
-        void initExpected() throws RDFException {
+        void initExpected()  {
             initExpectedFromModel();
         }
         protected void runTest() {
@@ -672,7 +646,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 fail(e.getMessage());
             }
         }
-        void initExpected() throws RDFException {
+        void initExpected()  {
             expected = new HashSet();
         }
     }
@@ -704,7 +678,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             initExpected(errs);
         }
         /*
-        void save(Property p) throws RDFException {
+        void save(Property p)  {
             if (factory.savable()) {
                 String uri = testID.getProperty(p).getResource().getURI();
                 int suffix = uri.lastIndexOf('.');
@@ -841,3 +815,34 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         return new NegativeTest2(uri, in, intype, e);
     }
 }
+/*
+ *  (c) Copyright Hewlett-Packard Company 2001-2003
+ *  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ *
+ * WGTestSuite.java
+ *
+ * Created on November 28, 2001, 10:00 AM
+ */

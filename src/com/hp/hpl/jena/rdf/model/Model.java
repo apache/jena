@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.21 2003-06-16 13:40:13 ian_dickinson Exp $
+  $Id: Model.java,v 1.22 2003-06-17 12:25:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.21 $Date: 2003/05/23 15:02:59 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.22 $Date: 2003/06/16 13:40:13 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -67,29 +67,29 @@ public interface Model
 
 	/** (Unwise) Computes the number of statements in the model.
 	 * Many implementations cannot do this efficiently.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 * @return the number of statements in the model
 	 */
-	long size() throws RDFException;
+	long size() ;
 
 	// @deprecated Too difficult to implement scalably.
 	/** List all resources which are subjects of statements.
 	 *
 	 * <p>Subsequent operations on those resource may modify this model.</p>
-	 * @throws RDFException Generic RDF Exception
+	 
 	 * @return an iterator over a set of resources which are subjects of statements
 	 *         in the model.
 	 * 
 	 */
-	ResIterator listSubjects() throws RDFException;
+	ResIterator listSubjects() ;
 
 	//* @deprecated Too difficult to implement scalably.
 	/** List all namespaces of predicates in the model.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 * @return an iterator over the set of namespaces associated with predicates in 
 	 *         the model.
 	 */
-	NsIterator listNameSpaces() throws RDFException;
+	NsIterator listNameSpaces() ;
 
     /**
         Answer an iterator over all the bindings implied by the query model.
@@ -108,9 +108,9 @@ public interface Model
 	 * <CODE>createResource</CODE> instead.</p>
 	 * @return a resource instance
 	 * @param uri the URI of the resource
-	 * @throws RDFException Generic RDF exception.
+	 .
 	 */
-	Resource getResource(String uri) throws RDFException;
+	Resource getResource(String uri) ;
 
 	/** Return a Property instance in this model.
 	 *
@@ -123,19 +123,19 @@ public interface Model
 	 * @return a property linked to this model
 	 * @param nameSpace the RDF namespace of the property
 	 * @param localName the localName of the property in its namespace
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
 	Property getProperty(String nameSpace, String localName)
-		throws RDFException;
+		;
 
 	/** Create a new anonymous resource.
 	 *
 	 * <p> Subsequent operations on the returned resource may modify this model.
 	 * </p>
-	 * @throws RDFException Generic RDF exception.
+	 .
 	 * @return a new anonymous resource linked to this model.
 	 */
-	public Resource createResource() throws RDFException;
+	public Resource createResource() ;
 
     /**
         create a blank node resource with a specified identifier/
@@ -150,10 +150,10 @@ public interface Model
 	 * <p> Subsequent operations on the returned resource may modify this model.
 	 * </p>
 	 * @param uri the URI of the resource to be created
-	 * @throws RDFException Generic RDF exception.
+	 .
 	 * @return a new resource linked to this model.
 	 */
-	public Resource createResource(String uri) throws RDFException;
+	public Resource createResource(String uri) ;
 
 	/** Create a property.
 	 *
@@ -161,11 +161,11 @@ public interface Model
 	 * </p>
 	 * @param nameSpace the nameSpace of the property
 	 * @param localName the name of the property within its namespace
-	 * @throws RDFException Generic RDF exception
+	 
 	 * @return a property instance
 	 */
 	public Property createProperty(String nameSpace, String localName)
-		throws RDFException;
+		;
 
 	/** Create a literal from a String value with a specified language.
 	 *
@@ -173,12 +173,12 @@ public interface Model
 	 *
 	 * @param v the value of the literal
 	 * @param language the language associated with the literal
-	 * @throws RDFException generic RDF exception
+	 
 	 * @return a new literal representing the value v with the given language
 	 */
 
 	public Literal createLiteral(String v, String language)
-		throws RDFException;
+		;
 
 	/** Create a literal from a String value with a specified language.
 	 *
@@ -187,11 +187,11 @@ public interface Model
 	 * @param v the value of the literal
 	 * @param language the language associated with the literal
 	 * @param wellFormed true if the Literal is well formed XML
-	 * @throws RDFException generic RDF exception
+	 
 	 * @return a new literal representing the value v with the given language
 	 */
 	public Literal createLiteral(String v, String language, boolean wellFormed)
-		throws RDFException;
+		;
 
         /**
          * Build a typed literal from its lexical form. The
@@ -204,7 +204,7 @@ public interface Model
          * @throws DatatypeFormatException if lex is not a legal form of dtype
          */
         public Literal createTypedLiteral(String lex, String lang, RDFDatatype dtype) 
-                                            throws RDFException;
+                                            ;
         
         /**
          * Build a typed literal from its value form.
@@ -232,11 +232,11 @@ public interface Model
 	 * @param s the subject of the statement
 	 * @param p the predicate of the statement
 	 * @param o the object of the statement
-	 * @throws RDFException generic RDF exception
+	 
 	 * @return the new statement
 	 */
 	public Statement createStatement(Resource s, Property p, RDFNode o)
-		throws RDFException;
+		;
 
     /**
      * <p>Answer a new empty list. This is equivalent to a list consisting only 
@@ -265,9 +265,9 @@ public interface Model
 	/** Add a statement to this model.
 	 * @return This model.
 	 * @param s The statement to be added.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Model add(Statement s) throws RDFException;
+	Model add(Statement s) ;
     
     /**
         Add all the statements to the Model, using through the bulk update interface.
@@ -304,33 +304,33 @@ public interface Model
 	/** Add all the statements returned by an iterator to this model.
 	 * @return this model
 	 * @param iter An iterator which returns the statements to be added.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Model add(StmtIterator iter) throws RDFException;
+	Model add(StmtIterator iter) ;
 
 	/** Add all the statements in another model to this model.
 	 * @return this model
 	 * @param m The model whose statements are to be added.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Model add(Model m) throws RDFException;
+	Model add(Model m) ;
 
 	/** Add the RDF statements from an XML document.
 	 *
 	 * <p>See {@link Model} for a description of how to traverse a firewall.</p>
 	 * @return this model
 	 * @param url of the document containing the RDF statements.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	public Model read(String url) throws RDFException;
+	public Model read(String url) ;
 
 	/** Add statements from an RDF/XML serialization.
 	 * @param in the source of the RDF/XML
 	 * @param base the base to use when converting relative to absolute uri's
-	 * @throws RDFException a generic RDF exception
+	 * @ a generic RDF exception
 	 * @return the current model
 	 */
-	public Model read(InputStream in, String base) throws RDFException;
+	public Model read(InputStream in, String base) ;
 
 	/** Add RDF statements represented in language <code>lang</code> to the model.
 	 * <br />Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE"
@@ -344,10 +344,10 @@ public interface Model
 	 * @param lang the langauge of the serialization <code>null<code>
 	 * selects the default
 	 * @param in the source of the input serialization
-	 * @throws RDFException generic exception
+	 * @ generic exception
 	 */
 	public Model read(InputStream in, String base, String lang)
-		throws RDFException;
+		;
 	
     /** Using this method is often a mistake.
 	 * Add statements from an RDF/XML serialization.
@@ -357,10 +357,10 @@ public interface Model
      * character encoding of the data in the file.
 	 * @param reader the source of the RDF/XML
 	 * @param base the base to use when converting relative to absolute uri's
-	 * @throws RDFException a generic RDF exception
+	 * @ a generic RDF exception
 	 * @return the current model
 	 */
-	public Model read(Reader reader, String base) throws RDFException;
+	public Model read(Reader reader, String base) ;
 	
 	/** 
 	 * Add statements from a serializion in language <code>lang</code> to the
@@ -373,10 +373,10 @@ public interface Model
 	 * <p>See {@link Model} for a description of how to traverse a firewall.</p>
 	 * @param url a string representation of the url to read from
 	 * @param lang the language of the serialization
-	 * @throws RDFException generic RDF exception
+	 
 	 * @return this model
 	 */
-	public Model read(String url, String lang) throws RDFException;
+	public Model read(String url, String lang) ;
 
 	/** Using this method is often a mistake.
 	 * Add RDF statements represented in language <code>lang</code> to the model.
@@ -395,10 +395,10 @@ public interface Model
 	 * @param lang the langauge of the serialization <code>null<code>
 	 * selects the default
 	 * @param reader the source of the input serialization
-	 * @throws RDFException generic exception
+	 * @ generic exception
 	 */
 	public Model read(Reader reader, String base, String lang)
-		throws RDFException;
+		;
 	
 	/** Write the model as an XML document.
 	*It is often better to use an OutputStream rather than a Writer, since this
@@ -407,9 +407,9 @@ public interface Model
 	 * 
 	 * @return this model
 	 * @param writer a writer to which the XML will be written
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	public Model write(Writer writer) throws RDFException;
+	public Model write(Writer writer) ;
 	
 	/** Write a serialized represention of a model in a specified language.
 	 *It is often better to use an OutputStream rather than a Writer, since this
@@ -421,10 +421,10 @@ public interface Model
 	 * represented by <code>null<code> is "RDF/XML".</p>
 	 * @param writer the output writer
 	 * @param lang the output langauge
-	 * @throws RDFException generic exception
+	 * @ generic exception
 	 * @return this model
 	 */
-	public Model write(Writer writer, String lang) throws RDFException;
+	public Model write(Writer writer, String lang) ;
 // @deprecated
 
 	/** Write a serialized represention of a model in a specified language.
@@ -438,11 +438,11 @@ public interface Model
 	 * @param base the base uri for relative URI calculations.
 	 * <code>null</code> means use only absolute URI's.
 	 * @param lang the language in which the RDF should be written
-	 * @throws RDFException generic RDF exception
+	 
 	 * @return this model
 	 */
 	public Model write(Writer writer, String lang, String base)
-		throws RDFException;
+		;
 	
 
 	/** Write the model as an XML document.
@@ -454,9 +454,9 @@ public interface Model
 	 *
 	 * @return this model
 	 * @param out to which the XML will be written
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	public Model write(OutputStream out) throws RDFException;
+	public Model write(OutputStream out) ;
 
 	/** write a serialized represention of a model in a specified language.
 	 *
@@ -466,10 +466,10 @@ public interface Model
 	 * represented by <code>null<code> is "RDF/XML".</p>
 	 * @param out where the RDF is written
 	 * @param lang the output langauge
-	 * @throws RDFException generic exception
+	 * @ generic exception
 	 * @return this model
 	 */
-	public Model write(OutputStream out, String lang) throws RDFException;
+	public Model write(OutputStream out, String lang) ;
 
 	/** write a serialized represention of a model in a specified language.
 	 *
@@ -481,11 +481,11 @@ public interface Model
 	 * @param base The base uri for relative URI calculations. <code>null</code>
 	 * means use only absolute URI's.
 	 * @param lang the language in which the RDF should be written
-	 * @throws RDFException generic RDF exception
+	 
 	 * @return this model
 	 */
 	public Model write(OutputStream out, String lang, String base)
-		throws RDFException;
+		;
 
 	/** Removes a statement.
 	 *
@@ -493,9 +493,9 @@ public interface Model
 	 *     that supplied will be removed from the model.</p>
 	 * @return this model
 	 * @param s The statement to be removed.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Model remove(Statement s) throws RDFException;
+	Model remove(Statement s) ;
 
 	/** Return a statement with given subject and property.
 	 *  <p>If more than one statement witht the given subject and property
@@ -503,47 +503,47 @@ public interface Model
 	 * @return A statement from the model with the given subject and property.
 	 * @param s The subject of the statement to be returned.
 	 * @param p The property of the statement to be returned.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Statement getProperty(Resource s, Property p) throws RDFException;
+	Statement getProperty(Resource s, Property p) ;
 
 	/** List all subjects with a given property.
 	 * @return an iterator over the subjects
 	 * @param p the property sought.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	ResIterator listSubjectsWithProperty(Property p) throws RDFException;
+	ResIterator listSubjectsWithProperty(Property p) ;
 
 	/** List all subjects with a given property and property value
 	 * @return an iterator over the subjects
 	 * @param p The predicate sought
 	 * @param o The value sought
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
 	ResIterator listSubjectsWithProperty(Property p, RDFNode o)
-		throws RDFException;
+		;
 
 	/** List all objects in a model.
 	 * @return an iterator over the objects
 	 * @param p The predicate sought
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	NodeIterator listObjects() throws RDFException;
+	NodeIterator listObjects() ;
 
 	/** List all objects of a given property.
 	 * @return an iterator over the objects
 	 * @param p The predicate sought
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	NodeIterator listObjectsOfProperty(Property p) throws RDFException;
+	NodeIterator listObjectsOfProperty(Property p) ;
 
 	/** List the values of a property of a resource.
 	 * @return an iterator over the objects
 	 * @param p The predicate sought
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
 	NodeIterator listObjectsOfProperty(Resource s, Property p)
-		throws RDFException;
+		;
 
 	/** Determine whether this model contains any statements with a given subject
 	 *  and property.
@@ -551,9 +551,9 @@ public interface Model
 	 * subject s and property p, false otherwise
 	 * @param s The subject sought.
 	 * @param p The predicate sought.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	boolean contains(Resource s, Property p) throws RDFException;
+	boolean contains(Resource s, Property p) ;
     
     /**
         determine if the RDFNode r appears in any statement of this model.
@@ -571,53 +571,53 @@ public interface Model
 	 * @param s The subject of the statment tested.
 	 * @param p The predicate of the statement tested.
 	 * @param o The object of the statement tested.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	boolean contains(Resource s, Property p, RDFNode o) throws RDFException;
+	boolean contains(Resource s, Property p, RDFNode o) ;
 
 	/** Determine if a statement is present in this model.
 	 * @param s The statement tested.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 * @return true if the statement s is in this model, false otherwise
 	*/
-	boolean contains(Statement s) throws RDFException;
+	boolean contains(Statement s) ;
 
 	/** Determine if any of the statements returned by an iterator are
 	 * contained in this model.
 	 * @param iter an iterator of the statements to be tested
-	 * @throws RDFException Generic RDF Exception
+	 
 	 * @return true if any of the statements returns by iter are contained
 	 *         in this model and false otherwise.
 	*/
-	boolean containsAny(StmtIterator iter) throws RDFException;
+	boolean containsAny(StmtIterator iter) ;
 
 	/** Determine if all of the statements returned by an iterator are
 	 * contained in this model.
 	 * @param iter an iterator of the statements to be tested
-	 * @throws RDFException Generic RDF Exception
+	 
 	 * @return true if any of the statements returns by iter are contained
 	 *         in this model and false otherwise.
 	*/
-	boolean containsAll(StmtIterator iter) throws RDFException;
+	boolean containsAll(StmtIterator iter) ;
 
 	// ModelPersonality getPersonality();
 	/** Determine if any of the statements in a model are also contained
 	 *  in this model.
 	 * @param model the model containing the statements to be tested
-	 * @throws RDFException Generic RDF Exception
+	 
 	 * @return true if any of the statements in model are also contained
 	 *         in this model and false otherwise.
 	*/
-	boolean containsAny(Model model) throws RDFException;
+	boolean containsAny(Model model) ;
 
 	/** Determine if all of the statements in a model are also contained
 	 *  in this model.
 	 * @param model the model containing the statements to be tested
-	 * @throws RDFException Generic RDF Exception
+	 
 	 * @return true if all of the statements in model are also contained
 	 *         in this model and false otherwise.
 	*/
-	boolean containsAll(Model model) throws RDFException;
+	boolean containsAll(Model model) ;
 
 	/** 
         Determine if this Statement has been reified in this Model.
@@ -647,10 +647,10 @@ public interface Model
     /** List all statements.
      *
      *  <p>Subsequent operations on those statements may modify this model.</p>
-     * @throws RDFException Generic RDF Exception
+     
      * @return an iterator over all statements in the model.
      */
-    StmtIterator listStatements() throws RDFException;
+    StmtIterator listStatements() ;
 
 	/** List the statements matching a selector.
 	 *
@@ -658,9 +658,9 @@ public interface Model
 	 * of s returns true when called on s.</p>
 	 * @return an iterator over the matching statements
 	 * @param s A selector object.
-	 * @throws RDFException Generic RDF exception.
+	 .
 	 */
-	StmtIterator listStatements(Selector s) throws RDFException;
+	StmtIterator listStatements(Selector s) ;
     /** Find all the statements matching a pattern.
      * <p>Return an iterator over all the statements in a model
      *  that match a pattern.  The statements selected are those
@@ -672,7 +672,7 @@ public interface Model
      * @param subject   The subject sought
      * @param predicate The predicate sought
      * @param object    The value sought
-     * @throws RDFException Generic RDF Exception
+     
      */ 
     
     StmtIterator listStatements( Resource s, Property p, RDFNode o );
@@ -709,35 +709,35 @@ public interface Model
 	 * of s returns true when called on s.</p>
 	 * @return an iterator over the matching statements
 	 * @param s A selector object.
-	 * @throws RDFException Generic RDF exception.
+	 .
 	 */
-	Model query(Selector s) throws RDFException;
+	Model query(Selector s) ;
 
 	/** Create a new model containing all the statements in this model 
 	 * together with all of those in another given model.
 	 * @return A new model containing all the statements that are in either model
 	 * @param model The other model whose statements are to be included.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Model union(Model model) throws RDFException;
+	Model union(Model model) ;
 
 	/** Create a new model containing all the statements which are in both
 	 * this model and another.  As models are sets of statements, a statement
 	 * contained in both models will only appear once in the resulting model.
 	 * @return A new model containing all the statements that are in both models.
 	 * @param model The other model.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Model intersection(Model model) throws RDFException;
+	Model intersection(Model model) ;
 
 	/** Create a new model containing all the statements in this model which
 	 * are not in another.
 	 * @return a new model containing all the statements in this model that
 	 *         are not in the given model.
 	 * @param model the other model whose statements are to be excluded.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Model difference(Model model) throws RDFException;
+	Model difference(Model model) ;
 
 	/** Test whether one model is the equal to another.
      * Two Models  are equal iff the underlying graphs are identical Java
@@ -752,21 +752,21 @@ public interface Model
 	 * <p> All changes made to a model within a transaction, will either
 	 * be made, or none of them will be made.</p>
 	 * @return this model to enable cascading.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Model begin() throws RDFException;
+	Model begin() ;
 
 	/** Abort the current transaction and abandon any changes in progress.
 	 * @return this model to enable cascading.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Model abort() throws RDFException;
+	Model abort() ;
 
 	/** Commit the current transaction.
 	 * @return this model to enable cascading.
-	 * @throws RDFException Generic RDF Exception
+	 
 	 */
-	Model commit() throws RDFException;
+	Model commit() ;
     
     /**
         Execute the command <code>cmd</code> inside a transaction. If it
@@ -861,5 +861,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.21 2003-06-16 13:40:13 ian_dickinson Exp $
+ * $Id: Model.java,v 1.22 2003-06-17 12:25:04 chris-dollin Exp $
  */

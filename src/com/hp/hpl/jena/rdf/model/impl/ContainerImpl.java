@@ -42,7 +42,7 @@ import com.hp.hpl.jena.shared.*;
  *  A base class on which the other containers are built.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-06-13 15:28:36 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-17 12:25:06 $'
  */
 public class ContainerImpl extends ResourceImpl
                            implements Container, ContainerI {
@@ -85,92 +85,92 @@ public class ContainerImpl extends ResourceImpl
     public boolean isSeq() {
         return is(RDF.Seq);
     }
-    public Container add(RDFNode n) throws RDFException {
+    public Container add(RDFNode n)  {
         int i = size();
         addProperty(RDF.li(i+1), n);
         return this;
     } 
     
-    public Container add(boolean o) throws RDFException {
+    public Container add(boolean o)  {
         return add( String.valueOf( o ) );
     }
     
-    public Container add(long o) throws RDFException {
+    public Container add(long o)  {
         return add( String.valueOf( o ) );
     }
     
-    public Container add(char o) throws RDFException {
+    public Container add(char o)  {
         return add( String.valueOf( o ) );
     }
     
-    public Container add(float o) throws RDFException {
+    public Container add(float o)  {
         return add( String.valueOf( o ) );
     }
     
-    public Container add(double o) throws RDFException {
+    public Container add(double o)  {
         return add( String.valueOf( o ) );
     }
 
-    public Container add(Object o) throws RDFException {
+    public Container add(Object o)  {
         return add( String.valueOf( o ) );
     }
      
-    public Container add(String o) throws RDFException {
+    public Container add(String o)  {
         return add( o, "" );
     }
     
-    public Container add(String o, String l) throws RDFException {
+    public Container add(String o, String l)  {
         return add( literal( o, l ) );
     }
     
-    public boolean contains(RDFNode n) throws RDFException {
+    public boolean contains(RDFNode n)  {
         return ((ModelI)getModel()).containerContains(this, n);
     }
 
-    public boolean contains(boolean o) throws RDFException {
+    public boolean contains(boolean o)  {
         return contains( String.valueOf( o ) );
     }
 
-    public boolean contains(long o) throws RDFException {
+    public boolean contains(long o)  {
         return contains( String.valueOf( o ) );
     }
 
-    public boolean contains(char o) throws RDFException {
+    public boolean contains(char o)  {
         return contains( String.valueOf( o ) );
     }
 
-    public boolean contains(float o) throws RDFException {
+    public boolean contains(float o)  {
         return contains( String.valueOf( o ) );
     }
 
-    public boolean contains(double o) throws RDFException {
+    public boolean contains(double o)  {
         return contains( String.valueOf( o ) );
     }
 
-    public boolean contains(Object o) throws RDFException {
+    public boolean contains(Object o)  {
         return contains( String.valueOf( o ) );
     }
     
-    public boolean contains(String o) throws RDFException {
+    public boolean contains(String o)  {
         return contains( o, "" );
     }
     
-    public boolean contains( String o, String l ) throws RDFException {
+    public boolean contains( String o, String l )  {
         return contains( literal( o, l ) );
     }
 
     private Literal literal( String s, String lang )
         { return new LiteralImpl( Node.createLiteral( s, lang, false ), (Model) getModel() ); }
             
-    public NodeIterator iterator() throws RDFException {
+    public NodeIterator iterator()  {
         return ((ModelI)getModel()).listContainerMembers(this, iteratorFactory);
     }
         
-    public int size() throws RDFException {
+    public int size()  {
         return ((ModelI)getModel()).containerSize(this);
     }
     
-    public Container remove(Statement s) throws RDFException {
+    public Container remove(Statement s)  {
         int size = size();
         Statement last = null;
         if (s.getPredicate().getOrdinal() == size) {       // if last
@@ -185,7 +185,7 @@ public class ContainerImpl extends ResourceImpl
         return this;
     }
     
-    public Container remove(int index, RDFNode object) throws RDFException {
+    public Container remove(int index, RDFNode object)  {
         remove(getModel().createStatement(this, RDF.li(index), object));
         return this;
     }

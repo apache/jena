@@ -60,7 +60,7 @@ package com.hp.hpl.jena.rdf.model;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-04 19:25:01 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-17 12:25:04 $'
  */
 public interface Seq extends Container {
     
@@ -70,10 +70,10 @@ public interface Seq extends Container {
      * have their index increased by one.</p>
      * @param index The index of the new member,
      * @param o The member to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading of method calls.
      */
-    public Seq add(int index, RDFNode o) throws RDFException;
+    public Seq add(int index, RDFNode o) ;
     
     /** Insert a new member into the sequence at the specified position.
      *
@@ -81,10 +81,10 @@ public interface Seq extends Container {
      * have their index increased by one.</p>
      * @param index The index of the new member,
      * @param o The member to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading of method calls.
      */
-    public Seq add(int index, boolean o) throws RDFException;
+    public Seq add(int index, boolean o) ;
     
     /** Insert a new member into the sequence at the specified position.
      *
@@ -92,10 +92,10 @@ public interface Seq extends Container {
      * have their index increased by one.</p>
      * @param index The index of the new member,
      * @param o The member to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading of method calls.
      */
-    public Seq add(int index, long o) throws RDFException;
+    public Seq add(int index, long o) ;
     
     /** Insert a new member into the sequence at the specified position.
      *
@@ -103,10 +103,10 @@ public interface Seq extends Container {
      * have their index increased by one.</p>
      * @param index The index of the new member,
      * @param o The member to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading of method calls.
      */
-    public Seq add(int index, char o) throws RDFException;
+    public Seq add(int index, char o) ;
     
     /** Insert a new member into the sequence at the specified position.
      *
@@ -114,10 +114,10 @@ public interface Seq extends Container {
      * have their index increased by one.</p>
      * @param index The index of the new member,
      * @param o The member to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading of method calls.
      */
-    public Seq add(int index, float o) throws RDFException;
+    public Seq add(int index, float o) ;
     
     /** Insert a new member into the sequence at the specified position.
      *
@@ -125,10 +125,10 @@ public interface Seq extends Container {
      * have their index increased by one.</p>
      * @param index The index of the new member,
      * @param o The member to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading of method calls.
      */
-    public Seq add(int index, double o) throws RDFException;
+    public Seq add(int index, double o) ;
     
     /** Insert a new member into the sequence at the specified position.
      *
@@ -136,10 +136,10 @@ public interface Seq extends Container {
      * have their index increased by one.</p>
      * @param index The index of the new member,
      * @param o The member to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading of method calls.
      */
-    public Seq add(int index, String o) throws RDFException;
+    public Seq add(int index, String o) ;
     
     /** Insert a new member into the sequence at the specified position.
      *
@@ -148,10 +148,10 @@ public interface Seq extends Container {
      * @param index The index of the new member,
      * @param o The member to be added.
      * @param l the langauge of the value added
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading of method calls.
      */
-    public Seq add(int index, String o, String l) throws RDFException;
+    public Seq add(int index, String o, String l) ;
     
     /** Insert a new member into the sequence at the specified position.
      *
@@ -159,90 +159,90 @@ public interface Seq extends Container {
      * have their index increased by one.</p>
      * @param index The index of the new member,
      * @param o The member to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading of method calls.
      */
-    public Seq add(int index, Object o) throws RDFException;
+    public Seq add(int index, Object o) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public boolean getBoolean(int index) throws RDFException;
+    public boolean getBoolean(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public byte getByte(int index) throws RDFException;
+    public byte getByte(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public short getShort(int index) throws RDFException;
+    public short getShort(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public int getInt(int index) throws RDFException;
+    public int getInt(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public long getLong(int index) throws RDFException;
+    public long getLong(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public char getChar(int index) throws RDFException;
+    public char getChar(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public float getFloat(int index) throws RDFException;
+    public float getFloat(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public double getDouble(int index) throws RDFException;
+    public double getDouble(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public String getString(int index) throws RDFException; 
+    public String getString(int index) ; 
     
     /** Get the language of the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public String getLanguage(int index) throws RDFException;
+    public String getLanguage(int index) ;
     
     /** Get the member at a given index.
      *
@@ -250,9 +250,9 @@ public interface Seq extends Container {
      * @return The member at the given index.
      * @param index The index of the required member.
      * @param f A factory object used to create the returned object.
-     * @throws RDFException Generic RDF exception.
+     .
      */
-    public Object getObject(int index, ObjectF f) throws RDFException;
+    public Object getObject(int index, ObjectF f) ;
     
     /** Get the member at a given index.
      *
@@ -260,67 +260,67 @@ public interface Seq extends Container {
      * @return The member at the given index.
      * @param index The index of the required member.
      * @param f The factory object used to create the returned object.
-     * @throws RDFException Generic RDF exception.
+     .
      */
-    public Resource getResource(int index, ResourceF f) throws RDFException;
+    public Resource getResource(int index, ResourceF f) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public Literal getLiteral(int index) throws RDFException;
+    public Literal getLiteral(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public Resource  getResource(int index) throws RDFException;
+    public Resource  getResource(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public RDFNode getObject(int index) throws RDFException;
+    public RDFNode getObject(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public Bag getBag(int index) throws RDFException;
+    public Bag getBag(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public Alt getAlt(int index) throws RDFException;
+    public Alt getAlt(int index) ;
     
     /** Get the member at a given index.
      *
      * @param index The index of the required member.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return The member at the given index.
      */
-    public Seq getSeq(int index) throws RDFException;
+    public Seq getSeq(int index) ;
 
     /** Remove the member at the specified index.
      *
      * <p>All other members with a higher index will have their index reduced by
      * one.</p>
      * @param index The index of the member to be removed.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading of method calls.
      */
-    public Seq remove(int index) throws RDFException;
+    public Seq remove(int index) ;
     
     /** Return the index of a given member of the sequence.
      *
@@ -329,11 +329,11 @@ public interface Seq extends Container {
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
      * @param o The member sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return an index of the member in this sequence or 0 if the
      * member is not found in this sequence.
      */
-    public int indexOf(RDFNode o) throws RDFException;
+    public int indexOf(RDFNode o) ;
     
     /** Return the index of a given member of the sequence.
      *
@@ -342,11 +342,11 @@ public interface Seq extends Container {
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
      * @param o The member sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return an index of the member in this sequence or 0 if the
      * member is not found in this sequence.
      */
-    public int indexOf(boolean o) throws RDFException;
+    public int indexOf(boolean o) ;
     
     /** Return the index of a given member of the sequence.
      *
@@ -355,11 +355,11 @@ public interface Seq extends Container {
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
      * @param o The member sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return an index of the member in this sequence or 0 if the
      * member is not found in this sequence.
      */
-    public int indexOf(long o) throws RDFException;
+    public int indexOf(long o) ;
     
     /** Return the index of a given member of the sequence.
      *
@@ -368,11 +368,11 @@ public interface Seq extends Container {
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
      * @param o The member sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return an index of the member in this sequence or 0 if the
      * member is not found in this sequence.
      */
-    public int indexOf(char o) throws RDFException;
+    public int indexOf(char o) ;
     
     /** Return the index of a given member of the sequence.
      *
@@ -381,11 +381,11 @@ public interface Seq extends Container {
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
      * @param o The member sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return an index of the member in this sequence or 0 if the
      * member is not found in this sequence.
      */
-    public int indexOf(float o) throws RDFException;
+    public int indexOf(float o) ;
     
     /** Return the index of a given member of the sequence.
      *
@@ -394,11 +394,11 @@ public interface Seq extends Container {
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
      * @param o The member sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return an index of the member in this sequence or 0 if the
      * member is not found in this sequence.
      */
-    public int indexOf(double o) throws RDFException;
+    public int indexOf(double o) ;
     
     /** Return the index of a given member of the sequence.
      *
@@ -407,11 +407,11 @@ public interface Seq extends Container {
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
      * @param o The member sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return an index of the member in this sequence or 0 if the
      * member is not found in this sequence.
      */
-    public int indexOf(String o) throws RDFException;
+    public int indexOf(String o) ;
     
     /** Return the index of a given member of the sequence.
      *
@@ -421,11 +421,11 @@ public interface Seq extends Container {
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
      * @param o The member sought.
      * @param l the language of the member sought
-     * @throws RDFException Generic RDF exception.
+     .
      * @return an index of the member in this sequence or 0 if the
      * member is not found in this sequence.
      */
-    public int indexOf(String o, String l) throws RDFException;
+    public int indexOf(String o, String l) ;
     
     /** Return the index of a given member of the sequence.
      *
@@ -434,11 +434,11 @@ public interface Seq extends Container {
      *
      * <p>If the member is not found in this sequence, a value of 0 is returned.</p>
      * @param o The member sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return an index of the member in this sequence or 0 if the
      * member is not found in this sequence.
      */
-    public int indexOf(Object o) throws RDFException;
+    public int indexOf(Object o) ;
     
     /** Set the value at a given index in the sequence.
      *
@@ -446,10 +446,10 @@ public interface Seq extends Container {
      * sequence, then an RDFException is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading method calls.
      */
-    public Seq set(int index, RDFNode o) throws RDFException;
+    public Seq set(int index, RDFNode o) ;
     
     /** Set the value at a given index in the sequence.
      *
@@ -457,10 +457,10 @@ public interface Seq extends Container {
      * sequence, then an RDFException is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading method calls.
      */
-    public Seq set(int index, boolean o) throws RDFException;
+    public Seq set(int index, boolean o) ;
     
     /** Set the value at a given index in the sequence.
      *
@@ -468,10 +468,10 @@ public interface Seq extends Container {
      * sequence, then an RDFException is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading method calls.
      */
-    public Seq set(int index, long o) throws RDFException;
+    public Seq set(int index, long o) ;
     
     /** Set the value at a given index in the sequence.
      *
@@ -479,10 +479,10 @@ public interface Seq extends Container {
      * sequence, then an RDFException is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading method calls.
      */
-    public Seq set(int index, char o) throws RDFException;
+    public Seq set(int index, char o) ;
     
     /** Set the value at a given index in the sequence.
      *
@@ -490,10 +490,10 @@ public interface Seq extends Container {
      * sequence, then an RDFException is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading method calls.
      */
-    public Seq set(int index, float o) throws RDFException;
+    public Seq set(int index, float o) ;
     
     /** Set the value at a given index in the sequence.
      *
@@ -501,10 +501,10 @@ public interface Seq extends Container {
      * sequence, then an RDFException is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading method calls.
      */
-    public Seq set(int index, double o) throws RDFException;
+    public Seq set(int index, double o) ;
     
     /** Set the value at a given index in the sequence.
      *
@@ -512,10 +512,10 @@ public interface Seq extends Container {
      * sequence, then an RDFException is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading method calls.
      */
-    public Seq set(int index, String o) throws RDFException;
+    public Seq set(int index, String o) ;
     
     /** Set the value at a given index in the sequence.
      *
@@ -524,10 +524,10 @@ public interface Seq extends Container {
      * @param index The index whose member is to be set.
      * @param o The value to be set.
      * @param l The language of the value set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading method calls.
      */
-    public Seq set(int index, String o, String l) throws RDFException;
+    public Seq set(int index, String o, String l) ;
     
     /** Set the value at a given index in the sequence.
      *
@@ -535,9 +535,9 @@ public interface Seq extends Container {
      * sequence, then an RDFException is raised.</p>
      * @param index The index whose member is to be set.
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this object to enable cascading method calls.
      */
-    public Seq set(int index, Object o) throws RDFException;
+    public Seq set(int index, Object o) ;
 }
 

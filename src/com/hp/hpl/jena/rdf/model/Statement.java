@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001
+ *  (c) Copyright Hewlett-Packard Company 2000-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.graph.Triple;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-05-15 15:31:15 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-06-17 12:25:04 $
  */
 public interface Statement 
 {
@@ -97,11 +97,11 @@ public interface Statement
      * <p>If the object of the statement is not a resource, an exception is
      *  thrown.</p>
      * @param p the property sought
-     * @throws RDFException Generic RDF Exception
+     
      * @return a statement representing an instance of the required
      * property
      */
-    public Statement getProperty(Property p) throws RDFException;
+    public Statement getProperty(Property p) ;
     
     /** Return a property of this statement.
      *
@@ -111,261 +111,261 @@ public interface Statement
      *   model, then it is undefined which is returned.  If no such statement
      *   exists, an exception is thrown.</p>
      * @param p the property sought
-     * @throws RDFException Generic RDF exception
+     
      * @return a statement representing an instance of the specified
      * property.
      */
-    public Statement getStatementProperty(Property p) throws RDFException;
+    public Statement getStatementProperty(Property p) ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a resource.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The Resource which is the object of the statement.
      */
-    public Resource getResource() throws RDFException;
+    public Resource getResource() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The Literal which is the object of the statement.
      */
-    public Literal getLiteral() throws RDFException;
+    public Literal getLiteral() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public boolean getBoolean() throws RDFException;
+    public boolean getBoolean() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public byte getByte() throws RDFException;
+    public byte getByte() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public short getShort() throws RDFException;
+    public short getShort() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public int getInt() throws RDFException;
+    public int getInt() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown iof the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public long getLong() throws RDFException;
+    public long getLong() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public char getChar() throws RDFException;
+    public char getChar() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public float getFloat() throws RDFException;
+    public float getFloat() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public double getDouble() throws RDFException;
+    public double getDouble() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */ 
-    public String getString() throws RDFException;
+    public String getString() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
      * @return The object of the statement.
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      */    
-    public Resource getResource(ResourceF f) throws RDFException;
+    public Resource getResource(ResourceF f) ;
     
     /** Return the object of the statement.
      * <p>An exception will be thrown if the object is not a Literal.</p>
      * @return The object of the statement.
      * @param f A factory used to create the returned object.
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      */    
-    public Object getObject(ObjectF f) throws RDFException;
+    public Object getObject(ObjectF f) ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public Bag getBag() throws RDFException;
+    public Bag getBag() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public Alt getAlt() throws RDFException;
+    public Alt getAlt() ;
     
     /** Return the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Resource.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return The object of the statement interpreted as a value of the
      * the specified type.
      */    
-    public Seq getSeq() throws RDFException;
+    public Seq getSeq() ;
     
     /** Return the language of the object of the statement.
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return the language of the object of the statement
      */    
-    public String getLanguage() throws RDFException;
+    public String getLanguage() ;
     
     /** Return whether the Literal object is well formed XML as would result
      *         from parsing a property element with parseType="Literal".
      *
      * <p>An exception will be thrown if the object is not a Literal.</p>
-     * @throws RDFException Generuc RDF exception.
+     * @ Generuc RDF exception.
      * @return true if the Literal object is well formed
      */    
-    public boolean getWellFormed() throws RDFException;
+    public boolean getWellFormed() ;
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      * @return this object to enable cascading of method calls.
      * @param o The new value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      */
-    public Statement changeObject(boolean o) throws RDFException;
+    public Statement changeObject(boolean o) ;
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(long o) throws RDFException;
+    public Statement changeObject(long o) ;
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(char o) throws RDFException;
+    public Statement changeObject(char o) ;
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(float o) throws RDFException;
+    public Statement changeObject(float o) ;
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(double o) throws RDFException;
+    public Statement changeObject(double o) ;
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(String o) throws RDFException;  
+    public Statement changeObject(String o) ;  
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added and returned.</p>
      * @param o The value to be set.
      * @param wellFormed true if o is well formed XML
-     * @throws RDFException Generic RDF exception.
+     .
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(String o, boolean wellFormed) throws RDFException;
+    public Statement changeObject(String o, boolean wellFormed) ;
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @param l the language of the String
-     * @throws RDFException Generic RDF exception.
+     .
      * @return the new (S, P, o) statement..
      */
-    public Statement changeObject(String o, String l) throws RDFException;
+    public Statement changeObject(String o, String l) ;
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set.
      * @param l the language of the String
-     * @throws RDFException Generic RDF exception.
+     .
      * @return the new (S, P, o) statement.
      */
     public Statement changeObject(String o, String l, boolean wellFormed) 
-      throws RDFException;
+      ;
     
     /** change the object of the statement (S, P, X) to (S, P, o).
      *  <p>The statement with the old value is removed from the model and 
      *  a new statement with the new value added.</p>
      * @param o The value to be set
      * @param wellFormed true if o is well formed XML
-     * @throws RDFException Generic RDF exception.
+     .
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(RDFNode o) throws RDFException;
+    public Statement changeObject(RDFNode o) ;
     
     /** change the object of the statement (S, P, X) to o.
      *  <p>The statement with the old value is removed from the model and 
@@ -373,25 +373,25 @@ public interface Statement
      *  The Object o is converted to a string representation by calling its
      *  <CODE>toString()</CODE> method.
      * @param o The value to be set.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return the new (S, P, o) statement.
      */
-    public Statement changeObject(Object o) throws RDFException;
+    public Statement changeObject(Object o) ;
     
     /** Remove this statement from its associated model.
      *
      *  <p>The statement with the same subject, predicate and object as this
      *  statement will be removed from the model associated with this
      *  statement.</p>
-     * @throws RDFException Generic RDF exception.
+     .
      * @return this statement.
      */
-    public Statement remove() throws RDFException;
+    public Statement remove() ;
     
 /** Determine if this statement is the subject of any statements its associated
  *  model.
  * @param s The statement tested.
- * @throws RDFException Generic RDF Exception
+ 
  * @return true if the statement s is the subject of a statement in the model,
              false otherwise
 */ 

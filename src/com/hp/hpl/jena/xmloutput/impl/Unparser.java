@@ -1,8 +1,8 @@
 /*
- *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
+ *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.15 2003-06-16 12:35:32 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.16 2003-06-17 12:25:07 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2003-06-16 12:35:32 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2003-06-17 12:25:07 $'
 
  */
 class Unparser {
@@ -119,10 +119,9 @@ class Unparser {
 	 * @param localName The intended URI of the output file. No trailing "#".
 	 * @param m The model.
 	 * @param w The output.
-	 * @throws RDFException -
 	 */
 	Unparser(Abbreviated parent, String localName, Model m, PrintWriter w)
-		throws RDFException {
+		 {
 		setLocalName(localName);
 		prettyWriter = parent;
 		out = w;
@@ -199,9 +198,8 @@ class Unparser {
 	}
 	/** Should be called exactly once for each Unparser.
 	 * Calling it a second time will have undesired results.
-	 * @throws RDFException -
 	 */
-	void write() throws RDFException {
+	void write()  {
 		prettyWriter.workOutNamespaces();
 		wRDF();
 		/*
@@ -272,7 +270,7 @@ class Unparser {
 	/*
 	[6.1] RDF            ::= ['<rdf:RDF>'] obj* ['</rdf:RDF>']
 	 */
-	private void wRDF() throws RDFException {
+	private void wRDF()  {
 		tab();
 		print("<");
 		print(prettyWriter.rdfEl("RDF"));
@@ -295,7 +293,7 @@ class Unparser {
 	/**
 	 *  All subjects get listed, for top level use only.
 	 */
-	private void wObjStar() throws RDFException {
+	private void wObjStar()  {
 			Iterator rs = listSubjects();
 			while (rs.hasNext()) {
 				Resource r = (Resource) rs.next();
@@ -331,7 +329,7 @@ class Unparser {
 		Property prop,
 		Statement s,
 		RDFNode val)
-		throws RDFException {
+		 {
 		return wPropertyEltCompact(wt, prop, s, val) || // choice 4
 		wPropertyEltDamlCollection(wt, prop, s, val) || // choice daml.1
 		wPropertyEltLiteral(wt, prop, s, val) || // choice 2
@@ -347,7 +345,7 @@ class Unparser {
 		Property prop,
 		Statement s,
 		RDFNode val)
-		throws RDFException {
+		 {
 		// Conditions
 		if (!(val instanceof Resource))
 			return false;
@@ -385,7 +383,7 @@ class Unparser {
 		Property prop,
 		Statement s,
 		RDFNode r)
-		throws RDFException {
+		 {
 		if (prettyWriter.sParseTypeLiteralPropertyElt)
 			return false;
 		if (!((r instanceof Literal) && ((Literal) r).getWellFormed())) {
@@ -412,7 +410,7 @@ class Unparser {
 		Property prop,
 		Statement s,
 		RDFNode r)
-		throws RDFException {
+		 {
 		if (!((r instanceof Literal)
 			&& ((Literal) r).getDatatypeURI() != null)) {
 			return false;
@@ -444,7 +442,7 @@ class Unparser {
 		Property prop,
 		Statement s,
 		RDFNode r)
-		throws RDFException {
+		 {
 		if (prettyWriter.sParseTypeResourcePropertyElt)
 			return false;
 		if (r instanceof Literal)
@@ -479,7 +477,7 @@ class Unparser {
 		Property prop,
 		Statement s,
 		RDFNode r)
-		throws RDFException {
+		 {
 		return wPropertyEltValueString(wt, prop, s, r)
 			|| wPropertyEltValueObj(wt, prop, s, r);
 	}
@@ -491,7 +489,7 @@ class Unparser {
 		Property prop,
 		Statement s,
 		RDFNode r)
-		throws RDFException {
+		 {
 		if (r instanceof Literal) {
 			done(s);
 			Literal lt = (Literal) r;
@@ -517,7 +515,7 @@ class Unparser {
 	/*
 	[6.17.2] value          ::=  string
 	 */
-	private void wValueString(Literal lt) throws RDFException {
+	private void wValueString(Literal lt)  {
 		String val = lt.getString();
 		print(Util.substituteEntitiesInElementContent(val));
 	}
@@ -531,7 +529,7 @@ class Unparser {
 		Property prop,
 		Statement s,
 		RDFNode r)
-		throws RDFException {
+		 {
 		if (r instanceof Resource && !prettyWriter.sResourcePropertyElt) {
 			Resource res = (Resource) r;
 			done(s);
@@ -564,7 +562,7 @@ class Unparser {
 		Property prop,
 		Statement s,
 		RDFNode r)
-		throws RDFException {
+		 {
 		boolean daml = true;
 		Statement list[][] = getDamlList(r);
 		if (list == null) {
@@ -604,13 +602,13 @@ class Unparser {
 		return true;
 	}
 	// propAttr* with no left over statements.
-	private void wPropAttrAll(Resource r) throws RDFException {
+	private void wPropAttrAll(Resource r)  {
 		wPropAttrSome(r);
 		if (hasProperties(r))
 			error("Bad call to wPropAttrAll");
 	}
 	// propAttr* possibly with left over statements.
-	private void wPropAttrSome(Resource r) throws RDFException {
+	private void wPropAttrSome(Resource r)  {
 		ClosableIterator ss = listProperties(r);
 		try {
 			Set seen = new HashSet();
@@ -648,7 +646,7 @@ class Unparser {
 	 *
 	
 	 */
-	private boolean wObj(Resource r, boolean topLevel) throws RDFException {
+	private boolean wObj(Resource r, boolean topLevel)  {
 		try {
 			doing.add(r);
 			Statement typeStatement = getType(r);
@@ -693,7 +691,7 @@ class Unparser {
 	                       | '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '>'
 	                              propertyElt* '</rdf:Description>'
 	 */
-	private boolean wDescription(Resource r) throws RDFException {
+	private boolean wDescription(Resource r)  {
 		return wTypedNodeOrDescription(wdesc, DESCRIPTION, r);
 	}
 	/*
@@ -701,7 +699,7 @@ class Unparser {
 	                       | '<' typeName idAboutAttr? bagIdAttr? propAttr* '>'
 	                             propertyElt* '</' typeName '>'
 	 */
-	private boolean wTypedNode(Resource r) throws RDFException {
+	private boolean wTypedNode(Resource r)  {
 		Statement st = getType(r);
 		if (st == null)
 			return false;
@@ -710,7 +708,7 @@ class Unparser {
 		return wTypedNodeOrDescription(wtype, type, r);
 	}
 	private boolean wTypedNodeOrDescription(WType wt, Resource ty, Resource r)
-		throws RDFException {
+		 {
 		// preparation - look for the li's.
 		Vector found = new Vector();
 		ClosableIterator ss = listProperties(r);
@@ -743,7 +741,7 @@ class Unparser {
 		Resource ty,
 		Resource r,
 		List li)
-		throws RDFException {
+		 {
 		// Conditions
 		if ((!li.isEmpty()) || !allPropsAreAttr(r))
 			return false;
@@ -760,7 +758,7 @@ class Unparser {
 	}
 	/* [6.13.1] typedNode      ::= '<' typeName idAboutAttr  '/>'
 	 */
-	private boolean wTypedNodeNoProperties(Resource r) throws RDFException {
+	private boolean wTypedNodeNoProperties(Resource r)  {
 		// Conditions
 		if (isGenuineAnon(r))
 			return false;
@@ -791,7 +789,7 @@ class Unparser {
 		Resource ty,
 		Resource r,
 		List li)
-		throws RDFException {
+		 {
 		Iterator it = li.iterator();
 		while (it.hasNext()) {
 			done((Statement) it.next());
@@ -813,7 +811,7 @@ class Unparser {
 		print(">");
 		return true;
 	}
-	private void wPropertyEltStar(Resource r) throws RDFException {
+	private void wPropertyEltStar(Resource r)  {
 		ClosableIterator ss = this.listProperties(r);
 		try {
 			while (ss.hasNext()) {
@@ -825,7 +823,7 @@ class Unparser {
 		}
 
 	}
-	private void wLiEltStar(Iterator ss) throws RDFException {
+	private void wLiEltStar(Iterator ss)  {
 		while (ss.hasNext()) {
 			Statement s = (Statement) ss.next();
 			wPropertyElt(wdesc, LI, s, s.getObject());
@@ -837,7 +835,7 @@ class Unparser {
 	[6.5a] idAboutAttr    ::= idAttr | aboutAttr
 	 */
 	private Set idDone = new HashSet();
-	private boolean wIdAboutAttrOpt(Resource r) throws RDFException {
+	private boolean wIdAboutAttrOpt(Resource r)  {
 		return wIdAttrOpt(r) || wNodeIDAttr(r) || wAboutAttr(r);
 	}
 	/**
@@ -845,7 +843,7 @@ class Unparser {
 	 * be referred to using an ID.
 	 * [6.6] idAttr         ::= ' ID="' IDsymbol '"'
 	 */
-	private boolean wIdAttrOpt(Resource r) throws RDFException {
+	private boolean wIdAttrOpt(Resource r)  {
 
 		if (isGenuineAnon(r))
 			return true; // We have output resource (with nothing).
@@ -876,23 +874,23 @@ class Unparser {
 	/*
 	[6.7] aboutAttr      ::= ' about="' URI-reference '"'
 	 */
-	private boolean wAboutAttr(Resource r) throws RDFException {
+	private boolean wAboutAttr(Resource r)  {
 		print(" ");
 		printRdfAt("about");
 		print("=");
 		wURIreference(r);
 		return true;
 	}
-	private void wURIreference(String s) throws RDFException {
+	private void wURIreference(String s)  {
 		print(quote(prettyWriter.relativize(s)));
 	}
-    private void wURIreference(Resource r) throws RDFException {
+    private void wURIreference(Resource r)  {
         wURIreference(r.getURI());
     }
 	/*
 	[6.16] idRefAttr      ::= idAttr | resourceAttr
 	 */
-	private void wIdRefAttrOpt(Statement s, Resource r) throws RDFException {
+	private void wIdRefAttrOpt(Statement s, Resource r)  {
 		wIdAttrReified(s);
 		if (!isGenuineAnon(r)) {
 			wResourceNodeIDAttr(r);
@@ -901,7 +899,7 @@ class Unparser {
 	/*
 	[6.6] idAttr         ::= ' ID="' IDsymbol '"'
 	 */
-	private void wIdAttrReified(Statement s) throws RDFException {
+	private void wIdAttrReified(Statement s)  {
 		if (wantReification(s)) {
             /*
             if ( prettyWriter.sReification )
@@ -926,13 +924,13 @@ class Unparser {
 	/*
 	[6.18] resourceAttr   ::= ' resource="' URI-reference '"'
 	 */
-	private boolean wResourceNodeIDAttr(Resource r) throws RDFException {
+	private boolean wResourceNodeIDAttr(Resource r)  {
 		return wNodeIDAttr(r) || wResourceAttr(r);
 	}
 	/*
 	 nodeIDAttr   ::= ' rdf:nodeID="' URI-reference '"'
 	 */
-	private boolean wNodeIDAttr(Resource r) throws RDFException {
+	private boolean wNodeIDAttr(Resource r)  {
 		if (!r.isAnon())
 			return false;
 		print(" ");
@@ -945,7 +943,7 @@ class Unparser {
 	/*
 	[6.18] resourceAttr   ::= ' resource="' URI-reference '"'
 	 */
-	private boolean wResourceAttr(Resource r) throws RDFException {
+	private boolean wResourceAttr(Resource r)  {
 		if (r.isAnon())
 			return false;
 		print(" ");
@@ -960,14 +958,14 @@ class Unparser {
 	/*
 	 [6.19] Qname          ::= [ NSprefix ':' ] name
 	 */
-	private void wQnameStart(String ns, String local) throws RDFException {
+	private void wQnameStart(String ns, String local)  {
 		print(prettyWriter.startElementTag(ns, local));
 	}
-	private void wQnameEnd(String ns, String local) throws RDFException {
+	private void wQnameEnd(String ns, String local)  {
 		print(prettyWriter.endElementTag(ns, local));
 	}
 
-	private void wQNameAttr(Property p) throws RDFException {
+	private void wQNameAttr(Property p)  {
 		print(prettyWriter.attributeTag(p.getURI()));
 	}
 	private void printRdfAt(String s) {
@@ -978,21 +976,21 @@ class Unparser {
 	                       | propName '="' string '"' (with embedded quotes escaped)
 	[6.11] typeAttr       ::= ' type="' URI-reference '"'
 	 */
-	private void wPropAttr(Property p, RDFNode n) throws RDFException {
+	private void wPropAttr(Property p, RDFNode n)  {
 		tab();
 		if (p.equals(RDF.type))
 			wTypeAttr((Resource) n);
 		else
 			wPropAttrString(p, (Literal) n);
 	}
-	private void wTypeAttr(Resource r) throws RDFException {
+	private void wTypeAttr(Resource r)  {
 		print(" ");
 		printRdfAt("type");
 		print("=");
         wURIreference(r);
 		//print(quote(r.getURI()));
 	}
-	private void wPropAttrString(Property p, Literal l) throws RDFException {
+	private void wPropAttrString(Property p, Literal l)  {
 		print(" ");
 		wQNameAttr(p);
 		print("=" + quote(l.getString()));
@@ -1001,7 +999,7 @@ class Unparser {
 	/*
 	[daml.2] parseDamlCollection ::= ' parseType="daml:collection"'
 	 */
-	private void wParseDamlCollection() throws RDFException {
+	private void wParseDamlCollection()  {
 		print(" ");
 		printRdfAt("parseType");
 		print("="+q("daml:collection"));
@@ -1009,7 +1007,7 @@ class Unparser {
 	/*
 	[List.2] parseCollection ::= ' parseType="Collection"'
 	 */
-	private void wParseCollection() throws RDFException {
+	private void wParseCollection()  {
 		print(" ");
 		printRdfAt("parseType");
 		print("="+q("Collection"));
@@ -1017,12 +1015,12 @@ class Unparser {
 	/*
 	[6.32] parseLiteral   ::= ' parseType="Literal"'
 	 */
-	private void wParseLiteral() throws RDFException {
+	private void wParseLiteral()  {
 		print(" ");
 		printRdfAt("parseType");
 		print("="+q("Literal"));
 	}
-	private void wDatatype(String dtURI) throws RDFException {
+	private void wDatatype(String dtURI)  {
 		print(" ");
 		printRdfAt("datatype");
 		print("=");
@@ -1032,7 +1030,7 @@ class Unparser {
 	/*
 	[6.33] parseResource  ::= ' parseType="Resource"'
 	 */
-	private void wParseResource() throws RDFException {
+	private void wParseResource()  {
 		print(" ");
 		printRdfAt("parseType");
 		print("="+q("Resource"));
@@ -1161,7 +1159,7 @@ class Unparser {
 	}
 
 
-	private boolean isLocalReference(Resource r) throws RDFException {
+	private boolean isLocalReference(Resource r)  {
 		return (!r.isAnon())
 			&& getNameSpace(r).equals(localName + "#")
 			&& XMLChar.isValidNCName(getLocalName(r));
@@ -1180,7 +1178,7 @@ class Unparser {
 				+ new Character((char) ('a' + suffixId % 26));
 		}
 	}
-	private String getLocalName(Resource r) throws RDFException {
+	private String getLocalName(Resource r)  {
 		if (r.isAnon()) {
 			Log.severe(
 				"Internal error - giving up",
@@ -1222,7 +1220,7 @@ class Unparser {
 		return wantReification((Statement) res2statement.get(res), res);
 	}
 	private boolean wantReification(Statement s, Resource ref)
-		throws RDFException {
+		 {
 		if (s == null
 			|| ref == null
 			|| ref.isAnon()
@@ -1237,7 +1235,7 @@ class Unparser {
 				return false; // Some of reification already done.
 		return true; // Reification rule helps.
 	}
-	private Statement[] reification(Statement s) throws RDFException {
+	private Statement[] reification(Statement s)  {
 		Model m = s.getModel();
 		Resource r = (Resource) statement2res.get(s);
 		return new Statement[] {
@@ -1247,7 +1245,7 @@ class Unparser {
 			m.createStatement(r, RDF.object, s.getObject())};
 	}
 
-	private boolean hasProperties(Resource r) throws RDFException {
+	private boolean hasProperties(Resource r)  {
 		ClosableIterator ss = listProperties(r);
 		if (avoidExplicitReification
 			&& //  ( r instanceof Statement ) &&
@@ -1275,7 +1273,7 @@ class Unparser {
 			ss.close();
 		}
 	}
-	private ClosableIterator listProperties(Resource r) throws RDFException {
+	private ClosableIterator listProperties(Resource r)  {
 		return new MapFilterIterator(new MapFilter() {
 			public Object accept(Object o) {
 				return doneSet.contains(o)?null:o;
@@ -1284,7 +1282,7 @@ class Unparser {
 	}
 	// Good type statement, or simple string valued statement with no langID
 	// See http://www.w3.org/TR/REC-xml#AVNormalize
-	private boolean canBeAttribute(Statement s, Set seen) throws RDFException {
+	private boolean canBeAttribute(Statement s, Set seen)  {
 		Property p = s.getPredicate();
 		// Check seen first.
 		if (prettyWriter.sPropertyAttr
@@ -1320,7 +1318,7 @@ class Unparser {
 		}
 		return false;
 	}
-	private boolean allPropsAreAttr(Resource r) throws RDFException {
+	private boolean allPropsAreAttr(Resource r)  {
 		ClosableIterator ss = listProperties(r);
 		Set seen = new HashSet();
 		try {
@@ -1430,7 +1428,7 @@ class Unparser {
 	/**
 	 * @return A statement that is suitable for a typed node construction or null.
 	 */
-	private Statement getType(Resource r) throws RDFException {
+	private Statement getType(Resource r)  {
 		Statement rslt;
 		try {
 			if (r instanceof Statement) {
@@ -1475,7 +1473,7 @@ class Unparser {
 	 *  This all supports wObjStar.
 	 **/
 	private Set infinite;
-	private void findInfiniteCycles() throws RDFException {
+	private void findInfiniteCycles()  {
 		// find all statements that haven't been done.
 		StmtIterator ss = model.listStatements();
 		Relation relation = new Relation();
@@ -1508,7 +1506,7 @@ class Unparser {
 		};
 	}
 
-	private Iterator pleasingTypeIterator() throws RDFException {
+	private Iterator pleasingTypeIterator()  {
 		if (pleasingTypes == null)
 			return new NullIterator();
 		Map buckets = new HashMap();
@@ -1573,7 +1571,7 @@ class Unparser {
 	 * java.util.Iterator-s. We hence use a wrapper around a ResIterator to
 	 * allow us to manage the closing issue.
 	 */
-	private Iterator listSubjects() throws RDFException {
+	private Iterator listSubjects()  {
 		//  The current file - mainly intended for good DAML.
 		Iterator currentFile =
 			new ArrayIterator(
@@ -1675,11 +1673,11 @@ class Unparser {
 		}, allAsOne);
 	}
 	private Set openResIterators = new HashSet();
-	private synchronized void close(ResIterator resIt) throws RDFException {
+	private synchronized void close(ResIterator resIt)  {
 		resIt.close();
 		openResIterators.remove(resIt);
 	}
-	private synchronized void closeAllResIterators() throws RDFException {
+	private synchronized void closeAllResIterators()  {
 		Iterator members = openResIterators.iterator();
 		while (members.hasNext()) {
 			((ResIterator) members.next()).close();
@@ -1696,7 +1694,7 @@ class Unparser {
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 200,2001, 2002
+    (c) Copyright Hewlett-Packard Company 2000-2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

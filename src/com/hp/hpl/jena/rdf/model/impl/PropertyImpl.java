@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-13 15:28:37 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-06-17 12:25:06 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property {
@@ -56,7 +56,7 @@ public class PropertyImpl extends ResourceImpl implements Property {
     protected int    ordinal   = 0;
 
     /** Creates new PropertyImpl */
-    public PropertyImpl(String uri) throws RDFException {
+    public PropertyImpl(String uri)  {
         super( uri );
         checkLocalName();
         checkOrdinal();
@@ -73,25 +73,25 @@ public class PropertyImpl extends ResourceImpl implements Property {
         }
 
     public PropertyImpl(String nameSpace, String localName)
-      throws RDFException {
+       {
         super(nameSpace, localName);
         checkLocalName();
         checkOrdinal();
     }
 
-    public PropertyImpl(String uri, Model m) throws RDFException {
+    public PropertyImpl(String uri, Model m)  {
         super(uri, m);
         checkOrdinal();
     }
 
     public PropertyImpl(String nameSpace, String localName, Model m)
-      throws RDFException {
+       {
         super(nameSpace, localName, m);
         checkOrdinal();
     }
     
     public PropertyImpl(Node n, EnhGraph m)
-      throws RDFException {
+       {
         super(n, m);
         checkOrdinal();
     }

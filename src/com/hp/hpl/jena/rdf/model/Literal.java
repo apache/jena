@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001 
+ *  (c) Copyright Hewlett-Packard Company 2000, 2001, 2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
  * the lexical form back into the appropriate object type.</p>
  * 
  * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-04-08 22:12:00 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2003-06-17 12:25:04 $
  */
 public interface Literal extends RDFNode {
         
@@ -98,10 +98,10 @@ public interface Literal extends RDFNode {
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
      * 
-     * @throws RDFException Generic RDF Exception
+     
      * @return the literal interpeted as a boolean
      */
-    public boolean getBoolean() throws RDFException;
+    public boolean getBoolean() ;
     
     /**
      * If the literal is interpretable as a Byte return its value.
@@ -109,10 +109,10 @@ public interface Literal extends RDFNode {
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
      * 
-     * @throws RDFException Generic RDF Exception
+     
      * @return the literal interpeted as a byte
      */
-    public byte getByte() throws RDFException;
+    public byte getByte() ;
     
     /**
      * If the literal is interpretable as a Short return its value.
@@ -120,10 +120,10 @@ public interface Literal extends RDFNode {
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
      * 
-     * @throws RDFException Generic RDF Exception
+     
      * @return the literal interpeted as a short
      */
-    public short getShort() throws RDFException;
+    public short getShort() ;
     
     /**
      * If the literal is interpretable as a Integer return its value.
@@ -131,10 +131,10 @@ public interface Literal extends RDFNode {
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
      * 
-     * @throws RDFException Generic RDF Exception
+     
      * @return the literal interpeted as an int
      */
-    public int getInt() throws RDFException;
+    public int getInt() ;
     
     /**
      * If the literal is interpretable as a Long return its value.
@@ -142,10 +142,10 @@ public interface Literal extends RDFNode {
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
      * 
-     * @throws RDFException Generic RDF Exception
+     
      * @return the literal interpeted as a long
      */
-    public long getLong() throws RDFException;
+    public long getLong() ;
     
     /**
      * If the literal is interpretable as a Char return its value.
@@ -153,10 +153,10 @@ public interface Literal extends RDFNode {
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
      * 
-     * @throws RDFException Generic RDF Exception
+     
      * @return the literal interpeted as a char
      */
-    public char getChar() throws RDFException;
+    public char getChar() ;
     
     /**
      * If the literal is interpretable as a Float return its value.
@@ -164,10 +164,10 @@ public interface Literal extends RDFNode {
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
      * 
-     * @throws RDFException Generic RDF Exception
+     
      * @return the literal interpeted as a float
      */
-    public float getFloat() throws RDFException;
+    public float getFloat() ;
     
     /**
      * If the literal is interpretable as a Double return its value.
@@ -175,10 +175,10 @@ public interface Literal extends RDFNode {
      * lexical representation, typed literals are interpreted by coercion
      * of the java object representing their value.
      * 
-     * @throws RDFException Generic RDF Exception
+     
      * @return the literal interpeted as a double
      */
-    public double getDouble() throws RDFException;
+    public double getDouble() ;
     
     /**
      * If the literal is interpretable as a string return its value.
@@ -186,12 +186,12 @@ public interface Literal extends RDFNode {
      * literals and one needs to use getLexicalForm to return the 
      * string form of other datatypes.
      * 
-     * @throws RDFException Generic RDF Exception
+     
      * @return the literal string
      */
     // TODO is this the right approach, could make getString synonomous 
     //       with getLexicalForm
-    public String getString() throws RDFException;
+    public String getString() ;
     
     /**
      * In the case of plain literals this recreates an object from its
@@ -200,11 +200,11 @@ public interface Literal extends RDFNode {
      * 
      * @return the object created from the literal string
      * @param f A factory object for creating the returned object.
-     * @throws RDFException Generic RDF Exception
+     
      */
     // @TODO is this the right approach, could reparse the lexical form 
     //       using the factory even for typed literals
-    public Object getObject(ObjectF f) throws RDFException;
+    public Object getObject(ObjectF f) ;
     
     /** If a language is defined for this literal return it
      * @return the language for this literal if it exists, or null

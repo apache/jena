@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001
+ *  (c) Copyright Hewlett-Packard Company 2000-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ import com.hp.hpl.jena.graph.Node;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-14 10:56:11 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-17 12:25:04 $'
  */
 public interface Resource extends RDFNode {
       
@@ -68,10 +68,10 @@ public interface Resource extends RDFNode {
      *
      * <p>This method is undefined if called on resources which are not anonymous
      * and may raise an exception.</p>
-     * @throws RDFException Generic RDF exception.
+     .
      * @return A unique id for an anonymous resource.
      */
-    public AnonId getId() throws RDFException;
+    public AnonId getId() ;
 
   /**
   	every Resource overlays a Node; fetch that Node. 
@@ -127,28 +127,28 @@ public interface Resource extends RDFNode {
      * is found, it is returned.  If several such statements are found, any one may
      * be returned.  If no such statements are found, and exception is thrown.</p>
      * @param p The property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return A statement specifying the property value.
      */
-    public Statement  getProperty(Property p) throws RDFException;
+    public Statement  getProperty(Property p) ;
     /** List all the values of the property p.
      *
      * <p>Returns an iterator over all the statements in the associated model whose
      * subject is this resource and whose predicate is p.</p>
      * @param p The predicate sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return An iterator over the statements.
      */
-    public StmtIterator listProperties(Property p) throws RDFException;
+    public StmtIterator listProperties(Property p) ;
     /** Return an iterator over all the properties of this resource.
      *
      * <p>The model associated with this resource is search and an iterator is
      * returned which iterates over all the statements which have this resource
      * as a subject.</p>
-     * @throws RDFException Generic RDF exception.
+     .
      * @return An iterator over all the statements about this object.
      */
-    public StmtIterator listProperties() throws RDFException;
+    public StmtIterator listProperties() ;
     
     /** Add a property to this resource.
      *
@@ -158,10 +158,10 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to allow cascading calls.
      */
-    public Resource addProperty(Property p, boolean o) throws RDFException;
+    public Resource addProperty(Property p, boolean o) ;
     
     /** Add a property to this resource.
      *
@@ -171,10 +171,10 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to allow cascading calls.
      */
-    public Resource addProperty(Property p, long o) throws RDFException;
+    public Resource addProperty(Property p, long o) ;
     
     /** Add a property to this resource.
      *
@@ -184,10 +184,10 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to allow cascading calls.
      */
-    public Resource addProperty(Property p, char o) throws RDFException;
+    public Resource addProperty(Property p, char o) ;
     
     /** Add a property to this resource.
      *
@@ -197,10 +197,10 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to allow cascading calls.
      */
-    public Resource addProperty(Property p, float o) throws RDFException;
+    public Resource addProperty(Property p, float o) ;
     
     /** Add a property to this resource.
      *
@@ -210,10 +210,10 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to allow cascading calls.
      */
-    public Resource addProperty(Property p, double o) throws RDFException;
+    public Resource addProperty(Property p, double o) ;
     
     /** Add a property to this resource.
      *
@@ -221,10 +221,10 @@ public interface Resource extends RDFNode {
      * as the object is added to the model associated with this resource.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to allow cascading calls.
      */
-    public Resource addProperty(Property p, String o) throws RDFException;
+    public Resource addProperty(Property p, String o) ;
     
     /** Add a property to this resource.
      *
@@ -233,10 +233,10 @@ public interface Resource extends RDFNode {
      * @param p The property to be added.
      * @param o The value of the property to be added.
      * @param l the language of the property
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to allow cascading calls.
      */
-    public Resource addProperty(Property p, String o, String l) throws RDFException;
+    public Resource addProperty(Property p, String o, String l) ;
     
     /** Add a property to this resource.
      *
@@ -246,10 +246,10 @@ public interface Resource extends RDFNode {
      * method.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to allow cascading calls.
      */
-    public Resource addProperty(Property p, Object o) throws RDFException;
+    public Resource addProperty(Property p, Object o) ;
     
     /** Add a property to this resource.
      *
@@ -257,124 +257,124 @@ public interface Resource extends RDFNode {
      * as the object is added to the model associated with this resource.</p>
      * @param p The property to be added.
      * @param o The value of the property to be added.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to allow cascading calls.
      */
-    public Resource addProperty(Property p, RDFNode o)throws RDFException;
+    public Resource addProperty(Property p, RDFNode o);
     
     /** Determine whether this resource has any values for a given property.
      * @param p The property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return true if and only if this resource has at least one
      * value for the property.
      */
-    public boolean  hasProperty(Property p) throws RDFException;
+    public boolean  hasProperty(Property p) ;
     
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return true if and only if this resource has property p with
      * value o.
      */
-    public boolean  hasProperty(Property p, boolean o) throws RDFException;
+    public boolean  hasProperty(Property p, boolean o) ;
     
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return true if and only if this resource has property p with
      * value o.
      */
-    public boolean  hasProperty(Property p, long o) throws RDFException;
+    public boolean  hasProperty(Property p, long o) ;
     
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return true if and only if this resource has property p with
      * value o.
      */
-    public boolean  hasProperty(Property p, char o) throws RDFException;
+    public boolean  hasProperty(Property p, char o) ;
     
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return true if and only if this resource has property p with
      * value o.
      */
-    public boolean  hasProperty(Property p, float o) throws RDFException;
+    public boolean  hasProperty(Property p, float o) ;
     
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return true if and only if this resource has property p with
      * value o.
      */
-    public boolean  hasProperty(Property p, double o) throws RDFException;
+    public boolean  hasProperty(Property p, double o) ;
     
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return true if and only if this resource has property p with
      * value o.
      */
-    public boolean  hasProperty(Property p, String o) throws RDFException;
+    public boolean  hasProperty(Property p, String o) ;
     
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
      * @param l The language of the property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return true if and only if this resource has property p with
      * value o.
      */
-    public boolean  hasProperty(Property p, String o, String l) throws RDFException;
+    public boolean  hasProperty(Property p, String o, String l) ;
     
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return true if and only if this resource has property p with
      * value o.
      */
-    public boolean  hasProperty(Property p, Object o) throws RDFException;
+    public boolean  hasProperty(Property p, Object o) ;
     
     /** Test if this resource has a given property with a given value.
      * @param p The property sought.
      * @param o The value of the property sought.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return true if and only if this resource has property p with
      * value o.
      */
-    public boolean  hasProperty(Property p, RDFNode o) throws RDFException;
+    public boolean  hasProperty(Property p, RDFNode o) ;
     
     /** Delete all the properties for this resource from the associated model.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to permit cascading.
      */
-    public Resource removeProperties() throws RDFException;
+    public Resource removeProperties() ;
     
     /** Begin a transaction in the associated model.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to permit cascading.
      */
-    public Resource begin() throws RDFException;
+    public Resource begin() ;
     
     /** Abort the  transaction in the associated model.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to permit cascading.
      */
-    public Resource abort() throws RDFException;
+    public Resource abort() ;
     
     /** Commit the transaction in the associated model.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return This resource to permit cascading.
      */
-    public Resource commit() throws RDFException;
+    public Resource commit() ;
     
     /** Return the model associated with this resource.
      * @return The model associated with this resource.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTriple.java,v 1.8 2003-06-10 10:46:20 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.9 2003-06-17 12:24:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -28,7 +28,6 @@ public class TestTriple extends GraphTestBase
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
     private static final LiteralLabel L = new LiteralLabel( "ashes are burning", "en", false );
-    private static final AnonId A = new AnonId();
         
     public void testTripleEquals() {
         try {

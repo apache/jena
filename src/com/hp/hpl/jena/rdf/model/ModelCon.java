@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+ *  (c) Copyright Hewlett-Packard Company 2000-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,8 +52,8 @@ package com.hp.hpl.jena.rdf.model;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.4 $'
-            Date='$Date: 2003-04-14 15:10:51 $'
+            Revision='$Revision: 1.5 $'
+            Date='$Date: 2003-06-17 12:25:04 $'
  */
 public interface ModelCon {
 
@@ -65,9 +65,9 @@ public interface ModelCon {
  * @return a resource instance created by the factory provided
  * @param uri the URI of the resource
  * @param f the factory object
- * @throws RDFException Generic RDF Exception 
+  
  */    
-    Resource getResource(String uri, ResourceF f) throws RDFException;
+    Resource getResource(String uri, ResourceF f) ;
 
 /** Return a Property instance in this model.
  *
@@ -76,9 +76,9 @@ public interface ModelCon {
  * <CODE>createProperty</CODE> should be used instead.</p>
  * @return a property object
  * @param uri the URI of the property
- * @throws RDFException Generic RDF Exception 
+  
 */
-    Property getProperty(String uri) throws RDFException;
+    Property getProperty(String uri) ;
 
 /** Return a Bag instance in this model.
  *
@@ -87,9 +87,9 @@ public interface ModelCon {
  * <CODE>createBag</CODE> should be used instead.</p>
  * @return a bag instance
  * @param uri the URI of the bag.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Bag getBag(String uri) throws RDFException;
+    Bag getBag(String uri) ;
 
 /** Return a bag instance based on a given resource.
  *
@@ -101,9 +101,9 @@ public interface ModelCon {
  * <CODE>createBag</CODE> should be used instead.</p>
  * @return a bag instance
  * @param r an untyped Resource instance 
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Bag getBag(Resource r) throws RDFException;
+    Bag getBag(Resource r) ;
 
 /** Return an Alt instance in this model.
  *
@@ -112,9 +112,9 @@ public interface ModelCon {
  * <CODE>createAlt</CODE> should be used instead.</p>
  * @return an alt instance
  * @param uri the URI of the alt
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Alt getAlt(String uri) throws RDFException;
+    Alt getAlt(String uri) ;
 
 /** Return an Alt instance based on a given resource.
  *
@@ -126,9 +126,9 @@ public interface ModelCon {
  * <CODE>createAlt</CODE> should be used instead.</p>
  * @return an Alt instance
  * @param r an untyped Resource instance
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Alt getAlt(Resource r) throws RDFException;
+    Alt getAlt(Resource r) ;
 /** Return a Seq instance in this model.
  *
  * <p>Subsequent operations on the returned bag may modify this model.</p>
@@ -136,9 +136,9 @@ public interface ModelCon {
  * <CODE>createSeq</CODE> should be used instead.</p>
  * @return a seq instance
  * @param uri the URI of the seq
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Seq getSeq(String uri) throws RDFException;
+    Seq getSeq(String uri) ;
 
 /** Return a Seq instance based on a given resource.
  *
@@ -150,9 +150,9 @@ public interface ModelCon {
  * <CODE>createAlt</CODE> should be used instead.</p>
  * @return an Alt instance
  * @param r an untyped Resource instance
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Seq getSeq(Resource r) throws RDFException;
+    Seq getSeq(Resource r) ;
 
 /** Create a new anonymous resource with a given type.
  *
@@ -163,9 +163,9 @@ public interface ModelCon {
  * @param type the type of the resource to be created.
  * @return a new anonymous resource linked to this model.
  * @param type A resource representing the RDF type of the new resource.
- * @throws RDFException Generic RDF exception
+ 
  */
-    public Resource createResource(Resource type) throws RDFException;
+    public Resource createResource(Resource type) ;
 
 /** Create a new resource with a given type.
  *
@@ -177,10 +177,10 @@ public interface ModelCon {
  * @return a new resource linked to this model.
  * @param uri The URI of the new resource.
  * @param type A resource representing the RDF type of the new resource.
- * @throws RDFException Generic RDF exception.
+ .
  */
     public Resource createResource(String uri, Resource type)
-                                    throws RDFException;
+                                    ;
 
 /** Create a new anonymous resource using the supplied factory.
  *
@@ -188,9 +188,9 @@ public interface ModelCon {
  * </p>
  * @return a new anonymous resource linked to this model.
  * @param f A factory object to create the returned object.
- * @throws RDFException Generic RDF exception.
+ .
  */
-    public Resource createResource(ResourceF f) throws RDFException;
+    public Resource createResource(ResourceF f) ;
  
 /** Create a new resource using the supplied factory.
  *
@@ -199,139 +199,139 @@ public interface ModelCon {
  * @return a new resource linked to this model.
  * @param uri the URI of the resource
  * @param f A factory to create the returned object.
- * @throws RDFException Generic RDF exception.
+ .
  */   
-    public Resource createResource(String uri, ResourceF f) throws RDFException;
+    public Resource createResource(String uri, ResourceF f) ;
 
 /** Create a property.
  *
  * <p> Subsequent operations on the returned property may modify this model.
  * </p>
  * @param uri the URI of the property
- * @throws RDFException Generic RDF exception
+ 
  * @return a property instance
  */
-    public Property createProperty(String uri) throws RDFException;
+    public Property createProperty(String uri) ;
 
     /** create a literal from a boolean value.
      *
      * <p> The value is converted to a string using its <CODE>toString</CODE>
      * method. </p>
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */
-    public Literal createLiteral(boolean v) throws RDFException; 
+    public Literal createLiteral(boolean v) ; 
     /** create a literal from an integer value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */   
-    public Literal createLiteral(long v) throws RDFException;
+    public Literal createLiteral(long v) ;
     /** create a literal from a char value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */
-    public Literal createLiteral(char v) throws RDFException;
+    public Literal createLiteral(char v) ;
     /** create a literal from a float value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */
-    public Literal createLiteral(float v) throws RDFException;
+    public Literal createLiteral(float v) ;
     /** create a literal from a double value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */
-    public Literal createLiteral(double v) throws RDFException;
+    public Literal createLiteral(double v) ;
     
     /** create a literal from a String value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */
-    public Literal createLiteral(String v) throws RDFException;
+    public Literal createLiteral(String v) ;
     
     /** create a literal from an Object.
      *
      * @return a new literal representing the value v
      * @param v the value of the literal.
-     * @throws RDFException generic RDF exception 
+      
      */
-    public Literal createLiteral(Object v) throws RDFException;
+    public Literal createLiteral(Object v) ;
  
     /** create a type literal from a boolean value.
      *
      * <p> The value is converted to a string using its <CODE>toString</CODE>
      * method. </p>
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(boolean v) throws RDFException; 
+    public Literal createTypedLiteral(boolean v) ; 
     
     /** create a typed literal from an integer value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */   
-    public Literal createTypedLiteral(int v) throws RDFException;
+    public Literal createTypedLiteral(int v) ;
     
     /** create a typed literal from an integer value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */   
-    public Literal createTypedLiteral(long v) throws RDFException;
+    public Literal createTypedLiteral(long v) ;
     
     /** create a typed literal from a char value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(char v) throws RDFException;
+    public Literal createTypedLiteral(char v) ;
     
     /** create a typed literal from a float value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(float v) throws RDFException;
+    public Literal createTypedLiteral(float v) ;
     
     /** create a typed literal from a double value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(double v) throws RDFException;
+    public Literal createTypedLiteral(double v) ;
     
     /** create a typed literal from a String value.
      *
      * @param v the value of the literal
-     * @throws RDFException generic RDF exception
+     
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(String v) throws RDFException;
+    public Literal createTypedLiteral(String v) ;
     
     /** create a literal from an Object.
      *
      * @return a new literal representing the value v
      * @param v the value of the literal.
-     * @throws RDFException generic RDF exception 
+      
      */
-    public Literal createTypedLiteral(Object v) throws RDFException;
+    public Literal createTypedLiteral(Object v) ;
 
     /**
      * Build a typed literal from its lexical form. The
@@ -344,7 +344,7 @@ public interface ModelCon {
      * @throws DatatypeFormatException if lex is not a legal form of dtype
      */
     public Literal createTypedLiteral(String lex, String lang, String typeURI) 
-                                        throws RDFException;
+                                        ;
     
     /**
      * Build a typed literal from its value form.
@@ -365,11 +365,11 @@ public interface ModelCon {
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
-     * @throws RDFException generic RDF exception
+     
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, boolean o) 
-                                      throws RDFException;
+                                      ;
     
     /** Create a Statement instance.
      *
@@ -381,11 +381,11 @@ public interface ModelCon {
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
-     * @throws RDFException generic RDF exception
+     
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, long o)
-                                      throws RDFException;
+                                      ;
     
     /** Create a Statement instance.
      *
@@ -397,11 +397,11 @@ public interface ModelCon {
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
-     * @throws RDFException generic RDF exception
+     
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, char o)
-                                      throws RDFException;
+                                      ;
     
     /** Create a Statement instance.
      *
@@ -413,11 +413,11 @@ public interface ModelCon {
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
-     * @throws RDFException generic RDF exception
+     
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, float o)
-                                      throws RDFException;
+                                      ;
     
     /** Create a Statement instance.
      *
@@ -429,11 +429,11 @@ public interface ModelCon {
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
-     * @throws RDFException generic RDF exception
+     
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, double o)
-                                      throws RDFException;
+                                      ;
     
     /** Create a Statement instance.
      *
@@ -445,11 +445,11 @@ public interface ModelCon {
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
-     * @throws RDFException generic RDF exception
+     
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, String o)  
-                                      throws RDFException;
+                                      ;
     
     /** Create a Statement instance.
      *
@@ -462,11 +462,11 @@ public interface ModelCon {
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
      * @param l the language associated with the object
-     * @throws RDFException generic RDF exception
+     
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, String o, String l)  
-                                      throws RDFException;
+                                      ;
 
     /** Create a Statement instance.
      *
@@ -479,11 +479,11 @@ public interface ModelCon {
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
      * @param wellFormed true if the string is well formed XML
-     * @throws RDFException generic RDF exception
+     
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, String o,
-                                     boolean wellFormed) throws RDFException;
+                                     boolean wellFormed) ;
     
     /** Create a Statement instance.
      *
@@ -497,11 +497,11 @@ public interface ModelCon {
      * @param o is the value to be the object of the statement
      * @param l the language associated with the object
      * @param wellFormed true of the string is well formed XML
-     * @throws RDFException generic RDF exception
+     
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, String o, String l,
-                                     boolean wellFormed) throws RDFException;
+                                     boolean wellFormed) ;
     
     /** Create a Statement instance.
      *
@@ -513,11 +513,11 @@ public interface ModelCon {
      * @param s the subject of the statement
      * @param p the predicate of the statement
      * @param o is the value to be the object of the statement
-     * @throws RDFException generic RDF exception
+     
      * @return the new statement
      */
     public Statement createStatement(Resource s, Property p, Object o)  
-                                      throws RDFException;
+                                      ;
     
     /** Create a new anonymous bag.
      *
@@ -525,10 +525,10 @@ public interface ModelCon {
      * modify this model.</p>
      * <p>A statement defining the type of the new bag is added to this model.
      * </p>
-     * @throws RDFException Generic RDF exception.
+     .
      * @return a new anonymous bag.
      */
-    public Bag createBag() throws RDFException;
+    public Bag createBag() ;
     
     /** Create a new bag.
      *
@@ -537,10 +537,10 @@ public interface ModelCon {
      * <p>A statement defining the type of the new bag is added to this model.
      * </p>
      * @param uri The URI of the new Bag.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return a new bag.
      */
-    public Bag createBag(String uri) throws RDFException;
+    public Bag createBag(String uri) ;
        
     /** Create a new anonymous alt.
      *
@@ -548,10 +548,10 @@ public interface ModelCon {
      * modify this model.</p>
      * <p>A statement defining the type of the new alt is added to this model.
      * </p>
-     * @throws RDFException Generic RDF exception.
+     .
      * @return a new anonymous alt.
      */
-    public Alt createAlt() throws RDFException;
+    public Alt createAlt() ;
     
     /** Create a new alt.
      *
@@ -560,10 +560,10 @@ public interface ModelCon {
      * <p>A statement defining the type of the new alt is added to this model.
      * </p>
      * @param uri The URI of the new alt.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return a new alt.
      */
-    public Alt createAlt(String uri) throws RDFException;
+    public Alt createAlt(String uri) ;
        
     /** Create a new anonymous seq.
      *
@@ -571,10 +571,10 @@ public interface ModelCon {
      * modify this model.</p>
      * <p>A statement defining the type of the new seq is added to this model.
      * </p>
-     * @throws RDFException Generic RDF exception.
+     .
      * @return a new anonymous seq.
      */
-    public Seq createSeq() throws RDFException;
+    public Seq createSeq() ;
     
     /** Create a new seq.
      *
@@ -583,65 +583,19 @@ public interface ModelCon {
      * <p>A statement defining the type of the new seq is added to this model.
      * </p>
      * @param uri The URI of the new seq.
-     * @throws RDFException Generic RDF exception.
+     .
      * @return a new seq.
      */
-    public Seq createSeq(String uri) throws RDFException;
+    public Seq createSeq(String uri) ;
 
 /** add a statement to this model.
  * @return this model
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Model add(Resource s, Property p, RDFNode o)     throws RDFException;
-
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * @throws RDFException Generic RDF Exception
- */ 
-    Model add(Resource s, Property p, boolean o) throws RDFException;
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * @throws RDFException Generic RDF Exception
- */ 
-    Model add(Resource s, Property p, long o) throws RDFException;
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * @throws RDFException Generic RDF Exception
- */ 
-    Model add(Resource s, Property p, char o) throws RDFException;
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * @throws RDFException Generic RDF Exception
- */ 
-    Model add(Resource s, Property p, float o) throws RDFException;
-/** add a statement to this model.
- *
- * @return this model
- * @param s the subject of the statement to add
- * @param p the predicate of the statement to add
- * @param o the object of the statement to add
- * @throws RDFException Generic RDF Exception
- */ 
-    Model add(Resource s, Property p, double o) throws RDFException;
+    Model add(Resource s, Property p, RDFNode o)     ;
 
 /** add a statement to this model.
  *
@@ -649,9 +603,55 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Model add(Resource s, Property p, String o) throws RDFException;
+    Model add(Resource s, Property p, boolean o) ;
+/** add a statement to this model.
+ *
+ * @return this model
+ * @param s the subject of the statement to add
+ * @param p the predicate of the statement to add
+ * @param o the object of the statement to add
+ 
+ */ 
+    Model add(Resource s, Property p, long o) ;
+/** add a statement to this model.
+ *
+ * @return this model
+ * @param s the subject of the statement to add
+ * @param p the predicate of the statement to add
+ * @param o the object of the statement to add
+ 
+ */ 
+    Model add(Resource s, Property p, char o) ;
+/** add a statement to this model.
+ *
+ * @return this model
+ * @param s the subject of the statement to add
+ * @param p the predicate of the statement to add
+ * @param o the object of the statement to add
+ 
+ */ 
+    Model add(Resource s, Property p, float o) ;
+/** add a statement to this model.
+ *
+ * @return this model
+ * @param s the subject of the statement to add
+ * @param p the predicate of the statement to add
+ * @param o the object of the statement to add
+ 
+ */ 
+    Model add(Resource s, Property p, double o) ;
+
+/** add a statement to this model.
+ *
+ * @return this model
+ * @param s the subject of the statement to add
+ * @param p the predicate of the statement to add
+ * @param o the object of the statement to add
+ 
+ */ 
+    Model add(Resource s, Property p, String o) ;
  
 /** add a statement to this model.
  *
@@ -660,10 +660,10 @@ public interface ModelCon {
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
  * @param wellFormed true if o is well formed XML
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     Model add(Resource s, Property p, String o, boolean wellFormed)
-      throws RDFException;
+      ;
 
 /** add a statement to this model.
  *
@@ -672,9 +672,9 @@ public interface ModelCon {
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
  * @param l the language associated with the object
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Model add(Resource s, Property p, String o, String l) throws RDFException;
+    Model add(Resource s, Property p, String o, String l) ;
 
 /** add a statement to this model.
  *
@@ -684,10 +684,10 @@ public interface ModelCon {
  * @param o the object of the statement to add
  * @param l the language associated with the object
  * @param wellFormed true if o is well formed XML
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     Model add(Resource s, Property p, String o, String l, boolean wellFormed)
-      throws RDFException;
+      ;
 
 /** add a statement to this model.
  *
@@ -695,23 +695,23 @@ public interface ModelCon {
  * @param s the subject of the statement to add
  * @param p the predicate of the statement to add
  * @param o the object of the statement to add
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Model add(Resource s, Property p, Object o) throws RDFException;
+    Model add(Resource s, Property p, Object o) ;
 
 /** Remove all the Statements returned by an iterator.
  * @return this model
  * @param iter the iterator which returns the statements to be removed.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Model remove(StmtIterator iter) throws RDFException;
+    Model remove(StmtIterator iter) ;
 
 /** Remove all the Statements in a given model.
  * @return this model
  * @param m the model containing the statements to be removed.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    Model remove(Model m) throws RDFException;
+    Model remove(Model m) ;
 
 /** Find all the statements matching a pattern.
  * <p>Return an iterator over all the statements in a model
@@ -724,12 +724,12 @@ public interface ModelCon {
  * @param subject   The subject sought
  * @param predicate The predicate sought
  * @param object    The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     StmtIterator listStatements(Resource subject,
                                 Property predicate,
                                 boolean object)
-                                           throws RDFException;
+                                           ;
 
 /** Find all the statements matching a pattern.
  * <p>Return an iterator over all the statements in a model
@@ -742,12 +742,12 @@ public interface ModelCon {
  * @param subject   The subject sought
  * @param predicate The predicate sought
  * @param object    The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     StmtIterator listStatements(Resource subject,
                                 Property predicate,
                                 long     object)
-                                           throws RDFException;
+                                           ;
 
 /** Find all the statements matching a pattern.
  * <p>Return an iterator over all the statements in a model
@@ -760,12 +760,12 @@ public interface ModelCon {
  * @param subject   The subject sought
  * @param predicate The predicate sought
  * @param object    The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     StmtIterator listStatements(Resource subject,
                                 Property predicate,
                                 char    object)
-                                           throws RDFException;
+                                           ;
 
 /** Find all the statements matching a pattern.
  * <p>Return an iterator over all the statements in a model
@@ -778,12 +778,12 @@ public interface ModelCon {
  * @param subject   The subject sought
  * @param predicate The predicate sought
  * @param object    The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     StmtIterator listStatements(Resource subject,
                                 Property predicate,
                                 float    object)
-                                           throws RDFException;
+                                           ;
 
 /** Find all the statements matching a pattern.
  * <p>Return an iterator over all the statements in a model
@@ -796,12 +796,12 @@ public interface ModelCon {
  * @param subject   The subject sought
  * @param predicate The predicate sought
  * @param object    The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     StmtIterator listStatements(Resource subject,
                                 Property predicate,
                                 double  object)
-                                           throws RDFException;
+                                           ;
 
 /** Find all the statements matching a pattern.
  * <p>Return an iterator over all the statements in a model
@@ -814,12 +814,12 @@ public interface ModelCon {
  * @param subject   The subject sought
  * @param predicate The predicate sought
  * @param object    The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     StmtIterator listStatements(Resource subject,
                                 Property predicate,
                                 String   object)
-                                           throws RDFException;
+                                           ;
 
 /** Find all the statements matching a pattern.
  * <p>Return an iterator over all the statements in a model
@@ -833,83 +833,83 @@ public interface ModelCon {
  * @param predicate The predicate sought
  * @param object    The value sought
  * @param lang      The lang code ofthe string.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     StmtIterator listStatements(Resource subject,
                                 Property predicate,
                                 String   object,
                                 String   lang)
-                                           throws RDFException;
+                                           ;
 
 /** List all subjects with a given property and property value.
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     ResIterator listSubjectsWithProperty(Property p, boolean o)
-                                           throws RDFException;
+                                           ;
 
 /** List all the subjects with a given property and property value.
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     ResIterator listSubjectsWithProperty(Property p, long o)
-                                           throws RDFException;
+                                           ;
 
 /** List all subjects with a given property and property value.
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     ResIterator listSubjectsWithProperty(Property p, char o)
-                                          throws RDFException;
+                                          ;
 
 /** List all subjects with a given property and property value.
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     ResIterator listSubjectsWithProperty(Property p, float o)
-                                           throws RDFException;
+                                           ;
 /** lists all subjects with a given property and property value.
  * @return an iterator over the set of subjects
  * @param p The property sought.
  * @param o The property value sought.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     ResIterator listSubjectsWithProperty(Property p, double o)
-                                           throws RDFException;
+                                           ;
 /** lists all subjects with a given property and property value.
  * @return an iterator over the set of subjects
  * @param p The predicate sought.
  * @param o The property value sought.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     ResIterator listSubjectsWithProperty(Property p, String o)
-                                          throws RDFException;
+                                          ;
 /** lists all subjects with a given property and property value.
  * @return an iterator over the set of subjects
  * @param p The predicate sought.
  * @param o The property value sought.
  * @param l the language associated with the object
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     ResIterator listSubjectsWithProperty(Property p, String o, String l)
-                                          throws RDFException;
+                                          ;
 
 /** List all subjects with a given property and property value.
  * @return an iterator over the subjects
  * @param p The predicate sought
  * @param o The value sought
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     ResIterator listSubjectsWithProperty(Property p, Object o)
-                                           throws RDFException;
+                                           ;
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -917,9 +917,9 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    boolean contains(Resource s, Property p, boolean o) throws RDFException;
+    boolean contains(Resource s, Property p, boolean o) ;
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -927,9 +927,9 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    boolean contains(Resource s, Property p, long o) throws RDFException;
+    boolean contains(Resource s, Property p, long o) ;
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -937,9 +937,9 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    boolean contains(Resource s, Property p, char o) throws RDFException;
+    boolean contains(Resource s, Property p, char o) ;
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -947,9 +947,9 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    boolean contains(Resource s, Property p, float o) throws RDFException;
+    boolean contains(Resource s, Property p, float o) ;
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -957,9 +957,9 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    boolean contains(Resource s, Property p, double o) throws RDFException;
+    boolean contains(Resource s, Property p, double o) ;
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -967,9 +967,9 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    boolean contains(Resource s, Property p, String o) throws RDFException;
+    boolean contains(Resource s, Property p, String o) ;
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -978,10 +978,10 @@ public interface ModelCon {
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
  * @param l the language associated with the object
- * @throws RDFException Generic RDF Exception
+ 
  */ 
     boolean contains(Resource s, Property p, String o, String l)
-       throws RDFException;
+       ;
 
 /** Determine if a statement is present in this model.
  * @return true if the statement with subject s, property p and object o
@@ -989,7 +989,7 @@ public interface ModelCon {
  * @param s The subject of the statment tested.
  * @param p The predicate of the statement tested.
  * @param o The object of the statement tested.
- * @throws RDFException Generic RDF Exception
+ 
  */ 
-    boolean contains(Resource s, Property p, Object o) throws RDFException;
+    boolean contains(Resource s, Property p, Object o) ;
 }

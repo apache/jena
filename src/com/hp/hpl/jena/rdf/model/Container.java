@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+ *  (c) Copyright Hewlett-Packard Company 2000, 2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,7 @@ package com.hp.hpl.jena.rdf.model;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:17:36 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-17 12:25:04 $'
  */
 public interface Container extends Resource {
     
@@ -73,139 +73,139 @@ public interface Container extends Resource {
      * <p>The size of the container is extended by 1 and the new value is added as
      *   the last element of the container.</p>
      * @param o The value to be added.
-     * @throws RDFException Generic RDF expection
+     
      * @return this object so that calls may be cascaded.
      */
-    public Container add(RDFNode o) throws RDFException;
+    public Container add(RDFNode o);
     /** Add a new value to a container.
      *
      * <p>The size of the container is extended by 1 and the new value is added as
      *   the last element of the container.</p>
      * @param o The value to be added.
-     * @throws RDFException Generic RDF expection
+     
      * @return this object so that calls may be cascaded.
      */
-    public Container add(boolean o) throws RDFException;
+    public Container add(boolean o);
     /** Add a new value to a container.
      *
      * <p>The size of the container is extended by 1 and the new value is added as
      *   the last element of the container.</p>
      * @param o The value to be added.
-     * @throws RDFException Generic RDF expection
+     
      * @return this object so that calls may be cascaded.
      */
-    public Container add(long o) throws RDFException;
+    public Container add(long o);
     /** Add a new value to a container.
      *
      * <p>The size of the container is extended by 1 and the new value is added as
      *   the last element of the container.</p>
      * @param o The value to be added.
-     * @throws RDFException Generic RDF expection
+     
      * @return this object so that calls may be cascaded.
      */
-    public Container add(char o) throws RDFException;
+    public Container add(char o);
     /** Add a new value to a container.
      *
      * <p>The size of the container is extended by 1 and the new value is added as
      *   the last element of the container.</p>
      * @param o The value to be added.
-     * @throws RDFException Generic RDF expection
+     
      * @return this object so that calls may be cascaded.
      */
-    public Container add(float o) throws RDFException;
+    public Container add(float o);
     /** Add a new value to a container.
      *
      * <p>The size of the container is extended by 1 and the new value is added as
      *   the last element of the container.</p>
      * @param o The value to be added.
-     * @throws RDFException Generic RDF expection
+     
      * @return this object so that calls may be cascaded.
      */
-    public Container add(double o) throws RDFException;
+    public Container add(double o);
     /** Add a new value to a container.
      *
      * <p>The size of the container is extended by 1 and the new value is added as
      *   the last element of the container.</p>
      * @param o The value to be added.
-     * @throws RDFException Generic RDF expection
+     
      * @return this object so that calls may be cascaded.
      */
-    public Container add(String o) throws RDFException;
+    public Container add(String o);
     /** Add a new value to a container.
      *
      * <p>The size of the container is extended by 1 and the new value is added as
      *   the last element of the container.</p>
      * @param o The value to be added.
      * @param l The language of the string to be added
-     * @throws RDFException Generic RDF expection
+     
      * @return this object so that calls may be cascaded.
      */
-    public Container add(String o, String l) throws RDFException;
+    public Container add(String o, String l);
     /** Add a new value to a container.
      *
      * <p>The size of the container is extended by 1 and the new value is added as
      *   the last element of the container.</p>
      * @param o The value to be added.
-     * @throws RDFException Generic RDF expection
+     
      * @return this object so that calls may be cascaded.
      */
-    public Container add(Object o) throws RDFException;
+    public Container add(Object o);
     
     /** Determine whether the container contains a value
      * @param o the value being tested for
-     * @throws RDFException Generic RDF exception
+     
      * @return true if and only if the container contains o
      */
-    public boolean contains(RDFNode o) throws RDFException;
+    public boolean contains(RDFNode o);
     /** Determine whether the container contains a value
      * @param o the value being tested for
-     * @throws RDFException Generic RDF exception
+     
      * @return true if and only if the container contains o
      */
-    public boolean contains(boolean o) throws RDFException;
+    public boolean contains(boolean o);
     /** Determine whether the container contains a value
      * @param o the value being tested for
-     * @throws RDFException Generic RDF exception
+     
      * @return true if and only if the container contains o
      */
-    public boolean contains(long o) throws RDFException;
+    public boolean contains(long o);
     /** Determine whether the container contains a value
      * @param o the value being tested for
-     * @throws RDFException Generic RDF exception
+     
      * @return true if and only if the container contains o
      */
-    public boolean contains(char o) throws RDFException;
+    public boolean contains(char o);
     /** Determine whether the container contains a value
      * @param o the value being tested for
-     * @throws RDFException Generic RDF exception
+     
      * @return true if and only if the container contains o
      */
-    public boolean contains(float o) throws RDFException;
+    public boolean contains(float o);
     /** Determine whether the container contains a value
      * @param o the value being tested for
-     * @throws RDFException Generic RDF exception
+     
      * @return true if and only if the container contains o
      */
-    public boolean contains(double o) throws RDFException;
+    public boolean contains(double o);
     /** Determine whether the container contains a value
      * @param o the value being tested for
-     * @throws RDFException Generic RDF exception
+     
      * @return true if and only if the container contains o
      */
-    public boolean contains(String o) throws RDFException;
+    public boolean contains(String o);
     /** Determine whether the container contains a value
      * @param o the value being tested for
      * @param l the language of the string tested
-     * @throws RDFException Generic RDF exception
+     
      * @return true if and only if the container contains o
      */
-    public boolean contains(String o, String l) throws RDFException;
+    public boolean contains(String o, String l);
     /** Determine whether the container contains a value
      * @param o the value being tested for
-     * @throws RDFException Generic RDF exception
+     
      * @return true if and only if the container contains o
      */
-    public boolean contains(Object o) throws RDFException;
+    public boolean contains(Object o);
     
     /** Remove a value from the container.
      *
@@ -214,10 +214,10 @@ public interface Container extends Resource {
      * container with a higher ordinal value are renumbered.  The renumbering
      * algorithm depends on the type of container.<p>
      * @param s The statement to be removed from the model.
-     * @throws RDFException Generic RDF Exception
+     
      * @return this container to enable cascading calls.
      */
-    public Container remove(Statement s) throws RDFException;
+    public Container remove(Statement s);
     
     /** Return an iterator over the values.
      *
@@ -226,13 +226,13 @@ public interface Container extends Resource {
      * application has not completed the iteration, but no longer requires
      * the iterator.  This will enable the freeing of resources in, for
      * example, implementations which store their models in a database.</p>
-     * @throws RDFException Generic RDF exception.
+     .
      * @return Return an iterator over the values.
      */
-    public NodeIterator iterator() throws RDFException;
+    public NodeIterator iterator();
     /** return the number values in the container.
-     * @throws RDFException Generic RDF exception
+     
      * @return the number of values int the container.
      */
-    public int size() throws RDFException;
+    public int size();
 }
