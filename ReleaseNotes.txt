@@ -1,7 +1,10 @@
 Release Notes
 =============
 
-Jena 2.1-dev1:
+Jena 2.1-dev-1:
+  This is a developers' release, particularly
+  intended for users of the OWL Syntax Checker.
+  Most users should continue to use Jena 2.0.
   For changes, see directly below.
   Documentation may not be up to date.
   Do not use this version unless:
@@ -9,8 +12,6 @@ Jena 2.1-dev1:
   - you need one or more of the bug fixes not in
     Jena 2.0
 
-
-Post jena 2.0 changes:
 
 RDF API:
 o Bug fixes:
