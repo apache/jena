@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDBMaker.java,v 1.7 2005-02-21 12:03:17 andy_seaborne Exp $
+  $Id: TestGraphRDBMaker.java,v 1.8 2005-03-16 14:46:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -25,9 +25,9 @@ import junit.framework.*;
 public class TestGraphRDBMaker extends AbstractTestGraphMaker
     {
     /**
-        A clean test connection for all the graph factories.
+         The connection for the graph factory.
     */
-    IDBConnection connection = TestConnection.makeAndCleanTestConnection();
+    IDBConnection connection;
     
     public TestGraphRDBMaker( String name )
         { super( name ); }
@@ -36,8 +36,9 @@ public class TestGraphRDBMaker extends AbstractTestGraphMaker
         { return new TestSuite( TestGraphRDBMaker.class ); }
         
     public void setUp()
-        { super.setUp();
-        // assertFalse( connection.getAllModelNames().hasNext() ); 
+        { // order is import - super.setUp grabs a graph 
+        connection = TestConnection.makeAndCleanTestConnection();
+        super.setUp();
         }
 
     /**
