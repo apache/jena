@@ -9,16 +9,12 @@
 
 <body xml:lang="en" lang="en" bgcolor="#FFFFFF">
 
-<h1 style="text-align: center; line-height: 18pt">Jena 2 Preview 2 Release</h1>
+<h1 style="text-align: center; line-height: 18pt">Jena 2 Preview 1 Release</h1>
+		<h1 style="text-align: center; line-height: 18pt">Jena: A Java API for Semantic Web Applications</h1>
+		<h3 style="text-align: center; line-height: 18pt">Readme for version j2p1</h3>
 
-<h1 style="text-align: center; line-height: 18pt">Jena: A Java API for Semantic Web Applications</h1>
-
-<h3 style="text-align: center; line-height: 18pt">Readme for version j2p2</h3>
-
-<p style="text-align: center; line-height: 18pt; font-style: italic">
-<span style="font-style: italic">
-Hewlett Packard Laboratories, Bristol
-</span></p>
+<p style="text-align: center; line-height: 18pt; font-style: italic"><span
+style="font-style: italic">Hewlett Packard Laboratories, Bristol</span></p>
 
 <h2>Overview</h2>
 
@@ -43,36 +39,9 @@ Hewlett Packard Laboratories, Bristol
 			<li>Support for datatype literals</li>
 			<li>Experimental support for  RDFS inference</li>
 		</ul>
-
-
-<p>This version of the Jena toolkit is the second preview release of Jena 2.
-It has less functionality than the current Jena 1 release (no DAML support, no
-persistenence support). It is newer and thus less well tested in the field.
-However, it does have fully compliant support for datatyped literals, parsers
-and writers that are fully conformant with the RDFCore WG last call drafts and
-a preview of the proposed support for RDFS inference, plus revised suport for
-reification in line with the WG specification. The Jena team intend to
-restore the missing functionality as soon as possible. </p>
-
-<blockquote>
-	<strong>changes since preview 1</strong>
-	<p>
-	a new interface for <strong>reified statements</strong> has been
-	added.	
-	</p>
-</blockquote>
-
-<p>The Jena team do not recommend migrating from Jena 1 to Jena 2 at this
-time. However, we do encourage folks to try out Jena 2 and provide feedback on
-ease of migrating existing code and experience, especially with the new
-features such as datatypes, reification, and the preliminary inference SPI.</p>
-
-<p>Whilst the intention is maintain the present API through the migration from
-Jena 1 to Jena 2, we are taking the opportunity to make some minor changes
-that folks have requested.  These are described in the document <a
-href="doc/migrate1-2.html">Migrating from Jena 1 to Jena2</a>. You may notice
-the javadoc is a lot smaller. This is largely because we are trying to not
-include classes which are internal to the operation of Jena. </p>
+		<p>This version of the Jena toolkit is a preview release of Jena 2. It has considerably less functionality than the current Jena 1 release (no DAML support, no persistenence support, no reification support). It is newer and thus less well tested in the field. However, it does have fully compliant support for datatyped literals, parsers and writers that are fully conformant with the RDFCore WG last call drafts and a preview of the proposed support for RDFS inference. The Jena team intend to complete the functionality missing from Jena 1 as soon as possible.</p>
+		<p>The Jena team do not recommend migrating from Jena 1 to Jena 2 at this time. However, we do encourage folks to try out Jena 2 and provide feedback on ease of migrating existing code and experience, especially with the new features such as datatypes and the preliminary inference SPI.</p>
+		<p>Whilst the intention is maintain the present API through the migration from Jena 1 to Jena 2, we are taking the opportunity to make some minor changes that folks have requested.  These are described in the document <a href="doc/migrate1-2.html">Migrating from Jena 1 to Jena2</a>. You may notice the javadoc is a lot smaller. This is largely because we are trying to not include classes which are internal to the operation of Jena. </p>
 
 <p> A key feature of the new architecture is making a clear distinction
 between the Application Programming Interface (API), the System Programming
@@ -84,12 +53,9 @@ This release contains preliminary versions of SPI interfaces for integrating
 new reasoners, and for "fast path" query which will allow us to pass complex
 queries on to database engines.
 
-<p>Earlier and more recent versions may be available from the Jena web site -
-<a href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb</a>.</p>
-
-<h2>Installation</h2>
-
-<ul>
+		<p>Earlier and more recent versions may be available from the Jena web site - <a href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb</a>.</p>
+		<h2>Installation</h2>
+		<ul>
   <li>unzip the distribution file into a convenient directory, JENAROOT.</li>
   <li>set the class path to include:
 			<pre>  JENAROOT/lib/jena.jar
@@ -105,67 +71,33 @@ queries on to database engines.
   JENAROOT/lib/rdf-api-2001-01-19.jar
 </pre>
 			</li>
-	
-	<li>Test the distribution by running the regression tests, either:
+			<li>Test the distribution by running the regression tests, either:</li>
 			
-	<pre>
-	ant test          // if you have ant configured to run junit
-	test.bat          // on windows
-	. test.sh         // on unix
-	</pre>
-	You may see some warnings about some tests being suppressed,
-	but the remaining 1000+ tests should run successfully.
-	</li>
+<pre>ant test                      // if you have ant configured to run junit
+test.bat                      // on windows
+. test.sh                     // on unix
 
-</ul>
-
-
-<h2>Applications</h2>
-
-<p>The Jena distribution includes some convenience applications.</p>
-
-<p><code>jena.rdfcopy </code>will read an RDF file in either RDF/XML, N3 or
-n-triple format and write it to standard out in either RDF/XML, N3 or n-triple
-format. It can be used to translate between different RDF serialization
-formats.</p>
-
-<p><code>jena.rdfcompare</code> will read two RDF files, in either RDF/XML, N3
-or n-triple format and test whether they are equal.</p>
-
-<p><code>jena.rdfquery </code>will execute an RDQL query on an RDF data file,
-in either RDF/XML or n-triple format and print the table of results in text or
-HTML. It can also be used to query a Jena model held in a BerkeleyDB
-persistent store.</p>
-
-<p><code>jena.rdfparse</code> is command line interface to the ARP RDF/XML
-parser.</p>
-
-<p><code>jena.n3</code> is a command line interfacec to Jena's N3 parser.</p>
-
-<p><code>jena.schemagen</code> takes and RDF Schema and generates the java
-source code for a constant class containing constants for all the classes and
-properties defined in that schema.</p>
-
-<p>These programs can be set use use a proxy to traverse a firewall by setting
-system properties. To use a socks proxy include the following in the command
-line:</p>
-
-<pre>   -DsocksProxyHost=&lt;your-proxy-domain-name-or-ip-address&gt;</pre>
-
-<p>To use an http proxy include the following on the command line:</p>
-
-<pre>   -DproxySet=true -DproxyHost=&lt;your-proxy&gt; -DproxyPort=&lt;your-proxy-port-number&gt;</pre>
-
-<h2>Getting started with jena</h2>
-
-<p>For the core java RDF API the key package to look at is
-com.hp.hpl.rdf..model. This package defines all of the key interfaces which
-the different implementations (jena.mem, jena.bdb, jena.common) conform
-to.</p>
-
-<p>The jena subsystems</p>
-
-<dl>
+</pre>
+			<p>You may see some warnings about some tests being suppressed,
+			but the remaining 1000+ tests should run successfully.
+			</p>
+		</ul>
+		<h2>Applications</h2>
+		<p>The Jena distribution includes some convenience applications.</p>
+		<p><code>jena.rdfcopy </code>will read an RDF file in either RDF/XML, N3 or n-triple format and write it to standard out in either RDF/XML, N3 or n-triple format. It can be used to translate between different RDF serialization formats.</p>
+		<p><code>jena.rdfcompare</code> will read two RDF files, in either RDF/XML, N3 or n-triple format and test whether they are equal.</p>
+		<p><code>jena.rdfquery </code>will execute an RDQL query on an RDF data file, in either RDF/XML or n-triple format and print the table of results in text or HTML. It can also be used to query a Jena model held in a BerkeleyDB persistent store.</p>
+		<p><code>jena.rdfparse</code> is command line interface to the ARP RDF/XML parser.</p>
+		<p><code>jena.n3</code> is a command line interfacec to Jena's N3 parser.</p>
+		<p><code>jena.schemagen</code> takes and RDF Schema and generates the java source code for a constant class containing constants for all the classes and properties defined in that schema.</p>
+		<p>These programs can be set use use a proxy to traverse a firewall by setting system properties. To use a socks proxy include the following in the command line:</p>
+		<pre>   -DsocksProxyHost=&lt;your-proxy-domain-name-or-ip-address&gt;</pre>
+		<p>To use an http proxy include the following on the command line:</p>
+		<pre>   -DproxySet=true -DproxyHost=&lt;your-proxy&gt; -DproxyPort=&lt;your-proxy-port-number&gt;</pre>
+		<h2>Getting started with jena</h2>
+		<p>For the core java RDF API the key package to look at is com.hp.hpl.rdf..model. This package defines all of the key interfaces which the different implementations (jena.mem, jena.bdb, jena.common) conform to.</p>
+		<p>The jena subsystems</p>
+		<dl>
   <dt><b>ARP parser</b></dt>
     <dd>ARP is a new RDF parser designed to be compliant with the latest working group recommendations. ARP is the default parser for jena. It can also be run standalone.  For more information on ARP see the documentation in <a
       href="doc/ARP/index.html">doc/ARP</a>.</dd>
