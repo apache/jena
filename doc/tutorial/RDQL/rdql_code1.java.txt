@@ -1,13 +1,10 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
-import com.hp.hpl.mesa.rdf.jena.model.* ;
-import com.hp.hpl.mesa.rdf.jena.mem.* ;
-import com.hp.hpl.mesa.rdf.jena.common.* ;
-
-import com.hp.hpl.jena.rdf.query.* ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdql.* ;
 
 import java.util.* ;
 import java.io.* ;
@@ -16,25 +13,25 @@ public class rdql_code1
 {
     static public void main(String[] argv)
     {
-	try {
-	    Model model = new ModelMem() ;
-	    model.read(new FileReader("vc-db-1.rdf"), 
-		       "http://nowhere/",
-		       "RDF/XML") ;
+        try {
+            Model model = ModelFactory.createDefaultModel() ;
+            model.read(new FileInputStream("vc-db-1.rdf"), 
+                       "http://nowhere/",
+                       "RDF/XML") ;
 
-	    String queryString = "SELECT ?x, ?fname "+
-	    "WHERE (?x, <http://www.w3.org/2001/vcard-rdf/3.0#FN>, ?fname)" ;
+            String queryString = "SELECT ?x, ?fname "+
+            "WHERE (?x, <http://www.w3.org/2001/vcard-rdf/3.0#FN>, ?fname)" ;
 
-	    Query query = new Query(queryString) ;
-	    query.setSource(model);
-	    QueryExecution qe = new QueryEngine(query) ;
+            Query query = new Query(queryString) ;
+            query.setSource(model);
+            QueryExecution qe = new QueryEngine(query) ;
 
-	    QueryResults results = qe.exec() ;
-	    for ( Iterator iter = results ; iter.hasNext() ; )
-	    {
-		ResultBinding res = (ResultBinding)iter.next() ;
-		Object x = res.get("x") ;
-		Object fname = res.get("fname") ;
+            QueryResults results = qe.exec() ;
+            for ( Iterator iter = results ; iter.hasNext() ; )
+            {
+                ResultBinding res = (ResultBinding)iter.next() ;
+                Object x = res.get("x") ;
+                Object fname = res.get("fname") ;
                 System.out.println("x = "+x+"   fname = "+fname) ;
             }
             results.close() ;
@@ -48,7 +45,7 @@ public class rdql_code1
 }
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
