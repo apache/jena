@@ -113,9 +113,17 @@ public class TestInputStreamFactory {
     }
 	private Object open(URI uri, boolean in) {
 		URI relative = uri.isAbsolute() ? base.relativize(uri) : uri;
+		
 		if (relative.isAbsolute())
 			throw new IllegalArgumentException(
 				"This  ARPTestInputStreamFactory only knows about '" + base + "'.");
+		
+		String relPath = relative.toString();
+		if ( relPath.length() - relPath.lastIndexOf('.') > 5 ) {
+			relPath = relPath + ".rdf";
+			relative = URI.create(relPath);
+		}
+		
 		if (mapBase != null) {
 			//System.out.println("LazyURL: " + relative + " " + mapBase);
 			try {
@@ -136,9 +144,7 @@ public class TestInputStreamFactory {
 		if (!in)
 			throw new IllegalArgumentException("Can only save to URLs");
 
-        String relPath = relative.toString();
-        if ( relPath.length() - relPath.lastIndexOf('.') > 5 )
-           relPath = relPath + ".rdf";
+
 		if (zip != null)
 			return new LazyZipEntryInputStream(zip,relPath );
 		else

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLResults.java,v 1.1 2003-09-12 16:31:48 der Exp $
+ * $Id: OWLResults.java,v 1.2 2003-09-24 13:07:10 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -36,8 +36,12 @@ public class OWLResults {
      */
     public static final Property output = m_model.createProperty( "http://www.w3.org/2002/03owlt/resultsOntology#output" );
     
+    
     /** <p>The test in question, such as an otest:PositiveEntailmentTest.</p> */
     public static final Property test = m_model.createProperty( "http://www.w3.org/2002/03owlt/resultsOntology#test" );
+    
+    /** <p>Syntactic tests.</p> */
+    public static final Property syntacticLevelTestFrom = m_model.createProperty( "http://www.w3.org/2002/03owlt/resultsOntology#syntacticLevelTestFrom" );
     
     /** <p>The complete system instance on which the test was run, conceptually including 
      *  software and hardware components. No range restriction is provided, however, 

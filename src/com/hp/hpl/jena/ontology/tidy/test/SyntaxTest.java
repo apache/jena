@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.4 2003-09-23 11:15:34 jeremy_carroll Exp $
+  $Id: SyntaxTest.java,v 1.5 2003-09-24 13:07:29 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -23,14 +23,22 @@ class SyntaxTest extends TestCase {
 	/**
 	 * @param arg0
 	 */
+	static String name(String testURI, String nm) {
+		int lastSl = testURI.lastIndexOf('/');
+		int penUltimateSl = testURI.lastIndexOf('/', lastSl - 1);
+		return testURI.substring(penUltimateSl + 1, lastSl) + "-" + nm;
+	}
+	//System.err.println(lastSl + " " + penUltimateSl + " " + hash);
 	
-	public SyntaxTest(String nm, TestInputStreamFactory factory) {
-		super(nm);
+	public SyntaxTest(String nm, TestInputStreamFactory factory, String u) {
+		super(name(u,nm));
 		dm = new DocMan(factory);
+		uri = u;
 	}
 
 	
 	final DocMan dm;
+	final String uri;
 	
 	static private class DMEntry {
 		Model mdl;
@@ -111,9 +119,11 @@ class SyntaxTest extends TestCase {
 						+ " not "
 						+ level.getURI().substring(hash + 1);
 				System.err.println(msg);
+				WGTests.logResult(uri,false);
 				fail(msg);
 			}
 		}
+		WGTests.logResult(uri,true);
 	}
 
 }
