@@ -20,10 +20,8 @@
     <owl:Thing rdf:about="#a" />
     <owl:Thing rdf:about="#b" />
 
-<!--    
     <rdf:Property rdf:about="#p" />
     <rdf:Property rdf:about="#q" />
--->
     
     <rdf:Description rdf:about="#a">
         <p rdf:resource="#b" />
