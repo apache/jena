@@ -24,11 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Relation.java,v 1.1.1.1 2002-12-19 19:21:54 bwm Exp $
+ * $Id: Relation.java,v 1.1 2003-04-02 10:07:30 jeremy_carroll Exp $
  *
  */
 
-package com.hp.hpl.jena.xmloutput;
+package com.hp.hpl.jena.xmloutput.impl;
 
 import java.util.*;
 import com.hp.hpl.jena.util.iterator.*;
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.*;
  *
  * Complete with transitive closure algorithm.
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:54 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2003-04-02 10:07:30 $'
  */
 class Relation {
     final private Map rows;

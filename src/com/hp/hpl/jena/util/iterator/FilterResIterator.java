@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: FilterResIterator.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
+ * $Id: FilterResIterator.java,v 1.3 2003-04-02 10:07:29 jeremy_carroll Exp $
  *
  */
 
@@ -36,9 +36,9 @@ import com.hp.hpl.jena.rdf.model.*;
 /** A sub iterator over Resource's.
    See FilterIterator and ResIterator.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-04-02 10:07:29 $'
  * @see com.hp.hpl.jena.rdf.model.ResIterator
- * @see com.hp.hpl.jena.xmloutput.FilterIterator
+ * @see com.hp.hpl.jena.xmloutput.impl.FilterIterator
  */
 
 public class FilterResIterator implements ResIterator {

@@ -2,14 +2,14 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002   
  * All rights reserved.
   [See end of file]
-  $Id: testWriterInterface.java,v 1.1.1.1 2002-12-19 19:22:07 bwm Exp $
+  $Id: testWriterInterface.java,v 1.2 2003-04-02 10:07:30 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.xmloutput.*;
+import com.hp.hpl.jena.xmloutput.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 
 import java.io.File;
@@ -20,7 +20,7 @@ import junit.framework.*;
 /**
  *
  * @author  bwm, jjc
- * @version $Revision: 1.1.1.1 $
+ * @version $Revision: 1.2 $
  */
 public class testWriterInterface extends TestCase {
     private String lang;
@@ -73,7 +73,7 @@ public class testWriterInterface extends TestCase {
 
     public void testAnotherWriter() {
         Model m1 = new ModelMem();
-        m1.setWriterClassName("foobar", Jena.PATH + ".xmloutput.Basic");
+        m1.setWriterClassName("foobar", Jena.PATH + ".xmloutput.impl.Basic");
         assertTrue(
             "Failed to access set writer",
             (m1.getWriter("foobar") instanceof Basic));
@@ -128,5 +128,5 @@ public class testWriterInterface extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterInterface.java,v 1.1.1.1 2002-12-19 19:22:07 bwm Exp $
+ * $Id: testWriterInterface.java,v 1.2 2003-04-02 10:07:30 jeremy_carroll Exp $
  */

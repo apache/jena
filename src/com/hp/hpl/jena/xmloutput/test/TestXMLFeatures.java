@@ -2,12 +2,12 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003    
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.9 2003-04-02 08:58:16 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.10 2003-04-02 10:07:30 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
-import com.hp.hpl.jena.xmloutput.BaseXMLWriter;
+import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.Util;
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.util.TestLogger;
 
 /** 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2003-04-02 08:58:16 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2003-04-02 10:07:30 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -1049,5 +1049,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.9 2003-04-02 08:58:16 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.10 2003-04-02 10:07:30 jeremy_carroll Exp $
  */

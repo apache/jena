@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriterFImpl.java,v 1.1.1.1 2002-12-19 19:18:30 bwm Exp $
+ * $Id: RDFWriterFImpl.java,v 1.2 2003-04-02 10:07:30 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -36,7 +36,7 @@ import java.util.Properties;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:18:30 $
+ * @version $Revision: 1.2 $ $Date: 2003-04-02 10:07:30 $
  */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
 
@@ -50,8 +50,8 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
 
     protected static final String DEFAULTWRITERS[] =
         {
-            Jena.PATH + ".xmloutput.Basic",
-            Jena.PATH + ".xmloutput.Abbreviated",
+            Jena.PATH + ".xmloutput.impl.Basic",
+            Jena.PATH + ".xmloutput.impl.Abbreviated",
             Jena.PATH + ".rdf.model.impl.NTripleWriter",
             "com.hp.hpl.jena.n3.N3JenaWriter" };
 

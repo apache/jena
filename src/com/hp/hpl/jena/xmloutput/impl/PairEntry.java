@@ -24,15 +24,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: PairEntry.java,v 1.1.1.1 2002-12-19 19:21:53 bwm Exp $
+ * $Id: PairEntry.java,v 1.1 2003-04-02 10:07:30 jeremy_carroll Exp $
  *
  */
 
-package com.hp.hpl.jena.xmloutput;
+package com.hp.hpl.jena.xmloutput.impl;
 
 /*
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:53 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2003-04-02 10:07:30 $'
  */
 class PairEntry implements java.util.Map.Entry {
     Object a;

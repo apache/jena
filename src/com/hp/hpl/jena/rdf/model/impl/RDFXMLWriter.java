@@ -34,12 +34,12 @@
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
-import com.hp.hpl.jena.xmloutput.Basic;
+import com.hp.hpl.jena.xmloutput.impl.Basic;
 
 /** Writes out an XML serialization of a model.
- * @deprecated {@link com.hp.hpl.jena.xmloutput.Basic }
+ * @deprecated {@link com.hp.hpl.jena.xmloutput.impl.Basic }
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:31 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-02 10:07:30 $'
  */
 public class RDFXMLWriter extends Basic {
 }
