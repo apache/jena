@@ -41,6 +41,6 @@ Reasoning subsystem:
    took to time to report these problems.
 
 RDF API:
-1) Replaced the createTypedLiterals calls which versions that do not allow
+1) Replaced the createTypedLiteral calls with versions that do not allow
    xml:lang tags, in keeping with working group changes.
    Deprecated the version of createLiteral that takes both xml:lang and xml:wellFormed.
