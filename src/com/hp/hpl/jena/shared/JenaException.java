@@ -3,10 +3,9 @@
  * [See end of file]
  */
  
- package com.hp.hpl.jena.shared;
+package com.hp.hpl.jena.shared;
  
- import com.hp.hpl.jena.rdf.model.*;
- import java.io.*;
+import java.io.*;
 
 /**
  * This should be a superclass of most exceptions

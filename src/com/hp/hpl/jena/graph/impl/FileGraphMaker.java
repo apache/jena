@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.1 2003-05-08 15:19:31 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.2 2003-05-08 17:55:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
 import java.io.*;
 import java.util.*;
 import com.hp.hpl.jena.shared.*;

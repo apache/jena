@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.1 2003-05-08 15:18:26 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.2 2003-05-08 17:54:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -10,7 +10,6 @@ import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
-import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 
