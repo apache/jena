@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.6 2003-05-28 10:28:00 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.7 2003-06-06 09:27:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -116,8 +116,6 @@ public class TestReifier extends GraphTestBase {
     /* */
     	assertTrue( "node is known bound", R.hasTriple( M ) );
     	assertTrue( "node is known bound", R.hasTriple( N ) );
-    	// TODO check if this is valid use of Node.ANY in find
-//    	assertFalse( "node is known unbound", R.hasTriple( Node.ANY ) );
     	assertFalse( "node is known unbound", R.hasTriple( Node.createURI( "any:thing" ) ) );
     /* */
 //    	Graph GR = R.getReifiedTriples();

@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2003-05-21 14:50:19 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2003-06-06 09:28:22 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -63,9 +63,6 @@ public class ResourceImpl extends EnhNode implements Resource {
 	}
 };
     private int splitHere = 0;
-
-    private ResourceImpl( Resource r )
-        { this( r.asNode(), r.getModel() ); }
         
     /**
         the master constructor: make a new Resource in the given model,

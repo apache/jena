@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.43 $' Date='$Date: 2003-06-06 09:15:50 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.44 $' Date='$Date: 2003-06-06 09:28:21 $'
  */
 
 public class ModelCom 
@@ -1334,7 +1334,8 @@ implements Model, ModelI, PrefixMapping, ModelLock
         { return modelReifier.getHiddenStatements(); }
         
     /**
-        TODO: consider how this might be cleaned up
+        Answer whether or not these two graphs are isomorphic, taking the
+        hidden (reification) statements into account.
     */
     public boolean isIsomorphicWith(Model m)
         {

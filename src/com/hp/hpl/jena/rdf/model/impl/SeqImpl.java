@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-05-20 12:42:09 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-06-06 09:28:22 $' 
  */
 public class SeqImpl extends ContainerImpl implements Seq {
 
@@ -57,9 +57,6 @@ public class SeqImpl extends ContainerImpl implements Seq {
         iteratorFactory = new SeqNodeIteratorFactoryImpl();
     }
 
-    private SeqImpl( Resource r )
-        { super( r ); }
-        
     /** Creates new SeqMem */
     public SeqImpl(Model model) throws RDFException {
         super(model);

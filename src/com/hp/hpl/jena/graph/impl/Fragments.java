@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Fragments.java,v 1.1 2003-05-28 11:13:50 chris-dollin Exp $
+  $Id: Fragments.java,v 1.2 2003-06-06 09:28:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -25,9 +25,6 @@ import com.hp.hpl.jena.graph.Triple;
     explanatory name was considered for Fragments, but the effect of
     picking one of those seemed to make the code that *uses* them
     excessively verbose. 
-<p>
-    TODO: consider splitting .graph up to use sub-packages to
-    express the structure more clearly.
 <p>
     @author kers 
 */

@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-05-20 12:42:09 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-06 09:28:22 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property {
@@ -54,9 +54,6 @@ public class PropertyImpl extends ResourceImpl implements Property {
     
     protected int    ordinal   = 0;
 
-    private PropertyImpl( Resource r )
-        { this( r.getURI(), r.getModel() ); }
-        
     /** Creates new PropertyImpl */
     public PropertyImpl(String uri) throws RDFException {
         super( uri );

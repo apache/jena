@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LiteralLabel.java,v 1.1 2003-05-28 11:13:50 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.2 2003-06-06 09:28:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -189,7 +189,7 @@ final public class LiteralLabel {
 
     /**
         Answer a human-acceptable representation of this literal value.
-        TODO: ensure nothing uses this for machine processing. 
+        This is NOT intended for a machine-processed result. 
     */
     public String toString() {
         String lf = getLexicalForm();

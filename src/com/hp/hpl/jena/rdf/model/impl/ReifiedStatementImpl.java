@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: ReifiedStatementImpl.java,v 1.2 2003-04-04 19:26:30 jeremy_carroll Exp $
+	$Id: ReifiedStatementImpl.java,v 1.3 2003-06-06 09:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -24,12 +24,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         private constructor, relies (ugh) on super(uri, model) generating
         bnode if uril == null. 
     */
-    private ReifiedStatementImpl( EnhGraph m, String uri, Statement s ) 
-        {
-        super( uri, (Model) m ); 
-        assertStatement( s ); 
-        }
-        
+
     private ReifiedStatementImpl( Model m, String uri, Statement s ) 
         {
         super( uri, m ); 
