@@ -1,5 +1,5 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.21 2004-07-21 15:28:51 der Exp $ -->
+<!-- $Id: jena-faq.html,v 1.22 2004-10-08 10:12:16 ian_dickinson Exp $ -->
 <!-- (c) Copyright 2003, 2004, Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
@@ -65,6 +65,8 @@ Jena 2 &ndash; Frequently Asked Questions
 <ul>
   <li><a href="#general-0">Why do I get a <code>java.lang.NoClassDefFoundError</code> when I run a Jena application?</a></li>
   <li><a href="#general-1">What does the error '<code>java.lang.NoSuchFieldError: actualValueType</code>' mean?</a></li>
+  <li><a href="#general-2">What versions of library jars does Jena require?</a></li>
+  <li><a href="#general-3">How do I get the most up-to-date version of Jena?</a></li>
 </ul>
 <h3>RDF model API</h3>
 <ul>
@@ -79,6 +81,9 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#reasoner-2">The domain and range inferences look wrong, is that a bug?</a></li>
   <li><a href="#reasoner-3">Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></a></li>
   <li><a href="#reasoner-4">Why do I get out of memory errors when working with the wine ontology?</a></li>
+  <li><a href="#reasoner-5">What causes the error 
+    &quot;<code>java.lang.UnsupportedOperationException: this is not a URI node</code>&quot; 
+    in the DIG reasoner?</a></li>
 </ul>
 <h3>Ontology API</h3>
 <ul>
@@ -116,10 +121,7 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#rdql-0">How do I do test for substrings of literals?</a></li>
 </ul>
 
-<h3>Miscellaneous</h3>
-<ul>
-  <li><a href="#misc-0">What versions of library jars does Jena require?</a></li>
-</ul>
+
 <h2>Answers</h2>
 <h3>General</h3>
 
@@ -142,7 +144,53 @@ Jena 2 &ndash; Frequently Asked Questions
   it by a more uptodate version of Xerces. This occurs with tomcat 5.* and certain configurations of jdk 1.4.1.
  </p>
 
-<h3>RDF model API</h3>
+<p id="general-2">
+  <strong>Q: What versions of library jars does Jena require?</strong><br />
+  <strong>A:</strong> Jena makes use of several third party Java libraries. Copies of
+  each of these is included in the $JENA/lib area of the distribution and we recommend
+  including all of these jars in your classpath. In some circumstances applications 
+  already make use of specific versions of these libraries (e.g. Xerces) and need to 
+  check if the version they are using is compatible with those shipped by Jena. The current
+  library versions used by Jena are:
+  <ul>
+  <li><strong>Xerces</strong> - 2.6.1 (not compatible with Xerces prior to 2.6.0)</li>
+  <li><strong>log4j</strong> - 1.2.7</li>
+  <li><strong>junit</strong> - ?</li>
+  <li><strong>icu4j</strong> - ?</li>
+  <li><strong>jakarta-oro</strong> - 2.0.5</li>
+  <li><strong>antlr</strong> - 2.7.2</li>
+  <li><strong>jakarta-commons-logging</strong> - 1.0.3</li>
+  <li><strong>concurrent</strong> - 1.3.2</li>
+  </ul> 
+</p>
+
+<p id="general-3">
+  <strong>Q: How do I get the most up-to-date version of Jena?</strong><br />
+  <strong>A:</strong> Released versions of Jena are available from the 
+  <a href="http://sourceforge.net/project/showfiles.php?group_id=40417">downloads page</a>
+  on SourceForge.  
+  However, there may be changes and bug fixes
+  that have been added to the Jena codebase that are not yet available as
+  part of a release. To get the most up-to-date version of Jena, download
+  the source code from CVS (instructions for this are 
+  <a href="http://sourceforge.net/cvs/?group_id=40417">available here</a>).  
+  To compile the source code and generate a new 
+  <code>jena.jar</code> file, 
+  <a href="http://ant.apache.org/">Ant</a> must be installed and on the path. The
+  command to build Jena is the default Ant target, so it only necessary to
+  <code>cd</code> to the Jena root directory, which should contain the file
+  <code>build.xml</code>, and issue the command <code>ant</code>.
+</p>
+<p>
+  To test that the new compiled version of Jena is working correctly, run
+  the script <code>test.bat</code> (Windows) or <code>test.sh</code> (Linux or
+  Cygwin) to run the full suite of Jena regression tests.  There should
+  be no test failures. <strong>Note:</strong> however that non-release
+  versions of Jena may not be as fully tested and stable as the formal 
+  releases.
+</p>
+  
+    <h3>RDF model API</h3>
     <p id="api-0"><strong>Q. Why does the localname part of my URI look wrong?</strong><br />
       <strong>A:</strong> In Jena it is possible to retrieve the localname part of a Resource or Property
       URI. Sometimes developers create Resources with a full URI reference but
@@ -277,7 +325,15 @@ Jena 2 &ndash; Frequently Asked Questions
       hiearchy and infernce over RDFS plus OWL property relations is enough for you then the
       OWL micro reasoner may be an option.</p>
       
-      
+  <p id="reasoner-5"><strong>Q: What causes the error 
+    &quot;<code>java.lang.UnsupportedOperationException: this is not a URI node</code>&quot; in the DIG reasoner?</strong>
+    <br />
+    <strong>A:</strong>
+    This is a known problem with the Jena 2.1 release. Please get the latest version of Jena (a later
+    release, if there is one, or get the sources from CVS and 
+    <a href="#general-3">build a new copy of <code>jena.jar</code></a>.)
+  </p>
+  
     <h3>Ontology API</h3>
 <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
   etc) work?</strong><br />
@@ -468,29 +524,7 @@ is provided by <a href="http://jakarta.apache.org/oro/">Jakarta ORO</a>.  Exampl
 <p>This can be used to do a case-insensitive substring match as in the last example,
 giving functionality similar to SQL LIKE.</p>
 
-<h3>Miscellaneous</h3>
-
-<p id="misc-0">
-  <strong>Q: What versions of library jars does Jena require?</strong><br />
-  <strong>A:</strong> Jena makes use of several third party Java libraries. Copies of
-  each of these is included in the $JENA/lib area of the distribution and we recommend
-  including all of these jars in your classpath. In some circumstances applications 
-  already make use of specific versions of these libraries (e.g. Xerces) and need to 
-  check if the version they are using is compatible with those shipped by Jena. The current
-  library versions used by Jena are:
-  <ul>
-  <li><strong>Xerces</strong> - 2.6.1 (not compatible with Xerces prior to 2.6.0)</li>
-  <li><strong>log4j</strong> - 1.2.7</li>
-  <li><strong>junit</strong> - ?</li>
-  <li><strong>icu4j</strong> - ?</li>
-  <li><strong>jakarta-oro</strong> - 2.0.5</li>
-  <li><strong>antlr</strong> - 2.7.2</li>
-  <li><strong>jakarta-commons-logging</strong> - 1.0.3</li>
-  <li><strong>concurrent</strong> - 1.3.2</li>
-  </ul> 
-</p>
-
-<p>&nbsp;</p>
+  <p>&nbsp;</p>
 
 </div><!-- end #content -->
 
