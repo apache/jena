@@ -7,13 +7,11 @@ package com.hp.hpl.jena.n3;
 import java.io.* ;
 import antlr.* ;
 import antlr.collections.*;
-import java.io.* ;
-
 
 /** Miscellaneous things in supprt of Antlr-derived parsers
  * 
  * @author		Andy Seaborne
- * @version 	$Id: AntlrUtils.java,v 1.2 2003-02-20 16:48:24 andy_seaborne Exp $
+ * @version 	$Id: AntlrUtils.java,v 1.3 2003-03-11 18:04:08 andy_seaborne Exp $
  */
 
 public class AntlrUtils
