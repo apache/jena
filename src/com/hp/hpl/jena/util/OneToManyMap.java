@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-06-30 12:58:02 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2004-09-25 18:45:47 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  * See end of file for details
@@ -32,7 +32,7 @@ import java.util.*;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.5 2004-06-30 12:58:02 chris-dollin Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.6 2004-09-25 18:45:47 ian_dickinson Exp $
  */
 public class OneToManyMap
     implements Map
@@ -193,7 +193,7 @@ public class OneToManyMap
      * that t1.hashCode()==t2.hashCode() for any two maps t1 and t2,
      * as required by the general contract of Object.hashCode
      */
-    public int hashcode() {
+    public int hashCode() {
         int hc = 0;
 
         for (Iterator i = entrySet().iterator();  i.hasNext(); ) {
