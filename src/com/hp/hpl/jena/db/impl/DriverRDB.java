@@ -48,7 +48,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.32 $ on $Date: 2003-08-27 03:17:35 $
+* @version $Revision: 1.33 $ on $Date: 2003-08-27 10:48:24 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -371,8 +371,8 @@ public abstract class DriverRDB implements IRDBDriver {
 		// adds them to the m_sysProperties specialized graph.
 		m_dbProps = new DBPropDatabase( m_sysProperties, m_dbcon.getDatabaseType(), 
 		        VERSION, LAYOUT_VERSION,String.valueOf(LONG_OBJECT_LENGTH), 
-		        String.valueOf(INDEX_KEY_LENGTH), Boolean.toString(IS_XACT_DB), 
-				Boolean.toString(URI_COMPRESS), String.valueOf(URI_COMPRESS_LENGTH),
+		        String.valueOf(INDEX_KEY_LENGTH), String.valueOf(IS_XACT_DB), 
+                        String.valueOf(URI_COMPRESS), String.valueOf(URI_COMPRESS_LENGTH),
 				TABLE_NAME_PREFIX);
 		
 		// Now we also need to construct the parameters that will be the
