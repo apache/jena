@@ -182,6 +182,7 @@
                  windowtitle="${Name} Framework"
                  doctitle="${Name} Framework"
                  Public="true"
+                 Use="true"
                  overview="src/link2readme.html"
                  bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved."
                  additionalparam="-breakiterator"
@@ -204,9 +205,10 @@
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
                 <package name="com.hp.hpl.jena.datatypes"/>
-		<package name="com.hp.hpl.jena.datatypes.xsd"/>
+		        <package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.util"/>
                 <package name="com.hp.hpl.jena.util.iterator"/>
+                <package name="jena"/>
 
             <group title="API - Application Programming Interface">
                 <package name="com.hp.hpl.jena.rdf.model"/>
@@ -227,9 +229,13 @@
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
                 <package name="com.hp.hpl.jena.datatypes"/>
-		<package name="com.hp.hpl.jena.datatypes.xsd"/>
+		        <package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.util"/>
                 <package name="com.hp.hpl.jena.util.iterator"/>
+            </group>
+            
+            <group title="Command line tools">
+                 <package name="jena" />
             </group>
         </javadoc>
     </target>
@@ -251,6 +257,7 @@
 	         bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved."
 	         packagenames="com.hp.hpl.*"
              additionalparam="-breakiterator"
+             Use="true"
 		/>
     </target>
 
