@@ -1,0 +1,220 @@
+<HTML>
+<HEAD><TITLE>Jean Relational Database backend</TITLE></HEAD>
+<BODY>
+
+
+
+<h1>Jena2 Database Interface - HowTo Create Persistent Models</h1>
+
+
+
+<h3>28 August, 2003</h3>
+
+
+
+<p>The Jena2&nbsp; persistent storage subsystem implements an extension of the 
+Model class that provides transparent persistence for models through the use of 
+a database engine. Three database engines are currently supported, MySQL, 
+Oracle, PostgreSQL, on two platforms, Linux and WindowsXP. The Jena2 persistence 
+subsystem is largely compatible with Jena1 but does not support the various 
+Jena1 layouts. Existing Jena1 databases cannot be accessed by Jena2 and must be 
+reloaded.</p>
+<p>This document provides a brief overview of creating and accessing Jena2 
+persistent models. Note that the recommended mechanism for creating and opening 
+persistent models has changed from Jena1 and also from the preliminary releases 
+of Jena2. Users are now encouraged to use the new factory mechanisms described 
+in <font size="2" face="Courier New">doc/how-to/model-factory.html</font>. 
+Previous mechanisms based on ModelRDB are now deprecated. However, the factory 
+mechanism are still under development and are not yet a complete replacement for 
+ModelRDB. Consequently, the deprecated Jena2 mechanisms may also be needed and 
+are reviewed here as well.</p>
+<p>The various options for configuring and accessing persistent models are 
+described in <font face="Courier New" size="2"> <a href="options.html">doc/DB/options.html</a></font>.&nbsp; 
+For details on installing and configuring the various database engines for use 
+with Jena2, see <font face="Courier New" size="2"> <a href="mysql-howto.html">doc/DB/mysql-howto.html</a>,
+<a href="oracle-howto.html">doc/DB/oracle-howto.html</a>,
+<a href="postgresql-howto.html">doc/DB/postgresql-howto.html</a></font>.</p>
+
+<h2>Creating and Accessing Persistent Models</h2>
+
+<p>In Jena2, all databases are multi-model and each model is, by default, stored 
+in separate tables. Models may share database tables using the
+<font face="Courier New" size="2"> 
+<a href="options.html">StoreWithModel</a></font> option.  Currently, 
+model names may be any string however users are encouraged to use URIs for model 
+names for compatibility with planned future Jena features. Note that the model 
+name &quot;DEFAULT&quot; is reserved for use by Jena (as the name of the default model) 
+and attempts to create such a named model will cause an exception.</p>
+
+<p>As mentioned above, there are two mechanisms for creating persistent models, 
+one using factory methods and another using constructors for the ModelRDB class. 
+However, the factory methods do not return a ModelRDB instance. Consequently, 
+certain methods defined on ModelRDB are not available for factory-created 
+models, e.g., remove, setDoDuplicateCheck. If an application needs these 
+methods, the ModelRDB constructors should be used. This is an interim measure until the factory-created models 
+support all the ModelRDB capabilities. Below we review creating and opening 
+models for each mechanism.</p>
+
+<h3>Factory Methods</h3>
+
+<p>Creating or opening a model is a three-step process. First, the driver class 
+must be loaded and a connection established to the database. Note that in Jena2, 
+the database type is specified as part of the database connection unlike in 
+Jena1 where it is part of the model constructor. Second, a model maker class is 
+constructed. The model maker creates persistent instances of the Model class. 
+Third, the model maker class is invoked to create new models or to open existing 
+models. The following examples show how this is done.</p>
+
+<font SIZE="2">
+<blockquote>
+  <pre><font face="Courier New"><font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_URL = <font SIZE="2" COLOR="#2a00ff">&quot;jdbc:mysql://localhost/test&quot;</font>; // database URL
+<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_USER = <font SIZE="2" COLOR="#2a00ff">&quot;test&quot;</font>;     // database user id
+<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_PASSWD = <font SIZE="2" COLOR="#2a00ff">&quot;&quot;</font>;   // database user password
+<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB = <font SIZE="2" COLOR="#2a00ff">&quot;MySQL&quot;</font>;  // database engine
+<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DBDRIVER_CLASS = <font SIZE="2" COLOR="#2a00ff">&quot;com.mysql.jdbc.Driver&quot;</font>;  // database driver</font></pre>
+  <pre><font face="Courier New">// load the the driver class
+Class.forName(M_DBDRIVER_CLASS);</font><font face="Courier">
+</font><font face="Courier New">// create a database connection
+</font>IDBConnection <font face="Courier New">conn = </font></font><font SIZE="2" COLOR="#7f0055" face="Courier New"><b>new</b></font><font SIZE="2"><font face="Courier New"> DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);</font><font face="Courier">
+</font><font face="Courier New">// create a model maker with the given connection parameters
+</font>ModelMaker <font face="Courier New">maker = ModelFactory.createModelRDBMaker(conn);</font></pre>
+  <pre><font face="Courier New">// create a default model
+Model defModel = maker.createModel();</font></pre>
+  <pre><font face="Courier New">...</font></pre>
+  <pre><font face="Courier New">// create a named model
+Model nmModel = maker.createModel(&quot;MyNamedModel&quot;);</font></pre>
+  <pre><font face="Courier New">...</font></pre>
+  <pre><font face="Courier New">// open a previously created model
+Model prvModel = maker.openModel(&quot;AnExistingModel&quot;);</font></pre>
+</blockquote>
+</font>
+
+<p>&nbsp;</p>
+
+<h3><a name="ModelRDB Methods"></a>ModelRDB Methods</h3>
+<p>
+Database-backed RDF models are instances of the class <code>jena.db.ModelRDB</code> 
+which supports the full <code>jena.model.Model</code> interface and also 
+provides static methods to create, extend and reopen database instances. 
+For backwards-compatibility, ModelRDB supports Jena1 methods for creating and 
+opening databases (see release notes for details on changes).</p>
+
+<p>ModelRDB supports several options to alter the underlying database table 
+structure. These options must be specified before the database is formatted and 
+the methods are invoked on the underlying database driver instance for the 
+connection. Ideally, the driver class need not be exposed to Jena applications. 
+Consequently, use of the driver class to set these options should be considered 
+an interim measure until the option setting can be integrated into the factory 
+methods. See <a href="#Enabling URI Compression">Enabling URI Compression</a> 
+for an example of setting these options. Other options apply to models. See
+<a href="#Disable Duplicate Checking">Disable Duplicate Checking</a> for an example 
+of setting these types of options.</p>
+
+<p>
+Creating an instance of ModelRDB is a two-step process. As with the factory 
+methods, the first step is to load the driver 
+class and establish a database connection. Second, the static 
+methods on ModelRDB are used to create new ModelRDB instances or to open 
+existing ones. The following examples show how this is done.</p>
+
+<font SIZE="2">
+<blockquote>
+  <pre><font face="Courier New"><font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_URL = <font SIZE="2" COLOR="#2a00ff">&quot;jdbc:mysql://localhost/test&quot;</font>; // database URL
+<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_USER = <font SIZE="2" COLOR="#2a00ff">&quot;test&quot;</font>;     // database user id
+<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB_PASSWD = <font SIZE="2" COLOR="#2a00ff">&quot;&quot;</font>;   // database user password
+<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DB = <font SIZE="2" COLOR="#2a00ff">&quot;MySQL&quot;</font>;  // database engine
+<font SIZE="2" COLOR="#7f0055"><b>static</b></font> String M_DBDRIVER_CLASS = <font SIZE="2" COLOR="#2a00ff">&quot;com.mysql.jdbc.Driver&quot;</font>;  // database driver</font></pre>
+  <pre><font face="Courier New">// load the the driver class
+Class.forName(M_DBDRIVER_CLASS);</font><font face="Courier">
+</font><font face="Courier New">// create a database connection
+</font>IDBConnection <font face="Courier New">conn = </font></font><font SIZE="2" COLOR="#7f0055" face="Courier New"><b>new</b></font><font SIZE="2"><font face="Courier New"> DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);</font></pre>
+  <pre><font face="Courier New">// create a default model
+</font>ModelRDB <font face="Courier New">defModel = ModelRDB.createModel(conn);</font></pre>
+  <pre><font face="Courier New">...</font></pre>
+  <pre><font face="Courier New">// create a named model
+</font>ModelRDB <font face="Courier New">nmModel = ModelRDB.createModel(conn,&quot;MyModelName&quot;);</font></pre>
+  <pre><font face="Courier New">...</font></pre>
+  <pre><font face="Courier New">// open a previously created model
+</font>ModelRDB <font face="Courier New">prvModel = maker.open(conn,&quot;AnExistingModel&quot;);</font></pre>
+  </font>
+</blockquote>
+<code>
+<pre></pre>
+</code>
+<h5><a name="Enabling URI Compression"></a>Enable URI prefix compression</h5>
+<p>
+As an example of setting a database configuration option, the following shows 
+how URI prefix compression is enabled. By default, URIs are stored fully 
+expanded in the statement tables. Also shown is doubling the size of the prefix 
+cache.<blockquote>
+<p>
+<code>
+<font face="Courier New" size="2">Class.forName(M_DBDRIVER_CLASS);<br>
+DBConnection dbcon = new DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);<br>
+</font>
+</code>
+
+<font face="Courier New" size="2">conn.getDriver().setDoCompressURI(true);<br>
+</font>
+<code>
+<font face="Courier New" size="2">ModelRDB model = ModelRDB.createModel(dbcon, "myModelName&quot;);<br>
+// double the size of the prefix cache<br>
+</font></code>
+
+<font face="Courier New" size="2">int cacheSize = conn.getDriver().getCompressCacheSize();</font><code><font face="Courier New" size="2"><br>
+</font></code>
+
+<font face="Courier New" size="2">conn.getDriver().setCompressCacheSize(cacheSize*2);</font></blockquote>
+<h5>Detect multiple models per database</h5>
+<p>
+In Jena2, all databases are multi-model and each model is, by default, stored in 
+separate tables.  Here is an example that checks to see if a specific named model exists and then creates or reopens it as necessary:
+<code>
+<blockquote>
+<pre><font face="Courier New" size="2">Class.forName(M_DBDRIVER_CLASS);
+DBConnection dbcon = new DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);
+ModelRDB model;
+if( !dbcon.containsModel("myModelName&quot;)
+	model = ModelRDB.createModel(dbcon, "myModelName&quot;);
+else
+	model = ModelRDB.open(dbcon, "myModelName&quot;);</font>
+</pre>
+</blockquote>
+</code>
+
+<h5><a name="Sharing Tables"></a>Share tables among&nbsp; models</h5>
+
+<p>In this example, a configuration option is used to specify that a new model 
+should share the tables of an existing model. Unlike the previous option, this 
+option can be set after the database is formatted. It affects only subsequently 
+created models.</p>
+<blockquote>
+
+<p>
+<code>
+<font face="Courier New" size="2">Class.forName(M_DBDRIVER_CLASS);<br>
+DBConnection dbcon = new DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);<br>
+ModelRDB model1, model2;<br>
+model1 = ModelRDB.createModel(dbcon, "myModel1&quot;);&nbsp; // create a new model 
+model</font></code><font face="Courier New" size="2">conn.getDriver().setStoreWithModel(</font><code><font face="Courier New" size="2">"myModelName&quot;</font></code><font face="Courier New" size="2">);</font><code><font face="Courier New" size="2"><br>
+model2 = ModelRDB.createModel(dbcon, "myModel2&quot;); // model2 is stored with 
+model1</font></code></p>
+</blockquote>
+
+<h5><a name="Disable Duplicate Checking"></a>Disable duplicate checking</h5>
+
+<p>Some options apply to ModelRDB, e.g., query processing options. This example 
+show how checking for duplicate statements can be disabled, as might be 
+desirable when loading a large number of statements that the user is certain are 
+duplicate-free.</p>
+<blockquote>
+
+<p>
+<code>
+<font face="Courier New" size="2">Class.forName(M_DBDRIVER_CLASS);<br>
+DBConnection dbcon = new DBConnection(M_DB_URL, M_DB_USER, M_DB_PASSWD, M_DB);<br>
+ModelRDB model = ModelRDB.createModel(dbcon, "myModelName&quot;);<br>
+model.setDoDuplicateCheck(false);&nbsp; // disable duplicate checking</font></code></p>
+</blockquote>
+</BODY>
+</HTML>
