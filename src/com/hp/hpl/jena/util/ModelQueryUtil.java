@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelQueryUtil.java,v 1.1 2003-07-30 15:20:10 chris-dollin Exp $
+  $Id: ModelQueryUtil.java,v 1.2 2003-08-04 11:17:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util;
@@ -14,6 +14,13 @@ import com.hp.hpl.jena.util.iterator.*;
 import java.util.*;
 
 /**
+    A utility for using the graph query interface from a Model. Queries may be represented
+    as models, where each statement in the model corresponds to a search for matching
+    statements in the model being queried. Variables are represented as resources
+    with URIs using the ficticious "jqv" protocol.
+<p>    
+    See also <code>QueryMapper</code>.
+    
  	@author kers
 */
 public class ModelQueryUtil

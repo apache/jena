@@ -1,53 +1,26 @@
-/*****************************************************************************
- * Source code information
- * -----------------------
- * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian.Dickinson@hp.com
- * Package            Jena 2
- * Web                http://sourceforge.net/projects/jena/
- * Created            06-Mar-2003
- * Filename           $RCSfile: GraphMaker.java,v $
- * Revision           $Revision: 1.1 $
- * Release status     $State: Exp $
- *
- * Last modified on   $Date: 2003-05-08 15:19:31 $
- *               by   $Author: chris-dollin $
- *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
- * (see footer for full conditions)
- *****************************************************************************/
+/*
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: GraphMaker.java,v 1.2 2003-08-04 11:17:50 chris-dollin Exp $
+*/
 
-// Package
-///////////////
 package com.hp.hpl.jena.graph;
 
-
-// Imports
-///////////////
-
 /**
- * <p>
- * A factory for providing instances of graphs with appropriate storage models. 
- * It is <b>not</b> part of the contract for this factory that each instance
- * is unique; some applications may legitimately want to write triples into
- * a single graph (such as a database). 
- * </p>
- * 
- * Updated by kers; added methods that create or locate named graphs.
- *
- * @author Ian Dickinson, HP Labs
- *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: GraphMaker.java,v 1.1 2003-05-08 15:19:31 chris-dollin Exp $
- */
+    A factory for providing instances of named graphs with appropriate storage models.
+    It represents a directory, or a database, or a mapping: names map to graphs for the
+    lifetime of the GraphMaker. Names can be "arbitrary" character sequences.
+*/
+
 public interface GraphMaker 
 {
 
     /**
-     * <p>
-     * Answer an instance of a graph
-     * </p>
-     * 
-     * @return A new or existing graph.
+        Answer a graph who's name isn't interesting. 
+        TODO resolve the issue of whether it may be some other graph, or a different
+        one each time.
+        
+        @return a new or existing graph.
      */
     public Graph getGraph();
     
@@ -111,6 +84,18 @@ public interface GraphMaker
     public void close();
 }
 
+/* ****************************************************************************
+ * Source code information
+ * -----------------------
+ * Original author    Ian Dickinson, HP Labs Bristol
+ * Package            Jena 2
+ * Web                http://sourceforge.net/projects/jena/
+ * Created            06-Mar-2003
+ *
+ * Last modified on   $Date: 2003-08-04 11:17:50 $
+ *               by   $Author: chris-dollin $
+
+ *****************************************************************************/
 
 /*
     (c) Copyright Hewlett-Packard Company 2002-2003

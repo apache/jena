@@ -49,7 +49,7 @@ import com.hp.hpl.jena.graph.Triple;
  *    for application objects.</p>
  
  * @author bwm; additions by kers
- * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2003-07-15 14:44:17 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2003-08-04 11:17:50 $
  */
 public interface Statement 
 {
@@ -417,12 +417,12 @@ public interface Statement
     */
     Triple asTriple();
     
-    /**
-     * Returns a resource representing the reification of this
-     * statement. Such a resoruce is created and added to the model
-     * if necessary.
-     */
-    Resource asResource();
+//    /**
+//     * Returns a resource representing the reification of this
+//     * statement. Such a resoruce is created and added to the model
+//     * if necessary.
+//     */
+//    Resource asResource();
     
     /**
         get the Model this Statement was created in.
