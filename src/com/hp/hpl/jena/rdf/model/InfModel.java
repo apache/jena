@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: InfModel.java,v 1.3 2003-06-17 14:39:38 chris-dollin Exp $
+ * $Id: InfModel.java,v 1.4 2003-06-23 13:10:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model;
 
@@ -35,9 +35,9 @@ import java.util.Iterator;
  * and Derivations are not yet stable.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-17 14:39:38 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-23 13:10:58 $
  */
-public interface InfModel {
+public interface InfModel extends Model {
 
     /**
      * Return the raw RDF model being processed (i.e. the argument
