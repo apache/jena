@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.2 2003-01-13 18:22:50 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.3 2003-02-21 13:28:12 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -337,12 +337,14 @@ public class NTriple implements ARPErrorNumbers {
 			String lang = lit.getLang();
 			String parseType = lit.getParseType();
             lineNumber();
+            /*
 			if (parseType != null) {
 				System.out.print("# ");
 				if (parseType != null)
 					System.out.print("'" + parseType + "'");
 				System.out.println();
 			}
+            */
 			resource(subj);
 			resource(pred);
 			literal(lit);

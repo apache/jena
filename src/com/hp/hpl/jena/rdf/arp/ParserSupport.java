@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.1.1.1 2002-12-19 19:16:25 bwm Exp $
+ * * $Id: ParserSupport.java,v 1.2 2003-02-21 13:28:12 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -221,8 +221,15 @@ class ParserSupport implements ARPErrorNumbers, RDFParserConstants, LanguageTagC
               "<" + rslt.getURI() + "> not in Unicode Normal Form C.");
         
              if ( !ctxt.isSameAsDocument() ) {
+                boolean bad = false;
+                try {
                  URIReference other = new URIReference(ctxt.getDocument(),val);
-                 if ( !other.equals(rslt) ) {
+                 bad = !other.equals(rslt);
+                }
+                catch (Exception e) {
+                   // Note resolving the URIReference above may not work.
+                }
+                 if ( bad  ) {
       arp.parseWarning(IGN_XMLBASE_SIGNIFICANT,t.location,
            "Use of attribute xml:base changes interpretation of relative URI: \"" + val + "\".");
                  }
