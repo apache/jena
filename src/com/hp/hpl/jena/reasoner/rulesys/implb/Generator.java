@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Generator.java,v 1.9 2003-08-14 07:51:10 der Exp $
+ * $Id: Generator.java,v 1.10 2003-08-15 16:10:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-08-14 07:51:10 $
+ * @version $Revision: 1.10 $ on $Date: 2003-08-15 16:10:30 $
  */
 public class Generator implements LPAgendaEntry, LPInterpreterContext {
 
@@ -39,7 +39,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     
     /** A indexed version of the result set, used while the generator is live 
      *  to detect duplicate results */
-    protected Set resultSet = new HashSet();
+    protected Set resultSet;
     
     /** set to true if the dependent generator has new results ready for us */
     protected boolean isReady = true;
@@ -59,14 +59,20 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     /** The goal the generator is satisfying - just used in debugging */
     protected TriplePattern goal;
     
+    /** True if this generator can produce at most one answer */
+    protected boolean isSingleton;
+    
     /**
      * Constructor.
      * 
      * @param interpreter an initialized interpreter instance that will answer 
      * results for this generator.
      */
-    public Generator(LPInterpreter interpreter) {
+    public Generator(LPInterpreter interpreter, TriplePattern goal) {
         this.interpreter = interpreter;
+        this.goal = goal;       // Just used for debugging
+        isSingleton = goal.isGround();
+        if (!isSingleton) resultSet = new HashSet();
     }
     
     /**
@@ -102,9 +108,11 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * for one of its generatingCPs has produced new results).
      */
     public void setReady(ConsumerChoicePointFrame ccp) {
-        interpreter.engine.schedule(ccp);
-        isReady = true;
-        checkReadyNeeded = false;
+        if (!isComplete()) {
+            interpreter.engine.schedule(ccp);
+            isReady = true;
+            checkReadyNeeded = false;
+        }
     }
     
     /**
@@ -124,13 +132,14 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
             resultSet = null;
             isReady = false;
             completionState = LFlag.DEAD;
-            generatingCPs = null;
+            // Anyone we were generating results for is now finished
             for (Iterator i = consumingCPs.iterator(); i.hasNext(); ) {
                 ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame)i.next();
                 if ( ! ccp.isReady()) {
                     ccp.setFinished();
                 }
             }
+            generatingCPs = null;
         }
     }
     
@@ -195,7 +204,7 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
     public synchronized void pump(LPInterpreterState context) {
         if (isComplete()) return;
         if (consumingCPs.isEmpty()) {
-            System.out.println("*** Cleaning up unused generator"); // Temp
+            System.out.println("*** Cleaning up unused generator");       // TODO: remove
             setComplete();
             return;
         }
@@ -208,7 +217,11 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
                 break;
             } else {
                 // Simple triple result
-                if (resultSet.add(result)) {
+                if (isSingleton) {
+                    results.add(result);
+                    isReady = false;
+                    break;
+                } else if (resultSet.add(result)) {
                     results.add(result);
                 }
             }
@@ -224,6 +237,12 @@ public class Generator implements LPAgendaEntry, LPInterpreterContext {
      * dependent on can run.
      */
     protected void checkForCompletions() {
+        if (isSingleton && results.size() == 1) {
+            // Special, terminate a singleton as soon as we have the answer
+            setComplete();
+            return;
+        }
+        
         HashSet visited = new HashSet();
         if (runCompletionCheck(visited) != LFlag.LIVE) {
             // The scan may have left some nodes as unknown so need to 

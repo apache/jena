@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBLPRuleInfGraph.java,v 1.4 2003-08-14 17:49:06 der Exp $
+ * $Id: FBLPRuleInfGraph.java,v 1.5 2003-08-15 16:10:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  * and this one will disappear
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-14 17:49:06 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-15 16:10:30 $
  */
 public class FBLPRuleInfGraph  extends FBRuleInfGraph {
     
@@ -78,7 +78,9 @@ public class FBLPRuleInfGraph  extends FBRuleInfGraph {
      */    
     private void initLP(Graph schema) {
         if (schema != null && schema instanceof FBLPRuleInfGraph) {
-            lpbEngine = new LPBRuleEngine(this, ((FBLPRuleInfGraph)schema).lpbEngine.getRuleStore());
+            LPRuleStore newStore = new LPRuleStore();
+            newStore.addAll(((FBLPRuleInfGraph)schema).lpbEngine.getRuleStore());
+            lpbEngine = new LPBRuleEngine(this, newStore);
         } else {
             lpbEngine = new LPBRuleEngine(this);
         }
@@ -214,6 +216,7 @@ public class FBLPRuleInfGraph  extends FBRuleInfGraph {
      * may not have completely satisfied the query.
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+//        System.out.println("FBLP find called on: " + pattern); 
         if (!isPrepared) prepare();
         ExtendedIterator result = lpbEngine.find(pattern);
         // TODO: Check if we need a UniqueExtendedIterator wrapper in here
@@ -266,6 +269,25 @@ public class FBLPRuleInfGraph  extends FBRuleInfGraph {
         lpbEngine.reset();
     }
     
+//  =======================================================================
+//  Support for LP engine profiling
+    
+    /**
+     * Reset the LP engine profile.
+     * @param enable it true then profiling will continue with a new empty profile table,
+     * if false profiling will stop all current data lost.
+     */
+    public void resetLPProfile(boolean enable) {
+        lpbEngine.resetProfile(enable);
+    }
+    
+    /**
+     * Print a profile of LP rules used since the last reset.
+     */
+    public void printLPProfile() {
+        lpbEngine.printProfile();
+    }
+        
 }
 
 

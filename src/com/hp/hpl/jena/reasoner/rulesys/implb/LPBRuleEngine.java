@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.10 2003-08-14 17:49:06 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.11 2003-08-15 16:10:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-14 17:49:06 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-15 16:10:30 $
  */
 public class LPBRuleEngine {
     
@@ -53,6 +53,9 @@ public class LPBRuleEngine {
     
     /** Set of generators waiting to be run */
     protected LinkedList agenda = new LinkedList();
+    
+    /** Optional profile of number of time each rule is entered, set to non-null to profile */
+    protected HashMap profile;
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(LPBRuleEngine.class);
@@ -218,8 +221,7 @@ public class LPBRuleEngine {
         if (generator == null) {
             LPInterpreter interpreter = new LPInterpreter(this, goal, clauses, false);
             activeInterpreters.add(interpreter);
-            generator = new Generator(interpreter);
-            generator.goal = goal;      // Debug aid
+            generator = new Generator(interpreter, goal);
             schedule(generator);
             tabledGoals.put(goal, generator);
         }
@@ -236,8 +238,7 @@ public class LPBRuleEngine {
         if (generator == null) {
             LPInterpreter interpreter = new LPInterpreter(this, goal, false);
             activeInterpreters.add(interpreter);
-            generator = new Generator(interpreter);
-            generator.goal = goal;      // Debug aid
+            generator = new Generator(interpreter, goal);
             schedule(generator);
             tabledGoals.put(goal, generator);
         }
@@ -256,15 +257,102 @@ public class LPBRuleEngine {
      * Run the scheduled generators until the given generator is ready to run.
      */
     public synchronized void pump(LPInterpreterContext gen) {
+//        System.out.println("Pump agenda on engine " + this + ", size = " + agenda.size());
+//        int count = 0; 
         while(!gen.isReady()) {
-            if (agenda.isEmpty()) return;
+            if (agenda.isEmpty()) {
+//                System.out.println("Cycled " + this + ", " + count);
+                return;
+            } 
             // TODO: Consider scanning agenda for entries with max # dependents
-//            LPAgendaEntry next = (LPAgendaEntry) agenda.removeFirst();
-            LPAgendaEntry next = (LPAgendaEntry) agenda.removeLast();
+            LPAgendaEntry next = (LPAgendaEntry) agenda.removeFirst();
+//            LPAgendaEntry next = (LPAgendaEntry) agenda.removeLast();
+//            System.out.println("  pumping entry " + next);
             next.pump();
+//            count ++; 
+        }
+//        System.out.println("Cycled " + this + ", " + count);
+    }
+     
+//  =======================================================================
+//  Profiling support
+   
+    /**
+     * Record a rule invocation in the profile count.
+     */
+    public void incrementProfile(RuleClauseCode clause) {
+        if (profile != null) {
+            String index = clause.toString();
+            Count count = (Count)profile.get(index);
+            if (count == null) {
+                profile.put(index, new Count(clause).inc());
+            } else {
+                count.inc();
+            }
         }
     }
- 
+    
+    /**
+     * Reset the profile.
+     * @param enable it true then profiling will continue with a new empty profile table,
+     * if false profiling will stop all current data lost.
+     */
+    public void resetProfile(boolean enable) {
+        profile = enable ? new HashMap() : null;
+    }
+    
+    /**
+     * Print a profile of rules used since the last reset.
+     */
+    public void printProfile() {
+        if (profile == null) {
+            System.out.println("No profile collected");
+        } else {
+            ArrayList counts = new ArrayList();
+            counts.addAll(profile.values());
+            Collections.sort(counts);
+            System.out.println("LP engine rule profile");
+            for (Iterator i = counts.iterator(); i.hasNext(); ) {
+                System.out.println(i.next());
+            }
+        }
+    }
+    
+    /**
+     * Record count of number of rule invocations, used in profile structure only.
+     */
+    static class Count implements Comparable {
+        protected int count = 0;
+        protected RuleClauseCode clause;
+
+        /** Constructor */
+        public Count(RuleClauseCode clause) {
+            this.clause = clause;
+        }
+        
+        /** return the count value */
+        public int getCount() {
+            return count;        
+        }
+        
+        /** increment the count value, return the count object */
+        public Count inc() {
+            count++;
+            return this;
+        }
+        
+        /** Ordering */
+        public int compareTo(Object other) {
+            Count otherCount = (Count) other;
+            return (count < otherCount.count) ? -1 : ( (count == otherCount.count) ? 0 : +1);
+        }
+        
+        /** Printable form */
+        public String toString() {
+            return " " + count + "\t - " + clause;
+        }
+        
+    }
 }
 
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.25 2003-08-14 22:43:30 der Exp $
+ * $Id: LPInterpreter.java,v 1.26 2003-08-15 16:10:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2003-08-14 22:43:30 $
+ * @version $Revision: 1.26 $ on $Date: 2003-08-15 16:10:30 $
  */
 public class LPInterpreter {
 
@@ -183,7 +183,11 @@ public class LPInterpreter {
      */
     public synchronized Object next() {
         boolean traceOn = engine.isTraceOn();
+        
+//        System.out.println("next() on interpeter for goal " + goal); 
         StateFlag answer = run();
+//        System.out.println("end next() on interpeter for goal " + goal);
+        
         if (answer == StateFlag.FAIL || answer == StateFlag.SUSPEND) {
             return answer;
         } else if (answer == StateFlag.SATISFIED) {
@@ -344,6 +348,8 @@ public class LPInterpreter {
             } else {
                 throw new ReasonerException("Internal error in backward rule system, unrecognized choice point");
             }
+            
+            engine.incrementProfile(clause);
             
             interpreter: while (envFrame != null) {
 
@@ -757,7 +763,7 @@ public class LPInterpreter {
             return dnode;
         }
     }
-    
+
 }
 
 

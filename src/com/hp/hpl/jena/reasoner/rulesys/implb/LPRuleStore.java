@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.10 2003-08-14 17:49:06 der Exp $
+ * $Id: LPRuleStore.java,v 1.11 2003-08-15 16:10:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-14 17:49:06 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-15 16:10:30 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -58,6 +58,14 @@ public class LPRuleStore extends RuleStore {
      */
     public LPRuleStore() {
         super();
+    }
+    
+    /**
+     * Add all the rules and tabling instructions from an existing rulestore into this one.
+     */
+    public void addAll(LPRuleStore store) {
+        super.addAll(store);
+        tabledPredicates.addAll(store.tabledPredicates);
     }
     
     /**
