@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-22 16:01:05 $
+ * Last modified on   $Date: 2003-07-22 16:11:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.25 2003-07-22 16:01:05 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.26 2003-07-22 16:11:37 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -590,7 +590,7 @@ public class OntClassImpl
      *         the classes to which they belong
      */
     public ExtendedIterator listInstances() {
-        return getModel().listStatements( null, RDF.type, this ).mapWith( new SubjectAsMapper( null ) );
+        return getModel().listStatements( null, RDF.type, this ).mapWith( new SubjectAsMapper( Individual.class ) );
     }
 
 
