@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.18 2003-11-27 16:16:37 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.19 2004-01-16 16:06:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -26,7 +26,15 @@ public class ModelTestBase extends GraphTestBase
     public ModelTestBase(String name)
         { super(name); }
      
-    private static Model aModel = ModelFactory.createDefaultModel();
+    private static Model aModel = standardModel();
+    
+    private static Model standardModel()
+        {
+        Model result = ModelFactory.createDefaultModel();
+        result.setNsPrefixes( PrefixMapping.Standard );
+        return result;
+        }
+    
      /**
         create a Statement in a given Model with (S, P, O) extracted by parsing a string.
         

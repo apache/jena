@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AllCapabilities.java,v 1.2 2003-08-27 13:00:58 andy_seaborne Exp $
+  $Id: AllCapabilities.java,v 1.3 2004-01-16 16:06:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -23,6 +23,7 @@ public class AllCapabilities implements Capabilities
     public boolean deleteAllowed() { return deleteAllowed( false ); }
     public boolean deleteAllowed( boolean every ) { return true; } 
     public boolean canBeEmpty() { return true; }
+    public boolean iteratorRemoveAllowed() { return true; }
     }
 
 /*

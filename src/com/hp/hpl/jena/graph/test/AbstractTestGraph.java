@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.38 2003-10-02 09:13:05 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.39 2004-01-16 16:06:17 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -272,6 +272,33 @@ public abstract class AbstractTestGraph extends GraphTestBase
     protected void xSPO( Reifier r )
         { r.reifyAs( Node.create( "x" ), Triple.create( "S P O" ) ); }
         
+    public void testRemove()
+        { 
+        testRemove( "S ?? ??", "S ?? ??" );
+        testRemove( "S ?? ??", "?? P ??" );
+        testRemove( "S ?? ??", "?? ?? O" );
+        testRemove( "?? P ??", "S ?? ??" );
+        testRemove( "?? P ??", "?? P ??" );
+        testRemove( "?? P ??", "?? ?? O" );
+        testRemove( "?? ?? O", "S ?? ??" );
+        testRemove( "?? ?? O", "?? P ??" );
+        testRemove( "?? ?? O", "?? ?? O" );
+        }
+    
+    public void testRemove( String findRemove, String findCheck )
+        {
+        Graph g = getGraphWith( "S P O" );
+        ExtendedIterator it = g.find( Triple.create( findRemove ) );
+        try 
+            {
+            it.next(); it.remove();
+            ExtendedIterator ut = g.find( Triple.create( findCheck ) );
+            assertFalse( ut.hasNext() );
+            }
+        catch (UnsupportedOperationException e)
+            { assertFalse( g.getCapabilities().iteratorRemoveAllowed() ); }
+        }
+    
     public void testBulkRemoveWithReification()
         {        
         testBulkUpdateRemoveWithReification( true );

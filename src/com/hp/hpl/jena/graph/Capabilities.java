@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Capabilities.java,v 1.4 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: Capabilities.java,v 1.5 2004-01-16 16:05:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -41,6 +41,12 @@ public interface Capabilities
         from the graph. If everyTriple is true, any such triple may be removed.
      */
     boolean deleteAllowed( boolean everyTriple );
+    
+    /**
+    	Answer true iff the iterators returned from <b>find</b> support the .remove()
+        operation. 
+    */
+    boolean iteratorRemoveAllowed();
     
     /**
         Answer true iff the graph can be completely empty.

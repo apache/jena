@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TripleFieldIterator.java,v 1.1 2003-10-02 11:18:09 chris-dollin Exp $
+  $Id: TripleFieldIterator.java,v 1.2 2004-01-16 16:06:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -39,8 +39,8 @@ public class TripleFieldIterator extends TrackingTripleIterator
         {
         super.remove();     
         triples.remove( current );
-        A.remove( current.getSubject(), current );
-        B.remove( current.getObject(), current );
+        // A.remove( current.getSubject(), current );
+        // B.remove( current.getObject(), current );
         }       
     }
 /*
