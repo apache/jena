@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGInfGraph.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-18 15:41:38 $
+ * Last modified on   $Date: 2004-05-20 10:47:36 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGInfGraph.java,v 1.8 2004-05-18 15:41:38 ian_dickinson Exp $
+ * @version CVS $Id: DIGInfGraph.java,v 1.9 2004-05-20 10:47:36 ian_dickinson Exp $
  */
 public class DIGInfGraph
     extends BaseInfGraph
@@ -160,6 +160,26 @@ public class DIGInfGraph
     
     // overriding the BaseInfGraph methods
     
+    /**
+     * <p>Add one triple to the data graph, mark the graph not-prepared,
+     * but don't run prepare() just yet.</p>
+     * @param t A triple to add to the graph
+     */
+    public synchronized void performAdd(Triple t) {
+        fdata.getGraph().add(t);
+        isPrepared = false;
+    }
+
+    /**
+     * <p>Delete one triple from the data graph, mark the graph not-prepared,
+     * but don't run prepare() just yet.</p>
+     * @param t A triple to remove from the graph
+     */
+    public void performDelete(Triple t) {
+        fdata.getGraph().delete(t);
+        isPrepared = false;
+    }
+
     /**
      * Replace the underlying data graph for this inference graph and start any
      * inferences over again. This is primarily using in setting up ontology imports
