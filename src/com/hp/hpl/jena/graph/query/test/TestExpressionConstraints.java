@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.14 2004-06-30 12:57:59 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.15 2004-07-12 14:21:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -192,7 +192,7 @@ public class TestExpressionConstraints extends GraphTestBase
     public void testPrepareNE()
         {
         Expression e = notEqual( X, Y );
-        VariableIndexes map = new Mapping( new Node[2] );
+        VariableIndexes map = new Mapping( new Node[0] );
         // Valuator ep = e.prepare( map );        
         }
     
