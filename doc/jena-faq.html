@@ -1,11 +1,11 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.10 2004-02-02 18:09:46 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.html,v 1.11 2004-02-02 18:12:56 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
   <meta name="author" content="The Jena Team" />
-  <meta name="description" content="Frequently asked questions about the Jena 2 semantic web toolkit" />
-  <meta name="keywords" content="Jena, Jena2, FAQ, Java, semantic web, RDF, OWL" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
 
 
   <link rel="stylesheet" type="text/css" href="styles/site.css" />
@@ -27,7 +27,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <td width="25ex" style="border-right: 1px solid #DDD;">
  <div id="leftnav" style="width: 25ex;">
   <div align="center" >
-  <img src="images/JenaSWF.png" alt="jena logo" style="border: 1 solid #DDD" width="90" height="74"/>
+  <img src="images/JenaSWF.png" alt="jena logo" style="border: 1 solid #DDD"/>
   </div>
   <div class="grouptitle">on this site</div>
   <div class="item"><a href="index.html">home</a></div>
@@ -63,7 +63,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <h2>Index</h2>
 <h3>General</h3>
 <ul>
-  <li><a href="#general-0">Why do I get a <code>java.lang.NoClassDefFoundError</code> when I run a Jena application?</a></li>
+  <li><a href="#general-0">Why do I get a ClassNotFoundException when I run Jena?</a></li>
 </ul>
 <h3>RDF model API</h3>
 <ul>
@@ -74,6 +74,8 @@ Jena 2 &ndash; Frequently Asked Questions
 <ul>
   <li><a href="#reasoner-0">I want to develop my own rules, how do I get started?</a></li>
   <li><a href="#reasoner-1">Why are there two different arrows ( -&gt; and &lt;- ) in the rule syntax?</a></li>
+  <li><a href="#reasoner-2">The domain and range inferences look wrong, is that a bug?</a></li>
+  <li><a href="#reasoner-3">Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></a></li>
 </ul>
 <h3>Ontology API</h3>
 <ul>
@@ -109,10 +111,10 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h2>Answers</h2>
 <h3>General</h3>
-<p id="general-0"><strong>Q: Why do I get a <code>java.lang.NoClassDefFoundError</code> when I run a Jena application?</strong><br>
-  <strong>A:</strong> This means that one or more of the libraries that Jena depends on is not
-  on your classpath. Typically, all of the libraries (.jar files) in <code>$JENA/lib</code>,
-  where <code>$JENA</code> refers to the directory in which you installed Jena, should be on
+<p id="general-0"><strong>Q: Why do I get a ClassNotFoundException when I run Jena?</strong><br>
+  A: This means that one or more of the libraries that Jena depends on is not
+  on your classpath. Typically, all of the librarys (.jar files) in $JENA/lib,
+  where $JENA refers to the directory in which you installed Jena, should be on
   your classpath. Consult the documentation for your JDK for details on setting
   the classpath for your system. There are also a number of on-line tutorials for setting 
   the Java classpath. Consult Google or see 
@@ -180,8 +182,59 @@ Jena 2 &ndash; Frequently Asked Questions
     Is saying that if both T1 and T2 match in the dataset then add the
     backward rule "[T0 &lt;- T3, T4]" after instantiating any bound variables.
   </p>
-
-<h3>Ontology API</h3>
+  
+  <p id="reasoner-2"><strong>Q. The domain and range inferences look wrong, is that a bug?</strong><br />
+      A: The way rdfs range and domain declarations work is completely alien to 
+      anyone who thinks of RDFS and OWL as being a bit like a type system for 
+      a programming language, especially an object oriented language. Whilst there 
+      may be bugs in the inference rule sets the most common explanation for supprising 
+      results, when listing inferred domains and ranges, is this mismatch in expectations. 
+    <p> Suppose we have three classes <code>eg:Man</code> is an <code>rdfs:subClassOf</code> 
+      <code>eg:Person</code> is an <code>rdfs:subClassOf</code> <code>eg:Animal</code>. 
+      Suppose we a property <code>eg:personalName</code> which is declared to 
+      have <code>rdfs:domain</code> <code>eg:Person</code>. Now the question is 
+      what other values can be inferred for the <code>rdfs:domain</code> of <code>eg:personalName</code>?</p>
+    <p> In pure RDFS no additional conclusions can be made. The definition of 
+      domain and range is <i>intensional</i> not <i>extensional</i>. It only works 
+      forward. Declaring <code>&lt;eg:personalName rdfs:domain eg:Person&gt;</code> 
+      means that anything to which <code>eg:personalName</code> is applied can 
+      be concluded to be of type <code>eg:Person</code>. It does not work backward 
+      - if you somehow knew that all things to which <code>eg:personalName</code> 
+      applied were also <code>Foo</code>'s you cannot conclude that <code>&lt;eg:personalName 
+      rdfs:domain Foo&gt;.</code></p>
+    <p>However, RDFS permits systems to strengthen the meaning of domain and range 
+      to be extensional, so that valid domain and range deductions can be made. 
+      OWL makes use of this option. So in OWL, then in our example we can also 
+      deduce that <code>&lt;eg:personalName rdfs:domain eg:Animal&gt;</code>. 
+      If you are used to object oriented programming this may look wrong. It is 
+      tempting, but incorrect, to think of rdfs:domain as meaning <i>this is the 
+      class of objects to which this property can be applied. </i>With that mind-set 
+      you might expect to find that <code>&lt;eg:personalName rdfs:domain eg:Man&gt;</code>, 
+      after all every <code>eg:Man</code> is an <code>eg:Person</code> so it is 
+      always &quot;legal&quot; to apply <code>eg:personalName</code> to an <code>eg:Man</code>. 
+      That is true, it is legal, any <code>eg:Man</code> is allowed to have a 
+      a <code>eg:personalName</code> but <code>rdfs:domain</code> does not describe 
+      what is legal. The statement <code>&lt;P rdfs:domain C&gt;</code> just means 
+      <i>all things to which P is applied can be inferred to have class C</i>. 
+      You can see that if we tried to infer <code>&lt;eg:personalName rdfs:domain 
+      eg:Man&gt;</code> then we would start concluding that anything with a name 
+      was a man which is not right - every Man can have a name but non-Man Persons 
+      are also allowed to have names in this example.</p>
+     
+  <p id="reasoner-3"><strong>Q: Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></strong><br />
+      A: If you create an infernce graph explicitly from an OWL reasoner or implicitly
+      (by using OntModelSpec.OWL_*_RULE) then it is best if the argument models
+      (data and schema) are plain models. It is easy to accidently misuse the API and
+      create an inference model working over the results of another inference model.
+	  This is a redunancy which significantly affects performance to no useful effect.
+	  To help detect this situation we have added a warning message. The best way
+	  to stop the message is to change your model construction code so that only the
+	  final InfModel/OntModel is specified to use OWL inference. If this is not
+	  appropriate for some reason you can disable the check and warning messages 
+	  using the global flag <code>com.hp.hpl.jena.shared.impl.JenaParameters.enableOWLRuleOverOWLRuleWarnings.</code></p>
+      
+      
+    <h3>Ontology API</h3>
 <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
   etc) work?</strong><br />
   <strong>A:</strong> It does work. Extensive unit tests are used to check the correctness of Jena,
@@ -314,7 +367,7 @@ engine) or by the maximum value of a 32 bit integer, i.e., 2G.</p>
   check if the version they are using is compatible with those shipped by Jena. The current
   library versions used by Jena are:
   <ul>
-  <li><strong>Xerces</strong> - 2.6.1 (not compatible with earlier Xerces versions)</li>
+  <li><strong>Xerces</strong> - 2.6.1 (not compatible with Xerces prior to 2.6.0)</li>
   <li><strong>log4j</strong> - 1.2.7</li>
   <li><strong>junit</strong> - ?</li>
   <li><strong>icu4j</strong> - ?</li>
@@ -341,7 +394,7 @@ engine) or by the maximum value of a 32 bit integer, i.e., 2G.</p>
 <div id="logos">
 <div class="left">
 <a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework">
-  <img border="0" src="images/rdf_w3c_icon.gif" alt="Resource Description Framework" width="44" height="48">
+  <img border="0" src="images/rdf_w3c_icon.gif" alt="Resource Description Framework">
 </a>
 </div>
 
@@ -353,7 +406,7 @@ Hosted by:
        border="0"
        alt="sourceforge.net" />
 -->
-  <img src="images/sflogo-type1.png" border="0" alt="sourceforge.net" width="88" height="31"/>
+  <img src="images/sflogo-type1.png" border="0" alt="sourceforge.net"/>
 </a>
 </div>
 
