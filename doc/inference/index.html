@@ -127,24 +127,24 @@
 <p>In addition, there are convenience methods on the <code>ReasonerRegistry</code> 
   for locating a prebuilt instance of each of the main reasoners (<code>getTransitiveReasoner</code>, 
   <code>getRDFSReasoner</code>, <code>getOWLReasoner</code>, <code>getRDFSSimpleReasoner</code>).</p>
-<p>Note that the use of factory objects for constructing reasoners is to simplify 
-  the design and extension of the registry service. Once you have a reasoner instnace, 
-  the same instance can reuse multiple times by binding it to different datasets, 
-  without risk of interference - there is no need to create a new reasoner instance 
-  each time.</p>
+<p>Note that the factory objects for constructing reasoners are just there to 
+  simplify the design and extension of the registry service. Once you have a reasoner 
+  instnace, the same instance can reused multiple times by binding it to different 
+  datasets, without risk of interference - there is no need to create a new reasoner 
+  instance each time.</p>
 <p>If working with the <a href="../ontology/index.html">Ontology API</a> it is 
   not always necessary to explicitly locate a reasoner. The prebuilt instances 
   of OntModelSpec provide easy access to the appropriate reasoners to use for 
   different Ontology configurations.</p>
-<p>Similarly, if all you want is a plain RDF Mode with RDFS inference included 
+<p>Similarly, if all you want is a plain RDF Model with RDFS inference included 
   then the convenience methods <code>ModelFactory.createRDFSModel</code> can be 
   used. </p>
 <h3>Configuring a reasoner</h3>
 <p>The behaviour of many of the reasoners can be configured. To allow arbitrary 
   configuration information to be passed to reasoners we use RDF to encode the 
-  configuration information. The <code>ReasonerFactory.create</code> method can 
-  be passed a Jena <code>Resource</code> object, the properties of that object 
-  will be used to configure the created reasoner.</p>
+  configuration details. The <code>ReasonerFactory.create</code> method can be 
+  passed a Jena <code>Resource</code> object, the properties of that object will 
+  be used to configure the created reasoner.</p>
 <p>To simplify the code required for simple cases we also provide a direct Java 
   method to set a single configuration parameter, <code>Reasoner.setParameter</code>. 
   The parameter being set is identified by the corresponding configuration property.</p>
@@ -456,7 +456,7 @@ Rule rule1 concluded (eg:A eg:p eg:D) <-
 <ol>
   <li><a href="#RDFSintro">RDFS reasoner - introduction and coverage</a></li>
   <li><a href="#RDFSconfiguration">RDFS Configuration</a></li>
-  <li><a href="#RDFSexamples">RDFS Examples</a></li>
+  <li><a href="#RDFSexamples">RDFS Example</a></li>
   <li><a href="#RDFSnotes">RDFS implementation and performance notes</a></li>
 </ol>
 <h2><a name="RDFSintro"></a>RDFS reasoner - intro and coverage</h2>
@@ -576,8 +576,83 @@ _:anon1 rdf:type datatype .</pre>
 </table>
 <p>[<a href="#rdfs">RDFS index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
-<h2><a name="RDFSexamples"></a>RDFS Examples</h2>
-<p>TODO</p>
+<h2><a name="RDFSexamples"></a>RDFS Example</h2>
+<p>As a complete worked example let us create a simple RDFS schema, some instance 
+  data and use an instance of the RDFS reasoner to query the two.</p>
+<p>We shall use a trivial schema:</p>
+<pre>
+ &nbsp;&lt;rdf:Description rdf:about="&amp;eg;mum"&gt;
+ &nbsp;&nbsp;&nbsp;&lt;rdfs:subPropertyOf rdf:resource="&amp;eg;parent"/&gt;
+ &nbsp;&lt;/rdf:Description&gt;
+
+ &nbsp;&lt;rdf:Description rdf:about="&amp;eg;parent"&gt;
+ &nbsp;&nbsp;&nbsp;&lt;rdfs:range &nbsp;rdf:resource="&amp;eg;Person"/&gt;
+ &nbsp;&nbsp;&nbsp;&lt;rdfs:domain rdf:resource="&amp;eg;Person"/&gt;
+ &nbsp;&lt;/rdf:Description&gt;
+
+ &nbsp;&lt;rdf:Description rdf:about="&amp;eg;age"&gt;
+ &nbsp;&nbsp;&nbsp;&lt;rdfs:range rdf:resource="&amp;xsd;integer" /&gt;
+ &nbsp;&lt;/rdf:Description&gt;
+</pre>
+<p>This defines a property <code>parent</code> from <code>Person</code> to <code>Person</code>, 
+  a sub-property <code>mum</code> of <code>parent</code> and an integer-valued 
+  property <code>age</code>.</p>
+<p>The the equally simple instace file:</p>
+<pre>
+ &nbsp;&lt;Teenager rdf:about="&amp;eg;colin"&gt;
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;mum rdf:resource="&amp;eg;rosy" /&gt;
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;age&gt;13&lt;/age&gt;
+ &nbsp;&lt;/Teenager&gt;
+</pre>
+<p>
+  Which defines a <code>Teenager</code> called <code>colin</code> who has a <code>mum</code> 
+  <code>rosy</code> and an <code>age</code> of 13.</p>
+<p>The the following code fragment can be used to read files containing these 
+  deifnitions, create an inference model and query it for information on the <code>rdf:type</code> 
+  of <code>colin</code> and the <code>rdf:type</code> of <code>Person</code>:</p>
+<pre>Model schema = ModelLoader.loadModel("file:data/rdfsDemoSchema.rdf");
+Model data = ModelLoader.loadModel("file:data/rdfsDemoData.rdf");
+InfModel infmodel = ModelFactory.createRDFSModel(schema, data);
+        
+Resource colin = infmodel.getResource("urn:x-hp:eg/colin");
+System.out.println("colin has types:");
+printStatements(infmodel, colin, RDF.type, null);
+        
+Resource Person = infmodel.getResource("urn:x-hp:eg/Person");
+System.out.println("\nPerson has types:");
+printStatements(infmodel, Person, RDF.type, null);</pre>
+<p>This produces the output:</p>
+<pre>colin has types:
+ - (eg:colin rdf:type eg:Teenager)
+ - (eg:colin rdf:type rdfs:Resource)
+ - (eg:colin rdf:type eg:Person)
+
+Person has types:
+ - (eg:Person rdf:type rdfs:Class)
+ - (eg:Person rdf:type rdfs:Resource)</pre>
+<p>Showing that <code>colin</code> is both a <code>Teenager</code> (by direct 
+  definition), a <code>Person</code> (because he has a mum) and an <code>rdfs:Resource</code>. 
+  Also showing that Person is an rdfs:Class, even though that wasn't explicit 
+  in the schema, because it is used as object of range and domain statements.</p>
+<p>If we add the additional code:</p>
+<pre>ValidityReport validity = infmodel.validate();
+if (validity.isValid()) {
+    System.out.println("\nOK");
+} else {
+    System.out.println("\nConflicts");
+    for (Iterator i = validity.getReports(); i.hasNext(); ) {
+        ValidityReport.Report report = (ValidityReport.Report)i.next();
+        System.out.println(" - " + report);
+    }
+}</pre>
+<p>
+  Then we get the additional output:</p>
+<pre>Conflicts
+ - Error (dtRange): Property urn:x-hp:eg/age has a typed range 
+Datatype[http://www.w3.org/2001/XMLSchema#integer -> class java.math.BigInteger]
+that is not compatible with 13</pre>
+<p>because the age was given using an RDF plain literal, even though the string 
+  &quot;13&quot; could be parsed as an xsd:integer.</p>
 <p>[<a href="#rdfs">RDFS index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
 <h2><a name="RDFSnotes"></a>RDFS implementation and performance notes</h2>
@@ -590,44 +665,48 @@ _:anon1 rdf:type datatype .</pre>
   to different rule sets. These rule sets are located by looking for files &quot;<code>etc/*.rules</code>&quot; 
   on the classpath and so could, in principle, be overridden by applications wishing 
   to modify the rules. </p>
-<p>Performance for in-memory queries appears to be good. Using the same same synthetic 
-  dataset described in [TODO: Volz reference] we obtain the following times to 
-  determine the extension of a class:</p>
-<table width="90%" border="1" cellspacing="0" cellpadding="0">
+<p>Performance for in-memory queries appears to be good. Using a synthetic dataset 
+  we obtain the following times to determine the extension of a class from a class 
+  hierarchy:</p>
+<table width="86%" border="1" cellspacing="0" cellpadding="0">
   <tr> 
-    <td><b>Set</b></td>
-    <td><b>#concepts</b></td>
-    <td><b>#instances</b></td>
-    <td><b>XSB</b></td>
-    <td><b>JenaRDFS</b></td>
+    <td width="6%"><b>Set</b></td>
+    <td width="14%"><b>#concepts</b></td>
+    <td width="18%"><b>total instances</b></td>
+    <td width="25%"><b>#instances of concept</b></td>
+    <td width="14%"><b>XSB*</b></td>
+    <td width="23%"><b>JenaRDFS</b></td>
   </tr>
   <tr> 
-    <td>1</td>
-    <td>155</td>
-    <td>1550</td>
-    <td>0.16</td>
-    <td>0.07</td>
+    <td width="6%">1</td>
+    <td width="14%">155</td>
+    <td width="18%">1550</td>
+    <td width="25%">310</td>
+    <td width="14%">0.16</td>
+    <td width="23%">0.07</td>
   </tr>
   <tr> 
-    <td>2</td>
-    <td>780</td>
-    <td>7800</td>
-    <td>0.47</td>
-    <td>0.25</td>
+    <td width="6%">2</td>
+    <td width="14%">780</td>
+    <td width="18%">7800</td>
+    <td width="25%">1560</td>
+    <td width="14%">0.47</td>
+    <td width="23%">0.25</td>
   </tr>
   <tr> 
-    <td>3</td>
-    <td>3905</td>
-    <td>39050</td>
-    <td>2.11</td>
-    <td>1.16</td>
+    <td width="6%">3</td>
+    <td width="14%">3905</td>
+    <td width="18%">39050</td>
+    <td width="25%">7810</td>
+    <td width="14%">2.11</td>
+    <td width="23%">1.16</td>
   </tr>
 </table>
-<p>The times are in seconds normalized to a 1.1GHz Pentium processor. The XSB 
-  figures are taken directly form the referenced paper and do not include any 
-  rule compilation time. The figures are not really directly comparable and are 
-  just offered to illustrate that the RDFSRuleReasoner performance has similar 
-  scaling and performance to other rule-based implementations.</p>
+<p>The times are in seconds, normalized to a 1.1GHz Pentium processor. The XSB* 
+  figures are taken from a pre-published paper and may not be directly comparable 
+  (for example they do not include any rule compilation time) - they just offered 
+  to illustrate that the RDFSRuleReasoner performance has broadly similar scaling 
+  and performance to other rule-based implementations.</p>
 <p>The Jena RDFS implementation has not been tested and evaluated over database 
   models. The Jena architecture makes it easy to construct such models but in 
   the absence of caching we would expect the peformance to be weak. Future work 
@@ -641,7 +720,7 @@ _:anon1 rdf:type datatype .</pre>
   <li><a href="#OWLintro">OWL reasoner introduction</a></li>
   <li><a href="#OWLcoverage">OWL coverage</a></li>
   <li><a href="#OWLconfiguration">OWL configuration</a></li>
-  <li><a href="#OWLexamples">OWL examples</a></li>
+  <li><a href="#OWLexamples">OWL example</a></li>
   <li><a href="#OWLnotes">OWL notes and limitations</a></li>
 </ol>
 <p><a name="OWLintro"></a>The second major reasoner supplied with Jena2 is a rule-based 
@@ -833,7 +912,7 @@ _:anon1 rdf:type datatype .</pre>
   - like that that supported by the RDFS reasoner in the form of the level settings.</p>
 <p>[<a href="#owl">OWL index</a>] [<a href="#index">main index</a>]</p>
 <h2></h2>
-<h2><a name="OWLexamples"></a>OWL Examples</h2>
+<h2><a name="OWLexamples"></a>OWL Example</h2>
 <p>TODO</p>
 <p>- recognition example</p>
 <p>- class extension example</p>
