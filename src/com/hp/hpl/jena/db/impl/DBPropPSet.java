@@ -23,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
-* @version $Revision: 1.3 $
+* @version $Revision: 1.4 $
  */
 public class DBPropPSet extends DBProp {
 
@@ -31,10 +31,12 @@ public class DBPropPSet extends DBProp {
 	 * @since Jena 2.0
 	 */
 
+	public static Node_URI pSetName = (Node_URI)DB.pSetName.getNode();
 	public static Node_URI pSetType = (Node_URI)DB.pSetType.getNode();
 	
-	public DBPropPSet( SpecializedGraph g, String name, String type) {
-		super( g, new Node_URI(DB.getURI()+name));
+	public DBPropPSet( SpecializedGraph g, String type) {
+		super( g);
+		putPropString(pSetName, DBProp.generateUniqueID());
 		putPropString(pSetType, type);
 	}
 	
@@ -42,7 +44,7 @@ public class DBPropPSet extends DBProp {
 		super(g,n);
 	}	
 	
-	public String getName() { return self.getURI().substring(DB.getURI().length()); }
+	public String getName() { return getPropString( pSetName); }
 	public String getType() { return getPropString( pSetType); };
 
 }

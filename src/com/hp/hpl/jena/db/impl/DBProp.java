@@ -5,8 +5,12 @@
 
 package com.hp.hpl.jena.db.impl;
 
+import java.net.UnknownHostException;
+import java.rmi.server.UID;
+
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.DB;
 
 
 /**
@@ -23,12 +27,17 @@ import com.hp.hpl.jena.util.iterator.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public abstract class DBProp {
 
 	protected SpecializedGraph graph = null;
 	protected Node self = null;
+	
+	public DBProp( SpecializedGraph g) {
+		graph = g;
+		self = generateNodeURI();
+	}			
 	
 	public DBProp( SpecializedGraph g, Node n) {
 		graph = g;
@@ -38,7 +47,7 @@ public abstract class DBProp {
 	public Node getNode() { return self; }
 	
 	protected void putPropString( Node_URI predicate, String value) {
-		putPropNode(predicate, new Node_Literal( new LiteralLabel(value)));
+		putPropNode(predicate, new Node_Literal( new LiteralLabel(value, "")));
 	}		
 	
 	protected void putPropNode( Node_URI predicate, Node node) {
@@ -86,6 +95,23 @@ public abstract class DBProp {
 		it.close();
 		return result;
 	}	
+
+	public static String generateUniqueID() {
+		UID uid = new UID();
+		String hostname;
+		try {
+			hostname = java.net.InetAddress.getLocalHost().getHostAddress().toString();
+		} catch (UnknownHostException e) {
+			hostname = "localhost";
+		}
+		return (hostname + uid.toString()).replace('.','_').replace(':','_').replace('-','_');
+	}
+
+	public static Node_URI generateNodeURI() {
+		String generateUniqueID = null;
+		return new Node_URI(DB.uri + generateUniqueID());
+	}
+	
 
 }
 

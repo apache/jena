@@ -5,14 +5,11 @@
 
 package com.hp.hpl.jena.db.impl;
 
-import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,7 +32,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.9 $ on $Date: 2003-05-06 09:43:49 $
+* @version $Revision: 1.10 $ on $Date: 2003-05-06 21:18:26 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -57,6 +54,11 @@ public abstract class DriverRDB implements IRDBDriver {
 	* Cached name of this class's SpecializedGraph_XXX class
 	*/
    protected String m_lsetClassName;
+   
+   /**
+	* Cached name of this class's SpecializedGraphReifer_XXX class
+	*/
+   protected String m_lsetReifierClassName;
    
    /** The class name of the database driver (e.g. jdbc.sql.class)*/
    protected  String DRIVER_NAME;     
@@ -125,12 +127,6 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	protected SQLCache m_sql = null;
 
-   /** 
-	* Each PSet_TripleStore_RDB instance is associated with a given 
-	* instance of DBPropPSet. 
-	*/
-   private  Hashtable m_NameMap = new Hashtable();
-
     /** Cache a reference to the system property graph (java) **/
     protected SpecializedGraph m_sysProperties = null;
     
@@ -188,8 +184,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		
 		// The database has already been formatted - just grab the properties
-		IPSet pSet = createIPSetInstanceFromName(m_psetClassName);
-		pSet.setASTname(SYSTEM_PROP_TNAME);
+		IPSet pSet = createIPSetInstanceFromName(m_psetClassName, SYSTEM_PROP_TNAME);
 		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet);
 		m_dbProps = new DBPropDatabase(m_sysProperties);
 		return m_sysProperties;		
@@ -216,20 +211,47 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		
 		// Construct the system properties
-		IPSet pSet = createIPSetInstanceFromName(m_psetClassName);
-		pSet.setASTname(SYSTEM_PROP_TNAME);
+		IPSet pSet = createIPSetInstanceFromName(m_psetClassName, SYSTEM_PROP_TNAME);
 		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet);
 						
 		// The following call constructs a new set of database properties and
 		// adds them to the m_sysProperties specialized graph.
-		m_dbProps = new DBPropDatabase( m_sysProperties, createUniqueIdentifier(), 
-							m_dbcon.getDatabaseType(), VERSION, String.valueOf(MAX_LITERAL));
+		m_dbProps = new DBPropDatabase( m_sysProperties, m_dbcon.getDatabaseType(), 
+		                                VERSION, String.valueOf(MAX_LITERAL));
 			
 		// Now we also need to construct the parameters that will be the
 		// default settings for any graph added to this database
 		new DBPropGraph( m_sysProperties, DEFAULT_PROPS, "generic");
 
 		return m_sysProperties;		
+	}
+	
+	
+	/**
+	 * Construct and return a new specialized graph.
+	 * @param graphProperties A set of customization properties for the specialized graph.
+	 */
+	public List createSpecializedGraphs(DBPropGraph graphProperties) {
+		
+		/** TODO Uncomment this once the reifier is ready
+		// Add the reifier first
+		DBPropPSet pSetReifier = new DBPropPSet(m_sysProperties, "PSET_"+graphProperties.getName()+"_REIFIER", m_psetClassName);
+		DBPropLSet lSetReifier = new DBPropLSet(m_sysProperties, "LSET_"+graphProperties.getName()+"_REIFIER", m_lsetReifierClassName);
+		lSetReifier.setPSet(pSetReifier);
+		graphProperties.addLSet(lSetReifier);
+		**/
+		
+		// Now add support all all non-reified triples
+		DBPropPSet pSet = new DBPropPSet(m_sysProperties, m_psetClassName);
+		DBPropLSet lSet = new DBPropLSet(m_sysProperties, "LSET_"+graphProperties.getName(), m_lsetClassName);
+		lSet.setPSet(pSet);
+		graphProperties.addLSet(lSet);
+
+		// Note - there is an assumption here that the order in which we add
+		// these will be maintained - that's not true for graphs in general,
+		// but our properties are always stored in our persistent graphs and
+		// we know they do maintain ordering.
+		return recreateSpecializedGraphs( graphProperties );
 	}
 	
 	/**
@@ -242,35 +264,43 @@ public abstract class DriverRDB implements IRDBDriver {
 
 		Iterator it = graphProperties.getAllLSets();
 		while(it.hasNext() ) {
-			DBPropLSet lSet = (DBPropLSet)it.next();
-			result.add(recreateSpecializedGraph( lSet ));
+			DBPropLSet lSetProps = (DBPropLSet)it.next();
+			DBPropPSet pSetProps = lSetProps.getPset();
+
+			IPSet pSet = createIPSetInstanceFromName(pSetProps.getType(), pSetProps.getName());		
+			result.add( createLSetInstanceFromName( lSetProps.getType(), pSet));		
 		}
 		
-		return result;
-		
+		return result;		
 	}
 	
-	/**
-	 * Construct and return a new specialized graph.
-	 * @param graphProperties A set of customization properties for the specialized graph.
-	 */
-	public List createSpecializedGraphs(DBPropGraph graphProperties) {
+    /**
+     * Create a new IPSet instance of the named implementation class and set the db connection.
+     * 
+     * @param pName name of a class that implements IPSet.
+     * @return an instance of the named class with the db connection set.
+     */
+	private IPSet createIPSetInstanceFromName(String className, String tableName) {
+		IPSet pSet = null;		
+		try {
+			// get PSet
+			pSet = (IPSet) Class.forName(className).newInstance();
+			pSet.setDriver(this);
+			pSet.setMaxLiteral(MAX_LITERAL);
+			pSet.setSQLType(ID_SQL_TYPE);
+			pSet.setSkipDuplicateCheck(SKIP_DUPLICATE_CHECK);
+			pSet.setSkipAllocateId(SKIP_ALLOCATE_ID);
+			pSet.setEmptyLiteralMarker(EMPTY_LITERAL_MARKER);
+			pSet.setSQLCache(m_sql);
+			pSet.setInsertByProcedure(INSERT_BY_PROCEDURE);
+			pSet.setCachePreparedStatements(CACHE_PREPARED_STATEMENTS);
+			pSet.setASTname(ASSERTED_TABLE_BASE+tableName);
+		} catch (Exception e) {
+			Log.warning("Unable to create IPSet instance " + e);
+		}
+		return pSet;
+	}	
 		
-		List result = new ArrayList();
-
-		// In the future we should do something more sophisticated,
-		// but for now we keep things simple.
-
-		// First choose a pSet to hold things - for now, assume a new
-		// pSet for each new Graph
-		DBPropPSet pSet = new DBPropPSet(m_sysProperties, "PSET_"+graphProperties.getName(), m_psetClassName);
-		DBPropLSet lSet = new DBPropLSet(m_sysProperties, "LSET_"+graphProperties.getName(), m_lsetClassName);
-		lSet.setPSet(pSet);
-		graphProperties.addLSet(lSet);
-		result.add(createSpecializedGraph(lSet));
-		return result;
-	}
-	
 	private SpecializedGraph createLSetInstanceFromName(String lSetName, IPSet pset) {
 		SpecializedGraph sg = null;		
 		try {
@@ -285,121 +315,6 @@ public abstract class DriverRDB implements IRDBDriver {
 		return sg;
 	}
 
-    /**
-     * Create a new IPSet instance of the named implementation class and set the db connection.
-     * 
-     * @param pName name of a class that implements IPSet.
-     * @return an instance of the named class with the db connection set.
-     */
-	private IPSet createIPSetInstanceFromName(String pName) {
-		IPSet pSet = null;		
-		try {
-			Class cls = Class.forName(pName);	
-			// get PSet
-			pSet = (IPSet) Class.forName(pName).newInstance();
-			pSet.setDriver(this);
-			pSet.setMaxLiteral(MAX_LITERAL);
-			pSet.setSQLType(ID_SQL_TYPE);
-			pSet.setSkipDuplicateCheck(SKIP_DUPLICATE_CHECK);
-			pSet.setSkipAllocateId(SKIP_ALLOCATE_ID);
-			pSet.setEmptyLiteralMarker(EMPTY_LITERAL_MARKER);
-			pSet.setSQLCache(m_sql);
-			pSet.setInsertByProcedure(INSERT_BY_PROCEDURE);
-			pSet.setCachePreparedStatements(CACHE_PREPARED_STATEMENTS);
-
-		} catch (Exception e) {
-			Log.warning("Unable to create IPSet instance " + e);
-		}
-		return pSet;
-	}
-		 
-	/**
-	 * Create a new SpecializedGraph instance from properties.
-	 * 
-	 * @param lProp logical property set.
-	 * @return an instance of a class that implements SpecializedGraph.
-	 */
-	public SpecializedGraph createSpecializedGraph(DBPropLSet lProp) {
-		DBPropPSet pProp = lProp.getPset();
-		IPSet pset = findOrCreatePSet(pProp);
-		
-		SpecializedGraph g = null;
-		
-		try { 
-		 // get SpecializedGraph
-		 Class cls = Class.forName(lProp.getType());
-		 Class[] params2 = {IPSet.class};
-		 java.lang.reflect.Constructor con = cls.getConstructor(params2);
-		 Object[] args2 = {pset};
-		 g = (SpecializedGraph)con.newInstance(args2);
-		} catch (Exception e) {
-			Log.severe("createSpecializedGraph: " + e);
-		}
-		return g;
-	}
-	
-//	=======================================================================
-//	 static methods
-
-	/** 
-	 * adds the IPSet instance to the m_NameMap hash table, using the
-	 * name of the DBPropPSet as the key.
-	 */
-	protected  void addPSet(String name,  IPSet pSet){
-		m_NameMap.put(name, pSet);
-	}
-
-
-	/** 
-	 * retrieves the IPSet instance to the m_NameMap hash table, using the
-	 * name of the DBPropPSet as the key.
-	 * @return IPSet that was found
-	 */
-	protected  IPSet findPSet(String name){
-		return (IPSet) m_NameMap.get(name);
-	}
-
-	/**
-	 * Given the name of an instance of a class that implements IPSet, 
-	 * find or create an instance of it.
-	 * (This name is obtained from the DBPropPSet instance.)
-	 * 
-	 * @param pName is the name of the IPSet instance.
-	 * @return IPSet that was found or created
-	 */
-	public IPSet findOrCreatePSet(String pName){
-		IPSet pSet = findPSet(pName);
-		if (pSet == null) {
-			pSet = createIPSetInstanceFromName(m_psetClassName);
-			pSet.setASTname(ASSERTED_TABLE_BASE+pName);
-			addPSet(pName, pSet);
-		}
-		return pSet;
-	}
-
-	/**
-	 * Given an instance of DBPropPSet (PSet properties), 
-	 * get the property set's name find or create an instance of it.
-	 * 
-	 * @param pProp is the DBPropPSet instance to be
-	 * associated with the new IPSet.
-	 *
-	 * @return IPSet that was found or created
-	 */
-	public IPSet findOrCreatePSet(DBPropPSet pProp){
-		String pName = pProp.getName();
-		return findOrCreatePSet(pName);
-	}
-	
-	/**
-	 * Construct and return a specialized graph that already exists in the db.
-	 * @param graphProperties
-	 * @return SpecializedGraph which was recreated.
-	 */
-	public SpecializedGraph recreateSpecializedGraph(DBPropLSet lProp) {
-		return createSpecializedGraph(lProp);
-	}
-	
 	/**
 	 * Remove the specialized graph, erasing all trace of a Graph.
 	 * @param graphId The identity of the Graph which these specialized graphs should hold
@@ -463,7 +378,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public DBPropGraph getDefaultModelProperties() {
 		SpecializedGraph sg = getSystemSpecializedGraph();
-		DBPropGraph result = DBPropGraph.findPropGraph(sg, DEFAULT_PROPS);
+		DBPropGraph result = DBPropGraph.findPropGraphByName(sg, DEFAULT_PROPS);
 		if (result == null) {
 			Log.severe("No default Model Properties found");
 			// Construct the parameters that will be the
@@ -511,14 +426,10 @@ public abstract class DriverRDB implements IRDBDriver {
 				m_sql.runSQLGroup("dropTable", (String) it.next());
 			}
 			if (!SKIP_ALLOCATE_ID) {
-				removeSequence("JENA_LITERALS_GEN");
-				removeSequence("JENA_GRAPHS_GEN");
-				/*
 				Iterator seqIt = getSequences().iterator();
 				while (seqIt.hasNext()) {
 					removeSequence((String)seqIt.next());
 				}
-				*/
 			}
 		} catch (SQLException e1) {
 			throw new RDFRDBException("Internal SQL error in driver", e1);
@@ -553,7 +464,6 @@ public abstract class DriverRDB implements IRDBDriver {
 		if (it != null) {
 			return (it.hasNext());
 		}		
-		it.close();
 		return false;
 	}
 
@@ -742,25 +652,6 @@ public abstract class DriverRDB implements IRDBDriver {
     public boolean supportsJenaReification() {
     	return false;
     }
-
-	/**
-	 * Create a unique identifier.
-	 * Use the local IP address and the date - this is not perfect, but 
-	 * sufficient for our simple needs.
-	 * @return String identifier.
-	 */
-	static String createUniqueIdentifier() {
-		String localhost;
-		try {
-			localhost = java.net.InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			localhost = "localhost";
-		}
-
-		return localhost + "/" + (new Date()).getTime();
-
-	}
-
 }
 
 /*

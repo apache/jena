@@ -26,22 +26,21 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
+ * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
 
-	/**
-	 * @since Jena 2.0
-	 */
-
-	public static String graphNamePrefix = DB.getURI() + "Graph.";
+	public static String graphURIPrefix = "http://jena.hp.com/graph.";
+	public static Node_URI graphName = (Node_URI)DB.graphName.getNode();
 	public static Node_URI graphType = (Node_URI)DB.graphType.getNode();
 	public static Node_URI graphLSet = (Node_URI)DB.graphLSet.getNode();
 	public static Node_URI graphPrefix = (Node_URI)DB.graphPrefix.getNode();
 	
-	public DBPropGraph( SpecializedGraph g, String name, String type) {
-		super(g, new Node_URI(graphNamePrefix+name));
+	public DBPropGraph( SpecializedGraph g, String symbolicName, String type) {
+		super(g);
 		
+		putPropString(graphName, symbolicName);
 		putPropString(graphType, type);
 	}
 	
@@ -49,9 +48,10 @@ public class DBPropGraph extends DBProp {
 		super(g,n);
 	}	
 	
-	public DBPropGraph( SpecializedGraph g, String newName, Graph oldProperties) {
-		super(g, new Node_URI(graphNamePrefix+newName));
+	public DBPropGraph( SpecializedGraph g, String newSymbolicName, Graph oldProperties) {
+		super(g);
 		
+		putPropString(graphName, newSymbolicName);
 		putPropNode(graphType, DBProp.findProperty(oldProperties, graphType));
 		
 	}
@@ -82,7 +82,7 @@ public class DBPropGraph extends DBProp {
 		addPrefix( new DBPropPrefix( graph, prefix, uri) );
 	}
 	
-	public String getName() { return self.getURI().substring(graphNamePrefix.length()); }
+	public String getName() { return getPropString( graphName); }
 	public String getType() { return getPropString( graphType); };
 	
 	public ExtendedIterator getAllLSets() {
@@ -127,6 +127,7 @@ public class DBPropGraph extends DBProp {
 		return result;
 	}
 	
+	
 	private class MapToLSet implements Map1 {
 		public Object map1( Object o) {
 			Triple t = (Triple) o;
@@ -141,12 +142,13 @@ public class DBPropGraph extends DBProp {
 		}
 	}
 	
-	public static DBPropGraph findPropGraph( SpecializedGraph graph, String name ) {
-		Node_URI myNode = new Node_URI(graphNamePrefix+name);
+	public static DBPropGraph findPropGraphByName( SpecializedGraph graph, String name ) {
+		
+		Node myNode = new Node_Literal( new LiteralLabel(name, ""));
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator it =  graph.find(new StandardTripleMatch(myNode, null, null), complete);
+		Iterator it =  graph.find(new StandardTripleMatch(null, graphName, myNode), complete);
 		if( it.hasNext() )
-			return new DBPropGraph( graph, myNode);
+			return new DBPropGraph( graph, ((Triple)it.next()).getSubject());
 		else
 			return null;
 	}

@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * simplify the calling pattern for ModelRDB factory methods.
 * *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.2 $
+* @version $Revision: 1.3 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -277,7 +277,7 @@ public class DBConnection implements IDBConnection {
 	 public boolean containsModel(String name) throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
-		return (DBPropGraph.findPropGraph(m_driver.getSystemSpecializedGraph(), name.toUpperCase() ) != null );		
+		return (DBPropGraph.findPropGraphByName(m_driver.getSystemSpecializedGraph(), name.toUpperCase() ) != null );		
 	 }
 
 	/**
@@ -294,7 +294,7 @@ public class DBConnection implements IDBConnection {
 	 public boolean containsDefaultModel() throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
-		return (DBPropGraph.findPropGraph(m_driver.getSystemSpecializedGraph(), GraphRDB.DEFAULT ) != null );		
+		return (DBPropGraph.findPropGraphByName(m_driver.getSystemSpecializedGraph(), GraphRDB.DEFAULT ) != null );		
 	 }
 
 	/** 

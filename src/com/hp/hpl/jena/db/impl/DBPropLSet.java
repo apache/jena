@@ -27,15 +27,17 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class DBPropLSet extends DBProp {
 
+	public static Node_URI lSetName = (Node_URI)DB.lSetName.getNode();
 	public static Node_URI lSetType = (Node_URI)DB.lSetType.getNode();
 	public static Node_URI lSetPSet = (Node_URI)DB.lSetPSet.getNode();
 	
 	public DBPropLSet( SpecializedGraph g, String name, String type) {
-		super( g, new Node_URI(DB.getURI()+name));
+		super( g);
+		putPropString(lSetName, name);
 		putPropString(lSetType, type);
 	}
 	

@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -45,8 +45,8 @@ public class DBPropDatabase extends DBProp {
 	
 	protected static SimpleDateFormat dateFormat = null;
 
-	public DBPropDatabase( SpecializedGraph g, String name, String engineType, String driverVersion, String maxLiteral) {
-		super(g, new Node_URI(DB.getURI()+name));
+	public DBPropDatabase( SpecializedGraph g, String engineType, String driverVersion, String maxLiteral) {
+		super(g);
 		
 		if( dateFormat == null ) {
 			// Use ISO 8601 Date format and write all dates as UTC time
@@ -71,7 +71,7 @@ public class DBPropDatabase extends DBProp {
 		super(g,findDBPropNode(g));
 	}	
 	
-	public String getName() { return self.getURI().substring(DB.getURI().length()); }
+	public String getName() { return self.getURI(); }
 	public String getEngineType() { return getPropString( dbEngineType); };
 	public String getDriverVersion() { return getPropString( dbDriverVersion);};
 	public String getFormatDate() { return getPropString( dbFormatDate); };
