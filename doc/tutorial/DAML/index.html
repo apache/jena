@@ -1,0 +1,1122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Jena Tutorial - DAML</TITLE>
+<META content="text/html; charset=utf-8" http-equiv=Content-Type>
+<LINK href="http://purl.org/DC/elements/1.0/" rel=schema.DC>
+<META content="Jena Tutorial - DAML" name=DC.Title>
+<META content="Jeremy Carroll" name=DC.Creator>
+<META content="Tutorial for DAML API within Jena." name=DC.Description>
+<META content=en name=DC.Language>
+<META content="web page ; tutorial" name=DC.Type>
+<META content="text/html" name="DC.Format">
+<!--
+<RDF:RDF 
+xmlns:dc="http://purl.org/dc/elements/1.1/" 
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<rdf:Description rdf:about="http://seaborne-a-2/JenaTutorial/TutorialRDQL.html">
+	<dc:title>Jena Tutorial - DAML</dc:title>
+	<dc:creator>Jeremy Carroll</dc:creator>
+	<dc:description>Tutorial for DAML API within Jena.</dc:description>
+	<dc:language>env</dc.language>
+	<dc:type>web page ; tutorial</dc:type>
+	<dc:format>text/html</dc:format>
+</rdf:Description>
+</RDF:RDF>
+-->
+<LINK href="../tutorial.css" 
+rel="stylesheet" type="text/css">
+</HEAD>
+<BODY>
+<H1 class=title>Jena Tutorial</H1>
+<H1 class=title>DAML+OIL - Ontology Description</H1>
+<P>Jeremy Carroll</P>
+<P>April 2002</P>
+<H1><A name="Introduction">DAML API Introduction</A></H1>
+<P>
+DAML+OIL is a means for describing the vocabulary used within some RDF.
+For example, in the vCards we have already seen we have used 
+&lt;vCard:FN&gt; and &lt;vCard:EMAIL&gt;. But what are these supposed to mean? 
+How should you use them?
+What is the relationship between them? The job of the DAML layer is to provide 
+in-depth formal answers to such questions.
+</P>
+<P>
+We have seen that this vocabulary was introduced using two descriptions in
+English (<a href="http://www.w3.org/TR/vcard-rdf">the vCard in RDF W3C note</a> and
+<a href="ftp://ftp.isi.edu/in-notes/rfc2426.txt">the original vCard RFC</a>).
+There is also <a href="http://www.w3.org/2001/vcard-rdf/3.0#">a more formal description</a>, 
+given using an <a href="http://www.w3.org/2001/vcard-rdf/3.0">RDF Schema</a> (<a href="../copies/vcard.rdfs.txt">local copy</a>).
+The DAML+OIL description of the same vocabulary can be thought of as extending this schema,
+or as providing an alternative, deeper schema.
+</P>
+<P>
+Within Jena, we use "DAML" where we should, more properly say "DAML+OIL". 
+DAML+OIL is the language component of DAML, 
+which as a project had a number of other important deliverables.
+More information about DAML and DAML+OIL can be found at:
+</P>
+<UL>
+<LI><a href="http://www.daml.org">www.daml.org</a>
+</LI>
+<LI><a href="http://www.daml.org/language/">The DAML+OIL language.</a>
+</LI>
+<LI><a href="http://www.daml.org/2001/03/daml+oil-walkthru.html">The DAML+OIL walk-thru.</a>
+</LI>
+</UL>
+<P>
+None of these are prerequisites for this tutorial.
+Students of this tutorial will be most interested in the walk-thru; 
+but even that is quite challenging for people unfamiliar with the underlying 
+concepts. Some students may find it easier to read this tutorial before
+stuggling with the more advanced description logic concepts needed
+for the walk-thru.
+Some students may prefer studying both the DAML+OIL walk-thru and this tutorial at the same time, 
+perhaps scanning both first and then stepping through them
+in more detail, switching from one to the other every so often.
+The two are very different and have different objectives. In particularly the DAML+OIL walk-thru covers 
+more of the language than this tutorial; whereas this tutorial concentrates on the
+use of DAML within Java, rather than the XML seralization.
+</P>
+<H1>Contents</H1>
+<OL>
+
+<LI><A href="#Introduction">DAML API Introduction</A></LI>
+<LI><A href="#Hello">Getting Started</A><OL>
+<LI><A href="#Create">Creating an Ontology</A></LI>
+<LI><A href="#write">Writing your Ontology as RDF/XML and N-triple</A></LI>
+<LI><A href="#Accessor">Using Accessors to Modify the Ontology's Properties</A></LI>
+<LI><A href="#DAMLProperty">Adding Properties to the Ontology</A></LI>
+<LI><A href="#data-range">Datatype Range Constraints</A></LI>
+<LI><A href="#DAMLClass">Adding Classes to the Ontology</A></LI>
+<LI><A href="#domain">Adding Domain Constraints</A></LI>
+</OL></LI>
+<LI><A href="#tbox">Reading and Navigating an Ontology</A><OL>
+<LI><A href="#XML">DAML+OIL and XML</A></LI>
+<LI><A href="#listClass">Listing the Classes in an Ontology</A></LI>
+<LI><A href="#listProperty">Listing the Properties in an Ontology</A></LI>
+<LI><A href="#frame">Framing Properties</A></LI>
+
+<LI><A href="#unqiueProperty">Unique and Unambiguous Properties</A></LI>
+
+</OL></LI>
+<LI><A href="#abox">Instances</A><OL>
+
+<LI><A href="#xbox">T-Boxes and A-Boxes</A></LI>
+
+<LI><A href="#loadInstance">Loading Examples</A></LI>
+
+<LI><A href="#listInstances">Listing the vCards</A></LI>
+
+<LI><A href="#findInstances">Finding Fred's vCard</A></LI>
+
+<LI><A href="#mixing">Mixing Jena Model and DAMLModel APIs</A></LI>
+
+</OL></LI>
+<LI><A href="#advanced">Advanced DAML</A><OL>
+
+<LI><A href="#equivalent">Equivalent Names</A></LI>
+
+<LI><A href="#name">The Name of Our vCard Ontology</A></LI>
+
+<LI><A href="#xmlbase">Using XML Base</A></LI>
+
+<LI><A href="#restrictions">Restrictions, Enumerations, Unions</A></LI>
+
+</OL></LI><LI><A href="#futures">The Ontology Layer in Jena 2</A><OL>
+
+<LI><A href="#jena1Enhancements">Difficult Improvements for Jena 1</A></LI>
+
+<LI><A href="#jena2Architecture">Architectural Changes</A></LI>
+
+<LI><A href="#rollout">Rollout Plan</A></LI>
+
+</OL></LI>
+</OL>
+<H1><A name="Hello">Getting Started</A></H1>
+<P>
+After this section you will be able to:
+</P>
+<UL>
+<LI>Create a DAML ontology within Jena (OK so it's empty  :-( !).
+<LI>Write it out to an XML file.
+<LI>Include a class and a property in it.
+</UL>
+<P>
+This section includes a sequence of exercises that should be done in
+order. The solution for each exercise is a Java source file, and
+the easiest approach is to add a few lines to the answer of the previous
+exercise.
+If an exercise is either too easy or too hard for you, refer to
+my solution before moving to the next subsection.
+</P>
+<P>
+It is important to grasp the Accessor design pattern used extensively
+within the DAML API. This is highlighted every so often in this section
+of the tutorial.
+</P>
+<H2><A name="Create">Creating an Ontology</A></H2>
+<P>
+The DAML API is found in the package <a href="../../../javadoc/com/hp/hpl/jena/daml/package-summary.html">com.hp.hpl.jena.daml</a>.
+The first class to note is <a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html">DAMLModel</a>. All parts of an ontology get created within
+one of these.
+</P>
+<P>
+So the first code we write is:
+</P>
+<PRE>
+    DAMLModel model = new DAMLModelImpl();
+</PRE>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Create a new main class that includes and executes the above line of code.
+(<a href="solutions/1/DAMLExercise.java">crib (java)</a>
+<a href="solutions/1.java.txt">(text)</a>
+)
+</BLOCKQUOTE>
+<P>This <CODE>model</CODE> is a <a href="../../../javadoc/com/hp/hpl/mesa/rdf/jena/model/Model.html">Jena model</a>, with some additional
+ functionality to help you create DAML ontologies.
+Each DAML ontology is encoded as RDF triples that can be stored within
+a Jena model. We will create an ontology using the DAML API.
+All of the operations of the DAML API get translated into
+adding, deleting and navigating the triples of this model.
+</P>
+<P>
+Browse through the Java doc for <a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html">DAMLModel</a>; 
+find an appropriate method for creating a new ontology.
+</P>
+<P>
+Reading the documentation for this method we see that
+we may choose a name (a URI) for our ontology.
+For now, we won't choose a name.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to create an ontology, by using the method you have found.
+(<a href="solutions/2/DAMLExercise.java">crib (java)</a>
+<a href="solutions/2.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<H2><A name="write">Writing your Ontology as RDF/XML and N-triple</A></H2>
+<p>
+Having created an ontology the next step is to write it out.
+</p>
+<p>
+Remember that the DAMLModel is a Jena Model, and the ontology that you have
+created is stored within the DAMLModel.
+If necessary refer back to the
+<a href="../RDF_API/index.html#ch-Writing RDF">first section</a> of the 
+tutorial to remember how to write the model out as XML.
+</p>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to write out the ontology as XML.
+
+(<a href="solutions/3/DAMLExercise.java">crib (java)</a>
+<a href="solutions/3.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<p>
+The XML produced should look something like:
+</p>
+<pre>
+&lt;rdf:RDF
+  xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
+ &gt;
+  &lt;rdf:Description rdf:about='#A0'&gt;
+    &lt;rdf:type rdf:resource='http://www.daml.org/2001/03/daml+oil#Ontology'/&gt;
+  &lt;/rdf:Description&gt;
+&lt;/rdf:RDF&gt;
+</pre>
+<p>
+That's a bit of a mess, maybe we should try the Jena pretty writer.
+</p>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to use the 
+<a href="../../../javadoc/com/hp/hpl/mesa/rdf/jena/common/prettywriter/PrettyWriter.html">pretty writer</a> (use 
+<a href="../../../javadoc/com/hp/hpl/mesa/rdf/jena/model/Model.html#write(java.io.Writer, java.lang.String)">
+<code>"RDF/XML-ABBREV"</code></a>).
+(<a href="solutions/4/DAMLExercise.java">crib (java)</a>
+<a href="solutions/4.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<p>
+That's better, I am now getting:
+</p>
+<pre>
+&lt;?xml version='1.0'?&gt;
+&lt;rdf:RDF
+    xmlns:daml='http://www.daml.org/2001/03/daml+oil#'
+    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'&gt;
+    &lt;daml:Ontology/&gt;
+&lt;/rdf:RDF&gt;
+</pre>
+<p>
+We have said that the ontology is represented within the RDF model as triples,
+but what triples are there? The N-triple format is the easiest for
+understanding precisely which triples have been used.
+Jena allows us to use this format using the <a href="../../../javadoc/com/hp/hpl/mesa/rdf/jena/model/Model.html#write(java.io.Writer, java.lang.String)">
+<code>"N-TRIPLE"</code></a> writer, briefly
+mentioned in the first section.  
+</p>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to also write out the ontology as N-triple.
+
+(<a href="solutions/5/DAMLExercise.java">crib (java)</a>
+<a href="solutions/5.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<p>
+There is one triple so far, and it is:
+</p>
+<pre>
+_:A &lt;rdf:type&gt; &lt;daml:Ontology&gt; .
+</pre>
+<P>
+(Note: the official N-triple format, output by Jena, does not use namespace
+prefixes, but writes very long lines).
+ </P>
+<H2><A name="Accessor">Using Accessors to Modify the Ontology's Properties</A></H2>
+<P>This subsection introduces the Accessor design pattern.
+It is important to understand this pattern, and it is worth spending
+sufficient time on this simple example of its use.</P>
+<P>Looking at the <a href="http://www.daml.org/2001/03/daml+oil-walkthru.html#housekeeping">DAML walkthru</a> 
+ we
+see that an ontology has a couple of properties:  <code>daml:version</code> and <code>rdfs:comment</code>.
+</P>
+<P>
+The corresponding methods in Jena are found in
+ <a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLOntology.html#prop_versionInfo()">DAMLOntology</a>
+and <a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLCommon.html#prop_comment()">DAMLCommon</a>.
+DAMLCommon is used as a place to put methods that are useful in more than one of
+the DAML interface definitions. Many things can have <code>rdfs:comment</code>s 
+so the <code>prop_comment()</code> method is common.
+<code>daml:version</code> only applies to DAML ontologies, and so it is not common.
+</P>
+<P>
+Both these methods return a <code>LiteralAccessor</code>.
+This reflects one of the design patterns used in the DAML API.
+Many of the properties in a DAML Ontology can have zero, one or more values.
+Natural operations including adding, removing, setting, getting and listing one or more values.
+Rather than duplicate this list of operations for each property within the API, the
+user of the API is required to chain two calls together e.g.
+</P>
+<pre>
+    onto.prop_comment().addValue("This is another comment");
+</pre>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to include a version number and two comments on the ontology.
+(<a href="solutions/6/DAMLExercise.java">crib (java)</a>
+<a href="solutions/6.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Generate output RDF/XML and N-Triple for your modified ontology.
+Use both the RDF/XML and the RDF/XML-ABBREV writers.
+(Repeat this exercise after any of the following exercises).
+(<a href="solutions/6/DAMLExercise.java">crib (java)</a>
+<a href="solutions/6.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<H2><A name="DAMLProperty">Adding Properties to the Ontology</A></H2>
+<P>
+Most of the vCard specification is a list of properties. 
+e.g. <code>&lt;vCard:FN&gt;</code> the full name property.
+</P>
+<P>We look at the JavaDoc for 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html">DAMLModel</a> to find how to create a property.
+Unfortunately we find three different methods, all of which look promising:
+</P>
+<UL>
+<LI>
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html#createDAMLProperty(java.lang.String)">
+<code>createDAMLProperty</code></a>
+</LI>
+<LI>
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html#createDAMLDatatypeProperty(java.lang.String)">
+<code>createDAMLDatatypeProperty</code></a>
+</LI>
+<LI>
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html#createDAMLObjectProperty(java.lang.String)">
+<code>createDAMLObjectProperty</code></a>
+</LI>
+</UL>
+<P>
+The difference between these is as follows:
+</P>
+<DL>
+<DT>
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html#createDAMLObjectProperty(java.lang.String)">
+<code>createDAMLObjectProperty</code></a>
+</DT>
+<DD>
+This is used for creating properties where the value is another resource, 
+represented by another node in the RDF graph. That resource in turn may well have
+further properties.
+</DD>
+<DT><a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html#createDAMLDatatypeProperty(java.lang.String)">
+<code>createDAMLDatatypeProperty</code></a></DT>
+<DD>
+This is used for creating properties where the value is a simple value, and we know its datatype (e.g. string or integer).
+It is not possible to specify further properties for such a value.
+</DD>
+<DT>
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html#createDAMLProperty(java.lang.String)">
+<code>createDAMLProperty</code></a>
+</DT>
+<DD>
+This is the dustbin case. We use this when neither of the other two are useable.
+Examples are if we know that something is a simple value but are unsure of its datatype,
+or if we wish to permit both simple values and object values. 
+(This last possibility is not compliant with the DAML+OIL specification).
+</DD>
+</DL>
+<P>
+We see that the <code>&lt;vCard:FN&gt;</code> property takes a value that is always a string.
+Within DAML+OIL XML Schema Datatypes are used for describing datatypes. 
+Within the Jena DAML subsystem the supported datatypes are:
+</P>
+<UL>
+<LI> 
+<code>xsd:string</code> represented by the URI
+ <code>"http://www.w3.org/2000/10/XMLSchema#string"</code>
+</LI>
+<LI> 
+<code>xsd:integer</code> represented by the URI
+ <code>"http://www.w3.org/2000/10/XMLSchema#integer"</code>
+</LI>
+<LI> 
+<code>xsd:decimal</code> represented by the URI
+ <code>"http://www.w3.org/2000/10/XMLSchema#decimal"</code>
+</LI>
+<LI> 
+<code>xsd:real</code> represented by the URI
+ <code>"http://www.w3.org/2000/10/XMLSchema#real"</code>
+</LI>
+</UL>
+<P><B>Advanced:</B> see 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/common/XMLDatatypeRegistry.html">
+<code>XMLDatatypeRegistry</code></a> for more information.
+In particular, it is possible to add more datatypes.
+</P>
+
+<BLOCKQUOTE>
+<B>Exercise</B>
+Add the property <code>&lt;vCard:FN&gt;</code> to your ontology by modifying your code.
+Do not yet include the information that the full name is a string.
+Remember the full URI for the <code>vCard</code> prefix is
+<code>"http://www.w3.org/2001/vcard-rdf/3.0#"</code>.
+(<a href="solutions/7/DAMLExercise.java">crib (java)</a>
+<a href="solutions/7.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<H2><A name="data-range">Datatype Range Constraints</A></H2>
+<P>
+In mathematical language a relationship or property relates two sets: the first is called
+its domain; and the second is called its range.
+</P>
+<P>
+<code>&lt;vCard:FN&gt;</code> relates vCards (the domain) to strings (the range). 
+We don't yet have a URI for describing vCards, so we will just concentrate on the range.
+</P>
+<P>
+Within the DAML API datatypes are represented by a
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLDatatype.html">
+<code>DAMLDatatype</code></a>. 
+These too are created using the relevant method on
+<code>DAMLModel</code>.
+</P>
+<P>
+To set the range of a property or datatype property we use the method 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLProperty.html#prop_range()">
+<code>prop_range()</code></a>. This returns a <code>PropertyAccessor</code>
+which uses the same design pattern as the <code>LiteralAccessor</code> that we
+<a href="#Accessor">used</a> for accessing the <code>daml:version</code> and <code>rdfs:comment</code>
+properties. Be sure to understand this design pattern before moving on.
+</P>
+<P>Thus to set the range of <code>&lt;vCard:FN&gt;</code> we need
+to create the <code>DAMLDatatype</code> corresponding to
+<code>xsd:string</code> and then <code>add</code> that to the <code>range</code>
+of the property.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Add the relevant range constraint to the property <code>&lt;vCard:FN&gt;</code> 
+by modifying your code.
+
+(<a href="solutions/8/DAMLExercise.java">crib (java)</a>
+<a href="solutions/8.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<BLOCKQUOTE>
+<B>Optional Exercise</B>
+If you want the practice, 
+add the following fields:
+<UL>
+<LI><code>
+NICKNAME
+</code></LI>
+<LI><code>
+MAILER 
+</code></LI>
+<LI><code>
+GEO 
+</code></LI>
+<LI><code>
+TITLE 
+</code></LI>
+<LI><code>
+ROLE 
+</code></LI>
+<LI><code>
+CATEGORIES 
+</code></LI>
+<LI><code>
+NOTE 
+</code></LI>
+<LI><code>
+PRODID 
+</code></LI>
+<LI><code>SORT-STRING</code></LI>
+<LI><code>CLASS</code></LI>
+</UL>
+with the appropriate range constraints. (Note: this is diverging somewhat from
+the vCard specification, particularly <a href="../copies/vcard-rdf.html#3.2">section 3.2</a>).
+This is a good time to refactor your code; it might be getting a little scrappy.
+(<a href="solutions/9/DAMLExercise.java">crib (java)</a>
+<a href="solutions/9.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<BLOCKQUOTE>
+<a name="exBase"></a><B>Exercise</B>
+Modify that part of your code that uses the RDF/XML-ABBREV writer to use the
+base URL of <code>"http://www.w3.org/2001/vcard-rdf/3.0"</code>.
+Is the output prettier? 
+(<a href="solutions/10/DAMLExercise.java">crib (java)</a>
+<a href="solutions/10.java.txt">(text)</a>)
+<br/>
+<br/>
+<B>Hint</B> Use the <code>base</code> argument of the
+<a href="../../../javadoc/com/hp/hpl/mesa/rdf/jena/model/Model.html#write(java.io.Writer, java.lang.String, java.lang.String)">
+<code>write(writer,"RDF/XML-ABBREV",base)</code></a> method.
+</BLOCKQUOTE>
+<P>
+The exercise above produces an RDF/XML file that is intended to be
+found at the web at the URL <code>"http://www.w3.org/2001/vcard-rdf/3.0"</code>.
+Later we will learn about using <A href="#xmlbase">XML Base</A> which allows us to overcome this limitation.
+</P>
+<H2><A name="DAMLClass">Adding Classes to the Ontology</A></H2>
+<P>
+Some of the properties in the <code>vCard</code> specification 
+have 'type parameters', see <a href="../copies/vcard-rdf.html#3.3">section 3.3 "Properties with Attributes"</a>.
+In particular, consider 
+<a href="../copies/vcard-rdf.html#TEL"><code>&lt;vCard:TEL&gt;</code></a>,
+<a href="../copies/vcard-rdf.html#EMAIL"><code>&lt;vCard:EMAIL&gt;</code></a>,
+<a href="../copies/vcard-rdf.html#ADR"><code>&lt;vCard:ADR&gt;</code></a> and
+<a href="../copies/vcard-rdf.html#LABEL"><code>&lt;vCard:LABEL&gt;</code></a>. 
+(The inclusion of <code>&lt;vCard:TZ&gt;</code>
+in this part of the vCard specification appears to be a mistake).
+</P>
+<P>
+Each of these is modelled in the <a href="../copies/vcard.rdfs.txt">schema</a> using an
+RDF property e.g. (<code>vcard:TEL</code>) a list of  RDF classes e.g. 
+(<code>vcard:home</code>, <code>vcard:work</code>, etc), and a superclass for those
+classes, e.g. <code>vcard:TELTYPES</code>.
+</P>
+<P>
+To create a class from the DAML API we look at the 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html">
+<code>DAMLModel</code></a> javadoc and 
+find the appropriate method.
+To create a class and a subclasses, we first create two classes,
+and then use the 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLClass.html#prop_subClassOf()">
+<code>prop_subClassOf()</code></a> method on the subclass, and <code>add</code> 
+the superclass. Once again we are using the <a href="#Accessor">accessor</a> design pattern.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Add code creating the <code>TELTYPES</code>, <code>home</code>, <code>work</code>, 
+<code>pref</code> classes, with appropriate subclass relationship between them.
+Add code for the <code>TEL</code> object property, and constrain its range to be 
+a <code>TELTYPES</code> (or one of its subclasses).
+(<a href="solutions/11/DAMLExercise.java">crib (java)</a>
+<a href="solutions/11.java.txt">(text)</a>)
+</BLOCKQUOTE>
+
+<H2><A name="domain">Adding Domain Constraints</A></H2>
+<P>
+The vCard properties such as <code>&lt;vCard:FN&gt;</code>
+are only meant to apply to vCards.
+Within DAML (and RDFS) the natural way to say this is to use a domain
+constraint. The domain constraint needs a class of vCards.
+However the vCard specification doesn't introduce such a class.
+</P>
+<P>
+We will ignore the spec., and create such a class anyway.
+We can call it <code>&lt;vCard:VCARD&gt;</code> i.e. with URI
+<code>"http://www.w3.org/2001/vcard-rdf/3.0#VCARD"</code>. 
+Then we can specify the appropriate domain constraint on all our properties.
+We do this using the <code>prop_domain()</code> method.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Add code creating the <code>&lt;vCard:VCARD&gt;</code> and add
+domain constraints to the properties you are already creating.
+
+(<a href="solutions/12/DAMLExercise.java">crib (java)</a>
+<a href="solutions/12.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<BLOCKQUOTE>
+<B>Advanced Exercise</B>
+Add more code so that your VCard ontology covers
+all the properties and classes in the <a href="../copies/vcard.rdfs.txt">VCard RDF Schema</a>.
+
+(<a href="solutions/13/DAMLExercise.java">crib (java)</a>
+<a href="solutions/13.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<H1><A name="tbox">Reading and Navigating an Ontology</A></H1>
+<P>
+This part of the tutorial reverses the relationship between the
+RDF/XML file and the Java code.
+Instead of creating the ontology in Java and writing it out as
+XML, I have created an <a href="solutions/vcard-daml.rdf">ontology in XML</a> 
+and we will use this
+by reading it into Java.
+</P>
+<H2><A name="XML">DAML+OIL and XML</A></H2>
+<P>
+Most users of DAML+OIL seem to be unhappily comfortable with the XML syntax
+used in the DAML+OIL specifications. The normal way of defining an ontology
+is to find a file on the web (particularly at
+<a href="http://www.daml.org/ontologies/">the DAML ontology library</a>) 
+with an appropriate ontology already in it.
+</P>
+<H2><A name="load">Loading an Ontology from a File</A></H2>
+<P>
+We use the version of the vCard ontology that I produced.
+It is <a href="solutions/vcard-daml.rdf">here</a>. Like in the last section, 
+we create a DAMLModel and use it to load in the ontology.
+</P>
+<P>
+The usual <a href="../../../javadoc/com/hp/hpl/mesa/rdf/jena/model/Model.html#read(java.lang.String)"><code>read</code></a> 
+methods are used to load an ontology,
+but a DAMLModel implements this in a special way to give the additional functionality.
+</P>
+
+<BLOCKQUOTE>
+<B>Exercise</B>
+Starting with a new Java file, with a main method, 
+create a DAMLModel and read in
+<a href="solutions/vcard-daml.rdf">the vCard ontology</a>.
+(<a href="solutions/14/DAMLExercise.java">crib (java)</a>
+<a href="solutions/14.java.txt">(text)</a>)
+</BLOCKQUOTE>
+
+<H2><A name="listClass">Listing the Classes in an Ontology</A></H2>
+<P>
+Having loaded the ontology into Jena we can now explore it within our Java code.
+We will start by listing the classes in the ontology.
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html#listDAMLClasses()">
+<code>listDAMLClasses()</code></a> looks like a promising place to start!
+The iterator returned always gives a <code>DAMLClass</code>.
+</P>
+
+<BLOCKQUOTE>
+<B>Exercise</B>
+Change your code to print out the names of the classes in the vCard ontology.
+(<a href="solutions/15/DAMLExercise.java">crib (java)</a>
+<a href="solutions/15.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<P>
+Notice:
+ </P>
+<ul>
+<li>A few of the classes don't have names, but instead may be shown as
+<code>&lt;Anonymous 1 ...</code></li>
+<li>A few of the classes that do have names, also have curious "anonymous" names like
+<code>RDFAnon1</code></li>
+<li>Some of these anonymous classes are <code>DAMLRestrictions</code></li>
+</ul>
+<P>
+Within RDF resources may be named or may be unnamed. 
+Some of the classes in a DAML ontology are normally unnamed.
+This seems a bit strange, because in most class oriented languages class names are
+obligatory and tell
+us a lot about what the class is meant to be.
+In DAML, unnamed classes are ones which are defined using some operation within 
+description logic. Within the ontology for vcards the class <code>RDFAnon1</code>
+is defined as an intersection of other classes. Since intersection is conceptually
+straight forward, the lack of a meaningful name on this class is permitted (and might in
+some cases be helpful, the name can just get in the way). In the 
+<a href="solutions/13.java.txt">code</a> that I used to generate this ontology
+this class really was unnamed, but when it got written out as RDF/XML it was
+forced to have a name. Sometimes RDF/XML allows resources to be unnamed, sometimes it
+needs them to have a name (the name the software chose was <code>"RDFAnon1"</code>). 
+This is a significant
+<a href="http://www.w3.org/2000/03/rdf-tracking/#rdfms-syntax-incomplete">known bug</a>
+with the XML version of RDF. (We are considering having a Jena-specific solution of
+using not-quite-URIs of the form <code>_:<i>foobar</i></code> for unnamed resources within
+RDF/XML).
+</P>
+<P>
+The classes that are <code>DAMLRestrictions</code>
+corresponds to RDF/XML like:
+</P>
+<pre>
+   &lt;daml:Restriction>
+       &lt;daml:onProperty rdf:resource='#TYPE'
+           rdf:type='http://www.daml.org/2001/03/daml+oil#Property'/>
+        &lt;daml:toClass rdf:resource='http://www.w3.org/2000/10/XMLSchema#string'/>
+   &lt;/daml:Restriction>
+</pre>
+<P>
+This too, is an operation from description logic. It means
+the set of things who are the subject of a triple with predicate 
+<code>vcard:TYPE</code>, whose object is an <code>xsd:string</code>.
+</P>
+<P>
+Within the ontology this restriction class is used (within an intersection which 
+is used) as the range constraint of some other property (e.g. <code>LOGO</code>).
+What that means is that the value of the property <code>LOGO</code> always has
+a string-valued <code>TYPE</code> property.
+</P>
+<P>
+This is a particularly baroque and awkward way to say something quite straightforward.
+Readers may be pleased to hear that early indications are that the 
+<a href="http://www.w3.org/2001/sw/WebOnt">Web Ontology Language</a> that
+will replace DAML+OIL is likely to provide a more intuitive frame oriented way of
+saying this sort of thing.
+</P>
+
+<H2><A name="listProperty">Listing the Properties in an Ontology</A></H2>
+<P>
+Let's try 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html#listDAMLProperties()">
+<code>listDAMLProperties()</code></a>.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Change your code to print out the names of the properties in the vCard ontology.
+(<a href="solutions/16/DAMLExercise.java">crib (java)</a>
+<a href="solutions/16.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<H2><A name="frame">Framing Properties</A></H2>
+<P>
+The last exercise should have produced a fairly muddled output.
+</P>
+<P>
+Properties of <code>vCard</code>s will have been muddled with properties of
+<code>ADRPROPERTIES</code> and properties of <code>NPROPERTIES</code>.
+So the property <code>Family</code> which only applies to <code>NPROPERTIES</code>
+is not clearly separated from <code>FN</code> (which also means <Q>Family Name</Q>)
+which applies to <code>vCard</code>s.
+</P>
+<P>
+DAML takes what is known as a description logic viewpoint that is property centric,
+rather than the more intuitive frame viewpoint that is class centric.
+</P>
+<P>
+We can combine the previous two exercises, and use
+the method <code><a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLClass.html#getDefinedProperties()">
+getDefinedProperties()</a></code> to arrange the output in a frame like fashion.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Change your code to print out the properties listed by the class they apply to.
+(<a href="solutions/17/DAMLExercise.java">crib (java)</a>
+<a href="solutions/17.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<P>
+Notice that this has not worked for the <code>DAMLRestriction</code>s.
+We saw earlier that <code>RDFAnon1</code> is described making it clear
+that <code>vCard:TYPE</code> applies to it. But in the listing produced
+by the last exercise no properties are associated with any restriction.
+</P>
+<P>
+This reflects limitations of the Jena support for DAML, in that we do
+not (yet) have a full description logic engine.
+Thus within Jena, it is hard to answer some interesting questions about
+an ontology (such as which properties must be present on this resource).
+</P>
+
+<H2><A name="unqiueProperty">Unique and Unambiguous Properties</A></H2>
+<P>
+Properties in DAML can also have <Q>cardinality constraints</Q>.
+These indicate the maximum number of object values a property might have for 
+some specific subject; or conversely the maximum number of subjects of a
+property correspond to one specific object.
+</P>
+<P>
+Usually that maximum number is <B>1</B>. This gives rise to unique properties
+which have at most one value on each subject; and unambiguous properties for which
+an object value corresponds to at most one subject.
+</P>
+<P>
+The DAML API supports both unique and unambiguous properties, through the same
+design pattern of a set method 
+(<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLProperty.html#setIsUnique(boolean)">
+<code>setIsUnique(boolean)</code></a>,
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLObjectProperty.html#setIsUnambiguous(boolean)">
+<code>setIsUnambiguous(boolean)</code></a>) and a get method
+(<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLProperty.html#isUnique()">
+<code>isUnique()</code></a>,
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLObjectProperty.html#isUnambiguous()">
+<code>isUnambiguous()</code></a>).
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Change your code to only print out unique and/or unambiguous properties listed by the class they apply to.
+(<a href="solutions/18/DAMLExercise.java">crib (java)</a>
+<a href="solutions/18.java.txt">(text)</a>)
+</BLOCKQUOTE>
+
+<H1><A name="abox">Instances</A></H1>
+<P>
+So far, we have only talked about the ontology for vCards, we haven't actually seen a vCard in DAML.
+In this section, we use both the vCard ontology, and some sample vCards that conform to 
+that ontology.
+</P>
+<H2><A name="xbox">T-Boxes and A-Boxes</A></H2>
+<P>
+In most data and information frameworks the base data, and the information
+describing the base data are kept quite separate. A database schema is conceptually distinct
+from the database data.
+In the description logic world from which DAML+OIL emerged this separation was described using
+the word <Q>T-Box</Q>, the terminology box that lists the terms you can use and their
+interactions, and the word <Q>A-Box</Q>, the assertion box, the base facts
+described using the terminology from the T-Box.
+</P>
+<P>
+In RDF, RDFS, and DAML+OIL, this clean separation between the base data and the schema or ontology
+is lost. From one point of view it is all muddled up together in a single soup.
+The Jena DAML API reflects that soup.
+Both the ontology terms and the instance data are loaded into the DAMLModel, and accessed 
+primarily through the DAML API, (although both can also be accessed through the Jena Model API as
+well).
+</P>
+<H2><A name="loadInstance">Loading Examples</A></H2>
+<BLOCKQUOTE>
+<B>Optional Exercise</B>
+Create suitable instance data files for the rest of the exercises.
+Here is some code <a href="solutions/MakeRandomDAMLVCards.java">(java)</a>
+<a href="solutions/MakeRandomDAMLVCards.java.txt">(text)</a> that can randomly generate such data.
+</BLOCKQUOTE>
+<P>
+We load RDF/XML instance data files, just like we loaded 
+the ontology file above.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Starting with a new Java file, with a main method, 
+create a DAMLModel and read in
+<a href="solutions/vcard-daml.rdf">the vCard ontology</a>, 
+and the <a href="solutions/vcards.rdf">instance data</a>.
+(<a href="solutions/19/VCardReader.java">crib (java)</a>
+<a href="solutions/19.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<H2><A name="listInstances">Listing the vCards</A></H2>
+<P>
+Having loaded all the data into our DAMLModel, we can now access it
+programmatically. Look at the DAMLModel javadoc and choose the appropriate method
+to get to the instances. When we find an instance, it should have Java class 
+<code>DAMLInstance</code>. The iterator returned by 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html#listDAMLInstances()">
+<code>DAMLModel.listDAMLInstances()</code></a>
+also returns objects of Java class <code>DAMLDataInstance</code>. These are
+not interesting for this exercise and must be ignored.
+</P>
+<P>To display the instance we will need to access a property, e.g.
+<code>vCard:FN</code>.
+To do that we use the method
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLInstance.html#accessProperty(com.hp.hpl.mesa.rdf.jena.model.Property)">
+<code>accessProperty()</code></a>. This returns a 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/PropertyAccessor.html">
+<code>PropertyAccessor</code></a> which uses the now familiar accessor design pattern.
+</P>
+<P>
+Since the ontology has told us that <code>vCard:FN</code> is a unique property, this means that
+there is at most one value. Thus we can use the method 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/PropertyAccessor.html#getDAMLValue()">
+<code>getDAMLValue()</code></a> rather than the more general
+
+<a href="../../../javadoc/com/hp/hpl/jena/daml/PropertyAccessor.html#getAll(boolean)">
+<code>getAll(true)</code></a>. (The boolean argument to getAll concerns transitive properties that
+are outside the scope of this tutorial).
+</P>
+<P>
+Using the explicitly typed <a href="solutions/vcards.rdf">sample data</a>, the
+values returned by <code>getDAMLValue()</code> are
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLDataInstance.html"><code>DAMLDataInstance</code></a>s.
+To get the actual value to display, a further call to
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLDataInstance.html#getValue()"><code>getValue()</code></a>
+is necessary.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to print out the name from each vCard in the knowledge base.
+(<a href="solutions/20/VCardReader.java">crib (java)</a>
+<a href="solutions/20.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<P>
+It would be easier if we only looked at objects of the 
+right class <code>&lt;vCard:VCARD></code>.
+This is possible; find an appropriate method in 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLClass.html"><code>DAMLClass</code></a>.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to access the VCards through the class <code>&lt;vCard:VCARD></code>.
+(<a href="solutions/21/VCardReader.java">crib (java)</a>
+<a href="solutions/21.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<H2><A name="findInstances">Finding Daffney's vCard</A></H2><P>
+A hint for the following exercises is that a quick way to get the property <code>rdf:value</code> is
+</P>
+<pre>
+     com.hp.hpl.mesa.rdf.jena.vocabulary.RDF.value
+</pre>
+<P>
+If we want to find a particular vCard, one approach is to use a brute force search
+through the knowledge base.
+Suppose we know someone's e-mail address and we want to find out more about them.
+We can go through the cards one by one, and access the <code>vCard:EMAIL</code>
+property (using <code>getAll(true)</code> since EMAIL is not a unique property).
+Each returned value will be a complex object (another DAMLInstance) and we need to access the
+<code>rdf:value</code> property to reach the actual e-mail address.
+The property <code>rdf:value</code> is not declared in our ontology,
+and is hence not treated as a DAML property.
+Using a DAML property accessor on <code>rdf:value</code> in this example
+does not work. Instead we must either make Jena calls
+or use 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLCommon.html#getPropertyValue(com.hp.hpl.mesa.rdf.jena.model.Property)"><code>getPropertyValue()</code></a>.
+If any of the given e-mail addresses matches then we have found the one.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to print out the name from the vCard for <code>amanda_cartwright@example.org</code>.
+(<a href="solutions/22/VCardReader.java">crib (java)</a>
+<a href="solutions/22.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<H2><A name="mixing">Contrasting Jena Model and DAMLModel functionality</A></H2>
+<P>
+A hint for the following exercises is that a quick way to get the property <code>rdf:type</code> is
+</P>
+<pre>
+     com.hp.hpl.mesa.rdf.jena.vocabulary.RDF.type
+</pre>
+<P>
+Looking at <code>DAMLCommon</code> we find a method 
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLCommon.html#getRDFTypes(boolean)"><code>getRDFTypes</code></a>.
+This can be used to find all the classes to which an object belongs.
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to select the vCard for <code>amanda_cartwright@example.org</code>, and then
+find all the types of the complex object (the DAMLInstance)
+whose <code>rdf:value</code> is <code>amanda_cartwright@example.org</code>.
+(<a href="solutions/23/VCardReader.java">crib (java)</a>
+<a href="solutions/23.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<P>
+Notice the <code>daml:Thing</code> class in your answer, this is the top class in DAML.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to select only the explicit types of the complex object.
+(<a href="solutions/24/VCardReader.java">crib (java)</a>
+<a href="solutions/24.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<P>
+Notice that the DAML implementation does do a significant part of the reasoning
+to do with class membership.
+NB: the classes found are the result of following the <code>isSubClassOf</code>
+property, and are not all those classes that would be found with a description 
+logic classifier.
+</P>
+<P>
+With the <code>closed</code> flag set to false, this operates like
+the underlying Jena calls.
+</P>
+<BLOCKQUOTE>
+<B>Exercise</B>
+Modify your code to use the Jena Model API for accessing the <code>rdf:type</code>
+(e.g. use
+<a href="../../../javadoc/com/hp/hpl/mesa/rdf/jena/model/Resource.html#listProperties(com.hp.hpl.mesa.rdf.jena.model.Property)"><code>listProperties(rdf:type)</code>
+</a>).
+(<a href="solutions/25/VCardReader.java">crib (java)</a>
+<a href="solutions/25.java.txt">(text)</a>)
+</BLOCKQUOTE>
+<P>
+Notice that when we do not want any additional reasoning the Jena API calls are
+just as useful as the DAML API calls.
+<P>
+In general <em>modifying</em> a DAMLModel through calls on the underlying Jena Model will lead to 
+problems. We are currently exploring alternatives layered architectures for Jena
+that will allow us to support such multiple views over the same underlying data.
+</P>
+<H1><A name="advanced">Advanced DAML</A></H1>
+<P>
+This section consists of leads into further study.
+This tutorial does not provide an adequate basis for understanding
+either these advanced DAML functionalities, or their (partial) implemenation within Jena.
+</P>
+<H2><A name="property-iterator">Property Iterator</A></H2>
+<P>
+We saw in the last exercises that the DAML implementation can be
+smart about class membership.
+In general it can be smart about any property for which it
+knows the ontology.
+This functionality, as with class membership, is not a full description logic
+implementation, but does cover equivalence, transitivity, inverse properties,
+and the class and property hierarchies.
+</P>
+<P>
+The javadoc can be found under the class
+<a href="../../../javadoc/com/hp/hpl/jena/daml/PropertyIterator.html">
+<code>PropertyIterator</code></a>, and under many methods such as
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLCommon.html#getEquivalentValues()"><code>getEquivalentValues</code></a>
+</P>
+<H2><A name="equivalent">Equivalent Names</A></H2>
+<P>
+DAML provides a number of ways of declaring that two different
+names (URIs) actually refer to the same resource.
+It also provides a way of showing that two names
+refer to different resources.
+These are:
+</P>
+<ol>
+<li><code>daml:equivalentTo</code></li>
+<li><code>daml:sameClassAs</code></li>
+<li><code>daml:samePropertyAs</code></li>
+<li><code>daml:sameIndividualAs</code></li>
+<li><code>daml:differentIndividualFrom</code></li>
+</ol>
+<P>
+Jena provides some support for these within the DAML API.
+However, at least some of the relevant processing is expensive, and
+see
+<a href="../../../javadoc/com/hp/hpl/jena/daml/DAMLModel.html##setUseEquivalence(boolean)">
+<code>setUseEquivalence(boolean)</code></a>.
+Moreover, there will be many implicit equivalences, that can be inferred
+from the ontology using a DL processor, that Jena cannot infer. These are
+hence ignored, whatever the setting of the <code>useEquivalence</code> flag.
+</P>
+<H2><A name="name">The Name of Our vCard Ontology</A></H2>
+<P>
+Within the semantic web it is assumed that the owner of
+a web-server on <code>foobar.example.org</code> has first
+bite at defining the schema or ontology for
+all URLs starting <code>http://foobar.example.org</code>.
+</P>
+<P>
+So we see that the vCard ontology was published by the W3C and 
+they allowed the author to use their web space to publish the
+vCard schema (at <code>http://www.w3.org/2001/vcard-rdf/3.0</code>).
+</P>
+<P>
+We have seen that it is nevertheless possible to define in our own file
+on our own computer (or our own web server) an alternative 
+schema or ontology for the same classes and properties. 
+This <em>is</em> a bit naughty.
+</P>
+
+<H2><A name="xmlbase">Using XML Base</A></H2>
+<P>
+In the <a href="#exBase">first part</a> of the DAML tutorial
+we saw that telling the writer to produce a file
+with base <code>http://www.w3.org/2001/vcard-rdf/3.0</code>
+produced tidier output.
+</P>
+<P>
+The <a href="solutions/vcard-daml.rdf">schema</a> we used in the second half 
+of the DAML tutorial was initially produced programmatically by the 
+sample solution for the first section. It used the tidier form of output.
+In order to tell the RDF/XML parser to pretend that it was at 
+<code>http://www.w3.org/2001/vcard-rdf/3.0</code>
+we use an <code>xml:base</code> declaration.
+</P>
+<pre>
+    xml:base="http://www.w3.org/2001/vcard-rdf/3.0"
+</pre>
+<P>
+Typically this is at the beginning of the file, but can occur on any XML element.
+</P>
+<H2><A name="restrictions">Restrictions, Enumerations, Unions</A></H2>
+<P>
+DAML allows you to describe anonymous classes that are described in terms
+of the properties used by the objects within them.
+This is quite like talking about a set of objects by describing something 
+about them, e.g. "the people with red hair", rather than by just naming the
+class "red-haired people".
+The class DAMLRestriction corresponds to these anonymous classes.
+</P>
+<P>
+DAML also allows you to explicitly construct a set by giving its members.
+These correspond to the prop_oneOf() method found on
+a DAMLClass. Similarly prop_unionOf() @@@@ allow accessing to classes
+defined in terms of these set theoretic operators.
+</P>
+<P>
+None of these are fully implemented in Jena. The API allows you to create and
+explore ontologies
+which have these constructions, but you cannot navigate instance data using
+these constructions.
+</P>
+<P>
+The underlying issue is that we have not yet invested in a DL reasoner, which
+is a moderately complex piece of specialised software needed to implement 
+these requirements.
+</P>
+<H1><A name="futures">The Ontology Layer in Jena 2</A></H1>
+<P>
+This section discusses likely changes planned for future versions of Jena.
+</P>
+<H2><A name="jena1Enhancements">Difficult Improvements for Jena 1</A></H2>
+<P>
+The Jena team are aware that the user community wants 
+deep improvements in the ontology support in Jena.
+</P>
+<P>
+The goal is to allow both:
+</P>
+<DL>
+<DT>Inference Models</DT>
+<DD>These models are ones which, for example, might
+include all the implicit information formed by
+ joining an ontology with some base data.
+For example, a range constraint or a subclass rule might
+imply additional type information. In an inference model 
+this additional type information would appear dynamically
+when relevant.
+</DD>
+<DT>Cleaner enhancement classes</DT>
+<DD>
+The DAML API adds functionality to the base Jena API.
+It should be possible for Jena developers to add their own
+additional functionality as well. It should be possible to use
+the additional DAML functionality over models other than
+memory models.
+</DD>
+</DL>
+<P>
+The current Jena releases (1.X.Y) have been found not
+to
+have sufficient architectural  support for such changes.
+</P>
+<H2><A name="jena2Architecture">Architectural Changes</A></H2>
+<P>
+We are designing a layered architecture in which both
+<Q>inference models</Q> and
+<Q>enhanced models</Q> can be layered on top of 
+other models (their base model(s)).
+We believe that a layered architecture will provide clarity about
+how to access a model both with and without the additional functionality.
+</P>
+<H2><A name="rollout">Rollout Plan</A></H2>
+<P>
+The first version of Jena 2 is likely to exercise the new
+architecture by providing RDF
+Schema support.
+</P>
+<P>After that we wish to provide improved DAML support including
+a Description Logic reasoner and closure over implicit triples.
+</P>
+<P>We hope to provide both of these within 2002.</P>
+<P>In the event that the W3C WebOnt Working Group make rapid progress,
+we may bypass full DAML support in favour of supporting the new 
+language.
+</P>
+</BODY></HTML>
