@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -542,23 +542,6 @@ public class GraphRDB extends GraphBase implements Graph {
 			}
 		}
 	}
-	
-	/**
-	* Get the value of CompressCacheSize
-	* @return int
-	*/
-	public int getCompressCacheSize() {
-		return m_driver.getCompressCacheSize();
-	}
-
-	/**
-	* Set the value of CompressCacheSize.
-	* @param size int
-	*/
-	public void setCompressCacheSize(int max) {
-		m_driver.setCompressCacheSize(max);
-	}
-
 
 }
 

@@ -35,7 +35,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class ModelRDB extends ModelCom implements Model {    
     
@@ -422,22 +422,6 @@ public class ModelRDB extends ModelCom implements Model {
 		return ((DBQueryHandler)m_graphRDB.queryHandler()).getQueryFullReified();
 	}
 	
-	/**
-	* Get the value of CompressCacheSize
-	* @return int
-	*/
-	public int getCompressCacheSize() {
-		return m_graphRDB.getCompressCacheSize();
-	}
-
-	/**
-	* Set the value of CompressCacheSize.
-	* @param size int
-	*/
-	public void setCompressCacheSize(int max) {
-		m_graphRDB.setCompressCacheSize(max);
-	}
-
 }
 
 /*
