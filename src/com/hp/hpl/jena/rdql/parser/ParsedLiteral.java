@@ -224,10 +224,7 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
             if ( ! valRDFLiteral.getLanguage().equals("") )
                 sb.append('@').append(valRDFLiteral.getLanguage()) ;
             if ( valRDFLiteral.getDatatypeURI() != null )
-            {
-                com.hp.hpl.jena.datatypes.RDFDatatype tmp = valRDFLiteral.getDatatype() ;
                 sb.append("^^<").append(valRDFLiteral.getDatatypeURI()).append(">") ; 
-            }
             return  sb.toString() ;
         }
 

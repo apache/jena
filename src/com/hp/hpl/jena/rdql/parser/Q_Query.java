@@ -236,7 +236,7 @@ public class Q_Query extends SimpleNode
             for ( int k = 0 ; k < qnsd.jjtGetNumChildren() ; k+=2 )
             {
                 Q_Identifier id = (Q_Identifier)qnsd.jjtGetChild(k) ;
-                Object tmp = qnsd.jjtGetChild(k+1) ; // Temp debug
+                //Object tmp = qnsd.jjtGetChild(k+1) ; // Temp debug
                 Q_URI uri = (Q_URI)qnsd.jjtGetChild(k+1) ;
                 query.setPrefix(id.toString(), uri.toString()) ;
             }

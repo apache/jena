@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 
 /** 
  * @author: Automatically generated class: Operator: LeftShift
- * @version: $Id: Q_LeftShift.java,v 1.2 2003-02-20 16:46:27 andy_seaborne Exp $
+ * @version: $Id: Q_LeftShift.java,v 1.3 2003-06-13 17:04:28 andy_seaborne Exp $
  */
 
 class Q_LeftShift extends SimpleNode implements Expr, ExprNumeric
@@ -35,7 +35,7 @@ class Q_LeftShift extends SimpleNode implements Expr, ExprNumeric
 
     public Value eval(Query q, ResultBinding env)
     {
-        int n = jjtGetNumChildren() ;
+        //int n = jjtGetNumChildren() ;
 
         Value x = left.eval(q, env) ;
         Value y = right.eval(q, env) ;
