@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.30 2004-03-22 14:20:44 chris-dollin Exp $
+  $Id: Node.java,v 1.31 2004-04-06 20:42:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -28,7 +28,7 @@ import java.util.*;
 public abstract class Node {
     
     final protected Object label;
-    static final int THRESHOLD = 1000;
+    static final int THRESHOLD = 10000;
     static final HashMap present = new HashMap( THRESHOLD * 2 );
 
     static final Log log = LogFactory.getLog( Node.class );
@@ -46,7 +46,9 @@ public abstract class Node {
         The string represents a URI, a numeric literal, a string literal, a bnode label,
         or a variable.        
         <ul>
-        <li> "some text" :: a string literal with that text
+        <li> 'some text' :: a string literal with that text
+        <li> 'some text'someLanguage:: a string literal with that text and language
+        <li> 'some text'someURI:: a typed literal with that text and datatype
         <li> digits :: a literal [OF WHAT TYPE] with that [numeric] value
         <li> _XXX :: a bnode with an AnonId built from _XXX
         <li> ?VVV :: a variable with name VVV
@@ -86,14 +88,25 @@ public abstract class Node {
         int colon = x.indexOf( ':' );
         return Node.createURI( colon < 0 ? "eh:" + x : pm.expandPrefix( x ) );
         }
-        
-    private static LiteralLabel newString( String literal )
+            
+    private static RDFDatatype getType( String s )
+        { return TypeMapper.getInstance().getSafeTypeByName( s ); }
+    
+    private static LiteralLabel literal( String spelling, String langOrType )
         {
-        int closeQuote = literal.indexOf( '\'', 1 );
-        String x = literal.substring( 1, closeQuote );
-        return new LiteralLabel(  x, "en-UK", false );    
+        int colon = langOrType.indexOf( ':' );
+        return colon < 0 
+            ? new LiteralLabel( spelling, langOrType, false )
+            : new LiteralLabel( spelling, "", getType( langOrType ) )
+            ;
         }
-        
+    
+    private static LiteralLabel newString( String nodeString )
+        {
+        int close = nodeString.indexOf( '\'', 1 );
+        return literal( nodeString.substring( 1, close ), nodeString.substring( close + 1 ) );
+        }
+    
     /** make a blank node with the specified label */
     public static Node createAnon( AnonId id )
         { return create( makeAnon, id ); }
@@ -189,11 +202,11 @@ public abstract class Node {
 
     /** get the blank node id if the node is blank, otherwise die horribly */    
     public AnonId getBlankNodeId() 
-        { throw new UnsupportedOperationException( "this is not a blank node" ); }
+        { throw new UnsupportedOperationException( this + " is not a blank node" ); }
     
     /** get the literal value of a literal node, otherwise die horribly */
     public LiteralLabel getLiteral()
-        { throw new UnsupportedOperationException( "this is not a literal node" ); }
+        { throw new UnsupportedOperationException( this + " is not a literal node" ); }
     
     /** get the URI of this node if it has one, else die horribly */
     public String getURI()
@@ -226,8 +239,7 @@ public abstract class Node {
     public static final Node NULL = new Node_NULL(); 
     
     /**
-        if the cache of recent nodes is "too big", empty it. Then put this latest
-        node in, unless caching has been suppressed.
+        keep the distinguishing label value.
     */
     
     /* package visibility only */ Node( Object label ) 

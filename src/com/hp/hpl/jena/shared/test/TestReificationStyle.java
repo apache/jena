@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReificationStyle.java,v 1.1 2003-09-08 13:44:31 chris-dollin Exp $
+  $Id: TestReificationStyle.java,v 1.2 2004-04-06 20:43:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -44,6 +44,12 @@ public class TestReificationStyle extends ModelTestBase
         assertEquals( false, ReificationStyle.Standard.conceals() );
         assertEquals( true, ReificationStyle.Convenient.intercepts() );
         assertEquals( true, ReificationStyle.Convenient.conceals() ); }
+    
+    public void testPrettyPrinting()
+        { assertEquals( "Minimal", ReificationStyle.Minimal.toString() );
+        assertEquals( "Convenient", ReificationStyle.Convenient.toString() );
+        assertEquals( "Standard", ReificationStyle.Standard.toString() );
+        }
     }
 
 /*

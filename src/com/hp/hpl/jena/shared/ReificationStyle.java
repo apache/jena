@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ReificationStyle.java,v 1.2 2003-09-08 13:43:49 chris-dollin Exp $
+  $Id: ReificationStyle.java,v 1.3 2004-04-06 20:43:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -33,8 +33,19 @@ public class ReificationStyle
     public boolean conceals()
         { return conceal; }
         
+    /**
+        Answer a human-readable representation of this reification style. If it's
+        one of the three standard constants, return their names; otherwise return
+        a description of the fields. <i>code should not rely on these values</i>;
+        they may be changed for debugging or convenience.
+    */
     public String toString()
-        { return "<style int=" + intercept + ", con=" + conceal + ">"; }
+        { 
+        if (this == Minimal) return "Minimal";
+        if (this == Standard) return "Standard";
+        if (this == Convenient) return "Convenient";
+        return "<style int=" + intercept + ", con=" + conceal + ">"; 
+        }
     }
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP

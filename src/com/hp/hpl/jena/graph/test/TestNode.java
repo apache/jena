@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.26 2003-10-13 15:09:28 chris-dollin Exp $
+  $Id: TestNode.java,v 1.27 2004-04-06 20:43:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -278,6 +278,46 @@ public class TestNode extends GraphTestBase
     public void testCreateANY()
         {
         assertEquals( "?? must denote ANY", Node.ANY, Node.create( "??" ) );
+        }
+    
+    public void testCreatePlainLiteral()
+        {
+        Node n = Node.create( "'xxx'" );
+        assertEquals( "xxx", n.getLiteral().getLexicalForm() );
+        assertEquals( "", n.getLiteral().language() );
+        assertEquals( null, n.getLiteral().getDatatypeURI() );
+        }
+    
+    public void testCreateLanguagedLiteralEN()
+        {
+        Node n = Node.create( "'chat'en-UK" );
+        assertEquals( "chat", n.getLiteral().getLexicalForm() );
+        assertEquals( "en-UK", n.getLiteral().language() );
+        assertEquals( null, n.getLiteral().getDatatypeURI() );
+        }    
+    public void testCreateLanguagedLiteralXY()
+        {
+        Node n = Node.create( "'chat'xy-AB" );
+        assertEquals( "chat", n.getLiteral().getLexicalForm() );
+        assertEquals( "xy-AB", n.getLiteral().language() );
+        assertEquals( null, n.getLiteral().getDatatypeURI() );
+        }
+    
+    public void testCreateTypedLiteralInteger()
+        {
+        Node n = Node.create( "'42'xsd:integer" );
+        assertEquals( "42", n.getLiteral().getLexicalForm() );
+        assertEquals( "", n.getLiteral().language() );
+        assertEquals( "xsd:integer", n.getLiteral().getDatatypeURI() );
+        }
+        
+    
+    public void testCreateTypedLiteralBoolean()
+        {
+        Node n = Node.create( "'true'xsd:boolean" );
+        assertEquals( "true", n.getLiteral().getLexicalForm() );
+        assertEquals( "", n.getLiteral().language() );
+        assertEquals( "xsd:boolean", n.getLiteral().getDatatypeURI() );
         }
         
     public void testCreateURI()
