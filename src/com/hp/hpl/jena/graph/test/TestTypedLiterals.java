@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.35 2004-03-02 17:14:32 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.36 2004-03-12 09:36:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -32,7 +32,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.35 $ on $Date: 2004-03-02 17:14:32 $
+ * @version $Revision: 1.36 $ on $Date: 2004-03-12 09:36:31 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -422,6 +422,15 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("calendar value", cal, testCal);
         assertEquals("equality test", l1, m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime));
         assertTrue("inequality test", l1 != m.createTypedLiteral("1999-04-31T02:09:32Z", XSDDatatype.XSDdateTime));
+        
+        Calendar testCal2 = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        testCal2.set(1999, 5, 30, 15, 9, 32);
+        testCal2.set(Calendar.MILLISECOND, 0);   // ms field can be undefined on Linux
+        Literal lc = m.createTypedLiteral(testCal2);
+        assertEquals("calendar 24 hour test", m.createTypedLiteral("1999-05-30T15:09:32Z", XSDDatatype.XSDdateTime), lc );
+        
+        assertEquals("calendar value", cal, testCal);
+        assertEquals("equality test", l1, m.createTypedLiteral("1999-05-31T02:09:32Z", XSDDatatype.XSDdateTime));
         
         // date
         l1 = m.createTypedLiteral("1999-05-31", XSDDatatype.XSDdate);
