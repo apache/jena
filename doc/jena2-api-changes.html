@@ -86,6 +86,11 @@ of the interface that is being converted to.
 The boolean method <i>canAs(Class)</i> returns true iff it's possible
 to convert this resource to one of the given class.
 
+<h1>aModel.containsResource(RDFNode r)</h1>
+
+This boolean method returns true iff <i>r</i> appears somewhere in
+<i>aModel</i> as the subject, predicate, or object of some statement.
+
 <h1>createResource(AnonId)</h1>
 
 An extra <i>createResource</i> method is availble that creates a blank
