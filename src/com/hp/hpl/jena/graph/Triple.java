@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.14 2004-10-26 13:13:45 chris-dollin Exp $
+  $Id: Triple.java,v 1.15 2004-11-05 11:59:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -19,14 +19,15 @@ import java.util.*;
 public class Triple implements TripleMatch {
 	private final Node subj, pred, obj;
     
-	public Triple(Node s, Node p, Node o) {
+	public Triple( Node s, Node p, Node o ) 
+        {
         if (s == null) throw new UnsupportedOperationException( "subject cannot be null" );
         if (p == null) throw new UnsupportedOperationException( "predicate cannot be null" );
         if (o == null) throw new UnsupportedOperationException( "object cannot be null" );
 		subj = s;
 		pred = p;
 		obj = o;
-	}
+        }
 	
     /**
         return a human-readable string "subject @predicate object" describing the triple
@@ -172,8 +173,10 @@ public class Triple implements TripleMatch {
         Node obj = Node.create( pm, st.nextToken() );
         return Triple.create( sub, pred, obj );
         }
+  
+    public static final TripleMatch ANY = Triple.create( Node.ANY, Node.ANY, Node.ANY );
             
-}
+    }
 
 /*
     (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP

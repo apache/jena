@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierTripleMap.java,v 1.3 2004-11-02 14:10:08 chris-dollin Exp $
+ $Id: ReifierTripleMap.java,v 1.4 2004-11-05 11:59:09 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -52,13 +52,14 @@ public interface ReifierTripleMap
     public abstract void removeTriple( Triple triple );
     
     /**
-         Return the node-to-triple map as a read-only Graph of triples (ie as the
-         corresponding reification quadlets). 
+         Answer an iterator over all the quadlets that match <code>m</code> that
+         correspond to complete reified triples held in this map.
     */
-    public abstract Graph asGraph();
-    
     public ExtendedIterator find( TripleMatch m );
     
+    /**
+         Answer the number of quadlets in this map.
+    */
     public int size();
 
     /**

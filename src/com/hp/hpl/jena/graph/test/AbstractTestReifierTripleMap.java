@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: AbstractTestReifierTripleMap.java,v 1.2 2004-09-15 14:04:18 chris-dollin Exp $
+  $Id: AbstractTestReifierTripleMap.java,v 1.3 2004-11-05 11:59:10 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -36,7 +36,7 @@ public abstract class AbstractTestReifierTripleMap extends GraphTestBase
         assertEquals( false, tripleMap.hasTriple( triple_xRy ) );
         assertEquals( false, tripleMap.tagIterator().hasNext() );
         assertEquals( false, tripleMap.tagIterator( triple_aRb ).hasNext() );
-        assertIsomorphic( Graph.emptyGraph, tripleMap.asGraph() );
+        assertFalse( tripleMap.find( Triple.ANY ).hasNext() );
         }
     
     public void testPutTriple_hasTriple()

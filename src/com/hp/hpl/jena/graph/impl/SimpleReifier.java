@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.43 2004-11-04 15:05:37 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.44 2004-11-05 11:59:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -14,7 +14,6 @@ package com.hp.hpl.jena.graph.impl;
 */
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.DisjointUnion;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -29,9 +28,7 @@ public class SimpleReifier implements Reifier
     
     protected ReifierFragmentsMap fragmentsMap;
     protected ReifierTripleMap tripleMap;
-    
-    protected Graph reificationTriples;
-    
+        
     /** 
         construct a simple reifier that is bound to the parent graph .
         
@@ -196,31 +193,19 @@ public class SimpleReifier implements Reifier
         Triple already = tripleMap.getTriple( tag );
         Triple complete = s.removeFragment( tag, already, fragment );
         if (complete == null)
-            {
             tripleMap.removeTriple( tag );
-            }
         else
             tripleMap.putTriple( tag, complete );
         }        
-    
-    public Graph getReificationTriples()
-        { if (reificationTriples == null) reificationTriples = new DisjointUnion( tripleMap.asGraph(), fragmentsMap.asGraph() ); 
-        return reificationTriples; }
     
     public ExtendedIterator find( TripleMatch m )
         { return tripleMap.find( m ).andThen( fragmentsMap.find( m ) ); }
     
     public ExtendedIterator findExposed( TripleMatch m )
-        { return concealing ? NullIterator.instance : tripleMap.find( m ).andThen( fragmentsMap.find( m ) ); }
+        { return findEither( m, false ); }
     
     public ExtendedIterator findEither( TripleMatch m, boolean showHidden )
-        {
-        return !showHidden 
-            ? (concealing ? NullIterator.instance : tripleMap.find( m ).andThen( fragmentsMap.find( m ) ))
-            : (concealing ? tripleMap.find( m ).andThen( fragmentsMap.find( m ) ) : NullIterator.instance)
-            ;
-        // return showHidden != concealing ? NullIterator.instance : tripleMap.find( m ).andThen( fragmentsMap.find( m ) ); 
-        }
+        { return showHidden == concealing ? find( m ) : NullIterator.instance; }
         
     public int size()
         { return concealing ? 0 : tripleMap.size() + fragmentsMap.size(); }

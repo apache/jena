@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.15 2004-04-23 10:33:43 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.16 2004-11-05 11:59:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -371,6 +371,12 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         A.removeNsPrefix( "hr" );
         assertEquals( null, A.getNsPrefixURI( "hr" ) );
         assertEquals( bURI, A.getNsPrefixURI( "br" ) );
+        }
+    
+    public void testTrapNastyNamespace()
+        {
+        try { getMapping().setNsPrefix( "abc", "def" ); fail( "" ); }
+        catch (NamespaceEndsWithNameCharException e) { pass(); }
         }
         
     public void testLock()

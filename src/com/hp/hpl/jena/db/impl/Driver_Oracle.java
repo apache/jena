@@ -325,7 +325,6 @@ protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
 				   BLOB blob = rs.getBLOB(2);
 					
 				   if (blob != null) {
-					InputStream blobin = null;
 					int len =  (int)blob.length();
 					byte[] data = blob.getBytes(1,len);
 					res.tail = new String(data, "UTF-8");

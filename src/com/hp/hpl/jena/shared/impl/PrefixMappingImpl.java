@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.16 2004-07-02 11:39:58 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.17 2004-11-05 11:59:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
 
 import com.hp.hpl.jena.rdf.model.impl.Util;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.HashUtils;
 
 import java.util.*;
@@ -39,8 +39,9 @@ public class PrefixMappingImpl implements PrefixMapping
         {
         checkUnlocked();
         checkLegal( prefix );
-        if (!prefix.equals( "" )) removeExistingNonDefault( uri );
-        if (!prefix.equals( "" )) checkProper( uri );
+        if (!prefix.equals( "" )) 
+            { checkProper( uri );
+            removeExistingNonDefault( uri ); }
         map.put( prefix, uri );
         return this;
         }
@@ -57,14 +58,14 @@ public class PrefixMappingImpl implements PrefixMapping
         
     private void checkProper( String uri )
         {
-        if (!isNiceURI( uri )) throw new RuntimeException( "horrible " + uri );
+        if (!isNiceURI( uri )) throw new NamespaceEndsWithNameCharException( uri );
         }
         
     public static boolean isNiceURI( String uri )
         {
         if (uri.equals( "" )) return false;
         char last = uri.charAt( uri.length() - 1 );
-        return Util.notNameChar( last ); // )last == '/' || last == '#';
+        return Util.notNameChar( last ); 
         }
  
     private void removeExistingNonDefault( String uri )

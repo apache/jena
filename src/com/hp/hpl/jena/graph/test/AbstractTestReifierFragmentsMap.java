@@ -1,12 +1,11 @@
 /*
      (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
      [See end of file]
-     $Id: AbstractTestReifierFragmentsMap.java,v 1.5 2004-09-21 15:07:19 chris-dollin Exp $
+     $Id: AbstractTestReifierFragmentsMap.java,v 1.6 2004-11-05 11:59:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.ReifierFragmentsMap;
 
 /**
@@ -24,9 +23,6 @@ public abstract class AbstractTestReifierFragmentsMap extends GraphTestBase
     
     public void setUp()
         { fragMap = getFragmentsMap(); }
-
-    public void testEmpty_emptyGraph()
-        { assertIsomorphic( Graph.emptyGraph, fragMap.asGraph() ); }
     
     public void testPutFragments()
         {

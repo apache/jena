@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierFragmentsMap.java,v 1.7 2004-11-02 14:10:08 chris-dollin Exp $
+ $Id: ReifierFragmentsMap.java,v 1.8 2004-11-05 11:59:09 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -18,12 +18,13 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 public interface ReifierFragmentsMap
     {
     /**
-         Answer the fragment map as a read-only Graph of quadlets. 
+         Answer an iterator over all the fragments that match <code>m</code>.
     */
-    public abstract Graph asGraph();
-    
     public ExtendedIterator find( TripleMatch m );
     
+    /**
+         Answer the number of fragments in this map.
+    */
     public int size();
 
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.14 2004-11-03 15:10:37 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.15 2004-11-05 11:59:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -76,17 +76,6 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         GraphAddList L = new GraphAddList( t );
         x.includeInto( L );
         return WrappedIterator.create( L.iterator() );
-        }
-
-    /**
-        Return the fragment map as a read-only Graph of triples. We rely on the
-        default code in GraphBase which allows us to only implement find(TripleMatch)
-        to present a Graph. All the hard work is done by allTriples.
-    */
-    public Graph asGraph()
-        {
-        return new GraphBase()
-            { public ExtendedIterator graphBaseFind( TripleMatch tm ) { return allTriples( tm ); } };
         }
 
     public ExtendedIterator find( TripleMatch m )
