@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.15 2004-03-17 11:20:49 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.16 2004-03-17 19:06:48 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -56,7 +56,8 @@ class ParserSupport
 		this.arp = arp;
 	}
 	ARPFilter arp;
-	void checkWhite(StrToken st, boolean maybeMissingParseType) throws ParseException {
+	void checkWhite(StrToken st, boolean maybeMissingParseType)
+		throws ParseException {
 		String s = st.value;
 		int lgth = s.length();
 		int from = 0;
@@ -74,10 +75,12 @@ class ParserSupport
 					throw new ParseException(
 						ERR_NOT_WHITESPACE,
 						st.location,
-						"Expected whitespace found: '" + s + "'"
-					+
-						(maybeMissingParseType?
-  ". Maybe a missing rdf:parseType='Literal', or a striping problem.":"."));
+						"Expected whitespace found: '"
+							+ s
+							+ "'"
+							+ (maybeMissingParseType
+								? ". Maybe a missing rdf:parseType='Literal', or a striping problem."
+								: "."));
 			}
 		}
 	}
@@ -86,32 +89,34 @@ class ParserSupport
 	 */
 	void checkIdSymbol(XMLContext ctxt, StrToken s, String str)
 		throws ParseException {
-			Map idsUsedForBase = (Map)idsUsed.get(ctxt.getBase());
-			if (idsUsedForBase==null){
+		if (!arp.ignoring(WARN_REDEFINITION_OF_ID)) {
+			Map idsUsedForBase = (Map) idsUsed.get(ctxt.getBase());
+			if (idsUsedForBase == null) {
 				idsUsedForBase = new HashMap();
-				idsUsed.put(ctxt.getBase(),idsUsedForBase);
+				idsUsed.put(ctxt.getBase(), idsUsedForBase);
 			}
-		Location prev = (Location) idsUsedForBase.get(s.value);
-		if (prev != null) {
-			arp.parseWarning(
-				WARN_REDEFINITION_OF_ID,
-				s.location,
-				"Redefinition of ID: " + s.value);
-			arp.parseWarning(
-				WARN_REDEFINITION_OF_ID,
-				prev,
-				"Previous definition of '" + s.value + "'.");
-		} else {
-//			idsUsed.put(str, s.location);
-//			prev = (Location) idsUsed.get(s.value);
-//			if (prev != null)
-//				arp.parseWarning(
-//					WARN_LEGAL_REUSE_OF_ID,
-//					s.location,
-//					"The ID: "
-//						+ s.value
-//						+ " is reused in different xml:base contexts; this may be confusing.");
-			idsUsedForBase.put(s.value, s.location);
+			Location prev = (Location) idsUsedForBase.get(s.value);
+			if (prev != null) {
+				arp.parseWarning(
+					WARN_REDEFINITION_OF_ID,
+					s.location,
+					"Redefinition of ID: " + s.value);
+				arp.parseWarning(
+					WARN_REDEFINITION_OF_ID,
+					prev,
+					"Previous definition of '" + s.value + "'.");
+			} else {
+				//			idsUsed.put(str, s.location);
+				//			prev = (Location) idsUsed.get(s.value);
+				//			if (prev != null)
+				//				arp.parseWarning(
+				//					WARN_LEGAL_REUSE_OF_ID,
+				//					s.location,
+				//					"The ID: "
+				//						+ s.value
+				//						+ " is reused in different xml:base contexts; this may be confusing.");
+				idsUsedForBase.put(s.value, s.location);
+			}
 		}
 		if (!ctxt.isSameAsDocument())
 			arp.parseWarning(
@@ -172,27 +177,30 @@ class ParserSupport
 				"String not in Unicode Normal Form C: " + str.toString());
 	}
 
-	void processingInstruction(Token t,boolean maybeMissingPT) throws ParseException {
+	void processingInstruction(Token t, boolean maybeMissingPT)
+		throws ParseException {
 		arp.parseWarning(
 			WARN_PROCESSING_INSTRUCTION_IN_RDF,
 			t.location,
 			"A processing instruction is in RDF content. No processing was done."
-			+(maybeMissingPT?" Maybe a missing rdf:parseType='Literal'":""));
+				+ (maybeMissingPT
+					? " Maybe a missing rdf:parseType='Literal'"
+					: ""));
 	}
 	void saxException(Token t) throws ParseException {
 		ExceptionToken sax = (ExceptionToken) t;
 		arp.parseWarning(sax.errorCode, t.location, sax.toString());
 	}
-	CollectionAction collectionAction(AResourceInternal rslt[]){
-		return new RDFCollection(this,rslt);
+	CollectionAction collectionAction(AResourceInternal rslt[]) {
+		return new RDFCollection(this, rslt);
 	}
-	CollectionAction damlCollectionAction(AResourceInternal rslt[]){
-		return new DAMLCollection(this,rslt);
+	CollectionAction damlCollectionAction(AResourceInternal rslt[]) {
+		return new DAMLCollection(this, rslt);
 	}
 	void checkXMLLang(StrToken s) throws ParseException {
 		String lang = s.value;
-		if ( lang.equals(""))
-		  return;
+		if (lang.equals(""))
+			return;
 		try {
 			LanguageTag tag = new LanguageTag(lang);
 			int tagType = tag.tagType();
@@ -282,12 +290,14 @@ class ParserSupport
 			URIReference rslt = new URIReference(t.location, ctxt, val);
 			if (val.indexOf(':') == -1) {
 				if ((!arp.ignoring(IGN_XMLBASE_SIGNIFICANT))
-				  &&
-				!ctxt.isSameAsDocument()) {
+					&& !ctxt.isSameAsDocument()) {
 					boolean bad = false;
 					try {
 						URIReference other =
-							new URIReference(t.location, ctxt.getDocument(), val);
+							new URIReference(
+								t.location,
+								ctxt.getDocument(),
+								val);
 						bad = !other.equals(rslt);
 					} catch (Exception e) {
 						// Note resolving the URIReference above may not work.
