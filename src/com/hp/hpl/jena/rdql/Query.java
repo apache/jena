@@ -31,7 +31,7 @@ import com.hp.hpl.jena.rdql.parser.RDQLParser;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.17 2004-06-25 10:17:44 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.18 2004-06-25 10:27:16 andy_seaborne Exp $
  */
 
 public class Query
@@ -178,28 +178,29 @@ public class Query
     public void setSourceURL(String s)              { sourceURL = s ; }
     public String getSourceURL()                    { return sourceURL ; }
 
-    /** Programmatic API operation */
+    /** Programmatic API operation: return the SELECT variables. */
     public List getResultVars() { return resultVars ; }
     
-    /** Programmatic API operation */
+    /** Programmatic API operation: add a SELECT variable */
     public void addResultVar(String varName)
     {
         if ( !resultVars.contains(varName) )
             resultVars.add(varName);
     }
 
-    /** Programmatic API operation */
+    /** Programmatic API operation: get all the variabes used by this query */
     public List getBoundVars() { return patternVars ; }
     
-    /** Programmatic API operation */
+    /** Programmatic API operation: declare a variable used by the query */
     public void addBoundVar(String varName)
     {
         if ( !patternVars.contains(varName) )
             patternVars.add(varName);
     }
 
-    /** Programmatic API operation */
+    /** Programmatic API operation: add a constraint */
     public void addConstraint(Constraint c)         { constraints.add(c) ; }
+    /** Programmatic API operation: get all the constraints */
     public List getConstraints()                    { return constraints ; }
 
     /** Programmatic API operation */
@@ -210,7 +211,7 @@ public class Query
         triplePatterns.add(t) ;
     }
 
-    /** Programmatic API operation */
+    /** Programmatic API operation: get the query graph pattern */
     public List getTriplePatterns()  { return triplePatterns ; }
 
 	/** Set a prefix for this query */
