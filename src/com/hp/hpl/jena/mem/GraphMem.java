@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.11 2003-05-28 11:13:51 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.12 2003-06-10 10:46:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -79,17 +79,17 @@ public class GraphMem extends GraphBase implements Graph {
         Node s = m.getSubject();
         Node p = m.getPredicate();
         Node o = m.getObject();
-
+        Triple tm = m.asTriple();
         // @@ some redundant compares in this code which could be improved
         if (s != null) {
-            return new TripleMatchIterator(m, subjects.iterator(s));
+            return new TripleMatchIterator(tm, subjects.iterator(s));
         } else if (o != null && !o.isLiteral()) {
             // der - added guard on isLiteral to support typed literal semantics
-            return new TripleMatchIterator(m, objects.iterator(o));
+            return new TripleMatchIterator(tm, objects.iterator(o));
         } else if (p != null) {
-            return new TripleMatchIterator(m, predicates.iterator(p));
+            return new TripleMatchIterator(tm, predicates.iterator(p));
         } else {
-            return new TripleMatchIterator(m, triples.iterator());
+            return new TripleMatchIterator(tm, triples.iterator());
         }
     }
 

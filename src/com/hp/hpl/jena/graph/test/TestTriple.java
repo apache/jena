@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTriple.java,v 1.7 2003-06-10 08:09:08 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.8 2003-06-10 10:46:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -167,6 +167,33 @@ public class TestTriple extends GraphTestBase
         
     public void testMatchFails( String pattern, String triple )
         { assertFalse( Triple.create( pattern ).matches( Triple.create( triple ) ) ); }
+        
+    public void testMatchesNodes()
+        {
+        assertTrue( Triple.create( "S P O" ).matches( node("S" ), node( "P" ), node( "O" ) ) );
+        assertTrue( Triple.create( "?? P O" ).matches( node("Z" ), node( "P" ), node( "O" ) ) );
+        assertTrue( Triple.create( "S ?? O" ).matches( node("S" ), node( "Q" ), node( "O" ) ) );
+        assertTrue( Triple.create( "S P ??" ).matches( node("S" ), node( "P" ), node( "I" ) ) );
+    /* */
+        assertFalse( Triple.create( "S P O" ).matches( node("Z" ), node( "P" ), node( "O" ) ) );
+        assertFalse( Triple.create( "S P O" ).matches( node("S" ), node( "Q" ), node( "O" ) ) );
+        assertFalse( Triple.create( "S P O" ).matches( node("Z" ), node( "P" ), node( "I" ) ) );        
+        }
+        
+    public void testElementMatches()
+        {
+        assertTrue( Triple.create( "S P O" ).subjectMatches( node( "S" ) ) );
+        assertTrue( Triple.create( "S P O" ).predicateMatches( node( "P" ) ) );
+        assertTrue( Triple.create( "S P O" ).objectMatches( node( "O" ) ) );
+    /* */
+        assertFalse( Triple.create( "S P O" ).subjectMatches( node( "Z" ) ) );
+        assertFalse( Triple.create( "S P O" ).predicateMatches( node( "Q" ) ) );
+        assertFalse( Triple.create( "S P O" ).objectMatches( node( "I" ) ) );        
+    /* */
+        assertTrue( Triple.create( "?? P O" ).subjectMatches( node( "SUB" ) ) );
+        assertTrue( Triple.create( "S ?? O" ).predicateMatches( node( "PRED" ) ) );
+        assertTrue( Triple.create( "S P ??" ).objectMatches( node( "OBJ" ) ) );    
+        }
 }
 /*
     (c) Copyright Hewlett-Packard Company 2002

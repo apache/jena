@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFSOld.java,v 1.3 2003-05-30 13:50:11 chris-dollin Exp $
+  $Id: RDFSOld.java,v 1.4 2003-06-10 10:45:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -135,13 +135,12 @@ public class RDFSOld extends Dyadic implements Vocabulary
         {
         }
 
-	private boolean wouldMatch( TripleMatch m, Node s, Node p, Node o )
+	private boolean wouldMatch( Triple m, Node s, Node p, Node o )
 		{
 		return 
-            (s == null || m.subject( s ))
-            && (p == null || m.predicate( p ))
-            && (o == null || m.object( o ));
-            // && m.triple( new Triple( s, p, o ) );
+            (s == null || m.subjectMatches( s ))
+            && (p == null || m.predicateMatches( p ))
+            && (o == null || m.objectMatches( o ));
 		}
 		
 	protected ExtendedIterator getTheseResources( Node X, Node S, Node P, Node O )
@@ -165,9 +164,9 @@ public class RDFSOld extends Dyadic implements Vocabulary
 		
     private static class AcceptTriples implements Filter
         {
-        private TripleMatch m;
+        private Triple m;
         
-        public AcceptTriples( TripleMatch m )
+        public AcceptTriples( Triple m )
             { this.m = m; }
             
         public boolean accept( Object o )
@@ -182,7 +181,7 @@ public class RDFSOld extends Dyadic implements Vocabulary
             { return new Triple( (Node) x, rdfType, rdfsResource ); }
         }
         
-	protected ExtendedIterator mapAsResources( TripleMatch m, ExtendedIterator nodes )
+	protected ExtendedIterator mapAsResources( Triple m, ExtendedIterator nodes )
 		{
         return nodes.mapWith( new TypeAsResource() ) .filterKeep( new AcceptTriples( m ) );
 		}
@@ -214,39 +213,15 @@ public class RDFSOld extends Dyadic implements Vocabulary
     	return typedBy( g, Query.ANY, RDFSOld.rdfsRange, XX );
     	}
         
-    public static ExtendedIterator findAllSubclasses( Graph g, final TripleMatch m )
-    	{
-    	TripleMatch matcher = new TripleMatch()
-    		{
-            public Node getSubject()   {return null;} //@@ quick patch by bwm
-            public Node getPredicate() {return null;} //@@ quick patch by bwm
-            public Node getObject()    {return null;} //@@ quick patch by bwm
-    		public boolean subject( Node x ) { return true; }
-    		public boolean predicate( Node x ) { return rdfsSubClassOf.equals( x ); }
-    		public boolean object( Node x ) { return m.object( x ); }
-    		public boolean triple( Triple x ) { return true; } 
-    		public boolean matches( Triple x ) 
-    			{ return subject(x.getSubject()) && predicate(x.getPredicate()) && object(x.getObject()) ; }
-    		};
-    	ExtendedIterator it = g.find( matcher );
-    	return it .mapWith( new Map1() { public Object map1( Object x ) { return ((Triple) x).getSubject(); } } );
-    	}
-    	
-    public ExtendedIterator typedBySubclass( final TripleMatch m, Graph g )
+    public ExtendedIterator typedBySubclass( final Triple m, Graph g )
     	{
     	final HashMap supers = superClasses();
-    	TripleMatch matcher = new TripleMatch()
-    		{
-                public Node getSubject()   {return null;} //@@ quick patch by bwm
-                public Node getPredicate() {return null;} //@@ quick patch by bwm
-                public Node getObject()    {return null;} //@@ quick patch by bwm
-    		public boolean subject( Node x ) { return m.subject( x ); }
-    		public boolean predicate( Node x ) { return rdfType.equals( x ); }
-    		public boolean object( Node x ) { return supers.containsKey( x ); }
-    		public boolean triple( Triple x ) { return true; } 
-    		public boolean matches( Triple x ) 
-    			{ return subject(x.getSubject()) && predicate(x.getPredicate()) && object(x.getObject()) ; }    		
-    		};
+        TripleMatch matcher = new StandardTripleMatch( m.getSubject(), rdfType, null );
+        Filter isSuper = new Filter()
+            {
+            public boolean accept( Object x )
+                { return supers.containsKey( ((Triple) x).getObject() ); }
+            };
     	MapFiller sm = new MapFiller()
     		{
     		public boolean refill( Object x, ArrayList a )
@@ -257,19 +232,20 @@ public class RDFSOld extends Dyadic implements Vocabulary
     			return true;
     			}
     		};
-    	return new MapMany( g.find( matcher ), sm );
+    	return new MapMany( g.find( matcher ) .filterKeep ( isSuper ), sm );
     	}
     	
         public ExtendedIterator find(final TripleMatch m)
         {
        	ExtendedIterator basic = properties.find( m ).andThen( rdfsAxioms.find( m ) ).andThen( L.find( m ) );
-        if (wouldMatch( m, null, rdfType, null ))
+        Triple tm = m.asTriple();
+        if (wouldMatch( tm, null, rdfType, null ))
             if (m instanceof StandardTripleMatch)
                 {
-                Filter FF = new AcceptTriples( m );
+                Filter FF = new AcceptTriples( tm );
                 ExtendedIterator t12 = typedByDomain( new Union( properties, L ) );
                 ExtendedIterator r12 = typedByRange( new Union( properties, L ) );
-                ExtendedIterator s = typedBySubclass( m, new Union( properties, L ) );
+                ExtendedIterator s = typedBySubclass( tm, new Union( properties, L ) );
             /* */
                 ExtendedIterator typed = t12.filterKeep( FF ) .andThen ( r12.filterKeep( FF ) );
                 basic = basic.andThen( typed ) .andThen( s.filterKeep( FF ) );
@@ -278,13 +254,13 @@ public class RDFSOld extends Dyadic implements Vocabulary
                 {
                 throw new RuntimeException( "only StandardTripleMatch works" );
                 }
-        if (wouldMatch( m, null, rdfType, rdfsResource ))
+        if (wouldMatch( tm, null, rdfType, rdfsResource ))
         	{ /* have to deliver all resource-type things */
             // System.err.println( "+  hairy " + m );
         	ExtendedIterator subjects = getSubjectResources();
         	ExtendedIterator objects = getObjectResources();
             ExtendedIterator predicates = getTheseResources( Query.P, Query.ANY, Query.P, Query.ANY );
-        	ExtendedIterator typedResource = mapAsResources( m, subjects.andThen( objects ).andThen( predicates ) );
+        	ExtendedIterator typedResource = mapAsResources( tm, subjects.andThen( objects ).andThen( predicates ) );
         	return basic.andThen( typedResource );
         	}
         else

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFClosure.java,v 1.4 2003-05-28 10:28:53 chris-dollin Exp $
+  $Id: RDFClosure.java,v 1.5 2003-06-10 10:45:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -47,25 +47,25 @@ public class RDFClosure extends Dyadic implements Graph
 	static Node RDFproperty = GraphTestBase.node( "rdf:Property" );
 	static Triple typeTriple = new Triple( RDFtype, RDFtype, RDFproperty );
 	
-	private boolean plausible( TripleMatch tm, Node p )
+	private boolean plausible( Triple tm, Node p )
 		{
-		return tm.subject( p ) && tm.predicate( RDFtype ) && tm.object( RDFproperty );
+        return tm.matches( p, RDFtype, RDFproperty );
 		}
 		
-	private ClosableIterator findProperties( final Graph g, final TripleMatch tm )
+	private ClosableIterator findProperties( final Graph g, final Triple ttm )
 		{
-		ClosableIterator it = g.find( null, null, null );
+		ClosableIterator it = GraphUtil.findAll( g );
 		final HashMap properties = new HashMap();
 		try 
 			{ 
-			if (tm.matches( typeTriple )) properties.put( RDFtype, typeTriple );
+			if (ttm.matches( typeTriple )) properties.put( RDFtype, typeTriple );
 			while (it.hasNext()) 
 				{
 				Node p = ((Triple) it.next()).getPredicate();
-				if (properties.containsKey( p ) == false && plausible( tm, p ))
+				if (properties.containsKey( p ) == false && plausible( ttm, p ))
 					{			
 					Triple t = new Triple( p, RDFtype, RDFproperty );
-					if (tm.triple( t )) properties.put( p, t );
+					/* if (tm.triple( t )) */ properties.put( p, t );
 					}
 				}
 			}
@@ -81,12 +81,14 @@ public class RDFClosure extends Dyadic implements Graph
 
 	public ExtendedIterator find( TripleMatch m ) 
 		{
-		if (m.predicate( RDFtype ) && m.object( RDFproperty ))
+        Triple tm = m.asTriple();
+        ExtendedIterator lit = L.find( m );
+		if (tm.predicateMatches( RDFtype ) && tm.objectMatches( RDFproperty ))
 			{
-			return L.find( m ).andThen( findProperties( L, m ) );	
+			return lit .andThen( findProperties( L, tm ) );	
 			}
 		else
-			return L.find( m );
+			return lit;
 		}
 		
 

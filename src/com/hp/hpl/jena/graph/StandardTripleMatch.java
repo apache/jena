@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: StandardTripleMatch.java,v 1.3 2003-06-06 09:14:50 chris-dollin Exp $
+  $Id: StandardTripleMatch.java,v 1.4 2003-06-10 10:46:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -33,45 +33,8 @@ public final class StandardTripleMatch implements TripleMatch {
         this.object = nullToAny( object );
     }
         
-	/**
-	 * Stores may optimise to not call this method
-	 * when subject!=null.
-	 * @see TripleMatch#subject(Node)
-	 */
-	public boolean subject(Node n) 
-        { return subject.matches( n ); }
-            
-	/**
-	 * Stores may optimise to not call this method
-	 * when predicate!=null.
-	 * @see TripleMatch#predicate(Node)
-	 */
-	public boolean predicate(Node n) 
-        { return predicate.matches( n ); }
-
-	/**
-	 * Stores may optimise to not call this method
-	 * when object!=null.
-	 * @see TripleMatch#object(Node)
-	 */
-	public boolean object(Node n) 
-        { return object.matches( n ); }
-
-	/**
-	 * This method must always be used as a filter by a Store.
-	 * @see TripleMatch#triple(Triple)
-	 */
-	public boolean triple(Triple t) {
-		return true;
-	}
-    
-    public boolean matches( Triple t )
-        {
-            return subject(t.getSubject())     &&
-                   predicate(t.getPredicate()) && 
-                   object(t.getObject())       &&
-                   triple(t);
-        }
+    public Triple asTriple()
+        { return new Triple( subject, predicate, object ); }
         
     public String toString()
     	{ return "<stm " + subject + " " + predicate + " " + object + ">"; }

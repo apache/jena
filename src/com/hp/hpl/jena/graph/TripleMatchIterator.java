@@ -1,26 +1,26 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TripleMatchIterator.java,v 1.2 2003-04-08 22:11:59 ian_dickinson Exp $
+  $Id: TripleMatchIterator.java,v 1.3 2003-06-10 10:46:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
-import com.hp.hpl.jena.util.iterator.FilterIterator;
+import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.Iterator;
 
 /** An iterator that selects triples from an underlying iterators of triples
- *
- * @author  bwm
- */
-public class TripleMatchIterator extends FilterIterator
-                                                  implements ClosableIterator {
-   public TripleMatchIterator(TripleMatch m, Iterator iter) {
-       super( new TripleMatchFilter(m), iter);
-   }
-}
+ * It used to take TripleMatch's, but those are obsolete.
+ * @author  bwm, kers
+*/
+public class TripleMatchIterator 
+    extends FilterIterator
+    implements ExtendedIterator 
+    {
+   public TripleMatchIterator( Triple m, Iterator iter ) 
+        { super( new TripleMatchFilter( m ), iter); }
+    }
 
 /*
  *  (c) Copyright Hewlett-Packard Company 2000, 2001

@@ -418,7 +418,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 //		ExtendedIterator nodes = m_reif.findReifNodes(stmtURI, my_GID);
 		ExtendedIterator allTriples = new MapMany(it, new ExpandReifiedTriples(this));
 
-		return allTriples.filterKeep(new TripleMatchFilter(t));
+		return allTriples.filterKeep( new TripleMatchFilter( t.asTriple() ) );
 	}
 
 	public class ExpandReifiedTriples implements MapFiller {
