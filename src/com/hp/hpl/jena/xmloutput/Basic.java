@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.1.1.1 2002-12-19 19:21:51 bwm Exp $
+  $Id: Basic.java,v 1.2 2003-01-31 06:17:47 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput;
@@ -17,206 +17,218 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:51 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-31 06:17:47 $'
  */
 public class Basic extends BaseXMLWriter {
 
-    static String RDFNS = RDF.getURI();
+	static String RDFNS = RDF.getURI();
 
-    public Basic() {
-    }
+	public Basic() {
+	}
 
-    void writeBody(
-        Model model,
-        PrintWriter pw,
-        String base,
-        boolean inclXMLBase) {
-        // 	System.err.println(base +" - "+inclXMLBase + " + " + (model!=null));
-        //	setupMaps();
-            //pw = new PrintWriter(System.out);
-            writeRDFHeader(model, pw);
-            writeRDFStatements(model, pw);
-            writeRDFTrailer(pw, base);
-            pw.flush();
-            /*
-        } catch (Exception e) {
+	void writeBody(
+		Model model,
+		PrintWriter pw,
+		String base,
+		boolean inclXMLBase) {
+		// 	System.err.println(base +" - "+inclXMLBase + " + " + (model!=null));
+		//	setupMaps();
+		//pw = new PrintWriter(System.out);
+		writeRDFHeader(model, pw);
+		writeRDFStatements(model, pw);
+		writeRDFTrailer(pw, base);
+		pw.flush();
+		/*
+		} catch (Exception e) {
+		
+		System.err.println(base + " - " + inclXMLBase);
+		errorHandler.error(e);
+		}
+		*/
+	}
 
-            System.err.println(base + " - " + inclXMLBase);
-            errorHandler.error(e);
-        }
-        */
-    }
+	private void writeRDFHeader(Model model, PrintWriter writer) {
+		String xmlns = xmlnsDecl();
+		NsIterator nsIter = model.listNameSpaces();
+		String ns;
 
-    
+		writer.print("<" + rdfEl("RDF") + xmlns);
 
-    private void writeRDFHeader(Model model, PrintWriter writer) {
-        String xmlns = xmlnsDecl();
-        NsIterator nsIter = model.listNameSpaces();
-        String ns;
+		if (null != xmlBase && xmlBase.length() > 0) {
 
-        writer.print("<" + rdfEl("RDF") + xmlns);
-        
-        if (null != xmlBase && xmlBase.length() > 0) {
+			writer.print("\n  xml:base=\"" + xmlBase + "\"");
+		}
+		writer.println(" >");
+	}
 
-            writer.print("\n  xml:base=\"" + xmlBase + "\"");
-        }
-        writer.println(" >");
-    }
+	protected void writeRDFStatements(Model model, PrintWriter writer)
+		throws RDFException {
+		ResIterator rIter = model.listSubjects();
+		while (rIter.hasNext()) {
+			writeRDFStatements(model, rIter.next(), writer);
+		}
+	}
 
-    protected void writeRDFStatements(Model model, PrintWriter writer)
-        throws RDFException {
-        ResIterator rIter = model.listSubjects();
-        while (rIter.hasNext()) {
-            writeRDFStatements(model, rIter.next(), writer);
-        }
-    }
+	protected void writeRDFTrailer(PrintWriter writer, String base) {
+		writer.println("</" + rdfEl("RDF") + ">");
+	}
 
-    protected void writeRDFTrailer(PrintWriter writer, String base) {
-        writer.println("</" + rdfEl("RDF") + ">");
-    }
+	protected void writeRDFStatements(
+		Model model,
+		Resource subject,
+		PrintWriter writer)
+		throws RDFException {
+		StmtIterator sIter =
+			model.listStatements(
+				new SelectorImpl(subject, null, (RDFNode) null));
 
-    protected void writeRDFStatements(
-        Model model,
-        Resource subject,
-        PrintWriter writer)
-        throws RDFException {
-        StmtIterator sIter =
-            model.listStatements(
-                new SelectorImpl(subject, null, (RDFNode) null));
+		writeDescriptionHeader(subject, writer);
+		if ((subject instanceof Statement)
+			&& !model.contains((Statement) subject)) {
+			// an unasserted reified statement
+			writeReifiedProperties((Statement) subject, writer);
+		}
+		while (sIter.hasNext()) {
+			writePredicate(sIter.next(), writer);
+		}
+		writeDescriptionTrailer(writer);
 
-        writeDescriptionHeader(subject, writer);
-        if ((subject instanceof Statement)
-            && !model.contains((Statement) subject)) {
-            // an unasserted reified statement
-            writeReifiedProperties((Statement) subject, writer);
-        }
-        while (sIter.hasNext()) {
-            writePredicate(sIter.next(), writer);
-        }
-        writeDescriptionTrailer(writer);
+		// if the subject of subject is a reified statement not in the model
+		// need to write it out too
+		if (subject instanceof Statement) {
+			Resource innerSubject = ((Statement) subject).getSubject();
+			if (innerSubject instanceof Statement
+				&& !model.contains((Statement) innerSubject)) {
+				writeRDFStatements(model, innerSubject, writer);
+			}
+			RDFNode innerObject = ((Statement) subject).getObject();
+			if (innerObject instanceof Statement
+				&& !model.contains((Statement) innerObject)) {
+				writeRDFStatements(model, (Resource) innerObject, writer);
+			}
+		}
 
-        // if the subject of subject is a reified statement not in the model
-        // need to write it out too
-        if (subject instanceof Statement) {
-            Resource innerSubject = ((Statement) subject).getSubject();
-            if (innerSubject instanceof Statement
-                && !model.contains((Statement) innerSubject)) {
-                writeRDFStatements(model, innerSubject, writer);
-            }
-            RDFNode innerObject = ((Statement) subject).getObject();
-            if (innerObject instanceof Statement
-                && !model.contains((Statement) innerObject)) {
-                writeRDFStatements(model, (Resource) innerObject, writer);
-            }
-        }
+	}
 
-    }
+	protected void writeDescriptionHeader(Resource subject, PrintWriter writer)
+		throws RDFException {
+		writer.print("  <" + rdfEl("Description") + " ");
+		writeResourceId(subject, writer);
+		writer.println(">");
+	}
 
-    protected void writeDescriptionHeader(Resource subject, PrintWriter writer)
-        throws RDFException {
-        writer.print("  <" + rdfEl("Description") + " ");
-        writeResourceId(subject, writer);
-        writer.println(">");
-    }
+	protected void writePredicate(Statement stmt, PrintWriter writer)
+		throws RDFException {
 
-    protected void writePredicate(Statement stmt, PrintWriter writer)
-        throws RDFException {
+		Property predicate = stmt.getPredicate();
+		RDFNode object = stmt.getObject();
 
-        Property predicate = stmt.getPredicate();
-        RDFNode object = stmt.getObject();
+		writer.print(
+			"    <"
+				+ startElementTag(
+					predicate.getNameSpace(),
+					predicate.getLocalName()));
 
-        writer.print("    <" + startElementTag(predicate.getNameSpace(),predicate.getLocalName()));
+		//        if (stmt.isReified()) {
+		//            writer.print(" " + nsPrefix(RDFNS) + ":ID='" + anonId(stmt) + "'");
+		//        }
 
-        //        if (stmt.isReified()) {
-        //            writer.print(" " + nsPrefix(RDFNS) + ":ID='" + anonId(stmt) + "'");
-        //        }
+		if (object instanceof Resource) {
+			writer.print(" ");
+			writeResourceReference(((Resource) object), writer);
+			writer.println("/>");
+		} else {
+			writeLiteral((Literal) object, writer);
+			writer.println(
+				"</"
+					+ endElementTag(
+						predicate.getNameSpace(),
+						predicate.getLocalName())
+					+ ">");
+		}
+	}
 
-        if (object instanceof Resource) {
-            writer.print(" ");
-            writeResourceReference(((Resource) object), writer);
-            writer.println("/>");
-        } else {
-            writeLiteral((Literal) object, writer);
-            writer.println("</" + endElementTag(predicate.getNameSpace(),predicate.getLocalName()) + ">");
-        }
-    }
+	protected void writeDescriptionTrailer(PrintWriter writer) {
+		writer.println("  </" + rdfEl("Description") + ">");
+	}
 
-    protected void writeDescriptionTrailer(PrintWriter writer) {
-        writer.println("  </" + rdfEl("Description")+">");
-    }
+	protected void writeReifiedProperties(Statement stmt, PrintWriter writer)
+		throws RDFException {
+		writer.println(
+			"    <"
+				+ rdfEl("type")
+				+ rdfAt("resource")
+				+ "='"
+				+ RDFNS
+				+ "Statement'/>");
+		writer.print("    <" + rdfEl("subject") + " ");
+		writeResourceReference(stmt.getSubject(), writer);
+		writer.println("/>");
+		writer.println(
+			"    <"
+				+ rdfEl("predicate")
+				+ rdfAt("resource")
+				+ "='"
+				+ Util.substituteStandardEntities(stmt.getPredicate().getURI())
+				+ "'/>");
+		writer.print("    <" + rdfEl("object") + " ");
 
-    protected void writeReifiedProperties(Statement stmt, PrintWriter writer)
-        throws RDFException {
-        writer.println(
-            "    <"
-                + rdfEl("type")
-            + rdfAt("resource")
-            + "='"
-                + RDFNS
-                + "Statement'/>");
-        writer.print("    <" + rdfEl("subject") + " ");
-        writeResourceReference(stmt.getSubject(), writer);
-        writer.println("/>");
-        writer.println(
-            "    <"
-                + rdfEl("predicate")
-                + rdfAt("resource")
-                + "='"
-                + Util.substituteStandardEntities(stmt.getPredicate().getURI())
-                + "'/>");
-        writer.print("    <" + rdfEl("object")+" ");
+		RDFNode object = stmt.getObject();
+		if (object instanceof Resource) {
+			writeResourceReference((Resource) stmt.getObject(), writer);
+			writer.println("/>");
+		} else {
+			writeLiteral((Literal) object, writer);
+			writer.println("</" + rdfEl("object") + ">");
+		}
+	}
 
-        RDFNode object = stmt.getObject();
-        if (object instanceof Resource) {
-            writeResourceReference((Resource) stmt.getObject(), writer);
-            writer.println("/>");
-        } else {
-            writeLiteral((Literal) object, writer);
-            writer.println("</" + rdfEl("object") + ">");
-        }
-    }
+	protected void writeResourceId(Resource r, PrintWriter writer)
+		throws RDFException {
+		if (r.isAnon()) {
+			writer.print(rdfAt("nodeID") + "='" + anonId(r));
+		} else {
+			writer.print(
+				rdfAt("about")
+					+ "='"
+					+ Util.substituteStandardEntities(r.getURI()));
+		}
+		writer.print("'");
+	}
 
-    protected void writeResourceId(Resource r, PrintWriter writer)
-        throws RDFException {
-        if (r.isAnon()) {
-            writer.print(rdfAt("nodeID")
-                                            + "='"+ anonId(r));
-        } else {
-            writer.print(
-                rdfAt("about")
-                    + "='"
-                    + Util.substituteStandardEntities(r.getURI()));
-        }
-        writer.print("'");
-    }
+	protected void writeResourceReference(Resource r, PrintWriter writer)
+		throws RDFException {
+		if (r.isAnon()) {
+			writer.print(rdfAt("nodeID") + "='" + anonId(r));
+		} else {
+			writer.print(
+				rdfAt("resource")
+					+ "='"
+					+ Util.substituteStandardEntities(r.getURI()));
+		}
+		writer.print("'");
+	}
 
-    protected void writeResourceReference(Resource r, PrintWriter writer)
-        throws RDFException {
-        if (r.isAnon()) {
-            writer.print(rdfAt("nodeID")
-                                + "='" + anonId(r));
-        } else {
-            writer.print(
-                rdfAt("resource")
-                    + "='"
-                    + Util.substituteStandardEntities(r.getURI()));
-        }
-        writer.print("'");
-    }
-
-    protected void writeLiteral(Literal l, PrintWriter writer) {
-        String lang = l.getLanguage();
-        if (!lang.equals("")) {
-            writer.print(" xml:lang=\'" + lang + "'");
-        }
-        if (l.getWellFormed()) {
-            writer.print(" " + rdfAt("parseType")+"='Literal'>");
-            writer.print(l.toString());
-        } else {
-            writer.print(">");
-            writer.print(Util.substituteStandardEntities(l.toString()));
-        }
-    }
+	protected void writeLiteral(Literal l, PrintWriter writer) {
+		String lang = l.getLanguage();
+		if (!lang.equals("")) {
+			writer.print(" xml:lang=\'" + lang + "'");
+		}
+		if (l.getWellFormed()) {
+			writer.print(" " + rdfAt("parseType") + "='Literal'>");
+			writer.print(l.toString());
+		} else {
+			String dt = l.getDatatypeURI();
+			if (dt != null) {
+                writer.print(" " + rdfAt("datatype") + "='" +
+                Util.substituteStandardEntities(dt)+"'>");
+                writer.print(l.getLexicalForm());
+			} else {
+				writer.print(">");
+				writer.print(Util.substituteStandardEntities(l.toString()));
+			}
+		}
+	}
 
 }
 
