@@ -63,21 +63,20 @@ public class WGTests extends java.lang.Object {
 	 */
 	static public boolean internet = false;
 	static private URI wgTestDir = URI.create("http://www.w3.org/2002/03owlt/");
-	private static String BASE_RESULTS_URI = "http://jena.sourceforge.net/data/owl-syntax-results.rdf";
-    private static boolean logging = false;
-    
+	private static String BASE_RESULTS_URI =
+		"http://jena.sourceforge.net/data/owl-syntax-results.rdf";
+	private static boolean logging = false;
+
 	/**
 	 * Setting this before invoking suite can permit the use of a zip based factory
 	 * etc.
 	 */
 	static private TestInputStreamFactory factory;
-   
-   
-    static private String skipThese[] = {
-    	"http://www.w3.org/2002/03owlt/I5.8/Manifest016#test"
-    };
-    static private boolean doLargeTests = false;
-    
+
+	static private String skipThese[] =
+		{ "http://www.w3.org/2002/03owlt/I5.8/Manifest016#test" };
+	static private boolean doLargeTests = false;
+
 	static private String manifestURI = "OWLManifest.rdf";
 	static private boolean manifestInFactory = true;
 
@@ -95,11 +94,11 @@ public class WGTests extends java.lang.Object {
 			manifest = factory.open(manifestURI);
 		} else {
 			try {
-			try {
-				manifest = new URL(manifestURI).openStream();
-			} catch (MalformedURLException e) {
-				manifest = new FileInputStream(manifestURI);
-			}
+				try {
+					manifest = new URL(manifestURI).openStream();
+				} catch (MalformedURLException e) {
+					manifest = new FileInputStream(manifestURI);
+				}
 			} catch (IOException e) {
 				throw new JenaException(e);
 			}
@@ -127,46 +126,44 @@ public class WGTests extends java.lang.Object {
 
 		for (Iterator iter = results; iter.hasNext();) {
 			ResultBinding res = (ResultBinding) iter.next();
-			
+
 			addTest(s, res, m);
 		}
 		results.close();
-        s.addTest(new DummyTest());
+		s.addTest(new DummyTest());
 		return s;
 	}
 
 	private static void addTest(TestSuite s, ResultBinding res, Model m) {
-			Object status = res.get("s");
-			Resource testResource = (Resource)res.get("t");
-			Object testFile = res.get("f");
-			Object level = res.get("l");
-		
-			String testURI =  testResource.getURI();
-			for (int kk=0;kk<skipThese.length; kk++)
-			  if ( testURI.equals(skipThese[kk]))
-			    return;
-			    
-			if ((!doLargeTests) &&
-				testResource.hasProperty(OWLTest.size, OWLTest.Large) ) {
-					return;
-			}
-		
-			TestSuite st =
-				(TestSuite) getTest(s,
-					((Literal) status).getLexicalForm(),
-					null);
-			
+		Object status = res.get("s");
+		Resource testResource = (Resource) res.get("t");
+		Object testFile = res.get("f");
+		Object level = res.get("l");
+
+		String testURI = testResource.getURI();
+		for (int kk = 0; kk < skipThese.length; kk++)
+			if (testURI.equals(skipThese[kk]))
+				return;
+
+		if ((!doLargeTests)
+			&& testResource.hasProperty(OWLTest.size, OWLTest.Large)) {
+			return;
+		}
+
+		TestSuite st =
+			(TestSuite) getTest(s, ((Literal) status).getLexicalForm(), null);
+
 		//	System.err.println(testURI);
-			int lastSl = testURI.lastIndexOf('/');
-			int penUltimateSl = testURI.lastIndexOf('/', lastSl - 1);
-			int hash = testURI.lastIndexOf('#');
-			//System.err.println(lastSl + " " + penUltimateSl + " " + hash);
-			String dirName = testURI.substring(penUltimateSl + 1, lastSl);
-			TestSuite dir = (TestSuite) getTest(st, dirName, null);
-			String number = testURI.substring(hash - 3, hash);
-			SyntaxTest test = (SyntaxTest) getTest(dir, number, testURI);
-			String fileURI = ((Resource) testFile).getURI();
-			test.add(factory.open(fileURI), (Resource) level, fileURI);
+		int lastSl = testURI.lastIndexOf('/');
+		int penUltimateSl = testURI.lastIndexOf('/', lastSl - 1);
+		int hash = testURI.lastIndexOf('#');
+		//System.err.println(lastSl + " " + penUltimateSl + " " + hash);
+		String dirName = testURI.substring(penUltimateSl + 1, lastSl);
+		TestSuite dir = (TestSuite) getTest(st, dirName, null);
+		String number = testURI.substring(hash - 3, hash);
+		SyntaxTest test = (SyntaxTest) getTest(dir, number, testURI);
+		String fileURI = ((Resource) testFile).getURI();
+		test.add(factory.open(fileURI), (Resource) level, fileURI);
 	}
 
 	static private Test getTest(TestSuite s, String nm, String syntaxTestURI) {
@@ -195,62 +192,79 @@ public class WGTests extends java.lang.Object {
 		logging = true;
 		testResults = ModelFactory.createDefaultModel();
 		jena2 = testResults.createResource(BASE_RESULTS_URI + "#jena2");
-		jena2.addProperty(RDFS.comment, 
+		jena2.addProperty(
+			RDFS.comment,
 			testResults.createLiteral(
-				"<a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://jena.sourceforce.net/\">Jena2</a> includes an " +
-				" OWL Syntax Checker. This does not produce an abstract syntax tree, but " +
-				" instead merely recognises the RDF graph as OWL Lite, OWL DL or OWL Full " +
-				" according to the grammar. The tested version is the developers version" +
-				" available from <a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://www.sourceforce.net/projects/jena\">" +
-				"sourceforge</a> CVS.",
-				true)
-		);
+				"<a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://jena.sourceforce.net/\">Jena2</a> includes an "
+					+ " OWL Syntax Checker. This does not produce an abstract syntax tree, but "
+					+ " instead merely recognises the RDF graph as OWL Lite, OWL DL or OWL Full "
+					+ " according to the grammar. The tested version is the developers version"
+					+ " available from <a xmlns=\"http://www.w3.org/1999/xhtml\" href=\"http://www.sourceforce.net/projects/jena\">"
+					+ "sourceforge</a> CVS.",
+				true));
 		jena2.addProperty(RDFS.label, "Jena2 (Syntax)");
 		testResults.setNsPrefix("results", OWLResults.NS);
 	}
 	static void logResult(String uri, boolean pass) {
-		if (!logging) return;
-		Resource test = testResults.createResource()
-		        .addProperty(OWLResults.syntacticLevelTestFrom,
-		                 testResults.createResource(uri) );
+		if (!logging)
+			return;
+		Resource test =
+			testResults.createResource().addProperty(
+				OWLResults.syntacticLevelTestFrom,
+				testResults.createResource(uri));
 		Resource result =
 			testResults
 				.createResource()
 				.addProperty(RDF.type, OWLResults.TestRun)
-				.addProperty(RDF.type, pass?OWLResults.PassingRun:
-				                      OWLResults.FailingRun)
-				.addProperty(OWLResults.test, test )
+				.addProperty(
+					RDF.type,
+					pass ? OWLResults.PassingRun : OWLResults.FailingRun)
+				.addProperty(OWLResults.test, test)
 				.addProperty(OWLResults.system, jena2);
 	}
 	static private class DummyTest extends TestCase {
 		DummyTest() {
 			super("save results");
 		}
-		public void runTest()  throws IOException {
-			if (logging) {	    
+		public void runTest() throws IOException {
+			if (logging) {
 				RDFWriter w = testResults.getWriter("RDF/XML-ABBREV");
-				w.setProperty("xmlbase",BASE_RESULTS_URI );
-				OutputStream out = new FileOutputStream("/tmp/owl-syntax-results.rdf");
-				w.write(testResults,out,BASE_RESULTS_URI);
+				w.setProperty("xmlbase", BASE_RESULTS_URI);
+				OutputStream out =
+					new FileOutputStream("/tmp/owl-syntax-results.rdf");
+				w.write(testResults, out, BASE_RESULTS_URI);
 				out.close();
 			}
 		}
 	}
 	static public void main(String args[]) {
-		
+
 		// Use local copy in directory WWW
-		manifestURI = "file://localhost/home/jjc/WWW/2002/03owlt/editors-draft/draft/Manifest.rdf";
-		manifestInFactory = false;
+		if (args.length == 1 && args[0].equals("--editors-draft")) {
+			manifestURI =
+				"http://www.w3.org/2002/03owlt/editors-draft/draft/Manifest.rdf";
+
+			manifestInFactory = false;
+			factory =
+				new TestInputStreamFactory(
+					wgTestDir,
+					URI.create("http://www.w3.org/2002/03owlt/."));
+		} else {
+
+			manifestURI =
+				"file://localhost/home/jjc/WWW/2002/03owlt/editors-draft/draft/Manifest.rdf";
+
+			manifestInFactory = false;
+			factory =
+				new TestInputStreamFactory(
+					wgTestDir,
+					URI.create("file://localhost/home/jjc/WWW/2002/03owlt/."));
+		}
 		doLargeTests = true;
 		skipThese = new String[0];
-		factory = new TestInputStreamFactory( wgTestDir,
-		    URI.create("file://localhost/home/jjc/WWW/2002/03owlt/."));
 		initResults();
 
-		TestRunner.main(new String[]{
-			  "-noloading", WGTests.class.getName()});
-			  
-
+		TestRunner.main(new String[] { "-noloading", WGTests.class.getName()});
 
 	}
 

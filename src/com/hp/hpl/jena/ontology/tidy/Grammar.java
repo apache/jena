@@ -1,6 +1,6 @@
 /* (c) Copyright 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Grammar.java,v 1.22 2003-09-25 16:01:51 jeremy_carroll Exp $
+  $Id: Grammar.java,v 1.23 2003-11-11 08:46:04 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import java.util.Arrays;
@@ -985,15 +985,15 @@ SPOA( description80disjointWith, owlcomplementOf, classID, 0|DL|FirstOfOne ),
 SPOA( description80disjointWith, rdftype, owlClass, 0|DL ),
 SPOA( description80object, owlcomplementOf, classID, 0|DL|FirstOfOne ),
 SPOA( description80object, rdftype, owlClass, 0|DL ),
-SPOA( description81subClassOf, owloneOf, rdfnil, 0|DL|FirstOfTwo ),
+SPOA( description81subClassOf, owloneOf, rdfnil, 0|DL|FirstOfOne ),
 SPOA( description81subClassOf, rdftype, owlClass, 0|DL ),
-SPOA( description81equivalentClass, owloneOf, rdfnil, 0|DL|FirstOfTwo ),
+SPOA( description81equivalentClass, owloneOf, rdfnil, 0|DL|FirstOfOne ),
 SPOA( description81equivalentClass, rdftype, owlClass, 0|DL ),
-SPOA( description81disjointWith, owloneOf, rdfnil, 0|DL|FirstOfTwo ),
+SPOA( description81disjointWith, owloneOf, rdfnil, 0|DL|FirstOfOne ),
 SPOA( description81disjointWith, rdftype, owlClass, 0|DL ),
-SPOA( description81object, owloneOf, rdfnil, 0|DL|FirstOfTwo ),
+SPOA( description81object, owloneOf, rdfnil, 0|DL|FirstOfOne ),
 SPOA( description81object, rdftype, owlClass, 0|DL ),
-SPOA( unnamedDataRange, owloneOf, rdfnil, 0|DL|FirstOfTwo ),
+SPOA( unnamedDataRange, owloneOf, rdfnil, 0|DL|FirstOfOne ),
 SPOA( unnamedDataRange, rdftype, owlDataRange, 0|DL ),
 SPOA( listOfDataLiteral, rdffirst, dlInteger, 0|DL|FirstOfTwo ),
 SPOA( listOfDataLiteral, rdffirst, liteInteger, 0|DL|FirstOfTwo ),
@@ -3126,7 +3126,7 @@ SPOA( restriction54subClassOf, owlsomeValuesFrom, unnamedDataRange, ObjectAction
 SPOA( restriction54equivalentClass, owlsomeValuesFrom, unnamedDataRange, ObjectAction|DL|FirstOfTwo ),
 SPOA( restriction54disjointWith, owlsomeValuesFrom, unnamedDataRange, ObjectAction|DL|FirstOfTwo ),
 SPOA( restriction54object, owlsomeValuesFrom, unnamedDataRange, ObjectAction|DL|FirstOfTwo ),
-SPOA( unnamedDataRange, owloneOf, listOfDataLiteral, ObjectAction|DL|FirstOfTwo ),
+SPOA( unnamedDataRange, owloneOf, listOfDataLiteral, ObjectAction|DL|FirstOfOne ),
 SPOA( listOfDataLiteral, rdfrest, listOfDataLiteral, ObjectAction|DL|SecondOfTwo ),
 SPOA( classID, owlintersectionOf, listOfDescription, ObjectAction ),
 SPOA( classID, owlunionOf, listOfDescription, ObjectAction|DL ),
@@ -3140,10 +3140,10 @@ SPOA( description79disjointWith, owlunionOf, listOfDescription, ObjectAction|DL|
 SPOA( description79object, owlunionOf, listOfDescription, ObjectAction|DL|FirstOfOne ),
 SPOA( listOfDescription, rdfrest, listOfDescription, ObjectAction|SecondOfTwo ),
 SPOA( classID, owloneOf, listOfIndividualID, ObjectAction|DL ),
-SPOA( description81subClassOf, owloneOf, listOfIndividualID, ObjectAction|DL|FirstOfTwo ),
-SPOA( description81equivalentClass, owloneOf, listOfIndividualID, ObjectAction|DL|FirstOfTwo ),
-SPOA( description81disjointWith, owloneOf, listOfIndividualID, ObjectAction|DL|FirstOfTwo ),
-SPOA( description81object, owloneOf, listOfIndividualID, ObjectAction|DL|FirstOfTwo ),
+SPOA( description81subClassOf, owloneOf, listOfIndividualID, ObjectAction|DL|FirstOfOne ),
+SPOA( description81equivalentClass, owloneOf, listOfIndividualID, ObjectAction|DL|FirstOfOne ),
+SPOA( description81disjointWith, owloneOf, listOfIndividualID, ObjectAction|DL|FirstOfOne ),
+SPOA( description81object, owloneOf, listOfIndividualID, ObjectAction|DL|FirstOfOne ),
 SPOA( allDifferent, owldistinctMembers, listOfIndividualID, ObjectAction|FirstOfOne ),
 SPOA( listOfIndividualID, rdfrest, listOfIndividualID, ObjectAction|SecondOfTwo ),
 };

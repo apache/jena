@@ -105,7 +105,7 @@ propertyNumber(owl:cardinality, 3):-!.
 propertyNumber(owl:hasValue, 3):-!.
 propertyNumber(owl:maxCardinality, 3):-!.
 propertyNumber(owl:minCardinality, 3):-!.
-propertyNumber(owl:oneOf, 3):-!.
+propertyNumber(owl:oneOf, 1):-!.
 propertyNumber(owl:someValuesFrom, 3):-!.
 propertyNumber(rdf:first, 3):-!.
 propertyNumber(P,_) :- throw(propertyNumber(P)).
@@ -127,7 +127,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.13 2003-09-25 16:02:30 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.14 2003-11-11 08:45:52 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
