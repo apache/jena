@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.8 2003-05-23 11:13:05 ian_dickinson Exp $
+  $Id: TestPackage.java,v 1.9 2003-05-23 21:11:19 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.ontology.impl.test;
@@ -31,6 +31,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestProperty", TestProperty.suite() );
         addTest( "TestListSyntaxCategories", TestListSyntaxCategories.suite() );
         addTest( "TestCreate", TestCreate.suite() );
+        addTest( "TestIndividual", TestIndividual.suite() );
     }
 
     private void addTest(String name, TestSuite tc) {

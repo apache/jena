@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 20:19:59 $
+ * Last modified on   $Date: 2003-05-23 21:11:19 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.4 2003-05-23 20:19:59 ian_dickinson Exp $
+ * @version CVS $Id: TestProperty.java,v 1.5 2003-05-23 21:11:19 ian_dickinson Exp $
  */
 public class TestProperty
     extends OntTestBase 
@@ -63,173 +63,6 @@ public class TestProperty
     public TestProperty( String name ) {
         super( name );
     }
-    
-/*
-    protected Object[][] psTestData() {
-        return new Object[][] {
-            {   
-                "OWL OntProperty.subPropertyOf",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((OntProperty) m.getResource( NS + "p" )
-                               .as( OntProperty.class )).p_subPropertyOf(); } 
-                },
-                OWL.subPropertyOf,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Property/test.rdf",
-                T,
-                new Integer( 2 ),
-                null,//NS + "q",
-                RDF.Property,
-                null
-            },
-            {   
-                "DAML OntProperty.subPropertyOf",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((OntProperty) m.getResource( NS + "p" )
-                               .as( OntProperty.class )).p_subPropertyOf(); } 
-                },
-                DAML_OIL.subPropertyOf,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Property/test.rdf",
-                T,
-                new Integer( 1 ),
-                NS + "q",
-                null,
-                null
-            },
-            {   
-                "OWL OntProperty.domain",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((OntProperty) m.getResource( NS + "p" )
-                               .as( OntProperty.class )).p_domain(); } 
-                },
-                OWL.domain,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Property/test.rdf",
-                T,
-                new Integer( 1 ),
-                NS + "ClassA",
-                null,
-                null
-            },
-            {   
-                "OWL OntProperty.range",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((OntProperty) m.getResource( NS + "p" )
-                               .as( OntProperty.class )).p_range(); } 
-                },
-                OWL.range,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Property/test.rdf",
-                T,
-                new Integer( 1 ),
-                NS + "ClassB",
-                null,
-                null
-            },
-            {   
-                "DAML OntProperty.domain",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((OntProperty) m.getResource( NS + "p" )
-                               .as( OntProperty.class )).p_domain(); } 
-                },
-                DAML_OIL.domain,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Property/test.rdf",
-                T,
-                new Integer( 1 ),
-                NS + "ClassA",
-                null,
-                null
-            },
-            {   
-                "DAML OntProperty.range",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((OntProperty) m.getResource( NS + "p" )
-                               .as( OntProperty.class )).p_range(); } 
-                },
-                DAML_OIL.range,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Property/test.rdf",
-                T,
-                new Integer( 1 ),
-                NS + "ClassB",
-                null,
-                null
-            },
-            {   
-                "OWL OntProperty.equivalentProperty",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((OntProperty) m.getResource( NS + "p" )
-                               .as( OntProperty.class )).p_equivalentProperty(); } 
-                },
-                OWL.equivalentProperty,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Property/test.rdf",
-                T,
-                new Integer( 1 ),
-                NS + "r",
-                null,
-                null
-            },
-            {   
-                "OWL OntProperty.inverseOf",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((OntProperty) m.getResource( NS + "p" )
-                               .as( OntProperty.class )).p_inverseOf(); } 
-                },
-                OWL.inverseOf,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Property/test.rdf",
-                T,
-                new Integer( 1 ),
-                NS + "s",
-                null,
-                null
-            },
-            {   
-                "DAML OntProperty.equivalentProperty",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((OntProperty) m.getResource( NS + "p" )
-                               .as( OntProperty.class )).p_equivalentProperty(); } 
-                },
-                DAML_OIL.samePropertyAs,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Property/test.rdf",
-                T,
-                new Integer( 1 ),
-                NS + "r",
-                null,
-                null
-            },
-            {   
-                "DAML OntProperty.inverseOf",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        return ((OntProperty) m.getResource( NS + "p" )
-                               .as( OntProperty.class )).p_inverseOf(); } 
-                },
-                DAML_OIL.inverseOf,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Property/test.rdf",
-                T,
-                new Integer( 1 ),
-                NS + "s",
-                null,
-                null
-            },
-            
-      };
-    }*/
     
     
     // External signature methods
