@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.39 $
+ * Revision           $Revision: 1.40 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-05 15:35:51 $
+ * Last modified on   $Date: 2005-04-05 18:44:04 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.39 2005-04-05 15:35:51 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.40 2005-04-05 18:44:04 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -915,8 +915,23 @@ public class schemagen {
     protected void writeRDFProperties() {
         String template = hasValue( OPT_PROP_TEMPLATE ) ?  getValue( OPT_PROP_TEMPLATE ) : DEFAULT_TEMPLATE;
 
-        for (StmtIterator i = m_source.listStatements( null, RDF.type, RDF.Property ); i.hasNext(); ) {
-            writeValue( i.nextStatement().getSubject(), template, "Property", "createProperty", "_PROP" );
+        // select the appropriate properties based on the language choice
+        Resource[] props;
+        if (isTrue( OPT_LANG_OWL )) {
+            props = new Resource[] {OWL.ObjectProperty, OWL.DatatypeProperty, RDF.Property};
+        }
+        else if (isTrue( OPT_LANG_DAML )) {
+            props = new Resource[] {DAML_OIL.ObjectProperty, DAML_OIL.DatatypeProperty, RDF.Property};
+        }
+        else {
+            props = new Resource[] {RDF.Property};
+        }
+        
+        // now write the properties
+        for (int j = 0;  j < props.length; j++) {
+            for (StmtIterator i = m_source.listStatements( null, RDF.type, props[j] ); i.hasNext(); ) {
+                writeValue( i.nextStatement().getSubject(), template, "Property", "createProperty", "_PROP" );
+            }
         }
     }
 
