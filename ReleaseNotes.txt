@@ -40,8 +40,10 @@ I/O:
   controlled much better.
 + Improved documentation for both basic and advanced I/O in Jena2
   is provided in doc/IO/iohowto.html
-+ ARP reflects latest WG decisions (including Last Call
-  issue resolutions)
++ ARP reflects latest WG decisions, as of 7th April 2003, including 
+  Last Call issue resolutions: 
+    williams-01, reagle-01, reagle-02, tbl-01
+  Note: bagID is dead.
 
 
 
