@@ -46,7 +46,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -295,6 +295,13 @@ public class GraphRDB extends GraphBase implements Graph {
 		return m_prefixMapping; 
 	}
 
+
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.graph.Graph#getTransactionHandler()
+	 */
+	public TransactionHandler getTransactionHandler() {
+		return new DBTransactionHandler(m_driver, this);
+	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#close()
