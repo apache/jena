@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 09:31:40 $
+ * Last modified on   $Date: 2003-12-09 13:02:40 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -25,6 +25,7 @@ package com.hp.hpl.jena.reasoner.dig.test;
 
 // Imports
 ///////////////
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.*;
 
 import com.hp.hpl.jena.ontology.*;
@@ -32,6 +33,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.reasoner.dig.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 import junit.framework.*;
 
@@ -48,7 +50,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.5 2003-12-08 09:31:40 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.6 2003-12-09 13:02:40 ian_dickinson Exp $)
  */
 public class TestDigReasoner 
     extends TestCase
@@ -79,8 +81,8 @@ public class TestDigReasoner
     public static TestSuite suite() {
         TestSuite s = new TestSuite( "TestDigReasoner" );
         
-        buildConceptLangSuite( "testing/ontology/dig/owl/cl", OntModelSpec.OWL_MEM, s );
-        buildBasicQuerySuite( "testing/ontology/dig/owl/basicq", OntModelSpec.OWL_MEM, s );
+        //buildConceptLangSuite( "testing/ontology/dig/owl/cl", OntModelSpec.OWL_MEM, s );
+        //buildBasicQuerySuite( "testing/ontology/dig/owl/basicq", OntModelSpec.OWL_MEM, s );
 
         // add the standard tests from this class
         s.addTestSuite( TestDigReasoner.class );
@@ -99,11 +101,127 @@ public class TestDigReasoner
         m.read( "file:testing/ontology/dig/owl/test1.xml" );
         
         TestUtil.assertIteratorValues( this, m.listClasses(), 
-                                       new Resource[] {m.getResource( NS + "A" ), m.getResource( NS + "B" )} );
+                                       new Resource[] {m.getResource( NS + "A" ), m.getResource( NS + "B" ), 
+                                                       m.getResource( NS + "C"), m.getResource( NS + "D"), 
+                                                       m.getResource( NS + "E"),m.getResource( NS + "BB"), } );
     }
     
     
+    public void testQuerySubsumes1() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass A = m.getOntClass( NS + "A" );
+        OntClass B = m.getOntClass( NS + "B" );
+        assertTrue( "A should be a sub-class of B", A.hasSuperClass( B ) );
+    }
     
+    public void testQuerySubsumes2() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass C = m.getOntClass( NS + "C" );
+        OntClass D = m.getOntClass( NS + "D" );
+        assertTrue( "D should be a sub-class of C", D.hasSuperClass( C ) );
+    }
+    
+    public void testQuerySubsumes3() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass A = m.getOntClass( NS + "A" );
+        OntClass C = m.getOntClass( NS + "C" );
+        assertFalse( "A should not be a super-class of C", C.hasSuperClass( A ) );
+        assertFalse( "C should not be a super-class of A", A.hasSuperClass( C ) );
+    }
+    
+    public void testAncestors() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass A = m.getOntClass( NS + "A" );
+        OntClass B = m.getOntClass( NS + "B" );
+        OntClass BB = m.getOntClass( NS + "BB" );
+        
+        TestUtil.assertIteratorValues( this, A.listSuperClasses(), 
+                                       new Resource[] {B,BB} );
+    }
+
+    public void testDescendants() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass A = m.getOntClass( NS + "A" );
+        OntClass B = m.getOntClass( NS + "B" );
+        OntClass BB = m.getOntClass( NS + "BB" );
+        
+        TestUtil.assertIteratorValues( this, BB.listSubClasses(), 
+                                       new Resource[] {B,A} );
+    }
+
+    public void testAllClassHierarchy() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+        m.read( "file:testing/ontology/dig/owl/test1.xml" );
+        
+        OntClass A = m.getOntClass( NS + "A" );
+        OntClass B = m.getOntClass( NS + "B" );
+        OntClass BB = m.getOntClass( NS + "BB" );
+        OntClass C = m.getOntClass( NS + "C" );
+        OntClass D = m.getOntClass( NS + "D" );
+        OntClass E = m.getOntClass( NS + "E" );
+        
+        TestUtil.assertIteratorValues( this, m.listStatements( null, RDFS.subClassOf, (RDFNode) null ), 
+                                       new Statement[] {
+                                           m.createStatement( A, RDFS.subClassOf, A ),
+                                           m.createStatement( A, RDFS.subClassOf, B ),
+                                           m.createStatement( A, RDFS.subClassOf, BB ),
+                                           m.createStatement( B, RDFS.subClassOf, B ),
+                                           m.createStatement( B, RDFS.subClassOf, BB ),
+                                           m.createStatement( BB, RDFS.subClassOf, BB ),
+                                           m.createStatement( C, RDFS.subClassOf, C ),
+                                           m.createStatement( D, RDFS.subClassOf, D ),
+                                           m.createStatement( D, RDFS.subClassOf, C ),
+                                           m.createStatement( E, RDFS.subClassOf, C ),
+                                           m.createStatement( E, RDFS.subClassOf, E ),
+                                       } );
+    }
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -216,7 +334,7 @@ public class TestDigReasoner
         private OntModelSpec m_spec;
         
         DigTranslationTest( File source, File target, OntModelSpec spec ) {
-            super( source.getName() );
+            super( "DigTranslationTest " + source.getName() );
             m_source = source;
             m_target = target;
             m_spec = spec;
@@ -250,7 +368,7 @@ public class TestDigReasoner
         private OntModelSpec m_spec;
         
         DigBasicQueryTest( File source, File target, File query, OntModelSpec spec ) {
-            super( source.getName() );
+            super( "BasicQueryTest " + source.getName() );
             m_source = source;
             m_target = target;
             m_query = query;
@@ -279,14 +397,12 @@ public class TestDigReasoner
                         
             Document queryD = builder.parse( m_query );
             Document targetD = builder.parse( m_target );
+
+            LogFactory.getLog( getClass() ).debug( "DIG test " + m_source.getPath() );
             Document resultD = da.getConnection().sendDigVerb( queryD, da.getProfile() );
             
             da.getConnection().errorCheck( resultD );
             assertFalse( "Should not be warnings", da.getConnection().warningCheck( resultD ) );
-            
-            System.out.println( m_source.getPath() );
-            da.getConnection().serialiseDocument( resultD, new PrintWriter( System.out ));
-            System.out.println();
             
             da.close();
             xmlEqualityTest( resultD, targetD );

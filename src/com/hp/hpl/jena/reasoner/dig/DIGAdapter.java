@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 09:31:39 $
+ * Last modified on   $Date: 2003-12-09 13:02:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.3 2003-12-08 09:31:39 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.4 2003-12-09 13:02:30 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -76,9 +76,24 @@ public class DIGAdapter
 
     /** The table that represents the query translations we know about */
     protected static DIGQueryTranslator[] s_queryTable = {
+        // all concepts query for [* rdf:type :Class]
         new DIGQueryAllConceptsTranslator( RDF.type.getURI(), RDFS.Class.getURI() ),
         new DIGQueryAllConceptsTranslator( RDF.type.getURI(), OWL.Class.getURI() ),
         new DIGQueryAllConceptsTranslator( RDF.type.getURI(), DAML_OIL.Class.getURI() ),
+        
+        // subsumes when testing for subsumption between two known class expressions
+        new DIGQuerySubsumesTranslator( RDFS.subClassOf.getURI() ),
+        new DIGQuerySubsumesTranslator( DAML_OIL.subClassOf.getURI() ),
+        
+        // ancestors and parents when testing for a named and variable node
+        new DIGQueryAncestorsTranslator( RDFS.subClassOf.getURI(), true ),
+        new DIGQueryAncestorsTranslator( RDFS.subClassOf.getURI(), false ),
+        new DIGQueryAncestorsTranslator( DAML_OIL.subClassOf.getURI(), true ),
+        new DIGQueryAncestorsTranslator( DAML_OIL.subClassOf.getURI(), false ),
+        
+        // the entire class hierarchy
+        new DIGQueryClassHierarchyTranslator( RDFS.subClassOf.getURI() ),
+        new DIGQueryClassHierarchyTranslator( DAML_OIL.subClassOf.getURI() ),
     };
     
     
@@ -321,9 +336,17 @@ public class DIGAdapter
     }
 
 
-    public void addClassIdentifier( Element elem, com.hp.hpl.jena.graph.Node node ) {
-        // TODO
+    /**
+     * <p>Add a DIG reference to the class identifed in the source graph by the given Jena
+     * graph Node to the given XML element.  If the class is a named class, this will be
+     * a <code>&lt;catom&gt;</code> element, otherwise it will be a class description axiom.</p>
+     * @param elem The parent XML element to which the class description will be attached
+     * @param node An RDF graph node representing a class we wish to describe.
+     */
+    public void addClassDescription( Element elem, com.hp.hpl.jena.graph.Node node ) {
+        translateClass( elem, (Resource) m_sourceData.getRDFNode( node ), true );
     }
+
 
     // Internal implementation methods
     //////////////////////////////////

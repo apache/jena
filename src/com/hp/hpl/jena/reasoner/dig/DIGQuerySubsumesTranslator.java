@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQuerySubsumesTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 09:31:39 $
+ * Last modified on   $Date: 2003-12-09 13:02:30 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import java.util.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQuerySubsumesTranslator.java,v 1.1 2003-12-08 09:31:39 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQuerySubsumesTranslator.java,v 1.2 2003-12-09 13:02:30 ian_dickinson Exp $)
  */
 public class DIGQuerySubsumesTranslator 
     extends DIGQueryTranslator
@@ -66,7 +66,7 @@ public class DIGQuerySubsumesTranslator
      * @param predicate The predicate URI to trigger on
      */
     public DIGQuerySubsumesTranslator( String predicate ) {
-        super( ALL, predicate, ALL );
+        super( null, predicate, null );
     }
     
 
@@ -81,8 +81,8 @@ public class DIGQuerySubsumesTranslator
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
         Element subsumes = da.addElement( query.getDocumentElement(), DIGProfile.SUBSUMES );
-        da.addClassIdentifier( subsumes, pattern.getObject() );
-        da.addClassIdentifier( subsumes, pattern.getSubject() );
+        da.addClassDescription( subsumes, pattern.getObject() );
+        da.addClassDescription( subsumes, pattern.getSubject() );
 
         return query;
     }
@@ -101,6 +101,13 @@ public class DIGQuerySubsumesTranslator
         return WrappedIterator.create( answer.iterator() );
     }
     
+    public boolean checkSubject( com.hp.hpl.jena.graph.Node subject ) {
+        return subject.isConcrete();
+    }
+    
+    public boolean checkObject( com.hp.hpl.jena.graph.Node object ) {
+        return object.isConcrete();
+    }
 
     // Internal implementation methods
     //////////////////////////////////

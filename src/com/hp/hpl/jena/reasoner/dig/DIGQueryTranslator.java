@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 10:48:25 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-12-09 13:02:30 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -26,7 +26,6 @@ package com.hp.hpl.jena.reasoner.dig;
 ///////////////
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 
@@ -34,6 +33,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.xml.SimpleXMLPath;
 
 
 /**
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.3 2003-12-08 10:48:25 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.4 2003-12-09 13:02:30 ian_dickinson Exp $)
  */
 public abstract class DIGQueryTranslator {
     // Constants
@@ -97,6 +97,9 @@ public abstract class DIGQueryTranslator {
         
         // pose the query to the dig reasoner
         Document query = translatePattern( pattern, da );
+        if (query == null) {
+            LogFactory.getLog( getClass() ).warn( "Could not find pattern translator for nested DIG query " + pattern );
+        }
         Document response = da.getConnection().sendDigVerb( query, da.getProfile() );
         
         boolean warn = dc.warningCheck( response );
@@ -194,9 +197,29 @@ public abstract class DIGQueryTranslator {
     }
     
     
+    /**
+     * <p>Answer true if the given document is the response &lt;true&gt; from a DIG reasoner.
+     * @param response The document encoding the response
+     * @return True iff this is the response <code>true</code>.
+     */
     protected boolean isTrue( Document response ) {
-        // TODO
-        return false;
+        return new SimpleXMLPath( true )
+               .appendElementPath( DIGProfile.TRUE )
+               .getAll( response )
+               .hasNext();
+    }
+    
+    
+    /**
+     * <p>Answer true if the given document is the response &lt;false&gt; from a DIG reasoner.
+     * @param response The document encoding the response
+     * @return True iff this is the response <code>false</code>.
+     */
+    protected boolean isFalse( Document response ) {
+        return new SimpleXMLPath( true )
+               .appendElementPath( DIGProfile.FALSE )
+               .getAll( response )
+               .hasNext();
     }
     
     

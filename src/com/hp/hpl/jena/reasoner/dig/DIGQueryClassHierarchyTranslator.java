@@ -6,8 +6,8 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
- * Filename           $RCSfile: DIGQueryAllConceptsTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Filename           $RCSfile: DIGQueryClassHierarchyTranslator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-09 13:02:30 $
@@ -21,31 +21,36 @@
 ///////////////
 package com.hp.hpl.jena.reasoner.dig;
 
-import org.w3c.dom.Document;
-
-import com.hp.hpl.jena.reasoner.TriplePattern;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.xml.SimpleXMLPath;
-
 
 // Imports
 ///////////////
+import java.util.Iterator;
+
+
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.vocabulary.RDF;
+
+
 
 /**
  * <p>
- * Translator that generates DIG allconcepts queries in response to a find query:
+ * Translator that generates DIG queries in response to find queries that search the entire class
+ * hierarchy:
  * <pre>
- * * rdf:type owl:Class
+ * * rdf:subClassOf *
  * </pre>
  * or similar.
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryAllConceptsTranslator.java,v 1.3 2003-12-09 13:02:30 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryClassHierarchyTranslator.java,v 1.1 2003-12-09 13:02:30 ian_dickinson Exp $)
  */
-public class DIGQueryAllConceptsTranslator 
-    extends DIGQueryTranslator
+public class DIGQueryClassHierarchyTranslator 
+    extends DIGIteratedQueryTranslator
 {
 
     // Constants
@@ -57,51 +62,44 @@ public class DIGQueryAllConceptsTranslator
     // Instance variables
     //////////////////////////////////
 
+    
+    
     // Constructors
     //////////////////////////////////
 
     /**
-     * <p>Construct a translator for the DIG query all concepts.</p>
+     * <p>Construct a translator for the DIG class hierarchy queries.</p>
      * @param predicate The predicate URI to trigger on
-     * @param object The object URI to trigger on
+     * @param ancestors If true, we are searching for parents of the class; if false, the descendants
      */
-    public DIGQueryAllConceptsTranslator( String predicate, String object ) {
-        super( ALL, predicate, object );
+    public DIGQueryClassHierarchyTranslator( String predicate ) {
+        super( ALL, predicate, ALL );
     }
-    
+
 
     // External signature methods
     //////////////////////////////////
 
-
     /**
-     * <p>Answer a query that will list all concept names</p>
+     * <p>To query the entire concept hierarchy, we need to know every super-class of every class.</p>
+     * @param pattern The incoming pattern
+     * @param da The current DIG adapter
      */
-    public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
-        DIGConnection dc = da.getConnection();
-        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        da.addElement( query.getDocumentElement(), DIGProfile.ALL_CONCEPT_NAMES );
-        return query;
+    protected Iterator expandQuery( TriplePattern pattern, DIGAdapter da ) {
+        final Node pred = pattern.getPredicate();
+
+        // find all concepts, and use them to replace the lhs nodes in the pattern
+        return new DIGQueryAllConceptsTranslator( null, null )
+               .find( new TriplePattern( null, RDF.type.asNode(), null ), da )
+               .mapWith( new Map1() {
+                   public Object map1( Object x ) {
+                       Triple triple = (Triple) x;
+                       return new TriplePattern( triple.getSubject(), pred, Node_RuleVariable.WILD );
+                   }
+               } );
     }
 
 
-    /**
-     * <p>Answer an iterator of triples that match the original find query.</p>
-     */
-    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
-        // evaluate a path through the return value to give us an iterator over catom names
-        ExtendedIterator catomNames = new SimpleXMLPath( true )
-                                          .appendElementPath( DIGProfile.CONCEPT_SET )
-                                          .appendElementPath( DIGProfile.SYNONYMS )
-                                          .appendElementPath( DIGProfile.CATOM )
-                                          .appendAttrPath( DIGProfile.NAME )
-                                          .getAll( response );
-        // check for no results
-        catomNames = (catomNames == null) ? new NullIterator() : catomNames;
-        
-        return catomNames.mapWith( new NameToNodeMapper() )
-                         .mapWith( new TripleSubjectFiller( query.getPredicate(), query.getObject() ) );
-    }
 
     // Internal implementation methods
     //////////////////////////////////

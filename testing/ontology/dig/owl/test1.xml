@@ -18,8 +18,18 @@
 
 <owl:Class rdf:ID="A">
 	<rdfs:subClassOf>
-		<owl:Class rdf:ID="B" />
+		<owl:Class rdf:ID="B">
+			<rdfs:subClassOf rdf:resource="#BB" />
+		</owl:Class>
 	</rdfs:subClassOf>
 </owl:Class>
+<owl:Class rdf:ID="BB"></owl:Class>
 
+<owl:Class rdf:ID="C">
+	<owl:unionOf rdf:parseType="Collection">
+		<owl:Class rdf:ID="D" />
+		<owl:Class rdf:ID="E" />
+	</owl:unionOf>
+	<owl:disjointWith rdf:resource="#A" />
+</owl:Class>
 </rdf:RDF>
