@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreator.java,v 1.4 2004-12-06 13:50:12 andy_seaborne Exp $
+  $Id: ModelSpecCreator.java,v 1.5 2005-02-02 13:39:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -11,7 +11,7 @@ package com.hp.hpl.jena.rdf.model;
     descriptions. See ModelSpecCreatorRegistry for their registration.
     
  	@author hedgehog
- */
+*/
 public interface ModelSpecCreator
     {
     /**

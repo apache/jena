@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreatorRegistry.java,v 1.5 2004-08-13 08:42:50 chris-dollin Exp $
+  $Id: ModelSpecCreatorRegistry.java,v 1.6 2005-02-02 13:39:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -18,15 +18,34 @@ import java.util.*;
  */
 public class ModelSpecCreatorRegistry
     {
-    private static Map creators = new HashMap();     
+    protected Map creators = new HashMap();     
     
-    public static ModelSpecCreator findCreator( Resource type )
+    public static final ModelSpecCreatorRegistry instance = new ModelSpecCreatorRegistry();
+    
+    /**
+        Answer a registry with a single entry, mapping <code>type</code>
+        to <code>c</code>.
+    */
+    public static ModelSpecCreatorRegistry registryWith( Resource type, ModelSpecCreator c )
+        {
+        ModelSpecCreatorRegistry result = new ModelSpecCreatorRegistry();
+        result.registerCreator( type, c );
+        return result;
+        }
+    
+    public ModelSpecCreator getCreator( Resource type )
         { return (ModelSpecCreator) creators.get( type ); }
     
-    public static void register( Resource type, ModelSpecCreator c )
+    public static ModelSpecCreator findCreator( Resource type )    
+        { return instance.getCreator( type ); }
+    
+    public void registerCreator( Resource type, ModelSpecCreator c )
         { creators.put( type, c ); }
+    
+    public static void register( Resource type, ModelSpecCreator c )
+        { instance.registerCreator( type, c ); }
         
-   static class InfSpecCreator implements ModelSpecCreator
+    static class InfSpecCreator implements ModelSpecCreator
         {
         public ModelSpec create( Resource root, Model desc ) 
             { return new InfModelSpec( root, desc ); }     
@@ -46,11 +65,11 @@ public class ModelSpecCreatorRegistry
                         
     static
         {
-        ModelSpecCreatorRegistry.register( JMS.InfModelSpec, new InfSpecCreator() );  
-        ModelSpecCreatorRegistry.register( JMS.OntModelSpec, new OntSpecCreator() );  
-        ModelSpecCreatorRegistry.register( JMS.PlainModelSpec, new PlainSpecCreator() );   
+        register( JMS.InfModelSpec, new InfSpecCreator() );  
+        register( JMS.OntModelSpec, new OntSpecCreator() );  
+        register( JMS.PlainModelSpec, new PlainSpecCreator() );   
         
-        ModelSpecCreatorRegistry.register( JMS.DefaultModelSpec, new PlainSpecCreator() );   
+        register( JMS.DefaultModelSpec, new PlainSpecCreator() );   
         }   
     }
 
