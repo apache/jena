@@ -65,7 +65,20 @@ wTripleTable :-
 wTripleTable :-
   wlist(['};',nl,
   'static { Arrays.sort(triples); }',nl]).
-  
+cwTripleTable :-
+  wlist(['%% Triples',nl]),
+  tt(S,P,O,A),
+  gname([S],SS),
+  gname([P],PP),
+  gname([O],OO),
+  objectAction(P,O,AA),
+  subjectAction(P,S,SA),
+  dlPart(A,DL),
+  pp(A,Pos),
+  wlist([SS,' ',PP,' ',OO,' ',AA,SA,DL,Pos,nl]),
+  fail.
+cwTripleTable :-
+  wlist(['%% End',nl]).
 objectAction(P,O,'ObjectAction') :-
    (\+ comparative(P);P==rdfs:subClassOf),
    expg(B,blank),
@@ -134,7 +147,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.16 2003-11-22 14:29:07 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.17 2003-11-22 15:19:09 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
@@ -205,6 +218,23 @@ gogo :-
   copyrightTail,
   told.
   
+ c :-
+  tell(compileddata),
+  wlist(['%% categories',nl]),
+  flag(catID,_,1),
+  category(C),
+  flag(catID,N,N+1),
+  cwsfi(C,N),
+  fail.
+  
+c :-
+  cwActions,
+  cwGetBuiltinID,
+  cwGroups,
+  cwInitSingletons,
+  cwTripleTable,
+  told.
+  
 wInitSingletons :-
   flag(catID,N,N),
   wlist([
@@ -216,6 +246,7 @@ wInitSingletons :-
    '}',nl,
    '};',nl]).
   
+cwInitSingletons.
 
 
 buildChecker :-
@@ -303,6 +334,18 @@ wGroups2 :-
   fail.
 wGroups2.
 
+cwGroups :-
+  wlist(['%% Groups',nl]),
+  expg(S,N),
+  wlist(['',N,' = ']),
+  (member(M,S),
+     gname([M],MM),
+     wlist([MM,' ']),
+     fail;
+   wlist([nl])),
+  fail.
+cwGroups.
+
 countx(G,_) :-
   flag(count,_,0),
   G,
@@ -356,6 +399,8 @@ wGetBuiltinID :-
   getBuiltins(xsd),
   getBuiltins(rdfs),
   wlist(['     }',nl,'     return Failure; ',nl,'}',nl]).
+  
+cwGetBuiltinID.
 
 getBuiltins(Q) :-
   namespace(Q,URI),
@@ -408,8 +453,12 @@ wActions :-
   wsfi('CategoryShift',9),
   wlist(['    static private final int W = CategoryShift;',nl]).
   
+cwActions.
+  
 wsfi(Name,Val) :-
   wlist(['    static final int ',Name,' = ',Val,';',nl]).
+cwsfi(Name,Val) :-
+  wlist([Name,' ',Val,nl]).
 
 
 xsub([],_).
