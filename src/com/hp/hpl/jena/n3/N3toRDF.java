@@ -11,15 +11,15 @@ import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.vocabulary.*;
-
-// TODO: Add triples to graphs, not statements to models.
+import org.apache.log4j.Logger;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.13 2003-08-07 11:22:33 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.14 2003-08-07 13:08:24 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
+    protected static Logger logger = Logger.getLogger( N3toRDF.class );
 	static public boolean VERBOSE = false ;
 	
 	Model model ;
@@ -28,6 +28,9 @@ public class N3toRDF implements N3ParserEventHandler
 	Map resourceRef = new HashMap() ;
 	// Maps URIref to Property
 	Map propertyRef = new HashMap() ;
+    
+    // A more liberal prefix mapping map.
+    Map myPrefixMapping = new HashMap() ;
 	
 	// Well known namespaces
 	
@@ -54,8 +57,10 @@ public class N3toRDF implements N3ParserEventHandler
 	// When Jena exceptions are runtime, we will change this
 	public void error(Exception ex, String message) 		{ throw new N3Exception(message) ; }
 	public void error(String message) 						{ error(null, message) ; }
-	public void warning(Exception ex, String message)		{ throw new N3Exception(message) ; }
-	public void warning(String message)						{ warning(null, message) ; }
+    
+	public void warning(Exception ex, String message)       { logger.warn(message, ex) ; }
+	public void warning(String message)						{ logger.warn(message) ; }
+    
 	public void deprecated(Exception ex, String message)	{ throw new N3Exception(message) ; }
 	public void deprecated(String message)					{ deprecated(null, message) ; }
 	
@@ -97,8 +102,7 @@ public class N3toRDF implements N3ParserEventHandler
 			if ( VERBOSE )
 				System.out.println(prefix+" => "+uriref) ;
 
-            model.setNsPrefix(prefix, uriref) ;
-
+            setPrefixMapping(model, prefix, uriref) ;
 			return ;
 		}
 		
@@ -156,9 +160,7 @@ public class N3toRDF implements N3ParserEventHandler
                     pNode = RDF.type ;
 					break ;
 				case N3Parser.QNAME:
-                    //ExpandedQName qn = new ExpandedQName(line, propStr);
-                    //pNode = model.createProperty(qn.firstPart, qn.secondPart) ;
-                    String uriref = model.expandPrefix(propStr) ;
+                    String uriref = expandPrefix(model, propStr) ;
                     if ( uriref == propStr )
                     {
                         // Failed to expand ...
@@ -264,9 +266,8 @@ public class N3toRDF implements N3ParserEventHandler
                                         + text+ "^^"+ typeURI);
                                 return model.createLiteral("Illegal literal: " + text + "^^" + typeURI);
                             }
-                            //ExpandedQName qn = new ExpandedQName(line, typeURI);
-                            //typeURI = qn.expansion;
-                            String typeURI2 = model.expandPrefix(typeURI) ;
+
+                            String typeURI2 = expandPrefix(model, typeURI) ;
                             if ( typeURI2 == typeURI )
                             {
                                 error("Line "+line+": N3toRDF: Undefined qname namespace in datatype: " + typeURI);
@@ -295,9 +296,7 @@ public class N3toRDF implements N3ParserEventHandler
 					return (Resource)bNodeMap.get(text) ;
 				}
 			
-				//ExpandedQName qn = new ExpandedQName(line, text);
-				//text = qn.expansion ;
-                String uriref = model.expandPrefix(text) ;
+                String uriref = expandPrefix(model, text) ;
                 if ( uriref == text )
                 {
                     error("Line "+line+": N3toRDF: Undefined qname namespace: " + text);
@@ -342,6 +341,35 @@ public class N3toRDF implements N3ParserEventHandler
             // The case of <#>.
             return base+"#" ;
         return text;
+    }
+    
+    private void setPrefixMapping(Model m, String prefix, String uriref)
+    {
+        try { model.setNsPrefix(prefix, uriref); }
+        catch (PrefixMapping.IllegalPrefixException ex)
+        {
+            warning("Prefix mapping '" + prefix + "' illegal: used but not recorded in model");
+        }
+        myPrefixMapping.put(prefix, uriref);
+    }
+    
+    private String expandPrefix(Model m, String prefixed)
+    {
+        // Code from shared.impl.PrefixMappingImpl ...
+        // Needed a copy as we store unchecked prefixes for N3.
+        int colon = prefixed.indexOf( ':' );
+        if (colon < 0) 
+            return prefixed;
+        else
+        {
+            String prefix = prefixed.substring( 0, colon );
+            String uri = (String) myPrefixMapping.get( prefix );
+            return uri == null ? prefixed : uri + prefixed.substring( colon + 1 );
+        }
+        // Not this - model may already have prefixes defined;
+        // we allow "illegal" prefixes (e.g. starts with a number)
+        // for compatibility 
+        //return model.expandPrefix(prefix) ;
     }
 }
 
