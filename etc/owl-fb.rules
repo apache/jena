@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.37 2003-10-07 10:52:23 der Exp $
+# $Id: owl-fb.rules,v 1.38 2003-10-09 13:27:54 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -672,7 +672,7 @@
 
 [validationDTRange: (?v rb:validation on()), (?P rdfs:range ?R) (?R rdf:type rdfs:Datatype) ->
 	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to range (prop, value)', ?P, ?V))
-				<- (?X ?P ?V), notDType(?V, ?R) ] ]
+				<- (?X ?P ?V), notDType(?V, ?R)  ] ]
 
 [validationDTRange: (?v rb:validation on()), (?P rdfs:range rdfs:Literal)  ->
 	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to range rdsf:Literal (prop, value)', ?P, ?V))
@@ -684,9 +684,10 @@
 
 [validationAllFrom: (?v rb:validation on()), (?C owl:equivalentClass all(?P, rdfs:Literal)) -> 
 	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to allValuesFrom rdfs:Literal (prop, value)', ?P, ?V))
-				<- (?X ?P ?V), (?X rdf:type ?C), notDType(?V, rdfs:Literal) ] ]
+				<- (?X ?P ?V), (?X rdf:type ?C), notDType(?V, rdfs:Literal) 
+				 ] ]
 
-[validationNothing: (?v rb:validation on()), (?C owl:equivalentClass owl:Nothing) -> 
+[validationNothing: (?v rb:validation on()), (?C owl:equivalentClass owl:Nothing) notEqual(?C, owl:Nothing) -> 
 	(?C rb:violation error('Inconsistent class', 'Class cannot be instantiated, probably subclass of a disjoint classes or of an empty restriction'))
 ]
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleInfGraph.java,v 1.2 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: RDFSRuleInfGraph.java,v 1.3 2003-10-09 13:29:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * the validation support.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.3 $ on $Date: 2003-10-09 13:29:21 $
  */
 public class RDFSRuleInfGraph extends FBRuleInfGraph {
 
@@ -81,6 +81,7 @@ public class RDFSRuleInfGraph extends FBRuleInfGraph {
     public ValidityReport.Report checkLiteral(Node prop, Node value) {
         List range = (List) getDTRange().get(prop);
         if (range != null) {
+            if (value.isBlank()) return null;
             if (!value.isLiteral()) {
                 return new ValidityReport.Report(true, "dtRange", 
                     "Property " + prop + " has a typed range but was given a non literal value " + value);

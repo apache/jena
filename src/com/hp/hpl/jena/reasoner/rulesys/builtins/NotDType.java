@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: NotDType.java,v 1.3 2003-10-05 15:35:49 der Exp $
+ * $Id: NotDType.java,v 1.4 2003-10-09 13:29:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.graph.*;
 
 /**
@@ -18,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * by the resource in the second argument.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-10-05 15:35:49 $
+ * @version $Revision: 1.4 $ on $Date: 2003-10-09 13:29:21 $
  */
 public class NotDType extends BaseBuiltin {
 
@@ -51,18 +50,7 @@ public class NotDType extends BaseBuiltin {
         checkArgs(length, context);
         Node val = getArg(0, args, context);
         Node dt = getArg(1, args, context);
-        if (val.isLiteral()) {
-            if (dt.equals(RDFS.Nodes.Literal)) {
-                return false;
-            } else {
-                if (val.getLiteral().getDatatype() != null) {
-                    return ! val.getLiteral().getDatatypeURI().equals(dt.getURI());
-                } else {
-                    return true;
-                }
-            }
-        }
-        return true;
+        return !IsDType.isTypeOK(val, dt);
     }
 }
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.13 2003-10-05 15:38:32 der Exp $
+ * $Id: TestBugs.java,v 1.14 2003-10-09 13:28:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-10-05 15:38:32 $
+ * @version $Revision: 1.14 $ on $Date: 2003-10-09 13:28:59 $
  */
 public class TestBugs extends TestCase {
 
@@ -317,6 +317,18 @@ public class TestBugs extends TestCase {
         Resource surname = omodel.getResource(baseuri + "surname");
         Statement s = omodel.createStatement(surname, RDFS.range, OWL.Nothing);
         assertTrue(! omodel.contains(s));
+    }
+    
+    /**
+     * Test change of RDF specs to allow plain literals w/o lang and XSD string to be the same.
+     */
+    public void testLiteralBug() {
+        Model model = ModelLoader.loadModel("file:testing/reasoners/bugs/dtValidation.owl");
+        Model m = ModelFactory.createDefaultModel();
+        Reasoner r = ReasonerRegistry.getOWLReasoner();
+        InfModel infmodel = ModelFactory.createInfModel(r, model);
+        ValidityReport validity = infmodel.validate();
+        assertTrue (validity.isValid());                
     }
     
     // debug assistant

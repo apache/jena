@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.29 2003-09-23 08:57:32 der Exp $
+ * $Id: TestFBRules.java,v 1.30 2003-10-09 13:28:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2003-09-23 08:57:32 $
+ * @version $Revision: 1.30 $ on $Date: 2003-10-09 13:28:59 $
  */
 public class TestFBRules extends TestCase {
     
@@ -745,7 +745,7 @@ public class TestFBRules extends TestCase {
 
                 new Triple(n2, s, Node.createLiteral("isLiteral", "", null)),
                 new Triple(n2, s, Node.createLiteral("notXSDInt", "", null)),
-                new Triple(n2, s, Node.createLiteral("notXSDString", "", null)),
+                new Triple(n2, s, Node.createLiteral("isXSDString", "", null)),
 
                 new Triple(n3, s, Node.createLiteral("isLiteral", "", null)),
                 new Triple(n3, s, Node.createLiteral("notXSDInt", "", null)),
