@@ -5,20 +5,41 @@
  */
 
 package com.hp.hpl.jena.rdql;
+import java.util.* ;
+import com.hp.hpl.jena.rdf.model.Model; 
 
 /** rdql2.ResultBinding
  * 
  * @author Andy Seaborne
- * @version $Id: ResultBinding.java,v 1.11 2004-05-28 16:56:15 andy_seaborne Exp $
+ * @version $Id: ResultBinding.java,v 1.12 2004-06-22 14:02:06 andy_seaborne Exp $
  */
 
 public interface ResultBinding
 {
+    /** Return an iterator of the items in this result binding. 
+     *  This iterator has operations to access the current variable name and variable value.
+     *  
+     * @return ResultBindingIterator
+     */
     public ResultBindingIterator iterator();
 
+    /** Return the value of the named variable in this binding */
     public Object get(String varName);
 
     //public Value getValue(String varName);
+
+    /** Iterate over the variable names (strings) in this ResultBinding.
+     * @return Iterator of strings
+     */ 
+    public Iterator names() ;
+
+    // Operations that map results into triples that originally matched.
+    // When implementing a ResultBinding, these can be do-nothinbg operations
+    // if you don't care about turning variable bidning style results into
+    // matching subgraphs.
+    
+    public Model mergeTriples(Model model) ;
+    public Set getTriples() ;
 }
 
 /*

@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdql.*;
 
 /** Bunch of programmatic uses of query to complrment the script tests.
  * @author Andy Seaborne
- * @version $Id: QueryTestProgrammatic.java,v 1.7 2004-05-28 16:57:33 andy_seaborne Exp $
+ * @version $Id: QueryTestProgrammatic.java,v 1.8 2004-06-22 14:04:18 andy_seaborne Exp $
  */
 
 public class QueryTestProgrammatic extends TestSuite
@@ -137,8 +137,11 @@ public class QueryTestProgrammatic extends TestSuite
             // Currently "success" is executing the query at all!
             Query query = new Query(queryString) ;
             query.setSource(model);
-            QueryExecution qe = new QueryEngine(query) ;
-            QueryResults results = qe.exec(binding) ;
+            // Not query execution - we wish to prebind. 
+            QueryEngine _qe = new QueryEngine(query) ;
+            QueryResults results = _qe.exec(binding) ;
+            QueryExecution qe = _qe ;
+            
             long count = 0 ;
             for ( ; results.hasNext() ; )
             {

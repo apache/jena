@@ -19,7 +19,7 @@ package com.hp.hpl.jena.rdql;
  * @see QueryEngine
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryExecution.java,v 1.5 2004-05-28 16:56:15 andy_seaborne Exp $
+ * @version  $Id: QueryExecution.java,v 1.6 2004-06-22 14:02:00 andy_seaborne Exp $
  */
 
 
@@ -32,7 +32,7 @@ public interface QueryExecution
 	public QueryResults exec();
 
 	/** Do a query, given an initail starting set of bindings*/
-	public QueryResults exec(ResultBindingImpl startBinding) ;
+	//public QueryResults exec(ResultBindingImpl startBinding) ;
 
 	/** Stop in mid execution.
 	 *  No guarantee that the concrete implementation actual will stop or
