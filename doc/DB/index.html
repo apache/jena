@@ -14,7 +14,7 @@
 
 
 
-<h3>27 June, 2003</h3>
+<h3>14 July, 2003</h3>
 
 
 
@@ -55,11 +55,11 @@ release or in the final, full featured Jena2 release.</p>
 
 
 
-  <p>The jena/db module provides persistence for asserted statements. It uses a 
+<p>The jena/db module provides persistence for asserted and reified statements. It uses a 
   different layout than Jena1 that enables faster insertion and retrieval but 
   uses more storage than Jena1. It is largely backwards-compatible for Jena1 
   applications with the exception of some database configuration options. This 
-  preliminary release only runs on MySQL.</p>
+  preliminary release does not support BerkeleyDB.</p>
 
 
 
@@ -75,9 +75,8 @@ release or in the final, full featured Jena2 release.</p>
 
 
   <ul>
-    <li><i>Oracle, Postgresql</i> and <i>
-  BerkeleyDB</i> <font face="Times New Roman">are not yet supported.</font><font face="Courier New" size="2"> ModelRDB</font> only works 
-  with one database engine, MySQL.</li>
+    <li> <i>
+  BerkeleyDB</i>  <font face="Times New Roman">is not yet supported.</font></li>
     <li><i>Namespace compression</i>, an internal optimization to reduce disk 
     space usage will be added. Jena2 persistence optimizes storage and retrieval speed at the expense of 
   disk space (see <a href="#notes">below</a>).</li>
@@ -115,7 +114,7 @@ release or in the final, full featured Jena2 release.</p>
     <td><b>&nbsp;&nbsp; JDBC Driver</b></td>
   </tr>
   <tr>
-    <td>&nbsp;&nbsp; Windows 2000&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td>&nbsp;&nbsp; Windows XP&nbsp; </td>
     <td>&nbsp;&nbsp; MySQL 4.0.12</td>
     <td>&nbsp;&nbsp; mysql-connector-java-3.0.7-stable.jar&nbsp;&nbsp;&nbsp;&nbsp; </td>
   </tr>
@@ -123,6 +122,26 @@ release or in the final, full featured Jena2 release.</p>
     <td>&nbsp;&nbsp; Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
     <td>&nbsp;&nbsp; MySQL 4.0.12</td>
     <td>&nbsp;&nbsp; mysql-connector-java-3.0.7-stable.jar</td>
+  </tr>
+  <tr>
+    <td>&nbsp;&nbsp; Windows XP&nbsp; </td>
+    <td>&nbsp;&nbsp; PostgreSQL 7.3.3</td>
+    <td>&nbsp;&nbsp; pg73jdbc2.jar (JDBC2 for jdk1.3, 1.2, 1.4&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+  </tr>
+  <tr>
+    <td>&nbsp;&nbsp; Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td>&nbsp;&nbsp; PostgreSQL 7.3.3</td>
+    <td>&nbsp;&nbsp; pg73jdbc2.jar (JDBC2 for jdk1.3, 1.2, 1.4&nbsp;)</td>
+  </tr>
+  <tr>
+    <td>&nbsp;&nbsp; Windows XP&nbsp; </td>
+    <td>&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
+    <td>&nbsp;&nbsp; Oracle oci8 JDBC driver (thick client)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+  </tr>
+  <tr>
+    <td>&nbsp;&nbsp; Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td>&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
+    <td>&nbsp;&nbsp; Oracle oci8 JDBC driver (thick client)&nbsp;</td>
   </tr>
 </table>
 
@@ -240,8 +259,8 @@ release or in the final, full featured Jena2 release.</p>
   from <a href="http://sourceforge.net/projects/jena/">
   http://sourceforge.net/projects/jena/</a>) show Jena2 to be up to three times 
   faster than Jena1 (see <a href="perftestWin32.html">perftest.html</a>). 
-  However, Jena2 models may consume more disk space than Jena1 models.
-  Future preliminary releases will provide more guidance on the space differences.
+  However, Jena2 models may consume more disk space than Jena1 models. The final
+  release will provide more guidance on the space differences and tuning.
   In the meantime, do not be surprised to find significant size differences between
   Jena1 and Jena2. Our goal is that that Jena2 performance be comparable to 
   Jena1. The jena-perf results given here are primarily intended for comparing 
@@ -251,18 +270,18 @@ release or in the final, full featured Jena2 release.</p>
 
 
   <p>These differences are due to the different table layouts used in Jena1 and 
-  Jena2. In Jena1, resources were stored in a separate table that was referenced 
-  from the statement table. Similarly for literals. This greatly reduced space 
+  Jena2. In Jena1, all resources were stored in a separate table that was referenced 
+  from the statement table. Similarly for all literals. This greatly reduced space 
   consumption since resources and literals that appeared in multiple statements 
   were only stored once. However, retrieving a statement required joining the 
   statement table with the literals and resources tables.</p>
 
 
 
-  <p>In Jena2, resources are stored directly in the statement table. Also stored 
-  in the statement table are plain literals, i.e., literals that have no 
-  language tag, no datatype and are not large. Non-plain literals are stored in 
-  a literals table. Consequently, Jena2 requires fewer join operations than 
+  <p>In Jena2, <i>short</i> resources and <i>short</i> literals may be stored directly in the statement table.
+  Separate tables for resources and literals exist but are only used for objects
+  whose length exceeds a database-dependent threshold (currently, 250 bytes for
+  all database engines). Consequently, Jena2 requires fewer join operations than 
   Jena1 at the expense of more memory since a resource or literal may be stored 
   multiple times. For the final release, Jena2 will support namespace 
   compression for the statement table which should  reduce space 
