@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-16 11:36:55 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-18 10:42:58 $
+ *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.9 2003-04-16 11:36:55 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.10 2003-04-18 10:42:58 jeremy_carroll Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -967,7 +967,8 @@ public class OntModelImpl
     // Internal implementation methods
     //////////////////////////////////
 
-    protected MultiUnion getUnionGraph() {
+// jjc - want access for Syntax checker ....
+    public MultiUnion getUnionGraph() {
         return ((OntologyGraph) graph).getUnion();
     }
     
