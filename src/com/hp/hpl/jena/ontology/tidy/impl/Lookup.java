@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Lookup.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
+  $Id: Lookup.java,v 1.2 2003-11-30 23:39:17 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -64,6 +64,14 @@ public interface Lookup {
 	  * @return
 	  */
 	public abstract byte allActions(int k);
+
+	/**
+	 * Return Failure if meet is bottom
+	 * @param c0
+	 * @param c1
+	 * @return
+	 */
+	public int meet(int c0, int c1);
 }
 /*
 	(c) Copyright Hewlett-Packard Company 2003

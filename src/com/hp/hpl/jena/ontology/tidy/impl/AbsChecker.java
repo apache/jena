@@ -11,6 +11,7 @@ import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.ontology.tidy.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.BrokenException;
 import java.util.*;
 
 abstract class AbsChecker implements Constants {
@@ -53,6 +54,9 @@ abstract class AbsChecker implements Constants {
 		CNodeI s = getCNode(t.getSubject());
 		CNodeI p = getCNode(t.getPredicate());
 		CNodeI o = getCNode(t.getObject());
+		
+		int meetCase = ( p==o ? 1 : 0 ) | ( s==o ? 2 : 0 ) | ( s==p ? 4 : 0 );
+		  // oneof { 0, 1, 2, 4, 7 } 
 		boolean success = true;
 		int s0 = -1;
 		int p0 = -1;
@@ -74,37 +78,71 @@ abstract class AbsChecker implements Constants {
 		while (success) {
 			if (s1 == s0 && p1 == p0 && o1 == o0)
 				break; // the exit point for success
+				
+			s0 = s1; // record these values, exit when stable
+			p0 = p1;
+			o0 = o1;
+				
 			/*
 			System.err.println("s:" + s0 + " -> " + s1 + "\n" +
 			              " p:" + p0 + " -> " + p1 + "\n" +
 			              " o:" + o0 + " -> " + o1); */
-			s0 = s1; // record these values, exit when stable
-			p0 = p1;
-			o0 = o1;
 //			key = SubCategorize.refineTriple(s0, p0, o0);
-      if (key!=Failure)
-     			look.done(key);
+      if (key!=Failure) {
+      	if ( look.removeTriple(key)) {
+      		break;
+      	}
+		    look.done(key);
+      }
 			key = look.qrefine(s0,p0,o0);
 			if (key == Failure) {
-				addProblem(Levels.DL, t);
+				addProblem(Levels.DL, t, "Grammar Mismatch");
 				success = false;
 			} else {
 				if (look.dl(key)) {
 					if (wantLite) {
 						success = false;
-						addProblem(Levels.Lite, t);
+						addProblem(Levels.Lite, t, "Only in DL");
 					} else {
 						setMonotoneLevel(Levels.DL);
 					}
 				}
-				o.setCategories(look.object(key), false);
-				p.setCategories(look.prop(key), false);
-				s.setCategories(look.subject(key), false);
+				s0 = look.subject(key);
+				p0 = look.prop(key);
+				o0 = look.object(key);
+				int meet;
+				switch (meetCase) {
+					case 0:
+					  meet = 0;
+					break;
+					case 1:
+					 meet= p0 = o0 = look.meet(p0,o0);
+					 break;
+					case 2:
+					meet= s0 = o0 = look.meet(s0,o0);
+					break;
+					case 4:
+					meet= s0 = p0 = look.meet(s0,p0);
+					break;
+					case 7:
+					meet= s0 = p0 = o0 = look.meet( look.meet(s0,p0), o0 );
+					break;
+					default:
+					throw new BrokenException("Impossible meetcase");
+				}
+				if ( meet == Failure ) {
+					addProblem(Levels.DL, t, "Grammar Mismatch (shared node in triple)");
+					success = false;
+				} else {
+				o.setCategories(o0, false);
+				p.setCategories(p0, false);
+				s.setCategories(s0, false);
 				success =
 					success
 						&& o.update()
 						&& p.update()
 						&& s.update();
+				}
 			}
 			s1 = s.getCategories();
 			p1 = p.getCategories();
@@ -128,7 +166,9 @@ abstract class AbsChecker implements Constants {
 		}
 		if ( success && p1 == Grammar.owldisjointWith) {
 			if ( s.equals(o)) {
-				addProblem(Levels.DL, t);
+				// TODO Incorrect owl:disjointWith constraint.
+				// correct for blank nodes not for URI nodes.
+				addProblem(Levels.DL, t, "owl:disjointWith cannot form a loop");
 				success = false;
 			}
 			else
@@ -202,7 +242,7 @@ abstract class AbsChecker implements Constants {
 	}
 	
 
-	void addProblem(int lvl, Triple t) {
+	void addProblem(int lvl, Triple t, String msg) {
 		setMonotoneLevel(lvl + 1);
 	}
 

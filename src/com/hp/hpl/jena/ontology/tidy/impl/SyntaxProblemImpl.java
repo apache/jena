@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SyntaxProblemImpl.java,v 1.1 2003-11-30 21:12:58 jeremy_carroll Exp $
+  $Id: SyntaxProblemImpl.java,v 1.2 2003-11-30 23:39:17 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -23,7 +23,6 @@ class SyntaxProblemImpl extends SyntaxProblem {
 	 */
 	public SyntaxProblemImpl(String shortD, EnhNode en, int lvl) {
 		super(shortD, en, lvl);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -33,7 +32,6 @@ class SyntaxProblemImpl extends SyntaxProblem {
 	 */
 	public SyntaxProblemImpl(String shortD, Node n, int lvl) {
 		super(shortD, n, lvl);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -43,7 +41,6 @@ class SyntaxProblemImpl extends SyntaxProblem {
 	 */
 	public SyntaxProblemImpl(String shortD, Graph g, int lvl) {
 		super(shortD, g, lvl);
-		// TODO Auto-generated constructor stub
 	}
 
 }

@@ -385,8 +385,8 @@ public class CheckerImpl extends AbsChecker {
 	}
 	//private boolean wantLite = true;
 
-	void addProblem(int lvl, Triple t) {
-		super.addProblem(lvl, t);
+	void addProblem(int lvl, Triple t, String msg) {
+		super.addProblem(lvl, t, msg);
 		if (lvl == Levels.Lite && !wantLite)
 			return;
 			
@@ -394,7 +394,7 @@ public class CheckerImpl extends AbsChecker {
 			new MinimalSubGraph(lvl == Levels.Lite, t, this).getContradiction();
 		addProblem(
 			new SyntaxProblemImpl(
-				"Not a " + Levels.toString(lvl) + " subgraph",
+				msg+" Not a " + Levels.toString(lvl) + " subgraph",
 				min,
 				lvl));
 				

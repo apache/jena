@@ -6,6 +6,8 @@ package com.hp.hpl.jena.ontology.tidy.impl;
 import java.io.*;
 import com.hp.hpl.jena.shared.*;
 import java.util.*;
+
+
 import com.hp.hpl.jena.reasoner.rulesys.Util;
 /**
  * @author Jeremy J. Carroll
@@ -52,6 +54,7 @@ static {
 	} catch (ClassNotFoundException e) {
 		throw new BrokenException(e);
 	}
+	CategorySet.closed = true;
 }
 
 public int qrefine(int s, int p, int o) {
@@ -129,6 +132,27 @@ public boolean dl(int k) {
  }
  
  public void done(int k){
+ }
+
+
+ static final int[] intersection(int a[], int b[]) {
+	 int rslt0[] = new int[a.length];
+	 int k = 0;
+	 for (int i = 0; i < a.length; i++)
+		 if (Arrays.binarySearch(b, a[i]) >= 0)
+			 rslt0[k++] = a[i];
+	 int rslt1[] = new int[k];
+	 System.arraycopy(rslt0, 0, rslt1, 0, k);
+	 return rslt1;
+ }
+ /* (non-Javadoc)
+  * @see com.hp.hpl.jena.ontology.tidy.impl.Lookup#meet(int, int)
+  */
+ public int meet(int c0, int c1) {
+	 int cc0[] = CategorySet.getSet(c0);
+	 int cc1[] = CategorySet.getSet(c1);
+		
+	 return CategorySet.find(intersection(cc0,cc1),true);
  }
 
 }
