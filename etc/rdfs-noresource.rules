@@ -1,4 +1,11 @@
 #------------------------------------------------------------------
+# RDFS rule set v0.1.
+# This variant has the main "everything is a resource" rule commented
+# because those entailments are not very useful.
+# $Id: rdfs-noresource.rules,v 1.2 2003-06-13 08:54:22 der Exp $
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
 # RDFS Axioms
 #------------------------------------------------------------------
 

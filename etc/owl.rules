@@ -1,5 +1,10 @@
 #------------------------------------------------------------------
 # OWL rule set v0.1
+# This rule set is design to implement owl(f)lite using pure
+# forward chaining. It is sufficient to pass the working group tests
+# for this OWL subset but some of the bug fixes applied to owl-fb 
+# have may not yet have migrated back here.
+# $Id: $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -259,7 +264,7 @@
 [sameIndividualAs2: (?P rdf:type owl:InverseFunctionalProperty), (?A ?P ?B), (?C ?P ?B) 
                     -> (?A owl:sameIndividualAs ?C) ]
                     
-[sameIndividualAs3: (?X owl:sameAs ?Y), (?X rdf:type owl:Thing), (?Y rdf:type old:Thing) 
+[sameIndividualAs3: (?X owl:sameAs ?Y), (?X rdf:type owl:Thing), (?Y rdf:type owl:Thing) 
                     -> (?X owl:sameIndividualAs ?Y) ]
                     
 

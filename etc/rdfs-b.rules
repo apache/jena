@@ -1,4 +1,11 @@
 #------------------------------------------------------------------
+# RDFS rule set v0.1.
+# This variant has been tweaked slightly to include some explicit
+# clause reordering to improve performance with a backward chainer.
+# $Id: rdfs-b.rules,v 1.6 2003-06-13 08:54:23 der Exp $
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
 # RDFS Axioms
 #------------------------------------------------------------------
 

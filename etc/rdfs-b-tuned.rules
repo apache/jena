@@ -1,4 +1,12 @@
 #------------------------------------------------------------------
+# RDFS rule set v0.1.
+# This variant has been tuned for useful entailments with the
+# backward chainer using more clause reorderings than in the default rules
+# and supressing the "everything is a resource" entailments.
+# $Id: rdfs-b-tuned.rules,v 1.4 2003-06-13 08:54:23 der Exp $
+#------------------------------------------------------------------
+
+#------------------------------------------------------------------
 # RDFS Axioms
 #------------------------------------------------------------------
 
