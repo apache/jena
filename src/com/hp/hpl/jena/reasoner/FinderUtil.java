@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FinderUtil.java,v 1.4 2003-06-22 16:10:50 der Exp $
+ * $Id: FinderUtil.java,v 1.5 2003-06-23 15:49:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * The cascades are designed to cope with null Finders as well.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.5 $ on $Date: 2003-06-23 15:49:41 $
  */
 public class FinderUtil {
     
@@ -28,6 +28,8 @@ public class FinderUtil {
      * @param second the second Graph/Finder to try
      */
     public static Finder cascade(Finder first, Finder second) {
+        if (first == null || (first instanceof FGraph && ((FGraph)first).getGraph() == null)) return second;
+        if (second == null || (second instanceof FGraph && ((FGraph)second).getGraph() == null)) return first;
         return new Cascade(first, second);
     }
     
@@ -39,7 +41,7 @@ public class FinderUtil {
      * @param third the third Graph/Finder to try
      */
     public static Finder cascade(Finder first, Finder second, Finder third) {
-        return new Cascade(first, new Cascade(second, third));
+        return new Cascade(first, cascade(second, third));
     }
     
     /**
@@ -51,7 +53,7 @@ public class FinderUtil {
      * @param fourth the third Graph/Finder to try
      */
     public static Finder cascade(Finder first, Finder second, Finder third, Finder fourth) {
-        return new Cascade(first, new Cascade(second, new Cascade(third, fourth)));
+        return new Cascade(first, cascade(second, cascade(third, fourth)));
     }
     
     /**

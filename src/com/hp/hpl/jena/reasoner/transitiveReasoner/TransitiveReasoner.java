@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.12 2003-06-23 13:54:29 der Exp $
+ * $Id: TransitiveReasoner.java,v 1.13 2003-06-23 15:49:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * of RDFS processing.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-06-23 13:54:29 $
+ * @version $Revision: 1.13 $ on $Date: 2003-06-23 15:49:41 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -148,8 +148,8 @@ public class TransitiveReasoner implements Reasoner {
         }
         TransitiveGraphCache sCc = new TransitiveGraphCache(directSubClassOf, subClassOf);
         TransitiveGraphCache sPc = new TransitiveGraphCache(directSubPropertyOf, subPropertyOf);
-        TransitiveEngine.cacheSubProp(tbox, sPc);
-        TransitiveEngine.cacheSubClass(tbox, sPc, sCc);
+        TransitiveEngine.cacheSubPropUtility(tbox, sPc);
+        TransitiveEngine.cacheSubClassUtility(tbox, sPc, sCc);
         
         return new TransitiveReasoner(tbox, sCc, sPc);
     }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.19 2003-06-23 13:54:29 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.20 2003-06-23 15:49:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-06-23 13:54:29 $
+ * @version $Revision: 1.20 $ on $Date: 2003-06-23 15:49:41 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -60,11 +60,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     /** Flag, if true then subClass and subProperty lattices will be optimized using TGCs */
     protected boolean useTGCCaching = false;
     
-    /** Optional precomputed cache of the subClass graph */
-    protected TransitiveGraphCache subClassCache;
-    
-    /** Optional precomputed cache of the subProperty graph */
-    protected TransitiveGraphCache subPropertyCache;
+    /** Optional precomputed cache of the subClass/subproperty lattices */
+    protected TransitiveEngine transitiveEngine;
     
     /** Optional list of preprocessing hooks  to be run in sequence during preparation time */
     protected List preprocessorHooks;
@@ -138,13 +135,11 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void setUseTGCCache() {
         useTGCCaching = true;
         if (schemaGraph != null) {
-            subClassCache = ((FBRuleInfGraph)schemaGraph).subClassCache.deepCopy();
-            subPropertyCache = ((FBRuleInfGraph)schemaGraph).subPropertyCache.deepCopy();
+            transitiveEngine = new TransitiveEngine(((FBRuleInfGraph)schemaGraph).transitiveEngine);
         } else {
-            subClassCache = new TransitiveGraphCache(ReasonerVocabulary.directSubClassOf.asNode(),
-                                                      RDFS.subClassOf.asNode());
-            subPropertyCache = new TransitiveGraphCache(ReasonerVocabulary.directSubPropertyOf.asNode(),
-                                                      RDFS.subPropertyOf.asNode());
+            transitiveEngine = new TransitiveEngine(
+                new TransitiveGraphCache(ReasonerVocabulary.directSubClassOf.asNode(), RDFS.subClassOf.asNode()),
+                new TransitiveGraphCache(ReasonerVocabulary.directSubPropertyOf.asNode(), RDFS.subPropertyOf.asNode()));
         }
     }
     
@@ -249,12 +244,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void addDeduction(Triple t) {
         getDeductionsGraph().add(t);
         if (useTGCCaching) {
-            Node predicate = t.getPredicate();
-            if (predicate.equals(TransitiveReasoner.subClassOf)) {
-                subClassCache.addRelation(t.getSubject(), t.getObject());
-            } else if (predicate.equals(TransitiveReasoner.subPropertyOf)) {
-                subPropertyCache.addRelation(t.getSubject(), t.getObject());
-            } 
+            transitiveEngine.add(t);
         }
     }
    
@@ -320,22 +310,18 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 if (schemaGraph != null) {
                     // Check if we can just reuse the copy of the raw 
                     if (
-                        (TransitiveEngine.checkOccurance(TransitiveReasoner.subPropertyOf, data, subPropertyCache) ||
-                         TransitiveEngine.checkOccurance(TransitiveReasoner.subClassOf, data, subPropertyCache) ||
-                         TransitiveEngine.checkOccurance(RDFS.domain.asNode(), data, subPropertyCache) ||
-                         TransitiveEngine.checkOccurance(RDFS.range.asNode(), data, subPropertyCache) )) {
+                        (transitiveEngine.checkOccurance(TransitiveReasoner.subPropertyOf, data) ||
+                         transitiveEngine.checkOccurance(TransitiveReasoner.subClassOf, data) ||
+                         transitiveEngine.checkOccurance(RDFS.domain.asNode(), data) ||
+                         transitiveEngine.checkOccurance(RDFS.range.asNode(), data) )) {
                 
                         // The data graph contains some ontology knowledge so split the caches
                         // now and rebuild them using merged data
-                        Finder tempTbox = schemaGraph == null ? fdata : FinderUtil.cascade(new FGraph(schemaGraph), fdata);
-    
-                        TransitiveEngine.cacheSubProp(tempTbox, subPropertyCache);
-                        TransitiveEngine.cacheSubClass(tempTbox, subPropertyCache, subClassCache);
+                        transitiveEngine.insert(((FBRuleInfGraph)schemaGraph).fdata, fdata);
                     }     
                 } else {
                     if (data != null) {
-                        TransitiveEngine.cacheSubProp(fdata, subPropertyCache);
-                        TransitiveEngine.cacheSubClass(fdata, subPropertyCache, subClassCache);
+                        transitiveEngine.insert(null, fdata);
                     }
                 }
                 // Insert any axiomatic statements into the caches
@@ -347,21 +333,15 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                             Object head = r.getHeadElement(j);
                             if (head instanceof TriplePattern) {
                                 TriplePattern h = (TriplePattern) head;
-                                Node pred = h.getPredicate();
-                                if (pred.equals(RDFS.subClassOf.asNode())) {
-                                    subClassCache.addRelation(h.getSubject(), h.getObject());
-                                } else if (pred.equals(RDFS.subPropertyOf.asNode())) {
-                                    subPropertyCache.addRelation(h.getSubject(), h.getObject());
-                                }
+                                transitiveEngine.add(h.asTriple());
                             }
                         }
                     }
                 }
 
-                subPropertyCache.setCaching(true);
-                subClassCache.setCaching(true);
+                transitiveEngine.setCaching(true, true);
 //                dataFind = FinderUtil.cascade(subClassCache, subPropertyCache, dataFind);
-                dataFind = FinderUtil.cascade(dataFind, subClassCache, subPropertyCache);
+                dataFind = FinderUtil.cascade(dataFind, transitiveEngine.getSubClassCache(), transitiveEngine.getSubPropertyCache());
             }
             
             // Call any optional preprocessing hook
@@ -525,14 +505,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public synchronized void add(Triple t) {
         fdata.getGraph().add(t);
         if (useTGCCaching) {
-            Node predicate = t.getPredicate();
-            if (predicate.equals(TransitiveReasoner.subClassOf)) {
-                subClassCache.addRelation(t.getSubject(), t.getObject());
-                isPrepared = false;
-            } else if (predicate.equals(TransitiveReasoner.subPropertyOf)) {
-                subPropertyCache.addRelation(t.getSubject(), t.getObject());
-                isPrepared = false;
-            }
+            if (transitiveEngine.add(t)) isPrepared = false;
         }
         if (isPrepared) {
             engine.add(t);
@@ -546,21 +519,13 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void delete(Triple t) {
         fdata.getGraph().delete(t);
         if (useTGCCaching) {
-            Node predicate = t.getPredicate();
-            if (predicate.equals(TransitiveReasoner.subClassOf)) {
-                subClassCache.removeRelation(t.getSubject(), t.getObject());
-                if (isPrepared) {
-                    bEngine.deleteAllRules();
-                }
-                isPrepared = false;
-            } else if (predicate.equals(TransitiveReasoner.subPropertyOf)) {
-                subPropertyCache.removeRelation(t.getSubject(), t.getObject());
+            if (transitiveEngine.delete(t)) {
                 if (isPrepared) {
                     bEngine.deleteAllRules();
                 }
                 isPrepared = false;
             }
-        }
+        } 
         if (isPrepared) {
             getDeductionsGraph().delete(t);
             engine.delete(t);

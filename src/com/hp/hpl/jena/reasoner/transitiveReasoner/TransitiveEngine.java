@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveEngine.java,v 1.2 2003-06-23 13:54:29 der Exp $
+ * $Id: TransitiveEngine.java,v 1.3 2003-06-23 15:49:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * lattice and use them within a larger inference graph.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-23 13:54:29 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-23 15:49:41 $
  */
 public class TransitiveEngine {
     
@@ -34,6 +34,9 @@ public class TransitiveEngine {
     /** The base data set from which the caches can be rebuilt */
     protected Finder data;
     
+    /** True if the internal data structures have been initialized */
+    protected boolean isPrepared = false;
+    
     /** The set of predicates which are aliases for subClassOf */
     protected static HashSet subClassAliases;
     
@@ -41,19 +44,22 @@ public class TransitiveEngine {
     protected static HashSet subPropertyAliases;
     
     /** Classification flag: not relevant to this engine */
-    private static final int NOT_RELEVANT = 0;
+    private static final int NOT_RELEVANT = 1;
     
     /** Classification flag: simple or indirect subClass */
-    private static final int SUBCLASS = 1;
+    private static final int SUBCLASS = 2;
     
     /** Classification flag: simple subProperty */
-    private static final int SUBPROPERTY = 2;
+    private static final int SUBPROPERTY = 4;
+    
+    /** Mask for the lattice update cases */
+    private static final int UPDATE_MASK = SUBCLASS | SUBPROPERTY;
     
     /** Classification flag: subProperty of subClass */
-    private static final int REBUILD_SUBCLASS = 4;
+    private static final int REBUILD_SUBCLASS = 8;
     
     /** Classification flag: subProperty of subProperty */
-    private static final int REBUILD_SUBPROPERTY = 8;
+    private static final int REBUILD_SUBPROPERTY = 16;
     
     /** The direct (minimal) version of the subPropertyOf property */
     public static Node directSubPropertyOf;
@@ -74,42 +80,50 @@ public class TransitiveEngine {
         subPropertyOf = RDFS.subPropertyOf.getNode();
         subClassOf = RDFS.subClassOf.getNode();
     }
-    
+   
     /**
      * Constructor.
      * @param subClassCache pre-initialized subclass TGC
      * @param subPropertyCache pre-initialized subproperty TGC
-     * @param data the dataset which was used to initialize the provided caches, may be null
      */
     public TransitiveEngine(TransitiveGraphCache subClassCache,
-                             TransitiveGraphCache subPropertyCache,
-                             Finder data) {
+                             TransitiveGraphCache subPropertyCache) {
          this.subClassCache = subClassCache;
          this.subPropertyCache = subPropertyCache;
-         this.data = data;
-         if (data instanceof FGraph && ((FGraph)data).getGraph() == null) this.data = null;
+    }
+   
+    /**
+     * Constructor.
+     * @param tengine an instance of TransitiveEngine to be cloned
+     */
+    public TransitiveEngine(TransitiveEngine tengine) {
+         this.subClassCache = tengine.getSubClassCache().deepCopy();
+         this.subPropertyCache = tengine.getSubPropertyCache().deepCopy();
     }
     
     /**
      * Prepare the engine by inserting any new data not already included
      * in the existing caches.
+     * @param baseData the base dataset on which the initial caches were based, could be null
      * @param newData a dataset to be added to the engine, not known to be already
      *                 included in the caches from construction time
+     * @return a concatenation of the inserted data and the original data
      */
-    public void insert(FGraph newData) {
+    public Finder insert(Finder baseData, FGraph newData) {
         Graph newDataG = newData.getGraph();
-        if (data == null) {
-            data = newData;
+        if (baseData != null) {
+            data = FinderUtil.cascade(baseData, newData);
         } else {
-            if (newData != null) data = FinderUtil.cascade(data, newData);
+            data = newData;
         }
-        if ((TransitiveEngine.checkOccurance(subPropertyOf, newDataG, subPropertyCache) ||
-               TransitiveEngine.checkOccurance(subClassOf, newDataG, subPropertyCache))) {
+        if ((TransitiveEngine.checkOccuranceUtility(subPropertyOf, newDataG, subPropertyCache) ||
+               TransitiveEngine.checkOccuranceUtility(subClassOf, newDataG, subPropertyCache))) {
              subClassCache = new TransitiveGraphCache(directSubClassOf, subClassOf);
              subPropertyCache = new TransitiveGraphCache(directSubPropertyOf, subPropertyOf);
-             TransitiveEngine.cacheSubProp(data, subPropertyCache);
-             TransitiveEngine.cacheSubClass(data, subPropertyCache, subClassCache);
-         }            
+             TransitiveEngine.cacheSubPropUtility(data, subPropertyCache);
+             TransitiveEngine.cacheSubClassUtility(data, subPropertyCache, subClassCache);
+         }        
+         return data;    
     }
 
     /**
@@ -127,9 +141,20 @@ public class TransitiveEngine {
     }
     
     /**
+     * Set the closure caching flags.
+     * @param cacheSP true if caching of subPropertyOf closure is wanted
+     * @param cacheSC true if caching of subClassOf closure is wanted
+     */
+    public void setCaching(boolean cacheSP, boolean cacheSC) {
+        subPropertyCache.setCaching(cacheSP);
+        subClassCache.setCaching(cacheSC);
+    }
+    
+    /**
      * Build alias tables for subclass and subproperty.
      */
-    private void buildAliasTables() {
+    private void prepare() {
+        if (isPrepared) return;
         subClassAliases = new HashSet();
         subClassAliases.add(subClassOf);
         subClassAliases.add(directSubClassOf);
@@ -143,9 +168,12 @@ public class TransitiveEngine {
             Triple spT = (Triple) subProps.next();
             Node spAlias = spT.getSubject();
             subPropertyAliases.add(spAlias);
-            Iterator subClasses = subClassCache.find(new TriplePattern(null, spAlias, subClassOf));
-            subClassAliases.add(((Triple)subClasses.next()).getObject());
+            Iterator subClasses = subPropertyCache.find(new TriplePattern(null, spAlias, subClassOf));
+            while (subClasses.hasNext()) {
+                subClassAliases.add(((Triple)subClasses.next()).getObject());
+            }
         }
+        isPrepared = true;
     }
     
     /**
@@ -154,14 +182,14 @@ public class TransitiveEngine {
      * @return a classification flag, as specified in the above private properties
      */
     private int triage(Triple t) {
-        if (subClassAliases == null) buildAliasTables();
+        if (!isPrepared) prepare();
         Node predicate = t.getPredicate();
         if (subClassAliases.contains(predicate)) {
             return SUBCLASS;
         } else if (subPropertyAliases.contains(predicate)) {
             Node target = t.getObject();
             if (subClassAliases.contains(target)) {
-                return REBUILD_SUBCLASS;
+                return REBUILD_SUBCLASS | SUBPROPERTY;
             } else if (subPropertyAliases.contains(target)) {
                 return REBUILD_SUBCLASS | REBUILD_SUBPROPERTY;
             } else {
@@ -174,55 +202,98 @@ public class TransitiveEngine {
     }
     
     /**
-     * Add one triple to caches if it is relevant.
+     * Return a Finder instance appropriate for the given query.
      */
-    public synchronized void add(Triple t) {
+    public Finder getFinder(TriplePattern pattern, Finder continuation) {
+        if (!isPrepared) prepare();
+        Node predicate = pattern.getPredicate();
+        if (predicate.isVariable()) {
+            // Want everything in the cache, the tbox and the continuation
+            return FinderUtil.cascade(subPropertyCache, subClassCache, continuation);
+        } else if (subPropertyAliases.contains(predicate)) {
+            return subPropertyCache;
+        } else if (subClassAliases.contains(predicate)) {
+            return subClassCache;
+        } else {
+            return continuation;
+        }
+    }
+    
+    /**
+     * Add one triple to caches if it is relevant.
+     * @return true if the triple affected the caches
+     */
+    public synchronized boolean add(Triple t) {
         int triageClass = triage(t);
-        switch (triageClass) {
+        switch (triageClass & UPDATE_MASK) {
             case SUBCLASS:
                 subClassCache.addRelation(t.getSubject(), t.getObject());
-                return;
+                break;
             case SUBPROPERTY:
                 subPropertyCache.addRelation(t.getSubject(), t.getObject());
-                return;
+                break;
             case NOT_RELEVANT:
-                return;
+                return false;
         }
-        // If we get here we need to some cache rebuilding
+        // If we get here we might need to some cache rebuilding
         if ((triageClass & REBUILD_SUBPROPERTY) != 0) {
-            TransitiveEngine.cacheSubProp(data, subPropertyCache);
+            TransitiveEngine.cacheSubPropUtility(data, subPropertyCache);
+            isPrepared = false;
         }
         if ((triageClass & REBUILD_SUBCLASS) != 0) {
-            TransitiveEngine.cacheSubClass(data, subPropertyCache, subClassCache);
+            TransitiveEngine.cacheSubClassUtility(data, subPropertyCache, subClassCache);
+            isPrepared = false;
         }
+        return true;
     }
     
     /** 
      * Removes the triple t (if relevant) from the caches.
+     * @return true if the triple affected the caches
      */   
-    public void delete(Triple t) {
+    public synchronized boolean delete(Triple t) {
         int triageClass = triage(t);
-        switch (triageClass) {
+        switch (triageClass & UPDATE_MASK) {
             case SUBCLASS:
                 subClassCache.removeRelation(t.getSubject(), t.getObject());
-                return;
+                break;
             case SUBPROPERTY:
                 subPropertyCache.removeRelation(t.getSubject(), t.getObject());
-                return;
+                break;
             case NOT_RELEVANT:
-                return;
+                return false;
         }
-        // If we get here we need to some cache rebuilding
+        // If we get here we might need to some cache rebuilding
         if ((triageClass & REBUILD_SUBPROPERTY) != 0) {
             subPropertyCache.clear();
-            TransitiveEngine.cacheSubProp(data, subPropertyCache);
+            TransitiveEngine.cacheSubPropUtility(data, subPropertyCache);
+            isPrepared = false;
         }
         if ((triageClass & REBUILD_SUBCLASS) != 0) {
             subClassCache.clear();
-            TransitiveEngine.cacheSubClass(data, subPropertyCache, subClassCache);
+            TransitiveEngine.cacheSubClassUtility(data, subPropertyCache, subClassCache);
+            isPrepared = false;
         }
+        return true;
     }
 
+    
+    /**
+     * Test if there are any usages of prop within the given graph.
+     * This includes indirect usages incurred by subProperties of prop.
+     * 
+     * @param prop the property to be checked for
+     * @param graph the graph to be check
+     * @return true if there is a triple using prop or one of its sub properties
+     */
+    public boolean checkOccurance(Node prop, Graph graph) {
+        return checkOccuranceUtility(prop, graph, subPropertyCache);
+    }
+
+// ----------------------------------------------------------------------------
+// Global helper routines, maintined in this for just to suppor the (now deprecated)
+// rdfs1 reasoner.
+    
     /**
      * Caches all subClass declarations, including those that
      * are defined via subProperties of subClassOf. Public to allow other reasoners
@@ -233,7 +304,7 @@ public class TransitiveEngine {
      * @param scCache the existing state of the subClassOf cache, will be updated
      * @return true if there were new metalevel declarations discovered.
      */
-    public static boolean cacheSubClass(Finder graph, TransitiveGraphCache spCache, TransitiveGraphCache scCache) {
+    public static boolean cacheSubClassUtility(Finder graph, TransitiveGraphCache spCache, TransitiveGraphCache scCache) {
         if (graph == null) return false;
     
         scCache.cacheAll(graph, TransitiveReasoner.subClassOf);       
@@ -265,7 +336,7 @@ public class TransitiveEngine {
      * @param spCache the subPropertyOf cache to use
      * @return true if there is a triple using prop or one of its sub properties
      */
-    public static boolean checkOccurance(Node prop, Graph graph, TransitiveGraphCache spCache) {
+    public static boolean checkOccuranceUtility(Node prop, Graph graph, TransitiveGraphCache spCache) {
         boolean foundOne = false;
         ExtendedIterator uses  = graph.find( null, prop, null );
         foundOne = uses.hasNext();
@@ -294,7 +365,7 @@ public class TransitiveEngine {
      * @param spCache the existing state of the subPropertyOf cache, will be updated
      * @return true if there were new metalevel declarations discovered.
      */
-    public static boolean cacheSubProp(Finder graph, TransitiveGraphCache spCache) {
+    public static boolean cacheSubPropUtility(Finder graph, TransitiveGraphCache spCache) {
         if (graph == null) return false;
         
         spCache.cacheAll(graph, TransitiveReasoner.subPropertyOf);
