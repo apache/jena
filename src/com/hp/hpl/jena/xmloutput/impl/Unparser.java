@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.26 2003-11-12 11:18:38 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.27 2003-11-14 05:58:49 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.xerces.util.XMLChar;
 
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.26 $' Date='$Date: 2003-11-12 11:18:38 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2003-11-14 05:58:49 $'
 
  */
 class Unparser {
@@ -747,6 +747,7 @@ class Unparser {
 					if (ix != 0) {
 						if (ix > greatest) {
 							found.setSize(ix);
+							greatest = ix;
 						}
 						found.set(ix - 1, s);
 					}
