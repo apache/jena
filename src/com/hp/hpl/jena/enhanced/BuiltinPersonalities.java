@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.11 2003-04-01 16:06:14 ian_dickinson Exp $
+  $Id: BuiltinPersonalities.java,v 1.12 2003-04-01 21:06:19 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -44,6 +44,7 @@ public class BuiltinPersonalities {
         .add( InverseFunctionalProperty.class, InverseFunctionalPropertyImpl.factory )
         .add( AllDifferent.class, AllDifferentImpl.factory )
         .add( Individual.class, IndividualImpl.factory )
+        .add( AnnotationProperty.class, AnnotationPropertyImpl.factory )
         ;	
         
         
