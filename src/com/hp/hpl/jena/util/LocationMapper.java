@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.3 2004-12-07 18:40:25 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.4 2004-12-17 14:23:36 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -194,6 +194,24 @@ public class LocationMapper
         return s_globalMapperPath ;
     }
     
+    public String toString()
+    {
+        String s = "" ;
+        for ( Iterator iter = altLocations.keySet().iterator() ; iter.hasNext() ; )
+        {
+            String k = (String)iter.next() ;
+            String v = (String)altLocations.get(k) ;
+            s = s+"(Loc:"+k+"=>"+v+") " ;
+        }
+
+        for ( Iterator iter = altPrefixes.keySet().iterator() ; iter.hasNext() ; )
+        {
+            String k = (String)iter.next() ;
+            String v = (String)altLocations.get(k) ;
+            s = s+"(Prefix:"+k+"=>"+v+") " ;
+        }
+        return s ;
+    }
     
     private void processConfig(Model m)
     {
