@@ -1,13 +1,15 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: RecordingModelListener.java,v 1.1 2004-06-29 14:42:03 chris-dollin Exp $
+  $Id: RecordingModelListener.java,v 1.2 2004-06-30 09:52:18 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import junit.framework.Assert;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelChangedListener;
@@ -65,6 +67,30 @@ class RecordingModelListener implements ModelChangedListener
         {
         if (has( things ) == false)
             ModelTestBase.fail( "expected " + Arrays.asList( things ) + " but got " + history );
+        }    
+    
+    public boolean has( List things )
+            { return history.equals( things ); } 
+        
+    public boolean hasStart( List L )
+        { return L.size() <= history.size() && L.equals( history.subList( 0, L.size() ) ); }
+    
+    public boolean hasEnd( List L )
+        { return L.size() <= history.size() && L.equals( history.subList( history.size() - L.size(), history.size() ) ); }
+    
+    public void assertHas( List things )
+        { if (has( things ) == false) Assert.fail( "expected " + things + " but got " + history ); }  
+    
+    public void assertHasStart( Object [] start )
+        { 
+        List L = Arrays.asList( start );
+        if (hasStart( L ) == false) Assert.fail( "expected " + L + " at the beginning of " + history );
+        }
+    
+    public void assertHasEnd( Object [] end )
+        {
+        List L = Arrays.asList( end );
+        if (hasEnd( L ) == false) Assert.fail( "expected " + L + " at the end of " + history );        
         }
     }
 

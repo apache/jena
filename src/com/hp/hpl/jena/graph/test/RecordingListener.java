@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RecordingListener.java,v 1.10 2004-06-29 14:42:02 chris-dollin Exp $
+  $Id: RecordingListener.java,v 1.11 2004-06-30 09:52:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -60,15 +60,36 @@ public class RecordingListener implements GraphListener
         
     public void clear()
         { history.clear(); }
-        
+
+    public boolean has( List things )
+        { return history.equals( things ); } 
+    
+    public boolean hasStart( List L )
+        { return L.size() <= history.size() && L.equals( history.subList( 0, L.size() ) ); }
+    
+    public boolean hasEnd( List L )
+        { return L.size() <= history.size() && L.equals( history.subList( history.size() - L.size(), history.size() ) ); }
+    
     public boolean has( Object [] things )
-        { return history.equals( Arrays.asList( things ) ); } 
+        { return has( Arrays.asList( things ) ); } 
         
+    public void assertHas( List things )
+        { if (has( things ) == false) Assert.fail( "expected " + things + " but got " + history ); }  
+    
     public void assertHas( Object [] things )
+        { assertHas( Arrays.asList( things ) ); }
+    
+    public void assertHasStart( Object [] start )
+        { 
+        List L = Arrays.asList( start );
+        if (hasStart( L ) == false) Assert.fail( "expected " + L + " at the beginning of " + history );
+        }
+    
+    public void assertHasEnd( Object [] end )
         {
-        if (has( things ) == false)
-            Assert.fail( "expected " + Arrays.asList( things ) + " but got " + history );
-        }   
+        List L = Arrays.asList( end );
+        if (hasEnd( L ) == false) Assert.fail( "expected " + L + " at the end of " + history );        
+        }
     }
 
 /*

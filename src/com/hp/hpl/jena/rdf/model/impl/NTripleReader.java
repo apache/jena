@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleReader.java,v 1.12 2003-12-08 10:48:25 andy_seaborne Exp $
+ * $Id: NTripleReader.java,v 1.13 2004-06-30 09:52:17 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -32,6 +32,7 @@ package com.hp.hpl.jena.rdf.model.impl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.shared.*;
@@ -43,7 +44,7 @@ import java.util.*;
 /** N-Triple Reader
  *
  * @author  Brian McBride, Jeremy Carroll, Dave Banks
- * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-12-08 10:48:25 $
+ * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2004-06-30 09:52:17 $
  */
 public class NTripleReader extends Object implements RDFReader {
     static final Log log = LogFactory.getLog(NTripleReader.class);
@@ -114,6 +115,15 @@ public class NTripleReader extends Object implements RDFReader {
     }
 
     protected void readRDF()  {
+        try {
+            model.notifyEvent( GraphEvents.startRead );
+            unwrappedReadRDF();
+        } finally {
+            model.notifyEvent( GraphEvents.finishRead );
+        }
+    }
+    
+    protected final void unwrappedReadRDF() {
         Resource subject;
         Property predicate = null;
         RDFNode object;
