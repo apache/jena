@@ -231,8 +231,9 @@
         <copy todir="${dist.dir}" file="build.xml"/>
         <copy todir="${dist.dir}" file="copyright.txt"/>
         <copy todir="${dist.dir}" file="ReleaseNotes.txt"/>
+        <copy todir="${dist.dir}" file="test.bat"/>
+        <copy todir="${dist.dir}" file="test.sh"/>
         <copy todir="${dist.dir}" file="readme.html"/>
-<!--        <copy todir="${dist.dir}" file="JenaTutorial.html"/> -->
 
         <!-- RDQL support files : scripts to build the Java
         <copy todir="${dist.dir}" file="doExprNodes"/>
