@@ -5,12 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.20 2004-03-02 13:38:10 der Exp $
+ * $Id: TestBugs.java,v 1.21 2004-03-02 17:17:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import java.io.*;
 
+import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.model.*;
@@ -31,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2004-03-02 13:38:10 $
+ * @version $Revision: 1.21 $ on $Date: 2004-03-02 17:17:56 $
  */
 public class TestBugs extends TestCase {
 
@@ -413,25 +415,25 @@ public class TestBugs extends TestCase {
     /**
      * Limitation of someValuesFrom applied to datatype properties.
      */
-    public void testSomeDatatype() {
-        String dataString = "@prefix owl: <http://www.w3.org/2002/07/owl#> .\n" +
-        "@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n" +
-        "@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .\n" +
-        "@prefix eg: <http://jena.hpl.hp.com/eg#> .\n" +
-        "@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n" +
-        
-        "eg:hasValue rdf:type owl:DatatypeProperty.\n" +
-        "eg:Test a owl:Class; owl:equivalentClass [\n" +
-        "   a owl:Restriction; owl:onProperty eg:hasValue; owl:someValuesFrom xsd:integer].\n" +
-        "eg:me eg:hasValue '42'^^xsd:integer.\n";
+    public void testSomeDatatype() throws IOException {
+        String uri = "http://www.daml.org/2001/03/daml+oil-ex-dt";
+        String filename = "testing/xsd/daml+oil-ex-dt.xsd";
+        TypeMapper tm = TypeMapper.getInstance();
+        XSDDatatype.loadUserDefined(uri, new FileReader(filename), null, tm);
         
         Model data = ModelFactory.createDefaultModel();
-        data.read(new StringReader(dataString), null, "N3");
+        data.read("file:testing/reasoners/bugs/userDatatypes.owl");
         InfModel inf = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), data);
+        
         String egNS = "http://jena.hpl.hp.com/eg#";
         Resource meR = inf.getResource(egNS + "me");
         Resource TestR = inf.getResource(egNS + "Test");
         assertTrue("somevalues inf for datatypes", inf.contains(meR, RDF.type, TestR));
+        
+        Resource Test2R = inf.getResource(egNS + "Test2");
+        Resource me2R = inf.getResource(egNS + "me2");
+        assertTrue("somevalues inf for datatypes", inf.contains(me2R, RDF.type, Test2R));
+        assertTrue("somevalues inf for user datatypes", inf.contains(meR, RDF.type, Test2R));
     }
     
     // debug assistant

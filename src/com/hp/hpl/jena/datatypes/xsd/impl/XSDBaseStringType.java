@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseStringType.java,v 1.8 2003-10-09 13:29:38 der Exp $
+ * $Id: XSDBaseStringType.java,v 1.9 2004-03-02 17:17:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
-import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
@@ -20,7 +19,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * to support the isValidLiteral tests across string types.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-10-09 13:29:38 $
+ * @version $Revision: 1.9 $ on $Date: 2004-03-02 17:17:09 $
  */
 public class XSDBaseStringType extends XSDDatatype {
 
@@ -45,23 +44,26 @@ public class XSDBaseStringType extends XSDDatatype {
     }
 
     
-    /**
-     * Test whether the given LiteralLabel is a valid instance
-     * of this datatype. This takes into accound typing information
-     * as well as lexical form - for example an xsd:string is
-     * never considered valid as an xsd:integer (even if it is
-     * lexically legal like "1").
-     */
-    public boolean isValidLiteral(LiteralLabel lit) {
-        RDFDatatype dt = lit.getDatatype();
-        if ( dt == null && lit.language().equals("") ) return true;
-        if ( this.equals(dt) ) return true;
-        if (dt instanceof XSDBaseStringType) {
-            return isValid(lit.getLexicalForm());
-        } else {
-            return false;
-        }
-    }
+// Functionality moved to XSDDatatype but old code left here temporarily until
+// we're sure the change is correct.
+//    
+//    /**
+//     * Test whether the given LiteralLabel is a valid instance
+//     * of this datatype. This takes into accound typing information
+//     * as well as lexical form - for example an xsd:string is
+//     * never considered valid as an xsd:integer (even if it is
+//     * lexically legal like "1").
+//     */
+//    public boolean isValidLiteral(LiteralLabel lit) {
+//        RDFDatatype dt = lit.getDatatype();
+//        if ( dt == null && lit.language().equals("") ) return true;
+//        if ( this.equals(dt) ) return true;
+//        if (dt instanceof XSDBaseStringType) {
+//            return isValid(lit.getLexicalForm());
+//        } else {
+//            return false;
+//        }
+//    }
     
     /**
      * Compares two instances of values of the given datatype. 

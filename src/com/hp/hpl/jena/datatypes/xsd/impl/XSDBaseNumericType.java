@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.10 2003-12-04 11:01:53 der Exp $
+ * $Id: XSDBaseNumericType.java,v 1.11 2004-03-02 17:17:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-12-04 11:01:53 $
+ * @version $Revision: 1.11 $ on $Date: 2004-03-02 17:17:09 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -57,9 +57,7 @@ public class XSDBaseNumericType extends XSDDatatype {
      * lexically legal like "1").
      */
     public boolean isValidLiteral(LiteralLabel lit) {
-        RDFDatatype dt = lit.getDatatype();
-        if (this.equals(dt)) return true;
-        if (dt instanceof XSDBaseNumericType) {
+        if (isBaseTypeCompatible(lit)) {
             String lex = lit.getLexicalForm();
             if (JenaParameters.enableWhitespaceCheckingOfTypedLiterals) {
                 if (lex.trim().equals(lex)) {

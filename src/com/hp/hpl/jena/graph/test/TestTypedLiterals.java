@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.34 2004-02-17 09:15:10 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.35 2004-03-02 17:14:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -32,7 +32,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.34 $ on $Date: 2004-02-17 09:15:10 $
+ * @version $Revision: 1.35 $ on $Date: 2004-03-02 17:14:32 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -350,6 +350,30 @@ public class TestTypedLiterals extends TestCase {
         checkLegalLiteral("42", clothingsize, Long.class, new Long(42));
         checkLegalLiteral("short", clothingsize, String.class, "short");
         
+        // Check use of isValidLiteral for base versus derived combinations
+        LiteralLabel iOver12 = m.createTypedLiteral("13", over12Type).asNode().getLiteral();
+        LiteralLabel iDecimal14 = m.createTypedLiteral("14", XSDDatatype.XSDdecimal).asNode().getLiteral();
+        LiteralLabel iDecimal10 = m.createTypedLiteral("10", XSDDatatype.XSDdecimal).asNode().getLiteral();
+        LiteralLabel iString = m.createTypedLiteral("15", XSDDatatype.XSDstring).asNode().getLiteral();
+        LiteralLabel iPlain = m.createLiteral("foo").asNode().getLiteral();
+        
+        assertTrue(over12Type.isValidLiteral(iOver12));
+        assertTrue(over12Type.isValidLiteral(iDecimal14));
+        assertTrue( ! over12Type.isValidLiteral(iDecimal10));
+        assertTrue( ! over12Type.isValidLiteral(iString));
+        assertTrue( ! over12Type.isValidLiteral(iPlain));
+        
+        assertTrue(XSDDatatype.XSDdecimal.isValidLiteral(iOver12));
+        assertTrue(XSDDatatype.XSDdecimal.isValidLiteral(iDecimal14));
+        assertTrue(XSDDatatype.XSDdecimal.isValidLiteral(iDecimal10));
+        assertTrue( ! XSDDatatype.XSDdecimal.isValidLiteral(iString));
+        assertTrue( ! XSDDatatype.XSDdecimal.isValidLiteral(iPlain));
+        
+        assertTrue(XSDDatatype.XSDstring.isValidLiteral(iString));
+        assertTrue(XSDDatatype.XSDstring.isValidLiteral(iPlain));
+        assertTrue( ! XSDDatatype.XSDstring.isValidLiteral(iOver12));
+        assertTrue( ! XSDDatatype.XSDstring.isValidLiteral(iDecimal10));
+        assertTrue( ! XSDDatatype.XSDstring.isValidLiteral(iDecimal14));
     }
 
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDGenericType.java,v 1.6 2003-12-04 11:01:52 der Exp $
+ * $Id: XSDGenericType.java,v 1.7 2004-03-02 17:17:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-12-04 11:01:52 $
+ * @version $Revision: 1.7 $ on $Date: 2004-03-02 17:17:09 $
  */
 public class XSDGenericType extends XSDDatatype {
 
@@ -36,6 +36,7 @@ public class XSDGenericType extends XSDDatatype {
     public XSDGenericType(XSSimpleType xstype, String namespace) {
         super(xstype, namespace);
     }
+
 
 //  No longer need to perform any special case processing of union types since we
 //  now do runtime type coercion - is that right?

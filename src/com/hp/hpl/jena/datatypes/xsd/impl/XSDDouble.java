@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: XSDDouble.java,v 1.1 2003-12-04 11:01:49 der Exp $
+ * $Id: XSDDouble.java,v 1.2 2004-03-02 17:17:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * XSDDatatype because the equality function needs overriding.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-12-04 11:01:49 $
+ * @version $Revision: 1.2 $ on $Date: 2004-03-02 17:17:09 $
  */
 public class XSDDouble extends XSDDatatype {
     /**
@@ -44,16 +44,16 @@ public class XSDDouble extends XSDDatatype {
      }
 
     
-     /**
-      * Test whether the given LiteralLabel is a valid instance
-      * of this datatype. This takes into accound typing information
-      * as well as lexical form - for example an xsd:string is
-      * never considered valid as an xsd:integer (even if it is
-      * lexically legal like "1").
-      */
-     public boolean isValidLiteral(LiteralLabel lit) {
-         return equals(lit.getDatatype());
-     }
+//     /**
+//      * Test whether the given LiteralLabel is a valid instance
+//      * of this datatype. This takes into accound typing information
+//      * as well as lexical form - for example an xsd:string is
+//      * never considered valid as an xsd:integer (even if it is
+//      * lexically legal like "1").
+//      */
+//     public boolean isValidLiteral(LiteralLabel lit) {
+//         return equals(lit.getDatatype());
+//     }
      
      /**
       * Test whether the given object is a legal value form
