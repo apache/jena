@@ -31,6 +31,8 @@ import com.hp.hpl.jena.util.iterator.*;
  * <li>The phrase "In keeping with their definition in RDF, rdfs:label and rdfs:
  * comment can only be used with data literals." is implemented here but missing
  * from OWL DL as triples.</li>
+ * <li>Unclear what the correct treatment of XMLLiteral is.
+ * I permit it, and do not require a declaration.</li>
  * </ul>
  * 
  * 
@@ -69,8 +71,10 @@ public class Checker extends EnhGraph {
 			checkedGraphs.add(g);
 		}
 	}
-	final private int Shift = Grammar.NBits;
+	final private int Shift = Grammar.CategoryShift;
 	final private int Mask = (1 << Shift) - 1;
+    final private int AShift = Grammar.ActionShift;
+    final private int AMask = (1<<AShift)-1;
 	/**
 	 * 
 	 * @param t A triple from a graph being checked.
@@ -89,23 +93,17 @@ public class Checker extends EnhGraph {
 			errorCnt++;
 		} else {
 			int m = nkey & Mask;
-			if (m == Grammar.EmptyCategorySet)
-				errorCnt++;
 			o.setCategories(m);
 			nkey >>= Shift;
 			m = nkey & Mask;
-			if (m == Grammar.EmptyCategorySet)
-				errorCnt++;
 			p.setCategories(m);
 			nkey >>= Shift;
 			m = nkey & Mask;
-			if (m == Grammar.EmptyCategorySet)
-				errorCnt++;
 			s.setCategories(m);
             nkey >>= Shift;
-            int action = nkey & Grammar.ActionMask;
-            nkey >>= Grammar.ActionBits;
-            switch ( nkey & Grammar.ActionMask ) {
+            int action = nkey & AMask;
+            nkey >>= AShift;
+            switch ( nkey & AMask ) {
                 // nothing
                 // restriction-part-1
                 // restriction-part-2

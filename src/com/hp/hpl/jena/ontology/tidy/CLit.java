@@ -31,12 +31,12 @@ class CLit extends CBuiltin {
             !(v instanceof BigDecimal) &&
             ((Number)v).longValue() >= 1 &&
         ((Number)v).longValue() <= 1) {
-                return Grammar.LiteInteger;
+                return Grammar.liteInteger;
             }
-            return Grammar.NonNegativeInteger;
+            return Grammar.dlInteger;
         }
 
-        return Grammar.Literal;
+        return Grammar.literal;
     }
 
 
