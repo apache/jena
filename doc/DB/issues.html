@@ -17,7 +17,7 @@
 
 
 
-<h3>28 August, 2003</h3>
+<h3>2 November, 2004</h3>
 
 
 
@@ -45,9 +45,9 @@
   abbreviations. It is unclear if there is a significant performance impact.</dd>
   <dt>&nbsp;</dt>
   <dt>Fastpath Testing</dt>
-  <dd>The Fastpath code for RDQL query processing is not thoroughly tested and 
-  missing significant capabilities. If problems are found or suspected, the 
-  Fastpath code can be disabled. See <a href="fastpath.html">Fastpath</a> for 
+  <dd>If problems are found or suspected in RDQL query processing over the 
+  database, the Fastpath code can be disabled and Jena will revert to a simpler, 
+  less-efficient mode of query processing. See <a href="fastpath.html">Fastpath</a> for 
   details on doing this.</dd>
   <dt>&nbsp;</dt>
 </dl>
@@ -55,6 +55,21 @@
 
 
   <h2><a name="features"></a>Known Bugs</h2>
+
+
+
+<dl>
+  <dt>Plain Literals vs. XSD String-typed Literals</dt>
+  <dd>The RDF recommendation states that if an XSD string-typed literal and a 
+  plain literal (no language tag) have the same value (see Literal.getValue()), 
+  then they are considered semantically equivalent, i.e., Literal.sameValueAs() 
+  returns true.&nbsp; Unfortunately, 
+  the database layer does not treat them as equivalent. For example, if a 
+  statement  with an xsd string-typed literal for an object is added to a database 
+  model, then in a subsequent attempt to list all statements with that value as 
+  a plain literal, the original 
+  statement (with the typed literal) will not be included in the result set. </dd>
+</dl>
 
 
 
