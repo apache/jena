@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.56 $
+ * Revision           $Revision: 1.57 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:27 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 16:15:21 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -937,6 +937,22 @@ public class TestBugReports
         //TestUtil.assertIteratorValues( this, dummy.listDeclaredProperties(), 
         //                               new Object[] {m.getObjectProperty( NS+"hasPublications")} );
     }
+    
+    /** Bug report from Dave - cycles checking code still not correct */
+    public void test_der_03() {
+        String NS = "http://jena.hpl.hp.com/test#";
+        OntModel om = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
+        OntClass A = om.createClass(NS+"A");
+        OntClass B = om.createClass(NS+"B");
+        OntClass C = om.createClass(NS+"C");
+        A.addSuperClass(B);
+        A.addSuperClass(C);
+        B.addSuperClass(C);
+        C.addSuperClass(B);
+        
+        TestUtil.assertIteratorValues( this, A.listSuperClasses( true ), new Object[] {B,C} );
+    }
+    
     
     /**
      * Bug report by pierluigi.damadio@katamail.com: raises conversion exception

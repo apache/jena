@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.48 $
+ * Revision           $Revision: 1.49 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:08 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 16:15:18 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.48 2004-12-06 13:50:08 andy_seaborne Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.49 2004-12-07 16:15:18 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1446,25 +1446,61 @@ public class OntResourceImpl
         ExtendedIterator j = getModel().listStatements( subject, p, object )
                                        .mapWith( mapper );
         
-        // we need to keep this node out of the iterator for now, else it will spoil the maximal 
-        // generator compression (since all the (e.g.) sub-classes will be sub-classes of this node
-        // and so will be excluded from the maximal lower elements calculation)
+        // collect a list of the candidates
         List s = new ArrayList();
         for( ; j.hasNext();  s.add( j.next() ) );
         
-        // remove any nodes that are equivalent to this one
+        // we need to keep this node out of the iterator for now, else it will spoil the maximal 
+        // generator compression (since all the (e.g.) sub-classes will be sub-classes of this node
+        // and so will be excluded from the maximal lower elements calculation)
         ResourceUtils.removeEquiv( s, orderRel, this );
         boolean withheld = s.remove( this );
+        
+        // we now compress the list by reducing all equivalent values to a single representative
+        
+        // first partition the list by equivalence under orderRel
+        List partition = ResourceUtils.partition( s, orderRel );
+        Map equivSets = new HashMap();
+        
+        // then reduce each part of the partition to a singleton, but remember the others
+        s.clear();
+        for (Iterator i = partition.iterator(); i.hasNext(); ) {
+            List part = (List) i.next();
+            // if this is a singleton we just add it to the compressed candidates
+            if (part.size() == 1) {
+                s.add( part.get(0) );
+            }
+            else {
+                // we select a single representative
+                Resource r = (Resource) part.remove( 0 );
+                // remember the other equivalent values
+                equivSets.put( r, part );
+                s.add( r );
+            }
+        }
+        
+        // now s1 contains a reduced set of nodes, in which any fully-connected sub-graph under
+        // orderRel has been reduced to a single representative
         
         // generate the short list as the maximal bound under the given partial order
         s = ResourceUtils.maximalLowerElements( s, orderRel, inverse );
         
-        // put myself back if needed
-        if (withheld) {
-            s.add( this );
+        // create a list of these values lower elements, plus their equivalents (if any)
+        List s2 = new ArrayList();
+        for (Iterator i = s.iterator(); i.hasNext(); ) {
+            Resource r = (Resource) i.next();
+            s2.add( r );
+            if (equivSets.containsKey( r )) {
+                s2.addAll( (List) equivSets.get( r ) );
+            }
         }
         
-        return s.iterator();
+        // put myself back if needed
+        if (withheld) {
+            s2.add( this );
+        }
+        
+        return s2.iterator();
     }
 
 
