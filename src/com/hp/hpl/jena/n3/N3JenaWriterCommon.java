@@ -17,11 +17,12 @@ import com.hp.hpl.jena.vocabulary.RDF ;
 
 import java.util.* ;
 import java.io.* ;
+import java.text.* ;
 
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.21 2004-03-10 15:12:29 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.22 2004-06-14 18:57:40 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -495,7 +496,13 @@ public class N3JenaWriterCommon implements RDFWriter
         if ( doAbbreviatedBaseURIref && uriStr.equals(baseURIref) )
             return "<>" ;
 
-		// Try for a prefix and write as qname
+		// Try for a prefix and write as qname.  Find the longest if several.
+        // TODO
+        // Possible optimization: split URI and have URI=> ns: map.
+        // Ordering prefixes by length, then first hit is better.
+        // 
+        // Also: could just assume that the split is on / or #
+        // Means we need to find a prefix just once. 
 		for ( Iterator pIter = prefixMap.keySet().iterator() ; pIter.hasNext() ; )
 		{
 			String p = (String)pIter.next() ;
@@ -509,28 +516,9 @@ public class N3JenaWriterCommon implements RDFWriter
 		}
 		if ( matchPrefix != null )
 		{
-			// If there was a dot in the localname part of the qname,
-			// then skip output a quoted URIref
-			// (nsprefix should not have a dot in it - got thrown out
-			// earlier).
-
-            // Quick hack = fix properly by consolidating character
-            // set handling with the reader 
 			String localname = uriStr.substring(matchURI.length()) ;
-            boolean isOK = true ;
-            for ( int i = 0 ; i < localname.length() ; i++ )
-            {
-                char ch = localname.charAt(i) ;
-                switch (ch)
-                {
-                    case '?': case '=': case ':': case '.':
-                        isOK = false ;
-                        break ;
-                    default:
-                        continue ;
-                }
-            }
-            if ( isOK )
+            
+            if ( checkQName(matchPrefix, localname) )
                 return matchPrefix+":"+localname ;
 
             // Continue and return quoted URIref
@@ -542,6 +530,47 @@ public class N3JenaWriterCommon implements RDFWriter
 		return "<"+uriStr+">" ;
 	}
 
+    // Qnames in N3 aren't really qnames
+    //   No dots; digit can be first
+    // These tests must agree, or be more restrictive, than the parser. 
+    static boolean checkQName(String ns, String local)
+    {
+        return checkQNameNamespace(ns) && checkQNameLocalname(local) ;
+    }
+    
+    static boolean checkQNameNamespace(String s)
+    {
+        return checkQNamePart(s) ;
+    }
+    static boolean checkQNameLocalname(String s)
+    {
+        return checkQNamePart(s) ;
+    }
+
+    
+    static boolean checkQNamePart(String s)
+    {
+        boolean isOK = true ;
+        CharacterIterator cIter = new StringCharacterIterator(s) ;
+        
+        for ( char ch = cIter.first() ;
+              ch != java.text.CharacterIterator.DONE ;
+              ch = cIter.next() )
+        {
+            if ( Character.isLetterOrDigit(ch) )
+                continue ;
+            switch (ch)
+            {
+                case '_': case '-':
+                    continue ;
+            }
+            // Not an acceptable characters
+            isOK = false ;
+            break ;
+        }
+        return isOK ; 
+    }
+    
     final static String WS = "\n\r\t" ;
 
 	protected String formatLiteral(Literal literal)
