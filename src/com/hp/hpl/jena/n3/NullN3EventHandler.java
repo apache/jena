@@ -5,12 +5,11 @@
 
 package com.hp.hpl.jena.n3;
 
-import antlr.Token ;
 import antlr.collections.AST ;
 
 /** A basic (do nothing) implementation of N3ParserEventHandler.
  * @author		Andy Seaborne
- * @version 	$Id: NullN3EventHandler.java,v 1.1.1.1 2002-12-19 19:14:43 bwm Exp $
+ * @version 	$Id: NullN3EventHandler.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
  */
 
 public class NullN3EventHandler implements N3ParserEventHandler

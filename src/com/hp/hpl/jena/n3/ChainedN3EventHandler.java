@@ -5,12 +5,11 @@
 
 package com.hp.hpl.jena.n3;
 
-import antlr.Token ;
 import antlr.collections.AST ;
 
 /** Support for chaining handlers.  Sends the operations to a chained handler.
  * @author		Andy Seaborne
- * @version 	$Id: ChainedN3EventHandler.java,v 1.1.1.1 2002-12-19 19:14:19 bwm Exp $
+ * @version 	$Id: ChainedN3EventHandler.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
  */
 
 public class ChainedN3EventHandler implements N3ParserEventHandler

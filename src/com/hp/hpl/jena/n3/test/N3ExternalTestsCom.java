@@ -7,22 +7,15 @@ package com.hp.hpl.jena.n3.test;
 
 import java.io.* ;
 import java.util.* ;
-import com.hp.hpl.jena.n3.* ;
 import junit.framework.* ;
 
-import com.hp.hpl.jena.rdf.model.* ;
-//import com.hp.hpl.jena.rdf.model.impl.* ;
-import com.hp.hpl.jena.mem.* ;
-
-
 import com.hp.hpl.jena.util.tuple.* ;
-import com.hp.hpl.jena.util.ModelLoader;
 
 //@@ToDo: Hunt around for the config file
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.1.1.1 2002-12-19 19:14:44 bwm Exp $
+ * @version 	$Id: N3ExternalTestsCom.java,v 1.2 2003-01-27 14:29:27 andy_seaborne Exp $
  */
 public abstract class N3ExternalTestsCom extends TestSuite
 {

@@ -11,7 +11,7 @@ import java.io.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3InternalTests.java,v 1.1.1.1 2002-12-19 19:14:45 bwm Exp $
+ * @version 	$Id: N3InternalTests.java,v 1.2 2003-01-27 14:29:27 andy_seaborne Exp $
  */
 public class N3InternalTests extends TestSuite
 {
@@ -158,6 +158,25 @@ public class N3InternalTests extends TestSuite
 		addTest(new Test("_:anon :- (\"1\") .")) ;
 		// Named formulae: Not supported by cwm (as of 2002/09)
 		addTest(new Test("_:anon :- { ?a ?b ?c } .")) ;
+        
+        // Datatypes
+        addTest(new Test("a:subj a:prop '123'^^xsd:integer .")) ;
+        addTest(new Test("a:subj a:prop '123'^^<uri> .")) ;
+        addTest(new Test("a:subj a:prop '<tag>text</tag>'^^rdf:XMLLiteral .")) ;
+
+        // Language tags
+        addTest(new Test("a:subj a:prop 'text'@en .")) ;
+        addTest(new Test("a:subj a:prop 'text'@en^^a:lang .")) ;
+        // Illegal in N-Triples
+        addTest(new Test("a:subj a:prop 'text'^^a:lang@en .")) ;
+        
+        // XML Literal
+        addTest(new Test("a:subj a:prop '<tag>text</tag>'@fr^^rdf:XMLLiteral .")) ;
+        addTest(new Test("a:subj a:prop '<tag>text</tag>'^^rdf:XMLLiteral@fr .")) ;
+
+        //addTest(new Test("a:subj a:prop ?x^^xsd:integer .")) ;
+        //addTest(new Test("a:subj a:prop '123'^^?x .")) ;
+        //addTest(new Test("a:subj a:prop ?x^^?y .")) ;
 	}
 	
 	class Test extends TestCase

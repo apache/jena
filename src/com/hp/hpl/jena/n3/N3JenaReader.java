@@ -8,13 +8,12 @@ package com.hp.hpl.jena.n3;
 import com.hp.hpl.jena.rdf.model.*;
 import java.net.* ;
 import java.io.* ;
-import antlr.collections.AST ;
 
 // To do: buffereing version that does the whole file before adding statements (error catcher)
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaReader.java,v 1.1.1.1 2002-12-19 19:14:37 bwm Exp $
+ * @version 	$Id: N3JenaReader.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
  */
 
 

@@ -10,7 +10,7 @@ import com.hp.hpl.jena.n3.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3EventPrinter.java,v 1.1.1.1 2002-12-19 19:14:37 bwm Exp $
+ * @version 	$Id: N3EventPrinter.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
  */
 public class N3EventPrinter implements N3ParserEventHandler
 {
@@ -118,7 +118,8 @@ public class N3EventPrinter implements N3ParserEventHandler
 		return null ;
 	}
 
-	private static void printSlot(Writer out, AST ast)
+    private static void printSlot(Writer out, AST ast) { printSlot(out, ast, true) ; }
+	private static void printSlot(Writer out, AST ast, boolean printType)
 	{
 		try {
 			if (ast == null)
@@ -135,22 +136,24 @@ public class N3EventPrinter implements N3ParserEventHandler
 				out.write('"');
 				printString(out, tmp);
 				out.write('"');
-				AST dt = ast.getFirstChild() ;
-				if ( dt != null )
-				{
-					out.write("^^") ;
-					printSlot(out, dt) ;
-				}
-				return;
+                
+				AST a1 = ast.getNextSibling() ;
+                AST a2 = (a1==null?null:a1.getNextSibling()) ;
+                printLiteralModifier(out, a1) ;
+                printLiteralModifier(out, a2) ;
 			}
-	
-			if (tmp.equals(""))
-				tmp = "<empty string>";
-	
-			out.write(tmp) ;
-			out.write('(');
-			out.write(N3Parser.getTokenNames()[tokenType]);
-			out.write(')');
+            else
+            {	
+    			if (tmp.equals(""))
+    				tmp = "<empty string>";
+    			out.write(tmp) ;
+            }
+            if ( printType )
+            {
+    			out.write('(');
+	       		out.write(N3Parser.getTokenNames()[tokenType]);
+			    out.write(')');
+            }
 		} catch (IOException ioEx) {}
 		
 	}
@@ -194,6 +197,32 @@ public class N3EventPrinter implements N3ParserEventHandler
 			}
 		} catch (IOException ioEx) {}
 	}
+
+    private static void printLiteralModifier(Writer out, AST a) throws IOException
+    {
+        if ( a == null )
+            return ;
+        int i = a.getType() ;
+        switch (a.getType())
+        {
+            case N3Parser.DATATYPE :
+                out.write("^^");
+                AST dt = a.getFirstChild() ;
+                printSlot(out, dt, false) ;
+                break;
+            case N3Parser.AT_LANG :
+                //out.write("@");
+                out.write(a.getText());
+                break ;
+            default :
+                System.err.println(
+                    "Error in grammar - not a datatype or lang tag: "
+                        + a.getText()
+                        + "/"
+                        + N3Parser.getTokenNames()[a.getType()]);
+        }
+    }
+
 
 	private static void print(Writer out, String s)
 	{

@@ -5,12 +5,12 @@
 
 package com.hp.hpl.jena.n3;
 import java.io.*;
-import antlr.collections.AST;
+//import antlr.collections.AST;
 import com.hp.hpl.jena.n3.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ErrorPrinter.java,v 1.1.1.1 2002-12-19 19:14:36 bwm Exp $
+ * @version 	$Id: N3ErrorPrinter.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
  */
 public class N3ErrorPrinter extends NullN3EventHandler
 {

@@ -6,7 +6,6 @@
 package com.hp.hpl.jena.n3.test;
 
 import java.io.* ;
-import java.util.* ;
 import com.hp.hpl.jena.n3.* ;
 import junit.framework.* ;
 
@@ -14,13 +13,11 @@ import com.hp.hpl.jena.rdf.model.* ;
 //import com.hp.hpl.jena.rdf.model.impl.* ;
 import com.hp.hpl.jena.mem.* ;
 
-
-import com.hp.hpl.jena.util.tuple.* ;
 import com.hp.hpl.jena.util.ModelLoader;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaReaderTests.java,v 1.1.1.1 2002-12-19 19:14:46 bwm Exp $
+ * @version 	$Id: N3JenaReaderTests.java,v 1.2 2003-01-27 14:29:27 andy_seaborne Exp $
  */
 public class N3JenaReaderTests extends N3ExternalTestsCom
 {
@@ -65,6 +62,7 @@ public class N3JenaReaderTests extends N3ExternalTestsCom
 			n3File = _n3File ;
 			resultsFile = _resultsFile ;
 			try {
+                
 				rData = makeReader(new FileInputStream(n3File)) ;
 
 				// Check the files exist
@@ -112,8 +110,9 @@ public class N3JenaReaderTests extends N3ExternalTestsCom
 			}
 			if ( rModel != null )
 			{
-				if ( !dModel.isIsomorphicWith(rModel) )
+                if ( ! dModel.isIsomorphicWith(rModel) )
 				{
+                    
 					Writer w = makeWriter(System.out) ;
 					println(w, "+++++++ "+super.getName()) ;
 					println(w, "---- Created") ;
@@ -122,8 +121,8 @@ public class N3JenaReaderTests extends N3ExternalTestsCom
 					rModel.write(w, "N-TRIPLE") ;
 					println(w, "+++++++"+super.getName()) ;
 					flush(w) ;
-					this.assertTrue("Model compare failed: "+super.getName(), false) ;
-				}
+					assertTrue("Model compare failed: "+super.getName(), false) ;
+                }
 			}
 				
 		}

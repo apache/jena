@@ -8,14 +8,13 @@ package com.hp.hpl.jena.n3;
 import antlr.collections.AST ;
 import java.util.* ;
 import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.mem.* ;
 
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
 import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.1.1.1 2002-12-19 19:14:43 bwm Exp $
+ * @version 	$Id: N3toRDF.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -31,13 +30,14 @@ public class N3toRDF implements N3ParserEventHandler
 	
 	// Well known namespaces
 	
-	String NS_rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ;
-	String NS_rdfs = "http://www.w3.org/2000/01/rdf-schema#" ;
+	static final String NS_rdf = "http://www.w3.org/1999/02/22-rdf-syntax-ns#" ;
+    static final String NS_rdfs = "http://www.w3.org/2000/01/rdf-schema#" ;
 	//String DAML_NS = DAMLVocabulary.NAMESPACE_DAML_2000_12_URI ;
-	String NS_DAML = DAMLVocabulary.NAMESPACE_DAML_2001_03_URI ;
+    static final String NS_DAML = DAMLVocabulary.NAMESPACE_DAML_2001_03_URI ;
 	DAMLVocabulary damlVocab = DAML_OIL.getInstance() ;
 	
-	String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
+    static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
+    static final String XMLLiteralURI = "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral" ;
 	
 	String base = null ;
 	final String anonPrefix = "_" ;
@@ -202,11 +202,63 @@ public class N3toRDF implements N3ParserEventHandler
 		switch (thing.getType())
 		{
 			case N3Parser.LITERAL :
-				// Literals have three part:
-				//    the value (a string), the lang tag, and the datatype
-				//    lang tag not done.
-				AST datatype = thing.getFirstChild() ;
-				return model.createLiteral(text);
+				// Literals have three part: value (string), lang tag, datatype
+                AST a1 = thing.getNextSibling() ;
+                AST a2 = (a1==null?null:a1.getNextSibling()) ;
+                AST datatype = null ;
+                AST lang = null ; 
+                
+                if ( a2 != null )
+                {
+                    if ( a2.getType() == N3Parser.DATATYPE )
+                        datatype = a2.getFirstChild() ;
+                    else
+                        lang = a2 ;
+                }
+                // First takes precidence over second.
+                if ( a1 != null )
+                {
+                    if ( a1.getType() == N3Parser.DATATYPE )
+                        datatype = a1.getFirstChild() ;
+                    else
+                        lang = a1 ;
+                }
+
+                // Chop leading '@'                
+                String langTag = (lang!=null)?lang.getText().substring(1):null ;
+                String typeURI = null ;
+                if (datatype != null)
+                {
+                    typeURI = datatype.getText();
+                    // Can't have bNodes here so the code is slightly different.
+                    switch (datatype.getType())
+                    {
+                        case N3Parser.QNAME :
+                            if (typeURI.startsWith("_:") || typeURI.startsWith("=:"))
+                            {
+                                error("Line "+ line+ ": N3toRDF: Use bNode for datatype URI: "
+                                        + text+ "^^"+ typeURI);
+                                return model.createLiteral("Illegal literal: " + text + "^^" + typeURI);
+                            }
+                            ExpandedQName qn = new ExpandedQName(line, typeURI);
+                            typeURI = qn.expansion;
+                            // Fall through
+                        case N3Parser.URIREF :
+                            typeURI = expandURIRef(typeURI);
+                            break ;
+                        default :
+                            error("Line "+ line+ ": N3toRDF: Must use URIref or QName datatype URI: "
+                                    + text+ "^^"+ typeURI+"("+N3Parser.getTokenNames()[datatype.getType()]+")");
+                            return model.createLiteral("Illegal literal: " + text + "^^" + typeURI);
+                    }
+                }
+                if ( langTag == null )
+                    langTag = "" ;
+                if ( typeURI == null )
+                    return model.createLiteral(text, langTag) ; 
+                
+                return model.createTypedLiteral(text, langTag, typeURI) ;
+                
 			case N3Parser.QNAME :
 				// Is it a labeled bNode?
 				if ( text.startsWith("_:") && ! prefixMap.containsKey("_") )
@@ -220,14 +272,8 @@ public class N3toRDF implements N3ParserEventHandler
 				text = qn.expansion ;
 				// Fall through
 			case N3Parser.URIREF :
-				// Not a "named" bNode (start with _:)
-				if ( text.equals("") )
-					// The case of <>.
-					return model.createResource(base) ;
-				if ( text.equals("#") )
-					// The case of <#>.
-					return model.createResource(base+"#") ;
-				return model.createResource(text);
+                // By now, is not a "named" bNode (start with _:)
+                return model.createResource(expandURIRef(text)) ;
 			case N3Parser.ANON:			// bNodes via [] or [:- ] QNAME starts "=:"
 				if ( ! bNodeMap.containsKey(text) )
 					bNodeMap.put(text, model.createResource()) ;
@@ -238,7 +284,19 @@ public class N3toRDF implements N3ParserEventHandler
 		return null ;
 	}
 
-
+    // Expand shorthand forms (not QNames) for URIrefs.
+    private String expandURIRef(String text)
+    {
+        // Not a "named" bNode (start with _:)
+        if ( text.equals("") )
+            // The case of <>.
+            return base ;
+        if ( text.equals("#") )
+            // The case of <#>.
+            return base+"#" ;
+        return text;
+    }
+    
 	class ExpandedQName
 	{
 		public String qname;

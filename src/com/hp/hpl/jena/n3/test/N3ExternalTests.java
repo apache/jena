@@ -6,21 +6,16 @@
 package com.hp.hpl.jena.n3.test;
 
 import java.io.* ;
-import java.util.* ;
 import com.hp.hpl.jena.n3.* ;
 import junit.framework.* ;
 
 import com.hp.hpl.jena.rdf.model.* ;
 //import com.hp.hpl.jena.common.* ;
-import com.hp.hpl.jena.mem.* ;
-
-
-import com.hp.hpl.jena.util.tuple.* ;
-import com.hp.hpl.jena.util.ModelLoader;
+//import com.hp.hpl.jena.mem.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTests.java,v 1.1.1.1 2002-12-19 19:14:43 bwm Exp $
+ * @version 	$Id: N3ExternalTests.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
  */
 public class N3ExternalTests extends N3ExternalTestsCom
 {

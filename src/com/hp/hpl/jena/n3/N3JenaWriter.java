@@ -22,13 +22,12 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.* ;
 import java.io.* ;
-import antlr.collections.AST ;
 
 /** An N3 pretty printer.
  *  Tries to make N3 data look readable - works better on regular data.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.1.1.1 2002-12-19 19:14:40 bwm Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
  */
 
 
@@ -78,6 +77,7 @@ public class N3JenaWriter implements RDFWriter
 	int minGap = 1 ;
 	
 	boolean doingBaseHash = false ;
+    boolean doingPrettyWrite = true ;
 
 	public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
 	{
@@ -128,19 +128,32 @@ public class N3JenaWriter implements RDFWriter
 	 * </pre>
 	 */
 	
-	public void write(Model model, Writer _out, String base) throws RDFException
-	{
-		if ( writerPropertyMap.get(propWriteSimple) != null )
-		{
-			writeSimple(model, _out, base) ;
-			return ;
-		}
-		
-		if ( ! ( _out instanceof BufferedWriter ) )
-			_out = new BufferedWriter(_out) ;
-		out = new IndentedWriter(_out) ;
+    public void write(Model model, Writer _out, String base) throws RDFException
+    {
+        Object obj = writerPropertyMap.get(propWriteSimple);
 
-		baseName = base ;
+        try {
+            if (obj == null)
+                obj = System.getProperty(propWriteSimple);
+        } catch (SecurityException secEx) {}
+
+        if (obj != null && obj instanceof String)
+        {
+            if (!"false".equals((String) obj))
+                doingPrettyWrite = false;
+        }
+
+        if (!doingPrettyWrite)
+        {
+            writeSimple(model, _out, base);
+            return;
+        }
+
+        if (!(_out instanceof BufferedWriter))
+            _out = new BufferedWriter(_out);
+        out = new IndentedWriter(_out);
+
+        baseName = base;
 		
 		// Allocate datastructures - allows reuse of a writer
 		startWriting() ;
@@ -641,7 +654,10 @@ public class N3JenaWriter implements RDFWriter
 
 	private void writeLiteral(Literal literal)
 	{
+        String datatype = literal.getDatatypeURI() ;
+        String lang = literal.getLanguage() ;
 		String s = literal.toString() ;
+        
 		int j = 0 ;
 		int i = -1 ;
 		
@@ -660,6 +676,18 @@ public class N3JenaWriter implements RDFWriter
 			out.print("\\\"");
 			j = i + 1;
 		}
+        
+        if ( lang != null && lang.length()>0)
+        {
+            out.print("@") ;
+            out.print(lang) ;
+        }
+        if ( datatype != null )
+        {
+            out.print("^^<") ;
+            out.print(datatype) ;
+            out.print(">") ;
+        }
 	}
 
 	
@@ -777,6 +805,8 @@ public class N3JenaWriter implements RDFWriter
 	// Writes the model, no fancy formatting.
 	public synchronized void writeSimple(Model model, Writer _out, String base) throws RDFException
 	{
+        doingPrettyWrite = false ; 
+        
 		if ( ! ( _out instanceof BufferedWriter ) )
 			_out = new BufferedWriter(_out) ;
 		out = new IndentedWriter(_out) ;

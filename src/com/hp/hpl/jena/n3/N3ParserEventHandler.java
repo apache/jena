@@ -4,13 +4,12 @@
  */
 
 package com.hp.hpl.jena.n3;
-import antlr.Token ;
 import antlr.collections.AST;
 
 /** Interface for handling the output events from the N3 parser
  * 
  * @author		Andy Seaborne
- * @version 	$Id: N3ParserEventHandler.java,v 1.1.1.1 2002-12-19 19:14:41 bwm Exp $
+ * @version 	$Id: N3ParserEventHandler.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
  */
 public interface N3ParserEventHandler
 {

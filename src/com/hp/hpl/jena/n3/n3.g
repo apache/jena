@@ -49,6 +49,7 @@ tokens
 	ANON ; FORMULA ;
 	QNAME ; KEYWORD ; NAME_OP ;
 	KW_THIS ; KW_OF ; KW_HAS ; KW_A ; KW_IS ;
+	AT_PREFIX ; AT_LANG ;
 	STRING ; LITERAL ;
 }
 
@@ -312,15 +313,27 @@ damllist[AST label]
 	;
 
 
+	// Extract from the N-Tripes syntax
+	//    literal ::= langString | datatypeString  
+	//    langString ::= '"' string '"' ( '@' language )?  
+	//    datatypeString ::= langString '^^' uriref 
+	//    language ::= [a-z0-9]+ ('-' [a-z0-9]+ )? 
+	// This is a permissive parse and allows the
+	// lang and the datatype to be reversed.
+	// Actually, the grammar allow two lang tags or twp datatype
+	// specifications.
+
 literal:
-	s:STRING
-	// Optional language tag : not done.
-	//  (AT lang:langString)?
-	// Optional datatype
-	  (DATA_T dt:datatype ) ?
-	// BUG : if lang is null, it loops
-	//{ #literal = #(#[LITERAL, s], lang, dt); }
-	{ #literal = #(#[LITERAL, s.getText()], dt); }
+	s:STRING literalModifier { #literal.setType(LITERAL) ; } ;
+	
+literalModifier:
+	literalModifier1 literalModifier1 ;
+	
+literalModifier1
+	: (AT_LANG) => AT_LANG
+	| (DATATYPE) => DATATYPE dt:datatype
+		{ #literalModifier1 = #([DATATYPE], #dt) ; }
+	|
 	;
 
 datatype: node ;
@@ -343,9 +356,11 @@ qname: QNAME ; //| QNAME_ANON ;
 uriref: URIREF ;
 
 //variable: UVAR ;
-variable:
-	v:UVAR (DATA_T dt:datatype )? { #variable = #(#[UVAR, v.getText()], dt) ; } ;
+variableDT:
+	v:UVAR (DATATYPE dt:datatype )? { #variableDT = #(#[UVAR, v.getText()], dt) ; } ;
 
+variable:
+	v:UVAR ;
 
 
 // --------------------------------------------------------
@@ -420,9 +435,15 @@ URICHAR:
 
 UVAR: QUESTION (ALPHANUMERIC)+ ;
 
-AT_PREFIX: AT "prefix" ;
 
-STRING: ( STRING1 | STRING2 ) ; //Not needed? { $setType(STRING) ; } ;
+AT_WORD
+	: (AT "prefix") => AT "prefix" { $setType(AT_PREFIX) ; }
+	| (AT (ALPHA)) => AT a:(ALPHA)+ ("-" (ALPHA)*)?
+		{ $setType(AT_LANG) ; }
+	;
+
+
+STRING: ( STRING1 | STRING2 ) ;
 
 
 // Named characters
@@ -440,7 +461,7 @@ COMMA		:	','	;
 PATH		:	'!' ;
 RPATH		:	'^' ;
 
-DATA_T		:	"^^"	;
+DATATYPE		:	"^^"	;
 
 protected
 NAME_IT		:	":-"	;
