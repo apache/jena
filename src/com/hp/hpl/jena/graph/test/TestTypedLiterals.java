@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.25 2003-08-23 12:19:48 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.26 2003-08-24 21:11:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -31,7 +31,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2003-08-23 12:19:48 $
+ * @version $Revision: 1.26 $ on $Date: 2003-08-24 21:11:51 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -158,6 +158,9 @@ public class TestTypedLiterals extends TestCase {
         assertDiffer("Not value sensitive", l1, l4);
         checkIllegalLiteral("zap", XSDDatatype.XSDint);
         checkIllegalLiteral("42.1", XSDDatatype.XSDint);
+        
+        Literal l5 = m.createTypedLiteral("42", XSDDatatype.XSDnonNegativeInteger);
+        assertEquals("type coercion", l2, l5);
         
         // Check float/double
         l1 = m.createTypedLiteral(42.42);  // default map
