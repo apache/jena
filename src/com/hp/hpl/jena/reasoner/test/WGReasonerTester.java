@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.11 2003-05-05 15:16:01 der Exp $
+ * $Id: WGReasonerTester.java,v 1.12 2003-06-16 11:20:28 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -17,6 +17,8 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.vocabulary.RDF;
+
+import com.hp.hpl.jena.shared.*;
 
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
@@ -39,7 +41,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-05-05 15:16:01 $
+ * @version $Revision: 1.12 $ on $Date: 2003-06-16 11:20:28 $
  */
 public class WGReasonerTester {
 
@@ -188,7 +190,7 @@ public class WGReasonerTester {
         Resource testType = (Resource)test.getProperty(RDF.type).getObject();
         if (!(testType.equals(NegativeEntailmentTest) ||
                testType.equals(PositiveEntailmentTest) ) ) {
-            throw new RDFException("Can't find test: " + uri);
+            throw new JenaException("Can't find test: " + uri);
         }
 
         String description = test.getProperty(descriptionP).getObject().toString();

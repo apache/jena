@@ -9,13 +9,13 @@ import java.io.* ;
 import com.hp.hpl.jena.n3.* ;
 import junit.framework.* ;
 
-import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.*;
 //import com.hp.hpl.jena.common.* ;
 //import com.hp.hpl.jena.mem.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTests.java,v 1.3 2003-02-20 16:48:54 andy_seaborne Exp $
+ * @version 	$Id: N3ExternalTests.java,v 1.4 2003-06-16 11:20:24 chris-dollin Exp $
  */
 public class N3ExternalTests extends N3ExternalTestsCom
 {
@@ -84,7 +84,7 @@ public class N3ExternalTests extends N3ExternalTestsCom
 			} catch (Exception ex)
 			{
 				// @@CLEANUP
-				throw new RDFException(ex) ;
+				throw new JenaException(ex) ;
 			}
 		}		
 	}

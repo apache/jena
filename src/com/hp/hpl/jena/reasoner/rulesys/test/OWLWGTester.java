@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.8 2003-06-08 17:49:51 der Exp $
+ * $Id: OWLWGTester.java,v 1.9 2003-06-16 11:20:28 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -17,6 +17,8 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+
+import com.hp.hpl.jena.shared.*;
 
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
@@ -31,7 +33,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-08 17:49:51 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-16 11:20:28 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -143,7 +145,7 @@ public class OWLWGTester {
         RDFNode testType = test.getProperty(RDF.type).getObject();
         if (!(testType.equals(NegativeEntailmentTest) ||
                testType.equals(PositiveEntailmentTest) ) ) {
-            throw new RDFException("Can't find test: " + test);
+            throw new JenaException("Can't find test: " + test);
         }
 
         String description = test.getProperty(descriptionP).getObject().toString();

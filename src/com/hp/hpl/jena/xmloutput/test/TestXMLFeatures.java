@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.22 2003-06-13 08:47:41 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.23 2003-06-16 11:20:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.util.TestLogger;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.22 $ $Date: 2003-06-13 08:47:41 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.23 $ $Date: 2003-06-16 11:20:29 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -215,7 +215,6 @@ public class TestXMLFeatures extends TestCase {
 		try {
 			m.write(fwriter, lang);
 			fwriter.close();
-			// throw new RDFException(RDFException.INVALIDPROPERTYURI);
 			fail("Writer did not detect bad property URI");
 		} catch (RDFException rdfe) {
 			// This loop here really shouldn't be necessary.
@@ -1068,5 +1067,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.22 2003-06-13 08:47:41 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.23 2003-06-16 11:20:29 chris-dollin Exp $
  */

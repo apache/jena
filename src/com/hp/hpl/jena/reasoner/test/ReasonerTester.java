@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.11 2003-05-30 16:26:13 der Exp $
+ * $Id: ReasonerTester.java,v 1.12 2003-06-16 11:20:28 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -18,6 +18,8 @@ import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 import com.hp.hpl.jena.vocabulary.RDF;
+
+import com.hp.hpl.jena.shared.*;
 
 import junit.framework.TestCase;
 import org.apache.log4j.Logger;
@@ -44,7 +46,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-05-30 16:26:13 $
+ * @version $Revision: 1.12 $ on $Date: 2003-06-16 11:20:28 $
  */
 public class ReasonerTester {
 
@@ -201,7 +203,7 @@ public class ReasonerTester {
         // Find the specification for the named test
         Resource test = testManifest.getResource(uri);
         if (!test.hasProperty(RDF.type, testClass)) {
-            throw new RDFException("Can't find test: " + uri);
+            throw new JenaException("Can't find test: " + uri);
         }
 
         String description = test.getProperty(descriptionP).getObject().toString();

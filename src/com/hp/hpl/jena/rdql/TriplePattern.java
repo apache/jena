@@ -5,7 +5,7 @@
 
 /** Class used by original, Jena1, external query engine
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.9 2003-05-21 15:33:17 chris-dollin Exp $
+ * @version  $Id: TriplePattern.java,v 1.10 2003-06-16 11:20:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -110,7 +110,7 @@ import com.hp.hpl.jena.shared.*;
 					{
 						if ( rdfEx.getErrorCode() != RDFException.INVALIDPROPERTYURI )
 							throw rdfEx ;
-                        throw new RDFException("Illegal property URI: "+((Resource)tmp).getURI()) ;
+                        throw new JenaInvalidPropertyURIException( ((Resource)tmp).getURI() ) ;
 					}
 				else if (tmp instanceof Value)
 					// Should not happen
