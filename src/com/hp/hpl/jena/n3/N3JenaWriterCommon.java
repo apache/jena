@@ -21,7 +21,7 @@ import java.io.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.20 2004-01-16 16:40:32 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.21 2004-03-10 15:12:29 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -554,16 +554,27 @@ public class N3JenaWriterCommon implements RDFWriter
         {
             // Special form we know how to handle?
             // Assume valid text
-            if ( datatype.equals(XSD.integer.getURI()) ) 
-                return s ;
+            if ( datatype.equals(XSD.integer.getURI()) )
+            {
+                try {
+                    new java.math.BigInteger(s) ;
+                    return s ;
+                } catch (NumberFormatException nfe) {}
+                // No luck.  Continue.
+                // Continuing is always safe.
+            }
                 
             if ( datatype.equals(XSD.xdouble.getURI()) )
             {
-                // Must contain a dot or an e else it looks like an XSD:integer!
-                if ( s.indexOf('.') >= 0 )
-                    return s ;
-                if ( s.indexOf('e') >= 0 )
-                    return s ;
+                // Must have an '.' or 'e'
+                if ( s.indexOf('.') >= 0 || s.indexOf('e') >= 0 )
+                {
+                    try {
+                        Double.parseDouble(s) ;
+                        return s ;
+                    } catch (NumberFormatException nfe) {}
+                    // No luck.  Continue.
+                }
             }
         }
         // Format the text - with escaping.
