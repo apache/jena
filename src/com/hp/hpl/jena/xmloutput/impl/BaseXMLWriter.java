@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.2 2003-04-02 11:07:13 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.3 2003-04-04 15:23:30 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-02 11:07:13 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-04-04 15:23:30 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -401,6 +401,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	final synchronized public void write(Model model, Writer out, String base)
 		throws RDFException {
 		//ns = new HashMap();
+        model = model.withHiddenStatements();
 		this.namespacesNeeded = new HashSet();
 		ns = null;
 		count = 0;

@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: testWriterAndReader.java,v 1.10 2003-04-02 08:58:16 jeremy_carroll Exp $
+  $Id: testWriterAndReader.java,v 1.11 2003-04-04 15:22:45 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -32,14 +32,14 @@ import junit.framework.*;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-04-02 08:58:16 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-04-04 15:22:45 $'
  */
 public class testWriterAndReader extends TestCase implements RDFErrorHandler {
     static private boolean showProgress = false;
     static private boolean keepFiles = false;
     static private boolean errorDetail = false;
-    static private int firstTest = 5;
-    static private int lastTest = 9;
+    static private int firstTest = 8;
+    static private int lastTest = 8;
     static private int repetitionsJ = 6;
     String lang;
     String test;
@@ -363,10 +363,19 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
                 in.close();
                 Model s1 = m1;
                 Model s2 = m2;
+                /*
+                System.err.println("m1:");
+                m1.write(System.err,"N-TRIPLE");
+                System.err.println("m2:");
+
+                m2.write(System.err,"N-TRIPLE");
+                System.err.println("=");
+                */
                 assertTrue(
                     "Comparison of file written out, and file read in. See "
                     + tmpFile1.getAbsolutePath(),
                     s1.isIsomorphicWith(s2));
+                System.err.println("OK");
 
                 if (!keepFiles) {
                     tmpFile1.delete();
@@ -511,5 +520,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.10 2003-04-02 08:58:16 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.11 2003-04-04 15:22:45 jeremy_carroll Exp $
  */
