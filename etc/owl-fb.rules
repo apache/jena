@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.34 2003-10-03 07:32:00 der Exp $
+# $Id: owl-fb.rules,v 1.35 2003-10-03 13:15:33 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -631,12 +631,12 @@
 [range2: (?P rdfs:range xsd:byte) <- (?P rdfs:range xsd:nonNegativeInteger),
 					(?P rdfs:range xsd:nonPositiveInteger)]
 
-[range3: (?P rdfs:range owl:Nothing) <- (?P rdfs:range ?C), (?P rdfs:range ?D),
-								(?C owl:disjointWith ?D) ]
+[range3: (?P rdfs:range owl:Nothing) <- (?P rdfs:range ?C), (?P rdfs:range ?D), 
+							 (?C owl:disjointWith ?D) ]
 
 [xsd3: (?C owl:disjointWith ?D) <- (?C rb:xsdBase ?BC), (?D rb:xsdBase ?BD), notEqual(?BC, ?BD) ]
 
-[range4: (?P rdfs:subPropertyOf ?Q) <- (?P rdfs:range owl:Nothing)]
+[range4: (?P rdfs:subPropertyOf ?Q) <- (?P rdfs:range owl:Nothing) (?Q rdf:type rdf:Property)]
 										
 #------------------------------------------------------------------
 # Validation rules. These are dormant by default but are triggered
