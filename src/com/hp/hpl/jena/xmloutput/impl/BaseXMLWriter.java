@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.4 2003-04-06 10:45:59 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.5 2003-04-09 11:05:51 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -58,7 +58,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-06 10:45:59 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-09 11:05:51 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -423,9 +423,13 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 				if (!(javaEnc.equals("UTF8") || javaEnc.equals("UTF-16"))) {
 					//		System.out.println(javaEnc);
 					String xEnc = EncodingMap.getJava2IANAMapping(javaEnc);
-					if (xEnc == null)
-						xEnc = javaEnc; // hmm.. incorrect
-					decl = "<?xml version="+q("1.0")+" encoding=" + q(xEnc) + "?>";
+					if (xEnc == null) {
+                        logger.warn("IANA name for Java encoding: "+javaEnc+" is not known. \n"+
+                        "   Not including any encoding declaration in the RDF/XML output.\n" +
+                        "   It is better to use a FileOutputStream, in place of a FileWriter.");
+                    } else {
+					   decl = "<?xml version="+q("1.0")+" encoding=" + q(xEnc) + "?>";
+                    }
 				}
 			}
 			if (decl == null && showXmlDeclaration != null)
