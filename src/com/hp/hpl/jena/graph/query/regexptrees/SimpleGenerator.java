@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
     [See end of file]
-    $Id: SimpleGenerator.java,v 1.2 2004-08-17 08:52:46 chris-dollin Exp $
+    $Id: SimpleGenerator.java,v 1.3 2004-08-17 14:56:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees;
@@ -21,7 +21,8 @@ public class SimpleGenerator implements RegexpTreeGenerator
     public RegexpTree getZeroOrMore( RegexpTree d ) { return new ZeroOrMore( d ); }
     public RegexpTree getOneOrMore( RegexpTree d ) { return new OneOrMore( d ); }
     public RegexpTree getOptional( RegexpTree d ) { return new Optional( d ); }
-    public Object getSequence( List operands ) { return Sequence.create( operands ); }
+    public RegexpTree getSequence( List operands ) { return Sequence.create( operands ); }
+    public RegexpTree getAlternatives( List operands ) { return Alternatives.create( operands ); }
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.4 2004-08-17 08:53:37 chris-dollin Exp $
+  $Id: TestPerlyParser.java,v 1.5 2004-08-17 14:57:57 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -92,16 +92,6 @@ public class TestPerlyParser extends GraphTestBase
         catch (RegexpTree.UnsupportedException e) { pass(); }
         }
     
-    public void testParentheses()
-        {
-        
-        }
-    
-    public void testNonAtoms()
-        {
-        
-        }
-    
     public void testNoQuantifier()
         {
         RegexpTree d = RegexpTree.ANY;
@@ -143,10 +133,21 @@ public class TestPerlyParser extends GraphTestBase
         assertEquals( seq3( new StartOfLine(), new AnySingle(), new EndOfLine() ), p.parseSeq() );
         }
     
+    public void testAlt()
+        {
+        PerlPatternParser L = new PerlPatternParser( "abc" );
+        PerlPatternParser R = new PerlPatternParser( "def" );
+        PerlPatternParser p = new PerlPatternParser( "abc|def" );
+        assertEquals( alt( L.parseSeq(), R.parseSeq() ), p.parseAlts() );
+        }
+    
     protected RegexpTree seq3( RegexpTree a, RegexpTree b, RegexpTree c )
         {
         return Sequence.create( Arrays.asList( new RegexpTree[] {a, b, c} ) );
         }
+    
+    protected RegexpTree alt( RegexpTree L, RegexpTree R )
+        { return Alternatives.create( Arrays.asList( new RegexpTree[] {L, R} ) ); }
     
     public void testOldSeq()
         {
@@ -170,6 +171,8 @@ public class TestPerlyParser extends GraphTestBase
         assertEquals( wanted, p.parseAtom() );
         assertEquals( 1, p.getPointer() );
         }
+    
+    
     
     }
 
