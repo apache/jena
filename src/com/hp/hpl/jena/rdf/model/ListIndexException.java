@@ -6,11 +6,11 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
- * Filename           $RCSfile: InvalidListException.java,v $
- * Revision           $Revision: 1.1 $
+ * Filename           $RCSfile: ListIndexException.java,v $
+ * Revision           $Revision: 1.3 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:12 $
+ * Last modified on   $Date: 2003-06-18 22:30:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -19,27 +19,27 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.shared;
+package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.ontology.OntologyException;
 
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.shared.JenaException;
 
 
 /**
  * <p>
- * A exception that is thrown when an operation is attempted on a list that is
- * not well-formed, and is being processed in strict mode.
+ * A exception that is thrown when an operation attempts to access an indexed
+ * list element beyond the length of the list.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release ($Id: InvalidListException.java,v 1.1 2003-06-16 13:40:12 ian_dickinson Exp $)
+ * @version Release ($Id: ListIndexException.java,v 1.3 2003-06-18 22:30:12 ian_dickinson Exp $)
  */
-public class InvalidListException
-    extends OntologyException
+public class ListIndexException
+    extends JenaException
 {
     // Constants
     //////////////////////////////////
@@ -57,18 +57,18 @@ public class InvalidListException
     //////////////////////////////////
 
     /**
-     * Construct an invalid list exception with a default message.
+     * Construct a list index exception with a default message.
      */
-    public InvalidListException() {
-        super( "Tried to operate on a list that is not well-formed" );
+    public ListIndexException() {
+        super( "Tried to index beyond the length of a list" );
     }
 
     /**
-     * Construct an invalid list exception with a given message.
+     * Construct a list index exception with a given message.
      * 
      * @param msg The exception message.
      */
-    public InvalidListException( String msg ) {
+    public ListIndexException( String msg ) {
         super( msg );
     }
 

@@ -6,11 +6,11 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
- * Filename           $RCSfile: ListIndexException.java,v $
- * Revision           $Revision: 1.1 $
+ * Filename           $RCSfile: EmptyListException.java,v $
+ * Revision           $Revision: 1.3 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:12 $
+ * Last modified on   $Date: 2003-06-18 22:30:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -19,27 +19,28 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.shared;
+package com.hp.hpl.jena.rdf.model;
 
-import com.hp.hpl.jena.ontology.OntologyException;
+
 
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.shared.JenaException;
 
 
 /**
  * <p>
- * A exception that is thrown when an operation attempts to access an indexed
- * list element beyond the length of the list.
+ * A exception that is thrown when an operation is attempted on an empty (nil)
+ * list that actually requires a list of length one or more.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release ($Id: ListIndexException.java,v 1.1 2003-06-16 13:40:12 ian_dickinson Exp $)
+ * @version Release ($Id: EmptyListException.java,v 1.3 2003-06-18 22:30:12 ian_dickinson Exp $)
  */
-public class ListIndexException
-    extends OntologyException
+public class EmptyListException
+    extends JenaException
 {
     // Constants
     //////////////////////////////////
@@ -57,18 +58,18 @@ public class ListIndexException
     //////////////////////////////////
 
     /**
-     * Construct a list index exception with a default message.
+     * Construct an empty list exception with a default message.
      */
-    public ListIndexException() {
-        super( "Tried to index beyond the length of a list" );
+    public EmptyListException() {
+        super( "Tried to perform an operation that requires a non-empty list" );
     }
 
     /**
-     * Construct a list index exception with a given message.
+     * Construct an empty list exception with a given message.
      * 
      * @param msg The exception message.
      */
-    public ListIndexException( String msg ) {
+    public EmptyListException( String msg ) {
         super( msg );
     }
 
