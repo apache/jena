@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.18 2003-08-08 14:55:38 chris-dollin Exp $
+  $Id: Query.java,v 1.19 2003-08-08 15:12:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -257,10 +257,22 @@ public class Query
                 nodes[--i] = nodeTriples.head;
                 nodeTriples = nodeTriples.tail;
                 }
+            sortTriples( nodes );
             Stage next = g.queryHandler().patternStage( map, constraintGraph, nodes );
             stages.add( next );
             }
         }
+        
+    public void setTripleSorter( TripleSorter ts )
+        { sortMethod = ts == null ? dontSort : ts; }
+        
+    private static final TripleSorter dontSort = new TripleSorter()
+        { public void sort( Triple [] ts ) {} };
+        
+    private TripleSorter sortMethod = dontSort;
+    
+    private void sortTriples( Triple [] ts )
+        { sortMethod.sort( ts ); }
         
     private int variableCount = -1;
     

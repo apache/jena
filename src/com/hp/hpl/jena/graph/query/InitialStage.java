@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: InitialStage.java,v 1.7 2003-08-08 14:29:13 chris-dollin Exp $
+  $Id: InitialStage.java,v 1.8 2003-08-08 15:12:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
-
-import com.hp.hpl.jena.graph.*;
 
 /**
     The initial stage of a query, responsible for dropping the no-variables-bound seed
