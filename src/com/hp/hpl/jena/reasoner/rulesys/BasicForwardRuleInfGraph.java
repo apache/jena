@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.3 2003-04-28 20:17:55 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.4 2003-04-29 16:53:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -16,9 +16,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.PrintUtil;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
+import com.hp.hpl.jena.util.iterator.*;
 import org.apache.log4j.Logger;
 
 /**
@@ -31,7 +29,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-28 20:17:55 $
+ * @version $Revision: 1.4 $ on $Date: 2003-04-29 16:53:53 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph {
 
@@ -86,9 +84,6 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * 
      * @param reasoner the parent reasoner 
      * @param rules the list of rules to use this time
-     * @param preload a precomputed set of deductions that should be added to the
-     * deductions context but not directly used to fire new rules (used as part of the
-     * bindSchema handling in the parent Reasoner).
      */
     public BasicForwardRuleInfGraph(BasicForwardRuleReasoner reasoner, List rules) {
         super(null, reasoner);
@@ -188,9 +183,11 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
             }
         }
     }
-    
+   
     /** 
      * Returns an iterator over Triples.
+     * This implementation assumes that the underlying findWithContinuation 
+     * will have also consulted the raw data.
      */
     public ExtendedIterator find(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), null);
@@ -198,6 +195,8 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
 
     /**
      * Basic pattern lookup interface.
+     * This implementation assumes that the underlying findWithContinuation 
+     * will have also consulted the raw data.
      * @param pattern a TriplePattern to be matched against the data
      * @return a ExtendedIterator over all Triples in the data set
      *  that match the pattern
@@ -206,27 +205,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
         return findWithContinuation(pattern, null);
     }
     
-    /**
-     * Test if the graph contains the given triple.
-     * Overridden in order to implement semantic instead of syntactic
-     * equivalance.
-     */
-    public boolean contains(Triple t) {
-        return find(t.getSubject(), t.getPredicate(), t.getObject()).hasNext();
-    }
-    
-    /**
-     * Test if the graph contains the given triple.
-     * Overridden in order to implement semantic instead of syntactic
-     * equivalance.
-     */
-    public boolean contains(Node s, Node p, Node o) {
-        ClosableIterator i = find(s, p, o);
-        boolean contained =  i.hasNext();
-        i.close();
-        return contained;
-    }
-        
+
     /**
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
@@ -246,7 +225,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * SIZE.
      */
     public int capabilities() {
-        return ADD | SIZE;
+        return ADD | SIZE | DELETE;
     }
 
     /**
@@ -258,7 +237,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
     
     /** 
      * Removes the triple t (if possible) from the set belonging to this graph. 
-     * */   
+     */   
     public void delete(Triple t) {
         if (fdata != null) {
             Graph data = fdata.getGraph();

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.4 2003-04-22 14:20:08 der Exp $
+ * $Id: TransitiveInfGraph.java,v 1.5 2003-04-29 16:54:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -29,7 +29,7 @@ import java.util.HashSet;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-22 14:20:08 $
+ * @version $Revision: 1.5 $ on $Date: 2003-04-29 16:54:12 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -117,4 +117,22 @@ public class TransitiveInfGraph extends BaseInfGraph {
         }
         return new UniqueExtendedIterator(resultF.find(pattern));
     }
+   
+    /** 
+     * Returns an iterator over Triples.
+     */
+    public ExtendedIterator find(Node subject, Node property, Node object) {
+        return findWithContinuation(new TriplePattern(subject, property, object), fdata);
+    }
+
+    /**
+     * Basic pattern lookup interface.
+     * @param pattern a TriplePattern to be matched against the data
+     * @return a ExtendedIterator over all Triples in the data set
+     *  that match the pattern
+     */
+    public ExtendedIterator find(TriplePattern pattern) {
+        return findWithContinuation(pattern, fdata);
+    }
+
 }
