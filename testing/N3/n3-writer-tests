@@ -1,4 +1,6 @@
 # Files for testing the N3 writer
+# These files are read, written and read again
+# then checked to see if the model is the same (isomorphic).
 
 <n3-writer-test-01.n3>      <> .
 <n3-writer-test-02.n3>      <> .
@@ -28,3 +30,4 @@
 <n3-writer-test-24.n3>      <> .
 <n3-writer-test-25.n3>      <> .
 <n3-writer-test-26.n3>      <> .
+<n3-writer-test-27.n3>      <> .

@@ -7,18 +7,18 @@ package com.hp.hpl.jena.n3;
 
 import com.hp.hpl.jena.util.iterator.* ;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.ModelCom ;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.vocabulary.OWL ;
+import com.hp.hpl.jena.vocabulary.XSD ;
 import com.hp.hpl.jena.vocabulary.RDF ;
 
 import java.util.* ;
 import java.io.* ;
 
-/** Common framework for implemening N3 writers.
+/** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.8 2003-07-29 14:37:54 chris-dollin Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.9 2003-08-07 11:22:33 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -537,6 +537,23 @@ public class N3JenaWriterCommon implements RDFWriter
         String lang = literal.getLanguage() ;
 		String s = literal.getLexicalForm() ;
 
+        if ( datatype != null )
+        {
+            // Spoecial form we know how to handle?
+            // Assume valid text
+            if ( datatype.equals(XSD.integer.getURI()) ) 
+                return s ;
+                
+            if ( datatype.equals(XSD.xdouble.getURI()) )
+            {
+                // Must contain a dot or an e else it looks like an XSD:integer!
+                if ( s.indexOf('.') >= 0 )
+                    return s ;
+                if ( s.indexOf('e') >= 0 )
+                    return s ;
+            }
+        }
+        // Format the text - with escaping.
 		int j = 0 ;
 		int i = -1 ;
 
@@ -558,11 +575,14 @@ public class N3JenaWriterCommon implements RDFWriter
 			j = i + 1;
 		}
 
+        // Format the language tag 
         if ( lang != null && lang.length()>0)
         {
             sbuff.append("@") ;
             sbuff.append(lang) ;
         }
+        
+        // Format the datatype
         if ( datatype != null )
         {
             sbuff.append("^^") ;

@@ -1,0 +1,24 @@
+# Numbers
+
+@prefix : <#> .
+@prefix e9: <http://example.org/9/ns#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:x :f1 -1.0 .
+:x :f2 +1.0 .
+:x :f3 1.0 .
+:x :f4 0.1 .
+
+
+:x :e1 1.0e5 .
+:x :e2 1e6 .
+:x :e3 1e+6 .
+:x :e3a 1e+6.
+:x :e4 1e-6 .
+
+:x :i1 1 .
+:x :i1a 1.
+:x :i2 +1 .
+:x :i3 -1 .
+

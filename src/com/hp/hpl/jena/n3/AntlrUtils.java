@@ -8,10 +8,10 @@ import java.io.* ;
 import antlr.* ;
 import antlr.collections.*;
 
-/** Miscellaneous things in supprt of Antlr-derived parsers
+/** Miscellaneous things in support of Antlr-derived parsers
  * 
  * @author		Andy Seaborne
- * @version 	$Id: AntlrUtils.java,v 1.3 2003-03-11 18:04:08 andy_seaborne Exp $
+ * @version 	$Id: AntlrUtils.java,v 1.4 2003-08-07 11:22:33 andy_seaborne Exp $
  */
 
 public class AntlrUtils

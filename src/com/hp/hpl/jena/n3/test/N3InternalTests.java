@@ -11,10 +11,16 @@ import java.io.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3InternalTests.java,v 1.5 2003-03-28 18:10:25 andy_seaborne Exp $
+ * @version 	$Id: N3InternalTests.java,v 1.6 2003-08-07 11:22:33 andy_seaborne Exp $
  */
 public class N3InternalTests extends TestSuite
 {
+    /* JUnit swingUI needed this */
+    static public TestSuite suite() {
+        return new N3InternalTests() ;
+    }
+    
+
 	static public final String QUOTE3 = "\"\"\"" ;
 	static public boolean VERBOSE = false ;
 	PrintWriter pw = null ;
@@ -26,16 +32,25 @@ public class N3InternalTests extends TestSuite
 		if ( VERBOSE )
 			pw = new PrintWriter(System.out) ;
 		
-		// Make sure basic things at least parse.
+        // ---- Debug testing
+        //addTest(new Test("<thing> b:px.b:py [] . ")) ;
+        // if ( true ) return ;
+        // ---- Debug testing
+
+		// Make sure basic things, at least, parse.
 		
 		// URIs, qnames, statements, prefixes
-		addTest(new Test("a:subj a:prop a:d .")) ;
-		addTest(new Test("a: _: 1:.")) ;
-		addTest(new Test("_:a :1 :_1 .")) ;	
-		addTest(new Test("rdf: rdf:type :_.")) ;	
-		addTest(new Test("@prefix start: <somewhere>.")) ;
-		addTest(new Test("<http://here/subj> <http://here/prep> <http://here/obj>.")) ;		
-		
+        
+        // End of statement (and whitespace)
+        addTest(new Test("a:subj a:prop a:d .")) ;
+        addTest(new Test("a:subj a:prop a:d . ")) ;
+        addTest(new Test("a:subj a:prop a:d.")) ;
+        addTest(new Test("a:subj a:prop a:d. ")) ;
+
+        addTest(new Test("rdf: rdf:type :_.")) ;    
+        addTest(new Test("@prefix start: <somewhere>.")) ;
+        addTest(new Test("<http://here/subj> <http://here/prep> <http://here/obj>.")) ;     
+        
 		// Whitespace, comments
 		addTest(new Test("a:subj\ta:prop\ta:d.\t")) ;
 		addTest(new Test("       a:subj\ta:prop\ta:d.     ")) ;
@@ -45,10 +60,7 @@ public class N3InternalTests extends TestSuite
 		addTest(new Test("a:subj a:prop a:d.  # Comment")) ;
 		addTest(new Test("a:subj a:prop a:d.# Comment")) ;
 
-		// Literals
-		//addTest(new Test("a:subj a:prop 123.")) ;
-		//addTest(new Test("a:subj a:prop -123.")) ;
-		//addTest(new Test("a:subj a:prop +123.")) ;
+		// Literal: strings
 		addTest(new Test("a:subj a:prop 'string1'.")) ;
 		addTest(new Test("a:subj a:prop \"string2\".")) ;
 		addTest(new Test("a:subj a:prop '''string3'''.")) ;
@@ -57,6 +69,23 @@ public class N3InternalTests extends TestSuite
 		// Literals: datatypes
 		addTest(new Test("a:subj a:prop 'string1'^^x:dt.")) ;
 		addTest(new Test("a:subj a:prop 'string1'^^<uriref>.")) ;
+        
+        // Literals: numbers.
+        addTest(new Test("a: :p 2.")) ;
+        addTest(new Test("a: :p +2.")) ;
+        addTest(new Test("a: :p -2 .")) ;
+        addTest(new Test("a: :p 2e6.")) ;
+        addTest(new Test("a: :p 2e-6.")) ;
+        addTest(new Test("a: :p -2e-6.")) ;
+        addTest(new Test("a: :p 2.0e-6.")) ;
+        addTest(new Test("a: :p 2.0.")) ;
+        
+        // Test numbers in qnames
+        addTest(new Test("a: _: 2:.")) ;
+        addTest(new Test("2.9 9:p 2.0.")) ;
+        addTest(new Test("_:a :2 :_2 .")) ;
+        //addTest(new Test("2. :p 2")) ;
+        addTest(new Test("2.0 :p 2.0.")) ;
 
 		// The "unusual" cases
 		addTest(new Test("a:subj 'prop'^^<uriref> 'string'.")) ;
@@ -118,9 +147,13 @@ public class N3InternalTests extends TestSuite
 		addTest(new Test("[] a:prop a:val.")) ;
 		addTest(new Test("[] a:prop [].")) ;
 		
-		//formulae
-		addTest(new Test("{ this a \"string2\" . } => { this a 'string1' .} .")) ;
-		
+		// formulae
+        // The final dot (statement terminator of outer statement) is necessary
+        // Inside formulae, it is not.
+        addTest(new Test("{:x :y :z} => {:x :y :z}.")) ;
+        addTest(new Test("{:x :y :z} => {:x :y :z . }.")) ;
+        addTest(new Test("{:x :y :z. } => {:x :y :z}.")) ;
+        
 		// Variables
 		addTest(new Test("?who ?knows ?what .")) ;
 		addTest(new Test("{?who ?knows ?what} => {'somesort' 'of' 'logic'}." )) ;
@@ -128,24 +161,38 @@ public class N3InternalTests extends TestSuite
 		// Formulae do not need the trailing '.'
 		addTest(new Test("{ this a \"string2\". } => { this a 'string1'} .")) ;
 		
-		// And can have directives in.
+		// And they can have directives in.
 		addTest(new Test("{ @prefix : <a> } => { this a 'string1'} .")) ;
 		addTest(new Test("{ @prefix : <a> . a:x <b> 'c'} => { this a 'string1'} .")) ;
 		
-		// DAML lists => RDF collections
-        // Remove/change
+		// RDF collections
 		addTest(new Test("() .")) ;
 		addTest(new Test("<here> <list> ().")) ;
 		addTest(new Test(" ( a:i1 a:i2 a:i3 ) a daml:list.")) ;
 		
-		//Paths
+		// Paths
 		addTest(new Test(":x!:y <prop> [].")) ;
 		addTest(new Test(":x!:y!:z <prop> [].")) ;
 		addTest(new Test(":x^:y <prop> [].")) ;
 		addTest(new Test(":x^:y^:z <prop> [].")) ;
 		addTest(new Test("[] <prop> :x!:y^:z.")) ;
 		addTest(new Test("[] :x^:y!:z [].")) ;
+        
+        // Paths - using . (dot)
+        addTest(new Test(":x.:y <prop> [].")) ;
+        addTest(new Test(":x.:y.:z <prop> [].")) ;
+        addTest(new Test("[] <prop> :a.:c.")) ;
+        addTest(new Test("<thing>.:y  <prop> [].")) ;
+        addTest(new Test("x:x.<thing>.:y  <prop> [].")) ;
+        addTest(new Test("<thing>.:y^:z  <prop> [].")) ;
+        addTest(new Test(":y.<thing>.:z  <prop> [].")) ;
+        addTest(new Test("<thing> :px.:py.:pz [] . ")) ;
+        addTest(new Test("<thing> :px!:py!:pz [] . ")) ;
 		
+        // Paths and formulae
+        addTest(new Test("{ :a.:b.:c . }.")) ;
+        addTest(new Test("{ :a.:b.<c>.}.")) ;
+        
 		// Named things
 		addTest(new Test("_:anon :- [a:p a:v] .")) ;
 		addTest(new Test("<uri> :- [a:p [ a:p a:v] ] .")) ;		
@@ -161,9 +208,9 @@ public class N3InternalTests extends TestSuite
 
         // Language tags
         addTest(new Test("a:subj a:prop 'text'@en .")) ;
-        addTest(new Test("a:subj a:prop 'text'@en^^a:lang .")) ;
         // Illegal in N-Triples
         addTest(new Test("a:subj a:prop 'text'^^a:lang@en .")) ;
+        addTest(new Test("a:subj a:prop 'text'@en^^a:lang .")) ;
         
         // XML Literal
         addTest(new Test("a:subj a:prop '<tag>text</tag>'@fr^^rdf:XMLLiteral .")) ;
@@ -180,8 +227,10 @@ public class N3InternalTests extends TestSuite
 		String testString ;
 		Test(String s)
 		{
-            // JUnit in Ecplise has problems with test names with commas in.
-            // No idea why. 
+            // JUnit in Eclipse (2.1) had problems with test names with commas in.
+            // No idea why. They fixed it after bug reported
+            // Effect is JUnit does not run.
+            
 			super("N3 Internal test: "+(s!=null?s.replace(',','_'):"<skipped test>")) ;
             //super("N3 Internal test: "+(s!=null?s:"<skipped test>")) ;
 			testString = s ; 

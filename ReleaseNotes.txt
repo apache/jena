@@ -1,76 +1,18 @@
 Release Notes
 =============
 
-Jena2-beta1 (July 2003)
+Jena 2.0 (August 2003)
 
-This is Jena 2.0 beta1 - it begins the process of releasing Jena 2.0. This
-version follows on from preview4 and includes support for PostreSQL and
-Oracle as database-nbacked persistent RDF stores.
+This is Jena 2.0.  This version follows on from preview and beta releases
+and is the first full release of Jena2.
 
 Most functionality from Jena1 (core RDF API, readers and writers for
-RDF/XML, N-Triples and N3,together with RDQL) is stable in Jena2 although
+RDF/XML, N-Triples and N3,together with RDQL) is provided in Jena2 although
 no BerkeleyDB persistence is currently provided.  Jena2 adds new
 functionality with an ontology API, including OWL, a reasoner plug-in
 architecture together with rule-based reasoners for RDFS and OWL.
 
-Database:
 
-PostgreSQL and Oracle are now supported for persistent models, although
-there are known bugs with the treatment of blobs (large objects) using Oracle 
-on Linux, so large objects (e.g., huge literals) are not supported with that
-configuration (Oracle/Linux). Note that the database layout has changed 
-from preview 3. Preview 3 and earlier Jena databases cannot be accessed 
-by Jena2-beta. It will be necessary to dump and rebuild them. No further 
-changes to the database layout are anticipated for the final Jena2 release.
-Remaining work includes: BerkeleyDB support, ability to set
-configuration options, namespace compression for URIs, query fastpath,
-tuning (e.g., bulk update, caching) and property tables (time permitting).
+Changes from Jena2-beta1:
 
-Ontology:
-
-The main package in com.hp.hpl.jena.ontology is mostly complete, except for
-Java classes to directly represent an axiom-centric view of the ontology
-rather than an object-centric view.  The Jena1 DAML API has been migrated
-to the new ontology API structure, and appears as
-com.hp.hpl.jena.ontology.daml. Some migration steps of the old API remain
-to be completed, so the DAML subsystem should used with care. Note that the
-main ontology API will also handle DAML+OIL ontologies; the legacy API is
-included to assist Jena1 DAML users to adapt their code to Jena2. New users
-are recommended to use the main ontology API exclusively.
-
-The default reasoner for all ontology models is currently the RDFS reasoner.
-Please see the documentation in
-	<Jena>/doc/user-manual/ontology
-for an explanation of how to select the reasoner and other options when
-constructing the ontology model.
-
-Reasoners:
-
-The previous default RDFS reasoner (RDFSReasoner1) has been replaced by
-a new implementation (RDFSRuleReasoner) which in turn is based on a generic
-hybrid rules engine which is included with Jena. This implementation is
-faster, more scalable and more configurable than the earlier version.
-
-The release also includes a very preliminary rule set which implements the
-OWL/Lite subset of OWL/full. This implementation is not yet stable or scalable 
-and is not recommended for non-trivial use at this stage.
-
-Some early documentation is in <Jena>/doc/user-manual/inference.
-
-Model API changes:
-
-The Model::add(Model) and Model::remove(Model) methods now add [or remove]
-reified statements to [from] the updated model, as well as the "ordinary"
-statements. In Jena 2.0 an optional boolean argument will allow the user
-to choose whether reified statements are copied in this way.
-
-The new method Model::isEmpty() tests a model to see if it is empty (contains
-no [no-reified] statements). This is equivalent to size()==0 but it (a) more
-convenient and (b) can be implemented more efficiently by some models.
-
-A preliminary model update event handling interface has been provided. Models
-may register (and unregister) ModelChangedListener's which are told about
-calls which update the model - add/remove single statements, statement
-arrays, statement lists, statement iterators, or [other] models.
-
-
+The jar file "antlr.debug.jar" has been replaced by "antlr.jar".

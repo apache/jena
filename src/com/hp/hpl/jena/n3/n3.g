@@ -47,7 +47,7 @@ options
 tokens
 {
 	ANON ; FORMULA ;
-	QNAME ; KEYWORD ; NAME_OP ;
+	QNAME ; SEP ; KEYWORD ; NAME_OP ;
 	KW_THIS ; KW_OF ; KW_HAS ; KW_A ; KW_IS ;
 	// Tokens for lists : next stage chooses the namespace for lists
 	TK_LIST ; TK_LIST_FIRST ; TK_LIST_REST ; TK_LIST_NIL ;
@@ -325,9 +325,12 @@ list[AST label]
 	// lang and the datatype to be reversed.
 	// Actually, the grammar allow two lang tags or twp datatype
 	// specifications.
+	// N3 adds numbers (XSD integers, XSD floats)
 
-literal:
-	s:STRING literalModifier { #literal.setType(LITERAL) ; } ;
+literal
+	:	n:NUMBER
+	| 	s:STRING literalModifier { #literal.setType(LITERAL) ; }
+	;
 	
 literalModifier:
 	literalModifier1 literalModifier1 ;
@@ -385,11 +388,13 @@ options {
 	charVocabulary= '\u0000'..'\uFFFE' ;
 }
 
+
+// One of QNAME, KEYWORD, NAME_OP, or a NUMBER
 // Keywords are a little strange: (the letters for) a keyword
 // could be part of a qname, either NS prefix or the local name.
+// NSNAMEs can be digits.
 
-
-QNAME_OR_KEYWORD_OR_NAME_OP
+THING
 	// Order of syntactic predicates matters here
 
 	// A qname (including the prefix used in @prefix)
@@ -399,9 +404,9 @@ QNAME_OR_KEYWORD_OR_NAME_OP
 	|	(COLON LNAME)=>			COLON LNAME			{ $setType(QNAME) ; }
 	|	(NSNAME COLON )=>	    NSNAME COLON		{ $setType(QNAME) ; } 
 	|	(COLON)=>			    COLON      			{ $setType(QNAME) ; } 
-
 		// Named anon node
 	|	(COLON '-') =>	":-"						{ $setType(NAME_OP) ; }
+	|	(NUMBER) => NUMBER							{ $setType(NUMBER) ; }
 
 		// Keywords: uses fact keywords can not be last in file (must be a .)
 	|   ("has"    NON_ANC)=>	"has"				{ $setType(KW_HAS) ; }
@@ -423,7 +428,7 @@ URI_OR_IMPLIES
 // Needs to be protected ... or the antlr compiler loops ...
 protected
 URIREF:
-	'<'! (options{greedy=false;}: ~('\n'|'\r'))* '>'! ;
+	LANGLE! (options{greedy=false;}: ~('\n'|'\r'))* RANGLE! ;
 
 // RDFC2396 + chars for limited IRI compatibility 
 // processing to check URIref syntax and chanracter sets
@@ -455,13 +460,46 @@ AT_WORD
 		{ $setType(AT_LANG) ; }
 	;
 
+// Namespace prefix name: include bNode ids.
+protected
+NSNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
+
+// LNAME does not allow a start of '-' because it confuses with
+// the name operator :-
+// Also, N3 does not allow '.' in the localname part of a qname (although
+// that is XML-legal) because N3 uses . as the end of statement separator
+// or as a path separator or as a number decimal point.
+// See N3JenaWriter, which avoids outputing qnames with a '.' in them.
+
+protected
+LNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
+
+// Use lookahead as the DOT character is also the statement separator/terminator
+// protected so parser uses THING to get these items, having checked that
+// it isn't a QNAME
+protected
+NUMBER:  ('+'|'-')? ('0'..'9')+
+		 ((DOT ('0'..'9')) => DOT ('0'..'9')+)?
+         ('e' ('+'|'-')? ('0'..'9')+)? ;
 
 STRING: ( STRING1 | STRING2 ) ;
 
 
+SEP_OR_PATH	:	(DOT (ALPHA|'_'|COLON|LANGLE)) => DOT
+					// Is immediately next char the start of a property 
+					// qname (in the form "a:p" or ":p") or a URI
+					{ $setType(PATH) ; }
+				// End of file case (and all other cases)
+			|	DOT								{ $setType(SEP) ; }
+			;
+
+
+// protected means the token or rule is not exposed to the parser 
 // Named characters
-SEP			:	'.' ;
-//protected
+protected
+DOT			: '.' ;
+//SEP			:	'.' ;
+
 AT			:	'@'	;
 LPAREN		:	'('	;
 RPAREN		:	')'	;
@@ -469,10 +507,13 @@ LBRACK		:	'['	;
 RBRACK		:	']'	;
 LCURLY		:	'{'	;
 RCURLY		:	'}'	;
+LANGLE		:	'<' ;
+RANGLE		:	'>' ;
 SEMI		:	';'	;
 COMMA		:	','	;
 PATH		:	'!' ;
 RPATH		:	'^' ;
+//USCORE		:	'_' ;
 
 DATATYPE	:	"^^"	;
 
@@ -525,28 +566,22 @@ WS:
 	( ' ' | '\t' | '\f' | NL )
 	{ $setType(Token.SKIP); }
 	;
+	
+protected
+NWS: ~(' ' | '\t' | '\f' | '\r' | '\n' ) ;
+
 
 protected
 ALPHA: ('A'..'Z')|('a'..'z') ;
 
 protected
-ALPHANUMERIC: (ALPHA|'0'..'9') ;
+NUMERIC: ('0'..'9') ;
+
+protected
+ALPHANUMERIC: (ALPHA|NUMERIC) ;
 
 protected
 NON_ANC:	~('A'..'Z'|'a'..'z'|'0'..'9'|':') ;
-
-// Namespace prefix name: include bNode ids.
-protected
-NSNAME: (ALPHANUMERIC|'_'|'-')+ ;
-
-protected
-// Not '-' because it confuses with the name operator :-
-// Also, N3 does not allow '.' in the localname part of a qname (although
-// that is XML-legal) because N3 uses . as the end of statement separator
-// or as a path separator.
-// See N3JenaWriter, which avoids outputing qnames with a '.' in them.
-LNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
-
 
 protected
 STRING1

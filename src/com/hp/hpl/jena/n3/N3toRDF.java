@@ -16,7 +16,7 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.12 2003-06-17 15:21:50 chris-dollin Exp $
+ * @version 	$Id: N3toRDF.java,v 1.13 2003-08-07 11:22:33 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -192,7 +192,7 @@ public class N3toRDF implements N3ParserEventHandler
 			RDFNode sNode = createNode(line, subj);
             // Must be a resource
 			if ( sNode instanceof Literal )
-				error("Line "+line+": N3toRDF: Subject can't be a literal") ;
+				error("Line "+line+": N3toRDF: Subject can't be a literal: " +subj.getText()) ;
 
 			RDFNode oNode = createNode(line, obj);
 			
@@ -208,7 +208,7 @@ public class N3toRDF implements N3ParserEventHandler
 	}
 	
 	private Map bNodeMap = new HashMap() ;
-	
+    
 	private RDFNode createNode(int line, AST thing) 
 	{
 		//String tokenType = N3AntlrParser._tokenNames[thing.getType()] ;
@@ -216,6 +216,15 @@ public class N3toRDF implements N3ParserEventHandler
 		String text = thing.getText() ;
 		switch (thing.getType())
 		{
+            case N3Parser.NUMBER :
+                Resource xsdType = XSD.integer ;
+                if ( text.indexOf('.') >= 0 )
+                    // The choice of XSD:double is for compatibility with N3/cwm.
+                    xsdType = XSD.xdouble ;
+                if ( text.indexOf('e') >= 0 )
+                    xsdType = XSD.xdouble ;
+                return model.createTypedLiteral(text, null, xsdType.getURI());
+                
 			case N3Parser.LITERAL :
 				// Literals have three part: value (string), lang tag, datatype
                 AST a1 = thing.getNextSibling() ;
@@ -230,7 +239,7 @@ public class N3toRDF implements N3ParserEventHandler
                     else
                         lang = a2 ;
                 }
-                // First takes precidence over second.
+                // First takes precedence over second.
                 if ( a1 != null )
                 {
                     if ( a1.getType() == N3Parser.DATATYPE )

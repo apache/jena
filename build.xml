@@ -36,7 +36,8 @@
     <property name="jarfile"         value="${name}.jar"/>
     <property name="srczipfile"      value="${name}-src.zip"/>
 
-    <property name="javacchome"      value="c:/home/afs/jlib/javacc2.0"/>
+    <!-- Oh dear - a fixed path -->
+    <property name="javacchome"      value="c:/home/afs/sys/javacc-2.1"/>
 
     <!-- Sub-system specific -->
     <property name="rdql.root" value="src/com/hp/hpl/jena/rdql"/>
