@@ -3,12 +3,13 @@
 
     <property name="Name"            value="Jena"/>
     <property name="name"            value="jena"/>
-    <property name="version"         value="2-RC0"/>
+    <property name="version"         value="2.0.0-beta1"/>
 
     <property name="dist.name"       value="${Name}-${version}"/>
 
-    <property name="debug"           value="false"/>
-    <property name="deprecation"     value="true"/>
+    <property name="debug"           value="true"/>
+    <property name="debuglevel"      value="source,lines"/>
+    <property name="deprecation"     value="false"/>
     <property name="optimize"        value="true"/>
 
     <property name="orig-src.dir"    value="src"/>
@@ -126,6 +127,7 @@
         <javac srcdir="${src.dir}"
                destdir="${classes.dir}"
                debug="${debug}"
+               debuglevel="${debuglevel}"
                deprecation="${deprecation}"
                optimize="${optimize}">
             <classpath refid="classpath" />
