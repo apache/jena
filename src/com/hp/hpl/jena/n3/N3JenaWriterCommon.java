@@ -18,7 +18,7 @@ import java.io.* ;
 /** Common framework for implemening N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.3 2003-06-10 10:17:52 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.4 2003-06-11 14:34:31 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -75,11 +75,10 @@ public class N3JenaWriterCommon implements RDFWriter
     //  Gap from property object
     int indentObject = propertyWidth ;
     
-    
     // If a subject is shorter than this, the first property may go on same line.
-    int shortSubject = indentProperty;
+    int shortSubject = indentProperty-minGap;
 
-
+    // ----------------------------------------------------
     // Jena RDFWriter interface
 
 	public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
@@ -88,21 +87,6 @@ public class N3JenaWriterCommon implements RDFWriter
 		errorHandler = errHandler;
 		return old;
 	}
-
-	public void setNsPrefix(String prefix, String ns)
-	{
-		if ( prefix.endsWith(":") )
-			prefix = prefix.substring(0,prefix.length()-1) ;
-		if ( prefix.indexOf('.') != -1 )
-        {
-            prefix = prefix.replace('.', '_') ;
-            //throw new JenaException("N3JenaWriter.setNsPrefix: N3 prefixes can't contain a '.':: "+prefix) ;
-        }
-		prefixMap.put(prefix, ns) ;
-	}
-
-    public String getPrefixFor( String uri )
-    { return (String)prefixMap.get(uri); }
 
     public Object setProperty(String propName, Object propValue) throws RDFException
     {
