@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.1 2003-06-09 14:50:11 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.2 2003-06-09 16:52:05 andy_seaborne Exp $
  */
 
 
@@ -406,8 +406,12 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
         out.incIndent(indentObject);
         out.print(propStr);
         
-        if ( propStr.length() < propertyWidth )
-            out.print( pad(propertyWidth-propStr.length()) ) ;
+        if ( propStr.length() < widePropertyLen )
+        {
+            if ( propStr.length() < propertyWidth ) 
+                out.print( pad(propertyWidth-propStr.length()) ) ;
+            out.print(pad(minGap)) ;
+        }
         else
             // Does not fit this line.
             out.println();

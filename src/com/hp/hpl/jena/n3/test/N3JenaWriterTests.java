@@ -22,7 +22,7 @@ import com.hp.hpl.jena.mem.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTests.java,v 1.7 2003-06-09 16:04:32 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterTests.java,v 1.8 2003-06-09 16:52:40 andy_seaborne Exp $
  */
 public class N3JenaWriterTests extends N3ExternalTestsCom
 {
@@ -100,7 +100,8 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
             
 			StringWriter w = new StringWriter() ;
             model_1.write(w, writerName, uriBase) ;
-            model_1.write(System.out, writerName, uriBase) ;
+            // Check we really are writing different things!
+            //model_1.write(System.out, writerName, uriBase) ;
 			w.close() ;
 			
 			StringReader r = new StringReader(w.toString()) ;
