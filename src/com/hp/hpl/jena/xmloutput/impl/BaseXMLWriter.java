@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.17 2003-06-16 09:16:59 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.18 2003-06-19 08:47:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2003-06-16 09:16:59 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2003-06-19 08:47:08 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -389,7 +389,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @param out the OutputStream to receive the serialization
 	 * @param base The URL at which the file will be placed.
 	 * @throws IOException if an io error occurs
-	 * @ if any other exception occurs
 	 */
 	final public void write(Model model, OutputStream out, String base)
 		 {
@@ -416,7 +415,6 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	 * @param model The model to be written.
 	 * @param base the base URI for relative URI calculations.  <code>
 	 * null</code> means use only absolute URI's.
-	 * @ Generic RDF exception.
 	 */
 	final synchronized public void write(Model baseModel, Writer out, String base)
 		 {

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriter.java,v 1.6 2003-06-17 13:39:28 chris-dollin Exp $
+ * $Id: RDFWriter.java,v 1.7 2003-06-19 08:47:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -36,15 +36,10 @@ import java.io.OutputStream;
  * to some RDF serializaion language.  RDF/XML, n-triple and n3 are
  * examples of serialization languages.</p>
  * @author bwm
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public interface RDFWriter {
-/** Namespace prefixes can be set using a system property of the form
- * <code>NSPREFIXPROPBASE + uri</code>.  
- * Such prefixes override the built in
- * ones and those set using 
- * {@link #setNsPrefix(java.lang.String, java.lang.String)}.
- */
+
 	public static final String NSPREFIXPROPBASE
 	  = "com.hp.hpl.jena.nsprefix.";
 	/** Caution: Serialize Model <code>model</code> to Writer <code>out</code>.
@@ -91,8 +86,6 @@ public interface RDFWriter {
  * <dt>N3</dt><dt>N-TRIPLE</dt>
  * <dd>No properties.</dd>
  * <dt>RDF/XML</dt><dt>RDF/XML-ABBREV</dt>
- * <dd>See {@link com.hp.hpl.jena.xmloutput.RDFXMLWriterI#setProperty(String,
- * Object)}
  * </dl>
  * @return the old value for this property, or <code>null</code>
  * if no value was set.

@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.Log;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.2 $ on $Date: 2003-06-18 20:58:48 $
+* @version $Revision: 1.3 $ on $Date: 2003-06-19 08:47:03 $
 */
 
 public class SQLCache {
@@ -503,7 +503,7 @@ public class SQLCache {
 				sql.execute(op);
 			} catch (SQLException e) {
 				// This is debugging legacy, exception is still reported at the end
-				//System.out.println("Exec failure: " + op + ": " + e);
+				// System.out.println("Exec failure: " + op + ": " + e);
 				operror = op;
 				eignore = e;
 			}

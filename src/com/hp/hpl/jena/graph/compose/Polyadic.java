@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-10 08:59:46 $
+ * Last modified on   $Date: 2003-06-19 08:47:08 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.3 2003-04-10 08:59:46 chris-dollin Exp $
+ * @version CVS $Id: Polyadic.java,v 1.4 2003-06-19 08:47:08 chris-dollin Exp $
  */
 public abstract class Polyadic
     extends CompositionBase
@@ -147,7 +147,7 @@ public abstract class Polyadic
      * 
      * @param graph A graph to test
      * @return True if the graph is this graph, or is a sub-graph of this one.
-     * @see com.hp.hpl.jena.graph.Graph#mightContain(Graph)
+     * @see com.hp.hpl.jena.graph.Graph#dependsOn(Graph)
      */
     public boolean dependsOn( Graph graph ) {
         return (graph == this) || m_subGraphs.contains( graph );

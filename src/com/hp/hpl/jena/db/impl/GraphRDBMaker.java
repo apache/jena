@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.6 2003-06-19 00:11:14 wkw Exp $
+  $Id: GraphRDBMaker.java,v 1.7 2003-06-19 08:47:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -52,15 +52,11 @@ public class GraphRDBMaker extends BaseGraphMaker
         throw new JenaException( "unsupported reification style" );
         }
         
-    /**
-     	@see com.hp.hpl.jena.graph.GraphMaker#getGraph()
-     */
     public Graph getGraph()
         { return createGraph( "anon_" + counter++ + "", false ); }
     
     /**
      	Create an RDB graph and remember its name.
-     	@see com.hp.hpl.jena.graph.GraphMaker#createGraph(java.lang.String)
      */
     public Graph createGraph( String name, boolean strict )
         {
@@ -89,8 +85,7 @@ public class GraphRDBMaker extends BaseGraphMaker
      	Remove a graph from the database - at present, this has to be done by
         opening it first.
         
-     	@see com.hp.hpl.jena.graph.GraphMaker#removeGraph(java.lang.String)
-     */
+    */
     public void removeGraph( String name )
         {
         GraphRDB toDelete = (GraphRDB) openGraph( name, true );

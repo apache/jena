@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ReifyingCaptureGraph.java,v 1.2 2003-05-30 13:50:12 chris-dollin Exp $
+  $Id: ReifyingCaptureGraph.java,v 1.3 2003-06-19 08:47:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.graph.query.*;
 
 /**
     A Graph that is layered over another graph and defers all its
@@ -31,6 +32,9 @@ public class ReifyingCaptureGraph extends GraphBase
         
     public ExtendedIterator find( TripleMatch m ) 
         { return under.find( m ); }
+        
+    public QueryHandler queryHandler()
+        { return under.queryHandler(); }
         
     public boolean contains( Node s, Node p, Node o )
         { return under.contains( s, p, o ); }
