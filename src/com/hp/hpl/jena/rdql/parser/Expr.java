@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-import java.io.PrintWriter ;
 import com.hp.hpl.jena.rdql.* ;
 
 public interface Expr extends Printable

@@ -4,8 +4,7 @@
  *  All rights reserved.
  */
 
-package com.hp.hpl.jena.rdql.parser;
-import java.util.* ;
+package com.hp.hpl.jena.rdql.parser ;
 
 public class RDQLParser/*@bgen(jjtree)*/implements RDQLParserTreeConstants, RDQLParserConstants {/*@bgen(jjtree)*/
   protected JJTRDQLParserState jjtree = new JJTRDQLParserState();public SimpleNode top()

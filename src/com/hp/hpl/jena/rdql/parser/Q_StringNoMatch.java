@@ -8,7 +8,7 @@ package com.hp.hpl.jena.rdql.parser;
 import com.hp.hpl.jena.rdql.* ;
 import java.io.PrintWriter;
 
-import org.apache.oro.text.* ;
+//import org.apache.oro.text.* ;
 import org.apache.oro.text.regex.* ;
 //import org.apache.oro.text.perl.Perl5Util ;
 //import org.apache.oro.text.perl.MalformedPerl5PatternException ;

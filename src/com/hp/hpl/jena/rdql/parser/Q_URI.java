@@ -7,8 +7,6 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-import com.hp.hpl.jena.rdql.* ;
-
 class Q_URI extends Literal {
 
     // The form actually coming from the parser.

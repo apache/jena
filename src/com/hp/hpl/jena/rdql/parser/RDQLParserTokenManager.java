@@ -4,7 +4,7 @@
  *  All rights reserved.
  */
 
-package com.hp.hpl.jena.rdql.parser;
+package com.hp.hpl.jena.rdql.parser ;
 import java.util.* ;
 
 public class RDQLParserTokenManager implements RDQLParserConstants

@@ -25,7 +25,7 @@ options
 //  NODE_DEFAULT_VOID    = false ;
 //  BUILD_NODE_FILES      = false ;
   NODE_PREFIX           = "Q_" ;
-  NODE_PACKAGE          = "com.hp.hpl.jena.rdf.query.parser" ;
+  NODE_PACKAGE          = "com.hp.hpl.jena.rdql.parser" ;
   NODE_USES_PARSER      = false ;
 }
 
@@ -35,8 +35,7 @@ PARSER_BEGIN(RDQLParser)
  *  All rights reserved.
  */
 
-package com.hp.hpl.jena.rdf.query.parser ; 
-import java.util.* ;
+package com.hp.hpl.jena.rdql.parser ; 
 
 public class RDQLParser
 {
@@ -549,7 +548,8 @@ void ArgList() :
 
 
 /******************************************************************/
-// Literals
+// Literals (as in query literls - any value in the query
+// Not "RDF literals".
 
 void Literal() #void :
 {}
@@ -574,6 +574,8 @@ void NumericLiteral() :
 |
   t = <FLOATING_POINT_LITERAL> { jjtThis.set(false, t.image) ; }
 }
+
+// DATATYPE
 
 void TextLiteral() :
 {

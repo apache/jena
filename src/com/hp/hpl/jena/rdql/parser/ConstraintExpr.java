@@ -6,7 +6,7 @@
 package com.hp.hpl.jena.rdql.parser;
 
 import com.hp.hpl.jena.rdql.*;
-import com.hp.hpl.jena.util.* ;
+//import com.hp.hpl.jena.util.* ;
 
 public class ConstraintExpr implements Constraint
 {

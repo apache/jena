@@ -18,14 +18,13 @@ import junit.framework.TestSuite ;
 import com.hp.hpl.jena.util.* ;
 import com.hp.hpl.jena.util.tuple.* ;
 import com.hp.hpl.jena.rdql.* ;
-import com.hp.hpl.jena.rdql.parser.* ;
 
 /** Test scripts for RDQL - loads, executes and checks (with JUnit) a collection of 
  *  queries.  New tests added as new featues appera and bugs are reported by
  *  adding new script files.  This class need not change.
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.1.1.1 2002-12-19 19:20:08 bwm Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.2 2003-01-30 13:45:25 andy_seaborne Exp $
  */
 
 
