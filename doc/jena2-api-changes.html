@@ -28,13 +28,17 @@ Models now have associated prefix-namespace mappings. The readers notice any
 mappings in their input streams and add them to the model; the writers use
 those namespace prefixes (if appropriate) in their output.
 
+<p>
 The user may read and write the prefix mappings, either one at a time or from
 other <i>PrefixMapping</i>s and <i>Map</i>s. Operations are provided that
 convert a URI to a QName (if possible) using the prefixes, and back the other
 way.
 
-<i>Model</i> extends the interface <i>PrefixMapping</i> for the namespace
+<p><i>Model</i> extends the interface <i>PrefixMapping</i> for the namespace
 methods; see the Javadoc for more details.
+
+<p>There is a "standard" set of prefix mappings (covering, in particular,
+rdf:, rdfs:, owl:, and daml:) in <i>PrefixMapping.Standard</i>.
 
 <h1>bulk update</h1>
 
@@ -164,6 +168,19 @@ type or use the .next<i>Type</i>() (where <i>Type</i> is <i>Resource</i>,
 <i>Literal</i>, <i>Ns</i>, <i>RDFNode</i> or <i>Statement</i> depending on the
 iterator) to avoid casting.
 
+<h1>event handling</h1>
+
+It is now possible to attach listeners to a Model. Each listener must implement
+<i>ModelChangedListener</i> and is informed of all statement-oriented updates
+to the model, <i>ie</i> add/remove of <i>Statement</i>, <i>Statement[]</i>,
+<i>List</i> (of <i>Statement</i>), <i>StmtIterator</i>, or <i>Model</i>.
+
+<p>Convenience classes implementing <i>ModelChangedListener</i> are in 
+<b>.model</b>'s sibling package <b>.listeners</b>, including listeners
+that simply record that a change has occurred and listeners that convert
+all updates into single-statement adds and removes.
+
+ 
 <h1>I/O</h1>
 
 See <a href=IO/iohowto.html#rush">the IO mini HowTo</a>.
