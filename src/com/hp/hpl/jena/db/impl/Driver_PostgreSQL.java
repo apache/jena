@@ -7,19 +7,19 @@
 
 package com.hp.hpl.jena.db.impl;
 
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.db.IDBConnection;
+import com.hp.hpl.jena.db.RDFRDBException;
 
 
 /**
  * @author hkuno based on code by Dave Reynolds
  *
- * Extends DriverRDB with MySQL-specific parameters.
+ * Extends DriverRDB with PostgreSQL-specific parameters.
  */
 public class Driver_PostgreSQL extends DriverRDB {
 	
@@ -152,18 +152,17 @@ public class Driver_PostgreSQL extends DriverRDB {
 
 		return res;
 	}
-	
 	/**
- 	* 
- 	* Return the parameters for table creation.
- 	* Generate the table name by counting the number of existing
+	* 
+	* Return the parameters for table creation.
+	* Generate the table name by counting the number of existing
 	* tables for the graph. This is not reliable if another client
 	* is concurrently trying to create a table so, if failure, we
 	* make several attempts to create the table.
 	*/	
 
 	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
-		String [] parms = new String[1];
+		String [] parms = new String[2];
 		String [] res = new String[2];
 				
 		getTblParams (parms);
@@ -171,32 +170,12 @@ public class Driver_PostgreSQL extends DriverRDB {
 		String tblName = TABLE_BASE_NAME + 
 					"g" + Integer.toString(graphId) +
 					"t" + Integer.toString(tblCnt) +
-					(isReif ? "_reif" : "_stmt");		
+					(isReif ? "_reif" : "_stmt");	
+		tblName = stringToDBname(tblName);	
 		res[0] = tblName;
 		res[1] = parms[0];
 		return res;
 	}
-	
-	protected int getTableCount ( int graphId ) {		
-	try {
-		DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
-		String[] tableTypes = { "TABLE" };
-		int	res = 0;
-		String	tblPattern = TABLE_BASE_NAME + "g" + Integer.toString(graphId) + "%";
-		ResultSet alltables = dbmd.getTables(null, null, tblPattern, tableTypes);
-		while (alltables.next()) {
-			res += 1;
-		}
-		alltables.close();
-		return res;
-	} catch (SQLException e1) {
-		throw new RDFRDBException("Internal SQL error in driver", e1);
-	}
-}
-
-	
-
-		
 }
 
 /*
