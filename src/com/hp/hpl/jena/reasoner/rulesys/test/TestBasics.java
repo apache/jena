@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.14 2003-06-23 16:27:56 der Exp $
+ * $Id: TestBasics.java,v 1.15 2003-06-24 10:55:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-06-23 16:27:56 $
+ * @version $Revision: 1.15 $ on $Date: 2003-06-24 10:55:24 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -69,7 +69,7 @@ public class TestBasics extends TestCase  {
             "(?a rdf:type _) -> action(?a).",
             "(?a rdf:type _) -> [(?a rdf:type _) -> action(?a)].",
            "(?a rdf:type _) -> (?a rdf:type 42).",
-           "(?a rdf:type _) -> (?a rdf:type ' fool ').",
+           "(?a rdf:type _) -> (?a rdf:type ' fool that,I(am)').",
             "[rule1: (?a rdf:type _) -> (?a rdf:type 42)]"
         };
         String[] testResults = new String[] {
@@ -79,7 +79,7 @@ public class TestBasics extends TestCase  {
             "[ (?a rdf:type *) -> action(?a) ]",
             "[ (?a rdf:type *) -> [ (?a rdf:type *) -> action(?a) ] ]",
             "[ (?a rdf:type *) -> (?a rdf:type 42) ]",
-            "[ (?a rdf:type *) -> (?a rdf:type 'fool') ]",
+            "[ (?a rdf:type *) -> (?a rdf:type ' fool that,I(am)') ]",
             "[ rule1: (?a rdf:type *) -> (?a rdf:type 42) ]"
         };
         

@@ -5,16 +5,18 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.10 2003-06-18 16:43:49 der Exp $
+ * $Id: Rule.java,v 1.11 2003-06-24 10:55:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import java.util.*;
 
 import com.hp.hpl.jena.util.PrintUtil;
+import com.hp.hpl.jena.util.Tokenizer;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.datatypes.xsd.*;
 
 /** * Representation of a generic inference rule. 
@@ -53,7 +55,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.10 $ on $Date: 2003-06-18 16:43:49 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.11 $ on $Date: 2003-06-24 10:55:24 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -427,12 +429,11 @@ public class Rule implements ClauseEntry {
      * Inner class which provides minimalist parsing support based on
      * tokenisation with depth 1 lookahead. No sensible error reporting on offer.
      * No embedded spaces supported.
-     * TODO: Add proper literal support
      */
     static class Parser {
         
         /** Tokenizer */
-        private StringTokenizer stream;
+        private Tokenizer stream;
         
         /** Look ahead, null if none */
         private String lookahead;
@@ -451,7 +452,7 @@ public class Rule implements ClauseEntry {
          * @param source the string to be parsed
          */
         Parser(String source) {
-            stream = new StringTokenizer(source, "()[], \t\n\r", true);
+            stream = new Tokenizer(source, "()[], \t\n\r", "'", true);
             lookahead = null;
         }
         
@@ -548,22 +549,29 @@ public class Rule implements ClauseEntry {
             if (token.startsWith("?")) {
                 return getNodeVar(token);
             } else if (token.equals("*") || token.equals("_")) {
-                return Node.ANY;
+                return Node_RuleVariable.ANY;
             } else if (token.indexOf(':') != -1) {
-                return Node.createURI(PrintUtil.expandQname(token));
+                String exp = PrintUtil.expandQname(token);
+                if (exp == token) {
+                    // No expansion was possible
+                    String prefix = token.substring(0, token.indexOf(':'));
+                    if (prefix.equals("http") || prefix.equals("urn") || prefix.equals("ftp")) {
+                        // assume it is all OK and fall through
+                    } else {
+                        // Likely to be a typo in a qname or failure to register
+                        throw new JenaException("Unrecognized qname prefix (" + prefix + ") in rule");
+                    }
+                }
+                return Node.createURI(exp);
             } else if (peekToken().equals("(")) {
                 Functor f = new Functor(token, parseNodeList(), BuiltinRegistry.theRegistry);
                 LiteralLabel ll = new LiteralLabel(f, null, Functor.FunctorDatatype.theFunctorDatatype);
                 return new Node_Literal(ll);
-            } else if (token.startsWith("'")) {
+            } else if (token.equals("'")) {
                 // A literal - either plain or integer
-                token = token.substring(1);
-                String lit = token;
-                while (! token.endsWith("'")) {
-                    token = nextToken();
-                    lit = lit+token;
-                }
-                lit = lit.substring(0, lit.length()-1);
+                String lit = nextToken();
+                // Skip the trailing quote
+                nextToken();
                 try {
                     Integer.parseInt(lit);
                     return Node.createLiteral(lit, "", XSDDatatype.XSDint);
