@@ -1,0 +1,112 @@
+<p>
+This section shows that the definition of a <a href="triples.html">graph as triples</a>
+is sufficient to ensure that the graph also falls under the definition of
+a graph via the <a href="syntax.html">abstract syntax</a> and the <a href="mapping.html">mapping rules</a>.
+</p>
+<p>We start by defining terms, and then move into the proof.</p>
+<dl>
+<dt>acceptable</dt>
+<dd>An RDF graph is accceptable if it meets the constraints specified for
+a <a href="triples.html">graph as triples</a></dd>
+<dt>mappable</dt>
+<dd>An RDF graph is mappable if there is an abstract syntax
+tree in the abstract ontology that maps to it.</dd>
+
+<dt>correspondences between abstract syntax trees and node categorizations</dt>
+<dd>
+A correspondence is a 3-tuple
+<code>&lt; <em>g</em>, <em>t</em>, <em>C</em> ></code>
+where <em>g</em> is
+a graph which is both acceptable and mappable,
+<em>t</em> is an abstract syntax tree that maps to <em>g</em>,
+and <em>C</em> is a 
+<a href="triples.html#uri-category">categorization</a> 
+of the nodes of <em>g</em>
+which shows that it is acceptable.
+Moreover, in a correspondence, 
+every uriref has the same categorization
+in the abstract syntax as in <em>C</em>.
+</dd>
+<dt>corresponds</dt>
+<dd>An acceptable graph <em>g</em>, with categorization <em>C</em> corresponds to an 
+abstract syntax tree
+<em>t</em>
+if there is a correspondence 
+<code>&lt; <em>g</em>, <em>t</em>, <em>C</em> ></code>.
+Under such a correspondence a subtree <em>u</em> of <em>t</em> corresponds to
+a node <em>n</em> in <em>g</em> if the mapping of <em>t</em> involves
+mapping <em>u</em> and returning <em>n</em>.
+</dd>
+</dl>
+<p>
+The goal of this section is to show that a graph is
+acceptable iff it is mappable.
+However, due to time pressure, I omit showing that
+mappable graphs are acceptable: this is the easier 
+direction since the triple tables have been generated
+from the mapping rules.
+Hence, we aim to show the following:
+</p>
+%%theorem('Sufficiency').
+
+<dd>
+ Every acceptable graph is mappable.
+</dd>
+</dl>
+<p>
+In fact the following stronger result is proved:
+</p>
+%%theorem('Correspondence').
+<dd>
+Every acceptable graph corresponds to 
+an abstract syntax tree.
+</dd>
+</dl>
+<p>
+The structure of the proof is inductive.
+The initial case from which the induction starts is
+the empty graph.
+</p>
+%%lemma('Empty Graph').
+<dd>
+The empty graph corresponds to <code>Ontology()</code>.
+</dd>
+</dl>
+<p>
+The inductive step involves a number of distinct cases.
+To structure the proof we introduce the concept of <em>reducible</em>.
+</p>
+<dl>
+<dt>reducibility</dt>
+<dd>
+An acceptable graph <em>g</em> is reducible, if there is a 
+related 
+graph <em>h</em> with fewer triples, which is also acceptable,
+such that if <em>h</em> corresponds to <em>t</em>
+then <em>g</em> corresponds to some defined transformation
+of <em>t</em>.
+</dd>
+</dl>
+<p>Usually <em>h</em> is a proper subgraph of <em>g</em>.
+</p>
+<p>
+The rest of this section gives:
+ <ol>
+<li>Reduction lemmas,
+each
+showing that an acceptable graph with a certain characteristic
+is reducible.
+</li>
+<li>Structural lemmas, which combine the reduction lemmas
+paying special attention to the structure of the blank nodes.
+</li>
+<li>
+The proof of the main theorem, which simply combines the structural
+lemmas with the reduction lemmas into an inductive argument.
+</li>
+</ol>
+
+
+
+
+
