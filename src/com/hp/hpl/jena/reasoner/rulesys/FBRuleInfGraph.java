@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.40 2004-01-12 13:39:24 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.41 2004-01-30 16:30:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.shared.impl.JenaParameters;
 import com.hp.hpl.jena.graph.*;
 
 import java.util.*;
@@ -35,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.40 $ on $Date: 2004-01-12 13:39:24 $
+ * @version $Revision: 1.41 $ on $Date: 2004-01-30 16:30:35 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -72,6 +73,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     /** Cache of temporary property values inferred through getTemp calls */
     protected TempNodeCache tempNodecache;
     
+    /** Table of temp nodes which should be hidden from output listings */
+    protected Set hiddenNodes;
+    
     static Log logger = LogFactory.getLog(FBRuleInfGraph.class);
 
 //  =======================================================================
@@ -84,8 +88,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public FBRuleInfGraph(Reasoner reasoner, Graph schema) {
         super(reasoner, schema);
-        initLP(schema);  
-        tempNodecache = new TempNodeCache(this);
+        constructorInit(schema);    
     }
 
     /**
@@ -97,8 +100,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public FBRuleInfGraph(Reasoner reasoner, List rules, Graph schema) {
         super(reasoner, rules, schema);
         this.rawRules = rules;
-        initLP(schema);  
-        tempNodecache = new TempNodeCache(this);
+        constructorInit(schema);    
     }
 
     /**
@@ -110,11 +112,21 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public FBRuleInfGraph(Reasoner reasoner, List rules, Graph schema, Graph data) {
         super(reasoner, rules, schema, data);
-        this.rawRules = rules;      
-        initLP(schema);  
-        tempNodecache = new TempNodeCache(this);
+        this.rawRules = rules;  
+        constructorInit(schema);    
     }
 
+    /**
+     * Common pieces of initialization code which apply in all constructor cases.
+     */
+    private void constructorInit(Graph schema) {
+        initLP(schema);  
+        tempNodecache = new TempNodeCache(this);
+        if (JenaParameters.enableFilteringOfHiddenInfNodes) {
+            hiddenNodes = new HashSet();
+        }
+    }
+    
     /**
      * Instantiate the forward rule engine to use.
      * Subclasses can override this to switch to, say, a RETE imlementation.
@@ -718,6 +730,15 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
     }
    
+    /**
+     * Called to flag that a node should be hidden from external queries.
+     */
+    public void hideNode(Node n) {
+        synchronized (hiddenNodes) {
+            hiddenNodes.add(n);
+        }
+    }
+    
 //  =======================================================================
 //  Support for LP engine profiling
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: JenaParameters.java,v 1.3 2003-11-08 15:53:56 der Exp $
+ * $Id: JenaParameters.java,v 1.4 2004-01-30 16:31:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.shared.impl;
 
@@ -20,7 +20,7 @@ package com.hp.hpl.jena.shared.impl;
  * moved to being model-specific rather than global.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-11-08 15:53:56 $
+ * @version $Revision: 1.4 $ on $Date: 2004-01-30 16:31:32 $
  */
 public class JenaParameters {
     
@@ -78,6 +78,16 @@ public class JenaParameters {
      * XSD numberic typed literal.
      */
     public static boolean enableWhitespaceCheckingOfTypedLiterals = false;
+    
+    /**
+     * Set this flag to true (default) to hide certain internal nodes from the output
+     * of inference graphs. Some rule sets (notably owl-fb) create blank nodes as 
+     * part of their reasoning process. If these match some query they can appear
+     * in the results. Such nodes are recorded as "hidden" and if this flag is set
+     * all triples involving such hidden nodes will be removed from the output - any
+     * indirect consequences will, however, still be visible.  
+     */
+    public static boolean enableFilteringOfHiddenInfNodes = true;    
 }
 
 
