@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery1.java,v 1.3 2003-09-08 11:28:22 chris-dollin Exp $
+  $Id: AbstractTestQuery1.java,v 1.4 2003-09-10 10:02:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -26,9 +26,12 @@ public abstract class AbstractTestQuery1 extends GraphTestBase
     {
     public AbstractTestQuery1(String name)
         { super(name); }
+    
+    public static TestSuite suite()
+        { return new TestSuite( AbstractTestQuery1.class ); }
 
     public abstract Graph getGraph();
-	public abstract Graph getGraph(ReificationStyle style);
+	public abstract Graph getGraph( ReificationStyle style );
 
     
     // in the stmt strings below, L indicates a long (object or predicate)
@@ -203,257 +206,277 @@ public abstract class AbstractTestQuery1 extends GraphTestBase
 
     };
     
-    public static TestSuite suite()
-        { return new TestSuite( AbstractTestQuery1.class ); }
-                
-    public void setUp()
-        {
+    public void setUp() throws Exception
+        {        
+        super.setUp();
 		}
 		
-	protected void tearDown() throws java.lang.Exception {
+    protected Graph standard()
+        { return fetchGraph( ReificationStyle.Standard ); }
+        
+     protected Graph convenient()
+        { return fetchGraph( ReificationStyle.Convenient ); }
+        
+    protected Graph fetchGraph( ReificationStyle style )
+        { Graph s = getGraph( style );
+        loadGraph( s );
+        return s; }
+ 
+	protected void tearDown() throws Exception {
+        super.tearDown();
 		}
 
-
-	protected String longpfx = null;
+    /**
+        The lots-of-dots prefix to use to make things long
+    */
+	protected final String longPrefix = makeLongPrefix();
 	
-	protected String longPrefix() {
-		if ( longpfx == null ) {
-			String s = ".";
-			for(int i=0;i<255;i++) s += ".";
-			longpfx = s;
-		}
-		return longpfx;
-	}
+    /**
+     	Answer a string of 256 dots.
+    */
+    private String makeLongPrefix()
+        { StringBuffer sb = new StringBuffer( 256 );
+        for (int i = 0; i < 256; i += 1) sb.append( '.' );
+        return sb.toString(); }
 	
-	protected Node makeResource ( String u ) {
-		boolean isLong = u.charAt(1) == 'L';
-		if ( isLong ) {
-			u = longPrefix() + u.substring(1);
-		}
-		return Node.createURI(u);		
-	}
-	
+	protected Node makeResource ( String u ) 
+        { return Node.createURI( expandLong( u ) ); }
+    
 	protected Node makeObject ( String u ) {
 		boolean isRef = u.charAt(0) == 'U';
-		if ( isRef ) return makeResource(u.substring(1));
-		boolean isLong = u.charAt(1) == 'L';
-		if ( isLong ) {
-			u = longPrefix() + u.substring(1);
-		}
-		return Node.createLiteral(new LiteralLabel(u));		
+        return 
+            isRef ? makeResource( u.substring(1) )
+            : Node.createLiteral( new LiteralLabel( expandLong( u ) ) );	
 	}
 
+    protected String expandLong( String s )
+        { return s.charAt(0) == 'L' ? longPrefix + s.substring(1) : s; }
+    
 	static int stmtCnt = 0;
 	
 	protected void loadGraph ( Graph g ) {
-		Node s,p,o; String k; Node n = null;
-		Triple t;
-		boolean isReified;
-		
-		for(int i=0; i<statementList.length; i++) {
-			StringTokenizer st = new StringTokenizer(statementList[i]);
-			k = st.nextToken();
-			if ( k.charAt(0) == 'N' ) {
-				isReified = true;
-				n = makeResource(k);
-				k = st.nextToken();
-			} else
-				isReified = false;
-			s = makeResource(k);
-			p = makeResource(st.nextToken());
-			o = makeObject(st.nextToken());
-			t = new Triple(s,p,o);
-			if ( isReified )
-				g.getReifier().reifyAs(n,t);
+        Reifier r = g.getReifier();
+		for (int i = 0; i < statementList.length; i++) {
+			StringTokenizer st = new StringTokenizer( statementList[i] );
+			String k = st.nextToken();
+			if ( k.charAt(0) == 'N' )
+                r.reifyAs( makeResource( k ), nextTriple( st.nextToken(), st ) );
 			else
-				g.add(t);
+                g.add( nextTriple( k, st ) );
 			stmtCnt++;
 		}
 	}
-	
-    protected int queryResultCount ( ExtendedIterator it ) {
-    	int n = 0;
-    	List r;
-    	while ( it.hasNext() ) {
-    		n++;
-    		r = (List) it.next();
-    		int i = r.size();
-    	}
-	    return n;
-    }
+    
+    protected Triple nextTriple( String k, StringTokenizer st )
+        { Node s = makeResource( k );
+        Node p = makeResource( st.nextToken() );
+        Node o = makeObject( st.nextToken() );
+        return Triple.create( s, p, o ); }
 
-     
-    public void testBinding1( )
+    final Node V1 = node( "?v1" );
+    final Node V2 = node( "?v2" );
+    final Node V3 = node( "?v3" );
+    final Node V4 = node( "?v4" );
+    final Node V5 = node( "?v5" );
+
+    final Node Ptitle = makeResource("Ptitle");
+    final Node Psex = makeResource("Psex");
+    final Node Pname = makeResource("Pname");
+    final Node Pmgr = makeResource("Pmgr");
+    final Node Pcard = makeResource("Pcard");
+    final Node Pcardmax = makeResource("Pcardmax");
+    final Node Prange = makeResource("Prange");
+    final Node Pdept = makeResource("Pdept");
+    final Node S1 = makeResource("S1");
+    
+        // object constants
+    final Node Ogrunt = makeObject("Ogrunt");
+    final Node Ofemale = makeObject("Ofemale");
+    final Node Omale = makeObject("Omale");
+    final Node Obigboss = makeObject("Obigboss");
+    final Node Oboss = makeObject("Oboss");
+    final Node Oshane = makeObject("Oshane");
+    final Node Oliteral = makeObject("Oliteral");
+    final Node Oresource = makeObject("Oresource");
+    final Node Oapp = makeObject("Oapp");
+    final Node Ogenesis = makeObject("Ogenesis");
+
+    final Node O1 = makeObject("O1");
+             
+    public void test0()
         {
-        Graph g = getGraph(ReificationStyle.Standard);
-        Graph gc = getGraph (ReificationStyle.Convenient);
-        loadGraph(g); loadGraph(gc);
-        
-        Query q;
-        Node V1 = node( "?v1" ), V2 = node( "?v2" ), V3 = node( "?v3" );
-        Node V4 = node( "?v4" ), V5 = node( "?v5" );
-		BindingQueryPlan qp;
-		ExtendedIterator it;
-
-        // property constants
-        Node Ptitle = makeResource("Ptitle");
-        Node Psex = makeResource("Psex");
-        Node Pname = makeResource("Pname");
-		Node Pmgr = makeResource("Pmgr");
-		Node Pcard = makeResource("Pcard");
-		Node Pcardmax = makeResource("Pcardmax");
-		Node Prange = makeResource("Prange");
-		Node Pdept = makeResource("Pdept");
-		Node S1 = makeResource("S1");
-	
-		// object constants
-		Node Ogrunt = makeObject("Ogrunt");
-		Node Ofemale = makeObject("Ofemale");
-		Node Omale = makeObject("Omale");
-		Node Obigboss = makeObject("Obigboss");
-		Node Oboss = makeObject("Oboss");
-		Node Oshane = makeObject("Oshane");
-		Node Oliteral = makeObject("Oliteral");
-		Node Oresource = makeObject("Oresource");
-		Node Oapp = makeObject("Oapp");
-		Node Ogenesis = makeObject("Ogenesis");
-
-		Node O1 = makeObject("O1");
-
-		// Q0: how many female grunts?
-		// a simple select
-		q = new Query();
-		q.addMatch( V1, Ptitle, Ogrunt );
-		q.addMatch( V1, Psex, Ofemale );
-		q.addMatch( V1, Pname, V3 );	
-	
-        qp = g.queryHandler().prepareBindings( q, new Node[] {V1,V3} );
-        it = qp.executeBindings();
-        assertEquals( "female grunts", 1, queryResultCount(it) ); it.close();
-        
-        // Q1: get names of managers of female grunts
-        // this has a joining variable
-		q = new Query();
-		q.addMatch( V1, Ptitle, Ogrunt );
-		q.addMatch( V1, Psex, Ofemale );
-		q.addMatch( V1, Pmgr, V2 );
-		q.addMatch( V2, Pname, V3 );	
-	
-		qp = g.queryHandler().prepareBindings( q, new Node[] {V1,V3} );
-		it = qp.executeBindings();
-		assertEquals( "mgrs of female grunts", 1, queryResultCount(it) ); it.close();
-
-		// Q2: get names of female grunts with female managers
-		q = new Query();
-		q.addMatch( V1, Ptitle, Ogrunt );
-		q.addMatch( V1, Psex, Ofemale );
-		q.addMatch( V1, Pmgr, V2 );
-		q.addMatch( V2, Psex, Ofemale );
-		q.addMatch( V1, Pname, V3 );	
-	
-		qp = g.queryHandler().prepareBindings( q, new Node[] {V1,V3} );
-		it = qp.executeBindings();
-		assertEquals( "female grunts with female mgrs", 0, queryResultCount(it) ); it.close();
-		
-		// Q3.0: get all properties of the bigboss
-		q = new Query();
-		q.addMatch( V1, Ptitle, Obigboss );
-		q.addMatch( V1, Pmgr, Oshane );
-		q.addMatch( V1, V2, V3 );
-	
-		qp = g.queryHandler().prepareBindings( q, new Node[] {V1,V2,V3} );
-		it = qp.executeBindings();
-		assertEquals( "all properties of the bigboss", 4, queryResultCount(it) ); it.close();
-
-
-		// Q3: get all properties of female grunts with male managers
-		// this has a predicate variable. for standard reification, it
-		// requires a multi-stage query. for convenient, minimal, it can
-		// be done as a single stage (since reification is not queried).
-		q = new Query();
-		q.addMatch( V1, Ptitle, Ogrunt );
-		q.addMatch( V1, Psex, Ofemale );
-		q.addMatch( V1, Pmgr, V2 );
-		q.addMatch( V2, Psex, Omale );
-		q.addMatch( V1, V3, V4 );	
-	
-		qp = g.queryHandler().prepareBindings( q, new Node[] {V1,V3,V4} );
-		it = qp.executeBindings();
-		assertEquals( "all properties of female grunts with male mgrs", 6, queryResultCount(it) ); it.close();
-       
-		// Q4: get all single-valued, required, literal properties of the bigboss
-		// similar to Q3 in terms of stages.
-		q = new Query();
-		q.addMatch( V1, Ptitle, Obigboss );
-		q.addMatch( V1, Pmgr, Oshane );
-		q.addMatch( V2, Pcard, O1 );
-		q.addMatch( V2, Prange, Oliteral );
-		q.addMatch( V1, V2, V3 );
-	
-		qp = g.queryHandler().prepareBindings( q, new Node[] {V2,V3} );
-		it = qp.executeBindings();
-		assertEquals( "single-valued, literal properties of the bigboss", 2, queryResultCount(it) ); it.close();
-
-
-		// Q5: list the name and gender of martin's boss, where the pmgr property
-		// is determined by a query).
-		// similar to Q3 in terms of stages.
-		q = new Query();
-		q.addMatch( V1, Pcardmax, O1 );        // get the mgr property
-		q.addMatch( V1, Prange, Oresource );
-		q.addMatch( S1, V1, V2 );         // get mm's mgr
-		q.addMatch( V2, Pname, V3 );
-		q.addMatch( V2, Psex, V4 );		
-	
-		qp = g.queryHandler().prepareBindings( q, new Node[] {V2,V3,V4} );
-		it = qp.executeBindings();
-		assertEquals( "name, gender of referenced people", 1, queryResultCount(it) ); it.close();
-
-		// Q6: list the reified subjects, predicates and objects.
-		// should return nothing for minimal, convenient reification.
-		q = new Query();
-		q.addMatch( V1, RDF.Nodes.subject, V2 ); 
-		q.addMatch( V1, RDF.Nodes.predicate, V3 );
-		q.addMatch( V1, RDF.Nodes.object, V4 );
-	
-		qp = g.queryHandler().prepareBindings( q, new Node[] {V2,V3,V4} );
-		it = qp.executeBindings();
-		assertEquals( "number of reified statements", 27, queryResultCount(it) ); it.close();
-
-		qp = gc.queryHandler().prepareBindings( q, new Node[] {V2,V3,V4} );
-		it = qp.executeBindings();
-		assertEquals( "number of reified statements", 0, queryResultCount(it) ); it.close();
-
-		
-		// Q7: list the reified predicates about the bigboss.
-		// should return nothing for minimal, convenient reification.
-		q = new Query();
-		q.addMatch( V1, RDF.Nodes.subject, V2 ); 
-		q.addMatch( V1, RDF.Nodes.predicate, Ptitle );
-		q.addMatch( V1, RDF.Nodes.object, Obigboss );
-		q.addMatch( V3, RDF.Nodes.subject, V2 ); 
-		q.addMatch( V3, RDF.Nodes.predicate, V4 ); 
-
-		qp = g.queryHandler().prepareBindings( q, new Node[] {V2,V3} );
-		it = qp.executeBindings();
-		assertEquals( "number of reified statements", 4, queryResultCount(it) ); it.close();
-		
-		// Q8: list the reification quads for the bigboss.
-		// should return nothing for minimal, convenient reification.
-		q = new Query();
-		q.addMatch( V1, RDF.Nodes.subject, V2 ); 
-		q.addMatch( V1, RDF.Nodes.predicate, Ptitle );
-		q.addMatch( V1, RDF.Nodes.object, Obigboss );
-		q.addMatch( V3, RDF.Nodes.subject, V2 ); 
-		q.addMatch( V3, V4, V5 ); // haven't figured out how to specify any so use dummy variables
-
-		qp = g.queryHandler().prepareBindings( q, new Node[] {V3} );
-		it = qp.executeBindings();
-		assertEquals( "number of reified statements", 16, queryResultCount(it) ); it.close();
-
-
-
+        Query query = new Query();
+        query.addMatch( V1, Ptitle, Ogrunt );
+        query.addMatch( V1, Psex, Ofemale );
+        query.addMatch( V1, Pname, V3 );        
+        checkCount( 1, standard(), query, new Node[] {V1,V3} );
         }
+        
+    /**    
+        Q1: get names of managers of female grunts;  this has a joining variable.
+    */
+    public void test1()
+        {
+        Query query = new Query();
+        query.addMatch( V1, Ptitle, Ogrunt );
+        query.addMatch( V1, Psex, Ofemale );
+        query.addMatch( V1, Pmgr, V2 );
+        query.addMatch( V2, Pname, V3 );    
+        checkCount( 1, standard(), query, new Node[] {V1,V3} );
+        }
+        
+    /**
+        Q2: get names of female grunts with female managers
+    */
+    public void test2()
+        {
+        Query query = new Query();
+        query.addMatch( V1, Ptitle, Ogrunt );
+        query.addMatch( V1, Psex, Ofemale );
+        query.addMatch( V1, Pmgr, V2 );
+        query.addMatch( V2, Psex, Ofemale );
+        query.addMatch( V1, Pname, V3 );     
+        checkCount( 0, standard(), query, new Node[] {V1,V3} ); 
+        }
+        
+    /**
+        Q3.0: get all properties of the bigboss
+    */
+    public void test3a()
+        {
+        Query query = new Query();
+        query.addMatch( V1, Ptitle, Obigboss );
+        query.addMatch( V1, Pmgr, Oshane );
+        query.addMatch( V1, V2, V3 );
+        checkCount( 4, standard(), query, new Node[] {V1,V2,V3} );
+        }
+        
+    /**
+        Q3: get all properties of female grunts with male managers
+        this has a predicate variable. for standard reification, it
+        requires a multi-stage query. for convenient, minimal, it can
+        be done as a single stage (since reification is not queried). 
+    */
+    public void test3b()
+        {
+        Query query = new Query();
+        query.addMatch( V1, Ptitle, Ogrunt );
+        query.addMatch( V1, Psex, Ofemale );
+        query.addMatch( V1, Pmgr, V2 );
+        query.addMatch( V2, Psex, Omale );
+        query.addMatch( V1, V3, V4 );   
+        checkCount( 6, standard(), query, new Node[] {V1,V3,V4} );
+        }   
+         
+    /**
+        Q4: get all single-valued, required, literal properties of the bigboss
+        similar to Q3 in terms of stages.
+    */
+    public void test4()
+        {
+        Query query = new Query();
+        query.addMatch( V1, Ptitle, Obigboss );
+        query.addMatch( V1, Pmgr, Oshane );
+        query.addMatch( V2, Pcard, O1 );
+        query.addMatch( V2, Prange, Oliteral );
+        query.addMatch( V1, V2, V3 );
+        checkCount( 2, standard(), query, new Node[] {V2,V3} );
+        }
+        
+    /**
+        Q5: list the name and gender of martin's boss, where the pmgr property
+        is determined by a query).
+        similar to Q3 in terms of stages.     
+    */
+    public void test5()
+        {
+        Query query = new Query();
+        query.addMatch( V1, Pcardmax, O1 );        // get the mgr property
+        query.addMatch( V1, Prange, Oresource );
+        query.addMatch( S1, V1, V2 );         // get mm's mgr
+        query.addMatch( V2, Pname, V3 );
+        query.addMatch( V2, Psex, V4 );     
+        checkCount( 1, standard(), query, new Node[] {V2,V3,V4} );      
+        }
+        
+    /**
+        Q6: list the reified subjects, predicates and objects.
+        should return nothing for minimal, convenient reification.
+    */
+    public void test6()
+        {
+        Query query = new Query();
+        query.addMatch( V1, RDF.Nodes.subject, V2 ); 
+        query.addMatch( V1, RDF.Nodes.predicate, V3 );
+        query.addMatch( V1, RDF.Nodes.object, V4 );
+    /* */
+        checkCount( 27, standard(), query, new Node[] {V2,V3,V4} );
+        checkCount( 0, convenient(), query, new Node[] {V2,V3,V4} );
+        }
+        
+    /**
+        Q7: list the reified predicates about the bigboss.
+        should return nothing for minimal, convenient reification.
+    */
+    public void test7()
+        {
+        Query query = new Query();
+        query.addMatch( V1, RDF.Nodes.subject, V2 ); 
+        query.addMatch( V1, RDF.Nodes.predicate, Ptitle );
+        query.addMatch( V1, RDF.Nodes.object, Obigboss );
+        query.addMatch( V3, RDF.Nodes.subject, V2 ); 
+        query.addMatch( V3, RDF.Nodes.predicate, V4 ); 
+    /* */
+        checkCount( 4, standard(), query, new Node[] {V2,V3} );
+        }
+        
+    /**
+        Q8: list the reification quads for the bigboss.
+        should return nothing for minimal, convenient reification.   
+    */
+    public void test8()
+        {
+        Query query = new Query();
+        query.addMatch( V1, RDF.Nodes.subject, V2 ); 
+        query.addMatch( V1, RDF.Nodes.predicate, Ptitle );
+        query.addMatch( V1, RDF.Nodes.object, Obigboss );
+        query.addMatch( V3, RDF.Nodes.subject, V2 ); 
+        query.addMatch( V3, V4, V5 ); // V4 and V5 serve duty as ANY
+        checkCount( 16, standard(), query, new Node[] {V3} );
+        }
+        
+    /**
+        Check that the number of results obtained from the query over the graph is
+        that expected.
+        
+     	@param expected the number of results expected from the query
+     	@param g the graph to run the query over
+     	@param q the query to apply to the graph
+     	@param results the results-variable array
+     */
+    private void checkCount( int expected, Graph g, Query q, Node [] results ) 
+       {
+       BindingQueryPlan plan = g.queryHandler().prepareBindings( q, results );
+       ExtendedIterator it = plan.executeBindings();
+       assertEquals( "number of reified statements", expected, queryResultCount( it ) ); 
+       it.close();
+	   }
+    
+    /**
+        Answer the number of elements in the iterator; each such element should be
+        a List (and we make sure size() works on it, don't know why).
+        
+     	@param it the iterator to run down
+     	@return the number of elements in that iterator
+     */
+    protected int queryResultCount( ExtendedIterator it ) {
+        int n = 0;
+        while (it.hasNext()) {
+            n++;
+            ((List) it.next()).size();  // hedgehog asks, do we need to check this works?
+        }
+        return n;
+    }
 
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestQuery1.java,v 1.3 2003-09-08 11:28:22 chris-dollin Exp $
+  $Id: TestQuery1.java,v 1.4 2003-09-10 10:02:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -9,6 +9,8 @@ package com.hp.hpl.jena.db.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.shared.*;
+
+import java.util.*;
 
 import junit.framework.*;
 
@@ -19,44 +21,49 @@ import junit.framework.*;
 public class TestQuery1 extends AbstractTestQuery1
     {
     public TestQuery1( String name )
-        {
-        	super( name );
-        }
-
+        { super( name ); }
 
 	public static TestSuite suite()
         { return new TestSuite( TestQuery1.class ); }     
-
-        
+       
     private IDBConnection theConnection;
     private int count = 0;
     
-    public void setUp()
+    private List graphs;
+    
+    public void setUp() throws Exception
         {
-        theConnection = TestConnection.makeAndCleanTestConnection();
+        theConnection = TestConnection.makeTestConnection();
+        graphs = new ArrayList();
+        super.setUp();
         }
         
-    public void tearDown()
+    public void tearDown() throws Exception
         {
-        try { theConnection.close(); }
-        catch (Exception e) { throw new JenaException( e ); }
+        removeGraphs();
+        theConnection.close(); 
+        super.tearDown(); 
         }
+        
+    private void removeGraphs()
+        { for (int i = 0; i < graphs.size(); i += 1) ((GraphRDB) graphs.get(i)).remove(); }
 
 	public Graph getGraph ( ) {
-		return getGraph(ReificationStyle.Minimal);
+		return getGraph( ReificationStyle.Minimal );
 	}
         
     public Graph getGraph ( ReificationStyle style )
         { 
-        return new GraphRDB
+        Graph result = new GraphRDB
             (
             theConnection,
             "testGraph-" + count ++, 
             theConnection.getDefaultModelProperties().getGraph(),
-			GraphRDB.styleRDB(style), 
-            // GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS, 
+			GraphRDB.styleRDB( style ), 
             true
             );
+        graphs.add( result );    
+        return result;
         }
 
     }
