@@ -158,7 +158,7 @@
     <tbox>rdfs/tbox1.rdf</tbox>
     <data>rdfs/data2.rdf</data>
     <query>rdfs/query19.nt</query>
-    <result>rdfs/result19.rdf</result>
+    <result>rdfs/result19-nodirect.rdf</result>
   </Test>
 -->
 
@@ -167,7 +167,7 @@
     <tbox>rdfs/tbox1.rdf</tbox>
     <data>rdfs/data2.rdf</data>
     <query>rdfs/query20.nt</query>
-    <result>rdfs/result20.rdf</result>
+    <result>rdfs/result20-nodirect.rdf</result>
   </Test>
 
 </rdf:RDF>
