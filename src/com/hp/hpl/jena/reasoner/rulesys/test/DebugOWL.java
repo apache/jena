@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.8 2003-06-22 16:10:50 der Exp $
+ * $Id: DebugOWL.java,v 1.9 2003-06-30 16:11:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-30 16:11:12 $
  */
 public class DebugOWL {
 
@@ -244,9 +244,18 @@ public class DebugOWL {
         System.out.println("Found " + count + " results");
         return (t2 - t1);
     }
-    
+   
     /**
-     * Create and run a standard test.
+     * Create and run a list classes test.
+     */
+    public void runListClassesTest(int depth, int NS, int NI, boolean withProps) {
+        createTest(depth, NS, NI, withProps);
+        long t = list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
+        System.out.println("Took " + t + "ms");
+    }
+   
+    /**
+     * Create and run a volz test.
      */
     public void run(int depth, int NS, int NI, boolean withProps) {
         createTest(depth, NS, NI, withProps);
@@ -273,10 +282,10 @@ public class DebugOWL {
     /**
      * Run default test on a named file.
      */
-    public void run(String filename) {
+    public void listClassesOn(String filename) {
         load(filename);
         System.out.println("Testing: " + filename);
-        long t = list(null, RDF.type.asNode(), RDFS.Class.asNode(), true);
+        long t = list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
         System.out.println("Took " + t + "ms");
     }
     
@@ -284,6 +293,8 @@ public class DebugOWL {
         try {
             String dataFile = "file:testing/ontology/owl/list-syntax/test-with-import.rdf";
             String schemaFile = "file:vocabularies/owl.owl";
+            String schemaFile2 = "file:testing/reasoners/bugs/owl-partial.owl";
+            String dataFile2 = "file:testing/reasoners/bugs/test.owl";
 
             // Example from ontology development which takes s rather than ms            
 //            new DebugOWL(OWL).run(dataFile);
@@ -297,13 +308,21 @@ public class DebugOWL {
             
             // Test volz examples on RDFS config
 //            new DebugOWL(RDFSFB).run();
-            new DebugOWL(RDFSExpt).run();
+//            new DebugOWL(RDFSExpt).run();
                         
 //            DebugOWL tester = new DebugOWL(OWLFB);
-//            tester.load(schemaFile, dataFile);
+//            tester.load(dataFile2);
 //            System.out.println("Test schema + data  started ...");
 //            long t = tester.list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
 //            System.out.println("Took " + t + "ms");
+
+            DebugOWL tester = new DebugOWL(RDFSExpt);
+            tester.runListClassesTest(1,4,10,false);
+            tester.runListClassesTest(1,4,10,false);
+            tester.runListClassesTest(2,4,10,false);
+            tester.runListClassesTest(3,4,10,false);
+            tester.runListClassesTest(3,5,10,false);
+            tester.runListClassesTest(3,6,10,false);
 
         } catch (Exception e) {
             System.out.println("Problem: " + e);
