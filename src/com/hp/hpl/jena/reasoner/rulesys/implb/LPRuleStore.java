@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.12 2003-08-17 20:09:18 der Exp $
+ * $Id: LPRuleStore.java,v 1.13 2003-08-19 20:09:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-17 20:09:18 $
+ * @version $Revision: 1.13 $ on $Date: 2003-08-19 20:09:19 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -45,6 +45,9 @@ public class LPRuleStore extends RuleStore {
     /** Threshold for number of rule entries in a predicate bucket before second level indexing kicks in */
     private static final int INDEX_THRESHOLD = 20;
     
+    /** True if all goals should be treated as tabled */
+    protected boolean allTabled = false;
+    
     /**
      * Construct a rule store containing the given rules.
      * @param rules the rules to initialize the store with.
@@ -66,6 +69,7 @@ public class LPRuleStore extends RuleStore {
     public void addAll(LPRuleStore store) {
         super.addAll(store);
         tabledPredicates.addAll(store.tabledPredicates);
+        allTabled = tabledPredicates.contains(Node.ANY);
     }
     
     /**
@@ -74,6 +78,7 @@ public class LPRuleStore extends RuleStore {
      */
     public synchronized void tablePredicate(Node predicate) {
         tabledPredicates.add(predicate);
+        if (predicate == Node.ANY) allTabled = true;
     }    
     
     /**
@@ -130,10 +135,7 @@ public class LPRuleStore extends RuleStore {
      * tabled predictes exist.
      */
     public boolean isTabled(TriplePattern goal) {
-        // This version forces tabling of all goals anyway
-        return true;
-        // Original used selective tabling, small perf disadvantage on early tests
-//        return isTabled(goal.getPredicate());
+        return isTabled(goal.getPredicate());
     }
     
     /**
@@ -142,6 +144,7 @@ public class LPRuleStore extends RuleStore {
      * tabled predictes exist.
      */
     public boolean isTabled(Node predicate) {
+        if (allTabled) return true;
         if (predicate.isVariable() && !tabledPredicates.isEmpty()) {
             return true;
         } else {
