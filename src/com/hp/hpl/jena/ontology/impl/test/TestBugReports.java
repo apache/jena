@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-30 20:53:58 $
+ * Last modified on   $Date: 2004-02-08 18:36:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -87,15 +87,19 @@ public class TestBugReports extends TestCase {
         
         schema.read( "file:doc/inference/data/owlDemoSchema.xml", null );
 
+        int count = 0;
         for (Iterator i = schema.listIndividuals(); i.hasNext(); ) {
-            Resource r = (Resource) i.next();
-            
-            /* Debugging 
+            //Resource r = (Resource) i.next();
+            i.next();
+            count++;
+            /* Debugging * /
             for (StmtIterator j = r.listProperties(RDF.type); j.hasNext(); ) {
                 System.out.println( "ind - " + r + " rdf:type = " + j.nextStatement().getObject() );
             }
-            System.out.println("----------"); */
+            System.out.println("----------"); / **/
         }
+        
+        assertEquals( "Expecting 3 individuals", 6, count );
     }
     
     

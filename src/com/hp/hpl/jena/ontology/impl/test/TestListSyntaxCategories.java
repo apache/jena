@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-29 18:45:01 $
+ * Last modified on   $Date: 2004-02-08 18:36:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.18 2004-01-29 18:45:01 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.19 2004-02-08 18:36:11 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -69,7 +69,7 @@ public class TestListSyntaxCategories
                 return r instanceof Ontology;
             }
         },
-        new DoListTest( "DAML list ontologies",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list ontologies",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,  
                         new String[] {"http://jena.hpl.hp.com/testing/ontology"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -161,8 +161,8 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  15,  
-                        null )//new String[] {NS+"rdf-p" /* - will not be recognised without alias processing -, NS+"rdf-p" */} ) 
+        new DoListTest( "DAML list properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  2,  
+                        new String[] {NS+"p", NS+"rdf-p"} ) 
         {
             public Iterator doList( OntModel m ) {
                 return m.listOntProperties();
@@ -172,7 +172,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list object properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  2,  
+        new DoListTest( "DAML list object properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  2,  
                         new String[] {NS+"op", NS+"op1"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -183,7 +183,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list datatype properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list datatype properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,  
                         new String[] {NS+"dp"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -194,7 +194,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list functional properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list functional properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,  
                         new String[] {NS+"fp"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -206,7 +206,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list transitive properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list transitive properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,  
                         new String[] {NS+"tp"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -218,7 +218,7 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list inverse functional properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list inverse functional properties",  "file:testing/ontology/daml/list-syntax/test-proptypes.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,  
                         new String[] {NS+"ifp"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -242,8 +242,8 @@ public class TestListSyntaxCategories
                 return r instanceof Individual;
             }
         },
-        new DoListTest( "DAML list individuals",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  3,  
-                        new String[] {NS+"A0", NS+"A1", NS+"C0"} ) 
+        new DoListTest( "DAML list individuals",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  6,  
+                        new String[] {NS+"A0", NS+"A1", NS+"C0", NS+"a1", NS+"a2", NS+"a0"} ) 
         {
             public Iterator doList( OntModel m ) {
                 return m.listIndividuals();
@@ -263,7 +263,7 @@ public class TestListSyntaxCategories
                 return r instanceof AllDifferent;
             }
         },
-        new DoListTest( "DAML list all different",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  0,  null,
+        new DoListTest( "DAML list all different",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  0,  null,
                         true /* exception expected */ ) 
         {
             public Iterator doList( OntModel m ) {
@@ -345,8 +345,8 @@ public class TestListSyntaxCategories
                 return r instanceof Restriction;
             }
         },
-        new DoListTest( "DAML list classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  11,  
-                        new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", } ) 
+        new DoListTest( "DAML list classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  12,  
+                        new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", DAML_OIL.Thing.getURI()} ) 
         {
             public Iterator doList( OntModel m ) {
                 return m.listClasses();
@@ -355,8 +355,8 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list named classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  10,  
-                        new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", } ) 
+        new DoListTest( "DAML list named classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  11,  
+                        new String[] {NS+"A", NS+"B", NS+"C", NS+"D", NS+"E", NS+"X0", NS+"X1", NS+"Y0", NS+"Y1", NS+"Z", DAML_OIL.Thing.getURI()} ) 
         {
             public Iterator doList( OntModel m ) {
                 return m.listNamedClasses();
@@ -365,7 +365,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list intersection classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list intersection classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,  
                         new String[] {NS+"A" } ) 
         {
             public Iterator doList( OntModel m ) {
@@ -375,7 +375,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list union classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list union classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,  
                         new String[] {NS+"B"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -385,7 +385,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list complement classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list complement classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,  
                         new String[] {NS+"C"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -395,7 +395,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list enumerated classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list enumerated classes",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,  
                         new String[] {NS+"D"} ) 
         {
             public Iterator doList( OntModel m ) {
@@ -405,7 +405,7 @@ public class TestListSyntaxCategories
                 return r instanceof OntClass;
             }
         },
-        new DoListTest( "DAML list restrictions",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RDFS_INF,  1,  
+        new DoListTest( "DAML list restrictions",  "file:testing/ontology/daml/list-syntax/test.rdf",  OntModelSpec.DAML_MEM_RULE_INF,  1,  
                         null ) 
         {
             public Iterator doList( OntModel m ) {
@@ -684,6 +684,12 @@ public class TestListSyntaxCategories
                         logger.debug( getName() + " - saw actual: " + j.next() );
                     }
                 } 
+                if (expected != null && !expected.isEmpty()) {
+                    Log logger = LogFactory.getLog( getClass() );
+                    for (Iterator j = expected.iterator(); j.hasNext(); ) {
+                        logger.debug( getName() + " - expected but did not find: " + j.next() );
+                    }
+                }
                 
                 assertEquals( "Wrong number of results returned", m_count, actual.size() );
                 if (expected != null) {

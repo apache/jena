@@ -14,7 +14,7 @@
 >
 
 <daml:Ontology rdf:about="">
-	<daml:versionInfo>CVS $Id: test.rdf,v 1.1 2003-04-02 20:33:33 ian_dickinson Exp $</daml:versionInfo>
+	<daml:versionInfo>CVS $Id: test.rdf,v 1.2 2004-02-08 18:36:11 ian_dickinson Exp $</daml:versionInfo>
 </daml:Ontology>
 
 <daml:Property rdf:ID="p">
@@ -58,9 +58,9 @@
 
 <daml:Class rdf:ID="D">
 	<daml:oneOf rdf:parseType="Collection">
-		<daml:Thing rdf:ID="a0" />
-		<daml:Thing rdf:ID="a1" />
-		<daml:Thing rdf:ID="a2" />
+		<X0 rdf:ID="a0" />
+		<X0 rdf:ID="a1" />
+		<X0 rdf:ID="a2" />
 	</daml:oneOf>
 </daml:Class>
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.57 $
+ * Revision           $Revision: 1.58 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-30 20:53:35 $
+ * Last modified on   $Date: 2004-02-08 18:36:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -28,6 +28,7 @@ import com.hp.hpl.jena.rdf.listeners.StatementListener;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleInfGraph;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -52,7 +53,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.57 2004-01-30 20:53:35 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.58 2004-02-08 18:36:11 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -76,7 +77,10 @@ public class OntModelImpl
     protected Set m_imported = new HashSet();
     
     /** Query that will access nodes with types whose type is Class */
-    protected BindingQueryPlan m_individualsQuery;
+    protected BindingQueryPlan m_individualsQueryNoInf;
+    
+    /** Query that will access nodes that are sub-classes of Thing in this profile */
+    protected BindingQueryPlan m_individualsQueryInf;
     
     /** Mode switch for strict checking mode */
     protected boolean m_strictMode = true;
@@ -130,7 +134,12 @@ public class OntModelImpl
                         (MultiUnion) ((InfGraph) getGraph()).getRawGraph();
         
         // cache the query plan for individuals
-        m_individualsQuery = queryXTypeOfType( getProfile().CLASS() );
+        m_individualsQueryNoInf = queryXTypeOfType( getProfile().CLASS() );
+        
+        if (getProfile().THING() != null) {
+            Query q = new Query().addMatch( Query.X, RDF.type.asNode(), getProfile().THING().asNode() );
+            m_individualsQueryInf = queryHandler().prepareBindings( q, new Node[] {Query.X} );
+        }
         
         // add the global prefixes, if required
         if (getDocumentManager().useDeclaredPrefixes()) {
@@ -369,7 +378,17 @@ public class OntModelImpl
      * @return An iterator over Individuals. 
      */
     public ExtendedIterator listIndividuals() {
-        return UniqueExtendedIterator.create( queryFor( m_individualsQuery, null, Individual.class ) );
+        // since the reasoner implements some OWL full functionality for RDF compatability, we
+        // have to decide which strategy to use for indentifying individuals depending on whether
+        // or not a powerful reasoner (i.e. owl:Thing/daml:Thing aware) is being used with this model
+        if (!(getGraph() instanceof BasicForwardRuleInfGraph) || (m_individualsQueryInf == null) || getProfile().CLASS().equals( RDFS.Class )) {
+            // no inference, or we are in RDFS land, so we pick things that have rdf:type whose rdf:type is Class
+            return UniqueExtendedIterator.create( queryFor( m_individualsQueryNoInf, null, Individual.class ) );
+        }
+        else {
+            // inference, so we pick the nodes that are of type Thing
+            return UniqueExtendedIterator.create( queryFor( m_individualsQueryInf, null, Individual.class ) );
+        }
     }
     
 

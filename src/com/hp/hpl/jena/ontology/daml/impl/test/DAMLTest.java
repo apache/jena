@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2004-01-29 18:44:49 $
+ * Last modified on   $Date: 2004-02-08 18:36:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import org.apache.commons.logging.LogFactory;
  * Legacy JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.21 2004-01-29 18:44:49 ian_dickinson Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.22 2004-02-08 18:36:11 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -122,7 +122,7 @@ public class DAMLTest
         m.getLoader().setLoadImportedOntologies( false );
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "Load success status should be true", m.getLoadSuccessful() );
-        assertEquals( "Count of number of classes in daml store (2001/03, no import)", 15, countClasses( m ) );
+        assertEquals( "Count of number of classes in daml store (2001/03, no import)", 16, countClasses( m ) );
 
         // test case for bug reported by Charlie Abela: must be able to load instance files that import
         // their own class declarations
@@ -205,8 +205,8 @@ public class DAMLTest
         assertTrue( "ab should be a B", ab.hasRDFType( cB ) );
 
         // how many ways do I know thee? let me count the ways ...
-        assertEquals( "Number of classes fido belongs to (closure) should be 7",
-                      7, countIteration( fido.getRDFTypes( true ), true, "fido member of class " ) );
+        assertEquals( "Number of classes fido belongs to (closure) should be 8",
+                      8, countIteration( fido.getRDFTypes( true ), true, "fido member of class " ) );
         assertEquals( "Number of classes fido belongs to (non-closure) should be 3",
                       3, countIteration( fido.getRDFTypes( false ), true, "fido member of non-closed class " ) );
 
@@ -238,8 +238,8 @@ public class DAMLTest
         // count the super-classes of a Person
         int sCount0 = countIteration( person.prop_subClassOf().getAll(  ), true, "super-class of Person (prop_subClassOf) " );
         int sCount1 = countIteration( person.getSuperClasses(), true, "super-class of Person (getSuperClasses) " );
-        assertEquals( "person should have 9 super-classes (by prop_subClassOf)", 9, sCount0 );
-        assertEquals( "person should have 8 super-classes (by getSuperClasses)", 8, sCount1 );
+        assertEquals( "person should have 10 super-classes (by prop_subClassOf)", 10, sCount0 );
+        assertEquals( "person should have 9 super-classes (by getSuperClasses)", 9, sCount1 );
 
         // count the number of sub-classes of a Person
         assertEquals( "person should have 3 sub-classes", 3,
@@ -273,7 +273,7 @@ public class DAMLTest
         // Car is a complement of Person
         DAMLClass car = m.getDAMLClass( ns + "Car" );
         assertNotNull( "Class Car should not be null", car );
-        DAMLClass carSuper = (DAMLClass) car.getSuperClasses().next();
+        DAMLClass carSuper = (DAMLClass) car.getSuperClasses(false).next();
         assertNotNull( "Car should have a super-class", carSuper );
         assertTrue( "Car super-class should be a complement", carSuper.isComplement() );
         assertTrue( "Car super-class should be a complement of Person", carSuper.prop_complementOf().hasValue( person ) );
@@ -309,23 +309,23 @@ public class DAMLTest
         int nP1nc = countIteration( defProp1.getDefinedProperties( false ), true, "Defined property of DefProp1, not closed" );
         int nP2 = countIteration( defProp2.getDefinedProperties(), true, "Defined property of DefProp2, closed" );
         int nP2nc = countIteration( defProp2.getDefinedProperties( false ), true, "Defined property of DefProp2, not closed" );
-        assertEquals( "Defined properties of DefProp0 should number 1", 1, nP0 );
+        assertEquals( "Defined properties of DefProp0 should number 3", 3, nP0 );
         assertEquals( "Defined properties of DefProp0 (non-closed) should number 1", 1, nP0nc );
-        assertEquals( "Defined properties of DefProp1 should number 1", 1, nP1 );
+        assertEquals( "Defined properties of DefProp1 should number 3", 3, nP1 );
         assertEquals( "Defined properties of DefProp1 (non-closed) should number 0", 0, nP1nc );
         
         // ijd - this is not working yet: numbers should be 3 and 2 resp.
         //assertEquals( "Defined properties of DefProp2 should number 3", 3, nP2 );
         //assertEquals( "Defined properties of DefProp2 (non-closed) should number 2", 2, nP2nc );
-        assertEquals( "Defined properties of DefProp2 should number 3", 2, nP2 );
-        assertEquals( "Defined properties of DefProp2 (non-closed) should number 2", 1, nP2nc );
+        assertEquals( "Defined properties of DefProp2 should number 4", 4, nP2 );
+        assertEquals( "Defined properties of DefProp2 (non-closed) should number 1", 1, nP2nc );
         
         // Bug report by Thorsten Liebig
         DAMLClass tl_one = m0.getDAMLClass( tcNs + "tl_one" );
         assertNotNull( "Class tl_one should not be null", tl_one );
         int tl_one_supers0 = countIteration( tl_one.prop_subClassOf().getAll(  ), true, "prop_subClassOf " );
         int tl_one_supers1 = countIteration( tl_one.getSuperClasses( false ), true, "getSuperClasses ");
-        assertEquals( "Should be two super-classes of tl_one by prop_subClassOf", 3, tl_one_supers0 );
+        assertEquals( "Should be four super-classes of tl_one by prop_subClassOf", 4, tl_one_supers0 );
         assertEquals( "Should be two super-classes of tl_one by getSuperClasses", 2, tl_one_supers1 );
 
         // Bug report by Andrei S. Lopatenko
@@ -475,7 +475,7 @@ public class DAMLTest
         assertNotNull( "Iterator over subClassOf values should not be null", iSubClassOf );
         assertTrue( "Iteration of subClassOf should have at least one value", iSubClassOf.hasNext() );
         int nSupers = countIteration( iSubClassOf, true, "direct super-class of Person = " );
-        assertEquals( "Should be 9 super-classes of Person", 9, nSupers );
+        assertEquals( "Should be 10 super-classes of Person", 10, nSupers );
 
         // another bug report from Michael Sintek - get() on single-valued property does not terminate
         DAMLClass male = m.getDAMLClass( ns + "Male" );
@@ -503,7 +503,7 @@ public class DAMLTest
         assertNotNull( "Iterator over subClassOf values should not be null", iSubClassOf );
         assertTrue( "Iteration of subClassOf should have at least one value", iSubClassOf3.hasNext() );
         nSupers = countIteration( iSubClassOf3, true, "property access on subClassCheck3 with closed = true " );
-        assertEquals( "Should be 2 closed super-classes of subClassCheck3", 2, nSupers );
+        assertEquals( "Should be 3 closed super-classes of subClassCheck3", 3, nSupers );
 
         // bug submitted by Michael Sintek: setUseEquivalence(false) does not work with property accessors
         DAMLProperty q = m.getDAMLProperty( ns + "q" );
@@ -693,8 +693,13 @@ public class DAMLTest
             c.remove();
         } 
         
-        for (Iterator i = m.listDAMLClasses(); i.hasNext(); System.err.println( i.next() ) );
-        assertFalse( "Should be no more classes", m.listDAMLClasses().hasNext() );
+        boolean notThing = false;
+        for (Iterator i = m.listDAMLClasses(); i.hasNext();  ) {
+            if (!i.next().equals( DAML_OIL.Thing )) {
+                notThing = true;
+            }
+        }
+        assertFalse( "Should be no more classes", notThing );
         assertFalse( "Should be no more properties", m.listDAMLProperties().hasNext() );
         assertFalse( "Should be no more instances", m.listDAMLInstances().hasNext() );
     }
