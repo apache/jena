@@ -1,4 +1,4 @@
-<!-- $Revision: 1.2 $ of $Date: 2003-06-18 12:59:57 $. -->
+<!-- $Revision: 1.3 $ of $Date: 2003-07-24 15:27:55 $. -->
 
 <rdf:RDF
   xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -10,7 +10,7 @@
 >
 
 <rdf:Description rdf:about="">
-  <versionInfo>$Id: daml+oil.daml,v 1.2 2003-06-18 12:59:57 ian_dickinson Exp $</versionInfo>
+  <versionInfo>$Id: daml+oil.daml,v 1.3 2003-07-24 15:27:55 ian_dickinson Exp $</versionInfo>
   <imports rdf:resource="http://www.w3.org/2000/01/rdf-schema"/>
 </rdf:Description>
 
@@ -34,7 +34,7 @@
 
 <!-- Pre-defined top/bottom thing/nothing most/least-general (object) classes. -->
 
-<Class rdf:ID="Thing">
+<daml:Class rdf:ID="Thing">
   <rdfs:label>Thing</rdfs:label>
   <rdfs:comment>
     The most general (object) class in DAML.
@@ -46,24 +46,24 @@
       <complementOf rdf:resource="#Nothing"/>
     </rdfs:Class>
   </unionOf>
-</Class>
+</daml:Class>
 
-<Class rdf:ID="Nothing">
+<daml:Class rdf:ID="Nothing">
   <rdfs:label>Nothing</rdfs:label>
   <rdfs:comment>the class with no things in it.</rdfs:comment>
   <complementOf rdf:resource="#Thing"/>
-</Class>
+</daml:Class>
 
 <!-- Terms for building classes from other classes. -->
 
-<Property rdf:ID="equivalentTo"> <!-- equals? equiv? renames? -->
+<rdf:Property rdf:ID="equivalentTo"> <!-- equals? equiv? renames? -->
   <rdfs:label>equivalentTo</rdfs:label>
   <comment>
     for equivalentTo(X, Y), read X is an equivalent term to Y.
   </comment>
-</Property>
+</rdf:Property>
 
-<Property rdf:ID="sameClassAs">
+<rdf:Property rdf:ID="sameClassAs">
   <rdfs:label>sameClassAs</rdfs:label>
   <comment>
     for sameClassAs(X, Y), read X is an equivalent class to Y.
@@ -71,20 +71,18 @@
   </comment>
   <rdfs:subPropertyOf rdf:resource="#equivalentTo"/>
   <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
-  <rdfs:domain rdf:resource="#Class"/>
-  <rdfs:range rdf:resource="#Class"/>
-</Property>
+</rdf:Property>
 
-<Property rdf:ID="samePropertyAs">
+<rdf:Property rdf:ID="samePropertyAs">
   <rdfs:label>samePropertyAs</rdfs:label>
   <rdfs:comment>
     for samePropertyAs(P, R), read P is an equivalent property to R.
   </rdfs:comment>
   <rdfs:subPropertyOf rdf:resource="#equivalentTo"/>
   <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#subPropertyOf"/>
-</Property>
+</rdf:Property>
 
-<Property rdf:ID="sameIndividualAs">
+<rdf:Property rdf:ID="sameIndividualAs">
   <rdfs:label>sameIndividualAs</rdfs:label>
   <rdfs:comment>
     for sameIndividualAs(a, b), read a is the same individual as b.
@@ -92,7 +90,7 @@
   <rdfs:subPropertyOf rdf:resource="#equivalentTo"/>
   <rdfs:domain rdf:resource="#Thing"/>
   <rdfs:range rdf:resource="#Thing"/>
-</Property>
+</rdf:Property>
 
 <rdf:Property rdf:ID="disjointWith">
   <rdfs:label>disjointWith</rdfs:label>
@@ -104,14 +102,14 @@
   <rdfs:range rdf:resource="#Class"/>
 </rdf:Property>
 
-<Property rdf:ID="differentIndividualFrom">
+<rdf:Property rdf:ID="differentIndividualFrom">
   <rdfs:label>differentIndividualFrom</rdfs:label>
   <rdfs:comment>
     for differentIndividualFrom(a, b), read a is not the same individual as b.
   </rdfs:comment>
   <rdfs:domain rdf:resource="#Thing"/>
   <rdfs:range rdf:resource="#Thing"/>
-</Property>
+</rdf:Property>
 
 
 <!-- NOTE: the Disjoint class has been deleted: use disjointWith -->
@@ -375,11 +373,11 @@
   <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq"/>
 </rdfs:Class>
 
-<List rdf:ID="nil">
+<daml:List rdf:ID="nil">
   <rdfs:comment>
      the empty list; this used to be called Empty.
   </rdfs:comment>
-</List>
+</daml:List>
 
 <rdf:Property rdf:ID="first">
   <rdfs:domain rdf:resource="#List"/>
@@ -438,9 +436,9 @@
 <!-- Importing terms from RDF/RDFS -->
 
 <!-- first, assert the contents of the RDF schema by reference -->
-<Ontology rdf:about="">
+<daml:Ontology rdf:about="">
   <imports rdf:resource="http://www.w3.org/2000/01/rdf-schema"/>
-</Ontology>
+</daml:Ontology>
 
 <rdf:Property rdf:ID="subPropertyOf">
   <samePropertyAs  rdf:resource="http://www.w3.org/2000/01/rdf-schema#subPropertyOf"/>
@@ -491,83 +489,6 @@
   <rdfs:subPropertyOf rdf:resource="#seeAlso"/>
 </rdf:Property>
 
-<!-- we re-express the equivalences using subPropertyOf and subClassOf to make them available to the Jena reasoners -->
-<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#subPropertyOf">
-  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#subPropertyOf" />
-</rdf:Property>
-<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#subPropertyOf">
-	<rdfs:subPropertyOf rdf:resource="#subPropertyOf" />
-</rdf:Property>
-
-<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#type">
-  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#type" />
-</rdf:Property>
-<rdf:Property rdf:about="http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-	<rdfs:subPropertyOf rdf:resource="#type" />
-</rdf:Property>
-
-<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#value">
-  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#value" />
-</rdf:Property>
-<rdf:Property rdf:about="http://www.w3.org/1999/02/22-rdf-syntax-ns#value">
-	<rdfs:subPropertyOf rdf:resource="#value" />
-</rdf:Property>
-
-<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#subClassOf">
-  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf" />
-</rdf:Property>
-<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#subClassOf">
-	<rdfs:subPropertyOf rdf:resource="#subClassOf" />
-</rdf:Property>
-
-<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#domain">
-  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#domain" />
-</rdf:Property>
-<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#domain">
-	<rdfs:subPropertyOf rdf:resource="#domain" />
-</rdf:Property>
-
-<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#range">
-  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#range" />
-</rdf:Property>
-<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#range">
-	<rdfs:subPropertyOf rdf:resource="#range" />
-</rdf:Property>
-
-<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#domain">
-  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#domain" />
-</rdf:Property>
-<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#domain">
-	<rdfs:subPropertyOf rdf:resource="#domain" />
-</rdf:Property>
-
-<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#label">
-  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#label" />
-</rdf:Property>
-<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#label">
-	<rdfs:subPropertyOf rdf:resource="#label" />
-</rdf:Property>
-
-<rdf:Property rdf:about="http://www.daml.org/2001/03/daml+oil#comment">
-  <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#comment" />
-</rdf:Property>
-<rdf:Property rdf:about="http://www.w3.org/2000/01/rdf-schema#comment">
-	<rdfs:subPropertyOf rdf:resource="#comment" />
-</rdf:Property>
-
-<rdfs:Class rdf:about="http://www.daml.org/2001/03/daml+oil#Literal">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal" />
-</rdfs:Class>
-<rdfs:Class rdf:about="http://www.w3.org/2000/01/rdf-schema#Literal">
-	<rdfs:subClassOf rdf:resource="#Literal" />
-</rdfs:Class>
-
-<rdfs:Class rdf:about="http://www.daml.org/2001/03/daml+oil#Property">
-  <rdfs:subClassOf rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property" />
-</rdfs:Class>
-<rdfs:Class rdf:about="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property">
-	<rdfs:subClassOf rdf:resource="#Property" />
-</rdfs:Class>
 
 
 </rdf:RDF>
