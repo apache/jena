@@ -5,19 +5,19 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.6 2003-04-15 21:16:35 jeremy_carroll Exp $
+ * $Id: BaseInfGraph.java,v 1.7 2003-04-29 16:39:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.*;
 import java.util.Iterator;
 
 /**
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-04-15 21:16:35 $
+ * @version $Revision: 1.7 $ on $Date: 2003-04-29 16:39:28 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -121,16 +121,33 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         return find(m.getSubject(), m.getPredicate(), m.getObject())
              .filterKeep(new TripleMatchFilter(m));
     }
-    
+      
+    /**
+     * Extended find interface used in situations where the implementator
+     * may or may not be able to answer the complete query. It will
+     * attempt to answer the pattern but if its answers are not known
+     * to be complete then it will also pass the request on to the nested
+     * Finder to append more results. 
+     * @param pattern a TriplePattern to be matched against the data
+     * @param continuation either a Finder or a normal Graph which
+     * will be asked for additional match results if the implementor
+     * may not have completely satisfied the query.
+     */
+    abstract public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation);
+   
     /** 
      * Returns an iterator over Triples.
+     * This implementation assumes that the underlying findWithContinuation 
+     * will have also consulted the raw data.
      */
     public ExtendedIterator find(Node subject, Node property, Node object) {
         return findWithContinuation(new TriplePattern(subject, property, object), fdata);
-     }
+    }
 
     /**
      * Basic pattern lookup interface.
+     * This implementation assumes that the underlying findWithContinuation 
+     * will have also consulted the raw data.
      * @param pattern a TriplePattern to be matched against the data
      * @return a ExtendedIterator over all Triples in the data set
      *  that match the pattern
@@ -140,17 +157,28 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     }
     
     /**
-     * Extended find interface used in situations where the implementator
-     * may or may not be able to answer the complete query. It will
-     * attempt to answer the pattern but if its answers are not known
-     * to be complete then it will also pass the request on to the nested
-     * Finder to append more results.
-     * @param pattern a TriplePattern to be matched against the data
-     * @param continuation either a Finder or a normal Graph which
-     * will be asked for additional match results if the implementor
-     * may not have completely satisfied the query.
+     * Test if the graph contains the given triple.
+     * Overridden in order to implement semantic instead of syntactic
+     * equivalance.
      */
-    abstract public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation);
+    public boolean contains(Triple t) {
+        ClosableIterator i = find(t.getSubject(), t.getPredicate(), t.getObject());
+        boolean contained =  i.hasNext();
+        i.close();
+        return contained;
+    }
+    
+    /**
+     * Test if the graph contains the given triple.
+     * Overridden in order to implement semantic instead of syntactic
+     * equivalance.
+     */
+    public boolean contains(Node s, Node p, Node o) {
+        ClosableIterator i = find(s, p, o);
+        boolean contained =  i.hasNext();
+        i.close();
+        return contained;
+    }
     
     /** 
         returns this Graph's reifier. Each call on a given Graph gets the same
@@ -178,6 +206,38 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         return null;
     }
 
+    /**
+     * Return the number of triples in the just the base graph
+     */
+    public int size() {
+        return fdata.getGraph().size();
+    }
+        
+    /**
+     * Add one triple to the data graph, run any rules triggered by
+     * the new data item, recursively adding any generated triples.
+     */
+    public synchronized void add(Triple t) {
+        fdata.getGraph().add(t);
+    }
+    
+    /**
+     * Returns the bitwise or of ADD, DELETE, SIZE and ORDERED,
+     * to show the capabilities of this implementation of Graph.
+     * So a read-only graph that finds in an unordered fashion,
+     * but can tell you how many triples are in the graph returns
+     * SIZE.
+     */
+    public int capabilities() {
+        return ADD | DELETE;
+    }
+    
+    /** 
+     * Removes the triple t (if possible) from the set belonging to this graph. 
+     */   
+    public void delete(Triple t) {
+        fdata.getGraph().delete(t);
+    }
 
 }
 
