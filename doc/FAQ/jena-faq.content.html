@@ -1,11 +1,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.19 2004-02-05 17:59:59 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.20 2004-02-27 17:30:04 ian_dickinson Exp $ -->
 <!-- (c) Copyright 2003, 2004, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
   <meta name="author" content="The Jena Team" />
-  <meta name="description" content="" />
-  <meta name="keywords" content="" />
+  <meta name="description" content="Frequently asked questions about the Jena 2 semantic web toolkit" />
+  <meta name="keywords" content="Jena, Jena2, FAQ, Java, semantic web, RDF, OWL" />
   <link rel="stylesheet" type="text/css" href="styles/site.css" />
 </head>
 
@@ -28,7 +28,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <h2>Index</h2>
 <h3>General</h3>
 <ul>
-  <li><a href="#general-0">Why do I get a ClassNotFoundException when I run Jena?</a></li>
+  <li><a href="#general-0">Why do I get a <code>java.lang.NoClassDefFoundError</code> when I run a Jena application?</a></li>
 </ul>
 <h3>RDF model API</h3>
 <ul>
@@ -44,13 +44,17 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h3>Ontology API</h3>
 <ul>
-  <li><a href="#ontology-0">Why doesn't listClasses() (listProperties()/listIndividuals(),
-    etc) work?</a></li>
-  <li><a href="#ontology-1">Why doesn't the ontlogy API handle <code>sub-class</code>
-	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc)
-  	relationships in a DAML model?</a></li>
-  <li><a href="#ontology-2">Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
-  <code>ConversionException</code> on SymmetricProperty (or other property types)?</a></li>
+  <li><a href="#ontology-0">Why doesn't <code>listClasses()</code> (<code>listProperties()</code> 
+      / <code>listIndividuals()</code>, etc) work?</a></li>
+  <li><a href="#ontology-1">Why doesn't <code>listProperties()</code> return any results when <code>listObjectProperties()</code> (or
+      <code>listDatatypeProperties()</code>) does?</a></li>
+  <li><a href="#ontology-2">Why are my transitive properties (or symmetric properties or inverse functional
+      properties) missing when I call <code>listObjectProperties()</code>?</a></li>
+  <li><a href="#ontology-3">Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
+    <code>ConversionException</code> on SymmetricProperty (or other property types)?</a></li>
+  <li><a href="#ontology-4">Why doesn't the ontology API handle <code>sub-class</code> 
+         (or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc)
+         relationships in a DAML model?</a></li>  
 </ul>
 <h3>Database and persistence</h3>
 <ul>
@@ -58,7 +62,7 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#db-1">Why do I run out of memory when trying to list statements in a persistent
   model?</a></li>
   <li><a href="#db-2">Has Jena2 persistence been ported to other database engines and platforms
-  besides those officially supported?</a></li>
+  besides those officially orted?</a></li>
   <li><a href="#db-3">Is there a limit on the number of models in a 
   database?</a></li>
 </ul>
@@ -76,10 +80,10 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h2>Answers</h2>
 <h3>General</h3>
-<p id="general-0"><strong>Q: Why do I get a ClassNotFoundException when I run Jena?</strong><br>
-  A: This means that one or more of the libraries that Jena depends on is not
-  on your classpath. Typically, all of the librarys (.jar files) in $JENA/lib,
-  where $JENA refers to the directory in which you installed Jena, should be on
+<p id="general-0"><strong>Q: Why do I get a <code>java.lang.NoClassDefFoundError</code> when I run a Jena application?</strong><br>
+  <strong>A:</strong> This means that one or more of the libraries that Jena depends on is not
+  on your classpath. Typically, all of the libraries (.jar files) in <code>$JENA/lib</code>,
+  where <code>$JENA</code> refers to the directory in which you installed Jena, should be on
   your classpath. Consult the documentation for your JDK for details on setting
   the classpath for your system. There are also a number of on-line tutorials for setting 
   the Java classpath. Consult Google or see 
@@ -87,7 +91,7 @@ Jena 2 &ndash; Frequently Asked Questions
 
 <h3>RDF model API</h3>
     <p id="api-0"><strong>Q. Why does the localname part of my URI look wrong?</strong><br />
-      A: In Jena it is possible to retrieve the localname part of a Resource or Property
+      <strong>A:</strong> In Jena it is possible to retrieve the localname part of a Resource or Property
       URI. Sometimes developers create Resources with a full URI reference but
       find that the result of a getLocalName call is not quite what they expected.
       This is usually because the URI is ill-formed or cannot be correctly split
@@ -110,19 +114,19 @@ Jena 2 &ndash; Frequently Asked Questions
       A utility for doing this is provided: <br />
       &nbsp;&nbsp;<code>com.hp.hpl.jena.util.ResourceUtils.renameResource()</code><br />
       If you are working with inference or ontology models, you need to be 
-      careful to do this on the base model, not the entailment model.
+      careful to do this on the base model, not the entailment (aka inference) model.
     </p>
 
 <h3>Reasoner and inference models</h3>
   <p id="reasoner-0"><strong>Q. I want to develop my own rules, how do I get started?</strong><br />
     A: The GenericRuleReasoner is the place to start. You can create instances of this reasoner by
-    supplying either an explict set of Rule objects or a configuration description (as a Jena Model)
+    supplying either an explicit set of Rule objects or a configuration description (as a Jena Model)
     that points to a local rule file. See the inference documentation for more details: <br />
     <a href="inference/index.html#rules">inference/index.html#rules</a>
   </p>
 
   <p id="reasoner-1"><strong>Q. Why are there two different arrows ( -&gt; and &lt;- ) in the rule syntax?</strong><br />
-    A: As explained in the documentation there are two rule systems available - a
+    <strong>A:</strong> As explained in the documentation there are two rule systems available - a
     forward chainer and a backward chainer. You can chose to use either or
     use the two together in a hybrid mode. <br />
 
@@ -149,10 +153,10 @@ Jena 2 &ndash; Frequently Asked Questions
   </p>
   
   <p id="reasoner-2"><strong>Q. The domain and range inferences look wrong, is that a bug?</strong><br />
-      A: The way rdfs range and domain declarations work is completely alien to 
+      <strong>A:</strong> The way rdfs range and domain declarations work is completely alien to 
       anyone who thinks of RDFS and OWL as being a bit like a type system for 
       a programming language, especially an object oriented language. Whilst there 
-      may be bugs in the inference rule sets the most common explanation for supprising 
+      may be bugs in the inference rule sets the most common explanation for surprising 
       results, when listing inferred domains and ranges, is this mismatch in expectations. 
     <p> Suppose we have three classes <code>eg:Man</code> is an <code>rdfs:subClassOf</code> 
       <code>eg:Person</code> is an <code>rdfs:subClassOf</code> <code>eg:Animal</code>. 
@@ -173,7 +177,7 @@ Jena 2 &ndash; Frequently Asked Questions
       deduce that <code>&lt;eg:personalName rdfs:domain eg:Animal&gt;</code>. 
       If you are used to object oriented programming this may look wrong. It is 
       tempting, but incorrect, to think of rdfs:domain as meaning <i>this is the 
-      class of objects to which this property can be applied. </i>With that mind-set 
+      class of objects to which this property can be applied. </i>With that mindset 
       you might expect to find that <code>&lt;eg:personalName rdfs:domain eg:Man&gt;</code>, 
       after all every <code>eg:Man</code> is an <code>eg:Person</code> so it is 
       always &quot;legal&quot; to apply <code>eg:personalName</code> to an <code>eg:Man</code>. 
@@ -187,11 +191,11 @@ Jena 2 &ndash; Frequently Asked Questions
       are also allowed to have names in this example.</p>
      
   <p id="reasoner-3"><strong>Q: Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></strong><br />
-      A: If you create an infernce graph explicitly from an OWL reasoner or implicitly
+      <strong>A:</strong> If you create an inference graph explicitly from an OWL reasoner or implicitly
       (by using OntModelSpec.OWL_*_RULE) then it is best if the argument models
-      (data and schema) are plain models. It is easy to accidently misuse the API and
+      (data and schema) are plain models. It is easy to accidentally misuse the API and
       create an inference model working over the results of another inference model.
-	  This is a redunancy which significantly affects performance to no useful effect.
+	  This is a redundancy which significantly affects performance to no useful effect.
 	  To help detect this situation we have added a warning message. The best way
 	  to stop the message is to change your model construction code so that only the
 	  final InfModel/OntModel is specified to use OWL inference. If this is not
@@ -213,7 +217,48 @@ Jena 2 &ndash; Frequently Asked Questions
   an <code>xml:base</code> declaration to the document to ensure that URI's are
   correctly specified.</p>
 
-<p id="ontology-1"><strong>Q: Why doesn't the ontlogy API handle <code>sub-class</code>
+  <p id="ontology-1">
+      <strong>Why doesn't <code>listProperties()</code> return any results when <code>listObjectProperties()</code> (or
+      <code>listDatatypeProperties()</code>) does?</strong><br />
+      <strong>A:</strong> The method <code>OntModel.listObjectProperties()</code> returns those resources from
+      the OntModel with <code>rdf:type rdf:Property</code>.  Under the OWL semantic theory, this is true
+      of <code>owl:ObjectProperty</code> since ObjectProperty is a sub-class of Property.  However, unless
+      an OWL reasoner is used with an OWL model (or a DAML reasoner with a DAML model, etc), this inferred
+      <code>rdf:type</code> statement is not visible.  Therefore, with no reasoner, the OntModel
+      cannot tell that an ObjectProperty is a Property.  The solution is to construct the OntModel
+      with an appropriate reasoner.  If, for some application reason, using a reasoner is not possible
+      then users should be prepared to list the various property types separately.  Note also the 
+      next question.
+  </p>
+  <p id="ontology-2">
+      <strong>Why are my transitive properties (or symmetric properties or inverse functional
+      properties) missing when I call <code>listObjectProperties()</code>?</strong><br />
+      <strong>A:</strong> This is essentially the same problem as the <a href="#ontology-1">
+       previous FAQ</a>.  Without an OWL reasoner, the model cannot tell that an <code>owl:TransitiveProperty</code>
+       is also an <code>owl:ObjectProperty</code> and an RDF property. The same solution advice
+       applies as with the previous question.
+  </p>
+
+<p id="ontology-3">
+  <strong>Q: Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
+  <code>ConversionException</code> on SymmetricProperty (or other property types)?</strong><br />
+  <strong>A:</strong> This is a slightly tricky issue.  Internally, <code>.as()</code> calls the <em>supports</em> check,
+  which tests whether the node that is being converted is a common flavour of property.
+  Strictly, the only necessary test should be '<code>has rdf:type rdf:Property</code>',
+  because that is entailed by all of the other property types.  However, that requires
+  the user to use a model with a reasoner, and some don't want to (for good reasons, e.g. building an editor).
+  The other position is to test for all the possible variants of property: object property,
+  datatype property, annotation, ontology, transitive, functional, inverse functional, etc etc.
+  The problem with this is that it duplicates the work of the reasoner, and my expectation was that
+  most people would be running with a reasoner.  Thus my code would be duplicating the functionality
+  of the reasoner, which is bad design. The compromise solution was to make the supports check test
+  for the common (top level) property types.  Users who aren't using the reasoner,
+  can either test explicitly for the other property types they expect to encounter (e.g. SymmetricProperty),
+  or can turn off the supports check by setting
+  <a href="javadoc/com/hp/hpl/jena/ontology/OntModel.html#strictMode()">strict mode</a> to false on the model.
+</p>
+
+<p id="ontology-4"><strong>Q: Why doesn't the ontology API handle <code>sub-class</code>
 	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc)
   	relationships in a DAML model?</strong><br />
   	<strong>A:</strong> These relationships are handled correctly, but the results you see are dependent on the
@@ -230,25 +275,6 @@ Jena 2 &ndash; Frequently Asked Questions
   	<code>OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF, null );</code>
 	</p>
 
-<p id="ontology-2">
-  <strong>Q: Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
-  <code>ConversionException</code> on SymmetricProperty (or other property types)?</strong><br />
-  <strong>A:</strong> This is a slightly tricky issue.  Internally, <code>.as()</code> calls the <em>supports</em> check,
-  which tests whether the node that is being converted is a common flavour of property.
-  Strictly, the only necessary test should be '<code>has rdf:type rdf:Property</code>',
-  because that is entailed by all of the other property types.  However, that requires
-  the user to use a model with a reasoner, and some don't want to (for good reasons, e.g. building an editor).
-  The other position is to test for all the possible variants of property: object property,
-  datatype property, annotation, ontology, transitive, funcitonal, inverse functional, etc etc.
-  The problem with this is that it duplicates the work of the reasoner, and my expectation was that
-  most people would be running with a reasoner.  Thus my code would be duplicating the functionality
-  of the reasoner, which is bad design. The compromise solution was to make the supports check test
-  for the common (top level) property types.  Users who aren't using the reasoner,
-  can either test explicitly for the other property types they expect to encounter (e.g. SymmetricProperty),
-  or can turn off the supports check by setting
-  <a href="javadoc/com/hp/hpl/jena/ontology/OntModel.html#strictMode()">strict mode</a> to false on the model.
-
-</p>
 
 <h3>Database and persistence</h3>
 <p id="db-0"><strong>Q: Why do I get an exception when trying to create a new persistent model?</strong><br>
@@ -325,7 +351,7 @@ engine) or by the maximum value of a 32 bit integer, i.e., 2G.</p>
 
 <p id="misc-0">
   <strong>Q: What versions of library jars does Jena require?</strong><br />
-  <strong>A:</strong> Jena makes use of several third party java libraries. Copies of
+  <strong>A:</strong> Jena makes use of several third party Java libraries. Copies of
   each of these is included in the $JENA/lib area of the distribution and we recommend
   including all of these jars in your classpath. In some circumstances applications 
   already make use of specific versions of these libraries (e.g. Xerces) and need to 
