@@ -1,34 +1,32 @@
 /******************************************************************
- * File:        RuleContext.java
+ * File:        RETERuleContext.java
  * Created by:  Dave Reynolds
- * Created on:  15-Apr-2003
+ * Created on:  09-Jun-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.5 2003-06-09 16:43:24 der Exp $
+ * $Id: RETERuleContext.java,v 1.1 2003-06-09 16:43:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 import org.apache.log4j.Logger;
 
 /**
- * An implementation of the generic RuleContext interface used by
- * the basic forward (BF) rule engine. This provides additional
- * methods specific to the functioning of that engine.
+ * An implementation of the generic RuleContext for use in the RETE implementation.
+ * The RuleContext is used to supply context information to the builtin operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-09 16:43:24 $
+ * @version $Revision: 1.1 $ on $Date: 2003-06-09 16:43:23 $
  */
-public class BFRuleContext implements RuleContext {
+public class RETERuleContext implements RuleContext {
+    
     /** The binding environment which represents the state of the current rule execution. */
-    protected BindingStack env;
+    protected BindingEnvironment env;
     
     /** The rule current being executed. */
     protected Rule rule;
@@ -37,14 +35,11 @@ public class BFRuleContext implements RuleContext {
     protected ForwardRuleInfGraphI graph;
     
     /** A stack of triples which have been added to the graph but haven't yet been processed. */
-    protected List stack;
+    protected ArrayList addStack = new ArrayList();
     
-    /** A temporary list of Triples which will be added to the stack and triples at the end of a rule scan */
-    protected List pending;
-
-    /** A searchable index into the pending triples */
-    protected Graph pendingCache;
-    
+    /** A stack of triples which have been removed from the graph but haven't yet been processed. */
+    protected ArrayList removeStack = new ArrayList();
+        
     /** log4j logger */
     protected static Logger logger = Logger.getLogger(BFRuleContext.class);
     
@@ -52,12 +47,8 @@ public class BFRuleContext implements RuleContext {
      * Constructor.
      * @param graph the inference graph which owns this context.
      */
-    public BFRuleContext(ForwardRuleInfGraphI graph) {
+    public RETERuleContext(ForwardRuleInfGraphI graph) {
         this.graph = graph;
-        env = new BindingStack();
-        stack = new ArrayList();
-        pending = new ArrayList();
-        pendingCache = new GraphMem();
     }
     
     /**
@@ -65,16 +56,6 @@ public class BFRuleContext implements RuleContext {
      * @return BindingEnvironment
      */
     public BindingEnvironment getEnv() {
-        return env;
-    }
-    
-    /**
-     * Variant of the generic getEnv interface specific to the basic
-     * forward rule system.
-     * Returns the current variable binding environment for the current rule.
-     * @return BindingStack
-     */
-    public BindingStack getEnvStack() {
         return env;
     }
 
@@ -103,51 +84,13 @@ public class BFRuleContext implements RuleContext {
     }
 
     /**
-     * Add a triple to the stack of triples to waiting to be processed by the rule engine.
+     * Sets both the rule and the current binding environment for this context.
+     * @param rule the rule being processed
+     * @param env the binding environment so far
      */
-    public void addTriple(Triple t) {
-        if (graph.shouldTrace()) {
-            if (rule != null) {
-                logger.debug("Adding to stack (" + rule.toShortString() + "): " + PrintUtil.print(t));
-            } else {
-                logger.debug("Adding to stack : " + PrintUtil.print(t));
-            }
-        }
-        stack.add(t);
-    }
-    
-    /**
-     * Add a triple to a temporary "pending" store, ready to be added to added to the
-     * deductions graph and the processing stack later.
-     * <p>This is needed to prevent concurrrent modification exceptions which searching
-     * the deductions for matches to a given rule.
-     */
-    public void addPending(Triple t) {
-        if (graph.shouldTrace()) {
-            if (rule != null) {
-                logger.debug("Adding to pending (" + rule.toShortString() + "): " + PrintUtil.print(t));
-            } else {
-                logger.debug("Adding to pending : " + PrintUtil.print(t));
-            }
-        }
-        pending.add(t);
-        //pendingCache.add(t);
-    }
-            
-    /**
-     * Take all the pending triples and add them to both the given graph and
-     * to the processing stack.
-     * @param deductions the graph to which the pending triples should be added
-     */
-    public void flushPending(Graph deductions) {
-        for (Iterator i = pending.iterator(); i.hasNext(); ) {
-            Triple t = (Triple)i.next();
-            stack.add(t);
-            deductions.add(t);
-            i.remove();
-            // pendingCache.delete(t);
-        }
-        pending.clear();
+    public void setRuleEnv(Rule rule, BindingEnvironment env) {
+        this.rule = rule;
+        this.env = env;
     }
     
     /**
@@ -164,7 +107,6 @@ public class BFRuleContext implements RuleContext {
      * I.e. it has already been deduced.
      */
     public boolean contains(Node s, Node p, Node o) {
-        // Can't use stackCache.contains because that does not do semantic equality
         ClosableIterator it = find(s, p, o);
         boolean result = it.hasNext();
         it.close();
@@ -182,27 +124,6 @@ public class BFRuleContext implements RuleContext {
     }
     
     /**
-     * Return the next triple to be added to the graph, removing it from
-     * the stack.
-     * @return the Triple or null if there are no more
-     */
-    public Triple getNextTriple() {
-        if (stack.size() > 0) {
-            Triple t = (Triple)stack.remove(stack.size() - 1);
-            return t;
-        } else {
-            return null;
-        } 
-    }
-    
-    /**
-     * Reset the binding environemnt back to empty
-     */
-    public void resetEnv() {
-        env.reset();
-    }
-    
-    /**
      * Assert a new triple in the deduction graph, bypassing any processing machinery.
      */
     public void silentAdd(Triple t) {
@@ -210,6 +131,7 @@ public class BFRuleContext implements RuleContext {
     }
 
 }
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

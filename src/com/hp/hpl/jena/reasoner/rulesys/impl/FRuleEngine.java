@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.7 2003-06-08 17:49:51 der Exp $
+ * $Id: FRuleEngine.java,v 1.8 2003-06-09 16:43:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-08 17:49:51 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-09 16:43:24 $
  */
 public class FRuleEngine {
     
@@ -578,17 +578,6 @@ public class FRuleEngine {
         TriplePattern getClause() {
             return (TriplePattern)rule.getBodyElement(index);
         }
-    }
-    
-    /**
-     * Generic exception used to report problems with rule semantics
-     */
-    public static class BFRException extends RuntimeException {
-        
-        public BFRException(String msg) {
-            super(msg);
-        }
-        
     }
     
     /**
