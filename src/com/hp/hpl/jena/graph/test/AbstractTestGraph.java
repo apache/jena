@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.48 2004-06-30 12:57:59 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.49 2004-07-19 14:39:25 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -296,9 +296,8 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         ExtendedIterator it = g.find( Triple.create( findRemove ) );
         try 
             {
-            it.next(); it.remove();
-            ExtendedIterator ut = g.find( Triple.create( findCheck ) );
-            assertFalse( ut.hasNext() );
+            it.next(); it.remove(); it.close();
+            assertFalse( g.contains( Triple.create( findCheck ) ) );
             }
         catch (UnsupportedOperationException e)
             { assertFalse( g.getCapabilities().iteratorRemoveAllowed() ); }
