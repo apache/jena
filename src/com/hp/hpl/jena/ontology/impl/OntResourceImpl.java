@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.51 $
+ * Revision           $Revision: 1.52 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:06:45 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-24 17:27:49 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -28,7 +28,6 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
@@ -53,7 +52,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.51 2005-02-21 12:06:45 andy_seaborne Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.52 2005-03-24 17:27:49 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -863,37 +862,6 @@ public class OntResourceImpl
     
     /**
      * <p>
-     * Answer an {@link PathSet accessor} for the given
-     * property of any ontology value. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @param p A property
-     * @param name The name of the property, so that an appropriate message can be printed if not in the profile
-     * @return An abstract accessor for the property p
-     */
-    public PathSet accessor( Property p, String name ) {
-        return asPathSet( p, name );
-    }
-    
-    
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the given
-     * property of any ontology value. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @param p A property
-     * @return An abstract accessor for the property p
-     */
-    public PathSet accessor( Property p ) {
-        return asPathSet( p, "unknown property" );
-    }
-    
-    
-    /**
-     * <p>
      * Set the value of the given property of this ontology resource to the given
      * value, encoded as an RDFNode.  Maintains the invariant that there is
      * at most one value of the property for a given resource, so existing
@@ -1214,15 +1182,6 @@ public class OntResourceImpl
     //////////////////////////////////
 
 
-    protected PathSet asPathSet( Property p, String name ) {
-        if (p == null) {
-            throw new ProfileException( name, getProfile() );
-        }
-        else {
-            return new PathSet( this, PathFactory.unit( p ) );
-        }
-    }
-    
     /** Answer true if the node has the given type in the graph */
     protected static boolean hasType( Node n, EnhGraph g, Resource type ) {
         boolean hasType = false;

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:04:36 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-24 17:27:48 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -24,7 +24,6 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.path.PathSet;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -38,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.31 2005-02-21 12:04:36 andy_seaborne Exp $
+ * @version CVS $Id: OntResource.java,v 1.32 2005-03-24 17:27:48 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -567,33 +566,6 @@ public interface OntResource
      * integer greater than or equal to zero.
      */
     public int getCardinality( Property p );
-    
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the given
-     * property of any ontology value. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @param p A property
-     * @param name A string name for the property, in case an error must be reported and the property is null
-     * @return An abstract accessor for the property p
-     */
-    public PathSet accessor( Property p, String name );
-    
-    
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the given
-     * property of any ontology value. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @param p A property
-     * @return An abstract accessor for the property p
-     */
-    public PathSet accessor( Property p );
-    
     
     /**
      * <p>

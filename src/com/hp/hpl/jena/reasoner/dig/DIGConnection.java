@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGConnection.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:18 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-03-24 17:27:48 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -36,6 +36,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xml.serialize.*;
 import org.w3c.dom.*;
 
+import com.hp.hpl.jena.util.FileUtils;
+
 
 /**
  * <p>
@@ -43,7 +45,7 @@ import org.w3c.dom.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGConnection.java,v 1.10 2005-02-21 12:16:18 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGConnection.java,v 1.11 2005-03-24 17:27:48 ian_dickinson Exp $)
  */
 public class DIGConnection {
     // Constants
@@ -119,7 +121,8 @@ public class DIGConnection {
             
             // send
             conn.connect();
-            PrintStream ps = new PrintStream( conn.getOutputStream() );
+            // PrintStream ps = new PrintStream( conn.getOutputStream() );
+            PrintWriter ps = FileUtils.asPrintWriterUTF8( conn.getOutputStream() );
             ps.print( out.getBuffer() );
             ps.flush();
             ps.close();
@@ -317,11 +320,13 @@ public class DIGConnection {
                 ch = in.read();
             }
             
+            LogFactory.getLog( getClass() ).debug( "Response buffer = " + buf.toString() );
             // now parse into a document
             DocumentBuilder builder = m_factory.newDocumentBuilder();
             return builder.parse( new ByteArrayInputStream( buf.toString().getBytes() ) );
         }
         catch (Exception e) {
+            e.printStackTrace( System.err );
             throw new DIGWrappedException( e );
         }
     }
