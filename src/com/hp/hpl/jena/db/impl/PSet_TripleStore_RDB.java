@@ -42,7 +42,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.24 $ on $Date: 2003-06-18 20:58:49 $
+* @version $Revision: 1.25 $ on $Date: 2003-06-18 23:56:36 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -133,7 +133,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	
 	/**
 	 * Accessor for m_ASTName.
-	 * @returns name of the Statement table.
+	 * @return name of the Statement table.
 	 */
 	protected String getASTname() {
 		return m_ASTName;
