@@ -64,6 +64,9 @@ package com.hp.hpl.jena.rdf.arp;
 
 import java.io.Serializable;
 import org.apache.log4j.Logger;
+
+import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
+
 import java.util.StringTokenizer;
 
 /**********************************************************************
@@ -95,7 +98,7 @@ import java.util.StringTokenizer;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.10 2003-06-25 07:23:06 jeremy_carroll Exp $
+* @version  $Id: URI.java,v 1.11 2003-11-29 15:06:41 jeremy_carroll Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -1487,47 +1490,5 @@ public class URI implements Serializable {
         int ix = s.lastIndexOf('/',s.length()-2);
         return s.substring(0,ix+1);
     }
-    static public String flags2str(int f) {
-    StringBuffer oldValue = new StringBuffer(64);
-    if ( (f&SAMEDOCUMENT)!=0 )
-       oldValue.append( "same-document, " );
-    if ( (f&NETWORK)!=0 )
-       oldValue.append( "network, ");
-    if ( (f&ABSOLUTE)!=0 )
-       oldValue.append("absolute, ");
-    if ( (f&RELATIVE)!=0 )
-       oldValue.append("relative, ");
-    if ((f&PARENT)!=0)
-       oldValue.append("parent, ");
-    if ((f&GRANDPARENT)!=0)
-       oldValue.append("grandparent, ");
-    if (oldValue.length() > 0)
-       oldValue.setLength(oldValue.length()-2);
-       return oldValue.toString();
-    }
-    public static int str2flags(String pv){
-    StringTokenizer tkn = new StringTokenizer(pv,", ");
-    int rslt = 0;
-    while ( tkn.hasMoreElements() ) {
-        String flag = tkn.nextToken();
-        if ( flag.equals("same-document") )
-           rslt |= SAMEDOCUMENT;
-        else if ( flag.equals("network") )
-           rslt |= NETWORK;
-        else if ( flag.equals("absolute") )
-           rslt |= ABSOLUTE;
-        else if ( flag.equals("relative") )
-           rslt |= RELATIVE;
-        else if ( flag.equals("parent") )
-           rslt |= PARENT;
-        else if ( flag.equals("grandparent") )
-           rslt |= GRANDPARENT;
-        else
-
-        logger.warn(
-            "Incorrect property value for relativeURIs: " + flag
-            );
-    }
-    return rslt;
-    }
+    
 }

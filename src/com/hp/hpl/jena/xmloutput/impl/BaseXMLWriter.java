@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.29 2003-11-12 11:18:38 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.30 2003-11-29 15:07:53 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.29 $' Date='$Date: 2003-11-12 11:18:38 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.30 $' Date='$Date: 2003-11-29 15:07:53 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -56,8 +56,22 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     }
     
     /** log4j logger */
-	protected static Logger logger = Logger.getLogger( BaseXMLWriter.class );
-
+	//protected static Logger logger = Logger.getLogger( BaseXMLWriter.class );
+  protected static SimpleLogger logger = new SimpleLogger() {
+  	public void warn(String s) {
+  		System.err.println(s);
+  	}
+  	public void warn(String s, Exception e) {
+  		System.err.println(s);
+  	}
+  };
+  
+  public static SimpleLogger setLogger(SimpleLogger lg) {
+  	SimpleLogger old = logger;
+  	logger= lg;
+  	return old;
+  }
+  
     abstract void unblockAll();
     
     abstract void blockRule(Resource r);
@@ -393,7 +407,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             case END :
                 return prefix + ":" + local;
             case FAST :
-                logger.fatal("Unreachable code - reached.");
+              //  logger.fatal("Unreachable code - reached.");
                 throw new BrokenException( "cookup reached final FAST" );
             }
         }
@@ -542,8 +556,8 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			return setTypes((Resource[]) propValue);
 		} else if (propName.equalsIgnoreCase("relativeURIs")) {
 			int old = relativeFlags;
-			relativeFlags = URI.str2flags((String) propValue);
-			return URI.flags2str(old);
+			relativeFlags = str2flags((String) propValue);
+			return flags2str(old);
 		} else if (propName.equalsIgnoreCase("blockRules")) {
 			return setBlockRules(propValue);
 		} else {
@@ -718,6 +732,51 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
             return true;
         return false;
     }
+
+	static private String flags2str(int f) {
+	StringBuffer oldValue = new StringBuffer(64);
+	if ( (f&URI.SAMEDOCUMENT)!=0 )
+	   oldValue.append( "same-document, " );
+	if ( (f&URI.NETWORK)!=0 )
+	   oldValue.append( "network, ");
+	if ( (f&URI.ABSOLUTE)!=0 )
+	   oldValue.append("absolute, ");
+	if ( (f&URI.RELATIVE)!=0 )
+	   oldValue.append("relative, ");
+	if ((f&URI.PARENT)!=0)
+	   oldValue.append("parent, ");
+	if ((f&URI.GRANDPARENT)!=0)
+	   oldValue.append("grandparent, ");
+	if (oldValue.length() > 0)
+	   oldValue.setLength(oldValue.length()-2);
+	   return oldValue.toString();
+	}
+
+	public static int str2flags(String pv){
+	StringTokenizer tkn = new StringTokenizer(pv,", ");
+	int rslt = 0;
+	while ( tkn.hasMoreElements() ) {
+	    String flag = tkn.nextToken();
+	    if ( flag.equals("same-document") )
+	       rslt |= URI.SAMEDOCUMENT;
+	    else if ( flag.equals("network") )
+	       rslt |= URI.NETWORK;
+	    else if ( flag.equals("absolute") )
+	       rslt |= URI.ABSOLUTE;
+	    else if ( flag.equals("relative") )
+	       rslt |= URI.RELATIVE;
+	    else if ( flag.equals("parent") )
+	       rslt |= URI.PARENT;
+	    else if ( flag.equals("grandparent") )
+	       rslt |= URI.GRANDPARENT;
+	    else
+	
+	    logger.warn(
+	        "Incorrect property value for relativeURIs: " + flag
+	        );
+	}
+	return rslt;
+	}
     
 }
 

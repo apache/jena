@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.22 2003-11-12 11:17:58 jeremy_carroll Exp $
+    $Id: testWriterAndReader.java,v 1.23 2003-11-29 15:07:52 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -17,7 +17,7 @@ import java.io.*;
 import java.util.*;
 
 import junit.framework.*;
-import org.apache.log4j.Logger;
+//import org.apache.log4j.Logger;
 
 /**
  * This will test any Writer and Reader pair.
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2003-11-12 11:17:58 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.23 $' Date='$Date: 2003-11-29 15:07:52 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -37,7 +37,7 @@ public class testWriterAndReader
 	static private int lastTest = 9;
 	static private int repetitionsJ = 6;
     
-    protected static Logger logger = Logger.getLogger( testWriterAndReader.class );
+ //   protected static Logger logger = Logger.getLogger( testWriterAndReader.class );
     
 	String lang;
 	String test;
@@ -487,7 +487,7 @@ public class testWriterAndReader
 	 * @param e an exception representing the error
 	 */
 	public void warning(Exception e) {
-		logger.warn( toString() + " " + e.getMessage(), e );
+//		logger.warn( toString() + " " + e.getMessage(), e );
 		throw new JenaException( e );
 	}
     
@@ -542,5 +542,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.22 2003-11-12 11:17:58 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.23 2003-11-29 15:07:52 jeremy_carroll Exp $
  */

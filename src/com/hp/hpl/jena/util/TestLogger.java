@@ -2,7 +2,7 @@
  *  (c) Copyright 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved. 
  * [See end of file]
-  $Id: TestLogger.java,v 1.4 2003-08-27 13:07:55 andy_seaborne Exp $
+  $Id: TestLogger.java,v 1.5 2003-11-29 15:09:05 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.util;
 import org.apache.log4j.*;
@@ -18,7 +18,7 @@ import org.apache.log4j.spi.LoggingEvent;
  * @author jjc
  *
  */
-public class TestLogger {
+class TestLogger {
     private int eCnt = 0;
     /** Suppresses the logger identified by c
      * 
@@ -74,5 +74,5 @@ public class TestLogger {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestLogger.java,v 1.4 2003-08-27 13:07:55 andy_seaborne Exp $
+ * $Id: TestLogger.java,v 1.5 2003-11-29 15:09:05 jeremy_carroll Exp $
  */

@@ -2,12 +2,12 @@
  *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.34 2003-11-12 11:17:58 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.35 2003-11-29 15:07:53 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
-import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
+import com.hp.hpl.jena.xmloutput.impl.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
@@ -16,6 +16,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
+//import com.hp.hpl.jena.util.*;
 
 import junit.framework.*;
 
@@ -25,21 +26,21 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import java.util.*;
 
 import java.io.*;
-import com.hp.hpl.jena.util.TestLogger;
-import org.apache.log4j.*;
+//import com.hp.hpl.jena.util.TestLogger;
+//import org.apache.log4j.Level;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.34 $ $Date: 2003-11-12 11:17:58 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.35 $ $Date: 2003-11-29 15:07:53 $
  */
 
 public class TestXMLFeatures extends ModelTestBase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
 	static AwkMatcher matcher = PrettyWriterTest.matcher;
     
-    static protected Logger logger = Logger.getLogger( TestXMLFeatures.class );
+   // static protected Logger logger = Logger.getLogger( TestXMLFeatures.class );
 
-    static { logger.setLevel( Level.OFF ); }
+   // static { logger.setLevel( Level.OFF ); }
     
 	static private class Change {
 		void code(RDFWriter w) {
@@ -65,6 +66,26 @@ public class TestXMLFeatures extends ModelTestBase {
 
 	public static Test suite() {
 		return new TestSuite(TestXMLFeatures.class);
+	}
+	static SimpleLogger realLogger;
+	static boolean sawErrors;
+	static SimpleLogger falseLogger = new SimpleLogger() {
+
+		public void warn(String s) {
+			sawErrors = true;
+		}
+
+		public void warn(String s, Exception e) {
+			sawErrors = true;
+		}
+	};
+	static private void blockLogger() {
+		realLogger = BaseXMLWriter.setLogger(falseLogger);
+		sawErrors = false;
+	}
+	static private boolean unblockLogger() {
+	  BaseXMLWriter.setLogger(realLogger);
+	  return sawErrors;
 	}
     
     /**
@@ -187,7 +208,8 @@ public class TestXMLFeatures extends ModelTestBase {
 		Change code,
         String base)
 		throws IOException, MalformedPatternException {
-		TestLogger tl = new TestLogger(BaseXMLWriter.class);
+		//TestLogger tl = new TestLogger(BaseXMLWriter.class);
+		blockLogger();
 		boolean errorsFound;
 		Model m = createMemModel();
         InputStream in = new FileInputStream(filename);
@@ -228,7 +250,7 @@ public class TestXMLFeatures extends ModelTestBase {
 					!matcher.contains(contents, awk.compile(regexAbsent)));
 			contents = null;
 		} finally {
-			errorsFound = !tl.end();
+			errorsFound = unblockLogger();
 			System.setProperties(p);
 			if (contents != null) {
 				System.err.println("===================");
@@ -711,7 +733,9 @@ public class TestXMLFeatures extends ModelTestBase {
 		throws IOException {
 		// create triple and graph.
         //BaseXMLWriter.dbg = true;
-        TestLogger tl = new TestLogger(BaseXMLWriter.class);
+   // SystemOutAndErr.block();
+    //TestLogger tl = new TestLogger(BaseXMLWriter.class);
+    blockLogger();
 		Node blank = Node.createAnon();
 		Node prop = Node.createURI(s);
 		Graph g = new GraphMem();
@@ -736,7 +760,10 @@ public class TestXMLFeatures extends ModelTestBase {
 			}
 			// read back in
 			Model m2 = createMemModel();
-			m2.read(new StringReader(f), "http://example.org/", lang);
+			RDFReader rdr = m2.getReader("RDF/XML");
+			rdr.setProperty("error-mode","lax");
+			rdr.read(m2,new StringReader(f), "http://example.org/" );
+			//m2.read(, lang);
 
 			// check
 			switch (behaviour) {
@@ -760,28 +787,32 @@ public class TestXMLFeatures extends ModelTestBase {
             throw e;
 		} finally {
           //          BaseXMLWriter.dbg = false;
-          tl.end();
+     //  tl.end();
+     unblockLogger();
+	// SystemOutAndErr.unblock();
         }
 	}
 
     public void testBadURIAsProperty1() throws IOException {
         try
             { 
-            RDFDefaultErrorHandler.logger.setLevel( Level.OFF );
+         //   RDFDefaultErrorHandler.logger.setLevel( Level.OFF );
             checkPropURI("_:aa", null, null, BadURI);
             }
         finally
-            { RDFDefaultErrorHandler.logger.setLevel( Level.WARN ); }
+            { //RDFDefaultErrorHandler.logger.setLevel( Level.WARN ); 
+            }
     }
 
     public void testBadURIAsProperty2() throws IOException {
         try
             { 
-            RDFDefaultErrorHandler.logger.setLevel( Level.OFF );
+           // RDFDefaultErrorHandler.logger.setLevel( Level.OFF );
             checkPropURI("_:aa", "allowBadURIs", "true", NoError);
             }
         finally
-            { RDFDefaultErrorHandler.logger.setLevel( Level.WARN ); }
+            {//RDFDefaultErrorHandler.logger.setLevel( Level.WARN ); 
+            }
     }
 
     public void testLiAsProperty1() throws IOException {
@@ -815,9 +846,10 @@ public class TestXMLFeatures extends ModelTestBase {
 		w.setProperty(
 			"relativeURIs",
 			"  parent, same-document, network, parent, absolute ");
-		TestLogger tl = new TestLogger(URI.class);
+		//TestLogger tl = new TestLogger(URI.class);
+		blockLogger();
 		w.setProperty("relativeURIs", "foo"); // will get warning
-		assertTrue("A warning should have been generated.", !tl.end());
+		assertTrue("A warning should have been generated.", unblockLogger());
 	}
 	private void relative(
 		String relativeParam,
@@ -1104,7 +1136,7 @@ public class TestXMLFeatures extends ModelTestBase {
 
 			for (int i = 0; i < n.length; i++) {
 				System.out.print(" { \"" + n[i] + "\", ");
-				int f = URI.str2flags(n[i]);
+				int f = BaseXMLWriter.str2flags(n[i]);
 				for (int j = 0; j < uris.length; j++) {
 					String r = bb.relativize(uris[j], f);
 					System.out.print(
@@ -1143,5 +1175,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.34 2003-11-12 11:17:58 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.35 2003-11-29 15:07:53 jeremy_carroll Exp $
  */
