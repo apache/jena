@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 13:47:44 $
+ * Last modified on   $Date: 2003-06-17 16:09:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -49,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.24 2003-06-17 13:47:44 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.25 2003-06-17 16:09:02 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1046,6 +1046,15 @@ public class OntResourceImpl
         else {
             return new PathSet( this, PathFactory.unit( p ) );
         }
+    }
+    
+    /** Answer true if the node has the given type in the graph */
+    protected static boolean hasType( Node n, EnhGraph g, Resource type ) {
+        boolean hasType = false;
+        ClosableIterator i = g.asGraph().find( n, RDF.type.asNode(), type.asNode() );
+        hasType = i.hasNext();
+        i.close();
+        return hasType;
     }
     
     /** 

@@ -6,36 +6,14 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLPropertyImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-17 16:09:02 $
  *               by   $Author: ian_dickinson $
  *
- * (c) Copyright Hewlett-Packard Company 2001
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
+ * (see footer for full conditions)
  *****************************************************************************/
 
 // Package
@@ -45,25 +23,30 @@ package com.hp.hpl.jena.ontology.daml.impl;
 
 // Imports
 ///////////////
-import java.util.Iterator;
+import java.util.*;
 
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.*;
-import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
+import com.hp.hpl.jena.ontology.impl.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 
 /**
- * Java encapsulation of a property in a DAML ontology.  In DAML, properties are
- * first-class values in their own right, and not just aspects of classes.
+ * <p>Encapsulates a property in a DAML ontology.  According to the specification,
+ * a daml:Property is an alias for rdf:Property.  It also acts as the super-class for
+ * more semantically meaningful property classes: datatype properties and object properties.
+ * The DAML spec also allows any property to be unique (that is, it defines UniqueProperty
+ * as a sub-class of Property), so uniqueness is modelled here as an attribute of a DAMLProperty.</p>
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.2 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.3 2003-06-17 16:09:02 ian_dickinson Exp $
  */
 public class DAMLPropertyImpl
-    extends DAMLCommonImpl
+    extends OntPropertyImpl
     implements DAMLProperty
 {
     // Constants
@@ -74,23 +57,24 @@ public class DAMLPropertyImpl
     //////////////////////////////////
 
     /**
-     * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
+     * A factory for generating DAMLProperty facets from nodes in enhanced graphs.
      * Note: should not be invoked directly by user code: use 
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
-                return new DAMLClassImpl( n, eg );
+                return new DAMLPropertyImpl( n, eg );
             }
             else {
-                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLOntology" );
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLProperty" );
             } 
         }
             
         public boolean canWrap( Node node, EnhGraph eg ) {
-            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  profile.isSupported( node, eg, DAMLOntology.class );
+            return hasType( node, eg, DAML_OIL.Property ) ||
+                   hasType( node, eg, DAML_OIL.DatatypeProperty ) ||
+                   hasType( node, eg, DAML_OIL.ObjectProperty );
         }
     };
 
@@ -98,26 +82,31 @@ public class DAMLPropertyImpl
     // Instance variables
     //////////////////////////////////
 
+    /** Vocabulary */
+    private DAMLVocabulary m_vocabulary = VocabularyManager.getDefaultVocabulary();
+    
     /** Property accessor for domain */
-    private PropertyAccessor m_propDomain = null;
+    private PropertyAccessor m_propDomain = new PropertyAccessorImpl( getVocabulary().domain(), this );
 
     /** Property accessor for range */
-    private PropertyAccessor m_propRange = null;
+    private PropertyAccessor m_propRange = new PropertyAccessorImpl( getVocabulary().range(), this );
 
     /** Property accessor for subPropertyOf */
-    private PropertyAccessor m_propSubPropertyOf = null;
+    private PropertyAccessor m_propSubPropertyOf = new PropertyAccessorImpl( getVocabulary().subPropertyOf(), this );
 
     /** Property accessor for samePropertyAs */
-    private PropertyAccessor m_propSamePropertyAs = null;
+    private PropertyAccessor m_propSamePropertyAs = new PropertyAccessorImpl( getVocabulary().samePropertyAs(), this );
 
-
-
+    /** DAMLCommon delegate */
+    private DAMLCommon m_common = null;
+    
+    
     // Constructors
     //////////////////////////////////
 
     /**
      * <p>
-     * Construct a DAML list represented by the given node in the given graph.
+     * Construct a DAML property represented by the given node in the given graph.
      * </p>
      * 
      * @param n The node that represents the resource
@@ -125,6 +114,7 @@ public class DAMLPropertyImpl
      */
     public DAMLPropertyImpl( Node n, EnhGraph g ) {
         super( n, g );
+        m_common = new DAMLCommonImpl( n, g );
     }
 
 
@@ -132,28 +122,54 @@ public class DAMLPropertyImpl
     // External signature methods
     //////////////////////////////////
 
+    // delegate to DAMLCommon what we can
+    /** @deprecated */
+    public void setRDFType( Resource rdfClass, boolean replace ) { m_common.setRDFType( rdfClass, replace ); }
+    public DAMLModel getDAMLModel()                              { return m_common.getDAMLModel(); }
+    public Iterator getRDFTypes( boolean complete )              { return m_common.getRDFTypes( complete ); }
+    public DAMLVocabulary getVocabulary()                        { return m_vocabulary; }
+    public LiteralAccessor prop_label()                          { return m_common.prop_label(); }
+    public LiteralAccessor prop_comment()                        { return m_common.prop_comment(); }
+    public PropertyAccessor prop_equivalentTo()                  { return m_common.prop_equivalentTo(); }
+    public PropertyAccessor prop_type()                          { return m_common.prop_type(); }
+    
+    /**
+     * <p>Answer an iterator over all of the DAML objects that are equivalent to this
+     * class, which will be the union of <code>daml:equivalentTo</code> and
+     * <code>daml:sameClassAs</code>.</p>
+     *
+     * @return an iterator ranging over every equivalent DAML class
+     */
+    public Iterator getEquivalentValues() {
+        ConcatenatedIterator i = new ConcatenatedIterator(
+                       // first the iterator over the equivalentTo values
+                       m_common.getEquivalentValues(),
+                       // followed by the samePropertyAs values
+                       getSameProperties() );
+
+        return new UniqueExtendedIterator( i ).mapWith( new AsMapper( DAMLProperty.class ) );
+    }
+
 
     /**
-     * Return a readable representation of the DAML value
+     * Answer the set of equivalent values to this value, but not including the
+     * value itself.  The iterator will range over a set: each element occurs only
+     * once.
      *
-     * @return a string denoting this value
+     * @return An iteration ranging over the set of values that are equivalent to this
+     *         value, but not itself.
      */
-    public String toString() {
-        // get the public name for this value type (e.g. we change DAMLClassImpl -> DAMLClass)
-        String cName = getClass().getName();
-        int i = cName.indexOf( "Impl" );
-        int j = cName.lastIndexOf( "." ) + 1;
-        cName = (i > 0) ? cName.substring( j, i ) : cName.substring( j );
+    public Iterator getEquivalenceSet() {
+        Set s = new HashSet();
 
-        // property attributes
-        String attribs;
-        attribs = isUnique() ? "unique " : "";
-
-        // now format the return string
-        return (getURI() == null) ?
-                   ("<" + attribs + "Anonymous " + cName + "@" + Integer.toHexString( hashCode() ) + ">") :
-                   ("<" + attribs + cName + " " + getURI() + ">");
+        s.add( this );
+        for (Iterator i = getEquivalentValues();  i.hasNext();  s.add( i.next() ) );
+        s.remove( this );
+        
+        return s.iterator();
     }
+
+
 
 
     /**
@@ -164,8 +180,8 @@ public class DAMLPropertyImpl
      */
     public void setIsUnique( boolean unique ) {
         if (unique) {
-            // add the transitive type to this property
-            setRDFType( getVocabulary().UniqueProperty() );
+            // add the unique type to this property
+            addRDFType( getVocabulary().UniqueProperty() );
         }
         else {
             // remove the transitive type from this property
@@ -193,10 +209,6 @@ public class DAMLPropertyImpl
      * @return Property accessor for 'domain'.
      */
     public PropertyAccessor prop_domain() {
-        if (m_propDomain == null) {
-            m_propDomain = new PropertyAccessorImpl( getVocabulary().domain(), this );
-        }
-
         return m_propDomain;
     }
 
@@ -208,10 +220,6 @@ public class DAMLPropertyImpl
      * @return Property accessor for 'subPropertyOf'.
      */
     public PropertyAccessor prop_subPropertyOf() {
-        if (m_propSubPropertyOf == null) {
-            m_propSubPropertyOf = new PropertyAccessorImpl( getVocabulary().subPropertyOf(), this );
-        }
-
         return m_propSubPropertyOf;
     }
 
@@ -223,10 +231,6 @@ public class DAMLPropertyImpl
      * @return Property accessor for 'samePropertyAs'.
      */
     public PropertyAccessor prop_samePropertyAs() {
-        if (m_propSamePropertyAs == null) {
-            m_propSamePropertyAs = new PropertyAccessorImpl( getVocabulary().samePropertyAs(), this );
-        }
-
         return m_propSamePropertyAs;
     }
 
@@ -239,51 +243,24 @@ public class DAMLPropertyImpl
      * @return Property accessor for 'range'.
      */
     public PropertyAccessor prop_range() {
-        if (m_propRange == null) {
-            m_propRange = new PropertyAccessorImpl( getVocabulary().range(), this );
-        }
-
         return m_propRange;
     }
 
 
     /**
-     * Answer an iterator over all of the DAML properties that are equivalent to this
+     * <p>Answer an iterator over all of the DAML properties that are equivalent to this
      * value under the <code>daml:samePropertyAs</code> relation.  Note: only considers
      * <code>daml:samePropertyAs</code>, for general equivalence, see
-     * {@link #getEquivalentValues}.  Note that the first member of the iteration is
+     * {@link #getEquivalentValues}.  Note also that the first member of the iteration is
      * always the DAMLProperty on which the method is invoked: trivially, a property is
      * a member of the set of properties equivalent to itself.  If the caller wants
      * the set of properties equivalent to this one, not including itself, simply ignore
-     * the first element of the iteration.
+     * the first element of the iteration.</p>
      *
-     * @return an iterator ranging over every equivalent DAML property - each value of
-     *         the iteration will be a DAMLProperty object.
+     * @return an iterator ranging over every equivalent DAML property.
      */
     public Iterator getSameProperties() {
-        return new PropertyIterator( this, getVocabulary().samePropertyAs(), getVocabulary().samePropertyAs(), true, true );
-    }
-
-
-    /**
-     * Answer an iterator over all of the DAML objects that are equivalent to this
-     * property, which will be the union of <code>daml:equivalentTo</code> and
-     * <code>daml:samePropertyAs</code>.
-     *
-     * @return an iterator ranging over every equivalent DAML class - each value of
-     *         the iteration should be a DAMLProperty object.
-     */
-    public Iterator getEquivalentValues() {
-        ConcatenatedIterator i = new ConcatenatedIterator(
-                       // first the iterator over the equivalentTo values
-                       super.getEquivalentValues(),
-                       // followed by the samePropertyAs values
-                       new PropertyIterator( this, getVocabulary().samePropertyAs(), getVocabulary().samePropertyAs(), true, false, false ) );
-
-        // ensure that the iteration includes self
-        i.setDefaultValue( this );
-
-        return i;
+        return WrappedIterator.create( super.listEquivalentProperties() ).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 
 
@@ -301,26 +278,28 @@ public class DAMLPropertyImpl
 
 
     /**
-     * Answer an iterator over all of the super-properties of this property, using the
-     * <code>rdfs:subPropertyOf</code> relation (or one of its aliases).   The set of super-properties
-     * is optionally transitively closed over the subPropertyOf relation.
-     *
-     * @param closed If true, iterate over the super-properties of my super-properties, etc.
-     * @return An iterator over the super-properties of this property,
-     *         whose values will be DAMLProperties.
+     * <p>Answer an iterator over all of the super-properties of this property.</p>
+     * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
+     * this iterator includes <em>inferred</em> super-properties is determined
+     * not by a flag at the API level, but by the construction of the DAML
+     * model itself.  See {@link ModelFactory} for details. The boolean parameter
+     * <code>closed</code> is now re-interpreted to mean the inverse of <code>
+     * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
+     * </p>
+     * 
+     * @param closed If true, return all available values; otherwise, return
+     * only local (direct) super-properties. See note for details.
+     * @return An iterator over this property's super-properties.
      */
     public Iterator getSuperProperties( boolean closed ) {
-        return new PropertyIterator( this, getVocabulary().subPropertyOf(), null, closed, false, true );
+        return WrappedIterator.create( listSuperProperties( !closed ) ).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 
 
     /**
-     * Answer an iterator over all of the sub-properties of this property, using the
-     * <code>rdfs:subPropertyOf</code> relation (or one of its aliases).   The set of sub-properties
-     * is transitively closed over the subPropertyOf relation.
+     * <p>Answer an iterator over all of the sub-properties of this property.</p>
      *
-     * @return An iterator over the sub-properties of this property,
-     *         whose values will be DAMLProperties.
+     * @return An iterator over the sub-properties of this property.
      */
     public Iterator getSubProperties() {
         return getSubProperties( true );
@@ -328,36 +307,35 @@ public class DAMLPropertyImpl
 
 
     /**
-     * Answer an iterator over all of the sub-properties of this property, using the
-     * <code>rdfs:subPropertyOf</code> relation (or one of its aliases).   The set of sub-properties
-     * is optionally transitively closed over the subPropertyOf relation.
-     *
-     * @param closed If true, iterate over the sub-properties of my sub-properties, etc.
-     * @return An iterator over the sub-properties of this property,
-     *         whose values will be DAMLProperties.
+     * <p>Answer an iterator over all of the sub-properties of this property.</p>
+     * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
+     * this iterator includes <em>inferred</em> sub-properties is determined
+     * not by a flag at the API level, but by the construction of the DAML
+     * model itself.  See {@link ModelFactory} for details. The boolean parameter
+     * <code>closed</code> is now re-interpreted to mean the inverse of <code>
+     * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
+     * </p>
+     * 
+     * @param closed If true, return all available values; otherwise, return
+     * only local (direct) sub-properties. See note for details.
+     * @return An iterator over this property's sub-properties.
      */
     public Iterator getSubProperties( boolean closed ) {
-        return new PropertyIterator( this, null, getVocabulary().subPropertyOf(), closed, false, true );
+        return WrappedIterator.create( listSubProperties( !closed ) ).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 
 
     /**
-     * Answer an iterator over all of the DAML classes that form the domain of this
+     * <p>Answer an iterator over all of the DAML classes that form the domain of this
      * property.  The actual domain of the relation denoted by this property is the
      * conjunction of all of the classes mention by the RDFS:domain property of this
-     * DAML property and all of its super-properties.
+     * DAML property and all of its super-properties.</p>
      *
      * @return an iterator whose values will be the DAML classes that define the domain
      *         of the relation
      */
     public Iterator getDomainClasses() {
-        // first we want an iteration of this property and all of its super-properties
-        Iterator i = new ConcatenatedIterator(
-                             null, // TODO getSelfIterator(),
-                             getSuperProperties() );
-
-        // from this starting point, get all domain values
-        return new PropertyIterator( i, getVocabulary().domain(), null, false, false );
+        return WrappedIterator.create( listPropertyValues( getProfile().DOMAIN() ) ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
 
@@ -371,32 +349,10 @@ public class DAMLPropertyImpl
      *         of the relation
      */
     public Iterator getRangeClasses() {
-        // first we want an iteration of this property and all of its super-properties
-        Iterator i = new ConcatenatedIterator(
-                             null, // TODO getSelfIterator(),
-                             getSuperProperties() );
-
-        // from this starting point, get all domain values
-        return new PropertyIterator( i, getVocabulary().range(), null, false, false );
+        return WrappedIterator.create( listPropertyValues( getProfile().RANGE() ) ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
-
-     public boolean isProperty() {
-     	return true;
-     }
-    /**
-     * Answers the ordinal value of a containment property.  Since DAML properties
-     * are not used as containment properties, this method always returns 0. See
-     * {@link com.hp.hpl.jena.rdf.model.Property#getOrdinal getOrdinal} for
-     * more details.
-     *
-     * @return zero.
-     */
-    public int getOrdinal() {
-        return 0;
-    }
-
-
+     
 
 
     // Internal implementation methods
@@ -410,3 +366,34 @@ public class DAMLPropertyImpl
 
 
 }
+
+/*
+    (c) Copyright Hewlett-Packard Company 2001-2003
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
