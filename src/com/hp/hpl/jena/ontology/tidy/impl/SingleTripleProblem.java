@@ -5,6 +5,8 @@
 
 package com.hp.hpl.jena.ontology.tidy.impl;
 
+import com.hp.hpl.jena.graph.Graph;
+
 
 /**
  * @author Jeremy J. Carroll
@@ -14,6 +16,10 @@ abstract public class SingleTripleProblem extends MonotonicProblem {
 
     public SingleTripleProblem(String msg) {
         super(msg);
+    }
+    
+    public Graph getMinimalGraph() {
+        return FullnessProof.asGraph(triple);
     }
 }
 

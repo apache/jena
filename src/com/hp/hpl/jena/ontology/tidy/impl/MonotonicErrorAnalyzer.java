@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: MonotonicErrorAnalyzer.java,v 1.13 2005-01-10 06:59:01 jeremy_carroll Exp $
+ $Id: MonotonicErrorAnalyzer.java,v 1.14 2005-01-19 15:27:57 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -9,6 +9,8 @@ import java.util.*;
 
 import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.ontology.tidy.errors.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.*;
 
 /**
  * 
@@ -19,9 +21,9 @@ import com.hp.hpl.jena.ontology.tidy.errors.*;
  *  
  */
 public class MonotonicErrorAnalyzer implements Constants {
-    
+
     // TODO MAX_SINGLETON_SET in Grammar is wrong.
-    
+
     final static private int BLANK_PROP = 1;
 
     final static private int LITERAL_PROP = 2;
@@ -91,8 +93,78 @@ public class MonotonicErrorAnalyzer implements Constants {
     static private final int SZ = CategorySet.unsorted.size();
 
     MonotonicProblem rslt;
-    
-    public MonotonicProblem getErrorCode(int s, int p, int o, int sx, int px, int ox) {
+
+    /**
+     * Preconditions
+     * 
+     * @param g
+     *            A graph in DL or Lite
+     * @param t
+     *            A triple which when added to g makes it full.
+     * @return
+     */
+    static public MonotonicProblem[] getProblem(AbsChecker g, Triple t) {
+        SimpleChecker empty = new SimpleChecker();
+        MonotonicProblem r = new MonotonicErrorAnalyzer().getErrorCode(g
+                .getCategory(t.getSubject()), g.getCategory(t.getPredicate()),
+                g.getCategory(t.getObject()),
+                empty.getCategory(t.getSubject()), empty.getCategory(t
+                        .getPredicate()), empty.getCategory(t.getObject()));
+        MonotonicProblem rslt[] = r.nextProblem() == null ? new MonotonicProblem[] { r }
+                : new MonotonicProblem[] { r, r.nextProblem() };
+        for (int i = 0; i < rslt.length; i++)
+            rslt[i].setTriple(t);
+        return rslt;
+    }
+/*
+    static int assess(Graph g, MonotonicProblem p, Graph t) {
+        if (p instanceof MultipleTripleProblem) {
+            MultipleTripleProblem mtp = (MultipleTripleProblem) p;
+            FullnessProof fp = new FullnessProof(g, t, mtp.getNode1(), mtp
+                    .getNode2());
+            return fp.extend();
+        }
+        else
+            return 1;
+
+    }
+  */  
+    static public MonotonicProblem[] allProblems(AbsChecker c, Triple t) {
+
+        Graph g = c.justForErrorMessages == null ? c.hasBeenChecked
+                : new DisjointUnion(c.hasBeenChecked, c.justForErrorMessages);
+        Graph tt = FullnessProof.asGraph(t);
+     MonotonicProblem x[] = getProblem(c,t);
+     Vector v = new Vector();
+     for (int i=0;i<x.length;i++) {
+         if (x[i] instanceof MultipleTripleProblem) {
+             MultipleTripleProblem mtp = (MultipleTripleProblem) x[i];
+             FullnessProof fp = new FullnessProof(g, tt, mtp.getNode1(), mtp
+                     .getNode2(), v, t);
+             fp.extend();
+         } else if (x[i] instanceof SingleTripleProblem){
+             v.add(x[i]);
+         } else {
+             throw new BrokenException("Unreachable code.");
+         }
+     }
+     return (MonotonicProblem[])v.toArray(new MonotonicProblem[v.size()]);
+    }
+/*
+    static public int test(AbsChecker c, Triple t) {
+        MonotonicProblem p[] = getProblem(c, t);
+        Graph g = c.justForErrorMessages == null ? c.hasBeenChecked
+                : new DisjointUnion(c.hasBeenChecked, c.justForErrorMessages);
+        Graph tt = FullnessProof.asGraph(t);
+        if (p.length == 1)
+            return assess(g, p[0], tt);
+        else
+            return assess(g, p[0], tt) + 100 * assess(g, p[1], tt);
+
+    }
+*/
+    public MonotonicProblem getErrorCode(int s, int p, int o, int sx, int px,
+            int ox) {
         //  Throws array access error if not 0 <= s,p,o,sx,px,ox < SZ.
         if (look.qrefine(s, p, o) != Failure)
             throw new IllegalArgumentException("triple is not in error");
@@ -107,7 +179,7 @@ public class MonotonicErrorAnalyzer implements Constants {
         for (int i = 0; i < 3; i++) {
             if (look.meet(general[i], given[i]) == Failure) {
                 IncompatibleUsageProblem r = new IncompatibleUsageProblem(i);
-                catMiss(r,general[i], given[i]);
+                catMiss(r, general[i], given[i]);
                 addResult(r);
             }
         }
@@ -131,7 +203,6 @@ public class MonotonicErrorAnalyzer implements Constants {
         }
         throw new BrokenException("Illegal argument to spo: " + f);
     }
-
 
     private MonotonicProblem difficultCase(int given[], int general[]) {
 
@@ -157,14 +228,15 @@ public class MonotonicErrorAnalyzer implements Constants {
             if (keyWithIGeneral[i] == Failure) {
                 // the two that are not i have conflicting given values
                 failures |= (1 << i);
-                ComplexIncompatibleUsageProblem r = new ComplexIncompatibleUsageProblem(i);
-                computeGivenWanted(r,i, general, keyWithIGiven, cats);
+                ComplexIncompatibleUsageProblem r = new ComplexIncompatibleUsageProblem(
+                        i);
+                computeGivenWanted(r, i, general, keyWithIGiven, cats);
                 addResult(r);
             }
         }
-        if (rslt==null)
+        if (rslt == null)
             throw new BrokenException("logic error");
-            
+
         return rslt;
     }
 
@@ -181,16 +253,15 @@ public class MonotonicErrorAnalyzer implements Constants {
      * @param givenCats
      *            The categories from the other triples
      */
-    private static void computeGivenWanted(
-            ComplexIncompatibleUsageProblem r,
-            int unchanged, int[] general,
-            int[] keyWithIGiven, int[][] givenCats) {
+    private static void computeGivenWanted(ComplexIncompatibleUsageProblem r,
+            int unchanged, int[] general, int[] keyWithIGiven, int[][] givenCats) {
         int ix = 0;
         for (int i = 0; i < 3; i++)
             if (i != unchanged) {
                 int want = spo(i, general[i], keyWithIGiven[3 - i - unchanged]);
                 int wantC[] = nonPseudoCats(want);
-                CategorySetNames.symmetricNames(r.wantedGiven(i),wantC, givenCats[i]);
+                CategorySetNames.symmetricNames(r.wantedGiven(i), wantC,
+                        givenCats[i]);
 
             }
 
@@ -202,11 +273,12 @@ public class MonotonicErrorAnalyzer implements Constants {
     }
 
     private void addResult(MonotonicProblem p) {
-        if (rslt==null)
+        if (rslt == null)
             rslt = p;
         else
             rslt.addNext(p);
     }
+
     private MonotonicProblem singleTripleError(int sx, int px, int ox) {
         if (isBlank(px))
             addResult(new BlankPropertyProblem());
@@ -214,17 +286,17 @@ public class MonotonicErrorAnalyzer implements Constants {
             addResult(new LiteralPropertyProblem());
         if (isLiteral(sx))
             addResult(new LiteralSubjectProblem());
-        
+
         if (sx == Grammar.badID)
             addResult(new BadURIProblem("%s"));
         if (px == Grammar.badID)
             addResult(new BadURIProblem("%p"));
         if (ox == Grammar.badID)
             addResult(new BadURIProblem("%o"));
-            
+
         if (rslt != null)
             return rslt;
-        
+
         if (!look.canBeSubj(sx)) {
             addResult(new IllegalSubjectProblem());
         }
@@ -239,19 +311,23 @@ public class MonotonicErrorAnalyzer implements Constants {
 
         if (//isBuiltin[px]&&
         !look.canBeProp(px)) {
-                addResult(new IllegalPredicateProblem());
+            addResult(new IllegalPredicateProblem());
         }
+
+        if (rslt != null)
+            return rslt;
+        
         int sxx[] = nonPseudoCats(sx);
         int oxx[] = nonPseudoCats(ox);
         int pxx[] = nonPseudoCats(px);
         if (!inDomain(pxx, sxx)) {
             DomainRangeProblem r = new IllegalSubjectForPredicateProblem();
-            CategorySetNames.symmetricNames(r,sxx, domain(pxx));
+            CategorySetNames.symmetricNames(r, domain(pxx), sxx);
             addResult(r);
         }
         if (!inRange(pxx, oxx)) {
             DomainRangeProblem r = new IllegalObjectForPredicateProblem();
-            CategorySetNames.symmetricNames(r,oxx, range(pxx));
+            CategorySetNames.symmetricNames(r, range(pxx), oxx);
             addResult(r);
         }
         if (rslt != null)
@@ -264,51 +340,52 @@ public class MonotonicErrorAnalyzer implements Constants {
     }
 
     static private boolean inRange(int px[], int[] ox) {
-        for (int i=0; i<px.length;i++)
-            if (Q.intersect(ox,look.range(px[i])))
+        for (int i = 0; i < px.length; i++)
+            if (Q.intersect(ox, look.range(px[i])))
                 return true;
-            
+
         return false;
     }
 
     static private boolean inDomain(int px[], int[] sx) {
-        for (int i=0; i<px.length;i++)
-            if (Q.intersect(sx,look.domain(px[i])))
+        for (int i = 0; i < px.length; i++)
+            if (Q.intersect(sx, look.domain(px[i])))
                 return true;
-            
+
         return false;
     }
-    
-    static private int[] domain(int p[]){
-        if (p.length==1)
+
+    static private int[] domain(int p[]) {
+        if (p.length == 1)
             return look.domain(p[0]);
         Set d = new TreeSet();
-        for (int i=0;i<p.length;i++) {
+        for (int i = 0; i < p.length; i++) {
             int dd[] = look.domain(p[i]);
-            for (int j=0;j<dd.length;j++)
+            for (int j = 0; j < dd.length; j++)
                 d.add(new Integer(dd[j]));
         }
         int rslt[] = new int[d.size()];
-        Iterator it=d.iterator();
+        Iterator it = d.iterator();
         int ix = 0;
         while (it.hasNext())
-            rslt[ix++]=((Integer)it.next()).intValue();
+            rslt[ix++] = ((Integer) it.next()).intValue();
         return rslt;
     }
-    static private int[] range(int p[]){
-        if (p.length==1)
+
+    static private int[] range(int p[]) {
+        if (p.length == 1)
             return look.range(p[0]);
         Set d = new TreeSet();
-        for (int i=0;i<p.length;i++) {
+        for (int i = 0; i < p.length; i++) {
             int dd[] = look.range(p[i]);
-            for (int j=0;j<dd.length;j++)
+            for (int j = 0; j < dd.length; j++)
                 d.add(new Integer(dd[j]));
         }
         int rslt[] = new int[d.size()];
-        Iterator it=d.iterator();
+        Iterator it = d.iterator();
         int ix = 0;
         while (it.hasNext())
-            rslt[ix++]=((Integer)it.next()).intValue();
+            rslt[ix++] = ((Integer) it.next()).intValue();
         return rslt;
     }
 
@@ -329,7 +406,7 @@ public class MonotonicErrorAnalyzer implements Constants {
             case Grammar.owlOntology:
             case Grammar.owlDeprecatedClass:
             case Grammar.owlOntologyProperty: // not permitted!! See
-                                              // http://www.w3.org/TR/owl-semantics/mapping.html#separated_vocabulary
+                // http://www.w3.org/TR/owl-semantics/mapping.html#separated_vocabulary
                 return new PropertyOnlyURIWithOtherTypeProblem();
 
             }
@@ -357,7 +434,7 @@ public class MonotonicErrorAnalyzer implements Constants {
             if (isClassOnly(sx))
                 return new ClassOnlyURIWithOtherTypeProblem();
             if (!isUserID(sx))
-                return  new TypeNeedsUserIDSubjectProblem();
+                return new TypeNeedsUserIDSubjectProblem();
             break;
         case Grammar.owlDeprecatedClass:
             if (!isUserID(sx))
@@ -406,9 +483,11 @@ public class MonotonicErrorAnalyzer implements Constants {
     public static boolean isPropertyOnly(int sx) {
         return look.meet(sx, Grammar.propertyOnly) == sx;
     }
+
     public static boolean isBlank(int sx) {
         return look.meet(sx, Grammar.blank) == sx;
     }
+
     public static boolean isUserID(int sx) {
         return look.meet(sx, Grammar.userID) == sx;
     }
@@ -442,134 +521,13 @@ public class MonotonicErrorAnalyzer implements Constants {
      *            from other triples
      * @return
      */
-    static private void catMiss(WantedGiven w,int wantedC, int givenC) {
+    static private void catMiss(WantedGiven w, int wantedC, int givenC) {
         if (isBlank(wantedC) != isBlank(givenC))
             throw new BrokenException("Logic error");
-        CategorySetNames.symmetricNames(w,nonPseudoCats(wantedC),
+        CategorySetNames.symmetricNames(w, nonPseudoCats(wantedC),
                 nonPseudoCats(givenC));
     }
 }
-/*
-    static private int bad = 0;
-
-    // The number of errors of each type.
-    static private int eCnt[] = new int[1000];
-
-    // The first three examples found for each sort.
-    static private int eExamples[][][] = new int[1000][3][6];
-/*
-    static private void allCases(int s, int p, int o) {
-        for (int i = 0; i < start[s].length; i++)
-            for (int j = 0; j < start[p].length; j++)
-                for (int k = 0; k < start[o].length; k++) {
-                    bad++;
-                    int e = getErrorCode(s, p, o, start[s][i], start[p][j],
-                            start[o][k]);
-                    int ix = eCnt[e]++;
-                    if (ix < 3) {
-                        eExamples[e][ix][0] = s;
-                        eExamples[e][ix][1] = p;
-                        eExamples[e][ix][2] = o;
-                        eExamples[e][ix][3] = start[s][i];
-                        eExamples[e][ix][4] = start[p][j];
-                        eExamples[e][ix][5] = start[o][k];
-                    }
-                }
-    }
-    */
-/*
-    public static void main(String args[]) {
-
-       for (int j = 1; j < SZ; j++) {
-            if (Grammar.isPseudoCategory(j))
-                continue;
-            if (isBlank(j))
-                continue;
-            if (isLiteral(j))
-                continue;
-            for (int i = 1; i < SZ; i++) {
-                if (Grammar.isPseudoCategory(i))
-                    continue;
-                if (isLiteral(i))
-                    continue;
-                for (int k = 1; k < SZ; k++) {
-                    if (Grammar.isPseudoCategory(k))
-                        continue;
-                    if (look.qrefine(i, j, k) == Failure) {
-     //                   allCases(i, j, k);
-
-                    }
-
-                }
-            }
-
-        }
-        System.out.println(bad + " cases considered.");
-        dump("Codes:", eCnt);
-
-        for (int i = 0; i < SZ; i++)
-            if (diffPreds[i] != 0)
-                System.out.println(CategorySet.catString(i) + " "
-                        + diffPreds[i]);
-        DebugCategorySetNames.anyUsedNames();
-    }
-*/
-/*
- * 
- * 
-     static private String fieldName[] = { "subj", "pred", "obj ", "S1  ",
-            "P1  ", "01  " };
-
-    static private void dump(String s, int a[]) {
-        boolean examples = s.startsWith("Codes");
-        Field fld[] = MonotonicErrorAnalyzer.class.getDeclaredFields();
-        Field fldsByN[] = new Field[1000];
-        if (examples) {
-            for (int i = 0; i < fld.length; i++) {
-                if (fld[i].getType() == Integer.TYPE
-                        && (fld[i].getModifiers() & Modifier.STATIC) != 0) {
-                    int vl = 0;
-                    try {
-                        vl = fld[i].getInt(null);
-                    } catch (IllegalAccessException ee) {
-                        throw new RuntimeException(ee);
-                    }
-                    if (vl >= 0 && vl < 1000) {
-                        if (fldsByN[vl] != null) {
-                            System.err.println("Flds: " + fldsByN[vl].getName()
-                                    + " & " + fld[i].getName());
-
-                        }
-                        fldsByN[vl] = fld[i];
-                    }
-                }
-
-            }
-        }
-        System.out.println(s);
-        for (int i = 0; i < a.length; i++)
-            if (a[i] != 0) {
-                System.out.println(i + "\t" + a[i]);
-                if (examples) {
-                    if (fldsByN[i] != null)
-                        System.out.println(fldsByN[i].getName());
-                    for (int j = 0; j < 0 && j < a[i]; j++) {
-                        System.out.println("Ex: " + j);
-                        for (int k = 0; k < 6; k++)
-                            System.out
-                                    .println("    "
-                                            + fieldName[k]
-                                            + " "
-                                            + CategorySet
-                                                    .catString(eExamples[i][j][k]));
-
-                    }
-                }
-            }
-    }
-
-}
-*/
 /*
  * (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP All rights
  * reserved.

@@ -14,8 +14,6 @@ import com.hp.hpl.jena.ontology.tidy.*;
 abstract class CNode implements CNodeI, Constants{
 	static public CNode create(Node n, AbsChecker eg ) {
 		CNode rslt = create1(n,eg);
-		if (eg.extraInfo())
-		  rslt.minimalityInfo = eg.extraInfo()?new MinimalityInfo(rslt):null;
 		return rslt;
 		  
 	}
@@ -91,7 +89,6 @@ abstract class CNode implements CNodeI, Constants{
 
 	final AbsChecker checker;
 	final Node node;
-	MinimalityInfo minimalityInfo;
 	CNode(Node n, AbsChecker eg) {
 		checker = eg;
 		node = n;

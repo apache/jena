@@ -80,7 +80,6 @@ abstract class AbsChecker implements Constants {
 		}
 		return rslt;
 	}
-	abstract boolean extraInfo();
 	
 	void dump() {
 		System.err.println("AbsChecker dump.");
@@ -101,9 +100,11 @@ abstract class AbsChecker implements Constants {
 	
 	String eMessage;
 	int eLevel;
-	private void saveProblem(int l, String m) {
+	boolean eGrammarMismatch;
+	private void saveProblem(int l, String m, boolean misMatch) {
 		eLevel = l;
 		eMessage = m;
+		eGrammarMismatch = misMatch;
 	}
 	/**0 on failure, 1 on trivial, 2 on refinement.
 		 * @param topLevelCall True if t has not already been checked, false if t is being rechecked, as a result of some other changes
@@ -158,13 +159,13 @@ abstract class AbsChecker implements Constants {
       }
 			key = look.qrefine(s0,p0,o0);
 			if (key == Failure) {
-				saveProblem(Levels.DL, "Grammar Mismatch");
+				saveProblem(Levels.DL, "Grammar Mismatch", true);
 				success = false;
 			} else {
 				if (look.dl(key)) {
 					if (wantLite) {
 						success = false;
-						saveProblem(Levels.Lite,  "Only in DL");
+						saveProblem(Levels.Lite,  "Only in DL", false);
 					} else {
 						setMonotoneLevel(Levels.DL);
 					}
@@ -193,7 +194,7 @@ abstract class AbsChecker implements Constants {
 					throw new BrokenException("Impossible meetcase");
 				}
 				if ( meet == Failure ) {
-					saveProblem(Levels.DL,  "Grammar Mismatch (shared node in triple)");
+					saveProblem(Levels.DL,  "Grammar Mismatch (shared node in triple)", true);
 					success = false;
 				} else {
 				o.setCategories(o0, false);
@@ -226,7 +227,7 @@ abstract class AbsChecker implements Constants {
 			if (!topLevelCall)
 				hasBeenChecked.add(t);
 		  else {
-		  	addProblem(eLevel,t,eMessage);
+		  	addProblem(eLevel,t,eMessage,eGrammarMismatch);
 		  }
 			s.setCategories(sOrig, false);
 			p.setCategories(pOrig, false);
@@ -237,8 +238,9 @@ abstract class AbsChecker implements Constants {
 		
 			if ( s.equals(o) && t.getSubject().isBlank()) {
 				// TODO owl:disjointWith constraint add to compiler.
+			    // TODO create loop as minimal graph
 				// correct for blank nodes not for URI nodes.
-				addProblem(Levels.DL, t, "owl:disjointWith cannot form a loop");
+				addProblem(Levels.DL, t, "owl:disjointWith cannot form a loop",false);
 				success = false;
 			}
 			else 
@@ -262,7 +264,6 @@ abstract class AbsChecker implements Constants {
 //		dump(t.getPredicate());
 //		dump(t.getObject());
 //	}
-	static int dCnt = 0;
 	void setMonotoneLevel(int l) {
 		if (monotoneLevel < l)
 			monotoneLevel = l;
@@ -312,7 +313,7 @@ abstract class AbsChecker implements Constants {
 	}
 	
 
-	void addProblem(int lvl, Triple t, String msg) {
+	void addProblem(int lvl, Triple t, String msg, boolean mismatch) {
 		setMonotoneLevel(lvl + 1);
 	}
 
@@ -335,6 +336,34 @@ abstract class AbsChecker implements Constants {
 		
 	}
 	protected Set cyclicTouched;
+
+    /**
+     * Include this graph in the check.
+     * Many graphs can be checked together.
+     * Does not process imports.
+     * @param g A graph to include in the check.
+     */
+    public void addRaw(Graph g) {
+    	// Add every triple
+    	ClosableIterator it = null;
+    	try {
+    		it = g.find(null, null, null);
+    		while (it.hasNext()) {
+    			add((Triple) it.next(), true);
+    		}
+    	} finally {
+    		if (it != null)
+    			it.close();
+    	}
+    }
+
+    /**
+     * @param n1
+     * @return
+     */
+    protected int getCategory(Node n1) {
+        return getCNode(n1).getCategories();
+    }
 }
 
 

@@ -5,6 +5,8 @@
 
 package com.hp.hpl.jena.ontology.tidy.impl;
 
+import com.hp.hpl.jena.graph.*;
+
 import com.hp.hpl.jena.ontology.tidy.ConflictingTriplesProblem;
 
 /**
@@ -34,6 +36,18 @@ public abstract class MonotonicProblem extends ConflictingTriplesProblem {
        else
            next.addNext(t);
    }
+  void setTriple(Triple t) {
+      triple = t;
+  }
+  protected Triple triple;
+  
+  abstract Graph getMinimalGraph();
+  
+  public String toString() {
+      return msg.replaceAll("%s",triple.getSubject().toString())
+.replaceAll("%p",triple.getPredicate().toString())
+.replaceAll("%o",triple.getObject().toString());
+  }
 }
 
 

@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.ontology.tidy.errors;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.tidy.impl.*;
 
 /**
@@ -18,21 +19,21 @@ public class ComplexIncompatibleUsageProblem extends MultipleTripleProblem {
     final private int given[] = new int[2];
     
     static final String messages[] = {
-            "The predicate %p is used elsewhere as a %1g. " +
-            " The object %o is used elsewhere as a %2g. " +
-            " With the subject %s, such predicates expect an object " +
-            " which is a %2w," +
-            " and such objects expect a predicate which is a %1w.",
-            "The subject %s is used elsewhere as a %0g. " +
-            " The object %o is used elsewhere as a %2g. " +
-            " With the predicate %p, such subjects expect an object " +
-            " which is a %2w," +
-            " and such objects expect a subject which is a %0w.",
-            "The subject %s is used elsewhere as a %0g. " +
-            " The predicate %p is used elsewhere as a %1g. " +
-            " With the object %o, such subjects expect a predicate " +
-            " which is a %1w," +
-            " and such objects expect a predicate which is a %1w."
+            "The predicate %p is used elsewhere as %1g." +
+            " The object %o is used elsewhere as %2g." +
+            " With the subject %s, such predicates expect an object" +
+            " which is %2w," +
+            " and such objects expect a predicate which is %1w.",
+            "The subject %s is used elsewhere as %0g." +
+            " The object %o is used elsewhere as %2g." +
+            " With the predicate %p, such subjects expect an object" +
+            " which is %2w," +
+            " and such objects expect a subject which is %0w.",
+            "The subject %s is used elsewhere as %0g. " +
+            " The predicate %p is used elsewhere as %1g." +
+            " With the object %o, such subjects expect a predicate" +
+            " which is %1w," +
+            " and such predicates expect a subject which is %0w."
     };
     /**
      * @param msg
@@ -73,8 +74,43 @@ public class ComplexIncompatibleUsageProblem extends MultipleTripleProblem {
             
         };
     }
+
+    /* (non-Javadoc)
+     * @see com.hp.hpl.jena.ontology.tidy.impl.MultipleTripleProblem#getNode1()
+     */
+    public Node getNode1() {
+        return field==0?triple.getPredicate():triple.getSubject();
+    }
+
+    /* (non-Javadoc)
+     * @see com.hp.hpl.jena.ontology.tidy.impl.MultipleTripleProblem#getNode2()
+     */
+    public Node getNode2() {
+        return field==2?triple.getPredicate():triple.getObject();
+    }
     
-    
+    public String toString() {
+        String rslt = super.toString();
+        rslt =
+            rslt.replaceAll("%0g",CategorySetNames.getName(given[0]))
+            .replaceAll("%0w",CategorySetNames.getName(wanted[0]))
+        .replaceAll("%2g",CategorySetNames.getName(given[1]))
+        .replaceAll("%2w",CategorySetNames.getName(wanted[1]));
+
+        
+        if (field==0) {
+            rslt =
+            rslt.replaceAll("%1g",CategorySetNames.getName(given[0]))
+            .replaceAll("%1w",CategorySetNames.getName(wanted[0]));
+        }
+        if (field==2) {
+            rslt =
+                rslt.replaceAll("%1g",CategorySetNames.getName(given[1]))
+                .replaceAll("%1w",CategorySetNames.getName(wanted[1]));
+                
+        }
+        return rslt;
+    }
 
 }
 

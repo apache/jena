@@ -15,8 +15,11 @@ import com.hp.hpl.jena.shared.BrokenException;
  * @author Jeremy J. Carroll
  *  
  */
-class CategorySetNames {
+public class CategorySetNames {
     
+    static public String getName(int i){
+        return (String)names[i][1];
+    }
     static int userIDorBlankNode[] =
         new int[1+CategorySet.getSet(Grammar.userID).length
                 + CategorySet.getSet(Grammar.blank).length];
@@ -498,6 +501,8 @@ class CategorySetNames {
         if (out == null)
             out = empty;
 
+        if (in.length==0)
+            throw new BrokenException("Logic error");
         for (int i = 0; i < names.length; i++) {
             int cats[] = (int[]) names[i][0];
             if (Q.subset(in, cats) && !Q.intersect(cats, out)) {

@@ -4,6 +4,7 @@
  */
 
 package com.hp.hpl.jena.ontology.tidy.impl;
+import com.hp.hpl.jena.graph.*;
 
 
 /**
@@ -13,6 +14,20 @@ package com.hp.hpl.jena.ontology.tidy.impl;
 abstract public class MultipleTripleProblem extends MonotonicProblem {
     public MultipleTripleProblem(String msg){
         super(msg);
+    }
+
+    /** Not part of API */
+    abstract public Node getNode1();
+
+    /** Not part of API */
+    abstract public Node getNode2();
+    
+    void setGraph(Graph g) {
+        problem = g;
+    }
+    private Graph problem;
+    public Graph getMinimalGraph() {
+        return problem;
     }
 }
 

@@ -50,7 +50,11 @@ import java.util.*;
 
 import junit.swingui.TestRunner;
 /**
- * .
+ * 
+ * 
+ * Current Heisenbugs:
+ *  disjointWith-010
+ *  extracredit-004
  *
  * @author  jjc
 
@@ -78,8 +82,8 @@ public class WGTests extends java.lang.Object {
 		{ 
 	        //"http://www.w3.org/2002/03owlt/I5.8/Manifest016#test" 
 	        };
-	static boolean doLargeTests = true;
-	static boolean onlyFullTests = true;
+	static boolean doLargeTests = false;
+	static boolean onlyFullTests = false;
 
 	static private String manifestURI = "OWLManifest.rdf";
 	static private boolean manifestInFactory = true;

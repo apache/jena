@@ -37,6 +37,12 @@ abstract public class DomainRangeProblem extends SingleTripleProblem implements
     public void setGiven(int g){
         given = g;
     }
+    
+    
+    public String toString() {
+        return super.toString().replaceAll("%g",(String)CategorySetNames.names[given][1])
+.replaceAll("%w",(String)CategorySetNames.names[wanted][1]);
+    }
 
 
 }

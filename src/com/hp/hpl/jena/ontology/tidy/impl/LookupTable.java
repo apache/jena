@@ -1,7 +1,7 @@
 /*
    (c) Copyright 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LookupTable.java,v 1.10 2005-01-03 08:18:25 jeremy_carroll Exp $
+  $Id: LookupTable.java,v 1.11 2005-01-19 15:27:57 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import java.util.*;
@@ -148,7 +148,7 @@ public class LookupTable
 		return (byte) ((key & ACTIONMASK) >> ACTIONSHIFT);
 	}
 
-	static final int[] intersection(int a[], int b[]) {
+	static public final int[] intersection(int a[], int b[]) {
 		int rslt0[] = new int[a.length];
 		int k = 0;
 		for (int i = 0; i < a.length; i++)

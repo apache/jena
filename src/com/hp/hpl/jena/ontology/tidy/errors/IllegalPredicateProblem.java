@@ -16,7 +16,7 @@ import com.hp.hpl.jena.ontology.tidy.impl.SingleTripleProblem;
 public class IllegalPredicateProblem extends SingleTripleProblem {
 
     public IllegalPredicateProblem() {
-        super("The URI %s is not permitted as the predicate of a triple.");
+        super("The URI %p is not permitted as the predicate of a triple.");
     }
 
     /* (non-Javadoc)

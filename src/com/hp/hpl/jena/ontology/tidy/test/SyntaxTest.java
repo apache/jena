@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.17 2005-01-11 10:08:30 jeremy_carroll Exp $
+  $Id: SyntaxTest.java,v 1.18 2005-01-19 15:27:58 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -12,7 +12,6 @@ import com.hp.hpl.jena.ontology.*;
 import java.util.*;
 import java.io.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.OWLTest;
 import com.hp.hpl.jena.shared.wg.*;
 import com.hp.hpl.jena.graph.*;
@@ -179,7 +178,7 @@ class SyntaxTest extends TestCase {
 				    }
 				    chk = new Checker(false);
 				    chk.addRaw(g);
-				    assertEquals(chk.getSubLanguage(),"Full");
+				    assertEquals("Counterexample is not in Full","Full",chk.getSubLanguage());
 				    
 				}
 			}

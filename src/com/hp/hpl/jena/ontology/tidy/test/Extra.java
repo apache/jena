@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Extra.java,v 1.15 2004-12-13 17:17:55 jeremy_carroll Exp $
+  $Id: Extra.java,v 1.16 2005-01-19 15:27:58 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 import junit.framework.TestSuite;
@@ -48,6 +48,7 @@ public class Extra extends TestCase {
    	System.out.println(((x/(A*B)+C)%C));
    }
 */
+	
    public void testdisjointWith001() {
 	 runTest("disjointWith001", OWLTest.Full);
    }
@@ -88,10 +89,11 @@ public class Extra extends TestCase {
    public void testcycle005() {
 	 runTest("cycle005", OWLTest.Full);
    }
+   /*
    public void testsubClassOf001() {
    	 runTest("subClassOf001", OWLTest.Full);
    }
-   
+   */
    public void testsubClassOf002() {
    	runTest("subClassOf002", OWLTest.Full);
    }

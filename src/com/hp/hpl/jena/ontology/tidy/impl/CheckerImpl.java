@@ -312,25 +312,6 @@ public class CheckerImpl extends AbsChecker {
 		super(lite);
 	}
 	/**
-	 * Include this graph in the check.
-	 * Many graphs can be checked together.
-	 * Does not process imports.
-	 * @param g A graph to include in the check.
-	 */
-	public void addRaw(Graph g) {
-		// Add every triple
-		ClosableIterator it = null;
-		try {
-			it = g.find(null, null, null);
-			while (it.hasNext()) {
-				add((Triple) it.next(), true);
-			}
-		} finally {
-			if (it != null)
-				it.close();
-		}
-	}
-	/**
 	 * Include an ontology and its imports
 	 * in the check.
 	 * @param url Load the ontology from this URL.
@@ -360,28 +341,36 @@ public class CheckerImpl extends AbsChecker {
 	}
 	//private boolean wantLite = true;
 
-	void addProblem(int lvl, Triple t, String msg) {
-		super.addProblem(lvl, t, msg);
+	void addProblem(int lvl, Triple t, String msg, boolean mismatch) {
+		super.addProblem(lvl, t, msg,mismatch);
 		if (lvl == Levels.Lite && !wantLite)
 			return;
         String msg2;
 		Graph min;
 
-		if (justForErrorMessages == null) {
+		if (justForErrorMessages == null
+		        || (!mismatch) ) {
 			min = Factory.createDefaultGraph(ReificationStyle.Minimal);
 			min.add(t);
-			msg2 = "\n Rerun without memory optimizations to get more correct error message.";
-		} else {
-			min =
-				new MinimalSubGraph(lvl == Levels.Lite, t, this)
-					.getContradiction();
-			msg2 = "";
+			msg2 = mismatch?
+			        "\n Rerun without memory optimizations to get more correct error message."
+                  : "";
+			addProblem(
+				new SyntaxProblemImpl(
+					msg + " Not a " + Levels.toString(lvl) + " subgraph" + msg2,
+					min,
+					lvl));
+		} else  {
+		    MonotonicProblem mp[] = MonotonicErrorAnalyzer.allProblems(this,t);
+		    for (int i=0;i<mp.length;i++) {
+
+				addProblem(
+					new SyntaxProblemImpl(
+						msg + " Not a " + Levels.toString(lvl) + " subgraph: " + mp[i].toString() ,
+						mp[i].getMinimalGraph(),
+						lvl));
+		    }
 		}
-		addProblem(
-			new SyntaxProblemImpl(
-				msg + " Not a " + Levels.toString(lvl) + " subgraph" + msg2,
-				min,
-				lvl));
 
 	}
 	void addProblem(SyntaxProblemImpl sp) {
@@ -440,12 +429,7 @@ public class CheckerImpl extends AbsChecker {
 		sa.add(b);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.hp.hpl.jena.ontology.tidy.AbsChecker#extraInfo()
-	 */
-	boolean extraInfo() {
-		return false;
-	}
+
 
 	protected Graph importsClosure(Graph g) {
 		// create an ontology model with no reasoner and the default doc manager
