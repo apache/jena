@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ModelGraphInterface.java,v 1.1 2004-06-15 14:02:05 chris-dollin Exp $
+  $Id: ModelGraphInterface.java,v 1.2 2004-06-15 14:26:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -18,14 +18,27 @@ import com.hp.hpl.jena.graph.query.*;
 */
 public interface ModelGraphInterface
     {
+    /**
+       Answer a Statement in this Model who's SPO is that of the triple <code>t</code>.
+    */
     Statement asStatement( Triple t );
     
-    /** Every model is based on some Graph */
+    /** 
+        Answer the Graph which this Model is presenting.
+    */
     Graph getGraph();
 
-    /** Every Model has a QueryHandler */
+    /** 
+       Answer the QueryHandler of the Graph this Model is presenting.
+    */
     QueryHandler queryHandler();
     
+    /**
+       Answer an RDF node wrapping <code>n</code> suitably; URI nodes
+       become Resources with the same URI, blank nodes become Resources
+       with URI null but the same AnonId, and literal nodes become Literals
+       with <code>n</code> as their value carrier.
+    */
     RDFNode asRDFNode( Node n );
     }
 
