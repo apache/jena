@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.24 2003-08-27 13:11:16 andy_seaborne Exp $
+ *  $Id: Unparser.java,v 1.25 2003-10-02 13:15:10 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.xerces.util.XMLChar;
 
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.24 $' Date='$Date: 2003-08-27 13:11:16 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.25 $' Date='$Date: 2003-10-02 13:15:10 $'
 
  */
 class Unparser {
@@ -185,10 +185,13 @@ class Unparser {
 		} finally {
 			ss.close();
 		}
-
 	}
+    
+    /**
+        Note: must work with uri being null.
+    */
 	private void setLocalName(String uri) {
-		if (uri.equals(""))
+		if (uri == null || uri.equals( "" ))
 			localName = "";
 		else
 			try {
@@ -199,6 +202,7 @@ class Unparser {
 				throw new BadURIException( "", e );
 			}
 	}
+    
 	/** Should be called exactly once for each Unparser.
 	 * Calling it a second time will have undesired results.
 	 */
@@ -259,6 +263,7 @@ class Unparser {
 
 	Map res2statement;
 	Map statement2res;
+    
 
 	/* The top-down recursive descent unparser.
 	 * The methods starting in w all refer to one of the rules
@@ -293,6 +298,7 @@ class Unparser {
 		print(">");
 		tab();
 	}
+    
 	/**
 	 *  All subjects get listed, for top level use only.
 	 */
@@ -307,6 +313,7 @@ class Unparser {
 			}
 			closeAllResIterators();
 	}
+    
 	/*
 	[6.12] propertyElt    ::= '<' propName idAttr? '>' value '</' propName '>'
 	                       | '<' propName idAttr? parseLiteral '>'
@@ -341,6 +348,7 @@ class Unparser {
 			|| wPropertyEltValue(wt, prop, s, val);
 		// choice 1.
 	}
+    
 	/* [6.12.4] propertyElt    ::= '<' propName idRefAttr? bagIdAttr? propAttr* '/>'
 	 */
 	private boolean wPropertyEltCompact(
@@ -377,6 +385,7 @@ class Unparser {
 		print("/>");
 		return true;
 	}
+    
 	/*
 	[6.12.2] propertyElt    ::=  '<' propName idAttr? parseLiteral '>'
 	                             literal '</' propName '>'
@@ -408,6 +417,7 @@ class Unparser {
 		print(">");
 		return true;
 	}
+    
 	private boolean wPropertyEltDatatype(
 		WType wt,
 		Property prop,
@@ -436,6 +446,7 @@ class Unparser {
 		print(">");
 		return true;
 	}
+    
 	/*
 	[6.12.3] propertyElt    ::=  '<' propName idAttr? parseResource '>'
 	                             propertyElt* '</' propName '>'
@@ -472,6 +483,7 @@ class Unparser {
 		print(">");
 		return true;
 	}
+    
 	/*
 	[6.12] propertyElt    ::= '<' propName idAttr? '>' value '</' propName '>'
 	 */
@@ -484,6 +496,7 @@ class Unparser {
 		return wPropertyEltValueString(wt, prop, s, r)
 			|| wPropertyEltValueObj(wt, prop, s, r);
 	}
+    
 	/*
 	[6.12] propertyElt    ::= '<' propName idAttr? '>' value '</' propName '>'
 	 */
@@ -515,6 +528,7 @@ class Unparser {
 			return false;
 		}
 	}
+    
 	/*
 	[6.17.2] value          ::=  string
 	 */
@@ -605,12 +619,14 @@ class Unparser {
 		print(">");
 		return true;
 	}
+    
 	// propAttr* with no left over statements.
 	private void wPropAttrAll(Resource r)  {
 		wPropAttrSome(r);
 		if (hasProperties(r))
 			error("Bad call to wPropAttrAll");
 	}
+    
 	// propAttr* possibly with left over statements.
 	private void wPropAttrSome(Resource r)  {
 		ClosableIterator ss = listProperties(r);
@@ -628,6 +644,7 @@ class Unparser {
 			ss.close();
 		}
 	}
+    
 	/*
 	[6.2] obj            ::= description | container
 	[6.3] description    ::= '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '/>'
@@ -668,11 +685,14 @@ class Unparser {
 			doing.remove(r);
 		}
 	}
+    
 	abstract private class WType {
 		abstract void wTypeStart(Resource uri);
 		abstract void wTypeEnd(Resource uri);
 	}
+    
 	static private int RDF_HASH = RDF.getURI().length();
+    
 	private WType wdesc = new WType() {
 		void wTypeStart(Resource u) {
 			print(prettyWriter.rdfEl(u.getURI().substring(RDF_HASH)));
@@ -681,6 +701,7 @@ class Unparser {
 			print(prettyWriter.rdfEl(u.getURI().substring(RDF_HASH)));
 		}
 	};
+    
 	private WType wtype = new WType() {
 		void wTypeStart(Resource u) {
 			print(prettyWriter.startElementTag(u.getURI()));
@@ -711,6 +732,7 @@ class Unparser {
 		done(st);
 		return wTypedNodeOrDescription(wtype, type, r);
 	}
+    
 	private boolean wTypedNodeOrDescription(WType wt, Resource ty, Resource r)
 		 {
 		// preparation - look for the li's.
@@ -738,6 +760,7 @@ class Unparser {
 		return wTypedNodeOrDescriptionCompact(wt, ty, r, li)
 			|| wTypedNodeOrDescriptionLong(wt, ty, r, li);
 	}
+    
 	/* [6.13.1] typedNode      ::= '<' typeName idAboutAttr? bagIdAttr? propAttr* '/>'
 	 */
 	private boolean wTypedNodeOrDescriptionCompact(
@@ -760,6 +783,7 @@ class Unparser {
 		indentMinus();
 		return true;
 	}
+    
 	/* [6.13.1] typedNode      ::= '<' typeName idAboutAttr  '/>'
 	 */
 	private boolean wTypedNodeNoProperties(Resource r)  {
@@ -784,6 +808,7 @@ class Unparser {
 		indentMinus();
 		return true;
 	}
+    
 	/*
 	[6.13.2] typedNode      ::=  '<' typeName idAboutAttr? bagIdAttr? propAttr* '>'
 	                             propertyElt* '</' typeName '>'
@@ -815,6 +840,7 @@ class Unparser {
 		print(">");
 		return true;
 	}
+    
 	private void wPropertyEltStar(Resource r)  {
 		ClosableIterator ss = this.listProperties(r);
 		try {
@@ -825,23 +851,26 @@ class Unparser {
 		} finally {
 			ss.close();
 		}
-
 	}
+    
 	private void wLiEltStar(Iterator ss)  {
 		while (ss.hasNext()) {
 			Statement s = (Statement) ss.next();
 			wPropertyElt(wdesc, LI, s, s.getObject());
 		}
 	}
+    
 	/*
 	[6.5] idAboutAttr    ::= idAttr | aboutAttr | aboutEachAttr
 	we use
 	[6.5a] idAboutAttr    ::= idAttr | aboutAttr
 	 */
 	private Set idDone = new HashSet();
+    
 	private boolean wIdAboutAttrOpt(Resource r)  {
 		return wIdAttrOpt(r) || wNodeIDAttr(r) || wAboutAttr(r);
 	}
+    
 	/**
 	 * Returns false if the resource is not genuinely anonymous and cannot
 	 * be referred to using an ID.
@@ -875,6 +904,7 @@ class Unparser {
 			return false;
 		}
 	}
+    
 	/*
 	[6.7] aboutAttr      ::= ' about="' URI-reference '"'
 	 */
@@ -885,12 +915,15 @@ class Unparser {
 		wURIreference(r);
 		return true;
 	}
+    
 	private void wURIreference(String s)  {
 		print(quote(prettyWriter.relativize(s)));
 	}
+    
     private void wURIreference(Resource r)  {
         wURIreference(r.getURI());
     }
+    
 	/*
 	[6.16] idRefAttr      ::= idAttr | resourceAttr
 	 */
@@ -900,6 +933,7 @@ class Unparser {
 			wResourceNodeIDAttr(r);
 		}
 	}
+    
 	/*
 	[6.6] idAttr         ::= ' ID="' IDsymbol '"'
 	 */
@@ -931,6 +965,7 @@ class Unparser {
 	private boolean wResourceNodeIDAttr(Resource r)  {
 		return wNodeIDAttr(r) || wResourceAttr(r);
 	}
+    
 	/*
 	 nodeIDAttr   ::= ' rdf:nodeID="' URI-reference '"'
 	 */
@@ -944,6 +979,7 @@ class Unparser {
 		
 		return true;
 	}
+    
 	/*
 	[6.18] resourceAttr   ::= ' resource="' URI-reference '"'
 	 */
@@ -965,6 +1001,7 @@ class Unparser {
 	private void wQnameStart(String ns, String local)  {
 		print(prettyWriter.startElementTag(ns, local));
 	}
+    
 	private void wQnameEnd(String ns, String local)  {
 		print(prettyWriter.endElementTag(ns, local));
 	}
@@ -972,9 +1009,11 @@ class Unparser {
 	private void wQNameAttr(Property p)  {
 		print(prettyWriter.attributeTag(p.getURI()));
 	}
+    
 	private void printRdfAt(String s) {
 		print(prettyWriter.rdfAt(s));
 	}
+    
 	/*
 	[6.10] propAttr       ::= typeAttr
 	                       | propName '="' string '"' (with embedded quotes escaped)
@@ -987,6 +1026,7 @@ class Unparser {
 		else
 			wPropAttrString(p, (Literal) n);
 	}
+    
 	private void wTypeAttr(Resource r)  {
 		print(" ");
 		printRdfAt("type");
@@ -994,6 +1034,7 @@ class Unparser {
         wURIreference(r);
 		//print(quote(r.getURI()));
 	}
+    
 	private void wPropAttrString(Property p, Literal l)  {
 		print(" ");
 		wQNameAttr(p);
@@ -1008,6 +1049,7 @@ class Unparser {
 		printRdfAt("parseType");
 		print("="+q("daml:collection"));
 	}
+    
 	/*
 	[List.2] parseCollection ::= ' parseType="Collection"'
 	 */
@@ -1016,6 +1058,7 @@ class Unparser {
 		printRdfAt("parseType");
 		print("="+q("Collection"));
 	}
+    
 	/*
 	[6.32] parseLiteral   ::= ' parseType="Literal"'
 	 */
@@ -1024,6 +1067,7 @@ class Unparser {
 		printRdfAt("parseType");
 		print("="+q("Literal"));
 	}
+    
 	private void wDatatype(String dtURI)  {
 		print(" ");
 		printRdfAt("datatype");
@@ -1053,12 +1097,15 @@ class Unparser {
 	 * Output and indentation.
 	 ***/
 	private int indentLevel = 0;
+    
 	private int currentColumn = 0;
+    
 	static private String filler(int lgth) {
 		char rslt[] = new char[lgth];
 		Arrays.fill(rslt, ' ');
 		return new String(rslt);
 	}
+    
 	private void tab() {
 		int desiredColumn = prettyWriter.tab * indentLevel;
 		if ( desiredColumn > prettyWriter.width ) {
@@ -1074,6 +1121,7 @@ class Unparser {
 		}
 		currentColumn = desiredColumn;
 	}
+    
 	private void maybeNewline() {
 		if ( currentColumn > prettyWriter.width ) {
 			tab();
@@ -1091,6 +1139,7 @@ class Unparser {
         private String q(String str) {
             return prettyWriter.q(str);
         }
+        
 	/**
 	 *  Indentation screws up if there is a tab character in s.
 	 *  We do not check this.
@@ -1103,9 +1152,11 @@ class Unparser {
 		else
 			currentColumn = s.length() - ix - 1;
 	}
+    
 	private void indentPlus() {
 		indentLevel++;
 	}
+    
 	private void indentMinus() {
 		indentLevel--;
 	}
@@ -1135,6 +1186,7 @@ class Unparser {
 			nn.close();
 		}
 	}
+    
 	private String getNameSpace(Resource r) {
 		if (r.isAnon()) {
 			logger.error( "Internal error - Unparser.getNameSpace; giving up" );
@@ -1179,6 +1231,7 @@ class Unparser {
 				+ new Character((char) ('a' + suffixId % 26));
 		}
 	}
+    
 	private String getLocalName(Resource r)  {
 		if (r.isAnon()) {
 			logger.error( "Internal error - giving up - Unparser.getLocalName" );
@@ -1214,9 +1267,11 @@ class Unparser {
 	private boolean wantReification(Statement s) {
 		return wantReification(s, (Resource) statement2res.get(s));
 	}
+    
 	private boolean wantReification(Resource res) {
 		return wantReification((Statement) res2statement.get(res), res);
 	}
+    
 	private boolean wantReification(Statement s, Resource ref)
 		 {
 		if (s == null
@@ -1233,6 +1288,7 @@ class Unparser {
 				return false; // Some of reification already done.
 		return true; // Reification rule helps.
 	}
+    
 	private Statement[] reification(Statement s)  {
 		Model m = s.getModel();
 		Resource r = (Resource) statement2res.get(s);
@@ -1316,6 +1372,7 @@ class Unparser {
 		}
 		return false;
 	}
+    
 	private boolean allPropsAreAttr(Resource r)  {
 		ClosableIterator ss = listProperties(r);
 		Set seen = new HashSet();
@@ -1671,11 +1728,14 @@ class Unparser {
 			}
 		}, allAsOne);
 	}
+    
 	private Set openResIterators = new HashSet();
+    
 	private synchronized void close(ResIterator resIt)  {
 		resIt.close();
 		openResIterators.remove(resIt);
 	}
+    
 	private synchronized void closeAllResIterators()  {
 		Iterator members = openResIterators.iterator();
 		while (members.hasNext()) {
@@ -1683,6 +1743,7 @@ class Unparser {
 		}
 		openResIterators = new HashSet();
 	}
+    
 	private Iterator modelListSubjects() {
 			ResIterator resIt = model.listSubjects();
 			openResIterators.add(resIt);

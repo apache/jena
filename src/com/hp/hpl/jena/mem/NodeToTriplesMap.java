@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.1 2003-10-02 11:18:09 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.2 2003-10-02 13:14:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.*;
     as a linked list [the context allows this].
 
 	@author kers
- */
+*/
 public class NodeToTriplesMap {
     HashMap map = new HashMap();
 

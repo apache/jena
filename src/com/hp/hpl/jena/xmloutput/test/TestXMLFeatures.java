@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.32 2003-09-24 11:28:57 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.33 2003-10-02 13:15:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import org.apache.log4j.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.32 $ $Date: 2003-09-24 11:28:57 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.33 $ $Date: 2003-10-02 13:15:10 $
  */
 
 public class TestXMLFeatures extends ModelTestBase {
@@ -90,7 +90,15 @@ public class TestXMLFeatures extends ModelTestBase {
         assertEquals( first, last );
         System.out.println( sw2.toString() );
         }
-        
+
+    /**
+        Writing a model with the base URI set to null should not throw a nullpointer exception.
+    */
+    public void testNullBaseWithAbbrev()
+        {
+        ModelFactory.createDefaultModel().write( new StringWriter(), lang, null );    
+        }
+                
 	public void testBug696057() throws IOException {
 		File f = File.createTempFile("jena", ".rdf");
 		String fileName = f.getAbsolutePath();
@@ -1100,5 +1108,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.32 2003-09-24 11:28:57 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.33 2003-10-02 13:15:10 chris-dollin Exp $
  */
