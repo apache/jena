@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.19 2003-08-13 08:02:40 der Exp $
+ * $Id: TestBasicLP.java,v 1.20 2003-08-13 10:45:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-08-13 08:02:40 $
+ * @version $Revision: 1.20 $ on $Date: 2003-08-13 10:45:55 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -70,7 +70,7 @@ public class TestBasicLP  extends TestCase {
 //        return new TestSuite( TestBasicLP.class );
         
         TestSuite suite = new TestSuite();
-        suite.addTest(new TestBasicLP( "testProblem8" ));
+        suite.addTest(new TestBasicLP( "testRDFSProblem20" ));
         return suite;
     }  
    
@@ -1012,7 +1012,8 @@ public class TestBasicLP  extends TestCase {
     }
 
     /**
-     * A problem from the original backchainer tests - incorrect additional deduction
+     * A problem from the original backchainer tests - incorrect additional deduction.
+     * Was due to interpeter setup failing to clone input variables.
      */
     public void testProblem7() {
         String ruleSrc = 
@@ -1050,7 +1051,8 @@ public class TestBasicLP  extends TestCase {
     }
 
     /**
-     * A problem from the original backchainer tests - RDFS example which failed
+     * A problem from the original backchainer tests - RDFS example which failed.
+     * Was due to unsupported multi-head statement.
      */
     public void testProblem8() {
         String ruleSrc = 

@@ -5,13 +5,16 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBLPRuleReasoner.java,v 1.1 2003-08-03 09:39:18 der Exp $
+ * $Id: FBLPRuleReasoner.java,v 1.2 2003-08-13 10:45:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.ClauseEntry;
+import com.hp.hpl.jena.reasoner.rulesys.Functor;
+import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
@@ -26,7 +29,7 @@ import java.util.*;
  * replaced by the upgraded FBRuleReasoner when the LP section is released.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-03 09:39:18 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-13 10:45:55 $
  */
 public class FBLPRuleReasoner implements Reasoner {
     
@@ -176,6 +179,21 @@ public class FBLPRuleReasoner implements Reasoner {
     public List getRules() {
         return rules;
     } 
+    
+    /**
+     * Register an RDF predicate as one whose presence in a goal should force
+     * the goal to be tabled. This is better done directly in the rule set.
+     */
+    public synchronized void tablePredicate(Node predicate) {
+        // Create a dummy rule which tables the predicate ...
+        Rule tablePredicateRule = new Rule("", 
+                new ClauseEntry[]{
+                    new Functor("table", new Node[] { predicate })
+                }, 
+                new ClauseEntry[]{});
+        // ... end append the rule to the ruleset
+        rules.add(tablePredicateRule);
+    }
     
     /**
      * Get the single static precomputed rule closure.

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestLPRDFS.java,v 1.1 2003-08-03 09:39:18 der Exp $
+ * $Id: TestLPRDFS.java,v 1.2 2003-08-13 10:45:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import java.util.*;
  *  Test an FB hyrid using the emerging LP engine on the basic RDFS tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-03 09:39:18 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-13 10:45:55 $
  */
 public class TestLPRDFS extends TestCase {
     
@@ -66,80 +66,77 @@ public class TestLPRDFS extends TestCase {
 //       return suite;
    }  
    
-    /**
-     * Simple range test.
-     */
-//    public void test1()  throws IOException {
-//        doTest("test1");
-//    }
-//   
-//    public void test2()  throws IOException {
-//        doTest("test2");
-//    }
-//   
-//    public void test3()  throws IOException {
-//        doTest("test3");
-//    }
-//   
-//    public void test4()  throws IOException {
-//        doTest("test4");
-//    }
-//   
-//    public void test5()  throws IOException {
-//        doTest("test5");
-//    }
-//   
-//    public void test6()  throws IOException {
-//        doTest("test6");
-//    }
-//   
-//    public void test7()  throws IOException {
-//        doTest("test7");
-//    }
-//   
-//    public void test8()  throws IOException {
-//        doTest("test8");
-//    }
-//   
-//    public void test9()  throws IOException {
-//        doTest("test9");
-//    }
+    public void test1()  throws IOException {
+        doTest("test1");
+    }
    
-//    public void test10()  throws IOException {
-//        doTest("test10");
-//    }
+    public void test2()  throws IOException {
+        doTest("test2");
+    }
+   
+    public void test3()  throws IOException {
+        doTest("test3");
+    }
+   
+    public void test4()  throws IOException {
+        doTest("test4");
+    }
+   
+    public void test5()  throws IOException {
+        doTest("test5");
+    }
+   
+    public void test6()  throws IOException {
+        doTest("test6");
+    }
+   
+    public void test7()  throws IOException {
+        doTest("test7");
+    }
+   
+    public void test8()  throws IOException {
+        doTest("test8");
+    }
+   
+    public void test9()  throws IOException {
+        doTest("test9");
+    }
+   
+    public void test10()  throws IOException {
+        doTest("test10");
+    }
    
     public void test11()  throws IOException {
         doTest("test11");
     }
    
-//    public void test12()  throws IOException {
-//        doTest("test12");
-//    }
+    public void test12()  throws IOException {
+        doTest("test12");
+    }
    
-//    public void test13()  throws IOException {
-//        doTest("test13");
-//    }
-//   
-//    public void test14()  throws IOException {
-//        doTest("test14");
-//    }
-//   
-//    public void test15()  throws IOException {
-//        doTest("test15");
-//    }
-//   
-//    public void test16()  throws IOException {
-//        doTest("test16");
-//    }
+    public void test13()  throws IOException {
+        doTest("test13");
+    }
    
-//    public void test18()  throws IOException {
-//        doTest("test18");
-//    }
-//   
-//    public void test20()  throws IOException {
-//        doTest("test20");
-//    }
+    public void test14()  throws IOException {
+        doTest("test14");
+    }
+   
+    public void test15()  throws IOException {
+        doTest("test15");
+    }
+   
+    public void test16()  throws IOException {
+        doTest("test16");
+    }
+   
+    public void test18()  throws IOException {
+        doTest("test18");
+    }
+   
+    public void test20()  throws IOException {
+        doTest("test20");
+    }
    
     /**
      * Run a named test.

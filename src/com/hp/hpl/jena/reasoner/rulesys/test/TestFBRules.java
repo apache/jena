@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.20 2003-08-12 09:33:02 der Exp $
+ * $Id: TestFBRules.java,v 1.21 2003-08-13 10:46:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-08-12 09:33:02 $
+ * @version $Revision: 1.21 $ on $Date: 2003-08-13 10:46:12 $
  */
 public class TestFBRules extends TestCase {
     
@@ -40,26 +40,26 @@ public class TestFBRules extends TestCase {
     protected static Logger logger = Logger.getLogger(TestFBRules.class);
     
     // Useful constants
-    Node p = Node.createURI("p");
-    Node q = Node.createURI("q");
-    Node n1 = Node.createURI("n1");
-    Node n2 = Node.createURI("n2");
-    Node n3 = Node.createURI("n3");
-    Node n4 = Node.createURI("n4");
-    Node res = Node.createURI("res");
-    Node r = Node.createURI("r");
-    Node s = Node.createURI("s");
-    Node t = Node.createURI("t");
-    Node a = Node.createURI("a");
-    Node b = Node.createURI("b");
-    Node c = Node.createURI("c");
-    Node d = Node.createURI("d");
-    Node C1 = Node.createURI("C1");
-    Node C2 = Node.createURI("C2");
-    Node C3 = Node.createURI("C3");
-    Node sP = RDFS.subPropertyOf.getNode();
-    Node sC = RDFS.subClassOf.getNode();
-    Node ty = RDF.type.getNode();
+    protected Node p = Node.createURI("p");
+    protected Node q = Node.createURI("q");
+    protected Node n1 = Node.createURI("n1");
+    protected Node n2 = Node.createURI("n2");
+    protected Node n3 = Node.createURI("n3");
+    protected Node n4 = Node.createURI("n4");
+    protected Node res = Node.createURI("res");
+    protected Node r = Node.createURI("r");
+    protected Node s = Node.createURI("s");
+    protected Node t = Node.createURI("t");
+    protected Node a = Node.createURI("a");
+    protected Node b = Node.createURI("b");
+    protected Node c = Node.createURI("c");
+    protected Node d = Node.createURI("d");
+    protected Node C1 = Node.createURI("C1");
+    protected Node C2 = Node.createURI("C2");
+    protected Node C3 = Node.createURI("C3");
+    protected Node sP = RDFS.subPropertyOf.getNode();
+    protected Node sC = RDFS.subClassOf.getNode();
+    protected Node ty = RDF.type.getNode();
      
     /**
      * Boilerplate for junit
@@ -78,6 +78,13 @@ public class TestFBRules extends TestCase {
 //        suite.addTest(new TestFBRules( "testHybrid2" ));
 //        return suite;
     }  
+
+    /**
+     * Override in subclasses to test other reasoners.
+     */
+    public Reasoner createReasoner(List rules) {
+        return new FBRuleReasoner(rules);
+    }
 
     /**
      * Check parser extension for f/b distinction.
@@ -99,7 +106,7 @@ public class TestFBRules extends TestCase {
                        "[r4: (n4 ?p ?a) -> (n4, ?a, ?p)]";
         List ruleList = Rule.parseRules(rules);
         
-        InfGraph infgraph = new FBRuleReasoner(ruleList).bind(new GraphMem());
+        InfGraph infgraph = createReasoner(ruleList).bind(new GraphMem());
         infgraph.add(new Triple(n1, p, n2));
         infgraph.add(new Triple(n2, p, n3));
         infgraph.add(new Triple(n2, q, n3));
@@ -141,7 +148,7 @@ public class TestFBRules extends TestCase {
           .addProperty(OWL.onProperty, p)
           .addProperty(OWL.allValuesFrom, D);
         
-        Reasoner reasoner =  new FBRuleReasoner(ruleList);
+        Reasoner reasoner =  createReasoner(ruleList);
         InfGraph infgraph = reasoner.bind(data.getGraph());
         Model infModel = ModelFactory.createModelForGraph(infgraph);
         Resource foo = infModel.createResource(PrintUtil.egNS + "foo");
@@ -172,7 +179,7 @@ public class TestFBRules extends TestCase {
                        "";
         List ruleList = Rule.parseRules(rules);
         
-        InfGraph infgraph = new FBRuleReasoner(ruleList).bind(new GraphMem());
+        InfGraph infgraph = createReasoner(ruleList).bind(new GraphMem());
         TestUtil.assertIteratorValues(this, infgraph.find(n1, q, null),
             new Triple[] {
                 new Triple(n1, q, Util.makeIntNode(2)),
@@ -200,7 +207,7 @@ public class TestFBRules extends TestCase {
         data.add(new Triple(n1, q, n4));
         data.add(new Triple(n1, q, n3));
         
-        Reasoner reasoner =  new FBRuleReasoner(ruleList);
+        Reasoner reasoner =  createReasoner(ruleList);
         Reasoner boundReasoner = reasoner.bindSchema(schema);
         InfGraph infgraph = boundReasoner.bind(data);
 
@@ -226,7 +233,7 @@ public class TestFBRules extends TestCase {
                        "";
         List ruleList = Rule.parseRules(rules);
 
-        InfGraph infgraph = new FBRuleReasoner(ruleList).bind(new GraphMem());
+        InfGraph infgraph = createReasoner(ruleList).bind(new GraphMem());
         infgraph.add(new Triple(n1, p, Util.makeIntNode(1)));
         infgraph.add(new Triple(n1, p, Util.makeIntNode(2)));
         infgraph.add(new Triple(n1, q, Util.makeIntNode(2)));
@@ -247,7 +254,7 @@ public class TestFBRules extends TestCase {
         List ruleList = Rule.parseRules(rules);
         Graph data = new GraphMem();
         data.add(new Triple(n1, p, n2));
-        InfGraph infgraph = new FBRuleReasoner(ruleList).bind(data);
+        InfGraph infgraph = createReasoner(ruleList).bind(data);
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
             new Triple[] {
                 new Triple(n1, p, n2),
@@ -281,7 +288,7 @@ public class TestFBRules extends TestCase {
         "[rdfs3:  (?y rdf:type ?c) <- (?x ?p ?y), (?p rdfs:range ?c)]" +
         "[rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class)]"
                         );        
-        Reasoner reasoner =  new FBRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(a, ty, null), 
@@ -306,7 +313,7 @@ public class TestFBRules extends TestCase {
             "[r1: (c r ?x) <- (?x p f(?x b))]" +
             "[r2: (?y p f(a ?y)) <- (c q ?y)]"
                           );        
-        Reasoner reasoner =  new FBRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), new Object[] { } );
@@ -316,7 +323,7 @@ public class TestFBRules extends TestCase {
         "[r1: (c r ?x) <- (?x p f(?x a))]" +
         "[r2: (?y p f(a ?y)) <- (c q ?y)]"
                           );        
-        reasoner =  new FBRuleReasoner(rules);
+        reasoner =  createReasoner(rules);
         infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
@@ -334,7 +341,7 @@ public class TestFBRules extends TestCase {
           "[r1: (c r ?x) <- (?x p ?x)]" +
           "[r2: (?x p ?y) <- (a q ?x), (b q ?y)]"
                           );        
-        reasoner =  new FBRuleReasoner(rules);
+        reasoner =  createReasoner(rules);
         infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
@@ -346,7 +353,7 @@ public class TestFBRules extends TestCase {
           "[r1: (c r ?x) <- (?x p ?x)]" +
           "[r2: (a p ?x) <- (a q ?x)]"
                           );        
-        reasoner =  new FBRuleReasoner(rules);
+        reasoner =  createReasoner(rules);
         infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(c, r, null), 
@@ -372,7 +379,7 @@ public class TestFBRules extends TestCase {
     "[rs2: (?X rdf:type all(?P,?C)) <- (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D)]" +
     "[rp4: (?Y rdf:type ?C) <- (?X rdf:type all(?P, ?C)), (?X ?P ?Y)]"
                           );        
-        Reasoner reasoner =  new FBRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(b, ty, c), new Object[] {
@@ -390,7 +397,7 @@ public class TestFBRules extends TestCase {
         List rules = Rule.parseRules(
         "[r1: (?p rdf:type s) -> [r1b: (?x ?p ?y) <- (?y ?p ?x)]]"
                           );        
-        Reasoner reasoner =  new FBRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
               infgraph.find(null, p, null), new Object[] {
@@ -412,7 +419,7 @@ public class TestFBRules extends TestCase {
         "[r1: (?p rdf:type s) -> [r1b: (?x ?p ?y) <- (?y ?p ?x)]]" +
         "[r2: (?p rdf:type s) -> [r2b: (?x ?p ?x) <- (?x rdf:type t)]]"
                           );        
-        Reasoner reasoner =  new FBRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         FBRuleInfGraph infgraph = (FBRuleInfGraph) reasoner.bind(data);
         infgraph.setDerivationLogging(true);
         infgraph.prepare();
@@ -423,15 +430,17 @@ public class TestFBRules extends TestCase {
                   new Triple(a, p, b),
                   new Triple(b, p, a)
               } );
-        assertTrue("Backward rule count", infgraph.getNRulesFired() == 8);
+        // Suppressed until LP engine implements rule counting, if ever
+//        assertTrue("Backward rule count", infgraph.getNRulesFired() == 8);
               
         // Check derivation tracing as well
-        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
-        assertTrue(di.hasNext());
-        RuleDerivation d = (RuleDerivation)di.next();
-        assertTrue(d.getRule().getName().equals("r1b"));
-        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
-        assertTrue(! di.hasNext());
+        // Suppressed until LP engine implements derivation tracing
+//        Iterator di = infgraph.getDerivation(new Triple(b, p, a));
+//        assertTrue(di.hasNext());
+//        RuleDerivation d = (RuleDerivation)di.next();
+//        assertTrue(d.getRule().getName().equals("r1b"));
+//        TestUtil.assertIteratorValues(this, d.getMatches().iterator(), new Object[] { new Triple(a, p, b) });
+//        assertTrue(! di.hasNext());
     }
     
     /**
@@ -451,7 +460,7 @@ public class TestFBRules extends TestCase {
     "[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)]" + 
     "[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ]" +
                           "" );        
-        Reasoner reasoner =  new FBRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
 //        ((FBRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
@@ -472,7 +481,7 @@ public class TestFBRules extends TestCase {
     "[rdfs3:  (?p rdfs:range ?c)  -> [(?y rdf:type ?c) <- (?x ?p ?y)] ]" + 
     "[rdfs6:  (?p rdfs:subPropertyOf ?q) -> [ (?a ?q ?b) <- (?a ?p ?b)] ]" + 
                           "" );        
-        Reasoner reasoner =  new FBRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
 //        ((FBRuleInfGraph)infgraph).setTraceOn(true);
         TestUtil.assertIteratorValues(this, 
@@ -491,7 +500,7 @@ public class TestFBRules extends TestCase {
         "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" +
         "[r2:  (?t rdf:type C2) <- (?x rdf:type C1), makeInstance(?x, p, C2, ?t)]" +
                           "" );        
-        Reasoner reasoner =  new FBRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         
         Node valueInstance = getValue(infgraph, a, p);
@@ -511,7 +520,7 @@ public class TestFBRules extends TestCase {
         List rules = Rule.parseRules(
         "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, ?t)]" +
                           "" );        
-        Reasoner reasoner =  new FBRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         
         Node valueInstance = getValue(infgraph, a, p);
@@ -532,7 +541,7 @@ public class TestFBRules extends TestCase {
         + "[some1b: (?X ?P ?T) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ]" 
         + "[some1b2: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ]"
         + "]");
-        Reasoner reasoner =  new FBRuleReasoner(rules);
+        Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         
         Node valueInstance = getValue(infgraph, a, p);
