@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.79 2003-09-09 10:59:09 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.80 2003-10-22 09:33:46 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -29,7 +29,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.79 $' Date='$Date: 2003-09-09 10:59:09 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.80 $' Date='$Date: 2003-10-22 09:33:46 $'
  */
 
 public class ModelCom 
@@ -669,7 +669,6 @@ implements Model, PrefixMapping, ModelLock
      */
     public RDFList createList() {
         Resource list = getResource( RDF.nil.getURI() );
-        list.addProperty( RDF.type, RDF.List );
         
         return (RDFList) list.as( RDFList.class );
     }
