@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.37 $
+ * Revision           $Revision: 1.38 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-03-08 23:13:07 $
+ * Last modified on   $Date: 2004-03-16 23:47:21 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -53,7 +53,9 @@ import junit.framework.*;
  * @version CVS $Id: TestBugReports.java,v 1.23 2003/11/20 17:53:10
  *          ian_dickinson Exp $
  */
-public class TestBugReports extends TestCase {
+public class TestBugReports 
+    extends TestCase 
+{
     // Constants
     //////////////////////////////////
 
@@ -147,7 +149,7 @@ public class TestBugReports extends TestCase {
     
     
     /**
-     * Bug report by Mariano Rico Almodóvar [Mariano.Rico@uam.es] on June 16th.
+     * Bug report by Mariano Rico Almodï¿½var [Mariano.Rico@uam.es] on June 16th.
      * Said to raise exception.
      */
     public void test_mra_01() {
@@ -842,6 +844,43 @@ public class TestBugReports extends TestCase {
         assertNotNull( result );
     }
     
+    /* Bug report from Dave Reynolds: listDeclaredProperties not complete */
+    public void test_der_02() {
+        String SOURCE=
+        "<?xml version='1.0'?>" +
+        "<!DOCTYPE owl [" +
+        "      <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#' >" +
+        "      <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#' >" +
+        "      <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#' >" +
+        "      <!ENTITY owl  'http://www.w3.org/2002/07/owl#' >" +
+        "      <!ENTITY dc   'http://purl.org/dc/elements/1.1/' >" +
+        "      <!ENTITY base  'http://jena.hpl.hp.com/test' >" +
+        "    ]>" +
+        "<rdf:RDF xmlns:owl ='&owl;' xmlns:rdf='&rdf;' xmlns:rdfs='&rdfs;' xmlns:dc='&dc;' xmlns='&base;#' xml:base='&base;'>" +
+        "  <owl:ObjectProperty rdf:ID='hasPublications'>" +
+        "    <rdfs:domain>" +
+        "      <owl:Class>" +
+        "        <owl:unionOf rdf:parseType='Collection'>" +
+        "          <owl:Class rdf:about='#Project'/>" +
+        "          <owl:Class rdf:about='#Task'/>" +
+        "        </owl:unionOf>" +
+        "      </owl:Class>" +
+        "    </rdfs:domain>" +
+        "    <rdfs:domain rdf:resource='#Dummy' />" +
+        "    <rdfs:range rdf:resource='#Publications'/>" +
+        "  </owl:ObjectProperty>" +
+        "  <owl:Class rdf:ID='Dummy'>" +
+        "  </owl:Class>" +
+        "</rdf:RDF>";
+        String NS = "http://jena.hpl.hp.com/test#";
+        OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+        m.read(new ByteArrayInputStream( SOURCE.getBytes()), NS );
+        
+        OntClass dummy = m.getOntClass( NS + "Dummy" );
+        // assert commented out - bug not accepted -ijd
+        //TestUtil.assertIteratorValues( this, dummy.listDeclaredProperties(), 
+        //                               new Object[] {m.getObjectProperty( NS+"hasPublications")} );
+    }
     
     // Internal implementation methods
     //////////////////////////////////
