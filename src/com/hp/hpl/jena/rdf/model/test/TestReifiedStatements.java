@@ -3,7 +3,7 @@ package com.hp.hpl.jena.rdf.model.test;
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifiedStatements.java,v 1.1 2003-03-05 10:29:10 chris-dollin Exp $
+  $Id: TestReifiedStatements.java,v 1.2 2003-03-05 10:36:15 chris-dollin Exp $
 */
 
 import junit.framework.*;
@@ -14,7 +14,10 @@ public class TestReifiedStatements extends TestCase
         { super( name ); }
     
     public static TestSuite suite()
-        { return new TestSuite( TestSimpleSelector.class ); }   
+        { return new TestSuite( TestReifiedStatements.class ); }   
+        
+    public void testNuffin()
+        {}
 
     }
 
