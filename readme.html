@@ -40,7 +40,7 @@ Hewlett Packard Laboratories, Bristol
 			<li>integrated query language (RDQL)</li>
 			<li>Support for datatype literals</li>
 			<li>An ontology API for OWL</li>
-			<li>Experimental support for  RDFS inference</li>
+			<li>Support for inference, including a built in RDFS reasoner</li>
 		</ul>
 
 <p>Whilst the intention is maintain the present API through the migration from
@@ -153,12 +153,16 @@ to.</p>
       href="doc/RDQL/rdql_grammar.html">rdql_grammar.html</a>, for condensed
       documentation.</dd>
 		</dl>
-		<dl>
-			<dt><b>Reasoning Subsystem</b></dt>
-			<dd>The Jena2 reasoner subsystem is designed to allow a range of inference engines to be plugged into Jena. Such reasoners are primarily used to derive additional RDF assertions which are entailed from some base RDF together with any optional ontology information and the axioms and rules associated with the reasoner. In addition, they can be used to test global properties of an RDF graph such as consistency.</dd>
-			<dd />
-			<dd>Currently, the reasoning subsystem requires using the SPI layer code.  See the <a href="javadoc/com/hp/hpl/jena/reasoner/package-summary.html">reasoner documentation</a> for more details. </dd>
-		</dl>
+		
+  <dl> 
+    <dt><b>Reasoning Subsystem</b></dt>
+    <dd>The Jena2 reasoner subsystem is designed to allow a range of inference 
+      engines to be plugged into Jena. Such reasoners are primarily used to derive 
+      additional RDF assertions which are entailed from some base RDF together 
+      with any optional ontology information and the axioms and rule. See the 
+      <a href="doc/user-manual/inference/index.html">reasoner documentation</a> 
+      for more details. </dd>
+  </dl>
 		<h2>License</h2>
 		<p>Jena is distributed under a BSD style open source <a
 href="copyright.txt">license</a>.</p>
