@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelCom.java,v 1.69 2003-07-29 14:37:54 chris-dollin Exp $
+  $Id: ModelCom.java,v 1.70 2003-07-30 15:20:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.69 $' Date='$Date: 2003-07-29 14:37:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.70 $' Date='$Date: 2003-07-30 15:20:36 $'
  */
 
 public class ModelCom 
@@ -868,28 +868,6 @@ implements Model, PrefixMapping, ModelLock
                 pm.setNsPrefix( key, (String) niceValues.iterator().next() );
             }            
         }
-    
-    public ExtendedIterator queryBindingsWith( Model m, Resource [] variables )
-        {
-        Map1 mm = new Map1()
-            { public Object map1( Object x ) { return mappy( x ); } };
-        QueryMapper qm = new QueryMapper( m, variables );
-        return
-            qm.getQuery().executeBindings( getGraph(), qm.getVariables() )
-            .mapWith( mm )
-            ;
-        }
-        
-    public List mappy( Object x )
-        {
-        List L = (List) x;
-        ArrayList result = new ArrayList( L.size() );
-        for (int i = 0; i < L.size(); i += 1) result.add( asRDF( (Node) L.get( i ) ) );
-        return result;
-        }
-
-    private RDFNode asRDF( Node n )
-        { return IteratorFactory.asRDFNode( n, this ); }
         
     public StmtIterator listStatements()  {
         return IteratorFactory.asStmtIterator( GraphUtil.findAll( graph ), this);

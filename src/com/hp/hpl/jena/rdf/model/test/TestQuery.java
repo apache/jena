@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestQuery.java,v 1.2 2003-05-28 10:28:58 chris-dollin Exp $
+  $Id: TestQuery.java,v 1.3 2003-07-30 15:20:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.rdf.model.test;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 
@@ -72,11 +73,11 @@ public class TestQuery extends ModelTestBase
             assertEquals( "variable did not convert", vOut[i], result[i] );
         }
         
-    public void testXXX()
+    public void testModelQuery()
         { 
-        Model m = modelWithStatements( "a R b; b S c; a R p; p T d" );
+        ModelCom m = (ModelCom) modelWithStatements( "a R b; b S c; a R p; p T d" );
         Model q = modelWithStatements( "jqv:x R jqv:y; jqv:y S jqv:z" );
-        ExtendedIterator it = m.queryBindingsWith( q, resources( q, "jqv:x jqv:z") );
+        ExtendedIterator it = ModelQueryUtil.queryBindingsWith( m, q, resources( q, "jqv:x jqv:z") );
         assertTrue( it.hasNext() );
         assertEquals( Arrays.asList( resources( m, "a c" ) ), it.next() );
         assertFalse( "", it.hasNext() );
