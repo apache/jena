@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.10 2003-12-06 21:46:59 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.11 2003-12-09 10:31:08 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */
@@ -71,8 +71,8 @@ import org.apache.xerces.util.EncodingMap;
  * of how to distinguish between them.
  * <p>
  * For very large files, ARP does not use any additional
- * memory except when either the {@link #setExtendedHandler}
- * method or the {@link AResource#setUserData} method have been
+ * memory except when either the {@link ExtendedHandler#discardNodesWithNodeID}
+ * returns false or when the {@link AResource#setUserData} method has been
  * used. In these cases ARP needs to remember the <code>rdf:nodeID</code>
  * usage through the file life time. 
  * @author  Jeremy Carroll, contribution //TODO sdr, newman

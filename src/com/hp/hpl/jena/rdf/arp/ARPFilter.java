@@ -23,7 +23,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: ARPFilter.java,v 1.16 2003-12-08 20:21:31 jeremy_carroll Exp $
+ * $Id: ARPFilter.java,v 1.17 2003-12-09 10:31:09 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -351,6 +351,10 @@ class ARPFilter
 		}
 
 		public void endRDF() {
+		}
+
+		public boolean discardNodesWithNodeID() {
+			return true;
 		}
 	};
 	ExtendedHandler scopeHandler = nullScopeHandler;
@@ -921,13 +925,14 @@ class ARPFilter
 		    return;
 			if (bn.hasNodeID()) {
 				// save for later end scope
+				if ( scopeHandler.discardNodesWithNodeID())
+				  return;
+				  
 				String bnodeID = bn.nodeID;
 				if (!nodeIdUserData.containsKey(bnodeID))
 					nodeIdUserData.put(bnodeID, null);
 			} else {
 				scopeHandler.endBNodeScope(bn);
-				// TODO this should not be necessary
-				bn.unsetHasBeenUsed();
 				
 			}
 		}

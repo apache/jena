@@ -43,7 +43,7 @@ class RDFParser implements ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.12 2003-12-08 20:21:31 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.13 2003-12-09 10:31:09 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -200,7 +200,9 @@ void rdf(XMLContext ctxt) :            { ARPResource r = null; }
    white() 
    (                      try { (
      r = obj(ctxt)                    
-                          ) } finally { arp.endLocalScope(r); }
+                          ) } finally { arp.endLocalScope(r); 
+                                        r = null;
+                                      }
                             
      white() 
    ) *    
@@ -471,14 +473,10 @@ Object propEltValue(XMLContext ctxt) : { String xml;
    dtURI = datatypeAttr(ctxt)        
    dtLex = string(ctxt)                 { return X.createDatatypeLiteral(dtURI,dtLex); }
  | // OR
-   <A_PARSETYPE> 
-   <AV_RESOURCE> 
-   ( warning() ) *                      { ptr = new ARPResource(arp); }
+                                        { ptr = new ARPResource(arp); }
                          try { (
-   white() 
-   ( propertyElt(ctxt,ptr) 
-     white() 
-   ) *                                  { return ptr; }
+   propEltValueWithRes(ctxt,ptr) 
+                                     { return ptr; }
                         ) }
                         catch (ParseException e) {
                          arp.endLocalScope(ptr);
@@ -488,21 +486,35 @@ Object propEltValue(XMLContext ctxt) : { String xml;
                          arp.endLocalScope(ptr);
                          throw e;
                         }
-
- | // OR 
-                                        { ptr = new ARPResource(arp); } 
-   resourceOrNodeIdAttr(ctxt,ptr)  
-   ( propAttr(ctxt,ptr) ) *
-   empty()                              { return ptr; }
-
- | // OR
-                                        { ptr = new ARPResource(arp); }  
-   ( propAttr(ctxt,ptr) ) +
-   empty()                              { return ptr; }
-
  | // OR    This one last because it can expand to empty.
   v= value(ctxt)                        { return v; }
 }
+
+
+
+void propEltValueWithRes(XMLContext ctxt, ARPResource ptr) 
+                                     : {} 
+{    
+   <A_PARSETYPE> 
+   <AV_RESOURCE> 
+   ( warning() ) *                      
+   white() 
+   ( propertyElt(ctxt,ptr) 
+     white() 
+   ) *                                  
+
+ | // OR 
+                                        
+   resourceOrNodeIdAttr(ctxt,ptr)  
+   ( propAttr(ctxt,ptr) ) *
+   empty()                              
+
+ | // OR
+                                          
+   ( propAttr(ctxt,ptr) ) +
+   empty()                              
+
+ }
 
 
 

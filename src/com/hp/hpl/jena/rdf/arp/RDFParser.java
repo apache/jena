@@ -31,7 +31,7 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: RDFParser.java,v 1.13 2003-12-08 20:21:32 jeremy_carroll Exp $
+ * * $Id: RDFParser.java,v 1.14 2003-12-09 10:31:09 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -326,6 +326,7 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
           r = obj(ctxt);
         } finally {
                                         arp.endLocalScope(r);
+                                        r = null;
         }
         white();
       }
@@ -780,40 +781,16 @@ E_END.
         dtLex = string(ctxt);
                                           {if (true) return X.createDatatypeLiteral(dtURI,dtLex);}
         break;
+      case A_NODEID:
+      case A_OTHER:
+      case A_RDF_N:
+      case A_TYPE:
       case A_PARSETYPE:
-        jj_consume_token(A_PARSETYPE);
-        jj_consume_token(AV_RESOURCE);
-        label_17:
-        while (true) {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case X_WARNING:
-            ;
-            break;
-          default:
-            jj_la1[27] = jj_gen;
-            break label_17;
-          }
-          warning();
-        }
+      case A_RESOURCE:
                                           ptr = new ARPResource(arp);
         try {
-          white();
-          label_18:
-          while (true) {
-            switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-            case E_OTHER:
-            case E_LI:
-            case E_RDF_N:
-              ;
-              break;
-            default:
-              jj_la1[28] = jj_gen;
-              break label_18;
-            }
-            propertyElt(ctxt,ptr);
-            white();
-          }
-                                          {if (true) return ptr;}
+          propEltValueWithRes(ctxt,ptr);
+                                       {if (true) return ptr;}
         } catch (ParseException e) {
                          arp.endLocalScope(ptr);
                          {if (true) throw e;}
@@ -822,56 +799,93 @@ E_END.
                          {if (true) throw e;}
         }
         break;
-      case A_NODEID:
-      case A_RESOURCE:
-                                          ptr = new ARPResource(arp);
-        resourceOrNodeIdAttr(ctxt,ptr);
-        label_19:
-        while (true) {
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case A_OTHER:
-          case A_RDF_N:
-          case A_TYPE:
-            ;
-            break;
-          default:
-            jj_la1[29] = jj_gen;
-            break label_19;
-          }
-          propAttr(ctxt,ptr);
-        }
-        empty();
-                                          {if (true) return ptr;}
-        break;
-      case A_OTHER:
-      case A_RDF_N:
-      case A_TYPE:
-                                          ptr = new ARPResource(arp);
-        label_20:
-        while (true) {
-          propAttr(ctxt,ptr);
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case A_OTHER:
-          case A_RDF_N:
-          case A_TYPE:
-            ;
-            break;
-          default:
-            jj_la1[30] = jj_gen;
-            break label_20;
-          }
-        }
-        empty();
-                                          {if (true) return ptr;}
-        break;
       default:
-        jj_la1[31] = jj_gen;
+        jj_la1[27] = jj_gen;
         // OR    This one last because it can expand to empty.
           v = value(ctxt);
                                           {if (true) return v;}
       }
     }
     throw new Error("Missing return statement in function");
+  }
+
+  final public void propEltValueWithRes(XMLContext ctxt, ARPResource ptr) throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case A_PARSETYPE:
+      jj_consume_token(A_PARSETYPE);
+      jj_consume_token(AV_RESOURCE);
+      label_17:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case X_WARNING:
+          ;
+          break;
+        default:
+          jj_la1[28] = jj_gen;
+          break label_17;
+        }
+        warning();
+      }
+      white();
+      label_18:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case E_OTHER:
+        case E_LI:
+        case E_RDF_N:
+          ;
+          break;
+        default:
+          jj_la1[29] = jj_gen;
+          break label_18;
+        }
+        propertyElt(ctxt,ptr);
+        white();
+      }
+      break;
+    case A_NODEID:
+    case A_RESOURCE:
+      resourceOrNodeIdAttr(ctxt,ptr);
+      label_19:
+      while (true) {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case A_OTHER:
+        case A_RDF_N:
+        case A_TYPE:
+          ;
+          break;
+        default:
+          jj_la1[30] = jj_gen;
+          break label_19;
+        }
+        propAttr(ctxt,ptr);
+      }
+      empty();
+      break;
+    case A_OTHER:
+    case A_RDF_N:
+    case A_TYPE:
+      label_20:
+      while (true) {
+        propAttr(ctxt,ptr);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case A_OTHER:
+        case A_RDF_N:
+        case A_TYPE:
+          ;
+          break;
+        default:
+          jj_la1[31] = jj_gen;
+          break label_20;
+        }
+      }
+      empty();
+      break;
+    default:
+      jj_la1[32] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
   }
 
   final public void collection(XMLContext ctxt, CollectionAction act) throws ParseException {
@@ -887,7 +901,7 @@ E_END.
           ;
           break;
         default:
-          jj_la1[32] = jj_gen;
+          jj_la1[33] = jj_gen;
           break label_21;
         }
         act = objInCollection(ctxt,act);
@@ -934,7 +948,7 @@ E_END.
       idAboutAttr(ctxt,r);
       break;
     default:
-      jj_la1[33] = jj_gen;
+      jj_la1[34] = jj_gen;
       ;
     }
                                           r.setType(
@@ -949,7 +963,7 @@ E_END.
         ;
         break;
       default:
-        jj_la1[34] = jj_gen;
+        jj_la1[35] = jj_gen;
         break label_22;
       }
       propAttr(ctxt,r);
@@ -964,7 +978,7 @@ E_END.
         ;
         break;
       default:
-        jj_la1[35] = jj_gen;
+        jj_la1[36] = jj_gen;
         break label_23;
       }
       propertyElt(ctxt,r);
@@ -1003,7 +1017,7 @@ E_END.
                                          {if (true) return rslt;}
       break;
     default:
-      jj_la1[36] = jj_gen;
+      jj_la1[37] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1053,7 +1067,7 @@ E_END.
         }
         break;
       default:
-        jj_la1[37] = jj_gen;
+        jj_la1[38] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1075,7 +1089,7 @@ E_END.
         ;
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[39] = jj_gen;
         break label_24;
       }
       warning();
@@ -1097,7 +1111,7 @@ E_END.
         ;
         break;
       default:
-        jj_la1[39] = jj_gen;
+        jj_la1[40] = jj_gen;
         break label_25;
       }
       warning();
@@ -1115,7 +1129,7 @@ E_END.
       nodeIdAttr(ctxt,r);
       break;
     default:
-      jj_la1[40] = jj_gen;
+      jj_la1[41] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1168,7 +1182,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[41] = jj_gen;
+        jj_la1[42] = jj_gen;
         break label_26;
       }
       tok = string1(pieces);
@@ -1203,7 +1217,7 @@ Notice the action within the kleene star.
                                          {if (true) return rslt;}
       break;
     default:
-      jj_la1[42] = jj_gen;
+      jj_la1[43] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1224,7 +1238,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[43] = jj_gen;
+        jj_la1[44] = jj_gen;
         break label_27;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1235,7 +1249,7 @@ Notice the action within the kleene star.
         ctxt = xmlns(ctxt);
         break;
       default:
-        jj_la1[44] = jj_gen;
+        jj_la1[45] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1250,14 +1264,14 @@ Notice the action within the kleene star.
           ;
           break;
         default:
-          jj_la1[45] = jj_gen;
+          jj_la1[46] = jj_gen;
           break label_28;
         }
         warning();
       }
       break;
     default:
-      jj_la1[46] = jj_gen;
+      jj_la1[47] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1270,14 +1284,14 @@ Notice the action within the kleene star.
           ;
           break;
         default:
-          jj_la1[47] = jj_gen;
+          jj_la1[48] = jj_gen;
           break label_29;
         }
         warning();
       }
       break;
     default:
-      jj_la1[48] = jj_gen;
+      jj_la1[49] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1291,14 +1305,14 @@ Notice the action within the kleene star.
           ;
           break;
         default:
-          jj_la1[49] = jj_gen;
+          jj_la1[50] = jj_gen;
           break label_30;
         }
         warning();
       }
       break;
     default:
-      jj_la1[50] = jj_gen;
+      jj_la1[51] = jj_gen;
       ;
     }
                                          {if (true) return ctxt;}
@@ -1363,7 +1377,7 @@ Notice the action within the kleene star.
       element(ctxt);
       break;
     default:
-      jj_la1[51] = jj_gen;
+      jj_la1[52] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1379,7 +1393,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[52] = jj_gen;
+        jj_la1[53] = jj_gen;
         break label_31;
       }
       nowarning();
@@ -1400,7 +1414,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[53] = jj_gen;
+        jj_la1[54] = jj_gen;
         break label_32;
       }
       attr();
@@ -1420,7 +1434,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[54] = jj_gen;
+        jj_la1[55] = jj_gen;
         break label_33;
       }
       content(ctxt);
@@ -1438,7 +1452,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[55] = jj_gen;
+        jj_la1[56] = jj_gen;
         break label_34;
       }
       nowarning();
@@ -1460,7 +1474,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[56] = jj_gen;
+        jj_la1[57] = jj_gen;
         break label_35;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1471,7 +1485,7 @@ Notice the action within the kleene star.
         ctxt = xmlns(ctxt);
         break;
       default:
-        jj_la1[57] = jj_gen;
+        jj_la1[58] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1486,14 +1500,14 @@ Notice the action within the kleene star.
           ;
           break;
         default:
-          jj_la1[58] = jj_gen;
+          jj_la1[59] = jj_gen;
           break label_36;
         }
         nowarning();
       }
       break;
     default:
-      jj_la1[59] = jj_gen;
+      jj_la1[60] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1506,14 +1520,14 @@ Notice the action within the kleene star.
           ;
           break;
         default:
-          jj_la1[60] = jj_gen;
+          jj_la1[61] = jj_gen;
           break label_37;
         }
         nowarning();
       }
       break;
     default:
-      jj_la1[61] = jj_gen;
+      jj_la1[62] = jj_gen;
       ;
     }
                                          {if (true) return ctxt;}
@@ -1544,7 +1558,7 @@ Notice the action within the kleene star.
       saxEx();
       break;
     default:
-      jj_la1[62] = jj_gen;
+      jj_la1[63] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1565,7 +1579,7 @@ Notice the action within the kleene star.
       jj_consume_token(E_RDF_N);
       break;
     default:
-      jj_la1[63] = jj_gen;
+      jj_la1[64] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1597,7 +1611,7 @@ Notice the action within the kleene star.
                                          {if (true) return t;}
       break;
     default:
-      jj_la1[64] = jj_gen;
+      jj_la1[65] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1657,7 +1671,7 @@ Notice the action within the kleene star.
                                          {if (true) return t;}
       break;
     default:
-      jj_la1[65] = jj_gen;
+      jj_la1[66] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1694,7 +1708,7 @@ Notice the action within the kleene star.
       jj_consume_token(A_DATATYPE);
       break;
     default:
-      jj_la1[66] = jj_gen;
+      jj_la1[67] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1721,7 +1735,7 @@ Notice the action within the kleene star.
                                          {if (true) return t;}
       break;
     default:
-      jj_la1[67] = jj_gen;
+      jj_la1[68] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1750,7 +1764,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[68] = jj_gen;
+        jj_la1[69] = jj_gen;
         break label_38;
       }
       nowarning();
@@ -1762,7 +1776,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[69] = jj_gen;
+        jj_la1[70] = jj_gen;
         break label_39;
       }
       allNs = litXmlns(allNs, visiblyUsed);
@@ -1785,7 +1799,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[70] = jj_gen;
+        jj_la1[71] = jj_gen;
         break label_40;
       }
       litAttr(attrs,visiblyUsed);
@@ -1807,7 +1821,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[71] = jj_gen;
+        jj_la1[72] = jj_gen;
         break label_41;
       }
       litContent(val,allNs,ns);
@@ -1827,7 +1841,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[72] = jj_gen;
+        jj_la1[73] = jj_gen;
         break label_42;
       }
       nowarning();
@@ -1850,7 +1864,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[73] = jj_gen;
+        jj_la1[74] = jj_gen;
         break label_43;
       }
       nowarning();
@@ -1889,7 +1903,7 @@ Notice the action within the kleene star.
       saxEx();
       break;
     default:
-      jj_la1[74] = jj_gen;
+      jj_la1[75] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1912,7 +1926,7 @@ Notice the action within the kleene star.
         ;
         break;
       default:
-        jj_la1[75] = jj_gen;
+        jj_la1[76] = jj_gen;
         break label_44;
       }
       litContent(buf,allNs,ParserSupport.xmlNameSpace());
@@ -1991,14 +2005,44 @@ Notice the action within the kleene star.
     return retval;
   }
 
+  final private boolean jj_3R_47() {
+    if (jj_scan_token(COMMENT)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
+  final private boolean jj_3_3() {
+    if (jj_scan_token(A_PARSETYPE)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    if (jj_scan_token(AV_COLLECTION)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
   final private boolean jj_3R_49() {
     if (jj_scan_token(X_SAX_EX)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
 
+  final private boolean jj_3_1() {
+    if (jj_scan_token(A_PARSETYPE)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    if (jj_scan_token(AV_LITERAL)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
   final private boolean jj_3R_48() {
     if (jj_scan_token(PROCESSING_INSTRUCTION)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
+  final private boolean jj_3_2() {
+    if (jj_scan_token(A_PARSETYPE)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    if (jj_scan_token(AV_DAMLCOLLECTION)) return true;
     if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
@@ -2038,36 +2082,6 @@ Notice the action within the kleene star.
     return false;
   }
 
-  final private boolean jj_3_3() {
-    if (jj_scan_token(A_PARSETYPE)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    if (jj_scan_token(AV_COLLECTION)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3_1() {
-    if (jj_scan_token(A_PARSETYPE)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    if (jj_scan_token(AV_LITERAL)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3R_47() {
-    if (jj_scan_token(COMMENT)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
-  final private boolean jj_3_2() {
-    if (jj_scan_token(A_PARSETYPE)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    if (jj_scan_token(AV_DAMLCOLLECTION)) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
-    return false;
-  }
-
   public TokenManager token_source;
   public Token token, jj_nt;
   private int jj_ntk;
@@ -2076,8 +2090,8 @@ Notice the action within the kleene star.
   public boolean lookingAhead = false;
   private boolean jj_semLA;
   private int jj_gen;
-  final private int[] jj_la1 = new int[76];
-  final private int[] jj_la1_0 = {0x380a0,0x1e,0x1e,0x2000001e,0x2000001e,0x1e,0x1e,0xc,0xc,0x38080,0x700,0x7000,0x38000,0x38080,0x700,0x20000000,0x20000000,0x20000000,0x20000000,0x20000000,0x7000,0x20000000,0x38000,0x100,0x20000000,0x20000000,0x20000000,0x20000000,0x38000,0x7000,0x7000,0x1847400,0x38080,0x700,0x7000,0x38000,0x38000,0x3809e,0x20000000,0x20000000,0x800400,0x1e,0x1e,0x24000000,0x24000000,0x20000000,0x8000000,0x20000000,0x10000000,0x20000000,0x2000000,0x380a0,0x20000000,0x1847700,0x380be,0x20000000,0x24000000,0x24000000,0x20000000,0x8000000,0x20000000,0x10000000,0x380be,0x38080,0x380a0,0x1b847700,0x1847700,0x580800,0x20000000,0x4000000,0x1b847700,0x380be,0x20000000,0x20000000,0x380be,0x380be,};
+  final private int[] jj_la1 = new int[77];
+  final private int[] jj_la1_0 = {0x380a0,0x1e,0x1e,0x2000001e,0x2000001e,0x1e,0x1e,0xc,0xc,0x38080,0x700,0x7000,0x38000,0x38080,0x700,0x20000000,0x20000000,0x20000000,0x20000000,0x20000000,0x7000,0x20000000,0x38000,0x100,0x20000000,0x20000000,0x20000000,0x1847400,0x20000000,0x38000,0x7000,0x7000,0x847400,0x38080,0x700,0x7000,0x38000,0x38000,0x3809e,0x20000000,0x20000000,0x800400,0x1e,0x1e,0x24000000,0x24000000,0x20000000,0x8000000,0x20000000,0x10000000,0x20000000,0x2000000,0x380a0,0x20000000,0x1847700,0x380be,0x20000000,0x24000000,0x24000000,0x20000000,0x8000000,0x20000000,0x10000000,0x380be,0x38080,0x380a0,0x1b847700,0x1847700,0x580800,0x20000000,0x4000000,0x1b847700,0x380be,0x20000000,0x20000000,0x380be,0x380be,};
   final private JJCalls[] jj_2_rtns = new JJCalls[4];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
@@ -2088,7 +2102,7 @@ Notice the action within the kleene star.
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2097,7 +2111,7 @@ Notice the action within the kleene star.
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 76; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 77; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2212,7 +2226,7 @@ Notice the action within the kleene star.
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 76; i++) {
+    for (int i = 0; i < 77; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

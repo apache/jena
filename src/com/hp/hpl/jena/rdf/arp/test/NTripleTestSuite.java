@@ -144,7 +144,6 @@ class NTripleTestSuite extends WGTestSuite {
 		 * 
 		 */
 		public void atEndOfFile() {
-			// Too hard when errors
 			if (!anon.isEmpty()) {
 				Iterator it = anon.iterator();
 				while (it.hasNext())
@@ -190,6 +189,12 @@ class NTripleTestSuite extends WGTestSuite {
 		 */
 		public int getCount() {
 			return -countDown;
+		}
+		/* (non-Javadoc)
+		 * @see com.hp.hpl.jena.rdf.arp.ExtendedHandler#discardNodesWithNodeID()
+		 */
+		public boolean discardNodesWithNodeID() {
+			return false;
 		}
 
 	}
@@ -238,7 +243,7 @@ class NTripleTestSuite extends WGTestSuite {
 
 			if (cnt == 0) {
 				// retry with sudden death
-				for (int i = th.getCount(); i >= 1; i-=3)
+				for (int i = th.getCount(); i >= 1; i--)
 					loadRDFx(in, TestScope.suppress, base, false, i);
 			}
 			if (wantModel) {

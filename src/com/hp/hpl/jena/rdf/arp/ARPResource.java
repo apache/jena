@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPResource.java,v 1.7 2003-12-08 20:21:31 jeremy_carroll Exp $
+ * * $Id: ARPResource.java,v 1.8 2003-12-09 10:31:09 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -306,9 +306,6 @@ class ARPResource implements  AResourceInternal {
 	public void setHasBeenUsed() {
 		used = true;
 	} 
-	void unsetHasBeenUsed() {
-	used = false;
-}
 
 
 	/* (non-Javadoc)
