@@ -2,7 +2,7 @@
 # RDFS rule set v0.1.
 # This variant is used in the case where the subclass and subproperty
 # lattices have been precomputed by a transitive graph closure cache.
-# $Id: rdfs-fb-tgc.rules,v 1.6 2003-08-25 20:59:25 der Exp $
+# $Id: rdfs-fb-tgc.rules,v 1.7 2003-11-08 17:55:01 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -81,4 +81,111 @@
 # Not needed - replaced by TGC front end
 #[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] 
 #[rdfs5a: (?a rdfs:subPropertyOf ?b), (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c)] 
+					
+#------------------------------------------------------------------
+# Declaration of main XSD datatypes
+#------------------------------------------------------------------
+
+-> (xsd:float rdf:type rdfs:Datatype).
+-> (xsd:double rdf:type rdfs:Datatype).
+-> (xsd:int rdf:type rdfs:Datatype).
+-> (xsd:long rdf:type rdfs:Datatype).
+-> (xsd:short rdf:type rdfs:Datatype).
+-> (xsd:byte rdf:type rdfs:Datatype).
+-> (xsd:unsignedByte rdf:type rdfs:Datatype).
+-> (xsd:unsignedShort rdf:type rdfs:Datatype).
+-> (xsd:unsignedInt rdf:type rdfs:Datatype).
+-> (xsd:unsignedLong rdf:type rdfs:Datatype).
+-> (xsd:decimal rdf:type rdfs:Datatype).
+-> (xsd:integer rdf:type rdfs:Datatype).
+-> (xsd:nonPositiveInteger rdf:type rdfs:Datatype).
+-> (xsd:nonNegativeInteger rdf:type rdfs:Datatype).
+-> (xsd:positiveInteger rdf:type rdfs:Datatype).
+-> (xsd:negativeInteger rdf:type rdfs:Datatype).
+-> (xsd:boolean rdf:type rdfs:Datatype).
+-> (xsd:string rdf:type rdfs:Datatype).
+-> (xsd:anyURI rdf:type rdfs:Datatype).
+-> (xsd:hexBinary rdf:type rdfs:Datatype).
+-> (xsd:base64Binary  rdf:type rdfs:Datatype).
+-> (xsd:date rdf:type rdfs:Datatype).
+-> (xsd:time rdf:type rdfs:Datatype).
+-> (xsd:dateTime rdf:type rdfs:Datatype).
+-> (xsd:duration rdf:type rdfs:Datatype).
+-> (xsd:gDay rdf:type rdfs:Datatype).
+-> (xsd:gMonth rdf:type rdfs:Datatype).
+-> (xsd:gYear rdf:type rdfs:Datatype).
+-> (xsd:gYearMonth rdf:type rdfs:Datatype).
+-> (xsd:gMonthDay rdf:type rdfs:Datatype).
+
+#-> (xsd:integer rdfs:subClassOf xsd:decimal).
+
+-> (xsd:byte rb:xsdBase xsd:decimal).
+-> (xsd:short rb:xsdBase xsd:decimal).
+-> (xsd:int rb:xsdBase xsd:decimal).
+-> (xsd:long rb:xsdBase xsd:decimal).
+-> (xsd:unsignedByte rb:xsdBase xsd:decimal).
+-> (xsd:unsignedShort rb:xsdBase xsd:decimal).
+-> (xsd:unsignedInt rb:xsdBase xsd:decimal).
+-> (xsd:unsignedLong rb:xsdBase xsd:decimal).
+-> (xsd:integer rb:xsdBase xsd:decimal).
+-> (xsd:nonNegativeInteger rb:xsdBase xsd:decimal).
+-> (xsd:nonPositiveInteger rb:xsdBase xsd:decimal).
+-> (xsd:byte rb:xsdBase xsd:decimal).
+-> (xsd:float rb:xsdBase xsd:float).
+-> (xsd:decimal rb:xsdBase xsd:decimal).
+-> (xsd:string rb:xsdBase xsd:string).
+-> (xsd:boolean rb:xsdBase xsd:boolean).
+-> (xsd:date rb:xsdBase xsd:date).
+-> (xsd:time rb:xsdBase xsd:time).
+-> (xsd:dateTime rb:xsdBase xsd:dateTime).
+-> (xsd:duration rb:xsdBase xsd:duration).
+
+# Describe range (base type, signed, min bits)
+-> (xsd:byte    rb:xsdRange xsd(xsd:integer,1,8)).
+-> (xsd:short   rb:xsdRange xsd(xsd:integer,1,16)).
+-> (xsd:int     rb:xsdRange xsd(xsd:integer,1,32)).
+-> (xsd:long    rb:xsdRange xsd(xsd:integer,1,64)).
+-> (xsd:integer rb:xsdRange xsd(xsd:integer,1,65)).
+							
+-> (xsd:unsignedByte    rb:xsdRange xsd(xsd:integer,0,8)).
+-> (xsd:unsignedShort   rb:xsdRange xsd(xsd:integer,0,16)).
+-> (xsd:unsignedInt     rb:xsdRange xsd(xsd:integer,0,32)).
+-> (xsd:unsignedLong    rb:xsdRange xsd(xsd:integer,0,64)).
+-> (xsd:nonNegativeInteger rb:xsdRange xsd(xsd:integer,0,65)).
+
+# Some XSD support may be disabled temporarily during performance checking
+
+#[xsd1: (?X rdfs:subClassOf ?Y) <- 
+#        (?X rb:xsdRange xsd(?B, 0, ?L)) (?Y rb:xsdRange xsd(?B, ?S, ?L2)) le(?L, ?L2)]
+
+#[xsd2: (?X rdfs:subClassOf ?Y) <- 
+#        (?X rb:xsdRange xsd(?B, 1, ?L)) (?Y rb:xsdRange xsd(?B, 1, ?L2)) le(?L, ?L2)]
+
+#[range1: (?P rdfs:range ?C) <- 
+#			(?P rdfs:range ?D), (?D rb:xsdRange xsd(?B, ?S1, ?L1)), 
+#			(?P rdfs:range ?E), notEqual(?D, ?E), 
+#			(?E rb:xsdRange xsd(?B, ?S2, ?L2)), 
+#			min(?S1, ?S2, ?S3),
+#			min(?L1, ?L2, ?L3),
+#			(?C rb:xsdRange xsd(?B, ?S3, ?L3)),
+#			]
+
+#------------------------------------------------------------------
+# Validation rules. These are dormant by default but are triggered
+# by the additional of a validation control triple to the graph.
+#------------------------------------------------------------------
+
+[validationDisjoint: (?v rb:validation on()) ->
+	[validationIndiv: (?X rb:violation error('disjoint', 'Subclass relationship asserted between disjoint datatypes', ?Y)) 
+				<- (?C rdfs:subClassOf ?D) notEqual(?C, ?D),
+  			       (?C rb:xsdBase ?BC), (?D rb:xsdBase ?BD), notEqual(?BC, ?BD) ] ]
+
+# Hardwired anyway
+#[validationDTRange: (?v rb:validation on()), (?P rdfs:range ?R) (?R rdf:type rdfs:Datatype)
+#	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to range (prop, value)', ?P, ?V))
+#				<- (?X ?P ?V), notDType(?V, ?R)  ] ]
+
+[validationDTRange: (?v rb:validation on()), (?P rdfs:range rdfs:Literal)  ->
+	[validationDTRange: (?X rb:violation error('range check', 'Incorrectly typed literal due to range rdsf:Literal (prop, value)', ?P, ?V))
+				<- (?X ?P ?V), notLiteral(?V), notBNode(?V) ] ]
 
