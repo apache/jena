@@ -5,10 +5,15 @@
     
    <file:///base/rdf-test-20.n3#b>     <file:///base/rdf-test-20.n3#p>  <file:///base/rdf-test-20.n3#list> .
     
-    _:a_g1     <http://www.daml.org/2001/03/daml+oil#first> "2" .
+    _:a_g1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+
+    _:a_g1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "2" .
     
-    _:a_g1     <http://www.daml.org/2001/03/daml+oil#rest> <http://www.daml.org/2001/03/daml+oil#nil> .
+    _:a_g1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
     
-    <file:///base/rdf-test-20.n3#list>  <http://www.daml.org/2001/03/daml+oil#first> "1" .
+
+    <file:///base/rdf-test-20.n3#list>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+
+    <file:///base/rdf-test-20.n3#list>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "1" .
     
-    <file:///base/rdf-test-20.n3#list>   <http://www.daml.org/2001/03/daml+oil#rest> _:a_g1 .
+    <file:///base/rdf-test-20.n3#list>  <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:a_g1 .

@@ -1,7 +1,7 @@
 @prefix a: <http://foo/a#> .
 @prefix : <#> .
 
-:test :comment "Shared DAML lists" .
+:test :comment "Shared RDF collections as lists" .
 
 :a :p _:list .
 :b :p _:list .

@@ -4,11 +4,15 @@
    <file:///base/rdf-test-19.n3#a>     <file:///base/rdf-test-19.n3#p> _:a_ga .
     
    <file:///base/rdf-test-19.n3#b>     <file:///base/rdf-test-19.n3#p> _:a_ga .
+
+    _:a_g1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+
+    _:a_g1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "2" .
     
-    _:a_g1     <http://www.daml.org/2001/03/daml+oil#first> "2" .
+    _:a_g1     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
     
-    _:a_g1     <http://www.daml.org/2001/03/daml+oil#rest> <http://www.daml.org/2001/03/daml+oil#nil> .
+    _:a_ga     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+
+    _:a_ga     <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "1" .
     
-    _:a_ga     <http://www.daml.org/2001/03/daml+oil#first> "1" .
-    
-    _:a_ga     <http://www.daml.org/2001/03/daml+oil#rest> _:a_g1 .
+    _:a_ga     <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:a_g1 .

@@ -1,6 +1,6 @@
 @prefix a: <http://foo/a#> .
 @prefix : <#> .
 
-:test :comment "DAML List: nil list with property".
+:test :comment "RDF collections as lists: nil list with property".
 
 () a:prop "nilProp" .

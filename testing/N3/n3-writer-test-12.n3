@@ -1,7 +1,7 @@
 @prefix a: <http://foo/a#> .
 @prefix : <#> .
 
-:test :comment "DAML Lists".
+:test :comment "RDF collections as lists".
 
 a:list3 a:p ("1" "2" "3").
 

@@ -1,11 +1,11 @@
 @prefix a: <http://foo/a#> .
 @prefix : <#> .
 
-:test :comment "Shared DAML lists tails" .
+:test :comment "Shared RDF lists tails" .
 
-:a :p _:list .
-:b :p _:list .
+:a :p :list .
+:b :p :list .
 
-_:list :- ("1" "2") .
+:list :- ("1" "2") .
 
 ("a" "b") .
