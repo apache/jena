@@ -146,8 +146,13 @@ getLongObject
 SELECT HEAD, TAIL FROM ${a} WHERE ID = ?
 
 #-------------------------------------------------------------------
-# Return the ID of a long object, if it exists
+# Return the ID of a long object, if it exists, based on the Head
 getLongObjectID
+SELECT ID FROM ${a} WHERE Head = ? and ChkSum is NULL
+
+#-------------------------------------------------------------------
+# Return the ID of a long object, if it exists, based on the Head and ChkSum
+getLongObjectIDwithChkSum
 SELECT ID FROM ${a} WHERE Head = ? and ChkSum = ?
 
 #-------------------------------------------------------------------

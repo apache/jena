@@ -118,7 +118,7 @@ DELETE FROM ${a} WHERE (GraphID = ?)
 #-------------------------------------------------------------------
 # Store the name of a new graph and create a unique identifier for it.
 insertGraph
-INSERT INTO jena_graph (Name) VALUES (?)
+INSERT INTO JENA_GRAPH (Name) VALUES (?)
 
 #-------------------------------------------------------------------
 # Remove the name of a graph.
@@ -160,8 +160,13 @@ getLongObject
 SELECT HEAD, TAIL FROM ${a} WHERE ID = ?
 
 #-------------------------------------------------------------------
-# Return the ID of a long object, if it exists
+# Return the ID of a long object, if it exists, based on the Head
 getLongObjectID
+SELECT ID FROM ${a} WHERE Head = ? and ChkSum is NULL
+
+#-------------------------------------------------------------------
+# Return the ID of a long object, if it exists, based on the Head and ChkSum
+getLongObjectIDwithChkSum
 SELECT ID FROM ${a} WHERE Head = ? and ChkSum = ?
 
 #-------------------------------------------------------------------

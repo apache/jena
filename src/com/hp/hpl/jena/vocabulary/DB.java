@@ -10,7 +10,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Vocabulary for Database properties.
  *
  * @author csayers
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class DB {
 
@@ -26,6 +26,7 @@ public class DB {
     public static final Resource systemGraphName = ResourceFactory.createResource(uri + "SystemGraph" );
     public static final Property engineType = ResourceFactory.createProperty(uri + "EngineType" );
     public static final Property driverVersion = ResourceFactory.createProperty(uri + "DriverVersion" );
+	public static final Property layoutVersion = ResourceFactory.createProperty(uri + "LayoutVersion" );
     public static final Property formatDate = ResourceFactory.createProperty(uri + "FormatDate" );
     public static final Property graph = ResourceFactory.createProperty(uri + "Graph" );
     public static final Property maxLiteral = ResourceFactory.createProperty(uri + "MaxLiteral" );

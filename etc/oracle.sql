@@ -1,388 +1,340 @@
-# Generic SQL driver file for MySQL suitable for multi-model formats
+# Generic SQL driver file for Oracle suitable for multi-model formats
 #
-############################################
-# TABLE CREATION
-############################################
 #-------------------------------------------------------------------
-# Initialize a blank database - create tables and indexes - compound statement group
+# Initialize a blank database - create system tables and indexes
+#
+# Parameters:
+# a - column type for subj, prop, obj
+#     VARCHAR(nn) BINARY if DBHasXact is true,
+#        where nn is DBLongObjectLen (requires that nn <= 250)
+#     else TINYBLOB if DBLongObjectLen <= 250; else MEDIUMBLOB
+#
+# Note that the tables JENA_LONG_LIT, JENA_LONG_URI, JENA_PREFIX
+# all have the same structure. These are used to store long objects.
+# Tthere chould (should) be a separate operation to create
+# these tables to ensure they have an identical structure.
+# This is not urgent - left for future work.
+#
 initDBtables
-CREATE TABLE JENA_SYS_STMTASSERTED (
- SubjRes       VARCHAR2(250) NOT NULL,
- PropRes       VARCHAR2(250) NOT NULL,
- ObjRes        VARCHAR2(250),
- ObjStr        VARCHAR2(4000),
- ObjLiteral    INTEGER,
- GraphID       VARCHAR2(250),
- CONSTRAINT uniq_jena_sys_sasserted_spo 
-   UNIQUE ( SubjRes, PropRes, ObjRes, ObjStr, ObjLiteral, GraphID )
+#DROP TABLE jena_sys_stmt;;
+CREATE TABLE jena_sys_stmt (
+ Subj       ${a} NOT NULL,
+ Prop       ${a} NOT NULL,
+ Obj        ${a} NOT NULL,
+ GraphID    INTEGER
+) ;;
+#DROP TABLE jena_long_lit;;
+CREATE TABLE jena_long_lit (
+ ID      	INTEGER NOT NULL PRIMARY KEY,
+ Head    	${b} NOT NULL,
+ ChkSum		INTEGER,
+ Tail    	BLOB
 );;
-CREATE TABLE JENA_LITERALS (
- LiteralId     INTEGER NOT NULL PRIMARY KEY,
- LiteralIdx    VARCHAR2(1000) NOT NULL,
- Lang          VARCHAR2(250),
- asBLOB          VARCHAR2(4000),
- AsFloat       FLOAT,
- AsInt         INTEGER,
- XSDType    VARCHAR2(250)
+CREATE SEQUENCE jena_long_lit_ID_seq;;
+#DROP TABLE jena_long_uri;;
+CREATE TABLE jena_long_uri (
+ ID      	INTEGER NOT NULL PRIMARY KEY,
+ Head    	${b} NOT NULL,
+ ChkSum 	INTEGER,
+ Tail    	BLOB
+) ;;
+CREATE SEQUENCE jena_long_uri_ID_seq;;
+#DROP TABLE jena_prefix;;
+CREATE TABLE jena_prefix (
+ ID      	INTEGER NOT NULL PRIMARY KEY,
+ Head    	${a} NOT NULL,
+ ChkSum		INTEGER,
+ Tail    	BLOB
+) ;;
+CREATE SEQUENCE jena_prefix_ID_seq;;
+#DROP TABLE jena_graph;;
+CREATE TABLE jena_graph (
+ ID      INTEGER NOT NULL PRIMARY KEY,
+ Name    VARCHAR2(4000)
 );;
-CREATE TABLE JENA_SYS_STMTREIFIED (
- SubjRes       VARCHAR2(250),
- PropRes       VARCHAR2(250),
- ObjRes        VARCHAR2(250),
- ObjStr        VARCHAR2(4000),
- ObjLiteral    INTEGER,
- GraphID       VARCHAR2(250),
- StmtRes		VARCHAR2(250) NOT NULL,
- HasType		INTEGER,
- CONSTRAINT uniq_jena_sysr_sasserted_spo 
-   UNIQUE ( SubjRes, PropRes, ObjRes, ObjStr, ObjLiteral, GraphID )
-);;
-CREATE UNIQUE INDEX JENA_IDXR_STMT ON JENA_SYS_STMTREIFIED(StmtRes, HasType);;
-CREATE INDEX JENA_IDXR_SUBJ_PROP ON JENA_SYS_STMTREIFIED(SubjRes, PropRes);;
-CREATE INDEX JENA_IDXR_OBJ ON JENA_SYS_STMTREIFIED(ObjRes);;
-CREATE INDEX JENA_IDX_SUBJ_PROP ON JENA_SYS_STMTASSERTED(SubjRes, PropRes);;
-CREATE INDEX JENA_IDX_OBJ ON JENA_SYS_STMTASSERTED(ObjRes);;
+CREATE SEQUENCE jena_graph_ID_seq;;
+CREATE UNIQUE INDEX JENA_IXLIT ON JENA_LONG_LIT(Head,ChkSum);;
+CREATE UNIQUE index jENA_IXURI ON JENA_LONG_URI(Head,ChkSum);;
+CREATE UNIQUE INDEX JENA_IXBND ON JENA_PREFIX(Head,ChkSum);;
+CREATE INDEX JENA_IXSP ON JENA_SYS_STMT(Subj, Prop);;
+CREATE INDEX JENA_IXO ON JENA_SYS_STMT(Obj);;
 
 #-------------------------------------------------------------------
-# Create a blank statement table - and indexes - compound statement group
+# Create a blank statement table - and indexes
+#
+# Parameters:
+# a - table name
+# b - column type for subj, prop, obj (see param a in InitDBtables)
+# c - table implementation type (see param b in InitDBtables)
+# d - index key length (see param c in InitDBtables)
+#
 createStatementTable
 CREATE TABLE ${a} (
- SubjRes       VARCHAR2(250) NOT NULL,
- PropRes       VARCHAR2(250) NOT NULL,
- ObjRes        VARCHAR2(250),
- ObjStr        VARCHAR2(4000),
- ObjLiteral    INTEGER,
- GraphID       VARCHAR2(250),
- CONSTRAINT ${a}_uspo 
-   UNIQUE (SubjRes, PropRes, ObjRes, ObjStr, ObjLiteral, GraphID)
+ Subj       ${b} NOT NULL,
+ Prop       ${b} NOT NULL,
+ Obj        ${b} NOT NULL,
+ GraphID    INTEGER
 );;
-CREATE INDEX ${a}_ISP ON ${a}(SubjRes, PropRes);;
-CREATE INDEX ${a}_IO ON ${a}(ObjRes);;
+CREATE INDEX ${a}_IXSP ON ${a}(Subj, Prop);;
+CREATE INDEX ${a}_IXO ON ${a}(Obj);;
 
 #-------------------------------------------------------------------
-# Create a blank reified statement table - and indexes - compound statement group
+# Create a blank reified statement table - and indexes
+#
+# Parameters:
+# a - table name
+# b - column type for subj, prop, obj (see param a in InitDBtables)
+# c - table implementation type (see param b in InitDBtables)
+# d - index key length (see param c in InitDBtables)
 createReifStatementTable
 CREATE TABLE ${a} (
- SubjRes       VARCHAR2(250),
- PropRes       VARCHAR2(250),
- ObjRes        VARCHAR2(250),
- ObjStr        VARCHAR2(4000),
- ObjLiteral    INTEGER,
- GraphID       VARCHAR2(250),
- StmtRes		VARCHAR2(250) NOT NULL,
- HasType		INTEGER
+ Subj       ${b},
+ Prop       ${b},
+ Obj        ${b},
+ GraphID    INTEGER,
+ Stmt       ${b} NOT NULL,
+ HasType    CHAR(1) NOT NULL
 );;
-CREATE UNIQUE INDEX ${a}_IDX_STMT ON ${a}(StmtRes, HasType);;
-CREATE INDEX ${a}_ISP ON ${a}(SubjRes, PropRes);;
-CREATE INDEX ${a}_IO ON ${a}(ObjRes);;
- 
-############################################
-# INITIALIZATION
-############################################
+CREATE UNIQUE INDEX ${a}_IXSTMT ON ${a}(Stmt, HasType);;
+CREATE INDEX ${a}_IXSP ON ${a}(Subj, Prop);;
+CREATE INDEX ${a}_IXO ON ${a}(Obj);;
+
 #-------------------------------------------------------------------
-# Initialize a blank database - create any generators needed - compound statement group
+# Initialize a blank database - create any generators needed
 initDBgenerators
 # Generators to index the main tables
-CREATE SEQUENCE JENA_LITERALS_GEN;;
-CREATE SEQUENCE JENA_GRAPHS_GEN;;
 
 #-------------------------------------------------------------------
-# Initialize a blank database - create any stored procedures - compound statement group
-initDBprocedures
-# Database specific ... not supported for MySQL
-
-############################################
-# DELETION
-############################################
-#-------------------------------------------------------------------
-# Delete an all-URI triple into a Statement table, 
-# substituting Statement table name 
-# and taking URI's as arguments
-deleteStatementObjectURI
-Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjRes = ? AND GraphID = ?)
+# Delete all rows from named AST table
+dropTable
+DROP TABLE ${a}
 
 #-------------------------------------------------------------------
 # Remove all rows from given table with the given GraphID.
-# Substitutes table name 
+# Substitutes table name
 removeRowsFromTable
 DELETE FROM ${a} WHERE (GraphID = ?)
 
 #-------------------------------------------------------------------
-# Delete an triple with a Simple String literal into a Statement table, 
-# substituting Statement table name 
-# and taking values as arguments
-deleteStatementLiteralRef
-Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjLiteral = ? AND GraphID = ?)
+# Store the name of a new graph and create a unique identifier for it.
+insertGraph
+INSERT INTO jena_graph (ID, Name) VALUES (?, ?)
 
 #-------------------------------------------------------------------
-# Delete an triple with a Simple String literal into a Statement table, 
-# substituting Statement table name 
-# and taking values as arguments
-deleteStatementLiteralVal
-Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjStr = ? AND ObjLiteral is Null AND GraphID = ?)
+# Remove the name of a graph.
+deleteGraph
+Update jena_graph SET NAME=null where ID = ?
 
-############################################
-# INSERT
-############################################
 #-------------------------------------------------------------------
-# Insert an all-URI triple into a Statement table, 
-# substituting Statement table name 
+# Delete a triple
+# substituting Statement table name
+# and taking values as arguments
+deleteStatement
+Delete FROM ${a} WHERE (Subj = ? AND Prop = ? AND Obj = ? AND GraphID = ?)
+
+#-------------------------------------------------------------------
+# Insert a triple into a Statement table,
+# substituting Statement table name
 # and taking URI's as arguments
-insertStatementObjectURI
-INSERT INTO ${a} (SubjRes, PropRes, ObjRes, GraphID) VALUES (?, ?, ?, ?)
+insertStatement
+INSERT INTO ${a} (Subj, Prop, Obj, GraphID) VALUES (?, ?, ?, ?)
 
 #-------------------------------------------------------------------
-# Insert an triple with a Simple String literal into a Statement table, 
-# substituting Statement table name 
-# and taking values as arguments
-insertStatementLiteralRef
-INSERT INTO ${a} (SubjRes, PropRes, ObjLiteral, ObjStr, GraphID) VALUES (?, ?, ?, ?, ?)
-
-#-------------------------------------------------------------------
-# Insert an triple with a Simple String literal into a Statement table, 
-# substituting Statement table name 
-# and taking values as arguments
-insertStatementLiteralVal
-INSERT INTO ${a} (SubjRes, PropRes, ObjStr, GraphID) VALUES (?, ?, ?, ?)
-
-#-------------------------------------------------------------------
-# Insert a non-Blob literal string
-insertLiteral
-INSERT INTO JENA_LITERALS(LITERALID, LITERALIDX, LANG, XSDType) VALUES (?,?,?,?)
-
-#-------------------------------------------------------------------
-# Insert a Blob literal string
-insertLiteralBlob
-INSERT INTO JENA_LITERALS(LITERALIDX, AsBLOB, LANG, XSDType) VALUES (?,?,?,?)
-
-#-------------------------------------------------------------------
-# Insert a non-Blob literal string with Lang
-insertLiteralLang
-INSERT INTO JENA_LITERALS(LITERALID, LITERALIDX, LANG) VALUES (?,?)
-
-#-------------------------------------------------------------------
-# Insert a non-Blob literal string without Lang
-insertLiteralNoLang
-INSERT INTO JENA_LITERALS(LITERALIDX) VALUES (?)
-
-#-------------------------------------------------------------------
-# Insert a literal string
-insertLiteralBlobLang
-INSERT INTO JENA_LITERALS(LITERALIDX,AsBLOB, LANG) VALUES (?,?,?)
-
-#-------------------------------------------------------------------
-# Insert a literal INTEGER
-insertLiteralIntLang
-INSERT INTO JENA_LITERALS(LITERALIDX,AsInt, LANG) VALUES (?,?,?)
-
-#-------------------------------------------------------------------
-# Insert a literal string
-insertLiteralBlobNoLang
-INSERT INTO JENA_LITERALS(LITERALIDX,AsBLOB) VALUES (?,?)
-
-#-------------------------------------------------------------------
-# Insert a literal int
-insertLiteralIntNoLang
-INSERT INTO JENA_LITERALS(LITERALIDX,AsInt) VALUES (?,?)
-
-#-------------------------------------------------------------------
-# Insert a non-Blob literal string with Lang
-insertLiteralwithIdLang
-INSERT INTO JENA_LITERALS(LITERALID, LITERALIDX, LANG) VALUES (?,?,?)
-
-#-------------------------------------------------------------------
-# Insert a non-Blob literal string without Lang
-insertLiteralwithIdNoLang
-INSERT INTO JENA_LITERALS(LITERALID, LITERALIDX) VALUES (?,?)
-
-#-------------------------------------------------------------------
-# Insert a literal blob
-insertLiteralwithIdLangBlob
-INSERT INTO JENA_LITERALS(LITERALID,LITERALIDX,LANG, AsBLOB) VALUES (?,?,?,EMPTY_BLOB())
-
-#-------------------------------------------------------------------
-# lock literal with blob
-lockLiteralwithIdBlob
-SELECT ASBLOB FROM JENA_LITERALS WHERE LITERALID = ? FOR UPDATE
-
-#-------------------------------------------------------------------
-# Set a literal blob
-updateBlobForLiteralID
-UPDATE JENA_LITERALS SET ASBLOB = ? WHERE LITERALID = ?
-
-#-------------------------------------------------------------------
-# Insert a literal int
-insertLiteralwithIdIntLang
-INSERT INTO JENA_LITERALS(LITERALID, LITERALIDX,AsInt, LANG) VALUES (?,?,?,?)
-
-#-------------------------------------------------------------------
-# Insert a literal string
-insertLiteralwithIdNoLangBlob
-INSERT INTO JENA_LITERALS(LITERALID, LITERALIDX) VALUES (?,?)
-#INSERT INTO JENA_LITERALS(LITERALID, LITERALIDX,AsBLOB) VALUES (?,?,EMPTY_BLOB())
-
-#-------------------------------------------------------------------
-# Insert a literal int
-insertLiteralIntwithIdNoLang
-INSERT INTO JENA_LITERALS(LITERALID, LITERALIDX,AsInt) VALUES (?,?,?)
-
-############################################
-# QUERIES
-############################################
-#-------------------------------------------------------------------
-# Return the count of rows in the table 
+# Return the count of rows in the table
 getRowCount
 SELECT COUNT(*) FROM ${a}
 
 #-------------------------------------------------------------------
-# Return the ID of a literal string, if it exists
-getLiteralID
-SELECT LITERALID FROM JENA_LITERALS WHERE LITERALIDX = ? AND LANG = ?
+# Insert a long object with no tail
+insertLongObject
+INSERT INTO ${a} (ID, Head, ChkSum) VALUES (?, ?, ?)
 
 #-------------------------------------------------------------------
-# Return the ID of a literal string, if it exists
-getLiteralIDNoLang
-SELECT LITERALID FROM JENA_LITERALS WHERE LITERALIDX = ? AND LANG IS NULL
+# Retrieve BLOB
+getEmptyBLOB
+SELECT Tail FROM ${a} WHERE (ID =  ${b}) FOR UPDATE
 
 #-------------------------------------------------------------------
-# Return the ID of a literal string, if it exists
-# Special case where the literal is was an empty string - in this case we
-# put marker text in the literal field but there will also be a blob giving
-# the true empty string literal
-getLiteralIDNoLangNullLiteral
-SELECT LITERALID FROM JENA_LITERALS WHERE LITERALIDX = ? AND LANG IS NULL
+# Get the ID of the object that was just inserted
+getInsertID
+SELECT ${a}_ID_seq.NEXTVAL FROM DUAL
 
 #-------------------------------------------------------------------
-# Return the ID of a literal string, if it exists
-# Special case where the literal is was an empty string - in this case we
-# put marker text in the literal field but there will also be a blob giving
-# the true empty string literal
-getLiteralIDNullLiteral
-SELECT LITERALID FROM JENA_LITERALS WHERE LITERALIDX = ? AND lang = ?
+# Return a long object
+getLongObject
+SELECT HEAD, TAIL FROM ${a} WHERE ID = ?
 
 #-------------------------------------------------------------------
-# Return the details of a literal
-getLiteral
-SELECT asBLOB, LITERALIDX, Lang, XSDType FROM JENA_LITERALS WHERE LITERALID = ?
+# Return the ID of a long object, if it exists, based on the Head
+getLongObjectID
+SELECT ID FROM ${a} WHERE Head = ? and ChkSum is NULL
+
+#-------------------------------------------------------------------
+# Return the ID of a long object, if it exists, based on the Head and ChkSum
+getLongObjectIDwithChkSum
+SELECT ID FROM ${a} WHERE Head = ? and ChkSum = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-SelectStatement
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
+selectStatement
+SELECT S.Subj, S.Prop, S.Obj
 FROM ${a} S WHERE S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-# with the same subject 
-SelectStatementS
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.SubjRes = ? AND S.GraphID = ?
+# with the same subject
+selectStatementS
+SELECT S.Subj, S.Prop, S.Obj
+FROM ${a} S WHERE S.Subj = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
 # with the same subject and Property
-SelectStatementSP
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.SubjRes = ? AND S.PropRes = ? AND S.GraphID = ?
+selectStatementSP
+SELECT S.Subj, S.Prop, S.Obj
+FROM ${a} S WHERE S.Subj = ? AND S.Prop = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-# with the same subject and Property
-SelectStatementSPOU
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjRes = ? AND S.SubjRes = ? AND S.PropRes = ? AND S.GraphID = ? 
+# with the same subject and Property and object
+selectStatementSPO
+SELECT S.Subj, S.Prop, S.Obj
+FROM ${a} S WHERE S.Obj = ? AND S.Subj = ? AND S.Prop = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-# with the same subject, Property, and Object as Value
-SelectStatementSPOV
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjStr = ? AND S.ObjLiteral IS NULL AND S.SubjRes = ? AND S.PropRes = ? AND S.GraphID = ?
+# with the same subject and Object
+selectStatementSO
+SELECT S.Subj, S.Prop, S.Obj
+FROM ${a} S WHERE S.Obj = ? AND S.Subj = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-# with the same subject, Property, and Object as LiteralRef
-SelectStatementSPOR
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjLiteral = ? AND S.SubjRes = ? AND S.PropRes = ? AND S.GraphID = ?
+# with the same Property and Object
+selectStatementPO
+SELECT S.Subj, S.Prop, S.Obj
+FROM ${a} S WHERE S.Obj = ? AND S.Prop = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-# with the same subject and Object as URI
-SelectStatementSOU
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjRes = ? AND S.SubjRes = ? AND S.GraphID = ?
+# with the same Object
+selectStatementO
+SELECT S.Subj, S.Prop, S.Obj
+FROM ${a} S WHERE S.Obj = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-# with the same subject and Object as Value
-SelectStatementSOV
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjStr = ? AND S.SubjRes = ? AND S.GraphID = ?
+# with the same Property
+selectStatementP
+SELECT S.Subj, S.Prop, S.Obj
+FROM ${a} S WHERE S.Prop = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Select all the statements in an Reified Statement (triple store) graph
+selectReified
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
+FROM ${a} S WHERE S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Select all the statements in an reified Statement (triple store) graph
+selectReifiedT
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
+FROM ${a} S WHERE HasType = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-# with the same subject, Property, and Object as LiteralRef
-SelectStatementSOR
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjLiteral = ? AND S.SubjRes = ? AND AND S.GraphID = ?
+# with the given statement URI
+selectReifiedN
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
+FROM ${a} S WHERE S.Stmt = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select all the statements in an Asserted Statement (triple store) graph
-# with the same Property and Object as URI
-SelectStatementPOU
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjRes = ? AND S.PropRes = ? AND S.GraphID = ?
+# with the given statement URI and that have the HasType property defined
+selectReifiedNT
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
+FROM ${a} S WHERE S.Stmt = ? AND HasType = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
-# Select all the statements in an Asserted Statement (triple store) graph
-# with the same Property and Object as Value
-SelectStatementPOV
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjStr = ? AND S.PropRes = ? AND S.GraphID = ?
+# Delete an all-URI triple into a Statement table,
+# substituting Statement table name
+# and taking URI's as arguments
+deleteReified
+Delete FROM ${a} WHERE (Subj = ? AND Prop = ? AND Obj = ? AND GraphID = ?
+AND Stmt = ?)
 
 #-------------------------------------------------------------------
-# Select all the statements in an Asserted Statement (triple store) graph
-# with the same  Object as LiteralRef
-SelectStatementPOR
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjLiteral = ? AND S.PropRes = ? AND S.GraphID = ?
+# Insert an all-URI triple into a Statement table,
+# substituting Statement table name
+# and taking URI's as arguments
+insertReified
+INSERT INTO ${a} (Subj, Prop, Obj, GraphID, Stmt, HasType) VALUES (?, ?, ?, ?, ?, ?)
 
 #-------------------------------------------------------------------
-# Select all the statements in an Asserted Statement (triple store) graph
-# with the same  Object as URI
-SelectStatementOU
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjRes = ? AND S.GraphID = ?
+# Update the subject of a reified statement
+updateReifiedS
+UPDATE ${a} SET Subj=? WHERE Stmt = ? AND GraphID = ?
 
 #-------------------------------------------------------------------
-# Select all the statements in an Asserted Statement (triple store) graph
-# with the same Object as Value
-SelectStatementOV
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjStr = ? AND S.GraphID = ?
+# Update the property of a reified statement
+updateReifiedP
+UPDATE ${a} SET Prop=? WHERE Stmt = ? AND GraphID = ?
 
 #-------------------------------------------------------------------
-# Select all the statements in an Asserted Statement (triple store) graph
-# with the same Object as LiteralRef
-SelectStatementOR
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.ObjLiteral = ? AND S.GraphID = ?
+# Update the object of a reified statement
+updateReifiedO
+UPDATE ${a} SET Obj=? WHERE Stmt = ? AND GraphID = ?
 
 #-------------------------------------------------------------------
-# Select all the statements in an Asserted Statement (triple store) graph
-# with the same Property 
-SelectStatementP
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral 
-FROM ${a} S WHERE S.PropRes = ? AND S.GraphID = ?
+# Update the hasType of a reified statement
+updateReifiedT
+UPDATE ${a} SET HasType=? WHERE Stmt = ? AND GraphID = ?
 
-############################################
-# SEQUENCES
-############################################
 #-------------------------------------------------------------------
-# Select sequence name from sequences
-SelectSequenceName
-SELECT SEQUENCE_NAME FROM SEQ WHERE SEQUENCE_NAME = ?
+# Find the reified statements with the given subject
+selectReifiedNS
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
+FROM ${a} S WHERE S.Stmt = ? AND S.Subj = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Find the reified statement with the given property
+selectReifiedNP
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
+FROM ${a} S WHERE S.Stmt = ? AND S.Prop = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Find the reified statement with the given object resource
+selectReifiedNO
+SELECT S.Subj, S.Prop, S.Obj, S.Stmt, S.HasType
+FROM ${a} S WHERE S.Stmt = ? AND S.Obj = ? AND S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Select all the statement URI's in a Reified Statement (triple store) graph
+# with the specified subject, property and literal (resource)
+selectReifNodeSPOT
+SELECT S.Stmt
+FROM ${a} S WHERE S.Subj = ? AND S.Prop = ? and S.Obj = ? AND S.GraphID = ? AND S.HasType = 'T'
+
+#-------------------------------------------------------------------
+# Select all the statement URI's in a Reified Statement (triple store) graph
+# with the specified subject, property and literal (reference)
+selectReifNodeT
+SELECT S.Stmt
+FROM ${a} S WHERE S.GraphID = ? AND S.HasType = 'T'
+
+#-------------------------------------------------------------------
+# Select all the statement URI's in a Reified Statement (triple store) graph
+# that partially reify something
+selectReifNode
+SELECT DISTINCT S.Stmt
+FROM ${a} S WHERE S.GraphID = ?
+
+#-------------------------------------------------------------------
+# Determine if the statement URI's partially reifies anything in a Reified
+# Statement (triple store) graph
+selectReifNodeN
+SELECT DISTINCT S.Stmt
+FROM ${a} S WHERE S.Stmt = ? AND S.GraphID = ?
 
 #-------------------------------------------------------------------
 # Select JENA sequence name from sequences
@@ -392,202 +344,15 @@ SELECT SEQUENCE_NAME FROM SEQ WHERE SEQUENCE_NAME LIKE ('JENA%')
 #-------------------------------------------------------------------
 # Select sequence name from sequences
 DropSequence
-DROP SEQUENCE ${a};;
+DROP SEQUENCE ${a}
 
 #-------------------------------------------------------------------
-# Allocate an id for a literal
-# Interbase doesn't obey the select syntax the needs a non-empty table in the from field
-allocateLiteralID
-SELECT JENA_LITERALS_GEN.NEXTVAL FROM DUAL
+# Select sequence name from sequences
+SelectSequenceName
+SELECT SEQUENCE_NAME FROM SEQ WHERE SEQUENCE_NAME = ?
 
 #-------------------------------------------------------------------
-# Allocate an id for a GRAPH
-# Interbase doesn' obey the select syntax the needs a non-empty table in the from field
-allocateGraphID
-SELECT JENA_GRAPHS_GEN.NEXTVAL FROM DUAL
-
-############################################
-# REIFICATION
-############################################
-#-------------------------------------------------------------------
-# Select all the statements in an Reified Statement (triple store) graph
-SelectAllReifStatement
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Select all the statements in an reified Statement (triple store) graph
-SelectAllReifTypeStmt
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE HasType = ? AND S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Select all the statements in an Asserted Statement (triple store) graph
-# with the given statement URI
-SelectReifStatement
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.StmtRes = ? AND S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Select all the statements in an Asserted Statement (triple store) graph
-# with the given statement URI and that have the HasType property defined
-SelectReifTypeStatement
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.StmtRes = ? AND HasType = ? AND S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Delete an all-URI triple into a Statement table, 
-# substituting Statement table name 
-# and taking URI's as arguments
-deleteReifStatementObjectURI
-Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjRes = ? AND GraphID = ?
-AND StmtRes = ?)
-
-#-------------------------------------------------------------------
-# Delete an triple with a Simple String literal into a Statement table, 
-# substituting Statement table name 
-# and taking values as arguments
-deleteReifStatementLiteralVal
-Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjStr = ? AND ObjLiteral is null AND GraphID = ?
-AND StmtRes = ?)
-
-#-------------------------------------------------------------------
-# Delete an triple with a Simple String literal into a Statement table, 
-# substituting Statement table name 
-# and taking values as arguments
-deleteReifStatementLiteralRef
-Delete FROM ${a} WHERE (SubjRes = ? AND PropRes = ? AND ObjLiteral = ? AND GraphID = ?
-AND StmtRes = ?)
-
-#-------------------------------------------------------------------
-# Insert an all-URI triple into a Statement table, 
-# substituting Statement table name 
-# and taking URI's as arguments
-insertReifStatementObjectURI
-INSERT INTO ${a} (SubjRes, PropRes, ObjRes, GraphID, StmtRes, HasType) VALUES (?, ?, ?, ?, ?, ?)
-
-#-------------------------------------------------------------------
-# Insert an triple with a Simple String literal into a Statement table, 
-# substituting Statement table name 
-# and taking values as arguments
-insertReifStatementLiteralRef
-INSERT INTO ${a} (SubjRes, PropRes, ObjLiteral, ObjStr, GraphID, StmtRes, HasType) VALUES (?, ?, ?, ?, ?, ?, ?)
-
-#-------------------------------------------------------------------
-# Insert an triple with a Simple String literal into a Statement table, 
-# substituting Statement table name 
-# and taking values as arguments
-insertReifStatementLiteralVal
-INSERT INTO ${a} (SubjRes, PropRes, ObjStr, GraphID, StmtRes, HasType) VALUES (?, ?, ?, ?, ?, ?)
-
-#-------------------------------------------------------------------
-# Update the subject of a reified statement 
-updateReifSubj
-UPDATE ${a} SET SubjRes=? WHERE StmtRes = ? AND GraphID = ?
-
-#-------------------------------------------------------------------
-# Update the property of a reified statement 
-updateReifProp
-UPDATE ${a} SET PropRes=? WHERE StmtRes = ? AND GraphID = ?
-
-#-------------------------------------------------------------------
-# Update the object of a reified statement 
-updateReifObj
-UPDATE ${a} SET ObjRes=?, ObjStr=? ObjLiteral=? WHERE StmtRes = ? AND GraphID = ?
-
-#-------------------------------------------------------------------
-# Update the hasType of a reified statement 
-updateReifHasType
-UPDATE ${a} SET HasType=? WHERE StmtRes = ? AND GraphID = ?
-
-#-------------------------------------------------------------------
-# Find the reified statements with the given subject 
-findFragSubj
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.StmtRes = ? AND S.SubjRes = ? AND S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Find the reified statement with the given property 
-findFragProp
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.StmtRes = ? AND S.PropRes = ? AND S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Find the reified statement with the given object resource
-findFragObjOU
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.StmtRes = ? AND S.ObjRes = ? AND S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Find the reified statement with the given object string
-findFragObjOV
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.StmtRes = ? AND S.ObjStr = ? AND S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Find the reified statement with the given object literal
-findFragObjOL
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.StmtRes = ? AND S.ObjLiteral = ? AND S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Find the reified statement with the given hasType 
-findFragHasType
-SELECT S.SubjRes, S.PropRes, S.ObjRes, S.ObjStr, S.ObjLiteral, S.StmtRes, S.HasType 
-FROM ${a} S WHERE S.StmtRes = ? AND S.HasType = ? AND S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Select all the statement URI's in a Reified Statement (triple store) graph
-# with the specified subject, property and literal (resource) 
-SelectReifURIByOU
-SELECT S.StmtRes
-FROM ${a} S WHERE S.SubjRes = ? AND S.PropRes = ? and S.ObjRes = ? AND S.GraphID = ? AND S.HasType = 1
-
-#-------------------------------------------------------------------
-# Select all the statement URI's in a Reified Statement (triple store) graph
-# with the specified subject, property and literal (string) 
-SelectReifURIByOV
-SELECT S.StmtRes
-FROM ${a} S WHERE S.SubjRes = ? AND S.PropRes = ? and S.ObjStr = ? AND S.GraphID = ? AND S.HasType = 1
-
-#-------------------------------------------------------------------
-# Select all the statement URI's in a Reified Statement (triple store) graph
-# with the specified subject, property and literal (reference) 
-SelectReifURIByOR
-SELECT S.StmtRes
-FROM ${a} S WHERE S.SubjRes = ? AND S.PropRes = ? and S.ObjLiteral = ? AND S.GraphID = ? AND S.HasType = 1
-
-#-------------------------------------------------------------------
-# Select all the statement URI's in a Reified Statement (triple store) graph
-# with the specified subject, property and literal (reference) 
-SelectReifURI
-SELECT S.StmtRes
-FROM ${a} S WHERE S.GraphID = ? AND S.HasType = 1
-
-#-------------------------------------------------------------------
-# Select all the statement URI's in a Reified Statement (triple store) graph
-# that partially reify something 
-SelectAllReifNodes
-SELECT DISTINCT S.StmtRes
-FROM ${a} S WHERE S.GraphID = ?
-
-#-------------------------------------------------------------------
-# Determine if the statement URI's partially reifies anything in a Reified
-# Statement (triple store) graph
-SelectReifNode
-SELECT DISTINCT S.StmtRes
-FROM ${a} S WHERE S.StmtRes = ? AND S.GraphID = ?
-
-############################################
-# CLEAN UP
-############################################
-#-------------------------------------------------------------------
-# Drop named  table
-dropTable
-DROP TABLE ${a};;
-
-#-------------------------------------------------------------------
-# Drop all RDF generators from a database
-cleanDBgenerators
-#no-op because mySQL does not support sequences
+# Insert a long object with an EMPTY_BLOB for a tail tail
+insertLongObjectEmptyTail
+INSERT INTO ${a} (ID, Head, ChkSum, Tail) VALUES (?, ?, ?, EMPTY_BLOB())
 
