@@ -2,7 +2,7 @@
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: RDFtoTable.java,v 1.1 2005-04-06 12:42:50 chris-dollin Exp $
+    $Id: RDFtoTable.java,v 1.2 2005-04-06 15:28:14 chris-dollin Exp $
 */
 package com.hp.hpl.jena.internal.tools;
 
@@ -12,6 +12,12 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.*;
 
+/**
+    Convert a file of RDF instance data into an HTML table according to
+    the description in a config file.
+    
+    @author kers
+ */
 public class RDFtoTable
     {    
     public static void main( String [] args )
@@ -83,7 +89,7 @@ public class RDFtoTable
                 }
             }
         String tr = count % 2 == 0 ? "<tr class='even'>" : "<tr class='odd'>";
-        return tr + elements + "</tr>";
+        return "\n" + tr + elements + "</tr>";
         }
     
     

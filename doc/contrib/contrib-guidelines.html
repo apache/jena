@@ -1,0 +1,108 @@
+<html>
+<head>
+<title>Jena contrib guidelines page</title>
+<link rel="stylesheet" type="text/css" href="styles/site.css" />
+</head>
+<body>
+
+<div id="header">
+Jena contributor guidelines page
+</div>
+
+<div id="main">
+
+<table width="100%" cellspacing="0" cellpadding="0">
+<tr>
+
+<!-- Right -->
+<td width="100%"> 
+
+<div id="trail">
+<a href="index.html">home</a>
+&raquo; <a href="contrib.html">contributions</a>
+&raquo; <a href="contrib-guidelines.html">guidelines</a>
+</div>
+
+<div id="content">
+
+<h1>guidelines for contributors</h1>
+
+<h2>request for listing</h2>
+
+<p>In your <i>request for listing</i> message to 
+<a href="mailto:jena-devel@sourceforge.net">jena-devel</a>,
+make sure you supply:
+
+<ul>
+<li>the name of your contribution
+<li>your name
+<li>a <i>brief</i> description of your contribution
+<li>the URL of your contribution's web-page or download
+</ul>
+
+<h2>guidelines for contributions</h2>
+
+<p>Multiple-file contributions should be bundled into a single
+archive file, typically a <i>.zip</i> file. Pathnames in
+the file should be relative.
+
+<h3>Java code</h3>
+
+<p>We recommend that Java code be bundled in the same style as
+Jena itself. So the zip should have a structure like this:
+
+<ul>
+<li>a README[.t[e]xt] which sumarises the contribution and
+    links to any documentation. 
+
+<li>a <i>src</i> directory containing the source code tree.
+
+<li>a <i>lib</i> directory containing any required jars.
+    The contributions own jar can appear here.
+    
+<li>a <i>doc</i> directory for any documentation. 
+
+<li>an Ant buildfile (typically <i>build.xml)</i>. Even
+    if the user isn't expected to build from source, the
+    buildfile can have a <i>test</i> target for running
+    your contributions tests.
+    
+<li>a clear statement of your contribution's licence.
+
+</ul>
+
+
+<h3>ontologies</h3>
+
+<p>Your ontology should have a non-filename URI. If possible,
+that URL should be the URL from which the ontology content
+can be downloaded.
+
+</div><!-- end #content -->
+
+</td>
+</tr>
+</table>
+
+</div>
+
+<div id="footer">
+&nbsp;
+</div>
+
+<div id="logos">
+<div class="left">
+<a href="http://www.w3.org/RDF/" title="RDF Resource Description Framework">
+  <img border="0" src="images/rdf_w3c_icon.gif" alt="Resource Description Framework">
+</a>
+</div>
+
+<div class="right">
+Hosted by:
+<a href="http://sourceforge.net" title="SourceForge">
+  <img src="images/sflogo-type1.png" border="0" alt="sourceforge.net"/>
+</a>
+</div>
+
+</body>
+</html>
