@@ -16,7 +16,7 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.9 2003-05-21 15:28:42 chris-dollin Exp $
+ * @version 	$Id: N3toRDF.java,v 1.10 2003-06-17 11:59:01 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -122,13 +122,12 @@ public class N3toRDF implements N3ParserEventHandler
 			// object: can be a literal or a URIref or a bNode name
 			// context must be zero (no formulae)
 
-            // Lists: The parser creates list elements as sequnces of triples:
-            //       anon  keyword_A list:List
+            // Lists: The parser creates list elements as sequences of triples:
             //       anon  list:first  ....
             //       anon  list:rest   resource
             // Where "resource" is nil for the last element of the list (generated first).
 
-            // The properties are inm a unique namespace to distinguish them
+            // The properties are in a unique namespace to distinguish them
             // from lists encoded explicitly, not with the () syntax.
 
 			int pType = prop.getType();

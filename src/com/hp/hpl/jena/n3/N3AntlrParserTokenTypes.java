@@ -1,8 +1,6 @@
 // $ANTLR : "c:/home/afs/Projects/Jena2/src/com/hp/hpl/jena/n3/n3.g" -> "N3AntlrParser.java"$
 
 package com.hp.hpl.jena.n3 ;
-//import java.io.* ;
-//import antlr.TokenStreamRecognitionException ;
 
 public interface N3AntlrParserTokenTypes {
 	int EOF = 1;

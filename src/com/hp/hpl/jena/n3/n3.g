@@ -70,6 +70,8 @@ tokens
 {
 	// Extra code for the parser.
 
+	boolean emitListTypeQuad = false ;
+
 	N3AntlrLexer lexer = null ;
 	void setLexer(N3AntlrLexer _lexer) { lexer = _lexer ; }
 
@@ -305,8 +307,8 @@ list[AST label]
 	  // because we recurse, then generate quads
 	  n:list[null]	
 	  {
-		// The parser emits the type of a list element.
-	  	emitQuad(label,  #([KW_A, "list"]),             #([TK_LIST, "List"]) );
+	  	if ( emitListTypeQuad )
+	  	    emitQuad(label, #([KW_A, "list"]), #([TK_LIST, "List"]) );
 	    emitQuad(label,  #([TK_LIST_FIRST, "first"]),   #i);
 		emitQuad(label,  #([TK_LIST_REST, "rest"]),     #n) ;
 	  }

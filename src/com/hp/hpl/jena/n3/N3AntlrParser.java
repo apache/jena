@@ -1,10 +1,19 @@
 // $ANTLR : "c:/home/afs/Projects/Jena2/src/com/hp/hpl/jena/n3/n3.g" -> "N3AntlrParser.java"$
 
 package com.hp.hpl.jena.n3 ;
-//import java.io.* ;
-import antlr.* ;
+import antlr.TokenStreamRecognitionException ;
+
+import antlr.TokenBuffer;
+import antlr.TokenStreamException;
+import antlr.Token;
+import antlr.TokenStream;
+import antlr.RecognitionException;
+import antlr.NoViableAltException;
+import antlr.SemanticException;
+import antlr.ParserSharedInputState;
 import antlr.collections.impl.BitSet;
-import antlr.collections.* ;
+import antlr.collections.AST;
+import antlr.ASTPair;
 import antlr.collections.impl.ASTArray;
 
 public class N3AntlrParser extends antlr.LLkParser
@@ -12,6 +21,8 @@ public class N3AntlrParser extends antlr.LLkParser
  {
 
 	// Extra code for the parser.
+
+	boolean emitListTypeQuad = false ;
 
 	N3AntlrLexer lexer = null ;
 	void setLexer(N3AntlrLexer _lexer) { lexer = _lexer ; }
@@ -115,7 +126,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				startDocument() ;
 			}
 			{
-			_loop1753:
+			_loop178:
 			do {
 				switch ( LA(1)) {
 				case AT_PREFIX:
@@ -137,7 +148,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop1753;
+					break _loop178;
 				}
 				}
 			} while (true);
@@ -442,7 +453,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 		n_AST = (AST)returnAST;
 		astFactory.addASTChild(currentAST, returnAST);
 		{
-		_loop1771:
+		_loop196:
 		do {
 			switch ( LA(1)) {
 			case PATH:
@@ -477,7 +488,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 			}
 			default:
 			{
-				break _loop1771;
+				break _loop196;
 			}
 			}
 		} while (true);
@@ -1084,8 +1095,8 @@ public N3AntlrParser(ParserSharedInputState state) {
 			astFactory.addASTChild(currentAST, returnAST);
 			if ( inputState.guessing==0 ) {
 				
-						// The parser emits the type of a list element.
-					  	emitQuad(label,  (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(KW_A,"list"))),             (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(TK_LIST,"List"))) );
+					  	if ( emitListTypeQuad )
+					  	    emitQuad(label, (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(KW_A,"list"))), (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(TK_LIST,"List"))) );
 					    emitQuad(label,  (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(TK_LIST_FIRST,"first"))),   i_AST);
 						emitQuad(label,  (AST)astFactory.make( (new ASTArray(1)).add((AST)astFactory.create(TK_LIST_REST,"rest"))),     n_AST) ;
 					
@@ -1135,10 +1146,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 		AST literalModifier1_AST = null;
 		AST dt_AST = null;
 		
-		boolean synPredMatched1787 = false;
+		boolean synPredMatched212 = false;
 		if (((LA(1)==AT_LANG))) {
-			int _m1787 = mark();
-			synPredMatched1787 = true;
+			int _m212 = mark();
+			synPredMatched212 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1146,12 +1157,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched1787 = false;
+				synPredMatched212 = false;
 			}
-			rewind(_m1787);
+			rewind(_m212);
 			inputState.guessing--;
 		}
-		if ( synPredMatched1787 ) {
+		if ( synPredMatched212 ) {
 			AST tmp30_AST = null;
 			tmp30_AST = (AST)astFactory.create(LT(1));
 			astFactory.addASTChild(currentAST, tmp30_AST);
@@ -1159,10 +1170,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 			literalModifier1_AST = (AST)currentAST.root;
 		}
 		else {
-			boolean synPredMatched1789 = false;
+			boolean synPredMatched214 = false;
 			if (((LA(1)==DATATYPE))) {
-				int _m1789 = mark();
-				synPredMatched1789 = true;
+				int _m214 = mark();
+				synPredMatched214 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -1170,12 +1181,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched1789 = false;
+					synPredMatched214 = false;
 				}
-				rewind(_m1789);
+				rewind(_m214);
 				inputState.guessing--;
 			}
-			if ( synPredMatched1789 ) {
+			if ( synPredMatched214 ) {
 				AST tmp31_AST = null;
 				tmp31_AST = (AST)astFactory.create(LT(1));
 				astFactory.addASTChild(currentAST, tmp31_AST);

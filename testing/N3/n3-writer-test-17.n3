@@ -5,15 +5,12 @@
 
 # This is the list ("1" "2" "3").
 
-_:a1 rdf:type  rdf:List.
 _:a1 rdf:first "1" .
 _:a1 rdf:rest  _:a2 .
 
-_:a2 rdf:type  rdf:List.
 _:a2 rdf:first "2" .
 _:a2 rdf:rest  _:a3 .
 
-_:a3 rdf:type  rdf:List.
 _:a3 rdf:first "3" .
 _:a3 rdf:rest () .
 
