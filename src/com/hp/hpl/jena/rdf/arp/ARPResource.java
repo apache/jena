@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPResource.java,v 1.9 2004-10-11 11:54:37 jeremy_carroll Exp $
+ * * $Id: ARPResource.java,v 1.10 2004-12-13 17:38:46 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -248,7 +248,7 @@ class ARPResource implements  AResourceInternal {
     }
     
     public String toString() {
-        return uri==null?"_"+genId:uri;
+        return uri==null?("_:"+getAnonymousID()):("<"+uri+">");
     }
     
     public int hashCode() {

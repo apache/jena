@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.17 2004-11-26 12:14:59 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.18 2004-12-13 17:39:25 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -38,6 +38,7 @@ public class MoreTests
 		suite.addTest(new MoreTests("testEmptyBaseParamError"));
 		suite.addTest(new MoreTests("testWineDefaultNS"));
 		suite.addTest(new MoreTests("testInterrupt"));
+		suite.addTest(new MoreTests("testToString"));
 		return suite;
 	}
 
@@ -88,6 +89,44 @@ public class MoreTests
 
 	}
 
+	static class ToStringStatementHandler implements StatementHandler {
+        String obj;
+        String subj;
+	    public void statement(AResource sub, AResource pred, ALiteral lit) {
+	     // System.out.println("(" + sub + ", " + pred + ", " + lit + ")");
+	      subj = sub.toString();
+	    }
+
+	    public void statement(AResource sub, AResource pred, AResource ob) {      
+	    //  System.out.println("(" + sub + ", " + pred + ", " + ob + ")");
+	      obj = ob.toString();
+	    }
+	    
+	  };
+	
+	public void testToString() throws IOException, SAXException{
+
+	    String testcase =
+	      "<rdf:RDF xmlns:music=\"http://www.kanzaki.com/ns/music#\" " +
+	      "  xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"> " +
+	      "<rdf:Description> " +
+	      "  <music:performs rdf:nodeID=\"p1\"/> " +
+	      "</rdf:Description> " +
+	      "<rdf:Description rdf:nodeID=\"p1\"> " +
+	      "  <music:opus>op.26</music:opus> " +
+	      "</rdf:Description> " +
+	      "</rdf:RDF>";
+	    
+	    ARP parser = new ARP();
+	    ToStringStatementHandler tssh = new ToStringStatementHandler();
+	    parser.getHandlers().setStatementHandler(tssh);
+	    parser.load(new StringReader(testcase), "http://www.example.com");
+	    assertEquals(tssh.subj,tssh.obj);
+	  }
+
+
+
+	 
 	public void testEncodingMismatch2() throws IOException {
 		Model m = createMemModel();
 		RDFReader rdr = m.getReader();
