@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -86,13 +86,15 @@ public class DBPropGraph extends DBProp {
 	public String getType() { return getPropString( graphType); };
 	
 	public ExtendedIterator getAllLSets() {
-		Iterator matches = graph.find( self, graphLSet, null, newComplete() );
-		return new Map1Iterator(new MapToLSet(), matches);
+		return 
+            graph.find( self, graphLSet, null, newComplete() )
+             .mapWith ( new MapToLSet() );
 	}
 	
 	public ExtendedIterator getAllPrefixes() {
-		Iterator matches = graph.find( self, graphPrefix, null, newComplete() );
-		return new Map1Iterator(new MapToPrefix(), matches);
+		return 
+            graph.find( self, graphPrefix, null, newComplete() )
+            .mapWith ( new MapToPrefix() );
 	}
 	
 	public DBPropPrefix getPrefix( String value ) {

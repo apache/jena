@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleReader.java,v 1.5 2003-06-12 15:10:29 chris-dollin Exp $
+ * $Id: NTripleReader.java,v 1.6 2003-06-13 14:23:47 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -42,7 +42,7 @@ import java.util.*;
 /** N-Triple Reader
  *
  * @author  Brian McBride, Jeremy Carroll, Dave Banks
- * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-06-12 15:10:29 $
+ * @version  Release=$Name: not supported by cvs2svn $ Date=$Date: 2003-06-13 14:23:47 $
  */
 public class NTripleReader extends Object implements RDFReader {
     static final Logger log = Logger.getLogger(NTripleReader.class);
@@ -102,7 +102,7 @@ public class NTripleReader extends Object implements RDFReader {
 
     public Object setProperty(String propName, Object propValue)
          {
-        errorHandler.error(new RDFException(RDFException.UNKNOWNPROPERTY));
+        errorHandler.error(new JenaUnknownPropertyException( propName ));
         return null;
     }
 
@@ -474,11 +474,7 @@ class IStream {
     }
 
     protected char nextChar() {
-        if (eof) {
-            return '\000';
-        } else {
-            return thisChar[0];
-        }
+        return eof ? '\000' : thisChar[0];
     }
 
     protected boolean eof() {

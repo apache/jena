@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleWriter.java,v 1.7 2003-04-17 14:43:41 chris-dollin Exp $
+ * $Id: NTripleWriter.java,v 1.8 2003-06-13 14:23:47 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -32,6 +32,7 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.shared.*;
 
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -42,7 +43,7 @@ import java.io.UnsupportedEncodingException;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-04-17 14:43:41 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-06-13 14:23:47 $'
  */
 public class NTripleWriter extends Object implements RDFWriter {
 
@@ -111,9 +112,8 @@ public class NTripleWriter extends Object implements RDFWriter {
      * property name is not recognised
      * @return the previous value of the property
      */
-    public Object setProperty(String propName, Object propValue)
-        throws RDFException {
-        throw new RDFException(RDFException.UNKNOWNPROPERTY);
+    public Object setProperty(String propName, Object propValue) {
+        throw new JenaUnknownPropertyException( propName );
     }
 
     public void setNsPrefix(String prefix, String ns) {
