@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.31 2003-08-25 16:41:27 chris-dollin Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.32 2003-08-26 15:16:14 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.31 $ on $Date: 2003-08-25 16:41:27 $
+ * @version $Revision: 1.32 $ on $Date: 2003-08-26 15:16:14 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -102,7 +102,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * @param reasoner the parent reasoner 
      * @param rules the list of rules to use this time
      * @param schema the (optional) schema or preload data which is being processed
-     * @param the data graph to be processed
+     * @param data the data graph to be processed
      */
     public BasicForwardRuleInfGraph(Reasoner reasoner, List rules, Graph schema, Graph data) {
         this(reasoner, rules, schema);
@@ -124,7 +124,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     
     /**
      * Attach a compiled rule set to this inference graph.
-     * @param rulestore a compiled set of rules (i.e. the result of an FRuleEngine.compile). 
+     * @param ruleStore a compiled set of rules (i.e. the result of an FRuleEngine.compile). 
      */
     public void setRuleStore(Object ruleStore) {
         engine.setRuleStore(ruleStore);

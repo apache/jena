@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Util.java,v 1.9 2003-08-24 21:17:33 der Exp $
+ * $Id: Util.java,v 1.10 2003-08-26 15:16:14 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-08-24 21:17:33 $
+ * @version $Revision: 1.10 $ on $Date: 2003-08-26 15:16:14 $
  */
 public class Util {
 
@@ -113,7 +113,7 @@ public class Util {
     /**
      * Convert an (assumed well formed) RDF list to a java list of Nodes
      * @param root the root node of the list
-     * @param graph the graph containing the list assertions
+     * @param context the graph containing the list assertions
      */
     public static List convertList(Node root, RuleContext context) {
         return convertList(root, context, new LinkedList());
