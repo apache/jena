@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ChoicePointFactory.java,v 1.1 2003-07-22 21:44:19 der Exp $
+ * $Id: ChoicePointFactory.java,v 1.2 2003-07-23 16:24:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -13,7 +13,7 @@ package com.hp.hpl.jena.reasoner.rulesys.implb;
  * Factory for Environment frames. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-22 21:44:19 $
+ * @version $Revision: 1.2 $ on $Date: 2003-07-23 16:24:17 $
  */
 public class ChoicePointFactory extends FrameObjectFactory {
 
@@ -26,7 +26,7 @@ public class ChoicePointFactory extends FrameObjectFactory {
     /**
      * Return a newly constructed or cached environment frame.
      */
-    public static ChoicePointFrame createEnvironment() {
+    public static ChoicePointFrame create() {
         return theFactory.getFrame();
     }
     

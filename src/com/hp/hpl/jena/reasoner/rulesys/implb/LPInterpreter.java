@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.3 2003-07-22 21:44:19 der Exp $
+ * $Id: LPInterpreter.java,v 1.4 2003-07-23 16:24:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-22 21:44:19 $
+ * @version $Revision: 1.4 $ on $Date: 2003-07-23 16:24:17 $
  */
 public class LPInterpreter {
 
@@ -41,12 +41,13 @@ public class LPInterpreter {
     protected boolean isComplete = false;
 
     /** The set of temporary variables (Ti) in use by this interpreter */
-    protected Node[] tVars =
-        new Node[RuleClauseCode.MAX_TEMPORARY_VARS];
+    protected Node[] tVars = new Node[RuleClauseCode.MAX_TEMPORARY_VARS];
 
     /** The set of argument variables (Ai) in use by this interpreter */
-    protected Node[] argVars =
-        new Node[RuleClauseCode.MAX_TEMPORARY_VARS];
+    protected Node[] argVars = new Node[RuleClauseCode.MAX_ARGUMENT_VARS];
+        
+    /** The set of "permanent" variables (Yi) in use by this interpreter */
+    protected Node[] pVars;
 
     /** The current environment frame */
     protected EnvironmentFrame envFrame;
@@ -74,13 +75,25 @@ public class LPInterpreter {
     public LPInterpreter(LPBRuleEngine engine, TriplePattern goal) {
         this.engine = engine;
         List clauses = engine.getRuleStore().codeFor(goal);
-        // Initial implementation of pure AND tree - no backtracking
-        RuleClauseCode topClause = RuleClauseCode.createGoalCode(goal, clauses);
+        
+        // Construct dummy top environemnt which is a call into the clauses for this goal
         envFrame = LPEnvironmentFactory.createEnvironment();
-        envFrame.init(topClause);
+        envFrame.init(RuleClauseCode.returnCodeBlock);
         envFrame.pVars[0] = argVars[0] = standardize(goal.getSubject());
         envFrame.pVars[1] = argVars[1] = standardize(goal.getPredicate());
         envFrame.pVars[2] = argVars[2] = standardize(goal.getObject());
+        
+        if (clauses != null && clauses.size() > 0) {
+            ChoicePointFrame newChoiceFrame = ChoicePointFactory.create();
+            newChoiceFrame.init(this, clauses);
+            newChoiceFrame.linkTo(null);
+            cpFrame = newChoiceFrame;
+        }
+        
+        TripleMatchFrame tmFrame = TripleMatchFactory.create();
+        tmFrame.init(this);
+        tmFrame.linkTo(cpFrame);
+        cpFrame = tmFrame;
     }
 
     //  =======================================================================
@@ -93,6 +106,7 @@ public class LPInterpreter {
     public synchronized void close() {
         isComplete = true;
         engine.detach(this);
+        if (cpFrame != null) cpFrame.close();
     }
 
     /**
@@ -107,17 +121,211 @@ public class LPInterpreter {
      * @return either a StateFlag or  a result Triple
      */
     public Object next() {
-        Object result = answer;
-        if (result == null) {
-            result = interpret();
-            answer = StateFlag.FAIL;
+        StateFlag answer = run();
+        if (answer == StateFlag.FAIL) {
+            return answer;
+        } else {
+            // TODO: avoid store turn over here in case where answer has been returned by a TripleMatch
+            return new Triple(deref(pVars[0]), deref(pVars[1]), deref(pVars[2]));
         }
-        return result;
     }
 
     //  =======================================================================
     //  Engine implementation  
 
+    /**
+     * Restore the current choice point and restart execution of the LP code
+     * until either find a successful branch (in which case exit with StateFlag.ACTIVE
+     * and variables bound to the correct results) or exhaust all choice points (in
+     * which case exit with StateFlag.FAIL and no bound results). In future tabled
+     * version could also exit with StateFlag.SUSPEND in cases whether the intepreter
+     * needs to suspend to await tabled results from a parallel proof tree.
+     */
+    protected StateFlag run() {
+
+        main: while (cpFrame != null) {
+            // restore choice point
+            if (cpFrame instanceof ChoicePointFrame) {
+                ChoicePointFrame choice = (ChoicePointFrame)cpFrame;
+                if (!choice.clauseIterator.hasNext()) {
+                    // No more choices left in this choice point
+                    cpFrame = choice.getLink();
+                    continue main;
+                }
+                
+                // Create an execution environment for the new choice of clause
+                RuleClauseCode clause = (RuleClauseCode)choice.clauseIterator.next();
+                envFrame = LPEnvironmentFactory.createEnvironment();
+                envFrame.init(clause);
+                envFrame.linkTo(choice.envFrame);
+
+                // Restore the choice point state
+                argVars = choice.argVars;
+                int trailMark = choice.trailIndex;
+                if (trailMark > trail.size()) {
+                    unwindTrail(trailMark);
+                }
+                
+                // then fall through into the recreated execution context for the new call
+                
+            } else if (cpFrame instanceof TripleMatchFrame) {
+                TripleMatchFrame tmFrame = (TripleMatchFrame)cpFrame;
+                
+                // Restore the calling context
+                envFrame = tmFrame.envFrame;
+                int trailMark = tmFrame.trailIndex;
+                if (trailMark > trail.size()) {
+                    unwindTrail(trailMark);
+                }
+                
+                // Find the next choice result directly
+                if (!tmFrame.nextMatch(this)) {
+                    // No more matches
+                    cpFrame = cpFrame.getLink();
+                    continue main;
+                }
+
+                // then fall through to the execution context in which the the match was called
+                
+            } else {
+                throw new ReasonerException("Internal error in backward rule system, unrecognized choice point");
+            }
+            
+            interpreter: while (envFrame != null) {
+
+                // Start of bytecode intepreter loop
+                // Init the state variables
+                int pc = envFrame.pc; // Program counter
+                int ac = envFrame.ac; // Argument counter
+                byte[] code = envFrame.clause.getCode();
+                Object[] args = envFrame.clause.getArgs();
+                pVars = envFrame.pVars;
+                int yi, ai, ti;
+                Node arg, constant;
+                List predicateCode;
+                RuleClauseCode clause;
+                TripleMatchFrame tmFrame;
+    
+                // Debug ...
+//                System.out.println("Interpeting code (at p = " + pc + "):");
+//                envFrame.clause.print(System.out);
+        
+                codeloop: while (true) {
+                    switch (code[pc++]) {
+                        case RuleClauseCode.GET_VARIABLE :
+                            yi = code[pc++];
+                            ai = code[pc++];
+                            pVars[yi] = argVars[ai];
+                            break;
+    
+                        case RuleClauseCode.GET_TEMP :
+                            ti = code[pc++];
+                            ai = code[pc++];
+                            tVars[ti] = argVars[ai];
+                            break;
+    
+                        case RuleClauseCode.GET_CONSTANT :
+                            ai = code[pc++];
+                            arg = argVars[ai];
+                            if (arg instanceof Node_RuleVariable) arg = ((Node_RuleVariable)arg).deref();
+                            constant = (Node) args[ac++]; 
+                            if (arg instanceof Node_RuleVariable) {
+                                bind(arg, constant);
+                            } else {
+                                if (!arg.sameValueAs(constant)) {
+                                    continue main;  
+                                }
+                            }
+                            break;
+                        
+                        case RuleClauseCode.UNIFY_VARIABLE :
+                            yi = code[pc++];
+                            ai = code[pc++];
+                            if (!unify(argVars[ai], pVars[yi])) {
+                                continue main;  
+                            }
+                            break;
+    
+                        case RuleClauseCode.UNIFY_TEMP :
+                            ti = code[pc++];
+                            ai = code[pc++];
+                            if (!unify(argVars[ai], tVars[ti])) {
+                                continue main;  
+                            }
+                            break;
+    
+                        case RuleClauseCode.PUT_NEW_VARIABLE:
+                            yi = code[pc++];
+                            ai = code[pc++];
+                            argVars[ai] = pVars[yi] = new Node_RuleVariable(null, yi); 
+                            break;
+                        
+                        case RuleClauseCode.PUT_VARIABLE:
+                            yi = code[pc++];
+                            ai = code[pc++];
+                            argVars[ai] = pVars[yi];
+                            break;
+                        
+                        case RuleClauseCode.PUT_TEMP:
+                            ti = code[pc++];
+                            ai = code[pc++];
+                            argVars[ai] = tVars[ti];
+                            break;
+                        
+                        case RuleClauseCode.PUT_CONSTANT:
+                            ai = code[pc++];
+                            argVars[ai] = (Node)args[ac++];
+                            break;
+                    
+                        case RuleClauseCode.CLEAR_ARG:
+                            ai = code[pc++];
+                            argVars[ai] = new Node_RuleVariable(null, ai); 
+                            break;
+                        
+                        case RuleClauseCode.LAST_CALL_PREDICATE:
+                            // TODO: improved implementation of last call case!
+                        case RuleClauseCode.CALL_PREDICATE:
+                            List clauses = (List)args[ac++];
+                            // Stash the current state
+                            envFrame.ac = ac;
+                            envFrame.pc = pc;
+                            // Create the new choice points
+                            ChoicePointFrame newChoiceFrame = ChoicePointFactory.create();
+                            newChoiceFrame.init(this, clauses);
+                            newChoiceFrame.linkTo(cpFrame);
+                            tmFrame = TripleMatchFactory.create();
+                            tmFrame.init(this);
+                            tmFrame.linkTo(newChoiceFrame);
+                            cpFrame = tmFrame;
+                            continue main;
+                                            
+                        case RuleClauseCode.CALL_TRIPLE_MATCH:
+                            // Stash the current state
+                            envFrame.ac = ac;
+                            envFrame.pc = pc;
+                            tmFrame = TripleMatchFactory.create();
+                            tmFrame.init(this);
+                            tmFrame.linkTo(cpFrame);
+                            cpFrame = tmFrame;
+                            continue main;
+                                            
+                        case RuleClauseCode.PROCEED:
+                            envFrame = (EnvironmentFrame) envFrame.link;
+                            continue interpreter;
+                        
+                        default :
+                            throw new ReasonerException("Internal error in backward rule system\nIllegal op code");
+                    }
+                }
+                // End of innter code loop
+            }
+            // End of bytecode interpreter loop, gets to here if we complete an AND chain
+            return StateFlag.ACTIVE;
+        }
+        // Gets to here if we have run out of choice point frames
+        return StateFlag.FAIL;
+    }
+    
     /**
      * TEMP.
      * (Re)start interpreter execution at the current environment frame, continue
@@ -138,7 +346,7 @@ public class LPInterpreter {
         MutableTriplePattern finderPattern = new MutableTriplePattern();
 
         // Debug ...
-        System.out.println("Interpeting code:");
+        System.out.println("Interpeting code (at p = " + pc + ":");
         envFrame.clause.print(System.out);
         
         fail: for (;;) {
@@ -253,7 +461,7 @@ public class LPInterpreter {
                 case RuleClauseCode.CALL_TRIPLE_MATCH:
                     // TODO choice point stuff, this bit TEMP
                     Node s = deref(argVars[0]);
-                    Node p = deref((Node)args[ac++]);
+                    Node p = deref(argVars[1]);
                     Node o = deref(argVars[2]);
                     finderPattern.setPattern(s, p, o);
                     ExtendedIterator it = engine.getInfGraph().findDataMatches(finderPattern);
@@ -347,7 +555,7 @@ public class LPInterpreter {
     /**
      * Derefernce a node, following any binding trail.
      */
-    public Node deref(Node node) {
+    public static Node deref(Node node) {
         if (node instanceof Node_RuleVariable) {
             return ((Node_RuleVariable)node).deref();
         } else {

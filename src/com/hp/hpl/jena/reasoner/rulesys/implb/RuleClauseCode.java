@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.5 2003-07-22 21:44:19 der Exp $
+ * $Id: RuleClauseCode.java,v 1.6 2003-07-23 16:24:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-07-22 21:44:19 $
+ * @version $Revision: 1.6 $ on $Date: 2003-07-23 16:24:17 $
  */
 public class RuleClauseCode {
     
@@ -113,6 +113,13 @@ public class RuleClauseCode {
     /** The maximum number of temporary variables allowed in a single rule clause. */
     public static final int MAX_TEMPORARY_VARS = 10;
     
+    /** Dummy code block which just returns */
+    public static RuleClauseCode returnCodeBlock;
+    
+    static {
+        returnCodeBlock = new RuleClauseCode(null);
+        returnCodeBlock.code = new byte[] {PROCEED};
+    }
 //  =======================================================================
 //  Methods and constructors
 
@@ -185,9 +192,9 @@ public class RuleClauseCode {
         int a = 0;
         
         Node predicate = goal.getPredicate();
+        // TODO: wildcard predicate support here
         if (predicateCode == null || predicateCode.size() == 0) {
             code[p++] = CALL_TRIPLE_MATCH;
-            args[a++] = predicate;
         } else {
             if (predicate.isVariable()) {
                 code[p++] = CALL_WILD_PREDICATE;
@@ -248,7 +255,7 @@ public class RuleClauseCode {
                     out.println("LAST_CALL_PREDICATE " + args[argi++]);
                     break;
                 case CALL_TRIPLE_MATCH:
-                        out.println("CALL_TRIPLE_MATCH (A0, " + args[argi++] +", A2)");
+                        out.println("CALL_TRIPLE_MATCH");
                         break;
                 case CALL_WILD_PREDICATE:
                     out.println("CALL_WILD_PREDICATE " + args[argi++]);
@@ -366,11 +373,11 @@ public class RuleClauseCode {
             int argi = 0;
             emitBodyPut(goal.getSubject(), 0);
             // TODO: Add predicate test in variable predicate case
+            emitBodyPut(goal.getPredicate(), 1);
             emitBodyPut(goal.getObject(), 2);
             List predicateCode = store.codeFor(goal);
             if (predicateCode == null || predicateCode.size() == 0) {
                 code[p++] = CALL_TRIPLE_MATCH;
-                args.add(goal.getPredicate());
             } else {
                 if (goal.getPredicate().isVariable()) {
                     code[p++] = CALL_WILD_PREDICATE;
@@ -607,7 +614,8 @@ public class RuleClauseCode {
             String test2 = "(?a p ?y) <- (?a q2 ?z) (?z q2 ?w).";
             String test3 =  "(?a p ?a) <- (?z r2 ?w) (?z r2 ?w).";
             String test4 =  "(?a p ?a) <- (?z r2 ?w) (?a r2 ?w).";
-            store.addRule(Rule.parseRule(test4));
+            String test5 = "(?a p ?y) <- (?a p ?z), (?z p ?y).";
+            store.addRule(Rule.parseRule(test5));
             System.out.println("Code for p:");
             List codeList = store.codeFor(Node.createURI("p"));
             RuleClauseCode code = (RuleClauseCode)codeList.get(0);

@@ -5,9 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.1 2003-07-21 20:41:18 der Exp $
+ * $Id: LPTopGoalIterator.java,v 1.2 2003-07-23 16:24:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
+
+import java.util.NoSuchElementException;
 
 import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
@@ -18,7 +20,7 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
  * inference graph if the iterator hits the end of the result set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-21 20:41:18 $
+ * @version $Revision: 1.2 $ on $Date: 2003-07-23 16:24:17 $
  */
 public class LPTopGoalIterator implements ClosableIterator {
     /** The next result to be returned, or null if we have finished */
@@ -71,6 +73,9 @@ public class LPTopGoalIterator implements ClosableIterator {
      */
     public Object next() {
         if (!started) moveForward();
+        if (lookAhead == null) {
+            throw new NoSuchElementException("Overran end of LP result set");
+        }
         Object result = lookAhead;
         moveForward();
         return result;
