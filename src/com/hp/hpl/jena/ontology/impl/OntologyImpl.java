@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntologyImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:46 $
+ * Last modified on   $Date: 2003-03-28 22:20:39 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,13 +37,17 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyImpl.java,v 1.1 2003-03-27 16:28:46 ian_dickinson Exp $
+ * @version CVS $Id: OntologyImpl.java,v 1.2 2003-03-28 22:20:39 ian_dickinson Exp $
  */
 public class OntologyImpl
     extends OntResourceImpl
     implements Ontology 
 {
     // Constants
+    //////////////////////////////////
+
+
+    // Static variables
     //////////////////////////////////
 
     /**
@@ -54,8 +58,6 @@ public class OntologyImpl
     };
 
 
-    // Static variables
-    //////////////////////////////////
 
     // Instance variables
     //////////////////////////////////

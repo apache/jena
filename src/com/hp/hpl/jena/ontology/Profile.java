@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:14 $
+ * Last modified on   $Date: 2003-03-28 22:19:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.2 2003-03-27 16:28:14 ian_dickinson Exp $
+ * @version CVS $Id: Profile.java,v 1.3 2003-03-28 22:19:23 ian_dickinson Exp $
  */
 public interface Profile
 {
@@ -226,7 +226,7 @@ public interface Profile
      * 
      * @return The property that denotes equivalence between two property resources.
      */
-    public Property SAME_PROPERTY_AS();
+    public Property EQUIVALENT_PROPERTY();
     
     
     /**
@@ -236,7 +236,7 @@ public interface Profile
      * 
      * @return The property that denotes equivalence between two class expressions.
      */
-    public Property SAME_CLASS_AS();
+    public Property EQUIVALENT_CLASS();
     
     
     /**
@@ -478,6 +478,29 @@ public interface Profile
      * @return The property that denotes ontology element backwards incompatability.
      */
     public Property INCOMPATIBLE_WITH();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes that one class is a sub-class of another.
+     * </p>
+     * 
+     * @return The property that the sub-class relationship.
+     */
+    public Property SUB_CLASS_OF();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes that one property is a sub-property of another.
+     * </p>
+     * 
+     * @return The property that denotes the sub-property relationship.
+     */
+    public Property SUB_PROPERTY_OF();
+    
+    
+    
 }
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:46 $
+ * Last modified on   $Date: 2003-03-28 22:20:52 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.ontology.impl;
 ///////////////
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 
 /**
@@ -35,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.1 2003-03-27 16:28:46 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.2 2003-03-28 22:20:52 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     implements Profile
@@ -55,45 +56,47 @@ public class DAML_OILProfile
     private Model m_vocabModel = ModelFactory.createDefaultModel();
     
     // class resources
-    private Resource m_class                        = m_vocabModel.createResource( DAML_OILProfile._NAMESPACE() + "Class"                     );
-    private Resource m_restriction                  = m_vocabModel.createResource( DAML_OILProfile._NAMESPACE() + "Restriction"               );
-    private Resource m_thing                        = m_vocabModel.createResource( DAML_OILProfile._NAMESPACE() + "Thing"                     );
-    private Resource m_nothing                      = m_vocabModel.createResource( DAML_OILProfile._NAMESPACE() + "Nothing"                   );
-    private Resource m_objectProperty               = m_vocabModel.createResource( DAML_OILProfile._NAMESPACE() + "ObjectProperty"            );
-    private Resource m_datatypeProperty             = m_vocabModel.createResource( DAML_OILProfile._NAMESPACE() + "DatatypeProperty"          );
-    private Resource m_transitiveProperty           = m_vocabModel.createResource( DAML_OILProfile._NAMESPACE() + "TransitiveProperty"        );
+    private Resource m_class                        = m_vocabModel.createResource( DAML_OIL.Class.getURI()                     );
+    private Resource m_restriction                  = m_vocabModel.createResource( DAML_OIL.Restriction.getURI()               );
+    private Resource m_thing                        = m_vocabModel.createResource( DAML_OIL.Thing.getURI()                     );
+    private Resource m_nothing                      = m_vocabModel.createResource( DAML_OIL.Nothing.getURI()                   );
+    private Resource m_objectProperty               = m_vocabModel.createResource( DAML_OIL.ObjectProperty.getURI()            );
+    private Resource m_datatypeProperty             = m_vocabModel.createResource( DAML_OIL.DatatypeProperty.getURI()          );
+    private Resource m_transitiveProperty           = m_vocabModel.createResource( DAML_OIL.TransitiveProperty.getURI()        );
     private Resource m_symmetricProperty            = null;
-    private Resource m_functionalProperty           = m_vocabModel.createResource( DAML_OILProfile._NAMESPACE() + "UniqueProperty"            );
-    private Resource m_inverseFunctionalProperty    = m_vocabModel.createResource( DAML_OILProfile._NAMESPACE() + "UnambiguousProperty"       );
+    private Resource m_functionalProperty           = m_vocabModel.createResource( DAML_OIL.UniqueProperty.getURI()            );
+    private Resource m_inverseFunctionalProperty    = m_vocabModel.createResource( DAML_OIL.UnambiguousProperty.getURI()       );
     private Resource m_allDifferent                 = null;
-    private Resource m_ontology                     = m_vocabModel.createResource( DAML_OILProfile._NAMESPACE() + "Ontology"                  );
+    private Resource m_ontology                     = m_vocabModel.createResource( DAML_OIL.Ontology.getURI()                  );
     private Resource m_deprecatedClass              = null;
     private Resource m_deprecatedProperty           = null;
     
-    private Property m_equivalentProperty           = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "samePropertyAs"             );
-    private Property m_equivalentClass              = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "equivalentClass"            );
-    private Property m_disjointWith                 = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "disjointWith"               );
-    private Property m_sameIndividualAs             = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "sameIndividualAs"           );
-    private Property m_sameAs                       = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "equivalentTo"               );
-    private Property m_differentFrom                = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "differentIndvidualFrom"     );
+    private Property m_equivalentProperty           = m_vocabModel.createProperty( DAML_OIL.samePropertyAs.getNameSpace(),          DAML_OIL.samePropertyAs.getLocalName() );
+    private Property m_equivalentClass              = m_vocabModel.createProperty( DAML_OIL.sameClassAs.getNameSpace(),             DAML_OIL.sameClassAs.getLocalName() );
+    private Property m_disjointWith                 = m_vocabModel.createProperty( DAML_OIL.disjointWith.getNameSpace(),            DAML_OIL.disjointWith.getLocalName() );
+    private Property m_sameIndividualAs             = m_vocabModel.createProperty( DAML_OIL.sameIndividualAs.getNameSpace(),        DAML_OIL.sameIndividualAs.getLocalName() );
+    private Property m_sameAs                       = m_vocabModel.createProperty( DAML_OIL.equivalentTo.getNameSpace(),            DAML_OIL.equivalentTo.getLocalName() );
+    private Property m_differentFrom                = m_vocabModel.createProperty( DAML_OIL.differentIndividualFrom.getNameSpace(), DAML_OIL.differentIndividualFrom.getLocalName() );
     private Property m_distinctMembers              = null;
-    private Property m_unionOf                      = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "unionOf"                    );
-    private Property m_intersectionOf               = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "intersectionOf"             );
-    private Property m_complementOf                 = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "complementOf"               );
-    private Property m_oneOf                        = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "oneOf"                      );
-    private Property m_onProperty                   = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "onProperty"                 );
-    private Property m_allValuesFrom                = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "toClass"                    );
-    private Property m_hasValue                     = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "hasValue"                   );
-    private Property m_someValuesFrom               = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "hasClass"                   );
-    private Property m_minCardinality               = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "minCardinality"             );
-    private Property m_maxCardinality               = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "maxCardinality"             );
-    private Property m_cardinality                  = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "cardinality"                );
-    private Property m_inverseOf                    = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "inverseOf"                  );
-    private Property m_imports                      = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "imports"                    );
-    private Property m_versionInfo                  = m_vocabModel.createProperty( DAML_OILProfile._NAMESPACE(), "versionInfo"                );
+    private Property m_unionOf                      = m_vocabModel.createProperty( DAML_OIL.unionOf.getNameSpace(),                 DAML_OIL.unionOf.getLocalName() );
+    private Property m_intersectionOf               = m_vocabModel.createProperty( DAML_OIL.intersectionOf.getNameSpace(),          DAML_OIL.intersectionOf.getLocalName() );
+    private Property m_complementOf                 = m_vocabModel.createProperty( DAML_OIL.complementOf.getNameSpace(),            DAML_OIL.complementOf.getLocalName() );
+    private Property m_oneOf                        = m_vocabModel.createProperty( DAML_OIL.oneOf.getNameSpace(),                   DAML_OIL.oneOf.getLocalName() );
+    private Property m_onProperty                   = m_vocabModel.createProperty( DAML_OIL.onProperty.getNameSpace(),              DAML_OIL.onProperty.getLocalName() );
+    private Property m_allValuesFrom                = m_vocabModel.createProperty( DAML_OIL.toClass.getNameSpace(),                 DAML_OIL.toClass.getLocalName() );
+    private Property m_hasValue                     = m_vocabModel.createProperty( DAML_OIL.hasValue.getNameSpace(),                DAML_OIL.hasValue.getLocalName() );
+    private Property m_someValuesFrom               = m_vocabModel.createProperty( DAML_OIL.hasClass.getNameSpace(),                DAML_OIL.hasClass.getLocalName() );
+    private Property m_minCardinality               = m_vocabModel.createProperty( DAML_OIL.minCardinality.getNameSpace(),          DAML_OIL.minCardinality.getLocalName() );
+    private Property m_maxCardinality               = m_vocabModel.createProperty( DAML_OIL.maxCardinality.getNameSpace(),          DAML_OIL.maxCardinality.getLocalName() );
+    private Property m_cardinality                  = m_vocabModel.createProperty( DAML_OIL.cardinality.getNameSpace(),             DAML_OIL.cardinality.getLocalName() );
+    private Property m_inverseOf                    = m_vocabModel.createProperty( DAML_OIL.inverseOf.getNameSpace(),               DAML_OIL.inverseOf.getLocalName() );
+    private Property m_imports                      = m_vocabModel.createProperty( DAML_OIL.imports.getNameSpace(),                 DAML_OIL.imports.getLocalName() );
+    private Property m_versionInfo                  = m_vocabModel.createProperty( DAML_OIL.versionInfo.getNameSpace(),             DAML_OIL.versionInfo.getLocalName() );
     private Property m_priorVersion                 = null;
     private Property m_backwardsCompatibleWith      = null;
     private Property m_incompatibleWith             = null;
+    private Property m_subPropertyOf                = m_vocabModel.createProperty( DAML_OIL.subPropertyOf.getNameSpace(),           DAML_OIL.subPropertyOf.getLocalName() );
+    private Property m_subClassOf                   = m_vocabModel.createProperty( DAML_OIL.subClassOf.getNameSpace(),              DAML_OIL.subClassOf.getLocalName() );
 
 
 
@@ -131,8 +134,8 @@ public class DAML_OILProfile
     public Resource DEPRECATED_CLASS() {            return m_deprecatedClass; }
     public Resource DEPRECATED_PROPERTY() {         return m_deprecatedProperty; }
 
-    public Property SAME_PROPERTY_AS() {            return m_equivalentProperty; }
-    public Property SAME_CLASS_AS() {               return m_equivalentClass; }
+    public Property EQUIVALENT_PROPERTY() {         return m_equivalentProperty; }
+    public Property EQUIVALENT_CLASS() {            return m_equivalentClass; }
     public Property DISJOINT_WITH() {               return m_disjointWith; }
     public Property SAME_INDIVIDUAL_AS() {          return m_sameIndividualAs; }
     public Property SAME_AS() {                     return m_sameAs; }
@@ -155,6 +158,8 @@ public class DAML_OILProfile
     public Property PRIOR_VERSION() {               return m_priorVersion; }
     public Property BACKWARD_COMPATIBLE_WITH() {    return m_backwardsCompatibleWith; }
     public Property INCOMPATIBLE_WITH() {           return m_incompatibleWith; }
+    public Property SUB_CLASS_OF() {                return m_subClassOf; }
+    public Property SUB_PROPERTY_OF() {             return m_subPropertyOf; }
     
     
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  * Filename           $RCSfile: ProfileRegistry.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:15 $
+ * Last modified on   $Date: 2003-03-28 22:19:27 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,8 +24,7 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.impl.DAML_OILProfile;
-import com.hp.hpl.jena.ontology.impl.OWLProfile;
+import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
@@ -39,7 +38,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ProfileRegistry.java,v 1.2 2003-03-27 16:28:15 ian_dickinson Exp $
+ * @version CVS $Id: ProfileRegistry.java,v 1.3 2003-03-28 22:19:27 ian_dickinson Exp $
  */
 public class ProfileRegistry {
     // Constants
@@ -48,6 +47,12 @@ public class ProfileRegistry {
     /** The URI that maps to the language profile for OWL (full) */
     public static final String OWL_LANG = OWL.NAMESPACE;
     
+    /** The URI that maps to the language profile for OWL (DL) */
+    public static final String OWL_DL_LANG = "http://www.w3.org/TR/owl-features/#term_OWLDL";
+    
+    /** The URI that maps to the language profile for OWL (lite) */
+    public static final String OWL_LITE_LANG = "http://www.w3.org/TR/owl-features/#term_OWLLite";
+    
     /** The URI that maps to the language profile for DAML+OIL */
     public static final String DAML_LANG = DAML_OIL.NAMESPACE_DAML_2001_03_URI;
     
@@ -55,12 +60,13 @@ public class ProfileRegistry {
     public static final String RDFS_LANG = RDFS.getURI();
     
     
-    
     // Static variables
     //////////////////////////////////
 
     private static Object[][] s_initData = new Object[][] {
         {OWL_LANG,      new OWLProfile()},
+        {OWL_DL_LANG,   new OWLDLProfile()},
+        {OWL_LITE_LANG, new OWLLiteProfile()},
         {DAML_LANG,     new DAML_OILProfile()}
     };
     

@@ -6,8 +6,8 @@
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
- * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.3 $
+ * Filename           $RCSfile: OWLDLProfile.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-03-28 22:20:50 $
@@ -32,14 +32,14 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * <p>
- * Ontology language profile implementation for the Full variant of the OWL 2002/07 language.
+ * Ontology language profile implementation for the DL variant of the OWL 2002/07 language.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.3 2003-03-28 22:20:50 ian_dickinson Exp $
+ * @version CVS $Id: OWLDLProfile.java,v 1.1 2003-03-28 22:20:50 ian_dickinson Exp $
  */
-public class OWLProfile
+public class OWLDLProfile
     implements Profile
 {
     // Constants

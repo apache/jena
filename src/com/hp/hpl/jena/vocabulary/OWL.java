@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            3 Mar 2003
  * Filename           $RCSfile: OWL.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-06 19:27:52 $
+ * Last modified on   $Date: 2003-03-28 22:20:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWL.java,v 1.5 2003-03-06 19:27:52 ian_dickinson Exp $
+ * @version CVS $Id: OWL.java,v 1.6 2003-03-28 22:20:01 ian_dickinson Exp $
  */
 public class OWL
 {
@@ -94,10 +94,10 @@ public class OWL
 
 
     /** Property denoting the OWL predicate that states that two given properties are equivalent */
-    public static final Property samePropertyAs               = m_vocabModel.createProperty( OWL.NAMESPACE, "samePropertyAs"         );
+    public static final Property equivalentProperty           = m_vocabModel.createProperty( OWL.NAMESPACE, "equivalentProperty"         );
 
     /** Property denoting the OWL predicate that states that two given classes are equivalent */
-    public static final Property sameClassAs                  = m_vocabModel.createProperty( OWL.NAMESPACE, "sameClassAs"            );
+    public static final Property equivalentClass              = m_vocabModel.createProperty( OWL.NAMESPACE, "equivalentClass"            );
 
     /** Property denoting the OWL predicate that states that one class has no instances in common with another */
     public static final Property disjointWith                 = m_vocabModel.createProperty( OWL.NAMESPACE, "disjointWith"               );

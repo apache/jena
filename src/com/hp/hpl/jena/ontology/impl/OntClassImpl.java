@@ -5,55 +5,77 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: ClassDescription.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            27-Mar-2003
+ * Filename           $RCSfile: OntClassImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:19:28 $
+ * Last modified on   $Date: 2003-03-28 22:20:43 $
  *               by   $Author: ian_dickinson $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
+ * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
- * ****************************************************************************/
+ *****************************************************************************/
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology;
+package com.hp.hpl.jena.ontology.impl;
+
 
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.path.PathSet;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.path.*;
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
 
 
 /**
  * <p>
- * Interface providing an encapsulation for general class descriptions, and
- * which provides a super-type for all ontology class expressions.
+ * Implementation for the ontology abstraction representing ontology classes.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClassDescription.java,v 1.2 2003-03-28 22:19:28 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.1 2003-03-28 22:20:43 ian_dickinson Exp $
  */
-public interface ClassDescription
-    extends OntResource
+public class OntClassImpl
+    extends OntResourceImpl
+    implements OntClass 
 {
     // Constants
     //////////////////////////////////
 
-
     // Static variables
     //////////////////////////////////
+
+    /**
+     * A factory for generating Ontology facets from nodes in enhanced graphs.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { return new OntClassImpl( n, eg ); }
+    };
+
 
 
     // Instance variables
     //////////////////////////////////
 
-
     // Constructors
     //////////////////////////////////
+
+    /**
+     * <p>
+     * Construct an ontology class node represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
+     */
+    public OntClassImpl( Node n, EnhGraph g ) {
+        super( n, g );
+    }
 
 
     // External signature methods
@@ -69,7 +91,9 @@ public interface ClassDescription
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_subClassOf();
+    public PathSet p_subClassOf() {
+        return asPathSet( getProfile().SUB_CLASS_OF() );
+    }
     
     /**
      * <p>
@@ -81,7 +105,9 @@ public interface ClassDescription
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_equivalentClass();
+    public PathSet p_equivalentClass() {
+        return asPathSet( getProfile().EQUIVALENT_CLASS() );
+    }
     
     /**
      * <p>
@@ -93,18 +119,17 @@ public interface ClassDescription
      * 
      * @return An abstract accessor for the imports of an ontology element
      */
-    public PathSet p_disjointWith();
-
+    public PathSet p_disjointWith() {
+        return asPathSet( getProfile().DISJOINT_WITH() );
+    }
      
 
     // Internal implementation methods
     //////////////////////////////////
 
-
     //==============================================================================
     // Inner class definitions
     //==============================================================================
-
 
 }
 
@@ -139,3 +164,9 @@ public interface ClassDescription
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/* TODO delete me
+public class OntClassImpl{
+
+}
+
+*/
