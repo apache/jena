@@ -12,7 +12,7 @@ This release adds a substantially revised and improved ontology API along
 with improved reasoning support for RDFS and many small improvements to 
 the graph SPI. <database?>
 
-... ontology and graph details ...
+...  graph details ...
 
 Reasoners:
 
@@ -27,6 +27,24 @@ and is not recommended for non-trivial use at this stage.
 
 Some early documentation is in <Jena>/doc/user-manual/inference.
 
+Ontology API:
+
+The Jena2 ontology API has now stabilised into something close to its
+final form.  The main package in com.hp.hpl.jena.ontology is mostly 
+complete, except for Java classes to directly represent an axiom-centric
+view of the ontology rather than an object-centric view.  The Jena1 DAML
+API has been migrated to the new ontology API structure, and appears as
+com.hp.hpl.jena.ontology.daml. Some migration steps of the old API remain 
+to be completed, so the DAML subsystem should used with care. Note that
+the main ontology API will also handle DAML+OIL ontologies; the legacy API
+is included to assist Jena1 DAML users to adapt their code to Jena2. New
+users are recommended to use the main ontology API exclusively.
+
+The default reasoner for all ontology models is currently the RDFS reasoner.
+Please see the documentation in
+	<Jena>/doc/user-manual/ontology
+for an explanation of how to select the reasoner and other options when
+constructing the ontology model.
 
 
 Previous release notes
