@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.12 2004-07-09 11:02:43 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.13 2004-07-09 11:27:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -153,6 +153,16 @@ public abstract class NodeToTriplesMap
     */
     public boolean remove( Triple t )
         { return remove( getIndexNode( t ), t ); }
+
+    /**
+     * @param triple
+     * @return
+     */
+    public boolean contains( Triple triple )
+        { 
+        Set s = (Set) map.get( getIndexNode( triple ) );
+        return s == null ? false : s.contains( triple );
+        }
     }
 
 /*

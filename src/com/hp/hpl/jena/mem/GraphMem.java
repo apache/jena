@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.36 2004-07-09 11:02:43 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.37 2004-07-09 11:27:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -116,6 +116,16 @@ public class GraphMem extends GraphMemBase implements Graph
             return new Removable( subjects.iterator( tm ), predicates, objects );
         }
 
+    /**
+         Answer true iff this graph contains <code>t</code>. If <code>t</code>
+         happens to be concrete, then we hand responsibility over to one of the
+         index graphs -- doesn't matter which one, but we've picked the subjects.
+    */
+    public boolean contains( Triple t )
+        {
+        return t.isConcrete() ? subjects.contains( t ) : super.contains( t );
+        }
+    
     /**
          An iterator wrapper for NodeToTriplesMap iterators which ensures that
          a .remove on the base iterator is copied to the other two maps of this

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.5 2004-06-30 17:16:56 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.6 2004-07-09 11:27:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -64,17 +64,29 @@ public class TestGraphMem extends AbstractTestGraph
     
     public void testRemoveAllDoesntUseFind()
         {
-        Graph g = new GraphMem()
-        	{
-            public ExtendedIterator find( Node s, Node p, Node o )
-                { throw new JenaException( "find is Not Allowed" ); }
-            
-            public ExtendedIterator find( Triple t )
-                { throw new JenaException( "find is Not Allowed" ); }
-        	};
+        Graph g = new GraphMemWithoutFind();
         graphAdd( g, "x P y; a Q b" );
         g.getBulkUpdateHandler().removeAll();
         assertEquals( 0, g.size() );
+        }
+    
+    public void testContainsConcreteDoesntUseFind()
+        {
+        Graph g = new GraphMemWithoutFind();
+        graphAdd( g, "x P y; a Q b" );
+        assertTrue( g.contains( triple( "x P y" ) ) );
+        assertTrue( g.contains( triple( "a Q b" ) ) );
+        assertFalse( g.contains( triple( "a P y" ) ) );
+        assertFalse( g.contains( triple( "y R b" ) ) );
+        }    
+    
+    protected final class GraphMemWithoutFind extends GraphMem
+        {
+        public ExtendedIterator find( Node s, Node p, Node o )
+            { throw new JenaException( "find is Not Allowed" ); }
+
+        public ExtendedIterator find( TripleMatch t )
+            { throw new JenaException( "find is Not Allowed" ); }
         }
     }
 
