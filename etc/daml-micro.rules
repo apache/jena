@@ -1,7 +1,7 @@
 #------------------------------------------------------------------
 # Mico ruleset for DAML. This is just the core RDFS rules plus
 # the extensional rules for domain/range, plus some DAML axioms.
-# $Id: daml-mico.rules,v 1.1 2003-07-23 16:54:41 der Exp $
+# $Id: daml-micro.rules,v 1.1 2003-07-24 09:59:42 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
