@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: MonotonicErrorAnalyzer.java,v 1.7 2005-01-05 13:07:31 jeremy_carroll Exp $
+ $Id: MonotonicErrorAnalyzer.java,v 1.8 2005-01-05 14:42:15 chris-dollin Exp $
  */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -33,12 +33,14 @@ class MonotonicErrorAnalyzer implements Constants {
 	final static private int TYPE_NEEDS_ID = 10;
 
 	final static private int TYPE_NEEDS_BLANK = 11;
+    
+    final static private int TYPE_NEEDS_ID_OR_BLANK = 12;
 
-	final static private int TYPE_OF_CLASS_ONLY_ID = 12;
+	final static private int TYPE_OF_CLASS_ONLY_ID = 13;
 
-	final static private int TYPE_OF_PROPERTY_ONLY_ID = 13;
+	final static private int TYPE_OF_PROPERTY_ONLY_ID = 14;
 
-	final static private int TYPE_FOR_BUILTIN = 14;
+	final static private int TYPE_FOR_BUILTIN = 15;
 
 	final static private int ST_DOMAIN_RANGE = 20;
 
@@ -146,9 +148,9 @@ class MonotonicErrorAnalyzer implements Constants {
 
 	static private int miss[] = new int[8];
 
-	static private int mTypes[] = new int[40];
 
 	static private int getErrorCode(int s, int p, int o, int sx, int px, int ox) {
+        // TODO should check args all in range 0 <= it < SZ.
 		int key = look.qrefine(sx, px, ox);
 		if (key == Failure) {
 			return singleTripleError(sx, px, ox);
@@ -158,23 +160,14 @@ class MonotonicErrorAnalyzer implements Constants {
 		int general[] = { look.subject(sx, key), look.prop(px, key),
 				look.object(ox, key) };
 		int meet[] = new int[3];
-		int rslt = NOT_CLASSIFIED;
-		int mType = 0;
 		for (int i = 0; i < 3; i++) {
 			meet[i] = look.meet(general[i], given[i]);
 			if (meet[i] == Failure) {
 				misses |= (1 << i);
 				int r = catMiss(general[i], given[i]);
-				if (r != NOT_CLASSIFIED) {
-					rslt = r;
-					mType++;
-				} else {
-					mType += 10;
-				}
 			}
 		}
 		miss[misses]++;
-		mTypes[mType]++;
 		if (misses == 0) {
 			return difficultCase(given, general, meet);
 		}
@@ -953,19 +946,27 @@ class MonotonicErrorAnalyzer implements Constants {
 		if (isLiteral(sx))
 			return LITERAL_SUBJ;
 
-		if (sx == Grammar.badID || px == Grammar.badID)
-			return BADID_USE;
-		if (ox == Grammar.badID)
+		if (sx == Grammar.badID || px == Grammar.badID || ox == Grammar.badID)
 			return BADID_USE;
 
 		// TODO case with bad subj and bad pred
 		if (isBuiltin[sx] && !look.canBeSubj(sx))
 			return BUILTIN_NON_SUBJ;
+        
+        // The intent here is that we are only testing for built-in
+        // non-predicates,  but a few cases are both 'built-in'
+        // and not isBuiltin[], e.g. rdf:Bag, which in much
+        // of the code is just a URIref, but can only be a classID
+        // and not a propID. The syntactic category given to rdf:Bag
+        // initially is { notype, classID } which is not an isBuiltin[] like owlClass.
+        
 		if (//isBuiltin[px]&&
 		!look.canBeProp(px)) {
 			return BUILTIN_NON_PRED;
 		}
 
+        // TODO is this test spurious? Very likely.
+        
 		if (px < SZ) {
 			int bad = 0;
 			int sxx[] = nonPseudoCats(sx);
@@ -984,10 +985,27 @@ class MonotonicErrorAnalyzer implements Constants {
 				return ST_DOMAIN_RANGE + bad;
 		}
 		if (px == Grammar.rdftype) {
+			return handleRDFType( sx, ox );
+		}
+		throw new BrokenException("Unreachable code.");
+	}
 
-			if (maybeBuiltinID(sx))
+	/**
+     * @param sx
+     * @param ox
+     */
+    private static int handleRDFType( int sx, int ox )
+        {
+            if (maybeBuiltinID(sx))
 				return TYPE_FOR_BUILTIN;
 			switch (ox) {
+            case Grammar.owlOntology:
+                if (isClassOnly(sx))
+                    return TYPE_OF_CLASS_ONLY_ID;
+                if (!isUserID[sx] && !isBlank[sx])
+                    return TYPE_NEEDS_ID_OR_BLANK;
+                throw new BrokenException("Unreachable code.");
+                   
 			case Grammar.rdfsDatatype:
 			case Grammar.rdfProperty:
 			case Grammar.owlAnnotationProperty:
@@ -999,20 +1017,25 @@ class MonotonicErrorAnalyzer implements Constants {
 			case Grammar.owlSymmetricProperty:
 			case Grammar.owlTransitiveProperty:
 			case Grammar.owlDeprecatedProperty:
-			case Grammar.owlOntology:
 				if (isClassOnly(sx))
 					return TYPE_OF_CLASS_ONLY_ID;
-			// fall through
+                if (!isUserID[sx] )
+                    return TYPE_NEEDS_ID;
+                throw new BrokenException("Unreachable code.");
+                
 			case Grammar.owlDeprecatedClass:
-				if (!isUserID[sx] && ox != Grammar.owlOntology)
+				if (!isUserID[sx] )
 					return TYPE_NEEDS_ID;
-
+                throw new BrokenException("Unreachable code.");
+                
 			case Grammar.rdfList:
 			case Grammar.owlAllDifferent:
 			case Grammar.owlDataRange:
 			case Grammar.owlRestriction:
 				if (!isBlank[sx])
 					return TYPE_NEEDS_BLANK;
+                throw new BrokenException("Unreachable code.");
+                
 			default:
 				if (isBlank[ox] || isClassOnly(ox)) {
 					if (isClassOnly(sx))
@@ -1038,19 +1061,18 @@ class MonotonicErrorAnalyzer implements Constants {
 					return TYPE_OF_PROPERTY_ONLY_ID;
 
 			}
-		}
-		throw new BrokenException("Unreachable code.");
-	}
+            throw new BrokenException("Unreachable code.");
+        }
 
-	static private boolean maybeBuiltinID(int sx) {
+    static private boolean maybeBuiltinID(int sx) {
 		boolean builtin;
 		switch (sx) {
-		case Grammar.annotationPropID:
-		case Grammar.datatypeID:
-		case Grammar.dataRangeID:
-		case Grammar.dataAnnotationPropID:
-		case Grammar.classID:
-		case Grammar.ontologyPropertyID:
+		case Grammar.annotationPropID:// rdfs:seeAlso ??
+		case Grammar.datatypeID: //xsd:int
+		case Grammar.dataRangeID: //rdfs:Literal
+		case Grammar.dataAnnotationPropID: // rdfs:label
+		case Grammar.classID:  // owl:Thing
+		case Grammar.ontologyPropertyID: // owl:priorVersion
 			builtin = true;
 			break;
 		default:
@@ -1068,6 +1090,10 @@ class MonotonicErrorAnalyzer implements Constants {
 		return look.meet(sx, Grammar.propertyOnly) == sx;
 	}
 
+    /**
+         categories without pseudo-categories. Note the pseuds (if any) all appear 
+         at the beginning, by (a) sorting and (b) arrangement of the grammar.
+    */
 	static private int[] nonPseudoCats(int c) {
 		int cats[] = CategorySet.getSet(c);
 		int i;
@@ -1185,7 +1211,6 @@ class MonotonicErrorAnalyzer implements Constants {
 		System.out.println(bad + " cases considered.");
 		dump("Codes:", eCnt);
 		dump("Misses", miss);
-		dump("MTypes", mTypes);
 
 		for (int i = 0; i < SZ; i++)
 			if (diffPreds[i] != 0)
