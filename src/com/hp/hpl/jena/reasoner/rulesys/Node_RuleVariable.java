@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Node_RuleVariable.java,v 1.12 2003-07-23 16:24:42 der Exp $
+ * $Id: Node_RuleVariable.java,v 1.13 2003-08-08 16:14:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.Node_Variable;
  * it should not end up in a Graph. It is only needed for the rule systems. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-07-23 16:24:42 $
+ * @version $Revision: 1.13 $ on $Date: 2003-08-08 16:14:23 $
  */
 public class Node_RuleVariable extends Node_Variable {
     /** The offset of this variable in the Frule's binding table */
@@ -113,6 +113,14 @@ public class Node_RuleVariable extends Node_Variable {
             var = (Node_RuleVariable)var.value;
         }
         return var.value;
+    }
+    
+    /**
+     * Return the raw value to which this variable is bound (via LP binding) with
+     * no dereferencing.
+     */
+    public Node getRawBoundValue() {
+        return value;
     }
     
     /**
