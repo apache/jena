@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Rewrite.java,v 1.6 2004-08-13 13:51:05 chris-dollin Exp $
+  $Id: Rewrite.java,v 1.7 2004-08-13 17:11:56 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -18,13 +18,16 @@ public class Rewrite
         if (pattern == null)
             return e;
         else if (isStartsWith( pattern ))
-            return startsWith( L, pattern.getPatternString().substring( 1 ));
+            return startsWith( L, pattern.getPatternString().substring(1), pattern.getPatternModifiers() );
         else if (isContains( pattern ))
-            return contains( L, pattern );
+            return contains( L, pattern.getPatternString(), pattern.getPatternModifiers() );
         else if (isEndsWith( pattern ))
-            return endsWith( L, pattern.getPatternString().substring( 0, pattern.getPatternString().length() - 1 ) );
+            return endsWith( L, front( pattern.getPatternString() ), pattern.getPatternModifiers() ); 
         return e;
         }
+    
+    protected static String front( String s )
+        { return s.substring( 0, s.length() - 1 ); }
 
     public static PatternLiteral getPattern( Expression E )
         {
@@ -36,41 +39,70 @@ public class Rewrite
         return null;
         }
 
-    public static Expression endsWith( final Expression L, final String S )
+    public static Expression endsWith( Expression L, String content, String modifiers )
         {
-        final Expression R = new Expression.Fixed( S );
-        return new Dyadic( L, ExpressionFunctionURIs.J_EndsWith, R )
+        if (modifiers.equals( "i" ))
+            {
+            final Expression R = new Expression.Fixed( content.toLowerCase() );
+            return new Dyadic( L, ExpressionFunctionURIs.J_endsWithInsensitive, R )
+                {            
+                public boolean evalBool( Object l, Object r )
+                    { return l.toString().toLowerCase().endsWith( r.toString() ); }
+                };
+            }
+        else
+            {
+            final Expression R = new Expression.Fixed( content );
+            return new Dyadic( L, ExpressionFunctionURIs.J_EndsWith, R )
+                {            
+                public boolean evalBool( Object l, Object r )
+                    { return l.toString().endsWith( r.toString() ); }
+                };    
+            }
+        }
+
+    public static Expression startsWith( Expression L, String content, String modifiers )
+        {
+        if (modifiers.equals( "i" ))
+            {
+            final Expression R = new Expression.Fixed( content.toLowerCase() );        
+            return new Dyadic( L, ExpressionFunctionURIs.J_startsWithInsensitive, R )
+                { 
+                public boolean evalBool( Object l, Object r )
+                    { return l.toString().toLowerCase().startsWith( r.toString() ); }
+                };  
+            }
+        else
             {            
-            public boolean evalBool( Object l, Object r )
-                { return l.toString().endsWith( r.toString() ); }
-            };            
+            final Expression R = new Expression.Fixed( content );        
+            return new Dyadic( L, ExpressionFunctionURIs.J_startsWith, R )
+                { 
+                public boolean evalBool( Object l, Object r )
+                    { return l.toString().startsWith( r.toString() ); }
+                };  
+            }          
         }
 
-    public static Expression startsWith( final Expression L, final String S )
+    public static Expression contains( Expression L, String content, String modifiers )
         {
-        final Expression R = new Expression.Fixed( S );
-        return new Dyadic( L, ExpressionFunctionURIs.J_startsWith, R )
-            { 
-            public boolean evalBool( Object l, Object r )
-                { return l.toString().startsWith( r.toString() ); }
-            };            
-        }
-
-    public static Expression contains( final Expression L, final PatternLiteral PL )
-        {
-        final Expression R = new Expression.Fixed( PL.getPatternString().toLowerCase() );
-        if (PL.getPatternModifiers().equals( "i" ))
+        if (modifiers.equals( "i" ))
+            {
+            final Expression R = new Expression.Fixed( content.toLowerCase() );
             return new Dyadic( L, ExpressionFunctionURIs.J_containsInsensitive, R )
                 { 
                 public boolean evalBool( Object l, Object r )
                     { return l.toString().toLowerCase().indexOf( r.toString() ) > -1; }
                 };      
+            }
         else
+            {
+            final Expression R = new Expression.Fixed( content );
             return new Dyadic( L, ExpressionFunctionURIs.J_contains, R )
                 { 
                 public boolean evalBool( Object l, Object r )
                     { return l.toString().indexOf( r.toString() ) > -1; }
-                };            
+                };     
+            }
         }
     
     public static boolean notSpecial( String pattern )

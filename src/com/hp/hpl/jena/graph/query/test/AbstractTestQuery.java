@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.28 2004-08-13 13:51:42 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.29 2004-08-13 17:12:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -567,10 +567,20 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Query q = new Query();
         Expression L = constant( "x" );
         Expression R = createSimplePattern( "^begins" );
-        String F = "Q_StringMatch";
         Expression provided = dyadic( L, "Q_StringMatch", R );
         Expression desired = dyadic( L, "J_startsWith", constant( "begins" ) );
-        assertEquals( dyadic( L, F, R ), dyadic( L, F, R ) );
+        q.addConstraint( provided );
+        Expression e2 = (Expression) q.getConstraints().iterator().next();
+        assertEquals( desired, e2 );
+        }
+
+    public void testRewriteStartswithInsensitiveExpression()
+        {
+        Query q = new Query();
+        Expression L = constant( "x" );
+        Expression R = createModifiedPattern( "^begins", "i" );
+        Expression provided = dyadic( L, "Q_StringMatch", R );
+        Expression desired = dyadic( L, "J_startsWithInsensitive", constant( "begins" ) );
         q.addConstraint( provided );
         Expression e2 = (Expression) q.getConstraints().iterator().next();
         assertEquals( desired, e2 );
@@ -581,9 +591,20 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Query q = new Query();
         Expression L = constant( "x" );
         Expression R = createSimplePattern( "ends$" );
-        String F = "Q_StringMatch";
         Expression provided = dyadic( L, "Q_StringMatch", R );
         Expression desired = dyadic( L, "J_endsWith", constant( "ends" ) );
+        q.addConstraint( provided );
+        Expression e2 = (Expression) q.getConstraints().iterator().next();
+        assertEquals( desired, e2 );
+        }
+   
+    public void testRewriteEndswithInsensitiveExpression()
+        {
+        Query q = new Query();
+        Expression L = constant( "x" );
+        Expression R = createModifiedPattern( "ends$", "i" );
+        Expression provided = dyadic( L, "Q_StringMatch", R );
+        Expression desired = dyadic( L, "J_endsWithInsensitive", constant( "ends" ) );
         q.addConstraint( provided );
         Expression e2 = (Expression) q.getConstraints().iterator().next();
         assertEquals( desired, e2 );
@@ -594,7 +615,6 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Query q = new Query();
         Expression L = constant( "x" );
         Expression R = createSimplePattern( "contains" );
-        String F = "Q_StringMatch";
         Expression provided = dyadic( L, "Q_StringMatch", R );
         Expression desired = dyadic( L, "J_contains", constant( "contains" ) );
         q.addConstraint( provided );
@@ -607,7 +627,6 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Query q = new Query();
         Expression L = constant( "x" );
         Expression R = createModifiedPattern( "coNtaIns", "i" );
-        String F = "Q_StringMatch";
         Expression provided = dyadic( L, "Q_StringMatch", R );
         Expression desired = dyadic( L, "J_containsInsensitive", constant( "contains" ) );
         q.addConstraint( provided );

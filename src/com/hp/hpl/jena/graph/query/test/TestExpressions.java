@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.8 2004-08-13 13:51:42 chris-dollin Exp $
+  $Id: TestExpressions.java,v 1.9 2004-08-13 17:12:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -42,16 +42,28 @@ public class TestExpressions extends QueryTestBase
         assertEquals( contains( B, "oops" ), contains( B, "oops" ) );
         assertDiffer( contains( A, "groo" ), contains( A, "glue" ) );
         assertDiffer( contains( A, "groo" ), contains( B, "groo" ) );
-        assertDiffer( contains( A, "blue" ), Rewrite.startsWith( A, "blue" ) );
-        assertDiffer( contains( A, "blue" ), Rewrite.endsWith( A, "blue" ) );
-        assertDiffer( Rewrite.endsWith( A, "blue" ), Rewrite.startsWith( A, "blue" ) );
+        assertDiffer( contains( A, "blue" ), startsWith( A, "blue" ) );
+        assertDiffer( contains( A, "blue" ), endsWith( A, "blue" ) );
+        assertDiffer( endsWith( A, "blue" ), startsWith( A, "blue" ) );
         }
 
     public Expression contains( Expression L, PatternLiteral R )
-        { return Rewrite.contains( L, R ); }
+        { return Rewrite.contains( L, R.getPatternString(), R.getPatternModifiers() ); }
     
     public Expression contains( Expression L, String R )
-        { return Rewrite.contains( L, pl( R ) ); }
+        { return Rewrite.contains( L, R, "" ); }
+    
+    public Expression endsWith( Expression L, String R )
+        { return Rewrite.endsWith( L, R, "" ); }
+    
+    public Expression endsWith( Expression L, PatternLiteral R )
+        { return Rewrite.endsWith( L, R.getPatternString(), R.getPatternModifiers() ); }
+    
+    public Expression startsWith( Expression L, String R )
+        { return Rewrite.startsWith( L, R, "" ); }
+    
+    public Expression startsWith( Expression L, PatternLiteral R )
+        { return Rewrite.startsWith( L, R.getPatternString(), R.getPatternModifiers() ); }
     
     public void testLiterals()
         {
@@ -108,12 +120,26 @@ public class TestExpressions extends QueryTestBase
 
     public void testStartsWith()
         {
-        assertEquals( true, evalBool( Rewrite.startsWith( lit( "hello" ), "h" ) ) );
-        assertEquals( true, evalBool( Rewrite.startsWith( lit( "hello" ), "he" ) ) );
-        assertEquals( true, evalBool( Rewrite.startsWith( lit( "hello" ), "hel" ) ) );
-        assertEquals( false, evalBool( Rewrite.startsWith( lit( "hello" ), "e" ) ) );
-        assertEquals( false, evalBool( Rewrite.startsWith( lit( "hello" ), "llo" ) ) );
-        assertEquals( false, evalBool( Rewrite.startsWith( lit( "hello" ), "xhe" ) ) );
+        assertEquals( true, evalBool( startsWith( lit( "hello" ), "h" ) ) );
+        assertEquals( true, evalBool( startsWith( lit( "hello" ), "he" ) ) );
+        assertEquals( true, evalBool( startsWith( lit( "hello" ), "hel" ) ) );
+        assertEquals( false, evalBool( startsWith( lit( "HELLO" ), "hel" ) ) );
+        assertEquals( false, evalBool( startsWith( lit( "hello" ), "HEL" ) ) );
+        assertEquals( false, evalBool( startsWith( lit( "hello" ), "e" ) ) );
+        assertEquals( false, evalBool( startsWith( lit( "hello" ), "llo" ) ) );
+        assertEquals( false, evalBool( startsWith( lit( "hello" ), "xhe" ) ) );
+        }
+
+    public void testStartsInsensitiveWith()
+        {
+        assertEquals( true, evalBool( startsWith( lit( "hello" ), pli( "H" ) ) ) );
+        assertEquals( true, evalBool( startsWith( lit( "hEllo" ), pli( "he" ) ) ) );
+        assertEquals( true, evalBool( startsWith( lit( "heLlo" ), pli( "hEl" ) ) ) );
+        assertEquals( true, evalBool( startsWith( lit( "HELLO" ), pli( "hel" ) ) ) );
+        assertEquals( true, evalBool( startsWith( lit( "hello" ), pli( "HEL" ) ) ) );
+        assertEquals( false, evalBool( startsWith( lit( "hello" ), pli( "e" ) ) ) );
+        assertEquals( false, evalBool( startsWith( lit( "hello" ), pli( "llo" ) ) ) );
+        assertEquals( false, evalBool( startsWith( lit( "hello" ), pli( "xhe" ) ) ) );
         }
 
     public void testIsContains()
@@ -128,6 +154,8 @@ public class TestExpressions extends QueryTestBase
         assertEquals( true, evalBool( contains( lit( "hello" ), "h" ) ) );
         assertEquals( true, evalBool( contains( lit( "hello" ), "e" ) ) );
         assertEquals( true, evalBool( contains( lit( "hello" ), "ll" ) ) );
+        assertEquals( false, evalBool( contains( lit( "heLLo" ), "ll" ) ) );
+        assertEquals( false, evalBool( contains( lit( "hello" ), "LL" ) ) );
         assertEquals( false, evalBool( contains( lit( "hello" ), "x" ) ) );
         assertEquals( false, evalBool( contains( lit( "hello" ), "the" ) ) );
         assertEquals( false, evalBool( contains( lit( "hello" ), "lot" ) ) );
@@ -146,12 +174,24 @@ public class TestExpressions extends QueryTestBase
 
     public void testEndsWith()
         {
-        assertEquals( true, evalBool( Rewrite.endsWith( lit( "hello" ), "o" ) ) );
-        assertEquals( true, evalBool( Rewrite.endsWith( lit( "hello" ), "lo" ) ) );
-        assertEquals( true, evalBool( Rewrite.endsWith( lit( "hello" ), "hello" ) ) );
-        assertEquals( false, evalBool( Rewrite.endsWith( lit( "hello" ), "ll" ) ) );
-        assertEquals( false, evalBool( Rewrite.endsWith( lit( "hello" ), "hel" ) ) );
-        assertEquals( false, evalBool( Rewrite.endsWith( lit( "hello" ), "quantum" ) ) );
+        assertEquals( true, evalBool( endsWith( lit( "hello" ), "o" ) ) );
+        assertEquals( true, evalBool( endsWith( lit( "hello" ), "lo" ) ) );
+        assertEquals( true, evalBool( endsWith( lit( "hello" ), "hello" ) ) );
+        assertEquals( false, evalBool( endsWith( lit( "HELLO" ), "hello" ) ) );
+        assertEquals( false, evalBool( endsWith( lit( "hello" ), "HELLO" ) ) );
+        assertEquals( false, evalBool( endsWith( lit( "hello" ), "ll" ) ) );
+        assertEquals( false, evalBool( endsWith( lit( "hello" ), "hel" ) ) );
+        assertEquals( false, evalBool( endsWith( lit( "hello" ), "quantum" ) ) );
+        }
+
+    public void testInsensitiveEndsWith()
+        {
+        assertEquals( true, evalBool( endsWith( lit( "hellO" ), pli( "o" ) ) ) );
+        assertEquals( true, evalBool( endsWith( lit( "hello" ), pli( "lO" ) ) ) );
+        assertEquals( true, evalBool( endsWith( lit( "HeLLo" ), pli( "HELlo" ) ) ) );
+        assertEquals( false, evalBool( endsWith( lit( "hello" ), pli( "ll" ) ) ) );
+        assertEquals( false, evalBool( endsWith( lit( "hello" ), pli( "hel" ) ) ) );
+        assertEquals( false, evalBool( endsWith( lit( "hello" ), pli( "quantum" ) ) ) );
         }
 
     private Object evalObject(Expression e)
