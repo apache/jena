@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:24 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 16:07:55 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.10 2004-12-06 13:50:24 andy_seaborne Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.11 2004-12-07 16:07:55 ian_dickinson Exp $
  */
 public class ResourceUtils {
     // Constants
@@ -157,6 +157,38 @@ public class ResourceUtils {
         return equiv;
     }
 
+    
+    /**
+     * <p>Answer a list of lists, which is a partition of the given
+     * input list of resources.  The equivalence relation is the predicate p.
+     * So, two resources <code>a</code> and <code>b</code>
+     * will be in the same partition iff 
+     * <code>(a p b) && (b p a)</code>.</p>  
+     * @param l A list of resources
+     * @param p An equivalence predicate
+     * @return A list of lists which are the partitions of <code>l</code> 
+     * under <code>p</code>
+     */
+    public static List partition( List l, Property p ) {
+        // first copy the input so we can mess with it
+        List source = new ArrayList();
+        source.addAll( l );
+        List parts = new ArrayList();
+        
+        while (!source.isEmpty()) {
+            // each step through the loop we pick a random element, and
+            // create a list of that element and all its equivalent values
+            Resource seed = (Resource) source.remove( 0 );
+            List part = removeEquiv( source, p, seed );
+            part.add( seed );
+            
+            // add to the partition list
+            parts.add( part );
+        }
+        
+        return parts;
+    }
+    
     
     /**
      * <p>Answer a new resource that occupies the same position in the graph as the current

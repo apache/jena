@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Jun-2003
  * Filename           $RCSfile: TestResourceUtils.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:30 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 16:05:16 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResourceUtils.java,v 1.6 2004-12-06 13:50:30 andy_seaborne Exp $
+ * @version CVS $Id: TestResourceUtils.java,v 1.7 2004-12-07 16:05:16 ian_dickinson Exp $
  */
 public class TestResourceUtils 
     extends TestCase
@@ -216,6 +216,40 @@ public class TestResourceUtils
         assertNotNull( out );
         assertEquals( out, de );
     }
+    
+    public void testPartition() {
+        Model m = ModelFactory.createDefaultModel();
+        
+        Resource a = m.createResource( NS + "a" );
+        Resource b = m.createResource( NS + "b" );
+        Resource c = m.createResource( NS + "c" );
+        Resource d = m.createResource( NS + "d" );
+        Resource e = m.createResource( NS + "e" );
+        
+        b.addProperty( RDFS.subClassOf, a );
+        a.addProperty( RDFS.subClassOf, b );  // a,b are equivalent
+        d.addProperty( RDFS.subClassOf, e );
+        e.addProperty( RDFS.subClassOf, d );  // d,e are equivalent
+        
+        // reflexive relations - would be inferred by inf engine
+        a.addProperty( RDFS.subClassOf, a );
+        b.addProperty( RDFS.subClassOf, b );
+        c.addProperty( RDFS.subClassOf, c );
+        d.addProperty( RDFS.subClassOf, d );
+        e.addProperty( RDFS.subClassOf, e );
+        
+        List abcde = Arrays.asList( new Object[] {a,b,c,d,e} );
+        List ab = Arrays.asList( new Object[] {b,a} );
+        List cc = Arrays.asList( new Object[] {c} );
+        List de = Arrays.asList( new Object[] {e,d} );
+
+        List partition = ResourceUtils.partition( abcde, RDFS.subClassOf );
+        assertEquals( "Should be 3 partitions", 3, partition.size() );
+        assertEquals( "First parition should be (a,b)", ab, partition.get(0) );
+        assertEquals( "First parition should be (c)", cc, partition.get(1) );
+        assertEquals( "First parition should be (d,e)", de, partition.get(2) );
+    }
+
     
     // Internal implementation methods
     //////////////////////////////////
