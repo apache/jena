@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryTranslator.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-10-31 11:52:35 $
+ * Last modified on   $Date: 2004-11-01 15:22:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.util.xml.SimpleXMLPathElement;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.12 2004-10-31 11:52:35 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryTranslator.java,v 1.13 2004-11-01 15:22:07 ian_dickinson Exp $)
  */
 public abstract class DIGQueryTranslator {
     // Constants
@@ -135,7 +135,7 @@ public abstract class DIGQueryTranslator {
         Document query = translatePattern( pattern, da, premises );
         if (query == null) {
             LogFactory.getLog( getClass() ).warn( "Could not find pattern translator for nested DIG query " + pattern );
-            return EmptyIterator.INSTANCE;
+            return NullIterator.instance;
         }
         else {
             Document response = da.getConnection().sendDigVerb( query, da.getProfile() );
