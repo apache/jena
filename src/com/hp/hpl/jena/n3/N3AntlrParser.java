@@ -132,7 +132,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				startDocument() ;
 			}
 			{
-			_loop205:
+			_loop3:
 			do {
 				switch ( LA(1)) {
 				case AT_PREFIX:
@@ -155,7 +155,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop205;
+					break _loop3;
 				}
 				}
 			} while (true);
@@ -463,7 +463,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 		n_AST = (AST)returnAST;
 		astFactory.addASTChild(currentAST, returnAST);
 		{
-		_loop223:
+		_loop21:
 		do {
 			switch ( LA(1)) {
 			case PATH:
@@ -498,7 +498,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 			}
 			default:
 			{
-				break _loop223;
+				break _loop21;
 			}
 			}
 		} while (true);
@@ -1182,10 +1182,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 		AST literalModifier1_AST = null;
 		AST dt_AST = null;
 		
-		boolean synPredMatched239 = false;
+		boolean synPredMatched37 = false;
 		if (((LA(1)==AT_LANG))) {
-			int _m239 = mark();
-			synPredMatched239 = true;
+			int _m37 = mark();
+			synPredMatched37 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1193,12 +1193,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched239 = false;
+				synPredMatched37 = false;
 			}
-			rewind(_m239);
+			rewind(_m37);
 			inputState.guessing--;
 		}
-		if ( synPredMatched239 ) {
+		if ( synPredMatched37 ) {
 			AST tmp30_AST = null;
 			tmp30_AST = astFactory.create(LT(1));
 			astFactory.addASTChild(currentAST, tmp30_AST);
@@ -1206,10 +1206,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 			literalModifier1_AST = (AST)currentAST.root;
 		}
 		else {
-			boolean synPredMatched241 = false;
+			boolean synPredMatched39 = false;
 			if (((LA(1)==DATATYPE))) {
-				int _m241 = mark();
-				synPredMatched241 = true;
+				int _m39 = mark();
+				synPredMatched39 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -1217,12 +1217,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched241 = false;
+					synPredMatched39 = false;
 				}
-				rewind(_m241);
+				rewind(_m39);
 				inputState.guessing--;
 			}
-			if ( synPredMatched241 ) {
+			if ( synPredMatched39 ) {
 				AST tmp31_AST = null;
 				tmp31_AST = astFactory.create(LT(1));
 				astFactory.addASTChild(currentAST, tmp31_AST);
