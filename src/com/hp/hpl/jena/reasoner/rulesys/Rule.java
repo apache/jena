@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.13 2003-07-21 15:16:45 der Exp $
+ * $Id: Rule.java,v 1.14 2003-07-25 08:48:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.13 $ on $Date: 2003-07-21 15:16:45 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.14 $ on $Date: 2003-07-25 08:48:11 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -576,16 +576,36 @@ public class Rule implements ClauseEntry {
                 String lit = nextToken();
                 // Skip the trailing quote
                 nextToken();
-                try {
-                    Integer.parseInt(lit);
-                    return Node.createLiteral(lit, "", XSDDatatype.XSDint);
-                } catch (NumberFormatException e) {
-                    return Node.createLiteral(lit, "", false);
-                }
+                return parseNumber(lit);
+            } else if ( Character.isDigit(token.charAt(0)) ) {
+                // A number literal
+               return parseNumber(token);
             } else {
-                // A uri
+                // A  uri
                 return Node.createURI(token);
             }
+        }
+        
+        /**
+         * Turn a possible numeric token into typed literal else a plain literal
+         * @return the constructed literal node
+         */
+        Node parseNumber(String lit) {
+            if ( Character.isDigit(lit.charAt(0)) ) {
+                if (lit.indexOf(".") != -1) {
+                    // Float?
+                    if (XSDDatatype.XSDfloat.isValid(lit)) {
+                        return Node.createLiteral(lit, "", XSDDatatype.XSDfloat);
+                    }
+                } else {
+                    // Float?
+                    if (XSDDatatype.XSDint.isValid(lit)) {
+                        return Node.createLiteral(lit, "", XSDDatatype.XSDint);
+                    }
+                }
+            }
+            // Default is a plain literal
+            return Node.createLiteral(lit, "", false);
         }
         
         /**
@@ -673,10 +693,11 @@ public class Rule implements ClauseEntry {
                 boolean backwardRule = token.equals("<-");
                 List head = new ArrayList();
                 token = nextToken();   // skip -> token
-                do {
+                token = peekToken();
+                while ( !(token.equals(".") || token.equals("]")) ) {
                     head.add(parseClause());
                     token = peekToken();
-                } while ( !(token.equals(".") || token.equals("]")) );
+                } 
                 nextToken();        // consume the terminating token
                 Rule r = null;
                 if (backwardRule) {
