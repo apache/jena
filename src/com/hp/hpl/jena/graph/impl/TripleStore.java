@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: TripleStore.java,v 1.3 2004-09-14 17:10:29 chris-dollin Exp $
+ $Id: TripleStore.java,v 1.4 2004-12-02 15:48:10 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -49,6 +49,11 @@ public interface TripleStore
          Answer an setwise iterator over all the subjects of triples in this store.
     */
     public ExtendedIterator listSubjects();
+    
+    /**
+         Answer an iterator over all the predicates of triples in this store.
+    */
+    public ExtendedIterator listPredicates();
     
     /**
          Answer an setwise iterator over all the objects of triples in this store.

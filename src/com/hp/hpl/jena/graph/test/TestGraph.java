@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.24 2004-11-19 14:38:12 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.25 2004-12-02 15:48:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -87,6 +87,22 @@ public class TestGraph extends GraphTestBase
         while (subjects.hasNext()) s.add( subjects.next() );
         assertFalse( "find should not have been called", called[0] );
         }   
+    
+    public void testListPredicatesDoesntUseFind()
+        {
+        final boolean [] called = {false};
+        
+        Graph g = new GraphMem()
+            {
+            public ExtendedIterator graphBaseFind( TripleMatch m )
+                { called[0] = true; return super.find( m ); }
+            };
+        
+        ExtendedIterator predicates = g.queryHandler().predicatesFor( null, null );
+        Set s = CollectionFactory.createHashedSet();
+        while (predicates.hasNext()) s.add( predicates.next() );
+        assertFalse( "find should not have been called", called[0] );
+        }
     
     public void testListObjectsDoesntUseFind()
         {

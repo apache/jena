@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.3 2004-09-13 15:21:05 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.4 2004-12-02 15:48:14 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -75,6 +75,9 @@ public class GraphTripleStore implements TripleStore
     
     public ExtendedIterator listSubjects()
         { return WrappedIterator.create( subjects.domain() ); }
+
+    public ExtendedIterator listPredicates()
+        { return WrappedIterator.create( predicates.domain() ); }
     
     public ExtendedIterator listObjects()
         { return WrappedIterator.create( objects.domain() ); }

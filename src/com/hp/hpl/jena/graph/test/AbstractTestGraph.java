@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.51 2004-11-19 14:38:12 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.52 2004-12-02 15:48:13 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -57,8 +57,7 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         
     public void testFindByFluidTriple()
         {
-        Graph g = getGraph();
-        g.add( triple( "x y z ") );
+        Graph g = getGraphWith( "x y z " );
         assertTrue( g.find( triple( "?? y z" ) ).hasNext() );
         assertTrue( g.find( triple( "x ?? z" ) ).hasNext() );
         assertTrue( g.find( triple( "x y ??" ) ).hasNext() );
@@ -66,8 +65,7 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         
     public void testContainsConcrete()
         {
-        Graph g = getGraph();
-        graphAdd( g, "s P o; _x _R _y; x S 0" );
+        Graph g = getGraphWith( "s P o; _x _R _y; x S 0" );
         assertTrue( g.contains( triple( "s P o" ) ) );
         assertTrue( g.contains( triple( "_x _R _y" ) ) );
         assertTrue( g.contains( triple( "x S 0" ) ) );
@@ -81,8 +79,7 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         
     public void testContainsFluid()
         {
-        Graph g = getGraph();
-        graphAdd( g, "x R y; a P b" );
+        Graph g = getGraphWith( "x R y; a P b" );
         assertTrue( g.contains( triple( "?? R y" ) ) );
         assertTrue( g.contains( triple( "x ?? y" ) ) );
         assertTrue( g.contains( triple( "x R ??" ) ) );
@@ -557,6 +554,52 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         assertFalse( qh.containsNode( node( "x" ) ) );
         assertFalse( qh.containsNode( node( "_y" ) ) );
         assertFalse( qh.containsNode( node( "99" ) ) );
+        }
+    
+    public void testSubjectsFor()
+        {
+        Graph g = getGraphWith( "a P b; a Q c; a P d; b P x; c Q y" );
+        testSameSubjects( g, Node.ANY, Node.ANY );
+        testSameSubjects( g, node( "P" ), Node.ANY );
+        testSameSubjects( g, node( "Q" ), node( "c" ) );
+        }
+    
+    protected void testSameSubjects( Graph g, Node p, Node o )
+        {
+        Set bis = iteratorToSet( SimpleQueryHandler.subjectsFor( g, p, o ) );
+        Set qhs = iteratorToSet( g.queryHandler().subjectsFor( p, o ) );
+        assertEquals( bis, qhs );
+        }
+    
+    public void testObjectsFor()
+        {
+        Graph g = getGraphWith( "b P a; c Q a; d P a; x P b; y Q c" );
+        testSameObjects( g, Node.ANY, Node.ANY );
+        testSameObjects( g, node( "P" ), Node.ANY );
+        testSameObjects( g, node( "Q" ), node( "c" ) );
+        }    
+    
+    protected void testSameObjects( Graph g, Node s, Node p )
+        {
+        Set bis = iteratorToSet( SimpleQueryHandler.objectsFor( g, s, p ) );
+        Set qhs = iteratorToSet( g.queryHandler().objectsFor( s, p ) );
+        assertEquals( bis, qhs );
+        }
+    
+    public void testPredicatesFor()
+        {
+        Graph g = getGraphWith( "a P b; c Q d; e R f; g P b; h Q i" );
+        testSamePredicates( g, Node.ANY, Node.ANY );
+        testSamePredicates( g, Node.ANY, node( "b" ) );
+        testSamePredicates( g, node( "g" ), Node.ANY );
+        testSamePredicates( g, node( "e" ), node( "f" ) );
+        }
+    
+    protected void testSamePredicates( Graph g, Node s, Node o )
+        {
+        Set bis = iteratorToSet( SimpleQueryHandler.predicatesFor( g, s, o ) );
+        Set qhs = iteratorToSet( g.queryHandler().predicatesFor( s, o ) );
+        assertEquals( bis, qhs );
         }
         
     public void testRemoveAll()

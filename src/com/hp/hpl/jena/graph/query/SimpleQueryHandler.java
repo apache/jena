@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleQueryHandler.java,v 1.17 2004-11-19 14:38:12 chris-dollin Exp $
+  $Id: SimpleQueryHandler.java,v 1.18 2004-12-02 15:48:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -38,20 +38,37 @@ public class SimpleQueryHandler implements QueryHandler
     	{ return new SimpleTreeQueryPlan( graph, pattern ); }
     	
 	public ExtendedIterator objectsFor( Node s, Node p )
-		{ 
-        Set objects = CollectionFactory.createHashedSet();
-        ClosableIterator it = graph.find( s, p, null );
-        while (it.hasNext()) objects.add( ((Triple) it.next()).getObject() );
-		return WrappedIterator.create( objects.iterator() );
-		}
+		{ return objectsFor( graph, s, p ); }
 		
 	public ExtendedIterator subjectsFor( Node p, Node o )
-		{ 
+		{ return subjectsFor( graph, p, o ); }
+    
+    public ExtendedIterator predicatesFor( Node s, Node o )
+        { return predicatesFor( graph, s, o ); }
+    
+    public static ExtendedIterator objectsFor( Graph g, Node s, Node p )
+        { 
         Set objects = CollectionFactory.createHashedSet();
-        ClosableIterator it = graph.find( null, p, o );
+        ClosableIterator it = g.find( s, p, null );
+        while (it.hasNext()) objects.add( ((Triple) it.next()).getObject() );
+        return WrappedIterator.create( objects.iterator() );
+        }
+        
+    public static ExtendedIterator subjectsFor( Graph g, Node p, Node o )
+        { 
+        Set objects = CollectionFactory.createHashedSet();
+        ClosableIterator it = g.find( null, p, o );
         while (it.hasNext()) objects.add( ((Triple) it.next()).getSubject() );
-		return WrappedIterator.create( objects.iterator() );
-		}
+        return WrappedIterator.create( objects.iterator() );
+        }
+    
+    public static ExtendedIterator predicatesFor( Graph g, Node s, Node o )
+        {
+        Set predicates = CollectionFactory.createHashedSet();
+        ClosableIterator it = g.find( s, Node.ANY, o );
+        while (it.hasNext()) predicates.add( ((Triple) it.next()).getPredicate() );
+        return WrappedIterator.create( predicates.iterator() );
+        }
         
     /**
         this is a simple-minded implementation of containsNode that uses find

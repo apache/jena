@@ -1,7 +1,7 @@
 /*
 (c) Copyright 2004, Hewlett-Packard Development Company, LP
 [See end of file]
-$Id: GraphMemQueryHandler.java,v 1.3 2004-09-10 09:47:56 chris-dollin Exp $
+$Id: GraphMemQueryHandler.java,v 1.4 2004-12-02 15:48:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -28,12 +28,22 @@ public class GraphMemQueryHandler extends SimpleQueryHandler
 	    {
 	    return p == null && o == null ? findObjects() : super.objectsFor( p, o );
 	    }
-	
-	public ExtendedIterator subjectsFor( Node p, Node o )
+
+    public ExtendedIterator predicatesFor( Node s, Node o )
+        {
+        return s == null && o == null ? findPredicates() : super.predicatesFor( s, o );
+        }
+    
+    public ExtendedIterator subjectsFor( Node p, Node o )
 	    {
 	    return p == null && o == null ? findSubjects() : super.subjectsFor( p, o );
 	    }   
-	
+
+    public ExtendedIterator findPredicates()
+        {
+        return ((GraphMem) graph).store.listPredicates();
+        }
+
 	public ExtendedIterator findObjects()
 	    {
 	    return ((GraphMem) graph).store.listObjects();

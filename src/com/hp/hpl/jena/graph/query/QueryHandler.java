@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryHandler.java,v 1.12 2004-03-09 16:16:56 chris-dollin Exp $
+  $Id: QueryHandler.java,v 1.13 2004-12-02 15:48:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -53,6 +53,12 @@ public interface QueryHandler
     	underlying graph; nulls count as wildcards.
     */
     public ExtendedIterator subjectsFor( Node p, Node o );
+
+    /**
+         Answer an iterator over all the predicates <code>p</code> such that
+         <code>(s, p, o)</code> is in the underlying graph.
+    */
+    public ExtendedIterator predicatesFor( Node s, Node o );
     
     /**
         true iff the graph contains a triple in which n appears somewhere.
@@ -60,6 +66,7 @@ public interface QueryHandler
         so don't do that.
     */
     public boolean containsNode( Node n );
+
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.97 2004-11-25 10:16:33 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.98 2004-12-02 15:48:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -829,10 +829,11 @@ public class ModelCom
         
     private Iterator listPredicates()
         {
-        Set predicates = CollectionFactory.createHashedSet();
-        ClosableIterator it = graph.find( null, null, null );
-        while (it.hasNext()) predicates.add( ((Triple) it.next()).getPredicate() );
-        return predicates.iterator();
+//        Set predicates = CollectionFactory.createHashedSet();
+//        ClosableIterator it = graph.find( null, null, null );
+//        while (it.hasNext()) predicates.add( ((Triple) it.next()).getPredicate() );
+//        return predicates.iterator();
+        return getGraph().queryHandler().predicatesFor( Node.ANY, Node.ANY );
         }
      
     private Iterator listTypes()
