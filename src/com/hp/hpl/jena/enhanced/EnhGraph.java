@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhGraph.java,v 1.11 2003-06-11 14:59:16 chris-dollin Exp $
+  $Id: EnhGraph.java,v 1.12 2003-07-15 13:26:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -112,7 +112,7 @@ public class EnhGraph
      * interface type.
      * 
      * @param n A node (assumed to be in this graph)
-     * @param t A type denoting the enhanced facet desired
+     * @param interf A type denoting the enhanced facet desired
      * @return An enhanced node
      */
     public EnhNode getNodeAs(Node n,Class interf) {

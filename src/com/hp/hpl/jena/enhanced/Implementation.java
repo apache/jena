@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Implementation.java,v 1.4 2003-05-20 12:41:38 chris-dollin Exp $
+  $Id: Implementation.java,v 1.5 2003-07-15 13:26:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -23,7 +23,7 @@ public abstract class Implementation {
      /** 
       * Create a new EnhNode wrapping a Node in the context of an EnhGraph
       * @param node The node to be wrapped
-      * @param graph The graph containing the node
+      * @param eg The graph containing the node
       * @return A new enhanced node which wraps node but presents the interface(s)
       *         that this factory encapsulates.
       */

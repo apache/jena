@@ -36,7 +36,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class ModelRDB extends ModelCom implements Model, ModelI {    
     
@@ -47,7 +47,7 @@ public class ModelRDB extends ModelCom implements Model, ModelI {
      * 
      * If a model already exists in the database, then it is opened, otherwise
      * a new model with default name and formatting is inserted and opened.
-     * @param con a Connection specifying the database connection
+     * @param dbcon a Connection specifying the database connection
      * @deprecated Since Jena 2.0, this call is not recommended - 
      * in the short-term use ModelRDB.open or ModelRDB.createModel;
      * in the longer-term use factory methods to construct persistent models.
@@ -63,7 +63,7 @@ public class ModelRDB extends ModelCom implements Model, ModelI {
      * If a model with the specified identifier already exists in the 
      * database, then it is opened, otherwise a new model with default 
      * formatting is inserted and opened.
-     * @param con a Connection specifying the database connection
+     * @param dbcon a Connection specifying the database connection
      * @param modelID is the identifier of an RDF model within the database.
      * @deprecated Since Jena 2.0, this call is not recommended -
      * in the short-term use ModelRDB.open or ModelRDB.createModel;
@@ -117,7 +117,6 @@ public class ModelRDB extends ModelCom implements Model, ModelI {
      * Create a new default model on an existing database.
      * Will format the database if it has not already been formatted.
      * @param dbcon a DBConnectionI specifying the database connection
-     * @param name the name to give the newly created model
      * @since Jena 2.0
      */
     public static ModelRDB createModel(IDBConnection dbcon) throws RDFRDBException {
@@ -138,8 +137,7 @@ public class ModelRDB extends ModelCom implements Model, ModelI {
 	 * getDefaultModelProperties, modify it, and then use that as an argument
 	 * in the call.
 	 * 
-     * @param dbcon a DBConnectionI specifying the database connection
-     * @param name the name to give the newly created model
+    * @param name the name to give the newly created model
      * @param modelProperties a Model containing customization properties
      * @since Jena 2.0
      */
