@@ -1,0 +1,168 @@
+/* Top level CSS2 style sheet for Jena site */
+
+body {
+    text-align:left;
+    font-family: helvetica, arial, sans-serif;
+    font-size: smaller;
+    background: #fff;
+    color: black;
+    margin: 0;
+}
+
+/* Page sections */
+
+#title h1 {
+    background: #ffe0b0;
+    border-bottom: 2px solid #dd8080;
+    margin-bottom: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#main {
+    margin-top: 0;
+    height: 350px;
+}
+
+#content {
+    margin-left: 10px;
+}
+
+#footer {
+    border-top: 2px solid #dd8080;
+    background: #ffe0b0;
+    position: relative;
+    font-size: 80%;
+    padding: 3px;
+    width: 100%;
+    text-align: center;
+}
+
+#footerC {
+}
+
+#footerL {
+    position: absolute;
+    text-align: left;
+    left: 2px;
+}
+
+#footerR {
+    position: absolute;
+    text-align: right;
+    right: 2px;
+}
+
+/* breadcrumbs trail */
+
+#trail {
+    border-bottom: 1px dotted #ffe0b0;
+    text-align: right;
+    font-size: 90%;
+    text-decoration:none;
+    font-weight:normal;
+    padding-right: 10px;
+}
+
+#trail a:link {
+    text-decoration:none;
+    color: black;
+    background: white;
+}
+
+#trail a:active {
+    text-decoration:none;
+    color:white;
+    background: #dd8080;
+}
+
+#trail a:visited {
+    text-decoration:none;
+}
+
+#trail a:hover {
+    color:white;
+    text-decoration:none;
+    background: #dd8080;
+}
+
+
+/* LHS navigation menu */
+
+#leftnav {
+    float: left;
+    color: black;
+    background: white;
+    padding-right: 4px;
+    padding-left: 0;
+    border-right: 1px dotted #dd8080;
+    width: 150px;
+    position: relative;
+    font-weight:normal;
+    height: 105%;
+}
+
+#leftnav p {
+    margin-left: 1.2em;
+    text-indent: -0.9em;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+#leftnav .spacer {
+    margin-bottom: 1em;
+}
+
+#leftnav img {
+    padding-top: 0px;
+    margin-left: 36px;
+    margin-bottom: 10px;
+}
+
+#leftnav a:link {
+    text-decoration:none;
+}
+
+#leftnav a:active {
+    text-decoration:none;
+    color:white;
+    background: #dd8080;
+}
+
+#leftnav a:visited {
+    text-decoration:none;
+}
+
+#leftnav a:hover {
+    text-decoration:none;
+    color:white;
+    background: #dd8080;
+}
+
+/* Generic components */
+
+h1 {
+    font-size: 135%;
+    font-weight: bold;
+    color:#000;
+    background:#eeeeff;
+    padding: 1px;
+    text-align:center;
+}
+
+h2 {
+    font-size: 110%;
+    font-weight: bold;
+    color: #003399;
+    background:#eeeeff;
+    margin-bottom:5px;
+}
+
+h3, h4, h5 {
+    font-size: 100%;
+    font-weight: bold;
+    margin-bottom:3px;
+}
+

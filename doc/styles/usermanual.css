@@ -1,0 +1,112 @@
+
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif ;
+	font-size: 10pt ;
+	color: black;
+	background: white ;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+
+/* Broswer CSS2 table support is rather "individual" */
+
+table {
+  font-family: Verdana, Arial, sans-serif ;
+  font-size: 10pt ;
+  border-color : black ;
+  border-collapse: collapse;
+  border-width: 1px;
+  border: 1;
+  cellspacing: 0 ;
+  cellpadding: 0 ;
+}
+
+td {
+  border-width: 1px ;
+  border-collapse: collapse;
+  border-color : #808080 ;
+  empty-cells: show;
+  padding: 5 ;
+  spacing: 0 ;
+  vertical-align:top;
+  text-align:center;
+}
+
+
+th {
+  border-collapse: collapse;
+  border-width: 1px ;
+  border-color: #808080 ;
+  empty-cells: show;
+  padding: 5 ;
+  vertical-align:top;
+  text-align:center;
+}
+
+
+.noindent     { margin-left: -5% ; margin-right: -5%; }
+.moreindent   { margin-left:  5% ; margin-right:  5%; }
+
+.box { /*margin-left : 5% ;
+       margin-right : 7% ;*/
+       border: solid ;
+       border-width: thin;
+       background-color: #F0F0F0;
+       padding: 10;
+       page-break-inside: avoid ;
+       }
+
+
+/* Use this for the document title as displayed on the page at the top. */
+h1 {
+    font-size: 135%;
+    font-weight: bold;
+    color:#000;
+    background:#eeeeff;
+    padding: 1px;
+    text-align:center;
+}
+
+h2 {
+    font-size: 110%;
+    font-weight: bold;
+    color: #003399;
+    background:#eeeeff;
+    margin-bottom:5px;
+}
+
+h3, h4, h5 {
+    font-size: 100%;
+    font-weight: bold;
+    margin-bottom:3px;
+}
+
+ul { list-style-type: disc }
+dt { font-weight: bold }
+
+/* Change background/foreground colour on hover */
+
+A:link { color: rgb(0, 0, 255) }        /* for unvisited links */
+A:hover { color: rgb(255, 0, 0) }       /* when mouse is over link */
+
+/* No extra space between paragraphs : inherits from body */
+pre {
+    font-family: monospace;
+    font-size: 10pt ;
+    margin-top: 1 ;
+    margin-bottom: 1 ;
+    }
+
+/* Some general utility definitions */
+.centered {
+    text-align: center;
+}
+
+.caption {
+    text-align: center;
+    font-size: smaller;
+}
+
+code {
+    font-size: 10pt;
+}
