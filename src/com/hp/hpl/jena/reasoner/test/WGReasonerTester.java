@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.6 2003-04-08 14:15:00 chris-dollin Exp $
+ * $Id: WGReasonerTester.java,v 1.7 2003-04-08 15:16:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -40,7 +39,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-04-08 14:15:00 $
+ * @version $Revision: 1.7 $ on $Date: 2003-04-08 15:16:20 $
  */
 public class WGReasonerTester {
 
@@ -123,7 +122,7 @@ public class WGReasonerTester {
         } else if (file.endsWith("n3")) {
             langType = "N3";
         }
-        Model result = new ModelMem();
+        Model result = ModelFactory.createNonreifyingModel();
         String fname = file;
         if (fname.startsWith(BASE_URI)) {
             fname = fname.substring(BASE_URI.length());
@@ -202,7 +201,7 @@ public class WGReasonerTester {
         }
                 
         // Load up the premise documents
-        Model premises = new ModelMem();
+        Model premises = ModelFactory.createNonreifyingModel();
         for (StmtIterator premisesI = test.listProperties(premiseDocumentP); premisesI.hasNext(); ) {
             premises.add(loadFile(premisesI.nextStatement().getObject().toString()));
         }
