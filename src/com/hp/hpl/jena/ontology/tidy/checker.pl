@@ -71,7 +71,10 @@ allBuiltins(Q,N,P,notQuite) :-
 allBuiltins(Q,N,[Q:N],0) :-
   builtiny(Q,N).
 
-   
+gogo :-
+   buildChecker,
+   gname,
+   classFile.
 
 :-dynamic tt/4.
 :- dynamic g/1.
@@ -80,6 +83,41 @@ allBuiltins(Q,N,[Q:N],0) :-
 :- dynamic gn/2.
 :-dynamic width/1.
 :-dynamic gn2/2.
+:-dynamic m/2.
+:-dynamic m/1.
+:- dynamic h/1.
+
+propertyNumber(owl:intersectionOf, 1):-!.
+propertyNumber(owl:complementOf, 1):-!.
+propertyNumber(owl:distinctMembers, 1):-!.
+propertyNumber(owl:unionOf, 1):-!.
+propertyNumber(rdf:type,0) :-!.
+propertyNumber(owl:allValuesFrom, 3):-!.
+propertyNumber(rdf:rest,2) :- !.
+propertyNumber(owl:onProperty,2) :- !.
+propertyNumber(owl:cardinality, 3):-!.
+propertyNumber(owl:hasValue, 3):-!.
+propertyNumber(owl:maxCardinality, 3):-!.
+propertyNumber(owl:minCardinality, 3):-!.
+propertyNumber(owl:oneOf, 3):-!.
+propertyNumber(owl:someValuesFrom, 3):-!.
+propertyNumber(rdf:first, 3):-!.
+propertyNumber(P,_) :- throw(propertyNumber(P)).
+
+
+uncan(N,Can) :-
+  member([S]+Ps+Os,Can),
+  member(P,Ps),
+  propertyNumber(P,PN),
+  member(O,Os),
+  xobj(O,O1),
+  tt(S,P,O1,Lvl),
+  assert(tt(S-N,P,O1,Lvl/property(PN))),
+  fail.
+uncan(_,_).
+  
+  
+
 
 buildChecker :-
   retractall(tt(_,_,_,_)),
@@ -88,15 +126,50 @@ buildChecker :-
   assertOnce(tt(S,P,O1,DL)),
   fail.
 buildChecker :-
+   tt(S,P,O,lite),
+   retract(tt(S,P,O,dl)),
+   fail.
+buildChecker :-
+   retractall(m(_)),
+   retractall(m(_,_)),
+   dumbCanned(_Mapping-N,Can,D,dl),
+   assertOnce(m(D)),
+   assert(m(D,D-N)),
+   uncan(N,Can),
+   fail.
+buildChecker :-
+   m(D),
+   tt(D,P,O,Lvl),
+   \+ comparative(P),
+   retract(tt(D,P,O,Lvl)),
+   fail.
+buildChecker :-
+   m(D),
+   comparative(P),
+   retract(tt(D,P,O,Lvl)),
+   m(D,N),
+   assert(tt(N,P,O,Lvl)),
+   fail.
+buildChecker :-
+   m(D),
+   retract(tt(S,P,D,Lvl)),
+   m(D,N),
+   assert(tt(S,P,N,Lvl)),
+   fail.
+
+   
+buildChecker :-
   retractall(g(_)),
   grouping(G),
-  assert(g(G)),
+  expandGrouping(G,G1),
+  assert(g(G1)),
   fail.
 buildChecker :-
   setof(N,isTTnode(N),S),
   member(X,S),
   assert(g([X])),
   fail.
+/*
 buildChecker :-
   retractall(x(_,_,_,_,_,_,_)),
   retractall(finished),
@@ -112,7 +185,71 @@ buildChecker :-
   retract(finished),
   fail;
   finished,!).
+*/
+buildChecker :-
+  retractall(x(_,_,_,_,_,_,_)),
+  retractall(finished),
+  countx(tt(_,_,_,_),N),
+  wuser(['tt has ',N,' entries.',nl]),
+  repeat,
+  (asserta(finished),
+  g(X),
+  \+ h(X),
+  show_stats,
+  choose(X,A,B,C),
+  switch(A,B,C,AA,BB,CC,DL),
+  \+x(A,B,C,AA,BB,CC,DL),
+  assert(x(A,B,C,AA,BB,CC,DL)),
+  assertOnce(g(AA)),
+  assertOnce(g(BB)),
+  assertOnce(g(CC)),
+  retract(finished),
+  fail;
+  finished,!).
 
+choose(X,X,B,C) :- h(X,B),h(X,C).
+choose(X,A,X,C) :- h(A),h(X,C).
+choose(X,A,B,X) :- h(A),h(B).
+choose(X,_,_,_) :- assertz(h(X)),fail.
+
+h(A,A).
+h(_,A) :- h(A).
+
+
+countx(G,_) :-
+  flag(count,_,0),
+  G,
+  flag(count,N,N+1),
+  fail.
+countx(_,N) :-
+  flag(count,N,N).
+
+show_stats :-
+  telling(X),
+  tell(user),
+  stats1,
+  tell(X).
+
+stats1 :-
+  countx(g(_),GN),
+  countx(h(_),HN),
+  statistics(runtime,[_,RT]),
+  statistics(inferences,II),
+  flag(inferences,OLD,II),
+  I is II - OLD,
+  writef('%5r %5r %8r %8r\n',[GN,HN,RT,I]).
+  
+
+expandGrouping(In,Out) :-
+  setof(X,expandIn(X,In),Out).
+
+expandIn(X,In) :-
+  member(X1,In),
+  expand2(X1,X).
+
+expand2(X,XX) :-
+   m(X,XX).
+expand2(X,X) :- \+ m(X,_).
 
 gname :-
   retractall(gn(_,_)),
@@ -130,6 +267,7 @@ bits(N,NB) :-
 
 gname(L,N) :- grouping(L,N), !.
 gname([(Q:N)],QN) :- atom_concat(Q,N,QN),!.
+gname([D-N],QN) :- atom_concat(D,N,QN),!.
 gname([X],X) :- !.
 gname([],'Empty') :- !.
 gname(L,N) :-
@@ -225,11 +363,22 @@ wAddTriple :-
    wlist(['      switch(triple) {',nl]),
    x(S,P,O,SS,PP,OO,DL),
    write('case '),spo(S,P,O),wlist([':',nl,'return ']),spo(SS,PP,OO),
-   (DL=dl->write('| DL;');write(';')),nl,fail.
+   extraInfo(DL,DLX),
+   wlist([DLX,';',nl]),fail.
 wAddTriple :-
    wlist(['      default: return Failure;',nl,'   }',nl,
          '}',nl]).
 
+extraInfo(dl,'| DL').
+extraInfo(lite,'| DL').
+extraInfo(dl/position(0),'| DL').
+extraInfo(lite/position(0),'').
+extraInfo(dl/position(1),'| DL | FirstOfOne ').
+extraInfo(lite/position(1),'| FirstOfOne').
+extraInfo(dl/position(2),'| DL | SecondOfTwo ').
+extraInfo(lite/position(2),'| SecondOfTwo').
+extraInfo(dl/position(3),'| DL | FirstOfTwo ').
+extraInfo(lite/position(3),'| FirstOfTwo').
 /*
 spo(S,P,O) :-
    gn(S,SN),wlist(['( /* subject */',SN,'<<(2*W))|',nl]),
