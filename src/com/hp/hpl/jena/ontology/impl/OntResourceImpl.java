@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-02 10:20:47 $
+ * Last modified on   $Date: 2003-06-06 11:07:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -31,6 +31,8 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.path.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.util.ResourceUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -45,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.13 2003-06-02 10:20:47 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.14 2003-06-06 11:07:02 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -744,20 +746,7 @@ public class OntResourceImpl
         ClosableIterator i = null;
         try {
             i = getModel().listStatements( this, RDF.type, ontClass );
-            if (i.hasNext()) {
-                // rdf:type ontClass  is true for this resource
-                return true;
-            }
-            
-            // try aliases for rdf:type
-            if (getProfile().hasAliasFor( RDF.type )) {
-                i.close();
-                i = getModel().listStatements( this, (Property) getProfile().getAliasFor( RDF.type), ontClass ); 
-                return i.hasNext();
-            }
-            else {
-                return false;
-            }
+            return (i.hasNext());
         }
         finally {
             i.close();
@@ -779,11 +768,6 @@ public class OntResourceImpl
         // make sure that we have an extneded iterator
         Iterator i = listProperties( RDF.type );
         ExtendedIterator ei = (i instanceof ExtendedIterator) ? (ExtendedIterator) i : WrappedIterator.create( i );
-        
-        // aliases to cope with?
-        if (getProfile().hasAliasFor( RDF.type )) {
-            ei = ei.andThen( WrappedIterator.create( listProperties( (Property) getProfile().getAliasFor( RDF.type ) ) ) );
-        }
         
         // we only want the objects of the statements, and we only want one of each
         return new UniqueExtendedIterator( ei.mapWith( mObject ) );
@@ -1020,6 +1004,63 @@ public class OntResourceImpl
         // we're told that adding this rdf:type will make the as() possible - let's see
         addProperty( RDF.type, type );
         return as( cls );
+    }
+    
+    /** Return an iterator of values, respecting the 'direct' modifier */
+    protected Iterator listDirectPropertyValues( Property p, String name, Class cls, boolean direct, boolean inverse ) {
+        ExtendedIterator i = null;
+        checkProfile( p, name );
+        
+        Property sc = p;
+        
+        // check for requesting direct versions of these properties
+        if (direct) {
+            sc      = getModel().getProperty( ReasonerRegistry.makeDirect( sc.getNode() ).getURI() );
+        }
+        
+        // determine the subject and object pairs for the list statements calls
+        Resource subject = inverse ? null : this;
+        Resource object  = inverse ? this : null;
+        Map1 mapper      = inverse ? (Map1) new SubjectAsMapper( cls ) : (Map1) new ObjectAsMapper( cls );
+        
+        // are we working on an inference graph?
+        OntModel m = (OntModel) getGraph();
+        InfGraph ig = null;
+        if (m.getGraph() instanceof InfGraph) {
+            ig = (InfGraph) m.getGraph();
+        }
+        
+        // can we go direct to the graph?
+        if (!direct || ((ig != null) && ig.getReasoner().supportsProperty( sc ))) {
+            // either not direct, or the direct sc property is supported
+            // ensure we have an extended iterator of statements  this rdfs:subClassOf _x
+            i = getModel().listStatements( subject, sc, object );
+    
+            // we only want the subjects or objects of the statements
+            return i.mapWith( mapper );
+        }
+        else {
+            // graph does not support direct directly
+            i = getModel().listStatements( subject, p, object );
+            
+            // we need to keep this node out of the iterator for now, else it will spoil the maximal 
+            // generator compression (since all the (e.g.) sub-classes will be sub-classes of this node
+            // and so will be excluded from the maximal lower elements calculation)
+            i = i.mapWith( mapper );
+            Collection s = new ArrayList();
+            for( ; i.hasNext();  s.add( i.next() ) );
+            boolean withheld = s.remove( this );
+            
+            // generate the short list
+            s = ResourceUtils.maximalLowerElements( s, p, inverse );
+            
+            // put myself back if needed
+            if (withheld) {
+                s.add( this );
+            }
+            
+            return s.iterator();
+        }
     }
     
     

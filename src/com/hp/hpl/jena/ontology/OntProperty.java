@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 17:17:24 $
+ * Last modified on   $Date: 2003-06-06 11:06:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.6 2003-05-30 17:17:24 ian_dickinson Exp $
+ * @version CVS $Id: OntProperty.java,v 1.7 2003-06-06 11:06:44 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -83,12 +83,25 @@ public interface OntProperty
     public Iterator listSuperProperties();
 
     /**
+     * <p>Answer an iterator over all of the properties that are declared to be super-properties of
+     * this property. Each element of the iterator will be an {@link #OntProperty}.</p>
+     * @param direct If true, only answer the direcly adjacent properties in the
+     * property hierarchy: i&#046;e&#046; eliminate any property for which there is a longer route
+     * to reach that child under the super-property relation.
+     * @return An iterator over the super-properties of this property.
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listSuperProperties( boolean direct );
+
+    /**
      * <p>Answer true if the given property is a super-property of this property.</p>
      * @param prop A property to test.
+     * @param direct If true, only consider the direcly adjacent properties in the
+     * property hierarchy
      * @return True if the given property is a super-property of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
      */
-    public boolean hasSuperProperty( Property prop );
+    public boolean hasSuperProperty( Property prop, boolean direct );
     
     /**
      * <p>Assert that this property is super-property of the given property. Any existing 
@@ -122,12 +135,25 @@ public interface OntProperty
     public Iterator listSubProperties();
 
     /**
+     * <p>Answer an iterator over all of the properties that are declared to be sub-properties of
+     * this property. Each element of the iterator will be an {@link #OntProperty}.</p>
+     * @param direct If true, only answer the direcly adjacent properties in the
+     * property hierarchy: i&#046;e&#046; eliminate any property for which there is a longer route
+     * to reach that child under the sub-property relation.
+     * @return An iterator over the sub-properties of this property.
+     * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listSubProperties( boolean direct );
+
+    /**
      * <p>Answer true if the given property is a sub-property of this property.</p>
      * @param prop A property to test.
+     * @param direct If true, only consider the direcly adjacent properties in the
+     * property hierarchy
      * @return True if the given property is a sub-property of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
      */
-    public boolean hasSubProperty( Property prop );
+    public boolean hasSubProperty( Property prop, boolean direct );
     
     // domain
     

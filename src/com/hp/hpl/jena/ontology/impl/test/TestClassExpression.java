@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-02 11:27:28 $
+ * Last modified on   $Date: 2003-06-06 11:07:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.15 2003-06-02 11:27:28 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.16 2003-06-06 11:07:02 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -89,7 +89,7 @@ public class TestClassExpression
                     A.setSuperClass( C );
                     assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.SUB_CLASS_OF() ) );
                     assertEquals( "A shuold have super-class C", C, A.getSuperClass() );
-                    assertTrue( "A shuold not have super-class B", !A.hasSuperClass( B ) );
+                    assertTrue( "A shuold not have super-class B", !A.hasSuperClass( B, false ) );
                 }
             },
             new OntTestCase( "OntClass.sub-class", true, true, true ) {
@@ -110,7 +110,7 @@ public class TestClassExpression
                     A.setSubClass( C );
                     assertEquals( "Cardinality should be 1", 1, B.getCardinality( prof.SUB_CLASS_OF() ) + C.getCardinality( prof.SUB_CLASS_OF() ) );
                     assertEquals( "A shuold have sub-class C", C, A.getSubClass() );
-                    assertTrue( "A shuold not have sub-class B", !A.hasSubClass( B ) );
+                    assertTrue( "A shuold not have sub-class B", !A.hasSubClass( B, false ) );
                 }
             },
             new OntTestCase( "OntClass.equivalentClass", true, true, true ) {

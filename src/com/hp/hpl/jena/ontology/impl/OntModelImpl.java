@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-02 11:27:04 $
+ * Last modified on   $Date: 2003-06-06 11:07:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.25 2003-06-02 11:27:04 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.26 2003-06-06 11:07:02 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -73,9 +73,6 @@ public class OntModelImpl
     
     /** Query that will access nodes with types whose type is Class */
     protected BindingQueryPlan m_individualsQuery;
-    
-    /** Query that will access nodes with types whose type is Class */
-    protected List m_individualsQueryAlias = null;
     
     /** Mode switch for strict checking mode */
     protected boolean m_strictMode = true;
@@ -115,16 +112,6 @@ public class OntModelImpl
         // cache the query plan for individuals
         Profile lang = getProfile();
         m_individualsQuery = queryXTypeOfType( lang.CLASS() );
-        
-        // cache the query plan for individuals using class alias (if defined)
-        if (lang.hasAliasFor( lang.CLASS() )) {
-            m_individualsQueryAlias = new ArrayList();
-            
-            for (Iterator j = lang.listAliasesFor( lang.CLASS() );  j.hasNext(); ) {
-                // add to the list of alternates for this query
-                m_individualsQueryAlias.add( queryXTypeOfType( (Resource) j.next() ) );
-            }
-        }        
         
         // load the imports closure, according to the policies in my document manager
         getDocumentManager().loadImports( this );
@@ -272,7 +259,7 @@ public class OntModelImpl
      * @return An iterator over Individuals. 
      */
     public Iterator listIndividuals() {
-        return queryFor( m_individualsQuery, m_individualsQueryAlias, Individual.class );
+        return queryFor( m_individualsQuery, null, Individual.class );
     }
     
 
@@ -1458,7 +1445,7 @@ public class OntModelImpl
     /**
      * <p>
      * Answer an iterator over all of the resources that have 
-     * <code>rdf:type</code> type.  No alias processing.
+     * <code>rdf:type</code> type.
      * </p>
      * 
      * @param type The resource that is the value of <code>rdf:type</code> we
@@ -1478,37 +1465,21 @@ public class OntModelImpl
      * 
      * @param type The resource that is the value of <code>rdf:type</code> we
      * want to match
-     * @param types An iterator over alternative types to search for, or null
+     * @param alternates An iterator over alternative types to search for, or null
      * @return An iterator over all triples <code>_x rdf:type t</code> where t
      * is <code>type</code> or one of the values from <code>types</code>.
      */
-    protected ExtendedIterator findByType( Resource type, Iterator types ) {
+    protected ExtendedIterator findByType( Resource type, Iterator alternates ) {
         ExtendedIterator i = findByType( type );
         
-        // compose onto i the find iterators for the aliases
-        if (types != null) {
-            while (types.hasNext()) {
-                i = i.andThen( findByType( (Resource) types.next() ) );
+        // compose onto i the find iterators for the alternate types
+        if (alternates != null) {
+            while (alternates.hasNext()) {
+                i = i.andThen( findByType( (Resource) alternates.next() ) );
             }
         }
         
         return i;
-    }
-    
-
-    /**
-     * <p>
-     * Answer an iterator over all of the resources that have 
-     * <code>rdf:type type</code>, or optionally, one of its aliases.
-     * </p>
-     * 
-     * @param type The resource that is the value of <code>rdf:type</code> we
-     * want to match
-     * @param aliased If true, check for aliases for <code>type</code> in the profile.
-     * @return An iterator over all triples <code>_x rdf:type type</code>
-     */
-    protected ExtendedIterator findByType( Resource type, boolean aliases ) {
-        return findByType( type, aliases ? getProfile().listAliasesFor( type ) : null );
     }
     
 
@@ -1551,7 +1522,7 @@ public class OntModelImpl
      * <p>
      * Answer an iterator over resources with the given rdf:type; for each value
      * in the iterator, ensure that is is presented <code>as()</code> the
-     * polymorphic object denoted by the given class key.  Will process aliases.
+     * polymorphic object denoted by the given class key.
      * </p>
      * 
      * @param type The rdf:type to search for
@@ -1560,7 +1531,7 @@ public class OntModelImpl
      * the given polymorphic class.
      */
     protected ExtendedIterator findByTypeAs( Resource type, Class asKey ) {
-        return findByType( type, true ).mapWith( new SubjectNodeAs( asKey ) );
+        return findByType( type ).mapWith( new SubjectNodeAs( asKey ) );
     }
     
     
@@ -1584,11 +1555,11 @@ public class OntModelImpl
         // get the results from the main query
         ExtendedIterator mainQuery = query.executeBindings().mapWith( firstBinding );
         
-        // now add the alias queries, if defined
+        // now add the alternate queries, if defined
         if (altQueries != null) {
             for (Iterator i = altQueries.iterator();  i.hasNext();  ) {
-                ExtendedIterator aliasQuery = ((BindingQueryPlan) i.next()).executeBindings().mapWith( firstBinding );
-                mainQuery = mainQuery.andThen( aliasQuery );
+                ExtendedIterator altQuery = ((BindingQueryPlan) i.next()).executeBindings().mapWith( firstBinding );
+                mainQuery = mainQuery.andThen( altQuery );
             }
         }
         

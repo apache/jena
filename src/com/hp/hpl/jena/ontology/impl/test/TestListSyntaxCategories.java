@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            02-Apr-2003
  * Filename           $RCSfile: TestListSyntaxCategories.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-14 14:58:30 $
+ * Last modified on   $Date: 2003-06-06 11:07:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestListSyntaxCategories.java,v 1.6 2003-05-14 14:58:30 ian_dickinson Exp $
+ * @version CVS $Id: TestListSyntaxCategories.java,v 1.7 2003-06-06 11:07:02 ian_dickinson Exp $
  */
 public class TestListSyntaxCategories 
     extends TestCase
@@ -110,8 +110,8 @@ public class TestListSyntaxCategories
                        r instanceof Property;
             }
         },
-        new DoListTest( "DAML list properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  2,  
-                        new String[] {NS+"p", NS+"rdf-p"} ) 
+        new DoListTest( "DAML list properties",  "file:testing/ontology/daml/list-syntax/test.rdf",  ProfileRegistry.DAML_LANG,  1,  
+                        new String[] {NS+"rdf-p" /* - will not be recognised without alias processing -, NS+"rdf-p" */} ) 
         {
             public Iterator doList( OntModel m ) {
                 return m.listOntProperties();

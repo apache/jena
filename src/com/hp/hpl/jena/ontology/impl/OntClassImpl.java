@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-30 18:47:51 $
+ * Last modified on   $Date: 2003-06-06 11:07:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -29,10 +29,11 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.util.ResourceUtils;
 import com.hp.hpl.jena.vocabulary.*;
 
-import java.util.Iterator;
+import java.util.*;
 
 
 /**
@@ -42,7 +43,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.12 2003-05-30 18:47:51 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.13 2003-06-06 11:07:02 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -138,17 +139,56 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */ 
     public Iterator listSuperClasses() {
-        return listAs( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class );
+        return listSuperClasses( false );
+    }
+     
+    /**
+     * <p>Answer an iterator over all of the classes that are declared to be super-classes of
+     * this class. Each element of the iterator will be an {@link #OntClass}.
+     * See {@link #listSubClasses( boolean )} for a full explanation of the <em>direct</em>
+     * parameter.
+     * </p>
+     * 
+     * @param direct If true, only answer the direcly adjacent classes in the
+     * super-class relation: i&#046;e&#046; eliminate any class for which there is a longer route
+     * to reach that child under the super-class relation.
+     * @return an iterator over the resources representing this class's sub-classes.
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */
+    public Iterator listSuperClasses( boolean direct ) {
+        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, direct, false );
     }
 
     /**
-     * <p>Answer true if the given class is a super-class of this class.</p>
+     * <p>Answer true if the given class is a super-class of this class.
+     * See {@link #listSubClasses( boolean )} for a full explanation of the <em>direct</em>
+     * parameter.
+     * </p>
      * @param cls A class to test.
+     * @param direct If true, only search the classes that are directly adjacent to this 
+     * class in the class hierarchy.
      * @return True if the given class is a super-class of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
-    public boolean hasSuperClass( Resource cls ) {
-        return hasPropertyValue( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", cls );
+    public boolean hasSuperClass( Resource cls, boolean direct ) {
+        if (!direct) {
+            // don't need any special case, we just get the property
+            return hasPropertyValue( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", cls );
+        }
+        else {
+            // we want the direct, not general relationship
+            if (getGraph() instanceof InfGraph) {
+                InfGraph ig = (InfGraph) getGraph();
+                if (ig.getReasoner().supportsProperty( ReasonerVocabulary.directSubClassOf )) {
+                    // we can look this up directly
+                    return hasPropertyValue( ReasonerVocabulary.directSubClassOf, "direct sub-class", cls );
+                }
+            }
+            
+            // otherwise, not an inf-graph or the given inf-graph does not support direct directly (:-)
+            // we manually compute the maximal lower elements - this could be expensive in general
+            return ResourceUtils.maximalLowerElements( listSuperClasses(), getProfile().SUB_CLASS_OF(), false ).contains( cls );
+        }
     }
     
     /**
@@ -197,19 +237,71 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */ 
     public Iterator listSubClasses() {
-        checkProfile( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF" );
-        return WrappedIterator.create( getModel().listStatements( null, getProfile().SUB_CLASS_OF(), this ) )
-               .mapWith( new SubjectAsMapper( OntClass.class ) );
+        return listSubClasses( false );
     }
 
     /**
-     * <p>Answer true if the given class is a sub-class of this class.</p>
+     * <p>
+     * Answer an iterator over the classes that are declared to be sub-classes of
+     * this class. Each element of the iterator will be an {@link #OntClass}. The
+     * distinguishing extra parameter for this method is the flag <code>direct<code>
+     * that allows some selectivity over the classes that appear in the iterator.
+     * Consider the following scenario:
+     * <code><pre>
+     *   :B rdfs:subClassOf :A.
+     *   :C rdfs:subClassOf :A.
+     *   :D rdfs:subClassof :C.
+     * </pre></code>
+     * (so A has two sub-classes, B and C, and C has sub-class D).  In a raw model, with
+     * no inference support, listing the sub-classes of A will answer B and C.  In an 
+     * inferencing model, <code>rdfs:subClassOf</code> is known to be transitive, so
+     * the sub-classes iterator will include D.  The <code>direct</code> sub-classes 
+     * are those members of the closure of the subClassOf relation, restricted to classes that
+     * cannot be reached by a longer route, i.e. the ones that are <em>directly</em> adjacent
+     * to the given root.  Thus, the direct sub-classes of A are B and C only, and not D -
+     * even in an inferencing graph.  Note that this is not the same as the entailments
+     * from the raw graph. Suppose we add to this example: 
+     * <code><pre>
+     *   :D rdfs:subClassof :A.
+     * </pre></code>
+     * Now, in the raw graph, A has sub-class C.  But the direct sub-classes of A remain
+     * B and C, since there is a longer path A-C-D that means that D is not a direct sub-class
+     * of A.  The assertion in the raw graph that A has sub-class D is essentially redundant,
+     * since this can be inferred from the closure of the graph.
+     * </p>
+     * <p>
+     * <strong>Note:</strong> This is is a change from the behaviour of Jena 1, which took a 
+     * parameter <code>closed</code> to compute the closure over transitivity and equivalence
+     * of sub-classes.  The closure capability in Jena2 is determined by the inference engine
+     * that is wrapped with the ontology model.  The direct parameter is provided to allow,
+     * for exmaple, a level-by-level traversal of the class hierarchy, starting at some given
+     * root.
+     * </p>
+     * 
+     * @param direct If true, only answer the direcly adjacent classes in the
+     * sub-class relation: i&#046;e&#046; eliminate any class for which there is a longer route
+     * to reach that child under the sub-class relation.
+     * @return an iterator over the resources representing this class's sub-classes
+     * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
+     */
+    public Iterator listSubClasses( boolean direct ) {
+        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, direct, true );
+    }
+
+
+    /**
+     * <p>Answer true if the given class is a sub-class of this class.
+     * See {@link #listSubClasses( boolean )} for a full explanation of the <em>direct</em>
+     * parameter.
+     * </p>
      * @param cls A class to test.
+     * @param direct If true, only search the classes that are directly adjacent to this 
+     * class in the class hierarchy.
      * @return True if the given class is a sub-class of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
-    public boolean hasSubClass( Resource cls ) {
-        return ((OntClass) cls.as( OntClass.class )).hasSuperClass( this );
+    public boolean hasSubClass( Resource cls, boolean direct ) {
+        return ((OntClass) cls.as( OntClass.class )).hasSuperClass( this, direct );
     }
     
     // equivalentClass
@@ -314,63 +406,6 @@ public class OntClassImpl
         return hasPropertyValue( getProfile().DISJOINT_WITH(), "DISJOINT_WITH", cls );
     }
     
-
-     
-    /**
-     * <p>
-     * Answer an iterator over the class descriptions
-     * that mention this class as one of its super-classes.
-     * </p>
-     * <p>
-     * TODO: the closed parameter is ignored at the current time
-     * </p>
-     * 
-     * @param closed If true, close the iteration over the sub-class relation: i&#046;e&#046;
-     *               return the sub-classes of the sub-classes, etc.
-     * @return an iterator over the resources representing this class's sub-classes
-     */
-    public Iterator getSubClasses( boolean closed ) {
-        // ensure we have an extended iterator of statements  _x rdfs:subClassOf this
-        Iterator i = getModel().listStatements( null, RDFS.subClassOf, this );
-        ExtendedIterator ei = (i instanceof ExtendedIterator) ? (ExtendedIterator) i : WrappedIterator.create( i );
-        
-        // alias defined?
-        if (getProfile().hasAliasFor( RDFS.subClassOf )) {
-            ei = ei.andThen( WrappedIterator.create( getModel().listStatements( null, (Property) getProfile().getAliasFor( RDFS.subClassOf ), this ) ) );
-        }
-        
-        // we only want the subjects of the statements
-        return ei.mapWith( new Map1() { public Object map1( Object x ) { return ((Statement) x).getSubject().as( OntClass.class ); } } );
-    }
-
-
-    /**
-     * <p>
-     * Answer an iterator over the class descriptions
-     * for which this class is a sub-class. 
-     * </p>
-     * <p>
-     * TODO: the closed parameter is ignored at the current time
-     * </p>
-     * 
-     * @param closed If true, close the iteration over the super-class relation: i&#046;e&#046;
-     *               return the super-classes of the super-classes, etc.
-     * @return an iterator over the resources representing this class's sub-classes.
-     */
-    public Iterator getSuperClasses( boolean closed ) {
-        // ensure we have an extended iterator of statements  this rdfs:subClassOf _x
-        Iterator i = getModel().listStatements( this, RDFS.subClassOf, (RDFNode) null );
-        ExtendedIterator ei = (i instanceof ExtendedIterator) ? (ExtendedIterator) i : WrappedIterator.create( i );
-        
-        // alias defined?
-        if (getProfile().hasAliasFor( RDFS.subClassOf )) {
-            ei = ei.andThen( WrappedIterator.create( getModel().listStatements( this, (Property) getProfile().getAliasFor( RDFS.subClassOf ), (RDFNode) null ) ) );
-        }
-        
-        // we only want the subjects of the statements
-        return ei.mapWith( new Map1() { public Object map1( Object x ) { return ((Statement) x).getSubject().as( OntClass.class ); } } );
-    }
-
 
     /** 
      * <p>Answer a view of this class as an enumerated class</p>
