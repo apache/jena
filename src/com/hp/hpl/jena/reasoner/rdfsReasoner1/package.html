@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+<body>
+This package contains an example RDFS reasoner. It was developed partly to
+test the reasoning API and support machinery though it is a complete and
+reasonably useful RDFS implementation.<br>
+<p>All RDFS implementations need to make tradeoffs. This implementation is
+intended to be complete (it can cope with metadata level declarations such
+as declaring and using a subPropertyOf rdfs:subPropertyOf). It requires all
+schema information to be loadable into main memory - the property and class
+lattices are stored reasonably efficiently but they will often be the limiting
+factor on size (and certainly on performance). These lattices are processed
+at the time the reasoner is bound to the schema and instance data. However,
+the rest of the RDFS inference rules will operate in a backwards chaining
+mode so that significant processing will be required to answer a given query.
+Highly ground queries will operate reasonably efficiently, queries with wildcards
+in predicate slot will operate particularly inefficiently and will make redundant
+passes across the data.<br>
+</p>
+<h3>Implementation notes</h3>
+<p>The subClassOf and subPropertyOf relationships are cached in memory using
+the TransitiveReasoner. This stores those relationships as explicit graphs
+containing the full relationship closure. The direct links are represented
+by direct versions of the subClassOf and subPropertyOf relations which can
+be constructed using ReasonerFactory#makeDirect or found as class variables
+on the TransitiveReasoner.<br>
+</p>
+<p>The schema rules such as domain, range and subPropertyOf inference are
+also checked at the time the data is bound but the result is the addition
+of a set of backward chaining rewrite rules which can match a given query
+against possible inferences. &nbsp;For example the domain rule is:<br>
+</p>
+<pre>   ?p rdfs:domain ?z -&gt; ?s rdf:type ?z &lt;- ?s ?p _<br></pre>
+<p>Thus the processing of a (p,domain,z) declaration generates a backward
+rule of the form "if you are looking for something of type z then check if
+there is any individual which is the subject of a p property.<br>
+</p>
+<p>All of these backward rules are implemented using the Graph iterators
+together with some simple triple rewrite machinery.<br>
+</p>
+<p>One special case to be aware of is the processing of container membership
+property entailments. By default the reasoner does a scan of the entire tbox+data
+looking for properties of the form <i>rdf:_n</i> and for each one found it
+asserts the appropriate entailments. This involves a pass over the whole
+dataset (we take the opportunity to cache all [p,type, Property] and [p,
+subPropertyOf,p] entailments at the same time). This behaviour can be switched
+off using the configuration option [TODO: document] which considerably reduces
+to the initial processing time but [x,type,containerMembershipProperty] and
+[x,subPropertyOf,member] entailments will then be missed. This may or may
+not be a useful trade-off depending on the application.</p>
+<p><br>
+</p>
+<br>
+</body>
+</html>
