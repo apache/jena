@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.3 2003-02-11 15:17:07 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.4 2003-03-04 18:00:16 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -27,15 +27,7 @@ public class GraphTestBase extends TestCase
     public static TestSuite suite()
         { return new TestSuite( GraphTestBase.class ); }   
 
-    public void testNodeSet()
-        {
-        String [] words = {"when", "home", "come", "the", "cows"};
-        Set s = nodeSet( "when the cows come home" );
-        assertEquals( "set size correct", words.length, s.size() );
-        for (int i = 0; i < words.length; i += 1)
-            assertTrue( "", s.contains( node( words[i] ) ) );
-        }
-        
+
     public static Node node( String x )
         {
         if (x.length() > 0)
