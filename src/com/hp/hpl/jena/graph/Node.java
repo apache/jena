@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.35 2004-06-17 11:02:57 chris-dollin Exp $
+  $Id: Node.java,v 1.36 2004-06-19 18:47:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -73,10 +73,10 @@ public abstract class Node {
         if (x.equals( "" ))
             throw new JenaException( "Node.create does not accept an empty string as argument" );
         char first = x.charAt( 0 );
-        if (first == '\'')
-            return Node.createLiteral( newString( x ) );
+        if (first == '\'' || first == '\"')
+            return Node.createLiteral( newString( first, x ) );
         if (Character.isDigit( first )) 
-            return Node.createLiteral( new LiteralLabel( x, "nn-NN", false ) );
+            return Node.createLiteral( new LiteralLabel( x, "", false ) );
         if (first == '_')
             return Node.createAnon( new AnonId( x ) );
         if (x.equals( "??" ))
@@ -86,7 +86,11 @@ public abstract class Node {
         if (first == '&')
             return Node.createURI( "q:" + x.substring( 1 ) );        
         int colon = x.indexOf( ':' );
-        return Node.createURI( colon < 0 ? "eh:" + x : pm.expandPrefix( x ) );
+        String d = pm.getNsPrefixURI( "" );
+        return colon < 0 
+            ? Node.createURI( (d == null ? "eh:" : d) + x )
+            : Node.createURI( pm.expandPrefix( x ) )
+            ;
         }
             
     private static RDFDatatype getType( String s )
@@ -101,9 +105,9 @@ public abstract class Node {
             ;
         }
     
-    private static LiteralLabel newString( String nodeString )
+    private static LiteralLabel newString( char quote, String nodeString )
         {
-        int close = nodeString.indexOf( '\'', 1 );
+        int close = nodeString.indexOf( quote, 1 );
         return literal( nodeString.substring( 1, close ), nodeString.substring( close + 1 ) );
         }
     

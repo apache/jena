@@ -26,9 +26,16 @@ Post Jena 2.1 change list
       o usePrefix deprecated - use shortForm instead.
       o qnameFor added; result is legal qname or null.
 
+  Exceptions
+      o added WrappedException extends JenaException for wrapped exceptions
+      o added WrappedIOException extends WrappedException
+
   Node
       o Node cache hash table replaced by specialised implementation
       o new Node methods getNameSpace, getLocalName, hasURI(String)
+      o minor adjustments to Node.create(String) to allow for specifying
+        language or type for literals, use of default prefix, and
+        elimination of the nn-NN hack for numeric literals. 
 
   Triple
       o Triple.create now uses a cache
@@ -37,11 +44,11 @@ Post Jena 2.1 change list
       o new method hasURI(String)
 
    Ontology API
-   	  o Added a new method getOWLLanguageLevel() to OntModel, which returns the
-   	    OWL sublanguage - lite, DL or full - and error messages
-   	  o Fixed ont language profiles to allow .as() on e.g. owl:SymmetricProperty as
-   	    OntProperty.class.  Previously this relied on the reasoner; the change was
-   	    needed to support the DIG interface.
+      o Added a new method getOWLLanguageLevel() to OntModel, which returns the
+        OWL sublanguage - lite, DL or full - and error messages
+      o Fixed ont language profiles to allow .as() on e.g. owl:SymmetricProperty as
+        OntProperty.class.  Previously this relied on the reasoner; the change was
+        needed to support the DIG interface.
 
 Jena 2.1 - Main changes from Jena 2.0
   Installation
