@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 12:35:39 $
+ * Last modified on   $Date: 2003-06-21 13:04:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.10 2003-06-21 12:35:39 ian_dickinson Exp $
+ * @version CVS $Id: OntProperty.java,v 1.11 2003-06-21 13:04:01 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -500,6 +500,24 @@ public interface OntProperty
      */
     public boolean isSymmetricProperty();
 
+    /**
+     * <p>Answer the property that is the inverse of this property.  If no such property is defined,
+     * return null.  If more than one inverse is defined, return an abritrary selection.</p>
+     * @return The property that is the inverse of this property, or null. 
+     */
+    public OntProperty getInverse();
+    
+    /**
+     * <p>Answer an iterator over the properties that are defined to be inverses of this property.</p>
+     * @return An iterator over the properties that declare themselves the <code>inverseOf</code> this property.
+     */
+    public ExtendedIterator listInverse();
+    
+    /**
+     * <p>Answer true if there is at least one inverse property for this property.</p>
+     * @return True if property has an inverse.
+     */
+    public boolean hasInverse();
 }
 
 

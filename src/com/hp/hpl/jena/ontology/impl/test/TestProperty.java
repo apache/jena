@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:16 $
+ * Last modified on   $Date: 2003-06-21 13:03:57 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.7 2003-06-08 18:53:16 ian_dickinson Exp $
+ * @version CVS $Id: TestProperty.java,v 1.8 2003-06-21 13:03:57 ian_dickinson Exp $
  */
 public class TestProperty
     extends OntTestBase 
@@ -516,6 +516,22 @@ public class TestProperty
                     assertTrue( "isTransitiveProperty not correct",         !p.isTransitiveProperty() );
                     assertTrue( "isInverseFunctionalProperty not correct",  !p.isInverseFunctionalProperty() );
                     if (m_owlLang) {assertTrue( "isSymmetricProperty not correct", p.isSymmetricProperty() ); } 
+                }
+            },
+            new OntTestCase( "OntProperty.inverse", true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    ObjectProperty p = m.createObjectProperty( NS + "p" );
+                    ObjectProperty q = m.createObjectProperty( NS + "q" );
+                    ObjectProperty r = m.createObjectProperty( NS + "r" );
+                    
+                    assertFalse( "No inverse of p", p.hasInverse() );
+                    
+                    q.addInverseOf( p );
+                    assertTrue( "Inverse of p", p.hasInverse() );
+                    assertEquals( "inverse of p ", q, p.getInverse() );
+                    
+                    r.addInverseOf( p );
+                    iteratorTest( p.listInverse(), new Object[] {q,r} );
                 }
             },
         };

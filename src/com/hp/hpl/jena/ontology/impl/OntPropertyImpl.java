@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 12:35:38 $
+ * Last modified on   $Date: 2003-06-21 13:04:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.14 2003-06-21 12:35:38 ian_dickinson Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.15 2003-06-21 13:04:01 ian_dickinson Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -682,6 +682,41 @@ public class OntPropertyImpl
         return hasRDFType( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY", false );
     }
 
+
+    /**
+     * <p>Answer the property that is the inverse of this property.  If no such property is defined,
+     * return null.  If more than one inverse is defined, return an abritrary selection.</p>
+     * @return The property that is the inverse of this property, or null. 
+     */
+    public OntProperty getInverse() {
+        ExtendedIterator i = listInverse();
+        OntProperty p = i.hasNext() ? ((OntProperty) i.next()) : null;
+        i.close();
+        
+        return p;
+    }
+    
+    /**
+     * <p>Answer an iterator over the properties that are defined to be inverses of this property.</p>
+     * @return An iterator over the properties that declare themselves the <code>inverseOf</code> this property.
+     */
+    public ExtendedIterator listInverse() {
+        return getModel().listStatements( null, getProfile().INVERSE_OF(), this ).mapWith( new SubjectAsMapper( OntProperty.class ) );
+    }
+    
+    /**
+     * <p>Answer true if there is at least one inverse property for this property.</p>
+     * @return True if property has an inverse.
+     */
+    public boolean hasInverse() {
+        ExtendedIterator i = listInverse();
+        boolean hasInv = i.hasNext();
+        i.close();
+        
+        return hasInv;
+    }
+    
+    
 
     // Internal implementation methods
     //////////////////////////////////
