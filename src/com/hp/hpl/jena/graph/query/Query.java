@@ -1,20 +1,17 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Query.java,v 1.23 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: Query.java,v 1.24 2003-09-12 12:13:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.mem.*;
-
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
-
-import com.hp.hpl.jena.util.iterator.*;
 
 /**
 	The class of graph queries, plus some machinery (which should move) for
@@ -63,7 +60,7 @@ public class Query
     /**
         The built-in constraint operator not-equals.
     */
-    public static final Node NE = GraphTestBase.node( "&ne" );
+    public static final Node NE = Node.create( "&ne" );
         
     /**
         Initialiser for Query; makes an empty Query [no matches, no constraints]
