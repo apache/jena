@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.18 $
+* @version $Revision: 1.19 $
 */
 
 public interface IRDBDriver {
@@ -48,21 +48,23 @@ public interface IRDBDriver {
 	
 	/**
 	 * Return the specialized graph containing system properties.
-	 * Formats the databaase and constucts a new one if necessary.
+	 * Formats the database and constucts a new one if doInit is true.
+	 * @param doInit if true, format the database if needed.
 	 * 
 	 * @return SpecializedGraph holding properties of this database
 	 * @since Jena 2.0
 	 */
-	public SpecializedGraph getSystemSpecializedGraph();
+	public SpecializedGraph getSystemSpecializedGraph(boolean doInit);
 	
 	/**
 	 * Construct and return a list of specialized graphs.
-	 * @param graphProperties A set of customization properties for the graph.
+	 * @param graphName TODO
+	 * @param requestedProperties TODO
 	 * @return List of SpecializedGraphs to store a Graph
 	 * 
 	 * @since Jena 2.0
 	 */
-	public List createSpecializedGraphs(DBPropGraph graphProperties);
+	public List createSpecializedGraphs(String graphName, Graph requestedProperties);
 	
 	/**
 	 * Reconstruct and return a list of specialized graphs.
@@ -143,6 +145,31 @@ public interface IRDBDriver {
 
     public void formatDB() throws RDFRDBException;
     
+    /**
+     * Acquire the mutex lock in the database. This
+     * is used to implement critical sections to prevent
+     * concurrent Jena threads from inteferring with
+     * each other when creating/destroying models,
+     * formatting databases, etc.
+     * 
+     * There should be no need for an application to
+     * call this method.
+     */
+    
+    public void lockDB() throws RDFRDBException;
+    
+    /**
+     * Release the mutex lock in the database.
+     */
+    
+    public void unlockDB() throws RDFRDBException;
+    
+    /**
+     * Return true if the database is locked, else false.
+     */
+    
+    public boolean tryLockDB() throws RDFRDBException;
+    
 	/**
 	 * Create a table for storing asserted or reified statements.
 	 * 
@@ -151,9 +178,24 @@ public interface IRDBDriver {
 	 * @return the name of the new table 
 	 * 
 	 */
+    
+    /**
+     *  Return true if the mutex is held.
+     */
+    
+    public boolean DBisLocked() throws RDFRDBException;
+
 	abstract String createTable( int graphId, boolean isReif);
 	   
-    /**
+	/**
+	 * Delete a table. 
+	 * For internal use only.
+	 * 
+	 */
+	abstract void deleteTable( String tableName );
+	   
+
+	/**
      * Aborts the open transaction, then turns autocommit on.
      */
 	public void abort() throws  RDFRDBException;
@@ -504,6 +546,18 @@ public interface IRDBDriver {
 	* @param int
 	*/
 	public void setCompressCacheSize(int count);
+	
+	/**
+	 * Return the number of system tables.
+	 */
+
+	public int getSystemTableCount();
+	
+	/**
+	 * Return the name of a system table
+	 */
+
+	public String getSystemTableName ( int i );
 
 }
 
