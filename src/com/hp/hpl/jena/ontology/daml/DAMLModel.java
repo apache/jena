@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModel.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-28 16:19:52 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -24,6 +24,7 @@ package com.hp.hpl.jena.ontology.daml;
 // Imports
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.daml.impl.*;
@@ -41,7 +42,7 @@ import java.util.*;
  * information from all loaded ontologies.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModel.java,v 1.9 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLModel.java,v 1.10 2004-01-28 16:19:52 ian_dickinson Exp $
  */
 public interface DAMLModel
     extends OntModel
@@ -83,6 +84,32 @@ public interface DAMLModel
      */
     public DAMLInstance createDAMLInstance( DAMLClass damlClass, String uri );
 
+
+    /**
+     * <p>Create an anonymous data instance, which has the given datatype and value.</p>
+     * @param datatype A resource denoting the datatype of the new data instance object
+     * @param value The value of the data instance
+     * @return A new DAMLDataInstance object.
+     */
+    public DAMLDataInstance createDAMLDataInstance( Resource datatype, Object value );
+
+
+    /**
+     * <p>Create an anonymous data instance, which has the given datatype and value.</p>
+     * @param datatype A resource denoting the datatype of the new data instance object
+     * @param value The value of the data instance
+     * @return A new DAMLDataInstance object.
+     */
+    public DAMLDataInstance createDAMLDataInstance( RDFDatatype datatype, Object value );
+
+
+    /**
+     * <p>Create an anonymous data instance, which has the given value and an appropriate datatype.</p>
+     * @param value The value of the data instance
+     * @return A new DAMLDataInstance object.
+     */
+    public DAMLDataInstance createDAMLDataInstance( Object value );
+        
 
     /**
      * <p>Create an (optionally anonymous) DAML class.</p>

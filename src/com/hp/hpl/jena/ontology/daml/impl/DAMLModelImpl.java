@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-12-11 22:55:09 $
+ * Last modified on   $Date: 2004-01-28 16:19:52 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -28,7 +28,9 @@ import java.io.*;
 import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.ontology.*;
@@ -47,7 +49,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.13 2003-12-11 22:55:09 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.14 2004-01-28 16:19:52 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends OntModelImpl
@@ -143,6 +145,46 @@ public class DAMLModelImpl
      */
     public DAMLInstance createDAMLInstance( DAMLClass damlClass, String uri ) {
         return (DAMLInstance) createOntResource( DAMLInstance.class, damlClass, uri );
+    }
+
+
+    /**
+     * <p>Create an anonymous data instance, which has the given datatype and value.</p>
+     * @param datatype A resource denoting the datatype of the new data instance object
+     * @param value The value of the data instance
+     * @return A new DAMLDataInstance object.
+     */
+    public DAMLDataInstance createDAMLDataInstance( Resource datatype, Object value ) {
+        return createDAMLDataInstance( TypeMapper.getInstance().getTypeByName( datatype.getURI() ), value );
+    }
+
+
+    /**
+     * <p>Create an anonymous data instance, which has the given datatype and value.</p>
+     * @param datatype A resource denoting the datatype of the new data instance object
+     * @param value The value of the data instance
+     * @return A new DAMLDataInstance object.
+     */
+    public DAMLDataInstance createDAMLDataInstance( RDFDatatype datatype, Object value ) {
+        Resource bNode = createResource( getResource( datatype.getURI() ) );
+        bNode.addProperty( RDF.value, createTypedLiteral( value, datatype ) );
+        return (DAMLDataInstance) bNode.as( DAMLDataInstance.class );
+    }
+
+
+    /**
+     * <p>Create an anonymous data instance, which has the given value and an appropriate datatype.</p>
+     * @param value The value of the data instance
+     * @return A new DAMLDataInstance object.
+     */
+    public DAMLDataInstance createDAMLDataInstance( Object value ) {
+        RDFDatatype datatype = TypeMapper.getInstance().getTypeByValue( value );
+        if (datatype == null) {
+            throw new JenaException( "Could not determine an appropriate datatype for value " + value );
+        }
+        else {
+            return createDAMLDataInstance( datatype, value );
+        }
     }
 
 

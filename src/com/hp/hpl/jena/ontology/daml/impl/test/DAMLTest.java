@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 10:48:24 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-28 16:19:39 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.ontology.daml.impl.test;
 import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.ontology.OntDocumentManager;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -34,7 +35,6 @@ import java.util.*;
 
 import java.io.*;
 
-import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
@@ -42,7 +42,7 @@ import org.apache.commons.logging.LogFactory;
  * Legacy JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.19 2003-12-08 10:48:24 andy_seaborne Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.20 2004-01-28 16:19:39 ian_dickinson Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -58,8 +58,6 @@ public class DAMLTest
     // Instance variables
     //////////////////////////////////
 
-    private Log m_log = LogFactory.getLog( DAMLTest.class );
-     
     // Constructors
     //////////////////////////////////
 
@@ -77,37 +75,7 @@ public class DAMLTest
     // External signature methods
     //////////////////////////////////
 
-    /**
-     * Answer a suite of all the tests defined here
-     */
-    public static TestSuite suite() {
-        TestSuite suite = new TestSuite();
-
-        // add all the tests defined in this class to the suite
-        /* */ suite.addTest( new DAMLTest( "testLoadOntology" ) );    /* */
-        /* */ suite.addTest( new DAMLTest( "testRDFType" ) );         /* */
-        /* */ suite.addTest( new DAMLTest( "testClass" ) );           /* */
-        /* */ suite.addTest( new DAMLTest( "testEquivalence" ) );     /* */
-        /* */ suite.addTest( new DAMLTest( "testProperty" ) );        /* */
-        /* */ suite.addTest( new DAMLTest( "testList" ) );            /* */
-        /* */ suite.addTest( new DAMLTest( "testDatatype" ) );        /* */
-        /* */ suite.addTest( new DAMLTest( "testInstance" ) );        /* */
-        /* */ suite.addTest( new DAMLTest( "testRemove" ) );          /* */
-        /* */ suite.addTest( new DAMLTest( "testCreate" ) );          /* */
-        /* */ suite.addTest( new DAMLTest( "testRestriction" ) );     /* */
-        /* */ suite.addTest( new DAMLTest( "testModelAdd" ) );        /* */
-
-        // tests arising from Jeremy's tutorial
-        /* */ suite.addTest( new DAMLTest( "testDatatypeProperty" ) );    /* */
-        /* */ suite.addTest( new DAMLTest( "testPropertyEq" ) );    /* */
-        /* */ suite.addTest( new DAMLTest( "testObjectProperty" ) );    /* */
-        /* */ suite.addTest( new DAMLTest( "testDatatypeEq2" ) );    /* */
-        /* */ suite.addTest( new DAMLTest( "testDatatypeRange" ) );    /* */
-
-        return suite;
-    }
-
-
+ 
 
     // Internal implementation methods
     //////////////////////////////////
@@ -137,12 +105,9 @@ public class DAMLTest
     public void testLoadOntology()
         
     {
-        m_log.debug( "Starting loadOntology tests" );
-
         DAMLModel m = ModelFactory.createDAMLModel();
 
         // first do the model read with all options turned on
-        m_log.debug( "Test: loading (2001/03, import, standard block)" );
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
         assertTrue( "Load success status should be true", m.getLoadSuccessful() );
         assertEquals( "Count of number of classes in daml store (2001/03, import)", 31, countClasses( m ) );
@@ -152,7 +117,6 @@ public class DAMLTest
         //dumpModel( m );
 
         // now turn off importing - should only get the classes and properties in the source doc
-        m_log.debug( "Test: loading (2001/03, no import)" );
         m = ModelFactory.createDAMLModel();
         m.getLoader().setLoadImportedOntologies( false );
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
@@ -189,7 +153,6 @@ public class DAMLTest
     {
         String ns = "http://dickinson-i-4/daml/tests/test-cases.daml#";
 
-        m_log.debug( "Starting rdf:type tests" );
         DAMLModel m = ModelFactory.createDAMLModel();
         m.getLoader().setLoadImportedOntologies( true );
 
@@ -258,10 +221,7 @@ public class DAMLTest
     /**
      * Test some of the properties of DAML classes
      */
-    public void testClass()
-        
-    {
-        m_log.debug( "Starting DAML class tests" );
+    public void testClass() {
         DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
@@ -377,12 +337,9 @@ public class DAMLTest
     /**
      * Test equivalance classes
      */
-    public void testEquivalence()
-        
-    {
+    public void testEquivalence() {
         String ns = "http://dickinson-i-4/daml/tests/test-cases.daml#";
 
-        m_log.debug( "Starting equivalence tests" );
         DAMLModel m = ModelFactory.createDAMLModel();
 
         // don't allow any additional info to load
@@ -452,10 +409,7 @@ public class DAMLTest
     /**
      * Unit tests on DAMLProperty and its subclasses
      */
-    public void testProperty()
-        
-    {
-        m_log.debug( "Starting DAML property tests" );
+    public void testProperty() {
         DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
@@ -586,10 +540,7 @@ public class DAMLTest
     /**
      * Tests on lists
      */
-    public void testList()
-        
-    {
-        m_log.debug( "Starting DAML list tests" );
+    public void testList()    {
         DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
@@ -637,10 +588,7 @@ public class DAMLTest
     /**
      * Tests on instances
      */
-    public void testInstance()
-        
-    {
-        m_log.debug( "Starting DAML instance tests" );
+    public void testInstance() {
         DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
@@ -662,10 +610,7 @@ public class DAMLTest
     /**
      * Tests on DAML datatypes
      */
-    public void testDatatype()
-        
-    {
-        m_log.debug( "Starting DAML datatype tests" );
+    public void testDatatype() {
         DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
@@ -688,7 +633,23 @@ public class DAMLTest
         assertEquals( "Shirt size should be \"12\"", "12", x );
     }
 
-
+    
+    public void testDataInstance() {
+        DAMLModel m = ModelFactory.createDAMLModel();
+        DAMLDataInstance di = m.createDAMLDataInstance( new Integer( 9 ) );
+        assertNotNull( "Failed to create data instance ", di );
+        assertEquals( "data instance URI not correct ", TypeMapper.getInstance().getTypeByName( XSD.xint.getURI() ), di.getDatatype() );
+        
+        String NS="http://example.org/eg#";
+        DAMLClass person = m.createDAMLClass( NS+"Person");
+        DAMLInstance peter = m.createDAMLInstance( person, NS+"peter");
+        DAMLDatatypeProperty p = m.createDAMLDatatypeProperty( NS+"shirtsize");
+        peter.addProperty( p, di );
+        
+        // just to confirm we are getting reasonable output m.write( System.out, "RDF/XML-ABBREV" );
+    }
+    
+    
     /**
      * Test the removal of DAML objects. We'll load a model, then
      * delete everything in it one step at a time.
@@ -697,7 +658,6 @@ public class DAMLTest
         
     {
         OntDocumentManager.getInstance().setProcessImports( false );
-        m_log.debug( "Starting DAML remove test" );
         DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
@@ -777,10 +737,7 @@ public class DAMLTest
      * Testing restrictions
      * @param m
      */
-    public void testRestriction()
-        
-    {
-        m_log.debug( "Starting DAML restriction tests" );
+    public void testRestriction() {
         DAMLModel m = ModelFactory.createDAMLModel();
 
         m.read( "file:testing/ontology/daml/daml_oil_2001_03/daml+oil-ex.daml", "http://www.daml.org/2001/03/daml+oil-ex", null );
@@ -817,10 +774,7 @@ public class DAMLTest
     /**
      * Test adding a model to an existing model
      */
-    public void testModelAdd()
-        
-    {
-        m_log.debug( "Starting model add test" );
+    public void testModelAdd() {
         DAMLModel m = ModelFactory.createDAMLModel();
 
         // create a daml model
@@ -935,9 +889,7 @@ public class DAMLTest
      * model are the same.
      *
      */
-    private void eqTest(EqualityTest test)
-         {
-        m_log.debug( "Starting DAML equality test for " + test.toString() );
+    private void eqTest(EqualityTest test) {
         DAMLModel m1 = ModelFactory.createDAMLModel();
         test.java(m1);
 
@@ -981,14 +933,13 @@ public class DAMLTest
         dumpModel( m, "model-out.rdf" );
     }
     public void dumpModel( Model m, String fileName ) {
-        m_log.debug( "Dumping model to " + fileName );
         try {
             OutputStream f = new FileOutputStream(fileName);
             m.write( f, "RDF/XML-ABBREV" );
             f.close();
         }
         catch (Exception e) {
-            m_log.debug( "Exception while dumping model: " + e, e );
+           LogFactory.getLog( getClass() ).debug( "Exception while dumping model: " + e, e );
         }
 
     }
@@ -1003,7 +954,7 @@ public class DAMLTest
             Object x = i.next();
 
             if (doLog) {
-                m_log.debug( "counting iteration, " + message + x );
+                LogFactory.getLog( getClass() ).debug( "counting iteration, " + message + x );
             }
         }
 

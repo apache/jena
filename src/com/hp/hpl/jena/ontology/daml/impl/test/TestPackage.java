@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            17-Jun-2003
  * Filename           $RCSfile: TestPackage.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-28 16:19:39 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -34,7 +34,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestPackage.java,v 1.3 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS $Id: TestPackage.java,v 1.4 2004-01-28 16:19:39 ian_dickinson Exp $
  */
 public class TestPackage 
     extends TestSuite 
@@ -49,7 +49,7 @@ public class TestPackage
         addTest( "TestDAMLClass", TestDAMLClass.suite() );
         addTest( "TestDAMLList", TestDAMLList.suite() );
         addTest( "TestDAMLProperty", TestDAMLProperty.suite() );
-        addTest( "Legacy tests", DAMLTest.suite() );
+        addTestSuite( DAMLTest.class );
     }
 
     private void addTest(String name, TestSuite tc) {
