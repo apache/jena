@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TripleMatchFilter.java,v 1.3 2003-06-10 10:46:19 chris-dollin Exp $
+  $Id: TripleMatchFilter.java,v 1.4 2003-06-11 13:26:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -33,7 +33,7 @@ public class TripleMatchFilter implements Filter {
     
 }
 /*
- *  (c) Copyright Hewlett-Packard Company 2000, 2001
+ *  (c) Copyright Hewlett-Packard Company 2000-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

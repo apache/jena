@@ -28,7 +28,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *  </p>
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.19 2003-06-10 10:17:52 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.20 2003-06-11 13:27:42 chris-dollin Exp $
  */
 
 
@@ -152,23 +152,6 @@ public class N3JenaWriter implements RDFWriter
     public Object setProperty(String propName, Object propValue) throws RDFException
     {
         return writer.setProperty(propName, propValue) ;
-    }
-
-    /**
-     * @see com.hp.hpl.jena.rdf.model.RDFWriter#setNsPrefix(java.lang.String, java.lang.String)
-     */
-    public void setNsPrefix(String prefix, String ns)
-    {
-        writer.setNsPrefix(prefix, ns) ;
-        
-    }
-
-    /**
-     * @see com.hp.hpl.jena.rdf.model.RDFWriter#getPrefixFor(java.lang.String)
-     */
-    public String getPrefixFor(String ns)
-    {
-        return writer.getPrefixFor(ns) ;
     }
 
     /**

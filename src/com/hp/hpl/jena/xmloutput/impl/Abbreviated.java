@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.5 2003-04-22 13:43:46 jeremy_carroll Exp $
+ *  $Id: Abbreviated.java,v 1.6 2003-06-11 13:29:18 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -24,7 +24,7 @@ import java.io.*;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-22 13:43:46 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-11 13:29:18 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
@@ -138,14 +138,14 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 			new FileInputStream("modules/rdf/regression/arp/bug51_0.rdf"),
 			"http://example.org/file");
 		RDFWriter pw = m.getWriter("RDF/XML-ABBREV");
-		pw.setNsPrefix("eg", "http://example.org/");
-		pw.setNsPrefix("eg2", "http://example.org/foo#");
+		m.setNsPrefix("eg", "http://example.org/");
+		m.setNsPrefix("eg2", "http://example.org/foo#");
 		pw.write(m, System.out, "http://example.org/file");
 	}
 
 }
 /*
-	(c) Copyright Hewlett-Packard Company 2002
+	(c) Copyright Hewlett-Packard Company 200, 2003
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.19 2003-06-04 15:15:56 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.20 2003-06-11 13:29:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.util.TestLogger;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.19 $ $Date: 2003-06-04 15:15:56 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.20 $ $Date: 2003-06-11 13:29:19 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -549,8 +549,8 @@ public class TestXMLFeatures extends TestCase {
 			"xmlns:eg=['\"]http://example.org/file[12]#['\"]",
 			null,
 			new Change() {
-			public void code(RDFWriter writer) {
-				writer.setNsPrefix("eg", "http://example.org/file1#");
+			public void code( Model m ) {
+				m.setNsPrefix("eg", "http://example.org/file1#");
 				setNsPrefixSysProp("eg", "http://example.org/file2#");
 			}
 		});
@@ -1064,5 +1064,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.19 2003-06-04 15:15:56 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.20 2003-06-11 13:29:19 chris-dollin Exp $
  */

@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.ResultSet ;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.9 2003-06-11 13:07:09 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.10 2003-06-11 13:29:19 chris-dollin Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -481,7 +481,7 @@ public class rdfquery
             {
                 Model m = fmt.toModel() ;
                 RDFWriter rdfw = m.getWriter("N3") ;
-                rdfw.setNsPrefix("rs", ResultSet.getURI()) ;
+                m.setNsPrefix("rs", ResultSet.getURI()) ;
                 rdfw.write(m, System.out, null) ;
             }
             else

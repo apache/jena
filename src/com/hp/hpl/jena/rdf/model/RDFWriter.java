@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriter.java,v 1.4 2003-04-17 14:43:40 chris-dollin Exp $
+ * $Id: RDFWriter.java,v 1.5 2003-06-11 13:28:48 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -36,7 +36,7 @@ import java.io.OutputStream;
  * to some RDF serializaion language.  RDF/XML, n-triple and n3 are
  * examples of serialization languages.</p>
  * @author bwm
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public interface RDFWriter {
 /** Namespace prefixes can be set using a system property of the form
@@ -106,19 +106,7 @@ public interface RDFWriter {
  */ 
     public Object setProperty(String propName, Object propValue) 
       throws RDFException;
-/** Set the the namespace prefix to be used for a particular namespace.
- * @param prefix the prefix to be used
- * @param ns the namespace
- */    
-    public void   setNsPrefix(String prefix, String ns);
-    
-    /**
-        return some prefix that maps to the URI ns, null if there are none.
-        @param ns a URI string
-        @return some P such that P mans to ns, null if there isn't one
-    */
-    public String getPrefixFor( String ns );
-    
+
 /** Set an error handler.
  * @param errHandler The new error handler to be used.
  * @return the old error handler
