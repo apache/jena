@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.5 2003-06-19 13:14:25 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.6 2003-06-25 07:23:06 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -626,7 +626,7 @@ URIReference uriReference(XMLContext ctxt)
 String idSymbol(XMLContext ctxt)     : { Token t; 
                                        }
 { t=<AV_STRING>                        { StrToken strtok = (StrToken)t;
-                                         String rslt = ctxt.getBase()+"#"+ strtok.value;
+                                         String rslt = ctxt.resolveSameDocRef(t.location, "#"+ strtok.value);
                                          X.checkIdSymbol(ctxt,strtok,rslt); 
                                          return  rslt;
                                        }

@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.4 2003-04-15 21:13:07 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.5 2003-06-25 07:23:14 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -10,6 +10,8 @@ import junit.framework.*;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import java.io.*;
 /**
  * @author jjc
@@ -20,6 +22,10 @@ public class MoreTests extends TestCase implements RDFErrorHandler, ARPErrorNumb
     TestSuite suite = new TestSuite("ARP Plus");
     suite.addTest(new MoreTests("testEncodingMismatch1"));
     suite.addTest(new MoreTests("testEncodingMismatch2"));
+	suite.addTest(new MoreTests("testNullBaseParamOK"));
+	suite.addTest(new MoreTests("testNullBaseParamError"));
+	suite.addTest(new MoreTests("testEmptyBaseParamOK"));
+	suite.addTest(new MoreTests("testEmptyBaseParamError"));
     return suite;
    }
    MoreTests(String s){
@@ -54,6 +60,68 @@ public class MoreTests extends TestCase implements RDFErrorHandler, ARPErrorNumb
 
         checkExpected();
     }
+    
+    public void testNullBaseParamOK() throws IOException {
+		Model m = new ModelMem();
+		Model m1 = new ModelMem();
+		RDFReader rdr = m.getReader();
+		FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf");
+		
+		rdr.setErrorHandler(this);
+		expected = new int[]{  };
+		rdr.read(m,fin,"http://example.org/");
+		fin.close();
+		fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf");
+		rdr.read(m1,fin,null);
+		fin.close();
+        assertTrue("Base URI should have no effect.",m.isIsomorphicWith(m1));
+		checkExpected();
+    }
+    
+    public void testNullBaseParamError() throws IOException {
+		Model m = new ModelMem();
+		RDFReader rdr = m.getReader();
+		FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf");
+		rdr.setErrorHandler(this);
+		expected = new int[]{ ERR_RESOLVING_URI_AGAINST_NULL_BASE }; 
+		rdr.read(m,fin,null);
+		fin.close();
+		checkExpected();
+    }
+    
+
+	public void testEmptyBaseParamOK() throws IOException {
+		Model m = new ModelMem();
+		Model m1 = new ModelMem();
+		RDFReader rdr = m.getReader();
+		FileInputStream fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf");
+		
+		rdr.setErrorHandler(this);
+		expected = new int[]{};
+		rdr.read(m,fin,"http://example.org/");
+		fin.close();
+		fin = new FileInputStream("testing/wg/rdfms-identity-anon-resources/test001.rdf");
+		rdr.read(m1,fin,"");
+		fin.close();
+		assertTrue("Empty base URI should have no effect.[" + m1.toString() +"]",m.isIsomorphicWith(m1));
+		checkExpected();
+	}
+    
+	public void testEmptyBaseParamError() throws IOException {
+		Model m = new ModelMem();
+		RDFReader rdr = m.getReader();
+		FileInputStream fin = new FileInputStream("testing/wg/rdfms-difference-between-ID-and-about/test1.rdf");
+		rdr.setErrorHandler(this);
+		expected = new int[]{ WARN_RESOLVING_URI_AGAINST_EMPTY_BASE}; 
+		rdr.read(m,fin,"");
+		fin.close();
+		Model m1 = new ModelMem();
+		m1.createResource("#foo").addProperty(RDF.value,"abc");
+		assertTrue("Empty base URI should produce relative URI.[" + m.toString() +"]",m.isIsomorphicWith(m1));
+		checkExpected();
+		
+	}
+    
     private void checkExpected() {
         for (int i=0; i<expected.length; i++)
           if (expected[i]!=0) {

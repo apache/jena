@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testModelEquals.java,v 1.4 2003-06-17 14:39:39 chris-dollin Exp $
+ * $Id: testModelEquals.java,v 1.5 2003-06-25 07:23:14 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -56,10 +56,10 @@ public class testModelEquals extends Object {
                 empty(m1); empty(m2);
                 m1.read(
                     ResourceReader.getInputStream(filebase + Integer.toString(n) + "-1.rdf"),
-                    "");
+                    "http://www.example.org/");
                 m2.read(
                     ResourceReader.getInputStream(filebase + Integer.toString(n) + "-2.rdf"),
-                    "");
+                    "http://www.example.org/");
                 if (! (m1.isIsomorphicWith(m2) == results[n])) {
                     error(test, n);
                     System.out.println("m1:");

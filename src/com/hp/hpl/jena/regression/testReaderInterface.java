@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testReaderInterface.java,v 1.6 2003-06-16 15:15:24 chris-dollin Exp $
+ * $Id: testReaderInterface.java,v 1.7 2003-06-25 07:23:14 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class testReaderInterface extends Object {
 
@@ -107,7 +107,7 @@ public class testReaderInterface extends Object {
                     }
 
 
-            n++; m1.read(ResourceReader.getInputStream(filebase + "1.rdf"), "");
+            n++; m1.read(ResourceReader.getInputStream(filebase + "1.rdf"), "http://example.org/");
 
             n++; m1.read(
                     ResourceReader.getInputStream(filebase + "2.nt"),  "", "N-TRIPLE");

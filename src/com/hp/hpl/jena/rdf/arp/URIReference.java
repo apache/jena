@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.3 2003-05-20 13:49:19 chris-dollin Exp $
+ * * $Id: URIReference.java,v 1.4 2003-06-25 07:23:07 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -49,21 +49,21 @@ class URIReference  implements AResource
 
     
     /** Creates new URIReference */
-    final private URI uri;
-    URIReference(XMLContext ctxt,String uri) throws MalformedURIException  {
+    final private String uri;
+    URIReference(Location l, XMLContext ctxt,String uri) throws MalformedURIException, ParseException {
         
 //        this.uri = new URI(ctxt.getURI(),URIref.encode(uri));
-        this.uri = new URI(ctxt.getURI(),uri);
+        this.uri = ctxt.resolve(l, uri);
     }
     URIReference(String uri)  throws MalformedURIException  {
 //        this.uri = new URI(URIref.encode(uri));
-        this.uri = new URI(uri);
+        this.uri = new URI(uri).getURIString();
     }
     URIReference() {
         uri = null;
     }
     public String toString() {
-        return uri.toString();
+        return uri;
     }
 
     public boolean isAnonymous() {
@@ -75,7 +75,7 @@ class URIReference  implements AResource
     }
     
     public String getURI() {
-        return uri.getURIString();
+        return uri;
     }
     
     private Object userData;

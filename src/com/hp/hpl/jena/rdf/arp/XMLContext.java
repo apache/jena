@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: XMLContext.java,v 1.1.1.1 2002-12-19 19:16:51 bwm Exp $
+ * * $Id: XMLContext.java,v 1.2 2003-06-25 07:23:06 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -48,30 +48,36 @@ class XMLContext extends Object {
     final private String lang;
     final private URI uri;
     final private Map namespaces;
-    private XMLContext document;
+    XMLContext document;
     /** Creates new XMLContext */
-    XMLContext(String base,String lang) throws MalformedURIException {
-        this(null,base,lang,ParserSupport.xmlNameSpace());
-        document = this;
+    XMLContext(String base) throws MalformedURIException {
+        this(base,new URI(base));
     }
+	XMLContext(String base,URI uri) {
+		this(null,uri,base,"",ParserSupport.xmlNameSpace());
+		document = this;
+	}
+    
+    /*
    private XMLContext(XMLContext document,String base,String lang,Map namespaces) throws MalformedURIException {
         this(document,new URI(base),base,lang,namespaces);
     }
-    private XMLContext(XMLContext document,URI uri,String base,String lang,Map namespaces)  {
-        this.base=base!=null?base:"http://error.com/no-xml-base-specified";
+    */
+    XMLContext(XMLContext document,URI uri,String base,String lang,Map namespaces)  {
+        this.base=base;
         this.lang=lang;
         this.uri = uri;
         this.document = document;
         this.namespaces = namespaces;
     }
     XMLContext withBase(String b)  throws MalformedURIException {
-        return new XMLContext(document,b,lang,namespaces);
+        return new XMLContext(document,new URI(b),b,lang,namespaces);
     }
     XMLContext revertToDocument() {
         return document.withLang(lang);
     }
     XMLContext withLang(String l) {
-        return new XMLContext(document,uri,base,l,namespaces);
+        return clone(document,uri,base,l,namespaces);
     }
     String getLang() {
         return lang;
@@ -86,7 +92,7 @@ class XMLContext extends Object {
     XMLContext addNamespace(Token prefix, Token ur) {
     	Map newns = new HashMap(namespaces);
     	newns.put(((StrToken)prefix).value,((StrToken)ur).value);
-        return new XMLContext(document,uri,base,lang,newns);	
+        return clone(document,uri,base,lang,newns);	
     }
     URI getURI() {
         return uri;
@@ -97,4 +103,13 @@ class XMLContext extends Object {
     XMLContext getDocument() {
         return document;
     }
+    XMLContext clone(XMLContext document,URI uri,String base,String lang,Map namespaces) {
+    	return new XMLContext(document,uri,base,lang,namespaces);
+    }
+    String resolve(Location l, String uri) throws MalformedURIException, ParseException {
+	 return new URI(getURI(),uri).getURIString();
+    }
+	String resolveSameDocRef(Location l, String sameDoc) throws ParseException {
+	 return base + sameDoc;
+	}
 }

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPQname.java,v 1.1.1.1 2002-12-19 19:16:04 bwm Exp $
+ * * $Id: ARPQname.java,v 1.2 2003-06-25 07:23:07 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -66,13 +66,16 @@ class ARPQname extends Token {
         URIReference uri;
         try {
             uri = new URIReference(nameSpace+local);
+            /*
             if (nameSpace.startsWith("#"))
                 System.err.println(nameSpace+local);
+                */
         }
         catch ( MalformedURIException mal ) {
             // Distinguish between relative namespaces and other problems.
             try {
-                new URI(arp.documentContext.getURI(),nameSpace+local);
+            	arp.documentContext.resolve(location, nameSpace+local);
+                //new URI(arp.documentContext.getURI(),nameSpace+local);
                 // May have been relative namespace, since this is now OK.
                 // Or maybe unqualified element.
                 if ( nameSpace.length() == 0 ) {

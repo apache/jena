@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.9 2003-04-08 14:54:34 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.10 2003-06-25 07:23:06 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -100,11 +100,19 @@ public interface ARPErrorNumbers {
      treat this as rdf:parseType="Literal".
    */
     public int IGN_DAML_COLLECTION = 4;
+    
+	/**
+	 Indicates that no name is known for the current file being parsed.. 
+	 * (W005)
+	 */
+
+	public int IGN_NO_BASE_URI_SPECIFIED = 5;
+
+
     /**
-     Indicates that no name is known for the current file being parsed.
-    The ARP interface prevents the user from not (at least implicitly)
-     specifying a name. 
+     
      * (W100)
+     * @deprecated {@link #IGN_NO_BASE_URI_SPECIFIED}
      */
 
     public int WARN_XMLBASE_MISSING = 100;
@@ -344,6 +352,13 @@ public interface ARPErrorNumbers {
      * @see #ERR_ENCODING_MISMATCH
      */
     public int WARN_ENCODING_MISMATCH = 129;
+	/**
+	 * A base URI was required but "" was given. The 
+	 * RDF/XML input includes a relative URI, an rdf:ID or
+	 * some other same document reference. (W130).
+	 */
+	public int WARN_RESOLVING_URI_AGAINST_EMPTY_BASE = 130;
+
 
     /** Should not happen. 
         Please report occurrence to jjc@hpl.hp.com with test case, if possible. 
@@ -419,6 +434,13 @@ public interface ARPErrorNumbers {
      * @see #WARN_ENCODING_MISMATCH
      */
     public int ERR_ENCODING_MISMATCH = 210;
+    
+    /**
+     * A base URI was required but not given. The 
+     * RDF/XML input includes a relative URI, an rdf:ID or
+     * some other same document reference. (E201).
+     */
+    public int ERR_RESOLVING_URI_AGAINST_NULL_BASE = 211;
     /**   The error recovery code failed; this can occur. (E300)
     **/
     public int ERR_UNABLE_TO_RECOVER = 300;

@@ -13,7 +13,7 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
 
 
     static {
-        try { 
+        try {
    //         RDFList     = new URIReference(ARPFilter.rdfns+"List");
             RDFnil        = new URIReference(ARPFilter.rdfns+"nil");
 
@@ -1100,7 +1100,7 @@ E_END.
                                          Token t;
     t = jj_consume_token(AV_STRING);
                                          StrToken strtok = (StrToken)t;
-                                         String rslt = ctxt.getBase()+"#"+ strtok.value;
+                                         String rslt = ctxt.resolveSameDocRef(t.location, "#"+ strtok.value);
                                          X.checkIdSymbol(ctxt,strtok,rslt);
                                          {if (true) return  rslt;}
     throw new Error("Missing return statement in function");

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPResource.java,v 1.2 2003-05-20 13:49:19 chris-dollin Exp $
+ * * $Id: ARPResource.java,v 1.3 2003-06-25 07:23:06 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -101,6 +101,7 @@ class ARPResource implements  AResource {
     final private int genId = genIdCounter++;
     private int liCounter = 1;
     static String dummy = "http://jena.hpl.hp.com/arp/not/a/real/uri/";
+	static String nullDummy = "nullpointerexception://jena.hpl.hp.com/arp/";
     
     ARPResource(ARPFilter parent) {
         arp = parent;

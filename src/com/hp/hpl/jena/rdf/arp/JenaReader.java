@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- * * $Id: JenaReader.java,v 1.9 2003-06-13 14:23:47 chris-dollin Exp $
+ * * $Id: JenaReader.java,v 1.10 2003-06-25 07:23:06 jeremy_carroll Exp $
 
    AUTHOR:  Jeremy J. Carroll
  */
@@ -186,20 +186,13 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
         throws JenaException {
         try {
             model = m;
-            if (xmlBase == null) {
-                xmlBase = ARPResource.dummy;
-                errorHandler.error(
-                    new NullPointerException("A document base URI must be specified."));
-            }
-            if (!xmlBase.equals("")) {
+            if (xmlBase != null && !xmlBase.equals("")) {
                 try {
                     URI uri = new URI(xmlBase);
                 } catch (MalformedURIException e) {
                     errorHandler.error(e);
                 }
-            } else {
-                xmlBase = ARPResource.dummy;
-            }
+            } 
             inputS.setSystemId(xmlBase);
             arpf.setStatementHandler(new StatementHandler() {
                 public void statement(
@@ -231,7 +224,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             });
 
             arpf.setErrorHandler(new ARPSaxErrorHandler(errorHandler));
-            arpf.parse(inputS);
+            arpf.parse(inputS, xmlBase);
         } catch (IOException e) {
             throw new JenaException(e);
         } catch (SAXException e) {

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.6 2003-04-09 11:04:12 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.7 2003-06-25 07:23:06 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -260,7 +260,7 @@ IOException {
         //load(new InputStreamReader(in),xmlBase);
         InputSource inputS = new InputSource(in);
         inputS.setSystemId(xmlBase);
-        arpf.parse(inputS);
+        arpf.parse(inputS, xmlBase);
     }
 /** Load RDF/XML from an InputStream, using base URL http://unknown.org/.
  * @param in The input XML document.
@@ -268,7 +268,7 @@ IOException {
  * @throws IOException Occurring during XML processing.
  */   
     public void load(InputStream in) throws SAXException, IOException {
-        load(in,"http://unknown.org/");
+        load(in,"");
     }
 /** Load RDF/XML from a Reader, using base URL http://unknown.org/.
  * @param in The input XML document.
@@ -276,6 +276,6 @@ IOException {
  * @throws IOException Occurring during XML processing.
  */    
     public void load(Reader in) throws SAXException, IOException {
-        load(in,"http://unknown.org/");
+        load(in,"");
     }
 }
