@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestReasoners.java,v 1.14 2003-05-12 19:42:20 der Exp $
+ * $Id: TestReasoners.java,v 1.15 2003-05-15 17:28:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-05-12 19:42:20 $
+ * @version $Revision: 1.15 $ on $Date: 2003-05-15 17:28:20 $
  */
 public class TestReasoners extends TestCase {
     
@@ -88,12 +88,43 @@ public class TestReasoners extends TestCase {
         data2.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
         data2.add( new Triple(C2, RDFS.subClassOf.asNode(), C4) );
         infgraph.rebind(data2);
+            
+        // Incremental additions
+        Node a = Node.createURI("a");
+        Node b = Node.createURI("b");
+        Node c = Node.createURI("c");
+        infgraph.add(new Triple(a, RDFS.subClassOf.asNode(), b));
+        infgraph.add(new Triple(b, RDFS.subClassOf.asNode(), c));
         TestUtil.assertIteratorValues(this, 
-            infgraph.find(C1, null, null), 
+            infgraph.find(b, RDFS.subClassOf.asNode(), null), 
             new Object[] {
-                new Triple(C1, RDFS.subClassOf.asNode(), C1),
-                new Triple(C1, RDFS.subClassOf.asNode(), C2),
-                new Triple(C1, RDFS.subClassOf.asNode(), C4)
+                new Triple(b, RDFS.subClassOf.asNode(), c),
+                new Triple(b, RDFS.subClassOf.asNode(), b)
+            } );
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(a, RDFS.subClassOf.asNode(), null), 
+            new Object[] {
+                new Triple(a, RDFS.subClassOf.asNode(), a),
+                new Triple(a, RDFS.subClassOf.asNode(), b),
+                new Triple(a, RDFS.subClassOf.asNode(), c)
+            } );
+        Node p = Node.createURI("p");
+        Node q = Node.createURI("q");
+        Node r = Node.createURI("r");
+        infgraph.add(new Triple(p, RDFS.subPropertyOf.asNode(), q));
+        infgraph.add(new Triple(q, RDFS.subPropertyOf.asNode(), r));
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(q, RDFS.subPropertyOf.asNode(), null), 
+            new Object[] {
+                new Triple(q, RDFS.subPropertyOf.asNode(), q),
+                new Triple(q, RDFS.subPropertyOf.asNode(), r)
+            } );
+        TestUtil.assertIteratorValues(this, 
+            infgraph.find(p, RDFS.subPropertyOf.asNode(), null), 
+            new Object[] {
+                new Triple(p, RDFS.subPropertyOf.asNode(), p),
+                new Triple(p, RDFS.subPropertyOf.asNode(), q),
+                new Triple(p, RDFS.subPropertyOf.asNode(), r)
             } );
     }
     

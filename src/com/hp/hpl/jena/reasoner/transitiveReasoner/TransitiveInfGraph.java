@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.7 2003-05-12 19:42:19 der Exp $
+ * $Id: TransitiveInfGraph.java,v 1.8 2003-05-15 17:30:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -29,7 +29,7 @@ import java.util.HashSet;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-05-12 19:42:19 $
+ * @version $Revision: 1.8 $ on $Date: 2003-05-15 17:30:00 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -146,6 +146,45 @@ public class TransitiveInfGraph extends BaseInfGraph {
      */
     public ExtendedIterator find(TriplePattern pattern) {
         return findWithContinuation(pattern, fdata);
+    }
+        
+    /**
+     * Add one triple to the data graph, run any rules triggered by
+     * the new data item, recursively adding any generated triples.
+     * TODO Will not correctly handle subPropertyOf subClassOf/subPropertyOf
+     */
+    public synchronized void add(Triple t) {
+        if (!isPrepared) prepare();
+        Node predicate = t.getPredicate();
+        if (specialPredicates.contains(predicate)) {
+            if (predicate.equals(TransitiveReasoner.directSubClassOf)  
+            || predicate.equals(TransitiveReasoner.subClassOf)) {
+                subClassCache.addRelation(t.getSubject(), t.getObject());
+            } else {
+                subPropertyCache.addRelation(t.getSubject(), t.getObject());
+            }
+        }
+        fdata.getGraph().add(t);
+    }
+    
+    /**
+     * Returns the bitwise or of ADD, DELETE, SIZE and ORDERED,
+     * to show the capabilities of this implementation of Graph.
+     * So a read-only graph that finds in an unordered fashion,
+     * but can tell you how many triples are in the graph returns
+     * SIZE.
+     */
+    public int capabilities() {
+        return ADD | SIZE;
+    }
+    
+    /** 
+     * Removes the triple t (if possible) from the set belonging to this graph.
+     * TODO: This will not work on subClass/subPropertOf yet. 
+     */   
+    public void delete(Triple t) {
+        if (!isPrepared) prepare();
+        fdata.getGraph().delete(t);
     }
 
 }
