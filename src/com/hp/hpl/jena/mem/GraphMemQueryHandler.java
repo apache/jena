@@ -1,7 +1,7 @@
 /*
 (c) Copyright 2004, Hewlett-Packard Development Company, LP
 [See end of file]
-$Id: GraphMemQueryHandler.java,v 1.1 2004-06-30 17:16:54 chris-dollin Exp $
+$Id: GraphMemQueryHandler.java,v 1.2 2004-09-03 15:06:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -36,12 +36,12 @@ public class GraphMemQueryHandler extends SimpleQueryHandler
 	
 	public ExtendedIterator findObjects()
 	    {
-	    return WrappedIterator.create( ((GraphMem) graph).objects.domain() );
+	    return WrappedIterator.create( ((GraphMem) graph).store.objects.domain() );
 	    }
 	
 	public ExtendedIterator findSubjects()
 	    {
-	    return WrappedIterator.create( ((GraphMem) graph).subjects.domain() );
+	    return WrappedIterator.create( ((GraphMem) graph).store.subjects.domain() );
 	    }
 	}
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.21 2004-09-03 10:48:20 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.22 2004-09-03 15:05:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -74,11 +74,10 @@ public class SimpleReifier implements Reifier
     /** */
     public ExtendedIterator allNodes()
         {
-        return WrappedIterator.create( nodeMap.keySet().iterator() ) .filterKeep ( completeFragment );
+        return WrappedIterator.create( nodeMap.tagIterator() ) .filterKeep ( completeFragment );
         }
         
     public ExtendedIterator allNodes( Triple t )
-        // { return allNodes() .filterKeep( matching( t ) );  }
         { 
         Set s = (Set) nodeMap.inverseMap.get( t );
         if (s == null)

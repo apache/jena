@@ -1,43 +1,44 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FragmentMap.java,v 1.8 2004-09-03 10:48:20 chris-dollin Exp $
+  $Id: FragmentMap.java,v 1.9 2004-09-03 15:05:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
 /**
-    a FragmentMap is a Map where the domain elements are Nodes
-    and the range elements are Triples or Fragments. The specialised
-    put methods return the range element that has been put, because
-    the context of use is usually of the form:
-<p>    
-    return map.putThingy( node, fragmentExpression )
-<p>
+    a FragmentMap maps Nodes to Triples/Fragments and from Triples to Nodes.
+    
     @author kers
 */
 
-public class FragmentMap extends HashMap
+public class FragmentMap 
     {
     public FragmentMap() { super(); }
     
-    protected HashMap inverseMap = new HashMap();
+    protected Map inverseMap = HashUtils.createMap();
+    
+    protected Map forwardMap = HashUtils.createMap();
     
     /**
         update the map with (node -> triple); return the triple
     */
     public Triple putTriple( Node key, Triple value )
         {
-        put( key, value );
+        forwardMap.put( key, value );
         inversePut( value, key );
         return value;
         }
+    
+    public Object get( Node tag )
+        { return forwardMap.get( tag ); }
     
     /**
      * @param value
@@ -56,7 +57,7 @@ public class FragmentMap extends HashMap
     */
     public void removeTriple( Node key, Triple value )
         {
-        remove( key );
+        forwardMap.remove( key );
         inverseRemove( value, key );
         }
         
@@ -80,7 +81,7 @@ public class FragmentMap extends HashMap
     */
     public Fragments putFragments( Node key, Fragments value )
         {
-        put( key, value );
+        forwardMap.put( key, value );
         return value;
         }        
         
@@ -115,7 +116,7 @@ public class FragmentMap extends HashMap
         Node subject = t.getSubject();
         if (subject.isConcrete())
             {
-            Object x = get( subject );  
+            Object x = forwardMap.get( subject );  
             return x == null
                 ? new NiceIterator()
                 : FragmentTripleIterator.toIterator( t, subject, x )
@@ -123,7 +124,7 @@ public class FragmentMap extends HashMap
             }
         else
             {
-            final Iterator it = this.entrySet().iterator();   
+            final Iterator it = forwardMap.entrySet().iterator();   
             return new FragmentTripleIterator( t, it );
             }
         }
@@ -140,13 +141,16 @@ public class FragmentMap extends HashMap
         }
 
     /**
-     * @param t
-     * @return
-     */
+         Answer true iff we have a reified triple <code>t</code>.
+    */
     public boolean hasTriple( Triple t )
-        {
-        return inverseMap.containsKey( t );
-        }
+        { return inverseMap.containsKey( t ); }
+
+    /**
+         Answer an iterator over all the fragment tags in this map.
+     */
+    public Iterator tagIterator()
+        { return forwardMap.keySet().iterator(); }
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.41 2004-07-28 13:29:58 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.42 2004-09-03 15:06:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -19,15 +19,8 @@ import java.util.*;
 */
 public class GraphMem extends GraphMemBase implements Graph 
     {
-    NodeToTriplesMap subjects = new NodeToTriplesMap()
-    	{ public Node getIndexNode( Triple t ) { return t.getSubject(); } };
-    	
-    NodeToTriplesMap predicates = new NodeToTriplesMap()
-    	{ public Node getIndexNode( Triple t ) { return t.getPredicate(); } };
-    	
-    NodeToTriplesMap objects = new NodeToTriplesMap()
-    	{ public Node getIndexNode( Triple t ) { return t.getObject(); } };
-
+    protected GraphTripleStore store = new GraphTripleStore();
+    
     /**
         Initialises a GraphMem with the Minimal reification style
     */
@@ -41,40 +34,25 @@ public class GraphMem extends GraphMemBase implements Graph
         { super( style ); }
 
     protected void destroy()
-        { subjects = predicates = objects = null; }
+        { store.destroy(); }
 
     public void performAdd( Triple t )
-        {
-        if (getReifier().handledAdd( t ))
-            return;
-        else if (subjects.add( t.getSubject(), t ))
-            {
-            predicates.add( t.getPredicate(), t );
-            objects.add( t.getObject(), t ); 
-            }
-        }
+        { if (!getReifier().handledAdd( t )) store.add( t ); }
 
     public void performDelete( Triple t )
-        {
-        if (getReifier().handledRemove( t ))
-            return;
-        else if (subjects.remove( t.getSubject(), t ))
-        	{
-            predicates.remove( t.getPredicate(), t );
-            objects.remove( t.getObject(), t ); 
-            }
-        }
+        { if (!getReifier().handledRemove( t )) store.remove( t ); }
+
 
     public int size()  
         {
         checkOpen();
-        return subjects.size();
+        return store.size();
         }
 
     public boolean isEmpty()
         {
         checkOpen();
-        return subjects.isEmpty();
+        return store.isEmpty();
         }
     
     public QueryHandler queryHandler()
@@ -89,76 +67,29 @@ public class GraphMem extends GraphMemBase implements Graph
         return bulkHandler;
         }
 
-    /** 
-     	Answer an ExtendedIterator returning all the triples from this Graph that
-     	match the pattern <code>m = (S, P, O)</code>.
-     	
-     	<p>Because the node-to-triples maps index on each of subject, predicate,
-     	and (non-literal) object, concrete S/P/O patterns can immediately select
-        an appropriate map. Because the match for literals must be by sameValueAs,
-        not equality, the optimisation is not applied for literals.
-        
-        <p>Practice suggests doing the predicate test <i>last</i>, because there are
-        "usually" many more statements than predicates, so the predicate doesn't
-        cut down the search space very much. By "practice suggests" I mean that
-        when the order went, accidentally, from S/O/P to S/P/O, performance on
-        (ANY, P, O) searches on largish models with few predicates declined
-        dramatically - specifically on the not-galen.owl ontology.
-    */
+    /**
+         Answer an ExtendedIterator over all the triples in this graph that match the
+         triple-pattern <code>m</code>. Delegated to the store.
+     */
     public ExtendedIterator find( TripleMatch m ) 
         {
         checkOpen();
-        Triple tm = m.asTriple();
-        Node pm = tm.getPredicate();
-        Node om = tm.getObject();
-        Node sm = tm.getSubject();
-        if (sm.isConcrete())
-            return new Removable( subjects.iterator( sm , tm ), predicates, objects );
-        else if (om.isConcrete() && !om.isLiteral())
-            return new Removable( objects.iterator( om, tm ), subjects, predicates );
-        else if (pm.isConcrete())
-            return new Removable( predicates.iterator( pm, tm ), subjects, objects );
-        else
-            return new Removable( subjects.iterator( tm ), predicates, objects );
+        return store.find( m.asTriple() );
         }
 
     /**
          Answer true iff this graph contains <code>t</code>. If <code>t</code>
-         happens to be concrete, then we hand responsibility over to one of the
-         index graphs -- doesn't matter which one, but we've picked the subjects.
+         happens to be concrete, then we hand responsibility over to the store.
+         Otherwise we use the default implementation.
     */
     public boolean contains( Triple t )
-        { return t.isConcrete() ? subjects.contains( t ) : super.contains( t ); }
+        { return t.isConcrete() ? store.contains( t ) : super.contains( t ); }
     
     /**
-         An iterator wrapper for NodeToTriplesMap iterators which ensures that
-         a .remove on the base iterator is copied to the other two maps of this
-         GraphMem. The current triple (the most recent result of .next) is
-         tracked by the parent <code>TrackingTripleIterator</code> so that it
-         can be removed from the other two maps, passed in when this Removable
-         is created.
-         
-        @author kers
+        Clear this GraphMem, ie remove all its triples (delegated to the store).
     */
-    static class Removable extends TrackingTripleIterator
-    	{
-        protected NodeToTriplesMap A;
-        protected NodeToTriplesMap B;
-        
-        Removable( Iterator it, NodeToTriplesMap A, NodeToTriplesMap B )
-        	{ 
-            super( it ); 
-            this.A = A; 
-            this.B = B; 
-            }
-
-        public void remove()
-            {
-            super.remove();
-            A.remove( current );
-            B.remove( current );
-            }
-    	}
+    public void clear()
+        { store.clear(); }
     }
 
 /*
