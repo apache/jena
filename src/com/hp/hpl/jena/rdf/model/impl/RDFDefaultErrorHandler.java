@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFDefaultErrorHandler.java,v 1.3 2003-07-01 12:48:27 chris-dollin Exp $
+ * $Id: RDFDefaultErrorHandler.java,v 1.4 2003-07-01 13:28:40 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -39,11 +39,11 @@ import org.apache.log4j.*;
  * This uses log4j as its utility.
  * @see     com.hp.hpl.jena.util.Log
  * @author  jjc,bwm
- * @version $Revision: 1.3 $ $Date: 2003-07-01 12:48:27 $
+ * @version $Revision: 1.4 $ $Date: 2003-07-01 13:28:40 $
  */
 public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
 
-    protected static Logger logger = Logger.getLogger( RDFDefaultErrorHandler.class );
+    public static final Logger logger = Logger.getLogger( RDFDefaultErrorHandler.class );
     
     /** Creates new RDFDefaultErrorHandler */
     public RDFDefaultErrorHandler() {

@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.25 2003-07-01 12:48:28 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.26 2003-07-01 13:28:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -10,7 +10,7 @@ package com.hp.hpl.jena.xmloutput.test;
 import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.Util;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.graph.*;
@@ -25,11 +25,11 @@ import java.util.*;
 
 import java.io.*;
 import com.hp.hpl.jena.util.TestLogger;
-import org.apache.log4j.Logger;
+import org.apache.log4j.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.25 $ $Date: 2003-07-01 12:48:28 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.26 $ $Date: 2003-07-01 13:28:48 $
  */
 
 public class TestXMLFeatures extends TestCase {
@@ -37,6 +37,8 @@ public class TestXMLFeatures extends TestCase {
 	static AwkMatcher matcher = PrettyWriterTest.matcher;
     
     static protected Logger logger = Logger.getLogger( TestXMLFeatures.class );
+
+    static { logger.setLevel( Level.OFF ); }
     
 	static private class Change {
 		void code(RDFWriter w) {
@@ -685,11 +687,23 @@ public class TestXMLFeatures extends TestCase {
 	}
 
     public void testBadURIAsProperty1() throws IOException {
-        checkPropURI("_:aa", null, null, BadURI);
+        try
+            { 
+            RDFDefaultErrorHandler.logger.setLevel( Level.OFF );
+            checkPropURI("_:aa", null, null, BadURI);
+            }
+        finally
+            { RDFDefaultErrorHandler.logger.setLevel( Level.WARN ); }
     }
 
     public void testBadURIAsProperty2() throws IOException {
-        checkPropURI("_:aa", "allowBadURIs", "true", NoError);
+        try
+            { 
+            RDFDefaultErrorHandler.logger.setLevel( Level.OFF );
+            checkPropURI("_:aa", "allowBadURIs", "true", NoError);
+            }
+        finally
+            { RDFDefaultErrorHandler.logger.setLevel( Level.WARN ); }
     }
 
     public void testLiAsProperty1() throws IOException {
@@ -1051,5 +1065,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.25 2003-07-01 12:48:28 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.26 2003-07-01 13:28:48 chris-dollin Exp $
  */
