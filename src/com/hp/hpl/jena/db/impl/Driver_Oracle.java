@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Driver_Oracle.java,v 1.4 2003-05-13 16:44:30 hkuno Exp $
+  $Id: Driver_Oracle.java,v 1.5 2003-06-18 20:58:48 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -46,7 +46,8 @@ public class Driver_Oracle extends DriverRDB {
 		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		ID_SQL_TYPE = "INTEGER";
 		INSERT_BY_PROCEDURE = false;
-		MAX_LITERAL = 4000;
+		INDEX_KEY_LENGTH = 250;
+		LONG_OBJECT_LENGTH = 250;
 		SKIP_ALLOCATE_ID = false;
 		SKIP_DUPLICATE_CHECK = true;
 		EMPTY_LITERAL_MARKER = "EmptyLiteral";
@@ -76,24 +77,6 @@ public class Driver_Oracle extends DriverRDB {
 		}
 	}
 	
-	/**
-	 * Convert a string into a form suitable for a legal identifier
-	 * name for the database type.
-	 * @author hkuno
-	 *
-	 */
-	public String toDBIdentifier(String aString) {
-		String newString = super.toDBIdentifier(aString);
-		if (m_tablecounter > 999) {
-			Log.severe("Driver_Oracle m_tablecounter exceeded 999");
-		}
-		
-		// 11 characters for index name, 3 chars for counter
-		if (newString.length() > MAX_DB_IDENTIFIER_LENGTH) 
-			newString = newString.substring(0,MAX_DB_IDENTIFIER_LENGTH - 14) + m_tablecounter++;
-		return newString;
-	}
-
 	/**
 	 * If the underlying database connection supports transactions,
 	 * call commit(), then turn autocommit on.

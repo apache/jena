@@ -7,17 +7,28 @@ package com.hp.hpl.jena.db.impl;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.CRC32;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
+import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Node_Literal;
+import com.hp.hpl.jena.graph.Node_URI;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.util.Log;
 
+import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.shared.*;
 
 //=======================================================================
@@ -34,7 +45,7 @@ import com.hp.hpl.jena.shared.*;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.14 $ on $Date: 2003-05-14 07:36:47 $
+* @version $Revision: 1.15 $ on $Date: 2003-06-18 20:58:49 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -74,12 +85,47 @@ public abstract class DriverRDB implements IRDBDriver {
    /** The name of the database type this driver supports */
    protected String DATABASE_TYPE;
 
-   /** The maximum size of literals that can be added to Statement table */
-   protected int MAX_LITERAL;
+   /** The maximum size of index key (or a component of a key) */
+   protected int INDEX_KEY_LENGTH;
+   /** The maximum size of an object that can be stored in a Statement table */
+
+   protected boolean HAS_XACTS;
+   /** true if graphs using this database instance use transactions.
+    * note, this differs from m_transactionSupported because HAS_XACTS
+    * is a user settable parameter. the underlying db engine may support
+    * transactions but an application may prefer to run without transactions
+    * for better performance.
+    */
+   
+   protected boolean STRINGS_TRIMMED;
+   /** true if the database engine will trim trailing spaces in strings. to
+    *  prevent this, append EOS to strings that should not be trimmed.
+    */
+   
+   protected String EOS = "";
+   protected char	EOS_CHAR = ':';
+   protected int	EOS_LEN = 0;
+   /** EOS is appended to most RDB strings to deal with string trimming. if
+    *  STRINGS_TRIMMED is false, EOS is null. otherwise, EOS is EOS_CHAR.
+    *  EOS_LEN is the length of EOS (0 or 1).
+    */
+   
+   
+   protected boolean URI_COMPRESS;
+   /** true if URI's are to be compressed by storing prefixes (an approximation
+    *  of a namespace) in the JENA_PREFIX table. note that "short" prefixes are
+    *  not stored, i.e., the prefix length not more than URI_COMPRESS_LENGTH.
+    */
+   
+   protected int URI_COMPRESS_LENGTH;
+   /** if URI_COMPRESS is true, compress prefixes that are longer than this.
+
+   /** The maximum size of an object that can be stored in a Statement table */
+   protected int LONG_OBJECT_LENGTH;
 
    /** The SQL type to use for storing ids (compatible with wrapDBID) */
    protected String ID_SQL_TYPE;
-
+   
    /** Set to true if the insert operations already check for duplications */
    protected boolean SKIP_DUPLICATE_CHECK;
 
@@ -98,6 +144,7 @@ public abstract class DriverRDB implements IRDBDriver {
 
    /** Set to true if the insert operations should be done using the "proc" versions */
    protected boolean INSERT_BY_PROCEDURE;
+      
    
 // =======================================================================
 //	Common variables
@@ -106,7 +153,7 @@ public abstract class DriverRDB implements IRDBDriver {
 	* Holds base name of AssertedStatement table.
 	* Every triple store has at least one tables for AssertedStatements.
 	*/
-   protected static final String ASSERTED_TABLE_BASE ="JENA_";
+   protected static final String TABLE_BASE_NAME = "JENA_";
   
    /** Set to true to enable cache of pre-prepared statements */
    protected boolean CACHE_PREPARED_STATEMENTS = true;
@@ -115,11 +162,25 @@ public abstract class DriverRDB implements IRDBDriver {
    protected String LAYOUT_TYPE = "TripleStore";
 
    /** Default name of the table that holds system property graph asserted statements **/
-   protected final String SYSTEM_PROP_TNAME = "SYS_STMTASSERTED";
+   protected final String SYSTEM_STMT_TABLE = TABLE_BASE_NAME + "SYS_STMT";
+   
+   /** Name of the long literal table **/
+   protected final String LONG_LIT_TABLE = "JENA_LONG_LIT";
+   
+   /** Name of the long URI table **/
+   protected final String LONG_URI_TABLE = "JENA_LONG_URI";
+
+   /** Name of the prefix table **/
+   protected final String PREFIX_TABLE = "JENA_PREFIX";
+
     
-   /** Name of the grpah holding default properties (the one's that a newly-created
+   /** Name of the graph holding default properties (the one's that a newly-created
 	*  graph will have by default **/
    protected final String DEFAULT_PROPS = "JENA_DEFAULT_GRAPH_PROPERTIES";
+   
+   /** Unique numeric identifier of the graph holding default properties **/
+   protected final int DEFAULT_ID = 0;
+
         
    /** Driver version number */
    protected final String VERSION = "2.0alpha";
@@ -191,8 +252,8 @@ public abstract class DriverRDB implements IRDBDriver {
 		}
 		
 		// The database has already been formatted - just grab the properties
-		IPSet pSet = createIPSetInstanceFromName(m_psetClassName, SYSTEM_PROP_TNAME);
-		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet);
+		IPSet pSet = createIPSetInstanceFromName(m_psetClassName, SYSTEM_STMT_TABLE);
+		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet, DEFAULT_ID);
 		m_dbProps = new DBPropDatabase(m_sysProperties);
 		return m_sysProperties;		
 	}
@@ -203,7 +264,8 @@ public abstract class DriverRDB implements IRDBDriver {
 	protected SpecializedGraph formatAndConstructSystemSpecializedGraph() {
 
 		try {
-			m_sql.runSQLGroup("initDBtables");
+			String [] params = 	getDbInitTablesParams();
+			m_sql.runSQLGroup("initDBtables", params);
 			if (!SKIP_ALLOCATE_ID) {
 				Iterator seqIt = getSequences().iterator();
 				while (seqIt.hasNext()) {
@@ -211,27 +273,42 @@ public abstract class DriverRDB implements IRDBDriver {
 				}
 			}
 			m_sql.runSQLGroup("initDBgenerators");
-			m_sql.runSQLGroup("initDBprocedures");
+//			m_sql.runSQLGroup("initDBprocedures");
 		} catch (SQLException e) {
 			com.hp.hpl.jena.util.Log.warning("Problem formatting database", e);
 			throw new RDFRDBException("Failed to format database", e);
 		}
 		
 		// Construct the system properties
-		IPSet pSet = createIPSetInstanceFromName(m_psetClassName, SYSTEM_PROP_TNAME);
-		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet);
+		IPSet pSet = createIPSetInstanceFromName(m_psetClassName, SYSTEM_STMT_TABLE);
+		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet, DEFAULT_ID);
 						
 		// The following call constructs a new set of database properties and
 		// adds them to the m_sysProperties specialized graph.
 		m_dbProps = new DBPropDatabase( m_sysProperties, m_dbcon.getDatabaseType(), 
-		                                VERSION, String.valueOf(MAX_LITERAL));
+		                                VERSION, String.valueOf(LONG_OBJECT_LENGTH));
 			
 		// Now we also need to construct the parameters that will be the
 		// default settings for any graph added to this database
-		new DBPropGraph( m_sysProperties, DEFAULT_PROPS, "generic");
+		DBPropGraph def_prop = new DBPropGraph( m_sysProperties, DEFAULT_PROPS, "generic");
+		
+		String reifTbl = createTable(DEFAULT_ID, true);
+		String stmtTbl = createTable(DEFAULT_ID, false);
+		
+		def_prop.addGraphId(DEFAULT_ID);
+		def_prop.addStmtTable(stmtTbl);
+		def_prop.addReifTable(reifTbl);
 
 		return m_sysProperties;		
 	}
+	
+	abstract String[] getDbInitTablesParams();
+	
+	abstract String[] getCreateTableParams( int graphId, boolean isReif );
+	
+	abstract public int graphIdAlloc ( String graphName );	
+	
+	abstract public int getLastInsertID();
 	
 	
 	/**
@@ -240,14 +317,48 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public List createSpecializedGraphs(DBPropGraph graphProperties) {
 		
+		String graphName = graphProperties.getName();
+		String stmtTbl = null;
+		String reifTbl = null;
+		String dbSchema;
+		int graphId = graphIdAlloc(graphName);
+		graphProperties.addGraphId(graphId);
+				
+		dbSchema = graphProperties.getDBSchema();
+		// use the default schema if:
+		// 1) no schema is specified and we are creating the default (unnamed) graph
+		// 2) a schema is specified and it is the default (unnamed) graph
+		if ( ((dbSchema == null) && graphName.equals(GraphRDB.DEFAULT)) ||
+			 ((dbSchema != null) && dbSchema.equals(GraphRDB.DEFAULT)) )
+			dbSchema = DEFAULT_PROPS;  // default graph should use default tables
+		if ( dbSchema != null ) {
+			DBPropGraph schProp = DBPropGraph.findPropGraphByName(getSystemSpecializedGraph(),
+												dbSchema );
+			if ( schProp != null ) {
+				reifTbl = schProp.getReifTable();
+				stmtTbl = schProp.getStmtTable();
+			}
+			if ( (reifTbl == null) || (stmtTbl == null) )
+				throw new RDFRDBException("Creating graph " + graphName +
+					": referenced schema not found: " + dbSchema);
+		} else {
+			reifTbl = createTable(graphId, true);	
+			stmtTbl = createTable(graphId, false);	
+			if ( (reifTbl == null) || (stmtTbl == null) )
+				throw new RDFRDBException("Creating graph " + graphName +
+					": cannot create tables");
+		}
+		graphProperties.addStmtTable(stmtTbl);
+		graphProperties.addReifTable(reifTbl);
+			
 		// Add the reifier first
-		DBPropPSet pSetReifier = new DBPropPSet(m_sysProperties, m_psetReifierClassName);
+		DBPropPSet pSetReifier = new DBPropPSet(m_sysProperties, m_psetReifierClassName, reifTbl);
 		DBPropLSet lSetReifier = new DBPropLSet(m_sysProperties, "LSET_"+graphProperties.getName()+"_REIFIER", m_lsetReifierClassName);
 		lSetReifier.setPSet(pSetReifier);
 		graphProperties.addLSet(lSetReifier);
 		
 		// Now add support all all non-reified triples
-		DBPropPSet pSet = new DBPropPSet(m_sysProperties, m_psetClassName);
+		DBPropPSet pSet = new DBPropPSet(m_sysProperties, m_psetClassName, stmtTbl);
 		DBPropLSet lSet = new DBPropLSet(m_sysProperties, "LSET_"+graphProperties.getName(), m_lsetClassName);
 		lSet.setPSet(pSet);
 		graphProperties.addLSet(lSet);
@@ -266,14 +377,15 @@ public abstract class DriverRDB implements IRDBDriver {
 	public List recreateSpecializedGraphs(DBPropGraph graphProperties) {
 		
 		List result = new ArrayList();
+		int dbGraphId = graphProperties.getGraphId();
 
 		Iterator it = graphProperties.getAllLSets();
 		while(it.hasNext() ) {
 			DBPropLSet lSetProps = (DBPropLSet)it.next();
 			DBPropPSet pSetProps = lSetProps.getPset();
 
-			IPSet pSet = createIPSetInstanceFromName(pSetProps.getType(), pSetProps.getName());		
-			result.add( createLSetInstanceFromName( lSetProps.getType(), pSet));		
+			IPSet pSet = createIPSetInstanceFromName(pSetProps.getType(), pSetProps.getTable());		
+			result.add( createLSetInstanceFromName( lSetProps.getType(), pSet, dbGraphId));		
 		}
 		
 		return result;		
@@ -285,13 +397,14 @@ public abstract class DriverRDB implements IRDBDriver {
      * @param pName name of a class that implements IPSet.
      * @return an instance of the named class with the db connection set.
      */
-	private IPSet createIPSetInstanceFromName(String className, String tableName) {
+	private IPSet createIPSetInstanceFromName(String className, String tblName) {
 		IPSet pSet = null;		
 		try {
+			String tblname;
 			// get PSet
 			pSet = (IPSet) Class.forName(className).newInstance();
 			pSet.setDriver(this);
-			pSet.setMaxLiteral(MAX_LITERAL);
+			pSet.setMaxLiteral(LONG_OBJECT_LENGTH);
 			pSet.setSQLType(ID_SQL_TYPE);
 			pSet.setSkipDuplicateCheck(SKIP_DUPLICATE_CHECK);
 			pSet.setSkipAllocateId(SKIP_ALLOCATE_ID);
@@ -299,20 +412,20 @@ public abstract class DriverRDB implements IRDBDriver {
 			pSet.setSQLCache(m_sql);
 			pSet.setInsertByProcedure(INSERT_BY_PROCEDURE);
 			pSet.setCachePreparedStatements(CACHE_PREPARED_STATEMENTS);
-			pSet.setASTname(ASSERTED_TABLE_BASE+tableName);
+			pSet.setASTname(tblName);
 		} catch (Exception e) {
 			Log.warning("Unable to create IPSet instance " + e);
 		}
 		return pSet;
 	}	
 		
-	private SpecializedGraph createLSetInstanceFromName(String lSetName, IPSet pset) {
+	private SpecializedGraph createLSetInstanceFromName(String lSetName, IPSet pset, int dbGraphID) {
 		SpecializedGraph sg = null;		
 		try {
 			Class cls = Class.forName(lSetName);
-			Class[] params = {IPSet.class};
+			Class[] params = {IPSet.class, Integer.class};
 			java.lang.reflect.Constructor con = cls.getConstructor(params);
-			Object[] args = {pset};
+			Object[] args = {pset, new Integer(dbGraphID)};
 			sg = (SpecializedGraph) con.newInstance(args);
 		} catch (Exception e) {
 			Log.severe("Unable to create instance of SpecializedGraph " + e);
@@ -501,6 +614,36 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public void formatDB() throws RDFRDBException {
 	}
+	
+	/**
+	 * Create a table for storing asserted or reified statements.
+	 * 
+	 * @param graphId the graph which the table is created.
+	 * @param isReif true if table stores reified statements.
+	 * @return the name of the new table 
+	 * 
+	 */
+	public String createTable( int graphId, boolean isReif) { 	
+		String opname = isReif ? "createReifStatementTable" : "createStatementTable";
+		int i = 0;
+		String params[];
+		while ( true ) {
+			params = getCreateTableParams(graphId, isReif);
+			try {
+				m_sql.runSQLGroup(opname, params);
+				break;
+			} catch (SQLException e) {
+				i++;
+				if ( i > 5 ) {
+					com.hp.hpl.jena.util.Log.warning("Problem creating table", e);
+					throw new RDFRDBException("Failed to create table: " + params[0], e);
+				}
+			}
+		}
+		return params[0];
+	}
+
+
 
 	/**
 	 * Throws an UnsupportedOperation exception.
@@ -657,19 +800,584 @@ public abstract class DriverRDB implements IRDBDriver {
     public boolean supportsJenaReification() {
     	return false;
     }
+    	
+	
+	/*
+	 * The following routines are responsible for encoding nodes
+	 * as database structures. For each node type stored (currently,
+	 * literals, URI, blank), there are two possible encodings
+	 * depending on the node size. Small nodes may be stored
+	 * within a statement table. If the node is long (will not
+	 * fit within the statement table), it is be stored in a
+	 * separate table for that node type.
+	 * 
+	 * In addition, for resources (URI, blank nodes), the URI
+	 * may be optionally compressed. Below, the possibilites
+	 * are enumerated.
+	 * 
+	 * Literal Encoding in Statement Tables
+	 * 	Short Literal:	Lv:[langLen]:[datatypeLen]:[langString][datatypeString]value[:]
+	 * 	Long Literal:	Lr:dbid
+	 * Literal Encoding in Long Literal Table
+	 * 	Literal:		Lv:[langLen]:[datatypeLen]:[langString][datatypeString]head[:] hash tail
+	 * 
+	 * Comments:
+	 * 		L indicates a literal
+	 * 		v indicates a value
+	 * 		r indicates a reference to another table
+	 * 		: is used as a delimiter. note that MySQL trims trailing white space for
+	 * 			certain VARCHAR columns so an extra delimiter is appended when necessary
+	 * 			for those columns. it is not required for dbid, however. 
+	 * 		dbid references the long literal table
+	 * 		langLen is the length of the language identifier for the literal
+	 * 		langString is the language identifier
+	 * 		datatypeLen is the length of the datatype for the literal
+	 * 		datatypeString is the datatype for the literal
+	 * 		value is the lexical form of the string
+	 * 		head is a prefix of value that can be indexed
+	 * 		hash is the CRC32 hash value for the tail
+	 * 		tail is the remainder of the value that cannot be indexed
+	 * 		
+	 * 
+	 * 
+	 * URI Encoding in Statement Tables
+	 * 	Short URI:	Uv:[pfx_dbid]:URI[:]
+	 * 	Long URI:	Ur:[pfx_dbid]:dbid
+	 * URI Encoding in Long URI Table
+	 * 	URI:		Uv:head[:] hash tail
+	 * 
+	 * Comments:
+	 * 		U indicates a URI
+	 * 		pfx_dbid references the prefix table. if the prefix is too
+	 * 			short (i.e., the length of the prefix is less than
+	 * 			URI_COMPRESS_LENGTH), the URI is not compressed and
+	 * 			pfx_dbid is null.
+	 * 		URI is the complete URI
+	 * 		other notation same as for literal encoding
+	 * 
+	 * Blank Node Encoding in Statement Tables
+	 * 	Blank Node:	Bv:[pfx_dbid]:bnid
+	 * 
+	 * Comments:
+	 * 		B indicates a blank node
+	 * 		bnid is the blank node identifier
+	 * 		other notation same as above
+	 * 		blank node encoding should always fit within a statement table
+	 * 		Note: currently, blank nodes are always stored uncompressed (pfix_dbid is null). 
+	 * 
+	 * Prefix Encoding in Prefix Table
+	 * 	Prefix:	Pv:val[:] [hash] [tail]
+	 * 
+	 * Comments:
+	 * 		P indicates a prefix
+	 * 		other notation same as above
+	 * 		hash and tail are only required for long prefixes.
+	 * 
+	 */
+	 
+	 
+	 
+	protected static String RDBCodeURI = "U";
+	protected static String RDBCodeBlank = "B";
+	protected static String RDBCodeLiteral = "L";
+	protected static String RDBCodePrefix = "P";
+	protected static String	RDBCodeValue = "v";
+	protected static String RDBCodeRef = "r";
+	protected static String RDBCodeDelim = ":";
+	protected static char RDBCodeDelimChar = ':';
+
+		
     
 	/**
-	 * Convert a string into a form suitable for a legal identifier
-	 * name for the database type.
-	 * @author hkuno
-	 *
-	 */
-	public String toDBIdentifier(String aString) {
-		return aString.toUpperCase();
+	* Convert a node to a string to be stored in a statement table.
+	* @param Node The node to convert to a string. Must be a concrete node.
+	* @param addIfLong If the node is a long object and is not in the database, add it.
+	* @return the string or null if failure.
+	*/
+	public String nodeToRDBString ( Node node, boolean addIfLong ) throws RDFRDBException {
+		String res = null;
+		if ( node.isURI() ) {
+			String uri = new String(((Node_URI) node).getURI());
+			if ( uri.startsWith(RDBCodeURI) ) {
+				throw new RDFRDBException ("URI Node looks like a blank node: " + uri );
+			}
+			// TODO: need to write special version of splitNamespace for rdb.
+			//		or else, need a guarantee that splitNamespace never changes.
+			//		the problem is that if the splitNamespace algorithm changes,
+			//		then URI's may be encoded differently. so, URI's in existing
+			//		databases may become inaccessible.
+			int pos = 0;
+			boolean noCompress;
+			String pfx;
+			String qname;
+			if ( URI_COMPRESS == true ) {
+				pos = Util.splitNamespace(uri);
+				noCompress = (pos == uri.length()) || (pos <= URI_COMPRESS_LENGTH);
+			} else
+				noCompress = true;
+			if ( noCompress ) {
+				pfx = RDBCodeDelim + RDBCodeDelim;
+				qname = uri;
+			} else {
+				DBIDInt pfxid = URItoPrefix(uri, pos, addIfLong);
+				if ( pfxid == null ) return res;
+				pfx = RDBCodeDelim + ((DBIDInt)pfxid).getIntID() + RDBCodeDelim;
+				qname = uri.substring(pos);
+			}
+			int encodeLen = RDBCodeURI.length() + 1 + pfx.length() + EOS_LEN;
+			boolean URIisLong = objectIsLong(encodeLen,qname);
+			if ( URIisLong ) {
+				int	dbid;
+				// belongs in URI table
+				DBIDInt URIid = getURIID(qname,addIfLong);
+				if ( URIid == null ) return res;
+				dbid = URIid.getIntID();
+				res = new String(RDBCodeLiteral + RDBCodeRef + RDBCodeDelim + dbid);
+			} else {
+				res = RDBCodeURI + RDBCodeValue + pfx + qname + EOS;
+			}
+		} else if ( node.isLiteral() ){
+			// TODO: may need to encode literal value when datatype is not a string.
+			Node_Literal litNode = (Node_Literal) node;
+			LiteralLabel ll = litNode.getLiteral();
+			String lval = ll.getLexicalForm();
+			String lang = ll.language();
+			String dtype = ll.getDatatypeURI();
+			String ld = litLangTypeToRDBString(lang,dtype);
+			int encodeLen = RDBCodeLiteral.length() + 2 + ld.length() + EOS_LEN;
+			boolean litIsLong = objectIsLong(encodeLen,lval);		
+			if ( litIsLong ) {
+				int	dbid;
+				// belongs in literal table
+				DBIDInt lid = getLiteralID(litNode,addIfLong);
+				if ( lid == null ) return res;
+				dbid = lid.getIntID();
+				res = new String(RDBCodeLiteral + RDBCodeRef + RDBCodeDelim + dbid);
+			} else {
+				res = new String(RDBCodeLiteral + RDBCodeValue + RDBCodeDelim + ld + lval + EOS);
+			}    		
+		} else if ( node.isBlank() ) {
+			// TODO: prefix compression for blank nodes.
+			res = new String(RDBCodeBlank + RDBCodeValue + RDBCodeDelim + RDBCodeDelim
+							+ node.getBlankNodeId().toString()+ EOS);
+		}else {
+			throw new RDFRDBException ("Expected Concrete Node, got " + node.toString() );	
+		}
+		return res;
+	}
+	
+	/**
+	* Convert an RDB string to the node that it encodes. Return null if failure.
+	* @param RDBstring The string to convert to a node.
+	* @return The node or null if failure.
+	*/
+	public Node RDBStringToNode ( String RDBString ) throws RDFRDBException {	
+		Node res = null;
+		int len = RDBString.length();
+		if ( len < 3 ) 
+			throw new RDFRDBException("Bad RDBString Header: " + RDBString);
+		String nodeType = RDBString.substring(0,1);
+		String valType = RDBString.substring(1,2);
+		if ( (!(valType.equals(RDBCodeRef) || valType.equals(RDBCodeValue))) ||
+				(RDBString.charAt(2) != RDBCodeDelimChar) || (len < 4) )
+				throw new RDFRDBException("Bad RDBString Header: " + RDBString);
+
+		int pos = 3;
+		int npos;
+		
+		if ( nodeType.equals(RDBCodeURI) ) {
+			ParseInt pi = new ParseInt(pos);
+			String prefix = "";
+			RDBStringParseInt(RDBString, pi, false);
+			if ( pi.val != null ) {
+				if ( URI_COMPRESS == false )
+					throw new RDFRDBException("Bad URI: Prefix Compression Disabled: " + RDBString);
+				prefix = IDtoPrefix(pi.val.intValue());
+				if ( prefix == null )
+					throw new RDFRDBException("Bad URI Prefix: " + RDBString);
+			}
+			pos = pi.pos + 1;
+			String qname = RDBString.substring(pos,len - EOS_LEN);
+			if ( valType.equals(RDBCodeRef) ) {
+				qname = IDtoURI(qname);
+				if ( qname == null )
+					throw new RDFRDBException("Bad URI: " + RDBString);
+			}
+			res = Node.createURI(prefix + qname);
+			
+		} else if ( nodeType.equals(RDBCodeLiteral) ) {
+			ParseInt pi = new ParseInt(pos);
+			String litString = null;
+			if ( valType.equals(RDBCodeRef) ) {
+				RDBStringParseInt(RDBString,pi,true);
+				if ( pi.val != null )
+					litString = IDtoLiteral(pi.val.intValue());
+				if ( litString == null )
+					throw new RDFRDBException("Bad Literal Reference: " + RDBString);
+			} else
+				litString = RDBString.substring(pos,len-EOS_LEN);
+			len = litString.length();
+			String lang;
+			String dtype;
+			int langLen = 0;
+			int dtypeLen = 0;
+			LiteralLabel llabel;
+			pi.pos = 0;
+			RDBStringParseInt(litString, pi, false);
+			if ( pi.val == null ) langLen = 0; 
+			else langLen = pi.val.intValue(); 
+			pi.pos = pi.pos + 1;
+			RDBStringParseInt(litString, pi, false);	
+			if ( pi.val == null ) dtypeLen = 0;
+			else dtypeLen = pi.val.intValue();
+			pos = pi.pos + 1;	
+			if ( (pos + langLen + dtypeLen) > len )
+					throw new RDFRDBException("Malformed Literal: " + litString);	
+			lang = litString.substring(pos,pos+langLen);
+			pos = pos + langLen;
+			dtype = litString.substring(pos,pos+dtypeLen);
+			pos = pos + dtypeLen;
+			
+			String val = litString.substring(pos);
+			
+			if ( (dtype == null) || (dtype.equals(""))  ) {
+				llabel = new LiteralLabel(val, lang == null ? "" : lang);
+			} else {
+				RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtype);
+				llabel = new LiteralLabel(val, lang == null ? "" : lang, dt);
+			}	 
+			res = Node.createLiteral(llabel);
+			
+		} else if ( nodeType.equals(RDBCodeBlank) ) {
+			// TODO: implement prefix compression for blank nodes
+			String bstr = RDBString.substring(4,len-EOS_LEN);
+			res = Node.createAnon( new AnonId (bstr) );
+		} else
+			throw new RDFRDBException ("Invalid RDBString Prefix, " + RDBString );	
+		return res;
+	}
+	
+	class ParseInt {
+		int	pos;
+		Integer val;	
+		ParseInt(int p) {pos = p;}
 	}
 
+	protected void RDBStringParseInt ( String RDBString, ParseInt pi, boolean toEnd ) {
+		int npos = toEnd ? RDBString.length() : RDBString.indexOf(RDBCodeDelimChar,pi.pos);
+		if ( npos < 0 ) {
+			throw new RDFRDBException("Bad RDB String: " + RDBString);
+		}
+		String intStr = RDBString.substring(pi.pos,npos);
+		pi.pos = npos;
+		if ( intStr.equals("") )
+			pi.val = null;
+		else try {
+			pi.val = new Integer(intStr);
+		} catch (NumberFormatException e1) {
+			throw new RDFRDBException("Bad RDB String: " + RDBString);
+		} 
+		return;
+	}
+	
+	
+
+	DBIDInt URItoPrefix ( String uri, int pos, boolean add ) {
+		RDBLongObject	lobj = PrefixToLongObject(uri,pos);
+		return getLongObjectID(lobj, PREFIX_TABLE, add);
+	}
+	
+	protected RDBLongObject PrefixToLongObject ( String prefix, int split ) {
+		RDBLongObject	res = new RDBLongObject();
+		int				headLen;
+		int				avail;
+
+		res.head = RDBCodePrefix + RDBCodeValue + RDBCodeDelim;
+		headLen = res.head.length();
+		avail = INDEX_KEY_LENGTH - (headLen + EOS_LEN);
+		if ( split > avail ) {
+			res.head = res.head + prefix.substring(0,avail) + EOS;
+			res.tail = prefix.substring(avail);
+			res.hash = stringToHash(res.tail);
+		} else {
+			res.head = res.head + prefix;
+			res.tail = "";
+		}
+		res.head = res.head + EOS;
+		return res;	
+	}
+
+	/**
+	* Encode a literal node's lang and datatype as a string of the
+	* form ":[langLen]:[datatypeLen]:[langString][dataTypeString]"
+	* @return the string.
+	*/
+	public String litLangTypeToRDBString ( String lang, String dtype ) throws RDFRDBException {
+		String res = RDBCodeDelim;
+		res = ((lang == null) ? "" : Integer.toString(lang.length())) + RDBCodeDelim;
+		res = res + ((dtype == null) ? "" : Integer.toString(dtype.length())) + RDBCodeDelim;
+		res = res + (lang == null ? "" : lang) + (dtype == null ? "" : dtype);
+		return res;
+	}
+	
+	/**
+	* Check if an object is long, i.e., it exceeds the length
+	* limit for storing in a statement table.
+	* @return true if literal is long, else false.
+	*/
+	protected boolean objectIsLong ( int encodingLen, String objAsString ) {
+		return ( (encodingLen + objAsString.length()) > LONG_OBJECT_LENGTH);
+	}
+	
+	class RDBLongObject {
+		String		head;		/* prefix of long object that can be indexed */
+		long		hash;		/* hash encoding of tail */
+		String		tail;		/* remainder of long object */
+	}
+	
+	protected RDBLongObject literalToLongObject ( Node_Literal node ) {
+		RDBLongObject	res = new RDBLongObject();
+		int				headLen;
+		int				avail;
+		LiteralLabel 	l = node.getLiteral();
+		String 			lang = l.language();
+		String 			dtype = l.getDatatypeURI();
+		String 			val = l.getLexicalForm();
+		String			langType = litLangTypeToRDBString(lang,dtype);
+
+		res.head = RDBCodeLiteral + RDBCodeValue + RDBCodeDelim + langType;
+		headLen = res.head.length();
+		avail = INDEX_KEY_LENGTH - (headLen + EOS_LEN);
+		if ( val.length() > avail ) {
+			res.head = res.head + val.substring(0,avail);
+			res.tail = val.substring(avail);
+			res.hash = stringToHash(res.tail);
+		} else {
+			res.head = res.head + val;
+			res.tail = "";
+		}
+		res.head = res.head + EOS;
+		return res;
+	}
+	
+		
+	protected long stringToHash ( String str ) {
+		CRC32 checksum = new CRC32();
+		checksum.update(str.getBytes());
+		return checksum.getValue();
+	}
+	
+	/**
+	 * Return the database ID for the URI, if it exists
+	 */
+	public DBIDInt getURIID(String qname, boolean add) throws RDFRDBException {
+		RDBLongObject	lobj = URIToLongObject (qname);
+		return getLongObjectID(lobj, LONG_URI_TABLE, add);
+	}
+
+	protected RDBLongObject URIToLongObject ( String qname ) {
+		RDBLongObject	res = new RDBLongObject();
+		int				headLen;
+		int				avail;
+
+		res.head = RDBCodeURI + RDBCodeValue + RDBCodeDelim;
+		headLen = res.head.length();
+		avail = INDEX_KEY_LENGTH - (headLen + EOS_LEN);
+		if ( qname.length() > avail ) {
+			res.head = res.head + qname.substring(0,avail) + EOS;
+			res.tail = qname.substring(avail);
+			res.hash = stringToHash(res.tail);
+		} else {
+			res.head = res.head + qname;
+			res.tail = "";
+		}
+		res.head = res.head + EOS;
+		return res;	
+	}
+			
+	
+	/**
+	 * Return the database ID for the literal, if it exists
+	 */
+	public DBIDInt getLiteralID(Node_Literal lnode, boolean add) throws RDFRDBException {
+		RDBLongObject	lobj = literalToLongObject (lnode);
+		return getLongObjectID(lobj, LONG_LIT_TABLE, add);
+	}
+			
+	public DBIDInt getLongObjectID(RDBLongObject lobj, String table, boolean add) throws RDFRDBException {
+		try {
+			String opName = "getLongObjectID";
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(opName, table); 
+			ps.setString(1,lobj.head);
+			ps.setLong(2,lobj.hash);
+			ResultSet rs = ps.executeQuery();
+			DBIDInt result = null;
+			if (rs.next()) {
+				result = wrapDBID(rs.getObject(1));
+			} else {
+				if ( add )
+					result = addRDBLongObject(lobj, table);
+			}
+		 //   m_sql.returnPreparedSQLStatement(ps, opName);
+			return result;
+		} catch (SQLException e1) {
+			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
+			throw new RDFRDBException("Failed to find literal", e1);
+		}
+	}
+ 
+	/**
+	 * Insert a long object into the database.  
+	 * This assumes the object is not already in the database.
+	 * @return the db index of the added literal 
+	 */
+	public DBIDInt addRDBLongObject(RDBLongObject lobj, String table) throws RDFRDBException {
+		try {
+			String opname = "insertLongObject";           			
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, table);
+			int argi = 1;
+			 ps.setString(argi++, lobj.head);
+			 if ( lobj.tail.length() > 0 ) {
+			 	ps.setLong(argi++, lobj.hash);
+			 	ps.setString(argi++, lobj.tail);
+			 } else {
+			 	ps.setNull(argi++,java.sql.Types.BIGINT);
+				ps.setNull(argi++,java.sql.Types.VARCHAR);     
+			 }
+/*			if (isBlob || (len == 0) ) {
+				// First convert the literal to a UTF-16 encoded byte array
+				// (this wouldn't be needed for jdbc 2.0 drivers but not all db's have them)
+				byte[] temp = lit.getBytes("UTF-8");
+				int lenb = temp.length;
+				//System.out.println("utf-16 len = " + lenb);
+				byte[] litData = new byte[lenb + 4];
+				litData[0] = (byte)(lenb & 0xff);
+				litData[1] = (byte)((lenb >> 8) & 0xff);
+				litData[2] = (byte)((lenb >> 16) & 0xff);
+				litData[3] = (byte)((lenb >> 24) & 0xff);
+				System.arraycopy(temp, 0, litData, 4, lenb);
+                
+				// Oracle has its own way to insert Blobs
+				if (isBlob && m_driver.getDatabaseType().equalsIgnoreCase("Oracle")) {
+					//TODO fix to use Blob
+					// For now, we do not support Blobs under Oracle
+					throw new RDFRDBException("Oracle driver does not currently support large literals.");
+				} else {
+					ps.setBinaryStream(argi++, new ByteArrayInputStream(litData), litData.length);
+				}
+			} 
+*/            
+			ps.executeUpdate();
+			return wrapDBID(new Integer(getLastInsertID()));
+		} catch (Exception e1) {
+			/* DEBUG */ System.out.println("Problem on long object (l=" + lobj.head + ") " + e1 );
+			// System.out.println("ID is: " + id);
+			throw new RDFRDBException("Failed to add long object ", e1);
+		}
+	}
+	
+	/**
+	 * Return the prefix string that has the given prefix id.
+	 * @param prefixID - the dbid of the prefix.
+	 * @return the prefix string or null if it does not exist.
+	 */
+	protected String IDtoPrefix ( int prefixID ) {
+		return IDtoString ( prefixID, PREFIX_TABLE, RDBCodePrefix);
+	}
+	
+	/**
+ 	* Return the URI string that has the given database id.
+ 	* @param uriID - the dbid of the uri, as a string.
+ 	* @return the uri string or null if it does not exist.
+ 	*/
+	protected String IDtoURI ( String uriID ) {
+		return IDtoString ( uriID, LONG_URI_TABLE, RDBCodeURI);
+	}
+
+	/**
+	* Return the long literal string that has the given database id.
+	* @param litID - the dbid of the literal..
+	* @return the long literal string or null if it does not exist.
+	*/
+	protected String IDtoLiteral ( int litID ) {
+		return IDtoString ( litID, LONG_LIT_TABLE, RDBCodeLiteral);
+	}
+	
+
+	
+	protected String IDtoString ( String dbidAsString, String table, String RDBcode ) {
+		int	dbID;
+		String res = null;
+		try {
+			dbID = Integer.parseInt(dbidAsString);
+		} catch (NumberFormatException e1) {
+			throw new RDFRDBException("Invalid Object ID: " + dbidAsString);
+		}
+		return IDtoString (dbID, table, RDBcode);
+	}
+
+	protected String IDtoString ( int dbID, String table, String RDBcode ) {
+		String res = null;
+		RDBLongObject lobj = IDtoLongObject(dbID, table);
+		if ( lobj == null )
+			throw new RDFRDBException("Invalid Object ID: " + dbID);
+		// debug check
+		if ( !lobj.head.substring(0,3).equals(RDBcode + RDBCodeValue + RDBCodeDelim) )
+			throw new RDFRDBException("Malformed URI in Database: " + lobj.head);
+		res = lobj.head.substring(3,lobj.head.length() - EOS_LEN);
+		res = res + lobj.tail;	
+		return res;
+	}
+
+	
+	protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
+		RDBLongObject	res = null;
+		try {
+			String opName = "getLongObject";
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(opName, table); 
+			ps.setInt(1,dbid);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				res = new RDBLongObject();
+				res.head = rs.getString(1);
+				res.tail = rs.getString(2);			
+			}
+			return res;
+		} catch (SQLException e1) {
+			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
+			throw new RDFRDBException("Failed to find literal", e1);
+		}		
+	}
+	
+	protected RDBLongObject IDtoLongObject ( String idAsString, String table ) {
+		RDBLongObject res = null;
+		int dbid;
+		try {
+			dbid = Integer.parseInt(idAsString);
+		} catch (NumberFormatException e1) {
+			throw new RDFRDBException("Invalid Object ID: " + idAsString);
+		}
+		return IDtoLongObject(dbid,table);
+	}
+    
+ 
+	/**
+	 * Convert the raw SQL object used to store a database identifier into a java object
+	 * which meets the DBIDInt interface.
+	 */
+	public DBIDInt wrapDBID(Object id) throws RDFRDBException {
+		if (id instanceof Number) {
+			return new DBIDInt(((Number)id).intValue());
+		} else if (id == null) {
+			return null;
+		} else {
+			throw new RDFRDBException("Unexpected DB identifier type: " + id);
+			//return null;
+		}
+	}
 
 }
+
 
 /*
  *  (c) Copyright Hewlett-Packard Company 2000, 2001

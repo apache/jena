@@ -43,7 +43,7 @@ import com.hp.hpl.jena.util.Log;
 * terminators!
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>.  Updated by hkuno to support GraphRDB.
-* @version $Revision: 1.1 $ on $Date: 2003-04-25 02:57:17 $
+* @version $Revision: 1.2 $ on $Date: 2003-06-18 20:58:48 $
 */
 
 public class SQLCache {
@@ -472,10 +472,48 @@ public class SQLCache {
         
         return executeSQL(ps, aop, iterator);
     }
+  
 
-
-
-
+	/**
+	 * Run a group of sql statements - normally used for db formating and clean up.
+	 * All statements are executed even if one raises an error then the error is
+	 * reported at the end.
+	 * 
+	 * Attribute version -- substitute the ${a} attribute macro
+	 * for the current attribute 
+	 */
+	public void runSQLGroup(String opname, String [] attr) throws SQLException {
+		String op = null;
+		SQLException eignore = null;
+		String operror = null;
+		java.sql.Statement sql = getConnection().createStatement();
+		Iterator ops = getSQLStatementGroup(opname).iterator();
+		int attrCnt = attr == null ? 0 : attr.length;
+		if ( attrCnt > 6 )
+			throw new RDFRDBException("Too many parameters");
+		while (ops.hasNext()) {
+			op = (String) ops.next();
+			if ( attrCnt > 0 ) op = substitute(op,"${a}",attr[0]);
+			if ( attrCnt > 1 ) op = substitute(op,"${b}",attr[1]);
+			if ( attrCnt > 2 ) op = substitute(op,"${c}",attr[2]);
+			if ( attrCnt > 3 ) op = substitute(op,"${d}",attr[3]);
+			if ( attrCnt > 4 ) op = substitute(op,"${e}",attr[4]);
+			if ( attrCnt > 5 ) op = substitute(op,"${f}",attr[5]);			
+			try {
+				sql.execute(op);
+			} catch (SQLException e) {
+				// This is debugging legacy, exception is still reported at the end
+				//System.out.println("Exec failure: " + op + ": " + e);
+				operror = op;
+				eignore = e;
+			}
+		}
+		sql.close();
+		if (eignore != null) {
+			// operror records the failed operator, mostly internal debugging use
+			throw eignore;
+		}
+	}
 
 
 
@@ -485,28 +523,8 @@ public class SQLCache {
      * reported at the end.
      */
     public void runSQLGroup(String opname) throws SQLException {
-        String op = null;
-        SQLException eignore = null;
-        String operror = null;
-        java.sql.Statement sql = getConnection().createStatement();
-        Iterator ops = getSQLStatementGroup(opname).iterator();
-        while (ops.hasNext()) {
-            op = (String) ops.next();
-            try {
-                sql.execute(op);
-            } catch (SQLException e) {
-                // This is debugging legacy, exception is still reported at the end
-                //System.out.println("Exec failure: " + op + ": " + e);
-                operror = op;
-                eignore = e;
-            }
-        }
-        sql.close();
-        if (eignore != null) {
-            // operror records the failed operator, mostly internal debugging use
-            throw eignore;
-        }
-    }
+    	runSQLGroup(opname,(String[])null);
+   }
 
 	/**
      * Run a group of sql statements - normally used for db formating and clean up.
@@ -517,28 +535,8 @@ public class SQLCache {
      * for the current attribute 
      */
     public void runSQLGroup(String opname, String attr) throws SQLException {
-        String op = null;
-        SQLException eignore = null;
-        String operror = null;
-        java.sql.Statement sql = getConnection().createStatement();
-        Iterator ops = getSQLStatementGroup(opname).iterator();
-        while (ops.hasNext()) {
-            op = (String) ops.next();
-            op = substitute(op,"${a}",attr);
-            try {
-                sql.execute(op);
-            } catch (SQLException e) {
-                // This is debugging legacy, exception is still reported at the end
-                //System.out.println("Exec failure: " + op + ": " + e);
-                operror = op;
-                eignore = e;
-            }
-        }
-        sql.close();
-        if (eignore != null) {
-            // operror records the failed operator, mostly internal debugging use
-            throw eignore;
-        }
+    	String[] param = {attr};
+    	runSQLGroup(opname,param);
     }
 
 	/**
@@ -550,29 +548,8 @@ public class SQLCache {
      * for the current attribute 
      */
     public void runSQLGroup(String opname, String attrA, String attrB) throws SQLException {
-        String op = null;
-        SQLException eignore = null;
-        String operror = null;
-        java.sql.Statement sql = getConnection().createStatement();
-        Iterator ops = getSQLStatementGroup(opname).iterator();
-        while (ops.hasNext()) {
-            op = (String) ops.next();
-            op = substitute(op,"${a}",attrA);
-            op = substitute(op,"${b}",attrB);
-            try {
-                sql.execute(op);
-            } catch (SQLException e) {
-                // This is debugging legacy, exception is still reported at the end
-                //System.out.println("Exec failure: " + op + ": " + e);
-                operror = op;
-                eignore = e;
-            }
-        }
-        sql.close();
-        if (eignore != null) {
-            // operror records the failed operator, mostly internal debugging use
-            throw eignore;
-        }
+		String[] param = {attrA,attrB};
+		runSQLGroup(opname,param);
     }
 
 
@@ -650,6 +627,7 @@ public class SQLCache {
             return line;
         }
     }
+    
 
 //=======================================================================
 // Internal support

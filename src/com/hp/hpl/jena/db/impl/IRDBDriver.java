@@ -16,6 +16,7 @@ import java.util.List;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
 
 
 /**
@@ -30,7 +31,7 @@ import com.hp.hpl.jena.graph.Graph;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.6 $
+* @version $Revision: 1.7 $
 */
 
 public interface IRDBDriver {
@@ -112,6 +113,7 @@ public interface IRDBDriver {
 	 *
 	 */
 	String getDatabaseType();
+	
 
     /**
      * Remove all RDF information from a database.
@@ -142,6 +144,16 @@ public interface IRDBDriver {
 
     public void formatDB() throws RDFRDBException;
     
+	/**
+	 * Create a table for storing asserted or reified statements.
+	 * 
+	 * @param graphId the graph which the table is created.
+	 * @param isReif true if table stores reified statements.
+	 * @return the name of the new table 
+	 * 
+	 */
+	abstract String createTable( int graphId, boolean isReif);
+	   
     /**
      * Aborts the open transaction, then turns autocommit on.
      */
@@ -182,13 +194,38 @@ public interface IRDBDriver {
 
     public boolean supportsJenaReification();
     
-    /**
-     * Convert a string into a form suitable for a legal identifier
-     * name for the database type.
-     * @author hkuno
-     *
-     */
-    public String toDBIdentifier(String aString);
+	/**
+	 * Allocate an identifier for a new graph.
+	 * @param graphName The name of a new graph.
+	 * @return the identifier of the new graph.
+	 */
+	 public int graphIdAlloc ( String graphName );
+	
+	/**
+ 	* Return the identifier of the most recently inserted auto-incremented row.
+ 	* @return the identifier of the most recently inserted auto-increment row.
+ 	*/
+	 public int getLastInsertID ();
+
+    
+	/**
+	* Convert a node to a string to be stored in a statement table.
+	* @param Node The node to convert to a string. Must be a concrete node.
+	* @param addIfLong If the node is a long object and is not in the database, add it.
+	* @return the string.
+	*/
+
+	public String nodeToRDBString ( Node node, boolean addIfLong );
+	
+	/**
+	* Convert an RDB string to the node that it encodes. Return null if failure.
+	* @param RDBstring The string to convert to a node.
+	* @return The node.
+	*/
+	
+	public Node RDBStringToNode ( String RDBString );	
+
+
 }
 
 /*

@@ -5,10 +5,6 @@
 
 package com.hp.hpl.jena.db.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -20,15 +16,11 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.zip.CRC32;
 
-import com.hp.hpl.jena.datatypes.RDFDatatype;
-import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
-import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -50,7 +42,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.23 $ on $Date: 2003-06-17 13:39:27 $
+* @version $Revision: 1.24 $ on $Date: 2003-06-18 20:58:49 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -58,15 +50,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
 //=======================================================================
 // Cutomization variables
 
-   public static String SYS_LITERAL_TNAME = "JENA_LITERALS";
-   public static String SYS_AS_TNAME = "JENA_StmtAsserted";
-   
-   /**
-    * Names of tables for which this PSet instance is responsible.
-    * Contains Strings.
-    */
-   protected ArrayList m_tablenames = new ArrayList();
-	
    /**
 	* Holds name of AssertedStatement table (defaults to JENA_SYS_AssStatements).
 	* Every triple store has at least one tables for AssertedStatements.
@@ -142,20 +125,15 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	/**
 	 * Sets m_ASTName variable.
 	 * 
-	 * @param newName the name of the Asserted Statement Table
+	 * @param tblName the name of the Statement Table
 	 */
-	public void setASTname(String newName){
-		m_ASTName = m_driver.toDBIdentifier(newName);
-		if (! doesTableExist(m_ASTName)) {
-			createASTable(m_ASTName);
-		}
-		if (! m_tablenames.contains(m_ASTName))
-			m_tablenames.add(m_ASTName);
+	public void setASTname(String tblName){
+		m_ASTName = tblName;
 	}
 	
 	/**
 	 * Accessor for m_ASTName.
-	 * @returns name of the asserted statements table.
+	 * @returns name of the Statement table.
 	 */
 	protected String getASTname() {
 		return m_ASTName;
@@ -167,6 +145,14 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 */
 	public void close() {
 		// no need to do anything here for now
+	}
+	
+	/**
+	 * @return the database driver.
+	 */
+
+	public IRDBDriver driver() {
+		return m_driver;
 	}
 
     
@@ -205,12 +191,11 @@ public  class PSet_TripleStore_RDB implements IPSet {
      */
     public void createASTable(String astName) {
     	
-		try {m_sql.runSQLGroup("createStatementTable", getASTname());
+		try {m_sql.runSQLGroup("createStatementTable", getASTname(), String.valueOf(MAX_LITERAL));
 		} catch (SQLException e) {
 			com.hp.hpl.jena.util.Log.warning("Problem formatting database", e);
 			throw new RDFRDBException("Failed to format database", e);
 		}
-		m_tablenames.add(astName);
     }
 
     /**
@@ -260,157 +245,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		return allocateID("allocateLiteralID");
 	}
 	
-	/**
-	 * Register a literal in the literals table.  
-	 * Add it if it is not there.  If it already present, return its id.
-	 * @return the db index of the added literal 
-	 */
-	public IDBID addLiteral(Node_Literal l) throws RDFRDBException {
-        IDBID id = null;
-        if (!SKIP_DUPLICATE_CHECK) {
-            id = getLiteralID(l);
-            if (id != null) return id;
-        }
-        try {
-            int val = 0;               // Integer translation of l, if possible
-            boolean isInt = false; // true if literal can be interpreted as an integer
-			boolean hasLang = false; // true if literal has language
-			boolean hasType = false;
-			boolean isHuge = false; // true if literal larger than MAX_LITERAL
-/*            // Check if the literal can be translated to an int
-            try {
-                val = Integer.parseInt(l.toString());  note: toString doesn't work here. KW
-                isInt = true;
-            } catch (NumberFormatException e) {
-                isInt = false;
-            }
-*/
-            String opname = "insertLiteral";
-            			
-			LiteralLabel ll = l.getLiteral();
-			String lit = ll.getLexicalForm();
-
-
-			int len = lit.length();
-			if (len > MAX_LITERAL) 
-			    isHuge = true;
-            
-            if (! isInt && (len >= MAX_LITERAL))
-            	opname += "Blob";
-       
-			hasLang = literalHasLang(ll);
-			hasType = literalHasType(ll);
-			
-            //DEBUG System.out.println("opname was " + opname);
-            PreparedStatement ps = m_sql.getPreparedSQLStatement(opname);
-            int argi = 1;
-            if (!SKIP_ALLOCATE_ID) {
-                id = allocateLiteralID();
-                ps.setObject(argi++, id.getID());
-            }
-            
-            // always populate LiteralIdx (departure from Jena1)
-			// insert a subset for indexing and put whole into a blob
-			 ps.setString(argi++, len == 0 ? EMPTY_LITERAL_MARKER : getLiteralIdx(lit));
-            
-            if (len >= MAX_LITERAL || len == 0) {
-                // First convert the literal to a UTF-16 encoded byte array
-                // (this wouldn't be needed for jdbc 2.0 drivers but not all db's have them)
-                byte[] temp = lit.getBytes("UTF-8");
-                int lenb = temp.length;
-                //System.out.println("utf-16 len = " + lenb);
-                byte[] litData = new byte[lenb + 4];
-                litData[0] = (byte)(lenb & 0xff);
-                litData[1] = (byte)((lenb >> 8) & 0xff);
-                litData[2] = (byte)((lenb >> 16) & 0xff);
-                litData[3] = (byte)((lenb >> 24) & 0xff);
-                System.arraycopy(temp, 0, litData, 4, lenb);
-                
-                // Oracle has its own way to insert Blobs
-				if (isHuge && m_driver.getDatabaseType().equalsIgnoreCase("Oracle")) {
-            		//TODO fix to use Blob
-            		// For now, we do not support Blobs under Oracle
-            		throw new RDFRDBException("Oracle driver does not currently support large literals.");
-				} else {
-					ps.setBinaryStream(argi++, new ByteArrayInputStream(litData), litData.length);
-				}
-            } 
-            
-/*            if (isInt) {
-                ps.setInt(argi++, val);
-            }       
-*/           
-            if (hasLang)
-				ps.setString(argi++, l.getLiteral().language());
-            else
-            	ps.setNull(argi++, java.sql.Types.VARCHAR);
-			if (hasType)
-				ps.setString(argi++, l.getLiteral().getDatatypeURI());
-			else
-				ps.setNull(argi++, java.sql.Types.VARCHAR);
-
-			
-			// TODO update here to work with executeBatch()
-            if (INSERT_BY_PROCEDURE) {
-                ResultSet rs = ps.executeQuery();
-                ResultSetIterator it = new ResultSetIterator(rs, ps, m_sql, opname);
-                if (it != null && it.hasNext())
-                    id = wrapDBID(it.getSingleton());
-            } else {
-				  ps.executeUpdate();
-        //          m_sql.returnPreparedSQLStatement(ps, opname);
-            }
-            if (id == null)
-                id = getLiteralID(l);
-            return id;
-        } catch (Exception e1) {
-            // /* DEBUG */ System.out.println("Problem on literal (l=" + l.toString().length() + "): " + l);
-            /* DEBUG */ System.out.println("Problem on literal (l=" + l.toString().length() + ") " + e1 );
-            // System.out.println("ID is: " + id);
-            throw new RDFRDBException("Failed to register literal ", e1);
-        }
-    }
-    
-    /** The prefix used to distinguish blank nodes from URI's in the database */
-    protected static String BlankNodeRDBPrefix = ">";
-    
-	/**
-	* Convert a node (blank or URI only) to a string.
-	* @return the string.
-	*/
-    public static String nodeToRDBString ( Node blankOrURI ) throws RDFRDBException {
-    	String res;
-    	if ( blankOrURI.isBlank() ) {
-    		res = BlankNodeRDBPrefix + blankOrURI.getBlankNodeId().toString();
-    	} else if ( blankOrURI.isURI() ) {
-    		res = ((Node_URI) blankOrURI).getURI();
-			if ( res.startsWith(BlankNodeRDBPrefix) ) {
-				throw new RDFRDBException ("URI Node looks like a blank node: " + res );
-			}
-    	} else {
-    		throw new RDFRDBException ("Expected Blank or URI Node, got " + blankOrURI.toString() );	
-    	}
-    	return res;
-    }
-    
-	/**
-	* Convert an RDB string to a node (blank or URI only).
-	* @return the node.
-	*/
-	public static Node RDBStringToNode ( String RDBString ) {
-		Node res;
-		if ( RDBString.startsWith(BlankNodeRDBPrefix) ) {
-			res = Node.createAnon( new AnonId (RDBString.substring(BlankNodeRDBPrefix.length())) );
-		} else {
-			res = Node.createURI(RDBString);
-		}
-		return res;
-	}
-	
-	/**
-	* Check if a literal (label) is plain.
-	* @return true if literal is plain, else false.
-	*/
 	protected boolean literalIsPlain ( LiteralLabel ll ) {
 		String dtype = ll.getDatatypeURI();
 		String lang = ll.language();
@@ -429,27 +263,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		return ((dtype != null) && !dtype.equals(""));
 	}
 			
-	/**
-	 * Check if database contains this PSet's table(s). 
-	 * If not, run specified command to create it.
-	 */
-	public void initializeStatementTable() throws RDFRDBException {
-		Iterator it = m_tablenames.iterator();
-		String tname;
-		
-		while (it.hasNext()) {
-			tname = (String) it.next();
-			if (! doesTableExist(tname)) {
-		  		try {
-				   m_sql.runSQLGroup("initializeASTable", getASTname());
-		  		} catch (Exception e2) {
-					throw new RDFRDBException("Failed to create new statement table", e2);
-		  		}
-			}
-		}
-	}
-
-
      /**
       * Printable name for the driver configuration
       */
@@ -457,23 +270,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
         return this.getClass().getPackage().getName();
      }
      
-	/**
-	 * Extract an indexable sub-string from a literal.
-	 * This is used for literals that are too long to index for the given
-	 * database.
-	 */
-	public String getLiteralIdx(String literal) {
-		String literal_idx = literal;
-		if (literal.length() > (MAX_LITERAL - 16)) {
-			// Some databases can't index long literals so literals are stored in two parts,
-			// a shorter indexable string plus the full string
-			CRC32 checksum = new CRC32();
-			checksum.update(literal.getBytes());
-			literal_idx = literal.substring(0, MAX_LITERAL-16) + Long.toHexString(checksum.getValue());
-		}
-		return literal_idx;
-	}
-	
 	/**
 	 * Fetch a literal from the cache just knowing its literal rdb-id.
 	 * If it is not in the cache, do not attempt to retrieve it from the database.
@@ -497,33 +293,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
         }
     }
     
-	/**
-	 * Fetch a literal just knowing its literal rdb-id.
-	 * Can be null if the ID can from a hash function and literal 
-	 * isn't registered yet.
-	 */
-	public Node_Literal getLiteral(IDBID id) {
-			// check in cache
-			Node_Literal lit = getLiteralFromCache(id);
-			if (lit != null) return lit;
-			// nope, go back to the database
-			try {
-				PreparedStatement ps = m_sql.getPreparedSQLStatement("getLiteral");
-				ps.setObject(1, id.getID());
-				ResultSet rs = ps.executeQuery();
-				if (!rs.next()) {
-			//		m_sql.returnPreparedSQLStatement(ps, "getLiteral");
-					return null;
-				}
-				lit = extractLiteralFromRow(rs);
-	//			m_sql.returnPreparedSQLStatement(ps, "getLiteral");
-				literalCache.put(id, lit);
-				return lit;
-			} catch (Exception e) {
-				throw new RDFRDBException("Internal sql error", e);
-			}
-		}
-
 	/** 
 	 * Compute the number of rows in a table.
 	 * 
@@ -549,98 +318,6 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	//=======================================================================
 // Patched functions to adapt to oracle jdbc driver expectations
 
-    /**
-     * Return the database ID for the literal, if it exists
-     */
-    public IDBID getLiteralID(Node_Literal lnode) throws RDFRDBException {
-        LiteralLabel l = ((Node_Literal) lnode).getLiteral();
-        String dtype = l.getDatatypeURI();
-        String ls = (String)(l.getValue());
-        try {
-            int len = ls.length();
-            if (len >= MAX_LITERAL) {
-                ls = getLiteralIdx(ls);
-            } // TODO should there be an else return here?
-            String lang = l.language();
-            boolean nullLang = (lang == null) || (lang.equals(""));
-            // Oracle (thin driver at least) fails to match empty strings so have to watch out for when lang is empty
-            String opName = nullLang ? "getLiteralIDNoLang" : "getLiteralID";
-            if (len == 0) {
-                opName += "NullLiteral";
-                ls = EMPTY_LITERAL_MARKER;
-            }
-            PreparedStatement ps = m_sql.getPreparedSQLStatement(opName);
-            ps.setString(1, ls);
-            if (!nullLang) ps.setString(2, lang);
-            ResultSet rs = ps.executeQuery();
-            IDBID result = null;
-            if (rs.next()) {
-                result = wrapDBID(rs.getObject(1));
-            };
-         //   m_sql.returnPreparedSQLStatement(ps, opName);
-            return result;
-        } catch (SQLException e1) {
-            // /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
-            throw new RDFRDBException("Failed to find literal", e1);
-        }
-    }
-    
-	/**
-	 * Convert the current row of a result set from a ResultSet
-	 * to a literal.
-	 * Expects row to contain: 
-	 *    asBLOB, LITERALIDX, LANG 
-	 *     
-	 * @param rs the resultSet to be processed.
-	 */
-	public Node_Literal extractLiteralFromRow(ResultSet rs) 
-        throws SQLException, IOException, UnsupportedEncodingException {
-		Object blob = rs.getObject(1);
-		String literal = null;
-		if (blob == null) {
-			// No blob so the literal must have fitted within the index field
-			literal = rs.getString(2);
-		} else {
-			InputStream blobin = null;
-			if (blobin instanceof InputStream) {
-				blobin = (InputStream) blob;
-			} else {
-				// Probably postgresql with it's BLOB=OID stuff and a broken jdbc driver
-				// This re-open of an arg is not guaranteed to work for all drivers but
-				// this code is probably only reached for the broken postgresql case which
-				// does support arg reopening.
-				blobin = rs.getBinaryStream(1);
-			}
-			int len = blobin.read() & 0xff;
-			len |= ((blobin.read() & 0xff) << 8);
-			len |= ((blobin.read() & 0xff) << 16);
-			len |= ((blobin.read() & 0xff) << 24);
-			//System.out.println("Len = " + len);
-			byte[] data = new byte[len];
-			int read = 0;
-			while (read < len) {
-				int got = blobin.read(data, read, len-read);
-				if (got == -1) {
-				throw new RDFRDBException("Premature end of blob in large literal, got " + read);
-				}
-				read += got;
-			}
-			blobin.close();
-			literal = new String(data, "UTF-8");
-		}
-		String Lang = rs.getString(3);
-		String typeRes = rs.getString(4);
-		LiteralLabel llabel;
-		if ( typeRes == null ) {
-			llabel = new LiteralLabel(literal,Lang == null ? "" : Lang);
-		} else {
-//			BaseDatatype dt = new BaseDatatype(typeRes);
-			RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeRes);
-			llabel = new LiteralLabel(literal,Lang, dt);
-		}	 
-		return ((Node_Literal)Node.createLiteral(llabel));
-	}
-
 	/**
 	 * Convert the current row of a result set from a ResultSet
 	 * to a Triple.
@@ -649,29 +326,14 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * @param rs the resultSet to be processed.
 	 */
 	public Triple extractTripleFromRowData(
-		String subjURI,
-		String predURI,
-		String objURI,
-		String objVal,
-		String objRef) {
+		String subj,
+		String pred,
+		String obj) {
 		
-		Node subjNode = subjURI == null ? null : RDBStringToNode(subjURI);
-		Node predNode = predURI == null ? null : RDBStringToNode(predURI);
-		Node objNode = null;
-		
-		if (objURI != null) {
-			objNode = RDBStringToNode(objURI);
-		} else if (objRef != null) {
-			IDBID objLid = new DBIDInt(Integer.parseInt(objRef));
-			objNode = getLiteral(objLid);
-		} else if (objVal != null) {
-			LiteralLabel llabel = new LiteralLabel(objVal,"");
-			objNode = new Node_Literal(llabel);
-		} else {
-			//no object?
-			// throw new RDFRDBException("No object found in Asserted Statement Table");
-		}
-		
+		Node subjNode = subj == null ? null : m_driver.RDBStringToNode(subj);
+		Node predNode = pred == null ? null : m_driver.RDBStringToNode(pred);
+		Node objNode = obj == null ? null : m_driver.RDBStringToNode(obj);
+
 		return (new Triple(subjNode, predNode, objNode));
 	}
 
@@ -738,56 +400,28 @@ public void deleteTripleAR(
 	Node reifNode,
 	boolean isBatch,
 	Hashtable batchedPreparedStatements) {
-	String objURI;
-	Object obj_val;
 	boolean isReif = reifNode != null;
 
-	String obj_res, obj_lex, obj_lit;
-
-	String subjURI =
-		t.getSubject() == Node.ANY ? null : nodeToRDBString(t.getSubject());
-	String predURI =
-		t.getPredicate() == Node.ANY ? null : nodeToRDBString(t.getPredicate());
-	Node obj_node = t.getObject() == Node.ANY ? null : t.getObject();
-	String gid = graphID.getID().toString();
-
+	String subj =
+		t.getSubject() == Node.ANY ? null : m_driver.nodeToRDBString(t.getSubject(),false);
+	String pred =
+		t.getPredicate() == Node.ANY ? null : m_driver.nodeToRDBString(t.getPredicate(),false);
+	String obj =
+		t.getObject() == Node.ANY ? null : m_driver.nodeToRDBString(t.getObject(),false);
+//	String gid = graphID.getID().toString();
+	int gid = ((DBIDInt) graphID).getIntID();
 	int argc = 1;
 	String stmtStr;
-	Node_Literal litNode = null;
-	// have to init these next 4 vars to prevent java warnings
-	LiteralLabel ll = null;
-	String lval = null;
-	boolean litIsPlain = true;
-
-	if ((subjURI == null) || (predURI == null) || (obj_node == null)) {
-		throw new JenaException("Attempt to delete triple with missing values");
+	
+	if ((subj == null) || (pred == null) || (obj == null)) {
+//		throw new JenaException("Attempt to delete triple with missing values");
+//		used to think this was an exception. i guess it's not.
+		return;
 	}
 
 	// get statement string	   	   
 	PreparedStatement ps = null;
-	if ((obj_node == null) || obj_node.isURI() || obj_node.isBlank()) {
-		stmtStr =
-			isReif
-				? "deleteReifStatementObjectURI"
-				: "deleteStatementObjectURI";
-	} else {
-		litNode = (Node_Literal) obj_node;
-		ll = litNode.getLiteral();
-		lval = (String) ll.getValue();
-		litIsPlain = literalIsPlain(ll);
-		if (litIsPlain) {
-			// object literal can fit in statement table
-			stmtStr =
-				isReif
-					? "deleteReifStatementLiteralVal"
-					: "deleteStatementLiteralVal";
-		} else {
-			stmtStr =
-				isReif
-					? "deleteReifStatementLiteralRef"
-					: "deleteStatementLiteralRef";
-		}
-	}
+	stmtStr = isReif ? "deleteReifStatement" : "deleteStatement";
 	try {
 		ps =
 			getPreparedStatement(
@@ -803,38 +437,14 @@ public void deleteTripleAR(
 
 	// now fill in parameters
 	try {
-		ps.setString(argc++, subjURI);
-		ps.setString(argc++, predURI);
+		ps.setString(argc++, subj);
+		ps.setString(argc++, pred);
+		ps.setString(argc++, obj);
 
-		if (obj_node.isURI() || obj_node.isBlank()) {
-			objURI = nodeToRDBString(obj_node);
-			ps.setString(argc++, objURI);
-
-		} else if (obj_node.isLiteral()) {
-			litNode = (Node_Literal) obj_node;
-			ll = litNode.getLiteral();
-			lval = (String) ll.getValue();
-			litIsPlain = literalIsPlain(ll);
-
-			if (litIsPlain) {
-				// object literal can fit in statement table
-
-				ps.setString(argc++, lval);
-			} else {
-				// belongs in literal table
-				IDBID lid = getLiteralID(litNode);
-				if (lid == null) {
-					// return, because if literalid does not exist, then statement
-					// can't be in store.
-					return;
-				}
-				ps.setString(argc++, lid.getID().toString());
-			}
-		}
-		ps.setString(argc++, gid);
+		ps.setInt(argc++, gid);
 
 		if (isReif) {
-			String stmtURI = nodeToRDBString(reifNode);
+			String stmtURI = m_driver.nodeToRDBString(reifNode,false);
 			ps.setString(argc++, stmtURI);
 		}
 	} catch (SQLException e1) {
@@ -953,52 +563,26 @@ public void deleteTripleAR(
 		
 		String obj_res, obj_lex, obj_lit;
 		// TODO: Node.ANY is only valid for reif triple stores. should check this.
-		String subjURI =
-			t.getSubject() == Node.ANY ? null : nodeToRDBString(t.getSubject());
-		String predURI =
-			t.getPredicate() == Node.ANY
-				? null
-				: nodeToRDBString(t.getPredicate());
-		Node obj_node = t.getObject() == Node.ANY ? null : t.getObject();
-		String gid = graphID.getID().toString();
+		String subj =
+			t.getSubject() == Node.ANY ? null : m_driver.nodeToRDBString(t.getSubject(),true);
+		String pred =
+			t.getPredicate() == Node.ANY ? null : m_driver.nodeToRDBString(t.getPredicate(),true);
+		String obj =
+			t.getObject() == Node.ANY ? null : m_driver.nodeToRDBString(t.getObject(),true);
+//		String gid = graphID.getID().toString();
+		int gid = ((DBIDInt) graphID).getIntID();
 
 		int argc = 1;
 		String stmtStr;
-		Node_Literal litNode = null; // have to init these next 4 vars to prevent java warnings
-		LiteralLabel ll = null;
-		String lval = null;
-		boolean litIsPlain = true;
 
-		if ((subjURI == null) || (predURI == null) || (obj_node == null)) {
+		if ((subj == null) || (pred == null) || (obj == null)) {
 			if (!isReif)
 				throw new JenaException("Attempt to assert triple with missing values");
 		}
 		// get statement string
 
 		PreparedStatement ps = null;
-		if ((obj_node == null) || obj_node.isURI() || obj_node.isBlank()) {
-			stmtStr =
-				isReif
-					? "insertReifStatementObjectURI"
-					: "insertStatementObjectURI";
-		} else {
-			litNode = (Node_Literal) obj_node;
-			ll = litNode.getLiteral();
-			lval = (String) ll.getValue();
-			litIsPlain = literalIsPlain(ll);
-			if (litIsPlain) {
-				// object literal can fit in statement table
-				stmtStr =
-					isReif
-						? "insertReifStatementLiteralVal"
-						: "insertStatementLiteralVal";
-			} else {
-				stmtStr =
-					isReif
-						? "insertReifStatementLiteralRef"
-						: "insertStatementLiteralRef";
-			}
-		}
+		stmtStr = isReif ? "insertReifStatement" : "insertStatement";
 		try {
 			ps =
 				getPreparedStatement(
@@ -1013,50 +597,28 @@ public void deleteTripleAR(
 		}
 		// now fill in parameters
 		try {
-			if (subjURI == null)
+			if (subj == null)
 				ps.setNull(argc++, java.sql.Types.VARCHAR);
 			else
-				ps.setString(argc++, subjURI);
-			if (predURI == null)
+				ps.setString(argc++, subj);
+			if (pred == null)
 				ps.setNull(argc++, java.sql.Types.VARCHAR);
 			else
-				ps.setString(argc++, predURI);
+				ps.setString(argc++, pred);
+			if (obj == null)
+				ps.setNull(argc++, java.sql.Types.VARCHAR);
+			else
+				ps.setString(argc++, obj);
 
-			// add object
-			if ((obj_node == null) || obj_node.isURI() || obj_node.isBlank()) {
-				objURI = obj_node == null ? null : nodeToRDBString(obj_node);
-				if (objURI == null)
-					ps.setNull(argc++, java.sql.Types.VARCHAR);
-				else
-					ps.setString(argc++, objURI);
-			} else if (obj_node.isLiteral()) {
-
-				if (litIsPlain) {
-					// object literal can fit in statement table
-					ps.setString(argc++, lval);
-
-				} else {
-					// belongs in literal table
-					String litIdx = getLiteralIdx(lval);
-					// TODO This happens in several places?
-					IDBID lid = getLiteralID(litNode);
-					if (lid == null) {
-						lid = addLiteral(litNode);
-					}
-					ps.setString(argc++, lid.getID().toString());
-					ps.setString(argc++, litIdx);
-					// TODO should this be here?  Seems redundant to store litIdx?
-				}
-			}
 			// add graph id and, if reifying, stmturi and hastype
-			ps.setString(argc++, gid);
+			ps.setInt(argc++, gid);
 			if (isReif) {
-				String stmtURI = nodeToRDBString(reifNode);
+				String stmtURI = m_driver.nodeToRDBString(reifNode,true);
 				ps.setString(argc++, stmtURI);
 				if (hasType == true)
-					ps.setInt(argc++, 1);
+					ps.setString(argc++, "T");
 				else
-					ps.setNull(argc++, java.sql.Types.INTEGER);
+					ps.setString(argc++, " "); // not nullable
 			}
 
 		} catch (SQLException e1) {
@@ -1237,94 +799,68 @@ public void deleteTripleAR(
 	 * @see com.hp.hpl.jena.db.impl.IPSet#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.IDBID)
 	 */
 	public ExtendedIterator find(TripleMatch t, IDBID graphID) {
-	   String astName = getASTname();
-	   Node subj =  t.getMatchSubject();
-	   Node pred =  t.getMatchPredicate();
-	   Node obj_node = t.getMatchObject();
-	   Node_Literal objLit;
-	   String gid = graphID.getID().toString();
-	   ResultSetTripleIterator result= new ResultSetTripleIterator(this, graphID);
-	   
-	   PreparedStatement ps = null;
-		
-	   String subj_uri = null;
-	   String pred_uri = null;
-	   String obj_uri = null;
-	   String lindx;
-	   IDBID lid;
-	   String op = "SelectStatement";
-	   boolean objIsBlankOrURI = false;
-	   int args = 1;
-		
-	   if (subj != null){
-		   subj_uri = nodeToRDBString(subj);
-		   op += "S";
-	   }
-		
-	   if (pred!= null) {
-		   pred_uri = nodeToRDBString(pred);
-		   op += "P";
-	   }
-	   
-	   if ( (obj_node!= null) && (obj_node.isURI() || obj_node.isBlank()) ) {
-			objIsBlankOrURI = true;
-			obj_uri = nodeToRDBString(obj_node);
-	   }
-	   
-	   try {
-	   	if (obj_node != null) {
-		   if (objIsBlankOrURI) {
-			   op += "OU";
-			   ps = m_sql.getPreparedSQLStatement(op,getASTname());
-			   ps.setString(args++,obj_uri);
-		   } else if (obj_node.isLiteral()) {
-			objLit = (Node_Literal)obj_node;
-			LiteralLabel ll = objLit.getLiteral();
-			String lval = (String)ll.getValue();
-			lval = ll.toString();
-			boolean litIsPlain = literalIsPlain(ll);
-	  
-			if (litIsPlain) {
-				op += "OV";
-				ps = m_sql.getPreparedSQLStatement(op,getASTname());
-				ps.setString(args++,lval);
-			} else {
-				op += "OR";
-				IDBID litID = getLiteralID(objLit);
-				if (litID == null) {
-					// if literal wasn't in store, triple can't be there
-					return((ExtendedIterator) result);
-				}
-				ps = m_sql.getPreparedSQLStatement(op,getASTname());
-				ps.setString(args++,litID.getID().toString());
-				}
-		   }
-	   } else {
-	   	// if object was null
-	    ps = m_sql.getPreparedSQLStatement(op,getASTname());
-	   	}
-	   
-	    if (subj != null){
-		   ps.setString(args++,subj_uri);
-	    }
-		
-	    if (pred!= null) {
-		  ps.setString(args++,pred_uri);
-	     }
-	   
-	   // set other args
-	   ps.setString(args++,gid);
-	   } catch (Exception e) {
-			   	Log.warning("Getting prepared statement for " + op + " Caught exception " + e);
-			   }
-			   
-	   try {
-		  m_sql.executeSQL(ps, op, result);
-	   } catch (Exception e) {
-		 Log.debug("find encountered exception " + e);
-	   }
-	   return ( new TripleMatchIterator( t.asTriple(), result ) );
-   }
+		String astName = getASTname();
+		Node subj_node = t.getMatchSubject();
+		Node pred_node = t.getMatchPredicate();
+		Node obj_node = t.getMatchObject();
+		Node_Literal objLit;
+		//	   String gid = graphID.getID().toString();
+		int gid = ((DBIDInt) graphID).getIntID();
+		boolean notFound = false;
+
+		ResultSetTripleIterator result =
+			new ResultSetTripleIterator(this, graphID);
+
+		PreparedStatement ps = null;
+
+		String subj = null;
+		String pred = null;
+		String obj = null;
+		String op = "SelectStatement";
+		int args = 1;
+
+		if (subj_node != null) {
+			subj = m_driver.nodeToRDBString(subj_node, false);
+			if (subj == null)
+				notFound = true;
+			else
+				op += "S";
+		}
+		if (pred_node != null) {
+			pred = m_driver.nodeToRDBString(pred_node, false);
+			if (pred == null)
+				notFound = true;
+			else
+				op += "P";
+		}
+		if (obj_node != null) {
+			obj = m_driver.nodeToRDBString(obj_node, false);
+			if (obj == null)
+				notFound = true;
+			else
+				op += "O";
+		}
+		if (notFound == false)
+			try {
+				ps = m_sql.getPreparedSQLStatement(op, getASTname());
+				if (obj != null)
+					ps.setString(args++, obj);
+				if (subj != null)
+					ps.setString(args++, subj);
+				if (pred != null)
+					ps.setString(args++, pred);
+
+				ps.setInt(args++, gid);
+				m_sql.executeSQL(ps, op, result);
+			} catch (Exception e) {
+				notFound = true;
+				Log.debug(
+					"find encountered exception: args=" + args + " err: " + e);
+			}
+
+		if ( notFound ) result.close();
+		return (new TripleMatchIterator(t.asTriple(), result));
+	}
 
 		/* (non-Javadoc)
 		 * @see com.hp.hpl.jena.graphRDB.IPSet#removeStatementsFromDB()

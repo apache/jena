@@ -7,6 +7,7 @@ package com.hp.hpl.jena.db.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.DB;
 
@@ -27,16 +28,21 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
 
-	public static String graphURIPrefix = "http://jena.hp.com/graph.";
 	public static Node_URI graphName = (Node_URI)DB.graphName.getNode();
 	public static Node_URI graphType = (Node_URI)DB.graphType.getNode();
 	public static Node_URI graphLSet = (Node_URI)DB.graphLSet.getNode();
 	public static Node_URI graphPrefix = (Node_URI)DB.graphPrefix.getNode();
+	public static Node_URI graphId = (Node_URI)DB.graphId.getNode();
+	public static Node_URI stmtTable = (Node_URI)DB.stmtTable.getNode();
+	public static Node_URI reifTable = (Node_URI)DB.reifTable.getNode();
+	public static Node_URI graphDBSchema = (Node_URI)DB.graphDBSchema.getNode();
+
+
 	
 	public DBPropGraph( SpecializedGraph g, String symbolicName, String type) {
 		super(g);
@@ -53,9 +59,19 @@ public class DBPropGraph extends DBProp {
 		super(g);
 		
 		putPropString(graphName, newSymbolicName);
-		putPropNode(graphType, DBProp.findProperty(oldProperties, graphType));
-		
+		// only copy user-configurable properties
+		Iterator it = oldProperties.find( Node.ANY, Node.ANY, Node.ANY);
+		while ( it.hasNext() ) {
+			Triple t = (Triple) it.next();
+			if ( t.getPredicate().equals(graphName) ||
+				t.getPredicate().equals(graphId) ||
+				t.getPredicate().equals(stmtTable) ||
+				t.getPredicate().equals(reifTable) )
+				continue;
+			putPropNode((Node_URI)t.getPredicate(),t.getObject());
+		}
 	}
+
 	
 	public void addLSet( DBPropLSet lset ) {
 		putPropNode( graphLSet, lset.getNode() );
@@ -82,8 +98,31 @@ public class DBPropGraph extends DBProp {
 		addPrefix( new DBPropPrefix( graph, prefix, uri) );
 	}
 	
+	public void addGraphId( int id ) {
+		putPropString(graphId, Integer.toString(id));
+	}
+
+	public void addStmtTable( String table ) {
+		putPropString(stmtTable, table);
+	}
+	
+	public void addDBSchema( String schemaName ) {
+		putPropString(graphDBSchema, schemaName);
+	}
+	public void addReifTable( String table ) {
+		putPropString(reifTable, table);
+	}
+
+
+	
 	public String getName() { return getPropString( graphName); }
 	public String getType() { return getPropString( graphType); };
+	public String getStmtTable() { return getPropString(stmtTable); }
+	public String getReifTable() { return getPropString(reifTable); }
+	public int getGraphId() { return Integer.parseInt(getPropString(graphId)); };
+	public String getDBSchema() { return getPropString(graphDBSchema); }
+
+
 	
 	public ExtendedIterator getAllLSets() {
 		return 
@@ -161,7 +200,7 @@ public class DBPropGraph extends DBProp {
 		}
 		super.remove();
 	}
-	
+
 }
 
 /*

@@ -8,7 +8,8 @@ package com.hp.hpl.jena.db.impl;
 import java.util.List;
 
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
@@ -20,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on the Jena1 version of IRDBDriver by Dave Reynolds
 * 
 * @author hkuno
-* @version $Revision: 1.4 $
+* @version $Revision: 1.5 $
 */
 
 public interface IPSet {
@@ -69,33 +70,12 @@ public interface IPSet {
     	
     
 	/**
-	 * Check if database contains given table. 
-	 * If not, run specified command to create it.
-	 */
-	public void initializeStatementTable();
-
-    	
-	/**
 	 * General ID allocate stub.
 	 * Calls the given SQL operation to perform the allocation.
 	 */
 	public IDBID allocateID(String opname);
 
 		
-	/**
-	 * Return the database ID for the literal and allocate one of necessary
-	 */
-	public IDBID getLiteralID(Node_Literal l);
-	
-	/**
-	 * get index for this literal.
-	 */
-	public String getLiteralIdx(String literal);
-	
-	/**
-	 * Add a literal to the Literal table
-	 */
-	public IDBID addLiteral(Node_Literal l);
 
 	/**
 	 * @param t the triple to be added
@@ -146,11 +126,9 @@ public interface IPSet {
 	 * @return Triple
 	 */
 	Triple extractTripleFromRowData(
-		String subjURI,
-		String predURI,
-		String objURI,
-		String objVal,
-		String objRef);
+		String subj,
+		String pred,
+		String obj);
 		
 	/**
 	 * Method find matching entries
@@ -185,6 +163,11 @@ public interface IPSet {
 	 * @param SYSTEM_PROP_TNAME
 	 */
 	public void setASTname(String SYSTEM_PROP_TNAME);
+
+	/**
+	 * @return the driver for the PSet
+	 */
+	public IRDBDriver driver();
 
 }
 

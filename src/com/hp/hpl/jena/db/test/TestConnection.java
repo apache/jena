@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestConnection.java,v 1.5 2003-05-05 11:07:31 chris-dollin Exp $
+  $Id: TestConnection.java,v 1.6 2003-06-18 20:57:40 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -21,10 +21,13 @@ package com.hp.hpl.jena.db.test;
 */
 
 import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.db.impl.DBPropGraph;
 
 import junit.framework.*;
 
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.vocabulary.DB;
 
 public class TestConnection extends TestCase {    
         
@@ -193,6 +196,76 @@ public class TestConnection extends TestCase {
 			conn.close();
 		}
 	}
+	
+	public void addToDBGraphProp ( Model model, Property prop, String val ) {
+		// first, get URI of the graph
+		StmtIterator iter = model.listStatements(
+			new SimpleSelector(null, DB.graphName, (RDFNode) null));
+		assertTrue(iter.hasNext());
+		
+		Statement stmt = iter.nextStatement();
+		assertTrue(iter.hasNext() == false);
+		Resource graphURI = stmt.getSubject();
+		Literal l = model.createLiteral(val);
+		Statement s = model.createStatement(graphURI,prop,l);
+		model.add(s);
+		assertTrue(model.contains(s));
+	}
+	
+	public void testConstructDefSchemaModel() throws java.lang.Exception {
+		IDBConnection conn = makeAndCleanTestConnection();
+		Model props = ModelRDB.getDefaultModelProperties(conn);
+		addToDBGraphProp(props,DB.graphDBSchema,"DEFAULT");
+		ModelRDB m = ModelRDB.createModel(conn, props);
+		m.remove();
+		conn.close();
+	}
+	
+	public void testConstructBadSchemaModel() throws java.lang.Exception {
+		IDBConnection conn = makeAndCleanTestConnection();
+		Model props = ModelRDB.getDefaultModelProperties(conn);
+		addToDBGraphProp(props,DB.graphDBSchema,"SCHEMA_DOES_NOT_EXIST");
+		try {
+			ModelRDB m = ModelRDB.createModel(conn, props);
+			m.remove();
+			assertFalse("Created model with non-existent schema",true);
+		} catch (RDFRDBException e) {
+		}
+		conn.close();
+	}
+	
+	public void testConstructNamedModelDefSchema() throws java.lang.Exception {
+		// this named model uses the default schema
+		IDBConnection conn = makeAndCleanTestConnection();
+		Model props = ModelRDB.getDefaultModelProperties(conn);
+		addToDBGraphProp(props,DB.graphDBSchema,"DEFAULT");
+		ModelRDB m = ModelRDB.createModel(conn, "myName", props);
+		m.remove();
+		conn.close();
+	}
+
+	public void testConstructNamedModelDefSchema1() throws java.lang.Exception {
+		// same as testConstructNamedModelDefSchema1 except the default model already exists
+		IDBConnection conn = makeAndCleanTestConnection();
+		ModelRDB mdef = ModelRDB.createModel(conn, ModelRDB.getDefaultModelProperties(conn));
+		Model props = ModelRDB.getDefaultModelProperties(conn);
+		addToDBGraphProp(props,DB.graphDBSchema,"DEFAULT");
+		ModelRDB m = ModelRDB.createModel(conn, "myName", props);
+		mdef.remove(); m.remove();
+		conn.close();
+	}
+	
+	public void testConstructNamedModelSchema() throws java.lang.Exception {
+		// construct two named models that share a schema
+		IDBConnection conn = makeAndCleanTestConnection();
+		ModelRDB m1 = ModelRDB.createModel(conn, "model1", ModelRDB.getDefaultModelProperties(conn));
+		Model props = ModelRDB.getDefaultModelProperties(conn);
+		addToDBGraphProp(props,DB.graphDBSchema,"model1");
+		ModelRDB m2 = ModelRDB.createModel(conn, "model2", props);
+		m1.remove(); m2.remove();
+		conn.close();
+	}
+
 }
     	
 

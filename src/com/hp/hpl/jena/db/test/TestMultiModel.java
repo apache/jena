@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.6 2003-06-18 20:57:40 wkw Exp $
+  $Id: TestMultiModel.java,v 1.1 2003-06-18 20:57:40 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -31,57 +31,92 @@ import junit.framework.TestSuite;
 
 
 
-public class TestBasicOperations extends TestCase
+public class TestMultiModel extends TestCase
     {    
         
-    public TestBasicOperations( String name )
+    public TestMultiModel( String name )
         { super( name ); }
     
     public static TestSuite suite()
-        { return new TestSuite( TestBasicOperations.class ); }   
+        { return new TestSuite( TestMultiModel.class ); }   
      
-    ModelRDB model = null;    
-	Model dbProperties = null;    
+    Model model = null;
+    ModelRDB dmod1 = null;    
+	ModelRDB dmod2 = null;
+	ModelRDB nmod1 = null; 
+	ModelRDB nmod2 = null; 
 	IDBConnection conn = null;
+	Model dbProperties = null;    
 	
     protected void setUp() throws java.lang.Exception {
     	conn = TestConnection.makeAndCleanTestConnection();
-    	model = ModelRDB.createModel(conn);
-    	dbProperties = conn.getDatabaseProperties();
+		Model props = ModelRDB.getDefaultModelProperties(conn);
+		dmod1 = ModelRDB.createModel(conn);
+		addToDBGraphProp(props,DB.graphDBSchema,"DEFAULT");
+		dmod2 = ModelRDB.createModel(conn, "Def_Model_2",props);
+		nmod1 = ModelRDB.createModel(conn,"Named_Model_1");
+		props = ModelRDB.getDefaultModelProperties(conn);
+		addToDBGraphProp(props,DB.graphDBSchema,"Named_Model_1");
+		nmod2 = ModelRDB.createModel(conn,"Named_Model_2",props);
+		model = ModelFactory.createDefaultModel();
+		dbProperties = conn.getDatabaseProperties();	
     }
     
     protected void tearDown() throws java.lang.Exception {
-    	model.close();
-    	model = null;
+    	dmod1.close(); dmod2.close();
+    	nmod1.close(); nmod2.close();
     	conn.cleanDB();
     	conn.close();
     	conn = null;
     }
     
-    private void addRemove(Statement stmt) {
+	
+	public void addToDBGraphProp ( Model model, Property prop, String val ) {
+		// first, get URI of the graph
+		StmtIterator iter = model.listStatements(
+			new SimpleSelector(null, DB.graphName, (RDFNode) null));
+		assertTrue(iter.hasNext());
+		
+		Statement stmt = iter.nextStatement();
+		assertTrue(iter.hasNext() == false);
+		Resource graphURI = stmt.getSubject();
+		Literal l = model.createLiteral(val);
+		Statement s = model.createStatement(graphURI,prop,l);
+		model.add(s);
+		assertTrue(model.contains(s));
+	}
+	
+    private void addOnModel(Model model, Statement stmt) {
     	model.add(stmt);
     	assertTrue( model.contains(stmt) );
-    	model.remove(stmt);
-    	assertTrue( !model.contains(stmt));
     	model.add(stmt);
     	assertTrue( model.contains(stmt) );
-    	model.remove(stmt);
-    	assertTrue( !model.contains(stmt));
-    	model.add(stmt);
-    	model.add(stmt);
-    	assertTrue( model.contains(stmt) );
-    	model.remove(stmt);
-    	assertTrue( !model.contains(stmt));    	
-    	model.add(stmt);
-    	model.add(stmt);
-    	model.add(stmt);
-    	model.add(stmt);
-    	model.add(stmt);
-    	model.add(stmt);
-    	assertTrue( model.contains(stmt) );
-    	model.remove(stmt);
-    	assertTrue( !model.contains(stmt));    	
     }
+    
+	private void rmvOnModel(Model model, Statement stmt) {
+		assertTrue( model.contains(stmt) );
+		model.remove(stmt);
+		assertTrue( !model.contains(stmt) );
+		model.add(stmt);
+		assertTrue( model.contains(stmt) );
+		model.remove(stmt);
+		assertTrue( !model.contains(stmt) );
+	}
+
+    
+	private void addRemove(Statement stmt) {
+		addOnModel(model,stmt);
+		addOnModel(dmod1,stmt);
+		addOnModel(dmod2,stmt);
+		addOnModel(nmod1,stmt);
+		addOnModel(nmod2,stmt);
+		
+		rmvOnModel(nmod2,stmt);
+		rmvOnModel(nmod1,stmt);
+		rmvOnModel(dmod2,stmt);
+		rmvOnModel(dmod1,stmt);
+		rmvOnModel(model,stmt);
+	}
     
     public void testAddRemoveURI() {
     	Resource s = model.createResource("test#subject");

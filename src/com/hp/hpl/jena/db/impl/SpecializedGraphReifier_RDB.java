@@ -11,7 +11,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -42,7 +41,7 @@ public class SpecializedGraphReifier_RDB
 	/**
 	 * holds ID of graph in database (defaults to "0")
 	 */
-	public IDBID my_GID = new DBIDInt(0);
+	public IDBID my_GID = null;
 
 	// lset name
 	private String m_lsetName;
@@ -61,9 +60,10 @@ public class SpecializedGraphReifier_RDB
 	 * Constructor
 	 * Create a new instance of a TripleStore graph.
 	 */
-	SpecializedGraphReifier_RDB(DBPropLSet lProp, IPSet pSet) {
+	SpecializedGraphReifier_RDB(DBPropLSet lProp, IPSet pSet, Integer dbGraphID) {
 		m_pset = (PSet_ReifStore_RDB) pSet;
 		m_dbPropLSet = lProp;
+		my_GID = new DBIDInt(dbGraphID);
 		m_reifCache = new ReifCacheMap(1);
 		m_reif = (PSet_ReifStore_RDB) m_pset;
 	}
@@ -74,8 +74,9 @@ public class SpecializedGraphReifier_RDB
 	 *  Create a new instance of a TripleStore graph, taking
 	 *  DBPropLSet and a PSet as arguments
 	 */
-	public SpecializedGraphReifier_RDB(IPSet pSet) {
+	public SpecializedGraphReifier_RDB(IPSet pSet, Integer dbGraphID) {
 		m_pset = (PSet_ReifStore_RDB) pSet;
+		my_GID = new DBIDInt(dbGraphID);
 		m_reifCache = new ReifCacheMap(1);
 		m_reif = (PSet_ReifStore_RDB) m_pset;
 	}
@@ -436,53 +437,32 @@ public class SpecializedGraphReifier_RDB
 		public boolean refill(Object x, ArrayList pending) {
 			ArrayList res = (ArrayList) x;
 			boolean addedToPending = false;
+			IRDBDriver	drvr = m_pset.driver();
 			
-//			ResultSetTripleIterator it = m_reif.findReifStmt(node, false, my_GID);
-			
-			String subjURI = (String) res.get(0);
-			String predURI = (String) res.get(1);
-			String objURI = (String) res.get(2);
-			String objVal = null;
-			if ( res.get(3) != null ) {
-				byte b[] = (byte []) res.get(3);
-				objVal = new String(b,0,b.length);
-			}
-//			Object litId = res.get(4); 
-			String litId = (String) res.get(4); 
-			String stmtURI = (String) res.get(5);
-			Object hasType = res.get(6);
-			Node node = PSet_TripleStore_RDB.RDBStringToNode(stmtURI);
+			String subj = (String) res.get(0);
+			String pred = (String) res.get(1);
+			String obj = (String) res.get(2);
+			String stmtURI = (String) res.get(3);
+			String hasType = (String) res.get(4);
+			Node node = drvr.RDBStringToNode(stmtURI);
 				
-//			System.err.println(hasType.getClass());
-//			System.err.println(litId.getClass());
-			if ( hasType != null ) {
+			if ( hasType.equals("T") ) {
 					pending.add( new Triple( node, Reifier.type, Reifier.Statement ));
 					addedToPending = true;					
 				}
-				if( subjURI != null ) {
+				if( subj != null ) {
 					pending.add( new Triple( node, Reifier.subject,
-								PSet_TripleStore_RDB.RDBStringToNode(subjURI) ));
+								drvr.RDBStringToNode(subj) ));
 					addedToPending = true;
 				}
-				if( predURI != null ) {
-					pending.add( new Triple( node, Reifier.predicate, new Node_URI(predURI)));
+				if( pred != null ) {
+					pending.add( new Triple( node, Reifier.predicate, drvr.RDBStringToNode(pred)));
 					addedToPending = true;
 				}
-			Node objNode = null;	
-			if (objURI != null) {
-				objNode = PSet_TripleStore_RDB.RDBStringToNode(objURI);
-			} else if (litId != null) {
-				IDBID objLid = new DBIDInt(Integer.parseInt(litId));
-				objNode = m_pset.getLiteral(objLid);
-			} else if (objVal != null) {
-				LiteralLabel llabel = new LiteralLabel(objVal,"");
-				objNode = new Node_Literal(llabel);
-			} 
-				if( objNode != null ) {
-					pending.add( new Triple( node, Reifier.object, objNode ));
-					addedToPending = true;
-					
-				}
+			if( obj != null ) {
+				pending.add( new Triple( node, Reifier.object, drvr.RDBStringToNode(obj)));
+				addedToPending = true;
+			}
 			return addedToPending;
 		}
 

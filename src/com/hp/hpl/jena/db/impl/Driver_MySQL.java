@@ -7,9 +7,14 @@
 
 package com.hp.hpl.jena.db.impl;
 
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Properties;
 
 import com.hp.hpl.jena.db.IDBConnection;
+import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.util.Log;
 
 
@@ -19,6 +24,8 @@ import com.hp.hpl.jena.util.Log;
  * Extends DriverRDB with MySQL-specific parameters.
  */
 public class Driver_MySQL extends DriverRDB {
+	
+	/** The name of the database type this driver supports */
 	
 	/** 
 	 * Constructor
@@ -34,7 +41,9 @@ public class Driver_MySQL extends DriverRDB {
 		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		ID_SQL_TYPE = "INTEGER";
 		INSERT_BY_PROCEDURE = false;
-		MAX_LITERAL = 250;
+		INDEX_KEY_LENGTH = 250;
+		LONG_OBJECT_LENGTH = 250;
+		HAS_XACTS = true;
 		SKIP_ALLOCATE_ID = true;
 		SKIP_DUPLICATE_CHECK = false;
 		EMPTY_LITERAL_MARKER = "EmptyLiteral";
@@ -61,7 +70,145 @@ public class Driver_MySQL extends DriverRDB {
 			Log.severe("Unable to set connection for Driver:" + e);
 		}
 	}
+	
+	/**
+	 * Allocate an identifier for a new graph.
+	 *
+	 */
+	public int graphIdAlloc ( String graphName ) {
+		DBIDInt result = null;
+		try {
+			PreparedStatement ps = m_sql.getPreparedSQLStatement("insertGraph");
+			ps.setString(1,graphName);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			throw new RDFRDBException("Failed to get last inserted ID: " + e);
+		}
+		return getLastInsertID();
+	}
 
+	public int getLastInsertID () {
+		DBIDInt result = null;
+		try {
+			PreparedStatement ps = m_sql.getPreparedSQLStatement("getLastInsertID");
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				result = wrapDBID(rs.getObject(1));
+			} else
+				throw new RDFRDBException("No last insert ID");
+		} catch (SQLException e) {
+			throw new RDFRDBException("Failed to get last inserted ID: " + e);
+		}
+		return result.getIntID();
+	}
+
+	
+	/**
+	 * Return the parameters for table creation.
+	 * 1) column type for subj, prop, obj.
+	 * 2) table implementation type.
+	 * 3) index key length.
+	 * @param param array to hold table creation parameters. 
+	 */
+	protected void getTblParams ( String [] param ) {
+		String objColType;
+		String tblImpl;
+		String ixKeyLen;
+		
+		ixKeyLen = Integer.toString(INDEX_KEY_LENGTH);
+		if ( INDEX_KEY_LENGTH > 250 )
+			throw new RDFRDBException("Key length specified (" + INDEX_KEY_LENGTH +
+					") exceeds MySQL maximum key length of 250.");
+		tblImpl = HAS_XACTS ? "INNODB" : "MyISAM";
+		if ( HAS_XACTS ) {
+			tblImpl = "INNODB";
+			if ( LONG_OBJECT_LENGTH > 250 )
+				throw new RDFRDBException("Long object length specified (" + LONG_OBJECT_LENGTH +
+						") exceeds MySQL maximum VARCHAR length of 250.");
+
+			objColType = "VARCHAR(" + LONG_OBJECT_LENGTH + ") BINARY";
+			STRINGS_TRIMMED = true;
+			EOS = ":";
+		} else {
+			tblImpl = "MyISAM";
+			objColType = LONG_OBJECT_LENGTH <= 250 ?
+				"TINYBLOB" : "MEDIUMBLOB";
+			STRINGS_TRIMMED = false;
+			EOS = "";
+		}
+		param[0] = objColType;
+		param[1] = tblImpl;
+		param[2] = ixKeyLen;	
+	}
+
+	
+	
+	/**
+	 * 
+	 * Return the parameters for database initialization.
+	 */
+	protected String[] getDbInitTablesParams() {
+		String [] res = new String[3];
+		
+		getTblParams (res);
+		if ( HAS_XACTS ) {
+			STRINGS_TRIMMED = true;
+			EOS = ":";
+		} else {
+			STRINGS_TRIMMED = false;
+			EOS = "";
+		}
+		EOS_LEN = EOS.length();
+
+		return res;
+	}
+	
+	/**
+ 	* 
+ 	* Return the parameters for table creation.
+ 	* Generate the table name by counting the number of existing
+	* tables for the graph. This is not reliable if another client
+	* is concurrently trying to create a table so, if failure, we
+	* make several attempts to create the table.
+	*/	
+
+	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
+		String [] parms = new String[3];
+		String [] res = new String[4];
+				
+		getTblParams (parms);
+		int tblCnt = getTableCount(graphId);
+		String tblName = TABLE_BASE_NAME + 
+					"G" + Integer.toString(graphId) +
+					"T" + Integer.toString(tblCnt) +
+					(isReif ? "_REIF" : "_STMT");		
+		res[0] = tblName;
+		res[1] = parms[0];
+		res[2] = parms[1];
+		res[3] = parms[2];
+		return res;
+	}
+	
+	protected int getTableCount ( int graphId ) {		
+	try {
+		DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
+		String[] tableTypes = { "TABLE" };
+		int	res = 0;
+		String	tblPattern = TABLE_BASE_NAME + "G" + Integer.toString(graphId) + "%";
+		ResultSet alltables = dbmd.getTables(null, null, tblPattern, tableTypes);
+		while (alltables.next()) {
+			res += 1;
+		}
+		alltables.close();
+		return res;
+	} catch (SQLException e1) {
+		throw new RDFRDBException("Internal SQL error in driver", e1);
+	}
+}
+
+	
+
+		
 }
 
 /*

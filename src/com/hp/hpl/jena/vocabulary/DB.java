@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
  * Vocabulary for Database properties.
  * 
  * @author csayers
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class DB {
 
@@ -39,6 +39,8 @@ public class DB {
     public static Property graph;
            static String nMaxLiteral = "MaxLiteral";
     public static Property maxLiteral;
+
+
     
 	// Graph properties
 	       static String nGraphName = "GraphName";
@@ -49,6 +51,17 @@ public class DB {
 	public static Property graphLSet;
 		   static String nGraphPrefix = "GraphPrefix";
 	public static Property graphPrefix;
+	   		static String nGraphId = "GraphId";
+	public static Property graphId;
+			static String nGraphDBSchema = "GraphDBSchema";
+	public static Property graphDBSchema;
+			static String nStmtTable = "StmtTable";
+	public static Property stmtTable;
+			static String nReifTable = "ReifTable";
+	public static Property reifTable;
+
+	
+
     
     // Prefix properties
 		   static String nPrefixValue = "PrefixValue";
@@ -68,7 +81,10 @@ public class DB {
 	   static String nPSetName = "PSetName";
 	public static Property pSetName;    
 	   static String nPSetType = "PSetType";
-	public static Property pSetType;    
+	public static Property pSetType;
+		static String nPSetTable = "PSetTable";
+ 	public static Property pSetTable;    
+  
     
     // Added - schemagen does not generate this
            static String nundefined = "undefined" ;
@@ -88,6 +104,11 @@ public class DB {
 			graphType = ResourceFactory.createProperty(uri + nGraphType);
 			graphLSet = ResourceFactory.createProperty(uri + nGraphLSet);
 			graphPrefix = ResourceFactory.createProperty(uri + nGraphPrefix);
+			graphId = ResourceFactory.createProperty(uri + nGraphId);
+			graphDBSchema = ResourceFactory.createProperty(uri + nGraphDBSchema);
+			stmtTable = ResourceFactory.createProperty(uri + nStmtTable);
+			reifTable = ResourceFactory.createProperty(uri + nReifTable);
+
             
 			prefixValue = ResourceFactory.createProperty(uri + nPrefixValue);
 			prefixURI = ResourceFactory.createProperty(uri + nPrefixURI);
@@ -98,6 +119,7 @@ public class DB {
             
 			pSetName = ResourceFactory.createProperty(uri + nPSetName);
 			pSetType = ResourceFactory.createProperty(uri + nPSetType);
+			pSetTable = ResourceFactory.createProperty(uri + nPSetTable);
 
             undefined = ResourceFactory.createResource(uri + nundefined) ;
         } catch (Exception e) {

@@ -47,11 +47,11 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
-    static final String DEFAULT = "DEFAULT_GRAPH";
+    static public final String DEFAULT = "DEFAULT";
 
 	protected IRDBDriver m_driver = null;
 	protected DBPropGraph m_properties = null; 
@@ -156,8 +156,6 @@ public class GraphRDB extends GraphBase implements Graph {
 		
 		if(graphID == null)
 			graphID = DEFAULT;
-		else
-			graphID = graphID.toUpperCase();
 			
 		// Find the driver
 		m_driver = con.getDriver();

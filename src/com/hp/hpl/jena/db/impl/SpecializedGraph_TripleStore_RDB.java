@@ -63,8 +63,8 @@ public class SpecializedGraph_TripleStore_RDB extends SpecializedGraph_TripleSto
 	 * as an argument.  Used for bootstrapping, when we don't have a
 	 * DBPropLSet yet.
 	 */
-	public SpecializedGraph_TripleStore_RDB(IPSet pSet) {
-		super(pSet);
+	public SpecializedGraph_TripleStore_RDB(IPSet pSet, Integer dbGraphId) {
+		super(pSet, dbGraphId);
 	}
 
     /** 

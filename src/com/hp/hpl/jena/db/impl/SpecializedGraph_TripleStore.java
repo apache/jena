@@ -35,7 +35,7 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	/**
 	 * holds ID of graph in database (defaults to "0")
 	 */
-	public IDBID my_GID = new DBIDInt(0);
+	public IDBID my_GID = null;
 	
 	// constructors
 	
@@ -43,9 +43,10 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	 * Constructor
 	 * Create a new instance of a TripleStore graph.
 	 */
-	SpecializedGraph_TripleStore(DBPropLSet lProp, IPSet pSet) {
+	SpecializedGraph_TripleStore(DBPropLSet lProp, IPSet pSet, Integer dbGraphID) {
 		m_pset = pSet;
 		m_dbPropLSet = lProp;
+		my_GID = new DBIDInt(dbGraphID);
 	}
 	
 	/** 
@@ -54,8 +55,9 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	 *  Create a new instance of a TripleStore graph, taking
 	 *  DBPropLSet and a PSet as arguments
 	 */
-	public SpecializedGraph_TripleStore(IPSet pSet) {
+	public SpecializedGraph_TripleStore(IPSet pSet, Integer dbGraphID) {
 		m_pset = pSet;
+		my_GID = new DBIDInt(dbGraphID);
 	}
 	
 	/** 
