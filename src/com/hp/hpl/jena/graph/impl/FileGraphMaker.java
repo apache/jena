@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.2 2003-05-08 17:55:09 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.3 2003-05-13 19:18:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -26,12 +26,23 @@ public class FileGraphMaker extends BaseGraphMaker
     private Map created = new HashMap();
     
     /**
-        Construct a file graph factory whose files will appear in root.
+        Construct a file graph factory whose files will appear in root. The reifier
+        style is Minimal and the files will be retained when the maker is closed.
         
      	@param root the directory to keep the files in.
      */
     public FileGraphMaker( String root )
-        { this( root, false ); }
+        { this( root, Reifier.Minimal ); }
+        
+    /**
+        Construct a file graph factory whose files will appear in root. The files 
+        will be retained when the maker is closed.
+    
+        @param root the directory to keep the files in.
+        @param style the reification style of the resulting graph
+     */
+    public FileGraphMaker( String root, Reifier.Style style )
+        { this( root, style, false ); }
  
     /**
         Construct a file graph factory whose files will appear in root.
@@ -39,10 +50,12 @@ public class FileGraphMaker extends BaseGraphMaker
         when the factory is closed.
         
      	@param root the directory to keep the files in
+        @param style the reification style of the graph
      	@param deleteOnClose iff true, delete created files on close
      */
-    public FileGraphMaker( String root, boolean deleteOnClose )
+    public FileGraphMaker( String root, Reifier.Style style, boolean deleteOnClose )
         {
+        super( style );
         this.root = root;
         this.deleteOnClose = deleteOnClose;       
         }
@@ -55,7 +68,7 @@ public class FileGraphMaker extends BaseGraphMaker
         File f = withRoot( name );
         Graph already = (Graph) created.get( f );
         if (already == null)
-            return remember( f, new FileGraph( f, true, strict ) ); 
+            return remember( f, new FileGraph( f, true, strict, style ) ); 
         else
             {
             if (strict) throw new AlreadyExistsException( name );
@@ -68,7 +81,7 @@ public class FileGraphMaker extends BaseGraphMaker
         File f = withRoot( name );
         return created.containsKey( f )  
             ? (Graph) created.get( f ) 
-            : new FileGraph( f, false, strict )
+            : new FileGraph( f, false, strict, style )
             ;
         }
 

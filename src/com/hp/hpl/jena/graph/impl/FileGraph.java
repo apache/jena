@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraph.java,v 1.4 2003-05-08 14:53:57 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.5 2003-05-13 19:18:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -30,6 +30,12 @@ public class FileGraph extends GraphMem
     String lang;
     
     /**
+        See FileCraph( f, create, strict, Reifier.Style ).
+     */
+    public FileGraph( File f, boolean create, boolean strict )
+        { this( f, create, strict, Reifier.Minimal ); }
+        
+    /**
         Construct a new FileGraph who's name is given by the specified File,
         If create is true, this is a new file, and any existing file will be destroyed;
         if create is false, this is an existing file, and its current contents will
@@ -37,10 +43,12 @@ public class FileGraph extends GraphMem
         
      	@param f the File naming the associated file-system file
      	@param create true to create a new one, false to read an existing one
-        @param failAllowed if true, can throw an exception
+        @param strict true to throw exceptions for create: existing, open: not found
+        @param style the reification style for the graph
      */
-    public FileGraph( File f, boolean create, boolean strict )
+    public FileGraph( File f, boolean create, boolean strict, Reifier.Style style )
         {
+        super( style );
         this.name = f;
         this.model = new ModelCom( this );
         this.lang = guessLang( this.name.toString() );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.3 2003-05-09 10:20:34 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.4 2003-05-13 19:17:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -27,13 +27,30 @@ public class GraphRDBMaker extends BaseGraphMaker
     private IDBConnection c;
     private int counter = 0;
     private Set created = new HashSet();
+    int reificationStyle;
     
     /**
         Construct a new GraphRDB factory based on the supplied DB connection.
         @param c the database connection
     */
-    public GraphRDBMaker( IDBConnection c ) { this.c = c; }
+    public GraphRDBMaker( IDBConnection c, Reifier.Style style ) 
+        {
+        super( style ); 
+        this.c = c; 
+        this.reificationStyle = styleRDB( style );
+        }
      
+    private int styleRDB( Reifier.Style style )
+        {
+        if (style == Reifier.Standard) 
+            return GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING;
+        if (style == Reifier.Convenient)
+            return GraphRDB.OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS;
+        if (style == Reifier.Minimal)
+            return GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING;
+        throw new RuntimeException( "unsupported reification style" );
+        }
+        
     /**
      	@see com.hp.hpl.jena.graph.GraphFactory#getGraph()
      */
@@ -63,7 +80,6 @@ public class GraphRDBMaker extends BaseGraphMaker
         
     private Graph consGraph( String name, boolean fresh )
         {        
-        int reificationStyle = GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS;
         Graph p = c.getDefaultModelProperties().getGraph();
         return new GraphRDB( c, name, (fresh ? p : null), reificationStyle, fresh );
         }

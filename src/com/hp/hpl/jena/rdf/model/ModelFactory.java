@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.12 2003-05-12 10:54:30 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.13 2003-05-13 19:18:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -16,8 +16,6 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.impl.OntModelImpl;
-import com.hp.hpl.jena.enhanced.*;
-
 
 /**
     ModelFactory provides methods for creating standard kinds of Model. 
@@ -36,26 +34,17 @@ public class ModelFactory extends ModelFactoryBase
         construct a new memory-based model that captures reification triples 
     */
     public static Model createDefaultModel()
-        { 
-        return new ModelCom
-            ( 
-            GraphBase.withReification( new GraphMem() ), 
-            BuiltinPersonalities.model 
-            );
-        }
+        { return new ModelCom( new GraphMem( Reifier.Convenient ) ); }
         
     /**
         construct a new memory-based model that does not capture reification triples
         (but still handles reifyAs() and .as(ReifiedStatement).
     */
     public static Model createNonreifyingModel()
-        { return new ModelCom( new GraphMem(), BuiltinPersonalities.model );}
+        { return new ModelCom( new GraphMem( Reifier.Minimal ) );}
         
     /** 
-     * <p>
      * Answer a model that encapsulates the given graph.
-     * </p>
-     * 
      * @param g A graph structure
      * @return A model presenting an API view of graph g
      */
@@ -67,31 +56,70 @@ public class ModelFactory extends ModelFactoryBase
         Answer a ModelMaker that constructs memory-based Models that
         are backed by files in the root directory. The Model is loaded from the
         file when it is opened, and when the Model is closed it is written back.
+        The model is given the Convenient reification style.
         
         @param root the name of the directory in which the backing files are held
         @return a ModelMaker linked to the files in the root
     */
     public static ModelMaker createFileModelMaker( String root )
-        { return new ModelMakerImpl( new FileGraphMaker( root ) ); }
+        { return createFileModelMaker( root, Reifier.Convenient ); }
+    
+    /**
+        Answer a ModelMaker that constructs memory-based Models that
+        are backed by files in the root directory. The Model is loaded from the
+        file when it is opened, and when the Model is closed it is written back.
+        
+        @param root the name of the directory in which the backing files are held
+        @param style the desired reification style
+        @return a ModelMaker linked to the files in the root
+    */
+    public static ModelMaker createFileModelMaker( String root, Reifier.Style style )
+        { return new ModelMakerImpl( new FileGraphMaker( root, style ) ); }
         
     /**
         Answer a ModelMaker that constructs memory-based Models that do
-        not persist past JVM termination.
+        not persist past JVM termination. The model has the Convenient reification
+        style.
         
         @return a ModelMaker that constructs memory-based models
     */
     public static ModelMaker createMemModelMaker()
-        { return new ModelMakerImpl( new SimpleGraphMaker() ); }
+        { return createMemModelMaker( Reifier.Convenient ); }
+        
+    /**
+        Answer a ModelMaker that constructs memory-based Models that do
+        not persist past JVM termination, with the given reification style.
+        
+        @param style the reification style for the model
+        @return a ModelMaker that constructs memory-based models
+    */
+      public static ModelMaker createMemModelMaker( Reifier.Style style )
+        { return new ModelMakerImpl( new SimpleGraphMaker( style ) ); }
         
     /**
         Answer a ModelMaker that accesses database-backed Models on
-        the database at the other end of the connection c.
+        the database at the other end of the connection c with the usual
+        "Convenient" reification style.
         
         @param c a connection to the database holding the models
         @return a ModelMaker whose Models are held in the database at c
     */
     public static ModelMaker createModelRDBMaker( IDBConnection c )
-        { return new ModelMakerImpl( new GraphRDBMaker( c ) ); }
+        { return createModelRDBMaker( c, Reifier.Convenient ); }
+        
+    /**
+        Answer a ModelMaker that accesses database-backed Models on
+        the database at the other end of the connection c with the given
+        reification style.
+        
+        @param c a connection to the database holding the models
+        @param style the desired reification style
+        @return a ModelMaker whose Models are held in the database at c
+    */        
+    public static ModelMaker createModelRDBMaker
+        ( IDBConnection c, Reifier.Style style )
+        { return new ModelMakerImpl( new GraphRDBMaker( c, style ) ); }
+        
         
     /**
         Answer a plain IDBConnection to a database with the given URL, with

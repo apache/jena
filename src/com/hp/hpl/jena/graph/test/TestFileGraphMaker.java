@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFileGraphMaker.java,v 1.1 2003-05-09 10:40:27 chris-dollin Exp $
+  $Id: TestFileGraphMaker.java,v 1.2 2003-05-13 19:18:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -23,7 +23,7 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
         { return new TestSuite( TestFileGraphMaker.class ); }
 
     public GraphMaker getGraphFactory()
-        { return new FileGraphMaker( getTempDirectory(), true ); } 
+        { return new FileGraphMaker( getTempDirectory(), Reifier.Minimal, true ); } 
     }
 
 
