@@ -111,10 +111,10 @@ Perhaps the easiest way to explain the detail of what schemagen does is to show 
 &lt;/rdf:RDF&gt;
 </code></pre>
 <p>We process this document with a command something like:<br />
-  <code>Java jena.schemagen -i deputy.rdf -b http://example.org/eg#</code><br />
+  <code>Java jena.schemagen -i deputy.rdf -a http://example.org/eg#</code><br />
 to produce the following generated class:</p>
 <code><pre>
-/* CVS $Id: schemagen.html,v 1.8 2004-05-20 10:46:05 ian_dickinson Exp $ */
+/* CVS $Id: schemagen.html,v 1.9 2004-05-20 10:50:26 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -153,7 +153,7 @@ public class Deputy {
   to get:</p>
 <p>
   <pre><code>
-/* CVs $Id: schemagen.html,v 1.8 2004-05-20 10:46:05 ian_dickinson Exp $ */
+/* CVs $Id: schemagen.html,v 1.9 2004-05-20 10:50:26 ian_dickinson Exp $ */
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
@@ -656,7 +656,7 @@ Options can be specified on the command line (when invoking schemagen), or may b
  &nbsp;&nbsp;&nbsp;Not all possible options are used in this example, see Javadoc and Howto for full details.
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVs: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.8 2004-05-20 10:46:05 ian_dickinson Exp $
+	CVs: &nbsp;&nbsp;&nbsp;$Id: schemagen.html,v 1.9 2004-05-20 10:50:26 ian_dickinson Exp $
 --&gt;
 
 <span class="xmlText">&lt;sgen:Config&gt;
@@ -688,10 +688,10 @@ Options can be specified on the command line (when invoking schemagen), or may b
  * Web site &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@website@
  * Created &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%date%
  * Filename &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$RCSfile: schemagen.html,v $
- * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.8 $
+ * Revision &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$Revision: 1.9 $
  * Release status &nbsp;&nbsp;&nbsp;&nbsp;@releaseStatus@ $State: Exp $
  *
- * Last modified on &nbsp;&nbsp;$Date: 2004-05-20 10:46:05 $
+ * Last modified on &nbsp;&nbsp;$Date: 2004-05-20 10:50:26 $
  * &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;by &nbsp;&nbsp;$Author: ian_dickinson $
  *
  * @copyright@
@@ -758,6 +758,6 @@ Options can be specified on the command line (when invoking schemagen), or may b
 </code></pre>
 </p>
 <hr />
-<p><small>CVS $Id: schemagen.html,v 1.8 2004-05-20 10:46:05 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: schemagen.html,v 1.9 2004-05-20 10:50:26 ian_dickinson Exp $</small></p>
 </body>
 </html>
