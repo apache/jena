@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.4 2003-03-26 12:38:13 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.5 2003-03-27 15:23:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -42,13 +42,18 @@ public class SimpleReifier implements Reifier
         
     static class Womble
         {
-        Node type;
-        Node subject;
-        Node predicate;
-        Node object;
-        Node triple;
-        
-        Womble() {}
+        Set types;
+        Set subjects;
+        Set predicates;
+        Set objects;
+
+        Womble() 
+            {
+            types = new HashSet();
+            subjects = new HashSet();
+            predicates = new HashSet();
+            objects = new HashSet();
+            }
         }
         
     /** return the parent graph we are bound to */
@@ -57,19 +62,22 @@ public class SimpleReifier implements Reifier
         
     /** return the triple bound to _n_ */
     public Triple getTriple( Node n )        
-         {
-         Triple t = null; // (Triple) nodeToTriple.get( n );
-         if (t == null) t = findTriple( n );
-         return t;
-         }
+        { return findTriple( n ); }
 
     private Triple findTriple( Node n )
         {
-        Womble w = (Womble) nodeMap.get( n );
+        Object map = nodeMap.get( n );
+        if (map instanceof Triple) return (Triple) map;
+        Womble w = (Womble) map;
         if (w == null) return null;
-        if (w.type == null || w.subject == null || w.predicate == null || w.object == null) return null;
-        return new Triple( w.subject, w.predicate, w.object );
+        if (w.types.size() != 1 || w.subjects.size() != 1 || w.predicates.size() != 1 || w.objects.size() != 1) return null;
+        Triple t = new Triple( only( w.subjects ), only( w.predicates ), only( w.objects ) );
+        nodeMap.put( n, t );
+        return t;
         }
+        
+    private Node only( Set s )
+        { return (Node) s.iterator().next(); }
         
     /** true iff there is a triple bound to _n_ */
     public boolean hasTriple( Node n )
@@ -86,8 +94,10 @@ public class SimpleReifier implements Reifier
         
     private boolean isComplete( Node n )
         {
+        Object x = nodeMap.get( n );
+        if (x instanceof Triple) return true;
         Womble w = (Womble) nodeMap.get( n );
-        return w != null && w.subject != null && w.predicate != null && w.object != null && w.type != null;
+        return w.types.size() == 1 && w.subjects.size() == 1 && w.predicates.size() == 1 && w.objects.size() == 1;
         }
         
     /** return the graph of reified triples. */
@@ -107,10 +117,21 @@ public class SimpleReifier implements Reifier
         Triple already = getTriple( tag );
         if (already != null && !already.equals( t ))
             throw new Reifier.AlreadyReifiedException( tag );
-        parent.add( new Triple( tag, type, Statement ) );
-        parent.add( new Triple( tag, subject, t.getSubject() ) );
-        parent.add( new Triple( tag, predicate, t.getPredicate() ) );
-        parent.add( new Triple( tag, object, t.getObject() ) ); 
+        Object mapped = nodeMap.get( tag );
+        if (mapped == null)
+            {
+            nodeMap.put( tag, t );
+            }
+        else if (mapped.equals( t ))
+            { /* that's easy */
+            }
+        else
+            {
+            parent.add( new Triple( tag, type, Statement ) );
+            parent.add( new Triple( tag, subject, t.getSubject() ) );
+            parent.add( new Triple( tag, predicate, t.getPredicate() ) );
+            parent.add( new Triple( tag, object, t.getObject() ) ); 
+            }
         triples.add( t );
         return tag; 
     	}
@@ -118,10 +139,18 @@ public class SimpleReifier implements Reifier
     /** unbind _n_ */    	
     public void remove( Node n, Triple t )
         {
-        parent.delete( new Triple( n, type, Statement ) );
-        parent.delete( new Triple( n, subject, t.getSubject() ) );
-        parent.delete( new Triple( n, predicate, t.getPredicate() ) );
-        parent.delete( new Triple( n, object, t.getObject() ) ); 
+        Object x = nodeMap.get( n );
+        if (x instanceof Triple)
+            {
+            if (x.equals( t )) nodeMap.remove( n );
+            }
+        else
+            {
+            parent.delete( new Triple( n, type, Statement ) );
+            parent.delete( new Triple( n, subject, t.getSubject() ) );
+            parent.delete( new Triple( n, predicate, t.getPredicate() ) );
+            parent.delete( new Triple( n, object, t.getObject() ) ); 
+            }
         }
         
     public boolean hasTriple( Triple t )
@@ -153,23 +182,19 @@ public class SimpleReifier implements Reifier
         if (w == null) { w = new Womble(); nodeMap.put( s, w ); }
         if (p.equals( subject )) 
             {
-            if (w.subject == null) w.subject = o;
-            if (!w.subject.equals( o )) throw new RuntimeException( "glurk: subject" );
+            w.subjects.add( o );
             }
         if (p.equals( predicate )) 
             {
-            if (w.predicate == null) w.predicate = o;
-            if (!w.predicate.equals( o )) throw new RuntimeException( "glurk: predicate" );
+            w.predicates.add( o );
             }
         if (p.equals( object )) 
             {
-            if (w.object == null) w.object = o;
-            if (!w.object.equals( o )) throw new RuntimeException( "glurk: object" );
+            w.objects.add( o );
             }
         if (p.equals( type ))            
             {
-            if (w.type == null) w.type = o;
-            if (!w.type.equals( o )) throw new RuntimeException( "glurk: type" );
+            w.types.add( o );
             }
         }
 
@@ -178,25 +203,38 @@ public class SimpleReifier implements Reifier
         Node s = t.getSubject();
         Node p = t.getPredicate();
         Node o = t.getObject();
-        Womble w = (Womble) nodeMap.get( s );
+        Object x = nodeMap.get( s );
+        if (t.equals( x )) { nodeMap.remove( s ); return; }
+        if (x instanceof Triple)
+            {
+            Triple tt = (Triple) x;
+            Womble ww = new Womble();
+            if (p.equals( subject )) ww.subjects.add( tt.getSubject() );
+            if (p.equals( predicate )) ww.predicates.add( tt.getPredicate() );
+            if (p.equals( object )) ww.objects.add( tt.getObject() );
+            if (p.equals( type )) ww.types.add( Statement );
+            nodeMap.put( s, ww );
+            x = ww;
+            }
+        Womble w = (Womble) x;
         if (w == null) return;
         if (p.equals( subject )) 
             {
-            if (w.subject.equals( o )) w.subject = null;
+            w.subjects.remove( o );
             }
         if (p.equals( predicate )) 
             {
-            if (w.predicate.equals( o )) w.predicate = null;
+            w.predicates.remove( o );
             }
         if (p.equals( object )) 
             {
-            if (w.object.equals( o )) w.object = null;
+            w.objects.remove( o );
             }
         if (p.equals( type ))            
             {
-            if (w.type.equals( o )) w.type = null;
+            w.types.remove( o );
             }
-        if (w.subject == null && w.predicate == null && w.object == null && w.type == null)
+        if (w.subjects.size() == 0 && w.predicates.size() == 0 && w.objects.size() == 0 && w.types.size() == 0)
             nodeMap.remove( s );
         }
     
