@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.28 2003-08-14 07:51:10 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.29 2003-08-19 12:58:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2003-08-14 07:51:10 $
+ * @version $Revision: 1.29 $ on $Date: 2003-08-19 12:58:48 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -56,7 +56,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     protected List rules;
     
     /** Static switch from Basic to RETE implementation of the forward component */
-    public static final boolean useRETE = true;
+    public static boolean useRETE = true;
 
     /** Flag, if true then subClass and subProperty lattices will be optimized using TGCs */
     protected boolean useTGCCaching = false;
