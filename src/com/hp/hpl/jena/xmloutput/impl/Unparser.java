@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.30 2003-12-13 21:10:59 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.31 2004-07-05 13:58:56 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.30 $' Date='$Date: 2003-12-13 21:10:59 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.31 $' Date='$Date: 2004-07-05 13:58:56 $'
 
  */
 class Unparser {
@@ -794,9 +794,9 @@ class Unparser {
 		print("<");
 		wtype.wTypeStart(type);
 		indentPlus();
-		if (hasProperties(r))
-			wAboutAttr(r);
-		else
+	//	if (hasProperties(r))
+	//		wAboutAttr(r);
+	//	else
 			wIdAboutAttrOpt(r);
 		print("/>");
 		indentMinus();
@@ -1482,6 +1482,7 @@ class Unparser {
 				return null;
 			lookingGood = false; // suppress bug report request
 		} finally {
+			/*
 			if (lookingGood) {
 				// try and get decent bug report
 				logger.warn("The RDF/XML-ABBREV writer detected a partially well-formed list structure, but rejected it. "+
@@ -1489,6 +1490,7 @@ class Unparser {
 				"Please take a copy of your output and mail it to jena-dev@yahoogroups.com"+
 				" Even better, would be a copy of your code that produced it.") ;
 			}
+			*/
 		}
 		Statement array[][] = new Statement[rslt.size()][];
 		rslt.copyInto(array);
