@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: JenaParameters.java,v 1.5 2004-01-31 16:13:18 der Exp $
+ * $Id: JenaParameters.java,v 1.6 2004-03-18 14:04:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.shared.impl;
 
@@ -20,7 +20,7 @@ package com.hp.hpl.jena.shared.impl;
  * moved to being model-specific rather than global.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2004-01-31 16:13:18 $
+ * @version $Revision: 1.6 $ on $Date: 2004-03-18 14:04:02 $
  */
 public class JenaParameters {
     
@@ -94,6 +94,16 @@ public class JenaParameters {
      * graph over another OWL inference graph will log a warning message.
      */
     public static boolean enableOWLRuleOverOWLRuleWarnings = true;
+    
+    /**
+     * If this flag is true (default is false) then bNodes are assigned a
+     * simple count local to this JVM. This is ONLY for use in debugging
+     * systems exhibiting non-deterministic behaviour due to the 
+     * time-dependence of UIDs, not for normal production use. In particular, it
+     * breaks the contract that anonIDs should be unique on the same machine, they 
+     * will only be unique for a single JVM run.
+     */
+    public static boolean disableBNodeUIDGeneration = false;
 }
 
 

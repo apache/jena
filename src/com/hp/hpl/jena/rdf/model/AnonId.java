@@ -24,30 +24,46 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: AnonId.java,v 1.3 2003-08-27 13:05:52 andy_seaborne Exp $
+ * $Id: AnonId.java,v 1.4 2004-03-18 14:04:01 der Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
 
 import java.rmi.server.UID;
 
+import com.hp.hpl.jena.shared.impl.JenaParameters;
+
 /** Create a new id for an anonymous node.
  *
  * <p>This id is guaranteed to be unique on this machine.</p>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-08-27 13:05:52 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $ $Date: 2004-03-18 14:04:01 $
  */
+
+// This version contains experimental modifications by der to 
+// switch off normal UID allocation for bNodes to assist tracking
+// down apparent non-deterministic behaviour.
+
 public class AnonId extends java.lang.Object {
     
     String id = null;
 
+    /** Support for debugging: global anonID counter */
+    private static int idCount = 0;
+    
     /** Creates new AnonId.
      *
      * <p>This id is guaranteed to be unique on this machine.</p>
- */
+     */
     public AnonId() {
-        id = (new UID()).toString();
+        if (JenaParameters.disableBNodeUIDGeneration) {
+            synchronized (AnonId.class) {
+                id = "A" + idCount++; // + rand.nextLong();
+            }
+        } else {
+            id = (new UID()).toString();
+        }
     }
     
 /** Create a new AnonId from the string argument supplied
