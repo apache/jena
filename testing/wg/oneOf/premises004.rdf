@@ -1,0 +1,85 @@
+<!--++ oneOf/premises004.rdf ** generated using webont test editor. ++-->
+<!--++ Created 28 Jan 2003 16:23:47 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises004.rdf,v 1.1 2003-04-17 14:33:28 der Exp $
+-->
+<!--
+This test illustrates the use of dataRange in OWL DL.
+This test combines some of the ugliest features of XML, RDF and OWL.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<!DOCTYPE rdf:RDF [
+   <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#">
+   <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+]>
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:owl="http://www.w3.org/2002/07/owl#"
+ xmlns:first="http://www.w3.org/2002/03owlt/oneOf/premises004#"
+ xml:base="http://www.w3.org/2002/03owlt/oneOf/premises004" >
+ <owl:DatatypeProperty rdf:ID="p">
+  <rdfs:range>
+   <rdf:Description>
+    <owl:oneOf>
+     <rdf:List>
+      <rdf:first rdf:datatype="&xsd;integer">1</rdf:first>
+      <rdf:rest>
+       <rdf:List>
+        <rdf:first rdf:datatype="&xsd;integer">2</rdf:first>
+        <rdf:rest>
+         <rdf:List>
+          <rdf:first rdf:datatype="&xsd;integer">3</rdf:first>
+          <rdf:rest>
+           <rdf:List>
+            <rdf:first rdf:datatype="&xsd;integer">4</rdf:first>
+            <rdf:rest rdf:resource="&rdf;nil"/>
+           </rdf:List>
+          </rdf:rest>
+         </rdf:List>
+        </rdf:rest>
+       </rdf:List>
+      </rdf:rest>
+     </rdf:List>
+    </owl:oneOf>
+   </rdf:Description>
+  </rdfs:range>
+  <rdfs:range>
+   <rdf:Description>
+    <owl:oneOf>
+     <rdf:List>
+      <rdf:first rdf:datatype="&xsd;integer">4</rdf:first>
+      <rdf:rest>
+       <rdf:List>
+        <rdf:first rdf:datatype="&xsd;integer">5</rdf:first>
+        <rdf:rest>
+         <rdf:List>
+          <rdf:first rdf:datatype="&xsd;integer">6</rdf:first>
+          <rdf:rest rdf:resource="&rdf;nil"/>
+         </rdf:List>
+        </rdf:rest>
+       </rdf:List>
+      </rdf:rest>
+     </rdf:List>
+    </owl:oneOf>
+   </rdf:Description>
+  </rdfs:range>
+ </owl:DatatypeProperty>
+ <owl:Thing rdf:ID="i">
+  <rdf:type>
+   <owl:Restriction>
+    <owl:onProperty rdf:resource="#p"/>
+    <owl:minCardinality rdf:datatype="&xsd;int">1</owl:minCardinality>
+   </owl:Restriction>
+  </rdf:type>
+ </owl:Thing>
+</rdf:RDF>

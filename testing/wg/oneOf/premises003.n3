@@ -1,0 +1,38 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jos De Roo
+#
+# Description: 
+#
+# The order of the instances in an <code>oneOf</code>
+# construct is unimportant.
+#
+_:a rdf:first first:large .
+_:a rdf:rest rdf:nil .
+_:a rdf:type rdf:List .
+_:b rdf:first first:medium .
+_:b rdf:rest _:a .
+_:b rdf:type rdf:List .
+_:c rdf:first first:small .
+_:c rdf:rest _:b .
+_:c rdf:type rdf:List .
+first:T1 owl:oneOf _:c .
+_:d rdf:first first:small .
+_:d rdf:rest rdf:nil .
+_:d rdf:type rdf:List .
+_:e rdf:first first:medium .
+_:e rdf:rest _:d .
+_:e rdf:type rdf:List .
+_:f rdf:first first:large .
+_:f rdf:rest _:e .
+_:f rdf:type rdf:List .
+first:T2 owl:oneOf _:f .
+first:myT rdf:type first:T1 .

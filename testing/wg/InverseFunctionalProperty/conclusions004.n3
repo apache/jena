@@ -1,0 +1,19 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# If the domain of <code>prop</code> is a singleton set then it is necessarily inverse functional, (i.e. every member of its 
+#  range is the value of a single item) so it is an 
+#  <code>owl:InverseFunctionalProperty</code>.
+#
+first:prop rdf:type owl:InverseFunctionalProperty .

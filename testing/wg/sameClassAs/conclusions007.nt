@@ -1,0 +1,34 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# De Morgan's law.
+#
+_:a <http://www.w3.org/2002/07/owl#complementOf> <http://www.w3.org/2002/03owlt/sameClassAs/premises007#A> .
+_:b <http://www.w3.org/2002/07/owl#complementOf> <http://www.w3.org/2002/03owlt/sameClassAs/premises007#B> .
+_:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:b .
+_:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:a .
+_:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:c .
+_:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:e <http://www.w3.org/2002/07/owl#intersectionOf> _:d .
+_:f <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://www.w3.org/2002/03owlt/sameClassAs/premises007#B> .
+_:f <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:f <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:g <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://www.w3.org/2002/03owlt/sameClassAs/premises007#A> .
+_:g <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:f .
+_:g <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:h <http://www.w3.org/2002/07/owl#unionOf> _:g .
+_:i <http://www.w3.org/2002/07/owl#complementOf> _:h .
+_:e <http://www.w3.org/2002/07/owl#sameClassAs> _:i .

@@ -1,0 +1,30 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jos De Roo
+#
+# Description: 
+#
+# A property with maximum cardinality of two cannot take
+# three distinct values on some subject node.
+# In this example, one of the three values is implicit.
+#
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
+_:a <http://www.w3.org/2002/07/owl#maxCardinality> "2" .
+_:a <http://www.w3.org/2002/07/owl#onProperty> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#prop> .
+<http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#sb1> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> _:a .
+<http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#sb1> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#prop> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#ob1> .
+<http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#sb1> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#prop> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#ob2> .
+<http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#sb1> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#otherprop> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#ob3> .
+<http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#ob1> <http://www.w3.org/2002/07/owl#differentIndividualFrom> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#ob2> .
+<http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#ob1> <http://www.w3.org/2002/07/owl#differentIndividualFrom> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#ob3> .
+<http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#ob2> <http://www.w3.org/2002/07/owl#differentIndividualFrom> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#ob3> .
+<http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#prop> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#otherprop> <http://www.w3.org/2000/01/rdf-schema#subPropertyOf> <http://www.w3.org/2002/03owlt/maxCardinality/inconsistent002#prop> .

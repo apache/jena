@@ -1,0 +1,38 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jos De Roo
+#
+# Description: 
+#
+# The order of the instances in an <code>oneOf</code>
+# construct is unimportant.
+#
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://www.w3.org/2002/03owlt/oneOf/premises003#large> .
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://www.w3.org/2002/03owlt/oneOf/premises003#medium> .
+_:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:a .
+_:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://www.w3.org/2002/03owlt/oneOf/premises003#small> .
+_:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b .
+_:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+<http://www.w3.org/2002/03owlt/oneOf/premises003#T1> <http://www.w3.org/2002/07/owl#oneOf> _:c .
+_:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://www.w3.org/2002/03owlt/oneOf/premises003#small> .
+_:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+_:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:e <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://www.w3.org/2002/03owlt/oneOf/premises003#medium> .
+_:e <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:d .
+_:e <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+_:f <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> <http://www.w3.org/2002/03owlt/oneOf/premises003#large> .
+_:f <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:e .
+_:f <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#List> .
+<http://www.w3.org/2002/03owlt/oneOf/premises003#T2> <http://www.w3.org/2002/07/owl#oneOf> _:f .
+<http://www.w3.org/2002/03owlt/oneOf/premises003#myT> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/03owlt/oneOf/premises003#T1> .

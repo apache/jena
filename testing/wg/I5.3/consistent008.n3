@@ -1,0 +1,19 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# An OWL Lite version of <a href="#I5.3-007">test 007</a>.
+#
+_:a rdf:type owl:Thing .
+_:a first:dp "value" .
+first:dp rdf:type owl:DatatypeProperty .

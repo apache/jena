@@ -1,0 +1,35 @@
+<!--++ I3.2/bad003.rdf ** generated using webont test editor. ++-->
+<!--++ Created 23 Sep 2002 20:21:51 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: bad003.rdf,v 1.1 2003-04-17 14:33:43 der Exp $
+-->
+<!--
+A DAML+OIL qualified min cardinality constraint is not 
+legal OWL.
+-->
+<!-- Author: Jeremy Carroll -->
+<!DOCTYPE rdf:RDF [ 
+   <!ENTITY owl "http://www.w3.org/2002/07/owl#">
+]> 
+
+
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:eg="http://example.org/"
+         xmlns:owl="&owl;"
+    >
+
+   <owl:Restriction owl:minCardinalityQ="1">
+      <owl:onProperty rdf:resource="#exampleProp"/>
+      <owl:hasClassQ rdf:resource="#exampleClass"/>
+   </owl:Restriction>
+  
+</rdf:RDF>

@@ -1,0 +1,34 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jos De Roo
+#
+# Description: 
+#
+# A union behaves quite like set theoretic union.
+#
+_:a rdf:first first:Animal .
+_:a rdf:rest rdf:nil .
+_:a rdf:type rdf:List .
+_:b rdf:first first:Human .
+_:b rdf:rest _:a .
+_:b rdf:type rdf:List .
+first:A owl:unionOf _:b .
+_:c rdf:first first:Stone .
+_:c rdf:rest rdf:nil .
+_:c rdf:type rdf:List .
+_:d rdf:first first:Human .
+_:d rdf:rest _:c .
+_:d rdf:type rdf:List .
+_:e rdf:first first:Animal .
+_:e rdf:rest _:d .
+_:e rdf:type rdf:List .
+first:B owl:unionOf _:e .
+first:John rdf:type first:A .

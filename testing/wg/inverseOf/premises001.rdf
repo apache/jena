@@ -1,0 +1,34 @@
+<!--++ inverseOf/premises001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 27 Sep 2002 10:54:47 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises001.rdf,v 1.1 2003-04-17 14:34:25 der Exp $
+-->
+<!--
+If the pair <code>(x,y)</code> is an instance of <code>P</code>, than the pair <code>(y,x)</code> is
+  an instance of the named property.
+-->
+<!-- Author: Dan Connolly -->
+<rdf:RDF 
+    xmlns:my="http://example.net/myVocab#"
+    xmlns:eg="http://example.net/vocab#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:your="http://example.net/yourVocab#">
+
+    <rdf:Description rdf:about="http://example.net/myVocab#hasBrother">
+        <owl:inverseOf rdf:resource="http://example.net/yourVocab#isBrotherOf"/>
+    </rdf:Description>
+
+    <rdf:Description rdf:about="http://example.net/vocab#joe">
+        <my:hasBrother rdf:resource="http://example.net/vocab#bob"/>
+    </rdf:Description>
+</rdf:RDF>
