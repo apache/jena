@@ -1,21 +1,36 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpec.java,v 1.2 2003-08-18 14:23:19 chris-dollin Exp $
+  $Id: JMS.java,v 1.1 2003-08-18 14:23:19 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model;
+package com.hp.hpl.jena.vocabulary;
+
+import com.hp.hpl.jena.rdf.model.*;
 
 /**
-    A ModelSpec allows Models to be created.
-    
  	@author kers
 */
-public interface ModelSpec
+public class JMS
     {
-    Model createModel();
+    public static final String baseURI = "jms:";
     
-    Model getDescription();
+    public static final Resource current = resource( "this" );
+    
+    public static final Property ontLanguage = property( "ontLanguage" );
+    public static final Property docManager = property( "docManager" );
+    public static final Property importMaker = property( "importMaker" );
+    public static final Property reasonsWith = property( "reasonsWith" );
+    
+    public static final Property reasoner = property( "reasoner" );
+    
+    public static final Resource TypeMemMaker = resource( "type/MemMaker");
+    
+    public static Resource resource( String ln )
+        { return ResourceFactory.createResource( baseURI + ln ); }
+        
+    public static Property property( String ln )
+        { return ResourceFactory.createProperty( baseURI + ln ); }
     }
 
 

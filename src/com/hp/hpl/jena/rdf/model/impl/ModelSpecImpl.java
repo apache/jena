@@ -1,23 +1,26 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpec.java,v 1.2 2003-08-18 14:23:19 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.1 2003-08-18 14:23:14 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model;
+package com.hp.hpl.jena.rdf.model.impl;
+
+import com.hp.hpl.jena.rdf.model.*;
 
 /**
-    A ModelSpec allows Models to be created.
-    
  	@author kers
 */
-public interface ModelSpec
+public abstract class ModelSpecImpl implements ModelSpec
     {
-    Model createModel();
-    
-    Model getDescription();
-    }
+    public ModelSpecImpl()
+        {}
 
+    public abstract Model createModel();
+
+    public abstract Model getDescription();
+    
+    }
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

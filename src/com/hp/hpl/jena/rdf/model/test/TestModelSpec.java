@@ -1,19 +1,18 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelSpec.java,v 1.2 2003-08-18 10:36:50 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.3 2003-08-18 14:23:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 import com.hp.hpl.jena.rdf.model.impl.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.ontology.*;
-import java.util.*;
-
 import java.util.*;
 
 import junit.framework.*;
@@ -30,9 +29,69 @@ public class TestModelSpec extends ModelTestBase
     public static TestSuite suite()
         { return new TestSuite( TestModelSpec.class ); }
         
-    public void testXXX()
+    public void testOntModeSpecIsaModelSpec()
         {
         assertTrue( OntModelSpec.DAML_MEM_RULE_INF instanceof ModelSpec );
+        }
+        
+    public void testOntModelSpecCreatesOntModels()
+        {
+        Model m = OntModelSpec.DAML_MEM_RULE_INF.createModel();
+        assertTrue( m instanceof OntModel );    
+        }
+        
+    public void testOntModelSpecDescription()
+        {
+        OntModelSpec oms = OntModelSpec.DAML_MEM_RULE_INF;
+        Model d = oms.getDescription();
+        String daml = ProfileRegistry.DAML_LANG;
+        Statement langDaml = d.createStatement( JMS.current, JMS.ontLanguage, daml );
+        Statement docManager = d.createStatement
+            ( JMS.current, JMS.docManager, 
+            d.createTypedLiteral( oms.getDocumentManager(), "", "jms:types/DocumentManager" )
+            );
+        System.err.println( ">> langDaml = " + langDaml );
+        System.err.println( ">> description = " + d );
+        
+        assertTrue( "spec must specify DAML", d.contains( langDaml ) ); 
+        assertTrue( "spec must have document manager", d.contains( docManager ) );
+        
+        }
+        
+    public void testOntModelSpecMaker()
+        {
+        OntModelSpec oms = OntModelSpec.DAML_MEM_RULE_INF;
+        Model d = oms.getDescription();
+        Statement s = d.getProperty( JMS.current, JMS.importMaker );
+        Model makerSpec = memMakerSpec( d.createResource() );
+        assertNotNull( s );
+        assertIsoModels( "", makerSpec, subModel( d, s.getObject() ) );
+        }
+        
+    public void testOntModelReasoner()
+        {
+        OntModelSpec oms = OntModelSpec.DAML_MEM_RULE_INF;
+        Model d = oms.getDescription();
+        Resource reasonerURI = d.createResource( oms.getReasonerFactory().getURI() );
+        Statement s = d.getProperty( JMS.current, JMS.reasonsWith );
+        Model reasonerSpec = ModelFactory.createDefaultModel()
+            .add( d.createResource(), JMS.reasoner, reasonerURI );
+        assertIsoModels( "", reasonerSpec, subModel( d, s.getObject() ) );
+        }
+        
+    public Model memMakerSpec( Resource root )
+        {
+        Model result = ModelFactory.createDefaultModel();
+        result.add( root, RDF.type, JMS.TypeMemMaker );
+        return result;    
+        }
+        
+    public Model subModel( Model m, RDFNode root )
+        {
+        Model result = ModelFactory.createDefaultModel();
+        if (root instanceof Resource)
+            result.add( m.listStatements( (Resource) root, null, (RDFNode) null ) );
+        return result;    
         }
     }
 

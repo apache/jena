@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-18 10:37:04 $
+ * Last modified on   $Date: 2003-08-18 14:23:19 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -29,6 +29,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.ontology.impl.*;
+import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
 
@@ -40,7 +41,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.10 2003-08-18 10:37:04 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.11 2003-08-18 14:23:19 chris-dollin Exp $
  */
 public class OntModelSpec implements ModelSpec {
     // Constants
@@ -343,11 +344,53 @@ public class OntModelSpec implements ModelSpec {
         Satisfy the ModelSpec interface: create an [Ont]Model according to the specification.
         The base model comes from the underlying ModelMaker.
     */
-    public Model createModel()
-        {
+    public Model createModel() {
         return new OntModelImpl( this, m_maker.createModel() );
-        }
+    }
     
+    /**
+        Answer an RDF description of this OntModelSpec, faking a few things for the 
+        moment (MakerSpecs).
+    */
+    public Model getDescription()
+        {
+        Model d = ModelFactory.createDefaultModel();
+        d.add
+            ( JMS.current, JMS.ontLanguage, d.createLiteral( m_languageURI ) );
+        d.add
+            (
+            JMS.current,
+            JMS.docManager,
+            d.createTypedLiteral( getDocumentManager(),  "", "jms:types/DocumentManager" )
+            );
+        Resource im = d.createResource();
+        d.add
+            (
+            JMS.current,
+            JMS.importMaker,
+            im 
+            );
+        d.add
+            (
+            im,
+            RDF.type,
+            JMS.TypeMemMaker
+            );
+        Resource r = d.createResource();
+        d.add
+            (
+            JMS.current,
+            JMS.reasonsWith,
+            r
+            );
+        d.add
+            (
+            r,
+            JMS.reasoner,
+            d.createResource( getReasonerFactory().getURI() )
+            );
+        return d;
+        }
     
     // Internal implementation methods
     //////////////////////////////////
