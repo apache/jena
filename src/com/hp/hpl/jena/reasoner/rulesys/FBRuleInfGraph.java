@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.39 2003-12-08 10:48:26 andy_seaborne Exp $
+ * $Id: FBRuleInfGraph.java,v 1.40 2004-01-12 13:39:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.39 $ on $Date: 2003-12-08 10:48:26 $
+ * @version $Revision: 1.40 $ on $Date: 2004-01-12 13:39:24 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -627,9 +627,16 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         checkOpen();
         StandardValidityReport report = new StandardValidityReport();
         // Switch on validation
-        add(new Triple(Node.createAnon(), 
-                        ReasonerVocabulary.RB_VALIDATION.asNode(),
-                        Functor.makeFunctorNode("on", new Node[] {})));
+        Triple validateOn = new Triple(Node.createAnon(), 
+                                ReasonerVocabulary.RB_VALIDATION.asNode(),
+                                Functor.makeFunctorNode("on", new Node[] {}));
+        // We sneak this switch directly into the engine to avoid contaminating the
+        // real data - this is only possible only the forward engine has been prepared
+//      add(validateOn);
+        if (!isPrepared) {
+            prepare();
+        }
+        engine.add(validateOn); 
         // Look for all reports
         TriplePattern pattern = new TriplePattern(null, ReasonerVocabulary.RB_VALIDATION_REPORT.asNode(), null);
         for (Iterator i = findFull(pattern); i.hasNext(); ) {
