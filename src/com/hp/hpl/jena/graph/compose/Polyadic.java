@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-19 08:47:08 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-08-18 14:30:06 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -25,6 +25,7 @@ package com.hp.hpl.jena.graph.compose;
 // Imports
 ///////////////
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
@@ -42,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.4 2003-06-19 08:47:08 chris-dollin Exp $
+ * @version CVS $Id: Polyadic.java,v 1.5 2003-08-18 14:30:06 ian_dickinson Exp $
  */
 public abstract class Polyadic
     extends CompositionBase
@@ -112,19 +113,6 @@ public abstract class Polyadic
     
     // External signature methods
     //////////////////////////////////
-
-    /**
-     * <p>
-     * Answer the capabilities that this graph has.
-     * </p>
-     * 
-     * @return The capability mask
-     * @see com.hp.hpl.jena.graph.Graph#capabilities()
-     */
-    public int capabilities() { 
-        return ADD | DELETE | SIZE;  
-    }
-
 
     /**
      * <p>
@@ -241,7 +229,31 @@ public abstract class Polyadic
         return sg;
     }
     
+    // the following methods all delegate handling capabilities to the base graph
+    // TODO: this needs to be integrated with WrappedGraph, but we don't have time to do so before Jena 2.0 release
     
+    public TransactionHandler getTransactionHandler()
+        { return (getBaseGraph() == null) ? super.getTransactionHandler() : getBaseGraph().getTransactionHandler(); }
+
+    public BulkUpdateHandler getBulkUpdateHandler()
+        { return (getBaseGraph() == null) ? super.getBulkUpdateHandler() : getBaseGraph().getBulkUpdateHandler(); }
+
+    public Capabilities getCapabilities()
+        { return (getBaseGraph() == null) ? super.getCapabilities() : getBaseGraph().getCapabilities(); }
+
+    public GraphEventManager getEventManager()
+        { return (getBaseGraph() == null) ? super.getEventManager() : getBaseGraph().getEventManager(); }
+
+    public Reifier getReifier()
+        {return (getBaseGraph() == null) ? super.getReifier() : getBaseGraph().getReifier(); }
+
+    public PrefixMapping getPrefixMapping()
+        { return (getBaseGraph() == null) ? super.getPrefixMapping() : getBaseGraph().getPrefixMapping(); }
+
+    public int capabilities()
+        { return (getBaseGraph() == null) ? super.capabilities() : getBaseGraph().capabilities(); }
+        
+
     // Internal implementation methods
     //////////////////////////////////
 
