@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.24 2004-12-06 13:50:22 andy_seaborne Exp $
+    $Id: WGTestSuite.java,v 1.25 2005-01-19 15:26:05 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -129,7 +129,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         
     static String jjcNS = "http://jcarroll.hpl.hp.com/testSchema#";
     
-    static private String approved = "APPROVED";
+ //   static private String approved = "APPROVED";
     static private Property status;
     static private Property input;
     static private Property output;
@@ -148,7 +148,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         new ResourceImpl(testNS, "RDF-XML-Document");
         
     static private Resource ntriple = new ResourceImpl(testNS, "NT-Document");
-	  static private Resource falseDoc = new ResourceImpl(testNS, "False-Document");
+	//  static private Resource falseDoc = new ResourceImpl(testNS, "False-Document");
 
     private URI testDir;
     
@@ -306,7 +306,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             }
     }
     
-    private ZipFile zip;
+   // private ZipFile zip;
     
     static TestSuite suite(URI testDir, String d, String nm) {
         return new WGTestSuite(

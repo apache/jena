@@ -38,11 +38,12 @@ public class TestErrorMsg extends TestCase {
 	 *            Read this file
 	 * @param regex
 	 *            Error msg must match this.
-	 */
+	 *
 	private void check(String filename, String regex)
 		throws IOException, MalformedPatternException, SAXException {
 		check(filename, regex, null);
 	}
+	*/
 	private void check(
 		String filename,
 		String regexPresent,
@@ -136,5 +137,5 @@ public class TestErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestErrorMsg.java,v 1.3 2004-10-11 11:55:10 jeremy_carroll Exp $
+ * $Id: TestErrorMsg.java,v 1.4 2005-01-19 15:26:06 jeremy_carroll Exp $
  */

@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP [See end of
- * file] $Id: XMLMemTest.java,v 1.2 2004-12-23 16:05:23 jeremy_carroll Exp $
+ * file] $Id: XMLMemTest.java,v 1.3 2005-01-19 15:26:06 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.rdf.arp.test;
 
@@ -114,11 +114,12 @@ public class XMLMemTest implements ContentHandler {
 	 */
 	public void endPrefixMapping(String prefix) throws SAXException {
 	}
-
+/*
 	private void c(String s) {
 		if (s != null)
 			chksum ^= s.hashCode();
 	}
+	*/
 	/*
 	 * (non-Javadoc)
 	 * 

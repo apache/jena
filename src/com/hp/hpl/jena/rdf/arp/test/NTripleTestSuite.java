@@ -62,7 +62,7 @@ class NTripleTestSuite extends WGTestSuite {
 		int state = 1; // 1 begin, 2 in RDF, 3 after RDF, 4 at end-of-file.
 		int countDown;
 		public void statement(AResource subj, AResource pred, AResource obj) {
-			Test.assertEquals(state, 2);
+			Assert.assertEquals(state, 2);
 			seeing(subj);
 			seeing(obj);
 			if (--countDown == 0)
@@ -75,14 +75,14 @@ class NTripleTestSuite extends WGTestSuite {
 		private void seeing(AResource subj) {
 			if (subj.isAnonymous())
 				anon.add(subj);
-			Test.assertFalse("bnode reuse?", oldAnon.contains(subj));
+			Assert.assertFalse("bnode reuse?", oldAnon.contains(subj));
 		}
 		/**
 		* @param subj
 		*/
 		private void seen(AResource subj) {
 			if (!anon.contains(subj))
-				Test.assertTrue(
+				Assert.assertTrue(
 					"end-scope for a bnode that had not been used "
 						+ subj.getAnonymousID(),
 					anon.contains(subj));
@@ -91,29 +91,29 @@ class NTripleTestSuite extends WGTestSuite {
 		}
 
 		public void statement(AResource subj, AResource pred, ALiteral lit) {
-			Test.assertEquals("no start RDF seen", state, 2);
+			Assert.assertEquals("no start RDF seen", state, 2);
 			seeing(subj);
 			if (--countDown == 0)
 				throw new SimulatedException();
 		}
 
 		public void endBNodeScope(AResource bnode) {
-			Test.assertTrue(bnode.isAnonymous());
+			Assert.assertTrue(bnode.isAnonymous());
 			switch (state) {
 				case 1 :
-					Test.fail("Missing startRDF");
+					Assert.fail("Missing startRDF");
 				case 2 :
-					Test.assertFalse(bnode.hasNodeID());
+					Assert.assertFalse(bnode.hasNodeID());
 					seen(bnode);
 					break;
 				case 3 :
 				case 4 :
-					Test.assertTrue(bnode.hasNodeID());
+					Assert.assertTrue(bnode.hasNodeID());
 					seen(bnode);
 					state = 4;
 					break;
 				default :
-					Test.fail("impossible - test logic error");
+					Assert.fail("impossible - test logic error");
 			}
 
 		}
@@ -122,13 +122,13 @@ class NTripleTestSuite extends WGTestSuite {
 			switch (state) {
 				case 2 :
 				case 4 :
-					Test.fail("Bad state for startRDF " + state);
+					Assert.fail("Bad state for startRDF " + state);
 			}
 			state = 2;
 		}
 
 		public void endRDF() {
-			Test.assertEquals(state, 2);
+			Assert.assertEquals(state, 2);
 			state = 3;
 		}
 
@@ -150,18 +150,18 @@ class NTripleTestSuite extends WGTestSuite {
 					System.err.print(
 						((AResource) it.next()).getAnonymousID() + ", ");
 			}
-			Test.assertTrue("("+xCountDown+") some bnode still in scope ", //hasErrors||
+			Assert.assertTrue("("+xCountDown+") some bnode still in scope ", //hasErrors||
 			anon.isEmpty());
 			switch (state) {
 				case 1 :
-					Test.fail("end-of-file before anything");
+					Assert.fail("end-of-file before anything");
 				case 2 :
-					Test.fail("did not see endRDF");
+					Assert.fail("did not see endRDF");
 				case 3 :
 				case 4 :
 					break;
 				default :
-					Test.fail("impossible logic error in test");
+					Assert.fail("impossible logic error in test");
 			}
 		}
 		boolean hasErrors = false;

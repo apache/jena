@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPResource.java,v 1.10 2004-12-13 17:38:46 jeremy_carroll Exp $
+ * * $Id: ARPResource.java,v 1.11 2005-01-19 15:26:08 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -47,16 +47,17 @@ class ARPResource implements  AResourceInternal {
     private final static String RDFNS =
 	"http://www.w3.org/1999/02/22-rdf-syntax-ns#";
     private final static int RDFNS_LENGTH = RDFNS.length();
+   /*
     private final static String XMLNS =
 	"http://www.w3.org/XML/1998/namespace";
-
+*/
 
 				// Element names
     private static AResourceInternal RDF_STATEMENT ; 
     static URIReference RDF_BAG;  
     static URIReference RDF_SEQ ;  
     static URIReference RDF_ALT ; 
-    private static String RDF_LI ; 
+  //  private static String RDF_LI ; 
     private static AResourceInternal RDF_TYPE ;
     private static AResourceInternal RDF_SUBJECT ;
     private static AResourceInternal RDF_PREDICATE ;
@@ -71,8 +72,8 @@ class ARPResource implements  AResourceInternal {
 	new URIReference((RDFNS + "Seq").intern());  
     RDF_ALT =
 	new URIReference((RDFNS + "Alt").intern()); 
-    RDF_LI =
-	(RDFNS + "li").intern(); 
+ //   RDF_LI =
+//	(RDFNS + "li").intern(); 
     RDF_TYPE =
 	new URIReference((RDFNS + "type").intern());
     RDF_SUBJECT =

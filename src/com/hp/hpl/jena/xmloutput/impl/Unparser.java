@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.32 2004-11-12 09:38:02 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.33 2005-01-19 15:26:07 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.32 $' Date='$Date: 2004-11-12 09:38:02 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.33 $' Date='$Date: 2005-01-19 15:26:07 $'
 
  */
 class Unparser {
@@ -990,7 +990,7 @@ class Unparser {
 
 	/*
 	 [6.19] Qname          ::= [ NSprefix ':' ] name
-	 */
+	 
 	private void wQnameStart(String ns, String local) {
 		print(prettyWriter.startElementTag(ns, local));
 	}
@@ -998,7 +998,7 @@ class Unparser {
 	private void wQnameEnd(String ns, String local) {
 		print(prettyWriter.endElementTag(ns, local));
 	}
-
+*/
 	private void wQNameAttr(Property p) {
 		print(prettyWriter.attributeTag(p.getURI()));
 	}
@@ -1184,11 +1184,11 @@ class Unparser {
 		if (r.isAnon()) {
 			logger.error("Internal error - Unparser.getNameSpace; giving up");
 			throw new BrokenException("Internal error: getNameSpace(bNode)");
-		} else {
+		} 
 			String uri = r.getURI();
 			int split = Util.splitNamespace(uri);
 			return uri.substring(0, split);
-		}
+		
 	}
 
 	/**
@@ -1211,7 +1211,7 @@ class Unparser {
 	}
 	/*
 	 * Utility for turning an integer into an alphabetic string.
-	 */
+	 
 	private static String getSuffix(int suffixId) {
 		if (suffixId == 0)
 			return "";
@@ -1223,6 +1223,7 @@ class Unparser {
 				+ new Character((char) ('a' + suffixId % 26));
 		}
 	}
+	*/
 
 	private String getLocalName(Resource r) {
 		if (r.isAnon()) {
