@@ -14,7 +14,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class LocatorClassLoader  implements Locator
 {
-    static Log log = LogFactory.getLog(LocatorFile.class) ;
+    static Log log = LogFactory.getLog(LocatorClassLoader.class) ;
 
     ClassLoader classLoader = null ;
     LocatorClassLoader(ClassLoader _classLoader)
@@ -29,12 +29,15 @@ public class LocatorClassLoader  implements Locator
             
         String fn = FileUtils.toFilename(filenameOrURI) ;
         if ( fn == null )
+        {
+            if ( FileManager.logLookupFailures && log.isTraceEnabled() )
+                log.trace("Not a resource: "+filenameOrURI) ; 
             return null ;
-
+        }
         InputStream in = classLoader.getResourceAsStream(fn) ;
         if ( in == null )
         {
-            if ( FileManager.logLookupFailures )
+            if ( FileManager.logLookupFailures && log.isTraceEnabled() )
                 log.trace("Failed to open: "+filenameOrURI) ;
             return in ;
         }

@@ -18,7 +18,7 @@ import org.apache.commons.logging.*;
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.1 2004-08-31 09:49:50 andy_seaborne Exp $
+ * @version $Id: LocatorFile.java,v 1.2 2004-09-28 10:55:29 andy_seaborne Exp $
  */
 
 public class LocatorFile implements Locator
@@ -82,16 +82,14 @@ public class LocatorFile implements Locator
         return f.exists() ;
     }
     
-    
-    
     public InputStream open(String filenameOrURI)
     {
         File f = toFile(filenameOrURI) ;
 
         if ( f == null || !f.exists() )
         {
-            if ( FileManager.logLookupFailures )
-                log.debug("File not found: "+filenameOrURI) ; 
+            if ( FileManager.logLookupFailures && log.isTraceEnabled())
+                log.trace("File not found: "+filenameOrURI) ; 
             return null ;
         }
         

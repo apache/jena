@@ -17,7 +17,7 @@ import org.apache.commons.logging.*;
 /** Location files named by a URL
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorURL.java,v 1.1 2004-08-31 09:49:50 andy_seaborne Exp $
+ * @version $Id: LocatorURL.java,v 1.2 2004-09-28 10:55:29 andy_seaborne Exp $
  */
 
 public class LocatorURL implements Locator
@@ -26,9 +26,14 @@ public class LocatorURL implements Locator
 
     public InputStream open(String filenameOrURI)
     {
-        if ( ! hasScheme(filenameOrURI, "http:") &&  
-             ! hasScheme(filenameOrURI, "file:") ) 
+        if ( ! hasScheme(filenameOrURI, "http:") 
+            // && ! hasScheme(filenameOrURI, "file:") // Leave a filelocator to hanlde this. 
+            ) 
+        {
+            if ( FileManager.logLookupFailures && log.isTraceEnabled() )
+                log.trace("Not an http URL: "+filenameOrURI) ; 
             return null;
+        }
         
         try
         {
@@ -37,7 +42,7 @@ public class LocatorURL implements Locator
             if ( in == null )
             {
                 if ( FileManager.logLookupFailures && log.isTraceEnabled() )
-                    log.trace("LocatorURL: not found: "+filenameOrURI) ; 
+                    log.trace("Not found: "+filenameOrURI) ; 
                 return null ;
             }
             
