@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.21 2003-07-21 10:54:10 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.22 2003-07-30 10:55:38 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.xerces.util.XMLChar;
 
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2003-07-21 10:54:10 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2003-07-30 10:55:38 $'
 
  */
 class Unparser {
@@ -1572,8 +1572,9 @@ class Unparser {
 	private Iterator listSubjects()  {
 		//  The current file - mainly intended for good DAML.
 		Iterator currentFile =
-			new ArrayIterator(
-				new Resource[] { model.createResource(this.localName)});
+//			new ArrayIterator(
+//				new Resource[] { model.createResource(this.localName)});
+            new SingletonIterator( model.createResource(this.localName) );
 		// The pleasing types
 		Iterator pleasing = pleasingTypeIterator();
 

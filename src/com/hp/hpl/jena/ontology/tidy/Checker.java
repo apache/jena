@@ -60,7 +60,7 @@ public class Checker extends AbsChecker {
 		return nonMonotoneProblems.iterator();
 	}
 	public Iterator getProblems() {
-		return new AddIterator(
+		return new ConcatenatedIterator(
 		   getErrors(),
 		   warnings.iterator()
 		);
