@@ -2,7 +2,7 @@
 # OWL rule set v0.2
 # This rule set is design to implement owl(f)lite using the hybrid
 # rule system (mixture of forward and backward chaining).
-# $Id: owl-fb.rules,v 1.4 2003-06-13 08:54:23 der Exp $
+# $Id: owl-fb.rules,v 1.5 2003-06-13 09:11:21 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -168,6 +168,9 @@
 
 [restrictionR-S: (?P rdfs:range ?C), notFunctor(?C) ->
      [restrictionRSb: (?X rdf:type some(?P, ?C)) <- (?X ?P *) ] ]
+     
+[restrictionRMn-S: (?P rdfs:range ?D), (?C rdfs:subClassOf min(?P, '1')) 
+						-> (?C rdfs:subClassOf some(?P, ?D)) ]
 
 [restrictionRA-T: (?P rdfs:range ?C), (?D owl:equivalentClass all(?P, ?C)) 
 						-> (owl:Thing rdfs:subClassOf ?D) ]
@@ -256,7 +259,7 @@
 [distinct1: (?C owl:disjointWith ?D), (?X rdf:type ?C), (?Y rdf:type ?D) 
 						-> (?X owl:differentFrom ?Y) ]
 
-# Exploding the pairwise assertions is simly done procedurally here.
+# Exploding the pairwise assertions is simply done procedurally here.
 # This is better handled by a dedicated equality reasoner any.
 [distinct2: (?w owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
 
