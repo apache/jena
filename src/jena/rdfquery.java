@@ -6,13 +6,12 @@
 
 package jena;
 
-import junit.framework.* ;
 
 import java.io.* ;
+import java.lang.reflect.Constructor;
 
 import com.hp.hpl.jena.util.* ;
 import com.hp.hpl.jena.rdql.* ;
-import com.hp.hpl.jena.rdql.test.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.shared.*;
 
@@ -48,7 +47,7 @@ import org.apache.commons.logging.LogFactory;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.23 2005-02-21 11:49:12 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.24 2005-04-06 08:38:28 chris-dollin Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -83,7 +82,7 @@ public class rdfquery
     
     static protected Log logger = LogFactory.getLog( rdfquery.class );
 
-    public static void main (String [] argv)
+    public static void main (String [] argv) throws Exception
     {
 
         if ( argv.length == 0 )
@@ -365,24 +364,19 @@ public class rdfquery
 
     }
 
-    static void allTests()
-    {
-        // This should load all the built in tests.
-        // It does not load the external test scripts.
-
-        TestSuite ts = new TestSuite("RDQL") ;
-        ts.addTest(TestExpressions.suite()) ;
-        //ts.addTest(QueryTestScripts.suite()) ;
-        ts.addTest(QueryTestProgrammatic.suite()) ;
-        junit.textui.TestRunner.run(ts) ;
+    static void allTests() throws Exception
+    {   
+        doTests( "-all" );
     }
 
     // Alternative invokation for command line use.
     // Assumes it is in the tests directory
-    static public void doTests(String testsFilename)
-    {
-        TestSuite suite = new QueryTestScripts(testsFilename) ;
-        junit.textui.TestRunner.run(suite) ;
+    static public void doTests(String testsFilename) throws Exception
+    { // factored out to allow elimination of junit dependency.
+        Class rdfparse = Class.forName( "jena.test.rdfquery" );
+        Constructor constructor = rdfparse.getConstructor( new Class[] {String.class} );
+        Command c = (Command) constructor.newInstance( new Object[] { testsFilename  } );
+        c.execute();
         /*
         // Fake the TestRunner : don't want all the dots.
         TestResult r = new TestResult() ;
