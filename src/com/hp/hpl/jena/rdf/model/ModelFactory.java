@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.26 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: ModelFactory.java,v 1.27 2003-08-27 14:07:19 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -188,7 +188,7 @@ public class ModelFactory extends ModelFactoryBase
         @param url the URL of the database
         @param user the user name to use to access the database
         @param password the password to use. WARNING: open text.
-        @param dbtype the databate type: currently, "Oracle" or "MySQL".
+        @param dbType the databate type: currently, "Oracle" or "MySQL".
         @return the connection
         @exception quite possibly
     */
