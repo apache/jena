@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.28 $
+ * Revision           $Revision: 1.29 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-02 15:19:34 $
- *               by   $Author: der $
+ * Last modified on   $Date: 2004-02-18 21:00:58 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.28 2004-02-02 15:19:34 der Exp $
+ * @version CVS $Id: schemagen.java,v 1.29 2004-02-18 21:00:58 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -770,7 +770,7 @@ public class schemagen {
             
             // ensure ends with namespace sep char
             char ch = uri.charAt( uri.length() - 1 );
-            boolean endsWithNCNameCh = XMLChar.isNCNameStart( ch );
+            boolean endsWithNCNameCh = XMLChar.isNCName( ch );
             uri = endsWithNCNameCh ? uri + "#" : uri;
 
             // save the namespace URI as the main included uri for the filter
