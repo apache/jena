@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhNode.java,v 1.1.1.1 2002-12-19 19:13:09 bwm Exp $
+  $Id: EnhNode.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -30,17 +30,14 @@ public class EnhNode
     /** The graph node that this enhanced node is wrapping */
     final protected Node node;
     
-    /** The enhnanced graph containing this node */
+    /** The enhanced graph containing this node */
     final protected EnhGraph enhGraph;
     
-    // Constructors
-    
-    public EnhNode(Node n,EnhGraph g,Type myTypes[]) {
-        super(myTypes);
+    public EnhNode(Node n,EnhGraph g ) {
+        super();
         node=n;
         enhGraph = g;
    }
-
 
     // External interface
     
@@ -60,7 +57,6 @@ public class EnhNode
         return enhGraph;
     }
     
-
     /**
      * Answer a facet of this node, where that facet is denoted by the
      * given type.
@@ -69,11 +65,10 @@ public class EnhNode
      * @return An enhanced nodet that corresponds to t; this may be <i>this</i>
      *         Java object, or a different object.
      */ 
-    public EnhNode as( Type t ) {
+    public EnhNode as( Class t ) {
         return (EnhNode) asInternal( t ); 
     }
-    
-    
+      
     /**
      * The hash code of an enhanced node is defined to be the same as the underlying node.
      * @return The hashcode as an int
@@ -81,8 +76,7 @@ public class EnhNode
     final public int hashCode() {
      	return node.hashCode();
     }
-     
-    
+       
     /**
      * An enhanced node is equal to another node n iff:
      * <ul>
@@ -96,16 +90,16 @@ public class EnhNode
      * @param o An object to test for equality with this node
      * @return True if o is equal to this node.
      */
-    final public boolean equals(Object o) {
-     	if (o instanceof EnhNode) {
-     		return super.equals(o) ||
-     		       node.equals(((EnhNode) o).asNode());
-     	}
-        else {
-            return false;
+    final public boolean equals( Object o )
+        {
+     	return o instanceof EnhNode && node.equals(((EnhNode) o).asNode());
         }
-    }
-
+    
+//    final private boolean sameAs( EnhNode n )
+//        { return asNode().equals( n.asNode() ) && sameGraph( getGraph(), n.getGraph() ); }
+//        
+//    final private boolean sameGraph( EnhGraph a, EnhGraph b ) 
+//        { return a == null ? b == null : a.equals( b ); }
 
     // Internal implementation
 
@@ -113,32 +107,13 @@ public class EnhNode
      * Answer an enhanced node object that presents <i>this</i> in a way which satisfies type
      * t.
      * @param t A type
-     * @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
+     * @return A polymorphic instance that conforms to t.
      */
-    protected Polymorphic asInternal(Type t) {
-        if (this.already(t))
-            return this;
-        else {
-            // first look to see if there is already a realization of t we know about
-            Polymorphic result = getFacet( t );
-            if (result != null)
-                return result;
-                
-            // otherwise, we generate a new one from the factory
-            result = getPersonality().getImplementation(t).wrap( asNode(), getGraph() );
-            
-            // and make it share the facets map (so that facets can be re-used)
-            result.setFacets( getFacets() );
-            
-            // additional test - @todo I'm not sure if this is really necessary ... perhaps move to unit tests? -ijd
-            if (getFacet(t) != result) {
-                logger.error( "Internal error: personality misconfigured - constructor did not setTypes()?." );
-            }
-            
+    protected Polymorphic convertTo( Class t ) {
+            Polymorphic result = getPersonality().getImplementation(t).wrap( asNode(), getGraph() );          
+            this.addView( result );
             return result;
-        }
     }
-
 
     /**
      * Answer the personality object bound to this enhanced node, which we obtain from 
@@ -150,8 +125,6 @@ public class EnhNode
         return ((GraphPersonality) getGraph().getPersonality()).nodePersonality();
     }
     
-    
-
 }
 
 /*

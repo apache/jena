@@ -40,20 +40,11 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-11 15:10:14 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-19 10:53:38 $' 
  */
 public class SeqImpl extends ContainerImpl implements Seq {
 
-    
-    
-    static private Type[] myTypes = new Type[]{
-        Resource.type,
-        Seq.type
-    };
     final static public Implementation factory = new Implementation() {
-        public Type[] implementedTypes() {
-            return myTypes;
-        }
         public EnhNode wrap(Node n,EnhGraph eg) {
             return new SeqImpl(n,eg);
         }
@@ -66,35 +57,33 @@ public class SeqImpl extends ContainerImpl implements Seq {
     }
 
     private SeqImpl( Resource r )
-        { super( r );
-         setTypes(myTypes); }
+        { super( r ); }
         
     /** Creates new SeqMem */
     public SeqImpl(Model model) throws RDFException {
         super(model);
-         setTypes(myTypes);
     }
     
     public SeqImpl(String uri, Model model) throws RDFException {
         super(uri, model);
-         setTypes(myTypes);
     }
     
     public SeqImpl(Resource r, Model m) throws RDFException {
         super(r, m);
-         setTypes(myTypes);
     }
 
     public SeqImpl(Node n, EnhGraph g) {
         super(n,g);
-         setTypes(myTypes);
     }
+    
     public Resource getResource(int index) throws RDFException {
         return getProperty(RDF.li(index)).getResource();
     }
+    
     public Literal getLiteral(int index) throws RDFException {
         return getProperty(RDF.li(index)).getLiteral();
     }
+    
     public RDFNode getObject(int index) throws RDFException {
         return getProperty(RDF.li(index)).getObject();
     }
@@ -103,56 +92,70 @@ public class SeqImpl extends ContainerImpl implements Seq {
         checkIndex(index);
         return getProperty(RDF.li(index)).getBoolean();
     }
+    
     public byte getByte(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getByte();
     }
+    
     public short getShort(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getShort();
     }
+    
     public int getInt(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getInt();
     }
+    
     public long getLong(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getLong();
     }
+    
     public char getChar(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getChar();
     }
+    
     public float getFloat(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getFloat();
     }
+    
     public double getDouble(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getDouble();
     }
+    
     public String getString(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getString();
     }
+    
     public String getLanguage(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getLanguage();
     }
+    
     public Object getObject(int index, ObjectF f) throws RDFException {
         return getProperty(RDF.li(index)).getObject(f);
     }
+    
     public Resource getResource(int index, ResourceF f) throws RDFException{
         return getProperty(RDF.li(index)).getResource(f);
     }
+    
     public Bag getBag(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getBag();
     }
+    
     public Alt getAlt(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getAlt();
     }
+    
     public Seq getSeq(int index) throws RDFException {
         checkIndex(index);
         return getProperty(RDF.li(index)).getSeq();
@@ -163,41 +166,49 @@ public class SeqImpl extends ContainerImpl implements Seq {
         getProperty(RDF.li(index)).set(o);
         return this;
     }
+    
     public Seq set(int index, boolean o) throws RDFException {
         checkIndex(index);
         getProperty(RDF.li(index)).set(o);
         return this;
     }
+    
     public Seq set(int index, long o) throws RDFException {
         checkIndex(index);
         getProperty(RDF.li(index)).set(o);
         return this;
     }
+    
     public Seq set(int index, float o) throws RDFException {
         checkIndex(index);
         getProperty(RDF.li(index)).set(o);
         return this;
     }
+    
     public Seq set(int index, double o) throws RDFException {
         checkIndex(index);
         getProperty(RDF.li(index)).set(o);
         return this;
     }
+    
     public Seq set(int index, char o) throws RDFException {
         checkIndex(index);
         getProperty(RDF.li(index)).set(o);
         return this;
     }
+    
     public Seq set(int index, String o) throws RDFException {
         checkIndex(index);
         getProperty(RDF.li(index)).set(o);
         return this;
     }
+    
     public Seq set(int index, String o, String l) throws RDFException {
         checkIndex(index);
         getProperty(RDF.li(index)).set(o, l);
         return this;
     }
+    
     public Seq set(int index, Object o) throws RDFException {
         checkIndex(index);
         getProperty(RDF.li(index)).set(o);

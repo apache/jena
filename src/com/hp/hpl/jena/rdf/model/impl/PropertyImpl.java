@@ -39,26 +39,19 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:29 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-19 10:53:39 $'
  */
 
 // next free error code = 2
 
 public class PropertyImpl extends ResourceImpl implements Property {
 
-    
-    static private Type[] myTypes = new Type[]{
-        Resource.type,
-        Property.type
-    };
     final static public Implementation factory = new Implementation() {
-        public Type[] implementedTypes() {
-            return myTypes;
-        }
         public EnhNode wrap(Node n,EnhGraph eg) {
             return new PropertyImpl(n,eg);
         }
     };
+    
     protected int    ordinal   = 0;
 
     private PropertyImpl( Resource r )
@@ -67,7 +60,6 @@ public class PropertyImpl extends ResourceImpl implements Property {
     /** Creates new PropertyImpl */
     public PropertyImpl(String uri) throws RDFException {
         super( uri );
-        setTypes(myTypes);
         checkLocalName();
         checkOrdinal();
     }
@@ -82,29 +74,24 @@ public class PropertyImpl extends ResourceImpl implements Property {
     public PropertyImpl(String nameSpace, String localName)
       throws RDFException {
         super(nameSpace, localName);
-        setTypes(myTypes);
         checkLocalName();
         checkOrdinal();
     }
 
     public PropertyImpl(String uri, Model m) throws RDFException {
         super(uri, m);
-        setTypes(myTypes);
-        // checkLocalName();
         checkOrdinal();
     }
 
     public PropertyImpl(String nameSpace, String localName, Model m)
       throws RDFException {
         super(nameSpace, localName, m);
-        setTypes(myTypes);
         checkOrdinal();
     }
+    
     public PropertyImpl(Node n, EnhGraph m)
       throws RDFException {
         super(n, m);
-        setTypes(myTypes);
-        // checkLocalName();
         checkOrdinal();
     }
 
@@ -113,7 +100,6 @@ public class PropertyImpl extends ResourceImpl implements Property {
                         int ordinal,
                         Model m) throws RDFException {
         super(nameSpace, localName, m);
-        setTypes(myTypes);
         checkLocalName();
         this.ordinal = ordinal;
     }
@@ -121,6 +107,7 @@ public class PropertyImpl extends ResourceImpl implements Property {
     public boolean isProperty() {
     	return true;
     }
+    
     public int getOrdinal() {
         return ordinal;
     }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Polymorphic.java,v 1.1.1.1 2002-12-19 19:13:12 bwm Exp $
+  $Id: Polymorphic.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -18,121 +18,102 @@ import com.hp.hpl.jena.util.*;
  *         <a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> (tidying up and comments)
  */
 public abstract class Polymorphic {
-    // instance variables
     
-    // At any one time, only one of these two variables is needed.
-    // On creation the myTypes field is set to the implementedTypes()
-    // value of the Implementation.
-    // When it is necessary to convert this object to another one,
-    // the shared state is held in the facet Type => Polymorhic map.
-    
-    /** Maps the different polymorphic objects that present different views of this object, indexed by type */
-    private Map facets;
-    
-    /** The set of types that this polymorphic object is an implementation for */
-    private Type[] myTypes;
-    
-    // Constructors
+    /** Each new polymorphic object is in a ring of views */
+    private Polymorphic ring;
     
     /**
-     * Construct a polymorphic RDF object that accepts the given set of types.
-     * @param myTypes The set of types that this class provides an implementation for
+        initially we're in the singleton ring.
      */
-    Polymorphic(Type myTypes[]) {
-        this.myTypes = myTypes;
-    }
-
+    Polymorphic() 
+        { this.ring = this; }
 
     // External contract methods
     
     /**
      * Answer the personality object bound to this polymorphic instance
-     * 
      * @return The personality object
      */
     protected abstract Personality getPersonality();
-    
-    
+        
     /** 
-     * Ansewr true iff <i>this</i> is already acceptable to the given type t. 
+     * Answer true iff <i>this</i> is already acceptable to the given type t. 
      * Delegates to t to test if this class is an acceptable implementation.
      * @param t A type to test
      * @return True iff this object is already an acceptable implementation of t
      */
-    protected boolean already(Type t) {
-        return t.accepts(this);
-    }
+    protected boolean already(Class t) 
+        { return t.isInstance( this ); }
 
+    /**
+        return _true_ iff this polymorphic object supports the specified interface.
+        Synonymous with "does the argument class have this as an instance".
+        Actually it shouldn't be. Review.
+    */
+    public boolean supports( Class t )
+        {
+        // System.err.println( "| Polymorphic.supports() called" );
+        // new RuntimeException( "" ).printStackTrace( System.err ); 
+        return t.isInstance( this ); 
+        }
+        
     /** 
-     * Answer a polyorphic object that presents <i>this</i> in a way which satisfies type
+     * Answer a polymorphic object that presents <i>this</i> in a way which satisfies type
      * t.
      * @param t A type
      * @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
      */
-    protected abstract Polymorphic asInternal(Type t);
-    
-    
-    /**
-     * Set the set of types that this polymorphic provides an realisation for.
-     * @todo Should copy the array, not reference it -ijd
-     * @todo Is it legal for clients to update this array once the object has been created? -ijd
-     * 
-     * @param m A set of type objects
-     */
-    protected void setTypes(Type m[]) {
-        myTypes = m;
-    }
-
-
-    /**
-     * Equality over polymorphic objects is defined as identity <b>or</b> sharing
-     * the same <i>facets</i> map.
-     * @param o An object to test for equality with this
-     * @return True if o is == this, or o and this have the identical facets map
-     */
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o != null
-            && o instanceof Polymorphic
-            && facets != null
-            && ((Polymorphic) o).facets == facets)
-            return true;
-        return false;
-    }
-    
-    // Internal implementation methods
-    
-    /** setFacets is a phase2 initializer invoked when we know that
-     *  this Polymorphic object has more than one face.
-     *  This may happen arbitrarily later than the initial creation,
-     *  or may not happen at all, but it happens at most once.
-     */
-    void setFacets(Map hm) {
-        if (facets != null)
-            Log.severe( "Internal error: invariant violation.", getClass().getName(), "setFacets" );
-            
-        facets = hm;
-        for (int i = 0; i < myTypes.length; i++) {
-            if (!myTypes[i].accepts(this))
-                Log.severe( "Internal error: personality misconfigured.", getClass().getName(), "setFacets");
-            else 
-                facets.put(myTypes[i], this);
-        }
-    }
-    
-    
-    Polymorphic getFacet( Type t ) {
-        if (facets == null) {
-            setFacets( new HashMap() );
+    protected final Polymorphic asInternal( Class t )
+        {
+        Polymorphic other = findExistingView( t );
+        return other == null ? this.convertTo( t ) : other;
         }
         
-        return (Polymorphic) facets.get( t );
-    }
+    /**
+        find an existing view in the ring which is an instance of _t_ and
+        return it; otherwise return null. If _this_ is an instance, the
+        search takes care to find it first.
+    */
+    private Polymorphic findExistingView( Class t )
+        {
+        Polymorphic r = this;
+        for (;;)
+            {
+            if (t.isInstance( r )) return r;
+            r = r.ring;
+            if (r == this) return null;
+            }
+        }
+        
+    /**
+        subclasses must provide a method for converting _this_, if
+        possible, into an instance of _t_. It will only be called if _this_
+        doesn't already have (or be) a suitable ring-sibling.
+    */    
+    protected abstract Polymorphic convertTo( Class t );
     
-    Map getFacets() {
-        return facets;
-    }
+    /**
+        subclasses must override equals. Actually they may not have
+        to nowadays ... I have expunged the clever facet-identity test
+        (and indeed facets).
+    */
+    public abstract boolean equals( Object o );
+    
+    /**
+        add another view for this object. _other_ must be freshly constructed.
+        To be called by subclasses when they have constructed a new view
+        for this object.
+    */
+    void addView( Polymorphic other )
+        {
+        if (other.ring == other)
+            {
+            other.ring = this.ring;
+            this.ring = other;
+            }
+        else
+            throw new RuntimeException( "oops: stale 'other' view" );
+        }
 
 }
 

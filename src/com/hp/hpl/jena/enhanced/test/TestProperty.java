@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestProperty.java,v 1.1.1.1 2002-12-19 19:13:18 bwm Exp $
+  $Id: TestProperty.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 package com.hp.hpl.jena.enhanced.test;
 import com.hp.hpl.jena.enhanced.*;
@@ -12,11 +12,6 @@ import com.hp.hpl.jena.enhanced.*;
  */
 public interface TestProperty extends TestNode {  
    
-    public static final Type type = new Type() {
-        public boolean accepts( Polymorphic p ) { return p instanceof TestProperty;}
-        public boolean supportedBy( Polymorphic p ) { return ((TestProperty)p).isProperty(); }
-        public String toString() { return "TestProperty.type"; }
-    };
     boolean isProperty();
     TestObject anObject();
 }

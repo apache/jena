@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestObject.java,v 1.1.1.1 2002-12-19 19:13:15 bwm Exp $
+  $Id: TestObject.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -13,28 +13,6 @@ import com.hp.hpl.jena.enhanced.*;
  */
 public interface TestObject extends TestNode {
     
-    /**
-     * For EnhNode interfaces that participate in polymorphism
-     * it is necessary to copy and modify code like this.
-     *  The name type is conventional.
-     */
-    public static final Type type = new Type() {
-    	/** This method should probably always be implemented this way.
-    	* It is a runtime check that the class is appropriate (ignoring the
-    	* underlying graph). **/
-        public boolean accepts( Polymorphic p ) { return p instanceof TestObject;}
-        
-        /** This method is the runtime check that the graph is appropriate.
-         *  A  precondition before it being called is that accepts() returns
-         * true, so the cast in this example is guaranteed not to fail.
-         * Code to verify its applicability can either be delegated to the
-         * implementation classes (as here), or in-line at this point.
-         * The latter choice might make it difficult for different
-         * implementations to be different.
-         */
-        public boolean supportedBy( Polymorphic p ) { return ((TestObject)p).isObject(); }
-        public String toString() { return "TestObject.type"; }
-    };
     /**
      * Checks whether this node is right now the object of some
      * triple in the graph.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPropertyImpl.java,v 1.1.1.1 2002-12-19 19:13:19 bwm Exp $
+  $Id: TestPropertyImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -13,11 +13,11 @@ import com.hp.hpl.jena.graph.*;
  * @author  jjc
  */
 public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
-    private static Type[] myTypes = new Type[]{
-       TestProperty.type
+    private static Class [] myTypes = new Class []{
+       TestProperty.class
     };
     public static final Implementation factory = new Implementation() {
-    public Type[] implementedTypes() {
+    public Class [] implementedTypes() {
         return myTypes;
     }
     public EnhNode wrap(Node n,EnhGraph eg) {
@@ -30,6 +30,9 @@ public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
         super(n,eg,myTypes);
     }
     
+    public boolean supports( Class t )
+        { return t.isInstance( this ) && isProperty(); }
+        
     public boolean isProperty() {
         return find(P)!=null;
     }
@@ -37,7 +40,7 @@ public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
     public TestObject anObject() {
         if (!isProperty())
             throw new IllegalStateException("Node is not the property of a triple.");
-        return (TestObject)enhGraph.getNodeAs(find(P).getObject(),TestObject.type);
+        return (TestObject)enhGraph.getNodeAs(find(P).getObject(),TestObject.class);
     }
     
 }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestAllImpl.java,v 1.1.1.1 2002-12-19 19:13:13 bwm Exp $
+  $Id: TestAllImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -13,13 +13,13 @@ import com.hp.hpl.jena.graph.*;
  * @author  jjc
  */
 public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProperty, TestObject {
-    private static Type[] myTypes = new Type[]{
-       TestObject.type,
-       TestProperty.type,
-       TestSubject.type
+    private static Class [] myTypes = new Class []{
+       TestObject.class,
+       TestProperty.class,
+       TestSubject.class
     };
     public static final Implementation factory = new Implementation() {
-    public Type[] implementedTypes() {
+    public Class [] implementedTypes() {
         return myTypes;
     }
     public EnhNode wrap(Node n,EnhGraph eg) {
@@ -32,6 +32,17 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
         super(n,eg,myTypes);
     }
     
+    public boolean supports( Class t )
+        {
+        // return convertTo( t ) != null;
+        return
+            t == TestProperty.class ? isProperty()
+            : t == TestSubject.class ? isSubject()
+            : t == TestObject.class ? isObject()
+            : false
+            ;
+        }
+        
     public boolean isObject() {
         return find(O)!=null;
     }
@@ -47,19 +58,19 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
         if (!isProperty())
             
             throw new IllegalStateException("Node is not the property of a triple.");
-        return (TestObject)enhGraph.getNodeAs(find(P).getObject(),TestObject.type);
+        return (TestObject)enhGraph.getNodeAs(find(P).getObject(),TestObject.class);
     }
     
     public TestProperty aProperty() {
         if (!isSubject())
             throw new IllegalStateException("Node is not the subject of a triple.");
-        return (TestProperty)enhGraph.getNodeAs(find(S).getPredicate(),TestProperty.type);
+        return (TestProperty)enhGraph.getNodeAs(find(S).getPredicate(),TestProperty.class);
     }
     
     public TestSubject aSubject() {
         if (!isObject())
             throw new IllegalStateException("Node is not the object of a triple.");
-        return (TestSubject)enhGraph.getNodeAs(find(O).getSubject(),TestSubject.type);
+        return (TestSubject)enhGraph.getNodeAs(find(O).getSubject(),TestSubject.class);
     }
     
 }

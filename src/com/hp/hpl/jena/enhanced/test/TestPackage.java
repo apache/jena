@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.2 2003-01-28 16:21:41 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.3 2003-02-19 10:54:23 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -52,22 +52,22 @@ public class TestPackage extends GraphTestBase implements SPO {
             // Note this does not guarantee that the only implementations
             // of each interface will be the one specified.
             // See bitOfBoth.
-        split.add( TestObject.type, TestObjectImpl.factory );
-        split.add( TestSubject.type, TestSubjectImpl.factory );
-        split.add( TestProperty.type, TestPropertyImpl.factory );
+        split.add( TestObject.class, TestObjectImpl.factory );
+        split.add( TestSubject.class, TestSubjectImpl.factory );
+        split.add( TestProperty.class, TestPropertyImpl.factory );
         
-        combo.add( TestObject.type, TestAllImpl.factory );
-        combo.add( TestSubject.type, TestAllImpl.factory );
-        combo.add( TestProperty.type, TestAllImpl.factory );
+        combo.add( TestObject.class, TestAllImpl.factory );
+        combo.add( TestSubject.class, TestAllImpl.factory );
+        combo.add( TestProperty.class, TestAllImpl.factory );
         
-        bitOfBoth.add( TestObject.type, TestObjectImpl.factory );
-        bitOfBoth.add( TestSubject.type, TestSubjectImpl.factory );
-        bitOfBoth.add( TestProperty.type, TestAllImpl.factory );
+        bitOfBoth.add( TestObject.class, TestObjectImpl.factory );
+        bitOfBoth.add( TestSubject.class, TestSubjectImpl.factory );
+        bitOfBoth.add( TestProperty.class, TestAllImpl.factory );
         
         // broken is misconfigured and must throw an exception.
-        broken.add(TestObject.type, TestObjectImpl.factory );
-        broken.add( TestSubject.type, TestSubjectImpl.factory );
-        broken.add( TestProperty.type, TestObjectImpl.factory );
+        broken.add(TestObject.class, TestObjectImpl.factory );
+        broken.add( TestSubject.class, TestSubjectImpl.factory );
+        broken.add( TestProperty.class, TestObjectImpl.factory );
 	}
     /** Creates a new instance of EnhancedTestSuite */
    	public TestPackage(String name)
@@ -98,7 +98,7 @@ public class TestPackage extends GraphTestBase implements SPO {
     /**
      * View n as intf. This is supported iff rslt.
      */
-    private static void miniAsSupports(String title, TestNode n, Type intf, boolean rslt ) {
+    private static void miniAsSupports(String title, TestNode n, Class intf, boolean rslt ) {
         assertTrue(title +":sanity",n instanceof Polymorphic);
         
         // It is always possible to view any node with any interface.
@@ -110,14 +110,14 @@ public class TestPackage extends GraphTestBase implements SPO {
         
         // Whether the interface is actually useable depends on the underlying
         // graph. This factoid is the rslt parameter.
-        assertEquals( title +":support",rslt,intf.supportedBy((EnhNode)as1) );
+        assertEquals( title +":support",rslt,((EnhNode) as1).supports( intf ) ); 
     }
     
     private static void oneNodeAsSupports(String title, TestNode n, boolean rslts[] ) {
     	// Try n with all three interfaces.
-        miniAsSupports(title+"/TestSubject",n,TestSubject.type,rslts[0]);
-        miniAsSupports(title+"/TestProperty",n,TestProperty.type,rslts[1]);
-        miniAsSupports(title+"/TestObject",n,TestObject.type,rslts[2]);
+        miniAsSupports(title+"/TestSubject",n,TestSubject.class,rslts[0]);
+        miniAsSupports(title+"/TestProperty",n,TestProperty.class,rslts[1]);
+        miniAsSupports(title+"/TestObject",n,TestObject.class,rslts[2]);
     }
     
     private static void manyNodeAsSupports(String title, TestNode n[], boolean rslts[][] ) {

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntListImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-02-13 22:44:37 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-02-19 10:54:24 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntListImpl.java,v 1.3 2003-02-13 22:44:37 ian_dickinson Exp $
+ * @version CVS $Id: OntListImpl.java,v 1.4 2003-02-19 10:54:24 chris-dollin Exp $
  */
 public class OntListImpl
     extends ResourceImpl
@@ -58,14 +58,10 @@ public class OntListImpl
     // Static variables
     //////////////////////////////////
 
-    /** The types that this implementation is satisfying */
-    private static Type[] s_myTypes = {OntList.type, Resource.type};
-    
     /**
      * A factory for generating OntList facets from nodes in enhanced graphs.
      */
     public static Implementation factory = new Implementation() {
-        public Type[]  implementedTypes()          { return s_myTypes; }
         public EnhNode wrap( Node n, EnhGraph eg ) { return new OntListImpl( n, eg ); }
     };
 
@@ -110,7 +106,6 @@ public class OntListImpl
         //super( n, g, s_myTypes );
         // @todo having to call setTypes is a bug in Jeremy's design
         super( n, g );
-        setTypes( s_myTypes );
     }
     
     

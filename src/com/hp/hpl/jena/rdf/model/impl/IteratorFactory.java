@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: IteratorFactory.java,v 1.1.1.1 2002-12-19 19:18:11 bwm Exp $
+  $Id: IteratorFactory.java,v 1.2 2003-02-19 10:53:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -90,20 +90,20 @@ public final class IteratorFactory {
 	}
 	    
     static  Resource asResource(Node n,ModelCom m) {
-    	return asResource(n,Resource.type,m);
+    	return asResource(n,Resource.class,m);
     	
     }	    
     
     static  Property asProperty(Node n,ModelCom m) {
-    	return (Property)asResource(n,Property.type,m);
+    	return (Property)asResource(n,Property.class,m);
     }
     
     static  Literal asLiteral(Node n,ModelCom m) {
     	// return (Literal) m.getNodeAs( n, Literal.class );
-        return (Literal) m.getNodeAs( n, Literal.type );
+        return (Literal) m.getNodeAs( n, Literal.class );
     }
     
-    static  Resource asResource(Node n, Type cl,ModelCom m) {
+    static  Resource asResource(Node n, Class cl,ModelCom m) {
     	return (Resource)m.getNodeAs(n,cl);
     }
 }

@@ -39,18 +39,12 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-11 15:10:16 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-02-19 10:53:39 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource, ResourceI {
     
-    static private Type[] myTypes = new Type[]{
-        Resource.type
-    };
     final static public Implementation factory = new Implementation() {
-        public Type[] implementedTypes() {
-            return myTypes;
-        }
         public EnhNode wrap(Node n,EnhGraph eg) {
             return new ResourceImpl(n,eg);
         }
@@ -66,7 +60,7 @@ public class ResourceImpl extends EnhNode implements Resource, ResourceI {
     */
     private ResourceImpl( Node n, int split, Model m )
         {
-            super(n,(ModelCom)m,myTypes);
+        super( n, (ModelCom)m );
         this.splitHere = split;
         }
 
@@ -119,6 +113,7 @@ public class ResourceImpl extends EnhNode implements Resource, ResourceI {
     public boolean isResource() {
     	return true;
     }
+    
     private static int whereToSplit( String s )
         {
         if (s == null) return 0;
@@ -135,7 +130,6 @@ public class ResourceImpl extends EnhNode implements Resource, ResourceI {
     public Node getNode() {
         return asNode();
     }
-
 
     public AnonId getId() {
         return asNode().getBlankNodeId();

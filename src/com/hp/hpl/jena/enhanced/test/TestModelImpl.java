@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelImpl.java,v 1.1.1.1 2002-12-19 19:13:14 bwm Exp $
+  $Id: TestModelImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -32,15 +32,15 @@ public class TestModelImpl extends EnhGraph implements TestModel {
     }
         
     public TestObject anObject() {
-        return (TestObject)getNodeAs(aTriple().getObject(),TestObject.type);
+        return (TestObject)getNodeAs(aTriple().getObject(),TestObject.class);
     }
     
     public TestProperty aProperty() {
-        return (TestProperty)getNodeAs(aTriple().getPredicate(),TestProperty.type);
+        return (TestProperty)getNodeAs(aTriple().getPredicate(),TestProperty.class);
     }
     
     public TestSubject aSubject() {
-        return (TestSubject)getNodeAs(aTriple().getSubject(),TestSubject.type);
+        return (TestSubject)getNodeAs(aTriple().getSubject(),TestSubject.class);
     }
     
 }

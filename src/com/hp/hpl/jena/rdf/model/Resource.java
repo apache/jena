@@ -57,11 +57,9 @@ import com.hp.hpl.jena.graph.Node;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:32 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-19 10:54:23 $'
  */
 public interface Resource extends RDFNode {
-
-      public static final Type type = new ResourceType();
       
     /** Returns an a unique identifier for anonymous resources.
      *
@@ -387,10 +385,3 @@ public interface Resource extends RDFNode {
     public Model getModel(); 
 }
 
-class ResourceType implements Type
-        {
-        public boolean accepts( Polymorphic p ) { return p instanceof Resource;}
-   //     public Polymorphic coerce( Polymorphic p ) { return new ResourceImpl( (Resource) p ); }
-        public boolean supportedBy( Polymorphic p ) { return p instanceof Resource; }
-        public String toString() { return "Resource.type"; }
-        };

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.2 2003-02-03 22:49:40 ian_dickinson Exp $
+  $Id: BuiltinPersonalities.java,v 1.3 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -19,13 +19,13 @@ public class BuiltinPersonalities {
 	static final private  GraphPersonality graph = new GraphPersonality();
 
 	static final public GraphPersonality model = (GraphPersonality)graph.copy()
-        .add( Resource.type, ResourceImpl.factory )
-		.add( Property.type, PropertyImpl.factory )	
-		.add( Literal.type,LiteralImpl.factory )
-        .add( Alt.type, AltImpl.factory )
-        .add( Bag.type, BagImpl.factory )
-        .add( Seq.type, SeqImpl.factory )
-        .add( OntList.type, OntListImpl.factory )
+        .add( Resource.class, ResourceImpl.factory )
+		.add( Property.class, PropertyImpl.factory )	
+		.add( Literal.class,LiteralImpl.factory )
+        .add( Alt.class, AltImpl.factory )
+        .add( Bag.class, BagImpl.factory )
+        .add( Seq.class, SeqImpl.factory )
+        .add( OntList.class, OntListImpl.factory )
         ;		
 }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: EnhGraph.java,v 1.1.1.1 2002-12-19 19:13:08 bwm Exp $
+  $Id: EnhGraph.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -47,8 +47,8 @@ public class EnhGraph
      * @param p The personality factory, that maps types to realisations
      * @param myTypes An array of types @todo explain better or remove
      */
-    protected EnhGraph( Graph g, Personality p, Type myTypes[]) {
-        super(myTypes);
+    protected EnhGraph( Graph g, Personality p, Class myTypes[]) {
+        super();
         graph = g;
         personality = p;
     }
@@ -90,7 +90,6 @@ public class EnhGraph
      * An enhanced graph is equal to another graph g iff:
      * <ul>
      * <li>g is identical to <i>this</i></li>
-     * <li>g has a facets map that is identical to the facets map on <i>this</i></li>
      * <li>the underlying graphs are equal</li>
      * </ul>
      * This is deemed to be a complete and correct interpretation of enhanced graph
@@ -106,13 +105,14 @@ public class EnhGraph
      * @see #isIsomorphicWith
      */
     final public boolean equals(Object o) {
-     	if (o instanceof EnhGraph) {
-     		return super.equals(o) ||
-     		       graph.equals(((EnhGraph) o).asGraph());
-     	}
-        else {
-            return false;
-        }
+        return this == o || o instanceof EnhGraph && graph.equals(((EnhGraph) o).asGraph());
+//     	if (o instanceof EnhGraph) {
+//     		return /* super.equals(o) || */
+//     		       graph.equals(((EnhGraph) o).asGraph());
+//     	}
+//        else {
+//            return false;
+//        }
     }
     
     
@@ -138,7 +138,7 @@ public class EnhGraph
      * @param t A type denoting the enhanced facet desired
      * @return An enhanced node
      */
-    public EnhNode getNodeAs(Node n,Type interf) {
+    public EnhNode getNodeAs(Node n,Class interf) {
          // We use a cache to avoid reconstructing the same Node too many times.
         EnhNode eh = (EnhNode)enhNodes.get(n);
         if ( eh != null )
@@ -175,7 +175,7 @@ public class EnhGraph
      * @param t A type
      * @return A polymorphic instance, possibly but not necessarily this, that conforms to t.
      */
-    protected Polymorphic asInternal(Type t) {
+    protected Polymorphic convertTo(Class t) {
         // @todo stub
         throw new PersonalityConfigException( "Alternative perspectives on graphs has not been implemented yet" );
     }

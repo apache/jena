@@ -46,14 +46,12 @@ package com.hp.hpl.jena.rdf.model;
  * algorithm.</p>
  *
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:32 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-19 10:54:23 $'
  */
 
 import com.hp.hpl.jena.enhanced.*;
 
 public interface Bag extends Container {
-    
-    public static final Type type = new BagType();
     
     /** Remove a value from the container.
      *
@@ -80,10 +78,3 @@ public interface Bag extends Container {
 //TODO    public Container remove(String v) throws RDFException;
 }
 
-class BagType implements Type
-        {
-        public boolean accepts( Polymorphic p ) { return p instanceof Bag;}
-      //  public Polymorphic coerce( Polymorphic p ) { return new BagImpl( (Resource) p ); }
-        public boolean supportedBy( Polymorphic p ) { return p instanceof Bag; }
-        public String toString() { return "Bag.type"; }
-        };

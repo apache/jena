@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSubjectImpl.java,v 1.1.1.1 2002-12-19 19:13:19 bwm Exp $
+  $Id: TestSubjectImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -13,11 +13,11 @@ import com.hp.hpl.jena.graph.*;
  * @author  jjc
  */
 public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
-    private static Type[] myTypes = new Type[]{
-       TestSubject.type
+    private static Class [] myTypes = new Class []{
+       TestSubject.class
     };
     public static final Implementation factory = new Implementation() {
-    public Type[] implementedTypes() {
+    public Class [] implementedTypes() {
         return myTypes;
     }
     public EnhNode wrap(Node n,EnhGraph eg) {
@@ -30,6 +30,9 @@ public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
         super(n,eg,myTypes);
     }
     
+    public boolean supports( Class t)
+        { return t.isInstance( this ) && isSubject(); }
+        
     public boolean isSubject() {
         return find(S)!=null;
     }
@@ -37,7 +40,7 @@ public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
     public TestProperty aProperty() {
         if (!isSubject())
             throw new IllegalStateException("Node is not the subject of a triple.");
-        return (TestProperty)enhGraph.getNodeAs(find(S).getPredicate(),TestProperty.type);
+        return (TestProperty)enhGraph.getNodeAs(find(S).getPredicate(),TestProperty.class);
     }
 }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCommonImpl.java,v 1.1.1.1 2002-12-19 19:13:14 bwm Exp $
+  $Id: TestCommonImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -16,8 +16,8 @@ import com.hp.hpl.jena.util.iterator.*;
 class TestCommonImpl extends EnhNode implements TestNode, SPO {
 
     /** Creates new TestCommonImpl */
-    TestCommonImpl(Node n,EnhGraph m,Type myTypes[]) {
-        super(n,m,myTypes);
+    TestCommonImpl(Node n,EnhGraph m,Class myTypes[]) {
+        super(n,m);
     }
     TestModel getModel() {
         return (TestModel)enhGraph;
@@ -43,15 +43,15 @@ class TestCommonImpl extends EnhNode implements TestNode, SPO {
     // Convenience routines, that wrap the generic
     // routines from EnhNode.
     public TestSubject asSubject() {
-        return (TestSubject)asInternal(TestSubject.type);
+        return (TestSubject)asInternal(TestSubject.class);
     }
     
     public TestObject asObject() {
-        return (TestObject)asInternal(TestObject.type);
+        return (TestObject)asInternal(TestObject.class);
     }
     
     public TestProperty asProperty() {
-        return (TestProperty)asInternal(TestProperty.type);
+        return (TestProperty)asInternal(TestProperty.class);
     }
     
 }

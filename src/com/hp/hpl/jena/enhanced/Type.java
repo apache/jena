@@ -1,37 +1,23 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Type.java,v 1.1.1.1 2002-12-19 19:13:12 bwm Exp $
+  $Id: Type.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 
 /**
  * A Type denotes a view of a polymorphic object.
- * 
+ IT IS NOW DEAD.
+ * * 
  * @author <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)<br>
  *         <a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> (tidying up and comments)
+ * 
 */
 public interface Type
 {
-    /** 
-     * Answer true iff this Type accepts the polymorphic object p. This encodes the
-     * test that an implementation of this type can be constructed from p based on
-     * p's static properties (such as p's Java class).
-     * @param p A polymorphic object to test
-     * @return True if an implementation of this type can be constructed from p
-     */
-    public boolean accepts( Polymorphic p );
     
-    /** 
-     * Answer true if this type is currently a valid presentation of the given
-     * polymorphic object at this moment. This may depend on dynamic properties,
-     * such as the current triples in some graph.
-     * @param p A polymorphic object to test
-     * @return True if the current environment means that p can validly be
-     *         presented as an object of this type.
-     */
-    public boolean supportedBy( Polymorphic p );
+    public Class represents();
 }
 
 

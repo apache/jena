@@ -59,10 +59,9 @@ import com.hp.hpl.jena.graph.dt.RDFDatatype;
  * the lexical form back into the appropriate object type.</p>
  * 
  * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-02-01 14:35:32 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-02-19 10:54:24 $
  */
 public interface Literal extends RDFNode {
-      public static final Type type = new LiteralType();
         
     /** Answer true.
      */
@@ -243,10 +242,3 @@ public interface Literal extends RDFNode {
     public boolean sameValueAs(Literal other);
 }
 
-class LiteralType implements Type
-        {
-        public boolean accepts( Polymorphic p ) { return p instanceof Literal;}
-      //  public Polymorphic coerce( Polymorphic p ) { return new LiteralImpl( (Resource) p ); }
-        public boolean supportedBy( Polymorphic p ) { return p instanceof Literal; }
-        public String toString() { return "Literal.type"; }
-        };

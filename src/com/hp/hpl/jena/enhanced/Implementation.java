@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Implementation.java,v 1.1.1.1 2002-12-19 19:13:10 bwm Exp $
+  $Id: Implementation.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -19,13 +19,7 @@ import com.hp.hpl.jena.graph.*;
  *         <a href="mailto:Ian.Dickinson@hp.com">Ian Dickinson</a> (refactoring and commentage)
  */
 public abstract class Implementation {
-    
-     /** A simple array of the types implemented.
-      * For each of these types t, and for any p returned by convert or wrap
-      *  it should be the case that t.accepts(p) is true.
-      */
-     public abstract Type[] implementedTypes();
-     
+
      /** 
       * Create a new EnhNode wrapping a Node in the context of an EnhGraph
       * @param node The node to be wrapped
