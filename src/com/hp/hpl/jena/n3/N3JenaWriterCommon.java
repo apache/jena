@@ -22,7 +22,7 @@ import java.text.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.27 2004-11-04 17:20:14 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.28 2004-11-19 09:40:05 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -103,7 +103,13 @@ public class N3JenaWriterCommon implements RDFWriter
 
     public Object setProperty(String propName, Object propValue) 
     {
-        // Store localized property names
+        if ( ! ( propValue instanceof String ) )
+        {
+            logger.warn("N3.setProperty: Property for '"+propName+"' is not a string") ;
+            propValue = propValue.toString() ;
+        }
+        
+        // Store absolute name of property 
         propName = absolutePropName(propName) ;
         if ( writerPropertyMap == null )
             writerPropertyMap = new HashMap() ;
@@ -813,7 +819,12 @@ public class N3JenaWriterCommon implements RDFWriter
     {
         prop = absolutePropName(prop) ;
         if ( writerPropertyMap != null && writerPropertyMap.containsKey(prop) )
-            return (String)writerPropertyMap.get(prop) ;
+        {
+            Object obj = writerPropertyMap.get(prop) ;
+            if ( ! ( obj instanceof String ) )
+                logger.warn("getPropValue: N3 Property for '"+prop+"' is not a string") ;
+            return (String)obj ; 
+        }
         String s = System.getProperty(prop) ;
         if ( s == null )
             s = System.getProperty(localPropName(prop)) ;
