@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Table.java,v 1.1 2003-08-08 09:24:04 der Exp $
+ * $Id: Table.java,v 1.2 2003-08-08 10:08:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * Arrange that the given predicate is tabled by the backchaining engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-08 09:24:04 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-08 10:08:55 $
  */
 public class Table extends BaseBuiltin {
 
@@ -47,7 +47,7 @@ public class Table extends BaseBuiltin {
                 ((FBLPRuleInfGraph)infgraph).setTabled(args[i]);
             }
         } else {
-            throw new BuiltinException(this, context, "builtin " + getName() + " only usable in backward/hybrid rule sets");
+            throw new BuiltinException(this, context, "builtin " + getName() + " only usable in LP hybrid rule sets");
         }
     }
  
