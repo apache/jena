@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.17 2004-02-02 13:47:19 der Exp $
+ * $Id: TestBugs.java,v 1.18 2004-02-02 14:21:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2004-02-02 13:47:19 $
+ * @version $Revision: 1.18 $ on $Date: 2004-02-02 14:21:52 $
  */
 public class TestBugs extends TestCase {
 
@@ -49,7 +49,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testBindSchemaValidate" ));
+//        suite.addTest(new TestBugs( "testGenericDeleteBug" ));
 //        return suite;
     }  
 
@@ -375,6 +375,30 @@ public class TestBugs extends TestCase {
         validity = inf.validate();
         assertTrue( ! validity.isValid());
     }
+    
+    /**
+     * Delete bug in generic rule reasoner.
+     */
+    public void testGenericDeleteBug() {
+        Model data = ModelFactory.createDefaultModel();
+        String NS = "urn:x-hp:eg/";
+        Property p = data.createProperty(NS, "p");
+        Resource x = data.createResource(NS + "x");
+        Resource y = data.createResource(NS + "y");
+        Statement sy = data.createStatement(y, p, "foo");
+        data.add(sy);
+        data.add(x, p, "foo");
+//        String rule = "[(?x eg:p ?m) -> (?x eg:same ?x)]";
+        String rule = "[(?x eg:p ?m) (?y eg:p ?m) -> (?x eg:same ?y) (?y eg:same ?x)]";
+        GenericRuleReasoner reasoner = (GenericRuleReasoner) GenericRuleReasonerFactory.theInstance().create(null);
+        reasoner.setMode(GenericRuleReasoner.FORWARD_RETE);
+        reasoner.setRules(Rule.parseRules(rule));
+        InfModel inf = ModelFactory.createInfModel(reasoner, data);
+        TestUtil.assertIteratorLength(inf.listStatements(y, null, (RDFNode)null), 3);
+        inf.remove(sy);
+        TestUtil.assertIteratorLength(inf.listStatements(y, null, (RDFNode)null), 0);
+    }
+    
     
     // debug assistant
     private void tempList(Model m, Resource s, Property p, RDFNode o) {
