@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 15:20:59 $
+ * Last modified on   $Date: 2003-08-29 20:13:59 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.15 2003-08-27 15:20:59 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.16 2003-08-29 20:13:59 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -353,6 +353,39 @@ public class TestBugReports
         
         assertTrue( "x should be an individual", inds.contains( m.getResource( "http://example.org/foo#x" ) ) );
         
+    }
+    
+    
+    /** Bug report by Thorsten Ottmann [Thorsten.Ottmann@rwth-aachen.de] - problem accessing elements of DAML list */
+    public void test_to_01() {
+        String sourceT = 
+        "<rdf:RDF " +
+        "    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
+        "    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'" +
+        "    xmlns:daml='http://www.daml.org/2001/03/daml+oil#'>" +
+        "  <daml:Class rdf:about='http://example.org/foo#A'>" +
+        "    <daml:intersectionOf rdf:parseType=\"daml:collection\">" +
+        "       <daml:Class rdf:ID=\"B\" />" +
+        "       <daml:Class rdf:ID=\"C\" />" +
+        "    </daml:intersectionOf>" +
+        "  </daml:Class>" +
+        "</rdf:RDF>" ;
+        
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM, null );
+        m.read( new ByteArrayInputStream( sourceT.getBytes() ), "http://example.org/foo" );
+        
+        OntClass A = m.getOntClass( "http://example.org/foo#A" );
+        assertNotNull( A );
+        
+        IntersectionClass iA = A.asIntersectionClass();
+        assertNotNull( iA );
+        
+        RDFList intersection = iA.getOperands();
+        assertNotNull( intersection );
+        
+        assertEquals( 2, intersection.size() );
+        assertTrue( intersection.contains( m.getOntClass( "http://example.org/foo#B" ) ));
+        assertTrue( intersection.contains( m.getOntClass( "http://example.org/foo#C" ) ));
     }
     
     // Internal implementation methods
