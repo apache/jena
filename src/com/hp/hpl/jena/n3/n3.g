@@ -1,7 +1,7 @@
 //-*- mode: antlr -*-
 
 /* This is part of the Jena RDF Framework.
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file for details]
  */
 
@@ -237,7 +237,7 @@ node
 	|	anonnode[null]
 	|	literal
 	|	kwTHIS
-	|	variable
+	|	variableDT
 	;
 
 // Keywords: do not use parser literals as things like URIREFs
@@ -255,7 +255,7 @@ verb
 	:  	item
 	|   kwA
 	|	EQUAL | ARROW_R | ARROW_L
-	|   ARROW_P_L! node ARROW_P_R!			// Deprecated
+	|   ARROW_PATH_L! node ARROW_PATH_R!			// Deprecated
 	|	kwHAS! item
 	;
 
@@ -291,7 +291,7 @@ anonnode[AST label]
 		{ endFormula(cxt) ; currentFormula = oldCxt ;}
 	  RCURLY!
 
-		// DAML list syntax
+		// List syntax
 	| LPAREN!
 		damllist[label]
 	  RPAREN!
@@ -336,9 +336,10 @@ literalModifier1
 	|
 	;
 
-datatype: node ;
-	// Maybe should be tighter here:
-	// qname | uriref | variable | literal
+datatype:
+	// Allowing a literal here is merely symetry.
+	// We allow literals everywhere else.
+	qname | uriref | variableNoDT | literal ;
 
 // Restricted case for nsprefix.
 nsprefix: ns:QNAME { ns.getText().endsWith(":") }? ;
@@ -355,11 +356,15 @@ qname: QNAME ; //| QNAME_ANON ;
 
 uriref: URIREF ;
 
-//variable: UVAR ;
+// There are two types of variable: one where it can
+// be followed by a datatype and one where it can't
+// The only place where it can't is in a datatype slot itself
+//  i.e. "111"^^?x
+
 variableDT:
 	v:UVAR (DATATYPE dt:datatype )? { #variableDT = #(#[UVAR, v.getText()], dt) ; } ;
 
-variable:
+variableNoDT:
 	v:UVAR ;
 
 
@@ -384,12 +389,13 @@ options {
 QNAME_OR_KEYWORD_OR_NAME_OP
 	// Order of syntactic predicates matters here
 
-		// A qname (including the prefix used in @prefix
+	// A qname (including the prefix used in @prefix)
+	// and bNodes, using "_:"
 
 	:	(NSNAME COLON LNAME)=>	NSNAME COLON LNAME	{ $setType(QNAME) ; }
 	|	(COLON LNAME)=>			COLON LNAME			{ $setType(QNAME) ; }
-	|	(NSNAME COLON )=>	NSNAME COLON			{ $setType(QNAME) ; } 
-	|	(COLON)=>			COLON      				{ $setType(QNAME) ; } 
+	|	(NSNAME COLON )=>	    NSNAME COLON		{ $setType(QNAME) ; } 
+	|	(COLON)=>			    COLON      			{ $setType(QNAME) ; } 
 
 		// Named anon node
 	|	(COLON '-') =>	":-"						{ $setType(NAME_OP) ; }
@@ -410,14 +416,15 @@ URI_OR_IMPLIES
 		| (ARROW_MEANS) =>  ARROW_MEANS { $setType(ARROW_MEANS) ; }
 		| URIREF  { $setType(URIREF) ; }
 		;
-
-
+		
+// Needs to be protected ... or the antlr compiler loops ...
 protected
 URIREF:
 	'<'! (options{greedy=false;}: ~('\n'|'\r'))* '>'! ;
 
 // RDFC2396 + chars for limited IRI compatibility 
 // processing to check URIref syntax and chanracter sets
+
 protected
 URICHAR:
 	ALPHANUMERIC |
@@ -435,6 +442,9 @@ URICHAR:
 
 UVAR: QUESTION (ALPHANUMERIC)+ ;
 
+
+// To cases of @word: dire3ctives (@prefix) and language tags.
+// Can't have a language of "prefix".
 
 AT_WORD
 	: (AT "prefix") => AT "prefix" { $setType(AT_PREFIX) ; }
@@ -461,21 +471,22 @@ COMMA		:	','	;
 PATH		:	'!' ;
 RPATH		:	'^' ;
 
-DATATYPE		:	"^^"	;
+DATATYPE	:	"^^"	;
 
 protected
 NAME_IT		:	":-"	;
 
 protected
 QUESTION	:	'?'	;
+
 ARROW_R		:	"=>"	;
 protected
 ARROW_L		:	"<="	;
 protected
 ARROW_MEANS	:	"<=>"	;
 
-ARROW_P_L	:	">-"	;
-ARROW_P_R	:	"->"	;
+ARROW_PATH_L	:	">-"	;
+ARROW_PATH_R	:	"->"	;
 
 EQUAL		:	"="	;
 
@@ -521,9 +532,8 @@ ALPHANUMERIC: (ALPHA|'0'..'9') ;
 protected
 NON_ANC:	~('A'..'Z'|'a'..'z'|'0'..'9'|':') ;
 
-// Namespace prefix name
+// Namespace prefix name: include bNode ids.
 protected
-//NSNAME: ALPHA (ALPHANUMERIC)* ;
 NSNAME: (ALPHANUMERIC|'_'|'-')+ ;
 
 protected
@@ -536,21 +546,19 @@ LNAME: (ALPHANUMERIC|'_') (ALPHANUMERIC|'_'|'-')* ;
 
 protected
 STRING1
-	: (QUOTE3S)=>
-		// Needs k=3: if k less a lexer is generated but fails : see antlr doc
-		QUOTE3S!
-		(options{greedy=false;}: (NL)=>NL | ESCAPE | ~('\\'))*
-		QUOTE3S!
-	| 
-		'\''! (options{greedy=false;}: ESCAPE  | ~'\\')* '\''! ;
+    : (QUOTE3S)=>
+      // Needs k=3: if k less a lexer is generated but fails : see antlr doc
+	  QUOTE3S!
+	  (options{greedy=false;}: (NL)=>NL | ESCAPE | ~('\\'))*
+	  QUOTE3S!
+	| '\''! (options{greedy=false;}: ESCAPE  | ~'\\')* '\''! ;
 
 protected
 STRING2
 	: (QUOTE3D)=>
-		QUOTE3D!
-		//(options{greedy=false;}: ~('\r'|'\n') | NL )*
-		(options{greedy=false;}: (NL)=>NL | ESCAPE | ~('\\'))*
-		QUOTE3D!
+	  QUOTE3D!
+	  (options{greedy=false;}: (NL)=>NL | ESCAPE | ~('\\'))*
+	  QUOTE3D!
 	| '"'! (options{greedy=false;}: ESCAPE  | ~'\\')* '"'!
 	;
 
@@ -587,7 +595,7 @@ ESC_CHAR:
 		; 
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2002
+ *  (c) Copyright Hewlett-Packard Company 2002, 2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

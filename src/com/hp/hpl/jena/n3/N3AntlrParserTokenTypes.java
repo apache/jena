@@ -29,8 +29,8 @@ public interface N3AntlrParserTokenTypes {
 	int EQUAL = 23;
 	int ARROW_R = 24;
 	int ARROW_L = 25;
-	int ARROW_P_L = 26;
-	int ARROW_P_R = 27;
+	int ARROW_PATH_L = 26;
+	int ARROW_PATH_R = 27;
 	int LBRACK = 28;
 	int RBRACK = 29;
 	int LCURLY = 30;

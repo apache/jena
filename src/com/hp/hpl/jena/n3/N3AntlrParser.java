@@ -134,7 +134,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				startDocument() ;
 			}
 			{
-			_loop3:
+			_loop353:
 			do {
 				switch ( LA(1)) {
 				case AT_PREFIX:
@@ -156,7 +156,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 				default:
 				{
-					break _loop3;
+					break _loop353;
 				}
 				}
 			} while (true);
@@ -326,7 +326,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 		case EQUAL:
 		case ARROW_R:
 		case ARROW_L:
-		case ARROW_P_L:
+		case ARROW_PATH_L:
 		case LBRACK:
 		case LCURLY:
 		case LPAREN:
@@ -461,7 +461,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 		n_AST = (AST)returnAST;
 		astFactory.addASTChild(currentAST, returnAST);
 		{
-		_loop21:
+		_loop371:
 		do {
 			switch ( LA(1)) {
 			case PATH:
@@ -496,7 +496,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 			}
 			default:
 			{
-				break _loop21;
+				break _loop371;
 			}
 			}
 		} while (true);
@@ -606,7 +606,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 		case EQUAL:
 		case ARROW_R:
 		case ARROW_L:
-		case ARROW_P_L:
+		case ARROW_PATH_L:
 		case LBRACK:
 		case LCURLY:
 		case LPAREN:
@@ -694,12 +694,12 @@ public N3AntlrParser(ParserSharedInputState state) {
 			verb_AST = (AST)currentAST.root;
 			break;
 		}
-		case ARROW_P_L:
+		case ARROW_PATH_L:
 		{
-			match(ARROW_P_L);
+			match(ARROW_PATH_L);
 			node();
 			astFactory.addASTChild(currentAST, returnAST);
-			match(ARROW_P_R);
+			match(ARROW_PATH_R);
 			verb_AST = (AST)currentAST.root;
 			break;
 		}
@@ -861,7 +861,7 @@ public N3AntlrParser(ParserSharedInputState state) {
 		}
 		case UVAR:
 		{
-			variable();
+			variableDT();
 			astFactory.addASTChild(currentAST, returnAST);
 			node_AST = (AST)currentAST.root;
 			break;
@@ -939,20 +939,78 @@ public N3AntlrParser(ParserSharedInputState state) {
 		returnAST = kwTHIS_AST;
 	}
 	
-	public final void variable() throws RecognitionException, TokenStreamException {
+	public final void variableDT() throws RecognitionException, TokenStreamException {
 		
 		returnAST = null;
 		ASTPair currentAST = new ASTPair();
-		AST variable_AST = null;
+		AST variableDT_AST = null;
 		Token  v = null;
 		AST v_AST = null;
+		AST dt_AST = null;
 		
 		v = LT(1);
 		v_AST = (AST)astFactory.create(v);
 		astFactory.addASTChild(currentAST, v_AST);
 		match(UVAR);
-		variable_AST = (AST)currentAST.root;
-		returnAST = variable_AST;
+		{
+		switch ( LA(1)) {
+		case DATATYPE:
+		{
+			AST tmp25_AST = null;
+			tmp25_AST = (AST)astFactory.create(LT(1));
+			astFactory.addASTChild(currentAST, tmp25_AST);
+			match(DATATYPE);
+			datatype();
+			dt_AST = (AST)returnAST;
+			astFactory.addASTChild(currentAST, returnAST);
+			break;
+		}
+		case EOF:
+		case QNAME:
+		case NAME_OP:
+		case KW_THIS:
+		case KW_OF:
+		case KW_HAS:
+		case KW_A:
+		case KW_IS:
+		case STRING:
+		case SEP:
+		case SEMI:
+		case COMMA:
+		case PATH:
+		case RPATH:
+		case EQUAL:
+		case ARROW_R:
+		case ARROW_L:
+		case ARROW_PATH_L:
+		case ARROW_PATH_R:
+		case LBRACK:
+		case RBRACK:
+		case LCURLY:
+		case RCURLY:
+		case LPAREN:
+		case RPAREN:
+		case URIREF:
+		case UVAR:
+		{
+			break;
+		}
+		default:
+		{
+			throw new NoViableAltException(LT(1), getFilename());
+		}
+		}
+		}
+		if ( inputState.guessing==0 ) {
+			variableDT_AST = (AST)currentAST.root;
+			variableDT_AST = (AST)astFactory.make( (new ASTArray(2)).add((AST)astFactory.create(UVAR,v.getText())).add(dt_AST)) ;
+			currentAST.root = variableDT_AST;
+			currentAST.child = variableDT_AST!=null &&variableDT_AST.getFirstChild()!=null ?
+				variableDT_AST.getFirstChild() : variableDT_AST;
+			currentAST.advanceChildToEnd();
+		}
+		variableDT_AST = (AST)currentAST.root;
+		returnAST = variableDT_AST;
 	}
 	
 	public final void kwOF() throws RecognitionException, TokenStreamException {
@@ -961,8 +1019,8 @@ public N3AntlrParser(ParserSharedInputState state) {
 		ASTPair currentAST = new ASTPair();
 		AST kwOF_AST = null;
 		
-		AST tmp25_AST = null;
-		tmp25_AST = (AST)astFactory.create(LT(1));
+		AST tmp26_AST = null;
+		tmp26_AST = (AST)astFactory.create(LT(1));
 		match(KW_OF);
 		returnAST = kwOF_AST;
 	}
@@ -973,8 +1031,8 @@ public N3AntlrParser(ParserSharedInputState state) {
 		ASTPair currentAST = new ASTPair();
 		AST kwHAS_AST = null;
 		
-		AST tmp26_AST = null;
-		tmp26_AST = (AST)astFactory.create(LT(1));
+		AST tmp27_AST = null;
+		tmp27_AST = (AST)astFactory.create(LT(1));
 		match(KW_HAS);
 		returnAST = kwHAS_AST;
 	}
@@ -985,9 +1043,9 @@ public N3AntlrParser(ParserSharedInputState state) {
 		ASTPair currentAST = new ASTPair();
 		AST kwA_AST = null;
 		
-		AST tmp27_AST = null;
-		tmp27_AST = (AST)astFactory.create(LT(1));
-		astFactory.addASTChild(currentAST, tmp27_AST);
+		AST tmp28_AST = null;
+		tmp28_AST = (AST)astFactory.create(LT(1));
+		astFactory.addASTChild(currentAST, tmp28_AST);
 		match(KW_A);
 		kwA_AST = (AST)currentAST.root;
 		returnAST = kwA_AST;
@@ -999,8 +1057,8 @@ public N3AntlrParser(ParserSharedInputState state) {
 		ASTPair currentAST = new ASTPair();
 		AST kwIS_AST = null;
 		
-		AST tmp28_AST = null;
-		tmp28_AST = (AST)astFactory.create(LT(1));
+		AST tmp29_AST = null;
+		tmp29_AST = (AST)astFactory.create(LT(1));
 		match(KW_IS);
 		returnAST = kwIS_AST;
 	}
@@ -1094,10 +1152,10 @@ public N3AntlrParser(ParserSharedInputState state) {
 		AST literalModifier1_AST = null;
 		AST dt_AST = null;
 		
-		boolean synPredMatched37 = false;
+		boolean synPredMatched387 = false;
 		if (((LA(1)==AT_LANG))) {
-			int _m37 = mark();
-			synPredMatched37 = true;
+			int _m387 = mark();
+			synPredMatched387 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1105,23 +1163,23 @@ public N3AntlrParser(ParserSharedInputState state) {
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched37 = false;
+				synPredMatched387 = false;
 			}
-			rewind(_m37);
+			rewind(_m387);
 			inputState.guessing--;
 		}
-		if ( synPredMatched37 ) {
-			AST tmp29_AST = null;
-			tmp29_AST = (AST)astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp29_AST);
+		if ( synPredMatched387 ) {
+			AST tmp30_AST = null;
+			tmp30_AST = (AST)astFactory.create(LT(1));
+			astFactory.addASTChild(currentAST, tmp30_AST);
 			match(AT_LANG);
 			literalModifier1_AST = (AST)currentAST.root;
 		}
 		else {
-			boolean synPredMatched39 = false;
+			boolean synPredMatched389 = false;
 			if (((LA(1)==DATATYPE))) {
-				int _m39 = mark();
-				synPredMatched39 = true;
+				int _m389 = mark();
+				synPredMatched389 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -1129,22 +1187,22 @@ public N3AntlrParser(ParserSharedInputState state) {
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched39 = false;
+					synPredMatched389 = false;
 				}
-				rewind(_m39);
+				rewind(_m389);
 				inputState.guessing--;
 			}
-			if ( synPredMatched39 ) {
-				AST tmp30_AST = null;
-				tmp30_AST = (AST)astFactory.create(LT(1));
-				astFactory.addASTChild(currentAST, tmp30_AST);
+			if ( synPredMatched389 ) {
+				AST tmp31_AST = null;
+				tmp31_AST = (AST)astFactory.create(LT(1));
+				astFactory.addASTChild(currentAST, tmp31_AST);
 				match(DATATYPE);
 				datatype();
 				dt_AST = (AST)returnAST;
 				astFactory.addASTChild(currentAST, returnAST);
 				if ( inputState.guessing==0 ) {
 					literalModifier1_AST = (AST)currentAST.root;
-					literalModifier1_AST = (AST)astFactory.make( (new ASTArray(2)).add((AST)astFactory.create(tmp30_AST)).add(dt_AST)) ;
+					literalModifier1_AST = (AST)astFactory.make( (new ASTArray(2)).add((AST)astFactory.create(tmp31_AST)).add(dt_AST)) ;
 					currentAST.root = literalModifier1_AST;
 					currentAST.child = literalModifier1_AST!=null &&literalModifier1_AST.getFirstChild()!=null ?
 						literalModifier1_AST.getFirstChild() : literalModifier1_AST;
@@ -1168,40 +1226,33 @@ public N3AntlrParser(ParserSharedInputState state) {
 		ASTPair currentAST = new ASTPair();
 		AST datatype_AST = null;
 		
-		node();
-		astFactory.addASTChild(currentAST, returnAST);
-		datatype_AST = (AST)currentAST.root;
-		returnAST = datatype_AST;
-	}
-	
-	public final void variableDT() throws RecognitionException, TokenStreamException {
-		
-		returnAST = null;
-		ASTPair currentAST = new ASTPair();
-		AST variableDT_AST = null;
-		Token  v = null;
-		AST v_AST = null;
-		AST dt_AST = null;
-		
-		v = LT(1);
-		v_AST = (AST)astFactory.create(v);
-		astFactory.addASTChild(currentAST, v_AST);
-		match(UVAR);
-		{
 		switch ( LA(1)) {
-		case DATATYPE:
+		case QNAME:
 		{
-			AST tmp31_AST = null;
-			tmp31_AST = (AST)astFactory.create(LT(1));
-			astFactory.addASTChild(currentAST, tmp31_AST);
-			match(DATATYPE);
-			datatype();
-			dt_AST = (AST)returnAST;
+			qname();
 			astFactory.addASTChild(currentAST, returnAST);
+			datatype_AST = (AST)currentAST.root;
 			break;
 		}
-		case EOF:
+		case URIREF:
 		{
+			uriref();
+			astFactory.addASTChild(currentAST, returnAST);
+			datatype_AST = (AST)currentAST.root;
+			break;
+		}
+		case UVAR:
+		{
+			variableNoDT();
+			astFactory.addASTChild(currentAST, returnAST);
+			datatype_AST = (AST)currentAST.root;
+			break;
+		}
+		case STRING:
+		{
+			literal();
+			astFactory.addASTChild(currentAST, returnAST);
+			datatype_AST = (AST)currentAST.root;
 			break;
 		}
 		default:
@@ -1209,17 +1260,23 @@ public N3AntlrParser(ParserSharedInputState state) {
 			throw new NoViableAltException(LT(1), getFilename());
 		}
 		}
-		}
-		if ( inputState.guessing==0 ) {
-			variableDT_AST = (AST)currentAST.root;
-			variableDT_AST = (AST)astFactory.make( (new ASTArray(2)).add((AST)astFactory.create(UVAR,v.getText())).add(dt_AST)) ;
-			currentAST.root = variableDT_AST;
-			currentAST.child = variableDT_AST!=null &&variableDT_AST.getFirstChild()!=null ?
-				variableDT_AST.getFirstChild() : variableDT_AST;
-			currentAST.advanceChildToEnd();
-		}
-		variableDT_AST = (AST)currentAST.root;
-		returnAST = variableDT_AST;
+		returnAST = datatype_AST;
+	}
+	
+	public final void variableNoDT() throws RecognitionException, TokenStreamException {
+		
+		returnAST = null;
+		ASTPair currentAST = new ASTPair();
+		AST variableNoDT_AST = null;
+		Token  v = null;
+		AST v_AST = null;
+		
+		v = LT(1);
+		v_AST = (AST)astFactory.create(v);
+		astFactory.addASTChild(currentAST, v_AST);
+		match(UVAR);
+		variableNoDT_AST = (AST)currentAST.root;
+		returnAST = variableNoDT_AST;
 	}
 	
 	
@@ -1250,8 +1307,8 @@ public N3AntlrParser(ParserSharedInputState state) {
 		"EQUAL",
 		"ARROW_R",
 		"ARROW_L",
-		"ARROW_P_L",
-		"ARROW_P_R",
+		"ARROW_PATH_L",
+		"ARROW_PATH_R",
 		"LBRACK",
 		"RBRACK",
 		"LCURLY",

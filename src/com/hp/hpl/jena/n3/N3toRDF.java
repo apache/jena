@@ -14,7 +14,7 @@ import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.3 2003-01-28 18:23:56 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -54,11 +54,11 @@ public class N3toRDF implements N3ParserEventHandler
 	public void endDocument()   { }
 	
 	// When Jena exceptions are runtime, we will change this
-	public void error(Exception ex, String message) 		{ throw new RuntimeException(message) ; }
+	public void error(Exception ex, String message) 		{ throw new N3Exception(message) ; }
 	public void error(String message) 						{ error(null, message) ; }
-	public void warning(Exception ex, String message)		{ throw new RuntimeException(message) ; }
+	public void warning(Exception ex, String message)		{ throw new N3Exception(message) ; }
 	public void warning(String message)						{ warning(null, message) ; }
-	public void deprecated(Exception ex, String message)	{ throw new RuntimeException(message) ; }
+	public void deprecated(Exception ex, String message)	{ throw new N3Exception(message) ; }
 	public void deprecated(String message)					{ deprecated(null, message) ; }
 	
 	public void startFormula(int line, String context)
@@ -112,8 +112,8 @@ public class N3toRDF implements N3ParserEventHandler
 		if ( context != null )
 			error("Line "+line+": N3toRDF: All statement are asserted - no formulae") ;
 		
-		try
-		{
+//		try
+//		{
 			// Converting N3 to RDF:
 			// subject: must be a URIref or a bNode name
 			// property: remove sugaring and then must be a URIref
@@ -184,12 +184,11 @@ public class N3toRDF implements N3ParserEventHandler
 			if ( VERBOSE )
 				System.out.println("Statement: "+stmt) ;
 			model.add(stmt) ;
-			
-		}
-		catch (RDFException rdfEx)
-		{
-			error("Line "+line+": RDFException: " + rdfEx);
-		}
+//		}
+//		catch (RDFException rdfEx)
+//		{
+//			error("Line "+line+": RDFException: " + rdfEx);
+//		}
 	}
 	
 	private Map bNodeMap = new HashMap() ;
@@ -278,8 +277,13 @@ public class N3toRDF implements N3ParserEventHandler
 				if ( ! bNodeMap.containsKey(text) )
 					bNodeMap.put(text, model.createResource()) ;
 				return (Resource)bNodeMap.get(text) ;
+                
+            case N3Parser.UVAR:
+                error("Line "+line+": N3toRDF: Can't map variables to RDF: "+text) ;
+                break ; 
 			default:
 				error("Line "+line+": N3toRDF: Can't map to a resource or literal: "+AntlrUtils.ast(thing)) ;
+                break ;
 		}
 		return null ;
 	}

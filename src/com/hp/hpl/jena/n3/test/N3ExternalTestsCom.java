@@ -15,12 +15,16 @@ import com.hp.hpl.jena.util.tuple.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.2 2003-01-27 14:29:27 andy_seaborne Exp $
+ * @version 	$Id: N3ExternalTestsCom.java,v 1.3 2003-01-28 18:24:51 andy_seaborne Exp $
  */
 public abstract class N3ExternalTestsCom extends TestSuite
 {
 	// List of places
-	static protected final String dirbases[] = {".", "Tests", "modules/rdf/regression/testN3"} ;
+	static protected final String dirbases[] = {".", "testN3",
+                                                // Jena2: correct location
+                                                "testing/testN3",
+                                                // Jena1: correct location
+                                                "modules/rdf/regression/testN3"} ;
 	
 	// Record where we find the file in the constructor
 	protected String basedir = null ;

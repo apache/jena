@@ -11,7 +11,7 @@ import java.io.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3InternalTests.java,v 1.2 2003-01-27 14:29:27 andy_seaborne Exp $
+ * @version 	$Id: N3InternalTests.java,v 1.3 2003-01-28 18:24:52 andy_seaborne Exp $
  */
 public class N3InternalTests extends TestSuite
 {
@@ -174,9 +174,9 @@ public class N3InternalTests extends TestSuite
         addTest(new Test("a:subj a:prop '<tag>text</tag>'@fr^^rdf:XMLLiteral .")) ;
         addTest(new Test("a:subj a:prop '<tag>text</tag>'^^rdf:XMLLiteral@fr .")) ;
 
-        //addTest(new Test("a:subj a:prop ?x^^xsd:integer .")) ;
-        //addTest(new Test("a:subj a:prop '123'^^?x .")) ;
-        //addTest(new Test("a:subj a:prop ?x^^?y .")) ;
+        addTest(new Test("a:subj a:prop ?x^^xsd:integer .")) ;
+        addTest(new Test("a:subj a:prop '123'^^?x .")) ;
+        addTest(new Test("a:subj a:prop ?x^^?y .")) ;
 	}
 	
 	class Test extends TestCase

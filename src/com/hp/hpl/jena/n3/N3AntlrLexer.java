@@ -136,7 +136,7 @@ tryAgain:
 				}
 				case '>':
 				{
-					mARROW_P_L(true);
+					mARROW_PATH_L(true);
 					theRetToken=_returnToken;
 					break;
 				}
@@ -167,7 +167,7 @@ tryAgain:
 						theRetToken=_returnToken;
 					}
 					else if ((LA(1)=='-') && (LA(2)=='>')) {
-						mARROW_P_R(true);
+						mARROW_PATH_R(true);
 						theRetToken=_returnToken;
 					}
 					else if ((_tokenSet_1.member(LA(1))) && (true)) {
@@ -217,10 +217,10 @@ tryAgain:
 		_ttype = QNAME_OR_KEYWORD_OR_NAME_OP;
 		int _saveIndex;
 		
-		boolean synPredMatched49 = false;
+		boolean synPredMatched399 = false;
 		if (((_tokenSet_2.member(LA(1))) && (_tokenSet_1.member(LA(2))) && (_tokenSet_1.member(LA(3))))) {
-			int _m49 = mark();
-			synPredMatched49 = true;
+			int _m399 = mark();
+			synPredMatched399 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -230,12 +230,12 @@ tryAgain:
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched49 = false;
+				synPredMatched399 = false;
 			}
-			rewind(_m49);
+			rewind(_m399);
 			inputState.guessing--;
 		}
-		if ( synPredMatched49 ) {
+		if ( synPredMatched399 ) {
 			mNSNAME(false);
 			mCOLON(false);
 			mLNAME(false);
@@ -244,10 +244,10 @@ tryAgain:
 			}
 		}
 		else {
-			boolean synPredMatched59 = false;
+			boolean synPredMatched409 = false;
 			if (((LA(1)=='h') && (LA(2)=='a') && (LA(3)=='s'))) {
-				int _m59 = mark();
-				synPredMatched59 = true;
+				int _m409 = mark();
+				synPredMatched409 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -256,22 +256,22 @@ tryAgain:
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched59 = false;
+					synPredMatched409 = false;
 				}
-				rewind(_m59);
+				rewind(_m409);
 				inputState.guessing--;
 			}
-			if ( synPredMatched59 ) {
+			if ( synPredMatched409 ) {
 				match("has");
 				if ( inputState.guessing==0 ) {
 					_ttype = KW_HAS ;
 				}
 			}
 			else {
-				boolean synPredMatched63 = false;
+				boolean synPredMatched413 = false;
 				if (((LA(1)=='t') && (LA(2)=='h') && (LA(3)=='i'))) {
-					int _m63 = mark();
-					synPredMatched63 = true;
+					int _m413 = mark();
+					synPredMatched413 = true;
 					inputState.guessing++;
 					try {
 						{
@@ -280,22 +280,22 @@ tryAgain:
 						}
 					}
 					catch (RecognitionException pe) {
-						synPredMatched63 = false;
+						synPredMatched413 = false;
 					}
-					rewind(_m63);
+					rewind(_m413);
 					inputState.guessing--;
 				}
-				if ( synPredMatched63 ) {
+				if ( synPredMatched413 ) {
 					match("this");
 					if ( inputState.guessing==0 ) {
 						_ttype = KW_THIS ;
 					}
 				}
 				else {
-					boolean synPredMatched51 = false;
+					boolean synPredMatched401 = false;
 					if (((LA(1)==':') && (_tokenSet_3.member(LA(2))))) {
-						int _m51 = mark();
-						synPredMatched51 = true;
+						int _m401 = mark();
+						synPredMatched401 = true;
 						inputState.guessing++;
 						try {
 							{
@@ -304,12 +304,12 @@ tryAgain:
 							}
 						}
 						catch (RecognitionException pe) {
-							synPredMatched51 = false;
+							synPredMatched401 = false;
 						}
-						rewind(_m51);
+						rewind(_m401);
 						inputState.guessing--;
 					}
-					if ( synPredMatched51 ) {
+					if ( synPredMatched401 ) {
 						mCOLON(false);
 						mLNAME(false);
 						if ( inputState.guessing==0 ) {
@@ -317,10 +317,10 @@ tryAgain:
 						}
 					}
 					else {
-						boolean synPredMatched53 = false;
+						boolean synPredMatched403 = false;
 						if (((_tokenSet_2.member(LA(1))) && (_tokenSet_1.member(LA(2))) && (true))) {
-							int _m53 = mark();
-							synPredMatched53 = true;
+							int _m403 = mark();
+							synPredMatched403 = true;
 							inputState.guessing++;
 							try {
 								{
@@ -329,12 +329,12 @@ tryAgain:
 								}
 							}
 							catch (RecognitionException pe) {
-								synPredMatched53 = false;
+								synPredMatched403 = false;
 							}
-							rewind(_m53);
+							rewind(_m403);
 							inputState.guessing--;
 						}
-						if ( synPredMatched53 ) {
+						if ( synPredMatched403 ) {
 							mNSNAME(false);
 							mCOLON(false);
 							if ( inputState.guessing==0 ) {
@@ -342,10 +342,10 @@ tryAgain:
 							}
 						}
 						else {
-							boolean synPredMatched57 = false;
+							boolean synPredMatched407 = false;
 							if (((LA(1)==':') && (LA(2)=='-'))) {
-								int _m57 = mark();
-								synPredMatched57 = true;
+								int _m407 = mark();
+								synPredMatched407 = true;
 								inputState.guessing++;
 								try {
 									{
@@ -354,22 +354,22 @@ tryAgain:
 									}
 								}
 								catch (RecognitionException pe) {
-									synPredMatched57 = false;
+									synPredMatched407 = false;
 								}
-								rewind(_m57);
+								rewind(_m407);
 								inputState.guessing--;
 							}
-							if ( synPredMatched57 ) {
+							if ( synPredMatched407 ) {
 								match(":-");
 								if ( inputState.guessing==0 ) {
 									_ttype = NAME_OP ;
 								}
 							}
 							else {
-								boolean synPredMatched61 = false;
+								boolean synPredMatched411 = false;
 								if (((LA(1)=='o') && (LA(2)=='f') && (true))) {
-									int _m61 = mark();
-									synPredMatched61 = true;
+									int _m411 = mark();
+									synPredMatched411 = true;
 									inputState.guessing++;
 									try {
 										{
@@ -378,22 +378,22 @@ tryAgain:
 										}
 									}
 									catch (RecognitionException pe) {
-										synPredMatched61 = false;
+										synPredMatched411 = false;
 									}
-									rewind(_m61);
+									rewind(_m411);
 									inputState.guessing--;
 								}
-								if ( synPredMatched61 ) {
+								if ( synPredMatched411 ) {
 									match("of");
 									if ( inputState.guessing==0 ) {
 										_ttype = KW_OF ;
 									}
 								}
 								else {
-									boolean synPredMatched67 = false;
+									boolean synPredMatched417 = false;
 									if (((LA(1)=='i') && (LA(2)=='s') && (true))) {
-										int _m67 = mark();
-										synPredMatched67 = true;
+										int _m417 = mark();
+										synPredMatched417 = true;
 										inputState.guessing++;
 										try {
 											{
@@ -402,22 +402,22 @@ tryAgain:
 											}
 										}
 										catch (RecognitionException pe) {
-											synPredMatched67 = false;
+											synPredMatched417 = false;
 										}
-										rewind(_m67);
+										rewind(_m417);
 										inputState.guessing--;
 									}
-									if ( synPredMatched67 ) {
+									if ( synPredMatched417 ) {
 										match("is");
 										if ( inputState.guessing==0 ) {
 											_ttype = KW_IS ;
 										}
 									}
 									else {
-										boolean synPredMatched55 = false;
+										boolean synPredMatched405 = false;
 										if (((LA(1)==':') && (true))) {
-											int _m55 = mark();
-											synPredMatched55 = true;
+											int _m405 = mark();
+											synPredMatched405 = true;
 											inputState.guessing++;
 											try {
 												{
@@ -425,22 +425,22 @@ tryAgain:
 												}
 											}
 											catch (RecognitionException pe) {
-												synPredMatched55 = false;
+												synPredMatched405 = false;
 											}
-											rewind(_m55);
+											rewind(_m405);
 											inputState.guessing--;
 										}
-										if ( synPredMatched55 ) {
+										if ( synPredMatched405 ) {
 											mCOLON(false);
 											if ( inputState.guessing==0 ) {
 												_ttype = QNAME ;
 											}
 										}
 										else {
-											boolean synPredMatched65 = false;
+											boolean synPredMatched415 = false;
 											if (((LA(1)=='a') && (true))) {
-												int _m65 = mark();
-												synPredMatched65 = true;
+												int _m415 = mark();
+												synPredMatched415 = true;
 												inputState.guessing++;
 												try {
 													{
@@ -449,12 +449,12 @@ tryAgain:
 													}
 												}
 												catch (RecognitionException pe) {
-													synPredMatched65 = false;
+													synPredMatched415 = false;
 												}
-												rewind(_m65);
+												rewind(_m415);
 												inputState.guessing--;
 											}
-											if ( synPredMatched65 ) {
+											if ( synPredMatched415 ) {
 												match("a");
 												if ( inputState.guessing==0 ) {
 													_ttype = KW_A ;
@@ -477,8 +477,8 @@ tryAgain:
 		int _saveIndex;
 		
 		{
-		int _cnt142=0;
-		_loop142:
+		int _cnt492=0;
+		_loop492:
 		do {
 			switch ( LA(1)) {
 			case '0':  case '1':  case '2':  case '3':
@@ -513,10 +513,10 @@ tryAgain:
 			}
 			default:
 			{
-				if ( _cnt142>=1 ) { break _loop142; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
+				if ( _cnt492>=1 ) { break _loop492; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
 			}
 			}
-			_cnt142++;
+			_cnt492++;
 		} while (true);
 		}
 		if ( _createToken && _token==null && _ttype!=Token.SKIP ) {
@@ -578,7 +578,7 @@ tryAgain:
 		}
 		}
 		{
-		_loop146:
+		_loop496:
 		do {
 			switch ( LA(1)) {
 			case '0':  case '1':  case '2':  case '3':
@@ -613,7 +613,7 @@ tryAgain:
 			}
 			default:
 			{
-				break _loop146;
+				break _loop496;
 			}
 			}
 		} while (true);
@@ -645,10 +645,10 @@ tryAgain:
 		_ttype = URI_OR_IMPLIES;
 		int _saveIndex;
 		
-		boolean synPredMatched72 = false;
+		boolean synPredMatched422 = false;
 		if (((LA(1)=='<') && (LA(2)=='=') && (LA(3)=='>'))) {
-			int _m72 = mark();
-			synPredMatched72 = true;
+			int _m422 = mark();
+			synPredMatched422 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -656,22 +656,22 @@ tryAgain:
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched72 = false;
+				synPredMatched422 = false;
 			}
-			rewind(_m72);
+			rewind(_m422);
 			inputState.guessing--;
 		}
-		if ( synPredMatched72 ) {
+		if ( synPredMatched422 ) {
 			mARROW_MEANS(false);
 			if ( inputState.guessing==0 ) {
 				_ttype = ARROW_MEANS ;
 			}
 		}
 		else {
-			boolean synPredMatched70 = false;
+			boolean synPredMatched420 = false;
 			if (((LA(1)=='<') && (LA(2)=='=') && (true))) {
-				int _m70 = mark();
-				synPredMatched70 = true;
+				int _m420 = mark();
+				synPredMatched420 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -679,12 +679,12 @@ tryAgain:
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched70 = false;
+					synPredMatched420 = false;
 				}
-				rewind(_m70);
+				rewind(_m420);
 				inputState.guessing--;
 			}
-			if ( synPredMatched70 ) {
+			if ( synPredMatched420 ) {
 				mARROW_L(false);
 				if ( inputState.guessing==0 ) {
 					_ttype = ARROW_L ;
@@ -742,17 +742,17 @@ tryAgain:
 		match('<');
 		text.setLength(_saveIndex);
 		{
-		_loop76:
+		_loop426:
 		do {
 			// nongreedy exit test
-			if ((LA(1)=='>') && (true)) break _loop76;
+			if ((LA(1)=='>') && (true)) break _loop426;
 			if ((_tokenSet_5.member(LA(1))) && (_tokenSet_5.member(LA(2)))) {
 				{
 				match(_tokenSet_5);
 				}
 			}
 			else {
-				break _loop76;
+				break _loop426;
 			}
 			
 		} while (true);
@@ -1011,17 +1011,17 @@ tryAgain:
 		
 		mQUESTION(false);
 		{
-		int _cnt80=0;
-		_loop80:
+		int _cnt430=0;
+		_loop430:
 		do {
 			if ((_tokenSet_6.member(LA(1)))) {
 				mALPHANUMERIC(false);
 			}
 			else {
-				if ( _cnt80>=1 ) { break _loop80; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
+				if ( _cnt430>=1 ) { break _loop430; } else {throw new NoViableAltForCharException((char)LA(1), getFilename(), getLine(), getColumn());}
 			}
 			
-			_cnt80++;
+			_cnt430++;
 		} while (true);
 		}
 		if ( _createToken && _token==null && _ttype!=Token.SKIP ) {
@@ -1050,10 +1050,10 @@ tryAgain:
 		int _saveIndex;
 		Token a=null;
 		
-		boolean synPredMatched83 = false;
+		boolean synPredMatched433 = false;
 		if (((LA(1)=='@') && (LA(2)=='p') && (LA(3)=='r'))) {
-			int _m83 = mark();
-			synPredMatched83 = true;
+			int _m433 = mark();
+			synPredMatched433 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1062,12 +1062,12 @@ tryAgain:
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched83 = false;
+				synPredMatched433 = false;
 			}
-			rewind(_m83);
+			rewind(_m433);
 			inputState.guessing--;
 		}
-		if ( synPredMatched83 ) {
+		if ( synPredMatched433 ) {
 			mAT(false);
 			match("prefix");
 			if ( inputState.guessing==0 ) {
@@ -1075,10 +1075,10 @@ tryAgain:
 			}
 		}
 		else {
-			boolean synPredMatched86 = false;
+			boolean synPredMatched436 = false;
 			if (((LA(1)=='@') && (_tokenSet_0.member(LA(2))) && (true))) {
-				int _m86 = mark();
-				synPredMatched86 = true;
+				int _m436 = mark();
+				synPredMatched436 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -1089,12 +1089,12 @@ tryAgain:
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched86 = false;
+					synPredMatched436 = false;
 				}
-				rewind(_m86);
+				rewind(_m436);
 				inputState.guessing--;
 			}
-			if ( synPredMatched86 ) {
+			if ( synPredMatched436 ) {
 				mAT(false);
 				{
 				int _cnt_a=0;
@@ -1114,13 +1114,13 @@ tryAgain:
 				if ((LA(1)=='-')) {
 					match("-");
 					{
-					_loop91:
+					_loop441:
 					do {
 						if ((_tokenSet_0.member(LA(1)))) {
 							mALPHA(false);
 						}
 						else {
-							break _loop91;
+							break _loop441;
 						}
 						
 					} while (true);
@@ -1237,10 +1237,10 @@ tryAgain:
 		_ttype = STRING1;
 		int _saveIndex;
 		
-		boolean synPredMatched149 = false;
+		boolean synPredMatched499 = false;
 		if (((LA(1)=='\'') && (LA(2)=='\'') && (LA(3)=='\''))) {
-			int _m149 = mark();
-			synPredMatched149 = true;
+			int _m499 = mark();
+			synPredMatched499 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1248,24 +1248,24 @@ tryAgain:
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched149 = false;
+				synPredMatched499 = false;
 			}
-			rewind(_m149);
+			rewind(_m499);
 			inputState.guessing--;
 		}
-		if ( synPredMatched149 ) {
+		if ( synPredMatched499 ) {
 			_saveIndex=text.length();
 			mQUOTE3S(false);
 			text.setLength(_saveIndex);
 			{
-			_loop154:
+			_loop504:
 			do {
 				// nongreedy exit test
-				if ((LA(1)=='\'') && (LA(2)=='\'') && (LA(3)=='\'')) break _loop154;
-				boolean synPredMatched152 = false;
+				if ((LA(1)=='\'') && (LA(2)=='\'') && (LA(3)=='\'')) break _loop504;
+				boolean synPredMatched502 = false;
 				if (((LA(1)=='\n'||LA(1)=='\r') && ((LA(2) >= '\u0000' && LA(2) <= '\ufffe')) && ((LA(3) >= '\u0000' && LA(3) <= '\ufffe')))) {
-					int _m152 = mark();
-					synPredMatched152 = true;
+					int _m502 = mark();
+					synPredMatched502 = true;
 					inputState.guessing++;
 					try {
 						{
@@ -1273,12 +1273,12 @@ tryAgain:
 						}
 					}
 					catch (RecognitionException pe) {
-						synPredMatched152 = false;
+						synPredMatched502 = false;
 					}
-					rewind(_m152);
+					rewind(_m502);
 					inputState.guessing--;
 				}
-				if ( synPredMatched152 ) {
+				if ( synPredMatched502 ) {
 					mNL(false);
 				}
 				else if ((_tokenSet_7.member(LA(1))) && ((LA(2) >= '\u0000' && LA(2) <= '\ufffe')) && ((LA(3) >= '\u0000' && LA(3) <= '\ufffe'))) {
@@ -1290,7 +1290,7 @@ tryAgain:
 					mESCAPE(false);
 				}
 				else {
-					break _loop154;
+					break _loop504;
 				}
 				
 			} while (true);
@@ -1304,10 +1304,10 @@ tryAgain:
 			match('\'');
 			text.setLength(_saveIndex);
 			{
-			_loop156:
+			_loop506:
 			do {
 				// nongreedy exit test
-				if ((LA(1)=='\'') && (true)) break _loop156;
+				if ((LA(1)=='\'') && (true)) break _loop506;
 				if ((_tokenSet_7.member(LA(1))) && ((LA(2) >= '\u0000' && LA(2) <= '\ufffe'))) {
 					matchNot('\\');
 				}
@@ -1315,7 +1315,7 @@ tryAgain:
 					mESCAPE(false);
 				}
 				else {
-					break _loop156;
+					break _loop506;
 				}
 				
 			} while (true);
@@ -1340,10 +1340,10 @@ tryAgain:
 		_ttype = STRING2;
 		int _saveIndex;
 		
-		boolean synPredMatched159 = false;
+		boolean synPredMatched509 = false;
 		if (((LA(1)=='"') && (LA(2)=='"') && (LA(3)=='"'))) {
-			int _m159 = mark();
-			synPredMatched159 = true;
+			int _m509 = mark();
+			synPredMatched509 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1351,24 +1351,24 @@ tryAgain:
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched159 = false;
+				synPredMatched509 = false;
 			}
-			rewind(_m159);
+			rewind(_m509);
 			inputState.guessing--;
 		}
-		if ( synPredMatched159 ) {
+		if ( synPredMatched509 ) {
 			_saveIndex=text.length();
 			mQUOTE3D(false);
 			text.setLength(_saveIndex);
 			{
-			_loop164:
+			_loop514:
 			do {
 				// nongreedy exit test
-				if ((LA(1)=='"') && (LA(2)=='"') && (LA(3)=='"')) break _loop164;
-				boolean synPredMatched162 = false;
+				if ((LA(1)=='"') && (LA(2)=='"') && (LA(3)=='"')) break _loop514;
+				boolean synPredMatched512 = false;
 				if (((LA(1)=='\n'||LA(1)=='\r') && ((LA(2) >= '\u0000' && LA(2) <= '\ufffe')) && ((LA(3) >= '\u0000' && LA(3) <= '\ufffe')))) {
-					int _m162 = mark();
-					synPredMatched162 = true;
+					int _m512 = mark();
+					synPredMatched512 = true;
 					inputState.guessing++;
 					try {
 						{
@@ -1376,12 +1376,12 @@ tryAgain:
 						}
 					}
 					catch (RecognitionException pe) {
-						synPredMatched162 = false;
+						synPredMatched512 = false;
 					}
-					rewind(_m162);
+					rewind(_m512);
 					inputState.guessing--;
 				}
-				if ( synPredMatched162 ) {
+				if ( synPredMatched512 ) {
 					mNL(false);
 				}
 				else if ((_tokenSet_7.member(LA(1))) && ((LA(2) >= '\u0000' && LA(2) <= '\ufffe')) && ((LA(3) >= '\u0000' && LA(3) <= '\ufffe'))) {
@@ -1393,7 +1393,7 @@ tryAgain:
 					mESCAPE(false);
 				}
 				else {
-					break _loop164;
+					break _loop514;
 				}
 				
 			} while (true);
@@ -1407,10 +1407,10 @@ tryAgain:
 			match('"');
 			text.setLength(_saveIndex);
 			{
-			_loop166:
+			_loop516:
 			do {
 				// nongreedy exit test
-				if ((LA(1)=='"') && (true)) break _loop166;
+				if ((LA(1)=='"') && (true)) break _loop516;
 				if ((_tokenSet_7.member(LA(1))) && ((LA(2) >= '\u0000' && LA(2) <= '\ufffe'))) {
 					matchNot('\\');
 				}
@@ -1418,7 +1418,7 @@ tryAgain:
 					mESCAPE(false);
 				}
 				else {
-					break _loop166;
+					break _loop516;
 				}
 				
 			} while (true);
@@ -1620,9 +1620,9 @@ tryAgain:
 		_returnToken = _token;
 	}
 	
-	public final void mARROW_P_L(boolean _createToken) throws RecognitionException, CharStreamException, TokenStreamException {
+	public final void mARROW_PATH_L(boolean _createToken) throws RecognitionException, CharStreamException, TokenStreamException {
 		int _ttype; Token _token=null; int _begin=text.length();
-		_ttype = ARROW_P_L;
+		_ttype = ARROW_PATH_L;
 		int _saveIndex;
 		
 		match(">-");
@@ -1633,9 +1633,9 @@ tryAgain:
 		_returnToken = _token;
 	}
 	
-	public final void mARROW_P_R(boolean _createToken) throws RecognitionException, CharStreamException, TokenStreamException {
+	public final void mARROW_PATH_R(boolean _createToken) throws RecognitionException, CharStreamException, TokenStreamException {
 		int _ttype; Token _token=null; int _begin=text.length();
-		_ttype = ARROW_P_R;
+		_ttype = ARROW_PATH_R;
 		int _saveIndex;
 		
 		match("->");
@@ -1666,7 +1666,7 @@ tryAgain:
 		
 		match("#");
 		{
-		_loop119:
+		_loop469:
 		do {
 			if ((_tokenSet_5.member(LA(1)))) {
 				{
@@ -1674,7 +1674,7 @@ tryAgain:
 				}
 			}
 			else {
-				break _loop119;
+				break _loop469;
 			}
 			
 		} while (true);
@@ -1702,10 +1702,10 @@ tryAgain:
 		_ttype = NL;
 		int _saveIndex;
 		
-		boolean synPredMatched126 = false;
+		boolean synPredMatched476 = false;
 		if (((LA(1)=='\r') && (LA(2)=='\n') && (true))) {
-			int _m126 = mark();
-			synPredMatched126 = true;
+			int _m476 = mark();
+			synPredMatched476 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1713,19 +1713,19 @@ tryAgain:
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched126 = false;
+				synPredMatched476 = false;
 			}
-			rewind(_m126);
+			rewind(_m476);
 			inputState.guessing--;
 		}
-		if ( synPredMatched126 ) {
+		if ( synPredMatched476 ) {
 			mNL1(false);
 		}
 		else {
-			boolean synPredMatched128 = false;
+			boolean synPredMatched478 = false;
 			if (((LA(1)=='\n'))) {
-				int _m128 = mark();
-				synPredMatched128 = true;
+				int _m478 = mark();
+				synPredMatched478 = true;
 				inputState.guessing++;
 				try {
 					{
@@ -1733,19 +1733,19 @@ tryAgain:
 					}
 				}
 				catch (RecognitionException pe) {
-					synPredMatched128 = false;
+					synPredMatched478 = false;
 				}
-				rewind(_m128);
+				rewind(_m478);
 				inputState.guessing--;
 			}
-			if ( synPredMatched128 ) {
+			if ( synPredMatched478 ) {
 				mNL2(false);
 			}
 			else {
-				boolean synPredMatched130 = false;
+				boolean synPredMatched480 = false;
 				if (((LA(1)=='\r') && (true) && (true))) {
-					int _m130 = mark();
-					synPredMatched130 = true;
+					int _m480 = mark();
+					synPredMatched480 = true;
 					inputState.guessing++;
 					try {
 						{
@@ -1753,12 +1753,12 @@ tryAgain:
 						}
 					}
 					catch (RecognitionException pe) {
-						synPredMatched130 = false;
+						synPredMatched480 = false;
 					}
-					rewind(_m130);
+					rewind(_m480);
 					inputState.guessing--;
 				}
-				if ( synPredMatched130 ) {
+				if ( synPredMatched480 ) {
 					mNL3(false);
 				}
 				else {
@@ -1886,10 +1886,10 @@ tryAgain:
 		match('\\');
 		text.setLength(_saveIndex);
 		{
-		boolean synPredMatched172 = false;
+		boolean synPredMatched522 = false;
 		if (((_tokenSet_8.member(LA(1))) && ((LA(2) >= '\u0000' && LA(2) <= '\ufffe')) && (true))) {
-			int _m172 = mark();
-			synPredMatched172 = true;
+			int _m522 = mark();
+			synPredMatched522 = true;
 			inputState.guessing++;
 			try {
 				{
@@ -1897,12 +1897,12 @@ tryAgain:
 				}
 			}
 			catch (RecognitionException pe) {
-				synPredMatched172 = false;
+				synPredMatched522 = false;
 			}
-			rewind(_m172);
+			rewind(_m522);
 			inputState.guessing--;
 		}
-		if ( synPredMatched172 ) {
+		if ( synPredMatched522 ) {
 			mESC_CHAR(false);
 		}
 		else if (((LA(1) >= '\u0000' && LA(1) <= '\ufffe')) && ((LA(2) >= '\u0000' && LA(2) <= '\ufffe')) && (true)) {
