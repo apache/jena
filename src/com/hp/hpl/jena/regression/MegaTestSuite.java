@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: MegaTestSuite.java,v 1.2 2003-01-28 13:09:10 andy_seaborne Exp $
+ * $Id: MegaTestSuite.java,v 1.3 2003-01-28 16:21:39 chris-dollin Exp $
  */
 
 /*
@@ -47,7 +47,7 @@ import junit.framework.Test;
 public class MegaTestSuite extends TestSuite {
 
     /** Creates new MegaTestSuite */
-    static public Test suite() {
+    static public TestSuite suite() {
         return new MegaTestSuite();
     }
     private MegaTestSuite() {
@@ -75,9 +75,8 @@ public class MegaTestSuite extends TestSuite {
         else
             System.err.println("WARNING: DAML tests suppressed for the moment");
     }
-    private void addTest(String name, Test tc) {
-        if (tc instanceof TestSuite)
-             ((TestSuite) tc).setName(name);
+    private void addTest(String name, TestSuite tc) {
+        tc.setName(name);
         addTest(tc);
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTriple.java,v 1.1.1.1 2002-12-19 19:14:11 bwm Exp $
+  $Id: TestTriple.java,v 1.2 2003-01-28 16:20:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -26,7 +26,7 @@ public class TestTriple extends TestCase
         public TestTriple(String name)
         { super( name ); }
     
-    public static Test suite()
+    public static TestSuite suite()
         { return new TestSuite( TestTriple.class ); }   
             
     public void assertFalse( String name, boolean b )

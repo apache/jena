@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.1.1.1 2002-12-19 19:13:27 bwm Exp $
+  $Id: GraphTestBase.java,v 1.2 2003-01-28 16:21:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -24,7 +24,7 @@ public class GraphTestBase extends TestCase
     public GraphTestBase( String name )
     	{ super( name ); }
     	
-    public static Test suite()
+    public static TestSuite suite()
         { return new TestSuite( GraphTestBase.class ); }   
 
     public void testNodeSet()

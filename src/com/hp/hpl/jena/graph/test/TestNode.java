@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.1.1.1 2002-12-19 19:14:08 bwm Exp $
+  $Id: TestNode.java,v 1.2 2003-01-28 16:20:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -25,7 +25,7 @@ public class TestNode extends TestCase
     public TestNode( String name )
         { super( name ); }
     
-    public static Test suite()
+    public static TestSuite suite()
         { return new TestSuite( TestNode.class ); }   
             
     public void assertFalse( String name, boolean b )

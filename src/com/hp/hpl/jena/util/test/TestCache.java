@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCache.java,v 1.1.1.1 2002-12-19 19:21:26 bwm Exp $
+  $Id: TestCache.java,v 1.2 2003-01-28 16:21:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -12,9 +12,7 @@ package com.hp.hpl.jena.util.test;
 
 import com.hp.hpl.jena.util.cache.*;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 
 public class TestCache extends TestCase
@@ -23,11 +21,9 @@ public class TestCache extends TestCase
    public TestCache(String name)
        { super( name ); }
     
-    public static Test suite() {
-        TestSuite suite = new TestSuite("Cache");
-        
+    public static TestSuite suite() {
+        TestSuite suite = new TestSuite("Cache");       
         suite.addTest( new CacheTestCase(CacheManager.RAND));
- 
         return suite;
     }   
             

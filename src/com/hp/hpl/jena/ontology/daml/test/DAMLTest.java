@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:15:56 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-01-28 16:21:39 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -66,7 +66,7 @@ import java.io.*;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.1.1.1 2002-12-19 19:15:56 bwm Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.2 2003-01-28 16:21:39 chris-dollin Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -106,7 +106,7 @@ public class DAMLTest
     /**
      * Answer a suite of all the tests defined here
      */
-    public static Test suite() {
+    public static TestSuite suite() {
         TestSuite suite = new TestSuite();
 
         // add all the tests defined in this class to the suite

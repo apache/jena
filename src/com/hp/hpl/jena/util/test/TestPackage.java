@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.1.1.1 2002-12-19 19:21:26 bwm Exp $
+  $Id: TestPackage.java,v 1.2 2003-01-28 16:21:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.test;
 
-import junit.framework.TestSuite;
-import junit.framework.Test;
+import junit.framework.*;
 
 /**
  * All developers should edit this file to add their tests.
@@ -18,7 +17,7 @@ import junit.framework.Test;
  */
 public class TestPackage extends TestSuite {
 
-    static public Test suite() {
+    static public TestSuite suite() {
         return new TestPackage();
     }
     
@@ -28,9 +27,8 @@ public class TestPackage extends TestSuite {
         addTest( "TestCache",   com.hp.hpl.jena.util.test.TestCache.suite() );
     }
 
-    private void addTest(String name, Test tc) {
-        if ( tc instanceof TestSuite)
-           ((TestSuite)tc).setName(name);
+    private void addTest(String name, TestSuite tc) {
+        tc.setName(name);
         addTest(tc);
     }
 
