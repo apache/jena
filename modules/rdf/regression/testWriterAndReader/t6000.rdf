@@ -16,7 +16,7 @@
     <NS205:baseURL>jj</NS205:baseURL>
     <NS206:locType xmlns:NS206="http://www.mozilla.org/rdf/chrome#">install</NS206:locType>
     <NS207:displayName xmlns:NS207="http://www.mozilla.org/rdf/chrome#">Toolkit</NS207:displayName>
-    <NS208:author xmlns:NS208="http://www.mozilla.org/rdf/chrome#">mozilla.org</NS208:author>
+    <NS208:author RDF:ID="foo" xmlns:NS208="http://www.mozilla.org/rdf/chrome#">mozilla.org</NS208:author>
     <NS209:name xmlns:NS209="http://www.mozilla.org/rdf/chrome#">global</NS209:name>
     </RDF:Description>
  </NS205:foo>

@@ -96,7 +96,7 @@ import com.hp.hpl.jena.rdf.model.impl.Util;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.5 2003-04-01 14:27:00 jeremy_carroll Exp $
+* @version  $Id: URI.java,v 1.6 2003-04-02 08:57:26 jeremy_carroll Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -1081,7 +1081,7 @@ public class URI implements Serializable {
 	 *                                  URI does not conform to the generic
 	 *                                  URI syntax or if the path is null
 	 */
-	private void setFragment(String p_fragment) throws MalformedURIException {
+	public void setFragment(String p_fragment) throws MalformedURIException {
 		if (p_fragment == null) {
 			m_fragment = null;
 		} else if (!isGenericURI()) {

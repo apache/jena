@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: testWriterAndReader.java,v 1.9 2003-04-01 20:36:21 jeremy_carroll Exp $
+  $Id: testWriterAndReader.java,v 1.10 2003-04-02 08:58:16 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -12,6 +12,8 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.mem.ModelMem;
 
 import com.hp.hpl.jena.util.Log;
+import com.hp.hpl.jena.vocabulary.RDFSyntax;
+import com.hp.hpl.jena.vocabulary.DAML_OIL;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -30,7 +32,7 @@ import junit.framework.*;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-04-01 20:36:21 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-04-02 08:58:16 $'
  */
 public class testWriterAndReader extends TestCase implements RDFErrorHandler {
     static private boolean showProgress = false;
@@ -42,16 +44,37 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
     String lang;
     String test;
     int fileNumber;
+    int options = 0;
     testWriterAndReader(String name, String lang, int fName) {
         super(name);
         this.lang = lang;
         this.fileNumber = fName;
     }
-    public String toString() {
-        return getName() + " " + lang + " t" + fileNumber + "000.rdf";
+    testWriterAndReader(String name, String lang, int fName,int options) {
+        super(name);
+        this.lang = lang;
+        this.fileNumber = fName;
+        this.options = options;
     }
-
+    public String toString() {
+        return getName() + " " + lang + " t" + fileNumber + "000.rdf" +
+          (options != 0 ? ( "[" + options +"]" ): "");
+    }
     static Test suite(String lang) {
+          return suite(lang,false);
+    }
+    static private boolean nBits(int i,int ok[]) {
+        int cnt = 0;
+        while ( i > 0 ) {
+            if ( (i&1)==1 ) cnt++;
+            i>>=1;
+        }
+        for (int j=0;j<ok.length;j++)
+           if ( cnt==ok[j])
+             return true;
+        return false;
+    }
+    static Test suite(String lang,boolean lots) {
         TestSuite langsuite = new TestSuite();
         langsuite.setName(lang);
         /* */
@@ -68,6 +91,10 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
                 langsuite.addTest(
                     new testWriterAndReader("testLongId", lang, k));
                 /* */
+                for (int j=1;j<(lang.equals("RDF/XML-ABBREV")?64:2);j++) {
+                    if (lots || nBits(j,new int[]{1,4,6}) )
+                    langsuite.addTest(new testWriterAndReader("testOptions", lang, k,j));
+                }
             }
         }
         if (lang.  //equals("RDF/XML")) {
@@ -181,6 +208,12 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
             langsuite.addTest(
                 new TestXMLFeatures("testNoTab", lang));
             /* */
+            langsuite.addTest(
+                new TestXMLFeatures("testDoubleQuote", lang));
+            /* */
+            langsuite.addTest(
+                new TestXMLFeatures("testSingleQuote", lang));
+            /* */
         }
         if ( lang.equals("RDF/XML-ABBREV") ) {
         langsuite.addTest(
@@ -192,6 +225,24 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
         langsuite.addTest(
             new TestXMLFeatures("testNoRdfCollection", "RDF/XML-ABBREV"));
         /* */
+            langsuite.addTest(
+                new TestXMLFeatures("testNoLi", "RDF/XML-ABBREV"));
+            /* */
+            langsuite.addTest(
+                new TestXMLFeatures("testNoID", lang));
+            /* */
+            langsuite.addTest(
+                new TestXMLFeatures("testNoID2", lang));
+            /* */
+            langsuite.addTest(
+                new TestXMLFeatures("testNoResource", lang));
+            /* * /
+            langsuite.addTest(
+                new TestXMLFeatures("testNoStripes", lang));
+            /* */
+            langsuite.addTest(
+                new TestXMLFeatures("testNoReification", lang));
+            /* */
         }
         return langsuite;
     }
@@ -203,6 +254,25 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
     }
     public void testLongId() throws IOException {
         doTest(new String[] { "longId" }, new Object[] { new Boolean(true)});
+    }
+    static Resource blockRules[] = {
+        RDFSyntax.parseTypeLiteralPropertyElt,
+        RDFSyntax.parseTypeCollectionPropertyElt,
+        RDFSyntax.propertyAttr,
+        //RDFSyntax.sectionReification,
+        RDFSyntax.sectionListExpand,
+        RDFSyntax.parseTypeResourcePropertyElt,
+        DAML_OIL.collection
+    };
+    public void testOptions() throws IOException {
+        Vector v = new Vector();
+        for (int i=0;i<blockRules.length;i++) {
+            if ((options & (1<<i))!=0)
+              v.add(blockRules[i]);
+        }
+        Resource blocked[] = new Resource[v.size()];
+        v.copyInto(blocked);
+        doTest(new String[] { "blockRules" }, new Object[] { blocked});
     }
     public void doTest(String[] propNames, Object[] propVals)
         throws IOException {
@@ -441,5 +511,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.9 2003-04-01 20:36:21 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.10 2003-04-02 08:58:16 jeremy_carroll Exp $
  */

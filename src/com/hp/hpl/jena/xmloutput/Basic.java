@@ -1,8 +1,8 @@
 /*
- *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
+ *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.7 2003-04-01 20:35:57 jeremy_carroll Exp $
+  $Id: Basic.java,v 1.8 2003-04-02 08:58:15 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput;
@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-04-01 20:35:57 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-04-02 08:58:15 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -61,7 +61,7 @@ public class Basic extends BaseXMLWriter {
 
 		if (null != xmlBase && xmlBase.length() > 0) {
 
-			writer.print("\n  xml:base=\"" + xmlBase + "\"");
+			writer.print("\n  xml:base=" + qq(xmlBase));
 		}
 		writer.println(" >");
 	}
@@ -206,42 +206,40 @@ public class Basic extends BaseXMLWriter {
 	protected void writeResourceId(Resource r, PrintWriter writer)
 		throws RDFException {
 		if (r.isAnon()) {
-			writer.print(rdfAt("nodeID") + "='" + anonId(r));
+			writer.print(rdfAt("nodeID") + "=" + q(anonId(r)));
 		} else {
 			writer.print(
 				rdfAt("about")
-					+ "='"
-					+ Util.substituteStandardEntities(relativize(r.getURI())));
+					+ "="
+					+ qq(relativize(r.getURI())));
 		}
-		writer.print("'");
 	}
 
 	protected void writeResourceReference(Resource r, PrintWriter writer)
 		throws RDFException {
 		if (r.isAnon()) {
-			writer.print(rdfAt("nodeID") + "='" + anonId(r));
+			writer.print(rdfAt("nodeID") + "=" + q(anonId(r)));
 		} else {
 			writer.print(
 				rdfAt("resource")
-					+ "='"
-					+ Util.substituteStandardEntities(relativize(r.getURI())));
+					+ "="
+					+ qq(relativize(r.getURI())));
 		}
-		writer.print("'");
 	}
 
 	protected void writeLiteral(Literal l, PrintWriter writer) {
 		String lang = l.getLanguage();
 		if (!lang.equals("")) {
-			writer.print(" xml:lang=\'" + lang + "'");
+			writer.print(" xml:lang=" + q(lang));
 		}
 		if (l.getWellFormed() && !blockLiterals) {
-			writer.print(" " + rdfAt("parseType") + "='Literal'>");
+			writer.print(" " + rdfAt("parseType") + "=" + q("Literal")+">");
 			writer.print(l.toString());
 		} else {
 			String dt = l.getDatatypeURI();
 			if (dt != null) {
-                writer.print(" " + rdfAt("datatype") + "='" +
-                Util.substituteStandardEntities(dt)+"'>");
+                writer.print(" " + rdfAt("datatype") + "=" +
+                qq(dt)+">");
                 writer.print(Util.substituteEntitiesInElementContent(l.getLexicalForm()));
 			} else {
 				writer.print(">");
@@ -253,7 +251,7 @@ public class Basic extends BaseXMLWriter {
 }
 
 /*
-	(c) Copyright Hewlett-Packard Company 2002
+	(c) Copyright Hewlett-Packard Company 2000-2003
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

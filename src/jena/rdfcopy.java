@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: rdfcopy.java,v 1.1.1.1 2002-12-19 19:22:12 bwm Exp $
+ * $Id: rdfcopy.java,v 1.2 2003-04-02 08:58:17 jeremy_carroll Exp $
  */
 
 package jena;
@@ -59,64 +59,92 @@ import java.io.FileInputStream;
  *  </pre>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:22:12 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-04-02 08:58:17 $
  */
 public class rdfcopy extends java.lang.Object {
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main (String args[]) {
+	/**
+	* @param args the command line arguments
+	*/
+	public static void main(String args[]) {
 
-        if (args.length < 1 || args.length > 3) {
-            usage();
-            System.exit(-1);
-        }
-         
-        String in = args[0];
-        String inlang = "RDF/XML";
-        if (args.length > 1) {
-            inlang = args[1];
-        } 
-        String outlang = "N-TRIPLE";
-        if (args.length == 3) {
-            outlang = args[2];
-        }
-        
-        try {
-            Model m = new ModelMem();
-        
-            read(m, in, inlang);
-            m.write(System.out, outlang);
-            System.exit(0);
-        } catch (Exception e) {
-            System.err.println("Unhandled exception:");
-            System.err.println("    " + e.toString());
-            System.exit(-1);
-        }
-    }
-    
-    protected static void usage() {
-        System.err.println("usage:");
-        System.err.println(
-            "    java jena.rdfcopy in [inlang [outlang]]");
-        System.err.println();
-        System.err.println("    in can be a URL or a filename");
-        System.err.println("    inlang and outlang can take values:");
-        System.err.println("      RDF/XML");
+		if (args.length < 1) {
+			usage();
+			System.exit(-1);
+		}
+
+		String in = args[0];
+		String inlang = "RDF/XML";
+		int j;
+		for (j = 1; j < args.length && args[j].indexOf("=") != -1; j++);
+		int lastInProp = j;
+		if (j < args.length) {
+			inlang = args[j];
+		}
+		j++;
+		String outlang = "N-TRIPLE";
+		for (; j < args.length && args[j].indexOf("=") != -1; j++);
+		int lastOutProp = j;
+		if (j < args.length) {
+			outlang = args[j];
+		}
+		if (j + 1 < args.length) {
+         //   System.err.println(j+"<<"+args.length);
+			usage();
+			System.exit(-1);
+		}
+
+		try {
+			Model m = new ModelMem();
+			RDFReader rdr = m.getReader(inlang);
+			for (j = 1; j < lastInProp; j++) {
+				int eq = args[j].indexOf("=");
+				rdr.setProperty(
+					args[j].substring(0, eq),
+					args[j].substring(eq + 1));
+			}
+			rdr.read(m, in);
+			RDFWriter w = m.getWriter(outlang);
+			j++;
+			for (; j < lastOutProp; j++) {
+				int eq = args[j].indexOf("=");
+				w.setProperty(
+					args[j].substring(0, eq),
+					args[j].substring(eq + 1));
+			}
+            w.write(m,System.out,in);
+			System.exit(0);
+		} catch (Exception e) {
+			System.err.println("Unhandled exception:");
+			System.err.println("    " + e.toString());
+			System.exit(-1);
+		}
+	}
+
+	protected static void usage() {
+		System.err.println("usage:");
+		System.err.println("    java jena.rdfcopy in {inprop=inval}* [ inlang  {outprop=outval}* outlang]]");
+		System.err.println();
+		System.err.println("    in can be a URL or a filename");
+		System.err.println("    inlang and outlang can take values:");
+		System.err.println("      RDF/XML");
+        System.err.println("      RDF/XML-ABBREV");
         System.err.println("      N-TRIPLE");
-        System.err.println("      N3");
-        System.err.println("    inlang defaults to RDF/XML, outlang to N-TRIPLE");
-        System.err.println();
-    }
-    
-    protected static void read(Model model, String in, String lang) 
-      throws RDFException, java.io.FileNotFoundException {
-        try {
-            URL url = new URL(in);
-            model.read(in, lang);
-        } catch (java.net.MalformedURLException e) {
-            model.read(new FileInputStream(in), "", lang);
-        }
-    }
+		System.err.println("      N3");
+		System.err.println(
+			"    inlang defaults to RDF/XML, outlang to N-TRIPLE");
+        System.err.println("    The legal values for inprop and outprop depend on inlang and outlang.");
+        System.err.println("    The legal values for inval and outval depend on inprop and outprop.");
+		System.err.println();
+	}
+
+	protected static void read(Model model, String in, String lang)
+		throws RDFException, java.io.FileNotFoundException {
+		try {
+			URL url = new URL(in);
+			model.read(in, lang);
+		} catch (java.net.MalformedURLException e) {
+			model.read(new FileInputStream(in), "", lang);
+		}
+	}
 }

@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003    
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.8 2003-04-01 20:36:20 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.9 2003-04-02 08:58:16 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.util.TestLogger;
 
 /** 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2003-04-01 20:36:20 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.9 $ $Date: 2003-04-02 08:58:16 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -40,7 +40,7 @@ public class TestXMLFeatures extends TestCase {
 	}
 	private String base1 = "http://example/foobar";
 	private String base2 = "http://example/barfoo";
-	private String file1 = "file:testing/abbreviated/namespaces.rdf";
+	private String file1 = "testing/abbreviated/namespaces.rdf";
 	private String lang;
 	TestXMLFeatures(String name, String lang) {
 		super(name);
@@ -110,18 +110,43 @@ public class TestXMLFeatures extends TestCase {
 		throws IOException, MalformedPatternException {
 		check(filename, encoding, regexPresent, regexAbsent, false, code);
 	}
+    private void check(
+        String filename,
+        String regexAbsent,
+        Change code,
+        String base)
+        throws IOException, MalformedPatternException {
+            check(filename,null,regexAbsent,null,false,new Change(){
+                public void code(RDFWriter w){}
+            },base);
+        check(filename, null, null, regexAbsent, false, code, base);
+    }
+    private void check(
+        String filename,
+        String encoding,
+        String regexPresent,
+        String regexAbsent,
+        boolean errs,
+        Change code)
+        throws IOException, MalformedPatternException {
+        check(filename, encoding, regexPresent, regexAbsent, errs, code, "file:"+filename);
+    }
 	private void check(
 		String filename,
 		String encoding,
 		String regexPresent,
 		String regexAbsent,
 		boolean errorExpected,
-		Change code)
+		Change code,
+        String base)
 		throws IOException, MalformedPatternException {
 		TestLogger tl = new TestLogger(BaseXMLWriter.class);
 		boolean errorsFound;
 		Model m = new ModelMem();
-		m.read(filename);
+        InputStream in = new FileInputStream(filename);
+        m.read(in,base);
+        in.close();
+        //m.read(filename);
 		Writer sw;
 		ByteArrayOutputStream bos = null;
 		if (encoding == null)
@@ -133,7 +158,7 @@ public class TestXMLFeatures extends TestCase {
 		Properties p = (Properties) System.getProperties().clone();
 		RDFWriter writer = m.getWriter(lang);
 		code.code(writer);
-		writer.write(m, sw, filename);
+		writer.write(m, sw, base);
 		sw.close();
 
 		String contents;
@@ -144,8 +169,8 @@ public class TestXMLFeatures extends TestCase {
 		}
 		try {
 			Model m2 = new ModelMem();
-			m2.read(new StringReader(contents), filename);
-			assertTrue(m.isIsomorphicWith(m2));
+			m2.read(new StringReader(contents), base);
+			assertTrue("Data got changed.",m.isIsomorphicWith(m2));
 			if (regexPresent != null)
 				assertTrue(
 					"Looking for /" + regexPresent + "/",
@@ -208,6 +233,22 @@ public class TestXMLFeatures extends TestCase {
 			}
 		});
 	}
+    public void testSingleQuote()
+        throws IOException, MalformedPatternException {
+        check(file1, "'","\"", new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("attributeQuoteChar", "'");
+            }
+        });
+    }
+    public void testDoubleQuote()
+        throws IOException, MalformedPatternException {
+        check(file1, "\"","'", new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("attributeQuoteChar", "\"");
+            }
+        });
+    }
 
 	public void testUseDefaultNamespace()
 		throws IOException, MalformedPatternException {
@@ -258,7 +299,7 @@ public class TestXMLFeatures extends TestCase {
     public void testNoLiteral()
         throws IOException, MalformedPatternException {
         check(
-            "file:testing/wg/rdfms-xml-literal-namespaces/test001.rdf",
+            "testing/wg/rdfms-xml-literal-namespaces/test001.rdf",
             "#XMLLiteral",
             "[\"']Literal[\"']",
             new Change() {
@@ -282,7 +323,7 @@ public class TestXMLFeatures extends TestCase {
     public void testNoDamlCollection()
         throws IOException, MalformedPatternException {
         check(
-            "file:testing/abbreviated/daml.rdf",
+            "testing/abbreviated/daml.rdf",
             null,
             "[\"']daml:collection[\"']",
             new Change() {
@@ -294,7 +335,7 @@ public class TestXMLFeatures extends TestCase {
     public void testNoRdfCollection()
         throws IOException, MalformedPatternException {
         check(
-            "file:testing/abbreviated/collection.rdf",
+            "testing/abbreviated/collection.rdf",
             null,
             "[\"']Collection[\"']",
             new Change() {
@@ -302,6 +343,86 @@ public class TestXMLFeatures extends TestCase {
                 writer.setProperty("blockrules", "parseTypeCollectionPropertyElt");
             }
         });
+    }
+    public void testNoLi()
+        throws IOException, MalformedPatternException {
+        check(
+            "testing/abbreviated/container.rdf",
+            null,
+            "rdf:li",
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("blockrules", "section-List-Expand");
+            }
+        });
+    }
+    public void testNoID()
+        throws IOException, MalformedPatternException {
+        check(
+            "testing/abbreviated/container.rdf",
+            "rdf:ID",
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("blockrules", "idAttr");
+            }
+            },
+            "http://example.org/foo"
+        );
+    }
+    public void testNoID2()
+        throws IOException, MalformedPatternException {
+        check(
+            "testing/abbreviated/container.rdf",
+            "rdf:ID",
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("blockrules", "idAttr");
+            }
+            },
+            "http://example.org/foo#"
+        );
+    }
+    public void testNoResource()
+        throws IOException, MalformedPatternException {
+        check(
+            "testing/abbreviated/container.rdf",
+            "['\"]Resource[\"']",
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("blockrules", "parseTypeResourcePropertyElt");
+            }
+            },
+            "http://example.org/foo#"
+        );
+    }
+    public void testNoReification()
+        throws IOException, MalformedPatternException {
+            System.err.println("WARNING: reification output tests suppressed.");
+            /*
+        check(
+            "testing/abbreviated/reification.rdf",
+            null, //"rdf:ID",
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("blockrules", "section-reification");
+            }
+            },
+            "http://example.org/foo"
+        );
+        */
+    }
+    public void testNoStripes()
+        throws IOException, MalformedPatternException {
+        check(
+            "testing/abbreviated/collection.rdf",
+            "                              <[a-zA-Z][-a-zA-Z0-9._]*:Class",
+            new Change() {
+            public void code(RDFWriter writer) {
+                writer.setProperty("blockrules", "resourcePropertyElt");
+            }
+            },
+            "http://example.org/foo"
+        );
     }
 	public void testRDFDefaultNamespace()
 		throws IOException, MalformedPatternException {
@@ -928,5 +1049,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.8 2003-04-01 20:36:20 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.9 2003-04-02 08:58:16 jeremy_carroll Exp $
  */

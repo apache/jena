@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.9 2003-04-01 20:35:57 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.10 2003-04-02 08:58:15 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput;
@@ -56,7 +56,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-04-01 20:35:57 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-04-02 08:58:15 $'
  */
 abstract public class BaseXMLWriter implements RDFWriter {
 	/** log4j logger */
@@ -64,7 +64,13 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	static {
 		ARP.initEncoding();
 	}
-
+    String attributeQuoteChar ="\"";
+    String q(String s) {
+        return attributeQuoteChar +s + attributeQuoteChar;
+    }
+    String qq(String s) {
+        return q(Util.substituteStandardEntities(s));
+    }
 	private Relation nameSpaces = new Relation();
 	private Map ns;
 	static private Set badRDF = new HashSet();
@@ -234,7 +240,7 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			if (prefix.length() > 0) {
 				rslt.append(":" + prefix);
 			}
-			rslt.append("='" + Util.substituteStandardEntities(uri) + "'");
+			rslt.append("=" + qq(uri));
 
 		}
 		return rslt.toString();
@@ -333,9 +339,9 @@ abstract public class BaseXMLWriter implements RDFWriter {
 				case ATTR :
 					return "xmlns:"
 						+ prefix
-						+ "='"
-						+ Util.substituteStandardEntities(uri)
-						+ "' "
+						+ "="
+						+ qq(uri)
+						+ " "
 						+ prefix
 						+ ":"
 						+ local;
@@ -345,9 +351,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 						+ local
 						+ " xmlns:"
 						+ prefix
-						+ "='"
-						+ Util.substituteStandardEntities(uri)
-						+ "'";
+						+ "="
+						+ qq(uri);
 				case END :
 					break;
 				case FAST :
@@ -417,11 +422,11 @@ abstract public class BaseXMLWriter implements RDFWriter {
 					String xEnc = EncodingMap.getJava2IANAMapping(javaEnc);
 					if (xEnc == null)
 						xEnc = javaEnc; // hmm.. incorrect
-					decl = "<?xml version='1.0' encoding='" + xEnc + "'?>";
+					decl = "<?xml version="+q("1.0")+" encoding=" + q(xEnc) + "?>";
 				}
 			}
 			if (decl == null && showXmlDeclaration != null)
-				decl = "<?xml version='1.0'?>";
+				decl = "<?xml version="+q("1.0")+"?>";
 			if (decl != null) {
 				pw.println(decl);
 			}
@@ -584,6 +589,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	 *  in the XML declaration.
 	 * <dt>tab</dt>
 	 * <dd>The number of spaces with which to indent XML child elements.</dd>
+	 * <dt>attributeQuoteChar</dt>
+	 * <dd>A one character string: "\"" or "'"</dd>
 	 * <dt>blockRules</dt>
 	 * <dd>
 	 * A list of Resource or a String being a comma separated list
@@ -599,7 +606,6 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	 * >section-Reification</a></li>
 	 * <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#section-List-Expand"
 	 * >section-List-Expand</a></li>
-	<li><a href="http://www.w3.org/TR/rdf-syntax-grammar#resourcePropertyElt">resourcePropertyElt</a></li>
 	<li><a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeLiteralPropertyElt">parseTypeLiteralPropertyElt</a></li>
 	<li><a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeResourcePropertyElt">parseTypeResourcePropertyElt</a></li>
 	<li><a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeCollectionPropertyElt">parseTypeCollectionPropertyElt</a></li>
@@ -690,20 +696,31 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			return result;
 		} else if (propName.equalsIgnoreCase("tab")) {
 			Integer result = new Integer(tab);
-            if ( propValue instanceof Integer ) {
-                tab = ((Integer)propValue).intValue();
-            } else {
-                try {
-                    tab = Integer.parseInt((String)propValue);
-                }
-                catch (Exception e) {
-                    logger.warn("Bad value for tab: '"+propValue+"' [" + e.getMessage()+"]");
-                }
-            }
+			if (propValue instanceof Integer) {
+				tab = ((Integer) propValue).intValue();
+			} else {
+				try {
+					tab = Integer.parseInt((String) propValue);
+				} catch (Exception e) {
+					logger.warn(
+						"Bad value for tab: '"
+							+ propValue
+							+ "' ["
+							+ e.getMessage()
+							+ "]");
+				}
+			}
 			return result;
 		} else if (propName.equalsIgnoreCase("longid")) {
 			Boolean result = new Boolean(longId);
 			longId = toboolean(propValue);
+			return result;
+		} else if (propName.equalsIgnoreCase("attributeQuoteChar")) {
+			String result = attributeQuoteChar;
+            if ( "\"".equals(propValue) || "'".equals(propValue) )
+              attributeQuoteChar = (String)propValue;
+            else 
+              logger.warn("attributeQutpeChar must be either \"\\\"\" or \', not \""+propValue+"\"" );
 			return result;
 		} else if (propName.equalsIgnoreCase("allowBadURIs")) {
 			Boolean result = new Boolean(allowBadURIs);
@@ -745,7 +762,7 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			Vector v = new Vector();
 			while (tkn.hasMoreElements()) {
 				String frag = tkn.nextToken();
-              //  System.err.println("Blocking " + frag);
+				//  System.err.println("Blocking " + frag);
 				if (frag.equals("daml:collection"))
 					v.add(DAML_OIL.collection);
 				else
@@ -755,8 +772,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			blockedRules = new Resource[v.size()];
 			v.copyInto(blockedRules);
 		}
-        for (int i = 0; i < blockedRules.length; i++)
-            blockRule(blockedRules[i]);
+		for (int i = 0; i < blockedRules.length; i++)
+			blockRule(blockedRules[i]);
 		return rslt;
 	}
 	abstract void unblockAll();
@@ -771,8 +788,7 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	*/
 	private int relativeFlags =
 		URI.SAMEDOCUMENT | URI.ABSOLUTE | URI.RELATIVE | URI.PARENT;
-        
-    
+
 }
 
 /*

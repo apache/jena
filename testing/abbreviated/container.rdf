@@ -1,4 +1,4 @@
-<!-- $Id: container.rdf,v 1.1.1.1 2002-12-19 19:22:21 bwm Exp $ -->
+<!-- $Id: container.rdf,v 1.2 2003-04-02 08:58:16 jeremy_carroll Exp $ -->
 
 <!-- MUST contain rdf:li -->
 
@@ -15,7 +15,11 @@
   <eg:a />
   <rdf:li rdf:nodeID="x" />
   <rdf:li rdf:nodeID="x" />
-  <eg:b> <eg:c /> </eg:b>
+  <eg:b> 
+    <rdf:Description>
+     <eg:c rdf:resource="#aa"/> 
+    </rdf:Description>
+  </eg:b>
   <rdf:li eg:z="foobar" />
 </rdfs:Class>
 
