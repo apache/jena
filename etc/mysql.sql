@@ -308,7 +308,7 @@ AND Stmt = ? AND HasType is null)
 # that has only a type.
 deleteReifiedT
 Delete FROM ${a} WHERE (Subj is null AND Prop is null AND Obj is null AND GraphID = ?
-AND Stmt = ? AND HasType = "T")
+AND Stmt = ? AND HasType = 'T')
 
 #-------------------------------------------------------------------
 # Insert an all-URI triple into a Statement table,
@@ -360,14 +360,14 @@ FROM ${a} S WHERE S.Stmt = ? AND S.Obj = ? AND S.GraphID = ?
 # with the specified subject, property and literal (resource)
 selectReifNodeSPOT
 SELECT S.Stmt
-FROM ${a} S WHERE S.Subj = ? AND S.Prop = ? and S.Obj = ? AND S.GraphID = ? AND S.HasType = "T"
+FROM ${a} S WHERE S.Subj = ? AND S.Prop = ? and S.Obj = ? AND S.GraphID = ? AND S.HasType = 'T'
 
 #-------------------------------------------------------------------
 # Select all the statement URI's in a Reified Statement (triple store) graph
 # with the specified subject, property and literal (reference)
 selectReifNodeT
 SELECT S.Stmt
-FROM ${a} S WHERE S.GraphID = ? AND S.HasType = "T"
+FROM ${a} S WHERE S.GraphID = ? AND S.HasType = 'T'
 
 #-------------------------------------------------------------------
 # Select all the statement URI's in a Reified Statement (triple store) graph

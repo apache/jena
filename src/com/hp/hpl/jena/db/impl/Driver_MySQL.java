@@ -45,6 +45,7 @@ public class Driver_MySQL extends DriverRDB {
 		SQL_FILE = "etc/mysql.sql";
 		DB_NAMES_TO_UPPER = false;
 		setTableNames(TABLE_NAME_PREFIX);
+		QUOTE_CHAR = '\'';
 
 		
 		m_psetClassName = myPackageName + ".PSet_TripleStore_RDB";
