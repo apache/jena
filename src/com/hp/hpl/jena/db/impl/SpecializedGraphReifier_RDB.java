@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.MapFiller;
@@ -86,7 +85,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 		ReifCache rs = m_reifCache.load((Node_URI) t.getSubject());
 		if (rs != null)
 			throw new Reifier.AlreadyReifiedException(n);
-		m_reif.storeReifStmt((Node_URI)n, t, my_GID);
+		m_reif.storeReifStmt(n, t, my_GID);
 		complete.setDone();
 	}
 
@@ -95,7 +94,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 */
 	public void delete(Node n, Triple t, CompletionFlag complete) {
 		m_reifCache.flushAll();
-		m_reif.deleteReifStmt( (Node_URI) n, t, my_GID);
+		m_reif.deleteReifStmt( n, t, my_GID);
 		complete.setDone();
 	}
 
@@ -103,27 +102,31 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#contains(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public boolean contains(Node n, Triple t, CompletionFlag complete) {
+		if ( true )
+			throw new RuntimeException("SpecializedGraphReifier.contains called");
 		return false;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#findReifiedNodes(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public ExtendedIterator findReifiedNodes(TripleMatch t, CompletionFlag complete) {
-		return null;
+	public ExtendedIterator findReifiedNodes(Triple t, CompletionFlag complete) {
+		complete.setDone();
+		return m_reif.findReifStmtURIByTriple(t, my_GID);
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#findReifiedTriple(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public Triple findReifiedTriple(Node n, CompletionFlag complete) {
-		ExtendedIterator it = m_reif.findReifNodes(n, true, my_GID);
+		ExtendedIterator it = m_reif.findReifStmt(n, true, my_GID);
 		Triple res = null;
 		if ( it.hasNext() ) {
 				List l = (List) it.next();
 				if ( !it.hasNext() )
 					res = new Triple((Node)l.get(1), (Node)l.get(2), (Node)l.get(3));
 		}
+		complete.setDone();
 		return res;
 	}
 
@@ -148,17 +151,8 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 * @return ExtendedIterator.
 	 */
 	public ExtendedIterator findReifiedTriples(Node n, CompletionFlag complete) {
-		return m_reif.findReifNodes(n, false, my_GID);
-	}
-
-	/** Find if a node has been marked as being of type Statement.
-	 * 
-	 * @param n is the Node for which we are querying.
-	 * @return ExtendedIterator.
-	 */
-	public boolean findIfStatement(Node n) {
-		ExtendedIterator it = m_reif.findReifNodes(n, true, my_GID);
-		return it.hasNext();
+		complete.setDone();
+		return m_reif.findReifStmt(n, false, my_GID);
 	}
 
 	/** 
@@ -187,89 +181,121 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public void add(Triple frag, CompletionFlag complete) throws Reifier.AlreadyReifiedException {
-		StmtMask m = new StmtMask(frag);
-		if (m.hasNada())
+		StmtMask fragMask = new StmtMask(frag);
+		if (fragMask.hasNada())
 			return;
-/*
-		boolean fht = m.hasType();
-		Triple t = fragToTriple(frag, m);
-		Node_URI stmtURI = (Node_URI) frag.getSubject();
-		ReifCache rs = m_reifCache.load(stmtURI);
-		if (rs == null) {
+			
+		boolean fragHasType = fragMask.hasType();
+		Node stmtURI = frag.getSubject();
+		ReifCache cachedFrag = m_reifCache.load(stmtURI);
+		if (cachedFrag == null) {
 			// not in database
-			m_reif.storeReifStmt(stmtURI, t, fht, my_GID);
+			m_reif.storeFrag(stmtURI, frag, fragMask, my_GID);
 			complete.setDone();
 
 		} else {
-			Node_URI stmtURI = (Node_URI) frag.getSubject();
-			StmtMask rsm = rs.getStmtMask();
-			if (rsm.hasIntersect(m)) {
+			StmtMask cachedMask = cachedFrag.getStmtMask();
+			if (cachedMask.hasIntersect(fragMask)) {
 				// see if this is a duplicate fragment
-				boolean dup = fht && rsm.hasType();
+				boolean dup = fragHasType && cachedMask.hasType();
 				if (dup == false) {
 					// not a type fragement; have to search db
-					TripleMatch tm =
-						new StandardTripleMatch(
-							t.getSubject(),
-							m.hasProp() ? t.getPredicate() : null,
-							m.hasObj() ? t.getObject() : null);
-					ResultSetReifIterator it = m_reif.findReif(stmtURI, t, tm, my_GID);
+					ExtendedIterator it = m_reif.findFrag (stmtURI, frag, fragMask, my_GID);
 					dup = it.hasNext();
 				}
-				if (!dup && rsm.isStmt()) {
-					throw new Reifier.AlreadyReifiedException(n);
+				if (!dup && cachedMask.isStmt()) {
+					throw new Reifier.AlreadyReifiedException(frag.getSubject());
 				}
 				// cannot perform a reificiation
-				m_reif.storeTriple(t, fht, my_GID);
-				m_reifCache.flush(rs);
+				m_reif.storeFrag(stmtURI, frag, fragMask, my_GID);
+				m_reifCache.flush(cachedFrag);
 			} else {
-				// reification may be possible
-				if (rs.getCnt() > 1) {
-					// reification not possible
-					m_reif.storeTriple(t, fht, my_GID);
+				// reification may be possible; update if possible, else compact
+				if (cachedFrag.canMerge(fragMask)) {
+					if ( cachedFrag.canUpdate(fragMask) ) {
+						m_reif.updateFrag(stmtURI, frag, fragMask, my_GID);
+						cachedFrag.setMerge(fragMask);
+					} else
+						fragCompact(stmtURI);					
 				} else {
-					// reification may be possible
-					rsm.setUnion(m);
-					m_reif.updateTriple(t, fht, my_GID);
+					// reification not possible
+					m_reif.storeFrag(stmtURI, frag, fragMask, my_GID);
 				}
 			}
 		}
 		complete.setDone();
-*/
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#delete(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public void delete(Triple frag, CompletionFlag complete) {
-		StmtMask m = new StmtMask(frag);
-		if (m.hasNada())
+		StmtMask fragMask = new StmtMask(frag);
+		if (fragMask.hasNada())
 			return;
-/*
-		Triple t = fragToTriple(frag, m);
-		// first need to see if database contains fragment
-		TripleMatch tm =
-			new StandardTripleMatch(
-				t.getSubject(),
-				m.hasProp() ? t.getPredicate() : null,
-				m.hasObj() ? t.getObject() : null);
-		ResultSetReifIterator it = m_reif.find(tm, my_GID);
-		if (it.hasNext()) {
-			// db has fragment. now we have something to do
-			// should be only one instance of this pair
-			m_reif.updateNull(t, m, my_GID);
-			// now see if this enables a reified statement
-			ReifCache rs = m_reifCache.load((Node_URI) t.getSubject());
-			if (rs.getStmtMask().hasNada()) {
-				// delete last fragment
-				m_reif.deleteTriple(t, my_GID);
-				// need to do compaction of fragments
+			
+		boolean fragHasType = fragMask.hasType();
+		Node stmtURI = frag.getSubject();
+		
+		ResultSetTripleIterator it = m_reif.findFrag(stmtURI, frag, fragMask, my_GID);
+		if ( it.hasNext() ) {
+			it.next();
+			Triple dbFrag = it.m_triple;
+			StmtMask dbMask = new StmtMask(dbFrag);
+			if ( dbMask.equals(fragMask) ) {
+				/* last fragment in this tuple; can just delete it */
+				it.deleteRow(); it.close();
+			} else {
+				/* remove fragment from row */
+				m_reif.nullifyFrag(stmtURI, fragMask, my_GID);
+				
+				/* compact remaining fragments, if possible */
+				it.close();
+				fragCompact(stmtURI);
 			}
+			// remove cache entry, if any
+			ReifCache cachedFrag = m_reifCache.lookup(stmtURI);
+			if ( cachedFrag != null ) m_reifCache.flush(cachedFrag);		
 		}
 		complete.setDone();
-*/
 	}
-
+	
+	
+	/* fragCompact
+	 * 
+	 * Compact fragments for a given statement URI.
+	 * 
+	 * first, find the unique row for stmtURI that with the HasType Statement fragment.
+	 * if no such row exists, we are done. then, get all fragments for stmtURI and
+	 * try to merge them with the hasType fragment, deleting each as they are merged.
+	 */
+	protected void fragCompact ( Node stmtURI ) {
+		ResultSetTripleIterator itHasType;
+		
+		itHasType = m_reif.findReifStmt(stmtURI,true,my_GID);
+		if ( itHasType.hasNext() ) {
+			/* something to do */
+			itHasType.next();
+			if ( itHasType.hasNext() ) throw new RuntimeException("Multiple HasType fragments for URI");			
+			StmtMask htMask = new StmtMask(itHasType.m_triple);
+			itHasType.close();
+					
+			// now, look at fragments and try to merge them with the hasType fragement 
+			ResultSetTripleIterator itFrag = m_reif.findReifStmt(stmtURI,false,my_GID);
+			StmtMask upMask = new StmtMask();
+			while ( itFrag.hasNext() ) {
+				StmtMask fm = new StmtMask(itFrag.m_triple);
+				if ( fm.hasType() ) continue;  // got the hasType fragment again
+				if ( htMask.hasIntersect(fm) )
+					break; // can't merge all fragments
+				// at this point, we can merge in the current fragment
+				m_reif.updateFrag(stmtURI, itFrag.m_triple, fm, my_GID);
+				htMask.setMerge(fm);
+				itFrag.deleteRow();
+			}
+		}
+	}
+	
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(java.util.List, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
@@ -320,8 +346,10 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public ExtendedIterator find(TripleMatch t, CompletionFlag complete) {
+		
+		Node stmtURI = t.getSubject();	// note: can be null
 
-		ExtendedIterator nodes = findReifiedNodes(new StandardTripleMatch(null, null, null), new CompletionFlag());
+		ExtendedIterator nodes = m_reif.findReifNodes(stmtURI, my_GID);
 		ExtendedIterator allTriples = new MapMany(nodes, new ExpandReifiedTriples(this));
 
 		return allTriples.filterKeep(new TripleMatchFilter(t));
@@ -340,15 +368,16 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 		public boolean refill(Object x, ArrayList pending) {
 			Node node = (Node) x;
 			boolean addedToPending = false;
-
-			if( m_sgr.findIfStatement( node)) {
-				pending.add( new Triple( node, Reifier.type, Reifier.Statement ) );
-				addedToPending = true;
-			}
 			
-			Iterator it = m_sgr.findReifiedTriples(node, new CompletionFlag());
+			ResultSetTripleIterator it = m_reif.findReifStmt(node, false, my_GID);
+			
 			while( it.hasNext()) {
-				Triple t = (Triple)it.next();
+				it.next();
+				if ( it.getHasType() ) {
+					pending.add( new Triple( node, Reifier.type, Reifier.Statement ));
+					addedToPending = true;					
+				}
+				Triple t = (Triple)it.getRow();
 				if( !t.getSubject().equals(Node.ANY)) {
 					pending.add( new Triple( node, Reifier.subject, t.getSubject() ));
 					addedToPending = true;
@@ -360,8 +389,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 				if( !t.getObject().equals(Node.ANY)) {
 					pending.add( new Triple( node, Reifier.object, t.getObject() ));
 					addedToPending = true;
-				}
-					
+				}					
 			}
 			return addedToPending;
 		}
@@ -424,7 +452,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 				inUse[i] = false;
 		}
 
-		ReifCache lookup(Node_URI stmtURI) {
+		ReifCache lookup(Node stmtURI) {
 			int i;
 			for (i = 0; i < cacheSize; i++) {
 				if (inUse[i] && (cache[i].getStmtURI().equals(stmtURI)))
@@ -443,10 +471,8 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 			flushAll(); // optimize later
 		}
 
-		// TODO - The stmtURI could be a bNode - so this should be Node, not Node_URI.
-		public ReifCache load(Node_URI stmtURI) {
-			return null;
-/*
+		public ReifCache load(Node stmtURI) {
+
 			ReifCache entry = lookup(stmtURI);
 			if (entry != null)
 				return entry;
@@ -454,13 +480,13 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 			StmtMask m = new StmtMask();
 			Triple t;
 			int cnt = 0;
-			TripleMatch tm = new StandardTripleMatch(stmtURI, null, null);
-			ResultSetReifIterator it = m_reif.find(tm, my_GID);
-			// ? ? ? ? how to get results;
-			need hasType flag while (it.hasNext()) {
+			ResultSetTripleIterator it = m_reif.findReifStmt(stmtURI,false,my_GID);
+			while (it.hasNext()) {
 				cnt++;
-				t = (Triple) it.next();
-				m.union(new StmtMask(t));
+				StmtMask n = new StmtMask((Triple) it.next());
+				if ( it.getHasType() ) n.setHasType();
+				if ( n.hasNada() ) throw new RuntimeException("Fragment has no data");
+				m.setMerge(n);
 			}
 			if (m.hasSPOT() && (cnt == 1))
 				m.setIsStmt();
@@ -468,7 +494,6 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 			inUse[0] = true;
 			cache[0] = new ReifCache(stmtURI, m, cnt);
 			return cache[0];
-*/
 		}
 
 		protected Triple fragToTriple(Triple t, StmtMask s) {
@@ -486,22 +511,26 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 
 	class ReifCache {
 	
-			protected Node_URI stmtURI;
+			protected Node stmtURI;
 			protected StmtMask mask;
 			protected int tripleCnt;
 		
-			ReifCache( Node_URI s, StmtMask m, int cnt )
+			ReifCache( Node s, StmtMask m, int cnt )
 				{ stmtURI = s; mask = m; tripleCnt = cnt; }
 		
 			public StmtMask getStmtMask() { return mask; }
 			public int getCnt() { return tripleCnt; }
-			public Node_URI getStmtURI() { return stmtURI; }
+			public Node getStmtURI() { return stmtURI; }
 			public void setMask ( StmtMask m ) { mask = m; }
 			public void setCnt ( int cnt ) { tripleCnt = cnt; }
 			public void incCnt ( int cnt ) { tripleCnt++; }
 			public void decCnt ( int cnt ) { tripleCnt--; }
-			
-
+			public boolean canMerge ( StmtMask fragMask ) {
+				return (!mask.hasIntersect(fragMask)); }			
+			public boolean canUpdate ( StmtMask fragMask ) {
+				return ( canMerge(fragMask) && (tripleCnt == 1)); }			
+			public void setMerge ( StmtMask fragMask ) {
+				mask.setMerge(fragMask);  }			
 	}
 
 	static boolean isReifProp ( Node_URI p ) {
@@ -530,6 +559,9 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 			public boolean hasSPOT () { return (mask ^ HasSPOT) == HasSPOT; };
 			public boolean isStmt () { return (mask ^ IsStmt) == IsStmt; };
 			public boolean hasNada () { return mask == HasNada; };
+			public boolean hasOneBit () { return ( (mask == HasSubj) ||
+				(mask == HasProp) || (mask == HasObj) || ( mask == HasType) );
+			}
 				
 			// note: have SPOT does not imply a reification since
 			// 1) there may be multiple fragments for prop, obj
@@ -551,11 +583,15 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 		
 			StmtMask () { mask = HasNada; };
 		
-			public void setUnion ( StmtMask m ) {
+			public void setMerge ( StmtMask m ) {
 				mask |= m.mask;	
 			}
 				
-			public void setIsStmt ( StmtMask m ) {
+			public void setHasType () {
+				mask |= HasType;	
+			}
+		
+			public void setIsStmt () {
 				mask |= IsStmt;	
 			}
 		
@@ -563,8 +599,8 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 				return (mask & m.mask) != 0;	
 			}
 		
-			public boolean hasDifference ( StmtMask m ) {
-				return (mask ^ m.mask) != 0;	
+			public boolean equals ( StmtMask m ) {
+				return mask == m.mask;	
 			}
 
 	}
