@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2001-2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RDFDefaultErrorHandler.java,v 1.8 2004-11-25 11:30:00 jeremy_carroll Exp $
+  $Id: RDFDefaultErrorHandler.java,v 1.9 2004-11-25 16:23:48 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -16,10 +16,16 @@ import org.apache.commons.logging.LogFactory;
  * The default error handler for I/O.
  * This uses log4j as its utility.
  * @author  jjc,bwm
- * @version $Revision: 1.8 $ $Date: 2004-11-25 11:30:00 $
+ * @version $Revision: 1.9 $ $Date: 2004-11-25 16:23:48 $
  */
 public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
 
+	/**
+	 * Change this global to make all RDFDefaultErrorHandler's silent!
+	 * Intended for testing purposes only.
+	 */
+	public static boolean silent = false;
+	
     public static final Log logger = LogFactory.getLog( RDFDefaultErrorHandler.class );
     
     /** Creates new RDFDefaultErrorHandler */
@@ -27,15 +33,15 @@ public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
     }
 
     public void warning(Exception e) {
-        logger.warn(ParseException.formatMessage(e));
+        if (!silent) logger.warn(ParseException.formatMessage(e));
     }
 
     public void error(Exception e) {
-        logger.error(ParseException.formatMessage(e));
+    	if (!silent) logger.error(ParseException.formatMessage(e));
     }
 
     public void fatalError(Exception e) {
-        logger.error(ParseException.formatMessage(e));
+    	if (!silent) logger.error(ParseException.formatMessage(e));
         throw e instanceof RuntimeException 
             ? (RuntimeException) e
             : new JenaException( e );
@@ -67,5 +73,5 @@ public class RDFDefaultErrorHandler extends Object implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFDefaultErrorHandler.java,v 1.8 2004-11-25 11:30:00 jeremy_carroll Exp $
+ * $Id: RDFDefaultErrorHandler.java,v 1.9 2004-11-25 16:23:48 jeremy_carroll Exp $
  */
