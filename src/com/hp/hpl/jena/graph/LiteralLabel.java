@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LiteralLabel.java,v 1.4 2003-03-31 10:01:35 der Exp $
+  $Id: LiteralLabel.java,v 1.5 2003-03-31 10:05:29 der Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,7 +9,6 @@ package com.hp.hpl.jena.graph;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.datatypes.xsd.impl.*;
-import com.hp.hpl.jena.graph.dt.*;
 
 /**
  * Represents the "contents" of a Node_Literal.
