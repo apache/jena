@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.10 2003-09-29 20:54:14 der Exp $
+ * $Id: TestBugs.java,v 1.11 2003-10-03 08:54:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
-//import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
+import com.hp.hpl.jena.reasoner.rulesys.FBRuleInfGraph;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -30,7 +30,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-09-29 20:54:14 $
+ * @version $Revision: 1.11 $ on $Date: 2003-10-03 08:54:37 $
  */
 public class TestBugs extends TestCase {
 
@@ -262,6 +262,7 @@ public class TestBugs extends TestCase {
     public void hiddenTestOWLLoop() {
         Model data = ModelLoader.loadModel("file:testing/reasoners/bugs/loop.owl");
         InfModel infmodel = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), data);
+        ((FBRuleInfGraph)infmodel.getGraph()).setTraceOn(true);
         String baseURI = "http://jena.hpl.hp.com/eg#";
         Resource C = infmodel.getResource(baseURI + "C");
         Resource I = infmodel.getResource(baseURI + "i");
