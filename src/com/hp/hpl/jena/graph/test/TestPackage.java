@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.2 2003-01-28 16:20:48 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.3 2003-03-13 13:25:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import junit.framework.*;
+import com.hp.hpl.jena.graph.query.test.*;
 
 /**
     Collected test suite for the .graph package.
@@ -26,6 +27,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestTriple", TestTriple.suite() );
         addTest( "TestReifier", TestReifier.suite() );   
         addTest( "TestTypedLiterals", TestTypedLiterals.suite() );
+        addTest( "TestGraphQuery", QueryTest.suite() );
         }
 
     private void addTest(String name, TestSuite tc) {
