@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import org.xml.sax.SAXParseException;
 /**
  * @author jjc
  *

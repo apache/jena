@@ -23,7 +23,7 @@ import com.hp.hpl.jena.ontology.tidy.impl.LookupLimits;
 //import com.hp.hpl.jena.ontology.tidy.impl.Q;
 import com.hp.hpl.jena.shared.*;
 import java.util.*;
-import java.io.*;
+//import java.io.*;
 /**
  * @author jjc
  * 

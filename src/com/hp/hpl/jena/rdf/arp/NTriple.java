@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.5 2003-09-03 15:50:53 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.6 2003-12-05 16:04:34 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -290,14 +290,22 @@ public class NTriple implements ARPErrorNumbers {
 		String xmlBase;
 
 		URL url;
+		String baseURL;
+		
 		try {
 			File ff = new File(surl);
 			in = new FileInputStream(ff);
 			url = ff.toURL();
+			baseURL  = url.toExternalForm();
+			if (baseURL.startsWith("file:/")
+			    && !baseURL.startsWith("file://")) {
+				baseURL = "file://" + baseURL.substring(5);
+			}
 		} catch (Exception ignore) {
 			try {
 				url = new URL(surl);
 				in = url.openStream();
+				baseURL = url.toExternalForm();
 			} catch (Exception e) {
 				System.err.println("ARP: Failed to open: " + surl);
 				System.err.println("    " + ParseException.formatMessage(ignore));
@@ -305,7 +313,7 @@ public class NTriple implements ARPErrorNumbers {
 				return;
 			}
 		}
-		process(in, url.toExternalForm(), surl);
+		process(in, baseURL, surl);
 	}
 	static private void process(InputStream in, String xmlBasex, String surl) {
 		String xmlBasey = xmlBase == null ? xmlBasex : xmlBase;
