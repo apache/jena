@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReaderFImpl.java,v 1.5 2003-08-01 21:21:36 ian_dickinson Exp $
+ * $Id: RDFReaderFImpl.java,v 1.6 2003-08-15 11:23:21 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -37,7 +37,7 @@ import java.util.Properties;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.5 $ $Date: 2003-08-01 21:21:36 $
+ * @version $Revision: 1.6 $ $Date: 2003-08-15 11:23:21 $
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
 
@@ -48,12 +48,14 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
     protected static final String LANGS[] = { "RDF/XML",
                                               "RDF/XML-ABBREV",
                                               "N-TRIPLE",
+                                              "N-TRIPLES",
                                               "N3"};
     // default readers for each language
 
     protected static final String DEFAULTREADERS[] = {
         "com.hp.hpl.jena.rdf.arp.JenaReader",
         "com.hp.hpl.jena.rdf.arp.JenaReader",
+        Jena.PATH + ".rdf.model.impl.NTripleReader",
         Jena.PATH + ".rdf.model.impl.NTripleReader",
         "com.hp.hpl.jena.n3.N3JenaReader"
     };
