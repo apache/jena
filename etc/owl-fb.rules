@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.19 2003-09-05 16:43:44 der Exp $
+# $Id: owl-fb.rules,v 1.20 2003-09-08 17:29:24 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -506,7 +506,7 @@
 				<- (?X ?P ?V), notLiteral(?V), notBNode(?V) ] ]
 
 [validationOP: (?v rb:validation on()), (?P rdf:type owl:ObjectProperty) ->
-	[validationDTP: (?X rb:violation error('range check', 'Literal value for datatype property (prop, value)', ?P, ?V))
+	[validationDTP: (?X rb:violation warn('range check', 'Literal value for object property (prop, value)', ?P, ?V))
 				<- (?X ?P ?V), isLiteral(?V) ] ]
 
 [validationDTRange: (?v rb:validation on()), (?P rdfs:range ?R) (?R rdf:type rdfs:Datatype) ->
