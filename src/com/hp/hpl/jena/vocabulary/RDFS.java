@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RDFS.java,v 1.5 2003-06-23 12:59:03 chris-dollin Exp $
+  $Id: RDFS.java,v 1.6 2003-06-30 14:55:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -11,7 +11,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /**
  *
  * @author  bwm, updated by kers/daniel/christopher
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-23 12:59:03 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-30 14:55:53 $'
  */
 public class RDFS {
 
@@ -19,25 +19,25 @@ public class RDFS {
     
     private static Model m = ModelFactory.createDefaultModel();
     
-    public static final Resource Class     = m.createResource(uri+"Class");
-    public static final Resource Datatype            = m.createResource(uri+"Datatype");
+    public static final Resource Class = m.createResource(uri+"Class");
+    public static final Resource Datatype = m.createResource(uri+"Datatype");
     public static final Resource ConstraintProperty  =  m.createResource(uri+"ConstraintProperty");
-    public static final Resource Container           = m.createResource(uri+"Container");
+    public static final Resource Container  = m.createResource(uri+"Container");
     public static final Resource ContainerMembershipProperty
                                                      = m.createResource(uri+"ContainerMembershipProperty");
     public static final Resource ConstraintResource  = m.createResource(uri+"ConstraintResource");
-    public static final Resource Literal             = m.createResource(uri+"Literal");
-    public static final Resource Resource            = m.createResource(uri+"Resource");
+    public static final Resource Literal = m.createResource(uri+"Literal");
+    public static final Resource Resource = m.createResource(uri+"Resource");
     
-    public static final Property comment             = m.createProperty(uri, "comment");
-    public static final Property domain              = m.createProperty(uri, "domain");
-    public static final Property label               = m.createProperty(uri, "label");
-    public static final Property isDefinedBy         = m.createProperty(uri, "isDefinedBy");
-    public static final Property range               = m.createProperty(uri, "range");
-    public static final Property seeAlso             = m.createProperty(uri, "seeAlso");
-    public static final Property subClassOf          = m.createProperty(uri, "subClassOf");
-    public static final Property subPropertyOf       = m.createProperty(uri, "subPropertyOf");
-    public static final Property member             = m.createProperty(uri, "member"); 
+    public static final Property comment = m.createProperty(uri, "comment");
+    public static final Property domain = m.createProperty(uri, "domain");
+    public static final Property label = m.createProperty(uri, "label");
+    public static final Property isDefinedBy = m.createProperty(uri, "isDefinedBy");
+    public static final Property range = m.createProperty(uri, "range");
+    public static final Property seeAlso = m.createProperty(uri, "seeAlso");
+    public static final Property subClassOf  = m.createProperty(uri, "subClassOf");
+    public static final Property subPropertyOf  = m.createProperty(uri, "subPropertyOf");
+    public static final Property member  = m.createProperty(uri, "member"); 
 
 /** returns the URI for this schema
  * @return the URI for this schema

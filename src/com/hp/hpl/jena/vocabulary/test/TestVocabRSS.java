@@ -1,34 +1,40 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestVocabularies.java,v 1.3 2003-06-30 14:56:33 chris-dollin Exp $
+  $Id: TestVocabRSS.java,v 1.1 2003-06-30 14:56:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
 
+import com.hp.hpl.jena.vocabulary.*;
+
 import junit.framework.*;
 
 /**
-    Collect together all the vocabulary tests.
+
  	@author kers
 */
-public class TestVocabularies extends TestCase
+public class TestVocabRSS extends VocabTestBase
     {
-    public TestVocabularies( String name )
-        { super( name ); }
+    public TestVocabRSS(String name)
+        { super(name); }
 
-    public static TestSuite suite()
+     public static TestSuite suite()
+        { return new TestSuite( TestVocabRSS.class ); }
+
+    public void testRSS()
         {
-        TestSuite result = new TestSuite();
-        result.addTest( TestVocabRDF.suite() );
-        result.addTest( TestVocabRDFS.suite() );
-        result.addTest( TestVocabVCARD.suite() );
-        result.addTest( TestVocabTestQuery.suite() );
-        result.addTest( TestVocabTestManifest.suite() );
-        result.addTest( TestVocabDB.suite() );
-        result.addTest( TestVocabRSS.suite() );
-        result.addTest( TestVocabResultSet.suite() );
-        return result;
+		String ns = "http://purl.org/rss/1.0/";
+        assertResource( ns + "channel", RSS.channel );
+        assertResource( ns + "item", RSS.item );
+        assertProperty( ns + "description", RSS.description );
+        assertProperty( ns + "image", RSS.image );
+        assertProperty( ns + "items", RSS.items );
+        assertProperty( ns + "link", RSS.link );
+        assertProperty( ns + "name", RSS.name );
+        assertProperty( ns + "textinput", RSS.textinput );
+        assertProperty( ns + "title", RSS.title );
+        assertProperty( ns + "url", RSS.url );
         }
     }
 

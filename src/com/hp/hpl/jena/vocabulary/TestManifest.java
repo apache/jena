@@ -5,10 +5,7 @@
 
 package com.hp.hpl.jena.vocabulary;
 
-import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.*;
 
 /** TestManifest vocabulary class for namespace http://jena.hpl.hp.com/2003/03/test-manifest#
  */
@@ -22,31 +19,14 @@ public class TestManifest {
     public static String getURI() {
           return uri;
     }
-           static String nManifestEntry = "ManifestEntry";
-    public static Resource ManifestEntry;
-           static String nManifest = "Manifest";
-    public static Resource Manifest;
-           static String naction = "action";
-    public static Property action;
-           static String nresult = "result";
-    public static Property result;
-           static String nname = "name";
-    public static Property name;
-           static String nentries = "entries";
-    public static Property entries;
 
-    static {
-        try {
-            ManifestEntry = ResourceFactory.createResource(uri + nManifestEntry);
-            Manifest = ResourceFactory.createResource(uri + nManifest);
-            action = ResourceFactory.createProperty(uri + naction);
-            result = ResourceFactory.createProperty(uri + nresult);
-            name = ResourceFactory.createProperty(uri + nname);
-            entries = ResourceFactory.createProperty(uri + nentries);
-        } catch (Exception e) {
-            ErrorHelper.logInternalError("RDF", 1, e);
-        }
-    }
+    public static final Resource ManifestEntry = ResourceFactory.createResource(uri + "ManifestEntry" );
+    public static final Resource Manifest = ResourceFactory.createResource(uri + "Manifest" );
+    public static final Property action = ResourceFactory.createProperty(uri + "action" );
+    public static final Property result = ResourceFactory.createProperty(uri + "result" );
+    public static final Property name = ResourceFactory.createProperty(uri + "name" );
+    public static final Property entries = ResourceFactory.createProperty(uri + "entries" );
+
 }
 
 
@@ -80,4 +60,3 @@ public class TestManifest {
  * Apache Software Foundation (http://www.apache.org/).
  *
  */
-

@@ -3,13 +3,9 @@
  * [See end of file]
  */
 
-
 package com.hp.hpl.jena.vocabulary;
 
-import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.*;
 
 /** TestQuery vocabulary class for namespace http://jena.hpl.hp.com/2003/03/test-query#
  */
@@ -23,22 +19,11 @@ public class TestQuery {
     public static String getURI() {
           return uri;
     }
-           static String nQueryTest = "QueryTest";
-    public static Resource QueryTest;
-           static String nquery = "query";
-    public static Property query;
-           static String ndata = "data";
-    public static Property data;
 
-    static {
-        try {
-            QueryTest = ResourceFactory.createResource(uri + nQueryTest);
-            query = ResourceFactory.createProperty(uri + nquery);
-            data = ResourceFactory.createProperty(uri + ndata);
-        } catch (Exception e) {
-            ErrorHelper.logInternalError("RDF", 1, e);
-        }
-    }
+    public static final Resource QueryTest = ResourceFactory.createResource( uri + "QueryTest" );
+    public static final Property query = ResourceFactory.createProperty( uri + "query" );
+    public static final Property data = ResourceFactory.createProperty( uri + "data" );
+       
 }
 
 /*

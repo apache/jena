@@ -1,35 +1,39 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestVocabularies.java,v 1.3 2003-06-30 14:56:33 chris-dollin Exp $
+  $Id: TestVocabResultSet.java,v 1.1 2003-06-30 14:56:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
 
+import com.hp.hpl.jena.vocabulary.*;
 import junit.framework.*;
 
 /**
-    Collect together all the vocabulary tests.
- 	@author kers
+     @author kers
 */
-public class TestVocabularies extends TestCase
+public class TestVocabResultSet extends VocabTestBase
     {
-    public TestVocabularies( String name )
-        { super( name ); }
+    public TestVocabResultSet(String name)
+    	{ super(name); }
 
-    public static TestSuite suite()
-        {
-        TestSuite result = new TestSuite();
-        result.addTest( TestVocabRDF.suite() );
-        result.addTest( TestVocabRDFS.suite() );
-        result.addTest( TestVocabVCARD.suite() );
-        result.addTest( TestVocabTestQuery.suite() );
-        result.addTest( TestVocabTestManifest.suite() );
-        result.addTest( TestVocabDB.suite() );
-        result.addTest( TestVocabRSS.suite() );
-        result.addTest( TestVocabResultSet.suite() );
-        return result;
-        }
+	public static TestSuite suite()
+		{ return new TestSuite( TestVocabResultSet.class ); }
+
+	public void testResultSet()
+		{
+		String ns = "http://jena.hpl.hp.com/2003/03/result-set#";
+        assertResource( ns + "ResultSolution", ResultSet.ResultSolution );
+        assertResource( ns + "ResultBinding", ResultSet.ResultBinding );
+        assertResource( ns + "ResultSet", ResultSet.ResultSet );
+        assertProperty( ns + "value", ResultSet.value );
+        assertProperty( ns + "resultVariable", ResultSet.resultVariable );
+        assertProperty( ns + "variable", ResultSet.variable );
+        assertProperty( ns + "size", ResultSet.size );
+        assertProperty( ns + "binding", ResultSet.binding );
+        assertProperty( ns + "solution", ResultSet.solution );
+        assertResource( ns + "undefined", ResultSet.undefined );
+		}
     }
 
 

@@ -31,18 +31,12 @@
 
 package com.hp.hpl.jena.vocabulary;
 
-import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.rdf.model.*;
 
 /**
  *
- * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-05-21 16:45:20 $'
+ * @author  bwm + kers
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-30 14:55:53 $'
  */
 public class RSS extends Object {
 
@@ -58,45 +52,16 @@ public class RSS extends Object {
         return uri;
     }
 
-           static final String   nchannel = "channel";
-    public static       Resource channel = null;
-           static final String   nitem = "item";
-    public static       Resource item = null;
+    public static final Resource channel = ResourceFactory.createResource( uri + "channel" );
+    public static final Resource item = ResourceFactory.createResource( uri + "item" );
 
-           static final String   ndescription = "description";
-    public static       Property description = null;
-           static final String   nimage = "image";
-    public static       Property image = null;
-           static final String   nitems = "items";
-    public static       Property items = null;
-           static final String   nlink = "link";
-    public static       Property link = null;
-           static final String   nname = "name";
-    public static       Property name = null;
-           static final String   ntextinput = "textinput";
-    public static       Property textinput = null;
-           static final String   ntitle = "title";
-    public static       Property title = null;
-           static final String   nurl = "url";
-    public static       Property url = null;
-
-
-    static {
-        try {
-            channel     = new ResourceImpl(uri+nchannel);
-            item        = new ResourceImpl(uri+nitem);
-
-            description = new PropertyImpl(uri, ndescription);
-            image       = new PropertyImpl(uri, nimage);
-            items       = new PropertyImpl(uri, nitems);
-            link        = new PropertyImpl(uri, nlink);
-            name        = new PropertyImpl(uri, nname);
-            textinput   = new PropertyImpl(uri, ntextinput);
-            title       = new PropertyImpl(uri, ntitle);
-            url         = new PropertyImpl(uri, nurl);
-        } catch (JenaException e) {
-            ErrorHelper.logInternalError("RSS", 1, e);
-        }
-    }
+    public static final Property description = ResourceFactory.createProperty( uri, "description" );
+    public static final Property image = ResourceFactory.createProperty( uri, "image" );
+    public static final Property items = ResourceFactory.createProperty( uri, "items" );
+    public static final Property link = ResourceFactory.createProperty( uri, "link" );
+    public static final Property name = ResourceFactory.createProperty( uri, "name" );
+    public static final Property textinput = ResourceFactory.createProperty( uri, "textinput" );
+    public static final Property title = ResourceFactory.createProperty( uri, "title" );
+    public static final Property url = ResourceFactory.createProperty( uri, "url" );
 
 }

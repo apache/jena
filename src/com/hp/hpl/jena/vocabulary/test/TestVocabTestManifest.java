@@ -1,37 +1,38 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestVocabularies.java,v 1.3 2003-06-30 14:56:33 chris-dollin Exp $
+  $Id: TestVocabTestManifest.java,v 1.1 2003-06-30 14:56:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
 
+import com.hp.hpl.jena.vocabulary.*;
 import junit.framework.*;
 
 /**
-    Collect together all the vocabulary tests.
+    Test for the TestManifest vocabulary.
  	@author kers
 */
-public class TestVocabularies extends TestCase
+public class TestVocabTestManifest extends VocabTestBase
     {
-    public TestVocabularies( String name )
-        { super( name ); }
+    public TestVocabTestManifest(String name)
+        { super(name); }
 
     public static TestSuite suite()
-        {
-        TestSuite result = new TestSuite();
-        result.addTest( TestVocabRDF.suite() );
-        result.addTest( TestVocabRDFS.suite() );
-        result.addTest( TestVocabVCARD.suite() );
-        result.addTest( TestVocabTestQuery.suite() );
-        result.addTest( TestVocabTestManifest.suite() );
-        result.addTest( TestVocabDB.suite() );
-        result.addTest( TestVocabRSS.suite() );
-        result.addTest( TestVocabResultSet.suite() );
-        return result;
-        }
-    }
+        { return new TestSuite( TestVocabTestManifest.class ); }
 
+    public void testTestManifest()
+        {
+        String ns = "http://jena.hpl.hp.com/2003/03/test-manifest#";
+        assertEquals( ns, TestManifest.getURI() );
+        assertResource( ns + "ManifestEntry", TestManifest.ManifestEntry );
+        assertResource( ns + "Manifest", TestManifest.Manifest );
+        assertProperty( ns + "action", TestManifest.action );
+        assertProperty( ns + "result", TestManifest.result );
+        assertProperty( ns + "name", TestManifest.name );
+        assertProperty( ns + "entries", TestManifest.entries );
+    	}
+	}
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

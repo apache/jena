@@ -1,35 +1,26 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestVocabularies.java,v 1.3 2003-06-30 14:56:33 chris-dollin Exp $
+  $Id: VocabTestBase.java,v 1.1 2003-06-30 14:56:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
 
-import junit.framework.*;
-
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.rdf.model.*;
 /**
-    Collect together all the vocabulary tests.
  	@author kers
 */
-public class TestVocabularies extends TestCase
+public class VocabTestBase extends ModelTestBase
     {
-    public TestVocabularies( String name )
-        { super( name ); }
+    public VocabTestBase(String name)
+        { super(name); }
 
-    public static TestSuite suite()
-        {
-        TestSuite result = new TestSuite();
-        result.addTest( TestVocabRDF.suite() );
-        result.addTest( TestVocabRDFS.suite() );
-        result.addTest( TestVocabVCARD.suite() );
-        result.addTest( TestVocabTestQuery.suite() );
-        result.addTest( TestVocabTestManifest.suite() );
-        result.addTest( TestVocabDB.suite() );
-        result.addTest( TestVocabRSS.suite() );
-        result.addTest( TestVocabResultSet.suite() );
-        return result;
-        }
+    public void assertProperty( String uri, Property p )
+        { assertResource( uri, p ); }
+    
+    public void assertResource( String uri, Resource r )
+        { assertEquals( uri, r.getURI() ); }
     }
 
 

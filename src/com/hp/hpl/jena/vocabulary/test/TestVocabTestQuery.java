@@ -1,34 +1,32 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestVocabularies.java,v 1.3 2003-06-30 14:56:33 chris-dollin Exp $
+  $Id: TestVocabTestQuery.java,v 1.1 2003-06-30 14:56:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
 
-import junit.framework.*;
+import com.hp.hpl.jena.vocabulary.*;
 
+import junit.framework.*;
 /**
-    Collect together all the vocabulary tests.
+    Tests for the TestQuery vocabulary.
  	@author kers
 */
-public class TestVocabularies extends TestCase
+public class TestVocabTestQuery extends VocabTestBase
     {
-    public TestVocabularies( String name )
-        { super( name ); }
+    public TestVocabTestQuery(String name)
+        { super(name);}
 
     public static TestSuite suite()
+        { return new TestSuite( TestVocabTestQuery.class ); }
+        
+    public void testTestQuery()
         {
-        TestSuite result = new TestSuite();
-        result.addTest( TestVocabRDF.suite() );
-        result.addTest( TestVocabRDFS.suite() );
-        result.addTest( TestVocabVCARD.suite() );
-        result.addTest( TestVocabTestQuery.suite() );
-        result.addTest( TestVocabTestManifest.suite() );
-        result.addTest( TestVocabDB.suite() );
-        result.addTest( TestVocabRSS.suite() );
-        result.addTest( TestVocabResultSet.suite() );
-        return result;
+        String ns = "http://jena.hpl.hp.com/2003/03/test-query#";
+        assertResource( ns + "QueryTest", TestQuery.QueryTest );
+        assertProperty( ns + "query", TestQuery.query );
+        assertProperty( ns + "data", TestQuery.data );
         }
     }
 
