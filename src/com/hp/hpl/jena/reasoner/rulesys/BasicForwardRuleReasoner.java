@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleReasoner.java,v 1.11 2003-08-27 13:09:18 andy_seaborne Exp $
+ * $Id: BasicForwardRuleReasoner.java,v 1.12 2003-09-08 13:02:07 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 import com.hp.hpl.jena.rdf.model.*;
@@ -18,7 +18,7 @@ import java.util.*;
  * according to a set of rules. This trivial version does not support
  * separate schema processing. The actual work is done in the inference
  * graph implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.11 $ on $Date: 2003-08-27 13:09:18 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.12 $ on $Date: 2003-09-08 13:02:07 $ */
 public class BasicForwardRuleReasoner implements Reasoner {
     
     /** The parent reasoner factory which is consulted to answer capability questions */
@@ -34,7 +34,7 @@ public class BasicForwardRuleReasoner implements Reasoner {
     protected boolean recordDerivations = false;
     
     /** Flag which, if true, enables tracing of rule actions to logger.info */
-    boolean traceOn = false;
+    protected boolean traceOn = false;
     
     /**
      * Constructor. This is the raw version that does not reference a ReasonerFactory

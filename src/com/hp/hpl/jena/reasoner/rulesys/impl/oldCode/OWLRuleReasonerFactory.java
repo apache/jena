@@ -5,16 +5,20 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLRuleReasonerFactory.java,v 1.9 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: OWLRuleReasonerFactory.java,v 1.1 2003-09-08 13:01:58 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys;
+package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
 
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
+ * @deprecated Obsoleted post jena2.0, replaced by 
+ * {@link com.hp.hpl.jena.reasoner.rulesys.OWLFBRuleReasonerFactory}.
+ * 
  * Factory class for creating blank instances of the OWL Reasoner.
  * <p>
  * The reasoner can be configured using three properties (set as
@@ -30,7 +34,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.1 $ on $Date: 2003-09-08 13:01:58 $
  */
 public class OWLRuleReasonerFactory implements ReasonerFactory {
     
