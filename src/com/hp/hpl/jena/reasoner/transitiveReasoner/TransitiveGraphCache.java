@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.10 2003-06-22 16:10:50 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.11 2003-06-23 13:54:29 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -37,7 +37,7 @@ import java.util.*;
  * <p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-23 13:54:29 $
  */
 public class TransitiveGraphCache implements Finder {
 
@@ -88,13 +88,21 @@ public class TransitiveGraphCache implements Finder {
     }
     
     /**
+     * Clear the entire cache contents. 
+     */
+    public void clear() {
+        clearClosureCache();
+        nodeMap.clear();
+    }
+    
+    /**
      * Clear the closure cache, if any.
      */
     private void clearClosureCache() {
         if (cacheOn) {
             // blow away the cache, don't try to do incremental updates
-            if (cacheClosureBackward.size() > 0) cacheClosureBackward = new HashMap();
-            if (cacheClosureForward.size() > 0) cacheClosureForward = new HashMap();
+            if (cacheClosureBackward.size() > 0) cacheClosureBackward.clear();
+            if (cacheClosureForward.size() > 0) cacheClosureForward.clear();
         }
     }
     

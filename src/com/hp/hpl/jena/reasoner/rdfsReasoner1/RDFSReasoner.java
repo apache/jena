@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.14 2003-06-22 16:10:50 der Exp $
+ * $Id: RDFSReasoner.java,v 1.15 2003-06-23 13:54:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.15 $ on $Date: 2003-06-23 13:54:08 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -131,8 +131,8 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
         FGraph ftbox = new FGraph(tbox);
         TransitiveGraphCache sCc = new TransitiveGraphCache(directSubClassOf, subClassOf);
         TransitiveGraphCache sPc = new TransitiveGraphCache(directSubPropertyOf, subPropertyOf);
-        TransitiveReasoner.cacheSubProp(ftbox, sPc);
-        TransitiveReasoner.cacheSubClass(ftbox, sPc, sCc);
+        TransitiveEngine.cacheSubProp(ftbox, sPc);
+        TransitiveEngine.cacheSubClass(ftbox, sPc, sCc);
         sPc.setCaching(true);
         return new RDFSReasoner(ftbox, sCc, sPc, scanProperties);
     }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSInfGraph.java,v 1.11 2003-05-28 11:13:54 chris-dollin Exp $
+ * $Id: RDFSInfGraph.java,v 1.12 2003-06-23 13:54:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-05-28 11:13:54 $
+ * @version $Revision: 1.12 $ on $Date: 2003-06-23 13:54:08 $
  */
 public class RDFSInfGraph extends BaseInfGraph {
 
@@ -222,18 +222,18 @@ public class RDFSInfGraph extends BaseInfGraph {
        // Check for vocabulary definitions in the data graph
        Graph data = fdata.getGraph();
        if (
-           (RDFSReasoner.checkOccurance(RDFSReasoner.subPropertyOf, data, subPropertyCache) ||
-            RDFSReasoner.checkOccurance(RDFSReasoner.subClassOf, data, subPropertyCache) ||
-            RDFSReasoner.checkOccurance(RDFSReasoner.domainP, data, subPropertyCache) ||
-            RDFSReasoner.checkOccurance(RDFSReasoner.rangeP, data, subPropertyCache) )) {
+           (TransitiveEngine.checkOccurance(RDFSReasoner.subPropertyOf, data, subPropertyCache) ||
+            TransitiveEngine.checkOccurance(RDFSReasoner.subClassOf, data, subPropertyCache) ||
+            TransitiveEngine.checkOccurance(RDFSReasoner.domainP, data, subPropertyCache) ||
+            TransitiveEngine.checkOccurance(RDFSReasoner.rangeP, data, subPropertyCache) )) {
             
            // The data graph contains some ontology knowledge so split the caches
            // now and rebuild them using merged data
            Finder tempTbox = tbox == null ? fdata : FinderUtil.cascade(tbox, fdata);
 
            splitSubClassCache();
-           TransitiveReasoner.cacheSubProp(tempTbox, subPropertyCache);
-           TransitiveReasoner.cacheSubClass(tempTbox, subPropertyCache, subClassCache);
+           TransitiveEngine.cacheSubProp(tempTbox, subPropertyCache);
+           TransitiveEngine.cacheSubClass(tempTbox, subPropertyCache, subClassCache);
            // Cache the closures of subPropertyOf because these are likely to be
            // small and accessed a lot
            subPropertyCache.setCaching(true);
@@ -243,7 +243,7 @@ public class RDFSInfGraph extends BaseInfGraph {
        for (int i = 0; i < baseAxioms.length; i++) {
            axioms.getGraph().add(baseAxioms[i]);
        }
-       TransitiveReasoner.cacheSubProp(axioms, subPropertyCache);
+       TransitiveEngine.cacheSubProp(axioms, subPropertyCache);
         
        // identify all properties and collection properties
        // This can be disabled in which case queries of the form (*,type,Property) will be

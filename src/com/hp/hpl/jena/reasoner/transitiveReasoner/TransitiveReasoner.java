@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.11 2003-06-13 10:12:17 chris-dollin Exp $
+ * $Id: TransitiveReasoner.java,v 1.12 2003-06-23 13:54:29 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -14,9 +14,6 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-
-import java.util.HashSet;
 
 /**
  * A  simple "reasoner" used to help with API development.
@@ -34,7 +31,7 @@ import java.util.HashSet;
  * of RDFS processing.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-06-13 10:12:17 $
+ * @version $Revision: 1.12 $ on $Date: 2003-06-23 13:54:29 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -151,112 +148,10 @@ public class TransitiveReasoner implements Reasoner {
         }
         TransitiveGraphCache sCc = new TransitiveGraphCache(directSubClassOf, subClassOf);
         TransitiveGraphCache sPc = new TransitiveGraphCache(directSubPropertyOf, subPropertyOf);
-        cacheSubProp(tbox, sPc);
-        cacheSubClass(tbox, sPc, sCc);
+        TransitiveEngine.cacheSubProp(tbox, sPc);
+        TransitiveEngine.cacheSubClass(tbox, sPc, sCc);
         
         return new TransitiveReasoner(tbox, sCc, sPc);
-    }
-    
-    /**
-     * Caches all subPropertyOf declarations, including any meta level
-     * ones (subPropertyOf subPropertyOf). Public to allow other reasoners
-     * to use it but not of interest to end users.
-     * 
-     * @param graph a graph whose declarations are to be cached
-     * @param spCache the existing state of the subPropertyOf cache, will be updated
-     * @return true if there were new metalevel declarations discovered.
-     */
-    public static boolean cacheSubProp(Finder graph, TransitiveGraphCache spCache) {
-        if (graph == null) return false;
-        
-        spCache.cacheAll(graph, subPropertyOf);
-        
-        // Check for any properties which are subProperties of subProperty
-        // and so introduce additional subProperty relations.
-        // Each one discovered might reveal indirect subPropertyOf subPropertyOf
-        // declarations - hence the double iteration
-        boolean foundAny = false;
-        boolean foundMore = false;
-        HashSet cached = new HashSet();
-        do {
-            ExtendedIterator subProps 
-                = spCache.find(new TriplePattern(null, subPropertyOf, subPropertyOf));
-            while (subProps.hasNext()) {
-                foundMore = false;
-                Triple t = (Triple)subProps.next();
-                Node subProp = t.getSubject();
-                if (!subProp.equals(subPropertyOf) && !cached.contains(subProp)) {
-                    foundAny = true;
-                    cached.add(subProp);
-                    spCache.cacheAll(graph, subProp);
-                    foundMore = true;
-                }
-            }
-        } while (foundMore);
-        
-        return foundAny;
-    }
-    
-    /**
-     * Caches all subClass declarations, including those that
-     * are defined via subProperties of subClassOf. Public to allow other reasoners
-     * to use it but not of interest to end users.
-     * 
-     * @param graph a graph whose declarations are to be cached
-     * @param spCache the existing state of the subPropertyOf cache
-     * @param scCache the existing state of the subClassOf cache, will be updated
-     * @return true if there were new metalevel declarations discovered.
-     */
-    public static boolean cacheSubClass(Finder graph, TransitiveGraphCache spCache, TransitiveGraphCache scCache) {
-        if (graph == null) return false;
-
-        scCache.cacheAll(graph, subClassOf);       
-        
-        // Check for any properties which are subProperties of subClassOf
-        boolean foundAny = false;
-        ExtendedIterator subClasses 
-            = spCache.find(new TriplePattern(null, subPropertyOf, subClassOf));
-        while (subClasses.hasNext()) {
-            foundAny = true;
-            Triple t = (Triple)subClasses.next();
-            Node subClass = t.getSubject();
-            if (!subClass.equals(subClassOf)) {
-                scCache.cacheAll(graph, subClass);
-            }
-        }
-        
-        return foundAny;
-    }
-    
-    /**
-     * Test if there are any usages of prop within the given graph.
-     * This includes indirect usages incurred by subProperties of prop.
-     * Public to allow other reasoners
-     * to use it but not of interest to end users.
-     * 
-     * @param prop the property to be checked for
-     * @param graph the graph to be check
-     * @param spCache the subPropertyOf cache to use
-     * @return true if there is a triple using prop or one of its sub properties
-     */
-    public static boolean checkOccurance(Node prop, Graph graph, TransitiveGraphCache spCache) {
-        boolean foundOne = false;
-        ExtendedIterator uses  = graph.find( null, prop, null );
-        foundOne = uses.hasNext();
-        uses.close();
-        if (foundOne) return foundOne;
-        
-        ExtendedIterator propVariants 
-           = spCache.find(new TriplePattern(null, subPropertyOf, prop));
-        while (propVariants.hasNext() && !foundOne) {
-            Triple t = (Triple)propVariants.next();
-            Node propVariant = t.getSubject();
-            uses = graph.find( null, propVariant, null );
-            foundOne = uses.hasNext();
-            uses.close();
-        }
-        propVariants.close();
-        return foundOne;
     }
     
     /**
