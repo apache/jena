@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.1 2003-04-30 17:45:12 csayers Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.2 2003-05-05 22:10:29 csayers Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.db.*;
     An implementation of the bulk update interface.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.1 $
+ 	@version $Revision: 1.2 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -42,7 +42,8 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 			while (it.hasNext() && list.size() < CHUNK_SIZE) {
 				list.add(it.next());
 			}
-			graph.add(list); // list is cleared as a side-effect of this operation
+			graph.add(list);
+			list.clear();
 		}
 	}
 
@@ -66,7 +67,8 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 			while (it.hasNext() && list.size() < CHUNK_SIZE) {
 				list.add(it.next());
 			}
-			graph.delete(list); // list is cleared as a side-effect of this operation
+			graph.delete(list);
+			list.clear();
 		}
 	}
 

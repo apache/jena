@@ -47,7 +47,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -167,20 +167,19 @@ public class GraphRDB extends GraphBase implements Graph {
 	}
 
 	/** Add a list of triples.
-	 * As each triple is added, it is removed from the List, 
-	 * so upon a successful return the List will be empty.
 	 * 
-	 * @param triples List to be added. This is modified by the call.
+	 * @param triples List to be added. This is unchanged by the call
 	 */
 	public void add(List triples) {
 		if(m_specializedGraphs == null)
 			throw new RDFRDBException("Error - attempt to call add on a GraphRDB that has already been closed");
 
+		ArrayList localTriples = new ArrayList( triples );
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
-			sg.add( triples, complete);
+			sg.add( localTriples, complete);
 			if( complete.isDone())
 				return;
 		}
@@ -209,19 +208,18 @@ public class GraphRDB extends GraphBase implements Graph {
 	}
 
 	/** Delete a list of triples.
-	 * As each triple is deleted, it is removed from the List, 
-	 * so upon a successful return the List will be empty.
 	 * 
-	 * @param triples List to be deleted. This is modified by the call.
+	 * @param triples List to be deleted. This is unchanged by the call.
 	 */
 	public void delete(List triples) {
 		if(m_specializedGraphs == null)
 			throw new RDFRDBException("Error - attempt to call delete on a GraphRDB that has already been closed");
+		ArrayList localTriples = new ArrayList( triples );
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
-			sg.delete( triples, complete);
+			sg.delete( localTriples, complete);
 			if( complete.isDone())
 				return;
 		}
