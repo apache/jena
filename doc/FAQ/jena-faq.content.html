@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.14 2004-01-12 16:30:04 der Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.15 2004-01-31 16:13:18 der Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -40,6 +40,7 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#reasoner-0">I want to develop my own rules, how do I get started?</a></li>
   <li><a href="#reasoner-1">Why are there two different arrows ( -&gt; and &lt;- ) in the rule syntax?</a></li>
   <li><a href="#reasoner-2">The domain and range inferences look wrong, is that a bug?</a></li>
+  <li><a href="#reasoner-3">Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></a></li>
 </ul>
 <h3>Ontology API</h3>
 <ul>
@@ -182,6 +183,20 @@ Jena 2 &ndash; Frequently Asked Questions
       eg:Man&gt;</code> then we would start concluding that anything with a name 
       was a man which is not right - every Man can have a name but non-Man Persons 
       are also allowed to have names in this example.</p>
+     
+  <p id="reasoner-3"><strong>Q: Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></strong><br />
+      A: If you create an infernce graph explicitly from an OWL reasoner or implicitly
+      (by using OntModelSpec.OWL_*_RULE) then it is best if the argument models
+      (data and schema) are plain models. It is easy to accidently misuse the API and
+      create an inference model working over the results of another inference model.
+	  This is a redunancy which significantly affects performance to no useful effect.
+	  To help detect this situation we have added a warning message. The best way
+	  to stop the message is to change your model construction code so that only the
+	  final InfModel/OntModel is specified to use OWL inference. If this is not
+	  appropriate for some reason you can disable the check and warning messages 
+	  using the global flag <code>com.hp.hpl.jena.shared.impl.JenaParameters.enableOWLRuleOverOWLRuleWarnings.</code></p>
+      
+      
     <h3>Ontology API</h3>
 <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
   etc) work?</strong><br />

@@ -5,14 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: JenaParameters.java,v 1.4 2004-01-30 16:31:32 der Exp $
+ * $Id: JenaParameters.java,v 1.5 2004-01-31 16:13:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.shared.impl;
 
 /**
  * This class holds global, static, configuration parameters that
  * affect the behaviour of the Jena API. These should not be changed
- * unless you are sure you know what you are doing and even then then
+ * unless you are sure you know what you are doing and even then 
  * should ideally only be changed before any Models are created or processed.
  * <p>
  * These parameters should not be regarded as a stable part of the API. If
@@ -20,7 +20,7 @@ package com.hp.hpl.jena.shared.impl;
  * moved to being model-specific rather than global.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2004-01-30 16:31:32 $
+ * @version $Revision: 1.5 $ on $Date: 2004-01-31 16:13:18 $
  */
 public class JenaParameters {
     
@@ -88,6 +88,12 @@ public class JenaParameters {
      * indirect consequences will, however, still be visible.  
      */
     public static boolean enableFilteringOfHiddenInfNodes = true;    
+    
+    /**
+     * If this flag is true (default) then attmempts to build an OWL inference
+     * graph over another OWL inference graph will log a warning message.
+     */
+    public static boolean enableOWLRuleOverOWLRuleWarnings = true;
 }
 
 

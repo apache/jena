@@ -78,6 +78,8 @@ o ModelFactory improvements:
 
 Reasoner subsystem:
 
+o Added a check for constructing one OWL reasoner instance layered on top
+  of another because this can have a large performance impact to no benefit.
 o Added a "hide" primitive which marks nodes as hidden. When querying an
   inference model no triples containing hidden subject or object nodes will
   be included in the result iterator.
