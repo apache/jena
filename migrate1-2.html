@@ -9,7 +9,7 @@
 
 <body xml:lang="en" lang="en" bgcolor="#FFFFFF">
 		<h1 style="text-align: center; line-height: 18pt">Migrating from Jena1  to Jena 2</h1>
-		<p>Jena 2 supports the Jena 1 API.  However a number of changes have been made that will cause existing code not to run out of the box.   The Jena team expect that there will be tools to help with the migration of Jena 1 code, but they don't exist yet.</p>
+		<p>Jena 2 supports the Jena 1 API. However a number of changes have been made that will cause existing code not to run out of the box. The Jena team expect that there will be tools to help with the migration of Jena 1 code, but they don't exist yet, as we are not encouraging folks to migrate.</p>
 		<p>The changes are conceptually minor, mostly just renaming things into a more sensible pattern.</p>
 		<h2>What Must be changed:</h2>
 		<h3>package renaming:</h3>
@@ -28,7 +28,11 @@
 		<h2>What Should be Changed</h2>
 		<h3>new SimpleSelector</h3>
 		<ul>
-			<li>SelectorImpl was the only case (other than creating models - see above) where applications had to use a specific implementation class rather than a class defined in the API.  A new SimpleSelector class has been added into the API package.  This is a clone of the old SelectorImpl class.  The old class still exists in the com.hp.hpl.jena.rdf.model.impl package so existing code won't break with the right import, but moving to the new class is encouraged.  The old one will eventually be deprecated.</li></ul>
+			<li>SelectorImpl was the only case (other than creating models - see above) where applications had to use a specific implementation class rather than a class defined in the API.  A new SimpleSelector class has been added into the API package.  This is a clone of the old SelectorImpl class.  The old class still exists in the com.hp.hpl.jena.rdf.model.impl package so existing code won't break with the right import, but moving to the new class is encouraged.  The old one will eventually be deprecated.</li>
+		</ul>
+		<h3>*Impl classes</h3>
+		<ul>
+			<li>Some folks have used  some of the implementation classes directly instead of using the factory methods provided in, e.g. Model.  We are tidying up the javadoc so that the implementation classes are no longer so visible.  Rather than renaming the import, it would be better to switch to using the factory methods.  However, the *Impl classes still exist, and if you need a quick fix, many of them can be found in com.hp.hpl.jena.rdf.model.impl.</li></ul>
 		
 	</body>
 </html>
