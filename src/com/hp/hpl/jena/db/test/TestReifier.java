@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.11 2003-07-25 09:03:29 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.12 2003-08-05 14:34:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -12,7 +12,6 @@ import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
-import com.hp.hpl.jena.shared.*;
 
 import junit.framework.*;
 
@@ -34,11 +33,8 @@ public class TestReifier extends AbstractTestReifier  {
 		return new TestSuite(TestReifier.class);
 	}
 
-
 	public void setUp() 
-        {
-		theConnection = TestConnection.makeAndCleanTestConnection();
-	   }
+        { theConnection = TestConnection.makeAndCleanTestConnection(); }
 
 	public void tearDown() throws Exception 
         {
@@ -47,15 +43,21 @@ public class TestReifier extends AbstractTestReifier  {
 		theConnection.close();
         }
 
-	public Graph getGraph() {
-		// in the following, we specify the same reification behaviour as the
-		// current GraphMem (so we can copy the GraphMem reification test code).
-		GraphRDB g = new GraphRDB(theConnection, "name"+theGraphs.size(), 
-				theConnection.getDefaultModelProperties().getGraph(), 
-				GraphRDB.OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS, true);
-		theGraphs.add(g);
+	public Graph getGraph( Reifier.Style style ) {
+		GraphRDB g = new GraphRDB
+            (
+            theConnection, 
+            "name" + theGraphs.size(), 
+            theConnection.getDefaultModelProperties().getGraph(), 
+            GraphRDB.styleRDB( style ), 
+            true 
+            );
+		theGraphs.add( g );
 		return g;		
 	   }
+       
+    public Graph getGraph()
+        { return getGraph( Reifier.Convenient ); }
         
     }
 

@@ -13,8 +13,6 @@ import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
 
-
-
 /**
  *
  * GraphRDB implementation
@@ -47,7 +45,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -117,7 +115,20 @@ public class GraphRDB extends GraphBase implements Graph {
 	 */
 	public static final int OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS = 3;
 	
-	
+    /**
+        Answer the integer representing the RDB reifier style given the Reifier style.
+    */
+	public static int styleRDB( Reifier.Style style )
+        {
+        if (style == Reifier.Standard) 
+            return GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING;
+        if (style == Reifier.Convenient)
+            return GraphRDB.OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS;
+        if (style == Reifier.Minimal)
+            return GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING;
+        throw new JenaException( "unsupported reification style" );
+        }
+        
 	/**
 	 * Construct a new GraphRDB
 	 * @param con an open connection to the database
@@ -461,6 +472,7 @@ public class GraphRDB extends GraphBase implements Graph {
 			return null;
 		return m_driver.getConnection();
 	}
+
 }
 
 /*

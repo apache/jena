@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.6 2003-08-01 09:46:37 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.7 2003-08-05 14:34:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -21,6 +20,8 @@ public abstract class AbstractTestReifier extends GraphTestBase
         { super(name); }
         
     public abstract Graph getGraph();
+    
+    public abstract Graph getGraph( Reifier.Style style );
 
     protected final Graph getGraphWith( String facts )
         {
@@ -52,7 +53,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testIntercept()
         {
-        Graph g = GraphBase.withReification( getGraph(), Reifier.Convenient );
+        Graph g = getGraph( Reifier.Convenient );
         Reifier r = g.getReifier();
         Node S = node( "sub" ), O = node( "obj" );
         Node RS = node( "http://example.org/type" );
@@ -67,7 +68,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testHiddenTriples()
         {
-        Graph g = GraphBase.withReification( getGraph(), Reifier.Convenient );
+        Graph g = getGraph( Reifier.Convenient );
         Reifier r = g.getReifier();
         Node S = node( "SSS" ), P = node( "PPP" );
         g.add( new Triple( S, RDF.Nodes.predicate, P ) );
@@ -164,7 +165,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testKevinCaseA()
         {
-        Graph G = GraphBase.withReification( getGraph(), Reifier.Standard );
+        Graph G = getGraph( Reifier.Standard );
         Node X = node( "x" ), a = node( "a" ), b = node( "b" ), c = node( "c" );
         G.add( new Triple( X, RDF.Nodes.type, RDF.Nodes.Statement ) );
         G.getReifier().reifyAs( X, new Triple( a, b, c ) ); 
@@ -172,7 +173,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testKevinCaseB()
         {
-        Graph G = GraphBase.withReification( getGraph(), Reifier.Standard );
+        Graph G = getGraph( Reifier.Standard );
         Node X = node( "x" ), Y = node( "y" );
         Node a = node( "a" ), b = node( "b" ), c = node( "c" );
         G.add( new Triple( X, RDF.Nodes.subject, Y ) );
