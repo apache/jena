@@ -1,7 +1,7 @@
 /*
   (c) Copyright Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.6 2004-11-19 14:38:13 chris-dollin Exp $
+  $Id: MixedGraphMem.java,v 1.7 2004-12-03 12:11:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -18,10 +18,15 @@ import com.hp.hpl.jena.util.iterator.*;
 */
 public class MixedGraphMem extends GraphMemBase implements Graph
     {    
-    protected Thing thing = new Thing();
+    protected Thing thing = new Thing( this );
     
     public static class Thing 
     	{
+        protected final Graph parent;
+        
+        public Thing( Graph parent )
+            { this.parent = parent; }
+        
         protected Map map = CollectionFactory.createHashedMap();
 
         protected int size = 0;
@@ -96,6 +101,7 @@ public class MixedGraphMem extends GraphMemBase implements Graph
                         excise( remember.getSubject(), remember );
                         excise( remember.getPredicate(), remember );
                         excise( remember.getObject(), remember );
+                        parent.getEventManager().notifyDeleteTriple( parent, remember );
                         }
                     
                 	}  .filterKeep( new TripleMatchFilter( pattern ) );
@@ -165,6 +171,7 @@ public class MixedGraphMem extends GraphMemBase implements Graph
                     excise( remember.getSubject(), remember );
                     excise( remember.getPredicate(), remember );
                     excise( remember.getObject(), remember );
+                    parent.getEventManager().notifyDeleteTriple( parent, remember );
                     }
                 }; 
             }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.53 2004-12-02 16:13:08 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.54 2004-12-03 12:11:33 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -14,6 +14,8 @@ import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
+
+import junit.framework.Assert;
 
 /**
     AbstractTestGraph provides a bunch of basic tests for something that
@@ -402,6 +404,26 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         L.assertHas( new Object[] { "delete", g, SPO} );
         }
         
+    public void testEventDeleteByFind()
+        {
+        Graph g = getAndRegister( L );
+        if (g.getCapabilities().iteratorRemoveAllowed())
+            {
+            Triple toRemove = triple( "remove this triple" );
+            g.add( toRemove );
+            ExtendedIterator spo = g.find( toRemove );
+            assertTrue( "ensure a(t least) one triple", spo.hasNext() );
+            spo.next();
+            spo.remove();
+            /* */
+            ;
+            List things = Arrays.asList( (new Object[] { "add", g, toRemove, "delete", g, toRemove}) );
+            if (L.has( things ) == false) 
+                System.err.println( ">> failed, graph type = " + g.getClass() );
+            L.assertHas( new Object[] { "add", g, toRemove, "delete", g, toRemove} );
+            }
+        }
+    
     public void testTwoListeners()
         {
         RecordingListener L1 = new RecordingListener();

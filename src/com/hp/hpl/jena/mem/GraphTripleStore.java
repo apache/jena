@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.4 2004-12-02 15:48:14 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.5 2004-12-03 12:11:34 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -28,8 +28,10 @@ public class GraphTripleStore implements TripleStore
     protected NodeToTriplesMap objects = new NodeToTriplesMap()
         { public Node getIndexNode( Triple t ) { return t.getObject(); } };
         
-    public GraphTripleStore()
-        {}
+    protected Graph parent;
+    
+    public GraphTripleStore( Graph parent )
+        { this.parent = parent; }
     
     /**
          Destroy this triple store - discard the indexes.
@@ -112,13 +114,13 @@ public class GraphTripleStore implements TripleStore
         Node om = t.getObject();
         Node sm = t.getSubject();
         if (sm.isConcrete())
-            return new StoreTripleIterator( subjects.iterator( sm , t ), predicates, objects );
+            return new StoreTripleIterator( parent, subjects.iterator( sm , t ), predicates, objects );
         else if (om.isConcrete() && !om.isLiteral())
-            return new StoreTripleIterator( objects.iterator( om, t ), subjects, predicates );
+            return new StoreTripleIterator( parent, objects.iterator( om, t ), subjects, predicates );
         else if (pm.isConcrete())
-            return new StoreTripleIterator( predicates.iterator( pm, t ), subjects, objects );
+            return new StoreTripleIterator( parent, predicates.iterator( pm, t ), subjects, objects );
         else
-            return new StoreTripleIterator( subjects.iterator( t ), predicates, objects );
+            return new StoreTripleIterator( parent, subjects.iterator( t ), predicates, objects );
         }
     
     /**
