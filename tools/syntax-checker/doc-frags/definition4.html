@@ -1,0 +1,35 @@
+</ul>
+</li>
+%%dl_only(Lvl,
+'<li><a name="use-aux-table" id="use-aux-table"> </a>
+A blank node may be the subject of at most one triple matching in the auxilliary
+table, in which case it must not be the object of any triple.</li>').
+<li>
+<a name="structural" id="structural"> </a>
+Every blank node is either of
+category <em>unnamedIndividual</em>
+or meets the structural requirements listed
+below, in the appropriate table.
+</li>
+</ol>
+<p>
+Such an RDF graph is finite, 
+being constructed from a finite number of finite 
+documents.
+</p>
+
+<p>
+<a name="directed-cycle" id="directed-cycle"> 
+A directed cycle</a> of blank nodes is
+a sequence of triples 
+<code>t<sub>0</sub></code>,
+<code>t<sub>1</sub></code>,
+...
+<code>t<sub>n</sub></code>,
+in which <code>t<sub>n</sub> = t<sub>0</sub></code>,
+and in which the subjects and objects of all
+the triples are blank, and in which the object
+of <code>t<sub>i</sub></code> is the subject
+of <code>t<sub>i+1</sub></code>, for <code>i</code>
+from <code>0</code> to <code>n-1</code>.
+</p>
