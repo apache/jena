@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.22 2004-03-18 12:14:53 der Exp $
+ * $Id: TestBasics.java,v 1.23 2004-06-01 08:09:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2004-03-18 12:14:53 $
+ * @version $Revision: 1.23 $ on $Date: 2004-06-01 08:09:56 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -457,6 +457,30 @@ public class TestBasics extends TestCase  {
         data.add(new Triple(n1, p, n2));
         InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(data);
         assertEquals(infgraph.size(), 2);
+    }
+    
+    /**
+     * Check validity report implementation, there had been a stupid bug here.
+     */
+    public void testValidityReport() {
+        StandardValidityReport report = new StandardValidityReport();
+        report.add(false, "dummy", "dummy1");
+        report.add(false, "dummy", "dummy3");
+        assertTrue(report.isValid());
+        report.add(true,  "dummy", "dummy2");
+        assertTrue( ! report.isValid());
+        
+        report = new StandardValidityReport();
+        report.add(false, "dummy", "dummy1");
+        report.add(true,  "dummy", "dummy2");
+        report.add(false, "dummy", "dummy3");
+        assertTrue( ! report.isValid());
+
+        report = new StandardValidityReport();
+        report.add(new ValidityReport.Report(false, "dummy", "dummy1"));
+        report.add(new ValidityReport.Report(true, "dummy", "dummy2"));
+        report.add(new ValidityReport.Report(false, "dummy", "dummy3"));
+        assertTrue( ! report.isValid());
     }
        
     /**

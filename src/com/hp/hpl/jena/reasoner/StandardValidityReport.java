@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: StandardValidityReport.java,v 1.6 2004-05-18 14:50:22 ian_dickinson Exp $
+ * $Id: StandardValidityReport.java,v 1.7 2004-06-01 08:11:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -16,7 +16,7 @@ import java.util.*;
  * of precomputed Report records.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2004-05-18 14:50:22 $
+ * @version $Revision: 1.7 $ on $Date: 2004-06-01 08:11:01 $
  */
 public class StandardValidityReport implements ValidityReport {
 
@@ -45,7 +45,9 @@ public class StandardValidityReport implements ValidityReport {
      */
     public void add(boolean error, String type, String description, Object extension) {
         reports.add(new Report(error, type, description, extension));
-        isError = error;
+        if (error) {
+            isError = true;
+        }
     }
     
     /**
@@ -55,7 +57,9 @@ public class StandardValidityReport implements ValidityReport {
     public void add(ValidityReport.Report report) {
         if (report == null) return;
         reports.add(report);
-        isError = report.isError;
+        if (report.isError) {
+            isError = true;
+        }
     }
     
     /**
