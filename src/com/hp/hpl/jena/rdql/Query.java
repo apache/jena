@@ -26,7 +26,7 @@ import com.hp.hpl.jena.rdf.model.* ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.8 2003-07-15 12:43:04 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.9 2003-07-15 13:26:58 andy_seaborne Exp $
  */
 
 public class Query
@@ -65,8 +65,8 @@ public class Query
      *  After it has been created, an application should set the data source, then
      *  call the QueryEngine.
      *
-     * @param String The query string
-     * @throws QueryException Thrown when a parse error occurs
+     * @param s                The query string
+     * @throws QueryException  Thrown when a parse error occurs
      */
 
     public Query(String s)
@@ -146,7 +146,7 @@ public class Query
      *  The remote data is loaded into the local application.
      *
      *  @param     queryString      The query: the FROM clause will be overridden
-     *  @param     datatURL         The remote data source
+     *  @param     dataURL         The remote data source
      *  @throws    QueryException   Runtime exception
      */
     public static QueryResults exec(String queryString, String dataURL)

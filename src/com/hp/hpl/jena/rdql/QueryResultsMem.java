@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.*;
 
 /**
  * @author      Andy Seaborne
- * @version     $Id: QueryResultsMem.java,v 1.7 2003-05-21 15:33:17 chris-dollin Exp $
+ * @version     $Id: QueryResultsMem.java,v 1.8 2003-07-15 13:26:58 andy_seaborne Exp $
  */
 
 
@@ -102,7 +102,7 @@ public class QueryResultsMem implements QueryResultsRewindable
     /** Read in a result set encoded in RDF according to
      * <code>http://jena.hpl.hp.com/2003/03/result-set#</code>
      *
-     * @param model
+     * @param urlStr  URL string
      */
 
     public QueryResultsMem(String urlStr)

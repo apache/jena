@@ -21,7 +21,7 @@ import com.hp.hpl.jena.db.* ;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.9 2003-07-01 12:48:28 chris-dollin Exp $
+ * @version $Id: ModelLoader.java,v 1.10 2003-07-15 13:26:47 andy_seaborne Exp $
  */
 
 public class ModelLoader
@@ -142,10 +142,10 @@ public class ModelLoader
     }
 
     /** Load a model from a file into a model.
-     * @param model
-     * @param uriStr
-     * @param lang  Null mean guess based on the URI String
-     * @return Resturns the model passed in.
+     * @param model   Model to read into
+     * @param urlStr  URL (or filename) to read from
+     * @param lang    Null mean guess based on the URI String
+     * @return Returns the model passed in.
      * @throws java.io.FileNotFoundException
      */
 
