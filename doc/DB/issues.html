@@ -73,6 +73,20 @@
 
 
 
+<dl>
+  <dt>Database Lock</dt>
+  <dd>The Jena2 storage subsystem uses a lock (or mutex)&nbsp; internally to implement a 
+  critical section for operations that modify the database structure 
+  (create/delete tables). The lock is implemented as a database table, i.e., if 
+  the table exists in the database, the lock is held. Normally, this lock 
+  should be transparent to applications. But if an application has an exception 
+  while in a critical section, the database may remain locked for subsequent 
+  applications. In this case, a user must manually unlock the database either by 
+  calling DriverRDB.unlockDB() or by deleting the table (Jena_Mutex) from the database. </dd>
+</dl>
+
+
+
   <p>There are many unknown bugs. Unfortunately, we have not had time to do as 
   much testing as we would have liked. Please do not hesitate to contact us on 
   the jena-dev or jena-devel lists when you suspect a problem.</p>
