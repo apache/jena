@@ -152,6 +152,8 @@ to false write the declaration to an OutputStream before calling
  "http://www.w3.org/TR/rdf-syntax-grammar#idAttr">idAttr</a>  also blocks
  <a href="http://www.w3.org/TR/rdf-syntax-grammar#section-Reification"
  >section-Reification</a>.
+ By default <a href="http://www.w3.org/TR/rdf-syntax-grammar#propertyAttr">propertyAttr</a>
+ is blocked.
  For the basic writer (RDF/XML) only
  <a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeLiteralPropertyElt">parseTypeLiteralPropertyElt</a>
  has any affect, since none of the other rules are implemented by that writer.

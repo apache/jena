@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.33 2003-10-02 13:15:10 chris-dollin Exp $
+  $Id: TestXMLFeatures.java,v 1.34 2003-11-12 11:17:58 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import org.apache.log4j.*;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.33 $ $Date: 2003-10-02 13:15:10 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.34 $ $Date: 2003-11-12 11:17:58 $
  */
 
 public class TestXMLFeatures extends ModelTestBase {
@@ -403,6 +403,41 @@ public class TestXMLFeatures extends ModelTestBase {
             }
         });
     }
+	public void testNoCookUp()
+		throws IOException, MalformedPatternException {
+		check(
+			"testing/abbreviated/cookup.rdf",
+			null,
+			"j.cook.up",
+			new Change() {
+			public void code(RDFWriter writer) {
+				writer.setProperty("blockrules", "");
+			}
+		});
+	}
+	public void testNoPropAttrs()
+		throws IOException, MalformedPatternException {
+		check(
+			"testing/abbreviated/namespaces.rdf",
+			null,
+			":prop0 *=",
+			new Change() {
+			public void code(RDFWriter writer) {
+			}
+		});
+	}
+	public void testPropAttrs()
+		throws IOException, MalformedPatternException {
+		check(
+			"testing/abbreviated/namespaces.rdf",
+			":prop0 *=",
+			null,
+			new Change() {
+			public void code(RDFWriter writer) {
+				writer.setProperty("blockrules", "");
+			}
+		});
+	}
     public void testNoID()
         throws IOException, MalformedPatternException {
         check(
@@ -1108,5 +1143,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.33 2003-10-02 13:15:10 chris-dollin Exp $
+ * $Id: TestXMLFeatures.java,v 1.34 2003-11-12 11:17:58 jeremy_carroll Exp $
  */

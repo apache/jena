@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.28 2003-09-25 13:27:01 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.29 2003-11-12 11:18:38 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.28 $' Date='$Date: 2003-09-25 13:27:01 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.29 $' Date='$Date: 2003-11-12 11:18:38 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -631,7 +631,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		return null;
 	}
     
-	private Resource blockedRules[] = new Resource[0];
+	private Resource blockedRules[] = new Resource[]{RDFSyntax.propertyAttr};
     
 	Resource[] setBlockRules(Object o) {
 		Resource rslt[] = blockedRules;

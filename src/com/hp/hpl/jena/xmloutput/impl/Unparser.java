@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.25 2003-10-02 13:15:10 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.26 2003-11-12 11:18:38 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.xerces.util.XMLChar;
 
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.25 $' Date='$Date: 2003-10-02 13:15:10 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.26 $' Date='$Date: 2003-11-12 11:18:38 $'
 
  */
 class Unparser {
@@ -1352,12 +1352,19 @@ class Unparser {
 			RDFNode n = s.getObject();
 			return (n instanceof Resource) && !((Resource) n).isAnon();
 		}
+		
 
 		if (s.getObject() instanceof Literal) {
 			Literal l = s.getLiteral();
 			if (l.getDatatypeURI() != null)
 				return false;
+
+			  
 			if (l.getLanguage().equals("")) {
+			// j.cook.up bug fix
+				if ( prettyWriter.isDefaultNamespace( getNameSpace(p)))
+							  return false;
+			
 				String str = l.getString();
 				if (str.length() < 40) {
 					char buf[] = str.toCharArray();
