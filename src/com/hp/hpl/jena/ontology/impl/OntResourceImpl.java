@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.42 $
+ * Revision           $Revision: 1.43 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-11 22:59:10 $
+ * Last modified on   $Date: 2004-02-08 18:33:52 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.42 2003-12-11 22:59:10 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.43 2004-02-08 18:33:52 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -849,7 +849,7 @@ public class OntResourceImpl
      */
     public int getCardinality( Property p ) {
         int n = 0;
-        for (Iterator i = UniqueExtendedIterator.create( listProperties( p ) );  i.hasNext(); n++) {
+        for (Iterator i = UniqueExtendedIterator.create( listPropertyValues( p ) );  i.hasNext(); n++) {
             i.next(); 
         }
         
