@@ -1,8 +1,8 @@
 /*
- *  (c)      Copyright Hewlett-Packard Company 2001, 2002
- * All rights reserved.
-  [See end of file]
-  $Id: testWriterAndReader.java,v 1.15 2003-06-13 08:47:41 chris-dollin Exp $
+    (c) Copyright Hewlett-Packard Company 2001-2003
+    All rights reserved.
+    [See end of file]
+    $Id: testWriterAndReader.java,v 1.16 2003-06-17 13:39:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -16,12 +16,7 @@ import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.vocabulary.RDFSyntax;
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
 
-import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.FileInputStream;
+import java.io.*;
 
 import java.util.*;
 import junit.framework.*;
@@ -33,7 +28,7 @@ import junit.framework.*;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2003-06-13 08:47:41 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2003-06-17 13:39:28 $'
  */
 public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 	static private boolean showProgress = false;
@@ -396,7 +391,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 	 * @param cnt The number of statements to delete.
 	 * @param m A model with more than cnt statements.
 	 */
-	private void prune(Model m, Random random, int cnt) throws RDFException {
+	private void prune(Model m, Random random, int cnt)  {
 		//    System.out.println("Pruning from " + (int)m.size() + " by " + cnt );
 		Statement die[] = new Statement[cnt];
 		int sz = (int) m.size();
@@ -422,7 +417,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 	 * @param cnt The number of statements to add.
 	 * @param m A model with more than cnt statements.
 	 */
-	private void expand(Model m, Random random, int cnt) throws RDFException {
+	private void expand(Model m, Random random, int cnt)  {
 		// System.out.println("Expanding from " + (int)m.size() + " by " + cnt );
 		Resource subject[] = new Resource[cnt];
 		Property predicate[] = new Property[cnt];
@@ -486,7 +481,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
 		throw new JenaException(e);
 	}
 	/*
-	static public void empty(Model m) throws RDFException {
+	static public void empty(Model m)  {
 	    StmtIterator iter = m.listStatements();
 	    while (iter.hasNext()) {
 	        iter.nextStatement();
@@ -523,5 +518,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.15 2003-06-13 08:47:41 chris-dollin Exp $
+ * $Id: testWriterAndReader.java,v 1.16 2003-06-17 13:39:28 chris-dollin Exp $
  */

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriter.java,v 1.5 2003-06-11 13:28:48 chris-dollin Exp $
+ * $Id: RDFWriter.java,v 1.6 2003-06-17 13:39:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -36,7 +36,7 @@ import java.io.OutputStream;
  * to some RDF serializaion language.  RDF/XML, n-triple and n3 are
  * examples of serialization languages.</p>
  * @author bwm
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public interface RDFWriter {
 /** Namespace prefixes can be set using a system property of the form
@@ -61,10 +61,8 @@ public interface RDFWriter {
 	 * @param model The model to be written.
 	 * @param base the base URI for relative URI calculations.  <code>
 	   null</code> means use only absolute URI's.
-	 * @throws RDFException Generic RDF exception.
 	 */    
-	    public void write(Model model, Writer out, String base) 
-	        throws RDFException;
+	    public void write(Model model, Writer out, String base);
     
     
 /** Serialize Model <code>model</code> to OutputStream <code>out</out>.
@@ -75,10 +73,8 @@ public interface RDFWriter {
  * @param model The model to be written.
  * @param base the base URI for relative URI calculations.  <code>
    null</code> means use only absolute URI's.
- * @throws RDFException Generic RDF exception.
  */    
-    public void write(Model model, OutputStream out, String base) 
-        throws RDFException;
+    public void write(Model model, OutputStream out, String base);
     
 /** Set a property to control the behaviour of this writer.
  *
@@ -102,10 +98,8 @@ public interface RDFWriter {
  * if no value was set.
  * @param propName The name of the property.
  * @param propValue The new value of the property
- * @throws RDFException Throws a generic RDF exception
  */ 
-    public Object setProperty(String propName, Object propValue) 
-      throws RDFException;
+    public Object setProperty(String propName, Object propValue);
 
 /** Set an error handler.
  * @param errHandler The new error handler to be used.

@@ -18,7 +18,7 @@ import java.io.* ;
 /** Common framework for implemening N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.5 2003-06-16 11:05:24 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.6 2003-06-17 13:39:28 chris-dollin Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -97,7 +97,7 @@ public class N3JenaWriterCommon implements RDFWriter
 		return old;
 	}
 
-    public Object setProperty(String propName, Object propValue) throws RDFException
+    public Object setProperty(String propName, Object propValue) 
     {
         Object obj = writerPropertyMap.get(propName);
         writerPropertyMap.put(propName, propValue);
@@ -128,7 +128,7 @@ public class N3JenaWriterCommon implements RDFWriter
     * @see #write(Model,Writer,String)
     */
 
-    public void write(Model baseModel, Writer _out, String base) throws RDFException
+    public void write(Model baseModel, Writer _out, String base) 
     {
         if (!(_out instanceof BufferedWriter))
             _out = new BufferedWriter(_out);
@@ -150,7 +150,7 @@ public class N3JenaWriterCommon implements RDFWriter
 	 * @see #write(Model,Writer,String)
 	 */
 
-	public synchronized void write(Model model, OutputStream output, String base) throws RDFException
+	public synchronized void write(Model model, OutputStream output, String base) 
 	{
 		try {
 			Writer w =  new BufferedWriter(new OutputStreamWriter(output, "UTF-8")) ;
@@ -582,7 +582,7 @@ public class N3JenaWriterCommon implements RDFWriter
 
 	// Utilities
 
-    protected int countProperties(Resource r) throws RDFException
+    protected int countProperties(Resource r) 
 	{
 		int numProp = 0 ;
 		StmtIterator sIter = r.listProperties() ;
@@ -595,7 +595,7 @@ public class N3JenaWriterCommon implements RDFWriter
 		return numProp ;
 	}
 
-    protected int countProperties(Resource r, Property p) throws RDFException
+    protected int countProperties(Resource r, Property p) 
 	{
 		int numProp = 0 ;
 		StmtIterator sIter = r.listProperties(p) ;
@@ -609,12 +609,12 @@ public class N3JenaWriterCommon implements RDFWriter
 	}
 
 
-    protected int countArcsTo(Resource resource) throws RDFException
+    protected int countArcsTo(Resource resource) 
 	{
 		return countArcsTo(null, resource) ;
 	}
 
-    protected int countArcsTo(Property prop, Resource resource) throws RDFException
+    protected int countArcsTo(Property prop, Resource resource) 
 	{
 		int numArcs = 0 ;
 		StmtIterator sIter = resource.getModel().listStatements(null, prop, resource) ;
@@ -629,7 +629,6 @@ public class N3JenaWriterCommon implements RDFWriter
 
 
     protected Iterator rdfListIterator(Resource r)
-		throws RDFException
 	{
 		List list = new ArrayList() ;
 

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReaderF.java,v 1.1.1.1 2002-12-19 19:17:53 bwm Exp $
+ * $Id: RDFReaderF.java,v 1.2 2003-06-17 13:39:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -49,24 +49,24 @@ package com.hp.hpl.jena.rdf.model;
  *with a name of the form com.hp.hpl.jena.readers.<lang> to the class
  *name.</p>
  * @author bwm
- * @version $Version$ $Date: 2002-12-19 19:17:53 $
+ * @version $Version$ $Date: 2003-06-17 13:39:28 $
  */
 
 public interface RDFReaderF {
     
 /** return an RDFReader instance for the default serialization language.
  * @return an RDFReader instance for the default serialization language.
- * @throws RDFException generic RDF exception
+ * @ generic RDF exception
  */    
-    public RDFReader getReader() throws RDFException;
+    public RDFReader getReader() ;
     
 /** return an RDFReader instance for the specified serialization language.
  * @return the RDFWriter instance
  * @param lang the serialization langauge - <code>null</code> selects the
  *            default
- * @throws RDFException generic RDF exception
+ 
  */    
-    public RDFReader getReader(String lang) throws RDFException;
+    public RDFReader getReader(String lang) ;
     
 /** set the class name for the RDFReader for a langauge
  * @param lang the language for which this class should be used

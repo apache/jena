@@ -6,9 +6,9 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: PrettyWriterTest.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  *
- * Last modified on   $Date: 2003-04-17 14:43:44 $
+ * Last modified on   $Date: 2003-06-17 13:39:28 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2002
@@ -58,7 +58,7 @@ import java.io.*;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: PrettyWriterTest.java,v 1.2 2003-04-17 14:43:44 chris-dollin Exp $,
+ * @version CVS info: $Id: PrettyWriterTest.java,v 1.3 2003-06-17 13:39:28 chris-dollin Exp $,
  */
 public class PrettyWriterTest extends TestCase {
 
@@ -120,13 +120,13 @@ public class PrettyWriterTest extends TestCase {
 
 	}
 	public void testOWLPrefix()
-		throws RDFException, IOException, MalformedPatternException {
+		throws IOException, MalformedPatternException {
 //		check(
 //			"file:testing/abbreviated/collection.rdf",
 //			"xmlns:owl=[\"']http://www.w3.org/2002/07/owl#[\"']");
 	}
 	public void testLi()
-		throws RDFException, IOException, MalformedPatternException {
+		throws IOException, MalformedPatternException {
 		check(
 			"file:testing/abbreviated/container.rdf",
 			"<rdf:li.*<rdf:li.*<rdf:li.*<rdf:li");

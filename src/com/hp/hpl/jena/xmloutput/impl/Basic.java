@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.8 2003-05-21 14:50:19 chris-dollin Exp $
+  $Id: Basic.java,v 1.9 2003-06-17 13:39:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-05-21 14:50:19 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-06-17 13:39:28 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -58,7 +58,7 @@ public class Basic extends BaseXMLWriter {
 	}
 
 	protected void writeRDFStatements(Model model, PrintWriter writer)
-		throws RDFException {
+		 {
 		ResIterator rIter = model.listSubjects();
 		while (rIter.hasNext()) {
 			writeRDFStatements(model, rIter.nextResource(), writer);
@@ -73,7 +73,7 @@ public class Basic extends BaseXMLWriter {
 		Model model,
 		Resource subject,
 		PrintWriter writer)
-		throws RDFException {
+		 {
 		StmtIterator sIter = model.listStatements( subject, null, (RDFNode) null );
 
 		writeDescriptionHeader(subject, writer);
@@ -86,14 +86,14 @@ public class Basic extends BaseXMLWriter {
 	}
 
 	protected void writeDescriptionHeader(Resource subject, PrintWriter writer)
-		throws RDFException {
+		 {
 		writer.print(space + "<" + rdfEl("Description") + " ");
 		writeResourceId(subject, writer);
 		writer.println(">");
 	}
 
 	protected void writePredicate(Statement stmt, final PrintWriter writer)
-		throws RDFException {
+		 {
 
 		final Property predicate = stmt.getPredicate();
 		final RDFNode object = stmt.getObject();
@@ -134,7 +134,7 @@ public class Basic extends BaseXMLWriter {
 		writer.println(space + "</" + rdfEl("Description") + ">");
 	}
 	protected void writeResourceId(Resource r, PrintWriter writer)
-		throws RDFException {
+		 {
 		if (r.isAnon()) {
 			writer.print(rdfAt("nodeID") + "=" + q(anonId(r)));
 		} else {
@@ -146,7 +146,7 @@ public class Basic extends BaseXMLWriter {
 	}
 
 	protected void writeResourceReference(Resource r, PrintWriter writer)
-		throws RDFException {
+		 {
 		if (r.isAnon()) {
 			writer.print(rdfAt("nodeID") + "=" + q(anonId(r)));
 		} else {

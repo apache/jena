@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReader.java,v 1.5 2003-04-16 20:17:35 jeremy_carroll Exp $
+ * $Id: RDFReader.java,v 1.6 2003-06-17 13:39:28 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -36,7 +36,7 @@ import java.io.InputStream;
  * e.g. RDF/XML, n-triple or n3 and adds the statements to a model.
  *
  * @author bwm
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public interface RDFReader {
 
@@ -50,22 +50,21 @@ public interface RDFReader {
 	 * @param model The model to which statements are added.
 	 * @param r the reader from which to read
 	 */
-	public void read(Model model, Reader r, String base) throws RDFException;
+	public void read(Model model, Reader r, String base) ;
 
 	/** Read serialized RDF from an <code>InputStream</code> and add the statements
 	 * to a <code>Model</code>.
 	 * @param model The model to which statements are added.
 	 * @param r the InputStream from which to read
 	 */
-	public void read(Model model, InputStream r, String base)
-		throws RDFException;
+	public void read(Model model, InputStream r, String base);
 
 	/** Read serialized RDF from a url and add the statements to a model.
 	 * @param model the model to which statements should be added
 	 * @param url the url, as a string, from which the serialized RDF
 	 * should be read.
 	 */
-	public void read(Model model, String url) throws RDFException;
+	public void read(Model model, String url) ;
 
 	/** Set the value of a reader property.
 	 *
@@ -91,8 +90,7 @@ public interface RDFReader {
 	 * @return the previous value of the property, or <code>null</code>
 	 * if there wasn't one
 	 */
-	public Object setProperty(String propName, Object propValue)
-		throws RDFException;
+	public Object setProperty(String propName, Object propValue);
 	/** Set an error handler for the reader
 	 * @param errHandler the new error handler
 	 * @return the previous error handler

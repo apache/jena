@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCompatability.java,v 1.3 2003-06-13 08:47:40 chris-dollin Exp $
+  $Id: TestCompatability.java,v 1.4 2003-06-17 13:39:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -24,7 +24,7 @@ package com.hp.hpl.jena.db.test;
  * in the cleanup code (it was calling getStore()).
  *
  * @author csayers
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -165,7 +165,7 @@ public class TestCompatability extends TestCase {
 
 		/** Create a model of the given name for this database config */
 
-		ModelRDB createModel(String name) throws RDFException {
+		ModelRDB createModel(String name) {
 			if (supportsMultipleModels) {
 				if (m_dbconn == null) {
 					m_dbconn = new DBConnection(m_baseuri, m_user, m_password);
@@ -194,7 +194,7 @@ public class TestCompatability extends TestCase {
 		}
 		
 		// Override set up to create RDB models instead of mem models
-		public void setUp() throws RDFException {
+		public void setUp() {
 			m1 = m_config.createModel("jr1");
 			m2 = m_config.createModel("jr2");
 			m3 = m_config.createModel("jr3");

@@ -29,7 +29,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.AnonId;
-import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -51,7 +50,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.22 $ on $Date: 2003-06-13 10:57:42 $
+* @version $Revision: 1.23 $ on $Date: 2003-06-17 13:39:27 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -503,7 +502,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * Can be null if the ID can from a hash function and literal 
 	 * isn't registered yet.
 	 */
-	public Node_Literal getLiteral(IDBID id) throws RDFException {
+	public Node_Literal getLiteral(IDBID id) {
 			// check in cache
 			Node_Literal lit = getLiteralFromCache(id);
 			if (lit != null) return lit;
@@ -594,8 +593,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 *     
 	 * @param rs the resultSet to be processed.
 	 */
-	public Node_Literal extractLiteralFromRow(ResultSet rs) throws SQLException, IOException,
-				RDFException, UnsupportedEncodingException {
+	public Node_Literal extractLiteralFromRow(ResultSet rs) 
+        throws SQLException, IOException, UnsupportedEncodingException {
 		Object blob = rs.getObject(1);
 		String literal = null;
 		if (blob == null) {
@@ -654,7 +653,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		String predURI,
 		String objURI,
 		String objVal,
-		String objRef) throws RDFException {
+		String objRef) {
 		
 		Node subjNode = subjURI == null ? null : RDBStringToNode(subjURI);
 		Node predNode = predURI == null ? null : RDBStringToNode(predURI);

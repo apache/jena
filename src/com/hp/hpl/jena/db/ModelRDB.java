@@ -36,7 +36,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class ModelRDB extends ModelCom implements Model, ModelI {    
     
@@ -331,7 +331,7 @@ public class ModelRDB extends ModelCom implements Model, ModelI {
 	 * @deprecated Since Jena 2.0, this call is not recommended.  Instead use
 	 * the soon-to-be-released bulk-load functions.
 	 */
-	public Model loadAll() throws RDFException {
+	public Model loadAll()  {
 		ModelMem m = new ModelMem();
 		for (StmtIterator i = this.listStatements(); i.hasNext(); ) {
 			m.add((Statement)i.next());
