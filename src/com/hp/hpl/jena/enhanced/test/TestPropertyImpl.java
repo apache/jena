@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPropertyImpl.java,v 1.3 2003-04-08 22:12:04 ian_dickinson Exp $
+  $Id: TestPropertyImpl.java,v 1.4 2003-04-24 14:20:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -34,13 +34,13 @@ public class TestPropertyImpl  extends TestCommonImpl implements TestProperty {
         { return t.isInstance( this ) && isProperty(); }
         
     public boolean isProperty() {
-        return find(P)!=null;
+        return findPredicate() != null;
     }
         
     public TestObject anObject() {
         if (!isProperty())
             throw new IllegalStateException("Node is not the property of a triple.");
-        return (TestObject)enhGraph.getNodeAs(find(P).getObject(),TestObject.class);
+        return (TestObject)enhGraph.getNodeAs(findPredicate().getObject(),TestObject.class);
     }
     
 }

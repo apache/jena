@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestAllImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: TestAllImpl.java,v 1.3 2003-04-24 14:20:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -44,33 +44,34 @@ public class TestAllImpl extends TestCommonImpl implements TestSubject, TestProp
         }
         
     public boolean isObject() {
-        return find(O)!=null;
+        return findObject() != null;
     }
     
     public boolean isProperty() {
-        return find(P)!=null;
+        return findPredicate() != null;
     }
     
     public boolean isSubject() {
-        return find(S)!=null;
+        return findSubject() != null;
     } 
+    
     public TestObject anObject() {
         if (!isProperty())
             
             throw new IllegalStateException("Node is not the property of a triple.");
-        return (TestObject)enhGraph.getNodeAs(find(P).getObject(),TestObject.class);
+        return (TestObject)enhGraph.getNodeAs(findPredicate().getObject(),TestObject.class);
     }
     
     public TestProperty aProperty() {
         if (!isSubject())
             throw new IllegalStateException("Node is not the subject of a triple.");
-        return (TestProperty)enhGraph.getNodeAs(find(S).getPredicate(),TestProperty.class);
+        return (TestProperty)enhGraph.getNodeAs(findSubject().getPredicate(),TestProperty.class);
     }
     
     public TestSubject aSubject() {
         if (!isObject())
             throw new IllegalStateException("Node is not the object of a triple.");
-        return (TestSubject)enhGraph.getNodeAs(find(O).getSubject(),TestSubject.class);
+        return (TestSubject)enhGraph.getNodeAs(findObject().getSubject(),TestSubject.class);
     }
     
 }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.6 2003-04-15 09:54:55 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.7 2003-04-24 14:20:13 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -37,7 +37,7 @@ import junit.framework.*;
  *the only two implementations, and they can inherit one from the other).
  * @author  jjc
  */
-public class TestPackage extends GraphTestBase implements SPO {
+public class TestPackage extends GraphTestBase  {
     
 	static final private  GraphPersonality split = new GraphPersonality();
         
@@ -183,6 +183,14 @@ public class TestPackage extends GraphTestBase implements SPO {
         
     }
 
+    /** 
+        Would like to get rid of these, but the abstraction is hard to find at the
+        moment. At least they're now just local to this test class.
+    */
+    static final int S = 1;
+    static final int P = 2;
+    static final int O = 3;
+    
     // This is like the earlier test: miniAsSupports (the last part of it).
     // However, this time instead of asking whether the interface will work
     // or not, we just try it.

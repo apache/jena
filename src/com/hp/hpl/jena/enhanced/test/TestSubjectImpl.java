@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSubjectImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: TestSubjectImpl.java,v 1.3 2003-04-24 14:20:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -34,13 +34,13 @@ public class TestSubjectImpl extends TestCommonImpl implements TestSubject {
         { return t.isInstance( this ) && isSubject(); }
         
     public boolean isSubject() {
-        return find(S)!=null;
+        return findSubject() != null;
     }
     
     public TestProperty aProperty() {
         if (!isSubject())
             throw new IllegalStateException("Node is not the subject of a triple.");
-        return (TestProperty)enhGraph.getNodeAs(find(S).getPredicate(),TestProperty.class);
+        return (TestProperty)enhGraph.getNodeAs(findSubject().getPredicate(),TestProperty.class);
     }
 }
 

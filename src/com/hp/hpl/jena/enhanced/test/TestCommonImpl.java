@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestCommonImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: TestCommonImpl.java,v 1.3 2003-04-24 14:20:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.util.iterator.*;
  *
  * @author  jjc
  */
-class TestCommonImpl extends EnhNode implements TestNode, SPO {
+class TestCommonImpl extends EnhNode implements TestNode {
 
     /** Creates new TestCommonImpl */
     TestCommonImpl(Node n,EnhGraph m,Class myTypes[]) {
@@ -23,23 +23,22 @@ class TestCommonImpl extends EnhNode implements TestNode, SPO {
         return (TestModel)enhGraph;
     }
 
-    // The underlying method that does all the work.
-    // Notice it uses the graph and nodes.
-    Triple find(int where) {
-       ClosableIterator it = null;
-        try {
-       it = enhGraph.asGraph().find(
-           where==S ? node : null,
-           where==P ? node : null,
-           where==O ? node : null );
-          return it.hasNext()?(Triple)it.next():null;
+    Triple findSubject()
+        { return findNode( node, null, null ); }
+        
+    Triple findPredicate()
+        { return findNode( null, node, null ); }
+        
+    Triple findObject()
+        { return findNode( null, null, node ); }
+        
+    Triple findNode( Node s, Node p, Node o )
+        {
+        ClosableIterator it = enhGraph.asGraph().find( s, p, o );
+        try { return it.hasNext() ? (Triple) it.next() : null; }
+        finally { it.close(); }
         }
-        finally {
-            if (it!=null) 
-                it.close();
-        }
-    }
-
+        
     // Convenience routines, that wrap the generic
     // routines from EnhNode.
     public TestSubject asSubject() {

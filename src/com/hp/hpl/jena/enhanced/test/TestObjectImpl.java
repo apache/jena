@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestObjectImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: TestObjectImpl.java,v 1.3 2003-04-24 14:20:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -57,7 +57,7 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
         { return t.isInstance( this) && isObject(); }
         
     public boolean isObject() {
-        return find(O)!=null;
+        return findObject() != null;
     }
     /**
      * The code first checks that the interface is appropriate at this point.
@@ -70,7 +70,7 @@ public class TestObjectImpl extends TestCommonImpl implements TestObject {
     public TestSubject aSubject() {
         if (!isObject())
             throw new IllegalStateException("Node is not the object of a triple.");
-        return (TestSubject)enhGraph.getNodeAs(find(O).getSubject(),TestSubject.class);
+        return (TestSubject)enhGraph.getNodeAs(findObject().getSubject(),TestSubject.class);
     }
 }
 
