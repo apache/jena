@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.21 2003-08-25 16:54:45 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.22 2003-08-26 09:55:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -208,13 +208,6 @@ public abstract class GraphBase implements Graph {
     */
     public boolean isEmpty()
         { return size() == 0; }
-        
-	/**
-	 * @see com.hp.hpl.jena.graph.Graph#capabilities()
-	 */
-	public int capabilities() {
-		return 0;
-	}
 
 	public boolean isIsomorphicWith( Graph g ) {
         checkOpen();

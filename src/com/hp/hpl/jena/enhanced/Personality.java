@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Personality.java,v 1.3 2003-03-31 11:11:45 ian_dickinson Exp $
+  $Id: Personality.java,v 1.4 2003-08-26 09:55:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -10,8 +10,9 @@ import java.util.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * Defines a set of permitted mappings from {@link Type} identifiers to {@link Implementation}
- * factories that can generate instances of the facet represented by the Type.
+ * Defines a set of permitted mappings from [interface] Class objects to 
+ * {@link Implementation} factories that can generate instances of the facet represented 
+ * by the Class.
  * 
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a> (original code)<br>
  *         <a href="mailto:Chris.Dollin@hp.com">Chris Dollin</a> (original code)
