@@ -86,6 +86,22 @@ public class Driver_MySQL extends DriverRDB {
 		}
 		return getLastInsertID();
 	}
+	
+	/**
+	 * Dellocate an identifier for a graph.
+	 *
+	 */
+	public void graphIdDealloc ( int graphId ) {
+		DBIDInt result = null;
+		try {
+			PreparedStatement ps = m_sql.getPreparedSQLStatement("deleteGraph");
+			ps.setInt(1,graphId);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			throw new RDFRDBException("Failed to delete graph ID: " + e);
+		}
+		return;
+	}
 
 	public int getLastInsertID () {
 		DBIDInt result = null;
