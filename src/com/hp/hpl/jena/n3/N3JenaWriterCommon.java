@@ -21,7 +21,7 @@ import java.io.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.17 2003-12-08 13:28:29 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.18 2003-12-23 17:06:34 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -568,7 +568,7 @@ public class N3JenaWriterCommon implements RDFWriter
         }
         // Format the text - with escaping.
         StringBuffer sbuff = new StringBuffer() ;
-        boolean oneLineLiteral = true ;
+        boolean singleQuoteLiteral = true ;
         
         String quoteMarks = "\"" ;
         
@@ -578,11 +578,11 @@ public class N3JenaWriterCommon implements RDFWriter
              s.indexOf("\f") != -1 )
         {
             quoteMarks = "\"\"\"" ;
-            oneLineLiteral = false ;
+            singleQuoteLiteral = false ;
         }
         
         sbuff.append(quoteMarks);
-        string(sbuff, s, !oneLineLiteral) ;
+        string(sbuff, s, singleQuoteLiteral) ;
         sbuff.append(quoteMarks);
 
         // Format the language tag 
@@ -601,16 +601,17 @@ public class N3JenaWriterCommon implements RDFWriter
         return sbuff.toString() ;
 	}
 
-	protected static void string(StringBuffer sbuff, String s, boolean litWS)
+	protected static void string(StringBuffer sbuff, String s, boolean singleQuoteLiteral)
     {
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
 
             // Escape escapes and quotes
-            if (c == '\\' || c == '"')
+            if (c == '\\' || (singleQuoteLiteral && c == '"') )
             {
                 sbuff.append('\\') ;
                 sbuff.append(c) ;
+                continue ;
             }
             
             // Characters to literally output.
@@ -622,7 +623,7 @@ public class N3JenaWriterCommon implements RDFWriter
 //            }    
 
             // Whitespace
-            if ( ! litWS && ( c == '\n' || c == '\r' || c == '\f' ) )
+            if ( singleQuoteLiteral && ( c == '\n' || c == '\r' || c == '\f' ) )
             {
                 if (c == '\n') sbuff.append("\\n");
                 if (c == '\t') sbuff.append("\\t");
