@@ -12,7 +12,7 @@ import junit.framework.* ;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.18 $
+ * @version 	$Revision: 1.19 $
  */
 public class TestPackage extends TestSuite
 {
@@ -41,7 +41,7 @@ public class TestPackage extends TestSuite
 	static String M_DBDRIVER_CLASS = "org.postgresql.Driver";
 	// */
         
-	//
+	// */
 	static String M_DB_URL = ModelFactoryBase.guessDBURL();
     static String M_DB_USER = ModelFactoryBase.guessDBUser();
     static String M_DB_PASSWD = ModelFactoryBase.guessDBPassword();
@@ -69,6 +69,9 @@ public class TestPackage extends TestSuite
 		addTest( "TestTransactions", TestTransactions.suite() );
 		addTest( "TestReifier", TestReifier.suite() );
 		addTest( "TestReifierCompareToMem", TestReifierCompareToMem.suite());
+		addTest( "TestQueryRDB", TestQueryRDB.suite());
+		addTest( "TestQuery1", TestQuery1.suite());
+
         }
 
     private void addTest(String name, TestSuite tc) {
