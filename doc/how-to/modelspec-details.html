@@ -14,8 +14,8 @@ pre {
 <body>
 
 <b>authors</b>: Chris Dollin, Dave Reynolds
-<br><b>date</b>: August 27th, 2003
-<br><b>version</b>: 1.0
+<br><b>date</b>: Seprember 11th, 2003
+<br><b>version</b>: 1.1
 
 <h1>Model Specification API</h1>
 
@@ -24,8 +24,9 @@ Jena 2.0. The JMS is neither complete nor frozen; we hope users will
 experiment with the early implementations and offer sugegstions that we
 can incorporate into later versions.
 
-<p>This document is a revision of a design note circulated to the jena-devel
-mailing list earlier this month.
+<p>This document is a minor revision of the Jena 2.0 design document, itself a
+revision of a design note circulated to the jena-devel
+mailing list in August.
 
 <h2>Requirements</h2>
 
@@ -139,19 +140,37 @@ kind as was used to create it.
 interface extends <code>ModelSpec</code>: thus a ModelMaker can be used
 wherever a ModelSpec is required.
 
+<p>ModelSpec's are usually created by <code>ModelFactory.create()</code>,
+which has four flavours:
+
+<pre>
+    create( Model desc )
+    create( Resource desc )
+    create( Resource root, Model desc )
+    create( Resource root, Resource desc )
+</pre>
+
+When <code>desc</code> is a resource, its URI identifies where the model
+to be used is loaded from. When <code>root</code> is omitted, it is
+implied as the unique resource in the description with type 
+<code>jms:ModelSpec</code>.
+
 <pre>    
 <b>class</b> PlainModelSpec <b>implements</b> ModelSpec
     PlainModelSpec( Model description )
+    PlainModelSpec( Resource root, Model description )
     ModelMaker: maker
     getter/setters as required
 
 <b>class</b> InfModelSpec <b>implements</b> ModelSpec <b>extends</b> PlainModelSpec
     InfModelSpec( Model description )
+    InfModelSpec( Resource root, Model description )
     Reasoner: reasoner
     getter/setters for <code>reasoner</code>
 
 <b>class</b> OntModelSpec <b>implements</b> ModelSpec <b>extends</b> InfModelSpec
     OntModelSpec( Model description )
+    OntModelSpec( Resource root, Model description )
     [other OntModelSpec constructors as before]
     String: language
     OntDocumentManager: docManager
@@ -163,6 +182,12 @@ wherever a ModelSpec is required.
 implementation does not, leaving all initialisation to the constructor and further
 tweaking to the class-specific getters and setters. This choice can be revisted
 if necessary.]
+
+<p>The constructors taking a <code>(Resource, Model)</code> pair use the sub-graph
+rooted at the Resource as the description; the Resource must have <code>rdf:type</code> 
+<code>jms:ModelSpec</code>. Thus a single model may contain multiple descriptions. 
+The constructors taking just a Model require that there be a single Resource with 
+that type, which is used as the root of the description.
 
 <p>The design also allows multiple Specs to be described by a single Model, and to
 have a ModelSpec factory:

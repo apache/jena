@@ -45,9 +45,13 @@ ModelSpecCreatorRegistry
 </a>
 and is extensible.]
 
-[Future versions of <code>ModelSpec</code> will allow models to contain
-multiple descriptions, with the appropriate one to be selected by root
-subject name, and for models to be specified by URL as well as directly.]
+<p>The <code>createSpec(Resource,Model)</code> method performs the same function,
+but the ModelSpec resource (which must have type <code>JMS.ModelSpec</code>)
+is passed as the first argument, rather than being the unique ModelSpec
+resource in the description.
+
+<p>In both cases, the <code>Model</code> can be replaced by a [non-bnode]
+<code>Resource</code> whose URI names the model to be loaded.
 
 <h1>using a ModelSpec</h1>
 
