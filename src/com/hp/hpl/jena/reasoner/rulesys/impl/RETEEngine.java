@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEEngine.java,v 1.6 2003-06-11 17:08:28 der Exp $
+ * $Id: RETEEngine.java,v 1.7 2003-06-12 08:25:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-11 17:08:28 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-12 08:25:25 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -106,17 +106,18 @@ public class RETEEngine implements FRuleEngineI {
      * have already be preprocessed and the clause index already exists.
      */
     public void fastInit() {
-        if (infGraph.getRawGraph() == null) return; 
-        // Insert the data
-        if (wildcardRule) {
-            for (Iterator i = infGraph.getRawGraph().find(null, null, null); i.hasNext(); ) {
-                addTriple((Triple)i.next(), false);
-            }
-        } else {
-            for (Iterator p = predicatesUsed.iterator(); p.hasNext(); ) {
-                Node predicate = (Node)p.next();
-                for (Iterator i = infGraph.getRawGraph().find(null, predicate, null); i.hasNext(); ) {
+        if (infGraph.getRawGraph() != null) {
+            // Insert the data
+            if (wildcardRule) {
+                for (Iterator i = infGraph.getRawGraph().find(null, null, null); i.hasNext(); ) {
                     addTriple((Triple)i.next(), false);
+                }
+            } else {
+                for (Iterator p = predicatesUsed.iterator(); p.hasNext(); ) {
+                    Node predicate = (Node)p.next();
+                    for (Iterator i = infGraph.getRawGraph().find(null, predicate, null); i.hasNext(); ) {
+                        addTriple((Triple)i.next(), false);
+                    }
                 }
             }
         }
@@ -146,7 +147,7 @@ public class RETEEngine implements FRuleEngineI {
      * It will return false during the axiom bootstrap phase.
      */
     public boolean shouldTrace() {
-        return infGraph.shouldTrace();
+        return true;
 //        return processedAxioms;
     }
 
@@ -266,7 +267,7 @@ public class RETEEngine implements FRuleEngineI {
      * added to the deductions graph.
      */
     public synchronized void addTriple(Triple triple, boolean deduction) {
-        if (shouldTrace()) {
+        if (infGraph.shouldTrace()) {
             logger.debug("Add triple: " + PrintUtil.print(triple));
         }
         if (deletesPending.size() > 0) deletesPending.remove(triple);
@@ -334,7 +335,7 @@ public class RETEEngine implements FRuleEngineI {
                 if (next == null) return;       // finished
                 isAdd = true;
             }
-            if (shouldTrace()) {
+            if (infGraph.shouldTrace()) {
                 logger.debug("Inserting triple: " + PrintUtil.print(next));
             }
             Iterator i1 = clauseIndex.getAll(next.getPredicate());

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.9 2003-06-08 17:49:51 der Exp $
+ * $Id: TestFBRules.java,v 1.10 2003-06-12 08:23:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-08 17:49:51 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-12 08:23:47 $
  */
 public class TestFBRules extends TestCase {
     
@@ -75,8 +75,7 @@ public class TestFBRules extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestFBRules.class ); 
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestFBRules( "testHybrid2" ));
-//        suite.addTest(new TestFBRules( "testDuplicatesEC4" ));
+//        suite.addTest(new TestFBRules( "testEmbeddedFunctors" ));
 //        return suite;
     }  
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.18 2003-06-11 17:08:29 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.19 2003-06-12 08:25:44 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-06-11 17:08:29 $
+ * @version $Revision: 1.19 $ on $Date: 2003-06-12 08:25:44 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -58,6 +58,9 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /** log4j logger */
     protected static Logger logger = Logger.getLogger(BasicForwardRuleInfGraph.class);
     
+    /** Static switch from Basic to RETE implementation */
+    public static final boolean useRETE = false;
+    
 //=======================================================================
 // Core methods
 
@@ -73,8 +76,11 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     */
    public BasicForwardRuleInfGraph(Reasoner reasoner, Graph schema) {
        super(null, reasoner);
-       engine = new FRuleEngine(this);
-//       engine = new RETEEngine(this);
+       if (useRETE) {
+           engine = new RETEEngine(this);
+       } else {
+           engine = new FRuleEngine(this);
+       }
        this.schemaGraph = schema;
    }    
 
@@ -91,8 +97,11 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     */
    public BasicForwardRuleInfGraph(Reasoner reasoner, List rules, Graph schema) {
        super(null, reasoner);
-       engine = new FRuleEngine(this, rules);
-//       engine = new RETEEngine(this, rules);
+       if (useRETE) {
+           engine = new RETEEngine(this, rules);
+       } else {
+           engine = new FRuleEngine(this, rules);
+       }
        this.rules = rules;
        this.schemaGraph = schema;
    }    
