@@ -747,7 +747,7 @@ Here is an illustrative code sample:
   	     try {
 	        Thread.sleep(tim);
 	     } catch (InterruptedException e) {
-	     }
+	     } 
 	     arpt.interrupt();
        }
     });
@@ -758,9 +758,22 @@ Here is an illustrative code sample:
     in.close();
     fail("Thread was not interrupted.");
   } catch (InterruptedIOException e) {
+  } catch (SAXParseException e) {
   }
 </pre>
 
+<p>
+I am not sure what happens when using a Jena Model and
+a read operation. 
+Check the 
+<a href="http://cvs.sourceforge.net/viewcvs.py/*checkout*/jena/jena2/doc/IO/iohowto.html?content-type=text%2Fhtml&rev=HEAD#arp-interrupt">latest version</a> of this document.
+I suspect this exception gets reported
+through the error handler and has to be rethrown to
+end the parse. If you have working code, and this section
+has not yet been updated, please
+send it to <a href="mailto:jena-devel@lists.sourceforge.net">jena-devel</a>
+for inclusion in this document.
+</p>
 
 <h2><a name="output">6. Advanced RDF/XML Output</a></h2>
 <p>
