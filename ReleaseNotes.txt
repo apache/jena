@@ -76,6 +76,9 @@ o ModelFactory improvements:
 
 Reasoner subsystem:
 
+o Extended the comparision builtins (equal, le etc) to support comparison of 
+  XSDDataTime instances. Many thanks to Bradley Schatz (Bradley@greystate.com)
+  for supply the patches for this.
 o Extended OWL rules to include more explicit representation of XSD knowledge.
 o Various bug fixes in OWL rules (maxCardinality bug, hasValue in intersection
   lists fixed, bug in someValuesFrom fixed, misssing property subclass axioms).

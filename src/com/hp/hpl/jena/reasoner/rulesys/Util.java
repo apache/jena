@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.17 2003-12-04 14:48:15 der Exp $
+ * $Id: Util.java,v 1.18 2004-01-30 13:09:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,16 +18,20 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
+//Thanks to Bradley Schatz (Bradley@greystate.com) for code patches
+//to support XSDDateTime comparisons
+
 /**
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-12-04 14:48:15 $
+ * @version $Revision: 1.18 $ on $Date: 2004-01-30 13:09:26 $
  */
 public class Util {
 
@@ -77,6 +81,38 @@ public class Util {
         throw new ClassCastException("Non-numeric literal in compareNumbers");
     }
     
+    /**
+     * Check whether a Node is an Instant (DateTime) value
+     */
+    public static boolean isInstant(Node n) {
+        if (n.isLiteral()) {
+            Object o = n.getLiteral().getValue();
+            return (o instanceof XSDDateTime);
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Compare two time Instant nodes.
+     * @param n1 the first time instant (XSDDateTime) valued literal node
+     * @param n2 the second time instant (XSDDateTime) valued literal node
+     * @return -1 if n1 is less than n2, 0 if n1 equals n2 and +1 if n1 greater than n2
+     * @throws ClassCastException if either not is not numeric
+     */
+    public static int compareInstants(Node n1, Node n2) {
+        if (n1.isLiteral() && n2.isLiteral()) {
+            Object v1 = n1.getLiteral().getValue();
+            Object v2 = n2.getLiteral().getValue();
+            if (v1 instanceof XSDDateTime && v2 instanceof XSDDateTime) {
+                XSDDateTime a = (XSDDateTime) v1;
+                XSDDateTime b = (XSDDateTime) v2;
+                return a.compare(b);
+            }
+        }
+        throw new ClassCastException("Non-numeric literal in compareNumbers");
+    }
+
     /**
      * Helper - returns the (singleton) value for the given property on the given
      * root node in the data graph.

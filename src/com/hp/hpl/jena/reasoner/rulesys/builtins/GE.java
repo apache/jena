@@ -5,19 +5,21 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GE.java,v 1.3 2003-10-05 15:35:49 der Exp $
+ * $Id: GE.java,v 1.4 2004-01-30 13:10:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
-
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
+
+// Thanks to Bradley Schatz (Bradley@greystate.com) for code patches
+// to support XSDDateTime comparisons
 
 /**
  * Tests if the first argument is greater than or equal to the second.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-10-05 15:35:49 $
+ * @version $Revision: 1.4 $ on $Date: 2004-01-30 13:10:09 $
  */
 public class GE extends BaseBuiltin {
 
@@ -50,6 +52,8 @@ public class GE extends BaseBuiltin {
         Node n1 = getArg(1, args, context);
         if ( Util.isNumeric(n0) && Util.isNumeric(n1) ) {
             return Util.compareNumbers(n0, n1) >= 0;
+        } else if (Util.isInstant(n0) && Util.isInstant(n1)) {
+            return Util.compareInstants(n0, n1) >= 0;
         } else {
             return false;
         }

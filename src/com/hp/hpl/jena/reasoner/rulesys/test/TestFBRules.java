@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.32 2003-12-08 10:48:27 andy_seaborne Exp $
+ * $Id: TestFBRules.java,v 1.33 2004-01-30 13:10:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
-import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.*;
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2003-12-08 10:48:27 $
+ * @version $Revision: 1.33 $ on $Date: 2004-01-30 13:10:08 $
  */
 public class TestFBRules extends TestCase {
     
@@ -672,6 +672,39 @@ public class TestFBRules extends TestCase {
                 new Triple(n2, lt, n3),
             });
             
+        // XSD timeDate point comparisons
+        data = new GraphMem();
+        XSDDatatype dt = new XSDDatatype("dateTime");
+        data.add(new Triple(n1, q, Node.createLiteral("2000-03-04T20:00:00Z", "", XSDDatatype.XSDdateTime)));
+        data.add(new Triple(n2, q, Node.createLiteral("2001-03-04T20:00:00Z", "", XSDDatatype.XSDdateTime)));
+        data.add(new Triple(n3, q, Node.createLiteral("2002-03-04T20:00:00Z", "", XSDDatatype.XSDdateTime)));
+        infgraph = createReasoner(ruleList).bind(data);
+               
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, n2),
+            new Triple[] {
+                new Triple(n1, ne, n2),
+                new Triple(n1, le, n2),
+                new Triple(n1, lt, n2),
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(n2, null, n3),
+            new Triple[] {
+                new Triple(n2, ne, n3),
+                new Triple(n2, le, n3),
+                new Triple(n2, lt, n3),
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(n2, null, n1),
+            new Triple[] {
+                new Triple(n2, ne, n1),
+                new Triple(n2, ge, n1),
+                new Triple(n2, gt, n1),
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(n3, null, n2),
+            new Triple[] {
+                new Triple(n3, ne, n2),
+                new Triple(n3, ge, n2),
+                new Triple(n3, gt, n2),
+            });
+                    
         // Arithmetic            
         rules =  
         "[r1: (?x p ?a), (?x q ?b), sum(?a, ?b, ?c) -> (?x s ?c)]" +

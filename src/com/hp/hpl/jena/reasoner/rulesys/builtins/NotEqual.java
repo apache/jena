@@ -5,18 +5,21 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: NotEqual.java,v 1.6 2003-10-05 15:35:49 der Exp $
+ * $Id: NotEqual.java,v 1.7 2004-01-30 13:10:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
+//Thanks to Bradley Schatz (Bradley@greystate.com) for code patches
+//to support XSDDateTime comparisons
+
 /**
  * Check that the two args are different. This uses a semantic equality test.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-10-05 15:35:49 $
+ * @version $Revision: 1.7 $ on $Date: 2004-01-30 13:10:09 $
  */
 public class NotEqual extends BaseBuiltin {
 
@@ -51,6 +54,8 @@ public class NotEqual extends BaseBuiltin {
         Node n2 = getArg(1, args, context);
         if (Util.isNumeric(n1)) {
             return Util.compareNumbers(n1, n2) != 0;
+        } else if (Util.isInstant(n1) && Util.isInstant(n2)) {
+            return Util.compareInstants(n1, n2) != 0;
         } else {
             return ! n1.sameValueAs(n2);
         }
