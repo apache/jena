@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: StandardValidityReport.java,v 1.5 2003-08-27 13:11:17 andy_seaborne Exp $
+ * $Id: StandardValidityReport.java,v 1.6 2004-05-18 14:50:22 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -16,7 +16,7 @@ import java.util.*;
  * of precomputed Report records.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:11:17 $
+ * @version $Revision: 1.6 $ on $Date: 2004-05-18 14:50:22 $
  */
 public class StandardValidityReport implements ValidityReport {
 
@@ -33,8 +33,19 @@ public class StandardValidityReport implements ValidityReport {
      * @param description a textual description of the problem
      */
     public void add(boolean error, String type, String description) {
-        reports.add(new Report(error, type, description));
-        if (error) isError = true;
+        add(error, type, description, null);
+    }
+    
+    /**
+     * Add a new error report
+     * @param error true if the report is an error, false if it is just a warning
+     * @param type a string giving a reasoner-dependent classification for the report
+     * @param description a textual description of the problem
+     * @param extension Optional argument with extension data about the reported error
+     */
+    public void add(boolean error, String type, String description, Object extension) {
+        reports.add(new Report(error, type, description, extension));
+        isError = error;
     }
     
     /**
@@ -44,7 +55,7 @@ public class StandardValidityReport implements ValidityReport {
     public void add(ValidityReport.Report report) {
         if (report == null) return;
         reports.add(report);
-        if (report.isError) isError = true;
+        isError = report.isError;
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ValidityReport.java,v 1.6 2003-08-27 13:11:17 andy_seaborne Exp $
+ * $Id: ValidityReport.java,v 1.7 2004-05-18 14:50:22 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,7 +17,7 @@ import java.util.Iterator;
  * each of which has a severity, a type (string) and a description (string).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-27 13:11:17 $
+ * @version $Revision: 1.7 $ on $Date: 2004-05-18 14:50:22 $
  */
 public interface ValidityReport {
     
@@ -63,9 +63,7 @@ public interface ValidityReport {
          * @param description a textual description of the problem
          */
         public Report(boolean error, String type, String description) {
-            this.isError = error;
-            this.type = type;
-            this.description = description;
+            this( error, type, description, null );
         }
         
         /**
@@ -80,6 +78,7 @@ public interface ValidityReport {
             this.isError = error;
             this.type = type;
             this.description = description;
+            this.extension = extension;
         }
         
          /**

@@ -7,10 +7,10 @@
  * Web site           @website@
  * Created            20-Apr-2004
  * Filename           $RCSfile: WebOntTests.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-12 15:56:21 $
+ * Last modified on   $Date: 2004-05-18 14:50:40 $
  *               by   $Author: ian_dickinson $
  *
  * @copyright@
@@ -29,6 +29,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.dig.*;
 import com.hp.hpl.jena.reasoner.dig.DIGReasoner;
 import com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
@@ -93,7 +94,7 @@ public class WebOntTests
             //"InverseFunctionalProperty", 
             //"Nothing",
             //"Restriction", 
-            "SymmetricProperty",
+            //"SymmetricProperty",
             //"Thing", 
             //"TransitiveProperty", 
             //"Class", 
@@ -119,7 +120,7 @@ public class WebOntTests
             //"statement-entailment",
             //"unionOf", 
             //"xmlbase", 
-            //"description-logic",
+            "description-logic",
             // "extra-credit",
     };
 
@@ -327,6 +328,7 @@ public class WebOntTests
                 || test.hasProperty(RDF.type, OWLTest.ImportEntailmentTest)
                 || test.hasProperty(RDF.type, OWLTest.TrueTest)) {
             // Entailment tests
+            System.out.println("Starting: " + test);
             boolean processImports = test.hasProperty( RDF.type, OWLTest.ImportEntailmentTest );
             Model premises = getDoc( test, RDFTest.premiseDocument, processImports );
             Model conclusions = getDoc( test, RDFTest.conclusionDocument );
@@ -340,8 +342,8 @@ public class WebOntTests
             }
             return correct;
         }
-        else if (false && test.hasProperty(RDF.type, OWLTest.InconsistencyTest)) {
-            //            System.out.println("Starting: " + test);
+        else if (test.hasProperty(RDF.type, OWLTest.InconsistencyTest)) {
+            System.out.println("Starting: " + test);
             Model input = getDoc(test, RDFTest.inputDocument);
             long t1 = System.currentTimeMillis();
             InfGraph graph = m_reasoner.bind(input.getGraph());
@@ -349,10 +351,8 @@ public class WebOntTests
             m_lastTestDuration = System.currentTimeMillis() - t1;
             return correct;
         }
-        else if (false && test.hasProperty(RDF.type, OWLTest.ConsistencyTest)) {
-            // Not used normally becase we are not complete enough to prove
-            // consistency
-            //            System.out.println("Starting: " + test);
+        else if (test.hasProperty(RDF.type, OWLTest.ConsistencyTest)) {
+            System.out.println("Starting: " + test);
             Model input = getDoc(test, RDFTest.inputDocument);
             long t1 = System.currentTimeMillis();
             InfGraph graph = m_reasoner.bind(input.getGraph());
@@ -433,7 +433,6 @@ public class WebOntTests
     public boolean testEntailment( Model conclusions, InfGraph inf ) {
         List queryRoots = listQueryRoots( conclusions );
         Model result = ModelFactory.createDefaultModel();
-        boolean correct = true;
         
         for (Iterator i = queryRoots.iterator(); i.hasNext(); ) {
             Resource root = (Resource) i.next();
@@ -453,20 +452,26 @@ public class WebOntTests
                 }
                 
                 // add the resulting triples to the graph
-                ExtendedIterator k =inf.find( rootQuery.getSubject().asNode(),
-                                              rootQuery.getPredicate().asNode(),
-                                              rootQuery.getObject().asNode(),
-                                              premises.getGraph() ); 
-                while (k.hasNext()) {
-                    //Triple t = (Triple) k.next();
-                    Object x = k.next();
-                    Triple t = (Triple) x;
-                    LogFactory.getLog( getClass() ).debug( "testEntailment got triple " + t );
-                    result.getGraph().add( t );
+                try {
+                    ExtendedIterator k =inf.find( rootQuery.getSubject().asNode(),
+                                                  rootQuery.getPredicate().asNode(),
+                                                  rootQuery.getObject().asNode(),
+                                                  premises.getGraph() ); 
+                    while (k.hasNext()) {
+                        //Triple t = (Triple) k.next();
+                        Object x = k.next();
+                        Triple t = (Triple) x;
+                        LogFactory.getLog( getClass() ).debug( "testEntailment got triple " + t );
+                        result.getGraph().add( t );
+                    }
+                    
+                    // transcribe the premises into the results
+                    result.add( premises );
                 }
-                
-                // transcribe the premises into the results
-                result.add( premises );
+                catch (DIGErrorResponseException e) {
+                    LogFactory.getLog( getClass() ).error( "DIG reasoner returned error: " + e.getMessage() );
+                    return false;
+                }
             }
         }
         
@@ -576,14 +581,17 @@ public class WebOntTests
             }
             
             // Check test level
-            Statement levelS = test.getProperty( OWLTest.level );
-            if (levelS == null) {
-                LogFactory.getLog( getClass() ).debug( "Test has no test level defined: " + test );
-            }
-            else {
-                if (!ACCEPTABLE_TEST_LEVELS.contains( levelS.getResource() )) {
+            if (accept) {
+                boolean reject = true;
+                for (StmtIterator i = test.listProperties( OWLTest.level ); i.hasNext(); ) {
+                    if (ACCEPTABLE_TEST_LEVELS.contains( i.nextStatement().getResource() )) {
+                        reject = false;
+                    }
+                }
+                
+                if (reject) {
+                    LogFactory.getLog( getClass() ).debug( "Ignoring test " + test + " because it either has no test level defined, or an unacceptable test level" );
                     accept = false;
-                    LogFactory.getLog( getClass() ).debug( "Ignoring test " + test + " at level " + levelS.getResource() );
                 }
             }
             
