@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.10 2003-11-07 23:45:05 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.11 2003-12-05 12:29:04 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -56,7 +56,7 @@ class ParserSupport
 		this.arp = arp;
 	}
 	ARPFilter arp;
-	void checkWhite(StrToken st) throws ParseException {
+	void checkWhite(StrToken st, boolean maybeMissingParseType) throws ParseException {
 		String s = st.value;
 		int lgth = s.length();
 		int from = 0;
@@ -74,7 +74,10 @@ class ParserSupport
 					throw new ParseException(
 						ERR_NOT_WHITESPACE,
 						st.location,
-						"Expected whitespace found: '" + s + "'.");
+						"Expected whitespace found: '" + s + "'"
+					+
+						(maybeMissingParseType?
+  ". Maybe a missing rdf:parseType='Literal', or a striping problem.":"."));
 			}
 		}
 	}
@@ -164,11 +167,12 @@ class ParserSupport
 				"String not in Unicode Normal Form C: " + str.toString());
 	}
 
-	void processingInstruction(Token t) throws ParseException {
+	void processingInstruction(Token t,boolean maybeMissingPT) throws ParseException {
 		arp.parseWarning(
 			WARN_PROCESSING_INSTRUCTION_IN_RDF,
 			t.location,
-			"A processing instruction is in RDF content. No processing was done.");
+			"A processing instruction is in RDF content. No processing was done."
+			+(maybeMissingPT?" Maybe a missing rdf:parseType='Literal'":""));
 	}
 	void saxException(Token t) throws ParseException {
 		SaxExceptionToken sax = (SaxExceptionToken) t;

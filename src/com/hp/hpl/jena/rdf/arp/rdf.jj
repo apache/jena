@@ -43,7 +43,7 @@ class RDFParser implements ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.7 2003-10-10 11:19:39 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.8 2003-12-05 12:29:04 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -125,8 +125,17 @@ void rdfFileSub(XMLContext ctxt) :     {}
    obj(ctxt) 
    
 }
+
+void zwhite(boolean suggestParseType): {}
+{ LOOKAHEAD( { suggestParseType } )
+  xwhite()
+| white()
+}
 void white() :                         {}
 { white1(true)
+}
+void xwhite() :                         {}
+{ ( xOneWhite() ) *
 }
 
 void white1(boolean warnOnPi) :         {}
@@ -135,9 +144,18 @@ void white1(boolean warnOnPi) :         {}
 void whiteOrErr() :                     {}
 {  ( oneWhite(true)| warning() ) * 
 }
+void xOneWhite() :                     { Token w; }
+{  w=<CD_STRING>                       { X.checkWhite((StrToken)w,true); } 
+ | // OR
+   w=<PROCESSING_INSTRUCTION>          { X.processingInstruction(w,true); }
+ | // OR
+   <COMMENT>    
+ | // OR
+   saxEx()       
+}
 
 void oneWhite(boolean warnOnPi) :      { Token w; }
-{  w=<CD_STRING>                       { X.checkWhite((StrToken)w); } 
+{  w=<CD_STRING>                       { X.checkWhite((StrToken)w,false); } 
  | // OR
    pi(warnOnPi)
  | // OR
@@ -163,7 +181,7 @@ void oneEmpty():                       {}
    <COMMENT>  
 }
 Token pi(boolean warnOnPi) :           { Token w; }
-{  w=<PROCESSING_INSTRUCTION>          { if (warnOnPi) X.processingInstruction(w);
+{  w=<PROCESSING_INSTRUCTION>          { if (warnOnPi) X.processingInstruction(w,false);
                                          return w;
                                        }
 }
@@ -189,9 +207,14 @@ void rdf(XMLContext ctxt) :            {}
 ARPResource obj(XMLContext ctxt) :     
                                        {  ARPResource r = 
                                                         new ARPResource(arp); }
-{  description(ctxt,r)                 { return r; }
+{  description(ctxt,r,false)           { return r; }
 }
 
+ARPResource xobj(XMLContext ctxt) :     
+                                       {  ARPResource r = 
+                                                        new ARPResource(arp); }
+{  description(ctxt,r,true)            { return r; }
+}
 
 
 /* [6.3] description    ::= '<rdf:Description' idAboutAttr? bagIdAttr? propAttr* '/>'
@@ -199,7 +222,7 @@ ARPResource obj(XMLContext ctxt) :
  *                                       propertyElt* '</rdf:Description>'
  *                        | typedNode  */
 
-void description(XMLContext ctxt, ARPResource r) 
+void description(XMLContext ctxt, ARPResource r, boolean suggestParseType) 
                                      : {}
 {                            try { (
    <E_DESCRIPTION> 
@@ -207,13 +230,13 @@ void description(XMLContext ctxt, ARPResource r)
    [ idAboutAttr(ctxt,r) ] 
    [ bagIdAttr(ctxt,r) ] 
    ( propAttr(ctxt,r) ) * 
-   white() 
+   zwhite(suggestParseType) 
    ( propertyElt(ctxt,r) 
-     white()  
+     zwhite(suggestParseType) 
    ) * 
    <E_END>
  | // OR
-   typedNode(ctxt,r)
+   typedNode(ctxt,r,suggestParseType)
                              ) } 
                              catch ( ParseException e ) {
                                        error_recovery(e);
@@ -472,7 +495,7 @@ CollectionAction objInCollection(XMLContext ctxt, CollectionAction act )
  document order in the bagID bag (if any).
 */
 
-void typedNode(XMLContext ctxt, ARPResource r) 
+void typedNode(XMLContext ctxt, ARPResource r, boolean suggestParseType) 
                                      : { Token type; }
 {  type=typedNodeTag()                 { type = (Token)type.clone();
                                          type.next = null;
@@ -484,9 +507,9 @@ void typedNode(XMLContext ctxt, ARPResource r)
                                                    .asURIReference(arp)); 
                                        }
    ( propAttr(ctxt,r) ) *
-   white() 
+   zwhite(suggestParseType) 
    ( propertyElt(ctxt,r) 
-     white() 
+     zwhite(suggestParseType) 
    ) *                   
    <E_END>
 }
@@ -534,9 +557,9 @@ Object value(XMLContext ctxt)        : { Object rslt; }
    rslt = string(ctxt)                 { return rslt; 
                                        }
 |  // OR
-   white() 
-   rslt = obj(ctxt) 
-   white()                             { return rslt; }
+   xwhite() 
+   rslt = xobj(ctxt) 
+   xwhite()                             { return rslt; }
 }
 
 /*

@@ -5,9 +5,9 @@ public interface RDFParserConstants {
 
   int EOF = 0;
   int CD_STRING = 1;
-  int COMMENT = 2;
-  int X_SAX_EX = 3;
-  int PROCESSING_INSTRUCTION = 4;
+  int PROCESSING_INSTRUCTION = 2;
+  int COMMENT = 3;
+  int X_SAX_EX = 4;
   int E_RDF = 5;
   int E_END = 6;
   int E_DESCRIPTION = 7;
@@ -39,9 +39,9 @@ public interface RDFParserConstants {
   String[] tokenImage = {
     "<EOF>",
     "<CD_STRING>",
+    "<PROCESSING_INSTRUCTION>",
     "<COMMENT>",
     "<X_SAX_EX>",
-    "<PROCESSING_INSTRUCTION>",
     "<E_RDF>",
     "<E_END>",
     "<E_DESCRIPTION>",
