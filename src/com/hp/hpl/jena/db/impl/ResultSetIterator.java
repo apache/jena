@@ -35,7 +35,7 @@ import com.hp.hpl.jena.util.iterator.NiceIterator;
 * of the raw row contents.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.1 $ on $Date: 2003-04-25 02:57:17 $
+* @version $Revision: 1.2 $ on $Date: 2003-05-11 01:32:38 $
 */
 
 public class ResultSetIterator implements ExtendedIterator {
@@ -191,6 +191,7 @@ public class ResultSetIterator implements ExtendedIterator {
             if (m_resultSet != null) {
                 try {
                     m_resultSet.close();
+                    m_resultSet = null;
                 } catch (SQLException e) {
                     Log.warning("Error while finalizing result set iterator", e);
                 }
