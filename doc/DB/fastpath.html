@@ -179,7 +179,7 @@ effect as specifying <font face="Courier New" size="2">setQueryOnlyAsserted(true
   examples of anomalies.</dd>
 </dl>
 
-<h4>Limitations</h4>
+<h4>Limitations/Future Enhancements</h4>
 
 <dl>
   <dd><b>Querying across graphs.</b> Currently, Fastpath does not optimize 
@@ -198,6 +198,9 @@ effect as specifying <font face="Courier New" size="2">setQueryOnlyAsserted(true
   uncomment line 60 of <font face="Courier New" size="2">
   jena.db.impl.DBStage.java</font>. In the future, we hope to add an API for 
   accessing information about the generated SQL, including the statement string.</dd>
+  <dd><b>Query Constraints.</b> Currently RDQL constraints are not processed 
+  within the database engine. In the future, constraints will be processed in 
+  the database engine.</dd>
   <dt>&nbsp;</dt>
   <dt>&nbsp;</dt>
 </dl>
