@@ -6,24 +6,24 @@
       xmlns:rtest='http://www.w3.org/2000/10/rdf-tests/rdfcore/testSchema#'
       xmlns:otest='http://www.w3.org/2002/03owlt/testOntology#'
       xmlns:dc='http://purl.org/dc/elements/1.0/'
-      xmlns='http://www.w3.org/2002/03owlt/localtests/Manifest003#'
+      xmlns='http://www.w3.org/2002/03owlt/localtests/Manifest004#'
       xmlns:owl='http://www.w3.org/2002/07/owl#'
-      xml:base='http://www.w3.org/2002/03owlt/localtests/Manifest003'
+      xml:base='http://www.w3.org/2002/03owlt/localtests/Manifest004'
 >
-<otest:PositiveEntailmentTest rdf:ID='intersection3'>
+<otest:PositiveEntailmentTest rdf:ID='equivIFP'>
    <rtest:status>Jena internal</rtest:status>
    <dc:creator>Dave Reynolds</dc:creator>
    <rtest:description rdf:parseType='Literal'>
-       Intersection of restrictions which revealed an earlier bug.
+       Make sure subProperties of inverse functional properties are correctly handled.
    </rtest:description>
    <rtest:premiseDocument>
-         <rtest:RDF-XML-Document rdf:about='premises003' >
-              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
+         <rtest:RDF-XML-Document rdf:about='premises004' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Lite' />
          </rtest:RDF-XML-Document>
    </rtest:premiseDocument>
    <rtest:conclusionDocument>
-         <rtest:RDF-XML-Document rdf:about='conclusions003' >
-              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />
+         <rtest:RDF-XML-Document rdf:about='conclusions004' >
+              <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Lite' />
          </rtest:RDF-XML-Document>
    </rtest:conclusionDocument>
 </otest:PositiveEntailmentTest >
