@@ -2,7 +2,10 @@
 
 
 
-<HEAD><TITLE>Jena Relational Database backend</TITLE></HEAD>
+<HEAD>
+<TITLE>Jena Relational Database backend</TITLE>
+<link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
+</HEAD>
 
 
 
@@ -41,8 +44,7 @@ must be reloaded. Little performance tuning has been done.</p>
 <a href="#remaining">Remaining Work</a><br>
 <a href="#dbengines">Database Engines Supported</a><br>
 <a href="#compatibility">Compatibility with Jena1 ModelRDB</a><br>
-<a href="#migrating">Migrating Jena1 Applications and Databases</a><br>
-<a href="#notes">Performance Notes</a></p>
+<a href="#migrating">Migrating Jena1 Applications and Databases</a></p>
 
 
 
@@ -60,10 +62,10 @@ database engine. Jena2 is largely backwards-compatible for Jena1 applications
 with the exception of some database configuration options. The default Jena2 
 database layout uses a denormalized schema in which literals and resource URIs 
 are stored directly in statement tables. This differs from Jena1 in which all 
-literals and resources were stored in  common tables that were referenced by 
-statements. The Jena2 layout  enables faster insertion and 
-retrieval but uses more storage than Jena1. Configuration options are available that give 
-Jena2 users some control over the degree of normalization in order to reduce 
+literals and resources were stored in  two separate tables that were referenced by 
+the statements table. The Jena2 layout  enables faster insertion and 
+retrieval but uses more storage than Jena1. However, configuration options are available that give 
+Jena2 users some control over the degree of denormalization in order to reduce 
 storage consumption. The persistence subsystem supports a Fastpath capability for RDQL 
 queries that dynamically generates SQL queries to perform as much of the RDQL 
 query as possible within the database engine. For an overview of creating and 
@@ -71,7 +73,8 @@ accessing persistent Jena models, see <a href="howto.html">howto.html</a>. A
 summary of the various configuration options available is given in
 <a href="options.html">options.html</a>. Known issues and open problems are 
 summarized in&nbsp;
-  <a href="issues.html">issues.html</a>.</p>
+  <a href="issues.html">issues.html</a>. Some performance notes and observations 
+are given in <a href="perfNotes.html">perfNotes.html</a>.</p>
 
 
 
@@ -84,17 +87,17 @@ summarized in&nbsp;
 
 
   <ul>
-    <li> <i>
-  BerkeleyDB</i>  <font face="Times New Roman">- use of BerkeleyDB as a 
+    <li> <font face="Verdana"> <i>
+  BerkeleyDB</i> - use of BerkeleyDB as a 
     persistent store is desirable for performance and compatibility with Jena1.</font></li>
-    <li> <font face="Times New Roman"><i>Native Java persistence</i> - a native 
+    <li> <font face="Verdana"><i>Native Java persistence</i> - a native 
     Java persistent store would be convenient for some users.</font></li>
-    <li> <font face="Times New Roman"><i>Performance tuning and characterization</i> 
+    <li> <font face="Verdana"><i>Performance tuning and characterization</i> 
     - a better understanding of the trade-offs of the various configuration 
     options would be useful.</font></li>
-    <li><i>Application-specific database layouts</i> - Jena2 supports 
+    <li><font face="Verdana"><i>Application-specific database layouts</i> - Jena2 supports 
     reification with a property-class table but this capability should be 
-    generalized to support user-defined property and property class tables.</li>
+    generalized to support user-defined property and property class tables.</font></li>
 </ul>
 
 
@@ -113,39 +116,39 @@ summarized in&nbsp;
 
 <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1">
   <tr>
-    <td><b>&nbsp;&nbsp; Platform&nbsp;&nbsp;&nbsp;&nbsp; </b></td>
-    <td><b>&nbsp;&nbsp; Database Engine&nbsp;&nbsp;&nbsp;&nbsp; </b></td>
-    <td><b>&nbsp;&nbsp; JDBC Driver</b></td>
+    <td style="text-align: left"><b>&nbsp;&nbsp; Platform&nbsp;&nbsp;&nbsp;&nbsp; </b></td>
+    <td style="text-align: left"><b>&nbsp;&nbsp; Database Engine&nbsp;&nbsp;&nbsp;&nbsp; </b></td>
+    <td style="text-align: left"><b>&nbsp;&nbsp; JDBC Driver</b></td>
   </tr>
   <tr>
-    <td>&nbsp;&nbsp; Windows XP&nbsp; </td>
-    <td>&nbsp;&nbsp; MySQL 4.0.12</td>
-    <td>&nbsp;&nbsp; mysql-connector-java-3.0.7-stable.jar&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; Windows XP&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; MySQL 4.0.12</td>
+    <td style="text-align: left">&nbsp;&nbsp; mysql-connector-java-3.0.7-stable.jar&nbsp;&nbsp;&nbsp;&nbsp; </td>
   </tr>
   <tr>
-    <td>&nbsp;&nbsp; Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
-    <td>&nbsp;&nbsp; MySQL 4.0.12</td>
-    <td>&nbsp;&nbsp; mysql-connector-java-3.0.7-stable.jar</td>
+    <td style="text-align: left">&nbsp;&nbsp; Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; MySQL 4.0.12</td>
+    <td style="text-align: left">&nbsp;&nbsp; mysql-connector-java-3.0.7-stable.jar</td>
   </tr>
   <tr>
-    <td>&nbsp;&nbsp; Windows XP&nbsp; </td>
-    <td>&nbsp;&nbsp; PostgreSQL 7.3.3</td>
-    <td>&nbsp;&nbsp; pg73jdbc2.jar (JDBC2 for jdk1.3, 1.2, 1.4&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; Windows XP&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; PostgreSQL 7.3.3</td>
+    <td style="text-align: left">&nbsp;&nbsp; pg73jdbc2.jar (JDBC2 for jdk1.3, 1.2, 1.4&nbsp;)&nbsp;&nbsp;&nbsp;&nbsp; </td>
   </tr>
   <tr>
-    <td>&nbsp;&nbsp; Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
-    <td>&nbsp;&nbsp; PostgreSQL 7.3.3</td>
-    <td>&nbsp;&nbsp; pg73jdbc2.jar (JDBC2 for jdk1.3, 1.2, 1.4&nbsp;)</td>
+    <td style="text-align: left">&nbsp;&nbsp; Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; PostgreSQL 7.3.3</td>
+    <td style="text-align: left">&nbsp;&nbsp; pg73jdbc2.jar (JDBC2 for jdk1.3, 1.2, 1.4&nbsp;)</td>
   </tr>
   <tr>
-    <td>&nbsp;&nbsp; Windows XP&nbsp; </td>
-    <td>&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
-    <td>&nbsp;&nbsp; Oracle oci8 JDBC driver (thick client)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; Windows XP&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
+    <td style="text-align: left">&nbsp;&nbsp; Oracle oci8 JDBC driver (thick client)&nbsp;&nbsp;&nbsp;&nbsp; </td>
   </tr>
   <tr>
-    <td>&nbsp;&nbsp; Linux (RedHat AS)&nbsp;&nbsp;&nbsp;&nbsp; </td>
-    <td>&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
-    <td>&nbsp;&nbsp; Oracle oci JDBC driver (thick client)&nbsp;</td>
+    <td style="text-align: left">&nbsp;&nbsp; Linux (RedHat AS)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td style="text-align: left">&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
+    <td style="text-align: left">&nbsp;&nbsp; Oracle oci JDBC driver (thick client)&nbsp;</td>
   </tr>
 </table>
 
@@ -178,17 +181,17 @@ summarized in&nbsp;
 
   <p>Jena2 does not support the <i>hash</i> layouts and <i>proc</i> layouts of 
   Jena1. Applications that request these layouts under Jena2 will be given a 
-  generic layout. Jena2 will initially support MySQL, Oracle, Postgresql and 
-  Berkeley DB. Applications that require Interbase will not work. The driver 
+  generic layout. Jena2  supports MySQL, Oracle, PostgreSQL. Applications that require Interbase 
+  or Berkeley DB will not work. The driver 
   configuration files (e.g., Mysql.config) are no longer used. Instead, 
-  configuration options are set and retrieved using statements in an RDF memory 
-  model.</p>
+  get/set methods on the driver and modelRDB classes are used for configuration 
+  parameters (see <a href="options.html">options</a>).</p>
 
 
 
-  <p>In Jena2, all databases are multi-model. By default, each model is 
-  stored in separate tables and two tables are used for each model, one for 
-  asserted statements and another for reified statements. To share tables among models, see
+  <p>In Jena2, all databases are multi-model. By default, models are stored 
+  separately and each model uses one table for 
+  asserted statements and another table for reified statements. To share tables among models, see
   <a href="#migrating">migrating</a>, below.</p>
 
 
@@ -206,8 +209,11 @@ summarized in&nbsp;
 
   <p>As mentioned <a href="#compatibility">above</a>, most Jena1 persistent 
   applications should run with little or no modification under Jena2. However, 
-  some <font face="Courier New" size="2">ModelRDB</font> class constructors are deprecated. In 
-  Jena2, persistent models should be created using a factory method.</p>
+  the <font face="Courier New" size="2">ModelRDB</font> class constructors are deprecated. In 
+  Jena2, persistent models should be created using a factory method. In some 
+  situations, the ModelRDB class constructors are still required because the 
+  factory methods do not yet support all the ModelRDB functionality (see
+  <a href="howto.html">howto</a>).</p>
 
 
 
@@ -217,65 +223,23 @@ summarized in&nbsp;
   that creates new persistent models. In particular, the way in which database 
   configuration options are specified is changed. In Jena2, configuration options are specified 
   using get and set methods on models or drivers. See <a href="options.html">
-  Options</a> details on the options and how to specify them.</p>
+  Options</a> for details on using them.</p>
 
 
 
-  <p>To migrate databases, a small Jena1 application program is used to write 
+  <p>There is no utility provided to migrate databases. However, users can 
+  easily create their own. A small Jena1 application program is used to write 
   Jena1 <font face="Courier New" size="2">ModelRDB</font> contents to a text 
-  file using an RDF writer. A small Jena2 application program is then used to 
-  read this file and store it in a <font face="Courier New" size="2">ModelDB</font> 
+  file using an RDF writer. Then, a small Jena2 application program is  used to 
+  read this file and store it in a <font face="Courier New">persistent</font> 
   model. For small databases, the PrettyWriter (RDF/XML-ABBREV) should be 
   adequate. For medium or large databases, use the N-Triple writer for better 
   performance and consider using a pipe to connect the two small applications 
-  rather than using an intermediate file. As a convenience, the preview release 
-  will provide a script or utility program for database migration.</p>
+  rather than using an intermediate file.</p>
 
 
 
-  <h2><a name="notes"></a>Performance Notes</h2>
-
-
-
-  <p>Very little tuning or performance analysis has been done. Early 
-  measurements of the Jena2 preview 1 release using the jena-perf benchmark (available as a package 
-  from <a href="http://sourceforge.net/projects/jena/">
-  http://sourceforge.net/projects/jena/</a>) show Jena2 to be up to three times 
-  faster than Jena1 (see <a href="perftestWin32.html">perftest.html</a>). 
-  However, Jena2 models may consume more disk space than Jena1 models. This is due to the different table layouts used in Jena1 and 
-  Jena2. In Jena1, all resources were stored in a separate table that was referenced 
-  from the statement table. Similarly for all literals. This greatly reduced space 
-  consumption since resources and literals that appeared in multiple statements 
-  were only stored once. However, retrieving a statement required joining the 
-  statement table with the literals and resources tables.</p>
-
-
-
-  <p>In Jena2, <i>short</i> resources and <i>short</i> literals are stored directly in the statement table.
-  Separate tables for resources and literals exist but are only used for objects
-  whose length exceeds some threshold. The threshold has a database-dependent 
-  default but may be redefined by users (see <a href="options.html">LongObjectLength</a>). Consequently, Jena2 requires fewer join operations than 
-  Jena1 at the expense of greater memory consumption. If disk space consumption 
-  is deemed excessive, two options may be used to reduce the amount of space 
-  used, <a href="options.html">DoCompressURI</a>&nbsp; and 
-  &nbsp;<a href="options.html">LongObjectLength </a>.</p>
-
-
-
-  <p>Little performance tuning has been done. For loading large databases, we 
-  have found two techniques can help. First, if the dataset to be loaded 
-  contains no duplicate statements, the option 
-  <a href="options.html">DoDuplicateCheck</a> &nbsp;may be used to disable checking for duplicate statements on 
-  insertion. Another option is to manually delete the database indexes and then 
-  recreate them after the loading has completed. Unfortunately, Jena2 does not 
-  currently support a utility to do this on behalf of users. We cannot provide 
-  any guidance on the benefit of deleting and recreating the indexes and mention 
-  it only as an option users may wish to try if load performance cannot be 
-  improved with other techniques.</p>
-
-
-
-</BODY>
+  </BODY>
 
 
 
