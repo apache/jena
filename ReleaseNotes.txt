@@ -45,7 +45,9 @@ Post Jena 2.1 change list
 
   RDQL
       o Added langeq operator
-      o Remove ResultBinding.getValue() (which was an internal use operation)
+      o Remove ResultBinding.getValue() (which was an internal use
+        operation) as part of move to more directly using the graph level
+        queryhandling.
 
   Event handling
       o added new graph.GraphEvents as holder of event constants with one
