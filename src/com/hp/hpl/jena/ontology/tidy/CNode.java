@@ -2,6 +2,7 @@ package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * @author jjc
@@ -14,12 +15,54 @@ abstract class CNode extends EnhNode implements CNodeI {
 	        if (n.isLiteral())
 				return new CLit(n, eg);
 			if (n.isURI()) {
-				// TODO uri handling code
 				int type = Grammar.getBuiltinID(n.getURI());
-				if (type != -1) {
-					return new CBuiltin(n, eg, type);
-				}
-				return new CURIref(n, eg);
+                switch ( type ) {
+                case Grammar.DisallowedVocab:
+                
+                    ((Checker)eg).addProblem(
+                       new SyntaxProblem(
+                         "Disallowed vocabulary",
+                         inEmptyModel(n),
+                         Levels.DL
+                       )
+                    );
+                    return new CURIref(n,eg);
+                case Grammar.BadOWL:
+                    ((Checker)eg).addProblem(
+                       new SyntaxProblem(
+                         "Unrecognised OWL vocabulary",
+                         inEmptyModel(n),
+                         Levels.Warning
+                       )
+                    );
+                    return new CURIref(n,eg);
+                case Grammar.BadRDF:
+                    ((Checker)eg).addProblem(
+                       new SyntaxProblem(
+                         "Unrecognised RDF vocabulary",
+                         inEmptyModel(n),
+                         Levels.Warning
+                       )
+                    );
+                    return new CURIref(n,eg);
+                case Grammar.BadXSD:
+                    ((Checker)eg).addProblem(
+                       new SyntaxProblem(
+                         "Illadvised XSD datatype",
+                         inEmptyModel(n),
+                         Levels.Warning
+                       )
+                    );
+                    return new CBuiltin(n,eg,Grammar.datatypeID);
+                   case Grammar.Failure:
+                    return new CURIref(n, eg);
+                    default:
+                    break;
+                }
+                if ( type < Grammar.MAX_SINGLETON_SET)
+                   return new CBuiltin(n,eg,type);
+                else
+                   return new CURIref(n,eg,type);
 			}
 			return new CBlank(n, eg);
 		}
@@ -27,6 +70,10 @@ abstract class CNode extends EnhNode implements CNodeI {
 	CNode(Node n, EnhGraph eg) {
 		super(n, eg);
 	}
+    static EnhNode inEmptyModel(Node n) {
+        Model m = ModelFactory.createDefaultModel();
+        return ((EnhGraph)m).getNodeAs(n,RDFNode.class);
+    }
 
 	Node getAttribute(Node property) {
 		Graph g = getGraph().asGraph();

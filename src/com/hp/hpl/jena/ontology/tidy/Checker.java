@@ -43,9 +43,13 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  */
 public class Checker extends EnhGraph {
-	// TODO personality extenstions
+	// TODO personality factories
 	static private Personality personality =
-		new GraphPersonality().add(CNodeI.class, CNode.factory);
+		new GraphPersonality()
+        .add(CNodeI.class, CNode.factory)
+        .add(Blank.class,CBlank.factory)
+        .add(One.class,OneImpl.factory)
+        .add(Two.class,TwoImpl.factory);
 	private Graph hasBeenChecked;
 	private Vector monotoneProblems = new Vector();
 
