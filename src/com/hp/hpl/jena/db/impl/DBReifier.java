@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBReifier.java,v 1.3 2003-05-02 23:06:18 csayers Exp $
+  $Id: DBReifier.java,v 1.4 2003-05-07 21:28:01 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -89,8 +89,9 @@ public class DBReifier implements Reifier
 	 */
 	public boolean hasTriple(Triple t) {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch(t.getSubject(), t.getPredicate(), t.getObject());
-		return m_reifier.findReifiedNodes(match, complete).hasNext();
+//		TripleMatch match = new StandardTripleMatch(t.getSubject(), t.getPredicate(), t.getObject());
+//		return m_reifier.findReifiedNodes(match, complete).hasNext();
+		return m_reifier.findReifiedNodes(t, complete).hasNext();
 	}
 
 	/* (non-Javadoc)
@@ -98,8 +99,9 @@ public class DBReifier implements Reifier
 	 */
 	public ExtendedIterator allNodes() {
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		TripleMatch match = new StandardTripleMatch(null, null, null);
-		return m_reifier.findReifiedNodes(match, complete);
+//		TripleMatch match = new StandardTripleMatch(null, null, null);
+//		return m_reifier.findReifiedNodes(match, complete);
+		return m_reifier.findReifiedNodes(null, complete);
 	}
 
 	/* (non-Javadoc)
