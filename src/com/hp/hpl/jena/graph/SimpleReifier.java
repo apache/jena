@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.5 2003-03-27 15:23:01 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.6 2003-03-27 16:16:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -54,6 +54,12 @@ public class SimpleReifier implements Reifier
             predicates = new HashSet();
             objects = new HashSet();
             }
+            
+        boolean isComplete()
+            { return types.size() == 1 && subjects.size() == 1 && predicates.size() == 1 && objects.size() == 1; }
+            
+        boolean isEmpty()
+            { return subjects.size() == 0 && predicates.size() == 0 && objects.size() == 0 && types.size() == 0; }
         }
         
     /** return the parent graph we are bound to */
@@ -95,9 +101,7 @@ public class SimpleReifier implements Reifier
     private boolean isComplete( Node n )
         {
         Object x = nodeMap.get( n );
-        if (x instanceof Triple) return true;
-        Womble w = (Womble) nodeMap.get( n );
-        return w.types.size() == 1 && w.subjects.size() == 1 && w.predicates.size() == 1 && w.objects.size() == 1;
+        return x instanceof Triple || ((Womble) x) .isComplete();
         }
         
     /** return the graph of reified triples. */
@@ -159,7 +163,6 @@ public class SimpleReifier implements Reifier
         while (it.hasNext())
             if (getTriple( (Node) it.next() ) .equals( t )) return true;
         return false;
-        // return nodeToTriple.containsValue( t );
         }
         
     public boolean handledAdd( Triple t )
@@ -234,8 +237,7 @@ public class SimpleReifier implements Reifier
             {
             w.types.remove( o );
             }
-        if (w.subjects.size() == 0 && w.predicates.size() == 0 && w.objects.size() == 0 && w.types.size() == 0)
-            nodeMap.remove( s );
+        if (w.isEmpty()) nodeMap.remove( s );
         }
     
     public boolean handledRemove( Triple t )
