@@ -1,9 +1,12 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Rewrite.java,v 1.3 2004-07-30 15:15:41 chris-dollin Exp $
+  $Id: Rewrite.java,v 1.4 2004-08-02 15:09:03 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
+
+import com.hp.hpl.jena.rdql.parser.Q_PatternLiteral;
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
      Rewrite - class which does expression rewrites for Query
@@ -28,16 +31,17 @@ public class Rewrite
 
     public static String getPattern( Expression E )
         {
-        if (E.isConstant())
+        if (E instanceof PatternLiteral) 
             {
-            Object R = E.getValue();
-            if (R instanceof String)
+            PatternLiteral L = (PatternLiteral) E;
+            if (L.getPatternLanguage().equals( "rdql" ))
                 {
-                String s = (String) R;
-                if (s.startsWith( "/") && s.endsWith( "/" ))
-                    return s.substring( 1, s.length() - 1 );
+                String S = L.getPatternString();
+                String M = L.getPatternModifiers();
+                if (M == null || M.equals( "" )) return S;
                 }
-            }
+            } 
+        if (true) throw new JenaException( "bother: " + E.getClass() + " " + E );
         return null;
         }
 

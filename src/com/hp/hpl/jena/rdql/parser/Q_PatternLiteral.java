@@ -9,10 +9,11 @@ package com.hp.hpl.jena.rdql.parser;
 import java.io.PrintWriter;
 import org.apache.oro.text.regex.Perl5Compiler ;
 import com.hp.hpl.jena.graph.query.IndexValues ;
+import com.hp.hpl.jena.graph.query.PatternLiteral;
 import com.hp.hpl.jena.rdql.*;
 
 
-public class Q_PatternLiteral extends ExprNode implements Expr
+public class Q_PatternLiteral extends ExprNode implements Expr, PatternLiteral
 {
     String patternString = null ;
     String modifiers = "" ;
@@ -113,6 +114,22 @@ public class Q_PatternLiteral extends ExprNode implements Expr
     public String asInfixString()
     {
         return toString() ;
+    }
+
+    /**
+        required for PatternLiteral interface - return the modifers
+    */
+    public String getPatternModifiers()
+    { 
+        return modifiers == null ? "" : modifiers;
+    }
+
+    /**
+         required for PatternLiteral interface - return the pattern language
+    */
+    public String getPatternLanguage()
+    { 
+        return "rdql"; 
     }
     
 }

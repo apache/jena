@@ -1,14 +1,15 @@
   /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.26 2004-07-22 10:11:47 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.27 2004-08-02 15:09:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.rdql.parser.Q_PatternLiteral;
+import com.hp.hpl.jena.rdql.test.TestExpressions;
 import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.impl.*;
@@ -567,7 +568,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         {
         Query q = new Query();
         Expression L = constant( "x" );
-        Expression R = constant( "/^begins/" );
+        Expression R = createSimplePattern( "^begins" );
         String F = "Q_StringMatch";
         Expression provided = dyadic( L, "Q_StringMatch", R );
         Expression desired = dyadic( L, "J_startsWith", constant( "begins" ) );
@@ -576,12 +577,12 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Expression e2 = (Expression) q.getConstraints().iterator().next();
         assertEquals( desired, e2 );
         }
-    
+
     public void testRewriteEndswithExpression()
         {
         Query q = new Query();
         Expression L = constant( "x" );
-        Expression R = constant( "/ends$/" );
+        Expression R = createSimplePattern( "ends$" );
         String F = "Q_StringMatch";
         Expression provided = dyadic( L, "Q_StringMatch", R );
         Expression desired = dyadic( L, "J_endsWith", constant( "ends" ) );
@@ -589,12 +590,12 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Expression e2 = (Expression) q.getConstraints().iterator().next();
         assertEquals( desired, e2 );
         }
-
+   
     public void testRewriteContainsExpression()
         {
         Query q = new Query();
         Expression L = constant( "x" );
-        Expression R = constant( "/contains/" );
+        Expression R = createSimplePattern( "contains" );
         String F = "Q_StringMatch";
         Expression provided = dyadic( L, "Q_StringMatch", R );
         Expression desired = dyadic( L, "J_contains", constant( "contains" ) );
@@ -603,8 +604,19 @@ public abstract class AbstractTestQuery extends QueryTestBase
         assertEquals( desired, e2 );
         }
     
-    private Expression constant( final String string )
-        { return new Expression.Fixed( string ); }
+    protected static class PL extends Expression.Fixed implements PatternLiteral
+        {
+        public PL( String s ) { super( s ); }
+        public String getPatternString() { return (String) value; }
+        public String getPatternModifiers() { return ""; }
+        public String getPatternLanguage() { return "rdql"; }
+        }
+    
+    public Expression createSimplePattern( final String p )
+        { return new PL( p ); }
+    
+    private Expression constant( final Object it )
+        { return new Expression.Fixed( it ); }
 
     private Expression dyadic( Expression l, String op, Expression r )
         {
@@ -624,7 +636,6 @@ public abstract class AbstractTestQuery extends QueryTestBase
         {
         Graph g = dataGraph();
         Map answer = getAnswer( g, TripleSorter.dontSort );
-        // TODO remove: System.err.println( ">> " + answer );
         assertEquals( 1, answer.size() );
         assertEquals( new Integer(1), answer.get( Arrays.asList( nodes( "a d" ) ) ) );
     /* */
@@ -727,7 +738,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
 
 
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
