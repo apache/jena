@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestConnection.java,v 1.6 2003-06-18 20:57:40 wkw Exp $
+  $Id: TestConnection.java,v 1.7 2003-06-27 18:08:58 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -116,6 +116,26 @@ public class TestConnection extends TestCase {
 		m.remove();
     	conn.close();
     }
+    
+	public void testReconstructDefaultModel() throws java.lang.Exception {
+		IDBConnection conn = makeAndCleanTestConnection();
+		ModelRDB m = ModelRDB.createModel(conn);
+		m.remove();
+		ModelRDB m1 = ModelRDB.createModel(conn);
+		m1.remove();
+		conn.close();
+	}
+
+    
+	public void testReconstructNamedModel() throws java.lang.Exception {
+		IDBConnection conn = makeAndCleanTestConnection();
+		ModelRDB m = ModelRDB.createModel(conn, "myName");
+		m.remove();
+		ModelRDB m1 = ModelRDB.createModel(conn, "myName");
+		m1.remove();
+		conn.close();
+	}
+
         
     public void testConstructAndOpenNamedModel() throws java.lang.Exception {
         IDBConnection conn = makeAndCleanTestConnection();
