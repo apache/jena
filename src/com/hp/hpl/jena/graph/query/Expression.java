@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.3 2003-10-08 15:14:55 chris-dollin Exp $
+  $Id: Expression.java,v 1.4 2003-10-09 09:45:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -17,18 +17,29 @@ public interface Expression
     { 
     public boolean evalBool( Mapping map, Domain d );
     
+    public boolean evalBool( VariableValues vv );
+    
     public Expression and( Expression e );
     
     public abstract class Base implements Expression
         {
         public Expression and( Expression e ) { return and( this, e ); }
         
+        public boolean evalBool( VariableValues vv )
+            { return false; }
+            
         protected Object eval( Node x, Mapping map, Domain d )
             {
             if (x.isVariable()) return d.get( map.indexOf( x ) );
             else return x;    
             }
-                            
+            
+        protected Object eval( Node x, VariableValues vv )
+            {
+            if (x.isVariable()) return vv.get( x.getName() );
+            else return x;    
+            }
+                                                        
         public static Expression and( final Expression L, final Expression R )
             {
             return new Base()
@@ -40,10 +51,16 @@ public interface Expression
         }
         
     public static Expression TRUE = new Base() 
-        { public boolean evalBool( Mapping map, Domain d ) { return true; }};
+        { 
+        public boolean evalBool( Mapping map, Domain d ) { return true; }
+        public boolean evalBool( VariableValues vv ) { return true; }
+        };
     
     public static Expression FALSE = new Base() 
-        { public boolean evalBool( Mapping map, Domain d ) { return false; }};
+        { 
+        public boolean evalBool( Mapping map, Domain d ) { return false; }
+        public boolean evalBool( VariableValues vv ) { return false; }
+        };
        
     public class Create
         {
@@ -51,6 +68,9 @@ public interface Expression
             {
             return new Base() 
                 {
+                public boolean evalBool( VariableValues vv )
+                    { return !eval( x, vv ).equals( eval( y, vv ) ); }
+                    
                 public boolean evalBool( Mapping map, Domain d )
                     { return !eval( x, map, d ).equals( eval( y, map, d ) ); }
                 };    
@@ -60,6 +80,9 @@ public interface Expression
             {
             return new Base() 
                 {
+                public boolean evalBool( VariableValues vv )
+                    { return eval( x, vv ).equals( eval( y, vv ) ); }
+                    
                 public boolean evalBool( Mapping map, Domain d )
                     { return eval( x, map, d ).equals( eval( y, map, d ) ); }
                 };    
@@ -79,6 +102,9 @@ public interface Expression
                     { String x = asString( L ), y = asString( R );
                     return x.indexOf( y ) > -1; }       
                              
+                public boolean evalBool( VariableValues vv )
+                    { return matches( eval( x, vv ), eval( y, vv ) ); }
+                    
                 public boolean evalBool( Mapping map, Domain d )
                     { return matches( eval( x, map, d ), eval( y, map, d ) ); }
                 };    

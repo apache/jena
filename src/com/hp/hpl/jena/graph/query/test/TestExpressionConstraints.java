@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.1 2003-09-26 11:53:08 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.2 2003-10-09 09:46:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -16,7 +16,7 @@ import junit.framework.*;
 import java.util.*;
 
 /**
-	TestExpressionConstraints - test the "new" (as of Seprember 2003) Constraint system
+	TestExpressionConstraints - test the "new" (as of September 2003) Constraint system
     for Query.
 
 	@author kers
@@ -36,7 +36,10 @@ public class TestExpressionConstraints extends GraphTestBase
     
     protected static final Expression eTRUE = Expression.TRUE;
     protected static final Expression eFALSE = Expression.FALSE;
-    
+
+    protected static final Map1 getFirst = new Map1()
+        { public Object map1(Object x) { return ((List) x).get(0); }};        
+        
     public void testConstraintFALSE()
         {
         Graph g = graphWith( "x R y; a P b" );
@@ -57,10 +60,17 @@ public class TestExpressionConstraints extends GraphTestBase
         {
         return Expression.Create.NE( x, y );
         }
+
+    private Expression areEqual( Node x, Node y )
+        {
+        return Expression.Create.EQ( x, y );
+        }
         
+    protected Expression matches( Node x, Node y )
+        { return Expression.Create.MATCHES( x, y ); }
+
     public void testConstraintNE1()
         {        
-        Map1 getFirst = new Map1(){ public Object map1(Object x) { return ((List) x).get(0); }};
         Graph g = graphWith( "x R y; a P a" );
         Query q = new Query()
             .addMatch( X, ANY, Y )
@@ -73,7 +83,6 @@ public class TestExpressionConstraints extends GraphTestBase
         
     public void testConstraintNE2()
         {        
-        Map1 getFirst = new Map1(){ public Object map1(Object x) { return ((List) x).get(0); }};
         Graph g = graphWith( "x R y; a P a" );
         Query q = new Query()
             .addMatch( Z, ANY, ANY )
@@ -87,7 +96,6 @@ public class TestExpressionConstraints extends GraphTestBase
                 
     public void testConstraintNE3()
         {        
-        Map1 getFirst = new Map1(){ public Object map1(Object x) { return ((List) x).get(0); }};
         Graph g = graphWith( "x R a; y P b; z Q c" );
         Query q = new Query()
             .addMatch( X, ANY, ANY )
@@ -101,7 +109,6 @@ public class TestExpressionConstraints extends GraphTestBase
         
     public void testConstraintNE4()
         {        
-        Map1 getFirst = new Map1(){ public Object map1(Object x) { return ((List) x).get(0); }};
         Graph g = graphWith( "x R a; y P b; z Q c" );
         Query q = new Query()
             .addMatch( X, ANY, ANY )
@@ -112,6 +119,40 @@ public class TestExpressionConstraints extends GraphTestBase
         expected.add( node( "z" ) );
         assertEquals( expected, iteratorToSet( q.executeBindings( g, new Node[] {X} ).mapWith( getFirst ) ) );     
         }
+        
+    public static class VV implements VariableValues
+        {
+        private Map values = new HashMap();
+        
+        public VV set( String x, String s ) { values.put( x, s ); return this; }    
+        
+        public Object get( String name ) { return values.get( name ); }
+        }
+        
+    public void testVV()
+        {
+        VV varValues = new VV() .set( "X", "1" ).set( "Y", "2" ).set( "Z", "3" );
+        assertEquals( "1", varValues.get( "X" ) );
+        assertEquals( "2", varValues.get( "Y" ) );
+        assertEquals( "3", varValues.get( "Z" ) );
+        }    
+        
+    public void testNE()
+        {
+        Expression e = areEqual( X, Y );
+        VV varValues = new VV() .set( "X", "1" ).set( "Y", "2" );
+        assertEquals( false, e.evalBool( varValues ) );    
+        }
+        
+   public void testVVTrue()
+        { assertEquals( true, Expression.TRUE.evalBool( new VV() ) ); }
+        
+   public void testVVFalse()
+        { assertEquals( false, Expression.FALSE.evalBool( new VV() ) ); }
+
+    public void testVVMatches()
+        { VariableValues vv = new VV().set( "X", "hello" ).set( "Y", "ell" );
+        assertEquals( true, matches( X, Y ).evalBool( vv ) );  }
     }
 
 /*
