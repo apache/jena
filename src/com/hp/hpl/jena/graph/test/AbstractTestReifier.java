@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.22 2004-11-19 14:38:12 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.23 2004-12-01 09:04:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -69,6 +69,13 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Reifier R1 = G.getReifier();
         G.add( triple( "x R y" ) );
         assertTrue( "same reifier", R1 == G.getReifier() );
+        }
+    
+    public void testReifierClosed()
+        {
+        Graph g = getGraph();
+        Reifier r = g.getReifier();
+        g.close();
         }
         
     public void testParent()

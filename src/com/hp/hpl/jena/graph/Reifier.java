@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Reifier.java,v 1.29 2004-11-05 11:58:52 chris-dollin Exp $
+  $Id: Reifier.java,v 1.30 2004-12-01 09:04:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -100,6 +100,12 @@ public interface Reifier extends GetTriple
         true iff the Reifier has handled a remove of the triple _t_.
     */
     boolean handledRemove( Triple t );
+
+    /**
+    	The reifier will no longer be used. Further operations on it are not defined
+        by this interface.
+    */
+    void close();
     }
 
 /*

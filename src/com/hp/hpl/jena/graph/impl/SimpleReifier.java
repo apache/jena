@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.44 2004-11-05 11:59:09 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.45 2004-12-01 09:04:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -28,6 +28,8 @@ public class SimpleReifier implements Reifier
     
     protected ReifierFragmentsMap fragmentsMap;
     protected ReifierTripleMap tripleMap;
+    
+    protected boolean closed = false;
         
     /** 
         construct a simple reifier that is bound to the parent graph .
@@ -236,6 +238,22 @@ public class SimpleReifier implements Reifier
     */
     public String toString()
         { return "<R " + fragmentsMap + "|" + tripleMap + ">"; }
+
+    /**
+         Close this reifier - discard (big) resources.
+    */
+    public void close()
+        {
+        fragmentsMap = null;
+        tripleMap = null;    
+        closed = true;
+        }
+
+    /**
+    	Answer true iff this SImpleReifier has been closed.
+    */
+    public boolean isClosed()
+        { return closed; }
     }
     
 /*

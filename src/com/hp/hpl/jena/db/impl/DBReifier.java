@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBReifier.java,v 1.17 2004-11-04 15:03:29 chris-dollin Exp $
+  $Id: DBReifier.java,v 1.18 2004-12-01 09:02:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -165,11 +165,15 @@ public class DBReifier implements Reifier
 	public Triple getTriple(Node n) {
 		return m_reifier.findReifiedTriple(n, newComplete() );
 	}
+    
+    public void close() {
+        // TODO anything useful for a close operation
+    }
         
 }
     
 /*
-    (c) Copyright 200, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

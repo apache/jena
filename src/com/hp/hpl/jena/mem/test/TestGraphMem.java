@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.9 2004-11-01 16:38:28 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.10 2004-12-01 09:04:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.SimpleReifier;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.shared.JenaException;
@@ -28,6 +29,14 @@ public class TestGraphMem extends AbstractTestGraph
     public Graph getGraph()
         { return new GraphMem(); }
         
+    public void testClosesReifier()
+        {
+        Graph g = getGraph();
+        SimpleReifier r = (SimpleReifier) g.getReifier();
+        g.close();
+        assertTrue( r.isClosed() );
+        }
+    
     public void testBrokenIndexes()
         {
         Graph g = getGraphWith( "x R y; x S z" );
