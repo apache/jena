@@ -18,8 +18,8 @@
     explicitly into their ontology. People that do import this file
     should expect their ontology to be an OWL Full ontology. 
   </rdfs:comment>
-    <rdfs:comment>$Id: OWLManifest.rdf,v 1.4 2003-09-24 15:14:53 jeremy_carroll Exp $</rdfs:comment>
-    <versionInfo>$Id: OWLManifest.rdf,v 1.4 2003-09-24 15:14:53 jeremy_carroll Exp $</versionInfo>
+    <rdfs:comment>$Id: OWLManifest.rdf,v 1.5 2003-09-25 07:50:01 jeremy_carroll Exp $</rdfs:comment>
+    <versionInfo>$Id: OWLManifest.rdf,v 1.5 2003-09-25 07:50:01 jeremy_carroll Exp $</versionInfo>
   </Ontology>
   <rdfs:Class rdf:about="http://www.w3.org/2002/07/owl#Ontology"
      rdfs:label="Ontology">
@@ -437,6 +437,26 @@ then this is not within OWL DL.</rtest:description>
       </rtest:RDF-XML-Document>
     </rtest:inputDocument>
   </otest:ConsistencyTest>
+  <otest:NegativeEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Restriction/Manifest005#test"
+     rtest:status="PROPOSED">
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <rtest:description rdf:parseType="Literal">
+This test shows a potential misapplication of OWL Full comprehension rules.
+It also shows optional type triples on an <code xmlns="http://www.w3.org/1999/xhtml">owl:Restriction</code>.</rtest:description>
+    <rtest:premiseDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Restriction/premises005">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:premiseDocument>
+    <rtest:conclusionDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Restriction/nonconclusions005">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:conclusionDocument>
+  </otest:NegativeEntailmentTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I4.5/premises001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
   </rtest:RDF-XML-Document>
@@ -463,6 +483,9 @@ document then it becomes OWL DL.
   </otest:ImportLevelTest>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/AllDistinct/conclusions002">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Restriction/premises006">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
   <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/I5.3/Manifest004#test"
      rtest:status="OBSOLETED">
@@ -753,11 +776,11 @@ this property may or may not be imported into the test.</rdfs:comment>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/premises904">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
   </rtest:RDF-XML-Document>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/maxCardinality/inconsistent001">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
-  </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/inconsistent033">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+  </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/maxCardinality/inconsistent001">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/conclusions001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -2477,6 +2500,9 @@ The use of blank nodes in OWL DL and OWL Lite is restricted. </rtest:description
       </rtest:RDF-XML-Document>
     </rtest:inputDocument>
   </otest:ConsistencyTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Restriction/conclusions006">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/description-logic/conclusions201">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
@@ -2794,6 +2820,9 @@ Sets with appropriate extensions are related by unionOf.</rtest:description>
     </rtest:premiseDocument>
     <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/unionOf/conclusions003"/>
   </otest:PositiveEntailmentTest>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/conclusions006">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
   <otest:OWLforOWLTest rdf:about="http://www.w3.org/2002/03owlt/imports/Manifest010#test"
      rtest:status="PROPOSED">
     <j.0:creator>Jeremy J. Carroll</j.0:creator>
@@ -3341,6 +3370,9 @@ An OWL Lite version of <a xmlns="http://www.w3.org/1999/xhtml" href="#I5.3-007">
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.8/conclusions010">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
   </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I4.6/nonconclusions004">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+  </rtest:RDF-XML-Document>
   <otest:NegativeEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/miscellaneous/Manifest301#test"
      rtest:status="APPROVED">
     <rtest:approval rdf:resource="http://www.w3.org/2003/09/11-webont-irc"/>
@@ -3352,9 +3384,6 @@ Annotations participate a little in the semantics.</rtest:description>
     <rtest:premiseDocument rdf:resource="http://www.w3.org/2002/03owlt/miscellaneous/premises301"/>
     <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/miscellaneous/nonconclusions301"/>
   </otest:NegativeEntailmentTest>
-  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I4.6/nonconclusions004">
-    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
-  </rtest:RDF-XML-Document>
   <otest:ConsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest006#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -3894,6 +3923,22 @@ which is connected but without a Hamiltonian path.</rtest:description>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/imports/premises001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
+  <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Class/Manifest006#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+This test shows a correct application of OWL Full comprehension rules.
+It also shows that use of <code xmlns="http://www.w3.org/1999/xhtml">rdfs:Class</code> instead of <code xmlns="http://www.w3.org/1999/xhtml">owl:Class</code>
+may make a file fall outside OWL DL.</rtest:description>
+    <rtest:premiseDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/premises006">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:premiseDocument>
+    <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/Class/conclusions006"/>
+  </otest:PositiveEntailmentTest>
   <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/TransitiveProperty/Manifest002#test"
      rtest:status="PROPOSED">
     <j.0:creator>Jeremy J. Carroll</j.0:creator>
@@ -4322,6 +4367,9 @@ A class like <code xmlns="http://www.w3.org/1999/xhtml">owl:Nothing</code> can b
   </rtest:RDF-XML-Document>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/I5.3/conclusions013">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+  </rtest:RDF-XML-Document>
+  <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/nonconclusions005">
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
   </rtest:RDF-XML-Document>
   <otest:InconsistencyTest rdf:about="http://www.w3.org/2002/03owlt/description-logic/Manifest027#test"
      rtest:status="APPROVED">
@@ -4843,6 +4891,22 @@ A more difficult prime factorization example.</rtest:description>
     <rtest:premiseDocument rdf:resource="http://www.w3.org/2002/03owlt/extra-credit/premises004"/>
     <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/extra-credit/conclusions004"/>
   </otest:PositiveEntailmentTest>
+  <otest:NegativeEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Class/Manifest005#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#DL"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+This test shows a potential misapplication of OWL Full comprehension rules.
+It also shows optional type triples on an <code xmlns="http://www.w3.org/1999/xhtml">owl:Class</code>.</rtest:description>
+    <rtest:premiseDocument>
+      <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/Class/premises005">
+        <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Lite"/>
+      </rtest:RDF-XML-Document>
+    </rtest:premiseDocument>
+    <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/Class/nonconclusions005"/>
+  </otest:NegativeEntailmentTest>
   <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/TransitiveProperty/Manifest001#test"
      rtest:status="APPROVED">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
@@ -5744,6 +5808,18 @@ then this may be within OWL DL.</rtest:description>
   <rtest:RDF-XML-Document rdf:about="http://www.w3.org/2002/03owlt/AllDifferent/conclusions001">
     <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
   </rtest:RDF-XML-Document>
+  <otest:PositiveEntailmentTest rdf:about="http://www.w3.org/2002/03owlt/Restriction/Manifest006#test"
+     rtest:status="PROPOSED">
+    <j.0:creator>Jeremy J. Carroll</j.0:creator>
+    <otest:feature rdf:resource="http://www.w3.org/2002/07/owl#Restriction"/>
+    <otest:level rdf:resource="http://www.w3.org/2002/03owlt/testOntology#Full"/>
+    <rtest:description rdf:parseType="Literal">
+This test shows a correct application of OWL Full comprehension rules.
+It also shows that optional type triples on an  <code xmlns="http://www.w3.org/1999/xhtml">owl:Restriction</code>
+do not replace the obligatory ones.</rtest:description>
+    <rtest:premiseDocument rdf:resource="http://www.w3.org/2002/03owlt/Restriction/premises006"/>
+    <rtest:conclusionDocument rdf:resource="http://www.w3.org/2002/03owlt/Restriction/conclusions006"/>
+  </otest:PositiveEntailmentTest>
   <otest:ImportLevelTest rdf:about="http://www.w3.org/2002/03owlt/imports/Manifest006#test"
      rtest:status="APPROVED">
     <rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Jan/0444"/>
