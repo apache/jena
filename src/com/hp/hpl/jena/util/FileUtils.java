@@ -273,7 +273,7 @@ public class FileUtils
         InputStream is = ClassLoader.getSystemResourceAsStream(filename);
         if (is == null) {
             // Try local loader with absolute path
-            is = Util.class.getResourceAsStream("/" + filename);
+            is = FileUtils.class.getResourceAsStream("/" + filename);
             if (is == null) {
                 // Can't find it on classpath, so try relative to current directory
                 is = new FileInputStream(filename);
