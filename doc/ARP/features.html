@@ -1,0 +1,90 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html">
+  <title>ARP: Another RDF Parser </title>
+</head>
+
+<body>
+<h3>ARP Features</h3>
+<ul>
+  <li>Java based <a
+    href="http://www.w3.org/TR/1999/REC-rdf-syntax-19990222">RDF</a>
+  parser.</li>
+  <li>Compliant with latest working group <a
+    href="http://www.w3.org/TR/2002/WD-rdf-syntax-grammar-20020325">
+    syntax</a> and <a href="http://www.w3.org/TR/rdf-testcases"> test
+    cases</a> working drafts.</li>
+  <li>Compliant with following standards and recommendations:
+    <dl>
+      <dt><b>daml:collection</b></dt>
+        <dd><a
+          href="http://www.daml.org/2001/03/reference.html#collection">rdf:parseType='daml:collection'</a>
+          is supported.</dd>
+      <dt><b>xml:lang</b></dt>
+        <dd><a href="http://www.w3.org/TR/REC-xml#sec-lang-tag">xml:lang</a>
+          is fully supported, both in RDF/XML and any document embedding
+          RDF/XML. Moreover, the language tags are checked against <a
+          href="http://www.isi.edu/in-notes/rfc1766.txt">RFC1766</a>, <a
+          href="http://www.isi.edu/in-notes/rfc3066.txt">RFC3066</a>,
+          ISO639-1, <a
+          href="http://www.din.de/gremien/nas/nabd/iso3166ma/codlstp1/db_en.html">ISO3166</a>.</dd>
+      <dt><b>xml:base</b></dt>
+        <dd><a href="http://www.w3.org/TR/xmlbase/">xml:base</a> is fully
+          supported, both in RDF/XML and any document embedding RDF/XML.</dd>
+      <dt><b>URI</b></dt>
+        <dd>All URI references are checked against <a
+          href="http://www.isi.edu/in-notes/rfc2396.txt">RFC2396</a>. The
+          treatment of international URIs follows the approach of anyURI in
+          XML Schema Datatypes.</dd>
+      <dt><b>XML Names</b></dt>
+        <dd>All rdf:ID and rdf:BagID's are checked against the <a
+          href="http://www.w3.org/TR/REC-xml#dt-name">XML Names</a>
+          specification.</dd>
+      <dt><b>International URI refs</b></dt>
+        <dd>rdf:about, rdf:ID and rdf:BagID's are processed according to the
+          <a href="http://www.w3.org/TR/charmod/#sec-URIs">Character Model
+          </a> working draft.</dd>
+      <dt><b>Unicode Normal Form C</b></dt>
+        <dd>String literals and URIs are checked for conformance with an
+          early uniform normalization processing model.</dd>
+      <dt><b>XML Literals</b></dt>
+        <dd><code>rdf:parseType='Literal'</code> is processed respecting
+          namespaces, processing instructions and XML comments. This follows
+          the XML exclusive canonicalizations recommendation with comments,
+          and treating namespace (re)declarations as visible uses of the
+          namespace.</dd>
+      <dt><b>Relative Namespace URI references</b></dt>
+        <dd>Namespace URI references are checked in light of the <a
+          href="http://www.w3.org/2000/09/xppa">W3C XML Plenary
+        decision</a>.</dd>
+      <dt><b>aboutEach</b></dt>
+        <dd>Is no longer supported, in line with working group decisions.</dd>
+    </dl>
+  </li>
+  <li>Command-line as RDF/XML to <a
+    href="http://www.ilrt.bristol.ac.uk/people/cmdjb/2001/06/ntriples">N-Triple</a>
+    filter.</li>
+  <li>Command-line RDF/XML error checking.</li>
+  <li>Can be used independently of Jena, with customizable
+  StatementHandler.</li>
+  <li>Highly configurable error processing.</li>
+  <li>Xerces based XML parsing.</li>
+  <li>Processes both standalone and embedded RDF/XML.</li>
+  <li>Streaming parser, suitable for large files.</li>
+</ul>
+
+<h3>Modular <a href="http://www.w3.org/TR/xml-infoset/">XML InfoSet</a> 
+Design</h3>
+<ul>
+  <li><a href="http://xml.apache.org/xerces-j/index.html">Xerces</a> parser
+    for XML.</li>
+  <li><a
+    href="http://xml.apache.org/xerces-j/apiDocs/org/xml/sax/package-summary.html">SAX2</a>
+    to XML InfoSet tokenization.</li>
+  <li><a
+    href="http://www.webgain.com/products/metamata/java_doc.html">JavaCC</a>
+    generated RDF co-parser with explicit RDF grammar over <a
+    href="http://www.w3.org/TR/xml-infoset/">XML InfoSet</a>.</li>
+</ul>
+</body>
+</html>

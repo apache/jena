@@ -1,0 +1,27 @@
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html">
+  <title>ARP: Another RDF Parser - Issues </title>
+</head>
+
+<body>
+<h3>Issues and known defects</h3>
+Please e-mail me if any of these issues are important to you, and I will try
+to prioritise fixes.
+<ul>
+  <li>Line and column numbers refer to the location of the <a
+    href="apidocs/org/xml/sax/SAXParseException.html#getLineNumber()">end of
+    the XML element tag </a> rather than the  appropriate attribute. This
+    <b>will not</b> be fixed.</li>
+  <li>Xerces (version 1.4.2 and before) has a <a
+    href="http://nagoya.apache.org/bugzilla/show_bug.cgi?id=897">memory
+    leak</a>; this may create problems for reading large files, or using ARP
+    in a server.</li>
+  <li>Does not include normalizing transcoder support. This is needed for
+    correct processing of some non-European character sets.</li>
+  <li>Please <a href="mailto:jjc@hpl.hp.com">e-mail me</a> with any further
+    issues.</li>
+</ul>
+<!-- END CONTENT -->
+</body>
+</html>

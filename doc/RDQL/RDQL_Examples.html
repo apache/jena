@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+<TITLE>RDQL Examples</TITLE>
+</HEAD>
+<BODY>
+<h1>Examples</h1>
+<p>Query example 1: Retrieve the value of a known property of a known resource</p>
+<blockquote>
+  <p><font face="Courier New">SELECT ?x<br>
+  WHERE&nbsp; (&lt;http://somewhere/res1&gt;, &lt;http://somewhere/pred1&gt;, ?x)</font></p>
+</blockquote>
+<p>Query example 2: constraints</p>
+<blockquote>
+  <p><font face="Courier New">SELECT ?a, ?b<br>
+  WHERE&nbsp; (?a, &lt;http://somewhere/pred1&gt;, ?b)<br>
+  AND&nbsp;&nbsp;&nbsp; ?b &lt; 5</font></p>
+</blockquote>
+<p>Query example 3: paths in the graph</p>
+<blockquote>
+  <p><font face="Courier New">SELECT ?a, ?b<br>
+  WHERE (?a, &lt;http://somewhere/pred1&gt;, ?c) ,<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (?c, &lt;http://somewhere/pred2&gt;, ?b)</font></p>
+  <h1>Usage</h1>
+  <p>There are two ways to use RDQL : from the command line and in Java programs.</p>
+  <h2><b>Command Line</b></h2>
+  <p>The main class is jena.rdfquery:</p>
+  <p>java -cp ... jena.rdfquery [--data modelFile] [--query File | queryString]</p>
+  <p>With no arguments, it prints a usage message.</p>
+  <h2><b>Java</b></h2>
+  <p><b>Example code fragment 1 (basic template)</b></p>
+  <pre>    Query query = new Query(queryString) ;
+    // Need to set the source if the query does not.
+    // This provided this override any query named source.
+    query.setSource(model);
+    QueryExecution qe = new QueryEngine(query) ;
+    QueryResults results = qe.exec() ;
+    for ( Iterator iter = results ; iter.hasNext() ; )
+    {
+        ResultBinding res = (ResultBinding)iter.next() ;
+        // Return from get is null if not found
+        Object obj = res.get(&quot;x&quot;) ;
+        // obj will be a Jena object: resource, property or RDFNode.
+    }
+    results.close() ;</pre>
+  <p>The ResultBinding class allows an alternative form which can be used to get quoted strings:</p>
+  <pre>        Value v = env.getValue(&quot;x&quot;) ;
+        String s = (v == null) ? &quot;&lt;<NULL>
+null&gt;&quot; : v.asQuotedString() ;</pre>
+  <p><b>Example code fragment 2 (using the results formatter)</b></p>
+  <pre>    Query query = new Query(queryString) ;
+    query.setSource(model);
+    QueryExecution qe = new QueryEngine(query) ;
+    QueryResults results = qe.exec() ;
+    QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
+    PrintWriter pw = new PrintWriter(System.out) ;
+    fmt.printAll(pw, &quot; | &quot;) ;
+    pw.flush() ;
+    fmt.close() ;	
+    results.close() ;</pre>
+  <p>The command line usage is a wrapper around the Java interface.</p>
+</blockquote>
+<p>Query example 4: contents of a bag</p>
+<blockquote>
+  <font face="Courier New">SELECT ?x, ?y<br>
+  WHERE (&lt;http://never/bag&gt;, ?x, ?y)<br>
+  AND ! ( ?x eq &lt;rsyn:type&gt; &amp;&amp; ?y eq &lt;rsyn:Bag&gt;)<br>
+  USING rsyn FOR &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt;</font> 
+</blockquote>
+<p>Query example 5: identifying the RDF model in the query</p>
+<blockquote>
+  <font face="Courier New">SELECT ?a, ?b<br>
+  FROM&nbsp;&nbsp; &lt;http://somewhere/model1.rdf&gt;<br>
+  WHERE&nbsp; (?a, &lt;http://somewhere/pred1&gt;, ?b)<br>
+  AND&nbsp;&nbsp;&nbsp; ?b &lt; 5</font> 
+</blockquote>
+<p>The source for the query would be overidden by the Java call query.setSource, or from the command line using --data
+URI.</p>
+<p>Relative URIs are interpreted as relative filenames.</p>
+<p>The syntax of a source, if not given elsewhere, is detemined bythe extension on the URI.&nbsp; Currently, the type
+recognized are:</p>
+<ul>
+  <li>Prefix jdbc: is assumed to be an SQL database</li>
+  <li>Extension .rdf : XML syntax</li>
+  <li>Extension .nt : N-Triple</li>
+  <li>Extension .bdb : A BerkeleyDB database. This can only be a filename.</li>
+</ul>
+<p>&nbsp;</p>
+</BODY>
+</HTML>

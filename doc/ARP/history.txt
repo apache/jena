@@ -1,0 +1,53 @@
+Version history:
+
+
+ARP-1_0_0 July 18th 2001
+    Initial version.
+
+
+ARP-1_0_1 July 24th 2001
+    'improved' syntax error messages.
+    Added xml:lang checking against RFC3066;
+    unfortunately Xerces 1_4_0 uses older syntax
+    that prohibits ISO-639-2 language codes.
+    Defined JenaReader.setProperties.
+    Changed rdf:aboutEach syntax for clearer error
+    messages.
+
+ARP-1_0_2 July 26th 2001
+     Changed package name, prior to first 
+     public announcement.
+
+ARP-1_0_3 August 3rd 2001
+     Fixed path in README  
+     Fixed spurious attribute errors outside embedded RDF.
+     Issue diagnostic in JenaReader with null or empty 
+       string xml:base arg. 
+     Discard xml:space, and other xml attributes.
+     Shortened org.apache.xerces.utils.URI$MalformedURIException 
+       in error messages. 
+     Fixed a specific syntax error message such as that seen
+       in http://www.w3.org/2000/10/rdf-tests/Miscellaneous/ril_1.rdf
+
+ARP-1_0_4 September 21st 2001
+     Added Internationalization on rdf:about rdf:ID etc.
+    (Conforming with [CHARMOD]).
+     Changed behaviour in JenaReader when given "" as xmlBase,
+     now takes this as an instruction to generate relative URIs.
+     Test against W3C test cases. 
+     Fails 2 that I believe are in error.
+
+
+ARP-1_0_5 September 28th 2001
+     Integrated with Jena 1.2.0
+     Fixed rdf:parseType="Literal" a bit.
+     
+Jena-1.5.0 July 2nd 2002
+     Major ARP update to conform with March syntax and
+     April test cases working drafts.
+
+
+
+
+
+

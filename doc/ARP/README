@@ -1,0 +1,61 @@
+
+ARP Another RDF Parser
+======================
+Author: Jeremy Carroll
+
+
+The RDF/XML Parser of the Jena toolkit.
+---------------------------------------
+
+
+
+Version 1_5_0,  2nd July 2002
+
+
+Jena homepage:           http://www.hpl.hp.com/semweb
+
+
+Standalone ARP homepage: http://www-uk.hpl.hp.com/people/jjc/arp/index.html
+
+
+Quickstart
+==========
+
+In Jena, ARP is now the default XML parser, and no action is needed
+to use it.
+
+jena.rdfcopy and jena.rdfcompare use ARP.
+
+Standalone Quickstart
+=====================
+
+java -cp "arp.jar;xerces.jar;icu4j.jar" com.hp.hpl.jena.rdf.arp.NTriple [ rdf-file ] [ url ]
+
+Produces n-triples corresponding to an RDF file.
+I use xerces-1_4_4, and java 1.3.1.
+See apidocs/com/hp/hpl/jena/rdf/arp/NTriple.html for more command-line arguments.
+
+Dependencies
+============
+These are the version numbers I use:
+
+                  Java             Xerces          Jena                JavaCC
+
+Use:              1.3.1             1_4_4          1.5.0 (optional)      -
+
+Development:      1.3.1             1_4_4          1.5.0 (needed)       2.0
+
+I believe earlier versions of Java and Xerces will probably work.
+
+
+
+
+
+
+
+
+
+
+
+
+
