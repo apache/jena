@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: TestOntReasoning.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 11:07:02 $
+ * Last modified on   $Date: 2003-06-10 14:31:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntReasoning.java,v 1.1 2003-06-06 11:07:02 ian_dickinson Exp $
+ * @version CVS $Id: TestOntReasoning.java,v 1.2 2003-06-10 14:31:37 ian_dickinson Exp $
  */
 public class TestOntReasoning 
     extends TestCase
@@ -107,7 +107,7 @@ public class TestOntReasoning
     public void testSubClassDirectTransInf2a() {
         // test the code path for generating direct sc with no reasoner
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_LITE_MEM );
-        spec.setReasoner( null );
+        spec.setReasonerFactory( null );
         OntModel m = ModelFactory.createOntologyModel( spec, null );
         
         OntClass A = m.createClass( NS + "A" );
@@ -126,7 +126,7 @@ public class TestOntReasoning
     public void testSubClassDirectTransInf2b() {
         // test the code path for generating direct sc with no reasoner
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_LITE_MEM );
-        spec.setReasoner( null );
+        spec.setReasonerFactory( null );
         OntModel m = ModelFactory.createOntologyModel( spec, null );
         
         OntClass A = m.createClass( NS + "A" );
@@ -179,7 +179,7 @@ public class TestOntReasoning
     public void testSubPropertyDirectTransInf2a() {
         // test the code path for generating direct sc with no reasoner
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_LITE_MEM );
-        spec.setReasoner( null );
+        spec.setReasonerFactory( null );
         OntModel m = ModelFactory.createOntologyModel( spec, null );
         
         OntProperty p = m.createObjectProperty( NS + "p" );
@@ -198,7 +198,7 @@ public class TestOntReasoning
     public void testSubPropertyDirectTransInf2b() {
         // test the code path for generating direct sc with no reasoner
         OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_LITE_MEM );
-        spec.setReasoner( null );
+        spec.setReasonerFactory( null );
         OntModel m = ModelFactory.createOntologyModel( spec, null );
         
         OntProperty p = m.createObjectProperty( NS + "p" );
