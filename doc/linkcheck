@@ -3,6 +3,8 @@
 
 # Slurp whole files
 undef $/ ;
+# Comments
+
 while(defined($file=shift @ARGV))
 {
     ( $dir = $file ) =~ s![^/]*$!! ;
@@ -10,6 +12,7 @@ while(defined($file=shift @ARGV))
 
     open(FILE, $file) || die "Can't open '$file': $!\n";
     $_ = <FILE> ;
+    s/<!--.*?-->//g ; 
 
     @a = /<a[^>]*href="([^"]*)"[^>]*>/gis ; #"
     map(&checkIt, @a) ;
@@ -23,16 +26,18 @@ while(defined($file=shift @ARGV))
 
 sub checkIt
 {
+    my $original = $_ ;
     # Absolute URI?
     # http:, ftp:, mailto:
     return if ( m!^[^/]*:! ) ;
+    # if same file fragment
+    return if ( m!^#! ) ; 
 
     # Remove fragid
     ( $link = $_ ) =~ s/\#[^\#]*$// ;
     $link = $dir.'/'.$link if ( $dir ne '' && ($link !~ m!^/! ) ) ;
     $link =~ s/%20/ /g ;
 
-
-    print "Missing ($file): $link", "\n" if ( ! -e $link ) ;
+    print "Missing ($file): $original", "\n" if ( ! -e $link ) ;
 
 }
