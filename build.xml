@@ -2,7 +2,7 @@
 
     <property name="Name"            value="Jena"/>
     <property name="name"            value="jena"/>
-    <property name="version"         value="j2p1"/>
+    <property name="version"         value="j2p1-rc2"/>
 
     <property name="dist.name"       value="${Name}-${version}"/>
 
@@ -244,9 +244,9 @@
             <fileset dir="${javadoc.dir}" includes="**"/>
         </copy>
 
-<!--        <copy todir="${dist.dir}/${doc.dir}">
+        <copy todir="${dist.dir}/${doc.dir}">
             <fileset dir="${doc.dir}" includes="**"/>
-        </copy> -->
+        </copy>
 
         <copy todir="${dist.dir}/modules">
             <fileset dir="modules" includes="**"/>
