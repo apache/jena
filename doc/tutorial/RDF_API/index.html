@@ -16,7 +16,7 @@ This is a tutorial introduction to both W3C's Resource Description Framework
 (RDF) and Jena, a Java API for RDF.  It is written for the programmer who is
 unfamiliar with RDF and who learns best by prototyping, or, for other
 reasons, wishes to move quickly to implementation.&nbsp; Some familiarity
-with both XML and Java is assumed. 
+with both XML and Java is assumed.
 
 <p>Implementing too quickly, without first understanding the RDF data model
 leads to frustration and disappointment.&nbsp; Yet studying the data model
@@ -122,7 +122,7 @@ static String fullName     = "John Smith";
 // create an empty graph
 Model model = new ModelMem();
 
-// create the resource 
+// create the resource
 Resource johnSmith = model.createResource(personURI);
 
 // add the property
@@ -186,10 +186,10 @@ Model model = new ModelMem();
 
 // create the resource
 //   and add the properties cascading style
-Resource johnSmith 
+Resource johnSmith
   = model.createResource(personURI)
          .addProperty(VCARD.FN, fullName)
-         .addProperty(VCARD.N, 
+         .addProperty(VCARD.N,
                       model.createResource()
                            .addProperty(VCARD.Given, givenName)
                            .addProperty(VCARD.Family, familyName));</code></pre>
@@ -236,23 +236,23 @@ found in <a href="code/Tutorial03.java">tutorial 3</a>.</p>
 <blockquote>
   <pre>// list the statements in the graph
 StmtIterator iter = model.listStatements();
-            
+
 // print out the predicate, subject and object of each statement
 while (iter.hasNext()) {
     Statement stmt      = iter.next();         // get next statement
     Resource  subject   = stmt.getSubject();   // get the subject
     Property  predicate = stmt.getPredicate(); // get the predicate
     RDFNode   object    = stmt.getObject();    // get the object
-                
+
     System.out.print(subject.toString());
     System.out.print(" " + predicate.toString() + " ");
     if (object instanceof Resource) {
        System.out.print(object.toString());
     } else {
         // object is a literal
-        System.out.print(" \"" + object.toString() + "\");
+        System.out.print(" \"" + object.toString() + "\"");
     }
-                
+
     System.out.println(" .");
 } </pre>
 </blockquote>
@@ -398,7 +398,7 @@ run, the input file must be in a directory or jar on your classpath.</em></p>
   <pre><code>
  // create an empty model
  Model model = new ModelMem();
-           
+
  // use the class loader to find the input file
  InputStream in = Tutorial05.class
                                .getClassLoader()
@@ -407,10 +407,10 @@ if (in == null) {
     throw new IllegalArgumentException(
                                  "File: " + inputFileName + " not found");
 }
-            
+
 // read the RDF/XML file
 model.read(new InputStreamReader(in), "");
-                        
+
 // write it to standard out
 model.write(new PrintWriter(System.out));
       </code></pre>
@@ -731,7 +731,7 @@ further filtering:</p>
   <pre>// select all the resources with a VCARD.FN property
 // whose value ends with "Smith"
 StmtIterator iter = model.listStatements(
-  new 
+  new
       SelectorImpl(null, VCARD.FN, (RDFNode) null) {
           public boolean selects(Statement s) {
           try {
@@ -768,7 +768,7 @@ applied to matching statements.</p>
 <blockquote>
   <pre>// do all filtering in the selects method
 StmtIterator iter = model.listStatements(
-  new 
+  new
       SelectorImpl(null, null, (RDFNode) null) {
           public boolean selects(Statement s) {
           try {
@@ -785,7 +785,7 @@ StmtIterator iter = model.listStatements(
 <p>is equivalent to:</p>
 
 <blockquote>
-  <pre>StmtIterator iter = 
+  <pre>StmtIterator iter =
   model.listStatements(new SelectorImpl(subject, predicate, object)</pre>
 </blockquote>
 
@@ -820,10 +820,10 @@ href="code/Tutorial09.java">tutorial 9</a>) and see what happens.</p>
   <pre>// read the RDF/XML files
 model1.read(new InputStreamReader(in1), "");
 model2.read(new InputStreamReader(in2), "");
-            
+
 // merge the graphs
 Model model = model1.union(model2);
-            
+
 // print the graph as RDF/XML
 model.write(new PrintWriter(System.out), "RDF/XML-ABBREV");</pre>
 </blockquote>
@@ -922,7 +922,7 @@ container using the lower level methods.</p>
 <blockquote>
   <pre><code>// create a bag
 Bag smiths = model.createBag();
-            
+
 // select all the resources with a VCARD.FN property
 // whose value ends with "Smith"
 StmtIterator iter = model.listStatements(
@@ -1019,13 +1019,13 @@ constructed, e.g. in <a href="code/Tutorial11.java">tutorial 11</a>:</p>
 
 <blockquote>
   <pre>// create the resource
-Resource r = model.createResource();                                     
+Resource r = model.createResource();
 
 // add the property
 r.addProperty(RDFS.label, model.createLiteral("chat", "en"))
  .addProperty(RDFS.label, model.createLiteral("chat", "fr"))
  .addProperty(RDFS.label, model.createLiteral("&lt;em&gt;chat&lt;/em&gt;", true));
-          
+
 // write out the graph
 model.write(new PrintWriter(System.out));</pre>
 </blockquote>
@@ -1061,12 +1061,12 @@ call):</p>
 
 <blockquote>
   <pre>// create the resource
-Resource r = model.createResource();                                     
+Resource r = model.createResource();
 
 // add the property
 r.addProperty(RDFS.label, "11")
  .addProperty(RDFS.label, 11);
-          
+
 // write out the graph
 model.write(new PrintWriter(System.out), "N-TRIPLE");</pre>
 </blockquote>
@@ -1173,5 +1173,5 @@ expected.</p>
 </ol>
 <hr>
 <i><small> Author: <a href="mailto:bwm@hplb.hpl.hp.com">Brian McBride</a>
-$Date: 2003-03-25 15:13:01 $ $Revision: 1.1 $</small></i></body>
+$Date: 2003-06-24 10:03:11 $ $Revision: 1.2 $</small></i></body>
 </html>
