@@ -1,0 +1,281 @@
+<?xml version="1.0"?>
+<rdf:RDF
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+xmlns:daml="http://www.daml.org/2001/03/daml+oil#" 
+xmlns:xsd="http://www.w3.org/2000/10/XMLSchema#" 
+xmlns:dc="http://orlando.drc.com/daml/ontology/DC/3.2/dces-ont#" 
+xmlns:ves="http://orlando.drc.com/daml/ontology/VES/3.2/drc-ves-ont#" 
+xmlns:tskl="http://orlando.drc.com/daml/ontology/TaskList/3.1.2/TaskList-ont#" 
+xmlns:ujtlscen="http://orlando.drc.com/daml/ontology/TaskListUJTLScenario/3.2/TaskListUJTLScenario-ont#" 
+xmlns="http://orlando.drc.com/daml/ontology/TaskListUJTLScenario/3.2/TaskListUJTLScenario-ont#"
+ >
+	<!-- UJTL Scenario Ontology-->
+	<daml:Ontology rdf:about="">
+		<ves:versioning>
+			<ves:VersionData>
+				<dc:title>Universal Joint Task List</dc:title>
+				<ves:previous>http://orlando.drc.com/daml/ontology/TaskListUJTLScenario/3.1.1/TaskListUJTLScenario-ont.daml</ves:previous>
+				<ves:location>http://orlando.drc.com/daml/ontology/TaskListUJTLScenario/3.2/TaskListUJTLScenario-ont.daml</ves:location>
+				<ves:version>3.2</ves:version>
+				<ves:email>TeamXML@drc.com</ves:email>
+				<dc:creator>DRC</dc:creator>
+				<ves:statusDate>2002-02-27</ves:statusDate>
+				<ves:status>published</ves:status>
+			</ves:VersionData>
+		</ves:versioning>
+		<daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+		<daml:imports rdf:resource="http://orlando.drc.com/daml/Ontology/daml-extension/3.2/daml-ext-ont"/>
+		<daml:imports rdf:resource="http://orlando.drc.com/daml/ontology/TaskList/3.1.2/TaskList-ont"/>
+		<daml:comment>This is an ontology to describe a particular scenario or activity list defined from the Universal Joint Task List  (UJTL).   It references the task list ontology, and defines task categories and the relationships between them.</daml:comment>
+	</daml:Ontology>
+	<!-- *************** Scenario of Universal Joint Task: Classes and Properties **************** -->
+	<!-- *************** Strategic Level - National Military Task Classes and Properties **************** -->
+	<!-- ActivityLists Class ********************************* -->
+	<daml:Class rdf:ID="ActivityLists">
+		<daml:label>Activity Lists</daml:label>
+		<daml:comment>Starting activity for the Scenario</daml:comment>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-n1-highestLevelStartingActivityForList"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="http://orlando.drc.com/daml/ontology/TaskList/3.1.2/TaskList-ont#r-c1-title"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-x1-description"/>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- Activity Class ********************************* -->
+	<daml:Class rdf:ID="Activity">
+		<daml:label>Activity</daml:label>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-x1-description"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="http://orlando.drc.com/daml/ontology/TaskList/3.1.2/TaskList-ont#r-x1-title"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about=""/>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- *************** Strategic Level - National Level Activity Class  **************** -->
+	<daml:Class rdf:ID="StrategicNationalLevelActivity">
+		<daml:comment>This class represents information about Strategic National Level (SN) Activities.</daml:comment>
+		<rdfs:subClassOf rdf:resource="#Activity"/>
+		<daml:disjointWith rdf:resource="#StrategicTheaterLevelActivity"/>
+		<daml:disjointWith rdf:resource="#OperationalLevelActivity"/>
+		<daml:disjointWith rdf:resource="#TacticalLevelActivity"/>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-c1-strategicNationalLevelActivityDefinedBy"/>
+		</daml:subClassOf>
+		<!-- operations performed by -->
+		<daml:comment>The SN task operation is perfromed by ST, OP, TA or possibly other SN tasks.</daml:comment>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-operationPerformedByStrategicNationalActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-operationPerformedByStrategicTheaterActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-operationPerformedByOperationalLevelActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-operationPerformedByTacticalLevelActivity"/>
+		</daml:subClassOf>
+		<!-- supports operations for -->
+		<daml:comment>The SN task operation supports possibly other SN tasks.</daml:comment>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-supportsOperationForStrategicNationalActivity"/>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- *************** Strategic Level - Theater Level Activity Class  **************** -->
+	<daml:Class rdf:ID="StrategicTheaterLevelActivity">
+		<daml:comment>This class represents information about Strategic Theater Level (ST) Activities.</daml:comment>
+		<rdfs:subClassOf rdf:resource="#Activity"/>
+		<daml:disjointWith rdf:resource="#StrategicNationalLevelActivity"/>
+		<daml:disjointWith rdf:resource="#OperationalLevelActivity"/>
+		<daml:disjointWith rdf:resource="#TacticalLevelActivity"/>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-c1-strategicTheaterLevelActivityDefinedBy"/>
+		</daml:subClassOf>
+		<!-- operations performed by -->
+		<daml:comment>The ST task operation is perfromed by OP, TA or possibly other ST tasks.</daml:comment>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-operationPerformedByStrategicTheaterActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-operationPerformedByOperationalLevelActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-operationPerformedByTacticalLevelActivity"/>
+		</daml:subClassOf>
+		<!-- supports operations for -->
+		<daml:comment>The ST task operation supports SN tasks and possibly other ST tasks.</daml:comment>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-supportsOperationForStrategicNationalActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-supportsOperationForStrategicTheaterActivity"/>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- *************** Operational Level Activity Class **************** -->
+	<daml:Class rdf:ID="OperationalLevelActivity">
+		<daml:comment>This class represents information about Operational Level (OP) Activities.</daml:comment>
+		<rdfs:subClassOf rdf:resource="#Activity"/>
+		<daml:disjointWith rdf:resource="#StrategicNationalLevelActivity"/>
+		<daml:disjointWith rdf:resource="#StrategicTheaterLevelActivity"/>
+		<daml:disjointWith rdf:resource="#TacticalLevelActivity"/>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-c1-operationalLevelActivityDefinedBy"/>
+		</daml:subClassOf>
+		<!-- operations performed by -->
+		<daml:comment>The OP task operation may be perfromed by TA and possibly other OP tasks.</daml:comment>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-operationPerformedByOperationalLevelActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-operationPerformedByTacticalLevelActivity"/>
+		</daml:subClassOf>
+		<!-- supports operations for -->
+		<daml:comment>The OP task operation supports SN, ST and possibly other OP tasks.</daml:comment>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-supportsOperationForStrategicNationalActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-supportsOperationForStrategicTheaterActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-supportsOperationForOperationalLevelActivity"/>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- *************** Tactical Level Activity Class **************** -->
+	<daml:Class rdf:ID="TacticalLevelActivity">
+		<daml:comment>This class represents information about Tactical Level (TA) Activities.</daml:comment>
+		<rdfs:subClassOf rdf:resource="#Activity"/>
+		<daml:disjointWith rdf:resource="#StrategicNationalLevelActivity"/>
+		<daml:disjointWith rdf:resource="#StrategicTheaterLevelActivity"/>
+		<daml:disjointWith rdf:resource="#OperationalLevelActivity"/>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-c1-tacticalLevelActivityDefinedBy"/>
+		</daml:subClassOf>
+		<!-- operations performed by -->
+		<daml:comment>The TA task operation may be perfromed by possibly other TA tasks.</daml:comment>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-operationPerformedByTacticalLevelActivity"/>
+		</daml:subClassOf>
+		<!-- supports operations for -->
+		<daml:comment>The TA task operation supports SN, ST, OP and possibly other TA tasks.</daml:comment>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-supportsOperationForStrategicNationalActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-supportsOperationForStrategicTheaterActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-supportsOperationForOperationalLevelActivity"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-supportsOperationForTacticalLevelActivity"/>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ****************************************** Named Restrictions ************************************** -->
+	<daml:Restriction daml:minCardinality="1" rdf:ID="r-n1-highestLevelStartingActivityForList">
+		<daml:onProperty rdf:resource="#highestLevelStartingActivityForList"/>
+		<daml:toClass rdf:resource="#Activity"/>
+	</daml:Restriction>
+	<daml:Restriction daml:cardinality="1" rdf:ID="r-c1-stategicNationalLevelActivityDefinedBy">
+		<daml:onProperty rdf:resource="#stategicNationalLevelActivityDefinedBy"/>
+		<daml:toClass rdf:resource="http://orlando.drc.com/daml/ontology/TaskList/3.1.2/TaskList-ont#Task"/>
+	</daml:Restriction>
+	<daml:Restriction daml:cardinality="1" rdf:ID="r-c1-strategicTheaterLevelActivityDefinedBy">
+		<daml:onProperty rdf:resource="#strategicTheaterLevelActivityDefinedBy"/>
+		<daml:toClass rdf:resource="http://orlando.drc.com/daml/ontology/TaskList/3.1.2/TaskList-ont#Task"/>
+	</daml:Restriction>
+	<daml:Restriction daml:cardinality="1" rdf:ID="r-c1-operationalLevelActivityDefinedBy">
+		<daml:onProperty rdf:resource="#operationalLevelActivityDefinedBy"/>
+		<daml:toClass rdf:resource="http://orlando.drc.com/daml/ontology/TaskList/3.1.2/TaskList-ont#Task"/>
+	</daml:Restriction>
+	<daml:Restriction daml:cardinality="1" rdf:ID="r-c1-tacticalLevelActivityDefinedBy">
+		<daml:onProperty rdf:resource="#tacticalLevelActivityDefinedBy"/>
+		<daml:toClass rdf:resource="http://orlando.drc.com/daml/ontology/TaskList/3.1.2/TaskList-ont#Task"/>
+	</daml:Restriction>
+	<daml:Restriction rdf:ID="r-operationPerformedByStrategicNationalActivity">
+		<daml:onProperty rdf:resource="#operationPerformedByStrategicNationalActivity"/>
+		<daml:toClass rdf:resource="#StrategicNationalLevelActivity"/>
+	</daml:Restriction>
+	<daml:Restriction rdf:ID="r-operationPerformedByStrategicTheaterActivity">
+		<daml:onProperty rdf:resource="#operationPerformedByStrategicTheaterActivity"/>
+		<daml:toClass rdf:resource="#StrategicTheaterLevelActivity"/>
+	</daml:Restriction>
+	<daml:Restriction rdf:ID="r-operationPerformedByOperationalLevelActivity">
+		<daml:onProperty rdf:resource="#operationPerformedByOperationalLevelActivity"/>
+		<daml:toClass rdf:resource="#OperationalLevelActivity"/>
+	</daml:Restriction>
+	<daml:Restriction rdf:ID="r-operationPerformedByTacticalLevelActivity">
+		<daml:onProperty rdf:resource="#operationPerformedByTacticalLevelActivity"/>
+		<daml:toClass rdf:resource="#TacticalLevelActivity"/>
+	</daml:Restriction>
+	<daml:Restriction rdf:ID="r-supportsOperationForStrategicNationalActivity">
+		<daml:onProperty rdf:resource="#supportsOperationForStrategicNationalActivity"/>
+		<daml:toClass rdf:resource="#StrategicNationalLevelActivity"/>
+	</daml:Restriction>
+	<daml:Restriction rdf:ID="r-supportsOperationForStrategicTheaterActivity">
+		<daml:onProperty rdf:resource="#supportsOperationForStrategicTheaterActivity"/>
+		<daml:toClass rdf:resource="#StrategicTheaterLevelActivity"/>
+	</daml:Restriction>
+	<daml:Restriction rdf:ID="r-supportsOperationForOperationalLevelActivity">
+		<daml:onProperty rdf:resource="#supportsOperationForOperationalLevelActivity"/>
+		<daml:toClass rdf:resource="#OperationalLevelActivity"/>
+	</daml:Restriction>
+	<daml:Restriction rdf:ID="r-supportsOperationForTacticalLevelActivity">
+		<daml:onProperty rdf:resource="#supportsOperationForTacticalLevelActivity"/>
+		<daml:toClass rdf:resource="#TacticalLevelActivity"/>
+	</daml:Restriction>
+	<daml:Restriction daml:maxCardinality="1" rdf:ID="r-x1-description">
+		<daml:onProperty rdf:resource="#description"/>
+		<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+	</daml:Restriction>
+	<!-- Properties ********************************** -->
+	<daml:ObjectProperty rdf:ID="highestLevelStartingActivityForList">
+		<daml:label>has Activity</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="stategicNationalLevelActivityDefinedBy">
+		<daml:label>Stategic National Level Activity Defined By</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="strategicTheaterLevelActivityDefinedBy">
+		<daml:label>Stategic Theater Level Activity Defined By</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="operationalLevelActivityDefinedBy">
+		<daml:label>Operational Level Activity Defined By</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="tacticalLevelActivityDefinedBy">
+		<daml:label>Tactical Level Activity Defined By</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="operationPerformedByStrategicNationalActivity">
+		<daml:label>Operation Performed By Strategic National Activity</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="operationPerformedByStrategicTheaterActivity">
+		<daml:label>Operation Performed By Strategic Theater Activity</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="operationPerformedByOperationalLevelActivity">
+		<daml:label>Operation Performed By Opeartional Level Activity</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="operationPerformedByTacticalLevelActivity">
+		<daml:label>Operation Performed By Tactical Level Activity</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="supportsOperationForStrategicNationalActivity">
+		<daml:label>Supports Operation For Strategic National Activity</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="supportsOperationForStrategicTheaterActivity">
+		<daml:label>Supports Operation For Strategic Theater Activity</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="supportsOperationForOperationalLevelActivity">
+		<daml:label>Supports Operation For Opeartional Level Activity</daml:label>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="supportsOperationForTacticalLevelActivity">
+		<daml:label>Supports Operation For Tactical Level Activity</daml:label>
+	</daml:ObjectProperty>
+	<daml:DatatypeProperty rdf:ID="description">
+		<daml:label>Description</daml:label>
+	</daml:DatatypeProperty>
+</rdf:RDF>

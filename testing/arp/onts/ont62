@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+ xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+ xmlns:xsd="http://www.w3.org/2000/10/XMLSchema#" 
+ xmlns:dc="http://orlando.drc.com/daml/ontology/DC/3.1/dces-ont#"
+ xmlns:ves="http://orlando.drc.com/daml/ontology/VES/3.1/drc-ves-ont#" 
+ xmlns:pdt ="http://orlando.drc.com/daml/Ontology/Person/DataType/3.1/Person-dt#"
+ xmlns:ged="http://orlando.drc.com/daml/Ontology/Genealogy/3.1/Gentology-ont#"
+ xmlns="http://orlando.drc.com/daml/Ontology/Genealogy/3.1/Gentology-ont#"
+>
+	<!-- Genealogy Ontology-->
+	<daml:Ontology rdf:about="">
+		<dc:title>Gentology</dc:title>
+		<ves:previous>http://orlando.drc.com/daml/Ontology/Genealogy/2.X/Gentology-ont-2.1v.daml</ves:previous>
+		<ves:location>http://orlando.drc.com/daml/Ontology/Genealogy/3.1/Gentology-ont.daml</ves:location>
+		<ves:version>3.1</ves:version>
+		<ves:email>TeamXML@drc.com</ves:email>
+		<dc:creator>DRC</dc:creator>
+		<ves:statusDate>2001-09-25</ves:statusDate>
+		<ves:status>published</ves:status>
+		<daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+		<daml:imports rdf:resource="http://orlando.drc.com/daml/ontology/VES/3.1/drc-ves-ont"/>
+		<daml:imports rdf:resource="http://orlando.drc.com/daml/Ontology/daml-extension/3.1/daml-ext-ont"/>
+		<daml:comment>This is a genealogy ontology based on a subset of the GEDCOM data model.</daml:comment>
+	</daml:Ontology>
+	<!-- *************** Individual: Classes and Properties **************** -->
+	<daml:Class rdf:ID="Individual">
+		<daml:label>Individual</daml:label>
+		<daml:subClassOf rdf:resource="http://orlando.drc.com/daml/ontology/Person/3.1/Person-ont#Person"/>
+		<daml:comment>This class represents information about one specific individual. </daml:comment>
+	</daml:Class>
+	<daml:Class rdf:ID="Male">
+		<daml:subClassOf rdf:resource="#Individual"/>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#sex"/>
+				<daml:hasValue>
+					<xsd:string rdf:value="M"/>
+				</daml:hasValue>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<daml:Class rdf:ID="Female">
+		<daml:subClassOf rdf:resource="#Individual"/>
+		<daml:disjointWith rdf:resource="#Male"/>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#sex"/>
+				<daml:hasValue>
+					<xsd:string rdf:value="F"/>
+				</daml:hasValue>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<daml:DatatypeProperty rdf:ID="name">
+		<daml:samePropertyAs rdf:resource="http://orlando.drc.com/daml/ontology/Person/3.1/Person-ont#firstName"/>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="surname">
+		<daml:samePropertyAs rdf:resource="http://orlando.drc.com/daml/ontology/Person/3.1/Person-ont#lastName"/>
+	</daml:DatatypeProperty>
+	<daml:ObjectProperty rdf:ID="childIn">
+		<daml:domain rdf:resource="#Individual"/>
+		<daml:range rdf:resource="#Family"/>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="spouseIn">
+		<daml:domain rdf:resource="#Individual"/>
+		<daml:range rdf:resource="#Family"/>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="birth">
+		<daml:domain rdf:resource="#Individual"/>
+		<daml:range rdf:resource="#BirthEvent"/>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="death">
+		<daml:domain rdf:resource="#Individual"/>
+		<daml:range rdf:resource="#DeathEvent"/>
+	</daml:ObjectProperty>
+	<daml:DatatypeProperty rdf:ID="sex">
+		<daml:samePropertyAs rdf:resource="http://orlando.drc.com/daml/ontology/Person/3.1/Person-ont#gender"/>
+	</daml:DatatypeProperty>
+	<!-- *************** Family: Classes and Properties **************** -->
+	<daml:Class rdf:ID="Family">
+		<daml:label> Family </daml:label>
+		<daml:comment>This class represents information about one specific family unit made up of individuals. </daml:comment>
+		<daml:subClassOf>
+			<daml:Restriction daml:maxCardinality="1">
+				<daml:onProperty rdf:resource="#husband"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction daml:maxCardinality="1">
+				<daml:onProperty rdf:resource="#wife"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<daml:ObjectProperty rdf:ID="marriage">
+		<daml:domain rdf:resource="#Family"/>
+		<daml:range rdf:resource="#MarriageEvent"/>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="divorce">
+		<daml:domain rdf:resource="#Family"/>
+		<daml:range rdf:resource="#DivorceEvent"/>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="husband">
+		<daml:domain rdf:resource="#Family"/>
+		<daml:range rdf:resource="#Male"/>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="wife">
+		<daml:domain rdf:resource="#Family"/>
+		<daml:range rdf:resource="#Female"/>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="child">
+		<daml:domain rdf:resource="#Family"/>
+		<daml:range rdf:resource="#Individual"/>
+	</daml:ObjectProperty>
+	<!-- *************** Event: Classes and Properties **************** -->
+	<daml:Class rdf:ID="Event">
+		<daml:label> Event </daml:label>
+		<daml:comment>This class represents something that happens at a particular time and/or place.</daml:comment>
+	</daml:Class>
+	<daml:UniqueProperty rdf:ID="date">
+		<daml:domain rdf:resource="#Event"/>
+		<daml:range rdf:resource="http://www.w3.org/2000/10/XMLSchema#date"/>
+	</daml:UniqueProperty>
+	<daml:UniqueProperty rdf:ID="location">
+		<daml:domain rdf:resource="#Event"/>
+		<daml:range rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+	</daml:UniqueProperty>
+	<!-- *************** Family Event: Classes and Properties **************** -->
+	<daml:Class rdf:ID="FamilyEvent">
+		<daml:subClassOf rdf:resource="#Event"/>
+		<daml:disjointWith rdf:resource="#IndividualEvent"/>
+	</daml:Class>
+	<daml:Class rdf:ID="MarriageEvent">
+		<daml:subClassOf rdf:resource="#FamilyEvent"/>
+	</daml:Class>
+	<daml:Class rdf:ID="DivorceEvent">
+		<daml:subClassOf rdf:resource="#FamilyEvent"/>
+	</daml:Class>
+	<daml:ObjectProperty rdf:ID="ofFamily">
+		<daml:domain rdf:resource="#FamilyEvent"/>
+		<daml:range rdf:resource="#Family"/>
+	</daml:ObjectProperty>
+	<!-- *************** Individual Event: Classes and Properties **************** -->
+	<daml:Class rdf:ID="IndividualEvent">
+		<daml:subClassOf rdf:resource="#Event"/>
+	</daml:Class>
+	<daml:Class rdf:ID="BirthEvent">
+		<daml:subClassOf rdf:resource="#IndividualEvent"/>
+	</daml:Class>
+	<daml:Class rdf:ID="DeathEvent">
+		<daml:subClassOf rdf:resource="#IndividualEvent"/>
+	</daml:Class>
+	<daml:ObjectProperty rdf:ID="ofIndividual">
+		<daml:domain rdf:resource="#IndividualEvent"/>
+		<daml:range rdf:resource="#Individual"/>
+	</daml:ObjectProperty>
+</rdf:RDF>

@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:daml="http://www.daml.org/2001/03/daml+oil#" xmlns:xsd="http://www.w3.org/2001/XMLSchema#" xmlns:dc="http://orlando.drc.com/SemanticWeb/DAML/Ontology/DC/ver/0.1.0/dces-ont#" xmlns:vls="http://orlando.drc.com/SemanticWeb/DAML/Ontology/VLS/ver/0.1.0/drc-vls-ont#" xmlns:ves="http://orlando.drc.com/SemanticWeb/DAML/Ontology/VES/ver/0.1.0/drc-ves-ont#" xmlns:gps="http://orlando.drc.com/SemanticWeb/DAML/Ontology/GPS/Coordinate/ver/0.1.0/GPS-ont#" xmlns="http://orlando.drc.com/SemanticWeb/DAML/Ontology/GPS/Coordinate/ver/0.1.0/GPS-ont#">
+	<!-- GPS Coordinates Ontology  -->
+	<daml:Ontology rdf:about="">
+		<ves:versioning>
+			<ves:VersionData>
+				<dc:title>GPS Coordinates Ontology</dc:title>
+				<ves:version>0.1.0</ves:version>
+				<ves:email>TeamXML@drc.com</ves:email>
+				<dc:creator>DRC</dc:creator>
+				<dc:contributor>Dan King</dc:contributor>
+				<dc:contributor>Gabriel Aviles</dc:contributor>
+				<ves:releaseDate>2002-10-11</ves:releaseDate>
+				<ves:releaseLevel>beta</ves:releaseLevel>
+				<ves:status>current</ves:status>
+			</ves:VersionData>
+		</ves:versioning>
+		<daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+		<daml:comment>This is an ontology to capture the most popular coordinate systems used by GPS</daml:comment>
+	</daml:Ontology>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** GPSCoordinates Class  *** -->
+	<daml:Class rdf:ID="GPSCoordinates">
+		<daml:label>GPS Coordinates</daml:label>
+		<!-- *** locationName Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:maxCardinality="1">
+				<daml:onProperty rdf:resource="#locationName"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#locationName"/>
+				<daml:toClass rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** elevation Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:maxCardinality="1">
+				<daml:onProperty rdf:resource="#elevation"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#elevation"/>
+				<daml:toClass rdf:resource="#Elevation"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** Degrees Minutes Seconds (DMS) Coordinates Class  *** -->
+	<daml:Class rdf:ID="DMSCoordinates">
+		<daml:label>Degrees Minutes Seconds (DMS) Coordinates</daml:label>
+		<daml:subClassOf rdf:resource="#GPSCoordinates"/>
+		<!-- *** latitude Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#latitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#latitude"/>
+				<daml:toClass rdf:resource="#DMSLatitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** longitude Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#longitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#longitude"/>
+				<daml:toClass rdf:resource="#DMSLongitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** Degree Decimal Minutes (DDM) Coordinates Class  *** -->
+	<daml:Class rdf:ID="DDMCoordinates">
+		<daml:label>Degree Decimal Minutes (DDM) Coordinates</daml:label>
+		<daml:subClassOf rdf:resource="#GPSCoordinates"/>
+		<!-- *** latitude Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#latitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#latitude"/>
+				<daml:toClass rdf:resource="#DDMLatitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** longitude Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#longitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#longitude"/>
+				<daml:toClass rdf:resource="#DDMLongitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** Decimal Degree (DD) Coordinates Class  *** -->
+	<daml:Class rdf:ID="DDCoordinates">
+		<daml:label>Decimal Degree (DD) Coordinates</daml:label>
+		<daml:subClassOf rdf:resource="#GPSCoordinates"/>
+		<!-- *** latitude Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#latitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#latitude"/>
+				<daml:toClass rdf:resource="#DDLatitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** longitude Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#longitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#longitude"/>
+				<daml:toClass rdf:resource="#DDLongitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** Universal Transverse Mercator Coordinates Class  *** -->
+	<daml:Class rdf:ID="UTMCoordinates">
+		<daml:label>Universal Transverse Mercator Coordinates</daml:label>
+		<daml:comment>UTM zones extend from a latitude of 80° S to 84° N</daml:comment>
+		<daml:subClassOf rdf:resource="#GPSCoordinates"/>
+		<!-- *** zoneNumber Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#zoneNumber"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#zoneNumber"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#UTMZoneNumberRange"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** zoneCharacter Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:maxCardinality="1">
+				<daml:onProperty rdf:resource="#zoneCharacter"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#zoneCharacter"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#UTMZoneCharacter"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** easting Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#easting"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#easting"/>
+				<daml:toClass rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** northing Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#northing"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#northing"/>
+				<daml:toClass rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** Elevation Class *** -->
+	<daml:Class rdf:ID="Elevation">
+		<daml:label>Elevation</daml:label>
+		<!-- *** category Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#category"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#category"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#elevationCategory"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** altitude Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#altitude"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#altitude"/>
+				<daml:toClass rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** UOM Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#uom"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#uom"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#unitOfMeasure"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** Latitude Class *** -->
+	<daml:Class rdf:ID="Latitude">
+		<daml:label>Latitude</daml:label>
+		<daml:comment>The angular distance north or south of the earth's equator, measured in degrees along a meridian, as on a map or globe.</daml:comment>
+		<!-- *** direction Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#direction"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#direction"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#latitudinalDirection"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** Longitude Class ***  -->
+	<daml:Class rdf:ID="Longitude">
+		<daml:label>Longitude</daml:label>
+		<daml:comment>The angular distance on the earth's surface, measured east or west from the prime meridian at Greenwich, England, to the meridian passing through a position, expressed in degrees (or hours), minutes, and seconds.</daml:comment>
+		<!-- *** direction Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#direction"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#direction"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#longitudinalDirection"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** Degree Coordinate Class ***  -->
+	<daml:Class rdf:ID="DegreeCoordinate">
+		<daml:label>Degree Coordinate</daml:label>
+		<!-- *** degrees Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#degrees"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** minutes Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:maxCardinality="1">
+				<daml:onProperty rdf:resource="#minutes"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** seconds Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:maxCardinality="1">
+				<daml:onProperty rdf:resource="#seconds"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#seconds"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#decimalMinute-SecondRange"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** DMSLatitude Class  *** -->
+	<daml:Class rdf:ID="DMSLatitude">
+		<daml:label>DMS Latitude</daml:label>
+		<daml:subClassOf rdf:resource="#DMSCoordinate"/>
+		<daml:subClassOf rdf:resource="#Latitude"/>
+	</daml:Class>
+	<!-- *** DMSLongitude Class ***  -->
+	<daml:Class rdf:ID="DMSLongitude">
+		<daml:label>DMS Longitude</daml:label>
+		<daml:subClassOf rdf:resource="#DMSCoordinate"/>
+		<daml:subClassOf rdf:resource="#Longitude"/>
+	</daml:Class>
+	<!-- *** DMSCoordinate Class  *** -->
+	<daml:Class rdf:ID="DMSCoordinate">
+		<daml:label>Degrees Minutes Seconds (DMS) Coordinate</daml:label>
+		<daml:subClassOf rdf:resource="#DegreeCoordinate"/>
+		<!-- *** degrees Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#degrees"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#integerDegreeRange"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** minutes Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#minutes"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#minutes"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#integerMinuteRange"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** seconds Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#seconds"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** DDMLatitude Class ***  -->
+	<daml:Class rdf:ID="DDMLatitude">
+		<daml:label>DDM Latitude</daml:label>
+		<daml:subClassOf rdf:resource="#DDMCoordinate"/>
+		<daml:subClassOf rdf:resource="#Latitude"/>
+	</daml:Class>
+	<!-- *** DDMLongitude Class  *** -->
+	<daml:Class rdf:ID="DDMLongitude">
+		<daml:label>DDM Longitude</daml:label>
+		<daml:subClassOf rdf:resource="#DDMCoordinate"/>
+		<daml:subClassOf rdf:resource="#Longitude"/>
+	</daml:Class>
+	<!-- *** DDMCoordinate Class  *** -->
+	<daml:Class rdf:ID="DDMCoordinate">
+		<daml:label>Degree Decimal Minutes (DDM) Coordinate</daml:label>
+		<daml:subClassOf rdf:resource="#DegreeCoordinate"/>
+		<!-- *** degrees Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#degrees"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#integerDegreeRange"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** minutes Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="1">
+				<daml:onProperty rdf:resource="#minutes"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#minutes"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#decimalMinute-SecondRange"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** seconds Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="0">
+				<daml:onProperty rdf:resource="#seconds"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** DDLatitude Class ***  -->
+	<daml:Class rdf:ID="DDLatitude">
+		<daml:label>DD Latitude</daml:label>
+		<daml:subClassOf rdf:resource="#DDCoordinate"/>
+		<daml:subClassOf rdf:resource="#Latitude"/>
+	</daml:Class>
+	<!-- *** DDLongitude Class ***  -->
+	<daml:Class rdf:ID="DDLongitude">
+		<daml:label>DD Longitude</daml:label>
+		<daml:subClassOf rdf:resource="#DDCoordinate"/>
+		<daml:subClassOf rdf:resource="#Longitude"/>
+	</daml:Class>
+	<!-- *** DDCoordinate Class ***  -->
+	<daml:Class rdf:ID="DDCoordinate">
+		<daml:label>Decimal Degree (DD) Coordinate</daml:label>
+		<daml:subClassOf rdf:resource="#DegreeCoordinate"/>
+		<!-- *** degrees Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction>
+				<daml:onProperty rdf:resource="#degrees"/>
+				<daml:toClass rdf:resource="http://orlando.drc.com/SemanticWeb/datatype/gps/ver/0.1.0/gps-dt#decimalDegreeRange"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** minutes Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="0">
+				<daml:onProperty rdf:resource="#minutes"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+		<!-- *** seconds Restrictions *** -->
+		<daml:subClassOf>
+			<daml:Restriction daml:cardinality="0">
+				<daml:onProperty rdf:resource="#seconds"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** Elevation Properties *** -->
+	<daml:ObjectProperty rdf:ID="elevation">
+		<daml:label>Elevation</daml:label>
+	</daml:ObjectProperty>
+	<daml:DatatypeProperty rdf:ID="altitude">
+		<daml:label>Altitude</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="category">
+		<daml:label>Category</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="uom">
+		<daml:label>Unit of Measure</daml:label>
+	</daml:DatatypeProperty>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** UTM Properties *** -->
+	<daml:DatatypeProperty rdf:ID="zoneCharacter">
+		<daml:label>Zone Character</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="zoneNumber">
+		<daml:label>Zone Number</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="easting">
+		<daml:label>Easting</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="northing">
+		<daml:label>Northing</daml:label>
+	</daml:DatatypeProperty>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** Degree Properties *** -->
+	<daml:DatatypeProperty rdf:ID="degrees">
+		<daml:label>Degrees</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="minutes">
+		<daml:label>Minutes</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="seconds">
+		<daml:label>Seconds</daml:label>
+	</daml:DatatypeProperty>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** latitude / longitude Properties *** -->
+	<daml:ObjectProperty rdf:ID="latitude">
+		<daml:label>Latitude</daml:label>
+		<daml:comment>The angular distance north or south of the earth's equator, measured in degrees along a meridian, as on a map or globe.</daml:comment>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="longitude">
+		<daml:label>Longitude</daml:label>
+		<daml:comment>Longitude - Angular distance on the earth's surface, measured east or west from the prime meridian at Greenwich, England, to the meridian passing through a position, expressed in degrees (or hours), minutes, and seconds.</daml:comment>
+	</daml:ObjectProperty>
+	<daml:DatatypeProperty rdf:ID="direction">
+		<daml:label>direction</daml:label>
+		<daml:comment>north, south, east, west</daml:comment>
+	</daml:DatatypeProperty>
+	<!-- ************************************************************************************************************************** -->
+	<!-- *** locationName Property *** -->
+	<daml:DatatypeProperty rdf:ID="locationName">
+		<daml:label>Location Name</daml:label>
+	</daml:DatatypeProperty>
+</rdf:RDF>

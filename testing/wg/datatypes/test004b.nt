@@ -1,0 +1,18 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Language doesn't affect the semantic equivalence of some datatypes,
+# when doing a DT-entailment. However, it represents a difference
+# when doing DT-unaware entailment.
+#
+# $Id: test004b.nt,v 1.1.1.1 2002-12-19 19:36:59 bwm Exp $
+#
+#####################################################################
+<http://example.org/foo> <http://example.org/bar> "10"@fr^^<http://www.w3.org/2001/XMLSchema#integer> .

@@ -1,0 +1,16 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Dan Connolly
+#
+# $Id: test001.nt,v 1.1.1.1 2002-12-19 19:36:58 bwm Exp $
+# 
+#####################################################################
+<http://example/q?abc=1&def=2> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "xxx" .

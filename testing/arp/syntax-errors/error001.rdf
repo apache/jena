@@ -1,0 +1,14 @@
+<rdf:RDF
+
+xmlns:sw="http://example.org/"
+xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+
+	<rdf:Description>
+ 		<sw:name>
+              <rdf:Description/>
+<!-- can't have two rdf:Descriptions matching obj production -->
+              <rdf:Description/>
+            </sw:name>
+ 	</rdf:Description>
+
+</rdf:RDF>

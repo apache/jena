@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+ xmlns:daml="http://www.daml.org/2001/03/daml+oil#"
+ xmlns:xsd="http://www.w3.org/2000/10/XMLSchema#" 
+ xmlns:dc="http://orlando.drc.com/daml/ontology/DC/3.1/dces-ont#"
+ xmlns:ves="http://orlando.drc.com/daml/ontology/VES/3.1/drc-ves-ont#" 
+ xmlns:poc="http://orlando.drc.com/daml/ontology/POC/3.1/POC-ont#"
+ xmlns="http://orlando.drc.com/daml/ontology/POC/3.1/POC-ont#"
+>
+	<!-- POC Ontology          -->
+	<daml:Ontology rdf:about="">	
+		<dc:title>POC Ontology</dc:title>
+		<ves:previous>http://orlando.drc.com/daml/ontology/POC/2.X/POC-ont-2.0v.daml</ves:previous>
+		<ves:location>http://orlando.drc.com/daml/ontology/POC/3.1/POC-ont.daml</ves:location>
+		<ves:version>3.1</ves:version>
+		<ves:email>TeamXML@drc.com</ves:email>
+		<dc:creator>DRC</dc:creator>
+		<ves:statusDate>2001-10-19</ves:statusDate>
+		<ves:status>published</ves:status>
+		<daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+		<daml:imports rdf:resource="http://orlando.drc.com/daml/ontology/VES/3.1/drc-ves-ont"/>
+		<daml:imports rdf:resource="http://orlando.drc.com/daml/Ontology/daml-extension/3.1/daml-ext-ont"/>
+		<daml:imports rdf:resource="http://orlando.drc.com/daml/ontology/Person/3.1/Person-ont"/>
+		<daml:imports rdf:resource="http://orlando.drc.com/daml/ontology/Locator/3.2/Locator-ont"/>
+		<daml:imports rdf:resource="http://orlando.drc.com/daml/ontology/Organization/3.1.1/Organization-ont"/>
+		<daml:comment>A Point of Contact Ontology</daml:comment>
+	</daml:Ontology>
+
+	<daml:Class rdf:ID="POC">
+		<daml:label>POC</daml:label>
+	</daml:Class>
+	<daml:ObjectProperty rdf:ID="contactEntity">
+		<daml:domain rdf:resource="#POC"/>
+		<daml:range rdf:resource="http://orlando.drc.com/daml/ontology/Person/3.1/Person-ont#Person"/>
+		<daml:range rdf:resource="http://orlando.drc.com/daml/ontology/Organization/3.1.1/Organization-ont#Organization"/>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="contactMeans">
+		<daml:domain rdf:resource="#POC"/>
+		<daml:range rdf:resource="http://orlando.drc.com/daml/ontology/Locator/3.2/Locator-ont#PostalAddress"/>
+		<daml:range rdf:resource="http://orlando.drc.com/daml/ontology/Locator/3.2/Locator-ont#ElectronicLocator"/>
+	</daml:ObjectProperty>
+	<daml:ObjectProperty rdf:ID="contactFor">
+		<daml:domain rdf:resource="#POC"/>
+		<daml:range rdf:resource="http://orlando.drc.com/daml/ontology/Person/3.1/Person-ont#Person"/>
+		<daml:range rdf:resource="http://orlando.drc.com/daml/ontology/Organization/3.1.1/Organization-ont#Organization"/>
+	</daml:ObjectProperty>
+</rdf:RDF>

@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<rdf:RDF 
+xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+xmlns:daml="http://www.daml.org/2001/03/daml+oil#" 
+xmlns:xsd="http://www.w3.org/2000/10/XMLSchema#" 
+xmlns:dc="http://orlando.drc.com/daml/ontology/DC/3.2/dces-ont#" 
+xmlns:ves="http://orlando.drc.com/daml/ontology/VES/3.2/drc-ves-ont#" 
+xmlns:loc="http://orlando.drc.com/daml/ontology/Locator/3.2/Locator-ont#" 
+xmlns="http://orlando.drc.com/daml/ontology/Locator/3.2/Locator-ont#"
+>
+	<!-- Locator Ontology  -->
+	<daml:Ontology rdf:about="">
+		<ves:versioning>
+			<ves:VersionData>
+				<dc:title>Locator Ontology</dc:title>
+				<ves:previous>http://orlando.drc.com/daml/ontology/Locator/3.1/Locator-ont.daml</ves:previous>
+				<ves:location>http://orlando.drc.com/daml/ontology/Locator/3.2/Locator-ont.daml</ves:location>
+				<ves:version>3.2</ves:version>
+				<ves:email>TeamXML@drc.com</ves:email>
+				<dc:creator>DRC</dc:creator>
+				<ves:statusDate>2002-02-27</ves:statusDate>
+				<ves:status>inwork</ves:status>
+			</ves:VersionData>
+		</ves:versioning>
+		<daml:imports rdf:resource="http://www.daml.org/2001/03/daml+oil"/>
+		<daml:imports rdf:resource="http://orlando.drc.com/daml/Ontology/daml-extension/3.2/daml-ext-ont"/>
+		<daml:comment>This is an ontology for a locator.</daml:comment>
+	</daml:Ontology>
+	<!-- Base -->
+	<daml:Class rdf:ID="Locator">
+		<daml:label>Locator Class</daml:label>
+	</daml:Class>
+	<daml:DatatypeProperty rdf:ID="locator">
+	     <daml:label>Locator Property</daml:label>
+	</daml:DatatypeProperty>
+	<!-- Physical Locator -->
+	<daml:Class rdf:ID="PhysicalLocator">
+		<daml:subClassOf rdf:resource="#Locator"/>
+	</daml:Class>
+	<daml:DatatypeProperty rdf:ID="physicalLocator">
+	     <daml:subPropertyOf rdf:resource="#locator"/>
+	</daml:DatatypeProperty>
+	<!-- Postal Address -->
+	<daml:DatatypeProperty rdf:ID="postalAddress">
+	     <daml:subPropertyOf rdf:resource="#physicalLocator"/>
+	</daml:DatatypeProperty>
+	<daml:Class rdf:ID="PostalAddress">
+		<daml:subClassOf rdf:resource="#PhysicalLocator"/>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-n1-addressLine"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-x1-city"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-x1-province"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-x1-state"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-c1-postalCode"/>
+		</daml:subClassOf>
+		<daml:subClassOf>
+			<daml:Restriction rdf:about="#r-x1-country"/>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- Named Restrictions for Adress Properties -->
+	<daml:Restriction daml:minCardinality="1" rdf:ID="r-n1-addressLine">
+		<daml:onProperty rdf:resource="#addressLine"/>
+		<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+	</daml:Restriction>
+	<daml:Restriction daml:maxCardinality="1" rdf:ID="r-x1-city">
+		<daml:onProperty rdf:resource="#city"/>
+		<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+	</daml:Restriction>
+	<daml:Restriction daml:maxCardinality="1" rdf:ID="r-x1-province">
+		<daml:onProperty rdf:resource="#province"/>
+		<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+	</daml:Restriction>
+	<daml:Restriction daml:maxCardinality="1" rdf:ID="r-x1-state">
+		<daml:onProperty rdf:resource="#state"/>
+		<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+	</daml:Restriction>
+	<daml:Restriction daml:cardinality="1" rdf:ID="r-c1-postalCode">
+		<daml:onProperty rdf:resource="#postalCode"/>
+		<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+	</daml:Restriction>
+	<daml:Restriction daml:maxCardinality="1" rdf:ID="r-x1-country">
+		<daml:onProperty rdf:resource="#country"/>
+		<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+	</daml:Restriction>
+	<!-- Address Properties -->
+	<daml:DatatypeProperty rdf:ID="addressLine">
+		<daml:label>Address Line</daml:label>
+		<daml:comment>Street address, Apt #, Suite #, APO, C/O, etc... type information</daml:comment>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="city">
+		<daml:label>City</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="state">
+		<daml:label>State</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="province">
+		<daml:label>Province</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="postalCode">
+		<daml:label>Postal Code</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="zipCode">
+		<daml:label>Zip Code</daml:label>
+		<daml:samePropertyAs rdf:resource="#postalCode"/>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="country">
+		<daml:label>Country</daml:label>
+	</daml:DatatypeProperty>
+	<!-- Electronic Locator -->
+	<daml:Class rdf:ID="ElectronicLocator">
+		<daml:subClassOf rdf:resource="#Locator"/>
+	</daml:Class>
+	<daml:DatatypeProperty rdf:ID="electronicLocator">
+	     <daml:subPropertyOf rdf:resource="#locator"/>
+	</daml:DatatypeProperty>
+	<!-- Email Address Classes  -->
+	<daml:Class rdf:ID="EmailAddress">
+		<daml:subClassOf rdf:resource="#ElectronicLocator"/>
+		<daml:subClassOf>
+			<daml:Restriction daml:minCardinality="1">
+				<daml:onProperty rdf:resource="#emailAddress"/>
+				<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<daml:Class rdf:ID="Email">
+		<daml:subClassOf rdf:resource="#EmailAddress"/>
+	</daml:Class>
+	<!-- Email Properties -->
+	<daml:DatatypeProperty rdf:ID="emailAddress">
+		<daml:label>Email Address</daml:label>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="email">
+		<daml:label>email</daml:label>
+		<daml:subPropertyOf rdf:resource="#emailAddress"/>
+	</daml:DatatypeProperty>
+	<!-- Telephone Classes  -->
+	<daml:Class rdf:ID="TelephoneNumber">
+	     <daml:label>Telephone Numbers</daml:label>
+		<daml:subClassOf rdf:resource="#ElectronicLocator"/>
+	</daml:Class>
+	<daml:Class rdf:ID="HomeTel">
+		<daml:subClassOf rdf:resource="#TelephoneNumber"/>
+		<daml:subClassOf>
+			<daml:Restriction daml:minCardinality="1">
+				<daml:onProperty rdf:resource="#homeTel"/>
+				<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<daml:Class rdf:ID="WorkTel">
+		<daml:subClassOf rdf:resource="#TelephoneNumber"/>
+		<daml:subClassOf>
+			<daml:Restriction daml:minCardinality="1">
+				<daml:onProperty rdf:resource="#workTel"/>
+				<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<daml:Class rdf:ID="CellularTel">
+		<daml:subClassOf rdf:resource="#TelephoneNumber"/>
+		<daml:subClassOf>
+			<daml:Restriction daml:minCardinality="1">
+				<daml:onProperty rdf:resource="#cellular"/>
+				<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<daml:Class rdf:ID="PagerTel">
+		<daml:subClassOf rdf:resource="#TelephoneNumber"/>
+		<daml:subClassOf>
+			<daml:Restriction daml:minCardinality="1">
+				<daml:onProperty rdf:resource="#pager"/>
+				<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<daml:Class rdf:ID="FaxTel">
+		<daml:subClassOf rdf:resource="#TelephoneNumber"/>
+		<daml:subClassOf>
+			<daml:Restriction daml:minCardinality="1">
+				<daml:onProperty rdf:resource="#fax"/>
+				<daml:toClass rdf:resource="http://www.w3.org/2000/10/XMLSchema#string"/>
+			</daml:Restriction>
+		</daml:subClassOf>
+	</daml:Class>
+	<!-- Telephone Number Properties -->
+	<daml:DatatypeProperty rdf:ID="tel">
+		<daml:label>Telephone Number</daml:label>
+		<daml:subPropertyOf rdf:resource="#electronicLocator"/>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="homeTel">
+		<daml:label>Home Telephone Number</daml:label>
+		<daml:subPropertyOf rdf:resource="#tel"/>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="workTel">
+		<daml:label>Work Telephone Number</daml:label>
+		<daml:subPropertyOf rdf:resource="#tel"/>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="fax">
+		<daml:label>Fax</daml:label>
+		<daml:subPropertyOf rdf:resource="#tel"/>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="pager">
+		<daml:label>Line</daml:label>
+		<daml:subPropertyOf rdf:resource="#tel"/>
+	</daml:DatatypeProperty>
+	<daml:DatatypeProperty rdf:ID="cellular">
+		<daml:label>Cellular</daml:label>
+		<daml:subPropertyOf rdf:resource="#tel"/>
+	</daml:DatatypeProperty>
+	<!-- GPS should have its own ontology and should be a subclass of the PhysicalLocator. -->
+	<daml:Class rdf:ID="GPSCoordinates">
+		<daml:subClassOf rdf:resource="#PhysicalLocator"/>
+		<!--daml:sameClassAs rdf:resource="http://orlando.drc.com/daml/mist/Ontology/GPS/Coordinates/3.1/GPSCoordinates-ont#GPSCoordinates"/-->
+	</daml:Class>
+</rdf:RDF>
