@@ -20,6 +20,17 @@ Post Jena 2.1 change list
         (S, P, O), Node.ANY as wildcard
       o BulkUpdateHandler generates events for these
 
+  GraphMem, SmallGraphMem
+      o GraphMem has had the redundant Set(Triple) excised, and changes made
+        to NodeToTriplesMap to push the triple-matching inwards and simplify
+        GraphMem's find code. It will use a little less memory and should be
+        a tad faster.
+      o a new memory-based Graph, SmallGraphMem, has been introduced. This
+        *only* holds a Set(Triple); no indexing is done. Hence it is
+        unsuitable for graphs with more than "a few" statements, unless
+        memory footprint is (much) more important than search speed. It
+        is primarily an extreme to compare other Graphs against.
+
   Event handling
       o added new graph.GraphEvents as holder of event constants with one
         such, .removeAll, issued by BulkUpdateHandler for removeAll(), and
