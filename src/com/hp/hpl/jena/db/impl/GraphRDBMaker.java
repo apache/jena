@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.16 2004-06-30 12:56:57 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.17 2004-07-24 20:05:36 der Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -102,7 +102,7 @@ public class GraphRDBMaker extends BaseGraphMaker
         return consGraph( name, fresh );
         }
         
-    private Graph consGraph( String name, boolean fresh )
+    protected Graph consGraph( String name, boolean fresh )
         {        
         Graph p = c.getDefaultModelProperties().getGraph();
         return new GraphRDB( c, name, (fresh ? p : null), reificationStyle, fresh );
