@@ -1,46 +1,17 @@
 /*
- *  (c)  Copyright 2001,2002 Hewlett-Packard Development Company, LP
- *   All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
-
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *
- * $Id: testMatch.java,v 1.4 2003-08-27 13:07:12 andy_seaborne Exp $
- *
- * testMatch.java
- *
- * Created on June 29, 2001, 9:36 PM
- */
-
+    (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+    [See end of file]
+    $Id: testMatch.java,v 1.5 2003-09-09 14:41:08 chris-dollin Exp $
+*/
 package com.hp.hpl.jena.regression;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.mem.ModelMem;
 
 import java.util.Random;
 /**
  *
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-08-27 13:07:12 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-09-09 14:41:08 $' 
  */
 
 public class testMatch extends java.lang.Object {
@@ -75,6 +46,7 @@ public class testMatch extends java.lang.Object {
             iter.remove();
         }
     }
+    
     void test() {
         //  test4DiHyperCube(5,1,true);
         test2HyperCube(DIMENSION, QUANTITY);
@@ -90,6 +62,7 @@ public class testMatch extends java.lang.Object {
         }
 
     }
+    
     private void test2DiHyperCube(int dim, int cnt, boolean type) {
         try {
             int sz = 1 << dim;
@@ -137,6 +110,7 @@ public class testMatch extends java.lang.Object {
             error(e);
         }
     }
+    
     private void test4DiHyperCube(int dim, int cnt, boolean type) {
         try {
             int sz = 1 << dim;
@@ -241,6 +215,7 @@ public class testMatch extends java.lang.Object {
             error(e);
         }
     }
+    
     private void test4HyperCube(int dim, int cnt, boolean type) {
         try {
             int sz = 1 << dim;
@@ -300,6 +275,7 @@ public class testMatch extends java.lang.Object {
             error(e);
         }
     }
+    
     private void test4ToggleHyperCube(int dim, int cnt, boolean type) {
         try {
             int sz = 1 << dim;
@@ -352,25 +328,62 @@ public class testMatch extends java.lang.Object {
             error(e);
         }
     }
+    
     private boolean inError = false;
+    
     private void error() {
         System.out.println(test + ": failed test " + Integer.toString(n));
         inError = true;
     }
+    
     public void error(Exception e) {
         System.out.println(
             "Test Failed: " + test + " " + n + " " + e.toString());
         inError = true;
     }
+    
     public boolean getErrors() {
         return inError;
     }
+    
     // RUN THIS TEST ONLY
     static public void main(String args[]) {
         DIMENSION = 8;
         QUANTITY = 10;
         QUIET = false;
-        doTest(new ModelMem(), new ModelMem());
-
+        doTest( ModelFactory.createDefaultModel(), ModelFactory.createDefaultModel() );
     }
 }
+
+/*
+ *  (c)  Copyright 2001,2002 Hewlett-Packard Development Company, LP
+ *   All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * $Id: testMatch.java,v 1.5 2003-09-09 14:41:08 chris-dollin Exp $
+ *
+ * testMatch.java
+ *
+ * Created on June 29, 2001, 9:36 PM
+ */

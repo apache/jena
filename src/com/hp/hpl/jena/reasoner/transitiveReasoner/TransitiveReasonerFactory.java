@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveReasonerFactory.java,v 1.10 2003-08-27 13:11:18 andy_seaborne Exp $
+ * $Id: TransitiveReasonerFactory.java,v 1.11 2003-09-09 14:41:08 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
-import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.reasoner.*;
@@ -18,7 +17,7 @@ import com.hp.hpl.jena.reasoner.*;
  * Factory class for creating blank instances of the transitive reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-27 13:11:18 $
+ * @version $Revision: 1.11 $ on $Date: 2003-09-09 14:41:08 $
  */
 public class TransitiveReasonerFactory implements ReasonerFactory {
     
@@ -55,7 +54,7 @@ public class TransitiveReasonerFactory implements ReasonerFactory {
      */
     public Model getCapabilities() {
         if (capabilities == null) {
-            capabilities = new ModelMem();
+            capabilities = ModelFactory.createDefaultModel();
             Resource base = capabilities.createResource(getURI());
             base.addProperty(ReasonerVocabulary.nameP, "Transitive Reasoner")
                 .addProperty(ReasonerVocabulary.descriptionP, "Provides reflexive-transitive closure of subClassOf and subPropertyOf")
