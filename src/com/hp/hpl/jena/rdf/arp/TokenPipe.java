@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: TokenPipe.java,v 1.6 2003-12-10 18:03:47 jeremy_carroll Exp $
+ * * $Id: TokenPipe.java,v 1.7 2004-01-20 10:06:16 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -71,8 +71,12 @@ class TokenPipe implements TokenManager {
 	private boolean atEOF = false;
 	public Token getNextToken() {
 		while (true) {
-			if (position < pipe.size())
-				return (Token) pipe.get(position++);
+			if (position < pipe.size()) {
+				int p = position++;
+				Token rslt = (Token) pipe.get(p);
+				pipe.set(p,null);
+				return rslt;
+			}
 			if (atEOF)
 				return new Token(RDFParserConstants.EOF, null);
 		  if (Thread.interrupted())
