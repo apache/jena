@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.3 2003-02-11 15:16:59 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.4 2003-03-26 12:16:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.vocabulary.*;
 import junit.framework.*;
 
 /**
@@ -42,40 +43,50 @@ public class TestReifier extends GraphTestBase
         assertTrue( "correct reifier (H)", H == H.getReifier().getParentGraph() );
         }
         
-    public void testInsertTriples()
+//    public void testInsertTriples()
+//        {
+//        Graph G = graphWith( "" );
+//        Reifier R = G.getReifier();
+//        Node N = R.reify( triple( "x R y" ) );
+//        assertTrue( "auto-allocated node must be blank", N.isBlank() );
+//        assertTrue( "has one triple", graphWith( "x R y" ).isIsomorphicWith(R.getReifiedTriples()) );
+//        Node M = R.reify( triple( "p S q" ) );
+//        assertTrue( "auto-allocated node must be blank", M.isBlank() );
+//        assertTrue( "has two triples", graphWith( "x R y; p S q" ).isIsomorphicWith(R.getReifiedTriples()) );
+//        assertTrue( "old graph still empty", G.isIsomorphicWith(graphWith( "" ) ) );
+//        }
+        
+//    public void testRetrieveTriplesByNode()
+//        {
+//        Graph G = graphWith( "" );
+//        Reifier R = G.getReifier();
+//        Node N = R.reify( triple( "x R y" ) );
+//        Triple T = R.getTriple( N );
+//        assertEquals( "gets correct triple", triple( "x R y" ), T );
+//        Node M = R.reify( triple( "p S q" ) );
+//        assertDiffer( "different triples need different tags", N, M );
+//        assertEquals( "gets correct triple", triple( "p S q" ), R.getTriple( M ) );
+//    /* */
+//    	assertTrue( "node is known bound", R.hasTriple( M ) );
+//    	assertTrue( "node is known bound", R.hasTriple( N ) );
+//    	assertFalse( "node is known unbound", R.hasTriple( Node.ANY ) );
+//    	assertFalse( "node is known unbound", R.hasTriple( Node.createURI( "any:thing" ) ) );
+//    /* */
+//    	Graph GR = R.getReifiedTriples();
+//    	assertTrue( "reified triples", graphWith( "x R y; p S q" ).isIsomorphicWith(GR) );
+//    	assertTrue( "untouched graph", graphWith( "" ).isIsomorphicWith(G) );
+//        }
+        
+    public void testRetrieveTriplesByTriple()
         {
         Graph G = graphWith( "" );
         Reifier R = G.getReifier();
-        Node N = R.reify( triple( "x R y" ) );
-        assertTrue( "auto-allocated node must be blank", N.isBlank() );
-        assertTrue( "has one triple", graphWith( "x R y" ).isIsomorphicWith(R.getReifiedTriples()) );
-        Node M = R.reify( triple( "p S q" ) );
-        assertTrue( "auto-allocated node must be blank", M.isBlank() );
-        assertTrue( "has two triples", graphWith( "x R y; p S q" ).isIsomorphicWith(R.getReifiedTriples()) );
-        assertTrue( "old graph still empty", G.isIsomorphicWith(graphWith( "" ) ) );
-        }
-        
-    public void testRetrieveTriples()
-        {
-        Graph G = graphWith( "" );
-        Reifier R = G.getReifier();
-        Node N = R.reify( triple( "x R y" ) );
-        Triple T = R.getTriple( N );
-        assertEquals( "gets correct triple", triple( "x R y" ), T );
-        Node M = R.reify( triple( "p S q" ) );
-        assertDiffer( "different triples need different tags", N, M );
-        assertEquals( "gets correct triple", triple( "p S q" ), R.getTriple( M ) );
-    /* */
-    	assertTrue( "node is known bound", R.hasTriple( M ) );
-    	assertTrue( "node is known bound", R.hasTriple( N ) );
-    	assertFalse( "node is known unbound", R.hasTriple( Node.ANY ) );
-    	assertFalse( "node is known unbound", R.hasTriple( Node.createURI( "any:thing" ) ) );
-    /* */
-    	Graph GR = R.getReifiedTriples();
-    	assertTrue( "reified triples", graphWith( "x R y; p S q" ).isIsomorphicWith(GR) );
-    	assertTrue( "untouched graph", graphWith( "" ).isIsomorphicWith(G) );
-        }
-        
+        Triple T = triple( "x R y" ), T2 = triple( "y R x" );
+        Node N = R.reify( T );
+        assertTrue( "R must have T", R.hasTriple( T ) );
+        assertFalse( "R must not have T2", R.hasTriple( T2 ) );
+        }   
+             
     public void testReifyAs()
     	{
     	Graph G = graphWith( "" );
@@ -94,17 +105,29 @@ public class TestReifier extends GraphTestBase
         assertEquals( "", nodeSet( "z y x" ), iteratorToSet( R.allNodes() ) );
         }
         
- 	public void testRemove()
+ 	public void testRemoveByNode()
  		{
  		Graph G = graphWith( "" );
  		Reifier R = G.getReifier();
  		Node X = node( "x" ), Y = node( "y" );
  		R.reifyAs( X, triple( "x R a" ) );
  		R.reifyAs( Y, triple( "y R a" ) );
- 		R.remove( X );
+ 		R.remove( X, triple( "x R a" ) );
  		assertFalse( "triple X has gone", R.hasTriple( X ) );
  		assertEquals( "triple Y still there", triple( "y R a" ), R.getTriple( Y ) );
  		}
+        
+//    public void testRemoveByTriple()
+//        {
+//        Graph G = graphWith( "" );
+//        Reifier R = G.getReifier();
+//        Node X = node( "x" ), Y = node( "y" );
+//        R.reifyAs( X, triple( "x R a" ) );
+//        R.reifyAs( Y, triple( "y R a" ) );
+//        R.remove( triple( "x R a" ) );
+//        assertFalse( "triple X has gone", R.hasTriple( X ) );
+//        assertEquals( "triple Y still there", triple( "y R a" ), R.getTriple( Y ) );            
+//        }
         
     public void testException()
         {
@@ -116,6 +139,27 @@ public class TestReifier extends GraphTestBase
         try { R.reifyAs( X, triple( "x R z" ) ); fail( "did not detected already reified node" ); }
         catch (Reifier.AlreadyReifiedException e) { }      
         }
+        
+//    public void testQuads()
+//        {
+//        Node A = node( "a" ), B = node( "b" );
+//        Graph G = graphWith( "" );
+//        Graph quads = graphWith
+//            ( 
+//            "a " + RDF.type + " " + RDF.Statement
+//            + "; a " + RDF.subject + " x"
+//            + "; a " + RDF.predicate + " R"
+//            + "; a " + RDF.object + " y"
+//            + "; b " + RDF.type + " " + RDF.Statement
+//            + "; b " + RDF.subject + " p"
+//            + "; b " + RDF.predicate + " S"
+//            + "; b " + RDF.object + " q"
+//            );
+//        Reifier R = G.getReifier();
+//        R.reifyAs( A, triple( "x R y") );
+//        R.reifyAs( B, triple( "p S q" ) );
+//        assertEquals( "same", quads, R.getReificationQuads() );
+//        }
         
     }
 

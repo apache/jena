@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.4 2003-02-11 15:17:01 chris-dollin Exp $
+  $Id: TestNode.java,v 1.5 2003-03-26 12:16:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -10,29 +10,21 @@ package com.hp.hpl.jena.graph.test;
 	@author bwm out of kers
 */
 
-import com.hp.hpl.jena.graph.LiteralLabel;
-import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.lang.reflect.*;
+import junit.framework.*;
 
 
-public class TestNode extends TestCase
+public class TestNode extends GraphTestBase
     {    
-        
     public TestNode( String name )
         { super( name ); }
     
     public static TestSuite suite()
         { return new TestSuite( TestNode.class ); }   
             
-    public void assertFalse( String name, boolean b )
-        { assertTrue( name, !b ); }
-    
-    private void assertDiffer( String title, Object x, Object y )
-        { assertFalse( title, x.equals( y ) ); }
-                
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
     private static final LiteralLabel L = new LiteralLabel( "ashes are burning", "en", false );
@@ -85,72 +77,75 @@ public class TestNode extends TestCase
         assertFalse( "ANY nodes aren't blank", Node.ANY.isBlank() );
         }
         
-    public void testNodeEquals() {
-        try {
-            Node.cache(false);
-            
-            // create some nodes to test
+    /**
+        test cases for equality: an array of (Node, String) pairs. [It's not worth
+        making a special class for these pairs.] The nodes are created with caching
+        off, to make sure that caching effects don't hide the effect of using .equals().
+        The strings are "equality groups": the nodes should test equal iff their
+        associated strings test equal. 
+    */
+    private Object [][] eqTestCases()
+        {
+        try
+            {
+            Node.cache( false );           
             AnonId id = new AnonId();
-            LiteralLabel L2 = new LiteralLabel(id.toString(), "", false);
+            LiteralLabel L2 = new LiteralLabel( id.toString(), "", false );
+            Node a = node( "a" ), b = node( "b" );
+            Triple T = new Triple( a, a, a ), T2 = new Triple( b, b, b );
             String U2 = id.toString();
             String N2 = id.toString();
-            
-            Node[] nodes = new Node[] {
-              Node.ANY,
-              Node.createAnon(id),    Node.createAnon(),       Node.createAnon(id),
-              Node.createLiteral(L),  Node.createLiteral(L2),  Node.createLiteral(L),
-              Node.createURI(U),      Node.createURI(U2),      Node.createURI(U),
-              Node.createVariable(N), Node.createVariable(N2), Node.createVariable(N)
-            };
-            
-            String[] types= {
-                "ANY",
-                "blank", "blank", "blank",
-                "literal", "literal", "literal",
-                "uri", "uri", "uri",
-                "variable", "variable", "variable"
-            };
-            
-            boolean[][] expected = new boolean[nodes.length][nodes.length];
-            
-            for (int i=0; i<nodes.length; i++) {
-                for (int j=0; j<nodes.length; j++) {
-                    expected[i][j] = (i==j);
-                }
+            return new Object [][]
+                {
+                    { Node.ANY, "0" },
+                    { Node.createAnon( id ), "1" },
+                    { Node.createAnon(), "2" },
+                    { Node.createAnon( id ), "1" },
+                    { Node.createLiteral( L ), "3" },
+                    { Node.createLiteral( L2 ), "4" },
+                    { Node.createLiteral( L ), "3" },
+                    { Node.createURI( U ), "5" },
+                    { Node.createURI( U2 ), "6" },
+                    { Node.createURI( U ), "5" },
+                    { Node.createVariable( N ), "7" },
+                    { Node.createVariable( N2 ), "8" },
+                    { Node.createVariable( N ), "7" }
+                };
             }
-            expected[1][3] = true;
-            expected[3][1] = true;
-            expected[4][6] = true;
-            expected[6][4] = true;
-            expected[7][9] = true;
-            expected[9][7] = true;
-            expected[10][12] = true;
-            expected[12][10] = true;                                 
-            
-            for (int i=0; i<nodes.length; i++) {
-                Node n1 = nodes[i];
-                String m1 = 
-                      "testNodeEquals: " 
-                    + types[i] + "(" + n1.toString() + ") ";
-                assertEquals(m1 + "String(String)", n1.equals("String"), false);
-                assertEquals(m1 + "null", n1.equals(null), false);
-                for (int j=0; j<nodes.length; j++) {
-                    Node n2 = nodes[j];
-                    String m2 = 
-                        m1 + types[j] + "(" + n2.toString() + ")";
-                    if (expected[i][j]) {
-                        assertEquals(m2, n1, n2);
-                    } else {
-                        assertDiffer(m2, n1, n2);
-                    }
-                }
-            }
-                
-        } finally {
-            Node.cache(true);
+        finally
+            { Node.cache( true ); }
         }
-    }
-    
+        
+    public void testNodeEquals() 
+        {
+        Object [][] tests = eqTestCases();
+        for (int i = 0; i < tests.length; i += 1)
+            {
+            Object [] I = tests[i];
+            assertFalse( I[0] + " should not equal null", I[0].equals( null ) );
+            assertFalse( I[0] + "should not equal 'String'", I[0].equals( "String" ) );
+            for (int j = 0; j < tests.length; j += 1)
+                {
+                Object [] J = tests[j];
+                testEquality( I[1].equals( J[1] ), I[0], J[0] );
+                }
+            }
+        }
+    private void testEquality( boolean testEq, Object L, Object R )
+        {
+        String testName = getType( L ) + " " + L + " and " + getType( R ) + " " + R;
+        if (testEq)
+            assertEquals( testName + "should be equal", L, R );
+        else
+            assertDiffer( testName + " should differ", L, R );
+        }
+        
+    private String getType( Object x )
+        {
+        String fullName = x.getClass().getName();
+        return fullName.substring( fullName.lastIndexOf( '.' ) + 1 );
+        }
+        
     public void testEquals()
         {
         try
@@ -170,86 +165,63 @@ public class TestNode extends TestCase
             { Node.cache( true ); }
         }
         
-    public void testGetLabel()
+    /**
+        test that the label of a Node can be retrieved from that Node in
+        a way appropriate to that Node.
+    */
+    public void testLabels()
         {
-            AnonId id = new AnonId();
-            String[] types = {
-                "ANY",
-                "Blank",
-                "Literal",
-                "URI",
-                "VAR"
-            };
-            Object[] labels = {
-                null,
-                id,
-                L,
-                U,
-                N
-            };
-            Node[] nodes = {
-                Node.ANY,
-                Node.createAnon((AnonId) labels[1]),
-                Node.createLiteral((LiteralLabel) labels[2]),
-                Node.createURI((String) labels[3]),
-                Node.createVariable((String) labels[4])
-            };
-            boolean[] expectedBlk = new boolean[nodes.length];
-            boolean[] expectedLit = new boolean[nodes.length];
-            boolean[] expectedURI = new boolean[nodes.length];
-            boolean[] expectedVar = new boolean[nodes.length];
-            for (int i=0; i<nodes.length; i++) {
-                expectedBlk[i] = false;
-                expectedLit[i] = false;
-                expectedURI[i] = false;
-                expectedVar[i] = false;
-            }
-            expectedBlk[1] = true;
-            expectedLit[2] = true;
-            expectedURI[3] = true;
-            expectedVar[4] = true;
-            
-            for (int i=0; i<nodes.length; i++) {
-                try {
-                    Object label = nodes[i].getBlankNodeId();
-                    assertTrue(expectedBlk[i]);
-                    assertEquals("getBlankNodeId: " + types[i], 
-                                 label,
-                                 labels[i]);
-                } catch (UnsupportedOperationException e) {
-                    assertTrue(!expectedBlk[i]);
-                }
-                try {
-                    Object label = nodes[i].getLiteral();
-                    assertTrue(expectedLit[i]);
-                    assertEquals("getLiteral: " + types[i], 
-                                 label,
-                                 labels[i]);
-                } catch (UnsupportedOperationException e) {
-                    assertTrue(!expectedLit[i]);
-                }
-                try {
-                    Object label = nodes[i].getURI();
-                    assertTrue(expectedURI[i]);
-                    assertEquals("getURI: " + types[i], 
-                                 label,
-                                 labels[i]);
-                } catch (UnsupportedOperationException e) {
-                    assertTrue(!expectedURI[i]);
-                }
-                try {
-                    Object label = nodes[i].getName();
-                    assertTrue(expectedVar[i]);
-                    assertEquals("getBlankNodeId: " + types[i], 
-                                 label,
-                                 labels[i]);
-                } catch (UnsupportedOperationException e) {
-                    assertTrue(!expectedVar[i]);
-                }
-                
-            }
-
+        AnonId id = new AnonId();
+        Triple T = triple( "x R y" );
+        assertEquals( "get URI value", U, Node.createURI( U ).getURI() );
+        assertEquals( "get blank value", id, Node.createAnon( id ).getBlankNodeId() );
+        assertEquals( "get literal value", L, Node.createLiteral( L ).getLiteral() );
+        assertEquals( "get variable name", N, Node.createVariable( N ).getName() );
         }
+        
+    /**
+        this is where we test that using the wrong accessor on a Node gets you
+        an exception. 
+    */
+    public void testFailingLabels()
+        {
+        Triple T = triple( "x R y" );
+        Node u = Node.createURI( U ), b = Node.createAnon();
+        Node l = Node.createLiteral( L ), v = Node.createVariable( N );
+        Node a = Node.ANY;
+    /* */
+        testGetURIFails( a );
+        testGetURIFails( b );
+        testGetURIFails( l );
+        testGetURIFails( v );
+    /* */
+        testGetLiteralFails( a );
+        testGetLiteralFails( u );
+        testGetLiteralFails( b );
+        testGetLiteralFails( v );
+    /* */
+        testGetNameFails( a );
+        testGetNameFails( u );
+        testGetNameFails( b );
+        testGetNameFails( l );;
+    /* */
+        testGetBlankNodeIdFails( a );
+        testGetBlankNodeIdFails( u );
+        testGetBlankNodeIdFails( l );
+        testGetBlankNodeIdFails( v );
+        }
+        
+    public void testGetBlankNodeIdFails( Node n )
+        { try { n.getBlankNodeId(); fail( n.getClass() + " should fail getName()" ); } catch (UnsupportedOperationException e) {} }
+
+    public void testGetURIFails( Node n )
+        { try { n.getURI(); fail( n.getClass() + " should fail getURI()" ); } catch (UnsupportedOperationException e) {} }
+        
+    public void testGetNameFails( Node n )
+        { try { n.getName(); fail( n.getClass() + " should fail getName()" ); } catch (UnsupportedOperationException e) {} }
+    
+    public void testGetLiteralFails( Node n )
+        { try { n.getLiteral(); fail( n.getClass() + " should fail getLiteral()" ); } catch (UnsupportedOperationException e) {} }
         
     public void testCache()
         {
@@ -257,13 +229,14 @@ public class TestNode extends TestCase
         assertTrue( "remembers literal", Node.createLiteral( L ) == Node.createLiteral( L ) );
         assertTrue( "remembers blanks", Node.createAnon( A ) == Node.createAnon( A ) );
         assertTrue( "remembers variables", Node.createVariable( N ) == Node.createVariable( N ) );
+        // assertTrue( "remembers valued", Node.createValued( voidTriple ) == Node.createValued( voidTriple ) );
     /* */
         assertFalse( "is not confused", Node.createVariable( N ) == Node.createURI( N ) );
         }
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
