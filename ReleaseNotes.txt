@@ -36,7 +36,7 @@ I/O:
   in doc/IO/iohowto.html
   Jena2 I/O subsystem uses InputStream's and OutputStream's where
   Jena1 used Reader's and Writer's.
-+ There is still a problem ubder Linux with FileWriter
++ There is still a problem under Linux with FileWriter
   and OutputStreamWriter. The test suite prints a warning
   message describing the problem and the workaround.
    "IANA name for Java encoding: ISO-8859-15 is not known. 
