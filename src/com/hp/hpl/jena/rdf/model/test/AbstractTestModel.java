@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.3 2003-07-08 09:15:43 chris-dollin Exp $
+  $Id: AbstractTestModel.java,v 1.4 2003-07-10 09:01:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -72,6 +72,19 @@ public abstract class AbstractTestModel extends ModelTestBase
         assertFalse( model.isEmpty() );
         model.remove( S2 );
         assertTrue( model.isEmpty() );
+        }
+        
+    public void testContainsResource()
+        {
+        modelAdd( model, "x R y; _a P _b" );
+        assertTrue( model.containsResource( resource( model, "x" ) ) );
+        assertTrue( model.containsResource( resource( model, "R" ) ) );
+        assertTrue( model.containsResource( resource( model, "y" ) ) );
+        assertTrue( model.containsResource( resource( model, "_a" ) ) );
+        assertTrue( model.containsResource( resource( model, "P" ) ) );
+        assertTrue( model.containsResource( resource( model, "_b" ) ) );
+        assertFalse( model.containsResource( resource( model, "i" ) ) );
+        assertFalse( model.containsResource( resource( model, "_j" ) ) );
         }
     }
 

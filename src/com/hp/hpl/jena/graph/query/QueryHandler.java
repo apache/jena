@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryHandler.java,v 1.5 2003-07-08 09:15:29 chris-dollin Exp $
+  $Id: QueryHandler.java,v 1.6 2003-07-10 09:01:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -56,6 +56,8 @@ public interface QueryHandler
     
     /**
         true iff the graph contains a triple in which n appears somewhere.
+        if n is a fluid node, it is not defined whether true or false is returned,
+        so don't do that.
     */
     public boolean containsNode( Node n );
     
