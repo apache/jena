@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -39,7 +39,6 @@ public class DBPropGraph extends DBProp {
 	public static Node_URI graphId = (Node_URI)DB.graphId.getNode();
 	public static Node_URI stmtTable = (Node_URI)DB.stmtTable.getNode();
 	public static Node_URI reifTable = (Node_URI)DB.reifTable.getNode();
-	public static Node_URI graphDBSchema = (Node_URI)DB.graphDBSchema.getNode();
 
 
 	
@@ -108,9 +107,6 @@ public class DBPropGraph extends DBProp {
 		putPropString(stmtTable, table);
 	}
 	
-	public void addDBSchema( String schemaName ) {
-		putPropString(graphDBSchema, schemaName);
-	}
 	public void addReifTable( String table ) {
 		putPropString(reifTable, table);
 	}
@@ -122,7 +118,6 @@ public class DBPropGraph extends DBProp {
 	public String getStmtTable() { return getPropString(stmtTable); }
 	public String getReifTable() { return getPropString(reifTable); }
 	public int getGraphId() { return Integer.parseInt(getPropString(graphId)); }	
-    public String getDBSchema() { return getPropString(graphDBSchema); }
 	
 	public ExtendedIterator getAllLSets() {
 		return 
