@@ -9,7 +9,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.12 2003-08-17 20:03:25 der Exp $
+# $Id: owl-fb-test.rules,v 1.13 2003-08-17 20:49:38 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -210,7 +210,8 @@
 #------------------------------------------------------------------
 
 [min: (?C rdfs:subClassOf min(?P, 1)) -> table(?P),
-    [min1b: (?X ?P ?T) <- (?X rdf:type ?C), noValue(?X, ?P), makeInstance(?X, ?P, ?T)] ]
+    [min1b: (?X ?P ?T) <- (?X rdf:type ?C), noValue(?X, ?P), makeInstance(?X, ?P, ?T)] 
+    ]
 
 [minRec: (?C owl:equivalentClass min(?P, 1)), notEqual(?P, rdf:type) -> table(?P),
     [min2b: (?X rdf:type ?C) <- (?X ?P ?Y)] ]
@@ -267,13 +268,13 @@
 					notEqual(?P, rdfs:subClassOf), notEqual(?P, rdfs:subPropertyOf), 
 					notEqual(?P, owl:equivalentProperty), notEqual(?P, owl:equivalentClass),
    -> table(?P),
-#    [some1b: (?X ?P ?T) <- (?X rdf:type ?C),  noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
-#    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?X ?P ?T) <- (?X rdf:type ?C),  noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), makeInstance(?X, ?P, ?D, ?T) ] 
     
-    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
-    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
-    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
-    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
+#    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+#    [some1b: (?X ?P ?T) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
+#    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), unbound(?T), noValue(?X, ?P), makeInstance(?X, ?P, ?D, ?T) ] 
+#    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
     ]
     
 [someRec: (?C owl:equivalentClass some(?P, ?D)), (?P rdfs:range ?D) -> table(?P),
