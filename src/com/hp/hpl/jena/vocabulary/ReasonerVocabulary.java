@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.6 2003-06-19 20:47:39 der Exp $
+ * $Id: ReasonerVocabulary.java,v 1.7 2003-06-23 08:10:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.reasoner.ReasonerRegistry;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-19 20:47:39 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-23 08:10:41 $
  */
 public class ReasonerVocabulary {
     
@@ -79,6 +79,11 @@ public class ReasonerVocabulary {
      * properties in RDFS preprocessing. */
     public static Property PROPenableCMPScan;
     
+    /** Property used to switch on/off full RDFS processing. This subsumes
+     *  the enableCMPScan property and also switches to a rule set that 
+     *  includes the explicit "everything is a Resource rules. */
+    public static Property PROPenableFullRDFS;
+    
     /** A namespace used for Rubric specific properties */
     public static final String RBNamespace = "urn:x-hp-jena:rubrik/";
             
@@ -114,6 +119,7 @@ public class ReasonerVocabulary {
             PROPenableOWLTranslation = ResourceFactory.createProperty(PropURI+"#", "enableOWLTranslation");
             PROPenableTGCCaching = ResourceFactory.createProperty(PropURI+"#", "enableTGCCaching");
             PROPenableCMPScan = ResourceFactory.createProperty(PropURI+"#", "enableCMPScan");
+            PROPenableFullRDFS = ResourceFactory.createProperty(PropURI+"#", "enableFullRDFS");
         } catch (Exception e) {
             System.err.println("Initialization error: " + e);
             e.printStackTrace(System.err);
