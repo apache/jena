@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBugs.java,v 1.5 2003-08-22 16:05:11 der Exp $
+ * $Id: TestBugs.java,v 1.6 2003-08-26 09:01:03 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-22 16:05:11 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-26 09:01:03 $
  */
 public class TestBugs extends TestCase {
 
@@ -53,9 +53,6 @@ public class TestBugs extends TestCase {
     /**
      * Report of NPE during processing on an ontology with a faulty intersection list,
      * from Hugh Winkler.
-     * 
-     * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-     * @version $Revision: 1.5 $ on $Date: 2003-08-22 16:05:11 $
      */
     public void testIntersectionNPE() {
         Model base = ModelFactory.createDefaultModel();
@@ -74,9 +71,6 @@ public class TestBugs extends TestCase {
     /**
      * Report of problems with cardinality v. maxCardinality usage in classification,
      * from Hugh Winkler.
-     * 
-     * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-     * @version $Revision: 1.5 $ on $Date: 2003-08-22 16:05:11 $
      */
     public void testCardinality1() {
         Model base = ModelFactory.createDefaultModel();
