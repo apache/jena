@@ -9,7 +9,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.9 2003-08-14 07:49:40 der Exp $
+# $Id: owl-fb-test.rules,v 1.10 2003-08-14 17:49:08 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -128,6 +128,7 @@
 -> (owl:equivalentProperty rdf:type owl:TransitiveProperty).
 -> (owl:equivalentClass rdf:type owl:SymmetricProperty).
 -> (owl:equivalentClass rdf:type owl:TransitiveProperty).
+-> (owl:sameAs rdf:type owl:SymmetricProperty).
 -> (owl:sameIndividualAs rdf:type owl:SymmetricProperty).
 -> (owl:sameIndividualAs rdf:type owl:TransitiveProperty).
 -> (owl:sameIndividualAs owl:equivalentProperty owl:sameAs).

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.23 2003-08-13 08:02:40 der Exp $
+ * $Id: LPInterpreter.java,v 1.24 2003-08-14 17:49:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
+import com.hp.hpl.jena.util.PrintUtil;
 
 import java.util.*;
 import org.apache.log4j.Logger;
@@ -23,7 +24,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2003-08-13 08:02:40 $
+ * @version $Revision: 1.24 $ on $Date: 2003-08-14 17:49:06 $
  */
 public class LPInterpreter {
 
@@ -181,14 +182,16 @@ public class LPInterpreter {
      * @return either a StateFlag or  a result Triple
      */
     public synchronized Object next() {
+        boolean traceOn = engine.isTraceOn();
         StateFlag answer = run();
         if (answer == StateFlag.FAIL || answer == StateFlag.SUSPEND) {
             return answer;
         } else if (answer == StateFlag.SATISFIED) {
+            if (traceOn) logger.info("RETURN: " + topTMFrame.lastMatch);
             return topTMFrame.lastMatch;
         } else {
             Triple t = new Triple(deref(pVars[0]), deref(pVars[1]), derefPossFunctor(pVars[2]));
-//            System.out.println("Ans: " + t);
+            if (traceOn) logger.info("RETURN: " + t);
             return t;
         }
     }
@@ -230,6 +233,7 @@ public class LPInterpreter {
         ChoicePointFrame choice = null;
         byte[] code;
         Object[] args;
+        boolean traceOn = engine.isTraceOn();
         
         main: while (cpFrame != null) {
             // restore choice point
@@ -238,6 +242,7 @@ public class LPInterpreter {
                 if (!choice.hasNext()) {
                     // No more choices left in this choice point
                     cpFrame = choice.getLink();
+                    if (traceOn) logger.info("FAIL clause choices");
                     continue main;
                 }
                 
@@ -247,7 +252,6 @@ public class LPInterpreter {
                 envFrame.linkTo(choice.envFrame);
                 envFrame.cpc = choice.cpc;
                 envFrame.cac = choice.cac;
-//                logger.debug("Retry rule: " + envFrame);
                 
                 // Restore the choice point state
                 System.arraycopy(choice.argVars, 0, argVars, 0, RuleClauseCode.MAX_ARGUMENT_VARS);
@@ -256,6 +260,9 @@ public class LPInterpreter {
                     unwindTrail(trailMark);
                 }
                 pc = ac = 0;
+                
+                if (traceOn) logger.info("ENTER " + clause + " : " + getArgTrace());
+                
                 // then fall through into the recreated execution context for the new call
                 
             } else if (cpFrame instanceof TripleMatchFrame) {
@@ -273,8 +280,14 @@ public class LPInterpreter {
                 if (!tmFrame.nextMatch(this)) {
                     // No more matches
                     cpFrame = cpFrame.getLink();
+                    if (traceOn) logger.info("TRIPLE match (" + tmFrame.goal +") -> FAIL");
                     continue main;
                 }
+                if (traceOn) {
+                    logger.info("TRIPLE match (" + tmFrame.goal +") -> " + getArgTrace());
+                    logger.info("RENTER " + clause);
+                }
+                     
                 pc = tmFrame.cpc;
                 ac = tmFrame.cac;
 
@@ -287,9 +300,11 @@ public class LPInterpreter {
                 if (!tmFrame.nextMatch(this)) {
                     // No more matches
                     cpFrame = cpFrame.getLink();
+                    if (traceOn) logger.info("TRIPLE match (" + tmFrame.goal +") -> FAIL");
                     continue main;
                 } else {
                     // Match but this is the top level so return the triple directly
+                    if (traceOn) logger.info("TRIPLE match (" + tmFrame.goal +") ->");
                     return StateFlag.SATISFIED;
                 }
                 
@@ -299,6 +314,7 @@ public class LPInterpreter {
                 // Restore the calling context
                 envFrame = ccp.envFrame;
                 clause = envFrame.clause;
+                if (traceOn) logger.info("RESTORE " + clause + ", due to tabled goal " + ccp.generator.goal);
                 int trailMark = ccp.trailIndex;
                 if (trailMark < trail.size()) {
                     unwindTrail(trailMark);
@@ -309,12 +325,14 @@ public class LPInterpreter {
                 if (state == StateFlag.FAIL) {
                     // No more matches
                     cpFrame = cpFrame.getLink();
+                    if (traceOn) logger.info("FAIL " + clause);
                     continue main;
                 } else if (state == StateFlag.SUSPEND) {
                     // Require other generators to cycle before resuming this one
                     preserveState(ccp);
                     iContext.notifyBlockedOn(ccp);
                     cpFrame = cpFrame.getLink();
+                    if (traceOn)logger.info("SUSPEND " + clause);
                     continue main;
                 }
 
@@ -338,11 +356,6 @@ public class LPInterpreter {
                 TripleMatchFrame tmFrame;
                 code = clause.getCode();
                 args = clause.getArgs();
-
-                // Debug ...
-//                logger.debug("Entering rule: " + envFrame);
-//                System.out.println("Interpeting code (at p = " + pc + "):");
-//                envFrame.clause.print(System.out);
         
                 codeloop: while (true) {
                     switch (code[pc++]) {
@@ -372,7 +385,7 @@ public class LPInterpreter {
                                 bind(arg, constant);
                             } else {
                                 if (!arg.sameValueAs(constant)) {
-//                                    logger.debug("FAIL: " + envFrame);
+                                    if (traceOn) logger.info("FAIL " + clause);
                                     continue main;  
                                 }
                             }
@@ -408,14 +421,17 @@ public class LPInterpreter {
                                 bind(((Node_RuleVariable)o).deref(), newFunc);
                                 match = true;
                             }
-                            if (!match) continue main;      // fail to unify functor shape
+                            if (!match) {
+                                if (traceOn) logger.info("FAIL " + clause);
+                                continue main;      // fail to unify functor shape
+                            }
                             break;
                             
                         case RuleClauseCode.UNIFY_VARIABLE :
                             yi = code[pc++];
                             ai = code[pc++];
                             if (!unify(argVars[ai], pVars[yi])) {
-//                                logger.debug("FAIL: " + envFrame);
+                                if (traceOn) logger.info("FAIL " + clause);
                                 continue main;  
                             }
                             break;
@@ -424,7 +440,7 @@ public class LPInterpreter {
                             ti = code[pc++];
                             ai = code[pc++];
                             if (!unify(argVars[ai], tVars[ti])) {
-//                                logger.debug("FAIL: " + envFrame);
+                                if (traceOn) logger.info("FAIL " + clause);
                                 continue main;  
                             }
                             break;
@@ -514,7 +530,7 @@ public class LPInterpreter {
                         case RuleClauseCode.PROCEED:
                             pc = envFrame.cpc;
                             ac = envFrame.cac;
-//                            logger.debug("EXIT " + envFrame);
+                            if (traceOn) logger.info("EXIT " + clause);
                             envFrame = (EnvironmentFrame) envFrame.link;
                             if (envFrame != null) {
                                 clause = envFrame.clause;
@@ -530,7 +546,7 @@ public class LPInterpreter {
                             }
                             context.setRule(clause.getRule());
                             if (!builtin.bodyCall(argVars, code[pc++], context)) {
-//                                logger.debug("FAIL: " + envFrame.clause.rule.toShortString());
+                                if (traceOn) logger.info("FAIL " + clause + ", due to " + builtin.getName());
                                 continue main;  
                             }
                             break;
@@ -549,6 +565,19 @@ public class LPInterpreter {
     }
  
     /**
+     * Tracing support - return a format set of triple queries/results.
+     */
+    private String getArgTrace() {
+        StringBuffer temp = new StringBuffer();
+        temp.append(PrintUtil.print(deref(argVars[0])));
+        temp.append(" ");
+        temp.append(PrintUtil.print(deref(argVars[1])));
+        temp.append(" ");
+        temp.append(PrintUtil.print(deref(argVars[2])));
+        return temp.toString();
+    }
+    
+    /**
      * Set up a triple match choice point as part of a CALL.
      */
     private void setupTripleMatchCall(int pc, int ac) {
@@ -556,10 +585,6 @@ public class LPInterpreter {
         tmFrame.setContinuation(pc, ac);
         tmFrame.linkTo(cpFrame);
         cpFrame = tmFrame;
-//        logger.debug("CALL triple match: " + 
-//                        deref(argVars[0]) + " " +
-//                        deref(argVars[1]) + " " +
-//                        deref(argVars[2]));
     }
     
     /**
@@ -731,6 +756,7 @@ public class LPInterpreter {
             return dnode;
         }
     }
+    
 }
 
 

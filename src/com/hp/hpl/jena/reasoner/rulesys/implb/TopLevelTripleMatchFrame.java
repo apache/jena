@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TopLevelTripleMatchFrame.java,v 1.1 2003-08-11 16:55:31 der Exp $
+ * $Id: TopLevelTripleMatchFrame.java,v 1.2 2003-08-14 17:49:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -16,17 +16,19 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 /**
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-11 16:55:31 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-14 17:49:06 $
  */
 public class TopLevelTripleMatchFrame extends GenericChoiceFrame {
 
     /** The last returned triple */
     protected Triple lastMatch;
     
-    
     /** An iterator over triples matching a goal */
     ExtendedIterator matchIterator;
-    
+
+    /** Used for debug/tracing only */
+    protected TriplePattern goal;
+        
     /**
      * Constructor.
      * Initialize the triple match to preserve the current context of the given
@@ -36,6 +38,7 @@ public class TopLevelTripleMatchFrame extends GenericChoiceFrame {
     public TopLevelTripleMatchFrame(LPInterpreter interpreter, TriplePattern goal) {
         init(interpreter);
         this.matchIterator = interpreter.getEngine().getInfGraph().findDataMatches(goal);
+        this.goal = goal;
     }
 
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.9 2003-08-12 09:31:56 der Exp $
+ * $Id: LPRuleStore.java,v 1.10 2003-08-14 17:49:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-08-12 09:31:56 $
+ * @version $Revision: 1.10 $ on $Date: 2003-08-14 17:49:06 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -80,7 +80,12 @@ public class LPRuleStore extends RuleStore {
         if (predicate.isVariable()) {
             return allRuleClauseCodes;
         } else {
-            return (List) predicateToCodeMap.get(predicate);
+            List codeList = (List) predicateToCodeMap.get(predicate);
+            if (codeList == null) {
+                // Uknown predicate, so only the wildcard rules apply
+                codeList = (List) predicateToCodeMap.get(Node_RuleVariable.WILD);
+            }
+            return codeList;
         }
     }
     
@@ -177,20 +182,15 @@ public class LPRuleStore extends RuleStore {
                 }
             }
         }
-        
-        // Now we change the semantics of the wildcard entry in the code map table
-        // to be used for any wildcard query. Doing it now enables us to easily include
-        // the allRules case in the subsequent indexing stage
-        predicateToCodeMap.put(Node_RuleVariable.WILD, allRuleClauseCodes);
         indexPredicateToCodeMap.put(Node_RuleVariable.WILD, new HashMap());
-        
+                
         // Now built any required two level indices
         for (Iterator i = indexPredicateToCodeMap.entrySet().iterator(); i.hasNext(); ) {
             Map.Entry entry = (Map.Entry)i.next();
             Node predicate = (Node) entry.getKey();
             HashMap predicateMap = (HashMap) entry.getValue();
             List wildRulesForPredicate = new ArrayList();
-            List allRulesForPredicate = (List) predicateToCodeMap.get(predicate);
+            List allRulesForPredicate =  predicate.isVariable() ? allRuleClauseCodes : (List) predicateToCodeMap.get(predicate);
             for (Iterator j = allRulesForPredicate.iterator(); j.hasNext(); ) {
                 RuleClauseCode code = (RuleClauseCode)j.next();
                 ClauseEntry head = code.getRule().getHeadElement(0);

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: EnvironmentFrame.java,v 1.5 2003-08-12 17:01:27 der Exp $
+ * $Id: EnvironmentFrame.java,v 1.6 2003-08-14 17:49:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.graph.Node;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-12 17:01:27 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-14 17:49:06 $
  */
 public class EnvironmentFrame extends FrameObject {
 
@@ -65,9 +65,9 @@ public class EnvironmentFrame extends FrameObject {
      */
     public String toString() {
         if (clause == null || clause.rule == null) {
-            return "null env";
+            return "[anon]";
         } else {
-            return "env(" + clause.rule.toShortString() + ")";
+            return "[" + clause.rule.toShortString() + "]";
         }
     }
 }

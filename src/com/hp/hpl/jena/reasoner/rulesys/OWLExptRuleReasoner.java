@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLExptRuleReasoner.java,v 1.2 2003-08-14 07:51:11 der Exp $
+ * $Id: OWLExptRuleReasoner.java,v 1.3 2003-08-14 17:49:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.*;
  * A hybrid forward/backward implementation of the OWL closure rules - experimental variant.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-14 07:51:11 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-14 17:49:08 $
  */
 public class OWLExptRuleReasoner extends FBLPRuleReasoner  {
     
@@ -102,7 +102,7 @@ public class OWLExptRuleReasoner extends FBLPRuleReasoner  {
         graph = new FBLPRuleInfGraph(this, baseRules, schemaArg);
         graph.addPreprocessingHook(new OWLRuleTranslationHook());
         graph.setDerivationLogging(recordDerivations);
-//        graph.setTraceOn(traceOn);
+        graph.setTraceOn(traceOn);
         graph.rebind(data);
                 
         return graph;
@@ -112,7 +112,7 @@ public class OWLExptRuleReasoner extends FBLPRuleReasoner  {
      * Get the single static precomputed rule closure.
      */
     public InfGraph getPreload() {
-        synchronized (OWLFBRuleReasoner.class) {
+        synchronized (OWLExptRuleReasoner.class) {
             if (preload == null) {
                 preload = new FBLPRuleInfGraph(this, rules, null);
                 preload.prepare();

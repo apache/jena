@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBLPRuleReasoner.java,v 1.2 2003-08-13 10:45:55 der Exp $
+ * $Id: FBLPRuleReasoner.java,v 1.3 2003-08-14 17:49:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -29,7 +29,7 @@ import java.util.*;
  * replaced by the upgraded FBRuleReasoner when the LP section is released.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-13 10:45:55 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-14 17:49:06 $
  */
 public class FBLPRuleReasoner implements Reasoner {
     
@@ -46,7 +46,7 @@ public class FBLPRuleReasoner implements Reasoner {
     protected boolean recordDerivations = false;
 
     /** Flag which, if true, enables tracing of rule actions to logger.info */
-    boolean traceOn = false;
+    protected boolean traceOn = false;
 //    boolean traceOn = true;
 
     /** Flag, if true we cache the closure of the pure rule set with its axioms */

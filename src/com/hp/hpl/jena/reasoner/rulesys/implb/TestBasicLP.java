@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.21 2003-08-14 07:51:10 der Exp $
+ * $Id: TestBasicLP.java,v 1.22 2003-08-14 17:49:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-08-14 07:51:10 $
+ * @version $Revision: 1.22 $ on $Date: 2003-08-14 17:49:06 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -70,7 +70,8 @@ public class TestBasicLP  extends TestCase {
         return new TestSuite( TestBasicLP.class );
         
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBasicLP( "testRDFSProblem20" ));
+//        suite.addTest(new TestBasicLP( "testBaseRules9" ));
+//        suite.addTest(new TestBasicLP( "testBacktrack4" ));
 //        return suite;
     }  
    
@@ -83,6 +84,7 @@ public class TestBasicLP  extends TestCase {
     public InfGraph makeInfGraph(List rules, Graph data) {
         FBLPRuleReasoner reasoner = new FBLPRuleReasoner(rules);
         FBLPRuleInfGraph infgraph = (FBLPRuleInfGraph) reasoner.bind(data);
+//        infgraph.setTraceOn(true);
         return infgraph;
     }
    
