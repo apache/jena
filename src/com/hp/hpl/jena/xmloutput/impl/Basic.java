@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.6 2003-04-15 21:33:56 jeremy_carroll Exp $
+  $Id: Basic.java,v 1.7 2003-05-20 13:50:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-04-15 21:33:56 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-05-20 13:50:19 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -160,22 +160,18 @@ public class Basic extends BaseXMLWriter {
 
 	protected void writeLiteral(Literal l, PrintWriter writer) {
 		String lang = l.getLanguage();
+        String form = l.getLexicalForm();
 		if (!lang.equals("")) {
 			writer.print(" xml:lang=" + q(lang));
 		}
 		if (l.getWellFormed() && !blockLiterals) {
 			writer.print(" " + rdfAt("parseType") + "=" + q("Literal")+">");
-			writer.print(l.toString());
+			writer.print( form );
 		} else {
 			String dt = l.getDatatypeURI();
-			if (dt != null) {
-                writer.print(" " + rdfAt("datatype") + "=" +
-                qq(dt)+">");
-                writer.print(Util.substituteEntitiesInElementContent(l.getLexicalForm()));
-			} else {
-				writer.print(">");
-				writer.print(Util.substituteEntitiesInElementContent(l.toString()));
-			}
+			if (dt != null) writer.print( " " + rdfAt( "datatype" ) + "=" + qq( dt ) );
+            writer.print(">");
+            writer.print(Util.substituteEntitiesInElementContent( form ));
 		}
 	}
 

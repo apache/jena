@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.2 2003-04-01 12:10:29 jeremy_carroll Exp $
+ * * $Id: URIReference.java,v 1.3 2003-05-20 13:49:19 chris-dollin Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -75,7 +75,7 @@ class URIReference  implements AResource
     }
     
     public String getURI() {
-        return uri.toString();
+        return uri.getURIString();
     }
     
     private Object userData;

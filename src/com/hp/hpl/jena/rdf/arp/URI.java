@@ -95,7 +95,7 @@ import java.util.StringTokenizer;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.8 2003-05-03 16:53:22 chris-dollin Exp $
+* @version  $Id: URI.java,v 1.9 2003-05-20 13:49:19 chris-dollin Exp $
 *
 **********************************************************************/
 public class URI implements Serializable {
@@ -1139,12 +1139,19 @@ public class URI implements Serializable {
 		return false;
 	}
 
-	/**
-	 * Get the URI as a string specification. See RFC 2396 Section 5.2.
-	 *
-	 * @return the URI string specification
-	 */
-	public String toString() {
+
+    /**
+        produce a human-consumable string for the URI
+    */
+	public String toString() 
+        { return getURIString(); }
+    
+    /**
+     * Get the URI as a string specification. See RFC 2396 Section 5.2.
+     *
+     * @return the URI string specification
+     */
+    public String getURIString() {
 		StringBuffer uriSpecString = new StringBuffer();
 
 		if (m_scheme != null) {

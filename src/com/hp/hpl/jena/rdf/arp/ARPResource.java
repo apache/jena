@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPResource.java,v 1.1.1.1 2002-12-19 19:16:06 bwm Exp $
+ * * $Id: ARPResource.java,v 1.2 2003-05-20 13:49:19 chris-dollin Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -105,21 +105,21 @@ class ARPResource implements  AResource {
     ARPResource(ARPFilter parent) {
         arp = parent;
     }
+    
     void setBagId(String id) {
         bag = new ARPResource(arp);
         bag.setAbout(id);
         bag.setType(RDF_BAG);
     } 
+    
     void setAbout(URIReference uri){
-        setAbout(uri.toString());
+        setAbout(uri.getURI());
     }
+    
     void setAbout(String uri){
-        if (uri.startsWith(dummy)) {
-            this.uri = uri.substring(dummy.length());
-        } else {
-           this.uri = uri;
-        }
+        this.uri = uri.startsWith( dummy ) ? uri.substring( dummy.length() ) : uri;
     }
+    
     void setLiObject(Object v, String reify) {
         setPredObject( rdf_n(liCounter++), v, reify(reify) );
     }
@@ -127,9 +127,11 @@ class ARPResource implements  AResource {
     void setPredicateObject(AResource p, ARPString v) {
         setPredObject(p,v,null);
     }
+    
     void setPredicateObject(AResource p, Object v, String reify) {
         setPredObject(p,v,reify(reify));
     }
+    
     AResource reify(String reify) {
         ARPResource reification = null;
         if ( reify != null ) {
@@ -143,6 +145,7 @@ class ARPResource implements  AResource {
     void setType(URIReference r) {
         setPredObject(RDF_TYPE, r, null );
     }
+    
     private void setPredObject( AResource pred, Object obj, AResource reify ) {
         // The basic triple.
         triple( this, pred, obj );
@@ -164,6 +167,7 @@ class ARPResource implements  AResource {
         }
         
     }
+    
     private void triple( AResource subj, AResource pred, Object obj ) {
         int sw = 0;
         if ( obj instanceof AResource ) {
@@ -190,10 +194,13 @@ class ARPResource implements  AResource {
         arp.statementHandler.statement(s,p,o);
         
     }
+    
     private void tripleLit( AResource s, final AResource p, final ALiteral o ) {
            arp.statementHandler.statement(s,p,o);
     }
+    
     static private URIReference _rdf_n[] = new URIReference[0];
+    
     static private URIReference rdf_n(int i) {
         if (i>=_rdf_n.length) {
             int newLength = (i+10)*3/2;
@@ -271,6 +278,7 @@ class ARPResource implements  AResource {
     }
     
     private Object userData;
+    
     public Object getUserData() {
     	if ( uri != null )
     	  throw new IllegalStateException("User data only supported on blank nodes");

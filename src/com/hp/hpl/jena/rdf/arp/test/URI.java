@@ -56,7 +56,7 @@ public class URI extends com.hp.hpl.jena.rdf.arp.URI {
 	}
 	
 	java.net.URL toURL() throws java.net.MalformedURLException {
-		return new java.net.URL(toString());
+		return new java.net.URL(getURIString());
 	}
 		
 	URI relativize(URI x) {
@@ -65,19 +65,15 @@ public class URI extends com.hp.hpl.jena.rdf.arp.URI {
 		if ( !xx.startsWith(me) ) {
 			throw new IllegalArgumentException(xx + " is not relative to " + me);
 		}
-		String sub = xx.substring(me.length());
-		if (sub.charAt(0)=='/')
-		   return create(sub.substring(1));
-		else
-		   return create(sub);
+		String sub = xx.substring( me.length() );
+        return create( sub.charAt(0) == '/' ? sub.substring( 1 ) : sub );
 	}
 
-    public String toString() {
-    	if (relative != null)
-    	   return relative;
-    	else
-    	  return super.toString();
-    }
+    public String getURIString()
+        { return relative == null ? super.getURIString() : relative; }
+        
+    public String toString() 
+        { return getURIString(); }
 }
 /*
  *  (c) Copyright Hewlett-Packard Company 2002 
