@@ -32,7 +32,7 @@ import com.hp.hpl.jena.util.Log;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.10 $ on $Date: 2003-05-06 21:18:26 $
+* @version $Revision: 1.11 $ on $Date: 2003-05-07 01:04:50 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -108,7 +108,7 @@ public abstract class DriverRDB implements IRDBDriver {
    protected String LAYOUT_TYPE = "TripleStore";
 
    /** Default name of the table that holds system property graph asserted statements **/
-   protected final String SYSTEM_PROP_TNAME = "JENA_SYS_STMTASSERTED";
+   protected final String SYSTEM_PROP_TNAME = "SYS_STMTASSERTED";
     
    /** Name of the grpah holding default properties (the one's that a newly-created
 	*  graph will have by default **/
