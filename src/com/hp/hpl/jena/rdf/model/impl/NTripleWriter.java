@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleWriter.java,v 1.8 2003-06-13 14:23:47 chris-dollin Exp $
+ * $Id: NTripleWriter.java,v 1.9 2003-06-17 12:51:38 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -43,7 +43,7 @@ import java.io.UnsupportedEncodingException;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-06-13 14:23:47 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-06-17 12:51:38 $'
  */
 public class NTripleWriter extends Object implements RDFWriter {
 
@@ -108,8 +108,6 @@ public class NTripleWriter extends Object implements RDFWriter {
      * to be raised.</p>?
      * @param propName The name of the property to be set
      * @param propValue The new value of the property
-     * @throws RDFException Throws <CODE>UNKNOWNPROPERTY RDFException</CODE> if the
-     * property name is not recognised
      * @return the previous value of the property
      */
     public Object setProperty(String propName, Object propValue) {
@@ -145,7 +143,7 @@ public class NTripleWriter extends Object implements RDFWriter {
     }
 
     protected static void writeResource(Resource r, PrintWriter writer)
-        throws RDFException {
+         {
         if (r.isAnon()) {
             writer.print(anonName(r.getId()));
         } else {
@@ -222,7 +220,7 @@ public class NTripleWriter extends Object implements RDFWriter {
     }
 
     protected static void writeNode(RDFNode n, PrintWriter writer)
-        throws RDFException {
+         {
         if (n instanceof Literal) {
             writeLiteral((Literal) n, writer);
         } else {

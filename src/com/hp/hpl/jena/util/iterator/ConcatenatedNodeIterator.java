@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedNodeIterator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:11:58 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-06-17 12:51:38 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -46,9 +46,7 @@ package com.hp.hpl.jena.util.iterator;
 // Imports
 ///////////////
 
-import com.hp.hpl.jena.rdf.model.NodeIterator;
-import com.hp.hpl.jena.rdf.model.RDFException;
-import com.hp.hpl.jena.rdf.model.RDFNode;
+import com.hp.hpl.jena.rdf.model.*;
 
 
 
@@ -58,7 +56,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedNodeIterator.java,v 1.3 2003-04-08 22:11:58 ian_dickinson Exp $
+ * @version CVS info: $Id: ConcatenatedNodeIterator.java,v 1.4 2003-06-17 12:51:38 chris-dollin Exp $
  */
 public class ConcatenatedNodeIterator
     implements NodeIterator
@@ -108,8 +106,7 @@ public class ConcatenatedNodeIterator
      *
      * @return true if the iterator has more elements.
      */
-    public boolean hasNext()
-        throws RDFException
+    public boolean hasNext()        
     {
         return m_iter0.hasNext()  ||  m_iter1.hasNext();
     }
@@ -122,8 +119,7 @@ public class ConcatenatedNodeIterator
      *         underlying iteration, projected to the range of the projection function.
      * @exception NoSuchElementException - iteration has no more elements.
      */
-    public Object next()
-        throws RDFException
+    public Object next()        
     {
         return (m_iter0.hasNext()) ? m_iter0.nextNode() : m_iter1.nextNode();
     }
@@ -137,7 +133,6 @@ public class ConcatenatedNodeIterator
      * @exception NoSuchElementException - iteration has no more elements.
      */
     public RDFNode nextNode()
-        throws RDFException
     {
         return (RDFNode) next();
     }
@@ -164,7 +159,6 @@ public class ConcatenatedNodeIterator
      * underlying iterators.
      */
     public void close()
-        throws RDFException
     {
         m_iter0.close();
         m_iter1.close();

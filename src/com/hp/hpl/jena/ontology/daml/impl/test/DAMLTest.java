@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:29 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-06-17 12:51:29 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -53,7 +53,6 @@ import com.hp.hpl.jena.mem.*;
 
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.util.*;
-import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -66,7 +65,7 @@ import java.io.*;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.1 2003-06-13 19:09:29 ian_dickinson Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.2 2003-06-17 12:51:29 chris-dollin Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -171,7 +170,7 @@ public class DAMLTest
      * Test the various pathways through loading the ontology from a source document.
      */
     public void testLoadOntology()
-        throws RDFException
+        
     {
         Log.debug( "Starting loadOntology tests" );
 
@@ -276,7 +275,7 @@ public class DAMLTest
      * Test case for testing rdf:type traversal
      */
     public void testRDFType()
-        throws RDFException
+        
     {
         String ns = "http://dickinson-i-4/daml/tests/test-cases.daml#";
 
@@ -351,7 +350,7 @@ public class DAMLTest
      * Test some of the properties of DAML classes
      */
     public void testClass()
-        throws RDFException
+        
     {
         Log.debug( "Starting DAML class tests" );
         DAMLModel m = ModelFactory.createDAMLModel();
@@ -455,7 +454,7 @@ public class DAMLTest
         assertNotNull( "Class tl_one should not be null", tl_one );
         int tl_one_supers0 = countIteration( tl_one.prop_subClassOf().getAll(  ), false, null );
         int tl_one_supers1 = countIteration( tl_one.getSuperClasses( false ), false, null );
-        int tl_one_supers2 = countIteration( new StatementSubjectIterator( tl_one.listProperties( RDFS.subClassOf ) ), false, null );
+        int tl_one_supers2 = countIteration( tl_one.listProperties( RDFS.subClassOf ), false, null );
         assertEquals( "Should be two super-classes of tl_one by prop_subClassOf", 2, tl_one_supers0 );
         assertEquals( "Should be two super-classes of tl_one by getSuperClasses", 2, tl_one_supers1 );
         assertEquals( "Should be one super-class of tl_one by listProperties", 1, tl_one_supers2 );
@@ -472,7 +471,7 @@ public class DAMLTest
      * Test equivalance classes
      */
     public void testEquivalence()
-        throws RDFException
+        
     {
         String ns = "http://dickinson-i-4/daml/tests/test-cases.daml#";
 
@@ -545,7 +544,7 @@ public class DAMLTest
      * Unit tests on DAMLProperty and its subclasses
      */
     public void testProperty()
-        throws RDFException
+        
     {
         Log.debug( "Starting DAML property tests" );
         DAMLModel m = ModelFactory.createDAMLModel();
@@ -682,7 +681,7 @@ public class DAMLTest
      * Tests on lists
      */
     public void testList()
-        throws RDFException
+        
     {
         Log.debug( "Starting DAML list tests" );
         DAMLModel m = ModelFactory.createDAMLModel();
@@ -733,7 +732,7 @@ public class DAMLTest
      * Tests on instances
      */
     public void testInstance()
-        throws RDFException
+        
     {
         Log.debug( "Starting DAML instance tests" );
         DAMLModel m = ModelFactory.createDAMLModel();
@@ -758,7 +757,7 @@ public class DAMLTest
      * Tests on DAML datatypes
      */
     public void testDatatype()
-        throws RDFException
+        
     {
         Log.debug( "Starting DAML datatype tests" );
         DAMLModel m = ModelFactory.createDAMLModel();
@@ -789,7 +788,7 @@ public class DAMLTest
      * delete everything in it one step at a time.
      */
     public void testRemove()
-        throws RDFException
+        
     {
         Log.debug( "Starting DAML remove test" );
         DAMLModel m = ModelFactory.createDAMLModel();
@@ -853,7 +852,7 @@ public class DAMLTest
      * Test the creation of new DAML values
      */
     public void testCreate()
-        throws RDFException
+        
     {
         DAMLModel m = ModelFactory.createDAMLModel();
 
@@ -890,7 +889,7 @@ public class DAMLTest
      * @param m
      */
     public void testRestriction()
-        throws RDFException
+        
     {
         Log.debug( "Starting DAML restriction tests" );
         DAMLModel m = ModelFactory.createDAMLModel();
@@ -928,10 +927,10 @@ public class DAMLTest
 
     /**
      * Test adding a model to an existing model
-     * @throws RDFException
+     * @
      */
     public void testModelAdd()
-        throws RDFException
+        
     {
         Log.debug( "Starting model add test" );
         DAMLModel m = ModelFactory.createDAMLModel();
@@ -959,7 +958,7 @@ public class DAMLTest
      * Testing equality: case DatatypeProperty
      */
     public void testDatatypeProperty()
-        throws RDFException
+        
     {
         eqTest(new EqualityTest("DatatypeProperty") {
                 String xml() {
@@ -974,7 +973,7 @@ public class DAMLTest
      * Testing equality: case ObjectProperty
      */
     public void testObjectProperty()
-        throws RDFException
+        
     {
         eqTest(new EqualityTest("ObjectProperty") {
                 String xml() {
@@ -989,7 +988,7 @@ public class DAMLTest
      * Testing equality: case Property
      */
     public void testPropertyEq()
-        throws RDFException
+        
     {
         eqTest(new EqualityTest("Property") {
                 String xml() {
@@ -1006,7 +1005,7 @@ public class DAMLTest
      * Testing equality: case Datatype
      */
     public void testDatatypeEq1()
-        throws RDFException
+        
     {
         eqTest(new EqualityTest("Datatype") {
                 String xml() {
@@ -1021,7 +1020,7 @@ public class DAMLTest
      * Testing equality: case Datatype
      */
     public void testDatatypeEq2()
-        throws RDFException
+        
     {
         eqTest(new EqualityTest("Datatype") {
                 String xml() {
@@ -1034,7 +1033,7 @@ public class DAMLTest
     }
 
     public void testDatatypeRange()
-        throws RDFException
+        
     {
         eqTest(new EqualityTest("Datatype Range") {
                 String xml() {
@@ -1065,8 +1064,7 @@ public class DAMLTest
      *
      */
     private void eqTest(EqualityTest test)
-        throws RDFException {
-
+         {
         Log.debug( "Starting DAML equality test for " + test.toString() );
         DAMLModel m1 = ModelFactory.createDAMLModel();
         test.java(m1);

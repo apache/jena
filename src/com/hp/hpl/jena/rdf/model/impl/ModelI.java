@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+ *  (c) Copyright Hewlett-Packard Company 2000-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /** An internal interface not normally of interest to application developers.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-14 10:57:26 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-06-17 12:51:38 $'
  */
 public interface ModelI {
     
@@ -45,35 +45,31 @@ public interface ModelI {
 /**
  * @param cont
  * @param f
- * @throws RDFException
  * @return iterator over container members
  */
     public NodeIterator listContainerMembers(Container cont,
                                              NodeIteratorFactory f)
-                                                    throws RDFException;
+                                                    ;
     
 /**
  * @param cont
- * @throws RDFException
  * @return size of container
  */
-    public int containerSize(Container cont) throws RDFException;
+    public int containerSize(Container cont) ;
     
 /**
  * @param cont
  * @param n
- * @throws RDFException
  * @return index of n in container
  */
-    public int containerIndexOf(Container cont, RDFNode n) throws RDFException;
+    public int containerIndexOf(Container cont, RDFNode n) ;
     
 /**
  * @param cont
  * @param n
- * @throws RDFException
  * @return true if containter contains n, false otherwise
  */
     public boolean containerContains(Container cont, RDFNode n) 
-                                        throws RDFException;
+                                        ;
 
 }

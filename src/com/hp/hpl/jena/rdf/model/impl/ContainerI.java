@@ -35,15 +35,14 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /** An internal interface, not normally of interest to application developers.
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:06 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-17 12:51:38 $'
  */
 interface ContainerI {
 
     /** Remove the given value at the given index.
      * @param index The index at which the value should be removed.
      * @param object The object at that index to be removed
-     * @throws RDFException Generic RDF exception
      * @return this object
      */
-    public Container remove(int index, RDFNode object) throws RDFException;
+    public Container remove(int index, RDFNode object) ;
 }

@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Bag
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-06-16 15:14:56 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-17 12:51:38 $' 
  */
 public class BagImpl extends ContainerImpl implements Bag {
     
@@ -52,15 +52,15 @@ public class BagImpl extends ContainerImpl implements Bag {
     };
         
     /** Creates new BagMem */
-    public BagImpl(Model model) throws RDFException {
+    public BagImpl(Model model)  {
         super(model);
     }
     
-    public BagImpl(String uri, Model model) throws RDFException {
+    public BagImpl(String uri, Model model)  {
         super(uri, model);
     }
     
-    public BagImpl(Resource r, Model m) throws RDFException {
+    public BagImpl(Resource r, Model m)  {
         super(r, m);
     }
     
