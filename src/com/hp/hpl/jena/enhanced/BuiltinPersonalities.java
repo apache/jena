@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.29 2004-12-06 13:50:11 andy_seaborne Exp $
+  $Id: BuiltinPersonalities.java,v 1.30 2005-02-17 16:17:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -29,6 +29,7 @@ public class BuiltinPersonalities {
         .add( Resource.class, ResourceImpl.factory )
 		.add( Property.class, PropertyImpl.factory )	
 		.add( Literal.class,LiteralImpl.factory )
+        .add( Container.class, ContainerImpl.factory )
         .add( Alt.class, AltImpl.factory )
         .add( Bag.class, BagImpl.factory )
         .add( Seq.class, SeqImpl.factory )

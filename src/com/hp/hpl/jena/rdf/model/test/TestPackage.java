@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.34 2005-02-14 08:49:55 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.35 2005-02-17 16:19:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -45,6 +45,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestModelSpecRevised", TestModelSpecRevised.suite() );
         addTest( TestModelSpecFactory.suite() );
         addTest( TestModelSource.suite() );
+        addTest( TestContainers.suite() );
         addTest( "TestStandardModels", TestStandardModels.suite() );
         addTest( "TestQuery", TestQuery.suite() );
         addTest( "TestSelectors", TestSelectors.suite() );
