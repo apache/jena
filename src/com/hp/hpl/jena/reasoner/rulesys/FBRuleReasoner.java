@@ -5,13 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.2 2003-06-02 09:03:50 der Exp $
+ * $Id: FBRuleReasoner.java,v 1.3 2003-06-02 16:52:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.FRuleEngine;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
@@ -21,7 +20,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-02 09:03:50 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-02 16:52:31 $
  */
 public class FBRuleReasoner implements Reasoner {
     
@@ -36,9 +35,6 @@ public class FBRuleReasoner implements Reasoner {
     
     /** Flag to set whether the inference class should record derivations */
     protected boolean recordDerivations = false;
-    
-    /** threshold on the numbers of rule firings allowed in a single operation */
-    protected long nRulesThreshold = FRuleEngine.DEFAULT_RULES_THRESHOLD;
 
     /** Flag which, if true, enables tracing of rule actions to logger.info */
     boolean traceOn = false;
@@ -148,7 +144,6 @@ public class FBRuleReasoner implements Reasoner {
     public InfGraph bind(Graph data) throws ReasonerException {
         FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, schemaGraph);
         graph.setDerivationLogging(recordDerivations);
-        graph.setRuleThreshold(nRulesThreshold);
         graph.setTraceOn(traceOn);
         graph.rebind(data);
         return graph;
@@ -175,13 +170,6 @@ public class FBRuleReasoner implements Reasoner {
     }
     
     /**
-     * Set the threshold on the numbers of rule firings allowed in a single operation.
-     */
-    public void setRulesThreshold(long threshold) {
-        nRulesThreshold = threshold;
-    }
-    
-    /**
      * Set the state of the trace flag. If set to true then rule firings
      * are logged out to the Logger at "INFO" level.
      */
@@ -195,7 +183,6 @@ public class FBRuleReasoner implements Reasoner {
      * <ul>
      * <li>BasicForwaredRuleReasoner.PROPderivationLogging - set to true to enable recording all rule derivations</li>
      * <li>BasicForwaredRuleReasoner.PROPtraceOn - set to true to enable verbose trace information to be sent to the logger INFO channel</li>
-     * <li>BasicForwaredRuleReasoner.PROPrulesThreshold - set a limit on the number of rule firings allowed in a derivation to prevent infinite loops</li>
      * </ul> 
      * 
      * @param parameterUri the uri identifying the parameter to be changed
@@ -207,8 +194,6 @@ public class FBRuleReasoner implements Reasoner {
             recordDerivations = Util.convertBooleanPredicateArg(parameterUri, value);
         } else if (parameterUri.equals(PROPtraceOn.getURI())) {
             traceOn =  Util.convertBooleanPredicateArg(parameterUri, value);
-        } else if (parameterUri.equals(PROPrulesThreshold.getURI())) {
-            nRulesThreshold =  Util.convertIntegerPredicateArg(parameterUri, value);
         } else {
             throw new IllegalParameterException("Don't recognize configuration parameter " + parameterUri + " for rule-based reasoner");
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.10 2003-05-30 16:26:12 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.11 2003-06-02 16:52:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-05-30 16:26:12 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-02 16:52:30 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -41,7 +41,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     protected OneToManyMap derivations;
     
     /** The set of deduced triples, this is in addition to base triples in the fdata graph */
-    protected FGraph deductions;
+    protected FGraph fdeductions;
     
     /** Reference to any schema graph data bound into the parent reasoner */
     protected Graph schemaGraph;
@@ -123,7 +123,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public synchronized void prepare() {
         isPrepared = true;
         // initilize the deductions graph
-        deductions = new FGraph( new GraphMem() );
+        fdeductions = new FGraph( new GraphMem() );
         if (schemaGraph != null) {
             preloadDeductions(schemaGraph);
         }
@@ -137,7 +137,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * in the parent Reasoner.
      */
     public void preloadDeductions(Graph preload) {
-        Graph d = deductions.getGraph();
+        Graph d = fdeductions.getGraph();
         for (Iterator i = preload.find(null, null, null); i.hasNext(); ) {
             d.add((Triple)i.next());
         }
@@ -157,12 +157,12 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
         if (!isPrepared) prepare();
         if (fdata == null) {
-            return deductions.findWithContinuation(pattern, continuation);
+            return fdeductions.findWithContinuation(pattern, continuation);
         } else {
             if (continuation == null) {
-                return fdata.findWithContinuation(pattern, deductions);
+                return fdata.findWithContinuation(pattern, fdeductions);
             } else {
-                return fdata.findWithContinuation(pattern, FinderUtil.cascade(deductions, continuation) );
+                return fdata.findWithContinuation(pattern, FinderUtil.cascade(fdeductions, continuation) );
             }
         }
     }
@@ -214,7 +214,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * Return the number of triples in the inferred graph
      */
     public int size() {
-        return fdata.getGraph().size() + deductions.getGraph().size();
+        return fdata.getGraph().size() + fdeductions.getGraph().size();
     }
     
     /** 
@@ -228,7 +228,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
                 data.delete(t);
             }
         }
-        deductions.getGraph().delete(t);
+        fdeductions.getGraph().delete(t);
     }
     
 //  =======================================================================
@@ -247,7 +247,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * Return the Graph containing all the static deductions available so far.
      */
     public Graph getDeductionsGraph() {
-        return deductions.getGraph();
+        return fdeductions.getGraph();
     }
     
     /**
@@ -265,6 +265,13 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      */
     public void logDerivation(Triple t, Object derivation) {
         derivations.put(t, derivation);
+    }
+    
+    /**
+     * Assert a new triple in the deduction graph, bypassing any processing machinery.
+     */
+    public void silentAdd(Triple t) {
+        fdeductions.getGraph().add(t);
     }
 
 //=======================================================================
@@ -294,16 +301,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
             return derivations.getAll(t);
         }
     }
-    
-    /**
-     * Change the threshold on the number of rule firings 
-     * allowed during a single operation.
-     * @param threshold the new cutoff on the number rules firings per external op
-     */
-    public void setRuleThreshold(long threshold) {
-        engine.setRuleThreshold(threshold);
-    }
-    
+     
     /**
      * Set the state of the trace flag. If set to true then rule firings
      * are logged out to the Logger at "INFO" level.

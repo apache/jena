@@ -5,13 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleReasoner.java,v 1.6 2003-05-29 16:44:57 der Exp $
+ * $Id: BasicBackwardRuleReasoner.java,v 1.7 2003-06-02 16:52:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.FRuleEngine;
 import com.hp.hpl.jena.reasoner.rulesys.impl.RuleStore;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
@@ -23,7 +22,7 @@ import java.util.*;
  * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-29 16:44:57 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-02 16:52:30 $
  */
 public class BasicBackwardRuleReasoner implements Reasoner {
 
@@ -44,9 +43,6 @@ public class BasicBackwardRuleReasoner implements Reasoner {
     
     /** Flag which, if true, enables tracing of rule actions to logger.info */
     boolean traceOn = false;
-    
-    /** threshold on the numbers of rule firings allowed in a single operation */
-    protected long nRulesThreshold = FRuleEngine.DEFAULT_RULES_THRESHOLD;
 
     /**
      * Constructor. This is the raw version that does not reference a ReasonerFactory
@@ -138,7 +134,6 @@ public class BasicBackwardRuleReasoner implements Reasoner {
     public InfGraph bind(Graph data) throws ReasonerException {
         BasicBackwardRuleInfGraph graph = new BasicBackwardRuleInfGraph(this, data, ruleStore);
         graph.setDerivationLogging(recordDerivations);
-        graph.setRuleThreshold(nRulesThreshold);
         return graph;
     }
     
@@ -160,13 +155,6 @@ public class BasicBackwardRuleReasoner implements Reasoner {
      */
     public void setDerivationLogging(boolean logOn) {
         recordDerivations = logOn;
-    }
-    
-    /**
-     * Set the threshold on the numbers of rule firings allowed in a single operation.
-     */
-    public void setRulesThreshold(long threshold) {
-        nRulesThreshold = threshold;
     }
     
     /**

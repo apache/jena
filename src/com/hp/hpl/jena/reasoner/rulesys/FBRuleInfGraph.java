@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.3 2003-06-02 09:03:50 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.4 2003-06-02 16:52:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-02 09:03:50 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-02 16:52:31 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -192,8 +192,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         if (!isPrepared) {
             isPrepared = true;
             // initilize the deductions graph
-            deductions = new FGraph( new GraphMem() );
-            dataFind = (fdata == null) ? deductions :  FinderUtil.cascade(deductions, fdata);
+            fdeductions = new FGraph( new GraphMem() );
+            dataFind = (fdata == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
             if (schemaGraph != null) {
                 preloadDeductions(schemaGraph);
                 dataFind = FinderUtil.cascade(dataFind, new FGraph(schemaGraph));
@@ -303,7 +303,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * in the parent Reasoner.
      */
     public void preloadDeductions(Graph preloadIn) {
-        Graph d = deductions.getGraph();
+        Graph d = fdeductions.getGraph();
         FBRuleInfGraph preload = (FBRuleInfGraph)preloadIn;
         // Load raw deductions
         for (Iterator i = preload.getDeductionsGraph().find(null, null, null); i.hasNext(); ) {

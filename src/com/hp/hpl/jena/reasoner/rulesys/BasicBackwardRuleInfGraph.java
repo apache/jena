@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.12 2003-05-30 16:26:13 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.13 2003-06-02 16:52:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-05-30 16:26:13 $
+ * @version $Revision: 1.13 $ on $Date: 2003-06-02 16:52:31 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -283,8 +283,15 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
         }
     }
     
+    /**
+     * Assert a new triple in the deduction graph, bypassing any processing machinery.
+     */
+    public void silentAdd(Triple t) {
+        fdeductions.getGraph().add(t);
+    }
+    
 //  =======================================================================
-//   Rule engine
+//   Rule engine extras
 
     /**
      * Find any axioms (rules with no body) in the rule set and

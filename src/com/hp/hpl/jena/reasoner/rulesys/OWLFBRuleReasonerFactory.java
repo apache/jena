@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLFBRuleReasonerFactory.java,v 1.1 2003-06-02 09:03:49 der Exp $
+ * $Id: OWLFBRuleReasonerFactory.java,v 1.2 2003-06-02 16:52:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-02 09:03:49 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-02 16:52:30 $
  */
 public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     
@@ -64,10 +64,6 @@ public class OWLFBRuleReasonerFactory implements ReasonerFactory {
             Boolean doTrace = Util.checkBinaryPredicate(URI, BasicForwardRuleReasoner.PROPtraceOn, configuration);
             if (doTrace != null) {
                 reasoner.setTraceOn(doTrace.booleanValue());
-            }
-            Integer threshold = Util.getIntegerPredicate(URI, BasicForwardRuleReasoner.PROPrulesThreshold, configuration);
-            if (threshold != null) {
-                reasoner.setRulesThreshold(threshold.intValue());
             }
         }
         return reasoner;
