@@ -1,32 +1,31 @@
 /******************************************************************
- * File:        lessThan.java
+ * File:        GreaterThan.java
  * Created by:  Dave Reynolds
- * Created on:  11-Apr-2003
+ * Created on:  24-Aug-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LessThan.java,v 1.4 2003-08-24 21:13:09 der Exp $
+ * $Id: GreaterThan.java,v 1.1 2003-08-24 21:13:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
-
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * Tests if the first argument is less than the second.
+ * Tests if the first argument is greater than the second.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-24 21:13:09 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-24 21:13:09 $
  */
-public class LessThan extends BaseBuiltin {
+public class GreaterThan extends BaseBuiltin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
     public String getName() {
-        return "lessThan";
+        return "greaterThan";
     }
     
     /**
@@ -47,13 +46,14 @@ public class LessThan extends BaseBuiltin {
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         if ( Util.isNumeric(args[0]) && Util.isNumeric(args[1]) ) {
-            return Util.compareNumbers(args[0], args[1]) < 0;
+            return Util.compareNumbers(args[0], args[1]) > 0;
         } else {
             return false;
         }
     }
     
 }
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BuiltinRegistry.java,v 1.10 2003-08-19 20:08:03 der Exp $
+ * $Id: BuiltinRegistry.java,v 1.11 2003-08-24 21:16:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * This is currently implemented as a singleton to simply any future
  * move to support different sets of builtins.
  * 
- * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.10 $ on $Date: 2003-08-19 20:08:03 $ */
+ * @see Builtin * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.11 $ on $Date: 2003-08-24 21:16:46 $ */
 public class BuiltinRegistry {
 
     /** The single global static registry */
@@ -37,6 +37,10 @@ public class BuiltinRegistry {
         theRegistry.register(new Print());
         theRegistry.register(new AddOne());
         theRegistry.register(new LessThan());
+        theRegistry.register(new GreaterThan());
+        theRegistry.register(new LE());
+        theRegistry.register(new GE());
+        theRegistry.register(new Equal());
         theRegistry.register(new NotFunctor());
         theRegistry.register(new IsFunctor());
         theRegistry.register(new NotEqual());
@@ -44,10 +48,16 @@ public class BuiltinRegistry {
         theRegistry.register(new NoValue());
         theRegistry.register(new Remove());
         theRegistry.register(new Sum());
+        theRegistry.register(new Product());
         theRegistry.register(new Bound());
         theRegistry.register(new Unbound());
         theRegistry.register(new IsLiteral());
         theRegistry.register(new NotLiteral());
+        theRegistry.register(new IsBNode());
+        theRegistry.register(new NotBNode());
+        theRegistry.register(new IsDType());
+        theRegistry.register(new NotDType());
+        theRegistry.register(new CountLiteralValues());
         
         theRegistry.register(new MakeInstance());
         theRegistry.register(new Table());

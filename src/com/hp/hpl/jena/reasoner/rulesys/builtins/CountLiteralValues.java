@@ -1,56 +1,72 @@
 /******************************************************************
- * File:        lessThan.java
+ * File:        CountLiteralValues.java
  * Created by:  Dave Reynolds
- * Created on:  11-Apr-2003
+ * Created on:  24-Aug-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LessThan.java,v 1.4 2003-08-24 21:13:09 der Exp $
+ * $Id: CountLiteralValues.java,v 1.1 2003-08-24 21:13:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
-
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
+import java.util.*;
 
 /**
- * Tests if the first argument is less than the second.
+ * CountLiteralValues(X, P, C) sets C to be the number of semantically
+ * distinct values for P on resource X. This is expensive.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-24 21:13:09 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-24 21:13:09 $
  */
-public class LessThan extends BaseBuiltin {
+public class CountLiteralValues extends BaseBuiltin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
     public String getName() {
-        return "lessThan";
+        return "countLiteralValues";
     }
     
     /**
      * Return the expected number of arguments for this functor or 0 if the number is flexible.
      */
     public int getArgLength() {
-        return 2;
+        return 3;
     }
 
     /**
      * This method is invoked when the builtin is called in a rule body.
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes, some of which may be Node_RuleVariables.
+     * @param length the length of the argument list, may be less than the length of the args array
+     * for some rule engines
      * @param context an execution context giving access to other relevant data
      * @return return true if the buildin predicate is deemed to have succeeded in
      * the current environment
      */
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
-        checkArgs(length, context);
-        if ( Util.isNumeric(args[0]) && Util.isNumeric(args[1]) ) {
-            return Util.compareNumbers(args[0], args[1]) < 0;
-        } else {
-            return false;
+        ArrayList values = new ArrayList();
+        for (Iterator ni = context.find(args[0], args[1], null); ni.hasNext(); ) {
+            Node v = ((Triple)ni.next()).getObject();
+            if (v.isLiteral()) {
+                // Can't just use contains because distinct objects may
+                // be semantically equal
+                boolean gotit = false;
+                for (Iterator i = values.iterator(); i.hasNext(); ) {
+                    if (v.sameValueAs(i.next())) {
+                        gotit = true;
+                        break;
+                    }
+                }
+                if (!gotit) {
+                    values.add(v);
+                }
+            }
         }
+        return context.getEnv().bind(args[2], Util.makeIntNode(values.size()));
     }
     
 }

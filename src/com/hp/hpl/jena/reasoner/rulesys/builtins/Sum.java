@@ -5,19 +5,18 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Sum.java,v 1.3 2003-07-25 12:16:46 der Exp $
+ * $Id: Sum.java,v 1.4 2003-08-24 21:13:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
-
 /**
  *  Bind the third arg to the sum of the first two args.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-25 12:16:46 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-24 21:13:09 $
  */
 public class Sum extends BaseBuiltin {
 
@@ -49,14 +48,27 @@ public class Sum extends BaseBuiltin {
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         BindingEnvironment env = context.getEnv();
-        if (Util.isNumeric(args[0]) && Util.isNumeric(args[1])) {
-            Node v = Util.makeIntNode(Util.getIntValue(args[0]) + Util.getIntValue(args[1]));
-            return env.bind(args[2], v); 
-        } else {
-            // partially bound case
-            // for now just faile but could run sum backwards
-            return false;
+        Node n1 = args[0];
+        Node n2 = args[1];
+        if (n1.isLiteral() && n2.isLiteral()) {
+            Object v1 = n1.getLiteral().getValue();
+            Object v2 = n2.getLiteral().getValue();
+            Node sum = null;
+            if (v1 instanceof Number && v2 instanceof Number) {
+                Number nv1 = (Number)v1;
+                Number nv2 = (Number)v2;
+                if (v1 instanceof Float || v1 instanceof Double 
+                ||  v2 instanceof Float || v2 instanceof Double) {
+                    sum = Util.makeDoubleNode(nv1.doubleValue() + nv2.doubleValue());
+                } else {
+                    sum = Util.makeLongNode(nv1.longValue() + nv2.longValue());
+                }
+                env.bind(args[2], sum);
+                return true;
+            }
         }
+        // Doesn't (yet) handle partially bound cases
+        return false;
     }
     
 }
