@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Builtin.java,v 1.3 2003-06-10 22:26:34 der Exp $
+ * $Id: Builtin.java,v 1.4 2003-06-24 09:07:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,15 +26,21 @@ import com.hp.hpl.jena.graph.*;
  * be user extended.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-10 22:26:34 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-24 09:07:21 $
  */
 public interface Builtin {
 
     /**
-     * Return a name for this builtin, normally this will be the name of the 
-     * functor that will be used to invoke it.
+     * Return a convenient name for this builtin, normally this will be the name of the 
+     * functor that will be used to invoke it and will often be the final component of the
+     * URI.
      */
     public String getName();
+    
+    /**
+     * Return the full URI which identifies this built in.
+     */
+    public String getURI();
     
     /**
      * This method is invoked when the builtin is called in a rule body.
