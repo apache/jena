@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.44 $
+ * Revision           $Revision: 1.45 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 15:17:25 $
+ * Last modified on   $Date: 2005-03-04 12:49:37 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.44 2005-02-21 15:17:25 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.45 2005-03-04 12:49:37 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -450,14 +450,34 @@ public class OntDocumentManager
     /**
      * <p>
      * Add an entry that <code>model</code> is the appropriate model to use
-     * for the given ontology document
+     * for the given ontology document. Will not replace any existing
+     * model that is cached for this URI (see
+     * {@link #addModel(String, Model, boolean)} for an alternative
+     * that can replace existing models).
      * </p>
      *
      * @param docURI The public URI of the ontology document
      * @param model A model containing the triples from the document
      */
     public void addModel( String docURI, Model model ) {
-        if (m_cacheModels && !m_modelMap.containsKey( docURI )) {
+        addModel( docURI, model, false );
+    }
+
+
+    /**
+     * <p>
+     * Add an entry that <code>model</code> is the appropriate model to use
+     * for the given ontology document
+     * </p>
+     *
+     * @param docURI The public URI of the ontology document
+     * @param model A model containing the triples from the document
+     * @param replace If true, replace any existing entry with this one.
+     */
+    public void addModel( String docURI, Model model, boolean replace ) {
+        if (m_cacheModels &&
+            (!m_modelMap.containsKey( docURI ) || replace))
+        {
             m_modelMap.put( docURI, model );
         }
     }
