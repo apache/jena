@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleReasoner.java,v 1.11 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: RDFSRuleReasoner.java,v 1.12 2003-08-27 14:17:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * data scanning hook. Implements datatype range validation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-27 14:17:32 $
  */
 public class RDFSRuleReasoner extends GenericRuleReasoner {
     
@@ -88,6 +88,15 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
             }
         }
     }
+   
+    /**
+     * Internal constructor, used to generated a partial binding of a schema
+     * to a rule reasoner instance.
+     */
+    protected RDFSRuleReasoner(FBRuleInfGraph schemaGraph, ReasonerFactory factory) {
+        super(schemaGraph.getRules(), factory);
+        this.schemaGraph = schemaGraph;
+    }
     
     /**
      * Internal version of setParameter that does not directly raise an
@@ -144,6 +153,30 @@ public class RDFSRuleReasoner extends GenericRuleReasoner {
         graph.setDerivationLogging(recordDerivations);
         graph.rebind(data);
         return graph;
+    }
+    
+    /**
+     * Precompute the implications of a schema graph. The statements in the graph
+     * will be combined with the data when the final InfGraph is created.
+     */
+    public Reasoner bindSchema(Graph tbox) throws ReasonerException {
+        if (schemaGraph != null) {
+            throw new ReasonerException("Can only bind one schema at a time to an RDFSRuleReasoner");
+        }
+        FBRuleInfGraph graph = new FBRuleInfGraph(this, rules, getPreload(), tbox);
+        if (enableTGCCaching) ((FBRuleInfGraph)graph).setUseTGCCache();
+        graph.prepare();
+        RDFSRuleReasoner grr = new RDFSRuleReasoner(graph, factory);
+        grr.setDerivationLogging(recordDerivations);
+        grr.setTraceOn(traceOn);
+        grr.setTransitiveClosureCaching(enableTGCCaching);
+        grr.setFunctorFiltering(filterFunctors);
+        if (preprocessorHooks != null) {
+            for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
+                grr.addPreprocessingHook((RulePreprocessHook)i.next());
+            }
+        }
+        return grr;
     }
     
     /**
