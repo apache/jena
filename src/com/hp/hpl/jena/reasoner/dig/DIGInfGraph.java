@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGInfGraph.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-20 10:47:36 $
+ * Last modified on   $Date: 2004-11-25 12:03:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGInfGraph.java,v 1.9 2004-05-20 10:47:36 ian_dickinson Exp $
+ * @version CVS $Id: DIGInfGraph.java,v 1.10 2004-11-25 12:03:45 ian_dickinson Exp $
  */
 public class DIGInfGraph
     extends BaseInfGraph
@@ -109,20 +109,25 @@ public class DIGInfGraph
     }
     
     /**
-     * Extended find interface used in situations where the implementator
+     * <p>Extended find interface used in situations where the implementator
      * may or may not be able to answer the complete query. It will
      * attempt to answer the pattern but if its answers are not known
      * to be complete then it will also pass the request on to the nested
-     * Finder to append more results. 
+     * Finder to append more results.</p><p>
+     * <strong>DIG implementation note:</strong> the default call into this
+     * method from the base inference graph makes the continuation a query
+     * of the base graph. Since {@link DIGAdapter} already queries the base
+     * graph, there is no futher need to query it through the continuation.
+     * Consequently, this implementation <em>does not call</em> the continuation.
+     * Client code that wishes to provide a non-default continuation should
+     * sub-class DIGInfGraph and provide a suitable call to the continuation.find().
+     * </p>
      * @param pattern a TriplePattern to be matched against the data
-     * @param continuation either a Finder or a normal Graph which
-     * will be asked for additional match results if the implementor
-     * may not have completely satisfied the query.
+     * @param continuation Not used in this implementation
      */
     public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
         prepare();
-        ExtendedIterator i = m_adapter.find( pattern );
-        return (continuation == null) ? i : i.andThen( continuation.find( pattern ) ); 
+        return m_adapter.find( pattern );
     }
 
    

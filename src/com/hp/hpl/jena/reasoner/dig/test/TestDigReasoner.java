@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-09-30 08:37:03 $
+ * Last modified on   $Date: 2004-11-25 12:02:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -52,7 +52,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.16 2004-09-30 08:37:03 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.17 2004-11-25 12:02:34 ian_dickinson Exp $)
  */
 public class TestDigReasoner 
     extends TestCase
@@ -609,13 +609,48 @@ public class TestDigReasoner
         OntModel m = ModelFactory.createOntologyModel( spec, null );
 
         // load an input document
+        m.getDocumentManager()
+         .addAltEntry( "http://protege.stanford.edu/plugins/owl/owl-library/koala.owl", 
+                       "file:testing/ontology/bugs/koala.owl" );
         m.read( "http://protege.stanford.edu/plugins/owl/owl-library/koala.owl" );
 
         // list the inconsistent classes
         StmtIterator i = m.listStatements( null, OWL.equivalentClass, OWL.Nothing );
+        int unsatCount = 0;
         while (i.hasNext()) {
-            System.out.println( "Class " + i.nextStatement().getSubject() + " is unsatisfiable" );
+            Resource s = i.nextStatement().getSubject();
+            //System.out.println( "Class " + s + " is unsatisfiable" );
+            unsatCount++;
         }
+        assertEquals( "Should be 4 unsatisfiable classes", 4, unsatCount );
+    }
+    
+    /* Bug report by Michele Orlando - duplicate results from rdql query */
+    public void test_bug_mo_1() {
+        String NS = "http://example.org/foo#";
+        
+        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
+        spec.setReasoner( r );
+        OntModel m = ModelFactory.createOntologyModel( spec, null );
+
+        OntClass a = m.createClass( NS + "A" );
+        Individual i0 = m.createIndividual( NS + "i0", a );
+
+        int iCount = 0;
+        int nonICount = 0;
+        
+        for (StmtIterator j = m.listStatements( null, RDF.type, m.getResource(NS+"A")); j.hasNext(); ) {
+            if (j.nextStatement().getSubject().getURI().equals( NS + "i0") ) {
+                iCount++;
+            }
+            else {
+                nonICount++;
+            }
+        }
+        assertEquals( "Should be no non i0's", 0, nonICount );
+        assertEquals( "Should be only one i0", 1, iCount );
     }
     
     
