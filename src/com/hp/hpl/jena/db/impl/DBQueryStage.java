@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.7 2003-12-12 22:15:31 wkw Exp $
+  $Id: DBQueryStage.java,v 1.8 2004-07-27 00:29:12 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -52,9 +52,10 @@ public class DBQueryStage extends Stage
 		PreparedStatement ps = null;
 		Domain current;
 		Domain useme;
-		IDBConnection conn = compiled.driver.getConnection();
-		 try {
-			 ps = conn.getConnection().prepareStatement(compiled.stmt);
+		IDBConnection conn;
+		if ( !compiled.isEmpty ) try {
+			conn = compiled.driver.getConnection();
+			ps = conn.getConnection().prepareStatement(compiled.stmt);
 		 } catch (Exception e) {
 			 throw new JenaException("Query prepare failed: " + e);
 		 }

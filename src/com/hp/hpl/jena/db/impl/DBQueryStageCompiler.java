@@ -39,11 +39,13 @@ public final class DBQueryStageCompiler
         DBQuery query = new DBQuery(sg,varList,qh.queryOnlyStmt,
         		qh.queryOnlyReif,qh.queryFullReif);
         int j;
-        for (int i = 0; i < dbPat.size(); i += 1) {
-			compilePattern (compiler, query, (DBPattern) dbPat.get(i));
+        if ( !query.isEmpty ) {
+        	for (int i = 0; i < dbPat.size(); i += 1) {
+				compilePattern (compiler, query, (DBPattern) dbPat.get(i));
+        	}
+			compileConstraints (compiler, query, constraints);
+			compileQuery (compiler, query);
         }
-		compileConstraints (compiler, query, constraints);
-		compileQuery (compiler, query);
         return query;
     }
        
@@ -61,7 +63,7 @@ public final class DBQueryStageCompiler
 			String qual = null;
 			int alias = query.aliasCnt;
 
-        	if ( query.isReifier ) {
+			if ( query.isReifier ) {
         		boolean newAlias = true;
         		if ( !(pred instanceof Fixed) )
         			throw new JenaException("Reifier predicate not bound");

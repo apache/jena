@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.10 2003-12-12 22:15:43 wkw Exp $
+  $Id: DBQueryHandler.java,v 1.11 2004-07-27 00:29:12 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -80,10 +80,11 @@ public class DBQueryHandler extends SimpleQueryHandler {
 						break;
 					}
 				}
-				if (!src.hasSource())
+				/* if (!src.hasSource())
 					throw new RDFRDBException(
 						"Pattern is not bound by any specialized graph: "
 							+ pat);
+				*/
 				source[i] = src;
 			}
 
@@ -155,10 +156,12 @@ public class DBQueryHandler extends SimpleQueryHandler {
 						}
 						doQuery = true;
 					}
-				}
+				} else if ( !src.hasSource() )
+					doQuery = true;
+					// hack to handle the case when no graphs match the pattern
 				if ( doQuery ) {
 						stages[stageCnt] =
-							new DBQueryStage(graph,src.singleSource(),varList,qryPat, constraints);
+							new DBQueryStage(graph,src.hasSource() ? src.singleSource() : null ,varList,qryPat, constraints);
 				} else {
 					stages[stageCnt] =
 							super.patternStage(varMap,constraints, new Triple[]{src.pattern});

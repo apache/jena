@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQuery.java,v 1.5 2003-12-12 22:15:55 wkw Exp $
+  $Id: DBQuery.java,v 1.6 2004-07-27 00:29:12 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -36,23 +36,33 @@ public class DBQuery
 	boolean isSingleValued; // true if property table is single-valued
 	boolean isCacheable;    // true if it is safe to cache compiled query
 	boolean isReifier;      // true if query is over a reifier specialized graph
+	boolean isEmpty;		// true if compiler determines query has no results
 
 	
 	public DBQuery ( SpecializedGraph sg, List varList,
 		boolean queryOnlyStmt,  boolean queryOnlyReif, boolean queryFullReif ) {
-		pset = sg.getPSet();
+
 		argCnt = 0;
 		argType = "";
 		argIndex = new ArrayList();	
 		aliasCnt = 0;
 		stmt = "";
-		graphId = sg.getGraphId();
-		table = pset.getTblName();
 		isMultiModel = true;  // for now
 		isSingleValued = false;  // for now
 		isCacheable = true;
-		isReifier = sg instanceof SpecializedGraphReifier;
-		driver = pset.driver();
+		if ( sg != null ) {
+			pset = sg.getPSet();			
+			isReifier = sg instanceof SpecializedGraphReifier;			
+			isEmpty = false;
+			graphId = sg.getGraphId();
+			table = pset.getTblName();
+			driver = pset.driver();
+		} else {
+			pset = null;
+			isReifier = false;
+			isEmpty = true;
+			driver = null;
+		}
 		sqlAnd = new IRDBDriver.GenSQLAnd();
 		qryOnlyStmt = queryOnlyStmt;
 		qryOnlyReif = queryOnlyReif;
