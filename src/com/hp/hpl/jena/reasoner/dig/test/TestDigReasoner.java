@@ -7,10 +7,10 @@
  * Web site           @website@
  * Created            21-Nov-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-26 16:36:31 $
+ * Last modified on   $Date: 2003-12-01 22:40:07 $
  *               by   $Author: ian_dickinson $
  *
  * @copyright@
@@ -34,6 +34,7 @@ import com.hp.hpl.jena.reasoner.dig.*;
 import junit.framework.*;
 
 import java.io.*;
+import java.util.*;
 
 import javax.xml.parsers.*;
 import javax.xml.parsers.DocumentBuilder;
@@ -45,7 +46,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.1 2003-11-26 16:36:31 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.2 2003-12-01 22:40:07 ian_dickinson Exp $)
  */
 public class TestDigReasoner 
     extends TestCase
@@ -76,12 +77,13 @@ public class TestDigReasoner
     public static TestSuite suite() {
         TestSuite s = new TestSuite( "TestDigReasoner" );
         
-        buildSuite( "testing/ontology/dig/owl", OntModelSpec.OWL_MEM, s );
+        //buildConceptLangSuite( "testing/ontology/dig/owl/cl", OntModelSpec.OWL_MEM, s );
+        buildBasicQuerySuite( "testing/ontology/dig/owl/basicq", OntModelSpec.OWL_MEM, s );
 
         return s;
     }
 
-    private static void buildSuite( String root, OntModelSpec spec, TestSuite s ) {
+    private static void buildConceptLangSuite( String root, OntModelSpec spec, TestSuite s ) {
         int i = 0;
         while (true) {
             File testSource = new File( root + "/test_" + i + ".source.xml" );
@@ -98,6 +100,24 @@ public class TestDigReasoner
         }
     }
     
+    private static void buildBasicQuerySuite( String root, OntModelSpec spec, TestSuite s ) {
+        int i = 0;
+        while (true) {
+            File testSource = new File( root + "/test_" + i + ".source.xml" );
+            File testQuery = new File( root + "/test_" + i + ".query.xml" );
+            File testTarget = new File( root + "/test_" + i + ".result.xml" );
+            
+            if (!testSource.exists()) {
+                break;
+            }
+            else {
+                i++;
+            }
+            
+            s.addTest( new DigBasicQueryTest( testSource, testTarget, testQuery, spec ) );
+        }
+    }
+    
     
     // Internal implementation methods
     //////////////////////////////////
@@ -107,36 +127,11 @@ public class TestDigReasoner
     // Inner class definitions
     //==============================================================================
 
-    private static class DigTranslationTest
+    private static class AbstractDigTest
         extends TestCase
     {
-        private File m_source;
-        private File m_target;
-        private OntModelSpec m_spec;
-        
-        DigTranslationTest( File source, File target, OntModelSpec spec ) {
-            super( source.getName() );
-            m_source = source;
-            m_target = target;
-            m_spec = spec;
-        }
-        
-        public void runTest()
-            throws Exception 
-        {
-            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            
-            Model m = ModelFactory.createDefaultModel();
-            m.read( new FileInputStream( m_source ), null );
-            DigAdapter da = new DigAdapter( m_spec, m.getGraph() );
-            
-            Document targetD = builder.parse( m_target );
-            Document sourceD = da.translateKbToDig();
-            
-            // TODO remove debug
-            da.serialiseDocument( sourceD, new PrintWriter( System.out ));
-            
-            xmlEqualityTest( sourceD, targetD );
+        public AbstractDigTest( String name ) {
+            super( name );
         }
         
         /** This is a simple test that test xml structure isomorphism on elements and attributes */
@@ -189,7 +184,92 @@ public class TestDigReasoner
         private boolean findAttributeMatch( Attr child, Element target ) {
             return child.getValue().equals( target.getAttribute( child.getName() ) );
         }
+    }
     
+    
+    private static class DigTranslationTest
+        extends AbstractDigTest
+    {
+        private File m_source;
+        private File m_target;
+        private OntModelSpec m_spec;
+        
+        DigTranslationTest( File source, File target, OntModelSpec spec ) {
+            super( source.getName() );
+            m_source = source;
+            m_target = target;
+            m_spec = spec;
+        }
+        
+        public void runTest()
+            throws Exception 
+        {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            
+            Model m = ModelFactory.createDefaultModel();
+            m.read( new FileInputStream( m_source ), null );
+            DIGAdapter da = new DIGAdapter( m_spec, m.getGraph() );
+            
+            Document targetD = builder.parse( m_target );
+            Document sourceD = da.translateKbToDig();
+            
+            // debug da.serialiseDocument( sourceD, new PrintWriter( System.out ));
+            
+            xmlEqualityTest( sourceD, targetD );
+        }
+    }
+    
+    
+    private static class DigBasicQueryTest
+        extends AbstractDigTest
+    {
+        private File m_source;
+        private File m_target;
+        private File m_query;
+        private OntModelSpec m_spec;
+        
+        DigBasicQueryTest( File source, File target, File query, OntModelSpec spec ) {
+            super( source.getName() );
+            m_source = source;
+            m_target = target;
+            m_query = query;
+            m_spec = spec;
+        }
+        
+        public void runTest()
+            throws Exception 
+        {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            
+            Model m = ModelFactory.createDefaultModel();
+            m.read( new FileInputStream( m_source ), null );
+            DIGAdapter da = new DIGAdapter( m_spec, m.getGraph() );
+            
+            // upload 
+            da.resetKB();
+            boolean warn  = !da.uploadKB();
+            if (warn) {
+                System.err.println( "00 Warning!" );
+                for (Iterator i = da.getConnection().getWarnings(); i.hasNext(); ) {
+                    System.err.println( i.next() );
+                }
+                assertFalse( "Should not be upload warnings", warn );
+            }
+                        
+            Document queryD = builder.parse( m_query );
+            Document targetD = builder.parse( m_target );
+            Document resultD = da.getConnection().sendDigVerb( queryD, da.getProfile() );
+            
+            da.getConnection().errorCheck( resultD );
+            assertFalse( "Should not be warnings", da.getConnection().warningCheck( resultD ) );
+            
+            System.out.println( m_source.getPath() );
+            da.getConnection().serialiseDocument( resultD, new PrintWriter( System.out ));
+            System.out.println();
+            
+            da.close();
+            xmlEqualityTest( resultD, targetD );
+        }
     }
 }
 

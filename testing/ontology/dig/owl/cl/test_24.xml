@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<tells
+  xmlns="http://dl.kr.org/dig/lang"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dl.kr.org/dig/lang http://potato.cs.man.ac.uk/dig/level0/dig.xsd">
+  <defrole name="http://example.org/foo#p" />
+  <defconcept name="http://example.org/foo#A" />
+
+  <domain>
+  	<ratom name="http://example.org/foo#p" />
+  	<catom name="http://example.org/foo#A" />
+  </domain>
+</tells>

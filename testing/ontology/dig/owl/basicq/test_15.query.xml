@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<asks
+  xmlns="http://dl.kr.org/dig/lang"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://dl.kr.org/dig/lang http://potato.cs.man.ac.uk/dig/level0/dig.xsd">
+  <rparents id="q0">
+  	<ratom name="http://example.org/foo#p"/>
+  </rparents>
+</asks>
