@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: UnionClass.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-28 15:44:56 $
+ * Last modified on   $Date: 2003-05-28 16:25:52 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -25,7 +25,6 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.path.PathSet;
 
 
 
@@ -36,7 +35,7 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: UnionClass.java,v 1.3 2003-04-28 15:44:56 ian_dickinson Exp $
+ * @version CVS $Id: UnionClass.java,v 1.4 2003-05-28 16:25:52 ian_dickinson Exp $
  */
 public interface UnionClass
     extends BooleanClassDescription 
@@ -47,19 +46,6 @@ public interface UnionClass
 
     // External signature methods
     //////////////////////////////////
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>unionOf</code>
-     * property of a class or class description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the union class description
-     */
-    public PathSet p_unionOf();
-
 
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestClassExpressionPath.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 22:26:11 $
+ * Last modified on   $Date: 2003-05-28 16:26:21 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpressionPath.java,v 1.2 2003-05-27 22:26:11 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpressionPath.java,v 1.3 2003-05-28 16:26:21 ian_dickinson Exp $
  */
 public class TestClassExpressionPath
     extends PathTestCase 
@@ -503,7 +503,7 @@ public class TestClassExpressionPath
             },
             
             // Boolean class expressions
-            {   
+/*            {   
                 "OWL ClassDescription.intersectionOf",
                 new PS() { 
                     public PathSet ps( OntModel m ) {
@@ -656,7 +656,7 @@ public class TestClassExpressionPath
                 null,
                 null
             },
-            
+            */
       };
     }
     

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestClassExpression.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 22:26:11 $
+ * Last modified on   $Date: 2003-05-28 16:26:21 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -25,6 +25,8 @@ package com.hp.hpl.jena.ontology.impl.test;
 
 // Imports
 ///////////////
+import java.util.ArrayList;
+
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 
@@ -38,7 +40,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestClassExpression.java,v 1.11 2003-05-27 22:26:11 ian_dickinson Exp $
+ * @version CVS $Id: TestClassExpression.java,v 1.12 2003-05-28 16:26:21 ian_dickinson Exp $
  */
 public class TestClassExpression
     extends OntTestBase 
@@ -153,30 +155,108 @@ public class TestClassExpression
                     assertTrue( "A should not be disjoint with B", !A.isDisjointWith( B ) );
                 }
             },
-            new OntTestCase( "EnumeratedClass.oneOf", true, false, true ) {
-                public void ontTest( OntModel m ) throws Exception {
-                    Profile prof = m.getProfile();
-                    EnumeratedClass A = m.createEnumeratedClass( NS + "A", null );
-                    OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
-                    OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
+			new OntTestCase( "EnumeratedClass.oneOf", true, false, true ) {
+				public void ontTest( OntModel m ) throws Exception {
+					Profile prof = m.getProfile();
+					EnumeratedClass A = m.createEnumeratedClass( NS + "A", null );
+					OntResource a = (OntResource) m.getResource( NS + "a" ).as( OntResource.class );
+					OntResource b = (OntResource) m.getResource( NS + "b" ).as( OntResource.class );
                     
-                    A.addOneOf( a );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
-                    assertEquals( "Size should be 1", 1, A.getOneOf().size() );
-                    assertTrue( "A should have a as enumerated member", A.getOneOf().contains( a ) );
+					A.addOneOf( a );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
+					assertEquals( "Size should be 1", 1, A.getOneOf().size() );
+					assertTrue( "A should have a as enumerated member", A.getOneOf().contains( a ) );
                     
-                    A.addOneOf( b );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
-                    assertEquals( "Size should be 2", 2, A.getOneOf().size() );
-                    iteratorTest( A.listOneOf(), new Object[] {a,b} );
+					A.addOneOf( b );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
+					assertEquals( "Size should be 2", 2, A.getOneOf().size() );
+					iteratorTest( A.listOneOf(), new Object[] {a,b} );
                     
-                    A.setOneOf( m.createList( new RDFNode[] {b} ) );
-                    assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
-                    assertEquals( "Size should be 1", 1, A.getOneOf().size() );
-                    assertTrue( "A should have b in the enum", A.hasOneOf( b ) );
-                    assertTrue( "A should not have a in the enum", !A.hasOneOf( a ) );
-                }
-            },
+					A.setOneOf( m.createList( new RDFNode[] {b} ) );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.ONE_OF() ) );
+					assertEquals( "Size should be 1", 1, A.getOneOf().size() );
+					assertTrue( "A should have b in the enum", A.hasOneOf( b ) );
+					assertTrue( "A should not have a in the enum", !A.hasOneOf( a ) );
+				}
+			},
+			new OntTestCase( "IntersectionClass.intersectionOf", true, true, true ) {
+				public void ontTest( OntModel m ) throws Exception {
+					Profile prof = m.getProfile();
+					IntersectionClass A = m.createIntersectionClass( NS + "A", null );
+					OntClass B = m.createClass( NS + "B" );
+					OntClass C = m.createClass( NS + "C" );
+                    
+					A.addOperand( B );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.INTERSECTION_OF() ) );
+					assertEquals( "Size should be 1", 1, A.getOperands().size() );
+					assertTrue( "A should have a as intersection member", A.getOperands().contains( B ) );
+                    
+					A.addOperand( C );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.INTERSECTION_OF() ) );
+					assertEquals( "Size should be 2", 2, A.getOperands().size() );
+					iteratorTest( A.listOperands(), new Object[] {B,C} );
+                    
+					A.setOperands( m.createList( new RDFNode[] {C} ) );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.INTERSECTION_OF() ) );
+					assertEquals( "Size should be 1", 1, A.getOperands().size() );
+					assertTrue( "A should have C in the intersection", A.hasOperand( C ) );
+					assertTrue( "A should not have B in the intersection", !A.hasOperand( B ) );
+				}
+			},
+			new OntTestCase( "UnionClass.unionOf", true, false, true ) {
+				public void ontTest( OntModel m ) throws Exception {
+					Profile prof = m.getProfile();
+					UnionClass A = m.createUnionClass( NS + "A", null );
+					OntClass B = m.createClass( NS + "B" );
+					OntClass C = m.createClass( NS + "C" );
+                    
+					A.addOperand( B );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.UNION_OF() ) );
+					assertEquals( "Size should be 1", 1, A.getOperands().size() );
+					assertTrue( "A should have a as union member", A.getOperands().contains( B ) );
+                    
+					A.addOperand( C );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.UNION_OF() ) );
+					assertEquals( "Size should be 2", 2, A.getOperands().size() );
+					iteratorTest( A.listOperands(), new Object[] {B,C} );
+                    
+					A.setOperands( m.createList( new RDFNode[] {C} ) );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.UNION_OF() ) );
+					assertEquals( "Size should be 1", 1, A.getOperands().size() );
+					assertTrue( "A should have C in the union", A.hasOperand( C ) );
+					assertTrue( "A should not have B in the union", !A.hasOperand( B ) );
+				}
+			},
+			new OntTestCase( "ComplementClass.complementOf", true, false, true ) {
+				public void ontTest( OntModel m ) throws Exception {
+					Profile prof = m.getProfile();
+					ComplementClass A = m.createComplementClass( NS + "A", null );
+					OntClass B = m.createClass( NS + "B" );
+					OntClass C = m.createClass( NS + "C" );
+					boolean ex = false;
+                    
+					try { A.addOperand( B ); } catch (UnsupportedOperationException e) {ex = true;}
+					assertTrue( "Should fail to add to a complement", ex );
+                    
+					ex = false;
+					try { A.addOperands( new ArrayList().iterator() ); } catch (UnsupportedOperationException e) {ex = true;}
+					assertTrue( "Should fail to add to a complement", ex );
+                    
+					ex = false;
+					try { A.setOperands( m.createList( new RDFNode[] {C} ) ); } catch (UnsupportedOperationException e) {ex = true;}
+					assertTrue( "Should fail to set a list to a complement", ex );
+                    
+					A.setOperand( B );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.COMPLEMENT_OF() ) );
+					assertEquals( "Complement should be B", B, A.getOperand() );
+					iteratorTest( A.listOperands(), new Object[] {B} );
+                    
+					A.setOperand( C );
+					assertEquals( "Cardinality should be 1", 1, A.getCardinality( prof.COMPLEMENT_OF() ) );
+					assertTrue( "A should have C in the complement", A.hasOperand( C ) );
+					assertTrue( "A should not have B in the complement", !A.hasOperand( B ) );
+				}
+			},
             
             // from file
             new OntTestCase( "OntClass.subclass.fromFile", true, true, true ) {

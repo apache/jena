@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-May-2003
  * Filename           $RCSfile: TestAllDifferent.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 17:34:20 $
+ * Last modified on   $Date: 2003-05-28 16:26:21 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -33,12 +33,12 @@ import junit.framework.*;
 
 /**
  * <p>
- * Class comment
+ * Unit tests for the AllDifferent declaration.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestAllDifferent.java,v 1.1 2003-05-27 17:34:20 ian_dickinson Exp $
+ * @version CVS $Id: TestAllDifferent.java,v 1.2 2003-05-28 16:26:21 ian_dickinson Exp $
  */
 public class TestAllDifferent
     extends OntTestBase 
@@ -137,11 +137,4 @@ public class TestAllDifferent
     THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* TODO delete me
-public class TestAllDifferent{
-
-}
-
 */

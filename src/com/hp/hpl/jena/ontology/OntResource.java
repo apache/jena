@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-27 17:34:54 $
+ * Last modified on   $Date: 2003-05-28 16:25:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.9 2003-05-27 17:34:54 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.10 2003-05-28 16:25:50 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -99,6 +99,7 @@ public interface OntResource
      * <p>Answer true if this resource is the same as the given resource.</p>
      * @param res A resource to test against
      * @return True if the resources are declared the same via a <code>sameAs</code> statement.
+     * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.   
      */
     public boolean isSameAs( Resource res );
     
