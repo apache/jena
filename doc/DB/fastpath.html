@@ -5,7 +5,7 @@
 </head>
 <body>
 
-This version: 0.1<br/> Date: 16 Aug 2003
+This version: 0.2<br/> Date: 28 Aug 2003
 
 <h1>RDQL Fastpath Query Processing</h1>
 
@@ -34,7 +34,11 @@ Find</i> operation. This is considered more efficient than generating an SQL
 query (although this has not been measured). The Fastpath algorithm also determines a 
 partial execution order for the stages in an attempt to minimize execution time.</p>
 
-<p>The remainder of this document describes the Fastpath algorithm in more 
+<p>The Fastpath code is new and not thoroughly tested. If problems with Fastpath 
+are suspected or found, it is possible to disable Fastpath and revert to the 
+default nested-loops algorithm by invoking <font face="Courier New" size="2">
+setDoFastpath(false)</font> on the ModelRDB instance (see <a href="options.html">
+Options)</a>. The remainder of this document describes the Fastpath algorithm in more 
 detail, including limitations, optimizations and future work. Jena2's support 
 for different reification styles and use of a separate table for reification 
 somewhat complicates the algorithm. These issues are discussed below.</p>
@@ -43,7 +47,9 @@ somewhat complicates the algorithm. These issues are discussed below.</p>
 
 <p>In this section, we describe the Fastpath algorithm for the most general 
 case, a model that uses the Standard reification style (i.e., standard RDF 
-treatment of reification) and that may contain both asserted statements and 
+treatment of reification, see the <a href="../how-to/reification.html">
+Reification-HowTo</a> for a description of the styles). Models that use this 
+style may may contain both asserted statements and 
 reification triples. As mentioned above, a Jena2 query consists of a set of 
 triple patterns and a set of constraints that apply to the variable bindings 
 (e.g., Var5 != 1000). The Fastpath algorithm is summarized in the pseudo-code 
@@ -140,13 +146,13 @@ rdf:object, V2&gt;<br>
 algorithm will generate a join for these two patterns. However, we note that 
 fully reified statements are stored in a single database row. So, if the user is 
 only interested in query results for fully reified statements, then the join can be replaced by a 
-simple select. This optimization is enabled by calling
-<font face="Courier New" size="2">queryFullReified(true)</font>.</p>
+simple select. This optimization is enabled by calling <font face="Courier New">
+setQ</font><font face="Courier New" size="2">ueryFullReified(true)</font>.</p>
 
 <p>To retrieve the current settings for any of these optimization settings, 
 there are corresponding get methods, that return a boolean e.g.,<font face="Courier New" size="2"> 
-getQueryOnlyAsserted().</font> Currently, the values of these options are not 
-persisted in the database.</p>
+getQueryOnlyAsserted().</font> Note that the values of these options are not 
+persisted in the database (see <a href="options.html">Options)</a>.</p>
 
 <h2>Fastpath Support for Convenient and Minimal Reification Styles</h2>
 
