@@ -34,9 +34,9 @@
       <rdfs:subClassOf rdf:resource="&eg;Bundle" />
   </owl:Class>
   
-  <owl:GraphicsCard rdf:about="&eg;budgetGraphics" />
-  <owl:GraphicsCard rdf:about="&eg;gamingGraphics" />
-  <owl:GraphicsCard rdf:about="&eg;DTPGraphics" />
+  <eg:GraphicsCard rdf:about="&eg;budgetGraphics" />
+  <eg:GraphicsCard rdf:about="&eg;gamingGraphics" />
+  <eg:GraphicsCard rdf:about="&eg;DTPGraphics" />
   
   <owl:ObjectProperty rdf:about="&eg;hasComponent">
       <rdf:type rdf:resource="&owl;TransitiveProperty" />
