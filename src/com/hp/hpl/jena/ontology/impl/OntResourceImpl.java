@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.39 $
+ * Revision           $Revision: 1.40 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-10-22 09:37:15 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,6 +39,8 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
+import org.apache.log4j.Logger;
+
 
 /**
  * <p>
@@ -48,7 +50,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.39 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.40 2003-10-22 09:37:15 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -951,12 +953,36 @@ public class OntResourceImpl
      */
     public void remove() {
         List stmts = new ArrayList();
+        List skip = new ArrayList();
         
         // collect statements mentioning this object
         for (StmtIterator i = listProperties();  i.hasNext();  stmts.add( i.next() ) );
         for (StmtIterator i = getModel().listStatements( null, null, this ); i.hasNext(); stmts.add( i.next() ) );
         
-        // and then remove them
+        // check for lists
+        for (Iterator i = stmts.iterator(); i.hasNext(); ) {
+            Statement s = (Statement) i.next();
+            if (s.getPredicate().equals( RDF.first )) {
+                // this object is referenced from inside a list
+                // we don't delete this, since it would make the list ill-formed
+                String me = isAnon() ? ("Anon object " + getId()) : getURI();
+                Logger.getLogger( getClass() ).warn( me + " is referened from an RDFList, so will not be fully removed");
+                skip.add( s );
+            }
+            else if (s.getObject() instanceof Resource){
+                // check for list-valued properties
+                Resource obj = s.getResource();
+                if (obj.hasProperty( RDF.type, RDF.List ) || obj.hasProperty( RDF.first )) {
+                    // this value is a list, so remove all of the elements
+                    ((RDFList) obj.as( RDFList.class )).removeAll();
+                }
+            }
+        }
+        
+        // skip the contents of the skip list
+        for (Iterator i = skip.iterator(); i.hasNext(); stmts.remove( i.next() ));
+        
+        // and then remove the remainder
         for (Iterator i = stmts.iterator();  i.hasNext();  ((Statement) i.next()).remove() );
     }
     
