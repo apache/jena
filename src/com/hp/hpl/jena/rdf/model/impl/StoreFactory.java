@@ -24,18 +24,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: StoreFactory.java,v 1.1.1.1 2002-12-19 19:18:40 bwm Exp $
+ * $Id: StoreFactory.java,v 1.2 2003-04-04 19:28:21 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.graph.*;
+//import com.hp.hpl.jena.graph.*;
 
 /**
  *
  * @author  bwm
- * @version $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:18:40 $
+ * @version $Revision: 1.2 $ $Date: 2003-04-04 19:28:21 $
  */
 public interface StoreFactory  {
 /** Create a new RDF store

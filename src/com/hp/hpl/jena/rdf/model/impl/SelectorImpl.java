@@ -32,7 +32,6 @@
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.graph.*;
 
 /** A general selector class for use when querying models.
  * 
@@ -58,7 +57,7 @@ import com.hp.hpl.jena.graph.*;
  * selects</CODE> method to test for any application supplied constraint.  The
  * default <CODE>selects</CODE> method simply returns true.</p>
  * @author bwm, kers
- * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-02-11 15:10:15 $
+ * @version Release='$Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-04-04 19:28:21 $
  */
 
 public class SelectorImpl extends SimpleSelector  {

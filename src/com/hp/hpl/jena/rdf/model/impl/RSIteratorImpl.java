@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RSIteratorImpl.java,v 1.1 2003-03-26 11:54:44 chris-dollin Exp $
+  $Id: RSIteratorImpl.java,v 1.2 2003-04-04 19:28:21 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.rdf.model.impl;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.iterator.*;
+//import com.hp.hpl.jena.util.iterator.*;
 
 public class RSIteratorImpl extends ResIteratorImpl implements RSIterator
     {
