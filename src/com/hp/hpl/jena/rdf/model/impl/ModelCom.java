@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.99 2004-12-06 13:50:17 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.100 2004-12-08 14:11:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -205,7 +205,12 @@ public class ModelCom
     
     public Model read( String url, String base, String lang )
         {
-        try { read( new URL( url ) .openStream(), base, lang ); }
+        try 
+            { 
+            InputStream is = new URL( url ) .openStream();
+            try { read( is, base, lang ); }
+            finally { is.close(); }
+            }
         catch (IOException e) { throw new WrappedIOException( e ); }
         return this;
         }
