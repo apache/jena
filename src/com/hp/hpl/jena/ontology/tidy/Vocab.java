@@ -20,6 +20,19 @@ class Vocab {
 	static final Node firstPart = Node.createURI(NameSpace+"firstPart");
 	static final Node secondPart = Node.createURI(NameSpace+"secondPart");
 	static final Node cyclicState = Node.createURI(NameSpace+"cyclicState");
+	static final Node disjointState = Node.createURI(NameSpace+"disjointState");
+	
+	// This gives a number which identifies the clique
+	// This is functional for blank nodes, and multivalued for URI nodes.
+	
+	static final Node inDisjointClique = Node.createURI(NameSpace+"inDisjointClique");
+    
+    // mimics owlDisjointWith except is symmetric
+    static final Node disjointWith = Node.createURI(NameSpace + "disjointWith");
+
+    // transitive closure of owlDisjointWith
+    // special case on URI nodes
+	static final Node transDisjointWith = Node.createURI(NameSpace+"transDisjointWith");
     
 }
 

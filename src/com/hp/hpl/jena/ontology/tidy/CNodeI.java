@@ -21,6 +21,9 @@ interface CNodeI {
     One asOne();
     Two asTwo();
     Blank asBlank();
+    // TODO implement disjoint
+    void addDisjoint(CNodeI foo);
+    void addDisjoint1(CNodeI foo);
 }
 
 

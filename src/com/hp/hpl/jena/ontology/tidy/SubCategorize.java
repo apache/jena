@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.8 2003-09-26 18:47:41 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.9 2003-09-30 07:35:06 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -39,6 +39,9 @@ class SubCategorize {
 	* of the subject which is a two-slot structured node.
 	*/
 	static final int SecondOfTwo = Grammar.SecondOfTwo;
+	
+	// TODO put in link to Grammar
+	static final int DisjointWith = 55;
 
 	static private final int DL = Grammar.DL;
 

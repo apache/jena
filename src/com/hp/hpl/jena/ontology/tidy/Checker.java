@@ -122,13 +122,8 @@ public class Checker extends AbsChecker {
 		  * We check the potentially cyclic
 		  * nodes.
 		  */
-		  Iterator it =
-		  asGraph().find(Node.ANY,Vocab.cyclicState,Node.ANY);
-		  List list = new Vector();
-		  while ( it.hasNext() )
-		    list.add(it.next());
-		  asGraph().getBulkUpdateHandler().delete(list);
-		  check(CategorySet.cyclicSets, new NodeAction() {
+		 clearProperty( Vocab.cyclicState);  
+		 check(CategorySet.cyclicSets, new NodeAction() {
 			public void apply(Node n){
 			// If this is a description then it's busted.
 			  CNodeI cn = getCNode(n);
@@ -157,14 +152,55 @@ public class Checker extends AbsChecker {
 		  }, m);
 		 
 			/*
-			* Hardest (well exlcuding Hamiltonian paths)
+			* Hardest
 			* Check the disjointUnion blank nodes
 			*/
 		    
-			  // TODO disjointUnion blank nodes
+		    clearProperty(Vocab.transDisjointWith);
+			Iterator i = asGraph().find(Node.ANY,Vocab.disjointWith,Node.ANY);
+			while ( i.hasNext()) {
+				Triple t = (Triple)i.next();
+				asGraph().add(new Triple(
+				t.getSubject(),
+				Vocab.transDisjointWith,
+				t.getObject() ) );
+			}
+			check(CategorySet.disjointWithSets, new NodeAction() {
+						public void apply(Node n){
+
+							Iterator i = asGraph().find(Node.ANY,Vocab.transDisjointWith,n);
+							while ( i.hasNext()) {
+								Triple ti = (Triple)i.next();
+								Iterator j = asGraph().find(n,Vocab.transDisjointWith,Node.ANY);
+								while (j.hasNext()) {
+									Triple tj = (Triple)j.next();
+									asGraph().add(new Triple(ti.getSubject(),
+									              Vocab.transDisjointWith,
+									              tj.getObject()));
+								}
+							}
+						}
+						}, m);
+				// TODO finish this code		
+		    check(CategorySet.disjointWithSets, new NodeAction() {
+			public void apply(Node n){
+
+				Iterator i = asGraph().find(Node.ANY,Vocab.transDisjointWith,n);
+				Iterator j = asGraph().find(n,Vocab.transDisjointWith,Node.ANY);
+			}
+		    }, m);
 			
 			
 		}
+	}
+	private void clearProperty(Node p) {
+		 Iterator it =
+		  asGraph().find(Node.ANY,p,Node.ANY);
+		  List list = new Vector();
+		  while ( it.hasNext() )
+		    list.add(it.next());
+		  asGraph().getBulkUpdateHandler().delete(list);
+		
 	}
 	
 	private boolean isCyclic( CBlank blk, Node n ){
@@ -310,6 +346,9 @@ public class Checker extends AbsChecker {
 			case SubCategorize.SecondOfTwo :
 				s.asTwo().second(t);
 				break;
+		   case SubCategorize.DisjointWith:
+		   // TODO implement disjointWith
+		        break;
 		}
 	}
 	static public void main(String argv[]) {

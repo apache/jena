@@ -157,6 +157,14 @@ abstract class CNode extends EnhNode implements CNodeI {
 	public Blank asBlank() {
 		return (Blank) viewAs(Blank.class);
 	}
+	
+	public void addDisjoint(CNodeI cn){
+		addDisjoint1(cn);
+		cn.addDisjoint1(this);
+	}
+	public void addDisjoint1(CNodeI cn){
+		// TODO
+	}
 
 }
 
