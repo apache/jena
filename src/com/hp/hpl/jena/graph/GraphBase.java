@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.2 2003-01-27 15:12:30 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.3 2003-01-28 13:03:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -52,7 +52,7 @@ public abstract class GraphBase implements Graph {
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#find(TripleMatch)
 	 */
-	public abstract ClosableIterator find(TripleMatch m);
+	public abstract ExtendedIterator find(TripleMatch m);
 
 	/**
 		contains( t ) - return true iff the triple t is in this graph
@@ -78,7 +78,7 @@ public abstract class GraphBase implements Graph {
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#find(Node, Node, Node)
 	 */
-	public ClosableIterator find(Node s, Node p, Node o) {
+	public ExtendedIterator find(Node s, Node p, Node o) {
 		return find(new StandardTripleMatch(s, p, o));
 	}
 

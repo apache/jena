@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.3 2003-01-27 15:30:57 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.4 2003-01-28 13:02:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.TripleMatchIterator;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -67,7 +67,7 @@ public class GraphMem extends GraphBase implements Graph {
     
     /** Returns an iterator over Triple.
      */
-    public ClosableIterator find(TripleMatch m) {
+    public ExtendedIterator find(TripleMatch m) {
         Node s = m.getSubject();
         Node p = m.getPredicate();
         Node o = m.getObject();

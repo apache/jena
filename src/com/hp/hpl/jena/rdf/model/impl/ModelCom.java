@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:19 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-28 13:03:17 $'
  */
 
 import com.hp.hpl.jena.mem.*;
@@ -1008,7 +1008,7 @@ abstract public class ModelCom extends EnhGraph
 			s.remove( IteratorFactory.asStatement( t, g ) );
 		}
         
-		public ClosableIterator find( final TripleMatch m ) {
+		public ExtendedIterator find( final TripleMatch m ) {
 			return new NiceIterator() {
 				Iterator it = s.list( null, null, null );
 				Object current = absent;
