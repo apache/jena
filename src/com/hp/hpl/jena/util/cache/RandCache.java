@@ -42,6 +42,14 @@ public class RandCache implements Cache, CacheControl {
             map = new HashMap(size * 100 / 75);  // based on .75 loadfactor
         } catch (IllegalArgumentException e) {
             if ("Illegal load factor: NaN".equals(e.getMessage())) {
+                // This strange construction needs explanation.
+                // When we implemented XSDbase64Binary/XSDhexBinary support involving use
+                // of byte[] we started seeing this error here. Since the default loadfactor
+                // is a static final constant in HashMap this should never be possible.
+                // It only happens under JDK 1.4.1 not under 1.3.1 nor 1.4.2.
+                // The retry, however does seem to work and hence gives us a work around
+                // which is completely mysterious but at least enables the unit tests to pass.
+                //   - der 4/5/04
                 logger.warn("Detected a NaN anomaly believed to be due to use of JDK 1.4.1");
                 map = new HashMap(size*100/75, 0.75f);
             } else {
@@ -166,5 +174,5 @@ public class RandCache implements Cache, CacheControl {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RandCache.java,v 1.6 2004-05-04 15:26:22 der Exp $
+ * $Id: RandCache.java,v 1.7 2004-05-04 15:32:22 der Exp $
  */
