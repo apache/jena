@@ -28,7 +28,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public abstract class DBProp {
 
@@ -81,6 +81,13 @@ public abstract class DBProp {
 		self = null;
 		graph = null;
 	}
+    
+    void showGraph()
+        {
+        SpecializedGraph.CompletionFlag complete = newComplete();
+        ExtendedIterator it = graph.find( self, null, null, complete );
+        while (it.hasNext()) System.err.println( ">> " + it.next() );
+        }
 	
 	public static ExtendedIterator listTriples( SpecializedGraph g, Node self ) {
 		// Get all the triples about the requested node.

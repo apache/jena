@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -97,7 +97,12 @@ public class DBPropGraph extends DBProp {
 	
 	public void addPrefix( String prefix, String uri ) {
 		addPrefix( new DBPropPrefix( graph, prefix, uri) );
-	}
+	}  
+    
+    public void removePrefix( String prefix ) {
+        DBPropPrefix existing = getPrefix( prefix );
+        if (existing != null) removePrefix( existing );
+    }
 	
 	public void addGraphId( int id ) {
 		putPropString(graphId, Integer.toString(id));

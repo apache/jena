@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPrefixMapping.java,v 1.4 2003-08-27 12:56:20 andy_seaborne Exp $
+  $Id: TestPrefixMapping.java,v 1.5 2004-07-16 15:52:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -20,7 +20,7 @@ import junit.framework.*;
  * (Tests for the persistence of prefix maps are in TestNSPrefix).
  *
  *	@author csayers based on testGraphRDB by kers
- *	@version $Revision: 1.4 $
+ *	@version $Revision: 1.5 $
  */
 public class TestPrefixMapping extends AbstractTestPrefixMapping {
 
@@ -74,16 +74,31 @@ public class TestPrefixMapping extends AbstractTestPrefixMapping {
     
     public void testPrefixesPersist()
         {
-        String name = "prefix-testing-model"; // getModelName();
+        String name = "prefix-testing-model-persist"; 
         Model m = ModelRDB.createModel( theConnection, name );
-        m.setNsPrefix( "hello", "eh:/someURI" );
-        m.setNsPrefix( "bingo", "eh:/otherURI" );
-        m.setNsPrefix( "yendi", "eh:/otherURI" );
+        m.setNsPrefix( "hello", "eh:/someURI#" );
+        m.setNsPrefix( "bingo", "eh:/otherURI#" );
+        m.setNsPrefix( "yendi", "eh:/otherURI#" );
         m.close();
         Model m1 = ModelRDB.open( theConnection, name );
-        assertEquals( "eh:/someURI", m1.getNsPrefixURI( "hello" ) );
-        assertEquals( "eh:/otherURI", m1.getNsPrefixURI( "yendi" ) );
+        assertEquals( "eh:/someURI#", m1.getNsPrefixURI( "hello" ) );
+        assertEquals( "eh:/otherURI#", m1.getNsPrefixURI( "yendi" ) );
         assertEquals( null, m1.getNsPrefixURI( "bingo" ) );
+        m1.close();
+        }
+    
+    public void testPrefixesRemoved()
+        {
+        String name = "prefix-testing-model-remove"; 
+        Model m = ModelRDB.createModel( theConnection, name );
+        m.setNsPrefix( "hello", "eh:/someURI#" );
+        m.setNsPrefix( "there", "eg:/otherURI#" );
+        m.removeNsPrefix( "hello" );
+        assertEquals( null, m.getNsPrefixURI( "hello" ) );
+        m.close();
+        Model m1 = ModelRDB.open( theConnection, name );
+        assertEquals( null, m1.getNsPrefixURI( "hello" ) );
+        assertEquals( "eg:/otherURI#", m1.getNsPrefixURI( "there" ) );
         m1.close();
         }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNsPrefix.java,v 1.5 2004-04-16 15:15:41 chris-dollin Exp $
+  $Id: TestNsPrefix.java,v 1.6 2004-07-16 15:52:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -49,7 +49,7 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
     
 	public void testSinglePrefix() throws java.lang.Exception {
 		String testPrefix = "testPrefix";
-		String testURI = "http://someTestURI";
+		String testURI = "http://someTestURI#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
 		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
@@ -62,7 +62,7 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 
 	public void testDuplicatePrefix() throws java.lang.Exception {
 		String testPrefix = "testPrefix";
-		String testURI = "http://someTestURI";
+		String testURI = "http://someTestURI#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
 		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
@@ -76,8 +76,8 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 
 	public void testChangingPrefixMapping() throws java.lang.Exception {
 		String testPrefix = "testPrefix";
-		String testURI = "http://someTestURI";
-		String someOtherTestURI = "http://someOtherTestURI";
+		String testURI = "http://someTestURI#";
+		String someOtherTestURI = "http://someOtherTestURI#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
 		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
@@ -92,7 +92,7 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 
 	public void testPersistenceOfPrefixes() throws java.lang.Exception {
 		String testPrefix = "testPrefix";
-		String testURI = "http://someTestURI";
+		String testURI = "http://someTestURI#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
 		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
@@ -119,11 +119,11 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 	
 	public void testIdependenceOfPrefixes() throws java.lang.Exception {
 		String testPrefix1 = "testPrefix1";
-		String testURI1 = "http://someTestURI1";
+		String testURI1 = "http://someTestURI1#";
 		String testPrefix2 = "testPrefix2";
-		String testURI2 = "http://someTestURI2";
+		String testURI2 = "http://someTestURI2#";
 		String testPrefix3 = "testPrefix3";
-		String testURI3 = "http://someTestURI3";
+		String testURI3 = "http://someTestURI3#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		
 		// Create a first model with a set of prefixes
@@ -176,12 +176,12 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 	
 	public void testPersistedChangedPrefixes() throws java.lang.Exception {
 		String testPrefix1 = "testPrefix1";
-		String testURI1 = "http://someTestURI/1";
-		String testURI1b = "http://someTestURI/1b";
+		String testURI1 = "http://someTestURI/1#";
+		String testURI1b = "http://someTestURI/1b#";
 		String testPrefix2 = "testPrefix2";
-		String testURI2 = "http://someTestURI/2";
+		String testURI2 = "http://someTestURI/2#";
 		String testPrefix3 = "testPrefix3";
-		String testURI3 = "http://someTestURI/3";
+		String testURI3 = "http://someTestURI/3#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		
 		ModelRDB m = ModelRDB.createModel(conn);
@@ -226,8 +226,8 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 	public void testCopyPersistentPrefixMapping() throws java.lang.Exception {
 		String testPrefix1 = "testPrefix1";
 		String testPrefix2 = "testPrefix2";
-		String testURI1 = "http://someTestURI/1";
-		String testURI2 = "http://someTestURI/2";
+		String testURI1 = "http://someTestURI/1#";
+		String testURI2 = "http://someTestURI/2#";
 		IDBConnection conn = TestConnection.makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
 		assertTrue( m.getNsPrefixMap().size() == 0 ); // brand new model should have no prefixes
@@ -255,8 +255,8 @@ public class TestNsPrefix extends AbstractTestPrefixMapping {
 	public void testCopyMemoryPrefixMapping() throws java.lang.Exception {
 		String testPrefix1 = "testPrefix1";
 		String testPrefix2 = "testPrefix2";
-		String testURI1 = "http://someTestURI/1";
-		String testURI2 = "http://someTestURI/2";
+		String testURI1 = "http://someTestURI/1#";
+		String testURI2 = "http://someTestURI/2#";
 		
 		PrefixMapping myMap = new PrefixMappingImpl();
 		myMap.setNsPrefix(testPrefix1, testURI1);

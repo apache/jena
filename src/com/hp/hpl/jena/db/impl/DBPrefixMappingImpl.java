@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.5 2003-08-27 12:56:39 andy_seaborne Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.6 2004-07-16 15:51:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -19,7 +19,7 @@ import java.util.*;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.5 $
+ 	@version $Revision: 1.6 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -51,6 +51,14 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 		}
 	}
 
+    public PrefixMapping removeNsPrefix( String prefix )
+        {
+        String uri = getNsPrefixURI( prefix );
+        super.removeNsPrefix( prefix );
+        if (uri != null) m_graphProperties.removePrefix( prefix );
+        return this;
+        }
+    
 	/* (non-Javadoc)
 	 * Override the default implementation so we can catch the write operation
 	 * and update the persistent store.

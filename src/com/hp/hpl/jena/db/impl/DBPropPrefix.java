@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class DBPropPrefix extends DBProp {
 
@@ -49,6 +49,8 @@ public class DBPropPrefix extends DBProp {
 	public ExtendedIterator listTriples() {
 		return DBProp.listTriples(graph, self);
 	}	
+    public String toString()
+        { return "<[" + getValue() + "=" + getURI() + "]>" ; }
 }
 
 /*
