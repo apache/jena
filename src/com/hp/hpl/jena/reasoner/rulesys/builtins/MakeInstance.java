@@ -5,26 +5,25 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: MakeInstance.java,v 1.2 2003-06-10 22:25:01 der Exp $
+ * $Id: MakeInstance.java,v 1.3 2003-07-09 15:50:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
-//import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.reasoner.rulesys.impl.BBRuleContext;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * Create a new anonymous instance of an property value inferred from a some(?P,C) rule.
- * The arguments, in order, are:
- * <ul>
- * <li>the instance to which the property should be bound</li>
- * <li>the property to be instantiated</li>
- * <li>the type to assign to the created instance</li>
- * <li>the unbound var through which the resulting value node will be returned</li>
- * </ul>
+ * Create or lookup an anonymous instance of a property value. Syntax of the call is:
+ * <pre>
+ *    getTemp(X, P, D, T) or getTemp(X, P, T)
+ * </pre>
+ * where X is the instance and P the property for which a temporary
+ * value is required, T will be bound to the temp value (a bNode) and D is
+ * an optional type cor the T value.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-10 22:25:01 $
+ * @version $Revision: 1.3 $ on $Date: 2003-07-09 15:50:18 $
  */
 public class MakeInstance extends BaseBuiltin {
 
@@ -45,52 +44,22 @@ public class MakeInstance extends BaseBuiltin {
      * the current environment
      */
     public boolean bodyCall(Node[] args, RuleContext context) {
-        if (args.length != 4) {
-            throw new BuiltinException(this, context, getName() + " expected 4 arguments");
-        }
-        if ( ! context.contains(args[0], args[1], null)) {
-            Node value = Node.createAnon();
-            // This won't work until we a concurrently updatable deductions graph
-//            context.silentAdd(new Triple(value, RDF.type.asNode(), args[2]));
-            if (! context.getEnv().bind(args[3], value)) return false;
-            return true;
-        }
-        return false;
-    }
-    
-    
-    /**
-     * This method is invoked when the builtin is called in a rule head.
-     * Such a use is only valid in a forward rule.
-     * Exected args are the instance to be annotated, the property to use and the type
-     * of the resulting bNode.
-     * @param args the array of argument values for the builtin, this is an array 
-     * of Nodes.
-     * @param context an execution context giving access to other relevant data
-     * @param rule the invoking rule
-     */
-    public void headAction(Node[] args, RuleContext context) {
-        if (args.length != 4) {
-            throw new BuiltinException(this, context, getName() + " expected 4 arguments");
-        }
-        if ( ! context.contains(args[0], args[1], null)) {
-            Node value = Node.createAnon();
-            // This won't work until we a concurrently updatable deductions graph
-//            context.silentAdd(new Triple(value, RDF.type.asNode(), args[2]));
-            context.getEnv().bind(args[3], value);
+        if (args.length == 3 || args.length == 4) {
+            Node inst = args[0];
+            Node prop = args[1];
+            Node pclass = args.length == 4 ? args[2] : null;
+            if (context instanceof BBRuleContext) {
+                Node temp = ((BBRuleContext)context).getTemp(inst, prop, pclass);
+                return context.getEnv().bind(args[args.length-1], temp); 
+            } else {
+                throw new BuiltinException(this, context, "builtin " + getName() + " only usable in backward/hybrid rule sets");
+            }
+        } else {
+            throw new BuiltinException(this, context, "builtin " + getName() + " requries 3 or 4 arguments");
         }
     }
-    
-    /**
-     * Returns false if this builtin has side effects when run in a body clause,
-     * other than the binding of environment variables.
-     */
-    public boolean isSafe() {
-        return false;
-    }
-    
+ 
 }
-
 
 
 /*

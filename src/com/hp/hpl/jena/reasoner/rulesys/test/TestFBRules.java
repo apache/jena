@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.13 2003-07-09 15:50:17 der Exp $
+ * $Id: TestFBRules.java,v 1.14 2003-07-09 15:51:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-07-09 15:50:17 $
+ * @version $Revision: 1.14 $ on $Date: 2003-07-09 15:51:48 $
  */
 public class TestFBRules extends TestCase {
     
@@ -500,6 +500,24 @@ public class TestFBRules extends TestCase {
         assertEquals(valueInstance, valueInstance2);
         Node valueType = getValue(infgraph, valueInstance, RDF.type.asNode());
         assertEquals(valueType, C2);
+    }
+
+    /**
+     * Test access to makeInstance machinery from a Brule.
+     */
+    public void testMakeInstances() {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, ty, C1));
+        List rules = Rule.parseRules(
+        "[r1:  (?x p ?t) <- (?x rdf:type C1), makeInstance(?x, p, ?t)]" +
+                          "" );        
+        Reasoner reasoner =  new FBRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        
+        Node valueInstance = getValue(infgraph, a, p);
+        assertNotNull(valueInstance);
+        Node valueInstance2 = getValue(infgraph, a, p);
+        assertEquals(valueInstance, valueInstance2);
     }
     
     /**
