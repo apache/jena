@@ -10,7 +10,7 @@
       xmlns:owl='http://www.w3.org/2002/07/owl#'
       xml:base='http://www.w3.org/2002/03owlt/localtests/Manifest003'
 >
-<otest:PositiveEntailmentTest rdf:ID='intersection3'>
+<otest:PositiveEntailmentTest rdf:ID='whitebox'>
    <rtest:status>Jena internal</rtest:status>
    <dc:creator>Dave Reynolds</dc:creator>
    <rtest:description rdf:parseType='Literal'>
