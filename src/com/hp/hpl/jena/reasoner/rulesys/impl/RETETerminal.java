@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETETerminal.java,v 1.8 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: RETETerminal.java,v 1.9 2003-10-05 15:37:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.9 $ on $Date: 2003-10-05 15:37:21 $
  */
 public class RETETerminal implements RETESinkNode {
 
@@ -123,8 +123,10 @@ public class RETETerminal implements RETESinkNode {
                             }
                         }
                     } else {
-                        // Remove the generated triple
-                        engine.deleteTriple(t, true);
+                        if ( context.contains(t)) {
+                            // Remove the generated triple
+                            engine.deleteTriple(t, true);
+                        }
                     }
                 }
             } else if (hClause instanceof Functor && isAdd) {
