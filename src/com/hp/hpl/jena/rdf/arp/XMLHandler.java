@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.4 2004-10-20 15:32:32 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.5 2004-11-16 15:37:14 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -641,5 +641,6 @@ abstract class XMLHandler
 			}
 		}
 	}
+	
 
 }

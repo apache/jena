@@ -138,7 +138,14 @@ class SingleThreadedParser extends XMLHandler {
 			} catch (WrappedException wrapped) {
 				wrapped.throwMe();
 			} catch (ParseException parse) {
-				// This has already been reported.
+				// This has not been reported???
+				// TODO more work on error reporting
+				try {
+				userError(parse);
+				}
+				catch (Exception eee){
+					// might be rethrown
+					}
 				// Don't overdo it.
 				//throw parse.rootCause();
 				
