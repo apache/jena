@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.51 $
+ * Revision           $Revision: 1.52 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-31 09:49:52 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-09-15 13:17:15 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -36,6 +36,7 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.impl.OntClassImpl;
+import com.hp.hpl.jena.ontology.tidy.SyntaxProblem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelMakerImpl;
 import com.hp.hpl.jena.reasoner.*;
@@ -1237,6 +1238,39 @@ public class TestBugReports
         HasValueRestriction hvrd = md.createHasValueRestriction( null, RDFS.seeAlso, OWL.Thing );
         
         assertNotNull( hvrd );
+    }
+    
+    /** Test case from Robert N Gonzalez [mailto:rngonzal@us.ibm.com] via jena-dev: exception while checking an ontology that imports a URN */
+    public void test_rng_01() {
+        String SOURCE=
+            "<?xml version='1.0'?>" +
+            "<!DOCTYPE owl [" +
+            "      <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#' >" +
+            "      <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#' >" +
+            "      <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#' >" +
+            "      <!ENTITY owl  'http://www.w3.org/2002/07/owl#' >" +
+            "      <!ENTITY dc   'http://purl.org/dc/elements/1.1/' >" +
+            "      <!ENTITY base  'http://jena.hpl.hp.com/test' >" +
+            "    ]>" +
+            "<rdf:RDF xmlns:owl ='&owl;' xmlns:rdf='&rdf;' xmlns:rdfs='&rdfs;' xmlns:dc='&dc;' xmlns='&base;#' xml:base='&base;'>" +
+            "         <owl:Ontology rdf:about='urn:someURN:'> " +
+            "                 <owl:imports>" +
+            "                   <owl:Ontology rdf:about='urn:ALegalURN:' />" +
+            "                 </owl:imports>" +
+            "         </owl:Ontology>" +
+            "</rdf:RDF>";
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        m.getDocumentManager()
+         .addAltEntry( "urn:ALegalURN:", "file:testing/ontology/bugs/test_hk_07B.owl" );
+        m.getDocumentManager().setProcessImports( false );
+        m.read( new StringReader( SOURCE ), null );
+        List problems = new ArrayList();
+        Resource level = m.getOWLLanguageLevel( problems );
+        //System.out.println( "level = " + level );
+        for (Iterator i = problems.iterator(); i.hasNext(); ) {
+            SyntaxProblem sp = (SyntaxProblem) i.next();
+            System.out.println( "problem = " + sp.longDescription() );
+        }
     }
     
     
