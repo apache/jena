@@ -25,7 +25,7 @@ options
 
 PARSER_BEGIN(RDQLParser)
 /*
- * (c) Copyright 2001-2003 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  */
 
 package com.hp.hpl.jena.rdql.parser ; 
@@ -173,6 +173,7 @@ TOKEN [IGNORE_CASE] :
   < FOR:         "for" >
 | < STR_EQ: "eq" >
 | < STR_NE: "ne" >
+| < STR_LANGEQ: "langeq" >
 }
 
 TOKEN :
@@ -807,14 +808,14 @@ void StringEqualityExpression()       :
                }
              }
 /*@egen*/
-  | <STR_MATCH>/*@bgen(jjtree) #StringMatch( 2) */
+  | <STR_LANGEQ>/*@bgen(jjtree) #StringLangEqual( 2) */
                  {
-                   Q_StringMatch jjtn003 = new Q_StringMatch(JJTSTRINGMATCH);
+                   Q_StringLangEqual jjtn003 = new Q_StringLangEqual(JJTSTRINGLANGEQUAL);
                    boolean jjtc003 = true;
                    jjtree.openNodeScope(jjtn003);
                  }
                  try {
-/*@egen*/  PatternLiteral()/*@bgen(jjtree)*/
+/*@egen*/ TextLiteral2()/*@bgen(jjtree)*/
                  } catch (Throwable jjte003) {
                    if (jjtc003) {
                      jjtree.clearNodeScope(jjtn003);
@@ -835,14 +836,14 @@ void StringEqualityExpression()       :
                    }
                  }
 /*@egen*/
-  | <STR_NMATCH>/*@bgen(jjtree) #StringNoMatch( 2) */
+  | <STR_MATCH>/*@bgen(jjtree) #StringMatch( 2) */
                  {
-                   Q_StringNoMatch jjtn004 = new Q_StringNoMatch(JJTSTRINGNOMATCH);
+                   Q_StringMatch jjtn004 = new Q_StringMatch(JJTSTRINGMATCH);
                    boolean jjtc004 = true;
                    jjtree.openNodeScope(jjtn004);
                  }
                  try {
-/*@egen*/ PatternLiteral()/*@bgen(jjtree)*/
+/*@egen*/  PatternLiteral()/*@bgen(jjtree)*/
                  } catch (Throwable jjte004) {
                    if (jjtc004) {
                      jjtree.clearNodeScope(jjtn004);
@@ -860,6 +861,34 @@ void StringEqualityExpression()       :
                  } finally {
                    if (jjtc004) {
                      jjtree.closeNodeScope(jjtn004,  2);
+                   }
+                 }
+/*@egen*/
+  | <STR_NMATCH>/*@bgen(jjtree) #StringNoMatch( 2) */
+                 {
+                   Q_StringNoMatch jjtn005 = new Q_StringNoMatch(JJTSTRINGNOMATCH);
+                   boolean jjtc005 = true;
+                   jjtree.openNodeScope(jjtn005);
+                 }
+                 try {
+/*@egen*/ PatternLiteral()/*@bgen(jjtree)*/
+                 } catch (Throwable jjte005) {
+                   if (jjtc005) {
+                     jjtree.clearNodeScope(jjtn005);
+                     jjtc005 = false;
+                   } else {
+                     jjtree.popNode();
+                   }
+                   if (jjte005 instanceof RuntimeException) {
+                     throw (RuntimeException)jjte005;
+                   }
+                   if (jjte005 instanceof ParseException) {
+                     throw (ParseException)jjte005;
+                   }
+                   throw (Error)jjte005;
+                 } finally {
+                   if (jjtc005) {
+                     jjtree.closeNodeScope(jjtn005,  2);
                    }
                  }
 /*@egen*/
@@ -1637,8 +1666,36 @@ void TextLiteral() :
 /*@egen*/
 } 
 
-
-
+void TextLiteral2() :
+{/*@bgen(jjtree) TextLiteral2 */
+  Q_TextLiteral2 jjtn000 = new Q_TextLiteral2(JJTTEXTLITERAL2);
+  boolean jjtc000 = true;
+  jjtree.openNodeScope(jjtn000);
+/*@egen*/
+  Token t ;
+}
+{/*@bgen(jjtree) TextLiteral2 */
+  try {
+/*@egen*/
+  ( t = <STRING_LITERAL1>/*@bgen(jjtree)*/
+                          {
+                            jjtree.closeNodeScope(jjtn000, true);
+                            jjtc000 = false;
+                          }
+/*@egen*/ { jjtn000.set(t.image) ; }
+  | t = <STRING_LITERAL2>/*@bgen(jjtree)*/
+                          {
+                            jjtree.closeNodeScope(jjtn000, true);
+                            jjtc000 = false;
+                          }
+/*@egen*/ { jjtn000.set(t.image) ; } )/*@bgen(jjtree)*/
+  } finally {
+    if (jjtc000) {
+      jjtree.closeNodeScope(jjtn000, true);
+    }
+  }
+/*@egen*/	
+}
 
 <READ_REGEX> TOKEN :
 {

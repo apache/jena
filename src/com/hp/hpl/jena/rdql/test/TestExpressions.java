@@ -102,7 +102,7 @@ public class TestExpressions extends TestSuite
         addTest(new TestBoolean("'fred'^^<type1> eq 'fred'", NO_FAILURE, false )) ;
         addTest(new TestBoolean("'fred'^^<type1> ne 'fred'", NO_FAILURE, true )) ;
         
-        // Numerci expessions: ignore typing (compatibility with RDF-99) 
+        // Numeric expessions: ignore typing (compatibility with RDF-99) 
         addTest(new TestBoolean("'21'^^<int> == '21'", NO_FAILURE, true )) ;
 
         // Escapes in strings
@@ -116,6 +116,16 @@ public class TestExpressions extends TestSuite
 
         addTest(new TestBoolean("\"urn:fred/1.5\" ne <urn:fred/1.5>", NO_FAILURE, false )) ;
         
+        // Lang tags - tests code from Zhexuan Song [zsong@fla.fujitsu.com] (Jeff)
+        addTest(new TestBoolean("\"xxx\"@fr langeq 'fr'", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"xxx\"@fr langeq \"fr\"", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"xxx\"@en-gb langeq 'en'", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"xxx\"@en-gb langeq 'EN'", NO_FAILURE, true )) ;
+        
+        addTest(new TestBoolean("\"xxx\"@en-gb langeq 'fr'", NO_FAILURE, false )) ;
+        addTest(new TestBoolean("\"chat\"@fr langeq 'en'", NO_FAILURE, false )) ;
+        
+        // Regular expressions
         addTest(new TestBoolean("\"aabbcc\" =~ /abbc/", NO_FAILURE, true )) ;
         addTest(new TestBoolean("\"aabbcc\" =~ /a..c/", NO_FAILURE, true )) ;
         addTest(new TestBoolean("\"aabbcc\" =~ /^aabb/", NO_FAILURE, true )) ;

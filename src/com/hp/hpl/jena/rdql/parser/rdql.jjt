@@ -179,6 +179,7 @@ TOKEN [IGNORE_CASE] :
   < FOR:         "for" >
 | < STR_EQ: "eq" >
 | < STR_NE: "ne" >
+| < STR_LANGEQ: "langeq" >
 }
 
 TOKEN :
@@ -445,6 +446,7 @@ void StringEqualityExpression() #void :
   NumericalLogical()
   ( <STR_EQ> NumericalLogical()     #StringEqual(2)
   | <STR_NE> NumericalLogical()     #StringNotEqual(2)
+  | <STR_LANGEQ> TextLiteral2()     #StringLangEqual(2)
   | <STR_MATCH>  PatternLiteral()   #StringMatch(2)
   | <STR_NMATCH> PatternLiteral()   #StringNoMatch(2)
   )*
@@ -633,8 +635,14 @@ void TextLiteral() :
   ( <DATATYPE> URI() )?
 } 
 
-
-
+void TextLiteral2() :
+{
+  Token t ;
+}
+{
+  ( t = <STRING_LITERAL1> { jjtThis.set(t.image) ; }
+  | t = <STRING_LITERAL2> { jjtThis.set(t.image) ; } )	
+}
 
 <READ_REGEX> TOKEN :
 {
