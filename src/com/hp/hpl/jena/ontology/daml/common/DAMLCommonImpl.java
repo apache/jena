@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-11 15:16:29 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-02-20 23:27:18 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -58,10 +58,7 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.rdf.model.impl.NodeIteratorImpl;
 import com.hp.hpl.jena.rdf.model.impl.SimpleSelector;
 
-import java.util.Iterator;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Vector;
+import java.util.*;
 
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
@@ -87,7 +84,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * properties, such as comment, label, and equivalentTo.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.4 2003-02-11 15:16:29 chris-dollin Exp $
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.5 2003-02-20 23:27:18 ian_dickinson Exp $
  */
 public abstract class DAMLCommonImpl
     extends ResourceImpl
@@ -671,7 +668,7 @@ public abstract class DAMLCommonImpl
         }
         else {
             // otherwise return the singleton set
-            Vector single = new Vector();
+            List single = new ArrayList();
             single.add( n );
             return single.iterator();
         }
@@ -688,7 +685,7 @@ public abstract class DAMLCommonImpl
      */
     protected void removeProperties( Iterator preds, Iterator values ) {
         // we have to clone one of the sets in order to do the cross-product
-        Vector predSet = new Vector();
+        List predSet = new ArrayList();
         while (preds.hasNext()) {
             predSet.add( preds.next() );
         }

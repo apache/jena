@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            7 Sept 2001
  * Filename           $RCSfile: DAMLHierarchy.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:15:19 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-02-20 23:27:18 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -55,9 +55,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Property;
 
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.*;
 
 
 
@@ -67,7 +65,7 @@ import java.util.LinkedList;
  * into their model each time. Uses Singleton pattern.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLHierarchy.java,v 1.1.1.1 2002-12-19 19:15:19 bwm Exp $
+ * @version CVS info: $Id: DAMLHierarchy.java,v 1.2 2003-02-20 23:27:18 ian_dickinson Exp $
  */
 public class DAMLHierarchy
 {
@@ -163,16 +161,16 @@ public class DAMLHierarchy
     };
 
     /** Super-class hierarchy hashmap */
-    protected Hashtable m_classHierarchyMap = new Hashtable();
+    protected Map m_classHierarchyMap = new HashMap();
 
     /** Flag to show initialisation of static structures has taken place */
     protected boolean m_initialised = false;
 
     /** Equivalance map */
-    protected Hashtable m_equivalenceMap = new Hashtable();
+    protected Map m_equivalenceMap = new HashMap();
 
     /** Table of transitive properties */
-    protected Hashtable m_transitiveProperties = new Hashtable();
+    protected Map m_transitiveProperties = new HashMap();
 
 
 

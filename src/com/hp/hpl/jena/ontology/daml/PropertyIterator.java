@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            11 Sept 2001
  * Filename           $RCSfile: PropertyIterator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-03 22:49:40 $
+ * Last modified on   $Date: 2003-02-20 23:28:00 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -46,12 +46,7 @@ package com.hp.hpl.jena.ontology.daml;
 // Imports
 ///////////////
 
-import java.util.Iterator;
-import java.util.WeakHashMap;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
-import java.util.Vector;
-import java.util.HashSet;
+import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -93,7 +88,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyIterator.java,v 1.3 2003-02-03 22:49:40 ian_dickinson Exp $
+ * @version CVS info: $Id: PropertyIterator.java,v 1.4 2003-02-20 23:28:00 ian_dickinson Exp $
  * @since Jena 1.3.0 (was previously in package com.hp.hpl.jena.ontology.daml.common).
  */
 public class PropertyIterator
@@ -135,7 +130,7 @@ public class PropertyIterator
     protected Resource m_root = null;
 
     /** The resources we started from (if many) */
-    protected Vector m_roots = null;
+    protected List m_roots = null;
 
     /** The default value for the iterator, or null if no default */
     protected Object m_defaultValue = null;
@@ -255,7 +250,7 @@ public class PropertyIterator
     public PropertyIterator( Iterator roots, Property pred, Property inverse, boolean isTransitive,
                              boolean isReflexive, boolean useEquivalence ) {
         // copy the roots of the traversal
-        m_roots = new Vector();
+        m_roots = new ArrayList();
         m_pred = pred;
         m_inverse = inverse;
         m_transitive = isTransitive;

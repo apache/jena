@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-20 17:11:57 $
+ * Last modified on   $Date: 2003-02-20 23:27:18 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -47,9 +47,7 @@ package com.hp.hpl.jena.ontology.daml.common;
 ///////////////
 import java.io.Reader;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.SimpleSelector;
@@ -89,7 +87,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.5 2003-02-20 17:11:57 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.6 2003-02-20 23:27:18 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends ModelMem
@@ -152,7 +150,7 @@ public class DAMLModelImpl
      */
 
     /** The set of indexes to different daml values */
-    protected Hashtable m_indexes = new Hashtable();
+    protected Map m_indexes = new HashMap();
 
     /** An index of values by type and name only (i&#046;e&#046; collecting namespace entries together) */
     protected OneToManyMap m_nameIndex = new OneToManyMap();

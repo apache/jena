@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Jan 2001
  * Filename           $RCSfile: DAMLLoader.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-11 15:16:30 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-02-20 23:27:18 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -45,10 +45,7 @@ package com.hp.hpl.jena.ontology.daml.common;
 
 // Imports
 ///////////////
-import java.util.Vector;
-import java.util.Iterator;
-import java.util.Hashtable;
-import java.util.HashSet;
+import java.util.*;
 
 import java.net.URL;
 import java.net.MalformedURLException;
@@ -98,7 +95,7 @@ import com.hp.hpl.jena.mem.ModelMem;
  * of imports on or off overall, or by using
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLLoader.java,v 1.5 2003-02-11 15:16:30 chris-dollin Exp $
+ * @version CVS info: $Id: DAMLLoader.java,v 1.6 2003-02-20 23:27:18 ian_dickinson Exp $
  */
 public class DAMLLoader
 {
@@ -148,13 +145,13 @@ public class DAMLLoader
     private DAMLModel m_damlModel = null;
 
     /** For efficiency, keep a list of the ontologies that were loaded into this store */
-    private Vector m_sources = new Vector();
+    private List m_sources = new ArrayList();
 
     /** Flag to control whether imported technologies are loaded automatically */
     private boolean m_loadImportedOntologies = true;
 
-    /** Vector of ontologies that are not automatically fetched when loading containing ontologies */
-    private Vector m_importBlockList = new Vector();
+    /** List of ontologies that are not automatically fetched when loading containing ontologies */
+    private List m_importBlockList = new ArrayList();
 
     /** Flag used to control the import blocking behaviour */
     private boolean m_useImportBlocking = true;
@@ -162,7 +159,7 @@ public class DAMLLoader
     /** Dictionary that holds the DAML resources that correspond to loaded RDF resources.
      *  Key = original rdf Resource,  value = corresponding DAMLCommon instance
      */
-    private Hashtable m_rdfDamlMap = new Hashtable();
+    private Map m_rdfDamlMap = new HashMap();
 
     /** Queue of resources to check for being instances */
     private HashSet m_postCheckResources = new HashSet();
@@ -633,7 +630,7 @@ public class DAMLLoader
 
             // we collect the imported URI's first, then load them ... otherwise we're
             // iterating over a model that is being updated, which is not guaranteed to be safe
-            Vector imports = new Vector();
+            List imports = new ArrayList();
             for (Iterator j = new ConcatenatedIterator( i0, i1 );  j.hasNext();  ) {
                 Resource ontologyRes = (Resource) j.next();
 

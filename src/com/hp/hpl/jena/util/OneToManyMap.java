@@ -2,40 +2,18 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian_Dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:21:05 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-02-20 23:28:13 $
+ *               by   $Author: ian_dickinson $
  *
- * (c) Copyright Hewlett-Packard Company 2001
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (c) Copyright Hewlett-Packard Company 2001-2003
+ * See end of file for details
  *****************************************************************************/
 
 // Package
@@ -45,16 +23,7 @@ package com.hp.hpl.jena.util;
 
 // Imports
 ///////////////
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Set;
+import java.util.*;
 
 
 
@@ -62,8 +31,8 @@ import java.util.Set;
  * An extension to a standard map that supports one-to-many mappings: that is, there
  * may be zero, one or many values corresponding to a given key.
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.1.1.1 2002-12-19 19:21:05 bwm Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version CVS info: $Id: OneToManyMap.java,v 1.2 2003-02-20 23:28:13 ian_dickinson Exp $
  */
 public class OneToManyMap
     implements Map
@@ -80,7 +49,7 @@ public class OneToManyMap
     //////////////////////////////////
 
     /** Encapsulated hash table stores the values */
-    private Hashtable m_table = new Hashtable();
+    private Map m_table = new HashMap();
 
 
     // Constructors
@@ -118,8 +87,8 @@ public class OneToManyMap
      * @return True if the value is in the map
      */
     public boolean containsValue( Object value ) {
-        for (Enumeration values = m_table.elements();  values.hasMoreElements(); ) {
-            Object x = values.nextElement();
+        for (Iterator values = m_table.values().iterator();  values.hasNext(); ) {
+            Object x = values.next();
 
             if (x == value) {
                 return true;
@@ -139,8 +108,8 @@ public class OneToManyMap
     public Set entrySet() {
         Set s = new HashSet();
 
-        for (Enumeration e0 = m_table.keys();  e0.hasMoreElements(); ) {
-            Object key = e0.nextElement();
+        for (Iterator e0 = m_table.keySet().iterator();  e0.hasNext(); ) {
+            Object key = e0.next();
             List values = (List) m_table.get( key );
 
             // add each key-value pair to the result set
@@ -326,8 +295,8 @@ public class OneToManyMap
     public int size() {
         int size = 0;
 
-        for (Enumeration e = m_table.keys();  e.hasMoreElements();  ) {
-            size += ((ArrayList) e.nextElement()).size();
+        for (Iterator e = m_table.keySet().iterator();  e.hasNext();  ) {
+            size += ((ArrayList) e.next()).size();
         }
 
         return size;
@@ -342,8 +311,8 @@ public class OneToManyMap
     public Collection values() {
         HashSet s = new HashSet();
 
-        for (Enumeration e = m_table.keys();  e.hasMoreElements();  ) {
-            s.addAll( (ArrayList) e.nextElement() );
+        for (Iterator e = m_table.keySet().iterator();  e.hasNext();  ) {
+            s.addAll( (ArrayList) e.next() );
         }
 
         return s;
@@ -458,3 +427,29 @@ public class OneToManyMap
     }
 
 }
+
+/*
+* All rights reserved.
+*
+* Redistribution and use in source and binary forms, with or without
+* modification, are permitted provided that the following conditions
+* are met:
+* 1. Redistributions of source code must retain the above copyright
+*    notice, this list of conditions and the following disclaimer.
+* 2. Redistributions in binary form must reproduce the above copyright
+*    notice, this list of conditions and the following disclaimer in the
+*    documentation and/or other materials provided with the distribution.
+* 3. The name of the author may not be used to endorse or promote products
+*    derived from this software without specific prior written permission.
+*
+* THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+* IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+* IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+* INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+* NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+* DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+* THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+* (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+* THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/

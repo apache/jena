@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            7 Sept 2001
  * Filename           $RCSfile: XMLDatatypeRegistry.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-23 15:14:17 $
+ * Last modified on   $Date: 2003-02-20 23:27:18 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -46,8 +46,7 @@ package com.hp.hpl.jena.ontology.daml.common;
 // Imports
 ///////////////
 
-import java.util.Hashtable;
-import java.util.Iterator;
+import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.rdf.model.RDFNode;
@@ -70,7 +69,7 @@ import com.hp.hpl.jena.util.Log;
  * mappings can be added by the user.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: XMLDatatypeRegistry.java,v 1.2 2003-01-23 15:14:17 ian_dickinson Exp $
+ * @version CVS info: $Id: XMLDatatypeRegistry.java,v 1.3 2003-02-20 23:27:18 ian_dickinson Exp $
  */
 public class XMLDatatypeRegistry
 {
@@ -93,8 +92,8 @@ public class XMLDatatypeRegistry
     // Instance variables
     //////////////////////////////////
 
-    /** Hashtable for type URI to translator object */
-    protected Hashtable m_registry = new Hashtable();
+    /** Map for type URI to translator object */
+    protected Map m_registry = new HashMap();
 
 
     // Constructors
