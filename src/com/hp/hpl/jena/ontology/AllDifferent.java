@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: AllDifferent.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:29 $
+ * Last modified on   $Date: 2003-06-08 21:29:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -44,7 +44,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferent.java,v 1.7 2003-06-08 18:53:29 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferent.java,v 1.8 2003-06-08 21:29:58 ian_dickinson Exp $
  */
 public interface AllDifferent
     extends OntResource
@@ -88,7 +88,7 @@ public interface AllDifferent
 
     /**
      * <p>Answer an iterator over all of the individuals that are declared to be distinct by
-     * this AllDifferent declaration. Each element of the iterator will be an {@link #OntResource}.</p>
+     * this AllDifferent declaration. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over distinct individuals.
      * @exception OntProfileException If the {@link Profile#DISTINCT_MEMBERS()} property is not supported in the current language profile.   
      */ 

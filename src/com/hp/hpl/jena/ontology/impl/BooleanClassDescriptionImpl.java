@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-May-2003
  * Filename           $RCSfile: BooleanClassDescriptionImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:52:43 $
+ * Last modified on   $Date: 2003-06-08 21:29:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: BooleanClassDescriptionImpl.java,v 1.2 2003-06-08 18:52:43 ian_dickinson Exp $
+ * @version CVS $Id: BooleanClassDescriptionImpl.java,v 1.3 2003-06-08 21:29:44 ian_dickinson Exp $
  */
 public abstract class BooleanClassDescriptionImpl 
     extends OntClassImpl
@@ -119,7 +119,7 @@ public abstract class BooleanClassDescriptionImpl
 
 	/**
 	 * <p>Answer an iterator over all of the clases that are the operands of this 
-	 * Boolean class expression. Each element of the iterator will be an {@link #OntClass}.</p>
+	 * Boolean class expression. Each element of the iterator will be an {@link OntClass}.</p>
 	 * @return An iterator over the operands of the expression.
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 

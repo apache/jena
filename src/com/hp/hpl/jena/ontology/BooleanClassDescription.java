@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: BooleanClassDescription.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:30 $
+ * Last modified on   $Date: 2003-06-08 21:29:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: BooleanClassDescription.java,v 1.3 2003-06-08 18:53:30 ian_dickinson Exp $
+ * @version CVS $Id: BooleanClassDescription.java,v 1.4 2003-06-08 21:29:58 ian_dickinson Exp $
  */
 public interface BooleanClassDescription 
     extends OntClass
@@ -85,7 +85,7 @@ public interface BooleanClassDescription
 
 	/**
 	 * <p>Answer an iterator over all of the clases that are the operands of this 
-	 * Boolean class expression. Each element of the iterator will be an {@link #OntClass}.</p>
+	 * Boolean class expression. Each element of the iterator will be an {@link OntClass}.</p>
 	 * @return An iterator over the operands of the expression.
 	 * @exception OntProfileException If the operand property is not supported in the current language profile.   
 	 */ 

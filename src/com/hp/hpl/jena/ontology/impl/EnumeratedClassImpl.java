@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: EnumeratedClassImpl.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:52:43 $
+ * Last modified on   $Date: 2003-06-08 21:29:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: EnumeratedClassImpl.java,v 1.7 2003-06-08 18:52:43 ian_dickinson Exp $
+ * @version CVS $Id: EnumeratedClassImpl.java,v 1.8 2003-06-08 21:29:44 ian_dickinson Exp $
  */
 public class EnumeratedClassImpl 
     extends OntClassImpl
@@ -142,7 +142,7 @@ public class EnumeratedClassImpl
 
     /**
      * <p>Answer an iterator over all of the individuals that are declared to be the class extension for
-     * this class. Each element of the iterator will be an {@link #OntResource}.</p>
+     * this class. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the individuals in the class extension
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            07-May-2003
  * Filename           $RCSfile: ConversionException.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:46:25 $
+ * Last modified on   $Date: 2003-06-08 21:29:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,7 +28,7 @@ package com.hp.hpl.jena.ontology;
 /**
  * <p>
  * Exception that is thrown when an ontology resource is converted to another
- * facet, using {@link RDFNode#as as()}, and the requested conversion is not
+ * facet, using {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()}, and the requested conversion is not
  * possible. The reasons for the failure may be that the requested term is not
  * in the language {@linkplain Profile profile} of the language attached to the
  * ontology model, or because the pre-conditions for the conversion are not met. 
@@ -36,7 +36,7 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ConversionException.java,v 1.1 2003-05-08 14:46:25 ian_dickinson Exp $
+ * @version CVS $Id: ConversionException.java,v 1.2 2003-06-08 21:29:58 ian_dickinson Exp $
  */
 public class ConversionException 
     extends OntologyException

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:52:43 $
+ * Last modified on   $Date: 2003-06-08 21:29:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.15 2003-06-08 18:52:43 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.16 2003-06-08 21:29:44 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -134,7 +134,7 @@ public class OntClassImpl
 
     /**
      * <p>Answer an iterator over all of the classes that are declared to be super-classes of
-     * this class. Each element of the iterator will be an {@link #OntClass}.</p>
+     * this class. Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the super-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */ 
@@ -144,7 +144,7 @@ public class OntClassImpl
      
     /**
      * <p>Answer an iterator over all of the classes that are declared to be super-classes of
-     * this class. Each element of the iterator will be an {@link #OntClass}.
+     * this class. Each element of the iterator will be an {@link OntClass}.
      * See {@link #listSubClasses( boolean )} for a full explanation of the <em>direct</em>
      * parameter.
      * </p>
@@ -242,7 +242,7 @@ public class OntClassImpl
 
     /**
      * <p>Answer an iterator over all of the classes that are declared to be sub-classes of
-     * this class. Each element of the iterator will be an {@link #OntClass}.</p>
+     * this class. Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the sub-classes of this class.
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */ 
@@ -253,7 +253,7 @@ public class OntClassImpl
     /**
      * <p>
      * Answer an iterator over the classes that are declared to be sub-classes of
-     * this class. Each element of the iterator will be an {@link #OntClass}. The
+     * this class. Each element of the iterator will be an {@link OntClass}. The
      * distinguishing extra parameter for this method is the flag <code>direct<code>
      * that allows some selectivity over the classes that appear in the iterator.
      * Consider the following scenario:
@@ -358,7 +358,7 @@ public class OntClassImpl
 
     /**
      * <p>Answer an iterator over all of the classes that are declared to be equivalent classes to
-     * this class. Each element of the iterator will be an {@link #OntClass}.</p>
+     * this class. Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the classes equivalent to this class.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_CLASS()} property is not supported in the current language profile.   
      */ 
@@ -420,7 +420,7 @@ public class OntClassImpl
 
     /**
      * <p>Answer an iterator over all of the classes that this class is declared to be disjoint with.
-     * Each element of the iterator will be an {@link #OntClass}.</p>
+     * Each element of the iterator will be an {@link OntClass}.</p>
      * @return An iterator over the classes disjoint with this class.
      * @exception OntProfileException If the {@link Profile#DISJOINT_WITH()} property is not supported in the current language profile.   
      */ 

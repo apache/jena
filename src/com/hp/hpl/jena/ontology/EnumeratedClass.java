@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: EnumeratedClass.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:29 $
+ * Last modified on   $Date: 2003-06-08 21:29:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: EnumeratedClass.java,v 1.6 2003-06-08 18:53:29 ian_dickinson Exp $
+ * @version CVS $Id: EnumeratedClass.java,v 1.7 2003-06-08 21:29:58 ian_dickinson Exp $
  */
 public interface EnumeratedClass 
     extends OntClass
@@ -84,7 +84,7 @@ public interface EnumeratedClass
 
     /**
      * <p>Answer an iterator over all of the individuals that are declared to be the class extension for
-     * this class. Each element of the iterator will be an {@link #OntResource}.</p>
+     * this class. Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the individuals in the class extension
      * @exception OntProfileException If the {@link Profile#ONE_OF()} property is not supported in the current language profile.   
      */ 

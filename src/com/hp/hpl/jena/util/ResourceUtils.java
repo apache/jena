@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 20:35:31 $
+ * Last modified on   $Date: 2003-06-08 21:29:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.2 2003-06-06 20:35:31 ian_dickinson Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.3 2003-06-08 21:29:58 ian_dickinson Exp $
  */
 public class ResourceUtils {
     // Constants
@@ -60,7 +60,7 @@ public class ResourceUtils {
     /**
      * <p>
      * Answer the maximal lower elements of the given collection, given the partial
-     * ordering <code>rel</code>. See {@link #maximalLowerElements( Iterator, Property)}
+     * ordering <code>rel</code>. See {@link #maximalLowerElements( Iterator, Property, boolean )}
      * for details.
      * </p>
      * 

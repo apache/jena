@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Ontology.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:29 $
+ * Last modified on   $Date: 2003-06-08 21:29:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Ontology.java,v 1.4 2003-06-08 18:53:29 ian_dickinson Exp $
+ * @version CVS $Id: Ontology.java,v 1.5 2003-06-08 21:29:58 ian_dickinson Exp $
  */
 public interface Ontology
     extends OntResource
@@ -80,7 +80,7 @@ public interface Ontology
 
     /**
      * <p>Answer an iterator over all of the resources representing ontologies imported by this ontology. 
-     * Each elemeent of the iterator will be an {@link #OntResource}.</p>
+     * Each elemeent of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the ontology import resources
      * @exception OntProfileException If the {@link Profile#IMPORTS()()} property is not supported in the current language profile.   
      */ 
@@ -131,7 +131,7 @@ public interface Ontology
     /**
      * <p>Answer an iterator over all of the resources representing 
      * ontologies that this ontology is backwards compatible with. 
-     * Each element of the iterator will be an {@link #OntResource}.</p>
+     * Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the ontology resources compatible with this ontology
      * @exception OntProfileException If the {@link Profile#BACKWARD_COMPATIBLE_WITH} property is not supported in the current language profile.   
      */ 
@@ -183,7 +183,7 @@ public interface Ontology
     /**
      * <p>Answer an iterator over all of the resources representing 
      * ontologies that this ontology supercedes. 
-     * Each element of the iterator will be an {@link #OntResource}.</p>
+     * Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the ontology resources superceded by this ontology
      * @exception OntProfileException If the {@link Profile#PRIOR_VERSION} property is not supported in the current language profile.   
      */ 
@@ -233,7 +233,7 @@ public interface Ontology
     /**
      * <p>Answer an iterator over all of the resources representing 
      * ontologies that this ontology is incompatible with. 
-     * Each element of the iterator will be an {@link #OntResource}.</p>
+     * Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the ontology resources that this ontology is incompatible with
      * @exception OntProfileException If the {@link Profile#INCOMPATIBLE_WITH} property is not supported in the current language profile.   
      */ 

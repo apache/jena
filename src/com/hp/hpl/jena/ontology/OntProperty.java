@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:53:29 $
+ * Last modified on   $Date: 2003-06-08 21:29:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.8 2003-06-08 18:53:29 ian_dickinson Exp $
+ * @version CVS $Id: OntProperty.java,v 1.9 2003-06-08 21:29:58 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -76,7 +76,7 @@ public interface OntProperty
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be super-properties of
-     * this property. Each element of the iterator will be an {@link #OntProperty}.</p>
+     * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the super-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
      */ 
@@ -84,7 +84,7 @@ public interface OntProperty
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be super-properties of
-     * this property. Each element of the iterator will be an {@link #OntProperty}.</p>
+     * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @param direct If true, only answer the direcly adjacent properties in the
      * property hierarchy: i&#046;e&#046; eliminate any property for which there is a longer route
      * to reach that child under the super-property relation.
@@ -136,7 +136,7 @@ public interface OntProperty
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be sub-properties of
-     * this property. Each element of the iterator will be an {@link #OntProperty}.</p>
+     * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the sub-properties of this property.
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
      */ 
@@ -144,7 +144,7 @@ public interface OntProperty
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be sub-properties of
-     * this property. Each element of the iterator will be an {@link #OntProperty}.</p>
+     * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @param direct If true, only answer the direcly adjacent properties in the
      * property hierarchy: i&#046;e&#046; eliminate any property for which there is a longer route
      * to reach that child under the sub-property relation.
@@ -198,7 +198,7 @@ public interface OntProperty
 
     /**
      * <p>Answer an iterator over all of the declared domain classes of this property.
-     * Each element of the iterator will be an {@link #OntResource}.</p>
+     * Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the classes that form the domain of this property.
      * @exception OntProfileException If the {@link Profile#DOMAIN()} property is not supported in the current language profile.   
      */ 
@@ -248,7 +248,7 @@ public interface OntProperty
 
     /**
      * <p>Answer an iterator over all of the declared range classes of this property.
-     * Each element of the iterator will be an {@link #OntResource}.</p>
+     * Each element of the iterator will be an {@link OntResource}.</p>
      * @return An iterator over the classes that form the range of this property.
      * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.   
      */ 
@@ -300,7 +300,7 @@ public interface OntProperty
 
     /**
      * <p>Answer an iterator over all of the properties that are declared to be equivalent properties to
-     * this property. Each element of the iterator will be an {@link #OntProperty}.</p>
+     * this property. Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the properties equivalent to this property.
      * @exception OntProfileException If the {@link Profile#EQUIVALENT_PROPERTY()} property is not supported in the current language profile.   
      */ 
@@ -351,7 +351,7 @@ public interface OntProperty
 
     /**
      * <p>Answer an iterator over all of the properties that this property is declared to be the inverse of.
-     * Each element of the iterator will be an {@link #OntProperty}.</p>
+     * Each element of the iterator will be an {@link OntProperty}.</p>
      * @return An iterator over the properties inverse to this property.
      * @exception OntProfileException If the {@link Profile#INVERSE_OF()} property is not supported in the current language profile.   
      */ 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 18:52:43 $
+ * Last modified on   $Date: 2003-06-08 21:29:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.6 2003-06-08 18:52:43 ian_dickinson Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.7 2003-06-08 21:29:44 ian_dickinson Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -121,7 +121,7 @@ public class IndividualImpl
 
     /**
      * <p>Answer an iterator over all of the resources that are declared to be equivalent to
-     * this individual. Each elemeent of the iterator will be an {@link #OntResource}.</p>
+     * this individual. Each elemeent of the iterator will be an {@link OntResource}.</p>
      * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
      * @return An iterator over the resources equivalent to this individual.
      * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   

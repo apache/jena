@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.19 $
+ * Revision           $Revision: 1.20 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-02 11:27:29 $
+ * Last modified on   $Date: 2003-06-08 21:29:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -57,7 +57,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.19 2003-06-02 11:27:29 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.20 2003-06-08 21:29:58 ian_dickinson Exp $
  */
 public interface OntModel
     extends Model
@@ -841,7 +841,7 @@ public interface OntModel
      * </p>
      *
      * @param model A sub-model to add 
-     * @see addSubModel( Model, boolean )
+     * @see #addSubModel( Model, boolean )
      */
     public void addSubModel( Model model );
     
