@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestConnection.java,v 1.7 2003-06-27 18:08:58 wkw Exp $
+  $Id: TestConnection.java,v 1.8 2003-07-22 07:19:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -21,7 +21,6 @@ package com.hp.hpl.jena.db.test;
 */
 
 import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.db.impl.DBPropGraph;
 
 import junit.framework.*;
 

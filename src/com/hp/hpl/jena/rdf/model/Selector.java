@@ -1,4 +1,56 @@
 /*
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+  [See end of file]
+  $Id: Selector.java,v 1.3 2003-07-22 07:19:55 chris-dollin Exp $ 
+*/
+package com.hp.hpl.jena.rdf.model;
+
+/** A Statement selector.
+ *
+ * <p>Model includes list and query methods which will return all the
+ * statements which are selected by a selector object.  This is the interface
+ * of such selector objects.
+ * 
+ * @author bwm, kers
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-07-22 07:19:55 $'
+*/
+
+public interface Selector {
+    /** Determine whether a Statement should be selected.
+     * @param s The statement to be considered.
+     * @return true if the statement has been selected.
+     */
+    boolean test( Statement s );
+    
+    /**
+        Answer true iff this Selector is completely characterised by its subject,
+        predicate, and object fields. If so, the <code>test</code> predicate need
+        not be called to decide if a statement is acceptable. This allows query engines
+        lattitude for optimisation (and our memory-based and RDB-based model
+        implementations both exploit this licence).
+    */
+    boolean isSimple();
+      
+    /**
+        Answer the only subject Resource that this Selector will match, or null if it
+        can match more that a single resource.
+    */
+    Resource getSubject();
+    
+    /**
+        Answer the only predicate Property that this Selector will match, or null
+        if it can match more than a single property.
+    */
+    Property getPredicate();
+    
+    /**
+        Answer the only RDFNode object that this Selector will match, or null if
+        it can match more than a single node. 
+    */
+    RDFNode getObject();
+    
+}
+/*
  *  (c) Copyright Hewlett-Packard Company 2000 
  *  All rights reserved.
  *
@@ -28,47 +80,3 @@
  *
  * Created on 28 July 2000, 13:33
  */
-
-package com.hp.hpl.jena.rdf.model;
-
-/** A Statement selector.
- *
- * <p>Model includes list and query methods which will return all the
- * statements which are selected by a selector object.  This is the interface
- * of such selector objects.</p>
- * @author bwm, kers
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-06-04 15:14:25 $'
-*/
-
-public interface Selector {
-    /** Determine whether a Statement should be selected.
-     * @param s The statement to be considered.
-     * @return true if the statement has been selected.
-     */
-    boolean test(Statement s);
-  
-    /**
-        Answer the only subject Resource that this Selector will match, or null if it
-        can match more that a single resource.
-    */
-    Resource getSubject();
-    
-    /**
-        Answer the only predicate Property that this Selector will match, or null
-        if it can match more than a single property.
-    */
-    Property getPredicate();
-    
-    /**
-        Answer the only RDFNode object that this Selector will match, or null if
-        it can match more than a single node. 
-    */
-    RDFNode getObject();
-    
-    /**
-        Answer true iff this Selector is completely characterised by its subject,
-        predicate, and object fields.
-    */
-    boolean isSimple();
-    
-}
