@@ -24,20 +24,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriter.java,v 1.1.1.1 2002-12-19 19:17:54 bwm Exp $
+ * $Id: RDFWriter.java,v 1.2 2003-04-02 13:26:33 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
 import java.io.Writer;
 import java.io.OutputStream;
-
 /** RDFWriter is an interface to RDF serializers.
  *
  * <p>An <code>RDFWriter</code> is a class which serializes an RDF model
  * to some RDF serializaion language.  RDF/XML, n-triple and n3 are
  * examples of serialization languages.</p>
  * @author bwm
- * @version $Revision: 1.1.1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface RDFWriter {
 /** Namespace prefixes can be set using a system property of the form<PRE>
@@ -88,11 +87,16 @@ public interface RDFWriter {
  *
  * <p>No standard properties are defined.  For the properties recognised
  * by any particular writer implementation, see the the documentation for
- * that implementation.  The properties recognised by writers provided in
- * the standard distribution can be found in the description of their
- * setProperty method.  Consult the list of implementors of this interface
- * given above.</p>
- *
+ * that implementation.  </p>
+ * <p>
+ * The built-in RDFWriters have properties as defined by:
+ * <dl>
+ * <dt>N3</dt><dt>N-TRIPLE</dt>
+ * <dd>No properties.</dd>
+ * <dt>RDF/XML</dt><dt>RDF/XML-ABBREV</dt>
+ * <dd>See {@link com.hp.hpl.jena.xmloutput.RDFXMLWriterI#setProperty(String,
+ * Object)}
+ * </dl>
  * @return the old value for this property, or <code>null</code>
  * if no value was set.
  * @param propName The name of the property.

@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.2 2003-04-02 11:46:52 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.3 2003-04-02 13:26:34 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -106,7 +106,7 @@ import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-02 11:46:52 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-04-02 13:26:34 $'
 
  */
 class Unparser {
@@ -227,55 +227,6 @@ class Unparser {
 		System.out.println();
 		 **/
 	}
-	/** Suggest nice prefixes for some of the namespaces.
-	 * These will only be used if the namespaces occur in the model.
-	 * The suggestions are passed in as an array of pairs { "key", "URI" }.
-	 * @param pairs The suggested prefixes as an array of pairs { {"key", "uri" }}.
-	 * /
-	void useNameSpaceDecl(String[][] pairs) {
-		useNameSpaceDecl(new ArrayMap(pairs));
-	}
-	*/
-	/** Suggest nice prefixes for some of the namespaces.
-	 * These will only be used if the namespaces occur in the model.
-	 * The suggestions are passed in as a <CODE>Map</CODE> from key <CODE>String</CODE>s to URI <CODE>String</CODE>s.
-	 * @param nameSpaceDecl The suggested prefixes of the form [key: prefix; value: uri].
-	 * /
-	void useNameSpaceDeclx(Map nameSpaceDecl) {
-		// Paranoia.
-		nameSpaceDecl.remove("rdf");
-		nameSpaceDecl.remove("RDF");
-		nameSpaceDecl.remove("xml");
-		nameSpaceDecl.remove("XML");
-		// An issue is that some of the prefixes already chosen
-		// in nameSpaces may conflict with those in nameSpaceDecl.
-		Iterator it = nameSpaceDecl.entrySet().iterator();
-		Set problems = new HashSet();
-		while (it.hasNext()) {
-			Map.Entry pair = (Map.Entry) it.next();
-			String uri = (String) pair.getValue();
-			if (nameSpaces.forward(uri) != null || problems.contains(uri)) {
-				String prefix = (String) pair.getKey();
-				Set before = nameSpaces.backward(prefix);
-				if (before != null) {
-					problems.addAll(before);
-				}
-				nameSpaces.set11(uri, prefix);
-				problems.remove(uri);
-			}
-		}
-		it = problems.iterator();
-		int genSym = 1;
-		while (it.hasNext()) {
-			String uri = (String) it.next();
-			String prefix;
-			do {
-				prefix = "RDFNsId" + genSym++;
-			} while (nameSpaces.backward(prefix) != null);
-			nameSpaces.set(uri, prefix);
-		}
-	}
-	*/
 	/** Set a list of types of objects that will be expanded at the
 	 *  top-level of the file.
 	 *  @param types An array of rdf:Class'es.
@@ -290,12 +241,6 @@ class Unparser {
 	void setXMLBase(String b) {
 		xmlBase = b;
 	}
-	/*
-		private String xmlDeclaration = null;
-		void setDeclaration(String b) {
-			xmlDeclaration = b;
-		}
-	*/
 	/* THE MORE INTERESTING MEMBER VARIABLES.
 	 * Note there are others scattered throughout the file,
 	 * but those are only used by one or two methods.
@@ -304,7 +249,6 @@ class Unparser {
 	final private static String rdfns = RDF.type.getNameSpace();
 	final private static Integer one = new Integer(1);
 
-	//private Relation nameSpaces;
 	private String localName;
 	private Map objectTable; // This is a map from Resource to Integer
 	// which indicates how many times each resource
@@ -346,19 +290,12 @@ class Unparser {
 	 */
 	private void wRDF() throws RDFException {
 		tab();
-		/*
-		if (xmlDeclaration != null) {
-			print(xmlDeclaration);
-			tab();
-		}
-		*/
 		print("<");
 		print(prettyWriter.rdfEl("RDF"));
 		indentPlus();
 		printNameSpaceDefn();
 		if (xmlBase != null) {
 			setLocalName(xmlBase);
-			//localName = xmlBase;
 			tab();
 			print("xml:base=" + quote(xmlBase));
 		}
@@ -1028,17 +965,10 @@ class Unparser {
 		return true;
 	}
 
-	// TODO
 	private void wBagIdAttrOpt(Resource r) {
 		// return;
 	}
 	int codeCoverage[] = new int[8];
-	/*
-	 [6.15] typeName       ::= Qname
-	 * /
-	private void wTypeName(Resource r) throws RDFException {
-		wQname(r);
-	}
 	
 	/*
 	 [6.19] Qname          ::= [ NSprefix ':' ] name
@@ -1050,18 +980,6 @@ class Unparser {
 		print(prettyWriter.endElementTag(ns, local));
 	}
 
-	/*
-	 [6.14] propName       ::= Qname
-	private void wPropName(Statement s) throws RDFException {
-		wQname(s.getPredicate());
-	}
-	 * /
-	private void wQNameStartx(Resource p) throws RDFException {
-		print(prettyWriter.startElementTag(p.getURI()));
-	}
-	private void wQNameEndx(Resource p) throws RDFException {
-		print(prettyWriter.endElementTag(p.getURI()));
-	}*/
 	private void wQNameAttr(Property p) throws RDFException {
 		print(prettyWriter.attributeTag(p.getURI()));
 	}
@@ -1134,15 +1052,6 @@ class Unparser {
 
 	private void printNameSpaceDefn() {
 		print(prettyWriter.xmlnsDecl());
-		/*
-		Iterator it = nameSpaces.iterator();
-		Map.Entry ns;.
-		while (it.hasNext()) {
-			ns = (Map.Entry) it.next();
-			tab();
-			print("xmlns:" + ns.getValue() + "=" + quote((String) ns.getKey()));
-		}
-		*/
 	}
 
 	/****************************************************************************
@@ -1213,45 +1122,7 @@ class Unparser {
 	}
 	/**
 	 * Name space stuff.
-	 ** /
-	private static Map specialPrefixes = new HashMap();
-	static {
-		specialPrefixes.put(RDF.getURI(), "rdf");
-		specialPrefixes.put(RDFS.getURI(), "rdfs");
-		specialPrefixes.put(RSS.getURI(), "rss");
-		//    specialPrefixes.put("http://www.daml.org/2000/12/daml+oil#","daml");
-	}
-	/**
-	 *  This looks up a URI in my list of favorite prefixes.
-	 *  This is not an invertible function, so another stage of
-	 *  reasoning is needed to make a bijective function for the
-	 *  name space declaration.
-	 * /
-	static private String specialPrefix(String uri) {
-		String rslt = (String) specialPrefixes.get(uri);
-		if (rslt == null
-			&& uri.startsWith("http://www.daml.org/")
-			&& uri.endsWith("daml+oil#"))
-			return "daml";
-		return rslt;
-	}
-	/*
-	private int genSym;
-	
-	private void addNameSpace(String uri, Relation nsv) {
-		String prefix = specialPrefix(uri);
-		if (nsv.backward(prefix) != null) {
-			prefix = null;
-		}
-		if (prefix == null) {
-			if (nsv.forward(uri) != null)
-				return; // Already in there.
-			prefix = "RDFNsId" + genSym++;
-		}
-		nsv.set(uri, prefix);
-	}
-	
-	*/
+	 **/
 	private void addTypeNameSpaces() {
 		NodeIterator nn = model.listObjectsOfProperty(RDF.type);
 		try {
@@ -1266,21 +1137,6 @@ class Unparser {
 			nn.close();
 		}
 	}
-	/*
-	private String nameSpaceAbbreviation(String ns) {
-		Set rslt = (Set) nameSpaces.forward(ns);
-		if (rslt == null || rslt.isEmpty()) {
-			/*
-			new Exception("foo").printStackTrace();
-			System.err.println("Please e-mail the above stack trace to jjc@hplb.hpl.hp.com");
-			System.err.println("There may be a heisenbug related to this condition.");
-			System.err.println("It is hard to reproduce.");
-			* /
-			error("Name space failure: " + ns);
-		}
-		return (String) rslt.iterator().next();
-	}
-	*/
 	private String getNameSpace(Resource r) {
 		if (r.isAnon()) {
 			Log.severe(
@@ -1331,8 +1187,6 @@ class Unparser {
 				+ new Character((char) ('a' + suffixId % 26));
 		}
 	}
-	//private Map localNameMap = new HashMap();
-	//private int localId = 1;
 	private String getLocalName(Resource r) throws RDFException {
 		if (r.isAnon()) {
 			Log.severe(
@@ -1464,21 +1318,6 @@ class Unparser {
 						// See http://www.w3.org/TR/REC-xml#AVNormalize
 						if (buf[i] <= ' ')
 							return false;
-						/*  NOT NECESSARY:
-						else
-						    // See http://www.w3.org/TR/REC-xml#NT-AttValue
-						    // It's very liberal, since we will escape
-						    // the following problem characters
-						    // we can ignore them.
-						    switch (buf[i]) {
-						        case '"':
-						        case '\'':
-						        case '&':
-						        case '<':
-						        case '>':
-						            return false;
-						    }
-						*/
 					}
 					return !wantReification(s);
 				}
@@ -1854,58 +1693,12 @@ class Unparser {
 		}
 		openResIterators = new HashSet();
 	}
-    /*
-	private class SubjectIterator implements Iterator {
-		private ResIterator resIt;
-		private boolean dead = false;
-		SubjectIterator(ResIterator resItx) {
-			resIt = resItx;
-		}
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-		public Object next() {
-			if (dead)
-				throw new NoSuchElementException();
-			
-		   return resIt.nextResource();
-		}
-		public boolean hasNext() {
-			if (dead)
-				return false;
-			boolean rslt;
-				rslt = resIt.hasNext();
-				if (!rslt) {
-					dead = true;
-					close(resIt);
-				}
-				return rslt;
-		}
-	}
-    */
 	private Iterator modelListSubjects() {
 			ResIterator resIt = model.listSubjects();
 			openResIterators.add(resIt);
 			return resIt;
 		
 	}
-	/** TESTING
-	static public void main(String args[]) throws RDFException, IOException{
-	    //Model mdl  = new com.hp.hpl.jena.mem.ModelMem();
-	   // new Regression().test21(new ModelMem(),new ModelMem());
-	
-	    for (int i=0; i< 4; i++) {
-	        System.out.print(i);
-	        for (int j=0; j<5;j++) {
-	            new Regression().test21(new ModelMem(),new ModelMem());
-	            System.out.print("+"); System.out.flush();
-	        }
-	        System.out.println();
-	    }
-	
-	    System.out.println("Done");
-	}
-	 */
 
 }
 

@@ -32,7 +32,6 @@
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.enhanced.*;
 
 import com.hp.hpl.jena.graph.*;
@@ -40,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-03-26 12:33:05 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-04-02 13:26:32 $
  */
 public class StatementImpl //extends ResourceImpl 
           implements Statement {

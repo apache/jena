@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.4 2003-03-31 10:05:40 der Exp $
+  $Id: Model.java,v 1.5 2003-04-02 13:26:33 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -50,7 +50,7 @@ import java.io.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.4 $Date: 2003/03/31 10:01:16 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $Date: 2003/03/31 10:05:40 $'
  */
 public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	//    public BindingQueryPlan prepareBindings( Query q, Variable [] variables );
@@ -262,7 +262,7 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	public Model read(String url) throws RDFException;
 
-	/** add statements from an RDF/XML serialization
+	/** Add statements from an RDF/XML serialization
 	 * @param in the source of the RDF/XML
 	 * @param base the base to use when converting relative to absolute uri's
 	 * @throws RDFException a generic RDF exception
@@ -270,10 +270,12 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	public Model read(InputStream in, String base) throws RDFException;
 
-	/** add RDF statements represented in language <code>lang</code> to the model.
+	/** Add RDF statements represented in language <code>lang</code> to the model.
+	 * <br />Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE"
+	 * and "N3".  <code>null</code> represents the default language, "RDF/XML".
+	 * "RDF/XML-ABBREV" is a synonym for "RDF/XML".
+     * <br />
 	 *
-	 * <p>predefined values for <code>lang</code> are defined in {@link RDFReader }
-	 * </p>
 	 * @return this model
 	 * @param base the base uri to be used when converting relative
 	 * URI's to absolute URI's.
@@ -284,22 +286,27 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	public Model read(InputStream in, String base, String lang)
 		throws RDFException;
-	/** Using this method is often a mistake.
+	
+    /** Using this method is often a mistake.
 	 * Add statements from an RDF/XML serialization.
+     * It is generally better to use an InputStream if possible.
+     * {@link Model.read(InputStream,String)}, otherwise there is
+     * a danger of a mismatch between the character encoding of say
+     * the FileReader and the character encoding of the data in the file.
 	 * @param reader the source of the RDF/XML
 	 * @param base the base to use when converting relative to absolute uri's
 	 * @throws RDFException a generic RDF exception
 	 * @return the current model
 	 */
 	public Model read(Reader reader, String base) throws RDFException;
-	// @deprecated
-
+	
 	/** 
 	 * Add statements from a serializion in language <code>lang</code> to the
 	 * model.
-	 *
-	 * <p>predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE" and
-	 * "N3".  <code>null</code> represents the default language, "RDF/XML".</p>
+     * <br />Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE"
+     * and "N3".  <code>null</code> represents the default language, "RDF/XML".
+     * "RDF/XML-ABBREV" is a synonym for "RDF/XML".
+     * <br />
 	 *
 	 * <p>See {@link Model} for a description of how to traverse a firewall.</p>
 	 * @param url a string representation of the url to read from
@@ -311,9 +318,15 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 
 	/** Using this method is often a mistake.
 	 * Add RDF statements represented in language <code>lang</code> to the model.
-	 *
-	 * <p>predefined values for <code>lang</code> are defined in {@link RDFReader }
-	 * </p>
+	 *<br />
+     *Predefined values for <code>lang</code> are "RDF/XML", "N-TRIPLE"
+	 *and "N3".  <code>null</code> represents the default language, "RDF/XML".
+	 *"RDF/XML-ABBREV" is a synonym for "RDF/XML".
+     * <br />
+	 * It is generally better to use an InputStream if possible. {@link Model.
+	 * read(InputStream,String)}, otherwise there is a danger of a mismatch
+	 * between the character encoding of say the FileReader and the character
+	 * encoding of the data in the file.
 	 * @return this model
 	 * @param base the base uri to be used when converting relative
 	 * URI's to absolute URI's.
@@ -324,24 +337,22 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	public Model read(Reader reader, String base, String lang)
 		throws RDFException;
-	// @deprecated
-
+	
 	/** Write the model as an XML document.
-	*
-	 * <p>The language in which to write the model is specified by the
-	 * <code>lang</code> argument.  Predefined values are "RDF/XML",
-	 * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value is
-	 * represented by <code>null<code> is "RDF/XML".</p>
-	 *
+	*It is often better to use an OutputStream rather than a Writer, since this
+	*will avoid character encoding errors.
+	 * 
+	 * 
 	 * @return this model
 	 * @param writer a writer to which the XML will be written
 	 * @throws RDFException Generic RDF Exception
 	 */
 	public Model write(Writer writer) throws RDFException;
-	//* @deprecated
-
-	/** write a serialized represention of a model in a specified language.
-	 *
+	
+	/** Write a serialized represention of a model in a specified language.
+	 *It is often better to use an OutputStream rather than a Writer, since this
+	 *will avoid character encoding errors.
+	 * 
 	 * <p>The language in which to write the model is specified by the
 	 * <code>lang</code> argument.  Predefined values are "RDF/XML",
 	 * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value is
@@ -354,9 +365,13 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	public Model write(Writer writer, String lang) throws RDFException;
 // @deprecated
 
-	/** write a serialized represention of a model in a specified language.
-	 *
-	 * <p>Predefine languages are defined in {@link RDFWriterF }</p>
+	/** Write a serialized represention of a model in a specified language.
+	 * It is often better to use an OutputStream rather than a Writer,
+     * since this will avoid character encoding errors.
+	 * <p>The language in which to write the model is specified by the
+	 * <code>lang</code> argument.  Predefined values are "RDF/XML",
+	 * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value is
+	 * represented by <code>null<code> is "RDF/XML".</p>
 	 * @param writer the output writer
 	 * @param base the base uri for relative URI calculations.
 	 * <code>null</code> means use only absolute URI's.
@@ -366,8 +381,7 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 */
 	public Model write(Writer writer, String lang, String base)
 		throws RDFException;
-	// @deprecated
-
+	
 
 	/** Write the model as an XML document.
 	*
@@ -402,8 +416,8 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 * "RDF/XML-ABBREV", "N-TRIPLE" and "N3".  The default value is
 	 * represented by <code>null<code> is "RDF/XML".</p>
 	 * @param out where the RDF is written
-	 * @param base the base uri for relative URI calculations.
-	 * <code>null</code> means use only absolute URI's.
+	 * @param base The base uri for relative URI calculations. <code>null</code>
+	 * means use only absolute URI's.
 	 * @param lang the language in which the RDF should be written
 	 * @throws RDFException generic RDF exception
 	 * @return this model
@@ -732,5 +746,5 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.4 2003-03-31 10:05:40 der Exp $
+ * $Id: Model.java,v 1.5 2003-04-02 13:26:33 jeremy_carroll Exp $
  */

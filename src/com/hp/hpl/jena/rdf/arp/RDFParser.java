@@ -1891,7 +1891,7 @@ Notice the action within the kleene star.
         jj_la1[79] = jj_gen;
         break label_44;
       }
-      litContent(buf,allNs,X.xmlNameSpace());
+      litContent(buf,allNs,ParserSupport.xmlNameSpace());
     }
                                          String r = buf.toString();
                                          X.checkEncoding(r,wh);

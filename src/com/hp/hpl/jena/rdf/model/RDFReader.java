@@ -24,26 +24,28 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReader.java,v 1.1.1.1 2002-12-19 19:17:52 bwm Exp $
+ * $Id: RDFReader.java,v 1.2 2003-04-02 13:26:33 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
 
 import java.io.Reader;
 import java.io.InputStream;
-
 /** An <code>RDFReader</code> reads a serialized represenation of RDF,
  * e.g. RDF/XML, n-triple or n3 and adds the statements to a model.
  *
  * @author bwm
- * @version $Revision: 1.1.1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface RDFReader {
 
 	/** 
 	 * It is usually a mistake to use this method.
 	 * Read serialized RDF from a <code>Reader</code> and add the statements to a
-	 * <code>Model</code>.
+	 * <code>Model</code>. It is generally better to use an InputStream if
+	 * possible. {@link Model. read(InputStream,String)}, otherwise there is a
+	 * danger of a mismatch between the character encoding of say the FileReader
+	 * and the character encoding of the data in the file.
 	 * @param model The model to which statements are added.
 	 * @param r the reader from which to read
 	 */
@@ -75,11 +77,14 @@ public interface RDFReader {
 	 *
 	 * <p>No standard properties are defined.  For the properties recognised
 	 * by any particular reader implementation, see the the documentation for
-	 * that implementation.  The properties recognised by readers provided in
-	 * the standard distribution can be found in the description of their
-	 * setProperty method.  Consult the list of implementors of this interface
-	 * given above.</p>
-	 *
+	 * that implementation. </p>
+     * <p> The built-in RDFReaders have properties as defined by:
+ * <dl>
+ * <dt>N3</dt><dt>N-TRIPLE</dt>
+ * <dd>No properties.</dd>
+ * <dt>RDF/XML</dt><dt>RDF/XML-ABBREV</dt>
+ * <dd>See {@link com.hp.hpl.jena.rdf.arp.JenaReader#setProperty(String,Object)}
+ * </dl>
 	 * @param propName the name of the property
 	 * @param propValue the value of the property
 	 * @return the previous value of the property, or <code>null</code>

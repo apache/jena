@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.5 2003-03-26 12:16:13 chris-dollin Exp $
+  $Id: TestNode.java,v 1.6 2003-04-02 13:26:34 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -13,7 +13,6 @@ package com.hp.hpl.jena.graph.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
 
-import java.lang.reflect.*;
 import junit.framework.*;
 
 

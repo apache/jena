@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   *$Id: ARPFilter.java,v 1.5 2003-04-01 10:44:56 jeremy_carroll Exp $
+   *$Id: ARPFilter.java,v 1.6 2003-04-02 13:26:31 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -41,14 +41,11 @@ import java.util.HashMap;
 import java.util.BitSet;
 import java.util.Set;
 import java.util.HashSet;
-import org.xml.sax.XMLReader;
-//import org.xml.sax.helpers.XMLReaderFactory;
 import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.ErrorHandler;
 
 import org.apache.xerces.parsers.*;
 import org.apache.xerces.xni.parser.*;

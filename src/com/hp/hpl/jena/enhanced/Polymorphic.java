@@ -1,14 +1,11 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Polymorphic.java,v 1.3 2003-03-26 12:39:08 chris-dollin Exp $
+  $Id: Polymorphic.java,v 1.4 2003-04-02 13:26:35 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 
-import java.util.*;
-
-import com.hp.hpl.jena.util.*;
 
 /**
  * Abstract base class for all polymorphic RDF objects, especially enhanced node and enhanced graph.

@@ -191,6 +191,7 @@
                 <package name="com.hp.hpl.jena.reasoner"/>
                 <package name="com.hp.hpl.jena.vocabulary"/>
                 <package name="com.hp.hpl.jena.xmloutput"/>
+                <package name="com.hp.hpl.jena.rdf.arp.lang"/>
                 
             <group title="API - Application Programming Interface">
                 <package name="com.hp.hpl.jena.rdf.model"/>
@@ -199,7 +200,6 @@
                 <package name="com.hp.hpl.jena.rdql"/>
                 <package name="com.hp.hpl.jena.vocabulary"/>
                 <package name="com.hp.hpl.jena.xmloutput"/>
-               <!-- <package name="com.hp.hpl.jena.xmloutput"/> -->
             </group>
             <group title="SPI - System Programming Interface">
                 <package name="com.hp.hpl.jena.enhanced"/>
