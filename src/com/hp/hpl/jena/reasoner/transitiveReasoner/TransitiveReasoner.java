@@ -5,10 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.6 2003-04-15 21:28:39 jeremy_carroll Exp $
+ * $Id: TransitiveReasoner.java,v 1.7 2003-05-08 15:08:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.RDFS;
@@ -32,7 +33,7 @@ import java.util.HashSet;
  * of RDFS processing.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-04-15 21:28:39 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-08 15:08:53 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -82,6 +83,19 @@ public class TransitiveReasoner implements Reasoner {
      */
     public Reasoner bindSchema(Graph tbox) throws ReasonerException {
         return bindSchema(new FGraph(tbox));
+    }
+     
+    /**
+     * Extracts all of the subClass and subProperty declarations from
+     * the given schema/tbox and caches the resultant graphs.
+     * It can only be used once, can't stack up multiple tboxes this way.
+     * This limitation could be lifted - the only difficulty is the need to
+     * reprocess all the earlier tboxes if a new subPropertyOf subPropertyOf
+     * subClassOf is discovered.
+     * @param tbox schema containing the property and class declarations
+     */
+    public Reasoner bindSchema(Model tbox) throws ReasonerException {
+        return bindSchema(new FGraph(tbox.getGraph()));
     }
     
      
@@ -246,6 +260,19 @@ public class TransitiveReasoner implements Reasoner {
      */
     public void setDerivationLogging(boolean logOn) {
         // Irrelevant to this reasoner
+    }
+    
+    /**
+     * Set a configuration paramter for the reasoner. In the case of the this
+     * reasoner there are no configuration parameters and this method is simply 
+     * here to meet the interfaces specification
+     * 
+     * @param parameterUri the uri identifying the parameter to be changed
+     * @param value the new value for the parameter, typically this is a wrapped
+     * java object like Boolean or Integer.
+     */
+    public void setParameter(String parameterUri, Object value) {
+        throw new IllegalParameterException(parameterUri);
     }
     
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasonerFactory.java,v 1.6 2003-04-15 21:24:09 jeremy_carroll Exp $
+ * $Id: RDFSReasonerFactory.java,v 1.7 2003-05-08 15:08:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Factory class for creating blank instances of the RDFS reasoner.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-04-15 21:24:09 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-08 15:08:53 $
  */
 public class RDFSReasonerFactory implements ReasonerFactory {
     
@@ -33,10 +33,6 @@ public class RDFSReasonerFactory implements ReasonerFactory {
     /** Property used to configure the scan behaviour of the reasoner.
      *  Set to "true" to enable scanning of triples looking for rdf:_1 assertions. */
     public static final Property scanProperties = new PropertyImpl(URI+"#", "scanProperties");
-    
-    /** Property used to configure the checking of ranges of datatype properties
-     *  Set to "true" to enable eager range checking on add. */
-    public static final Property checkDTRange = new PropertyImpl(URI+"#", "checkDTRange");
     
     /**
      * Return the single global instance of this factory

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestReasoners.java,v 1.12 2003-04-15 21:26:20 jeremy_carroll Exp $
+ * $Id: TestReasoners.java,v 1.13 2003-05-08 15:08:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -20,13 +20,15 @@ import com.hp.hpl.jena.rdf.model.impl.StatementImpl;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.IOException;
+import java.util.Iterator;
+
 import org.apache.log4j.Logger;
 
 /**
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-04-15 21:26:20 $
+ * @version $Revision: 1.13 $ on $Date: 2003-05-08 15:08:53 $
  */
 public class TestReasoners extends TestCase {
     
@@ -99,8 +101,8 @@ public class TestReasoners extends TestCase {
         ValidityReport report = g.validate();
         if (!report.isValid()) {
             logger.debug("Validation error report:");
-            for (int i = 0; i < report.size(); i++) {
-                logger.debug(report.get(i).toString());
+            for (Iterator i = report.getReports(); i.hasNext(); ) {
+                logger.debug(i.next().toString());
             }
         }
         return report.isValid();

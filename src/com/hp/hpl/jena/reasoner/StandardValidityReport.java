@@ -5,16 +5,18 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: StandardValidityReport.java,v 1.3 2003-04-15 21:20:00 jeremy_carroll Exp $
+ * $Id: StandardValidityReport.java,v 1.4 2003-05-08 15:08:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import java.util.*;
 
 /**
- *
+ * Default implementation of ValidityReport which simply stores a list
+ * of precomputed Report records.
+ * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:20:00 $
+ * @version $Revision: 1.4 $ on $Date: 2003-05-08 15:08:16 $
  */
 public class StandardValidityReport implements ValidityReport {
 
@@ -60,11 +62,13 @@ public class StandardValidityReport implements ValidityReport {
         return reports.size();
     }
     
+    
     /**
-     * Return the i'th error/warning report in the set
+     * Return an iterator over the separate ValidityReport.Report records.
      */
-    public Report get(int i) {
-        return (Report)reports.get(i);
+    public Iterator getReports() {
+        return reports.iterator();
     }
+
 
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.6 2003-04-15 21:19:41 jeremy_carroll Exp $
+ * $Id: ReasonerRegistry.java,v 1.7 2003-05-08 15:08:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -16,6 +16,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.OWLRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
 import java.util.*;
@@ -32,7 +33,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-04-15 21:19:41 $
+ * @version $Revision: 1.7 $ on $Date: 2003-05-08 15:08:16 $
  */
 public class ReasonerRegistry {
 
@@ -194,6 +195,23 @@ public class ReasonerRegistry {
         String directName = "urn:x-hp-direct-predicate:" + node.getURI().replace(':','_') ;
         return Node.createURI(directName);
     }
+    
+    /**
+     * Prebuilt standard configuration for the default RDFS reasoner.
+     */
+    public static final Reasoner RDFS = RDFSReasonerFactory.theInstance().create(null);
+    
+    /**
+     * Prebuilt standard configuration for the default subclass/subproperty transitive closure reasoner.
+     */
+    public static final Reasoner TRANSITIVE = TransitiveReasonerFactory.theInstance().create(null);
+    
+    /**
+     * Prebuilt stanard configuration for the default OWL reasoner. This configuration is
+     * a pure forward rule-based reasoner that will compute all entailments from the ontology + instamnce
+     * data at bind time.
+     */
+    public static final Reasoner OWL = OWLRuleReasonerFactory.theInstance().create(null);
     
 }
 

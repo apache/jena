@@ -1,43 +1,33 @@
 /******************************************************************
- * File:        Derivation.java
+ * File:        NoSuchParameterException.java
  * Created by:  Dave Reynolds
- * Created on:  06-Apr-03
+ * Created on:  08-May-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Derivation.java,v 1.3 2003-05-08 15:08:16 der Exp $
+ * $Id: IllegalParameterException.java,v 1.1 2003-05-08 15:08:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
-import java.io.PrintWriter;
-
 /**
- * Derivation records are used to determine how an inferred triple
- * was derived from a set of source triples and a reasoner. SubClasses
- * provide more specific information.
- * 
- * TODO replace this with methods than can generate RDF models
- * of the derivation tree.
+ * Exception used to to signal that a configuration parameter was used
+ * (typically in a setParameter call) that was not understood - either
+ * because it was not a recognized parameter URI or its value range was incorrect.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-08 15:08:16 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-08 15:08:16 $
  */
-public interface Derivation {
+public class IllegalParameterException extends ReasonerException {
 
     /**
-     * Return a short-form description of this derivation.
+     * Constructor.
      */
-    public String toString();
+    public IllegalParameterException(String message) {
+        super(message);
+    }
     
-    /**
-     * Print a deep traceback of this derivation back to axioms and 
-     * source assertions.
-     * @param out the stream to print the trace out to
-     * @param bindings set to true to print intermediate variable bindings for
-     * each stage in the derivation
-     */
-    public void printTrace(PrintWriter out, boolean bindings);
 }
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

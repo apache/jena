@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSInfGraph.java,v 1.7 2003-04-29 16:43:41 der Exp $
+ * $Id: RDFSInfGraph.java,v 1.8 2003-05-08 15:08:54 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -35,7 +35,7 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-04-29 16:43:41 $
+ * @version $Revision: 1.8 $ on $Date: 2003-05-08 15:08:54 $
  */
 public class RDFSInfGraph extends BaseInfGraph {
 
@@ -67,9 +67,6 @@ public class RDFSInfGraph extends BaseInfGraph {
     
     /** Flag to control whether properties are eagerly scanned */
     protected boolean scanProperties = true;
-    
-    /** Note if datatype range checking is enabled for adds */
-    protected boolean checkDTRange = false;
     
 //=======================================================================
 // static rules and axioms
@@ -162,7 +159,6 @@ public class RDFSInfGraph extends BaseInfGraph {
         this.subPropertyCache = sPropertyCache.deepCopy();
         this.subClassCache = sClassCache;
         this.scanProperties = reasoner.scanProperties;
-        this.checkDTRange = reasoner.checkDTRange;
         
         // Combine a place to hold axioms and local deductions and the tbox into single cache
         if (tbox == null) {

@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.9 2003-04-15 21:23:49 jeremy_carroll Exp $
+ * $Id: RDFSReasoner.java,v 1.10 2003-05-08 15:08:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
@@ -30,7 +31,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-04-15 21:23:49 $
+ * @version $Revision: 1.10 $ on $Date: 2003-05-08 15:08:53 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -41,9 +42,6 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     
     /** Note if the reasoner is configured to scan for member properties */
     protected boolean scanProperties = true;
-    
-    /** Note if datatype range checking is enabled for adds */
-    protected boolean checkDTRange = false;
     
     // Static initializer
     static {
@@ -67,8 +65,6 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
         if (configuration != null) {
             Boolean flag = checkBinaryPredicate(RDFSReasonerFactory.scanProperties, configuration);
             if (flag != null) scanProperties = flag.booleanValue();
-            flag = checkBinaryPredicate(RDFSReasonerFactory.checkDTRange, configuration);
-            if (flag != null) checkDTRange = flag.booleanValue();
         }
     }
      
@@ -134,6 +130,26 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
      */
     public void setDerivationLogging(boolean logOn) {
         // Irrelevant to this reasoner
+    }
+    
+    /**
+     * Set a configuration parameter for the reasoner. The only supported parameter at present is:
+     * are:
+     * <ul>
+     * <li>RDFSReasonerFactory.scanProperties - set this to Boolean true to
+     * enable scanning of all properties looking for container membership properties, default on. </li>
+     * </ul>
+     * 
+     * @param parameterUri the uri identifying the paramter to be changed
+     * @param value the new value for the parameter, typically this is a wrapped
+     * java object like Boolean or Integer.
+     */
+    public void setParameter(String parameterUri, Object value) {
+        if (parameterUri.equals(RDFSReasonerFactory.scanProperties.getURI())) {
+            scanProperties = Util.convertBooleanPredicateArg(parameterUri, value);
+        } else {
+            throw new IllegalParameterException(parameterUri);
+        }
     }
     
 }

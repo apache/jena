@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Reasoner.java,v 1.8 2003-05-02 08:59:40 der Exp $
+ * $Id: Reasoner.java,v 1.9 2003-05-08 15:08:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.rdf.model.Model;
 //import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
@@ -20,7 +21,7 @@ import com.hp.hpl.jena.graph.Graph;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-05-02 08:59:40 $
+ * @version $Revision: 1.9 $ on $Date: 2003-05-08 15:08:16 $
  */
 public interface Reasoner {
     
@@ -50,6 +51,31 @@ public interface Reasoner {
     public Reasoner bindSchema(Graph tbox) throws ReasonerException;
     
     /**
+     * This is most commonly used to attach an ontology (a set of tbox 
+     * axioms in description logics jargon) to a reasoner. A certain amount
+     * of precomputation may be done at this time (e.g. constructing the
+     * class lattice). When the reasoner is later applied some instance data
+     * these cached precomputations may be reused.
+     * <p>In fact this call may be more general than the above 
+     * description suggests. Firstly, a reasoner that supports arbitrary rules
+     * rather than ontologies may use the same method to bind the reasoner
+     * to the specific rule set (encoded in RDF). Secondly, even in the ontology
+     * case a given reasoner may not require a strict separation of tbox and
+     * abox - it may allow instance data in the tbox and terminology axioms in
+     * the abox. </p>
+     * <p>A reasoner is free to simply note this set of RDF and merge with any
+     * future RDF rather than do processing at this time. </p>
+     * @param tbox the ontology axioms or rule set encoded in RDF
+     * @return a reasoner instace which can be used to process a data graph,
+     * it may be the same instance - bindSchema is not required to be side-effect free.
+     * @throws ReasonerException if the reasoner cannot be
+     * bound to a rule set in this way, for example if the underlying engine
+     * can only accept a single rule set in this way and one rule set has
+     * already been bound in of if the ruleset is illformed.
+     */
+    public Reasoner bindSchema(Model tbox) throws ReasonerException;
+    
+    /**
      * Attach the reasoner to a set of RDF data to process.
      * The reasoner may already have been bound to specific rules or ontology
      * axioms (encoded in RDF) through earlier bindRuleset calls.
@@ -71,6 +97,17 @@ public interface Reasoner {
      * Default - false.
      */
     public void setDerivationLogging(boolean logOn);
+    
+    /**
+     * Set a configuration parameter for the reasoner. Parameters can identified
+     * by URI and can also be set when the Reasoner instance is created by specifying a
+     * configuration in RDF.
+     * 
+     * @param parameterUri the uri identifying the parameter to be changed
+     * @param value the new value for the parameter, typically this is a wrapped
+     * java object like Boolean or Integer.
+     */
+    public void setParameter(String parameterUri, Object value);
 
 }
 
