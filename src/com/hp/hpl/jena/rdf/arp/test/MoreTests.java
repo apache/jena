@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.21 2005-02-21 12:11:05 andy_seaborne Exp $
+ *  $Id: MoreTests.java,v 1.22 2005-03-31 16:15:31 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -29,6 +29,8 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
 	static public Test suite() {
 		TestSuite suite = new TestSuite("ARP Plus");
+
+		
 		suite.addTest(TestErrorMsg.suite());
 		suite.addTest(TestScope.suite());
 		suite.addTest(ExceptionTests.suite());
@@ -41,9 +43,15 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		suite.addTest(new MoreTests("testWineDefaultNS"));
 		suite.addTest(new MoreTests("testInterrupt"));
 		suite.addTest(new MoreTests("testToString"));
-
+		
+//for (int i=0; i< 20; i++ ) {
 		suite.addTest(new MoreTests("testTokenGarbage1"));
 		suite.addTest(new MoreTests("testTokenGarbage2"));
+//		suite.addTest(new MoreTests("testTokenGarbage1"));
+//		suite.addTest(new MoreTests("testTokenGarbage2"));
+//		suite.addTest(new MoreTests("testTokenGarbage1"));
+//		suite.addTest(new MoreTests("testTokenGarbage2"));
+//}
 		return suite;
 	}
 
@@ -295,6 +303,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 			Token.COUNTTEST = true;
 			Token.reinitHighTide();
 			NTriple.main(new String[] { "-t", file });
+			//System.err.println("["+Token.highTide+"]");
 			assertTrue("Too many tokens used: "+ Token.highTide,
 					Token.highTide<200);
 		} finally {

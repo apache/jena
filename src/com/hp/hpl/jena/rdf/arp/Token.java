@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Token.java,v 1.6 2004-12-23 16:05:23 jeremy_carroll Exp $
+ * * $Id: Token.java,v 1.7 2005-03-31 16:12:26 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -73,22 +73,26 @@ public class Token implements RDFParserConstants, Cloneable {
 	 */
 	static private boolean GIVEUP = true;
 
+	static private int SLEEPTIME = 15;
 	/**
 	 * The maximum number of tokens ever alive. Call
 	 * {@link #reinitHighTide} before testing. Only
 	 * set when {@link #COUNTTEST} is true.
 	 */
-	static public int highTide;
+	static volatile public int highTide;
 
-	static private int dead = 0;
+	static volatile private int dead = 0;
 
-	static private int alive = 0;
+	static volatile private int alive = 0;
 	
 	static public void reinitHighTide() {
 		PullingTokenPipe.lastMade = null;
 		Runtime.getRuntime().gc();
 		Runtime.getRuntime().gc();
-		
+		try {
+		Thread.sleep(SLEEPTIME);
+		}
+		catch (Exception e){}
 		highTide = 0;
 		dead=0;
 		alive=0;
@@ -136,6 +140,10 @@ public class Token implements RDFParserConstants, Cloneable {
 			boolean big = alive % BIGSIZE == 0;
 			Runtime.getRuntime().gc();
 			Runtime.getRuntime().gc();
+			try {
+				Thread.sleep(SLEEPTIME);
+				}
+			catch (Exception e){}
 			if (COUNTTEST) {
 				int inUse = alive - dead;
 
@@ -143,7 +151,7 @@ public class Token implements RDFParserConstants, Cloneable {
 				if (highTide < inUse)
 					highTide = inUse;
 			} else {
-				System.err.println(dead + "/" + alive);
+				System.err.println("[" + (alive-dead)+"]"+dead + "/" + alive);
 				if (big) {
 					System.err.println("Total: " + (alive - dead));
 					Iterator it = countMap.keySet().iterator();
