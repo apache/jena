@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.1 2003-04-02 10:07:30 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.2 2003-04-02 11:46:52 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -106,7 +106,7 @@ import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2003-04-02 10:07:30 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-02 11:46:52 $'
 
  */
 class Unparser {
@@ -160,20 +160,18 @@ class Unparser {
 		try {
 			res2statement = new HashMap();
 			statement2res = new HashMap();
-			ResIterator reified = new FilterResIterator(new Filter() {
-				public boolean accept(Object o) {
+			ClosableIterator reified = new MapFilterIterator(new MapFilter() {
+				public Object accept(Object o) {
 					Resource r = (Resource) o;
-					try {
-						return r.hasProperty(RDF.subject)
+						return ( r.hasProperty(RDF.subject)
 							&& r.hasProperty(RDF.object)
-							&& r.hasProperty(RDF.predicate);
-					} catch (RDFException e) {
-						throw new RuntimeRDFException(e);
-					}
+							&& r.hasProperty(RDF.predicate) )
+                            ? r : null;
+					
 				}
 			}, model.listSubjectsWithProperty(RDF.type, RDF.Statement));
 			while (reified.hasNext()) {
-				Resource r = reified.nextResource();
+				Resource r = (Resource)reified.next();
 				try {
 					/**
 					 *  This block of code assumes that really we
@@ -377,7 +375,6 @@ class Unparser {
 	 *  All subjects get listed, for top level use only.
 	 */
 	private void wObjStar() throws RDFException {
-		try {
 			Iterator rs = listSubjects();
 			while (rs.hasNext()) {
 				Resource r = (Resource) rs.next();
@@ -387,9 +384,6 @@ class Unparser {
 				wObj(r, true);
 			}
 			closeAllResIterators();
-		} catch (RuntimeRDFException rdfE) {
-			throw rdfE.getUnderlyingException();
-		}
 	}
 	/*
 	[6.12] propertyElt    ::= '<' propName idAttr? '>' value '</' propName '>'
@@ -691,11 +685,11 @@ class Unparser {
 	}
 	// propAttr* possibly with left over statements.
 	private void wPropAttrSome(Resource r) throws RDFException {
-		StmtIterator ss = listProperties(r);
+		ClosableIterator ss = listProperties(r);
 		try {
 			Set seen = new HashSet();
 			while (ss.hasNext()) {
-				Statement s = ss.nextStatement();
+				Statement s = (Statement)ss.next();
 				RDFNode val = s.getObject();
 				if (canBeAttribute(s, seen)) {
 					done(s);
@@ -793,12 +787,12 @@ class Unparser {
 		throws RDFException {
 		// preparation - look for the li's.
 		Vector found = new Vector();
-		StmtIterator ss = listProperties(r);
+		ClosableIterator ss = listProperties(r);
 		try {
 			int greatest = 0;
 			if (!prettyWriter.sListExpand)
 				while (ss.hasNext()) {
-					Statement s = ss.nextStatement();
+					Statement s = (Statement)ss.next();
 					int ix = s.getPredicate().getOrdinal();
 					if (ix != 0) {
 						if (ix > greatest) {
@@ -896,10 +890,10 @@ class Unparser {
 		return true;
 	}
 	private void wPropertyEltStar(Resource r) throws RDFException {
-		StmtIterator ss = this.listProperties(r);
+		ClosableIterator ss = this.listProperties(r);
 		try {
 			while (ss.hasNext()) {
-				Statement s = ss.nextStatement();
+				Statement s = (Statement)ss.next();
 				wPropertyElt(wtype, s.getPredicate(), s, s.getObject());
 			}
 		} finally {
@@ -1405,23 +1399,24 @@ class Unparser {
 	}
 
 	private boolean hasProperties(Resource r) throws RDFException {
-		StmtIterator ss = listProperties(r);
+		ClosableIterator ss = listProperties(r);
 		if (avoidExplicitReification
 			&& //  ( r instanceof Statement ) &&
 		 (!r.isAnon())
 			&& isLocalReference(r)
 			&& res2statement.containsKey(r)) {
-			ss = new FilterStmtIterator(new Filter() {
-				public boolean accept(Object o) {
+			ss = new MapFilterIterator(new MapFilter() {
+				public Object accept(Object o) {
 					Statement s = (Statement) o;
 					Property p = s.getPredicate();
 					String local = p.getLocalName();
-					return (!p.getNameSpace().equals(rdfns))
+					return ((!p.getNameSpace().equals(rdfns))
 						|| !((RDF.type.equals(p)
 							&& s.getObject().equals(RDF.Statement))
 							|| RDF.object.equals(p)
 							|| RDF.predicate.equals(p)
-							|| RDF.subject.equals(p));
+							|| RDF.subject.equals(p)) )
+                        ? o : null;
 				}
 			}, ss);
 		}
@@ -1431,10 +1426,10 @@ class Unparser {
 			ss.close();
 		}
 	}
-	private StmtIterator listProperties(Resource r) throws RDFException {
-		return new FilterStmtIterator(new Filter() {
-			public boolean accept(Object o) {
-				return !doneSet.contains(o);
+	private ClosableIterator listProperties(Resource r) throws RDFException {
+		return new MapFilterIterator(new MapFilter() {
+			public Object accept(Object o) {
+				return doneSet.contains(o)?null:o;
 			}
 		}, r.listProperties());
 	}
@@ -1492,11 +1487,11 @@ class Unparser {
 		return false;
 	}
 	private boolean allPropsAreAttr(Resource r) throws RDFException {
-		StmtIterator ss = listProperties(r);
+		ClosableIterator ss = listProperties(r);
 		Set seen = new HashSet();
 		try {
 			while (ss.hasNext()) {
-				Statement s = ss.nextStatement();
+				Statement s = (Statement)ss.next();
 				if (!canBeAttribute(s, seen))
 					return false;
 			}
@@ -1775,11 +1770,7 @@ class Unparser {
 		Iterator fakeLazyEvaluator = new NullIterator() {
 			public boolean hasNext() {
 					// Evalaute dependency graph.
-	try {
 					findInfiniteCycles();
-				} catch (RDFException e) {
-					throw new RuntimeRDFException(e);
-				}
 				return false;
 			}
 		};
@@ -1847,11 +1838,7 @@ class Unparser {
 		// Filter for those that still have something to list.
 		return new FilterIterator(new Filter() {
 			public boolean accept(Object o) {
-				try {
 					return hasProperties((Resource) o);
-				} catch (RDFException e) {
-					throw new RuntimeRDFException(e);
-				}
 			}
 		}, allAsOne);
 	}
@@ -1867,6 +1854,7 @@ class Unparser {
 		}
 		openResIterators = new HashSet();
 	}
+    /*
 	private class SubjectIterator implements Iterator {
 		private ResIterator resIt;
 		private boolean dead = false;
@@ -1879,36 +1867,27 @@ class Unparser {
 		public Object next() {
 			if (dead)
 				throw new NoSuchElementException();
-			try {
-				return resIt.nextResource();
-			} catch (RDFException ee) {
-				throw new RuntimeRDFException(ee);
-			}
+			
+		   return resIt.nextResource();
 		}
 		public boolean hasNext() {
 			if (dead)
 				return false;
 			boolean rslt;
-			try {
 				rslt = resIt.hasNext();
 				if (!rslt) {
 					dead = true;
 					close(resIt);
 				}
 				return rslt;
-			} catch (RDFException ee) {
-				throw new RuntimeRDFException(ee);
-			}
 		}
 	}
+    */
 	private Iterator modelListSubjects() {
-		try {
 			ResIterator resIt = model.listSubjects();
 			openResIterators.add(resIt);
-			return new SubjectIterator(resIt);
-		} catch (RDFException ee) {
-			throw new RuntimeRDFException(ee);
-		}
+			return resIt;
+		
 	}
 	/** TESTING
 	static public void main(String args[]) throws RDFException, IOException{
