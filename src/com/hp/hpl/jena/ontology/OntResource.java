@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-02 10:21:45 $
+ * Last modified on   $Date: 2003-06-06 14:46:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -39,7 +39,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.12 2003-06-02 10:21:45 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.13 2003-06-06 14:46:06 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -442,46 +442,63 @@ public interface OntResource
     public void removeAll( Property property );
 
 
+    // rdf:type 
+    
     /**
-     * <p>Set the RDF type property for this node in the underlying model, replacing any
-     * existing <code>rdf:type</code> property.  
-     * To add a second or subsequent type statement to a resource,
-     * use {@link #setRDFType( Resource, boolean ) setRDFType( Resource, false ) }.
-     * </p>
+     * <p>Set the RDF type (ie the class) for this resource, replacing any
+     * existing <code>rdf:type</code> property. Any existing statements for the RDF type
+     * will first be removed.</p>
      * 
-     * @param ontClass The RDF resource denoting the new value for the rdf:type property,
+     * @param cls The RDF resource denoting the new value for the <code>rdf:type</code> property,
      *                 which will replace any existing type property.
      */
-    public void setRDFType( Resource ontClass );
+    public void setRDFType( Resource cls );
 
+    /**
+     * <p>Add the given class as one of the <code>rdf:type</code>'s for this resource.</p>
+     * 
+     * @param cls An RDF resource denoting a new value for the <code>rdf:type</code> property.
+     */
+    public void addRDFType( Resource cls );
 
     /**
      * <p>
-     * Add an RDF type property for this node in the underlying model. If the replace flag
-     * is true, this type will replace any current type property for the node. Otherwise,
-     * the type will be in addition to any existing type property.
+     * Answer the <code>rdf:type<code> (ie the class) of this resource. If there
+     * is more than one type for this resource, the return value will be one of 
+     * the values, but it is not specified which one (nor that it will consistently
+     * be the same one each time). Equivalent to <code>getRDFType( false )</code>.
      * </p>
      * 
-     * @param ontClass The RDF resource denoting the class that will be the value 
-     * for a new <code>rdf:type</code> property.
-     * @param replace  If true, the given class will replace any existing 
-     * <code>rdf:type</code> property for this
-     *                 value, otherwise it will be added as an extra type statement.
+     * @return A resource that is the rdf:type for this resource, or one of them if 
+     * more than one is defined.
      */
-    public void setRDFType( Resource ontClass, boolean replace );
-
+    public Resource getRDFType();
 
     /**
      * <p>
-     * Answer true if this resource is a member of the class denoted by the given URI.
+     * Answer the <code>rdf:type<code> (ie the class) of this resource. If there
+     * is more than one type for this resource, the return value will be one of 
+     * the values, but it is not specified which one (nor that it will consistently
+     * be the same one each time).
+     * </p>
+     * 
+     * @param direct If true, only consider the direct types of this resource, and not
+     * the super-classes of the type(s).
+     * @return A resource that is the rdf:type for this resource, or one of them if 
+     * more than one is defined.
+     */
+    public Resource getRDFType( boolean direct );
+
+    /**
+     * <p>
+     * Answer an iterator over the RDF classes to which this resource belongs.
      * </p>
      *
-     * @param classURI String denoting the URI of the class to test against
-     * @return True if it can be shown that this ontology resource has an
-     *         <code>rdf:type</code> of the given URI.
+     * @param direct If true, only answer those resources that are direct types
+     * of this resource, not the super-classes of the class etc. 
+     * @return An iterator over the set of this resource's classes
      */
-    public boolean hasRDFType( String classURI );
-
+    public Iterator listRDFTypes( boolean direct );
 
     /**
      * <p>
@@ -490,21 +507,11 @@ public interface OntResource
      * </p>
      * 
      * @param ontClass Denotes a class to which this value may belong
-     * @return True if <code><i>this</i> rdf:type <i>ontClass</i></code> is
-     * true of the current model.
+     * @param direct If true, only consider the direct types of this resource, ignoring
+     * the super-classes of the stated types.
+     * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
      */
-    public boolean hasRDFType( Resource ontClass );
-
-
-    /**
-     * <p>
-     * Answer an iterator over all of the RDF types to which this class belongs.
-     * </p>
-     *
-     * @param closed TODO Not used in the current implementation  - fix
-     * @return an iterator over the set of this ressource's classes
-     */
-    public Iterator getRDFTypes( boolean closed );
+    public boolean hasRDFType( Resource ontClass, boolean direct );
 
 
     // Conversion methods

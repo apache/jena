@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 11:07:02 $
+ * Last modified on   $Date: 2003-06-06 14:45:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.13 2003-06-06 11:07:02 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.14 2003-06-06 14:45:25 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -156,7 +156,7 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
     public Iterator listSuperClasses( boolean direct ) {
-        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, direct, false );
+        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, false );
     }
 
     /**
@@ -285,7 +285,7 @@ public class OntClassImpl
      * @exception OntProfileException If the {@link Profile#SUB_CLASS_OF()} property is not supported in the current language profile.   
      */
     public Iterator listSubClasses( boolean direct ) {
-        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, direct, true );
+        return listDirectPropertyValues( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF", OntClass.class, getProfile().SUB_CLASS_OF(), direct, true );
     }
 
 
@@ -555,7 +555,7 @@ public class OntClassImpl
      * @return This ontology class, converted to a restriction on the given property 
      */
     public Restriction convertToRestriction( Property prop ) {
-        if (!hasRDFType( getProfile().RESTRICTION(), "RESTRICTION")) {
+        if (!hasRDFType( getProfile().RESTRICTION(), "RESTRICTION", false )) {
             setRDFType( getProfile().RESTRICTION() );
         }
         setPropertyValue( getProfile().ON_PROPERTY(), "ON_PROPERTY", prop );

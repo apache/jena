@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 11:07:02 $
+ * Last modified on   $Date: 2003-06-06 14:45:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.14 2003-06-06 11:07:02 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.15 2003-06-06 14:45:25 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -654,126 +654,132 @@ public class OntResourceImpl
     }
 
 
+    // rdf:type 
+    
     /**
-     * <p>Set the RDF type property for this node in the underlying model, replacing any
-     * existing <code>rdf:type</code> property.  
-     * To add a second or subsequent type statement to a resource,
-     * use {@link #setRDFType( Resource, boolean ) setRDFType( Resource, false ) }.
-     * </p>
+     * <p>Set the RDF type (ie the class) for this resource, replacing any
+     * existing <code>rdf:type</code> property. Any existing statements for the RDF type
+     * will first be removed.</p>
      * 
-     * @param ontClass The RDF resource denoting the new value for the rdf:type property,
+     * @param cls The RDF resource denoting the new value for the <code>rdf:type</code> property,
      *                 which will replace any existing type property.
      */
-    public void setRDFType( Resource ontClass ) {
-        setRDFType( ontClass, true );
+    public void setRDFType( Resource cls ) {
+        setPropertyValue( RDF.type, "rdf:type", cls );
     }
 
+    /**
+     * <p>Add the given class as one of the <code>rdf:type</code>'s for this resource.</p>
+     * 
+     * @param cls An RDF resource denoting a new value for the <code>rdf:type</code> property.
+     */
+    public void addRDFType( Resource cls ) {
+        addPropertyValue( RDF.type, "rdf:type", cls );
+    }
 
     /**
      * <p>
-     * Add an RDF type property for this node in the underlying model. If the replace flag
-     * is true, this type will replace any current type property for the node. Otherwise,
-     * the type will be in addition to any existing type property.
+     * Answer the <code>rdf:type<code> (ie the class) of this resource. If there
+     * is more than one type for this resource, the return value will be one of 
+     * the values, but it is not specified which one (nor that it will consistently
+     * be the same one each time). Equivalent to <code>getRDFType( false )</code>.
      * </p>
      * 
-     * @param ontClass The RDF resource denoting the class that will be the value 
-     * for a new <code>rdf:type</code> property.
-     * @param replace  If true, the given class will replace any existing 
-     * <code>rdf:type</code> property for this
-     *                 value, otherwise it will be added as an extra type statement.
+     * @return A resource that is the rdf:type for this resource, or one of them if 
+     * more than one is defined.
      */
-    public void setRDFType( Resource ontClass, boolean replace ) {
-        // first remove any existing values, if required
-        if (replace) {
-            removeAll( RDF.type );
-            
-            Property typeAlias = (Property) getProfile().getAliasFor( RDF.type );
-            if (typeAlias != null) {
-                removeAll( typeAlias );
-            }
-        }
-        
-        
-        addProperty( RDF.type, ontClass );
+    public Resource getRDFType() {
+        return getRDFType( false );
     }
-
 
     /**
      * <p>
-     * Answer true if this resource is a member of the class denoted by the given URI.
-     * </p>
-     *
-     * @param classURI String denoting the URI of the class to test against
-     * @return True if it can be shown that this ontology resource has an
-     *         <code>rdf:type</code> of the given URI.
-     */
-    public boolean hasRDFType( String classURI ) {
-        return hasRDFType( getModel().getResource( classURI ) );
-    }
-
-
-    /**
-     * <p>
-     * Answer true if this resource is a member of the class denoted by the
-     * given class resource.
+     * Answer the <code>rdf:type<code> (ie the class) of this resource. If there
+     * is more than one type for this resource, the return value will be one of 
+     * the values, but it is not specified which one (nor that it will consistently
+     * be the same one each time).
      * </p>
      * 
-     * @param ontClass Denotes a class to which this value may belong
-     * @return True if <code><i>this</i> rdf:type <i>ontClass</i></code> is
-     * true of the current model.
+     * @param direct If true, only consider the direct types of this resource, and not
+     * the super-classes of the type(s).
+     * @return A resource that is the rdf:type for this resource, or one of them if 
+     * more than one is defined.
      */
-    public boolean hasRDFType( Resource ontClass ) {
-        return hasRDFType( ontClass, "UNSPECIFIED" );
-    }
-    
-    /**
-     * <p>
-     * Answer true if this resource is a member of the class denoted by the
-     * given class resource.
-     * </p>
-     * 
-     * @param ontClass Denotes a class to which this value may belong
-     * @param name The name of the class, which will be used to give a more meaningful
-     * error message if the ontClass is null (indicating that it lies outside the current
-     * ontology profile).
-     * @return True if <code><i>this</i> rdf:type <i>ontClass</i></code> is
-     * true of the current model.
-     * @exception ProfileException if the class is null, indicating that it is not in the current profile
-     */
-    protected boolean hasRDFType( Resource ontClass, String name ) {
-        checkProfile( ontClass, name );
-        
-        ClosableIterator i = null;
+    public Resource getRDFType( boolean direct ) {
+        Iterator i = null;
         try {
-            i = getModel().listStatements( this, RDF.type, ontClass );
-            return (i.hasNext());
+            i = listRDFTypes( direct );
+            return i.hasNext() ? (Resource) i.next(): null;
         }
         finally {
-            i.close();
+            if (i instanceof ClosableIterator) {
+                ((ClosableIterator) i).close();
+            }
+        }
+    }
+
+    /**
+     * <p>
+     * Answer an iterator over the RDF classes to which this resource belongs.
+     * </p>
+     *
+     * @param direct If true, only answer those resources that are direct types
+     * of this resource, not the super-classes of the class etc. 
+     * @return An iterator over the set of this resource's classes, each of which
+     * will be a {@link Resource}.
+     */
+    public Iterator listRDFTypes( boolean direct ) {
+        Iterator i = listDirectPropertyValues( RDF.type, "rdf:type", null, getProfile().SUB_CLASS_OF(), direct, false );
+        ExtendedIterator j = (i instanceof ExtendedIterator) ? (ExtendedIterator) i : WrappedIterator.create( i );
+        
+        // we only want each result once
+        return new UniqueExtendedIterator( j );
+    }
+
+    /**
+     * <p>
+     * Answer true if this resource is a member of the class denoted by the
+     * given class resource.
+     * </p>
+     * 
+     * @param ontClass Denotes a class to which this value may belong
+     * @param direct If true, only consider the direct types of this resource, ignoring
+     * the super-classes of the stated types.
+     * @return True if this resource has the given class as one of its <code>rdf:type</code>'s.
+     */
+    public boolean hasRDFType( Resource ontClass, boolean direct ) {
+        return hasRDFType( ontClass, "unknown", direct );
+    }
+
+    protected boolean hasRDFType( Resource ontClass, String name, boolean direct ) {
+        checkProfile( ontClass, name );
+        
+        if (!direct) {
+            // just an ordinary query - we can answer this directly (more efficient)
+            return hasPropertyValue( RDF.type, "rdf:type", ontClass );
+        }
+        else {
+            // need the direct version - not so efficient
+            Iterator i = null;
+            try {
+                i = listRDFTypes( true );
+                while (i.hasNext()) {
+                    if (ontClass.equals( i.next() )) {
+                        return true;
+                    }
+                }
+            
+                return false;
+            }
+            finally {
+                if (i instanceof ClosableIterator) {
+                    ((ClosableIterator) i).close();
+                }
+            }
         }
     }
 
 
-    /**
-     * <p>
-     * Answer an iterator over all of the RDF types to which this class belongs.
-     * </p>
-     *
-     * @param closed TODO Not used in the current implementation  - fix
-     * @return an iterator over the set of this ressource's classes
-     */
-    public Iterator getRDFTypes( boolean closed ) {
-        Map1 mObject = new Map1() {  public Object map1( Object x ) { return ((Statement) x).getObject();  } };
-        
-        // make sure that we have an extneded iterator
-        Iterator i = listProperties( RDF.type );
-        ExtendedIterator ei = (i instanceof ExtendedIterator) ? (ExtendedIterator) i : WrappedIterator.create( i );
-        
-        // we only want the objects of the statements, and we only want one of each
-        return new UniqueExtendedIterator( ei.mapWith( mObject ) );
-    }
-
-    
     /** 
      * <p>Answer a view of this resource as an annotation property</p>
      * @return This resource, but viewed as an AnnotationProperty
@@ -1007,7 +1013,7 @@ public class OntResourceImpl
     }
     
     /** Return an iterator of values, respecting the 'direct' modifier */
-    protected Iterator listDirectPropertyValues( Property p, String name, Class cls, boolean direct, boolean inverse ) {
+    protected Iterator listDirectPropertyValues( Property p, String name, Class cls, Property orderRel, boolean direct, boolean inverse ) {
         ExtendedIterator i = null;
         checkProfile( p, name );
         
@@ -1015,7 +1021,7 @@ public class OntResourceImpl
         
         // check for requesting direct versions of these properties
         if (direct) {
-            sc      = getModel().getProperty( ReasonerRegistry.makeDirect( sc.getNode() ).getURI() );
+            sc = getModel().getProperty( ReasonerRegistry.makeDirect( sc.getNode() ).getURI() );
         }
         
         // determine the subject and object pairs for the list statements calls
@@ -1046,13 +1052,12 @@ public class OntResourceImpl
             // we need to keep this node out of the iterator for now, else it will spoil the maximal 
             // generator compression (since all the (e.g.) sub-classes will be sub-classes of this node
             // and so will be excluded from the maximal lower elements calculation)
-            i = i.mapWith( mapper );
             Collection s = new ArrayList();
-            for( ; i.hasNext();  s.add( i.next() ) );
+            for( i = i.mapWith( mapper ); i.hasNext();  s.add( i.next() ) );
             boolean withheld = s.remove( this );
             
-            // generate the short list
-            s = ResourceUtils.maximalLowerElements( s, p, inverse );
+            // generate the short list as the maximal bound under the given partial order
+            s = ResourceUtils.maximalLowerElements( s, orderRel, inverse );
             
             // put myself back if needed
             if (withheld) {
@@ -1083,7 +1088,15 @@ public class OntResourceImpl
     {
         private Class m_as;
         protected SubjectAsMapper( Class as ) { m_as = as; }
-        public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getSubject().as( m_as ) : x; }
+        public Object map1( Object x ) { 
+            if (x instanceof Statement) {
+                RDFNode subj = ((Statement) x).getSubject(); 
+                return (m_as == null) ? subj : subj.as( m_as );
+            }
+            else {
+                return x;
+            }
+        }
     }
     
     /** Implementation of Map1 that performs as( Class ) for a given class, on the object of a statement */
@@ -1092,7 +1105,15 @@ public class OntResourceImpl
     {
         private Class m_as;
         protected ObjectAsMapper( Class as ) { m_as = as; }
-        public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getObject().as( m_as ) : x; }
+        public Object map1( Object x ) { 
+            if (x instanceof Statement) {
+                RDFNode obj = ((Statement) x).getObject(); 
+                return (m_as == null) ? obj : obj.as( m_as );
+            }
+            else {
+                return x;
+            }
+        }
     }
     
     /** Implementation of Map1 that performs getString on the object of a statement */

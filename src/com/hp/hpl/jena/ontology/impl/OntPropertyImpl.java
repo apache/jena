@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 11:07:02 $
+ * Last modified on   $Date: 2003-06-06 14:45:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.10 2003-06-06 11:07:02 ian_dickinson Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.11 2003-06-06 14:45:25 ian_dickinson Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -168,7 +168,7 @@ public class OntPropertyImpl
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
      */ 
     public Iterator listSuperProperties( boolean direct ) {
-        return listDirectPropertyValues( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", OntProperty.class, direct, false );
+        return listDirectPropertyValues( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", OntProperty.class, getProfile().SUB_PROPERTY_OF(), direct, false );
     }
 
     /**
@@ -242,7 +242,7 @@ public class OntPropertyImpl
      * @exception OntProfileException If the {@link Profile#SUB_PROPERTY_OF()} property is not supported in the current language profile.   
      */ 
     public Iterator listSubProperties( boolean direct ) {
-        return listDirectPropertyValues( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", OntProperty.class, direct, true );
+        return listDirectPropertyValues( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF", OntProperty.class, getProfile().SUB_PROPERTY_OF(), direct, true );
     }
 
     /**
@@ -579,7 +579,7 @@ public class OntPropertyImpl
      * @return True if this this property has an <code>rdf:type</code> that defines it as a functional property.
      */
     public boolean isFunctionalProperty() {
-        return hasRDFType( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
+        return hasRDFType( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY", false );
     }
 
     /** 
@@ -587,7 +587,7 @@ public class OntPropertyImpl
      * @return True if this this property has an <code>rdf:type</code> that defines it as a datatype property.
      */
     public boolean isDatatypeProperty() {
-        return hasRDFType( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY" );
+        return hasRDFType( getProfile().DATATYPE_PROPERTY(), "DATATYPE_PROPERTY", false );
     }
 
     /** 
@@ -595,7 +595,7 @@ public class OntPropertyImpl
      * @return True if this this property has an <code>rdf:type</code> that defines it as an object property.
      */
     public boolean isObjectProperty() {
-        return hasRDFType( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY" );
+        return hasRDFType( getProfile().OBJECT_PROPERTY(), "OBJECT_PROPERTY", false );
     }
     
     /** 
@@ -603,7 +603,7 @@ public class OntPropertyImpl
      * @return True if this this property has an <code>rdf:type</code> that defines it as a transitive property.
      */
     public boolean isTransitiveProperty() {
-        return hasRDFType( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY" );
+        return hasRDFType( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY", false );
     }
     
     /** 
@@ -611,7 +611,7 @@ public class OntPropertyImpl
      * @return True if this this property has an <code>rdf:type</code> that defines it as an inverse functional property.
      */
     public boolean isInverseFunctionalProperty() {
-        return hasRDFType( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY" );
+        return hasRDFType( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY", false );
     }
     
     /** 
@@ -619,7 +619,7 @@ public class OntPropertyImpl
      * @return True if this this property has an <code>rdf:type</code> that defines it as a symmetric property.
      */
     public boolean isSymmetricProperty() {
-        return hasRDFType( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY" );
+        return hasRDFType( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY", false );
     }
 
 
