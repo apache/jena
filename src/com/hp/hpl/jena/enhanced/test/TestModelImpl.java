@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelImpl.java,v 1.2 2003-02-19 10:54:23 chris-dollin Exp $
+  $Id: TestModelImpl.java,v 1.3 2003-03-26 12:36:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced.test;
@@ -17,7 +17,7 @@ public class TestModelImpl extends EnhGraph implements TestModel {
     
     /** Creates a new instance of TestModelImpl */
     public TestModelImpl(Graph g, Personality p) {
-        super(g,p,null);
+        super(g,p);
     }
     private Triple aTriple() {
         ClosableIterator it = null;

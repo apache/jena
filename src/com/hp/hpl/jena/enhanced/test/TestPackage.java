@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.4 2003-02-20 10:57:13 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.5 2003-03-26 12:36:46 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -77,9 +77,6 @@ public class TestPackage extends GraphTestBase implements SPO {
 		
     public static TestSuite suite()
         { TestSuite suite = new TestSuite( "Enhanced" ); 
-          
-  
-
         // add all the tests defined in this class to the suite
         /* */ suite.addTest( new TestPackage( "testSplitBasic" ) );    /* */
         /* */ suite.addTest( new TestPackage( "testComboBasic" ) );    /* */
@@ -92,9 +89,10 @@ public class TestPackage extends GraphTestBase implements SPO {
         /* */ suite.addTest( new TestPackage( "testBitOfBothCache" ) );   /* */
         /* */ suite.addTest( new TestPackage( "testBitOfBothSurprise" ) ); /* */
         /* */ suite.addTest( new TestPackage( "testBrokenBasic" ) );  /* */
-
+        /* */ suite.addTest( new TestPackage( "testSimple" ) );  /* */
         return suite;
         }
+        
     /**
      * View n as intf. This is supported iff rslt.
      */
@@ -359,6 +357,28 @@ public class TestPackage extends GraphTestBase implements SPO {
     		
     	}
     }
+    
+    static class Example 
+        {
+        static final Implementation factory = new Implementation()
+            {
+            public EnhNode wrap( Node n, EnhGraph g ) { return new EnhNode( n, g ); }
+            
+            public boolean canWrap( Node n, EnhGraph g ) { return n.isURI(); }
+            };
+        }
+    
+    public void testSimple()
+        {
+        Graph g = new GraphMem();
+        Personality ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
+        EnhGraph eg = new EnhGraph( g, ours ); 
+        Node n = Node.createURI( "spoo:bar" );
+        EnhNode eNode = new EnhNode( Node.createURI( "spoo:bar" ), eg );
+        EnhNode eBlank = new EnhNode( Node.createAnon(), eg );
+        assertTrue( "URI node can be an Example", eNode.supports( Example.class ) );
+        assertFalse( "Blank node cannot be an Example", eBlank.supports( Example.class ) );
+        }
 
 }
 
