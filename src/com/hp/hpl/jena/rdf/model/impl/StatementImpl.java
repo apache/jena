@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.11 $ $Date: 2003-05-19 16:06:52 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.12 $ $Date: 2003-05-20 15:15:06 $
  */
 public class StatementImpl  implements Statement {
     
@@ -149,7 +149,7 @@ public class StatementImpl  implements Statement {
     }
     
     public String getString() throws RDFException {
-        return getLiteral().toString();
+        return getLiteral().getLexicalForm();
     }
     
     public Object getObject(ObjectF f) throws RDFException {

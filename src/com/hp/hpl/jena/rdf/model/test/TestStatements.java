@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: TestStatements.java,v 1.6 2003-04-15 12:43:42 chris-dollin Exp $
+	$Id: TestStatements.java,v 1.7 2003-05-20 15:15:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 
 import java.util.*;
 
-public class TestStatements extends GraphTestBase
+public class TestStatements extends ModelTestBase
     {
     public TestStatements( String name )
         { super( name ); }
@@ -95,6 +95,21 @@ public class TestStatements extends GraphTestBase
         Resource bAnon = (Resource) anon.inModel( B );
         assertTrue( "moved resource should still be blank", bAnon.isAnon() );
         assertEquals( "move resource should equal original", anon, bAnon );
+        }
+        
+    /**
+        Feeble test that toString'ing a Statement[Impl] will display the data-type
+        of its object if it has one.
+    */
+    public void testStatementPrintsType()
+        {            
+        Model m = ModelFactory.createDefaultModel();
+        String fakeURI = "fake:URI";
+        Resource S = m.createResource( ) ; 
+        Property P = property( m, "PP" );
+        RDFNode O = m.createTypedLiteral( "42", "", fakeURI);
+        Statement st = m.createStatement( S, P, O );
+        assertTrue( st.toString().indexOf( fakeURI ) > 0 );  
         }
     }
 

@@ -37,7 +37,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.15 2003-05-05 10:31:00 chris-dollin Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.16 2003-05-20 15:15:05 chris-dollin Exp $
  */
 
 
@@ -773,7 +773,7 @@ public class N3JenaWriter implements RDFWriter
 	{
         String datatype = literal.getDatatypeURI() ;
         String lang = literal.getLanguage() ;
-		String s = literal.toString() ;
+		String s = literal.getLexicalForm() ;
 
 		int j = 0 ;
 		int i = -1 ;

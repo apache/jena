@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LiteralLabel.java,v 1.7 2003-05-19 16:06:52 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.8 2003-05-20 15:14:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -193,8 +193,8 @@ final public class LiteralLabel {
     */
     public String toString() {
         String lf = getLexicalForm();
-        // if (true) throw new RuntimeException( "aha" );
-        return lf; // return dtype == null ? lf : lf + "^^" + dtype;
+        if (false) throw new RuntimeException( "aha" );
+        return dtype == null ? lf : lf + "^^" + dtype.getURI();
     }
     
     /**

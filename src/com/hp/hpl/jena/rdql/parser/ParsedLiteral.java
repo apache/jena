@@ -149,7 +149,7 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
         isSet = true;
         isString = true ;
         isRDFLiteral = true;
-        valString = l.toString() ;
+        valString = l.getLexicalForm() ;
         valRDFLiteral = l;
     }
     
