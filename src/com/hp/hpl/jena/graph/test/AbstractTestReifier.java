@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.11 2003-09-17 12:14:05 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.12 2003-11-26 18:35:19 wkw Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -315,6 +315,23 @@ public abstract class AbstractTestReifier extends GraphTestBase
         r.reifyAs( node( "x" ), triple( "a B c" ) );
         assertIsomorphic( wanted, h );
         }
+            
+		public void testQuadRemove()
+			{
+			Graph g = getGraph( Standard );
+			assertEquals( 0, g.size() );
+		
+			Triple s = Triple.create( "x rdf:subject s" );
+			Triple p = Triple.create( "x rdf:predicate p" );
+			Triple o = Triple.create( "x rdf:object o" );
+			Triple t = Triple.create( "x rdf:type rdf:Statement");
+			g.add(s); g.add(p); g.add(o); g.add(t);
+			assertEquals( 4, g.size() );
+
+			g.delete(s); g.delete(p); g.delete(o); g.delete(t);
+			assertEquals( 0, g.size() );
+			}
+
 
 //    public void testKevinCaseC()
 //        {
