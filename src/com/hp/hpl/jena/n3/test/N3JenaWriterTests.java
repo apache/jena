@@ -22,7 +22,7 @@ import com.hp.hpl.jena.mem.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTests.java,v 1.6 2003-06-09 14:51:14 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterTests.java,v 1.7 2003-06-09 16:04:32 andy_seaborne Exp $
  */
 public class N3JenaWriterTests extends N3ExternalTestsCom
 {
@@ -98,22 +98,10 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 			Model model_1 = new ModelMem() ;
 			model_1.read(data, uriBase, "N3") ;
             
-            // Set the writer name.
-            String oldName = System.getProperty(N3JenaWriter.propWriterName) ;
-            System.setProperty(N3JenaWriter.propWriterName, writerName) ;
 			StringWriter w = new StringWriter() ;
-            
-			//N3JenaWriter out = new N3JenaWriter() ;
-			//out.write(model_1, w, uriBase) ;
-            
-			model_1.write(w, "N3", uriBase) ;
+            model_1.write(w, writerName, uriBase) ;
+            model_1.write(System.out, writerName, uriBase) ;
 			w.close() ;
-            
-            // Set the writer name back again.
-            if ( oldName == null )
-                System.getProperties().remove(N3JenaWriter.propWriterName) ;
-            else
-                System.setProperty(N3JenaWriter.propWriterName, oldName) ;
 			
 			StringReader r = new StringReader(w.toString()) ;
 			Model model_2 = new ModelMem() ;

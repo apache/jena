@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /** An N3 writher that indirections onto one of the other writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.17 2003-06-09 14:50:09 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.18 2003-06-09 16:03:18 andy_seaborne Exp $
  */
 
 
@@ -30,8 +30,8 @@ public class N3JenaWriter implements RDFWriter
 
     static public final String n3WriterPrettyPrinter = "N3-PP" ;
     static public final String n3WriterPlain         = "N3-PLAIN" ;
-    static public final String n3WriterTriples       = "N3-Triples" ;
-    static public final String n3WriterTriplesAlt    = "N3-Triple" ;
+    static public final String n3WriterTriples       = "N3-TRIPLES" ;
+    static public final String n3WriterTriplesAlt    = "N3-TRIPLE" ;
 
     RDFWriter writer = null ;
     

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFWriterFImpl.java,v 1.2 2003-04-02 10:07:30 jeremy_carroll Exp $
+ * $Id: RDFWriterFImpl.java,v 1.3 2003-06-09 16:04:33 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -32,11 +32,12 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.rdf.model.*;
 
 import java.util.Properties;
+import com.hp.hpl.jena.n3.N3JenaWriter;
 
 /**
  *
  * @author  bwm
- * @version $Revision: 1.2 $ $Date: 2003-04-02 10:07:30 $
+ * @version $Revision: 1.3 $ $Date: 2003-06-09 16:04:33 $
  */
 public class RDFWriterFImpl extends Object implements RDFWriterF {
 
@@ -45,7 +46,16 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
     // predefined languages - these should probably go in a properties file
 
     protected static final String LANGS[] =
-        { "RDF/XML", "RDF/XML-ABBREV", "N-TRIPLE", "N3" };
+        { "RDF/XML",
+          "RDF/XML-ABBREV",
+          "N-TRIPLE",
+          "N-TRIPLES",
+          "N3",
+          N3JenaWriter.n3WriterPrettyPrinter,
+          N3JenaWriter.n3WriterPlain,
+          N3JenaWriter.n3WriterTriples,
+          N3JenaWriter.n3WriterTriplesAlt,
+        };
     // default readers for each language
 
     protected static final String DEFAULTWRITERS[] =
@@ -53,7 +63,13 @@ public class RDFWriterFImpl extends Object implements RDFWriterF {
             Jena.PATH + ".xmloutput.impl.Basic",
             Jena.PATH + ".xmloutput.impl.Abbreviated",
             Jena.PATH + ".rdf.model.impl.NTripleWriter",
-            "com.hp.hpl.jena.n3.N3JenaWriter" };
+            Jena.PATH + ".rdf.model.impl.NTripleWriter",
+            Jena.PATH + ".n3.N3JenaWriter",
+            Jena.PATH + ".n3.N3JenaWriterPP",
+            Jena.PATH + ".n3.N3JenaWriterPlain",
+            Jena.PATH + ".n3.N3JenaWriterTriples",
+            Jena.PATH + ".n3.N3JenaWriterTriples",  // Same writer, different writer name
+             };
 
     protected static final String DEFAULTLANG = LANGS[0];
 
