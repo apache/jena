@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.16 2003-07-13 21:15:56 der Exp $
+ * $Id: TestFBRules.java,v 1.17 2003-07-18 12:50:50 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-07-13 21:15:56 $
+ * @version $Revision: 1.17 $ on $Date: 2003-07-18 12:50:50 $
  */
 public class TestFBRules extends TestCase {
     
@@ -147,7 +147,7 @@ public class TestFBRules extends TestCase {
         Resource foo = infModel.createResource(PrintUtil.egNS + "foo");
         Resource bar = infModel.createResource(PrintUtil.egNS + "bar");
         
-        RDFNode flit = infModel.getResource(R1.getURI()).getProperty(rbr).getObject();
+        RDFNode flit = infModel.getResource(R1.getURI()).getRequiredProperty(rbr).getObject();
         assertNotNull(flit);
         assertEquals(flit.toString(), "allOK");
 //        assertTrue(flit instanceof Literal);
@@ -156,7 +156,7 @@ public class TestFBRules extends TestCase {
 //        assertEquals(p.getNode(), func.getArgs()[0]);
 //        assertEquals(D.getNode(), func.getArgs()[1]);
         
-        Literal one = (Literal)foo.getProperty(propbar).getObject();
+        Literal one = (Literal)foo.getRequiredProperty(propbar).getObject();
         assertEquals(new Integer(1), one.getValue());
     }
     

@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.64 $' Date='$Date: 2003-07-16 15:29:42 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.65 $' Date='$Date: 2003-07-18 12:50:48 $'
  */
 
 public class ModelCom 
@@ -1061,18 +1061,19 @@ implements Model, ModelI, PrefixMapping, ModelLock
     public boolean contains( Resource s, Property p, RDFNode o )
         { return graph.contains( s.asNode(), p.asNode(), o.asNode() ); }
         
-    public Statement getProperty(Resource s,Property p)  {
-        StmtIterator iter = listStatements( s, p, (RDFNode) null );
-        try {
-            if (iter.hasNext()) {
-                return iter.nextStatement();
-            } else {
-                throw new JenaPropertyNotFoundException( p );
-            }
-        } finally {
-            iter.close();
+    public Statement getRequiredProperty( Resource s, Property p )  
+        {
+        Statement st = getProperty( s, p );
+        if (st == null) throw new JenaPropertyNotFoundException( p );
+        return st;
         }
-    }
+    
+    public Statement getProperty( Resource s, Property p )
+        {
+        StmtIterator iter = listStatements( s, p, (RDFNode) null );
+        try { return iter.hasNext() ? iter.nextStatement() : null; }
+        finally { iter.close(); }
+        }
     
     public static Node asNode( RDFNode x )
         { return x == null ? null : x.asNode(); }
@@ -1089,32 +1090,23 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return IteratorFactory.asResIterator( xit, this );
         }
                 
-    public ResIterator listSubjects()  {
-        return listSubjectsFor( null, null );
-    }
+    public ResIterator listSubjects()  
+        { return listSubjectsFor( null, null ); }
     
     public ResIterator listSubjectsWithProperty(Property p)
-     {
-        return listSubjectsFor( p, null );
-    }
+        { return listSubjectsFor( p, null ); }
     
     public ResIterator listSubjectsWithProperty(Property p, RDFNode o)
-     {
-        return listSubjectsFor( p, o );
-    }
+        { return listSubjectsFor( p, o ); }
     
-    public NodeIterator listObjects()  {
-        return listObjectsFor( null, null );
-    }
+    public NodeIterator listObjects()  
+        { return listObjectsFor( null, null ); }
     
-    public NodeIterator listObjectsOfProperty(Property p)  {
-        return listObjectsFor( null, p );
-    }
+    public NodeIterator listObjectsOfProperty(Property p)  
+        { return listObjectsFor( null, p ); }
     
     public NodeIterator listObjectsOfProperty(Resource s, Property p)
-       {
-        return listObjectsFor( s, p );
-    }
+        { return listObjectsFor( s, p ); }
             
     public StmtIterator listStatements(final Selector selector)
         {

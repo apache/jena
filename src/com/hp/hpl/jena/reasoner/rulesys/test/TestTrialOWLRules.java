@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTrialOWLRules.java,v 1.6 2003-07-17 11:01:19 der Exp $
+ * $Id: TestTrialOWLRules.java,v 1.7 2003-07-18 12:50:50 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * included in the master regression test suite.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-07-17 11:01:19 $
+ * @version $Revision: 1.7 $ on $Date: 2003-07-18 12:50:50 $
  */
 public class TestTrialOWLRules extends TestCase {
 
@@ -193,7 +193,7 @@ public class TestTrialOWLRules extends TestCase {
         Property p = conclusions.getProperty("http://www.w3.org/2002/03owlt/someValuesFrom/premises001#p");
         Resource c = conclusions.getResource("http://www.w3.org/2002/03owlt/someValuesFrom/premises001#c");
         Resource r = conclusions.getResource("http://www.w3.org/2002/03owlt/someValuesFrom/premises001#r");
-        Resource v = (Resource)i.getProperty(p).getObject();
+        Resource v = (Resource)i.getRequiredProperty(p).getObject();
         System.out.println("Value of i.p = " + v);
         System.out.println("Types of v are: ");
         for (Iterator it2 = conclusions.listStatements(v, RDF.type, (RDFNode)null); it2.hasNext(); ) {

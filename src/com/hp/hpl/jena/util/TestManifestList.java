@@ -13,7 +13,7 @@
  * then the order between the lists is not determined.  
  *  
  * @author      Andy Seaborne
- * @version     $Id: TestManifestList.java,v 1.1 2003-03-10 09:58:20 andy_seaborne Exp $
+ * @version     $Id: TestManifestList.java,v 1.2 2003-07-18 12:50:51 chris-dollin Exp $
  */
  
 package com.hp.hpl.jena.util;
@@ -86,22 +86,22 @@ public class TestManifestList
                     for (; !listItem.equals(RDF.nil);)
                     {
 
-                        Resource entry = listItem.getProperty(RDF.first).getResource();
+                        Resource entry = listItem.getRequiredProperty(RDF.first).getResource();
 
                         TestItem item = new TestItem();
                         item.entry = entry ;
                         if ( entry.hasProperty(TestManifest.name))
-                            item.name = entry.getProperty(TestManifest.name).getString() ;
+                            item.name = entry.getRequiredProperty(TestManifest.name).getString() ;
                         else
                             item.name = "No name" ;
                         if ( entry.hasProperty(TestManifest.action))
-                            item.action = entry.getProperty(TestManifest.action).getObject();
+                            item.action = entry.getRequiredProperty(TestManifest.action).getObject();
                         if (entry.hasProperty(TestManifest.result))
-                            item.result = entry.getProperty(TestManifest.result).getObject();
+                            item.result = entry.getRequiredProperty(TestManifest.result).getObject();
 
                         entries.add(item);
                         // Move on
-                        listItem = listItem.getProperty(RDF.rest).getResource();
+                        listItem = listItem.getRequiredProperty(RDF.rest).getResource();
                     }
                 }
                 listIter.close();
@@ -210,10 +210,10 @@ public class TestManifestList
             String name = "Unknown" ;
             String comment = null ;
             if ( r.hasProperty(TestManifest.name))
-                name = r.getProperty(TestManifest.name).getString() ;
+                name = r.getRequiredProperty(TestManifest.name).getString() ;
                         
             if ( r.hasProperty(RDFS.comment))
-                comment = r.getProperty(RDFS.comment).getString() ;
+                comment = r.getRequiredProperty(RDFS.comment).getString() ;
                         
             String actionStr = "unset" ;
             if ( action != null )

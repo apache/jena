@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDataInstanceImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:07 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-18 12:50:44 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import java.util.Iterator;
  * of a DAML datatype. The instance is a resource whose <code>rdf:value</code> is a typed literal.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.6 2003-06-18 21:56:07 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.7 2003-07-18 12:50:44 chris-dollin Exp $
  */
 public class DAMLDataInstanceImpl
     extends DAMLInstanceImpl
@@ -132,7 +132,7 @@ public class DAMLDataInstanceImpl
      *         serialised value is defined
      */
     public Object getValue() {
-        return hasProperty( RDF.value ) ?  getDatatype().parse( getProperty( RDF.value ).getString() ) : null;
+        return hasProperty( RDF.value ) ?  getDatatype().parse( getRequiredProperty( RDF.value ).getString() ) : null;
     }
 
 

@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.18 2003-07-01 12:48:28 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.19 2003-07-18 12:50:51 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.xerces.util.XMLChar;
 
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2003-07-01 12:48:28 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2003-07-18 12:50:51 $'
 
  */
 class Unparser {
@@ -165,9 +165,9 @@ class Unparser {
 					 *  We may, on the contrary, be dealing with a random
 					 *  collection of triples that do not make sense.
 					 */
-					Statement subj = r.getProperty(RDF.subject);
-					Statement pred = r.getProperty(RDF.predicate);
-					Statement obj = r.getProperty(RDF.object);
+					Statement subj = r.getRequiredProperty(RDF.subject);
+					Statement pred = r.getRequiredProperty(RDF.predicate);
+					Statement obj = r.getRequiredProperty(RDF.object);
 					RDFNode nobj = obj.getObject();
 					Resource rsubj = (Resource) subj.getObject();
 					Resource rpred = (Resource) pred.getObject();
@@ -1434,7 +1434,7 @@ class Unparser {
 				if (rslt == null || (!rslt.getObject().equals(RDF.Statement)))
 					error("Statement type problem");
 			} else {
-				rslt = r.getProperty(RDF.type);
+				rslt = r.getRequiredProperty(RDF.type);
 			}
 		} catch (JenaPropertyNotFoundException rdfe) {
 			if (r instanceof Statement) error( "Statement type problem" ) ;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.17 2003-06-22 16:10:50 der Exp $
+ * $Id: ReasonerTester.java,v 1.18 2003-07-18 12:50:50 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -46,7 +46,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.18 $ on $Date: 2003-07-18 12:50:50 $
  */
 public class ReasonerTester {
 
@@ -140,7 +140,7 @@ public class ReasonerTester {
      */
     public Graph loadTestFile(Resource test, Property predicate) throws IOException {
         if (test.hasProperty(predicate)) {
-            String fileName = test.getProperty(predicate).getObject().toString();
+            String fileName = test.getRequiredProperty(predicate).getObject().toString();
             boolean cache = predicate.equals(tboxP) || predicate.equals(dataP);
             return loadFile(fileName, cache).getGraph();
         } else {
@@ -217,7 +217,7 @@ public class ReasonerTester {
             throw new JenaException("Can't find test: " + uri);
         }
 
-        String description = test.getProperty(descriptionP).getObject().toString();
+        String description = test.getRequiredProperty(descriptionP).getObject().toString();
         logger.debug("Reasoner test " + test.getURI() + " - " + description);
         
         // Construct the inferred graph

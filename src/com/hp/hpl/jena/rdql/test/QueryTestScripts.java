@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.11 2003-07-01 12:48:27 chris-dollin Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.12 2003-07-18 12:50:49 chris-dollin Exp $
  */
 
 
@@ -127,9 +127,9 @@ public class QueryTestScripts extends TestSuite
             {
                 // Anon node - more details
                 Resource r = (Resource) item.getAction();
-                queryFile = r.getProperty(TestQuery.query).getResource().getURI();
+                queryFile = r.getRequiredProperty(TestQuery.query).getResource().getURI();
                 if (r.hasProperty(TestQuery.data))
-                    dataFile = r.getProperty(TestQuery.data).getResource().getURI();
+                    dataFile = r.getRequiredProperty(TestQuery.data).getResource().getURI();
             }
 
             if (item.getResult() != null)

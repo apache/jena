@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.31 2003-07-16 15:29:42 chris-dollin Exp $
+  $Id: Model.java,v 1.32 2003-07-18 12:50:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.31 $Date: 2003/07/15 14:44:17 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.32 $Date: 2003/07/16 15:29:42 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -527,13 +527,23 @@ public interface Model
 
 	/** Return a statement with given subject and property.
 	 *  <p>If more than one statement witht the given subject and property
-	 *  exists in the model, it is undefined which will be returned.</p>
+	 *  exists in the model, it is undefined which will be returned. If none
+     * exist, an exception is thrown.
 	 * @return A statement from the model with the given subject and property.
 	 * @param s The subject of the statement to be returned.
 	 * @param p The property of the statement to be returned.
-	 
+	 * @throws JenaPropertyNotFoundException
 	 */
-	Statement getProperty(Resource s, Property p) ;
+	Statement getRequiredProperty(Resource s, Property p) ;
+    
+    /**
+        Answer a statement (s, p, ?O) from this model. If none exist, return null;
+        if several exist, pick one arbitrarily. 
+        @param s the subject of the statement to return
+        @param p the predicate of the statement to return
+        @return some statement (s, p, ?O) or null if none can be found
+    */
+    Statement getProperty( Resource s, Property p );
 
 	/** List all subjects with a given property.
 	 * @return an iterator over the subjects
@@ -906,5 +916,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.31 2003-07-16 15:29:42 chris-dollin Exp $
+ * $Id: Model.java,v 1.32 2003-07-18 12:50:45 chris-dollin Exp $
  */

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-26 08:38:34 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-18 12:50:44 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.20 2003-06-26 08:38:34 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.21 2003-07-18 12:50:44 chris-dollin Exp $
  */
 public class OntDocumentManager
 {
@@ -679,26 +679,26 @@ public class OntDocumentManager
         for (ResIterator i = metadata.listSubjectsWithProperty( RDF.type, ONTOLOGY_SPEC ); i.hasNext(); ) {
             Resource root = i.nextResource();
 
-            Statement s = root.getProperty( PUBLIC_URI );
+            Statement s = root.getRequiredProperty( PUBLIC_URI );
             if (s != null) {
                 // this will be the key in the mappings
                 String publicURI = s.getResource().getURI();
 
                 // there may be a cached copy for this ontology
                 try {
-                    s = root.getProperty( ALT_URL );
+                    s = root.getRequiredProperty( ALT_URL );
                     addAltEntry( publicURI, s.getResource().getURI() );
                 } catch (JenaException ignore) {}
 
                 // there may be a standard prefix for this ontology
                 try {
-                    s = root.getProperty( PREFIX );
+                    s = root.getRequiredProperty( PREFIX );
                     addPrefixMapping( publicURI, s.getString() );
                 } catch (JenaException ignore) {}
 
                 // there may be a language specified for this ontology
                 try {
-                    s = root.getProperty( LANGUAGE );
+                    s = root.getRequiredProperty( LANGUAGE );
                     addLanguageEntry( publicURI, s.getResource().getURI() );
                 } catch (JenaException ignore) {}
             }

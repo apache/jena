@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.*;
 
 /**
  * @author      Andy Seaborne
- * @version     $Id: QueryResultsMem.java,v 1.8 2003-07-15 13:26:58 andy_seaborne Exp $
+ * @version     $Id: QueryResultsMem.java,v 1.9 2003-07-18 12:50:49 chris-dollin Exp $
  */
 
 
@@ -208,8 +208,8 @@ public class QueryResultsMem implements QueryResultsRewindable
                 for ( ; bindingIter.hasNext() ; )
                 {
                     Resource binding = bindingIter.nextStatement().getResource() ;
-                    String var = binding.getProperty(ResultSet.variable).getString() ;
-                    RDFNode val = binding.getProperty(ResultSet.value).getObject() ;
+                    String var = binding.getRequiredProperty(ResultSet.variable).getString() ;
+                    RDFNode val = binding.getRequiredProperty(ResultSet.value).getObject() ;
                     // We include the value even if it is the marker term "rs:undefined"
                     //if ( val.equals(ResultSet.undefined))
                     //    continue ;
@@ -227,7 +227,7 @@ public class QueryResultsMem implements QueryResultsRewindable
             if ( root.hasProperty(ResultSet.size))
             {
                 try {
-                    int size = root.getProperty(ResultSet.size).getInt() ;
+                    int size = root.getRequiredProperty(ResultSet.size).getInt() ;
                     if ( size != count )
                         System.err.println("Warning: Declared size = "+size+" : Count = "+count) ;
                 } catch (JenaException rdfEx) {}

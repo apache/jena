@@ -40,7 +40,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.17 $ $Date: 2003-06-17 15:21:51 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.18 $ $Date: 2003-07-18 12:50:49 $
  */
 public class StatementImpl  implements Statement {
     
@@ -94,7 +94,7 @@ public class StatementImpl  implements Statement {
     }    
     
     public Statement getStatementProperty(Property p)  {
-        return asResource().getProperty(p);
+        return asResource().getRequiredProperty(p);
     }
     
     /**
@@ -115,7 +115,7 @@ public class StatementImpl  implements Statement {
         { return f.createResource( getResource() ); }
     
     public Statement getProperty(Property p)  {
-        return getResource().getProperty( p );
+        return getResource().getRequiredProperty( p );
     }    
         
     /**

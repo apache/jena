@@ -42,7 +42,7 @@ import com.hp.hpl.jena.shared.*;
  *  A base class on which the other containers are built.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-06-17 12:25:06 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-07-18 12:50:47 $'
  */
 public class ContainerImpl extends ResourceImpl
                            implements Container, ContainerI {
@@ -176,7 +176,7 @@ public class ContainerImpl extends ResourceImpl
         if (s.getPredicate().getOrdinal() == size) {       // if last
             getModel().remove(s);
         } else {
-            last = getModel().getProperty(this, RDF.li(size));
+            last = getModel().getRequiredProperty(this, RDF.li(size));
             s.changeObject(last.getObject());
             getModel().remove(last);
         }

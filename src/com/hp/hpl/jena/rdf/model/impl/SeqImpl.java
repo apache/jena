@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SeqImpl.java,v 1.9 2003-06-17 14:39:39 chris-dollin Exp $
+  $Id: SeqImpl.java,v 1.10 2003-07-18 12:50:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Seq
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-06-17 14:39:39 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-07-18 12:50:49 $' 
  */
 public class SeqImpl extends ContainerImpl implements Seq {
 
@@ -51,141 +51,141 @@ public class SeqImpl extends ContainerImpl implements Seq {
     }
     
     public Resource getResource(int index)  {
-        return getProperty(RDF.li(index)).getResource();
+        return getRequiredProperty(RDF.li(index)).getResource();
     }
     
     public Literal getLiteral(int index)  {
-        return getProperty(RDF.li(index)).getLiteral();
+        return getRequiredProperty(RDF.li(index)).getLiteral();
     }
     
     public RDFNode getObject(int index)  {
-        return getProperty(RDF.li(index)).getObject();
+        return getRequiredProperty(RDF.li(index)).getObject();
     }
     
     public boolean getBoolean(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getBoolean();
+        return getRequiredProperty(RDF.li(index)).getBoolean();
     }
     
     public byte getByte(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getByte();
+        return getRequiredProperty(RDF.li(index)).getByte();
     }
     
     public short getShort(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getShort();
+        return getRequiredProperty(RDF.li(index)).getShort();
     }
     
     public int getInt(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getInt();
+        return getRequiredProperty(RDF.li(index)).getInt();
     }
     
     public long getLong(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getLong();
+        return getRequiredProperty(RDF.li(index)).getLong();
     }
     
     public char getChar(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getChar();
+        return getRequiredProperty(RDF.li(index)).getChar();
     }
     
     public float getFloat(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getFloat();
+        return getRequiredProperty(RDF.li(index)).getFloat();
     }
     
     public double getDouble(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getDouble();
+        return getRequiredProperty(RDF.li(index)).getDouble();
     }
     
     public String getString(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getString();
+        return getRequiredProperty(RDF.li(index)).getString();
     }
     
     public String getLanguage(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getLanguage();
+        return getRequiredProperty(RDF.li(index)).getLanguage();
     }
     
     public Object getObject(int index, ObjectF f)  {
-        return getProperty(RDF.li(index)).getObject(f);
+        return getRequiredProperty(RDF.li(index)).getObject(f);
     }
     
     public Resource getResource(int index, ResourceF f) {
-        return getProperty(RDF.li(index)).getResource(f);
+        return getRequiredProperty(RDF.li(index)).getResource(f);
     }
     
     public Bag getBag(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getBag();
+        return getRequiredProperty(RDF.li(index)).getBag();
     }
     
     public Alt getAlt(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getAlt();
+        return getRequiredProperty(RDF.li(index)).getAlt();
     }
     
     public Seq getSeq(int index)  {
         checkIndex(index);
-        return getProperty(RDF.li(index)).getSeq();
+        return getRequiredProperty(RDF.li(index)).getSeq();
     }
 
     public Seq set(int index, RDFNode o)  {
         checkIndex(index);
-        getProperty(RDF.li(index)).changeObject(o);
+        getRequiredProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, boolean o)  {
         checkIndex(index);
-        getProperty(RDF.li(index)).changeObject(o);
+        getRequiredProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, long o)  {
         checkIndex(index);
-        getProperty(RDF.li(index)).changeObject(o);
+        getRequiredProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, float o)  {
         checkIndex(index);
-        getProperty(RDF.li(index)).changeObject(o);
+        getRequiredProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, double o)  {
         checkIndex(index);
-        getProperty(RDF.li(index)).changeObject(o);
+        getRequiredProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, char o)  {
         checkIndex(index);
-        getProperty(RDF.li(index)).changeObject(o);
+        getRequiredProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, String o)  {
         checkIndex(index);
-        getProperty(RDF.li(index)).changeObject(o);
+        getRequiredProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
     public Seq set(int index, String o, String l)  {
         checkIndex(index);
-        getProperty(RDF.li(index)).changeObject(o, l);
+        getRequiredProperty(RDF.li(index)).changeObject(o, l);
         return this;
     }
     
     public Seq set(int index, Object o)  {
         checkIndex(index);
-        getProperty(RDF.li(index)).changeObject(o);
+        getRequiredProperty(RDF.li(index)).changeObject(o);
         return this;
     }
     
@@ -240,7 +240,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     } 
     
     public Seq remove(int index)  {
-        getProperty(RDF.li(index)).remove();
+        getRequiredProperty(RDF.li(index)).remove();
         shiftDown(index+1, size()+1);
         return this;
     }
@@ -291,7 +291,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     protected void shiftUp(int start, int finish)  {
         Statement stmt = null;
         for (int i = finish; i >= start; i--) {
-            stmt = getProperty(RDF.li(i));
+            stmt = getRequiredProperty(RDF.li(i));
             getModel().remove(stmt);
             addProperty(RDF.li(i+1), stmt.getObject());
         }
@@ -299,7 +299,7 @@ public class SeqImpl extends ContainerImpl implements Seq {
     protected void shiftDown(int start, int finish)  {
         Statement stmt = null;
         for (int i=start; i<=finish; i++) {
-            stmt = getProperty(RDF.li(i));
+            stmt = getRequiredProperty(RDF.li(i));
             addProperty(RDF.li(i-1), stmt.getObject());
             stmt.remove();
         }

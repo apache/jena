@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.12 2003-07-09 17:11:29 der Exp $
+ * $Id: OWLWGTester.java,v 1.13 2003-07-18 12:50:49 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-07-09 17:11:29 $
+ * @version $Revision: 1.13 $ on $Date: 2003-07-18 12:50:49 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -140,14 +140,14 @@ public class OWLWGTester {
      */
     public boolean runTest(Resource test, boolean log, boolean stats) throws IOException {
         // Find the specification for the named test
-        RDFNode testType = test.getProperty(RDF.type).getObject();
+        RDFNode testType = test.getRequiredProperty(RDF.type).getObject();
         if (!(testType.equals(NegativeEntailmentTest) ||
                testType.equals(PositiveEntailmentTest) ) ) {
             throw new JenaException("Can't find test: " + test);
         }
 
-        String description = test.getProperty(descriptionP).getObject().toString();
-        String status = test.getProperty(statusP).getObject().toString();
+        String description = test.getRequiredProperty(descriptionP).getObject().toString();
+        String status = test.getRequiredProperty(statusP).getObject().toString();
         logger.debug("WG test " + test.getURI() + " - " + status);
         
         // Load up the premise documents
@@ -157,7 +157,7 @@ public class OWLWGTester {
         }
 
         // Load up the conclusions document
-        Resource conclusionsRes = (Resource) test.getProperty(conclusionDocumentP).getObject();
+        Resource conclusionsRes = (Resource) test.getRequiredProperty(conclusionDocumentP).getObject();
         Model conclusions = loadFile(conclusionsRes.toString() + ".rdf");
         
         // Construct the inferred graph

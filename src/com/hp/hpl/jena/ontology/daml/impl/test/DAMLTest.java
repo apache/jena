@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-23 11:47:37 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-18 12:50:44 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  * TODO: these tests are not yet fully migrated to Jena2.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.9 2003-06-23 11:47:37 ian_dickinson Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.10 2003-07-18 12:50:44 chris-dollin Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -683,7 +683,7 @@ public class DAMLTest
         DAMLProperty shoesize = (DAMLProperty) m.getDAMLValue( ns + "shoesize" );
         assertNotNull( "Property shoesize should not be null", shoesize );
 
-        DAMLDataInstance sSize = (DAMLDataInstance) ian.getProperty( shirtsize ).getObject();
+        DAMLDataInstance sSize = (DAMLDataInstance) ian.getRequiredProperty( shirtsize ).getObject();
         assertNotNull( "Object ian should have a shirtsize", sSize );
         Object x = sSize.getValue();
         assertNotNull( "Value of shirtsize should not be null", x );

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.17 2003-07-17 11:01:19 der Exp $
+ * $Id: TestBasics.java,v 1.18 2003-07-18 12:50:50 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-07-17 11:01:19 $
+ * @version $Revision: 1.18 $ on $Date: 2003-07-18 12:50:50 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -360,7 +360,7 @@ public class TestBasics extends TestCase  {
         Resource foo = infModel.createResource(PrintUtil.egNS + "foo");
         Resource bar = infModel.createResource(PrintUtil.egNS + "bar");
         
-        RDFNode flit = infModel.getResource(R1.getURI()).getProperty(rbr).getObject();
+        RDFNode flit = infModel.getResource(R1.getURI()).getRequiredProperty(rbr).getObject();
         assertNotNull(flit);
         assertEquals(flit.toString(), "allOK");
 //        assertTrue(flit instanceof Literal);
@@ -369,7 +369,7 @@ public class TestBasics extends TestCase  {
 //        assertEquals(p.getNode(), func.getArgs()[0]);
 //        assertEquals(D.getNode(), func.getArgs()[1]);
         
-        Literal one = (Literal)foo.getProperty(propbar).getObject();
+        Literal one = (Literal)foo.getRequiredProperty(propbar).getObject();
         assertEquals(new Integer(1), one.getValue());
     }
     

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
     [See end of file]
-    $Id: WGTestSuite.java,v 1.10 2003-06-17 12:25:04 chris-dollin Exp $
+    $Id: WGTestSuite.java,v 1.11 2003-07-18 12:50:44 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -239,7 +239,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     private void addTest(Resource key, TestCase test)  {
         String keyName =
             key.hasProperty(status)
-                ? key.getProperty(status).getString()
+                ? key.getRequiredProperty(status).getString()
                 : "no status";
         TestSuite sub = (TestSuite) parts.get(keyName);
         if (sub == null) {
@@ -274,8 +274,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             testID = r;
         }
         String create(Property p) {
-            Resource file = testID.getProperty(p).getResource();
-            Resource t = file.getProperty(RDF.type).getResource();
+            Resource file = testID.getRequiredProperty(p).getResource();
+            Resource t = file.getRequiredProperty(RDF.type).getResource();
             if (ntriple.equals(t)) {
                 return "\"" + file.getURI() + "\",false";
             } else if (rdfxml.equals(t)) {
@@ -285,8 +285,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             }
         }
         Model read(Property p) throws IOException {
-            Resource file = testID.getProperty(p).getResource();
-            Resource t = file.getProperty(RDF.type).getResource();
+            Resource file = testID.getRequiredProperty(p).getResource();
+            Resource t = file.getRequiredProperty(RDF.type).getResource();
             String uri = file.getURI();
             if (ntriple.equals(t)) {
                 return loadNT(factory.open(uri),uri);
@@ -416,7 +416,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         void save(Property p)  {
             if (factory.savable()) {
-                String uri = testID.getProperty(p).getResource().getURI();
+                String uri = testID.getRequiredProperty(p).getResource().getURI();
                 int suffix = uri.lastIndexOf('.');
                 String saveUri = uri.substring(0, suffix) + ".ntx";
                 //   System.out.println("Saving to " + saveUri);

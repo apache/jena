@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ManualExample.java,v 1.1 2003-06-26 22:42:01 der Exp $
+ * $Id: ManualExample.java,v 1.2 2003-07-18 12:50:50 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * Some code samples from the user manual.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-26 22:42:01 $
+ * @version $Revision: 1.2 $ on $Date: 2003-07-18 12:50:50 $
  */
 public class ManualExample {
 
@@ -44,7 +44,7 @@ public class ManualExample {
                               ReasonerVocabulary.RDFS_SIMPLE);
         InfModel inf = ModelFactory.createInfModel(reasoner, rdfsExample);
         Resource a = inf.getResource(NS+"a");
-        System.out.println("Statement: " + a.getProperty(q));
+        System.out.println("Statement: " + a.getRequiredProperty(q));
                    
     }
     

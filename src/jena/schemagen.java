@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-10 12:11:03 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-18 12:50:51 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -48,7 +48,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.18 2003-06-10 12:11:03 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.19 2003-07-18 12:50:51 chris-dollin Exp $
  */
 public class schemagen {
     // Constants
@@ -1193,7 +1193,7 @@ public class schemagen {
             }
 
             if (m_root.hasProperty( m_prop )) {
-                return m_root.getProperty( m_prop ).getBoolean();
+                return m_root.getRequiredProperty( m_prop ).getBoolean();
             }
 
             return false;
@@ -1218,7 +1218,7 @@ public class schemagen {
             }
 
             if (m_prop != null  &&  m_root.hasProperty( m_prop )) {
-                return m_root.getProperty( m_prop ).getString();
+                return m_root.getRequiredProperty( m_prop ).getString();
             }
 
             // not set
@@ -1253,7 +1253,7 @@ public class schemagen {
             }
 
             if (m_prop != null  &&  m_root.hasProperty( m_prop )) {
-                return m_root.getProperty( m_prop ).getResource();
+                return m_root.getRequiredProperty( m_prop ).getResource();
             }
 
             // not set

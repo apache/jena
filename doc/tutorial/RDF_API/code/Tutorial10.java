@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Tutorial10.java,v 1.3 2003-07-08 07:38:38 chris-dollin Exp $
+  $Id: Tutorial10.java,v 1.4 2003-07-18 12:50:26 chris-dollin Exp $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 /** Tutorial 10 - demonstrate a container
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-07-08 07:38:38 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-07-18 12:50:26 $'
  */
 public class Tutorial10 extends Object {
     
@@ -64,7 +64,7 @@ public class Tutorial10 extends Object {
             while (iter2.hasNext()) {
                 System.out.println("  " +
                     ((Resource) iter2.next())
-                                     .getProperty(VCARD.FN)
+                                     .getRequiredProperty(VCARD.FN)
                                      .getString());
             }
         } else {

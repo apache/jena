@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-19 08:19:46 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-18 12:50:49 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -44,7 +44,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.2 2003-06-19 08:19:46 ian_dickinson Exp $
+ * @version CVS $Id: TestList.java,v 1.3 2003-07-18 12:50:49 chris-dollin Exp $
  */
 public class TestList
     extends TestCase
@@ -156,7 +156,7 @@ public class TestList
             Resource root = m.getResource( NS + "root" );
             assertNotNull( "Root resource should not be null", root );
         
-            Resource listHead = root.getProperty( m.getProperty( NS + "p" ) ).getResource();
+            Resource listHead = root.getRequiredProperty( m.getProperty( NS + "p" ) ).getResource();
         
             RDFList l = (RDFList) listHead.as( RDFList.class );
             assertNotNull( "as(RDFList) should not return null for root", l );
@@ -203,7 +203,7 @@ public class TestList
             
             // add another node to the head of the list
             Resource badList = m.createResource();
-            m.getProperty( root, p ).remove();
+            m.getRequiredProperty( root, p ).remove();
             m.add( root, p, badList );
             m.add( badList, RDF.type, RDF.List );
             

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestModel.java,v 1.4 2003-07-10 09:01:33 chris-dollin Exp $
+  $Id: AbstractTestModel.java,v 1.5 2003-07-18 12:50:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -85,6 +85,20 @@ public abstract class AbstractTestModel extends ModelTestBase
         assertTrue( model.containsResource( resource( model, "_b" ) ) );
         assertFalse( model.containsResource( resource( model, "i" ) ) );
         assertFalse( model.containsResource( resource( model, "_j" ) ) );
+        }
+        
+    /**
+        Test the new version of getProperty(), which delivers null for not-found
+        properties.
+    */
+    public void testGetProperty()
+        {
+        modelAdd( model, "x P a; x P b; x R c" );
+        Resource x = resource( model, "x" );
+        assertEquals( resource( model, "c" ), x.getProperty( property( model, "R" ) ).getObject() );
+        RDFNode ob = x.getProperty( property( model, "P" ) ).getObject();
+        assertTrue( ob.equals( resource( model, "a" ) ) || ob.equals( resource( model, "b" ) ) );
+        assertNull( x.getProperty( property( model, "noSuchPropertyHere" ) ) );
         }
     }
 

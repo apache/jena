@@ -56,7 +56,7 @@ import com.hp.hpl.jena.graph.Node;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-07-02 09:00:20 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-07-18 12:50:46 $'
  */
 public interface Resource extends RDFNode {
       
@@ -124,11 +124,22 @@ public interface Resource extends RDFNode {
      * <p>The model associated with the resource instance is searched for statements
      * whose subject is this resource and whose predicate is p.  If such a statement
      * is found, it is returned.  If several such statements are found, any one may
-     * be returned.  If no such statements are found, and exception is thrown.</p>
+     * be returned.  If no such statements are found, an exception is thrown.</p>
      * @param p The property sought.
-     * @return A statement specifying the property value.
+     * @return some (this, p, ?O) statement if one exists
+     * @throws JenaPropertyNotFoundException if no such statement found
      */
-    public Statement  getProperty(Property p) ;
+    public Statement  getRequiredProperty(Property p) ;
+    
+    /**
+        Answer some statement (this, p, O) in the associated model. If there are several
+        such statements, any one of them may be returned. If no such statements exist,
+        null is returned - in this is differs from getRequiredProperty. 
+        @param p the property sought
+        @return a statement (this, p, O), or null if no such statements exist here
+    */
+    public Statement getProperty( Property p );
+    
     /** List all the values of the property p.
      *
      * <p>Returns an iterator over all the statements in the associated model whose
