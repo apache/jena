@@ -43,6 +43,10 @@ Post Jena 2.1 change list
         with labels J_startsWith, J_endsWith, J_contains, to allow back
         ends to optimise those.
 
+  RDQL
+      o Added langeq operator
+      o Remove ResultBinding.getValue() (which was an internal use operation)
+
   Event handling
       o added new graph.GraphEvents as holder of event constants with one
         such, .removeAll, issued by BulkUpdateHandler for removeAll(), and

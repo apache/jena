@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.Model;
 /** rdql2.ResultBinding
  * 
  * @author Andy Seaborne
- * @version $Id: ResultBinding.java,v 1.13 2004-07-30 13:41:06 andy_seaborne Exp $
+ * @version $Id: ResultBinding.java,v 1.14 2004-07-30 17:11:00 andy_seaborne Exp $
  */
 
 public interface ResultBinding
@@ -24,7 +24,9 @@ public interface ResultBinding
      */
     public ResultBindingIterator iterator();
 
-    /** Return the value of the named variable in this binding.  Object will ne an RDFNode. */
+    /** Return the value of the named variable in this binding.  Object will be
+        an RDFNode.
+     */
     public Object get(String varName);
 
     /** Iterator over the names in this binding */ 
