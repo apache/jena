@@ -9,7 +9,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.13 2003-08-17 20:49:38 der Exp $
+# $Id: owl-fb-test.rules,v 1.14 2003-08-18 17:00:48 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -360,7 +360,7 @@
 [sameIndividualAs5c: (?V ?P ?Y) <- bound(?V), (?V ?P ?X), notEqual(?X,?Y), (?X owl:sameIndividualAs ?Y) ]
 
 [sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
-[sameIndividualAs6: (?Y rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
+#[sameIndividualAs6: (?Y rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
 
 #------------------------------------------------------------------
 # Property rules
