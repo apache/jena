@@ -87,6 +87,7 @@
 
 -> (rdfs:range owl:ObjectProperty owl:Thing).
 -> (rdfs:domain owl:ObjectProperty owl:Thing).
+-> (rdfs:domain owl:DatatypeProperty owl:Thing).
 
 -> (owl:Class rdfs:subClassOf rdfs:Class).
 -> (owl:Restriction rdfs:subClassOf owl:Class).
@@ -113,6 +114,8 @@
 #------------------------------------------------------------------
 # OWL Rules
 #------------------------------------------------------------------
+
+[thing1: (?C rdf:type owl:Class) -> (?C rdfs:subClassOf owl:Thing)]
 
 #------------------------------------------------------------------
 # Identify restriction assertions
@@ -252,7 +255,7 @@
 
 # Exploding the pairwise assertions is simly done procedurally here.
 # This is better handled by a dedicated equality reasoner any.
-[distinct2: (* owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
+[distinct2: (?w owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
 
 #------------------------------------------------------------------
 # Class equality
@@ -291,7 +294,7 @@
 #[sameIndividualAs2: (?P rdf:type owl:InverseFunctionalProperty) ->
 #      [sameIndividualAs2b: (?A owl:sameIndividualAs ?C) <- (?A ?P ?B), (?C ?P ?B) ] ]
                     
-[sameIndividualAs3: (?X owl:sameAs ?Y), (?X rdf:type owl:Thing), (?Y rdf:type old:Thing) 
+[sameIndividualAs3: (?X owl:sameAs ?Y), (?X rdf:type owl:Thing), (?Y rdf:type owl:Thing) 
                     -> (?X owl:sameIndividualAs ?Y) ]
                     
 
