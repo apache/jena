@@ -1,11 +1,11 @@
 /*
    (c) Copyright 2003,2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Checker.java,v 1.46 2004-01-27 15:45:24 jeremy_carroll Exp $
+  $Id: Checker.java,v 1.47 2004-05-06 13:33:49 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
-import java.util.Iterator;
+//import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.rdf.model.*;
