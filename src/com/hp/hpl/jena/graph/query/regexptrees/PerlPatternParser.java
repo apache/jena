@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: PerlPatternParser.java,v 1.6 2004-08-17 15:15:08 chris-dollin Exp $
+  $Id: PerlPatternParser.java,v 1.7 2004-08-17 19:02:44 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -15,95 +15,155 @@ import java.util.*;
 */
 public class PerlPatternParser
     {
+    /**
+         The string being parsed, as supplied to the constructor(s).
+    */
     final protected String toParse;
-    protected int pointer;
-    protected RegexpTreeGenerator gen;
     
+    /**
+         The index into the string of the next undealt-with character, ie, it starts at 0.
+    */
+    protected int pointer;
+    
+    /**
+         The length of the string to parse, used as a limit.
+    */
+    protected int limit;
+    
+    /**
+         The generator for the RegexpTree nodes to be used in the parse.
+    */
+    protected RegexpTreeGenerator generator;
+    
+    /**
+         Initialise this parser with the string to parse and with the default
+         generator (SimpleGenerator).
+    */
     public PerlPatternParser( String toParse )
         { this( toParse, new SimpleGenerator() ); }
     
+    /**
+         Initialise this parser with the string to parse and with the generator to
+         use for node construction.
+    */
     public PerlPatternParser( String toParse, RegexpTreeGenerator gen )
         { this.toParse = toParse; 
-        this.gen = gen; }
+        this.limit = toParse.length();
+        this.generator = gen; }
     
-    public RegexpTree parseAtom()
+    /**
+        Answer the result of parsing the given string as a sequence of alternatives.
+    */
+    public static RegexpTree parse( String string )
+        { return new PerlPatternParser( string ) .parseAlts(); }
+    
+    /**
+        Answer the result of parsing the given string as a sequence of alternatives,
+        using the supplied generator for the pattern nodes.
+    */    
+    public static RegexpTree parse( String string, RegexpTreeGenerator gen )
+        { return new PerlPatternParser( string, gen ) .parseAlts(); }
+    
+    /**
+         Exception thrown if a syntax error is detected. Further details are in the
+         error message - it doesn't seem worth worrying about having different
+         classes for different errors. Possibly this should be a non-static class so
+         that it can get at the current context?
+    */
+    public static class SyntaxException extends RuntimeException
         {
-        if (pointer < toParse.length())
-            {
-            char ch = toParse.charAt( pointer++ );
-            if (ch == '.')
-                return gen.getAnySingle();
-            else if (ch == '^')
-                return gen.getStartOfLine();
-            else if (ch == '$')
-                return gen.getEndOfLine();
-            else if (ch == '|' || ch == ')' || ch == ']')
-                { pointer -= 1; return gen.getNothing(); }
-            else if (notSpecial( ch ))
-                return gen.getText( ch );
-            else
-                throw new RegexpTree.UnsupportedException();
-            }
-        return gen.getNothing();
+        public SyntaxException( String message )
+            { super( message ); }
         }
     
-    public static boolean notSpecial( char ch )
-        {
-        switch (ch)
-            {
-            case '.':
-            case '\\':
-            case '*': case '+':
-            case '?':
-            case '|':
-            case '^': case '$':
-            case '(': case ')':
-            case '{': case '}':
-            case '[': case ']':
-                return false;
-            default: 
-                return true;
-            }
-        }
-    
+    /**
+         Answer the string that this parser is parsing.
+    */
     public String getString()
         { return toParse; }
     
+    /**
+         Answer the current index into the parse string.
+    */
     public int getPointer()
         { return pointer; }
     
+    /**
+         Parse a single atom and return the tree for it, advancing the pointer. This
+         does not deal with quantifiers, for which see parseQuantifier. Unmatched
+         right parentheses, unexpected (hence unbound) quantifiers, and those things
+         that aren't implemented, throw exceptions. An empty atom is permitted
+         (at the end of a string or before a |).
+    */
+    public RegexpTree parseAtom()
+        {
+        if (pointer < limit)
+            {
+            char ch = toParse.charAt( pointer++ );
+            switch (ch)
+                {
+                case '.':   return generator.getAnySingle();
+                case '^':   return generator.getStartOfLine();
+                case '$':   return generator.getEndOfLine();
+                case '|':   pointer -= 1; return generator.getNothing();
+                case ')':   throw new PerlPatternParser.SyntaxException( "unmatched bracket " + ch );
+                case '(':   throw new PerlPatternParser.SyntaxException( "can't do (E) yet" );
+                case '[':   throw new PerlPatternParser.SyntaxException( "can't do [C] yet" );
+                case '\\':  throw new PerlPatternParser.SyntaxException( "can't do \\ yet" );
+                case '*':
+                case '+':
+                case '?':
+                case '{': throw new PerlPatternParser.SyntaxException( "unbound quantifier " + ch );
+                case ']':
+                case '}':
+                default: return generator.getText( ch );       
+                }
+            }
+        return generator.getNothing();
+        }
+    
+    /**
+         Parse any quantifier and answer the quantified version of the argument
+         tree <code>d</code>. TODO: handle non-greedy quantifiers. (These will
+         currently generate syntax errors when their flagging ? is encountered by
+         parseAtom.)
+    */
     public RegexpTree parseQuantifier( RegexpTree d )
         {
-        if (pointer < toParse.length())
+        if (pointer < limit)
             {
             char ch = toParse.charAt( pointer );
             switch (ch)
                 {
                 case '*':
                     pointer += 1;
-                    return gen.getZeroOrMore( d );
+                    return generator.getZeroOrMore( d );
                     
                 case '+':
                     pointer += 1;
-                    return gen.getOneOrMore( d );
+                    return generator.getOneOrMore( d );
                     
                 case '?':
                     pointer += 1;
-                    return gen.getOptional( d );
+                    return generator.getOptional( d );
                     
                 case '{':
-                    throw new RegexpTree.UnsupportedException();
-                    
-                default:
-                    return d;
+                    throw new SyntaxException( "numeric quantifiers not done yet" );
                 }
             }
-        else
-            return d;
+        return d;
         }
+    
+    /**
+         Parse an element (an atom and any following quantifier) and answer the
+         possibly-quantified tree.
+    */
+    public RegexpTree parseElement()
+        { return parseQuantifier( parseAtom() ); }
 
     /**
-    	@return
+    	Parse a sequence of elements [possibly-quantified atoms] and answer the
+        sequence (singular sequences may be reduced to its single element).
     */
     public RegexpTree parseSeq()
         {
@@ -111,30 +171,26 @@ public class PerlPatternParser
         while (true)
             {
             RegexpTree next = parseElement();
-            if (next.equals( gen.getNothing() ) ) break;
+            if (next.equals( generator.getNothing() ) ) break;
             operands.add( next );
             }
-        return gen.getSequence( operands );
+        return generator.getSequence( operands );
         }
 
+    /**
+         Parse an alternation of sequences and answer an alternative tree (or the
+         single component if there is just one alternative).
+    */
     public RegexpTree parseAlts()
         {
         List operands = new ArrayList();
         while (true)
             {
-            RegexpTree next = parseSeq();
-            operands.add( next );
-            if (pointer < toParse.length() && toParse.charAt( pointer ) == '|') pointer += 1;
+            operands.add( parseSeq() );
+            if (pointer < limit && toParse.charAt( pointer ) == '|') pointer += 1;
             else break;
             }
-        return gen.getAlternatives( operands );
-        }
-    
-    private RegexpTree parseElement()
-        {
-        RegexpTree atom = parseAtom();
-        if (atom == null) return null;
-        return parseQuantifier( atom );
+        return generator.getAlternatives( operands );
         }
     }
 
