@@ -47,17 +47,19 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
     static final String DEFAULT = "DEFAULT_GRAPH";
 
-	protected List m_specializedGraphs = null;
 	protected IRDBDriver m_driver = null;
 	protected DBPropGraph m_properties = null; 
 	protected DBPrefixMappingImpl m_prefixMapping = null;
-
+	protected List m_specializedGraphs = null;
+	protected List m_specializedGraphReifiers = null;
+	protected boolean m_hideReifiers = true; // Jena 1 behaviour is to hide reification triples
+	
 	/**
 	 * Construct a new GraphRDB
 	 * @param con an open connection to the database
@@ -100,6 +102,17 @@ public class GraphRDB extends GraphBase implements Graph {
 			DBPropDatabase dbprop = new DBPropDatabase( m_driver.getSystemSpecializedGraph());
 			dbprop.addGraph(m_properties);
 			m_specializedGraphs = m_driver.createSpecializedGraphs( m_properties );
+		}
+		
+		// Keep a list of the specialized graphs that handle reification
+		// (we'll need this later to support getReifier)
+		
+		m_specializedGraphReifiers = new ArrayList();
+		Iterator it = m_specializedGraphs.iterator();
+		while( it.hasNext() ) {
+			Object o = it.next();
+			if( o instanceof SpecializedGraphReifier )
+				m_specializedGraphReifiers.add(o);
 		}
 	}
 	
@@ -227,6 +240,8 @@ public class GraphRDB extends GraphBase implements Graph {
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
+			if( m_hideReifiers && (sg instanceof SpecializedGraphReifier) )
+				continue;
 			result += sg.tripleCount();
 		}
 		return result;
@@ -242,6 +257,8 @@ public class GraphRDB extends GraphBase implements Graph {
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
+			if( m_hideReifiers && (sg instanceof SpecializedGraphReifier) )
+				continue;
 			boolean result = sg.contains( t, complete);
 			if( result == true || complete.isDone() == true )
 				return result;
@@ -263,16 +280,15 @@ public class GraphRDB extends GraphBase implements Graph {
 	public ExtendedIterator find(TripleMatch m) {
 		if(m_specializedGraphs == null)
 			throw new RDFRDBException("Error - attempt to call find on a GraphRDB that has already been closed");
-		ExtendedIterator result = null;
+		ExtendedIterator result = new NiceIterator();
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
+			if( m_hideReifiers && (sg instanceof SpecializedGraphReifier) )
+				continue;
 			ExtendedIterator partialResult = sg.find( m, complete);
-			if( result == null)
-				result = partialResult;
-			else
-				result = result.andThen(partialResult);
+			result = result.andThen(partialResult);
 			if( complete.isDone())
 				break;
 		}
@@ -286,6 +302,18 @@ public class GraphRDB extends GraphBase implements Graph {
 	 public BulkUpdateHandler getBulkUpdateHandler()
 		{ return new SimpleBulkUpdateHandler( this ); }
 	 *******/
+
+	/* TODO - unoomment this to activate after implementation complete
+	 * (non-Javadoc)
+	 * @see com.hp.hpl.jena.graph.Graph#getReifier()
+	 *
+	 * public Reifier getReifier() {
+	 * if( m_hideReifiers )
+	 *		return new DBReifier(this, m_specializedGraphReifiers, m_specializedGraphReifiers);
+	 *	else
+	 *		return new DBReifier(this, m_specializedGraphReifiers, new ArrayList());
+	 *}
+	 */
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#getPrefixMapping()
