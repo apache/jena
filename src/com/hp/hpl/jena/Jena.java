@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Aug-2003
  * Filename           $RCSfile: Jena.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-01 21:21:36 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-08-26 16:29:15 $
+ *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -33,7 +33,7 @@ package com.hp.hpl.jena;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Version @version@, CVS $Id: Jena.java,v 1.1 2003-08-01 21:21:36 ian_dickinson Exp $
+ * @version Version @version@, CVS $Id: Jena.java,v 1.2 2003-08-26 16:29:15 andy_seaborne Exp $
  */
 public interface Jena
 {
@@ -46,9 +46,6 @@ public interface Jena
     
     /** The product name */    
     public static final String NAME = "@Name@";
-    
-    /** The copyright notice */
-    public static final String COPYRIGHT = "@copyright@";
     
     /** The Jena web site */    
     public static final String WEBSITE = "@website@";

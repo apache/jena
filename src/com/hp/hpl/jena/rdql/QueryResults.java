@@ -1,3 +1,8 @@
+/*
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
+ * [See end of file]
+ */
+
 
 package com.hp.hpl.jena.rdql;
 
@@ -13,7 +18,7 @@ import java.util.*;
  * @see QueryResultsStream
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResults.java,v 1.4 2003-03-19 17:16:55 andy_seaborne Exp $
+ * @version  $Id: QueryResults.java,v 1.5 2003-08-26 16:29:33 andy_seaborne Exp $
  */
 
 public interface QueryResults extends java.util.Iterator
