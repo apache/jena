@@ -17,13 +17,30 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.21 2004-08-31 09:49:50 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.22 2004-09-01 11:05:51 andy_seaborne Exp $
  */
 
 public class ModelLoader
 {
     static Log log = LogFactory.getLog(ModelLoader.class)  ;
     
+    /** @deprecated Use FileUtils.FileUtils.langXML */
+    public static final String langXML          = FileUtils.langXML ;
+    
+    /** @deprecated Use FileUtils.langXMLAbbrev */
+    public static final String langXMLAbbrev    = FileUtils.langXMLAbbrev ;
+    
+    /** @deprecated Use FileUtils.langNTriple */
+    public static final String langNTriple      = FileUtils.langNTriple ;
+    
+    /** @deprecated Use FileUtils.langN3 */
+    public static final String langN3           = FileUtils.langN3 ;
+    // Non-standard
+    /** @deprecated Use FileUtils.langBDB */
+    public static final String langBDB          = FileUtils.langBDB ;
+    /** @deprecated Use FileUtils.langSQL */
+    public static final String langSQL          = FileUtils.langSQL ;
+
     
     /** Load a model
      *  @deprecated Use FileManager.loadModel(urlStr)
