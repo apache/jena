@@ -19,7 +19,11 @@ Post Jena 2.1 bug fix list
       o Changed delete for RETE reasoner to be non-incremental to work around
         bug without demanding full reference counting
       o Added experimental OWLMini and OWLMicro reasoners
-      
+   
+   Ontology API
+   	  o Added a new method getOWLLanguageLevel() to OntModel, which returns the
+   	    OWL sublanguage - lite, DL or full - and error messages
+   	     
       
 Jena 2.1 - Main changes from Jena 2.0
   Installation
