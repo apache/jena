@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.19 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: Rule.java,v 1.20 2003-11-17 15:41:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -56,7 +56,7 @@ import org.apache.log4j.Logger;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.19 $ on $Date: 2003-08-27 13:11:15 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.20 $ on $Date: 2003-11-17 15:41:24 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -561,7 +561,8 @@ public class Rule implements ClauseEntry {
                 if (exp == token) {
                     // No expansion was possible
                     String prefix = token.substring(0, token.indexOf(':'));
-                    if (prefix.equals("http") || prefix.equals("urn") || prefix.equals("ftp")) {
+                    if (prefix.equals("http") || prefix.equals("urn") 
+                     || prefix.equals("ftp") || prefix.equals("mailto")) {
                         // assume it is all OK and fall through
                     } else {
                         // Likely to be a typo in a qname or failure to register
