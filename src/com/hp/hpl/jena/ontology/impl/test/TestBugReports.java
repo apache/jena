@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-13 12:11:24 $
+ * Last modified on   $Date: 2003-11-13 15:39:20 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -27,10 +27,12 @@ package com.hp.hpl.jena.ontology.impl.test;
 import java.io.*;
 import java.util.*;
 
+import com.hp.hpl.jena.enhanced.EnhGraph;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.impl.OntClassImpl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.ReasonerRegistry;
@@ -47,7 +49,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.20 2003-11-13 12:11:24 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.21 2003-11-13 15:39:20 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -483,6 +485,21 @@ public class TestBugReports
     }   
     
     
+    /** Bug report by Dave Reynolds - SF bug report 810492 */
+    public void test_der_01() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM_TRANS_INF, null );
+        Resource a = m.createResource( "http://example.org#A" );
+        Resource b = m.createResource( "http://example.org#B" );
+        OntClass A = new OntClassImpl( a.getNode(), (EnhGraph) m ) {
+            protected boolean hasSuperClassDirect(Resource cls) {
+                throw new RuntimeException( "did not find direct reasoner" );
+            }
+        };
+        
+        // will throw an exception if the wrong code path is taken
+        A.hasSuperClass( b, true );
+    }
+     
      
     // Internal implementation methods
     //////////////////////////////////

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.30 $
+ * Revision           $Revision: 1.31 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-13 12:10:26 $
+ * Last modified on   $Date: 2003-11-13 15:38:55 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.30 2003-11-13 12:10:26 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.31 2003-11-13 15:38:55 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -228,10 +228,10 @@ public class OntClassImpl
                 // we can look this up directly
                 return hasPropertyValue( ReasonerVocabulary.directSubClassOf, "direct sub-class", cls );
             }
-
-            // otherwise, not an inf-graph or the given inf-graph does not support direct directly (:-)
-            // we manually compute the maximal lower elements - this could be expensive in general
-            return ResourceUtils.maximalLowerElements( listSuperClasses(), getProfile().SUB_CLASS_OF(), false ).contains( cls );
+            else {
+                // otherwise, not an inf-graph or the given inf-graph does not support direct directly (:-)
+                return hasSuperClassDirect(cls);
+            }
         }
     }
     
@@ -773,6 +773,18 @@ public class OntClassImpl
         props.add( m.getProperty( p.getURI() ) );
     }
     
+    /**
+     * <p>Answer true if this class has the given class as a direct super-class, without using
+     * extra help from the reasoner.</p>
+     * @param cls The class to test
+     * @return True if the cls is a direct super-class of this class
+     */
+    protected boolean hasSuperClassDirect(Resource cls) {
+        // we manually compute the maximal lower elements - this could be expensive in general
+        return ResourceUtils.maximalLowerElements( listSuperClasses(), getProfile().SUB_CLASS_OF(), false ).contains( cls );
+    }
+
+
     
     //==============================================================================
     // Inner class definitions
