@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.28 2004-04-22 12:42:28 chris-dollin Exp $
+  $Id: TestNode.java,v 1.29 2004-04-23 14:32:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -10,6 +10,7 @@ package com.hp.hpl.jena.graph.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
+import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -504,10 +505,56 @@ public class TestNode extends GraphTestBase
         assertFalse( Node.create( "?x" ).isConcrete() );
         }
 
+    static String [] someURIs = new String [] 
+        {
+    		"http://domainy.thing/stuff/henry",
+            "http://whatever.com/stingy-beast/bee",
+            "ftp://erewhon/12345",
+            "potatoe:rhubarb"
+        };
+    
+    /**
+        test that URI nodes have namespace/localname splits which are consistent
+        with Util.splitNamepace.
+    */
+    public void testNamespace()
+        {
+        for (int i = 0; i < someURIs.length; i += 1)
+            {
+            String uri = someURIs[i];
+            int split = Util.splitNamespace( uri );
+        	Node n = Node.create( uri );
+        	assertEquals( "check namespace", uri.substring( 0, split ), n.getNameSpace() );
+            assertEquals( "check localname", uri.substring( split ), n.getLocalName() );
+            }
+        }
+    
+    protected static String [] someNodes =
+        {
+            "42",
+            "'hello'",
+            "_anon",
+            "'robotic'tick",
+            "'teriffic'abc:def"
+        };
+    
+    public void testHasURI()
+        {
+        for (int i = 0; i < someURIs.length; i += 1) testHasURI( someURIs[i] );
+        for (int i = 0; i < someNodes.length; i += 1) testHasURI( someNodes[i] );
+        }
+
+	private void testHasURI( String uri ) 
+        {
+		Node n = Node.create( uri );
+		assertTrue( uri, !n.isURI() || n.hasURI( uri ) );
+		assertFalse( uri, n.hasURI( uri + "x" ) );
+        }
+    
     }
 
 /*
-    (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

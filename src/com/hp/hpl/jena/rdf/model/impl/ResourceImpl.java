@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.27 2004-03-24 16:02:58 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.28 2004-04-23 14:32:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2004-03-24 16:02:58 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.28 $' Date='$Date: 2004-04-23 14:32:30 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -38,7 +38,6 @@ public class ResourceImpl extends EnhNode implements Resource {
 		return null;
 	}
 };
-    private int splitHere = -1;
         
     /**
         the master constructor: make a new Resource in the given model,
@@ -119,26 +118,18 @@ public class ResourceImpl extends EnhNode implements Resource {
     }
 
     public String getNameSpace() {
-        return isAnon() ? null : getURI().substring( 0, getSplit() );
-    }
-
-    private int getSplit() {
-		if (splitHere < 0) splitHere = whereToSplit( getURI() );
-        return splitHere;
-	}
-
-	public String getLocalName() {
-        return isAnon() ? null : getURI().substring( getSplit() );
+        return isAnon() ? null : node.getNameSpace(); // getURI().substring( 0, getSplit() );
     }
     
-    private static int whereToSplit( String s )
-        {
-        if (s == null) return 0;
-        int where = Util.splitNamespace( s );
-        return where == 0 ? s.length() : where;
-        }
+	public String getLocalName() {
+        return isAnon() ? null : node.getLocalName();  // getURI().substring( getSplit() );
+    }
 
-    public String  toString() {
+    public boolean hasURI( String uri ) {
+        return node.hasURI( uri );
+    }
+    
+    public String toString() {
     	return asNode().toString();
     }
 

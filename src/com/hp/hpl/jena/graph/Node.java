@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.33 2004-04-22 12:42:27 chris-dollin Exp $
+  $Id: Node.java,v 1.34 2004-04-23 14:32:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -213,10 +213,22 @@ public abstract class Node {
     /** get the URI of this node if it has one, else die horribly */
     public String getURI()
         { throw new UnsupportedOperationException( this + " is not a URI node" ); }
+    
+    /** get the namespace part of this node if it's a URI node, else die horribly */
+    public String getNameSpace()
+        { throw new UnsupportedOperationException( this + " is not a URI node" ); }
+    
+    /** get the localname part of this node if it's a URI node, else die horribly */
+    public String getLocalName()
+        { throw new UnsupportedOperationException( this + " is not a URI node" ); }
 
     /** get a variable nodes name, otherwise die horribly */
     public String getName()
         { throw new UnsupportedOperationException( "this (" + this.getClass() + ") is not a variable node" ); }
+    
+    /** answer true iff this node is a URI node with the given URI */
+    public boolean hasURI( String uri )
+        { return false; }
         
     /** an abstraction to allow code sharing */
     static abstract class NodeMaker { abstract Node construct( Object x ); }

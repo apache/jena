@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestResourceImpl.java,v 1.1 2003-09-08 15:05:24 chris-dollin Exp $
+  $Id: TestResourceImpl.java,v 1.2 2004-04-23 14:32:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -40,6 +40,28 @@ public class TestResourceImpl extends ModelTestBase
             fail( "literals cannot be resources"); }
         catch (ResourceRequiredException e)
             { pass(); }}
+    
+    public void testNameSpace()
+        { 
+        assertEquals( "eg:x", resource( "eg:xyz" ).getNameSpace() ); 
+        assertEquals( "http://d/", resource( "http://d/stuff" ).getNameSpace() ); 
+        assertEquals( "ftp://dd.com/12345", resource( "ftp://dd.com/12345" ).getNameSpace() ); 
+        assertEquals( "http://domain/spoo#", resource( "http://domain/spoo#anchor" ).getNameSpace() ); 
+        assertEquals( "ftp://abd/def#ghi#", resource( "ftp://abd/def#ghi#e11-2" ).getNameSpace() ); 
+        }
+    
+    public void testLocalName()
+        { 
+        assertEquals( "yz", resource( "eg:xyz" ).getLocalName() );
+        }
+    
+    public void testHasURI()
+        { 
+        assertTrue( resource( "eg:xyz" ).hasURI( "eg:xyz" ) );
+        assertFalse( resource( "eg:xyz" ).hasURI( "eg:1yz" ) );
+        assertFalse( ResourceFactory.createResource().hasURI( "42" ) );
+        }
+    
     }    
 
 

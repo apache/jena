@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_URI.java,v 1.7 2004-03-20 09:28:30 chris-dollin Exp $
+  $Id: Node_URI.java,v 1.8 2004-04-23 14:32:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.shared.*;
 
 /**
@@ -32,10 +33,25 @@ public class Node_URI extends Node_Concrete
         TODO fix the circularity issue
     */
     public String toString( PrefixMapping pm, boolean quoting )
-        { return pm == null ? (String) label : pm.usePrefix( (String) label ); }
+        { return pm == null ? (String) label : pm.shortForm( (String) label ); }
         
     public boolean equals( Object other )
         { return other instanceof Node_URI && label.equals( ((Node_URI) other).label ); }
+    
+    public String getNameSpace()
+        { 
+        String s = (String) label;
+        return s.substring( 0, Util.splitNamespace( s ) );
+        }
+    
+    public String getLocalName()
+        {  
+        String s = (String) label;
+        return s.substring( Util.splitNamespace( s ) );
+        }
+    
+    public boolean hasURI( String uri )
+        { return label.equals( uri ); }
     }
 
 /*
