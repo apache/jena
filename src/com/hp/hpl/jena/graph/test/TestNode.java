@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.13 2003-05-20 05:30:57 chris-dollin Exp $
+  $Id: TestNode.java,v 1.14 2003-05-20 07:56:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -11,6 +11,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.*;
 
+import java.util.*;
 import junit.framework.*;
 
 /**
@@ -305,7 +306,7 @@ public class TestNode extends GraphTestBase
         
     public void testVisitorPatternNode()
         {
-        NodeVisitor returnNode = new NodeVisitor() 
+       NodeVisitor returnNode = new NodeVisitor() 
             {
             public Object visitAny( Node_ANY it ) { return it; }
             public Object visitBlank( Node_Blank it, AnonId id ) { return it; }
@@ -326,6 +327,15 @@ public class TestNode extends GraphTestBase
         assertEquals( n, n.visitWith( v ) ); 
         }
         
+    private void visitExamples( NodeVisitor nv )
+        {        
+        node( "sortOfURI" ).visitWith( nv );        
+        node( "?variableI" ).visitWith( nv );        
+        node( "_anon" ).visitWith( nv );        
+        node( "11" ).visitWith( nv );        
+        node( "??" ).visitWith( nv );
+        }
+        
     public void testVisitorPatternValue()
         {
         NodeVisitor checkValue = new NodeVisitor() 
@@ -341,11 +351,36 @@ public class TestNode extends GraphTestBase
             public Object visitVariable( Node_Variable it, String name ) 
                 { assertEquals( it.getName(), name ); return null; }
             };
-        node( "sortOfURI" ).visitWith( checkValue );        
-        node( "?variableI" ).visitWith( checkValue );        
-        node( "_anon" ).visitWith( checkValue );        
-        node( "11" ).visitWith( checkValue );        
-        node( "??" ).visitWith( checkValue );
+        visitExamples( checkValue );
+        }
+        
+    public void testVisitorPatternCalled()
+        {
+        final Set strings = new HashSet();
+        NodeVisitor checkCalled = new NodeVisitor() 
+            {
+            public Object visitAny( Node_ANY it ) 
+                { strings.add( "any" ); return null; }
+            public Object visitBlank( Node_Blank it, AnonId id ) 
+                { strings.add( "blank" ); return null; }
+            public Object visitLiteral( Node_Literal it, LiteralLabel lit ) 
+                { strings.add( "literal" ); return null; }
+            public Object visitURI( Node_URI it, String uri ) 
+                { strings.add( "uri" ); return null; }
+            public Object visitVariable( Node_Variable it, String name ) 
+                { strings.add( "variable" ); return null; }
+            };
+        Set desired = wordSet( "any blank literal uri variable" );        
+        visitExamples( checkCalled );
+        assertEquals( "all vists must have been made", desired, strings );
+        }
+        
+    private Set wordSet( String words )
+        {
+        Set result = new HashSet();
+        StringTokenizer st = new StringTokenizer( words );
+        while (st.hasMoreTokens()) result.add( st.nextToken() );
+        return result;
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.19 2003-05-19 13:15:13 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.20 2003-05-20 07:55:16 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -32,7 +32,7 @@ public class GraphTestBase extends JenaTestBase
     public static Model modelFor( Graph g )
         { return ModelFactory.createModelForGraph( g ); }
         
-    public static Set iteratorToSet( ClosableIterator L )
+    public static Set iteratorToSet( Iterator L )
         {
         HashSet result = new HashSet();
         while (L.hasNext()) result.add( L.next() );        
