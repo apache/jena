@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryHandler.java,v 1.2 2003-01-09 15:28:02 chris-dollin Exp $
+  $Id: QueryHandler.java,v 1.3 2003-03-05 10:12:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -46,13 +46,13 @@ public interface QueryHandler
     	deliver an iterator over all the objects _o_ such that _(s, p, o)_ is in the
     	underlying graph; nulls count as wildcards.
     */
-    public ClosableIterator objectsFor( Node s, Node p );
+    public ExtendedIterator objectsFor( Node s, Node p );
 
     /**
     	deliver an iterator over all the subjects _s_ such that _(s, p, o)_ is in the
     	underlying graph; nulls count as wildcards.
     */
-    public ClosableIterator subjectsFor( Node p, Node o );
+    public ExtendedIterator subjectsFor( Node p, Node o );
     }
 
 /*
