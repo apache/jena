@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: Manifest017.rdf,v 1.1 2003/10/12 06:04:32 jcarroll Exp $
+  $Id: Manifest017.rdf,v 1.3 2003/12/02 05:07:36 jcarroll Exp $
 -->
 <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
       xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
@@ -22,7 +22,7 @@
       xml:base='http://www.w3.org/2002/03owlt/I5.8/Manifest017'
 >
 <otest:PositiveEntailmentTest rdf:ID='test'>
-   <rtest:status>PROPOSED</rtest:status>
+   <rtest:status>APPROVED</rtest:status><rtest:approval rdf:resource="http://lists.w3.org/Archives/Public/www-webont-wg/2003Dec/0006"/>
    <dc:creator>Dan Connolly</dc:creator>
    <rtest:issue rdf:resource='http://www.w3.org/2001/sw/WebOnt/webont-issues#I5.8-Datatypes' />
    <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Full' />

@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: inconsistent003.rdf,v 1.5 2003-11-20 15:34:04 jeremy_carroll Exp $
+  $Id: inconsistent003.rdf,v 1.6 2003-12-05 05:09:31 jeremy_carroll Exp $
 -->
 <!--
 rdf:nil cannot have an rdf:rest property.

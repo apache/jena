@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: Manifest004.rdf,v 1.5 2003-11-20 15:34:04 jeremy_carroll Exp $
+  $Id: Manifest004.rdf,v 1.6 2003-12-05 05:09:27 jeremy_carroll Exp $
 -->
 <rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
       xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
@@ -28,7 +28,6 @@
    <otest:feature rdf:resource='http://www.w3.org/2002/07/owl#oneOf' />
    <otest:level rdf:resource='http://www.w3.org/2002/03owlt/testOntology#DL' />
    <otest:size rdf:resource='http://www.w3.org/2002/03owlt/testOntology#Large' />
-   <otest:supportedDatatype rdf:resource='http://www.w3.org/2001/XMLSchema#short'/>
    <rtest:description rdf:parseType='Literal'>
 This test illustrates the use of dataRange in OWL DL.
 This test combines some of the ugliest features of XML, RDF and OWL.</rtest:description>

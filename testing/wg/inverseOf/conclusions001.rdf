@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: conclusions001.rdf,v 1.5 2003-11-20 15:34:13 jeremy_carroll Exp $
+  $Id: conclusions001.rdf,v 1.6 2003-12-05 05:09:26 jeremy_carroll Exp $
 -->
 <!--
 If the pair <code>(x,y)</code> is an instance of <code>P</code>, than the pair <code>(y,x)</code> is

@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: nonconclusions004.rdf,v 1.2 2003-11-20 15:34:09 jeremy_carroll Exp $
+  $Id: nonconclusions004.rdf,v 1.3 2003-12-05 05:09:30 jeremy_carroll Exp $
 -->
 <!--
 Annotations about owl:Class are not related to those about rdfs:Class.

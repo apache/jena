@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: consistent016.rdf,v 1.2 2003-11-20 15:34:04 jeremy_carroll Exp $
+  $Id: consistent016.rdf,v 1.3 2003-12-05 05:06:34 jeremy_carroll Exp $
 -->
 <!--
 This test illustrates the use of an undeclared user defined datatype. The document is hence in Full.

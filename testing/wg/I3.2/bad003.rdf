@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: bad003.rdf,v 1.5 2003-11-20 15:34:12 jeremy_carroll Exp $
+  $Id: bad003.rdf,v 1.6 2003-12-05 05:09:25 jeremy_carroll Exp $
 -->
 <!--
 The names used in a DAML+OIL qualified min cardinality constraint are not defined the OWL namespace.

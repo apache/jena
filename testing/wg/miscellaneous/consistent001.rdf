@@ -10,12 +10,12 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: consistent001.rdf,v 1.4 2003-11-20 15:34:06 jeremy_carroll Exp $
+  $Id: consistent001.rdf,v 1.5 2003-12-05 05:09:29 jeremy_carroll Exp $
 -->
 <!--
 Wine example taken from the guide.
 -->
-<!-- Author: Guide editors -->
+<!-- Author: the Guide editors -->
 <!DOCTYPE owl [
      <!ENTITY vin  "http://www.w3.org/2002/03owlt/miscellaneous/consistent001#" >
      <!ENTITY food "http://www.w3.org/2002/03owlt/miscellaneous/consistent002#" >

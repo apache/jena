@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: consistent006.rdf,v 1.4 2003-11-20 15:34:06 jeremy_carroll Exp $
+  $Id: consistent006.rdf,v 1.5 2003-12-05 05:09:27 jeremy_carroll Exp $
 -->
 <!--
 The blank nodes in a class description in OWL DL may not form a directed cycle.

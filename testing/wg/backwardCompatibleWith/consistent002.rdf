@@ -10,7 +10,7 @@
   Please see the full Copyright clause at
   <http://www.w3.org/Consortium/Legal/copyright-software.html>
 
-  $Id: consistent002.rdf,v 1.2 2003-11-20 15:34:07 jeremy_carroll Exp $
+  $Id: consistent002.rdf,v 1.3 2003-12-05 05:09:29 jeremy_carroll Exp $
 -->
 <!--
 In OWL Lite and DL the subject and object of a triple with predicate <code>owl:backwardCompatibleWith</code>
