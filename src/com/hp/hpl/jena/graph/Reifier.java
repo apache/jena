@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.18 2003-08-19 15:13:07 chris-dollin Exp $
+  $Id: Reifier.java,v 1.19 2003-08-20 15:12:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -53,6 +53,11 @@ public interface Reifier extends GetTriple
          return a read-only Graph of the triples used for reification.
     */    
     Graph getHiddenTriples();
+    
+    /**
+        Answer this reifier's style.
+    */
+    Style getStyle();
     
     /**
         get the Graph which uses this reifier.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelFactory.java,v 1.9 2003-07-28 13:07:47 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.10 2003-08-20 15:12:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -19,7 +19,7 @@ import junit.framework.*;
     @author kers
 */
 
-public class TestModelFactory extends GraphTestBase
+public class TestModelFactory extends ModelTestBase
     {
     public static TestSuite suite()
         { return new TestSuite( TestModelFactory.class ); }   
@@ -33,17 +33,12 @@ public class TestModelFactory extends GraphTestBase
         m.close();
         }    
         
-    public void testRDBStuff()
+    public void testCreateSpec()
         {
-//        try { Class.forName( "com.mysql.jdbc.Driver" ); }
-////        catch (Exception e) { throw new JenaException( e ); }
-//        IDBConnection c = ModelFactory.createSimpleRDBConnection();
-//        assertNotNull( c );
-//        ModelMaker mm = ModelFactory.createModelRDBMaker( c ); 
-//        Model m1 = mm.createModel( "brujo" );
-        
+        Model desc = ModelFactory.createDefaultModel();
+        ModelSpec spec = ModelFactory.createSpec( desc ); 
+        assertIsoModels( desc, spec.getDescription() );
         }
-        
     }
 
 /*

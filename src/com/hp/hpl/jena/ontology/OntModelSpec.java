@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-20 13:02:12 $
+ * Last modified on   $Date: 2003-08-20 15:12:56 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -42,9 +42,9 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.15 2003-08-20 13:02:12 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.16 2003-08-20 15:12:56 chris-dollin Exp $
  */
-public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
+public class OntModelSpec extends PlainModelSpec implements ModelSpec {
     // Constants
     //////////////////////////////////
 
@@ -124,9 +124,6 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     /** The ontology language profile */
     protected Profile m_profile = null;
     
-    /** The model maker for this specification, or null to use the default from the doc manager */
-    protected ModelMaker m_maker = null;
-    
     /** The reasoner factory for creating the reasoner on demand */
     protected ReasonerFactory m_rFactory = null;
     
@@ -143,8 +140,8 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
      * @param languageURI The URI of the ontology language. Required.
      */
     public OntModelSpec( ModelMaker maker, OntDocumentManager docMgr, ReasonerFactory rFactory, String languageURI ) {
+        super( maker );
         setDocumentManager( docMgr );
-        setModelMaker( maker );
         setReasonerFactory( rFactory );
         
         if (languageURI == null) {
@@ -254,30 +251,14 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         m_docManager = docMgr;
     }
     
-    
-    /**
-     * <p>Answer the model maker that will be used to create new models to hold
-     * ontologies loaded as imports for a given ontology document</p>
-     * @return The model maker for this ontology specification
-     */
-    public ModelMaker getModelMaker() {
-        if (m_maker == null) {
-            m_maker = ModelFactory.createMemModelMaker();
-        }
-        
-        return m_maker;
-    }
-    
-    
     /**
      * <p>Set the model maker that will be used when the ontology model needs to create
      * an additional container for an imported ontology</p>
      * @param maker The new model maker to use
      */
     public void setModelMaker( ModelMaker maker ) {
-        m_maker = maker;
+        this.maker = maker;
     }
-    
     
     /**
      * <p>Answer the reasoner that will be used to infer additional entailed 
@@ -368,7 +349,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @return an OntModel satisfying this specification
     */
     public Model createModel() {
-        return new OntModelImpl( this, m_maker.createModel() );
+        return new OntModelImpl( this, maker.createModel() );
     }
     
     /**
@@ -413,7 +394,6 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         return ReasonerRegistry.theRegistry().getFactory( factoryURI );
     }
 
- 
     /**
         Add the description of this OntModelSpec to the given model under the given 
         resource. This same description can be used to create an equivalent OntModelSpec.
@@ -422,13 +402,23 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         TODO allow the DocumentManager to be [de]serialised 
     */
     public Model addDescription( Model d, Resource self )  {
+        super.addDescription( d, self );
         addLanguageDescription( d, self, m_languageURI );
         addManagerDescription( d, self, getDocumentManager() );
-        addMakerDescription( d, self, m_maker );
         addReasonerDescription( d, self, getReasonerFactory() );
         return d;
     }
     
+    /**
+        Answer the RDFS property used to attach this ModelSpec to its ModelMaker; used
+        by the parent classes when constructing the RDF description for this Spec.
+        
+        @return JMS.importMaker
+    */
+    public Property getMakerProperty() {
+        return JMS.importMaker;
+    }
+        
     /**
         Augment the description with that of our language
         @param d the description to augment
@@ -450,18 +440,6 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         d.add( me, JMS.docManager, createValue( man ) );    
     }
     
-    /**
-        Augment the description with that of our model maker
-        @param d the description to augment
-        @param me the resource to use to represent this OntModelSpec
-        @param maker the ModelMaker to describe
-    */        
-    protected void addMakerDescription( Model d, Resource me, ModelMaker maker )  {
-        Resource makerSelf = d.createResource();
-        maker.addDescription( d, makerSelf );
-        d.add( me, JMS.importMaker, makerSelf );    
-    }
-        
     /**
         Augment the description with that of our reasoner factory
         @param d the description to augment

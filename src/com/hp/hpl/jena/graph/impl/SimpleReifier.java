@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.12 2003-08-08 08:11:15 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.13 2003-08-20 15:12:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -25,6 +25,7 @@ public class SimpleReifier implements Reifier
     private Graph parent;
     private boolean intercepting = false;
     private boolean concealing = false;
+    private Style style = null;
     private FragmentMap nodeMap;
     
     /** 
@@ -33,13 +34,17 @@ public class SimpleReifier implements Reifier
         @param parent the Graph which we're reifiying for
         @param style the reification style to use
     */
-    public SimpleReifier( Graph parent, Reifier.Style style )
+    public SimpleReifier( Graph parent, Style style )
         {
         this.parent = parent;
         this.nodeMap = new FragmentMap();
         this.intercepting = style.intercepts();
         this.concealing = style.conceals();
+        this.style = style;
         }
+        
+    public Style getStyle()
+        { return style; }
             
     /** return the parent graph we are bound to */
     public Graph getParentGraph()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelSpec.java,v 1.7 2003-08-20 13:02:12 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.8 2003-08-20 15:12:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -11,11 +11,7 @@ import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.ontology.*;
-import java.util.*;
 
 import junit.framework.*;
 
@@ -176,6 +172,37 @@ public class TestModelSpec extends ModelTestBase
         assertEquals( wanted, maker.getGraphMaker().getReificationStyle() );
         }
                 
+    public void testCreatePlainMemModel()
+        {
+        Resource me = ResourceFactory.createResource();
+        Model spec = modelWithStatements( "" )
+            .add( me, RDF.type, JMS.MemMakerClass )
+            .add( me, JMS.reificationMode, JMS.rsStandard )
+            ;    
+        PlainModelSpec pms = new PlainModelSpec( spec );
+        ModelMaker mm = pms.getModelMaker();
+        Model desc = mm.getDescription( me );
+        assertTrue( desc.contains( me, RDF.type, JMS.MemMakerClass ) );
+        assertTrue( desc.contains( me, JMS.reificationMode, JMS.rsStandard ) );
+        assertTrue( mm.getGraphMaker() instanceof SimpleGraphMaker );
+        assertEquals( Reifier.Standard , mm.getGraphMaker().getReificationStyle() );
+        }
+        
+    public void testCreatePlainFileModel()
+        {
+        Resource me = ResourceFactory.createResource();
+        Model spec = modelWithStatements( "" )
+            .add( me, RDF.type, JMS.FileMakerClass )
+            .add( me, JMS.reificationMode, JMS.rsMinimal )
+            ;    
+        PlainModelSpec pms = new PlainModelSpec( spec );
+        ModelMaker mm = pms.getModelMaker();
+        Model desc = mm.getDescription( me );
+        assertTrue( desc.contains( me, RDF.type, JMS.FileMakerClass ) );
+        assertTrue( desc.contains( me, JMS.reificationMode, JMS.rsMinimal ) );
+        assertTrue( mm.getGraphMaker() instanceof FileGraphMaker );
+        assertEquals( Reifier.Minimal , mm.getGraphMaker().getReificationStyle() );
+        }
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBReifier.java,v 1.9 2003-07-21 14:44:14 chris-dollin Exp $
+  $Id: DBReifier.java,v 1.10 2003-08-20 15:12:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -56,6 +56,9 @@ public class DBReifier implements Reifier
 	 */
 	public Graph getParentGraph() { 
     	return m_parent; }
+        
+    public Style getStyle()
+        { throw new RuntimeException( "NOT YET IMPLEMENTED" ); }
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#getHiddenTriples()

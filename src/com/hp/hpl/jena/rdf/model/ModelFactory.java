@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.22 2003-08-01 14:12:06 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.23 2003-08-20 15:12:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -48,6 +48,9 @@ public class ModelFactory extends ModelFactoryBase
         and are visible to listStatements(). 
     */
     public static final Reifier.Style Minimal = Reifier.Minimal;
+    
+    public static ModelSpec createSpec( Model desc )
+        { return ModelSpecImpl.create( desc ); }
     
     /** 
         construct a new memory-based model with the standard reification style

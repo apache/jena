@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JMS.java,v 1.5 2003-08-20 13:02:12 chris-dollin Exp $
+  $Id: JMS.java,v 1.6 2003-08-20 15:12:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -17,12 +17,12 @@ public class JMS
     {
     public static final String baseURI = "jms:";
     
-    public static final Resource current = resource( "this" );
-    
     public static final Property ontLanguage = property( "ontLanguage" );
     public static final Property docManager = property( "docManager" );
     public static final Property importMaker = property( "importMaker" );
     public static final Property reasonsWith = property( "reasonsWith" );
+    
+    public static final Property maker = property( "maker" );
     
     public static final Property reificationMode = property( "reificationMode" );
     public static final Property reasoner = property( "reasoner" );

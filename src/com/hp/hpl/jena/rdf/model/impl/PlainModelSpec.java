@@ -1,45 +1,43 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpec.java,v 1.5 2003-08-20 15:12:57 chris-dollin Exp $
+  $Id: PlainModelSpec.java,v 1.1 2003-08-20 15:12:48 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model;
+package com.hp.hpl.jena.rdf.model.impl;
+
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 /**
-    A ModelSpec allows Models to be created.
-    
  	@author kers
 */
-public interface ModelSpec
+public class PlainModelSpec extends ModelSpecImpl implements ModelSpec
     {
-    /**
-        Answer a new Model which fits the specification of this ModelSpec.
-    */
-    Model createModel();
+    protected ModelMaker maker;
     
-    /**
-        Answer an RDF description of this ModelSpec using the JMS vocabulary. The
-        description root will be a freshly-created bnode.
-    */
-    Model getDescription();
-    
-    /**
-        Answer an RDF description of this ModelSpec using the JMS vocabulary, with
-        the given Resource as root.
+    public PlainModelSpec( ModelMaker maker )
+        { this.maker = maker == null ? ModelFactory.createMemModelMaker(): maker; }
         
-        @param root the resource to be used for all the top-level properties
-        @return a description of this ModelSpec
-    */
-    Model getDescription( Resource root );
+    public PlainModelSpec( Model description )
+        { this( createMaker( description ) ); }
     
-    /**
-        Add this ModelSpec's description to a given model, under the given resource
-        @param m the model to which the description is to be added
-        @param self the resource to which the properties are to be added
-        @return the model m (for cascading and convenience)
-    */
-    Model addDescription( Model m, Resource self );
+    public ModelMaker getModelMaker()
+        { return maker; }
+
+    public Model createModel()
+        { return maker.createModel(); }
+
+    public Model addDescription( Model desc, Resource root )
+        {
+        Resource makerRoot = desc.createResource();
+        desc.add( root, getMakerProperty(), makerRoot );
+        maker.addDescription( desc, makerRoot );
+        return desc;
+        }
+
+    public Property getMakerProperty()
+        { return JMS.maker; }
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BaseGraphMaker.java,v 1.7 2003-08-20 13:02:12 chris-dollin Exp $
+  $Id: BaseGraphMaker.java,v 1.8 2003-08-20 15:12:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -85,13 +85,21 @@ public abstract class BaseGraphMaker implements GraphMaker
                 
     public Graph addDescription( Graph desc, Node self )
         {
-        Node mode = JMS.rsStandard.asNode();
+        Node mode = styleAsJMS( style ); // JMS.rsStandard.asNode();
         desc.add( Triple.create( self, JMS.reificationMode.asNode(), mode ) );
         desc.add( Triple.create( self, RDF.type.asNode(), getMakerClass() ) );
         augmentDescription( desc, self );    
         return desc;
         }
 
+    public Node styleAsJMS( Reifier.Style style )
+        {
+        if (style == Reifier.Minimal) return JMS.rsMinimal.asNode();
+        if (style == Reifier.Convenient) return JMS.rsConvenient.asNode();
+        if (style == Reifier.Standard) return JMS.rsStandard.asNode();
+        return null;
+        }
+        
     /**
         Update the graph g with any other descriptive information for this GraphMaker.
         @param d the description to be augmented
