@@ -1,0 +1,97 @@
+Notes on RDQL testing in Jena
+-----------------------------
+
+
+Testing in Jena is with JUnit and for RDQL there a series of small tests,
+each test focusing on just one aspect of the language implementation.
+Tests come in 3 types:
+
+	internal tests - tests the expression evaluator 
+	external tests - tests queries on models
+	scripting tests - tests calling RDQL queries from Java
+
+The internal tests are in:
+
+    <Jena>/src/com/hp/hpl/jena/rdf/query/test/TestExpressions.java
+
+and are done separately to reduce the combinatorial explosion of trying to
+test the expression evaluator from within the query language.  Also, I get
+Java to calculate the correct answer so the comparison between the
+expression evaluator and the real answer is automatically generated.  By
+the time these tests have been run, it should be that the expression
+evaluator is OK and the rest of the tests focus on the triple matching.
+
+The external tests are in:
+
+    <Jena>/src/com/hp/hpl/jena/rdf/query/test/QueryTesrScripts.java
+    <Jena>/modules/rdf/regression/testRDQL
+
+and there is a control file (a manifest) which lists the 
+
+	<query file>  <the data file>  <results file> .
+
+The data file can be null (usually is) and the query names the data file.
+And, yes, the parser for the syntax is derived from an N-Triple reader :-)
+This manifest could be RDF but isn't for readability and because it is
+trivially auto-generated with a Perl script (I like the idea of the "little
+languages" approach).  When managing lots of tests, simple readability is
+very important, including a compact style that a human can easily spot
+irregularities in the contents.
+
+
+A result files might look like:
+
+---------------------------------------
+# Variables:
+?b ?y .
+# Data:
+?b <anon:cdedfd:eea1faaa34:-8000> ?y "11" .
+?b <anon:cdedfd:eea1faaa34:-8000> ?y "12" .
+?b <http://never/bag> ?y "21" .
+?b <http://never/bag> ?y "22" .
+---------------------------------------
+
+which is one line stating the variables (a check - other more), then one
+line per result row of the result table serialized as "var, value, var,
+value, ... ."  Values are strings, or URI.  The anon: is a hack so that
+which bnode is being talked about can be captured.  This couldn't be
+encoded in RDF/XML at the time - could now.  Uses the same parser as the
+control file.  This will need to change for datatypes.
+
+The table structure of the results file means it is clear to the tester
+what the file contains.  As each one has to be checked visually at least
+once when created, this is important.
+
+The JUnit setup reads the manifest and creates one testcase per query test.
+Tests are executed by running the query on the data, getting back a result
+set and comparing the calculated result set with the results file (there is
+a special implementation of QueryResults that builds from a file).  BNode
+sharing is correctly accounted for - hence the <anon:...> ids.  The result
+set comparison code is intentionally simple - it not only has to work, it
+has to be clear it works.  Speed isn't an issue at this point - clearly
+correct is.
+
+Result sets are tested for equivalence by:
+
+  for each result row in one set
+    find the matching row in the other set
+    remove it from expected result
+
+At the end, the expected result set should be empty.
+
+
+This could be done in RDF - Jeremy's model comparison code does graph
+isomorphism so a carefully encoded result set in RDF.  A set of set of
+bindings should work, being careful to differentiate between BNodes in the
+data model and in the encoded model.  However, it has to be clear the right
+results are encoded and RDF isn't particularly good at that - I would
+choose careful layout of N3 at this point, where the only issue is that the
+lines will be a bit long.
+
+Early versions of the Jena's RDQL didn’t do the result set checking - they
+just ran through the queries to see if they ran and I (occasionally :-()
+eye-balled the results.  Then I decided to set aside the time to do it.  It
+was a bit of a slog to write the support code, more so to get the result
+files (mechanically generated from a run of the tests but visually checked
+to be correct), but it has been really worth it.
+
