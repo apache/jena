@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: StmtIteratorImpl.java,v 1.4 2003-04-02 13:26:32 jeremy_carroll Exp $
+  $Id: StmtIteratorImpl.java,v 1.5 2003-04-10 11:01:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import java.util.Iterator;
 /** An implementation of StmtIterator.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-02 13:26:32 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-10 11:01:27 $' 
  */
 
 import com.hp.hpl.jena.util.iterator.*;
@@ -26,6 +26,13 @@ public class StmtIteratorImpl extends ClosableWrapper implements StmtIterator
     public StmtIteratorImpl( Iterator iterator )
         { super( iterator ); }
 
+    /**
+        return *and remember* the next element. It must be remembered
+        so that remove works whichever next-method is called.
+    */
+    public Object next()
+        { return current = (Statement) super.next(); }
+        
     public void remove()
         {
         super.remove();
@@ -33,7 +40,7 @@ public class StmtIteratorImpl extends ClosableWrapper implements StmtIterator
         }
         
     public Statement nextStatement()
-        { return current = (Statement) next(); }
+        { return (Statement) next(); }
     }
 
 /*

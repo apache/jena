@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedIterator.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 22:11:58 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-10 11:01:27 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -59,7 +59,7 @@ import com.hp.hpl.jena.rdf.model.ResIterator;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedIterator.java,v 1.2 2003-04-08 22:11:58 ian_dickinson Exp $
+ * @version CVS info: $Id: ConcatenatedIterator.java,v 1.3 2003-04-10 11:01:27 chris-dollin Exp $
  */
 public class ConcatenatedIterator
     implements Iterator
@@ -111,7 +111,7 @@ public class ConcatenatedIterator
             m_iter0 = new NodeIteratorWrapper( (NodeIterator) iter0 );
         }
         else if (iter0 instanceof ResIterator) {
-            m_iter0 = new ResIteratorWrapper( (ResIterator) iter0 );
+            m_iter0 = (ResIterator) iter0; 
         }
         else {
             throw new IllegalArgumentException( "Found a non-iterator when constructing ConcatenatedIterator: " + iter0 );
@@ -125,7 +125,7 @@ public class ConcatenatedIterator
             m_iter1 = new NodeIteratorWrapper( (NodeIterator) iter1 );
         }
         else if (iter1 instanceof ResIterator) {
-            m_iter1 = new ResIteratorWrapper( (ResIterator) iter1 );
+            m_iter1 = (ResIterator) iter1;
         }
         else {
             throw new IllegalArgumentException( "Found a non-iterator when constructing ConcatenatedIterator: " + iter1 );

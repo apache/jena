@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ResIteratorImpl.java,v 1.3 2003-03-26 12:27:09 chris-dollin Exp $
+  $Id: ResIteratorImpl.java,v 1.4 2003-04-10 11:01:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import java.util.*;
 /** An implementation of ResIterator.
  *
  * @author  bwm, kers
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-03-26 12:27:09 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-10 11:01:26 $'
  */
 public class ResIteratorImpl extends ClosableWrapper implements ResIterator {
     
@@ -27,14 +27,8 @@ public class ResIteratorImpl extends ClosableWrapper implements ResIterator {
     public ResIteratorImpl( Iterator iter )
         { super( iter ); }
 
-    /** the cast was in the pre-Wrapper code, it's probably unnecessary;
-        we can delete the method entirely.
-    */
-    public Object next() 
-        { return (Resource) super.next(); }
-        
     public Resource nextResource() {
-        return (Resource) super.next();
+        return (Resource) next();
     }
     
 }

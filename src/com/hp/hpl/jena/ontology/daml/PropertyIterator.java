@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            11 Sept 2001
  * Filename           $RCSfile: PropertyIterator.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:32 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-10 11:01:25 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -57,8 +57,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 import com.hp.hpl.jena.util.iterator.NodeIteratorWrapper;
-import com.hp.hpl.jena.util.iterator.ResIteratorWrapper;
-
 
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
 
@@ -88,7 +86,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyIterator.java,v 1.5 2003-03-12 17:16:32 ian_dickinson Exp $
+ * @version CVS info: $Id: PropertyIterator.java,v 1.6 2003-04-10 11:01:25 chris-dollin Exp $
  * @since Jena 1.3.0 (was previously in package com.hp.hpl.jena.ontology.daml.impl).
  */
 public class PropertyIterator
@@ -527,7 +525,7 @@ public class PropertyIterator
             // don't use equivalents
             if (m_model != null) {
                 // we have a model to query, so use it to get the subject of the triple
-                i = new ResIteratorWrapper( m_model.listSubjectsWithProperty( m_inverse, res ) );
+                i = m_model.listSubjectsWithProperty( m_inverse, res );
             }
             else {
                 // no model (can occur when using built-in constants from vocab)
