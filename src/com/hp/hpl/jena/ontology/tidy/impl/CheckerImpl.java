@@ -39,18 +39,17 @@ import java.util.*;
  *
  */
 public class CheckerImpl extends AbsChecker {
-//	private GraphMaker gf;
+	//	private GraphMaker gf;
 	private Vector monotoneProblems = new Vector();
 	private Vector warnings = new Vector();
-	
 
 	private Vector nonMonotoneProblems = null;
 	private int nonMonotoneLevel;
 
-    /**
-     * Answer an Iterator over {@link SyntaxProblem}'s which
-     * are errors found by the syntax checker.
-     */
+	/**
+	 * Answer an Iterator over {@link SyntaxProblem}'s which
+	 * are errors found by the syntax checker.
+	 */
 	public Iterator getErrors() {
 		nonMonotoneLevel = Levels.Lite;
 		if (monotoneProblems.size() > 0)
@@ -67,15 +66,6 @@ public class CheckerImpl extends AbsChecker {
 		return new ConcatenatedIterator(getErrors(), warnings.iterator());
 	}
 
-	private void clearCyclicState() {
-		Iterator it = nodeInfo.values().iterator();
-		while (it.hasNext()) {
-			CNodeI info = (CNodeI)it.next();
-			if (info instanceof OneTwoImpl) {
-				((OneTwoImpl)info).setCyclicState(OneTwoImpl.Undefined);
-			}
-		}
-	}
 	//static public int cyCnt = 0;
 	synchronized private void snapCheck() {
 		if (nonMonotoneProblems == null) {
@@ -83,110 +73,64 @@ public class CheckerImpl extends AbsChecker {
 			nonMonotoneLevel = Levels.Lite;
 			//Model m = ModelFactory.createModelForGraph(asGraph());
 			CheckerImpl m = this;
-      
-      final Set toAdd = new HashSet();
-      
-   
-   // Make sure there is a node for every user defined datatype.
-//			check(CategorySet.userTypedLiterals, new NodeAction() {
-//				public void apply(Node n) {
-//					// System.err.println("Found: " + n.getLiteral().toString(true));
-//					toAdd.add(Node.createURI(n.getLiteral().getDatatypeURI()) );
-//				}
-//			});
-	
-	/*
-	 * 
-	 */
-	// We have to separate the two phases of this (above and below)
-	// because otherwise we get a concurrent modification of nodes.		
-			Iterator it = toAdd.iterator();
+			cyclicTouched = new HashSet();
+			Iterator it = nodeInfo.entrySet().iterator();
+
 			while (it.hasNext()) {
-				getCNode( (Node)it.next() );
-			}
-			/*
-			 * Easy problems to check.
-			 */
-			check(CategorySet.untypedSets, new NodeAction() {
-				public void apply(Node n) {
-					nonMonProblem("Untyped node", n);
-				}
-			});
-			check(CategorySet.orphanSets, new NodeAction() {
-				public void apply(Node n) {
-					nonMonProblem(
-						"Orphaned rdf:List or owl:OntologyProperty node",
-						n);
-				}
-			});
+				Map.Entry ent = (Map.Entry) it.next();
+				Node n = (Node) ent.getKey();
+				CNodeI info = (CNodeI) ent.getValue();
+				int c = info.getCategories();
+				int f = CategorySet.flags[c];
 
-			check(CategorySet.dlOrphanSets, new NodeAction() {
-				public void apply(Node n) {
-					nonMonProblem(
-						"Orphaned blank owl:Class or owl:Restriction is in OWL DL",
-						n,
-						Levels.Lite);
-				}
-			});
+				if (f == 0)
+					continue;
 
-			/*
-			 * Slightly harder
-			 */
-			check(CategorySet.structuredOne, new NodeAction() {
-				public void apply(Node n) {
+				if ((f & CategorySet.STRUCT1) != 0) {
 					if (getCNode(n).asOne().incompleteOne())
 						nonMonProblem(
 							"Incomplete blank owl:Class or owl:AllDifferent",
 							n);
 				}
-			});
-			check(CategorySet.structuredTwo, new NodeAction() {
-				public void apply(Node n) {
+				if ((f & CategorySet.STRUCT2) != 0) {
 					if (getCNode(n).asTwo().incompleteTwo())
 						nonMonProblem(
 							"Incomplete rdf:List or owl:Restriction",
 							n);
 				}
-			});
-
-			/*
-			 * Getting harder ...
-			 * We could optimise by first find non-cyclic orphaned unnamed 
-			 * individuals,
-			 * mark those as non-cyclic - but that's too much like hardwork.
-			 * 
-			 * We check the potentially cyclic
-			 * nodes.
-			 */
-			// TODO refactor cyclic code
-			// temporarily set orphan as non-cylcic and we are done
-		  clearCyclicState();
-			check(CategorySet.cyclicSets, new NodeAction() {
-				public void apply(Node n) {
-					// If this is a description then it's busted.
-		//			cyCnt++;
-					CNodeI cn = getCNode(n);
+				if ((f & ~(CategorySet.STRUCT1 | CategorySet.STRUCT2)) == 0)
+					continue;
+				if ((f & CategorySet.UNTYPED) != 0) {
+					nonMonProblem("Untyped node", n);
+				}
+				if ((f & CategorySet.ORPHAN) != 0) {
+					nonMonProblem(
+						"Orphaned rdf:List or owl:OntologyProperty node",
+						n);
+				}
+				if ((f & CategorySet.DLORPHAN) != 0) {
+					nonMonProblem(
+						"Orphaned blank owl:Class or owl:Restriction is in OWL DL",
+						n,
+						Levels.Lite);
+				}
+				if ((f & CategorySet.CYCLIC) != 0) {
 					if (Q
-						.intersect(
-							Grammar.descriptionsX,
-							CategorySet.getSet(cn.getCategories()))
+						.intersect(Grammar.descriptionsX, CategorySet.getSet(c))
 						|| Q.intersect(
 							Grammar.restrictionsX,
-							CategorySet.getSet(cn.getCategories()))) {
+							CategorySet.getSet(c))) {
 
 						nonMonProblem(
 							"Cyclic blank owl:Class or owl:Restriction",
 							n);
 					}
 
-					if (Q
-						.intersect(
-							Grammar.listsX,
-							CategorySet.getSet(cn.getCategories()))) {
-        //    System.err.println(CategorySet.catString(cn.getCategories()));
-				//		dump(n);
+					if (Q.intersect(Grammar.listsX, CategorySet.getSet(c))) {
+						//    System.err.println(CategorySet.catString(cn.getCategories()));
+						//		dump(n);
 						nonMonProblem("Cyclic rdf:List", n);
-						
+
 					}
 
 					// If this is an individual then we have to check it.
@@ -194,64 +138,44 @@ public class CheckerImpl extends AbsChecker {
 					if (Q
 						.member(
 							Grammar.unnamedIndividual,
-							CategorySet.getSet(cn.getCategories()))) {
-						isCyclic((OneTwoImpl) cn, n);
+							CategorySet.getSet(c))) {
+						isCyclic((OneTwoImpl) info, n);
 					}
 				}
-			});
 
-			/*
-			* Hardest
-			* Check the disjointUnion blank nodes
-			*/
-			/* Not needed
-			clearProperty(Vocab.transDisjointWith);
-			Iterator i = asGraph().find(Node.ANY,Vocab.disjointWith,Node.ANY);
-			while ( i.hasNext()) {
-				Triple t = (Triple)i.next();
-				asGraph().add(new Triple(
-				t.getSubject(),
-				Vocab.transDisjointWith,
-				t.getObject() ) );
 			}
-			*/
-			//check(CategorySet.disjointWithSets, new NodeAction() {
-			//	public void apply(Node n) {
 
-					Iterator i = disjoints.keySet().iterator();
-					while (i.hasNext()) {
-						Node b = (Node)i.next();
-						if (!b.isBlank()) continue;
-						
-						Iterator j =
-							((Set)disjoints.get(b)).iterator();
-						while (j.hasNext()) {
-							Node a = (Node)j.next();
-							Iterator k = ((Set)disjoints.get(b)).iterator();
-							while (k.hasNext()) {
-								Node c = (Node)k.next();
-								// TODO improve owl:disjointWith error msg
-								if ( !(a.equals(c) ||((Set)disjoints.get(a)).contains(c))){
-									nonMonProblem("Ill-formed owl:disjointWith", b);
-								}
-							}	
-						}
-					}
-				
-			//	}
-			//});
+
+
+			clearCyclicState();
+			
+			checkDisjoint();
+
 		}
 	}
-	/*
-	private void clearProperty(Node p) {
-		Iterator it = asGraph().find(Node.ANY, p, Node.ANY);
-		List list = new Vector();
-		while (it.hasNext())
-			list.add(it.next());
-		asGraph().getBulkUpdateHandler().delete(list);
 
+	private void checkDisjoint() {
+		Iterator i = disjoints.keySet().iterator();
+		while (i.hasNext()) {
+			Node b = (Node) i.next();
+			if (!b.isBlank())
+				continue;
+		
+			Iterator j = ((Set) disjoints.get(b)).iterator();
+			while (j.hasNext()) {
+				Node a = (Node) j.next();
+				Iterator k = ((Set) disjoints.get(b)).iterator();
+				while (k.hasNext()) {
+					Node c = (Node) k.next();
+					// TODO improve owl:disjointWith error msg
+					if (!(a.equals(c)
+						|| ((Set) disjoints.get(a)).contains(c))) {
+						nonMonProblem("Ill-formed owl:disjointWith", b);
+					}
+				}
+			}
+		}
 	}
-  */
 	private boolean isCyclic(OneTwoImpl blk, Node n) {
 		int st = blk.getCyclicState();
 		switch (st) {
@@ -268,7 +192,8 @@ public class CheckerImpl extends AbsChecker {
 					rslt = false;
 				else
 					rslt = isCyclic((OneTwoImpl) getCNode(t.getSubject()), n);
-				blk.setCyclicState(rslt ? OneTwoImpl.IsCyclic : OneTwoImpl.NonCyclic);
+				blk.setCyclicState(
+					rslt ? OneTwoImpl.IsCyclic : OneTwoImpl.NonCyclic);
 				return rslt;
 			case OneTwoImpl.NonCyclic :
 				return false;
@@ -277,35 +202,14 @@ public class CheckerImpl extends AbsChecker {
 		}
 
 	}
-	private void check(Q q, NodeAction a) {
-		
-		int bad[] = q.asInt();
-		//Query rdql = q.asRDQL();
-		//rdql.setSource(m);
-		
-		Iterator it = nodeInfo.entrySet().iterator();
-		
-		while ( it.hasNext() ) {
-			Map.Entry ent = (Map.Entry)it.next();
-			Node n = (Node)ent.getKey();
-			CNodeI info = (CNodeI)ent.getValue();
-			if (Q.member(info.getCategories(),bad)) {
-				a.apply(n);
-			}
+
+	private void clearCyclicState() {
+		Iterator it = cyclicTouched.iterator();
+		while (it.hasNext()) {
+			((OneTwoImpl) it.next()).setCyclicState(OneTwoImpl.Undefined);
 		}
-		
-		/*
-		QueryExecution qe = new QueryEngine(rdql);
-		QueryResults results = qe.exec();
-		
-		while (results.hasNext()) {
-			ResultBinding rb = (ResultBinding) results.next();
-			RDFNode nn = (RDFNode) rb.get("x");
-			a.apply(nn.asNode());
-		}
-		*/
 	}
-	private void nonMonProblem(String shortD, Node n) {
+  private void nonMonProblem(String shortD, Node n) {
 		nonMonProblem(shortD, n, Levels.DL);
 	}
 	private void nonMonProblem(String shortD, Node n, int lvl) {
@@ -325,7 +229,6 @@ public class CheckerImpl extends AbsChecker {
 		this.nonMonotoneProblems.add(new SyntaxProblemImpl(shortD, enh, lvl));
 	}
 
-	
 	/**
 	 * Construct a syntax checker.
 	 * Will not explain why something is in DL rather than Lite.	 
@@ -361,20 +264,16 @@ public class CheckerImpl extends AbsChecker {
 				it.close();
 		}
 	}
-/**
- * Include an ontology and its imports
- * in the check.
- * @param url Load the ontology from this URL.
- */
+	/**
+	 * Include an ontology and its imports
+	 * in the check.
+	 * @param url Load the ontology from this URL.
+	 */
 	public void load(String url) {
 		// create an ontology model with no reasoner and the default doc manager
 		OntModel m =
 			ModelFactory.createOntologyModel(
-				new OntModelSpec(
-					null,
-					null,
-					null,
-					ProfileRegistry.OWL_LANG),
+				new OntModelSpec(null, null, null, ProfileRegistry.OWL_LANG),
 				null);
 		//OntModel m = ModelFactory.createOntologyModel();
 		m.getDocumentManager().setProcessImports(true);
@@ -390,21 +289,23 @@ public class CheckerImpl extends AbsChecker {
 		super.addProblem(lvl, t, msg);
 		if (lvl == Levels.Lite && !wantLite)
 			return;
-			
+
 		Graph min;
-		
-		if ( justForErrorMessages == null ) {
-		  min = Factory.createDefaultGraph(ReificationStyle.Minimal);
-		  min.add(t);	
+
+		if (justForErrorMessages == null) {
+			min = Factory.createDefaultGraph(ReificationStyle.Minimal);
+			min.add(t);
 		} else {
-			min = new MinimalSubGraph(lvl == Levels.Lite, t, this).getContradiction();
+			min =
+				new MinimalSubGraph(lvl == Levels.Lite, t, this)
+					.getContradiction();
 		}
 		addProblem(
 			new SyntaxProblemImpl(
-				msg+" Not a " + Levels.toString(lvl) + " subgraph",
+				msg + " Not a " + Levels.toString(lvl) + " subgraph",
 				min,
 				lvl));
-				
+
 	}
 	void addProblem(SyntaxProblemImpl sp) {
 		super.addProblem(sp);
@@ -437,7 +338,7 @@ public class CheckerImpl extends AbsChecker {
 			o.asBlank().addObjectTriple(t);
 		if (look.tripleForSubject(key))
 			s.asBlank().addObjectTriple(t);
-		
+
 		switch (look.action(key)) {
 			case FirstOfOne :
 				s.asOne().first(t);
@@ -451,41 +352,37 @@ public class CheckerImpl extends AbsChecker {
 		}
 
 	}
-  Map disjoints = new HashMap();
-  
-  void addDisjoint(Node a,Node b) {
-  	Set sa = (Set)disjoints.get(a);
-  	if ( sa == null ) {
-  		sa = new HashSet();
-  		disjoints.put(a,sa);
-  	}
-  	sa.add(b);
-  }
+	Map disjoints = new HashMap();
 
-/* (non-Javadoc)
- * @see com.hp.hpl.jena.ontology.tidy.AbsChecker#extraInfo()
- */
-boolean extraInfo() {
-	return false;
-}
+	void addDisjoint(Node a, Node b) {
+		Set sa = (Set) disjoints.get(a);
+		if (sa == null) {
+			sa = new HashSet();
+			disjoints.put(a, sa);
+		}
+		sa.add(b);
+	}
 
-protected Graph importsClosure(Graph g) {
-	// create an ontology model with no reasoner and the default doc manager
-	OntModelSpec dullOWL =
-		new OntModelSpec(
-			null,
-			null,
-			null,
-			ProfileRegistry.OWL_LANG);
-	dullOWL.getDocumentManager().setProcessImports(true);
-	OntModel m =
-		ModelFactory.createOntologyModel(
-			dullOWL,
-			ModelFactory.createModelForGraph(g));
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.AbsChecker#extraInfo()
+	 */
+	boolean extraInfo() {
+		return false;
+	}
 
-	// the ont model graph must be the union graph, since we specified the null reasoner (hence no inf graph)
-	return m.getGraph();
-}
+	protected Graph importsClosure(Graph g) {
+		// create an ontology model with no reasoner and the default doc manager
+		OntModelSpec dullOWL =
+			new OntModelSpec(null, null, null, ProfileRegistry.OWL_LANG);
+		dullOWL.getDocumentManager().setProcessImports(true);
+		OntModel m =
+			ModelFactory.createOntologyModel(
+				dullOWL,
+				ModelFactory.createModelForGraph(g));
+
+		// the ont model graph must be the union graph, since we specified the null reasoner (hence no inf graph)
+		return m.getGraph();
+	}
 }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: OneTwoImpl.java,v 1.2 2003-11-30 21:12:58 jeremy_carroll Exp $
+  $Id: OneTwoImpl.java,v 1.3 2003-12-05 08:00:24 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import com.hp.hpl.jena.graph.*;
@@ -95,6 +95,7 @@ class OneTwoImpl extends CGeneral implements One, Two, Blank {
 
 	protected void setCyclicState(int st) {
 		cyclicState = st;
+		checker.cyclicTouched.add(this);
 	}
 
 	public boolean incompleteOne() {

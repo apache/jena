@@ -294,6 +294,7 @@ abstract class AbsChecker implements Constants {
 			  justForErrorMessages = Factory.createDefaultGraph(ReificationStyle.Minimal);
 		
 	}
+	protected Set cyclicTouched;
 }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.5 2003-12-05 06:32:09 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.6 2003-12-05 08:00:24 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -58,7 +58,7 @@ public class CategorySet implements Comparable, Serializable, Constants {
 //	};
 
     static final private int orphanTypes[] = new int[]{
-    	Grammar.owlOntologyProperty,
+   // 	Grammar.owlOntologyProperty,
     	Grammar.rdfList
     };
 	/**
@@ -205,8 +205,16 @@ public class CategorySet implements Comparable, Serializable, Constants {
 		cs.init();
 		return cs.id;
 	}
+	static final int flags[] = new int[1000];
+	static final int CYCLIC  = 1;
+	static final int UNTYPED = 2;
+	static final int ORPHAN  = 4;
+	static final int DLORPHAN = 8;
+	static final int STRUCT1  = 16;
+	static final int STRUCT2  = 32;
   static	boolean closed = false;
 	private void init() {
+		int flag = 0;
 		unsorted.add(this);
 		sorted.add(this);
 		for (int i=0;i<various.length;i++)
@@ -214,6 +222,27 @@ public class CategorySet implements Comparable, Serializable, Constants {
 		if ( cats[0]==Grammar.orphan )
 		for (int i=0;i<orphaned.length;i++)
 		   orphaned[i].testAdd(id,cats);
+		if ( Q.intersect(cycles,cats) )
+		   flag |= CYCLIC;
+		if (Q.intersect(untyped,cats) )
+		   flag |= UNTYPED;
+		if (cats[0] == Grammar.orphan
+		    && Q.intersect(orphanTypes,cats)) 
+		    flag |= ORPHAN;
+		if (cats[0] == Grammar.orphan
+			&& ( Q.intersect(Grammar.restrictionsX,cats)
+			    || Q.intersect(Grammar.descriptionsX,cats) )) 
+			flag |= DLORPHAN;
+	 if (Q.member(Grammar.allDifferent,cats)
+	 || Q.member(Grammar.unnamedDataRange,cats)
+	 || Q.intersect(Grammar.descriptionsX,cats))
+	   flag |= STRUCT1;
+	   if (Q.intersect(Grammar.listsX,cats)
+	   || Q.intersect(Grammar.restrictionsX,cats))
+		 flag |= STRUCT2;
+	   flags[id] = flag;
+		   
+		   
 	}
 	public static int[] getSet(int id) {
 		return ((CategorySet) unsorted.elementAt(id)).cats;
