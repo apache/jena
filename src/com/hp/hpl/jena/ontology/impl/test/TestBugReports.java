@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.42 $
+ * Revision           $Revision: 1.43 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-11 22:31:27 $
+ * Last modified on   $Date: 2004-08-12 10:51:38 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -1082,6 +1082,19 @@ public class TestBugReports
         assertTrue( "pass 2: c1 should be a direct super of c2", c2.hasSuperClass( c1, true ) );
     }
     
+    
+    /** Test case for SF bug 934528 - conversion exception with owl:Thing and owl:Nothing when no reasoner */
+    public void test_sf_934528() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        
+        Resource r = (Resource) OWL.Thing.inModel( m );
+        OntClass thingClass = (OntClass) r.as( OntClass.class );
+        assertNotNull( thingClass );
+        
+        r = (Resource) OWL.Nothing.inModel( m );
+        OntClass nothingClass = (OntClass) r.as( OntClass.class );
+        assertNotNull( nothingClass );
+    }
     
     
     // Internal implementation methods
