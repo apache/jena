@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.14 2003-07-25 08:48:11 der Exp $
+ * $Id: Rule.java,v 1.15 2003-07-25 12:16:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -57,7 +57,7 @@ import org.apache.log4j.Logger;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.14 $ on $Date: 2003-07-25 08:48:11 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.15 $ on $Date: 2003-07-25 12:16:16 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -572,11 +572,11 @@ public class Rule implements ClauseEntry {
                 LiteralLabel ll = new LiteralLabel(f, null, Functor.FunctorDatatype.theFunctorDatatype);
                 return new Node_Literal(ll);
             } else if (token.equals("'")) {
-                // A literal - either plain or integer
+                // A plain literal
                 String lit = nextToken();
                 // Skip the trailing quote
                 nextToken();
-                return parseNumber(lit);
+                return Node.createLiteral(lit, "", false);
             } else if ( Character.isDigit(token.charAt(0)) ) {
                 // A number literal
                return parseNumber(token);
