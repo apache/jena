@@ -1,0 +1,208 @@
+<html>
+<head>
+   <title>Jena 2.0 enhanced node howto</title>
+</head>
+<body>
+
+This version: 0.1<br/> Date: 16 Aug 2003
+
+<h1>RDQL Fastpath Query Processing</h1>
+
+<h2>Fastpath Overview</h2>
+
+<p>The goal of RDQL Fastpath query processing is to perform as much of the RDQL 
+query processing as possible within the database engine. The standard RDQL query 
+processing algorithm is to process each RDQL pattern as a separate <i>Find</i> 
+operation. For database-backed models, this algorithm has high overhead for 
+queries with variables. For example, consider the RDQL query:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font face="Courier New" size="2">&lt;Var1, ex:Name, &quot;Alice&quot;&gt; AND &lt;Var1, ex:City, 
+&quot;Wonderland&quot;&gt;<br>
+</font>The standard algorithm processes this query by generating one <i>Find</i> 
+operation to get all Alices and then, for each Alice, generating an additional
+<i>Find</i> operation to check if that Alice lives in Wonderland. However, a 
+database engine could process both RDQL query patterns with a single join 
+operation. The Fastpath algorithm generates SQL queries that match multiple 
+patterns.</p>
+
+<p>The Fastpath algorithm works by partitioning the patterns and constraints for 
+a query into one or more groups, referred to as <i>stages</i>, where each stage consists of patterns that can 
+be processed together. Stages that consist of more than one pattern are processed by a single, 
+dynamically-generated SQL query. Stages that consist of just one pattern are processed by a <i>
+Find</i> operation. This is considered more efficient than generating an SQL 
+query (although this has not been measured). The Fastpath algorithm also determines a 
+partial execution order for the stages in an attempt to minimize execution time.</p>
+
+<p>The remainder of this document describes the Fastpath algorithm in more 
+detail, including limitations, optimizations and future work. Jena2's support 
+for different reification styles and use of a separate table for reification 
+somewhat complicates the algorithm. These issues are discussed below.</p>
+
+<h2>Fastpath Support for Standard Models</h2>
+
+<p>In this section, we describe the Fastpath algorithm for the most general 
+case, a model that uses the Standard reification style (i.e., standard RDF 
+treatment of reification) and that may contain both asserted statements and 
+reification triples. As mentioned above, a Jena2 query consists of a set of 
+triple patterns and a set of constraints that apply to the variable bindings 
+(e.g., Var5 != 1000). The Fastpath algorithm is summarized in the pseudo-code 
+below.</p>
+
+  <dl>
+    <font SIZE="2">
+    <dd><font face="Courier New">patternsToDo = all patterns in query</font></dd>
+    <dd><font face="Courier New">// patternsToDo has the RDQL query patterns 
+    that are not yet staged.</font></dd>
+    <dd><font face="Courier New">while ( patternsToDo is not empty ) {</font></dd>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp; staged = the lowest cost pattern 
+    in remaining&nbsp; </font></dd>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp; // staged has the 
+    query patterns to join in the next stage</font></dd>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp; remove staged from 
+    patternsToDo</font></dd>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp; while ( patternsToDo is not 
+    empty ) {</font></dd>
+    <dt><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    joinPattern = a pattern in patternsToDo that joins with one in staged</font></dt>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    if ( joinPattern is null ) break</font></dd>
+    <dt><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    add joinPattern to staged</font></dt>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    remove joinPattern from patternsToDo</font></dd>
+    <dt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    }</dt>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp; // now decide how to process 
+    the stage - as a find op or an SQL query</font></dd>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp; if staged has one pattern</font></dd>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    generate find operation for this stage</font></dd>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp; else</font></dd>
+    <dd><font face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+    generate SQL query for this stage</font></dd>
+    <dt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <font face="Courier New">}</font></dt>
+    </font>
+  </dl>
+
+<p>The first step is to order the triple patterns by their estimated cost of 
+evaluation. Currently, the cost estimate is a simple measure that ranks patterns 
+with bound variables higher than patterns with unbound variables. Further, 
+unbound variables over predicates are ranked lower than unbound variables over 
+subjects or objects. The highest ranked pattern is then chosen as the first 
+pattern in the next stage of patterns to process. </p>
+
+<p>The next step is to all find patterns that can join with a staged pattern. 
+The process iterates until no more patterns remain or no joins are found. In 
+general, two patterns are considered joinable if they apply to the same database 
+table, have a common variable and neither variable is bound to a predicate. 
+However, in some cases joins of predicate variables are supported as described 
+below. Joins across database tables are somewhat tricky and are deferred to a 
+future release.</p>
+
+<p>The final step is to generate code for the staged patterns. If there is a 
+single pattern in the stage, it is considered more efficient to process the 
+pattern as a find operation. For multiple patterns, a new SQL query is generated 
+dynamically.</p>
+
+<p>The final result of the Fastpath algorithm is a series of stages of query 
+results where each stage is either a find operation or an SQL query. The stages 
+are then evaluated in order, i.e., the output of one stage is used as input for 
+variable bindings in the next stage. A final stage is used for processing the 
+constraints by filtering the final results. Processing constraints within the 
+database is deferred to a future release. Another limitation is that Fastpath 
+processes patterns for different graph separately, i.e., it cannot generate SQL 
+code for joins across graphs. This is also deferred to a future release.</p>
+
+<h2>Fastpath Optimizations</h2>
+
+<p>If it is known that a Jena model contains only asserted statements or if a 
+user does not wish to query over reified statments, then  variables over 
+predicates can 
+be supported. This affects the algorithm that looks for joins (mentioned above) and 
+should provide a performance benefit for queries that include predicate 
+variables by reducing the number of stages. The RDB Query Handler supports a method,
+<font face="Courier New" size="2">setQueryOnlyAsserted(true)</font>, for the user to 
+declare that Fastpath should ignore reified statements in queries. Similarly, if 
+a model contains only reified statements or the user only wishes to query 
+reified statements, then <font face="Courier New" size="2">setQueryOnlyReified(true)</font>, 
+may be called. However, currently, this latter call has no effect. A future release 
+will support joins across predicate variable for reified statements.</p>
+
+<p>If a model contains only fully reified statements or the user is only 
+interested in querying fully reified statements (i.e., partially reified 
+statements are to be ignored), then another optimization is possible that eliminates unnecessary joins for reified statements. For 
+example, consider the following query over reified statements.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<font face="Courier New" size="2">&lt;Var1, rdf:subject, &quot;Alice&quot;&gt; AND &lt;Var1, 
+rdf:object, V2&gt;<br>
+</font>This retrieves all reified statements about Alice. The normal Fastpath 
+algorithm will generate a join for these two patterns. However, we note that 
+fully reified statements are stored in a single database row. So, if the user is 
+only interested in query results for fully reified statements, then the join can be replaced by a 
+simple select. This optimization is enabled by calling
+<font face="Courier New" size="2">queryFullReified(true)</font>.</p>
+
+<p>To retrieve the current settings for any of these optimization settings, 
+there are corresponding get methods, that return a boolean e.g.,<font face="Courier New" size="2"> 
+getQueryOnlyAsserted().</font> Currently, the values of these options are not 
+persisted in the database.</p>
+
+<h2>Fastpath Support for Convenient and Minimal Reification Styles</h2>
+
+<p>Convenient and Minimal reification styles hide reification triples from the
+<i>Find</i> operation. Consequently, using these reification styles has the same 
+effect as specifying <font face="Courier New" size="2">setQueryOnlyAsserted(true).</font></p>
+
+<blockquote>
+  <dl>
+    <font SIZE="2">
+  </dl>
+</blockquote>
+<p></p>
+</font>
+
+<h2>Limitations</h2>
+
+<h4>Known Bugs</h4>
+
+<dl>
+  <dd><b>Concurrent updates</b>: if the RDQL query is not run within a 
+  transaction, anomalies may occur if the underlying persistent model is updated 
+  by some other application between the the time an RDQL query is compiled and 
+  subsequently executed. Generally, this should not be a problem but there are 
+  situations where a query may return no results. In particular, if a query 
+  references a long literal or URI, the database identifier for that object is 
+  obtained at compilation time. If the literal does not exist at compilation 
+  time but is subsequently added prior to running the query, then no results are 
+  returned when, in fact, results should be returned. There may be other 
+  examples of anomalies.</dd>
+</dl>
+
+<h4>Limitations</h4>
+
+<dl>
+  <dd><b>Querying across graphs.</b> Currently, Fastpath does not optimize 
+  queries across graphs. A separate SQL statement is generated for each graph. 
+  Some support for querying across graphs will be enabled in the future.</dd>
+  <dd><b>Querying across tables.</b> Within a model, Fastpath only optimizes 
+  patterns over the same table. Limited support for queryng across tables will 
+  be enabled in the future.</dd>
+  <dd><b>Predicate variables.</b> Fastpath only supports predicate variables in 
+  the case that queryOnlyAsserted is true. In the future, it should also be 
+  possible to enable predicate variables for some types of RDQL queries when queryOnlyReified 
+  is true.</dd>
+  <dd><b>Query Log.</b> There is currently no easy-to-use facility to log the 
+  SQL statements generated by Fastpath. However, to print a&nbsp; trace of the 
+  generated SQL on <font face="Courier New" size="2">System.out</font>, 
+  uncomment line 60 of <font face="Courier New" size="2">
+  jena.db.impl.DBStage.java</font>. In the future, we hope to add an API for 
+  accessing information about the generated SQL, including the statement string.</dd>
+  <dt>&nbsp;</dt>
+  <dt>&nbsp;</dt>
+</dl>
+
+<p>&nbsp;</p>
+
+</body>
+</html>
