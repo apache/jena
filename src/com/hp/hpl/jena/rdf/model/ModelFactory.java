@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.11 2003-05-09 13:29:49 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.12 2003-05-12 10:54:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -87,6 +87,7 @@ public class ModelFactory extends ModelFactoryBase
         Answer a ModelMaker that accesses database-backed Models on
         the database at the other end of the connection c.
         
+        @param c a connection to the database holding the models
         @return a ModelMaker whose Models are held in the database at c
     */
     public static ModelMaker createModelRDBMaker( IDBConnection c )
