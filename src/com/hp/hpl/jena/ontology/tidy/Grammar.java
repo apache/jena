@@ -6,6 +6,8 @@ class Grammar {
 	static final int restrictions[] = new int[]{};
 	static final int descriptions[] = new int[]{};
     static final int CategoryShift = 8;
+    // orphan must be first
+	static final int orphan = 0;
     static final int annotationPropID = 1;
     static final int userID = 2;
     static final int annotationPropID_dataPropID = 3;
@@ -27,7 +29,6 @@ class Grammar {
     static final int objectPropID_transitivePropID = 19;
     static final int ontologyID = 20;
     static final int ontologyPropertyID = 21;
-    static final int orphan = 22;
     static final int ontologyPropertyHack = 23;
     static final int orphan_unnamedIndividual = 24;
     static final int blank = 25;
