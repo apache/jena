@@ -2,12 +2,12 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       ian.dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            11-Sep-2003
- * Filename           $RCSfile: DIGWrappedException.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            July 19th 2003
+ * Filename           $RCSfile: DIGQueryAllConceptsTranslator.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-04 16:38:21 $
@@ -15,11 +15,17 @@
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- *****************************************************************************/
+ * ****************************************************************************/
 
 // Package
 ///////////////
 package com.hp.hpl.jena.reasoner.dig;
+
+import org.w3c.dom.Document;
+
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.xml.SimpleXMLPath;
 
 
 // Imports
@@ -27,16 +33,16 @@ package com.hp.hpl.jena.reasoner.dig;
 
 /**
  * <p>
- * An exception type that wraps a checked exception from the DIG interface as a Jena (runtime)
- * exception.
+ * Translator that generates DIG allconcepts queries
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGWrappedException.java,v 1.3 2003-12-04 16:38:21 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryAllConceptsTranslator.java,v 1.1 2003-12-04 16:38:21 ian_dickinson Exp $)
  */
-public class DIGWrappedException 
-    extends DIGReasonerException
+public class DIGQueryAllConceptsTranslator 
+    extends DIGQueryTranslator
 {
+
     // Constants
     //////////////////////////////////
 
@@ -46,33 +52,49 @@ public class DIGWrappedException
     // Instance variables
     //////////////////////////////////
 
-    private Throwable m_ex;
-    
     // Constructors
     //////////////////////////////////
 
     /**
-     * <p>Construct a DIG exception that wraps a deeper exception from the DIG interface.</p>
-     * @param ex An exception or other error to be wrapped
+     * <p>Construct a translator for the DIG query all concepts.</p>
+     * @param predicate The predicate URI to trigger on
+     * @param object The object URI to trigger on
+     * @param ontLang Profile denoting the language we're dealing with
      */
-    public DIGWrappedException( Throwable ex ) {
-        super( "DIG wrapped exception: " + ex.getMessage() );
-        m_ex = ex;
+    public DIGQueryAllConceptsTranslator( String predicate, String object ) {
+        super( ALL, predicate, object );
     }
     
-    
+
     // External signature methods
     //////////////////////////////////
 
+
     /**
-     * <p>Answer the exception that this exception is wrapping.</p>
-     * @return The underlying, or wrapped, exception
+     * <p>Answer a query that will list all concept names</p>
      */
-    public Throwable getWrappedException() {
-        return m_ex;
+    public Document translatePattern( TriplePattern query, DIGAdapter da ) {
+        return da.getConnection().createDigVerb( DIGProfile.ALL_CONCEPT_NAMES, da.getProfile() );
     }
-    
-    
+
+
+    /**
+     * <p>Answer an iterator of triples that match the original find query.</p>
+     */
+    public ExtendedIterator translateResponse( Document response, TriplePattern query, DIGAdapter da ) {
+        // evaluate a path through the return value to give us an iterator over catom names
+        ExtendedIterator catomNames = new SimpleXMLPath( true )
+                                          .appendElementPath( DIGProfile.RESPONSE )
+                                          .appendElementPath( DIGProfile.CONCEPT_SET )
+                                          .appendElementPath( DIGProfile.SYNONYMS )
+                                          .appendElementPath( DIGProfile.CATOM )
+                                          .appendAttrPath( DIGProfile.NAME )
+                                          .getAll( response );
+        
+        return catomNames.mapWith( new NameToNodeMapper() )
+                         .mapWith( new TripleSubjectFiller( query.getPredicate(), query.getObject() ) );
+    }
+
     // Internal implementation methods
     //////////////////////////////////
 

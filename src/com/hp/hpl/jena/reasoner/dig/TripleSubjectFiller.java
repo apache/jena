@@ -5,9 +5,9 @@
  * Author email       ian.dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            11-Sep-2003
- * Filename           $RCSfile: DIGWrappedException.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            04-Dec-2003
+ * Filename           $RCSfile: TripleSubjectFiller.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-04 16:38:21 $
@@ -22,20 +22,25 @@
 package com.hp.hpl.jena.reasoner.dig;
 
 
+
 // Imports
 ///////////////
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.Map1;
+
+
 
 /**
  * <p>
- * An exception type that wraps a checked exception from the DIG interface as a Jena (runtime)
- * exception.
+ * Mapper to create triples from a given predicate and object
  * </p>
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGWrappedException.java,v 1.3 2003-12-04 16:38:21 ian_dickinson Exp $)
+ * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
+ * @version CVS $Id: TripleSubjectFiller.java,v 1.1 2003-12-04 16:38:21 ian_dickinson Exp $
  */
-public class DIGWrappedException 
-    extends DIGReasonerException
+public class TripleSubjectFiller 
+    implements Map1
 {
     // Constants
     //////////////////////////////////
@@ -46,31 +51,38 @@ public class DIGWrappedException
     // Instance variables
     //////////////////////////////////
 
-    private Throwable m_ex;
+    private Node m_predicate;
+    private Node m_object;
     
     // Constructors
     //////////////////////////////////
 
     /**
-     * <p>Construct a DIG exception that wraps a deeper exception from the DIG interface.</p>
-     * @param ex An exception or other error to be wrapped
+     * Construct a mapper to create triples from the given predicate and object,
+     * with a subject supplied by the iterator being mapped.
      */
-    public DIGWrappedException( Throwable ex ) {
-        super( "DIG wrapped exception: " + ex.getMessage() );
-        m_ex = ex;
+    public TripleSubjectFiller( Resource predicate, Resource object ) {
+        this( predicate.asNode(), object.asNode() );
+    }
+    
+
+    /**
+     * Construct a mapper to create triples from the given predicate and object,
+     * with a subject supplied by the iterator being mapped.
+     */
+    public TripleSubjectFiller( Node predicate, Node object ) {
+        m_predicate = predicate;
+        m_object = object;
     }
     
     
     // External signature methods
     //////////////////////////////////
 
-    /**
-     * <p>Answer the exception that this exception is wrapping.</p>
-     * @return The underlying, or wrapped, exception
-     */
-    public Throwable getWrappedException() {
-        return m_ex;
+    public Object map1( Object x ) {
+        return new Triple( (Node) x, m_predicate, m_object );
     }
+    
     
     
     // Internal implementation methods

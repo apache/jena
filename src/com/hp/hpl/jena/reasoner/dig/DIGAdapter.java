@@ -7,14 +7,14 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-01 22:40:06 $
+ * Last modified on   $Date: 2003-12-04 16:38:21 $
  *               by   $Author: ian_dickinson $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
- * (see footer for full conditions)
+ * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * [See end of file]
  *****************************************************************************/
 
 // Package
@@ -29,11 +29,14 @@ import java.io.PrintWriter;
 import java.util.*;
 
 import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.*;
 
 import org.w3c.dom.*;
 
@@ -45,7 +48,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.1 2003-12-01 22:40:06 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.2 2003-12-04 16:38:21 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -72,6 +75,14 @@ public class DIGAdapter
     // Static variables
     //////////////////////////////////
 
+    /** The table that represents the query translations we know about */
+    protected static DIGQueryTranslator[] s_queryTable = {
+        new DIGQueryAllConceptsTranslator( RDF.type.getURI(), RDFS.Class.getURI() ),
+        new DIGQueryAllConceptsTranslator( RDF.type.getURI(), OWL.Class.getURI() ),
+        new DIGQueryAllConceptsTranslator( RDF.type.getURI(), DAML_OIL.Class.getURI() ),
+    };
+    
+    
     // Instance variables
     //////////////////////////////////
 
@@ -130,6 +141,15 @@ public class DIGAdapter
      */
     public DIGProfile getProfile() {
         return m_profile;
+    }
+    
+    
+    /**
+     * <p>Answer the ontology language profile we're assuming in this reasoner.
+     * @return The ontology language via the language profile
+     */
+    public Profile getOntLanguage() {
+        return m_sourceData.getProfile();
     }
     
     
@@ -216,6 +236,54 @@ public class DIGAdapter
     }
     
     
+    /**
+     * Basic pattern lookup interface.
+     * @param pattern a TriplePattern to be matched against the data
+     * @return An ExtendedIterator over all Triples in the data set
+     *  that match the pattern
+     */ 
+    public ExtendedIterator find( TriplePattern pattern ) {
+        DIGQueryTranslator tr = getQueryTranslator( pattern );
+        
+        ExtendedIterator remote = (tr == null) ? null : tr.find( pattern, this );
+        ExtendedIterator local = m_sourceData.getGraph().find( pattern.getSubject(), 
+                                                               pattern.getPredicate(), 
+                                                               pattern.getObject() );
+        
+        // if we have a remote iterator, prepend to the local one and drop duplicates
+        ExtendedIterator i = (remote == null) ? local : remote.andThen( local );
+        
+        // make sure we don't have duplicates
+        return new UniqueExtendedIterator( i );
+    }
+
+
+    /**
+     * <p>Answer the query translator that matches the given pattern, if any</p>
+     * @param pattern The triple pattern that has been received
+     * @return A DIG translator that can translate this pattern to a DIG query,
+     * or null if no matches.
+     */
+    public DIGQueryTranslator getQueryTranslator( TriplePattern pattern ) {
+        for (int i = 0;  i < s_queryTable.length;  i++) {
+            if (s_queryTable[i].trigger( pattern )) {
+                return s_queryTable[i];
+            }
+        }
+        
+        return null;
+    }
+
+
+    /**
+     * <p>Answer the graph of local (source) data.</p>
+     * @return The graph containing the local source data.
+     */
+    public Graph getGraph() {
+        return m_sourceData.getGraph();
+    }
+    
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -882,31 +950,28 @@ public class DIGAdapter
 
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002-2003
-    All rights reserved.
-
-    Redistribution and use in source and binary forms, with or without
-    modification, are permitted provided that the following conditions
-    are met:
-
-    1. Redistributions of source code must retain the above copyright
-       notice, this list of conditions and the following disclaimer.
-
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-
-    3. The name of the author may not be used to endorse or promote products
-       derived from this software without specific prior written permission.
-
-    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
-    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
-    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
-    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
-    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */

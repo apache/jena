@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.14 2003-08-27 13:08:11 andy_seaborne Exp $
+ * $Id: ReasonerVocabulary.java,v 1.15 2003-12-04 16:38:37 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-08-27 13:08:11 $
+ * @version $Revision: 1.15 $ on $Date: 2003-12-04 16:38:37 $
  */
 public class ReasonerVocabulary {
     
@@ -105,7 +105,16 @@ public class ReasonerVocabulary {
 
     /** Property used for validation reports in owl ruleset */
     public static final Property RB_VALIDATION_REPORT = ResourceFactory.createProperty(RBNamespace, "violation");
+    
                 
+    /** Property to denote the URL of an external reasoner. Default is http://localhost:8081 */
+    public static final Property EXT_REASONER_URL = ResourceFactory.createProperty( JenaReasonerNS, "extReasonerURL" );
+    
+    /** Property to denote the ontology language (OWL, DAML, RDFS) an external reasoner will process. 
+     *  Values are URI's, see {@link com.hp.hpl.jena.ontology.ProfileRegistry}. Default is OWL. */
+    public static final Property EXT_REASONER_ONT_LANG = ResourceFactory.createProperty( JenaReasonerNS, "extReasonerOntologyLang" );
+    
+    
 //  --------------------------------------------------------------------
 // Method versions of key namespaces which are more initializer friendly
 

@@ -2,12 +2,12 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       ian.dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            11-Sep-2003
- * Filename           $RCSfile: DIGErrorResponseException.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            July 19th 2003
+ * Filename           $RCSfile: DIGReasonerFactory.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-12-04 16:38:21 $
@@ -15,98 +15,114 @@
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- *****************************************************************************/
+ * ****************************************************************************/
 
 // Package
 ///////////////
 package com.hp.hpl.jena.reasoner.dig;
 
 
+
 // Imports
 ///////////////
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
+
+
 
 /**
  * <p>
- * An exception that encapsulates an error response from the DIG server, including 
- * error number and message.
+ * Factory class for generating instances of DIG reasoners.  Implements singleton pattern.
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGErrorResponseException.java,v 1.3 2003-12-04 16:38:21 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGReasonerFactory.java,v 1.1 2003-12-04 16:38:21 ian_dickinson Exp $)
  */
-public class DIGErrorResponseException 
-    extends DIGReasonerException
+public class DIGReasonerFactory 
+    implements ReasonerFactory
 {
+
     // Constants
     //////////////////////////////////
 
-    public static final int GENERAL_UNSPECIFIED_ERROR = 100;
-    public static final int UNKNOWN_REQUEST = 101;
-    public static final int MAFORMED_REQUEST = 102;
-    public static final int UNSUPPORTED_OPERATION = 103;
+    /** Static URI for this reasoner type */
+    public static final String URI = "http://jena.hpl.hp.com/2003/DIGReasoner";
     
-    public static final int CANNOT_CREATE_NEW_KB = 201;
-    public static final int MALFORMED_KB_URI = 202;
-    public static final int UNKNOWN_OR_STALE_KB_URI = 203;
-    public static final int KB_RELEASE_ERROR = 204;
-    public static final int MISSING_URI = 205;
-    
-    public static final int GENERAL_TELL_ERROR = 301;
-    public static final int UNSUPPORTED_TELL_OPERATION = 302;
-    public static final int UNKNOWN_TELL_OPERATION = 303;
 
-    public static final int GENERAL_ASK_ERROR = 401;
-    public static final int UNSUPPORTED_ASK_OPERATION = 402;
-    public static final int UNKNOWN_ASK_OPERATION = 403;
-    
-    
     // Static variables
     //////////////////////////////////
 
+    /** The singleton instance */
+    private static DIGReasonerFactory s_instance = new DIGReasonerFactory();
+    
+    
     // Instance variables
     //////////////////////////////////
 
-    /** The msg attribute from the DIG error message */
-    private String m_msgAttr;
-    
-    /** The DIG error code */
-    private int m_errorCode;
+    /** A model denoting the standard capabilities of a DIG reasoner */
+    private Model m_capabilities = null;
     
     
     // Constructors
     //////////////////////////////////
 
-    public DIGErrorResponseException( String msg, String msgAttr, int errorCode ) {
-        super( "DIG error: " + msg );
-        m_msgAttr = msgAttr;
-        m_errorCode = errorCode;
-    }
+    /** Private constructor to enforce singleton pattern */
+    private DIGReasonerFactory() {}
     
     
     // External signature methods
     //////////////////////////////////
 
     /**
-     * <p>Answer the error code sent back by DIG.  Well known error codes are listed
-     * as constants exported from this class.</p>
-     * @return The DIG error code; the value of the <code>code</code> attribute in
-     * the error response returned by the reasoner.
+     * <p>Answer the singleton instance of the factory.</p>
      */
-    public int getErrorCode() {
-        return m_errorCode;
+    public static DIGReasonerFactory getInstance() {
+        return s_instance;
     }
     
     
     /**
-     * <p>Answer the error message sent back by DIG.</p>
-     * @return The DIG error message; the value of the <code>msg</code> attribute
-     * in the error response returned by the reasoner
+     * <p>Answer a new DIG reasoner instance, optionally configured with the given
+     * configuration resource.</p>
+     * @param configuration A resource whose properties denote the configuration of
+     * the reasoner instance, or null to rely on the default configuration.
      */
-    public String getMessage() {
-        return m_msgAttr;
+    public Reasoner create( Resource configuration ) {
+        return new DIGReasoner( null, this, configuration );
     }
     
-    
+
+    /* (non-Javadoc)
+     * @see com.hp.hpl.jena.reasoner.ReasonerFactory#getCapabilities()
+     */
+    public Model getCapabilities() {
+        if (m_capabilities == null) {
+            m_capabilities = ModelFactory.createDefaultModel();
+            Resource base = m_capabilities.createResource(getURI());
+            base.addProperty(ReasonerVocabulary.nameP, "DIG external Reasoner")
+                .addProperty(ReasonerVocabulary.descriptionP, "Adapter for external (i.e. non-Jena) DIG reasoner." )
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.subClassOf)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.subPropertyOf)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.member)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.range)
+                .addProperty(ReasonerVocabulary.supportsP, RDFS.domain)
+                // TODO - add OWL elements supported
+                .addProperty(ReasonerVocabulary.versionP, "0.1");
+        }
+        
+        return m_capabilities;
+    }
+
+    /**
+     * <p>Answer the URI of this reasoner factory</p>
+     */
+    public String getURI() {
+        return URI;
+    }
+
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -115,7 +131,6 @@ public class DIGErrorResponseException
     //==============================================================================
 
 }
-
 
 /*
  *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
