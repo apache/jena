@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DoesNotExistException.java,v 1.4 2004-12-03 16:11:49 chris-dollin Exp $
+  $Id: DoesNotExistException.java,v 1.5 2004-12-13 11:54:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
+
+import com.hp.hpl.jena.db.RDFRDBException;
 
 /**
     Exception thrown when an attempt is made find an entity by name, but it
@@ -13,7 +15,7 @@ package com.hp.hpl.jena.shared;
  	@author kers
 */
 
-public class DoesNotExistException extends JenaException
+public class DoesNotExistException extends RDFRDBException
     {
     /**
          The entity <code>name</code> does not exist.
