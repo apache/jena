@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Mapping.java,v 1.10 2003-10-06 05:37:40 chris-dollin Exp $
+  $Id: Mapping.java,v 1.11 2003-10-09 15:23:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -15,7 +15,7 @@ import java.util.*;
     are predeclared; the negative value is converted on index allocation.
 */
 
-public class Mapping 
+public class Mapping implements VariableIndexes
 	{
 	private HashMap map;
 	
@@ -51,6 +51,9 @@ public class Mapping
         if (res < 0) throw new Query.UnboundVariableException( v );
         return res;
         }
+        
+    public int indexOf( String name )
+        { return indexOf( Node.createVariable( name ) ); }
 
 	/**
 		get the index of a node in the mapping; return -1

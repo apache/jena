@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.5 2003-10-09 14:06:13 chris-dollin Exp $
+  $Id: Expression.java,v 1.6 2003-10-09 15:23:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -15,14 +15,18 @@ public interface Expression
     { 
     public boolean evalBool( VariableValues vv );
     
+    public Expression prepare( VariableIndexes vi );
+    
     public static Expression TRUE = new Expression() 
         { 
         public boolean evalBool( VariableValues vv ) { return true; }
+        public Expression prepare( VariableIndexes vi ) { return this; }
         };
     
     public static Expression FALSE = new Expression() 
         { 
         public boolean evalBool( VariableValues vv ) { return false; }
+        public Expression prepare( VariableIndexes vi ) { return this; }
         };
     }
 
