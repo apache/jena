@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelListenerAdapter.java,v 1.9 2003-07-11 13:34:20 chris-dollin Exp $
+  $Id: ModelListenerAdapter.java,v 1.10 2003-07-11 14:32:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,6 +15,10 @@ import java.util.*;
     Adapter class that converts a ModelChangedListener into a GraphListener.
     The only tricky bit is that we have to implement equality as equality of the
     underlying ModelChangedListeners/ModelCom pairs.
+<p>
+    This implementation only works for <code>ModelCom</code> models,
+    because it relies on various service methods; this gives the model the
+    opportunity to cache various mappings for efficiency.
     
     @author hedgehog
 */
@@ -39,8 +43,7 @@ public class ModelListenerAdapter implements GraphListener
         { L.addedStatements( m.asStatements( it ) ); }
         
     public void notifyAdd( Graph g )
-        { 
-        }
+        { L.addedStatements( m.asModel( g ) ); }
         
     public void notifyDelete( Iterator it )
         { L.removedStatements( m.asStatements( it ) ); }
@@ -55,8 +58,7 @@ public class ModelListenerAdapter implements GraphListener
         { L.removedStatements( m.asStatements( triples ) ); }
 
     public void notifyDelete( Graph g )
-        {
-        }
+        { L.removedStatements( m.asModel( g ) ); }
         
     public boolean equals( Object other )
         { 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleEventManager.java,v 1.5 2003-07-11 13:34:20 chris-dollin Exp $
+  $Id: SimpleEventManager.java,v 1.6 2003-07-11 14:32:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -13,6 +13,10 @@ import com.hp.hpl.jena.graph.*;
 /**
     Simple implementation of GraphEventManager for GraphBase to use.
     The listeners are held as an [Array]List.
+<p>
+    The code duplication is a right pain. The most natural removal tactic, a
+    meta-method that took the notification method as an argument, is not
+    available in Java, and I can't off-hand think of a clean alternative.
     
     @author hedgehog
 */
@@ -102,8 +106,6 @@ public class SimpleEventManager implements GraphEventManager
         for (int i = 0; i < listeners.size(); i += 1) 
             ((GraphListener) listeners.get(i)).notifyDelete( g ); 
         }
-        
-    
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelChangedListener.java,v 1.7 2003-07-11 11:20:09 chris-dollin Exp $
+  $Id: ModelChangedListener.java,v 1.8 2003-07-11 14:32:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,6 +53,13 @@ public interface ModelChangedListener
     void addedStatements( StmtIterator statements );
     
     /**
+        Method to call when a model has been used to define the statements to
+        be added to our attached model.
+    	@param m a model equivalent to [and sharing with] the added model
+     */
+    void addedStatements( Model m );
+    
+    /**
         Method to call when a single statement has been removed from the attached model.
         @param s the statement that has been presented for removal.
     */
@@ -81,6 +88,14 @@ public interface ModelChangedListener
     	@param statements a statement-type copy of the updating iterator
      */
     void removedStatements( StmtIterator statements );
+    
+    /**
+        Method to call when a model has been used to remove statements from
+        our attached model.
+    	@param m a model equivalent to [and sharing with] the one removed
+     */
+    
+    void removedStatements( Model m );
     }
 
 

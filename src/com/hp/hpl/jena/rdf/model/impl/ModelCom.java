@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.62 $' Date='$Date: 2003-07-11 11:20:28 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.63 $' Date='$Date: 2003-07-11 14:32:51 $'
  */
 
 public class ModelCom 
@@ -161,8 +161,9 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return this;
     }
     
-    public Model add(Model m)  {
-        return add(m.listStatements());
+    public Model add( Model m )  {
+        getBulkUpdateHandler().add( m.getGraph() );
+        return this;
     }
     
     public RDFReader getReader()  {
@@ -286,37 +287,9 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return this;
         }
     
-    /**
-        Utility method: return a list of all elements in a model. WARNING: if the
-        Model is big, then so is this list. 
-        
-        @param m the model whose triples are required
-        @return the list of its triples
-    */
-    private List triplesOf( Model m )
-        {
-        ArrayList L = new ArrayList();
-        Iterator it = m.getGraph().find( null, null, null );
-        while (it.hasNext()) L.add( it.next() );
-        return L;
-        }
-        
-    /**
-        Remove the contents of the model m from this model. If that graph depends
-        on this one (in particular, if it happens to *be* this one) then we go the long
-        way round, extracting the triples as a list and removing that. Otherwise we
-        call the bulk update directly on the underlying graphs.
-        
-         @param m the model to remove
-         @return this model, for cascading 
-    */
     public Model remove( Model m ) 
         {
-        BulkUpdateHandler bu = getBulkUpdateHandler();
-        if (m.getGraph().dependsOn( this.getGraph() ))
-            bu.delete( triplesOf( m ) );
-        else
-            bu.delete( m.getGraph() );
+        getBulkUpdateHandler().delete( m.getGraph() );
         return this;
         }
         
@@ -615,10 +588,8 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return new LiteralImpl(Node.createLiteral(ll), (Model)this);
     }
 
-
-    public Literal createLiteral(boolean v)  {
-        return createLiteral(String.valueOf(v), "");
-    }
+    public Literal createLiteral(boolean v)  
+        { return createLiteral(String.valueOf(v), ""); }
     
     public Literal createLiteral(int v)  {
         return createLiteral(String.valueOf(v), "");
@@ -1300,6 +1271,9 @@ implements Model, ModelI, PrefixMapping, ModelLock
         for (int i = 0; i < triples.size(); i += 1) L.add( asStatement( (Triple) triples.get(i) ) );
         return L;
         }
+        
+    public Model asModel( Graph g )
+        { return new ModelCom( g ); }
         
 	public StmtIterator asStatements( final Iterator it ) {
         return new StmtIteratorImpl( new Map1Iterator( mapAsStatement, it ) );

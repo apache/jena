@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphListener.java,v 1.8 2003-07-11 13:34:20 chris-dollin Exp $
+  $Id: GraphListener.java,v 1.9 2003-07-11 14:32:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -34,6 +34,11 @@ public interface GraphListener
     */
     void notifyAdd( Iterator it );
     
+    /**
+        Method called when another graph <code>g</code> has been used to
+        specify the triples added to our attached graph.
+    	@param g the graph of triples added
+     */
     void notifyAdd( Graph g );
     
     /**
@@ -56,6 +61,11 @@ public interface GraphListener
     */
     void notifyDelete( Iterator it );
     
+    /**
+        Method to call when another graph has been used to specify the triples 
+        deleted from our attached graph. 
+    	@param g the graph of triples added
+     */
     void notifyDelete( Graph g );
     }
 
