@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDataInstanceImpl.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-12-08 10:48:24 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-12-11 23:02:38 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -35,7 +35,6 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.Iterator;
 
-import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
@@ -45,7 +44,7 @@ import org.apache.commons.logging.LogFactory;
  * of a DAML datatype. The instance is a resource whose <code>rdf:value</code> is a typed literal.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.11 2003-12-08 10:48:24 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.12 2003-12-11 23:02:38 ian_dickinson Exp $
  */
 public class DAMLDataInstanceImpl
     extends DAMLInstanceImpl
