@@ -54,6 +54,8 @@ EOF
 
 # Copy to a release ara, them copy all to SourceForge
 
+echo "BE CAREFUL"
+exit 
 cp $PAGES   ~/WWW/Jena/WebSite
 cp $STYLE   ~/WWW/Jena/WebSite/styles
 ## cp $IMAGES  ~/WWW/Jena/WebSite/images

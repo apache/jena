@@ -1,23 +1,26 @@
 /* Jena web site style sheet */
 
 /* (c) Copyright 2003, Hewlett-Packard Development Company LP */
-/* $Id: site.css,v 1.3 2003-08-22 17:25:28 andy_seaborne Exp $ */
+/* $Id: site.css,v 1.4 2003-08-25 09:42:59 andy_seaborne Exp $ */
 
 
 body {
     text-align: left;
     font-family: verdana, helvetica, arial, sans-serif;
     font-size:10pt ;
-    background: #DDD;
+    background: white;
     color: black;
-    margin: 2ex ;
-    padding:0 ;
+    /*margin: 2ex ;*/
+    margin: 0 ;
+    margin: 1ex ;
+    padding: 0 ;
 }
 
 #header {
-    color:#FFFFFF ;
-    background: #215E9B ; 
-    font-size: 16pt ; 
+    /* color:#FFFFFF ;
+       background: #215E9B ; */
+    color: black ;
+    background: #CADFF4 ;    font-size: 16pt ; 
     font-weight: bold ;
     text-align: center ;
     padding-top: 5px;
@@ -25,8 +28,10 @@ body {
 }
 
 #footer {
-	color:#FFFFFF ;
-	background: #215E9B ;  
+    /* color:#FFFFFF ;
+       background: #215E9B ; */
+    color: black ;
+    background: #CADFF4 ;
     font-size: 12pt ; 
     font-weight: bold ;
     text-align: center ;
@@ -35,6 +40,7 @@ body {
     
 }
 
+
 #logos      { margin: 2ex ; }
 #logos img  { vertical-align: top; border: 0 ; }
 
@@ -42,11 +48,15 @@ body {
 .right   { float: right }
 .center: { text-align: center ; }
 
-#main { margin:0 ; padding: 0; background: white ;}
+#main { margin:0 ; padding: 0; background: white ;
+        border: 1 solid #DDD ; }
 
 #content { font-size:10pt ;
            margin-top: 2ex ;
            margin-bottom: 2ex ;} 
+
+
+.rule { line-height:0 ; border-bottom: 1px solid #DDD; }
 
 /* Generic components for content div */
 
@@ -55,7 +65,8 @@ ul { list-style-type: disc }
 li { line-height:14 pt ; }
 
 
-#content p { margin-left: 2ex ; margin-top: 1ex ; margin-bottom: 1ex }
+#content p { margin-left: 2ex ; margin-right: 2ex ; 
+             margin-top: 1ex ; margin-bottom: 1ex }
 
 
 #content h1 {
@@ -117,7 +128,7 @@ li { line-height:14 pt ; }
 
 .spacer { font-size: 10pt ; padding: 0 ; margin: 0 ;}
 
-#leftnav img { text-align: center ; margin: 1ex ; }
+#leftnav img { text-align: center ; margin: 2ex ; border: 1 solid #DDD ;}
 
 
 /* breadcrumbs trail */
@@ -145,11 +156,11 @@ a:hover   { text-decoration:none; color:white; background: #039; }
 
 /* Table - for positioning */
 
-table   { margin: 0 ; padding:0 ;
+#main table   { margin: 0 ; padding:0 ;
 		  border-collapse: collapse;
 		}
-tr      { margin: 0 ; padding:0 ; }
-td      { margin: 0 ; padding:0 ;
+#main tr      { margin: 0 ; padding:0 ; }
+#main td      { margin: 0 ; padding:0 ;
           text-align:left ; vertical-align: top ; 
         }
 

@@ -62,9 +62,6 @@ release - Ship the website off to jena.sourceforge.net (if you
 Notes
 -----
 
-Colours:
-
-
 
 ----------------
-$Id: readme-site.txt,v 1.1 2003-08-22 17:25:26 andy_seaborne Exp $
+$Id: readme-site.txt,v 1.2 2003-08-25 09:42:48 andy_seaborne Exp $
