@@ -7,7 +7,7 @@
 @prefix xsd:    <http://www.w3.org/2000/10/XMLSchema#> .
 
 
-<> rdfs:comment     "Vocabulary for recording query result set" ;
+:  rdfs:comment     "Vocabulary for recording query result set" ;
    dc:creator       "Andy Seaborne" ;
    dc:subject       "" ;
    dc:publisher     "SWAD-e" ;
