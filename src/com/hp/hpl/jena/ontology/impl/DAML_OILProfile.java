@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:20:52 $
+ * Last modified on   $Date: 2003-04-01 10:31:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.2 2003-03-28 22:20:52 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.3 2003-04-01 10:31:06 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     implements Profile
@@ -97,6 +97,8 @@ public class DAML_OILProfile
     private Property m_incompatibleWith             = null;
     private Property m_subPropertyOf                = m_vocabModel.createProperty( DAML_OIL.subPropertyOf.getNameSpace(),           DAML_OIL.subPropertyOf.getLocalName() );
     private Property m_subClassOf                   = m_vocabModel.createProperty( DAML_OIL.subClassOf.getNameSpace(),              DAML_OIL.subClassOf.getLocalName() );
+    private Property m_domain                       = m_vocabModel.createProperty( DAML_OIL.subClassOf.getNameSpace(),              DAML_OIL.domain.getLocalName() );
+    private Property m_range                        = m_vocabModel.createProperty( DAML_OIL.subClassOf.getNameSpace(),              DAML_OIL.range.getLocalName() );
 
 
 
@@ -160,6 +162,8 @@ public class DAML_OILProfile
     public Property INCOMPATIBLE_WITH() {           return m_incompatibleWith; }
     public Property SUB_CLASS_OF() {                return m_subClassOf; }
     public Property SUB_PROPERTY_OF() {             return m_subPropertyOf; }
+    public Property DOMAIN() {                      return m_domain; }
+    public Property RANGE() {                       return m_range; }
     
     
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-28 22:19:23 $
+ * Last modified on   $Date: 2003-04-01 10:31:04 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.3 2003-03-28 22:19:23 ian_dickinson Exp $
+ * @version CVS $Id: Profile.java,v 1.4 2003-04-01 10:31:04 ian_dickinson Exp $
  */
 public interface Profile
 {
@@ -498,6 +498,26 @@ public interface Profile
      * @return The property that denotes the sub-property relationship.
      */
     public Property SUB_PROPERTY_OF();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes the domain of a property.
+     * </p>
+     * 
+     * @return The property that denotes a property domain
+     */
+    public Property DOMAIN();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes the range of a property
+     * </p>
+     * 
+     * @return The property that denotes the property range
+     */
+    public Property RANGE();
     
     
     

@@ -5,25 +5,28 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            31-Mar-2003
+ * Filename           $RCSfile: OntPropertyImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 10:31:05 $
+ * Last modified on   $Date: 2003-04-01 10:31:06 $
  *               by   $Author: ian_dickinson $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
- * footer for full conditions)
- * ****************************************************************************/
+ * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+ * (see footer for full conditions)
+ *****************************************************************************/
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology;
+package com.hp.hpl.jena.ontology.impl;
 
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.path.PathSet;
 import com.hp.hpl.jena.rdf.model.*;
 
@@ -31,23 +34,75 @@ import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * <p>
- * Interface encapsulating a property in an ontology.
+ * Class comment
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.2 2003-04-01 10:31:05 ian_dickinson Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.1 2003-04-01 10:31:06 ian_dickinson Exp $
  */
-public interface OntProperty
-    extends OntResource, Property
+public class OntPropertyImpl
+    extends OntResourceImpl
+    implements OntProperty 
 {
     // Constants
     //////////////////////////////////
+
+    // Static variables
+    //////////////////////////////////
+
+    /**
+     * A factory for generating OntProperty facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { return new OntPropertyImpl( n, eg ); }
+    };
+
+
+    // Instance variables
+    //////////////////////////////////
+
+    // Constructors
+    //////////////////////////////////
+
+    /**
+     * <p>
+     * Construct an ontology class node represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
+     */
+    public OntPropertyImpl( Node n, EnhGraph g ) {
+        super( n, g );
+    }
 
 
     // External signature methods
     //////////////////////////////////
 
+    /**
+     * <p>
+     * Answer true to indicate that this resource is an RDF property.
+     * </p>
+     * 
+     * @return True.
+     */
+    public boolean isProperty() {
+        return true;
+    }
+    
+    
+    /**
+     * @see Property#getOrdinal()
+     */
+    public int getOrdinal() {
+        return ((Property) as( Property.class )).getOrdinal();
+    }
+    
+    
     /**
      * <p>
      * Answer an {@link PathSet accessor} for the 
@@ -56,10 +111,11 @@ public interface OntProperty
      * can be used to perform a variety of operations, including getting and setting the value.
      * </p>
      * 
-     * @return An abstract accessor for the subPropertyOf relation on properties
+     * @return An abstract accessor for the super-property of a property
      */
-    public PathSet p_subPropertyOf();
-
+    public PathSet p_subPropertyOf() {
+        return asPathSet( getProfile().SUB_PROPERTY_OF() );
+    }
 
     /**
      * <p>
@@ -71,7 +127,9 @@ public interface OntProperty
      * 
      * @return An abstract accessor for the domain of a property
      */
-    public PathSet p_domain();
+    public PathSet p_domain() {
+        return asPathSet( getProfile().DOMAIN() );
+    }
 
 
     /**
@@ -84,11 +142,11 @@ public interface OntProperty
      * 
      * @return An abstract accessor for the range of a property
      */
-    public PathSet p_range();
+    public PathSet p_range() {
+        return asPathSet( getProfile().RANGE() );
+    }
 
-
-    // relationships between properties
-
+    
     /**
      * <p>
      * Answer an {@link PathSet accessor} for the 
@@ -99,7 +157,9 @@ public interface OntProperty
      * 
      * @return An abstract accessor for property equivalence
      */
-    public PathSet p_equivalentProperty();
+    public PathSet p_equivalentProperty() {
+        return asPathSet( getProfile().EQUIVALENT_PROPERTY() );
+    }
 
 
     /**
@@ -112,8 +172,18 @@ public interface OntProperty
      * 
      * @return An abstract accessor for property invserses
      */
-    public PathSet p_inverseOf();
+    public PathSet p_inverseOf() {
+        return asPathSet( getProfile().INVERSE_OF() );
+    }
 
+
+
+    // Internal implementation methods
+    //////////////////////////////////
+
+    //==============================================================================
+    // Inner class definitions
+    //==============================================================================
 
 }
 
