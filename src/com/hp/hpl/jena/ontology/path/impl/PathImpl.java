@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Mar-2003
  * Filename           $RCSfile: PathImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-16 13:13:01 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-23 15:02:31 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.ontology.path.impl;
 ///////////////
 import com.hp.hpl.jena.ontology.path.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
 
@@ -38,7 +39,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: PathImpl.java,v 1.3 2003-05-16 13:13:01 ian_dickinson Exp $
+ * @version CVS $Id: PathImpl.java,v 1.4 2003-05-23 15:02:31 chris-dollin Exp $
  */
 public class PathImpl
     implements Path 
@@ -261,7 +262,7 @@ public class PathImpl
     /**
      * <p>Implementation of statement iterator for path objects</p>
      */
-    protected class PathStmtIterator
+    protected class PathStmtIterator extends NiceIterator
         implements StmtIterator
     {
         private int i = 0;

@@ -40,6 +40,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.mem.*;
+import com.sun.rsasign.i;
 
 import java.io.*;
 import java.util.*;
@@ -52,7 +53,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.37 $' Date='$Date: 2003-05-22 09:42:58 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.38 $' Date='$Date: 2003-05-23 15:03:00 $'
  */
 
 public class ModelCom 
@@ -889,6 +890,28 @@ implements Model, ModelI, PrefixMapping, ModelLock
             }            
         }
     
+    public ExtendedIterator queryBindingsWith( Model m, Resource [] variables )
+        {
+        Map1 mm = new Map1()
+            { public Object map1( Object x ) { return mappy( x ); } };
+        QueryMapper qm = new QueryMapper( m, variables );
+        return
+            qm.getQuery().executeBindings( getGraph(), qm.getVariables() )
+            .mapWith( mm )
+            ;
+        }
+        
+    public List mappy( Object x )
+        {
+        List L = (List) x;
+        ArrayList result = new ArrayList( L.size() );
+        for (int i = 0; i < L.size(); i += 1) result.add( asRDF( (Node) L.get( i ) ) );
+        return result;
+        }
+
+    private RDFNode asRDF( Node n )
+        { return IteratorFactory.asRDFNode( (Node) n, this ); }
+        
     public StmtIterator listStatements() throws RDFException {
         return IteratorFactory.asStmtIterator(graph.find(null,null,null), this);
     }
@@ -1007,9 +1030,8 @@ implements Model, ModelI, PrefixMapping, ModelLock
         { return graph.contains( s.asNode(), p.asNode(), o.asNode() ); }
         
     public Statement getProperty(Resource s,Property p) throws RDFException {
-        StmtIterator iter = null;
+        StmtIterator iter = listStatements( s, p, (RDFNode) null );
         try {
-            iter = listStatements( s, p, (RDFNode) null );
             if (iter.hasNext()) {
                 return iter.nextStatement();
             } else {

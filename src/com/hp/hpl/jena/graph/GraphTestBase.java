@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.20 2003-05-20 07:55:16 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.21 2003-05-23 15:00:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -58,6 +58,14 @@ public class GraphTestBase extends JenaTestBase
         return (Triple []) al.toArray( new Triple [al.size()] );
         }
         
+    public static Node [] nodes( String items )
+        {
+        ArrayList nl = new ArrayList();
+        StringTokenizer nodes = new StringTokenizer( items );
+        while (nodes.hasMoreTokens()) nl.add( node( nodes.nextToken() ) );   
+        return (Node []) nl.toArray( new Node [nl.size()] );
+        }
+        
     public static Graph graphAdd( Graph g, String s )
         {
         StringTokenizer semis = new StringTokenizer( s, ";" );
@@ -81,7 +89,7 @@ public class GraphTestBase extends JenaTestBase
         assertTrue( title, g.isIsomorphicWith( graphWith( template ) ) );
         }
         
-    public void assertEquals( String name, Graph wanted, Graph obtained )
+    public static void assertEquals( String name, Graph wanted, Graph obtained )
         {
         Model mWanted = modelFor( wanted ), mObtained = modelFor( obtained );
         assertTrue( name + ": wanted " + wanted + " got " + obtained, mWanted.isIsomorphicWith( mObtained ) );

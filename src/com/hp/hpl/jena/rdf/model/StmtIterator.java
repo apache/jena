@@ -34,13 +34,12 @@ package com.hp.hpl.jena.rdf.model;
 /**
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:32 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-05-23 15:03:00 $'
  */
 
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.NoSuchElementException;
-
 
 
 /** An iterator which returns RDF Statements.
@@ -51,23 +50,9 @@ import java.util.NoSuchElementException;
  *   that should be called to free resources if the application does 
  *   not complete the iteration.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:32 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-05-23 15:03:00 $'
  */
-public interface StmtIterator extends ClosableIterator {
-    
-    /** Determine if there any more Statements in the iteration.
-     * @throws RDFException Generic RDF exception.
-     * @return true if and only if there are more Statements available
-     * from the iteration.
-     */    
-    public boolean   hasNext() throws RDFException;
-    
-    /** Return the next Statement of the iteration.
-     * @throws NoSuchElementException if there are no more to be returned.
-     * @throws RDFException Generic RDF exception.
-     * @return The next Resource from the iteration.
-     */
-    public Object next() throws  NoSuchElementException, RDFException;
+public interface StmtIterator extends ExtendedIterator {
     
     /** Return the next Statement of the iteration.
      * @throws NoSuchElementException if there are no more to be returned.
@@ -76,19 +61,4 @@ public interface StmtIterator extends ClosableIterator {
      */
     public Statement nextStatement() throws  NoSuchElementException, RDFException;
     
-    /** Remove the most recently returned Statement from its associated model.
-     * @throws NoSuchElementException thrown if no Statement has been returned.
-     * @throws RDFException Generic RDF exception.
-     */
-    public void      remove() throws NoSuchElementException, RDFException;
-    
-    /** Terminate the iteration and free up resources.
-     *
-     * <p>Some implementations, e.g. on relational databases, hold resources while
-     * the iterator still exists.  These will normally be freed when the iteration
-     * completes.  However, if an application wishes to ensure they are freed without
-     * completing the iteration, this method should be called.</p>
-     * @throws RDFException Generic RDF exception.
-     */
-    public void close() throws RDFException;
 }

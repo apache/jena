@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.19 2003-05-20 11:20:45 chris-dollin Exp $
+  $Id: Model.java,v 1.20 2003-05-23 15:02:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.iterator.*;
 
 import java.io.*;
 import java.util.*;
@@ -52,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.19 $Date: 2003/04/28 14:36:52 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.20 $Date: 2003/05/20 11:20:45 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -90,6 +91,13 @@ public interface Model
 	 */
 	NsIterator listNameSpaces() throws RDFException;
 
+    /**
+        Answer an iterator over all the bindings implied by the query model.
+        
+        TODO complete this explanation.
+    */
+    ExtendedIterator queryBindingsWith( Model query, Resource [] variables );
+    
 	/** Return a Resource instance in this model.
 	 *
 	 * <p>Subsequent operations on the returned object may modify this model.</p>
@@ -829,5 +837,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.19 2003-05-20 11:20:45 chris-dollin Exp $
+ * $Id: Model.java,v 1.20 2003-05-23 15:02:59 chris-dollin Exp $
  */

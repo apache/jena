@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelTestBase.java,v 1.5 2003-05-16 11:12:52 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.6 2003-05-23 15:03:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -20,7 +20,7 @@ import java.util.*;
  	@author kers
 */
 
-public class ModelTestBase extends JenaTestBase
+public class ModelTestBase extends GraphTestBase
     {
     public ModelTestBase(String name)
         { super(name); }
@@ -69,6 +69,21 @@ public class ModelTestBase extends JenaTestBase
         StringTokenizer st = new StringTokenizer( facts, ";" );
         while (st.hasMoreTokens()) sl.add( statement( m, st.nextToken() ) );  
         return (Statement []) sl.toArray( new Statement[sl.size()] );
+        }
+        
+    /**
+        Create an array of Resources from a whitespace-separated string
+        
+        @param m a model to serve as a resource factory
+        @param items a whitespace-separated sequence to feed to resource
+        @return a RDFNode[] of the parsed resources
+    */
+    public static Resource [] resources( Model m, String items )
+        {
+        ArrayList rl = new ArrayList();
+        StringTokenizer st = new StringTokenizer( items );
+        while (st.hasMoreTokens()) rl.add( (Resource) resource( m, st.nextToken() ) );  
+        return (Resource []) rl.toArray( new Resource[rl.size()] );
         }
         
     /**
