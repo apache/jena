@@ -2,23 +2,18 @@
  *  (c)     Copyright 2004 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: ExceptionTests.java,v 1.3 2004-12-01 14:20:30 jeremy_carroll Exp $
+ *  $Id: ExceptionTests.java,v 1.4 2004-12-13 23:07:23 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
 import junit.framework.*;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 import com.hp.hpl.jena.shared.JenaException;
-import org.xml.sax.*;
-
-import java.io.*;
 /**
  * @author jjc
  *

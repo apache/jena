@@ -1,22 +1,15 @@
 /*
   (c) Copyright 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CmdLineTidyTest.java,v 1.1 2004-12-13 17:17:55 jeremy_carroll Exp $
+  $Id: CmdLineTidyTest.java,v 1.2 2004-12-13 23:07:21 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
  
 import junit.framework.*;
 import jena.*;
-import com.hp.hpl.jena.ontology.tidy.*;
-import com.hp.hpl.jena.ontology.tidy.impl.*;
-import com.hp.hpl.jena.ontology.*;
-import java.util.*;
 import java.io.*;
 
-import com.hp.hpl.jena.rdf.model.*;
 //import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.vocabulary.OWLTest;
-import com.hp.hpl.jena.shared.wg.*;
 /**
  *  @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
 *

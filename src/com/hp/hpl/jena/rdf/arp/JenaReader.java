@@ -9,12 +9,10 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 import com.hp.hpl.jena.datatypes.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.*;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXNotSupportedException;
@@ -613,7 +611,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: JenaReader.java,v 1.28 2004-12-06 13:50:16 andy_seaborne Exp $
+ *  * $Id: JenaReader.java,v 1.29 2004-12-13 23:04:59 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */

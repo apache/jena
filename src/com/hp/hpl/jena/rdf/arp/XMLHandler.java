@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.6 2004-11-26 12:14:40 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.7 2004-12-13 23:05:00 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -39,21 +39,12 @@ package com.hp.hpl.jena.rdf.arp;
 
 import java.util.*;
 
-import org.xml.sax.InputSource;
 import org.xml.sax.Locator;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import org.apache.xerces.parsers.*;
-import org.apache.xerces.xni.parser.*;
-import org.apache.xerces.xni.*;
 
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.ext.LexicalHandler;
-import java.io.*;
-
-import org.apache.xerces.util.EncodingMap;
 
 /**
  * This class converts SAX events into a stream

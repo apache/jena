@@ -24,13 +24,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.8 2004-10-25 13:25:26 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.9 2004-12-13 23:04:59 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
 package com.hp.hpl.jena.rdf.arp;
-import org.xml.sax.helpers.*;
-import org.xml.sax.ext.*;
 import org.xml.sax.*;
 
 /**

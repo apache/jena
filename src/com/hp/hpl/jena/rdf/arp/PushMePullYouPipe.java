@@ -5,16 +5,11 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import java.io.InterruptedIOException;
-import java.util.*;
 
 import org.xml.sax.*;
 
 import EDU.oswego.cs.dl.util.concurrent.BoundedBuffer;
 
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.BufferPipe.BoundedBufferPutException;
-import com.hp.hpl.jena.graph.query.BufferPipe.BoundedBufferTakeException;
 import com.hp.hpl.jena.shared.JenaException;
 
 /**

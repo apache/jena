@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import org.xml.sax.ErrorHandler;
 
 /**
  * Configure error reporting options etc on

@@ -10,8 +10,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UTFDataFormatException;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.apache.xerces.parsers.StandardParserConfiguration;

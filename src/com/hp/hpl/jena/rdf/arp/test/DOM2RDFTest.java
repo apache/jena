@@ -5,31 +5,21 @@
 
 package com.hp.hpl.jena.rdf.arp.test;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.parsers.*;
 import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.sax.SAXResult;
 
 
-
-import org.apache.xerces.parsers.SAXParser;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
-import org.xml.sax.XMLReader;
 
 import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 import com.hp.hpl.jena.rdf.arp.DOM2Model;
-import com.hp.hpl.jena.rdf.arp.test.SAX2RDFTest.RDFEHArray;
 import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.shared.*;
 
 /**

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: TokenPipe.java,v 1.9 2004-10-19 14:46:29 jeremy_carroll Exp $
+ * * $Id: TokenPipe.java,v 1.10 2004-12-13 23:04:59 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -35,11 +35,9 @@
  */
 
 package com.hp.hpl.jena.rdf.arp;
-import java.util.*;
 import org.xml.sax.Locator;
 import org.xml.sax.SAXParseException;
 
-import java.io.*;
 
 /**
  *

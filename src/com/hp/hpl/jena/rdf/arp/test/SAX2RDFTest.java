@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.rdf.arp.test;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.*;
