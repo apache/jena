@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  * Filename           $RCSfile: GraphFactory.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:17:21 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-02 15:29:47 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -32,18 +32,15 @@ package com.hp.hpl.jena.graph;
  * is unique; some applications may legitimately want to write triples into
  * a single graph (such as a database). 
  * </p>
+ * 
+ * Updated by kers; added methods that create or locate named graphs.
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: GraphFactory.java,v 1.1 2003-03-12 17:17:21 ian_dickinson Exp $
+ * @version CVS $Id: GraphFactory.java,v 1.2 2003-05-02 15:29:47 chris-dollin Exp $
  */
 public interface GraphFactory 
 {
-    // Constants
-    //////////////////////////////////
-
-    // External signature methods
-    //////////////////////////////////
 
     /**
      * <p>
@@ -53,6 +50,19 @@ public interface GraphFactory
      * @return A new or existing graph.
      */
     public Graph getGraph();
+    
+    /**
+        Create a new graph associated with the given name. If this factory
+        already knows about a graph with this name, throw an AlreadyExistsException.
+        Otherwise create and return the new graph.
+    */
+    public Graph createGraph( String name );
+    
+    /**
+        Find an existing graph that this factory knows about under the given
+        name. If no such graph exists, throw a DoesNotExistException.
+    */
+    public Graph openGraph( String name );
 }
 
 

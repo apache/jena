@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DefaultGraphFactory.java,v 1.1 2003-04-16 21:09:31 jeremy_carroll Exp $
+  $Id: DefaultGraphFactory.java,v 1.2 2003-05-02 15:30:37 chris-dollin Exp $
 */
 package com.hp.hpl.jena.ontology.impl;
 
@@ -21,6 +21,12 @@ public class DefaultGraphFactory implements GraphFactory {
 	public Graph getGraph() {
 	     return new GraphMem();
 	 }
+     
+     public Graph createGraph( String name )
+        { throw new UnsupportedOperationException( "" ); }
+       
+    public Graph openGraph( String name )
+        { throw new UnsupportedOperationException( "" ); }
 }
 /*
 	(c) Copyright Hewlett-Packard Company 2003

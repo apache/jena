@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestFactory.java,v 1.3 2003-05-01 15:36:54 chris-dollin Exp $
+  $Id: TestFactory.java,v 1.4 2003-05-02 15:30:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -12,6 +12,14 @@ package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.db.impl.*;
+import com.hp.hpl.jena.db.test.*;
+import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.*;
+
+import java.util.*;
+
+import java.sql.SQLException;
 
 import junit.framework.*;
 
@@ -23,21 +31,47 @@ public class TestFactory extends GraphTestBase
     public static TestSuite suite()
         { return new TestSuite( TestFactory.class ); }   
 
-    public void tearDown()
+    private TrackingFactory factory;
+    private IDBConnection connection;
+    
+    public void setUp()
         {
-//        destroy( "xxx" );
-//        destroy( "alpha" );
+        connection = TestConnection.makeTestConnection();
+        factory = new TrackingFactory( connection );
         }
         
-    private void destroy( String name )
+    private static class TrackingFactory extends GraphRDBFactory
         {
-        try
+        Set names = new HashSet();
+        
+        public TrackingFactory( IDBConnection c ) { super( c ); }
+        
+        public Graph createGraph( String name )
             {
-            GraphRDB g = (GraphRDB) Factory.openPersistentGraph( name );
-            if (g != null) { g.remove(); g.close(); }
+            Graph result = super.createGraph( name );
+            names.add( name );
+            return result;
             }
-        catch (Exception e)
-            { System.err.println( "oops: " + e ); }
+        }
+        
+    public void tearDown()
+        {
+        Iterator it = factory.names.iterator();
+        while (it.hasNext())
+            {
+            String name = (String) it.next();
+            try
+                {
+                GraphRDB g = (GraphRDB) factory.openGraph( name );
+                g.remove();
+                g.close();
+                }
+            catch (DoesNotExistException e)
+                {}
+            }
+        
+//         try { connection.cleanDB(); connection.close(); }
+//         catch (SQLException s) { throw new JenaException( s ); }
         }
         
     public void testFactory()
@@ -45,29 +79,67 @@ public class TestFactory extends GraphTestBase
         Graph g = Factory.createDefaultGraph();
         }
         
+    public void testCanRemoveOpenedGraph()
+        {
+        String name = "jena_testing_remove";
+        GraphRDB g = (GraphRDB) factory.createGraph( name );     
+        g.close();
+        GraphRDB g2 = (GraphRDB) factory.openGraph( name );  
+        g2.remove();
+        g2.close();
+        }
+        
+    public void testCannotCreateTwice()
+        {
+        String name = "jena_testing_benjamin";
+        GraphRDB g = (GraphRDB) factory.createGraph( name );
+        g.close();
+        try
+            {
+            factory.createGraph( name );
+            fail( "should not be able to re-create " + name );
+            }
+        catch (AlreadyExistsException a)
+            { /* good - that's what we expected */ }
+        }
+        
     public void testCreatePersistentGraph()
         {
-//        Graph g = Factory.createPersistentGraph( "xxx" );
-//        ((GraphRDB) g).remove();
-//        g.close();
+        Graph g = factory.createGraph( "xxx" );
+        ((GraphRDB) g).remove();
+        g.close();
+        }
+        
+    public void testCannotOpenNonExistentGraph()
+        {
+        String name = "beetle";
+        try 
+            { 
+            Graph g = factory.openGraph( name );
+            g.close();
+            fail( "should not be able to open " + name );
+            }
+        catch (DoesNotExistException e)
+            { /* find - that's what we expect */ }
         }
         
     public void testOpenPersistentGraph()
         {
-//        Graph g = Factory.openPersistentGraph( "xxx" );
-//        g.close();
+        Graph g = factory.createGraph( "xxx" );
+        g.close();
+        Graph g2 = factory.openGraph( "xxx" );
+        g2.close();
         }
         
     public void testPersistent()
         {
-//        Graph triples = graphWith( "x R y" );
-//        Graph g = Factory.createPersistentGraph( "alpha" );
-//        g.getBulkUpdateHandler().add( triples );
-//        g.close();
-//        Graph g2 = Factory.openPersistentGraph( "alpha" );
-//        assertTrue( "should retrieve triples", triples.isIsomorphicWith( g2 ) );
-//        ((GraphRDB) g2).remove();
-//        g2.close();
+        Graph triples = graphWith( "x R y" );
+        Graph g = factory.createGraph( "alpha" );
+        g.getBulkUpdateHandler().add( triples );
+        g.close();
+        Graph g2 = factory.openGraph( "alpha" );
+        assertTrue( "should retrieve triples", triples.isIsomorphicWith( g2 ) );
+        g2.close();
         }
     }
 

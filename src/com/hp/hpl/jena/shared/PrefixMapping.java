@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMapping.java,v 1.3 2003-04-29 15:37:11 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.4 2003-05-02 15:30:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -13,6 +13,10 @@ import java.util.*;
 /**
     Methods for recording namepsace prefix mappings and applying and
     unapplying them to URIs.
+<p>
+    Note that a Model *is* a PrefixMapping, so all the PrefixMapping
+    operations apply to Models, and a Model can be used to supply
+    the PrefixMapping argument to setNsPrefixes.
     
  	@author kers
 */
@@ -31,7 +35,7 @@ public interface PrefixMapping
     
     /**
         Copies the prefixes from other into this. Any existing binding of the
-        same prefix is lost.
+        same prefix is lost. 
         
         @param other the PrefixMapping to add
     */

@@ -1,46 +1,44 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.7 2003-05-02 15:30:36 chris-dollin Exp $
+  $Id: GraphRDBFactory.java,v 1.1 2003-05-02 15:28:29 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph.test;
+package com.hp.hpl.jena.db.impl;
 
-import junit.framework.*;
-import com.hp.hpl.jena.graph.query.test.*;
+import com.hp.hpl.jena.db.GraphRDB;
+import com.hp.hpl.jena.db.IDBConnection;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.GraphFactory;
 
 /**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
+    A GraphFactory that produces Graphs from database connections.
+
+    @author kers 
 */
 
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
+public class GraphRDBFactory implements GraphFactory
+    {
+    private IDBConnection c;
+    private int counter = 0;
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("graph");
-        addTest( "TestNode", TestNode.suite() );
-        addTest( "TestTriple", TestTriple.suite() );
-        addTest( "TestReifier", TestReifier.suite() );   
-        addTest( "TestTypedLiterals", TestTypedLiterals.suite() );
-        addTest( "TestGraphQuery", QueryTest.suite() );
-        // addTest( "TestFactory", TestFactory.suite() );
-        addTest( "TestCapabilities", TestCapabilities.suite() );
-        addTest( "TestGraphPrefixMapping", TestGraphPrefixMapping.suite() );       }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+    public GraphRDBFactory( IDBConnection c ) { this.c = c; }
+     
+    public Graph getGraph()
+        { return createGraph( "<anon" + counter++ + ">" ); }
+    
+    public Graph createGraph( String name )
+        {
+        Graph p = c.getDefaultModelProperties().getGraph();
+        return new GraphRDB( c, name, p, true );
+        }
+    
+    public Graph openGraph( String name )
+        { return new GraphRDB( c, name, null, false ); }
     }
-
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

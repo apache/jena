@@ -7,8 +7,10 @@ package com.hp.hpl.jena.db;
 
 import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.util.*;
 
 import java.util.*;
 
@@ -46,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -83,14 +85,14 @@ public class GraphRDB extends GraphBase implements Graph {
 		
 		if( m_properties != null) {
 			if( isNew )
-				throw new RDFRDBException("Error,attempt to create a graph with the same name as an exisiting graph.");
+				throw new AlreadyExistsException( graphID );
 			if( requestedProperties != null )
 				throw new RDFRDBException("Error,attempt to change a graph's properties after it has been used.");			
 			m_specializedGraphs = m_driver.recreateSpecializedGraphs( m_properties );	
 		}
 		else {	
 			if( !isNew )
-				throw new RDFRDBException("Error,attempt to open a graph that does not exist.");
+				throw new DoesNotExistException( graphID );
 			
 			if( requestedProperties == null )
 				throw new RDFRDBException("Error requested properties is null");
