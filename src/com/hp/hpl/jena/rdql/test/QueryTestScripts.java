@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.13 2003-08-27 12:26:14 andy_seaborne Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.14 2003-09-09 14:24:43 chris-dollin Exp $
  */
 
 
@@ -376,7 +376,7 @@ public class QueryTestScripts extends TestSuite
     {
         String queryString = "SELECT * WHERE (?x, ?y, ?z)" ;
         Query query = new Query(queryString) ;
-        query.setSource(new ModelMem());
+        query.setSource( ModelFactory.createDefaultModel() );
         QueryExecution qe = new QueryEngine(query) ;
         QueryResults qr = qe.exec() ;
         QueryResultsFormatter fmt = new QueryResultsFormatter(qr) ;

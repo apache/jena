@@ -24,18 +24,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: rdfcopy.java,v 1.6 2003-08-27 13:04:04 andy_seaborne Exp $
+ * $Id: rdfcopy.java,v 1.7 2003-09-09 14:24:43 chris-dollin Exp $
  */
 
 package jena;
 
 import com.hp.hpl.jena.shared.JenaException ;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.mem.ModelMem;
 
 import java.net.*;
 import java.io.*;
-import java.io.FileInputStream;
 
 /** A program which read an RDF model and copy it to the standard output stream.
  *
@@ -61,7 +59,7 @@ import java.io.FileInputStream;
  *  </pre>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-08-27 13:04:04 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-09-09 14:24:43 $
  */
 public class rdfcopy extends java.lang.Object {
 
@@ -97,7 +95,7 @@ public class rdfcopy extends java.lang.Object {
 		}
 
 		try {
-			Model m = new ModelMem();
+			Model m = ModelFactory.createDefaultModel();
             String base = in ;
 			RDFReader rdr = m.getReader(inlang);
 			for (j = 1; j < lastInProp; j++) {

@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.10 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: TestRDFSReasoners.java,v 1.11 2003-09-09 14:24:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
-import com.hp.hpl.jena.mem.ModelMem;
 //import com.hp.hpl.jena.reasoner.rdfsReasoner1.*;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory;
@@ -29,9 +28,9 @@ import org.apache.log4j.Logger;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.11 $ on $Date: 2003-09-09 14:24:43 $
  */
-public class TestRDFSReasoners extends TestCase {
+public class TestRDFSReasoners extends ReasonerTestBase {
     
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -62,21 +61,21 @@ public class TestRDFSReasoners extends TestCase {
 //            constructRDFWGtests(suite, RDFSFBRuleReasonerFactory.theInstance(), null);
             constructQuerytests(suite, "rdfs/manifest-nodirect-noresource.rdf", RDFSFBRuleReasonerFactory.theInstance(), null);
             
-            Resource config = new ModelMem().createResource().addProperty(ReasonerVocabulary.PROPenableCMPScan, true);
+            Resource config = newResource().addProperty(ReasonerVocabulary.PROPenableCMPScan, true);
 //            config.addProperty(ReasonerVocabulary.PROPtraceOn, true);
             constructRDFWGtests(suite, RDFSRuleReasonerFactory.theInstance(), null);
             constructQuerytests(suite, "rdfs/manifest-standard.rdf", RDFSRuleReasonerFactory.theInstance(), config);
             
             suite.addTest(new TestRDFSMisc(RDFSRuleReasonerFactory.theInstance(), null));
 
-            Resource configFull = new ModelMem().createResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_FULL);
+            Resource configFull = newResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_FULL);
             constructQuerytests(suite, "rdfs/manifest.rdf", RDFSRuleReasonerFactory.theInstance(), configFull);
             
             // This test was needed for the brief time the rdfs12 rules might have been in the standard
             // That's no longer true but left comment out because we might want them for OWL someday
 //            constructQuerytests(suite, "rdfs/manifest-rdfs12.rdf", RDFSRuleReasonerFactory.theInstance(), configFull);
 
-            Resource configSimple = new ModelMem().createResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_SIMPLE);
+            Resource configSimple = newResource().addProperty(ReasonerVocabulary.PROPsetRDFSLevel, ReasonerVocabulary.RDFS_SIMPLE);
             constructQuerytests(suite, "rdfs/manifest-simple.rdf", RDFSRuleReasonerFactory.theInstance(), configSimple);
 
             // Single test case used in debugging, subsumed by above
@@ -232,7 +231,7 @@ public class TestRDFSReasoners extends TestCase {
         public void runTest() throws IOException {
             ReasonerTester tester = new ReasonerTester("rdfs/manifest.rdf");
             // Test effect of switching off property scan - should break container property test case
-            Resource configuration = new ModelMem().createResource();
+            Resource configuration = newResource();
             if (config != null) {
                 for (StmtIterator i = config.listProperties(); i.hasNext();) {
                     Statement s = i.nextStatement();

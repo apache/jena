@@ -8,9 +8,8 @@ package jena ;
 import java.io.* ;
 import jena.cmdline.*;
 
-import java.util.* ;
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.mem.* ;
+import java.util.*;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.n3.* ;
@@ -18,7 +17,7 @@ import com.hp.hpl.jena.n3.* ;
 /**
     Read N3 files and print in a variery of formats.
  * @author		Andy Seaborne
- * @version 	$Id: n3.java,v 1.9 2003-08-27 13:04:04 andy_seaborne Exp $
+ * @version 	$Id: n3.java,v 1.10 2003-09-09 14:24:43 chris-dollin Exp $
  */
 public class n3
 {
@@ -224,7 +223,7 @@ public class n3
 	{
 		try
 		{
-			Model model = new ModelMem();
+			Model model = ModelFactory.createDefaultModel();
 			//RDFReader n3Reader = new N3JenaReader();
 			//n3Reader.read(model, reader, baseName);
 			model.read(reader, baseName, "N3") ;

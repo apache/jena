@@ -24,13 +24,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: rdfcompare.java,v 1.5 2003-08-27 13:04:04 andy_seaborne Exp $
+ * $Id: rdfcompare.java,v 1.6 2003-09-09 14:24:43 chris-dollin Exp $
  */
 
 package jena;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.mem.ModelMem;
 
 import java.net.URL;
 import java.io.FileInputStream;
@@ -55,7 +54,7 @@ import java.io.FileInputStream;
  *  </pre>
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.5 $ $Date: 2003-08-27 13:04:04 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-09-09 14:24:43 $
  */
 public class rdfcompare extends java.lang.Object {
 
@@ -82,8 +81,8 @@ public class rdfcompare extends java.lang.Object {
         
         System.out.println(in1 + " " + in2 + " " + lang1 + " " + lang2);
         try {
-            Model m1 = new ModelMem();
-            Model m2 = new ModelMem();
+            Model m1 = ModelFactory.createDefaultModel();
+            Model m2 = ModelFactory.createDefaultModel();
         
             read(m1, in1, lang1);
             read(m2, in2, lang2);

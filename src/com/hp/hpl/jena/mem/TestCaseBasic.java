@@ -1,4 +1,32 @@
 /*
+    (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+    [See end of file]
+    $Id: TestCaseBasic.java,v 1.3 2003-09-09 14:24:43 chris-dollin Exp $
+*/
+ 
+package com.hp.hpl.jena.mem;
+
+/**
+ *
+ * @author  bwm
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-09-09 14:24:43 $
+ */
+
+public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic {
+
+    public TestCaseBasic(String name) {
+        super(name);
+    }
+    
+    public void setUp() {
+        m1 = new ModelMem();
+        m2 = new ModelMem();
+        m3 = new ModelMem();
+        m4 = new ModelMem();
+    }
+}
+
+/*
  *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
@@ -24,27 +52,5 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBasic.java,v 1.2 2003-08-27 13:01:27 andy_seaborne Exp $
+ * $Id: TestCaseBasic.java,v 1.3 2003-09-09 14:24:43 chris-dollin Exp $
  */
-
-package com.hp.hpl.jena.mem;
-
-
-/**
- *
- * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-08-27 13:01:27 $
- */
-public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic {
-
-    public TestCaseBasic(String name) {
-        super(name);
-    }
-    
-    public void setUp() {
-        m1 = new ModelMem();
-        m2 = new ModelMem();
-        m3 = new ModelMem();
-        m4 = new ModelMem();
-    }
-}

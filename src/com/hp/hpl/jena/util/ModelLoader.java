@@ -10,18 +10,17 @@ import java.net.* ;
 
 import org.apache.log4j.*;
 
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.mem.* ;
+import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 
-import com.hp.hpl.jena.db.* ;
+import com.hp.hpl.jena.db.*;
 
 /** A set of static convenience methods for getting models
  *  The loader will guess the language/type of the model using
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.13 2003-08-27 13:07:55 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.14 2003-09-09 14:24:33 chris-dollin Exp $
  */
 
 public class ModelLoader
@@ -118,7 +117,7 @@ public class ModelLoader
 
         // Its a files.
 		// Language is N3, RDF/XML or N-TRIPLE
-        Model m = new ModelMem() ;
+        Model m = ModelFactory.createDefaultModel() ;
 
         m.setReaderClassName(langXML, com.hp.hpl.jena.rdf.arp.JenaReader.class.getName());
         m.setReaderClassName(langXMLAbbrev, com.hp.hpl.jena.rdf.arp.JenaReader.class.getName());

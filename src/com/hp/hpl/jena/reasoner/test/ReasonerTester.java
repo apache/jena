@@ -5,15 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.22 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: ReasonerTester.java,v 1.23 2003-09-09 14:24:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
@@ -46,7 +44,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.23 $ on $Date: 2003-09-09 14:24:43 $
  */
 public class ReasonerTester {
 
@@ -121,7 +119,7 @@ public class ReasonerTester {
         } else if (file.endsWith("n3")) {
             langType = "N3";
         }
-        Model result = new ModelMem();
+        Model result = ModelFactory.createDefaultModel();
         Reader reader = new BufferedReader(new FileReader(baseDir + file));
         result.read(reader, BASE_URI + file, langType);
         if (cache) {

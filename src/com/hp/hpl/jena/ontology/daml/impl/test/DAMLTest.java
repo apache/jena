@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-09-09 14:24:43 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  * Legacy JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.16 2003-08-27 13:04:46 andy_seaborne Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.17 2003-09-09 14:24:43 chris-dollin Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -828,7 +828,7 @@ public class DAMLTest
         assertTrue( "loadStatus should be true for successful load", m.getLoadSuccessful() );
 
         // create a normal rdf model
-        Model m0 = new ModelMem();
+        Model m0 = ModelFactory.createDefaultModel();
         m0.read( "file:testing/ontology/daml/test-add-1.daml" );
 
         // should be 0 instances in the daml model so far
@@ -941,7 +941,7 @@ public class DAMLTest
         DAMLModel m1 = ModelFactory.createDAMLModel();
         test.java(m1);
 
-        Model m2 = new ModelMem();
+        Model m2 = ModelFactory.createDefaultModel();
         Reader rdr = new StringReader(
           "<rdf:RDF " +
     "xmlns:daml='http://www.daml.org/2001/03/daml+oil#' " +

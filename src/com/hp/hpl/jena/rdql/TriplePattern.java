@@ -5,7 +5,7 @@
 
 /** Class used by original, Jena1, external query engine
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.16 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version  $Id: TriplePattern.java,v 1.17 2003-09-09 14:24:43 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -60,7 +60,7 @@ import com.hp.hpl.jena.shared.*;
 	}
 	
 	// Hack - somewhere to base creating resources, predicate and statements if nowhere else.
-	static Model groundingModel = new ModelMem() ;
+	static Model groundingModel = ModelFactory.createDefaultModel() ;
 
 	/** Get the statement for this TriplePattern
 	 * 	@return A statement if this TriplePattern is grounded (no variables) else return null.

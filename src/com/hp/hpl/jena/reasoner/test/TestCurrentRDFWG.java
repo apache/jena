@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestCurrentRDFWG.java,v 1.3 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: TestCurrentRDFWG.java,v 1.4 2003-09-09 14:24:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
-import com.hp.hpl.jena.mem.ModelMem;
 //import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasoner;
 //import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
@@ -29,9 +28,9 @@ import org.apache.log4j.Logger;
  * Test the default RDFS reasoner against the current set of working group tests
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.4 $ on $Date: 2003-09-09 14:24:43 $
  */
-public class TestCurrentRDFWG extends TestCase {
+public class TestCurrentRDFWG extends ReasonerTestBase {
     
     /** Location of the test file directory */
     public static final String TEST_DIR = "testing/wg20030725/";    
@@ -46,7 +45,7 @@ public class TestCurrentRDFWG extends TestCase {
     public TestCurrentRDFWG( String name ) {
         super( name ); 
     }
-    
+        
     /**
      * Boilerplate for junit.
      * This is its own test suite
@@ -54,7 +53,7 @@ public class TestCurrentRDFWG extends TestCase {
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
         try {
-            Resource config = new ModelMem().createResource().addProperty(ReasonerVocabulary.PROPenableCMPScan, true);
+            Resource config = newResource().addProperty(ReasonerVocabulary.PROPenableCMPScan, true);
             config.addProperty(ReasonerVocabulary.PROPtraceOn, true);
             constructRDFWGtests(suite, RDFSRuleReasonerFactory.theInstance(), null);
 //            constructRDFWGtests(suite, RDFSReasonerFactory.theInstance(), null);
