@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PrintUtil.java,v 1.7 2003-08-22 16:03:45 der Exp $
+ * $Id: PrintUtil.java,v 1.8 2003-08-24 21:19:44 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
 import java.util.*;
 import java.io.*;
 import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
@@ -23,7 +24,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * prefix map which is preloaded with known prefixes.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-22 16:03:45 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-24 21:19:44 $
  */
 public class PrintUtil {
 
@@ -52,6 +53,7 @@ public class PrintUtil {
         registerPrefix("jr", ReasonerVocabulary.getJenaReasonerNS());
         registerPrefix("rb", ReasonerVocabulary.getRBNamespace());
         registerPrefix("eg", egNS);
+        registerPrefix("xsd", XSDDatatype.XSD + "#");
     }
     
     /**
@@ -171,6 +173,15 @@ public class PrintUtil {
         StringBuffer spaces = new StringBuffer();
         for (int i = 0; i < indent; i++) spaces.append(" ");
         out.print(spaces.toString());
+    }
+    
+    /**
+     * Print all the Triple values from a find iterator.
+     */
+    public static void printOut(Iterator it) {
+        while (it.hasNext()) {
+            System.out.println("   " + print(it.next()));
+        }
     }
 }
 
