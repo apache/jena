@@ -121,6 +121,13 @@ Post Jena 2.1 change list
         global FileManager (or create your own).
         Create new model with FileManager.get().loadModel
         Read into an existing model with FileManager.get().readModel
+        
+   ARP
+      o New support for non-Xerces SAX sources.
+        Documentation shows how to parse a DOM as RDF.
+      o ARP setup rationalized, a few methods deprecated as a result.
+      o Improved documentation, covering new features, (see doc/ARP)
+      
 
 
 Jena 2.1 - Main changes from Jena 2.0
