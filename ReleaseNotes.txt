@@ -19,6 +19,9 @@ Post Jena 2.1 change list
       o added BulkUpdateHandler.remove(S,P,O) removing triples matching
         (S, P, O), Node.ANY as wildcard
       o BulkUpdateHandler generates events for these
+      
+      o ModelFactory has gained createUnion(Model, Model) which creates a
+        dynamic union of the two argument models.
 
   GraphMem, SmallGraphMem
       o GraphMem has had the redundant Set(Triple) excised, and changes made
@@ -30,6 +33,12 @@ Post Jena 2.1 change list
         unsuitable for graphs with more than "a few" statements, unless
         memory footprint is (much) more important than search speed. It
         is primarily an extreme to compare other Graphs against.
+
+  Graph Query handling
+      o Query now rewrites (some) RDQL pattern matches which are equivalent
+        to startsWith, endsWith, or contains to use new Expression nodes
+        with labels J_startsWith, J_endsWith, J_contains, to allow back
+        ends to optimise those.
 
   Event handling
       o added new graph.GraphEvents as holder of event constants with one
