@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestConnection.java,v 1.10 2003-08-26 07:47:25 hkuno Exp $
+  $Id: TestConnection.java,v 1.11 2003-08-26 15:44:15 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -130,7 +130,19 @@ public class TestConnection extends TestCase {
 		}
 		conn.close();
 	}
-    
+	
+	public void testBadNamedFactoryModel() throws java.lang.Exception {
+		IDBConnection conn = makeAndCleanTestConnection();
+		ModelMaker maker = ModelFactory.createModelRDBMaker(conn);
+		Model m = null;
+		try {
+			m  = maker.createModel(DefModel);
+			assertTrue(false);
+		} catch (Exception e) {
+		}
+		conn.close();
+	}
+	
 	public void testReconstructDefaultModel() throws java.lang.Exception {
 		IDBConnection conn = makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
@@ -139,7 +151,6 @@ public class TestConnection extends TestCase {
 		m1.remove();
 		conn.close();
 	}
-
     
 	public void testReconstructNamedModel() throws java.lang.Exception {
 		IDBConnection conn = makeAndCleanTestConnection();
