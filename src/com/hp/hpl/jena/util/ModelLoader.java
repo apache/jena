@@ -14,15 +14,14 @@ import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
 import com.hp.hpl.jena.shared.*;
 
-//import com.hp.hpl.jena.bdb.* ;
-//import com.hp.hpl.jena.rdb.* ;
+import com.hp.hpl.jena.db.* ;
 
 /** A set of static convenience methods for getting models
  *  The loader will guess the language/type of the model using
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.5 2003-05-21 15:33:21 chris-dollin Exp $
+ * @version $Id: ModelLoader.java,v 1.6 2003-06-11 13:05:49 andy_seaborne Exp $
  */
 
 public class ModelLoader
@@ -49,7 +48,7 @@ public class ModelLoader
 
     public static Model loadModel(String urlStr) { return loadModel(urlStr, null) ; }
 
-	/** Load a model or attached a persistent store.
+	/** Load a model or attached a persistent store (but not a database).
 	 *
 	 * @param urlStr	The URL or file name of the model
 	 * @param lang		The language of the data - if null, the system guesses
@@ -57,18 +56,27 @@ public class ModelLoader
 
     public static Model loadModel(String urlStr, String lang)
     {
-    	return loadModel(urlStr, lang, "", "") ;
+    	return loadModel(urlStr, lang, null, null, null, null, null) ;
     }
 
 	/** Load a model or attached a persistent store.
+     *  Tries to guess syntax type.
+     *  Database paramters only needed if its a database.
 	 *
 	 * @param urlStr		The URL or file name of the model
 	 * @param lang			The language of the data - if null, the system guesses
 	 * @param dbUser		Database user name (for RDB/JDBC)
 	 * @param dbPassword	Database password (for RDB/JDBC)
+     * @param modelName     The name of the model 
+     * @param dbType        Database type (e.g. MySQL)
+     * @param driver        JDBC driver to load.
+     * @return Model
 	 */
 
-    public static Model loadModel(String urlStr, String lang, String dbUser, String dbPassword)
+
+    public static Model loadModel(String urlStr, String lang,
+                                  String dbUser, String dbPassword,
+                                  String modelName, String dbType, String driver)
     {
         // Wild guess at the language!
         if ( lang == null )
@@ -80,7 +88,7 @@ public class ModelLoader
         if ( lang.equals(langBDB) )
         {
         	// @@ temporarily not supported        	
-            Log.severe("Failed to open Berkeley database", "ModelLoader", "loadModel") ;
+            logger.fatal("Failed to open Berkeley database") ;
             System.exit(1) ;
 /*
             // URL had better be a file!
@@ -92,50 +100,23 @@ public class ModelLoader
                    dirBDB = "." ;
             urlStr = getBasename(urlStr) ;
 
-            Log.debug("BDB: file="+urlStr+", dir="+dirBDB+", basename="+basename, "ModelLoader", "loadModel") ;
+            logger.debug("BDB: file="+urlStr+", dir="+dirBDB+", basename="+basename) ;
 
             try {
                 Model model = new ModelBdb(new StoreBdbF(dirBDB, urlStr)) ;
                 return model ;
             } catch (JenaException rdfEx)
             {
-                Log.severe("Failed to open Berkeley database", "ModelLoader", "loadModel", rdfEx) ;
+                logger.severe("Failed to open Berkeley database", rdfEx) ;
                 System.exit(1) ;
             }
             */
         }
 
         if ( lang.equals(langSQL) )
-        {
-            // URL had better be a file!
-            if ( basename != null )
-                urlStr = basename+File.separator+urlStr ;
-            Log.debug("SQL: file="+urlStr, "ModelLoader", "loadModel") ;
-            // @@ temporarily disabled
-            Log.severe("Failed to open SQL database", "ModelLoader", "loadModel") ;
-            System.exit(1) ;
-          /*
-            // No way to specify user and password.
-            try {
-          	
-                DBConnection dbcon = new DBConnection(urlStr, dbUser, dbPassword);
-                ModelRDB model = null;
-                try {
-                    model = ModelRDB.open(dbcon);
-                } catch (Exception e) {
-                    model = ModelRDB.create(dbcon, "Generic", "Postgresql");
-                }
-                return model ;
-            } catch (JenaException rdfEx)
-            {
-                Log.severe("Failed to open SQL database", "ModelLoader", "loadModel", rdfEx) ;
-                System.exit(1) ;
-            }
-            */
+            return connectToDB(urlStr, dbUser, dbPassword, modelName, dbType, driver) ;
 
-        }
-
-
+        // Its a files.
 		// Language is N3, RDF/XML or N-TRIPLE
         Model m = new ModelMem() ;
 
@@ -149,16 +130,24 @@ public class ModelLoader
             loadModel(m, urlStr, lang) ;
         } catch (JenaException rdfEx)
         {
-            Log.warning("Error loading data source", "ModelLoader", "loadModel", rdfEx);
+            logger.warn("Error loading data source", rdfEx);
             return null ;
         }
         catch (FileNotFoundException e)
         {
-            Log.warning("No such data source: "+urlStr, "ModelLoader", "loadModel", e);
+            logger.warn("No such data source: "+urlStr, e);
             return null ;
         }
         return m ;
     }
+
+    /** Load a model from a file into a model.
+     * @param model
+     * @param uriStr
+     * @param lang  Null mean guess based on the URI String
+     * @return Resturns the model passed in.
+     * @throws java.io.FileNotFoundException
+     */
 
 
     public static Model loadModel(Model model, String urlStr, String lang)
@@ -172,7 +161,7 @@ public class ModelLoader
 
         if ( lang.equals(langBDB) || lang.equals(langSQL) )
         {
-            Log.severe("Can't load data into existing model from a persistent database", "ModelLoader", "loadModel") ;
+            logger.fatal("Can't load data into existing model from a persistent database") ;
             return null ;
         }
 
@@ -196,7 +185,7 @@ public class ModelLoader
         }
         catch (java.io.IOException ioEx)
         {
-            Log.severe("IOException: "+ioEx, "ModelLoader", "loadModel", ioEx) ;
+            logger.fatal("IOException: "+ioEx, ioEx) ;
             return null ;
         }
         //model.read(urlStr, base, lang) ;
@@ -210,6 +199,49 @@ public class ModelLoader
         { logger.warn("IOException closing reader", ioEx) ; }
 
         return model ;
+    }
+
+    /**
+     * Connect to a database.
+     * @param urlStr
+     * @param dbUser
+     * @param dbPassword
+     * @param dbType
+     * @param driverName   Load this driver (if not null)
+     * @return Model
+     */
+
+    public static Model connectToDB(String urlStr,
+                                    String dbUser, String dbPassword,
+                                    String modelName,
+                                    String dbType, String driverName)
+    {
+        // Fragment ID is the model name.
+        logger.debug("SQL: file="+urlStr) ;
+        //System.out.println("SQL: file="+urlStr) ;
+        try { 
+            if ( driverName != null )
+                Class.forName(driverName).newInstance();
+        } catch (Exception ex) {}
+
+//        System.out.println("URL        = "+urlStr) ;
+//        System.out.println("dbName     = "+modelName) ;
+//        System.out.println("dbUser     = "+dbUser) ;
+//        System.out.println("dbType     = "+dbType) ;
+//        System.out.println("dbPassword = "+dbPassword) ;
+//        System.out.println("driver     = "+driverName) ;
+            
+        try {
+            // Hack
+            IDBConnection conn = 
+                ModelFactory.createSimpleRDBConnection(urlStr, dbUser, dbPassword, dbType) ;
+            return ModelRDB.open(conn, modelName) ;
+        } catch (JenaException rdfEx)
+        {
+            Log.severe("Failed to open SQL database", "ModelLoader", "loadModel", rdfEx) ;
+            System.exit(1) ;
+        }
+        return null ;
     }
 
     private static FileReader tryFile( String baseName, String fileName ) throws FileNotFoundException

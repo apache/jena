@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.ResultSet ;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.8 2003-05-21 15:33:26 chris-dollin Exp $
+ * @version $Id: rdfquery.java,v 1.9 2003-06-11 13:07:09 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -65,6 +65,9 @@ public class rdfquery
     static public int outputFormat = FMT_TEXT ;
     static String dbUser = "" ;
     static String dbPassword = "" ;
+    static String dbType = "" ;
+    static String dbName = "" ;
+    static String dbDriver = null ;
 
     //static final String defaultReasonerURI =  "http://www.hpl.hp.com/semweb/2003/RDFSReasoner1" ;
     //static String reasonerURI = defaultReasonerURI ;
@@ -236,6 +239,42 @@ public class rdfquery
                 continue ;
             }
 
+            if ( arg.equalsIgnoreCase("--dbName" ) )
+            {
+                argi++ ;
+                if ( argi == argv.length )
+                {
+                    System.err.println("Error: no database name  specified");
+                    System.exit(1) ;
+                }
+                dbName = argv[argi] ;
+                continue ;
+            }
+
+            if ( arg.equalsIgnoreCase("--dbType" ) )
+            {
+                argi++ ;
+                if ( argi == argv.length )
+                {
+                    System.err.println("Error: no database type  specified");
+                    System.exit(1) ;
+                }
+                dbType = argv[argi] ;
+                continue ;
+            }
+
+            if ( arg.equalsIgnoreCase("--driver" ) )
+            {
+                argi++ ;
+                if ( argi == argv.length )
+                {
+                    System.err.println("Error: no databse name  specified");
+                    System.exit(1) ;
+                }
+                dbDriver = argv[argi] ;
+                continue ;
+            }
+
             if ( arg.equalsIgnoreCase("--user" ) )
             {
                 argi++ ;
@@ -388,7 +427,9 @@ public class rdfquery
         if ( dataURL != null )
         {
             long startLoadTime = System.currentTimeMillis();
-            query.setSource(ModelLoader.loadModel(dataURL, language, dbUser, dbPassword)) ;
+            query.setSource(ModelLoader.loadModel(dataURL, language,
+                                                  dbUser, dbPassword,
+                                                  dbName, dbType, dbDriver)) ;
             Model m = query.getSource() ;
             // ------------
 
