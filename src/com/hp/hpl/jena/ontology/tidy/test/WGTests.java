@@ -229,10 +229,10 @@ public class WGTests extends java.lang.Object {
 			super("save results");
 		}
 		public void runTest() throws IOException {
-			PerfData pd = new PerfData();
-			pd.load();
-			pd.dump();
-			if (false && logging) {
+			//PerfData pd = new PerfData();
+			//pd.load();
+			//pd.dump();
+			if (logging) {
 				RDFWriter w = testResults.getWriter("RDF/XML-ABBREV");
 				w.setProperty("xmlbase", BASE_RESULTS_URI);
 				OutputStream out =
