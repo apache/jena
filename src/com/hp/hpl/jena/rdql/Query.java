@@ -30,7 +30,7 @@ import com.hp.hpl.jena.rdql.parser.RDQLParser ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.12 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.13 2003-10-24 11:06:07 andy_seaborne Exp $
  */
 
 public class Query
@@ -332,7 +332,7 @@ public class Query
             LiteralLabel lit = ((Node_Literal)n).getLiteral() ;
             StringBuffer sb = new StringBuffer() ;
             sb.append('"') ;
-            sb.append(lit.toString()) ;
+            sb.append(lit.getLexicalForm()) ;
             sb.append('"') ;
             if ( lit.language() != null && lit.language().length() > 0 )
             {

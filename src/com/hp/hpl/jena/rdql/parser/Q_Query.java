@@ -9,6 +9,7 @@ package com.hp.hpl.jena.rdql.parser;
 
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.rdql.* ;
+import com.hp.hpl.jena.datatypes.xsd.*;
 
 import java.util.* ;
 
@@ -21,6 +22,7 @@ import java.util.* ;
 
 public class Q_Query extends SimpleNode
 {
+    
     public Q_Query(int id) { super(id); }
 
     public Q_Query(RDQLParser p, int id) { super(p, id); }
@@ -195,6 +197,10 @@ public class Q_Query extends SimpleNode
         
     }
 
+    // This operation puts all the thing to graph node conversion code in
+    // one place.
+    
+    
     static private com.hp.hpl.jena.graph.Node convertToGraphNode(Node n, Query q)
     {
         if ( n instanceof Var )
@@ -206,6 +212,7 @@ public class Q_Query extends SimpleNode
         if ( n instanceof Value)
         {
             Value v = (Value)n ;
+            
             if ( v.isRDFLiteral() )
             {
                 Literal lit = v.getRDFLiteral() ;
@@ -219,6 +226,23 @@ public class Q_Query extends SimpleNode
                 
             if ( v.isString() )
                 return com.hp.hpl.jena.graph.Node.createLiteral(v.getString(), null, null) ;
+            if ( v.isBoolean())
+                return com.hp.hpl.jena.graph.Node.createLiteral(v.asUnquotedString(), null,null) ;
+            
+//            
+            if ( v.isInt() )
+                return com.hp.hpl.jena.graph.Node.createLiteral(
+                        v.asUnquotedString(), null, XSDDatatype.XSDinteger) ;
+            if ( v.isDouble())
+                return com.hp.hpl.jena.graph.Node.createLiteral(
+                    v.asUnquotedString(), null, XSDDatatype.XSDdouble) ;
+
+            String s = v.getString() ;
+            System.err.println("BUG: "+s) ;
+                
+//                
+//            
+//            //if ( v.isNumber())
                 
         }
         throw new RDQL_InternalErrorException("convertToGraphNode encountered strange type: "+n.getClass().getName()) ;

@@ -275,7 +275,7 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
         if ( isInt ) return Long.toString(valInt) ;
         if ( isDouble ) return Double.toString(valDouble) ;
         if ( isBoolean ) return (valBoolean?"true":"false") ;
-        if ( isRDFLiteral) return valRDFLiteral.toString() ;
+        if ( isRDFLiteral) return valRDFLiteral.getLexicalForm() ;
         if ( isRDFResource ) return valRDFResource.toString() ;
         if ( isURI ) return valURI ;
         if ( isString ) return valString ;
@@ -291,7 +291,12 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
         if ( isInt ) return "int:"+Long.toString(valInt) ;
         if ( isDouble ) return "double:"+Double.toString(valDouble) ;
         if ( isBoolean ) return "boolean:"+(valBoolean?"true":"false") ;
-        if ( isRDFLiteral) return "RDF:\""+valRDFLiteral.toString()+"\"" ;
+        if ( isRDFLiteral)
+        {
+            if ( valRDFLiteral.getDatatypeURI() == null )
+                return "RDF:\""+valRDFLiteral.getLexicalForm()+"\"" ;
+            return "RDF:\""+valRDFLiteral.getLexicalForm()+"\"^^"+valRDFLiteral.getDatatypeURI() ;
+        }
         if ( isRDFResource ) return "RDF:<"+valRDFResource.toString()+">" ;
         if ( isURI ) return "URI:"+valURI ;
         if ( isString ) return "string:"+valString ;
