@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.22 2004-07-05 13:57:56 jeremy_carroll Exp $
+  $Id: TestPackage.java,v 1.23 2004-09-10 11:11:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
+
+import com.hp.hpl.jena.mem.test.TestMemPackage;
 
 import junit.framework.TestSuite;
 import junit.framework.Test;
@@ -27,6 +29,7 @@ public class TestPackage extends TestSuite {
         super("jena");
         addTest("Enhanced", com.hp.hpl.jena.enhanced.test.TestPackage.suite());
         addTest("Graph", com.hp.hpl.jena.graph.test.TestPackage.suite());
+        addTest( com.hp.hpl.jena.mem.test.TestMemPackage.suite() );
         addTest("Model", com.hp.hpl.jena.rdf.model.test.TestPackage.suite());
         addTest("N3", com.hp.hpl.jena.n3.test.N3TestSuite.suite());
         addTest("RDQL", com.hp.hpl.jena.rdql.test.RDQLTestSuite.suite());
