@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: Polyadic.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-25 16:55:58 $
+ * Last modified on   $Date: 2004-06-28 14:43:15 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -25,6 +25,7 @@ package com.hp.hpl.jena.graph.compose;
 // Imports
 ///////////////
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.WrappedBulkUpdateHandler;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -43,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Polyadic.java,v 1.10 2004-01-25 16:55:58 chris-dollin Exp $
+ * @version CVS $Id: Polyadic.java,v 1.11 2004-06-28 14:43:15 chris-dollin Exp $
  */
 public abstract class Polyadic
     extends CompositionBase
@@ -212,6 +213,7 @@ public abstract class Polyadic
     public void setBaseGraph( Graph graph ) {
         if (m_subGraphs.contains( graph )) {
             m_baseGraph = graph;
+            bud = null;
         }
         else {
             throw new IllegalArgumentException( "The updateable graph must be one of the graphs from the composition" );
@@ -232,39 +234,28 @@ public abstract class Polyadic
         if (getBaseGraph() != null) {
             sg.remove( getBaseGraph() );
         }
-        
+       
         return sg;
     }
-    
+
+    public BulkUpdateHandler getBulkUpdateHandler() {
+        if (getBaseGraph() == null)
+            throw new RuntimeException(); // return super.getBulkUpdateHandler();
+        if (bud == null)  
+            bud = new WrappedBulkUpdateHandler( this, getBaseGraph().getBulkUpdateHandler() );
+        return bud;
+    }
+
     // the following methods all delegate handling capabilities to the base graph
     // TODO: this needs to be integrated with WrappedGraph, but we don't have time to do so before Jena 2.0 release
     
-    public TransactionHandler getTransactionHandler()
-        { return (getBaseGraph() == null) ? super.getTransactionHandler() : getBaseGraph().getTransactionHandler(); }
+    public TransactionHandler getTransactionHandler() { 
+        return (getBaseGraph() == null) ? super.getTransactionHandler() : getBaseGraph().getTransactionHandler(); 
+        }
 
-    public BulkUpdateHandler getBulkUpdateHandler()
-        { return (getBaseGraph() == null) ? super.getBulkUpdateHandler() : getBaseGraph().getBulkUpdateHandler(); }
-
-    public Capabilities getCapabilities()
-        { return (getBaseGraph() == null) ? super.getCapabilities() : getBaseGraph().getCapabilities(); }
-
-    public GraphEventManager getEventManager()
-        { return (getBaseGraph() == null) ? super.getEventManager() : getBaseGraph().getEventManager(); }
-
-//    public Reifier getReifier()
-//        { 
-//        if (reifier == null) reifier = new SimpleReifier( this, style );
-//        return reifier;
-//        }
-
-    // Internal implementation methods
-    //////////////////////////////////
-
-
-    //==============================================================================
-    // Inner class definitions
-    //==============================================================================
-
+    public Capabilities getCapabilities() { 
+        return (getBaseGraph() == null) ? super.getCapabilities() : getBaseGraph().getCapabilities(); 
+    }
 
 }
 

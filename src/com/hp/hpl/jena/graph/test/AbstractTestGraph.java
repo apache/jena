@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.44 2004-06-25 06:13:41 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.45 2004-06-28 14:43:20 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -391,13 +391,13 @@ public abstract class AbstractTestGraph extends GraphTestBase
     public void testAddTriple()
         {
         getAndRegister( L ).add( SPO );
-        assertTrue( L.has( new Object[] {"add", SPO} ) );
+        L.assertHas( new Object[] {"add", SPO} );
         }
         
     public void testDeleteTriple()
         {        
         getAndRegister( L ).delete( SPO );
-        assertTrue( L.has( new Object[] { "delete", SPO} ) );
+        L.assertHas( new Object[] { "delete", SPO} );
         }
         
     public void testTwoListeners()
@@ -510,6 +510,13 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Object value = new int[]{};
         g.getEventManager().notifyEvent( g, value );
         L.assertHas( new Object[] { "someEvent", g, value } );
+        }
+    
+    public void testRemoveAllEvent()
+        {
+        Graph g = getAndRegister( L );
+        g.getBulkUpdateHandler().removeAll();
+        L.assertHas( new Object[] { "someEvent", g, GraphEvents.removeAll } );        
         }
     
     /**
