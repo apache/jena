@@ -1,17 +1,16 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Variable.java,v 1.4 2003-06-11 11:22:52 chris-dollin Exp $
+  $Id: Node_Variable.java,v 1.5 2003-07-18 15:14:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 /**
-	@author kers
-<br>
     "variable" nodes; these are outside the RDF2003 specification, but are
     used internally for "placeholder" nodes where blank nodes would be
     wrong, most specifically in Query.
+    @author kers
 */
 
 public class Node_Variable extends Node_Fluid

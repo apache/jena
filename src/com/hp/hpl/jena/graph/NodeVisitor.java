@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: NodeVisitor.java,v 1.2 2003-05-28 11:13:49 chris-dollin Exp $
+  $Id: NodeVisitor.java,v 1.3 2003-07-18 15:14:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -10,10 +10,10 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
- 	@author hedgehog
-    
     The NodeVisitor interface is used by Node::visitWith so that an application
-    can have type-dispatch on the class of a Node.
+    can have type-dispatch on the class of a Node. 	
+    
+    @author hedgehog
 */
 public interface NodeVisitor
     {

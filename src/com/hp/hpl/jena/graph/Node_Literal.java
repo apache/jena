@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Literal.java,v 1.7 2003-06-11 11:22:52 chris-dollin Exp $
+  $Id: Node_Literal.java,v 1.8 2003-07-18 15:14:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph;
 import com.hp.hpl.jena.graph.impl.*;
 
 /**
+    An RDF node holding a literal value. Literals may have datatypes.
 	@author kers
 */
 public class Node_Literal extends Node_Concrete

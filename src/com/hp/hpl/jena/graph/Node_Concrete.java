@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Concrete.java,v 1.1 2003-06-11 11:24:37 chris-dollin Exp $
+  $Id: Node_Concrete.java,v 1.2 2003-07-18 15:14:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 /**
-    This is the superclass for "concrete" nodes, ie those which correspond
+    This is the class of "concrete" nodes, ie those which correspond
     to actual RDF data - URIs, blank nodes, and literals.
  	@author kers
 */

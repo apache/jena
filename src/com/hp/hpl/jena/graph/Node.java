@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.15 2003-06-19 15:51:00 chris-dollin Exp $
+  $Id: Node.java,v 1.16 2003-07-18 15:14:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -16,13 +16,12 @@ import org.apache.log4j.*;
 import java.util.*;
 
 /**
-    @author Jeremy Carroll and Chris Dollin
-<br>
     A Node has five subtypes: Node_Blank, Node_Anon, Node_URI,  
     Node_Variable, and Node_ANY.
     Nodes are only constructed by the node factory methods, and they will
     attempt to re-use existing nodes with the same label if they are recent
-    enough.
+    enough.    
+    @author Jeremy Carroll and Chris Dollin
 */
 
 public abstract class Node {

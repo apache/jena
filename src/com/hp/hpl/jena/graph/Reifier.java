@@ -1,18 +1,15 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.12 2003-07-18 09:33:32 chris-dollin Exp $
+  $Id: Reifier.java,v 1.13 2003-07-18 15:14:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 /**
-	@author kers
-<br>
     This interface represents the type of things that can hold reified triples
     for a Jena Graph.
-<br>    
-    PRELIMINARY - waiting for the fire.
+    @author kers
 */
 
 import com.hp.hpl.jena.util.iterator.*;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.13 2003-07-09 07:54:11 chris-dollin Exp $
+  $Id: Graph.java,v 1.14 2003-07-18 15:14:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -13,10 +13,14 @@ import com.hp.hpl.jena.util.iterator.*;
 
 
 /**
- * @author Jeremy Carroll
- *
- * 
- */
+    The interface to be satisfied by implementations maintaining collections
+    of RDF triples. The core interface is small (add, delete, find, contains) and
+    is augmented by additional classes to handle more complicated matters
+    such as reification, query handling, bulk update, event management,
+    and transaction handling.
+    
+    @author Jeremy Carroll, Chris Dollin
+*/
 public interface Graph  {
 	
     /** 
@@ -113,11 +117,7 @@ public interface Graph  {
 	/** Free all resources, any further use of this Graph is an error.
 	 */
 	void close();
-	/* TODO
-	 *  GraphListener stuff
-	 *  complex find
-	 * 
-	 */ 
+    
 	 int size() throws UnsupportedOperationException;
 	 
 	 int ADD     = 1;
