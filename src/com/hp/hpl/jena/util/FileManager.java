@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.11 2005-02-13 15:36:27 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.12 2005-02-13 18:02:50 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -379,7 +379,7 @@ public class FileManager
     {
         InputStream in = open(filename) ;
         if ( in == null )
-            throw new JenaException("File not found: "+filename) ;
+            throw new NotFoundException("File not found: "+filename) ;
         return readWholeFileAsUTF8(in) ;
     }
         
