@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:05:25 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-02-23 16:59:26 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -32,6 +32,7 @@ import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.daml.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.impl.*;
@@ -49,7 +50,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.16 2005-02-21 12:05:25 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.17 2005-02-23 16:59:26 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends OntModelImpl
@@ -347,9 +348,13 @@ public class DAMLModelImpl
      *         no such resource is found.
      */
     public DAMLCommon getDAMLValue( String uri ) {
-        // work-around a strange design choice in Model.getResource(), which will create a new resource
-        // if one is not found in the model
-        return (containsResource( uri )) ? (DAMLCommon) getResource( uri ).as( DAMLCommon.class ) : null;
+        Node n = Node.createURI( uri );
+        if (getGraph().queryHandler().containsNode( n )) {
+            return (DAMLCommon) ((Resource) asRDFNode( n )).as( DAMLCommon.class );
+        }
+        else {
+            return null;
+        }
     }
 
 
@@ -410,7 +415,13 @@ public class DAMLModelImpl
      * @return The class resource with the given URI, or null
      */
     public DAMLClass getDAMLClass( String uri ) {
-        return containsResource( uri ) ? (DAMLClass) getResource( uri ).as( DAMLClass.class ) : null;
+        Node n = Node.createURI( uri );
+        if (getGraph().queryHandler().containsNode( n )) {
+            return (DAMLClass) ((Resource) asRDFNode( n )).as( DAMLClass.class );
+        }
+        else {
+            return null;
+        }
     }
     
     /**
@@ -419,7 +430,13 @@ public class DAMLModelImpl
      * @return The property resource with the given URI, or null
      */
     public DAMLProperty getDAMLProperty( String uri ) {
-        return containsResource( uri ) ? (DAMLProperty) getResource( uri ).as( DAMLProperty.class ) : null;
+        Node n = Node.createURI( uri );
+        if (getGraph().queryHandler().containsNode( n )) {
+            return (DAMLProperty) ((Resource) asRDFNode( n )).as( DAMLProperty.class );
+        }
+        else {
+            return null;
+        }
     }
     
     /**
@@ -428,7 +445,13 @@ public class DAMLModelImpl
      * @return The instance resource with the given URI, or null
      */
     public DAMLInstance getDAMLInstance( String uri ) {
-        return containsResource( uri ) ? (DAMLInstance) getResource( uri ).as( DAMLInstance.class ) : null;
+        Node n = Node.createURI( uri );
+        if (getGraph().queryHandler().containsNode( n )) {
+            return (DAMLInstance) ((Resource) asRDFNode( n )).as( DAMLInstance.class );
+        }
+        else {
+            return null;
+        }
     }
     
 
@@ -539,40 +562,7 @@ public class DAMLModelImpl
      * @return True if the resource appears in any subject, predicate or object position in the model.
      */
     protected boolean containsResource( String uri ) {
-        // first try as a subject
-        Resource r = getResource( uri );
-        StmtIterator i0 = listStatements( r, null, (RDFNode) null );
-        if (i0.hasNext()) {
-            i0.close();
-            return true;
-        }
-        else {
-            i0.close();
-        }
-
-        // now as object
-        StmtIterator i1 = listStatements( null, null, r );
-        if (i1.hasNext()) {
-            i1.close();
-            return true;
-        }
-        else {
-            i1.close();
-        }
-
-        // now as predicate: note that this URI may not be a valid predicate URI
-        Property p = getProperty( uri );
-        StmtIterator p0 = listStatements( null, p, (RDFNode) null );
-        if (p0.hasNext()) {
-            p0.close();
-            return true;
-        }
-        else {
-            p0.close();
-        }
-
-        // not in the model
-        return false;
+        return containsResource( getResource( uri ) );
     }
 
 
