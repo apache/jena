@@ -1,27 +1,27 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 
-/** Old name for ResultBinding - for compatibility only
+/** Old name for ResultBindingImpl - for compatibility only
  * @author		Andy Seaborne
- * @version 	$Id: Environment.java,v 1.5 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version 	$Id: Environment.java,v 1.6 2004-05-28 16:56:14 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
 
 import com.hp.hpl.jena.rdf.model.* ;
 
-public class Environment extends ResultBinding
+public class Environment extends ResultBindingImpl
 {
    /**
-    * @deprecated Renamed as {@link ResultBinding ResultBinding}
+    * @deprecated Renamed as {@link ResultBindingImpl ResultBindingImpl}
     */
     public Environment() { super() ; }
     
    /**
-    * @deprecated This class has been renamed as {@link ResultBinding ResultBinding}
+    * @deprecated This class has been renamed as {@link ResultBindingImpl ResultBindingImpl}
     */
     public int add(String varName, Value value)
     {
@@ -29,7 +29,7 @@ public class Environment extends ResultBinding
     }
 
    /**
-    * @deprecated This class has been renamed as {@link ResultBinding ResultBinding}
+    * @deprecated This class has been renamed as {@link ResultBindingImpl ResultBindingImpl}
     */
     public int add(String varName, RDFNode node)
     {
@@ -38,7 +38,7 @@ public class Environment extends ResultBinding
 
     
    /**
-    * @deprecated This class has been renamed as {@link ResultBinding ResultBinding}
+    * @deprecated This class has been renamed as {@link ResultBindingImpl ResultBindingImpl}
     */
     public ResultBindingIterator iterator()
     {
@@ -46,23 +46,23 @@ public class Environment extends ResultBinding
     }
 
    /**
-    * @deprecated This class has been renamed as {@link ResultBinding ResultBinding}
+    * @deprecated This class has been renamed as {@link ResultBindingImpl ResultBindingImpl}
     */
     public Object get(String varName)
     {
         return super.get(varName) ;
     }
 
-   /**
-    * @deprecated This class has been renamed as {@link ResultBinding ResultBinding}
-    */
-    public Value getValue(String varName)
-    {
-        return super.getValue(varName) ;
-    }
+//   /**
+//    * @deprecated This class has been renamed as {@link ResultBindingImpl ResultBindingImpl}
+//    */
+//    public Value getValue(String varName)
+//    {
+//        return super.getValue(varName) ;
+//    }
     
    /**
-    * @deprecated This class has been renamed as {@link ResultBinding ResultBinding}
+    * @deprecated This class has been renamed as {@link ResultBindingImpl ResultBindingImpl}
     */
     public int size()
     {
@@ -70,7 +70,7 @@ public class Environment extends ResultBinding
     }
 
    /** Check for multiple bindings of the same variable.
-    * @deprecated This class has been renamed as {@link ResultBinding ResultBinding}
+    * @deprecated This class has been renamed as {@link ResultBindingImpl ResultBindingImpl}
     */
 
     public void check()
@@ -80,7 +80,7 @@ public class Environment extends ResultBinding
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,23 +1,25 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
  
 /** 
  * Interface representing something that evaluates to true or false.
  * @author		Andy Seaborne
- * @version 	$Id: Constraint.java,v 1.5 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version 	$Id: Constraint.java,v 1.6 2004-05-28 16:56:13 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
 
+import com.hp.hpl.jena.graph.query.IndexValues;
+
 public interface Constraint
 {
-    public boolean isSatisfied(Query q, ResultBinding env) ;
+    public boolean isSatisfied(Query q, IndexValues env) ;
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

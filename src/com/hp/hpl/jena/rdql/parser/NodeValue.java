@@ -1,30 +1,44 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2004, Hewlett-Packard Development Company, LP
+ * All rights reserved.
  * [See end of file]
  */
 
-/**
- * @author   Andy Seaborne
- * @version  $Id: WorkingVar.java,v 1.7 2003-09-29 11:15:05 andy_seaborne Exp $
+package com.hp.hpl.jena.rdql.parser;
+
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdql.Printable;
+
+/** A dynamically typed slot 
+ * 
+ * 
+ * @author Andy Seaborne
+ * @version $Id: NodeValue.java,v 1.1 2004-05-28 16:57:31 andy_seaborne Exp $
  */
 
-
-package com.hp.hpl.jena.rdql;
-
-import com.hp.hpl.jena.rdql.parser.ParsedLiteral ;
-
-/**  Working variables are settable values for holding intermediate results.
- */
-
-public class WorkingVar extends ParsedLiteral implements Value, Printable, Settable, Cloneable
+public interface NodeValue extends Printable
 {
-    public WorkingVar() { super() ; }
-    public WorkingVar(Value v) { super(v) ; } 
+    public boolean isNumber() ;
+    public boolean isInt() ;
+    public boolean isDouble() ;
+    public boolean isBoolean() ;
+    public boolean isString() ;
+    public boolean isURI() ;
+    public boolean isNode() ;
+
+    public long getInt() ;
+    public double getDouble() ;
+    public boolean getBoolean() ;
+    public String getString() ;
+    public String getURI() ;
+    public Node getNode() ;
+    
+    public String valueString() ;
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
- *  All rights reserved.
+ * (c) Copyright 2004 Hewlett-Packard Development Company, LP
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions

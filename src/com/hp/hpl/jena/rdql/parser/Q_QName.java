@@ -1,11 +1,12 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 
 package com.hp.hpl.jena.rdql.parser;
-import com.hp.hpl.jena.rdql.* ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdql.*;
 
 public class Q_QName extends Q_URI
 {
@@ -39,18 +40,19 @@ public class Q_QName extends Q_URI
         //super.setURI(seen) ;
     }
 
-    public void fixup(Q_Query qnode)
+    public void postParse(Query query)
     {
-        
-        if ( isRDFResource() )
+        super.postParse(query) ;
+
+        if ( isNode() )
             // Already done.
             return ;
-        String full = qnode.getPrefix(prefix) ;
+        String full = query.getPrefix(prefix) ;
 
         if ( full == null )
             throw new QueryException("Query error: QName '"+seen+"' can not be expanded.") ;
 
-        super.setRDFResource(model.createResource(full+lcname)) ;
+        super._setNode(Node.createURI(full+lcname)) ;
     }
     
 
@@ -66,7 +68,7 @@ public class Q_QName extends Q_URI
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -11,14 +11,14 @@ package com.hp.hpl.jena.rdql.test;
 import junit.framework.* ;
 
 import java.util.* ;
-import com.hp.hpl.jena.rdql.* ;
 
 import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdql.*;
 
 
 /** Bunch of programmatic uses of query to complrment the script tests.
  * @author Andy Seaborne
- * @version $Id: QueryTestProgrammatic.java,v 1.6 2003-08-27 12:26:14 andy_seaborne Exp $
+ * @version $Id: QueryTestProgrammatic.java,v 1.7 2004-05-28 16:57:33 andy_seaborne Exp $
  */
 
 public class QueryTestProgrammatic extends TestSuite
@@ -54,7 +54,7 @@ public class QueryTestProgrammatic extends TestSuite
             // Test templates
             // expect to get one result with ?z = 1+1 = 2
             
-            ResultBinding rb = new ResultBinding() ;
+            ResultBindingImpl rb = new ResultBindingImpl() ;
             rb.add("x", model1.createResource("http://never/r-1")) ;
             rb.add("y", model1.createResource("http://never/p-1")) ;
             // No bindings
@@ -99,7 +99,7 @@ public class QueryTestProgrammatic extends TestSuite
 
             for ( ; results.hasNext() ; )
             {
-                 ResultBinding rb = (ResultBinding)results.next() ;
+                 ResultBindingImpl rb = (ResultBindingImpl)results.next() ;
                  for ( Iterator iter = rb.getTriples().iterator() ; iter.hasNext() ; )
                  {
                      Statement s = (Statement)iter.next() ;
@@ -114,10 +114,10 @@ public class QueryTestProgrammatic extends TestSuite
     {
         Model model ;
         String queryString ;
-        ResultBinding binding ;
+        ResultBindingImpl binding ;
         long numResults ;
         
-        TestQueryTemplate(String testName, Model m, ResultBinding b, String q, long num)
+        TestQueryTemplate(String testName, Model m, ResultBindingImpl b, String q, long num)
         {
             super(testName) ;
             model = m ;
@@ -228,7 +228,7 @@ public class QueryTestProgrammatic extends TestSuite
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

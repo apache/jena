@@ -1,7 +1,7 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: QueryTestScripts.java,v 1.18 2004-05-06 14:38:48 andy_seaborne Exp $
+ * $Id: QueryTestScripts.java,v 1.19 2004-05-28 16:57:33 andy_seaborne Exp $
  */
 
 
@@ -11,12 +11,12 @@ import java.io.* ;
 //import java.util.* ;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdql.*;
 
 import junit.framework.*;
 
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.rdql.*;
 
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.18 2004-05-06 14:38:48 andy_seaborne Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.19 2004-05-28 16:57:33 andy_seaborne Exp $
  */
 
 
@@ -283,7 +283,6 @@ public class QueryTestScripts extends TestSuite
                     int n = fmt.numRows() ;
                     pw.println("Results: "+((n < 0)?"unknown (one pass format)":n+"")) ;
                     fmt.close() ;
-                    results.rewind() ;
                 }
 
                 if ( printDetails && displayTime )
@@ -367,7 +366,7 @@ public class QueryTestScripts extends TestSuite
             }
             sIter.close() ;
         } catch ( JenaException rdfEx)
-        { logger.error( "Failed to empty model", rdfEx) ; }
+        { logger.error( "Failed to empty model (com.hp.hpl.jena.rdf.query.Test.QueryTest.emptyModel)", rdfEx) ; }
     }
 
     static String convertFilename(String filename, String directory)
@@ -404,7 +403,7 @@ public class QueryTestScripts extends TestSuite
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -8,7 +8,6 @@ package com.hp.hpl.jena.rdql;
 import java.util.* ;
 import java.io.* ;
 
-import org.apache.commons.logging.*;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.vocabulary.* ;
 
@@ -26,13 +25,11 @@ import com.hp.hpl.jena.vocabulary.* ;
  *  Don't keep QueryResultsFormatter's around unnecessarily!
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsFormatter.java,v 1.13 2004-01-20 14:27:43 andy_seaborne Exp $
+ * @version  $Id: QueryResultsFormatter.java,v 1.14 2004-05-28 16:56:15 andy_seaborne Exp $
  */
 
 public class QueryResultsFormatter
 {
-    static Log log = LogFactory.getLog(QueryResultsFormatter.class); 
-    
     QueryResults queryResults ;
     QueryResultsMem all = null ;
     int numRows = -2 ;
@@ -145,7 +142,7 @@ public class QueryResultsFormatter
                     n = ResultSet.undefined ;
                 else if ( ! (tmp instanceof RDFNode) )
                 {
-                    log.warn("Class wrong: "+tmp.getClass().getName()) ;
+                    System.err.println("Class wrong: "+tmp.getClass().getName()) ;
                     continue ;
                 }
                 else
@@ -156,7 +153,6 @@ public class QueryResultsFormatter
                 thisSolution.addProperty(ResultSet.binding, thisBinding) ;
             }
         }
-        queryResults.close() ;
         results.addProperty(ResultSet.size, count) ;
         return results ;
     }
@@ -382,7 +378,7 @@ public class QueryResultsFormatter
             for ( int col = 0 ; col < queryResults.getResultVars().size() ; col++ )
             {
                 String rVar = (String)queryResults.getResultVars().get(col) ;
-                Value val = env.getValue(rVar) ;
+                RDFNode val = (RDFNode)env.get(rVar) ;
                 // Use the unquoted form here - should also XML-escape it.
                 String s = (val==null)? notThere : val.toString() ;
 
@@ -410,12 +406,9 @@ public class QueryResultsFormatter
         {
             ResultBinding result = (ResultBinding)rowIter.next() ;
 
-            for ( ResultBinding.ResultBindingIterator iter = result.iterator() ; iter.hasNext() ; )
+            for ( ResultBindingIterator iter = result.iterator() ; iter.hasNext() ; )
             {
                 iter.next() ;
-                String rVar = iter.varName() ;
-                Value val = iter.value() ;
-                //String valStr = (val==null) ? null : val.toString() ;
             }
         }
     }
@@ -430,11 +423,10 @@ public class QueryResultsFormatter
         // Print in all details
         Object obj = env.get(varName) ;
                 
-        String s = notThere ;
         if ( obj != null )
         {
             if ( ! ( obj instanceof RDFNode ) )
-                s = "Found a "+(obj.getClass().getName()) ;
+                return "Found a "+(obj.getClass().getName()) ;
             else if ( obj instanceof Literal )
             {
                 Literal l = (Literal)obj ;
@@ -445,17 +437,23 @@ public class QueryResultsFormatter
                     sb.append("@").append(l.getLanguage()) ;
                 if ( l.getDatatype() != null )
                     sb.append("^^<").append(l.getDatatypeURI()).append(">") ;
-                s = sb.toString() ;
+                return sb.toString() ;
             }
-            else
-                s = env.getValue(varName).asQuotedString() ;
+            else if ( obj instanceof Resource )
+            {
+                Resource r = (Resource)obj ;
+                if ( r.isAnon() )
+                    return "anon:"+r.getId() ;
+                else
+                    return "<"+r.getURI()+">" ;
+            }
         }
-        return s ;
+        return notThere ;
     }
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

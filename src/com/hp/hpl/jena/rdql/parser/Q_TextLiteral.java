@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -7,7 +7,10 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-import com.hp.hpl.jena.rdf.model.* ;
+
+import com.hp.hpl.jena.datatypes.RDFDatatype ;
+import com.hp.hpl.jena.datatypes.TypeMapper;
+import com.hp.hpl.jena.rdql.Query;
 
 public class Q_TextLiteral extends ParsedLiteral {
 
@@ -28,7 +31,7 @@ public class Q_TextLiteral extends ParsedLiteral {
     seen = s ; 
     // Remove string quotes
     s = s.substring(1,s.length()-1) ;
-    super.setString(unescape(s,'\\')) ;
+    super._setString(unescape(s,'\\')) ;
   }
   
     public void jjtClose()
@@ -50,25 +53,28 @@ public class Q_TextLiteral extends ParsedLiteral {
             seen = seen+"^^"+datatype.asQuotedString() ;
     }
   
-    public void fixup(Q_Query qnode)
+    public void postParse(Query query)
     {
+        super.postParse(query) ;
         // Must wait until any QName is resolved.
         String tmp_datatype = null ;
         if ( datatype != null )
         {
-            if ( ! datatype.isSet )
-                datatype.fixup(qnode) ;
-            tmp_datatype = datatype.valueString() ;
+            datatype.postParse(query) ;
+            tmp_datatype = datatype.getURI() ;//   .valueString() ;
         }
         
-        // 2003-08
+        com.hp.hpl.jena.graph.Node n = null ; 
+        
         // Can't have type and lang tag.
-        Literal l = null ;
         if ( tmp_datatype != null)
-            l = model.createTypedLiteral(super.getString(), tmp_datatype) ;
+        {
+            RDFDatatype dType = TypeMapper.getInstance().getSafeTypeByName(tmp_datatype) ;
+            n = com.hp.hpl.jena.graph.Node.createLiteral(super.getString(), null, dType) ;
+        }
         else
-            l = model.createLiteral(super.getString(), langTag) ;
-        super.setRDFLiteral(l) ; 
+            n = com.hp.hpl.jena.graph.Node.createLiteral(super.getString(), langTag, null) ;
+        super._setNode(n) ; 
     }
   
     public String asQuotedString()
@@ -110,7 +116,7 @@ public class Q_TextLiteral extends ParsedLiteral {
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

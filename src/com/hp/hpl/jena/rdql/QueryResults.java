@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -14,11 +14,11 @@ import java.util.*;
  *
  * @see Query
  * @see QueryEngine
- * @see ResultBinding
+ * @see ResultBindingImpl
  * @see QueryResultsStream
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResults.java,v 1.7 2004-04-30 13:22:41 andy_seaborne Exp $
+ * @version  $Id: QueryResults.java,v 1.8 2004-05-28 16:56:15 andy_seaborne Exp $
  */
 
 public interface QueryResults extends java.util.Iterator
@@ -35,12 +35,7 @@ public interface QueryResults extends java.util.Iterator
     public boolean hasNext() ;
 
     /** Moves onto the next result possibility.
-     */
-    
-    public ResultBinding nextResultBinding() ;
-
-    /** Moves onto the next result possibility.
-     *  The returned object should be of class ResultBinding
+     *  The returned object should be of class ResultBindingImpl
      */
     
     public Object next() ;
@@ -63,7 +58,7 @@ public interface QueryResults extends java.util.Iterator
     public List getResultVars() ;
 
     /** Convenience function to consume a query.
-     *  Returns a list of {@link ResultBinding}s.
+     *  Returns a list of {@link ResultBindingImpl}s.
      *
      *  @return List
      *  @deprecated Use {@link QueryResultsMem} to get all the results of a query.
@@ -73,7 +68,7 @@ public interface QueryResults extends java.util.Iterator
 
 }
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

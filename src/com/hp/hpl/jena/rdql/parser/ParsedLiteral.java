@@ -1,91 +1,93 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 package com.hp.hpl.jena.rdql.parser;
 
-import com.hp.hpl.jena.rdql.*;
+
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdql.*;
+import com.hp.hpl.jena.graph.query.IndexValues ;
+import com.hp.hpl.jena.graph.impl.LiteralLabel;
 
 import java.io.PrintWriter;
 
 // An implementation of value that is created from the parsing process.
+// Explict declaration of the Expr interface causes Eclipse to put it
+// in the type hierarchy directly which helps development.
 
-
-public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
+public class ParsedLiteral extends ExprNode implements Expr, NodeValue
 {
     // Used to create resources and literals
     static Model model = ModelFactory.createDefaultModel() ;
 
     protected boolean isSet = false ;
 
-    protected boolean isInt = false ;
-    protected boolean isBoolean = false ;
-    protected boolean isDouble = false ;
-    protected boolean isURI = false ;
-    protected boolean isString = false ;
-    protected boolean isRDFResource = false ;
-    protected boolean isRDFLiteral = false ;
-
-    protected long valInt ;
-    protected boolean valBoolean ;
-    protected double valDouble ;
-    protected String valString ;
-    protected String valURI ;
-    protected Literal valRDFLiteral ;
-    protected Resource valRDFResource ;  
+    private boolean isInt = false ;
+    private boolean isBoolean = false ;
+    private boolean isDouble = false ;
+    private boolean isURI = false ;
+    private boolean isString = false ;
+    private boolean isGraphNode = false ;
     
-    //RDFNode rdfNode ;
+    //private boolean isRDFResource = false ;
+    //private boolean isRDFLiteral = false ;
 
+    private long valInt ;
+    private boolean valBoolean ;
+    private double valDouble ;
+    private String valString ;
+    private String valURI ;
+    private com.hp.hpl.jena.graph.Node valGraphNode ;
+    
+    //private Literal valRDFLiteral ;
+    //private Resource valRDFResource ;  
+    
     // Constructors used by the parser
     ParsedLiteral(int id) { super(id); }
 
     ParsedLiteral(RDQLParser p, int id) { super(p, id); }
 
     public ParsedLiteral() { super(-1) ; unset() ; }
-    public ParsedLiteral(Value v)
+    
+    // Used by working var to clone values.
+    protected ParsedLiteral(NodeValue v)
     {
         super(-1) ;
         if ( v.isBoolean() )
         {
-            setBoolean(v.getBoolean()) ;
+            _setBoolean(v.getBoolean()) ;
             return ;
         }
             
         if ( v.isInt() )
         {
-            setInt(v.getInt()) ;
+            _setInt(v.getInt()) ;
             return ;
         }
 
         if ( v.isDouble() )
         {
-            setDouble(v.getDouble()) ;
+            _setDouble(v.getDouble()) ;
             return ;
         }
 
         if ( v.isURI() )
         {
-            setURI(v.getURI()) ;
+            _setURI(v.getURI()) ;
             return ;
         }
 
-        if ( v.isRDFLiteral() )
+        if ( v.isNode() )
         {
-            setRDFLiteral(v.getRDFLiteral()) ;
-            return ;
-        }
-
-        if ( v.isRDFResource())
-        {
-            setRDFResource(v.getRDFResource()) ;
+            _setNode(v.getNode()) ;
             return ;
         }
         
         if ( v.isString() )
         {
-            setString(v.getString()) ;
+            _setString(v.getString()) ;
             return ;
         }
 
@@ -96,19 +98,13 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
     protected void unset()
     {
         isSet = false ;
-        // Throw away any old values
-
-        if ( isString )
-            valString = null ;
-
-        if ( isURI )
-            valURI = null ;
-            
-        if ( isRDFResource )
-            valRDFResource = null ; 
-
-        if ( isRDFLiteral )
-            valRDFLiteral = null ; 
+        valString = null ;
+        valGraphNode = null ;
+        valInt = 0 ;
+        valBoolean = false ;
+        valDouble = 0 ;
+        valURI = null ;
+        valGraphNode = null ;       
 
         isInt = false ;
         isBoolean = false ;
@@ -117,7 +113,7 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
         isString = false ;
     }
 
-    public Value eval(Query q, ResultBinding env)
+    public NodeValue eval(Query q, IndexValues env)
     {
         if ( ! isSet )
             throw new EvalFailureException("Literal value not set") ;
@@ -133,15 +129,38 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
     public boolean isBoolean()      { return isSet && isBoolean ; }
     public boolean isString()       { return isSet && isString ; }
     public boolean isURI()          { return isSet && isURI ; }
-    public boolean isRDFResource()  { return isSet && isRDFResource ; }
-    public boolean isRDFLiteral()   { return isSet && isRDFLiteral ; }
+    public boolean isNode()         { return isSet && isGraphNode ; }
     
 
-    public void setInt(long i)               { unset() ; isSet = true ; isInt = true ; valInt = i ; }
-    public void setDouble(double d)          { unset() ; isSet = true ; isDouble = true ; valDouble = d ; }
-    public void setBoolean(boolean b)        { unset() ; isSet = true ; isBoolean = true ; valBoolean = b ; }
-    public void setString(String s)          { unset() ; isSet = true ; isString = true ; valString = s ; }
-    public void setURI(String uri)           { unset() ; isSet = true ; isURI = true ; isString = true ; valURI = uri ; valString = uri ; }
+    protected void _setInt(long i)               { unset() ; isSet = true ; isInt = true ; valInt = i ; }
+    protected void _setDouble(double d)          { unset() ; isSet = true ; isDouble = true ; valDouble = d ; }
+    protected void _setBoolean(boolean b)        { unset() ; isSet = true ; isBoolean = true ; valBoolean = b ; }
+    protected void _setString(String s)          { unset() ; isSet = true ; isString = true ; valString = s ; }
+    protected void _setURI(String uri)           { unset() ; isSet = true ; isURI = true ; isString = true ; valURI = uri ; valString = uri ; }
+    
+    protected void _setNode(com.hp.hpl.jena.graph.Node n)
+    {
+        unset();
+        isSet = true;
+        isGraphNode = true;
+        valGraphNode = n ;
+        isString = false ;
+        valString = null ;
+        
+        if ( n.isLiteral() )
+            valString = n.getLiteral().getLexicalForm() ;
+        if ( n.isURI() )
+        {
+            valString = n.getURI() ;
+            valURI = n.getURI() ;
+            isURI = true ;
+        }
+        if ( n.isBlank() )
+            valString = n.getBlankNodeId().toString() ;
+        
+        if ( valString != null )
+            isString = true ;
+    }
     
     private void forceInt()
     {
@@ -173,26 +192,6 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
             forceDouble() ;
     }
 
-    
-    public void setRDFLiteral(Literal l)
-    {
-        unset();
-        isSet = true;
-        isString = true ;
-        isRDFLiteral = true;
-        valString = l.getLexicalForm() ;
-        valRDFLiteral = l;
-    }
-    
-    public void setRDFResource(Resource r)
-    {
-        unset();
-        isSet = true;
-        isURI = true ;
-        isRDFResource = true;
-        valURI = r.toString() ;
-        valRDFResource = r;
-    }
 
     public long getInt()
     {
@@ -226,20 +225,19 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
         return valURI ;
     }
 
-    public Literal getRDFLiteral()
+    public com.hp.hpl.jena.graph.Node getNode()
     {
-        if ( ! isSet || ! isRDFLiteral ) throw new ValueException("Not a Literal: "+this) ;
-        return valRDFLiteral ;
+        if ( ! isSet ) throw new ValueException("Not a graph node: "+this) ;
+        return valGraphNode ;
     }
-
-    public Resource getRDFResource()
-    {
-        if ( ! isSet || ! isRDFResource ) throw new ValueException("Not a Resource: "+this) ;
-        return valRDFResource ;
-    }
-
-
-
+    
+    // Expressions
+    
+    // -- Constants (literals - but that name is confusing with RDF literals). 
+    public boolean isConstant()      { return true; }
+    // This may be null (as it is not a jena.graph value).
+    public Object getValue()         { return getNode() ; }
+        
     // In all these stringification operations, order matters e.g. URI before string
     public String asQuotedString()
     {
@@ -248,18 +246,30 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
         if ( isDouble ) return Double.toString(valDouble) ;
         if ( isBoolean ) return (valBoolean?"true":"false") ;
         
-        if ( isRDFLiteral )
+        if ( isGraphNode )
         {
-            StringBuffer sb = new StringBuffer() ;
-            sb.append('"').append(valRDFLiteral.toString()).append('"') ;
-            if ( ! valRDFLiteral.getLanguage().equals("") )
-                sb.append('@').append(valRDFLiteral.getLanguage()) ;
-            if ( valRDFLiteral.getDatatypeURI() != null )
-                sb.append("^^<").append(valRDFLiteral.getDatatypeURI()).append(">") ; 
-            return  sb.toString() ;
-        }
+            if ( valGraphNode.isLiteral() )
+            {
+                StringBuffer sBuff = new StringBuffer() ;
+                
+                LiteralLabel l = valGraphNode.getLiteral() ;
+                sBuff.append('"') ;
+                sBuff.append(l.getLexicalForm()) ;
+                sBuff.append('"') ;
 
-        if ( isRDFResource) return "<"+valRDFResource.toString()+">" ;
+                String dt = l.getDatatypeURI() ;
+                if ( dt != null ) { sBuff.append("^^") ; sBuff.append(dt) ; }
+                
+                String lang = l.language() ;
+                if ( lang != null ) { sBuff.append("@") ; sBuff.append(lang) ; }
+            }
+
+            if ( valGraphNode.isURI() )
+                valString = "<"+valGraphNode.getURI()+">" ;
+            if ( valGraphNode.isBlank() )
+                valString = valGraphNode.getBlankNodeId().toString() ;
+        }
+            
         // Escaping needed
         if ( isURI ) return "<"+valURI+">" ;
         // Escaping needed
@@ -275,10 +285,11 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
         if ( isInt ) return Long.toString(valInt) ;
         if ( isDouble ) return Double.toString(valDouble) ;
         if ( isBoolean ) return (valBoolean?"true":"false") ;
-        if ( isRDFLiteral) return valRDFLiteral.getLexicalForm() ;
-        if ( isRDFResource ) return valRDFResource.toString() ;
+        // TODO Is this right?
         if ( isURI ) return valURI ;
         if ( isString ) return valString ;
+        // TODO Is this right?
+        if ( isGraphNode ) return valGraphNode.toString() ;
 
         return "literal:unknown" ;
     }
@@ -291,16 +302,10 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
         if ( isInt ) return "int:"+Long.toString(valInt) ;
         if ( isDouble ) return "double:"+Double.toString(valDouble) ;
         if ( isBoolean ) return "boolean:"+(valBoolean?"true":"false") ;
-        if ( isRDFLiteral)
-        {
-            if ( valRDFLiteral.getDatatypeURI() == null )
-                return "RDF:\""+valRDFLiteral.getLexicalForm()+"\"" ;
-            return "RDF:\""+valRDFLiteral.getLexicalForm()+"\"^^"+valRDFLiteral.getDatatypeURI() ;
-        }
-        if ( isRDFResource ) return "RDF:<"+valRDFResource.toString()+">" ;
         if ( isURI ) return "URI:"+valURI ;
         if ( isString ) return "string:"+valString ;
-
+        if ( isGraphNode) return "node:"+valGraphNode ;
+        
         return "literal:unknown" ;
     }
 
@@ -325,17 +330,16 @@ public class ParsedLiteral extends SimpleNode implements Value, Expr, Settable
 	public static ParsedLiteral makeString(String s)
 	{
 		ParsedLiteral l = new ParsedLiteral(0) ; 
-		l.setString(s) ;
+		l._setString(s) ;
 		return l ;
 	}
 	
 	// Q_URI is not public.
 	public static Q_URI makeURI(String s) { return Q_URI.makeURI(s) ; }
-
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

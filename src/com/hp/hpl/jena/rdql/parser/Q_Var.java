@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -7,12 +7,17 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-import com.hp.hpl.jena.rdql.* ;
-import java.io.PrintWriter ;
 
-public class Q_Var extends SimpleNode implements Var, Expr
+import java.io.PrintWriter ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.rdql.*;
+
+public class Q_Var extends ExprNode implements Var, Expr
 {
     String varName ;
+    int index ;
+    VariableIndexes varIndexes ;
 
     public Q_Var(int id) { super(id); }
     public Q_Var(RDQLParser p, int id) { super(p, id); }
@@ -27,14 +32,20 @@ public class Q_Var extends SimpleNode implements Var, Expr
     public String getVarName() { return varName ; }
     public void setVarName(String vn) { varName = vn ; }
 
-    public Value eval(Query q, ResultBinding env)
+    public NodeValue eval(com.hp.hpl.jena.rdql.Query q, IndexValues env)
     {
         // Result is a copy as a bound variable.
-        Value v = env.getValue(varName) ;
-        WorkingVar v2 = new WorkingVar(v) ;
-        return v2 ;
-        //v2.setString(v.getString());
-        //return v2 ;
+        com.hp.hpl.jena.graph.Node v = (Node)env.get(index) ;
+        if ( v == null )
+        {
+            System.err.println("Oh dear: variable: "+varName) ;
+            WorkingVar tmp = new WorkingVar() ;
+            tmp.setString("unset: "+varName+"/"+index) ;
+            return tmp ;
+        }
+        WorkingVar var = new WorkingVar() ;
+        var.setNode(v) ;
+        return var ;
     }
 
     public String toString() { return "?"+varName ; }
@@ -49,10 +60,23 @@ public class Q_Var extends SimpleNode implements Var, Expr
         pw.println(this.asPrefixString()) ;
     }
 
+    // graph.query.Expression
+    public Valuator prepare(VariableIndexes vi)
+    {
+        super.prepare(vi) ;
+        varIndexes = vi ;
+        index = vi.indexOf(varName) ;
+        return this ;
+    }
+    
+    public boolean isVariable()      { return true ; }
+    public String getName()          { return varName ; } // For variables only
+
+
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

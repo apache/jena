@@ -1,16 +1,19 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 package com.hp.hpl.jena.rdql.parser;
 
-import com.hp.hpl.jena.rdql.* ;
-import com.hp.hpl.jena.rdf.model.Literal ;
+
 
 import java.io.PrintWriter;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.graph.query.IndexValues;
+import com.hp.hpl.jena.graph.query.Expression;
+import com.hp.hpl.jena.rdql.*;
 
-public class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
+public class Q_StringEqual extends ExprNode implements Expr, ExprBoolean
 {
     Expr left ;
     Expr right ;
@@ -24,7 +27,7 @@ public class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
 
     Q_StringEqual(RDQLParser p, int id) { super(p, id); }
 
-    protected boolean rawEval(Value x, Value y)
+    protected boolean rawEval(NodeValue x, NodeValue y)
     {
         // There is a decision here : do we allow anything to be
         // tested as string or do restrict ourselves to things
@@ -37,52 +40,36 @@ public class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
         // If we know left and right are types/lang-tagged literals,
         // do we apply a stricter test of "equal"?
 
-        if ( enableRDFLiteralSameValueAs && x.isRDFLiteral() && y.isRDFLiteral() )
+        if ( enableRDFLiteralSameValueAs )
         {
-            Literal xLit = x.getRDFLiteral() ;
-            Literal yLit = y.getRDFLiteral() ;
-            
-//            String xDT = xLit.getDatatypeURI() ;
-//            if ( xDT == null )
-//                xDT = "<<null>>" ;
-//            String yDT = yLit.getDatatypeURI() ;
-//            if ( yDT == null )
-//                yDT = "<<null>>" ;
-//            
-//            System.err.println("StringEq: "+xLit+"^^"+xDT+" eq "+yLit+"^^"+yDT) ;
-            
-            boolean b = xLit.sameValueAs(yLit) ;  
-            return b ;
+            if ( x.isNode() && x.getNode().isLiteral() &&
+                 y.isNode() && y.getNode().isLiteral() )
+            {
+                Node xNode = x.getNode() ;
+                Node yNode = y.getNode() ;
+                return xNode.sameValueAs(yNode) ;
+            }
         }
 
         // Allow anything to be forced to be a string.
-        /*
-        if ( ! x.isString() )
-            throw new EvalTypeException("Q_StringEqual: Wanted a string: "+x) ;
-        if ( ! y.isString() )
-            throw new EvalTypeException("Q_StringEqual: Wanted a string: "+y) ;
-        String xx = x.getString() ;
-        String yy = y.getString() ;
-        */
-
         String xx = x.valueString() ;
         String yy = y.valueString() ;
 
         return (xx.equals(yy)) ;
     }
 
-    public Value eval(Query q, ResultBinding env)
+    public NodeValue eval(Query q, IndexValues env)
     {
-        Value x = left.eval(q, env) ;
-        Value y = right.eval(q, env) ;
+        NodeValue x = left.eval(q, env) ;
+        NodeValue y = right.eval(q, env) ;
         
         boolean b = rawEval(x, y) ;
                 
-        Settable result ;
-        if ( x instanceof Settable )
-            result = (Settable)x ;
-        else if ( y instanceof Settable )
-            result = (Settable)y ;
+        NodeValueSettable result ;
+        if ( x instanceof NodeValueSettable )
+            result = (NodeValueSettable)x ;
+        else if ( y instanceof NodeValueSettable )
+            result = (NodeValueSettable)y ;
         else
             result = new WorkingVar() ;
 
@@ -100,6 +87,22 @@ public class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
         right = (Expr)jjtGetChild(1) ;
     }
 
+    // graph.query.Expression
+
+    public boolean isApply()         { return true ; }
+    public String getFun()           { return this.getClass().getName() ; } // For URI of the function
+    public int argCount()            { return 2; }
+    public Expression getArg(int i)  
+    {
+        if ( i == 0 && left instanceof Expression )
+            return (Expression)left ;
+        if ( i == 1 && right instanceof Expression )
+            return (Expression)right ;
+        return null;
+    }
+
+    // ----
+    
     public String asInfixString()
     {
         return QueryPrintUtils.asInfixString2(left, right, printName, opSymbol) ;
@@ -122,7 +125,7 @@ public class Q_StringEqual extends SimpleNode implements Expr, ExprBoolean
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

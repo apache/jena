@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -9,10 +9,11 @@ package com.hp.hpl.jena.rdql.test;
 // Mega-tests should be broken up.  Can use TestCase.setName to change the name while running.
 
 import java.io.* ;
+
+import com.hp.hpl.jena.rdql.parser.*;
+
 import junit.framework.* ;
 
-import com.hp.hpl.jena.rdql.* ;
-import com.hp.hpl.jena.rdql.parser.* ;
 
 public class TestExpressions extends TestSuite
 {
@@ -26,6 +27,10 @@ public class TestExpressions extends TestSuite
     private TestExpressions(String name)
     {
     	super(name) ;
+        
+        final boolean FAILURE_OK = true ;
+        final boolean NO_FAILURE = false ;
+
         String xsd = "http://www.w3.org/2001/XMLSchema#" ;
 
         addTest(new TestNumeric("7", 7)) ;
@@ -59,81 +64,81 @@ public class TestExpressions extends TestSuite
         addTest(new TestNumeric("1234 + 4111222333444", 1234 + 4111222333444L)) ;
         
         // Boolean
-        addTest(new TestBoolean("true", false, true)) ;
+        addTest(new TestBoolean("true", NO_FAILURE, true)) ;
 
-        addTest(new TestBoolean("false", false, false)) ;
+        addTest(new TestBoolean("false", NO_FAILURE, false)) ;
 
-        addTest(new TestBoolean("false || true", false, true)) ;
-        addTest(new TestBoolean("false && true", false, false)) ;
+        addTest(new TestBoolean("false || true", NO_FAILURE, true)) ;
+        addTest(new TestBoolean("false && true", NO_FAILURE, false)) ;
 
-        addTest(new TestBoolean("2 < 3", false, 2 < 3)) ;
-        addTest(new TestBoolean("2 > 3", false, 2 > 3)) ;
-        addTest(new TestBoolean("(2 < 3) && (3<4)", false, (2 < 3) && (3<4))) ;
-        addTest(new TestBoolean("(2 < 3) && (3>=4)", false, (2 < 3) && (3>=4))) ;
-        addTest(new TestBoolean("(2 < 3) || (3>=4)", false, (2 < 3) || (3>=4))) ;
-        addTest(new TestBoolean("2 == 3", false, 2 == 3)) ;
+        addTest(new TestBoolean("2 < 3", NO_FAILURE, 2 < 3)) ;
+        addTest(new TestBoolean("2 > 3", NO_FAILURE, 2 > 3)) ;
+        addTest(new TestBoolean("(2 < 3) && (3<4)", NO_FAILURE, (2 < 3) && (3<4))) ;
+        addTest(new TestBoolean("(2 < 3) && (3>=4)", NO_FAILURE, (2 < 3) && (3>=4))) ;
+        addTest(new TestBoolean("(2 < 3) || (3>=4)", NO_FAILURE, (2 < 3) || (3>=4))) ;
+        addTest(new TestBoolean("2 == 3", NO_FAILURE, 2 == 3)) ;
         
         // Check that strings are coerced if needed
         addTest(new TestBoolean("2 < '3'", false, 2 < 3)) ;
 
-        addTest(new TestBoolean("\"fred\" ne \"joe\"", false, true )) ;
-        addTest(new TestBoolean("\"fred\" eq \"joe\"", false, false )) ;
-        addTest(new TestBoolean("\"fred\" eq \"fred\"", false, true )) ;
-        addTest(new TestBoolean("\"fred\" eq 'fred'", false, true )) ;
-        addTest(new TestBoolean("\"fred\" eq 'fr\\ed'", false, true )) ;
-        addTest(new TestBoolean("\"fred\" ne \"fred\"", false, false )) ;
+        addTest(new TestBoolean("\"fred\" ne \"joe\"", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"fred\" eq \"joe\"", NO_FAILURE, false )) ;
+        addTest(new TestBoolean("\"fred\" eq \"fred\"", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"fred\" eq 'fred'", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"fred\" eq 'fr\\ed'", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"fred\" ne \"fred\"", NO_FAILURE, false )) ;
         
         // Typed literals
         // Same types.
-        addTest(new TestBoolean("'fred'^^<type1> eq 'fred'^^<type1>", false, true )) ;
-        addTest(new TestBoolean("'fred'^^<type1> ne 'joe'^^<type1>",  false, true )) ;
+        addTest(new TestBoolean("'fred'^^<type1> eq 'fred'^^<type1>", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("'fred'^^<type1> ne 'joe'^^<type1>",  NO_FAILURE, true )) ;
         // Different types.
-        addTest(new TestBoolean("'fred'^^<type1> eq 'fred'^^<type2>", false, false )) ;
-        addTest(new TestBoolean("'fred'^^<type1> ne 'fred'^^<type2>", false, true )) ;
+        addTest(new TestBoolean("'fred'^^<type1> eq 'fred'^^<type2>", NO_FAILURE, false )) ;
+        addTest(new TestBoolean("'fred'^^<type1> ne 'fred'^^<type2>", NO_FAILURE, true )) ;
         
         // true: xsd:string is sameValueAs plain (classic) RDF literal
-        addTest(new TestBoolean("'fred'^^<"+xsd+"string> eq 'fred'", false, true )) ;
+        addTest(new TestBoolean("'fred'^^<"+xsd+"string> eq 'fred'", NO_FAILURE, true )) ;
         // false: parsing created two RDF literals and these are different 
-        addTest(new TestBoolean("'fred'^^<type1> eq 'fred'", false, false )) ;
-        addTest(new TestBoolean("'fred'^^<type1> ne 'fred'", false, true )) ;
+        addTest(new TestBoolean("'fred'^^<type1> eq 'fred'", NO_FAILURE, false )) ;
+        addTest(new TestBoolean("'fred'^^<type1> ne 'fred'", NO_FAILURE, true )) ;
         
         // Numerci expessions: ignore typing (compatibility with RDF-99) 
-        addTest(new TestBoolean("'21'^^<int> == '21'", false, true )) ;
+        addTest(new TestBoolean("'21'^^<int> == '21'", NO_FAILURE, true )) ;
 
         // Escapes in strings
-        addTest(new TestBoolean("\"fred\\1\" eq 'fred1'", false, true )) ;
-        addTest(new TestBoolean("\"fred2\" eq 'fred\\2'", false, true )) ;
-        addTest(new TestBoolean("'fred\\\\3' ne \"fred3\"", false, true )) ;
+        addTest(new TestBoolean("\"fred\\1\" eq 'fred1'", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"fred2\" eq 'fred\\2'", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("'fred\\\\3' ne \"fred3\"", NO_FAILURE, true )) ;
 
 
-        addTest(new TestBoolean("\"urn:fred\" eq <urn:fred>", false, true )) ;
-        addTest(new TestBoolean("\"urn:fred\" ne <urn:fred>", false, false )) ;
+        addTest(new TestBoolean("\"urn:fred\" eq <urn:fred>", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"urn:fred\" ne <urn:fred>", NO_FAILURE, false )) ;
 
-        addTest(new TestBoolean("\"urn:fred/1.5\" ne <urn:fred/1.5>", false, false )) ;
+        addTest(new TestBoolean("\"urn:fred/1.5\" ne <urn:fred/1.5>", NO_FAILURE, false )) ;
         
-        addTest(new TestBoolean("\"aabbcc\" =~ /abbc/", false, true )) ;
-        addTest(new TestBoolean("\"aabbcc\" =~ /a..c/", false, true )) ;
-        addTest(new TestBoolean("\"aabbcc\" =~ /^aabb/", false, true )) ;
-        addTest(new TestBoolean("\"aabbcc\" =~ /cc$/", false, true )) ;
-        addTest(new TestBoolean("\"aabbcc\" !~ /abbc/", false, false )) ;
+        addTest(new TestBoolean("\"aabbcc\" =~ /abbc/", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"aabbcc\" =~ /a..c/", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"aabbcc\" =~ /^aabb/", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"aabbcc\" =~ /cc$/", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"aabbcc\" !~ /abbc/", NO_FAILURE, false )) ;
         
-        addTest(new TestBoolean("\"aab*bcc\" =~ /ab\\*bc/", false, true )) ;
-        addTest(new TestBoolean("\"aabbcc\" ~~ /ab\\\\*bc/", false, true )) ;
-        addTest(new TestBoolean("'aabbcc' =~ /B.*B/i", false, true )) ;
+        addTest(new TestBoolean("\"aab*bcc\" =~ /ab\\*bc/", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("\"aabbcc\" ~~ /ab\\\\*bc/", NO_FAILURE, true )) ;
+        addTest(new TestBoolean("'aabbcc' =~ /B.*B/i", NO_FAILURE, true )) ;
 
-        addTest(new TestBoolean("1.5 < 2", false, 1.5 < 2 )) ;
-        addTest(new TestBoolean("1.5 > 2", false, 1.5 > 2 )) ;
-        addTest(new TestBoolean("1.5 < 2.3", false, 1.5 < 2.3 )) ;
-        addTest(new TestBoolean("1.5 > 2.3", false, 1.5 > 2.3 )) ;
+        addTest(new TestBoolean("1.5 < 2", NO_FAILURE, 1.5 < 2 )) ;
+        addTest(new TestBoolean("1.5 > 2", NO_FAILURE, 1.5 > 2 )) ;
+        addTest(new TestBoolean("1.5 < 2.3", NO_FAILURE, 1.5 < 2.3 )) ;
+        addTest(new TestBoolean("1.5 > 2.3", NO_FAILURE, 1.5 > 2.3 )) ;
         
         // Longs
-        addTest(new TestBoolean("4111222333444 > 1234", false, 4111222333444L > 1234)) ;
-        addTest(new TestBoolean("4111222333444 < 1234", false, 4111222333444L < 1234L)) ;
+        addTest(new TestBoolean("4111222333444 > 1234", NO_FAILURE, 4111222333444L > 1234)) ;
+        addTest(new TestBoolean("4111222333444 < 1234", NO_FAILURE, 4111222333444L < 1234L)) ;
         
         // These are false because a failure should occur
 
-        addTest(new TestBoolean("2 < \"fred\"", true, false)) ;
-        addTest(new TestBoolean("2 || true", true, false)) ;
+        addTest(new TestBoolean("2 < \"fred\"", FAILURE_OK, false)) ;
+        addTest(new TestBoolean("2 || true", FAILURE_OK, false)) ;
     }
 
 
@@ -188,7 +193,7 @@ public class TestExpressions extends TestSuite
             //System.out.println("Time: "+parseTime+"ms") ;
 
             //parser.top().dump(" ");
-            parser.top().fixup(null) ;
+            parser.top().postParse(null) ;
             Expr e = (Expr)parser.top() ;
             
 
@@ -197,7 +202,7 @@ public class TestExpressions extends TestSuite
 
             ExprNumeric n = (ExprNumeric)e ;
 
-            Value v = n.eval(null, null) ;
+            NodeValue v = n.eval(null, null) ;
 
             if ( ! isDouble )
                 assertEquals(s+" => "+v.getInt()+" ["+rightAnswer+"]",  v.getInt(), rightAnswer ) ;
@@ -243,7 +248,7 @@ public class TestExpressions extends TestSuite
             parseTime = stopTime - startTime;
             //System.out.println("Time: "+parseTime+"ms") ;
 
-            parser.top().fixup(null) ;
+            parser.top().postParse(null) ;
             Expr e = (Expr)parser.top() ;
 
             assertTrue("Expression is not ExprBoolean: "+e.getClass().getName(),
@@ -251,7 +256,7 @@ public class TestExpressions extends TestSuite
 
             ExprBoolean n = (ExprBoolean)e ;
 
-            Value v = null ;
+            NodeValue v = null ;
             boolean result = false ;
             try {
                 v = n.eval(null, null) ;
@@ -269,7 +274,7 @@ public class TestExpressions extends TestSuite
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

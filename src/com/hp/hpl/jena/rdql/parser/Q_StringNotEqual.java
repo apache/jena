@@ -1,11 +1,11 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 package com.hp.hpl.jena.rdql.parser;
 
-import com.hp.hpl.jena.rdql.* ;
+import com.hp.hpl.jena.rdql.*;
 
 public class Q_StringNotEqual extends Q_StringEqual implements Expr, ExprBoolean
 {
@@ -18,7 +18,7 @@ public class Q_StringNotEqual extends Q_StringEqual implements Expr, ExprBoolean
 
     Q_StringNotEqual(RDQLParser p, int id) { super(p, id); }
 
-    protected boolean rawEval(Value x, Value y)
+    protected boolean rawEval(NodeValue x, NodeValue y)
     {
         return ! super.rawEval(x, y) ;
    }
@@ -33,7 +33,7 @@ public class Q_StringNotEqual extends Q_StringEqual implements Expr, ExprBoolean
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

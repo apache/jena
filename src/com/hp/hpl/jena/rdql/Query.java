@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -14,10 +14,10 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 
 import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.rdql.parser.Q_Query;
+import com.hp.hpl.jena.rdql.parser.RDQLParser;
 
 // Don't import the package!  Conflict with graph.Node
-import com.hp.hpl.jena.rdql.parser.Q_Query ;
-import com.hp.hpl.jena.rdql.parser.RDQLParser ;
 
 /** The data structure for a query.
  *  There are two ways of creating a query - use the parser to turn
@@ -31,7 +31,7 @@ import com.hp.hpl.jena.rdql.parser.RDQLParser ;
  * @see QueryResults
  * 
  * @author		Andy Seaborne
- * @version 	$Id: Query.java,v 1.15 2003-12-04 12:07:15 andy_seaborne Exp $
+ * @version 	$Id: Query.java,v 1.16 2004-05-28 16:56:15 andy_seaborne Exp $
  */
 
 public class Query
@@ -310,7 +310,7 @@ public class Query
         return sb.toString() ;
     }
     
-    static private String triplePatternToString(Triple tp)
+    private String triplePatternToString(Triple tp)
     {
         StringBuffer sb = new StringBuffer() ;
         sb.append("( ") ;
@@ -323,12 +323,19 @@ public class Query
         return sb.toString() ;
     }
     
-    static private String slotToString(Node n)
+    private String slotToString(Node n)
     {
         if ( n instanceof Node_Variable)
             return n.toString() ;
         if ( n instanceof Node_URI)
-            return "<"+n+">" ;
+        {
+            String s = applyPrefix(n.getURI()) ;
+            if ( s == null )
+                return "<"+n.getURI()+">" ;
+            return s ;
+        }
+            
+            
         if ( n instanceof Node_Literal)
         {
             LiteralLabel lit = ((Node_Literal)n).getLiteral() ;
@@ -357,10 +364,40 @@ public class Query
             return "any:"+n ;
         return "unknown:"+n ;
     }
+    
+    private String applyPrefix(String uri)
+    {
+        String s = applyPrefix(uri, prefixMap, null) ;
+        if ( s == null )
+            s = applyPrefix(uri, defaultPrefixMap, prefixMap) ;
+        return s ;
+    }
+    
+    private String applyPrefix(String uri, Map pm, Map exclude)
+    {
+        Iterator it = pm.entrySet().iterator();
+        for ( ; it.hasNext() ; )
+        {
+            Map.Entry e = (Map.Entry) it.next();
+            String ss = (String) e.getValue();
+            if ( uri.startsWith( ss ) )
+            {
+                if ( exclude != null )
+                {
+                    // Check it is not in the exclusions as a different mapping.
+                    if ( exclude.containsKey(e.getKey()) &&
+                         ! exclude.get(e.getKey()).equals(e.getValue()) )
+                        continue ;
+                }
+                return e.getKey()+":"+uri.substring(ss.length() );
+            }
+        }
+        return null ;
+    }
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,32 +1,35 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdql;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-/** Class to define the operating environment for RDQL.
- *  Provides some utility operations like assert and handling unexpected exceptions
- * @author		Andy Seaborne
- * @version 	$Id: QSys.java,v 1.7 2003-12-04 12:07:15 andy_seaborne Exp $
+/**
+ * @author   Andy Seaborne
+ * @version  $Id: WorkingVar.java,v 1.1 2004-05-28 16:57:32 andy_seaborne Exp $
  */
 
-public class QSys
+
+package com.hp.hpl.jena.rdql.parser;
+
+
+/**  Working variables are settable values for holding intermediate results.
+ */
+
+public class WorkingVar extends ParsedLiteral implements Cloneable, NodeValueSettable
 {
-    protected static Log logger = LogFactory.getLog( QSys.class );
+    public WorkingVar() { super() ; }
+    public WorkingVar(NodeValue v) { super(v) ; } 
     
-    public static void unhandledException(Throwable t, String className, String methodName)
-    {
-        String tmp = Thread.currentThread().getName() ;
-        logger.error("("+tmp+") Unhandled exception" + className + "." + methodName, t );
-    }
+    public void setInt(long i)             { _setInt(i) ; }
+    public void setDouble(double d)        { _setDouble(d) ; }
+    public void setBoolean(boolean b)      { _setBoolean(b) ; }
+    public void setString(String s)        { _setString(s) ; }
+    public void setURI(String uri)         { _setURI(uri) ; }
+    public void setNode(com.hp.hpl.jena.graph.Node n)            { _setNode(n) ; }
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

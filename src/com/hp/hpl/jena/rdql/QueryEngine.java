@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.ModelLoader ;
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryEngine.java,v 1.10 2004-04-30 13:22:41 andy_seaborne Exp $
+ * @version    $Id: QueryEngine.java,v 1.11 2004-05-28 16:56:15 andy_seaborne Exp $
  */
  
 public class QueryEngine implements QueryExecution
@@ -50,7 +50,7 @@ public class QueryEngine implements QueryExecution
         {
             if (query.sourceURL == null)
             {
-                Query.logger.warn("No data for query (no URL, no model)");
+                //Query.logger.warn("No data for query (no URL, no model)");
                 throw new QueryException("No model for query");
             }
             long startTime = System.currentTimeMillis();
@@ -74,7 +74,7 @@ public class QueryEngine implements QueryExecution
      * @return QueryResults
      */
     
-    public QueryResults exec(ResultBinding startBinding)
+    public QueryResults exec(ResultBindingImpl startBinding)
     {
         resultsIter = null ;
         try {
@@ -105,12 +105,12 @@ public class QueryEngine implements QueryExecution
         Node[] projectionVars ;
         Query query ;
 
-        ResultBinding nextBinding = null ;
+        ResultBindingImpl nextBinding = null ;
         boolean finished = false ;
         ClosableIterator planIter ;
-        ResultBinding initialBindings ;
+        ResultBindingImpl initialBindings ;
          
-        ResultsIterator(Query q, ResultBinding presets)
+        ResultsIterator(Query q, ResultBindingImpl presets)
         {
             query = q ;
             initialBindings = presets ;
@@ -134,6 +134,20 @@ public class QueryEngine implements QueryExecution
                 projectionVars[i] = Node.createVariable((String) query.getBoundVars().get(i));
             }
 
+            // Constraints
+            
+            for (Iterator cIter = query.constraints.iterator(); cIter.hasNext();)
+            {
+                Constraint constraint = (Constraint)cIter.next();
+                if ( constraint instanceof Expression )
+                {
+                    Expression e = (Expression)constraint ;
+                    graphQuery.addConstraint(e) ;
+                }
+                else
+                    System.err.println("Query constraint '"+constraint+"' is not an expression") ;
+            }
+            
             BindingQueryPlan plan = queryHandler.prepareBindings(graphQuery, projectionVars);
             planIter = plan.executeBindings() ;
         }
@@ -150,7 +164,7 @@ public class QueryEngine implements QueryExecution
                     break ;
                 // Convert from graph form to model form
                 Domain d = (Domain)planIter.next() ;
-                nextBinding = new ResultBinding(initialBindings) ;
+                nextBinding = new ResultBindingImpl(initialBindings) ;
                 nextBinding.setQuery(query) ;
                 for ( int i = 0 ; i < projectionVars.length ; i++ )
                 {
@@ -166,26 +180,29 @@ public class QueryEngine implements QueryExecution
                     }
     
                     // Convert graph node to model RDFNode
-                    RDFNode rdfNode = convertNodeToRDFNode(n, query.getSource()) ;
+                    RDFNode rdfNode = convertGraphNodeToRDFNode(n, query.getSource()) ;
                     nextBinding.add(name, rdfNode) ;
                 }
                 
-                // Verify constriants
-                boolean passesTests = true;
-                for (Iterator cIter = query.constraints.iterator(); cIter.hasNext();)
-                {
-                    Constraint constraint = (Constraint)cIter.next();
-                    if (!constraint.isSatisfied(query, nextBinding))
-                    {
-                        passesTests = false;
-                        break;
-                    }
-                }
-                if (!passesTests)
-                {
-                    nextBinding = null ;
-                    continue ;
-                }
+                // TODO Confirm no longer needed due to move to graph query system
+//                // Verify constraints
+//                boolean passesTests = true;
+//                for (Iterator cIter = query.constraints.iterator(); cIter.hasNext();)
+//                {
+//                    Constraint constraint = (Constraint)cIter.next();
+//                    // Debugging
+//                    printExpression((Expression)constraint) ;
+//                    if (!constraint.isSatisfied(query, nextBinding))
+//                    {
+//                        passesTests = false;
+//                        break;
+//                    }
+//                }
+//                if (!passesTests)
+//                {
+//                    nextBinding = null ;
+//                    continue ;
+//                }
             }       
 
             if ( nextBinding == null )
@@ -220,28 +237,30 @@ public class QueryEngine implements QueryExecution
         }
     }
 
-    static Node convertValueToNode(Value value)
-    {
-        if ( value.isRDFLiteral())
-            return Node.createLiteral(
-                    value.getRDFLiteral().getLexicalForm(),
-                    value.getRDFLiteral().getLanguage(),
-                    value.getRDFLiteral().getDatatype()) ;
-            
-        if ( value.isRDFResource())
-        {
-            if ( value.getRDFResource().isAnon())
-                return Node.createAnon(value.getRDFResource().getId()) ;
-            return Node.createURI(value.getRDFResource().getURI()) ;
-        }
-            
-        if ( value.isURI())
-            return Node.createURI(value.getURI()) ;
-            
-        return Node.createLiteral(value.asUnquotedString(),null ,null) ;
-    }
+//    static Node convertValueToNode(Value value)
+//    {
+//        if ( value.isRDFLiteral())
+//            return Node.createLiteral(
+//                    value.getRDFLiteral().getLexicalForm(),
+//                    value.getRDFLiteral().getLanguage(),
+//                    value.getRDFLiteral().getDatatype()) ;
+//            
+//        if ( value.isRDFResource())
+//        {
+//            if ( value.getRDFResource().isAnon())
+//                return Node.createAnon(value.getRDFResource().getId()) ;
+//            return Node.createURI(value.getRDFResource().getURI()) ;
+//        }
+//            
+//        if ( value.isURI())
+//            return Node.createURI(value.getURI()) ;
+//            
+//        return Node.createLiteral(value.asUnquotedString(),null ,null) ;
+//    }
 
-    static RDFNode convertNodeToRDFNode(Node n, Model model)
+    /** Internal utility */
+    
+    static RDFNode convertGraphNodeToRDFNode(Node n, Model model)
     {
         if ( n.isLiteral() )
             return new LiteralImpl(n, model) ;
@@ -293,16 +312,35 @@ public class QueryEngine implements QueryExecution
         if ( obj instanceof RDFNode )
             return ((RDFNode)obj).asNode() ;
             
-        if ( obj instanceof Value )
-            return convertValueToNode((Value)obj) ;
+        if ( obj instanceof Node )
+            return (Node)obj ;
 
         System.err.println("Unknown object in binding: ignored: "+obj.getClass().getName()) ;        
         return n ;
     }
+    
+    static private void printExpression(Expression e)
+    {
+        System.out.println("Expression: "+e+"  ["+e.getClass().getName()+"]") ;
+        if ( e.isApply() )
+        {
+            System.out.println("  Apply - "+e.getFun()) ;
+            for ( int i = 0 ; i < e.argCount() ; i++ )
+            {
+                printExpression(e.getArg(i)) ;
+            }
+        }
+        else if ( e.isVariable() )
+            System.out.println("  Variable - "+e.getName()) ;
+        else if ( e.isConstant() )
+            System.out.println("  Constant - "+e.getValue()) ;
+        else
+            System.out.println("  Unknown") ;
+    }
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

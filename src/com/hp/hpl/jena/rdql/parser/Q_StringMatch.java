@@ -1,11 +1,14 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 package com.hp.hpl.jena.rdql.parser;
 
-import com.hp.hpl.jena.rdql.* ;
+import com.hp.hpl.jena.graph.query.Expression; 
+import com.hp.hpl.jena.graph.query.IndexValues ;
+import com.hp.hpl.jena.rdql.*;
+
 import java.io.PrintWriter;
 
 //import org.apache.oro.text.* ;
@@ -14,7 +17,7 @@ import org.apache.oro.text.regex.* ;
 //import org.apache.oro.text.perl.MalformedPerl5PatternException ;
 
 
-public class Q_StringMatch extends SimpleNode implements Expr, ExprBoolean
+public class Q_StringMatch extends ExprNode implements Expr, ExprBoolean
 {
     Expr left ;
     Expr right ;
@@ -36,7 +39,7 @@ public class Q_StringMatch extends SimpleNode implements Expr, ExprBoolean
     { super(p, id); }
     
     
-    public Value eval(Query q, ResultBinding env)
+    public NodeValue eval(Query q, IndexValues env)
     {
         // There is a decision here : do we allow anything to be
         // tested as string or do restrict ourselves to things
@@ -45,7 +48,7 @@ public class Q_StringMatch extends SimpleNode implements Expr, ExprBoolean
         //      ?x ne <uri>
         // Decision here is to allow string tests on anything.
         
-        Value x = left.eval(q, env) ;
+        NodeValue x = left.eval(q, env) ;
         //Value y = right.eval(q, env) ;    // Must be a pattern literal
         
         // Allow anything to be forced to be a string.
@@ -54,7 +57,7 @@ public class Q_StringMatch extends SimpleNode implements Expr, ExprBoolean
         // Had better be the pattern string!
         //String yy = y.toString() ;
         
-        Settable result = new WorkingVar() ;
+        NodeValueSettable result = new WorkingVar() ;
         
         // Actually do it!
         boolean b = matcher.contains(xx, pattern) ;
@@ -84,6 +87,23 @@ public class Q_StringMatch extends SimpleNode implements Expr, ExprBoolean
         }
     }
     
+    // -----------
+    // graph.query.Expression
+
+    public boolean isApply()         { return true ; }
+    public String getFun()           { return super.constructURI(this.getClass().getName()) ; }
+    public int argCount()            { return 2; }
+    public Expression getArg(int i)  
+    {
+        if ( i == 0 && left instanceof Expression )
+            return (Expression)left ;
+        if ( i == 1 && right instanceof Expression )
+            return (Expression)right ;
+        return null;
+    }
+
+    // -----------
+    
     public String asInfixString()
     {
         return QueryPrintUtils.asInfixString2(left, right, printName, opSymbol) ;
@@ -105,7 +125,7 @@ public class Q_StringMatch extends SimpleNode implements Expr, ExprBoolean
     }
 }
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

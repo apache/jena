@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -14,11 +14,11 @@ import java.util.*;
  * 
  * @see Query
  * @see QueryEngine
- * @see ResultBinding
+ * @see ResultBindingImpl
  * @see QueryResultsStream
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsStream.java,v 1.6 2004-04-30 13:22:41 andy_seaborne Exp $
+ * @version  $Id: QueryResultsStream.java,v 1.7 2004-05-28 16:56:15 andy_seaborne Exp $
  */
 
 public class QueryResultsStream implements QueryResults
@@ -59,23 +59,18 @@ public class QueryResultsStream implements QueryResults
     }
 
     /** Moves onto the next result possibility.
+     *  The returned object is actual the binding for this
+     *  result; it is possible to access the bound variables
+     *  for the current possibility through the additional variable
+     *  accessor opertations.
      */
-    
-    public ResultBinding nextResultBinding()
+    public Object next()
     {
         currentEnv = (ResultBinding)queryExecutionIter.next() ;
         if ( currentEnv != null )
             rowNumber++ ;
         return currentEnv ;
     }
-    
-    /** Moves onto the next result possibility.
-     *  The returned object is actual the binding for this
-     *  result; it is possible to access the bound variables
-     *  for the current possibility through the additional variable
-     *  accessor opertations.
-     */
-    public Object next() { return nextResultBinding() ; }
 
     /** Close the results iterator and stop query evaluation as soon as convenient.
      */
@@ -116,7 +111,7 @@ public class QueryResultsStream implements QueryResults
     public List getResultVars() { return resultVars ; }
 
     /** Convenience function to consume a query.
-     *  Returns a list of {@link ResultBinding}s.
+     *  Returns a list of {@link ResultBindingImpl}s.
      *
      *  @return List
      *  @deprecated  QueryResultsStream do not have all the results at once - {@link QueryResultsMem}
@@ -137,7 +132,7 @@ public class QueryResultsStream implements QueryResults
     {
         if ( ! projectResultVars || resultVars.contains(name) )
         {
-            Value v = currentEnv.getValue(name) ;
+            Object v = currentEnv.get(name) ;
             if ( v == null ) return null ;
             return v.toString() ;
         }
@@ -146,7 +141,7 @@ public class QueryResultsStream implements QueryResults
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

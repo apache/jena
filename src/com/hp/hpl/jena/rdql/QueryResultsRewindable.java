@@ -1,11 +1,11 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryResultsRewindable.java,v 1.2 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version    $Id: QueryResultsRewindable.java,v 1.3 2004-05-28 16:56:15 andy_seaborne Exp $
  */
  
 package com.hp.hpl.jena.rdql;
@@ -19,7 +19,7 @@ public interface QueryResultsRewindable extends QueryResults
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

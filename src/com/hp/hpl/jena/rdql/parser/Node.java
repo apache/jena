@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -10,6 +10,9 @@ package com.hp.hpl.jena.rdql.parser;
 /* All AST nodes must implement this interface.  It provides basic
    machinery for constructing the parent and child relationships
    between nodes. */
+
+/** Product of JavaCC - must be called "Node" which makes
+ * working with Jena graph nodes fiddly!*/
 
 public interface Node {
 
@@ -39,7 +42,7 @@ public interface Node {
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

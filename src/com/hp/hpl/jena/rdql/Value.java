@@ -1,53 +1,35 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: Value.java,v 1.6 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version  $Id: Value.java,v 1.7 2004-05-28 16:56:15 andy_seaborne Exp $
  */
 
 
 package com.hp.hpl.jena.rdql;
-import com.hp.hpl.jena.rdf.model.Literal ;
-import com.hp.hpl.jena.rdf.model.Resource ;
+import com.hp.hpl.jena.graph.Node ;
+import com.hp.hpl.jena.rdf.model.RDFNode ;
 
 // There is a separate settable interface
 
-public interface Value extends Printable
+public class Value
 {
-    public boolean isNumber() ;
-    public boolean isInt() ;
-    public boolean isDouble() ;
-    public boolean isBoolean() ;
-    public boolean isString() ;
-    public boolean isURI() ;
-    public boolean isRDFLiteral() ;
-    public boolean isRDFResource() ;
-
-    public long getInt() ;
-    public double getDouble() ;
-    public boolean getBoolean() ;
-    public String getString() ;
-    public String getURI() ;
-    public Literal getRDFLiteral() ;
-    public Resource getRDFResource() ;   
-
-    // Should be in the form usable to print out : this may depend on the
-    // intended interpretation context.  For RDQL-the-language, this should
-    // be a string that can be parsed, so unquothed numbers, ""-quoted strings with
-    // escapes.
-    public String asQuotedString() ;
-    public String asUnquotedString() ;
+    public Value(Node n) { } 
+    public Value(RDFNode n) { }
+    public String asQuotedString() { throw new RuntimeException("Value / unimplemented ") ; }
+    public String asUnquotedString() { throw new RuntimeException("Value / unimplemented ") ; }
+    public String asInfixString() { throw new RuntimeException("Value / unimplemented ") ; }
     // Should be the literal value appropriate to filter computation.
-    public String valueString() ;
+    public String valueString() { throw new RuntimeException("Value / unimplemented ") ; }
 	// Displayable form
-    public String toString() ;
+    public String toString() { throw new RuntimeException("Value / unimplemented ") ; }
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -7,9 +7,9 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.rdql.* ;
+
 import com.hp.hpl.jena.datatypes.xsd.*;
+import com.hp.hpl.jena.rdql.*;
 
 import java.util.* ;
 
@@ -63,7 +63,7 @@ public class Q_Query extends SimpleNode
                     extractPrefixes(q, (Q_PrefixesClause)n) ; 
                 }
             }
-            this.fixup(this) ;
+            this.postParse(q) ;
             
             int i = 0 ;
             // Select
@@ -123,7 +123,11 @@ public class Q_Query extends SimpleNode
         catch (RDQL_InternalErrorException e) { throw e ; }
         catch (QueryException qEx) { throw qEx; } 
         catch (ClassCastException e) { throw new RDQL_InternalErrorException("Parser generated illegal parse tree: "+e) ; }
-        catch (Exception e) { throw new RDQL_InternalErrorException("Unknown exception: "+e) ; }
+        catch (Exception e)
+        {
+            e.printStackTrace(System.err) ;
+            throw new RDQL_InternalErrorException("Unknown exception: "+e) ;
+        }
     }
 
 
@@ -209,18 +213,13 @@ public class Q_Query extends SimpleNode
             q.addBoundVar(varName) ;
             return com.hp.hpl.jena.graph.Node.createVariable(((Var)n).getVarName()) ;
         }
-        if ( n instanceof Value)
+        if ( n instanceof ParsedLiteral)
         {
-            Value v = (Value)n ;
+            ParsedLiteral v = (ParsedLiteral)n ;
             
-            if ( v.isRDFLiteral() )
-            {
-                Literal lit = v.getRDFLiteral() ;
-                return lit.asNode() ;
-            }
-            if ( v.isRDFResource() )
-                return v.getRDFResource().getNode() ;
-                
+            if ( v.isNode() )
+                return v.getNode() ;
+
             if ( v.isURI() )
                 return com.hp.hpl.jena.graph.Node.createURI(v.getURI()) ;
                 
@@ -255,8 +254,11 @@ public class Q_Query extends SimpleNode
         int n = qcc.jjtGetNumChildren() ;
         for ( int j = 0 ; j < n ; j++ )
         {
-            Expr expr = (Expr)qcc.jjtGetChild(j) ;
-            q.addConstraint(new ConstraintExpr(expr)) ;
+            Object obj = qcc.jjtGetChild(j) ;
+            if ( ! ( obj instanceof Constraint ) )
+                throw new RDQL_InternalErrorException("Parse node in AND clause isn't a Constraint") ;
+            //q.addConstraint(new ConstraintExpr(expr)) ;
+            q.addConstraint((Constraint)obj) ;
         }
     }
 
@@ -279,12 +281,10 @@ public class Q_Query extends SimpleNode
             }
         }
     }
-    
-    String getPrefix(String prefix) { return query.getPrefix(prefix) ; }
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,12 +1,12 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 /** Internal class - used by the old, external-to-model query system.
  * 
  * @author   Andy Seaborne
- * @version  $Id: Slot.java,v 1.6 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version  $Id: Slot.java,v 1.7 2004-05-28 16:56:15 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -126,7 +126,7 @@ class Slot
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

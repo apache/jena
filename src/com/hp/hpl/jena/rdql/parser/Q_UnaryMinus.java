@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -7,10 +7,13 @@
 
 package com.hp.hpl.jena.rdql.parser;
 
-import com.hp.hpl.jena.rdql.* ;
-import java.io.PrintWriter ;
 
-public class Q_UnaryMinus extends SimpleNode implements ExprNumeric
+import java.io.PrintWriter ;
+import com.hp.hpl.jena.graph.query.IndexValues;
+import com.hp.hpl.jena.graph.query.Expression ;
+import com.hp.hpl.jena.rdql.*;
+
+public class Q_UnaryMinus extends ExprNode implements ExprNumeric
 {
     Expr expr ;
     private String printName = "unaryminus" ;
@@ -20,14 +23,14 @@ public class Q_UnaryMinus extends SimpleNode implements ExprNumeric
 
     Q_UnaryMinus(RDQLParser p, int id) { super(p, id); }
 
-    public Value eval(Query q, ResultBinding env)
+    public NodeValue eval(Query q, IndexValues env)
     {
-        Value v = expr.eval(q, env) ;
+        NodeValue v = expr.eval(q, env) ;
 
         if ( ! v.isNumber() )
             throw new EvalTypeException("Q_UnaryMinus: Wanted a number: got "+expr) ;
 
-        Settable result ;
+        NodeValueSettable result ;
         /* Further work needed : what is a variable name
          * bound to so that it does not get over written?
         if ( v instanceof Settable )
@@ -52,6 +55,19 @@ public class Q_UnaryMinus extends SimpleNode implements ExprNumeric
         expr = (Expr)jjtGetChild(0) ;
     }
 
+    // -----------
+    // graph.query.Expression
+
+    public boolean isApply()         { return true ; }
+    public String getFun()           { return super.constructURI(this.getClass().getName()) ; }
+    public int argCount()            { return 1; }
+    public Expression getArg(int i)  
+    {
+        if ( i == 0 && expr instanceof Expression )
+            return (Expression)expr ;
+        return null;
+    }
+
     public String asInfixString() { return QueryPrintUtils.asInfixString1(expr, printName, opSymbol) ; }
 
     public String asPrefixString() { return QueryPrintUtils.asPrefixString(expr, null, printName, opSymbol) ; }
@@ -62,7 +78,7 @@ public class Q_UnaryMinus extends SimpleNode implements ExprNumeric
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,16 +1,18 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 package com.hp.hpl.jena.rdql.parser;
 
-import com.hp.hpl.jena.rdql.* ;
+
 import java.io.PrintWriter;
 import org.apache.oro.text.regex.Perl5Compiler ;
+import com.hp.hpl.jena.graph.query.IndexValues ;
+import com.hp.hpl.jena.rdql.*;
 
 
-public class Q_PatternLiteral extends SimpleNode implements Expr
+public class Q_PatternLiteral extends ExprNode implements Expr
 {
     String patternString = null ;
     String modifiers = "" ;
@@ -81,13 +83,20 @@ public class Q_PatternLiteral extends SimpleNode implements Expr
         return pString ;
     }
     
+    // -----------
+    // graph.query.Expression
+
+    public boolean isConstant()      { return true; }
+    public Object getValue()         { return toString(); } // For constants
+
+    // -----------
     
     public void print(PrintWriter pw, int level)
     {
         pw.print(toString()) ;
     }
     
-    public Value eval(Query q, ResultBinding env)
+    public NodeValue eval(Query q, IndexValues env)
     {
         throw new RDQL_InternalErrorException("Q_PatternLiteral.eval called!") ;
         //return null ;
@@ -106,7 +115,7 @@ public class Q_PatternLiteral extends SimpleNode implements Expr
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

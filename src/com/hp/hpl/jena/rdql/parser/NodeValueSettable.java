@@ -1,30 +1,30 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: Settable.java,v 1.6 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version  $Id: NodeValueSettable.java,v 1.1 2004-05-28 16:57:31 andy_seaborne Exp $
  */
 
-package com.hp.hpl.jena.rdql;
-import com.hp.hpl.jena.rdf.model.Resource ; 
-import com.hp.hpl.jena.rdf.model.Literal ; 
+package com.hp.hpl.jena.rdql.parser;
 
-public interface Settable extends Value
+import com.hp.hpl.jena.graph.Node;
+
+interface NodeValueSettable extends NodeValue
 {
     public void setInt(long i) ;
     public void setDouble(double d) ;
     public void setBoolean(boolean b) ;
     public void setString(String s) ;
     public void setURI(String uri) ;
-    public void setRDFLiteral(Literal l) ;
-    public void setRDFResource(Resource r) ;
+    public void setNode(Node n) ;
+    public String valueString() ; 
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
