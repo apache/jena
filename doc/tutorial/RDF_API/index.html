@@ -12,13 +12,14 @@
 <hr>
 
 <h2>Preface</h2>
+
 This is a tutorial introduction to both W3C's Resource Description Framework
 (RDF) and Jena, a Java API for RDF.  It is written for the programmer who is
 unfamiliar with RDF and who learns best by prototyping, or, for other
 reasons, wishes to move quickly to implementation. Some familiarity
 with both XML and Java is assumed.
 
-<p>Implementing too quickly, without first understanding the RDF data model
+<p>Implementing too quickly, without first understanding the RDF data model,
 leads to frustration and disappointment. Yet studying the data model
 alone is dry stuff and often leads to tortuous metaphysical conundrums.  It
 is better to approach understanding both the data model and how to use it in
@@ -30,7 +31,7 @@ approach does not take long.</p>
 <p>RDF has an XML syntax and many who are familiar with XML will think of RDF
 in terms of that syntax. This is mistake. RDF should be
 understood in terms of its data model. RDF data can be represented in
-XML, however, understanding the syntax is secondary to understanding the data
+XML, but understanding the syntax is secondary to understanding the data
 model.</p>
 
 <p>An implementation of the Jena API, including the working source code for
@@ -62,7 +63,7 @@ href="http://www.hpl.hp.com/semweb/">http://www.hpl.hp.com/semweb/</a>.</p>
 <p>The Resource Description Framework (RDF) is a standard (technically a W3C
 Recommendation) for describing resources. What is a resource?  That is
 rather a deep question and the precise definition is still the subject of
-debate.  For our purpuses we can think of it as anything we can  identify.
+debate.  For our purposes we can think of it as anything we can identify.
 You are a resource, as is your home page, this tutorial, the number one and
 the great white whale in Moby Dick.</p>
 
@@ -128,7 +129,7 @@ Resource johnSmith = model.createResource(personURI);
 </blockquote>
 
 <p>It begins with some constant definitions and then creates an empty Model
-or model, using the <code>Modelfactory</code> method <code>createDefaultModel()</code>
+or model, using the <code>ModelFactory</code> method <code>createDefaultModel()</code>
 to create a memory-based model. Jena contains other implementations
 of the Model interface, e.g one which uses a relational database: these
 types of Model are also available from ModelFactory.</p>
@@ -153,7 +154,7 @@ the Jena distribution as <a href="code/Tutorial01.java">tutorial 1</a>.  As
 an exercise, take this code and modify it to create a simple VCARD for
 yourself.</p>
 
-<p>Now lets add some more detail to the vcard, exploring some more features
+<p>Now let's add some more detail to the vcard, exploring some more features
 of RDF and Jena.</p>
 
 <p>In the first example, the property value was a literal. RDF
@@ -163,7 +164,7 @@ Smith's name:</p>
 
 <p align="center"><img border="0" src="figures/fig2.png" alt="figure 2"></p>
 
-<p>Here we have added a new property, vcard:N to represent the structure of
+<p>Here we have added a new property, vcard:N, to represent the structure of
 John Smith's name.  There are several things of interest about this
 Model. Note that the vcard:N property takes a resource as its value.
 Note also that the ellipse representing the compound name has no URI.
@@ -215,16 +216,16 @@ about a resource. A statement has three parts:</p>
 <p>A statement is sometimes called a <a href="#glos-Triple">triple</a>,
 because of its three parts.</p>
 
-<p>An RDF Model is represented is a set of statements.  Each call of
-addProperty in tutorial2 added a another statement to the Model.  Note that a
-Model is <em>set</em> of statements; adding a duplicate of a statement has no
-effect.  The Jena model interface defines a <span
-style="font-family: courier">listStatements()</span> method which returns an
-iterator<font size="1"><sup><a href="#fn-03">4</a></sup></font> over all all
-the statements in a Model. Each time the next method of the iterator is
-called it returns a Jena object of type <span
-style="font-family: courier">Statement</span>.  The <span
-style="font-family: courier">Statement</span> interface provides accessor
+<p>An RDF Model is represented as a <i>set</i> of statements.  Each call of
+<code>addProperty</code> in tutorial2 added a another statement to the Model.
+(Because a Model is set of statements, adding a duplicate of a statement has no
+effect.)  The Jena model interface defines a <code>listStatements()</code>
+method which returns an <code>StmtIterator</code>, a subtype of Java's
+<code>Iterator</code> over all all the statements in a Model.
+<code>StmtIterator</code> has a method <code>nextStatement()</code>
+which returns the next statement from the iterator (the same one that
+<code>next()</code> would deliver, already cast to <code>Statement</code>).
+The <code>Statement</code> interface provides accessor
 methods to the subject, predicate and object of a statement.</p>
 
 <p>Now we will use that interface to extend tutorial2 to list all the
@@ -232,7 +233,7 @@ statements created and print them out.  The complete code for this can be
 found in <a href="code/Tutorial03.java">tutorial 3</a>.</p>
 
 <blockquote>
-  <pre>// list the statements in the Model
+<pre><code>// list the statements in the Model
 StmtIterator iter = model.listStatements();
 
 // print out the predicate, subject and object of each statement
@@ -252,23 +253,23 @@ while (iter.hasNext()) {
     }
 
     System.out.println(" .");
-} </pre>
+} </code></pre>
 </blockquote>
 
 <p>Since the object of a statement can be either a resource or a literal, the
-<span style="font-family: courier">getObject()</span> method returns an
-object typed as <span style="font-family: courier">RDFNode</span>, which is a
-common superclass of both <span style="font-family: courier">Resource</span>
-and <span style="font-family: courier">Literal</span>.  The underlying object
-is of the appropriate type, so the code uses <span
-style="font-family: courier">instanceof</span> to determine which and
+<code>getObject()</code> method returns an
+object typed as <code>RDFNode</code>, which is a
+common superclass of both <code>Resource</code>
+and <code>Literal</code>.  The underlying object
+is of the appropriate type, so the code uses <code>instanceof</code> to
+determine which and
 processes it accordingly.</p>
 
 <p>When run, this program should produce output resembling:</p>
-<pre>http://somewhere/JohnSmith http://www.w3.org/2001/vcard-rdf/3.0#N anon:14df86:ecc3dee17b:-7fff .
+<pre><code>http://somewhere/JohnSmith http://www.w3.org/2001/vcard-rdf/3.0#N anon:14df86:ecc3dee17b:-7fff .
 anon:14df86:ecc3dee17b:-7fff http://www.w3.org/2001/vcard-rdf/3.0#Family  "Smith" .
 anon:14df86:ecc3dee17b:-7fff http://www.w3.org/2001/vcard-rdf/3.0#Given  "John" .
-http://somewhere/JohnSmith http://www.w3.org/2001/vcard-rdf/3.0#FN  "John Smith" .</pre>
+http://somewhere/JohnSmith http://www.w3.org/2001/vcard-rdf/3.0#FN  "John Smith" .</code></pre>
 
 <p></p>
 
@@ -282,14 +283,14 @@ with one.  It is simply an internal label used by the Jena implementation.</p>
 <p>The W3C <a href="http://www.w3.org/2001/sw/RDFCore/">RDFCore Working
 Group</a> have defined a similar simple notation called <a
 href="http://www.w3.org/TR/rdf-testcases/#ntriples">N-Triples</a>.  The name
-means "triple notation.  We will see in the next section that Jena has an
+means "triple notation".  We will see in the next section that Jena has an
 N-Triples writer built in.</p>
 <hr>
 
 <h2><a name="ch-Writing RDF">Writing RDF</a></h2>
 
 <p>Jena has methods for reading and writing RDF as XML. These can be
-used to save an RDF model to a file and later, read it back in again.</p>
+used to save an RDF model to a file and later read it back in again.</p>
 
 <p>Tutorial 3 created a model and wrote it out in triple form. <a
 href="code/Tutorial04.java">Tutorial 4</a> modifies tutorial 3 to write the
@@ -305,7 +306,7 @@ model.write(System.out);</code></pre>
 <p>The output should look something like this:</p>
 
 <blockquote>
-  <pre>&lt;rdf:RDF
+  <pre><code>&lt;rdf:RDF
   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
   xmlns:vcard='http://www.w3.org/2001/vcard-rdf/3.0#'
  &gt;
@@ -317,7 +318,7 @@ model.write(System.out);</code></pre>
     &lt;vcard:Given&gt;John&lt;/vcard:Given&gt;
     &lt;vcard:Family&gt;Smith&lt;/vcard:Family&gt;
   &lt;/rdf:Description&gt;
-&lt;/rdf:RDF&gt;</pre>
+&lt;/rdf:RDF&gt;</code></pre>
 </blockquote>
 
 <p></p>
@@ -325,7 +326,7 @@ model.write(System.out);</code></pre>
 <p>The RDF specifications specify how to represent RDF as XML. The RDF
 XML syntax is quite complex.  The reader is referred to the <a
 href="http://www.w3.org/TR/rdf-primer/">primer</a> being developed by the
-RDFCore WG for a more detailed introduction.  However, lets take a quick look
+RDFCore WG for a more detailed introduction.  However, let's take a quick look
 at how to interpret the above.</p>
 
 <p>RDF is usually embedded in an &lt;rdf:RDF&gt; element.  The element is
@@ -359,12 +360,12 @@ correctly.  It gives a URI to each blank node, making it no longer blank.</p>
 serialization languages for RDF to be easily plugged in.  The above call
 invoked the standard 'dumb' writer.  Jena also includes a more sophisticated
 RDF/XML writer which can be invoked by specifying another argument to the
-<span style="font-family: courier">write()</span> method call:</p>
+<code>write()</code> method call:</p>
 
 <blockquote>
-  <pre>// now write the model in XML form to a file
+  <pre><code>// now write the model in XML form to a file
 model.write(system.out, "RDF/XML-ABBREV");
- </pre>
+ </code></pre>
 </blockquote>
 
 <p>This writer, the so called PrettyWriter, takes advantage of features of
@@ -375,9 +376,9 @@ acceptable.  To write large files and preserve blank nodes, write in
 N-Triples format:</p>
 
 <blockquote>
-  <pre>// now write the model in XML form to a file
+  <pre><code>// now write the model in XML form to a file
 model.write(system.out, "N-TRIPLE");
-  </pre>
+  </code></pre>
 </blockquote>
 
 <p>This will produce output similar to that of tutorial 3 which conforms to
@@ -414,12 +415,9 @@ model.write(system.out);
       </code></pre>
 </blockquote>
 
-<p>The second argument to the <span
-style="font-family: courier">read()</span> method call is the URI which will
+<p>The second argument to the <code>read()</code> method call is the URI which will
 be used for resolving relative URI's.  As there are no relative URI
-references in the test file, it is can be empty.</p>
-
-<p>For now, it can always be to the empty string. When run, <a
+references in the test file, it is allowed to be empty. When run, <a
 href="code/Tutorial05.java"> tutorial 5</a> will produce XML output which
 looks like:</p>
 
@@ -472,7 +470,7 @@ the application developer is
 in terms of interfaces so that application code can work with different
 implementations without change. This package contains interfaces for
 representing models, resources, properties, literals, statements and all the
-other key concepts of RDF, and a ModelFactory for creating models.  So that 
+other key concepts of RDF, and a ModelFactory for creating models.  So that
 application code remains independent of
 the implementation, it is best if it uses interfaces wherever possible, not
 specific class implementations.</p>
@@ -480,11 +478,11 @@ specific class implementations.</p>
 <p>The <code>com.hp.hpl.jena.tutorial</code> package contains the
 working source code for all the examples used in this tutorial.</p>
 
-<p>The <code>com.hp.hpl.jena.common</code> package contains
+<p>The <code>com.hp.hpl.jena...impl</code> packages contains
 implementation classes which may be common to many implementations. For
-example, it defines classes <code>ResourceImpl</code>,
-<code>PropertyImpl</code>, <code>LiteralImpl</code> which may be used
-directly or subclassed by different implementations. Applications
+example, they defines classes <code>ResourceImpl</code>,
+<code>PropertyImpl</code>, and <code>LiteralImpl</code> which may be
+used directly or subclassed by different implementations. Applications
 should rarely, if ever, use these classes directly. For example, rather
 than creating a new instance of <code>ResourceImpl</code>, it is better to
 use the <code>createResource</code> method of whatever model is being
@@ -509,7 +507,7 @@ resource from the model read in from the file in tutorial 5:</p>
 <blockquote>
   <pre><code>// retrieve the John Smith vcard resource from the model
 Resource vcard = model.getResource(johnSmithURI);</code>
-  </pre>
+  </code></pre>
 </blockquote>
 
 <p>The Resource interface defines a number of methods for accessing the
@@ -523,9 +521,9 @@ return the object of the statement. For example to retrieve the
 resource which is the value of the <code>vcard:N</code> property:</p>
 
 <blockquote>
-  <pre>// retrieve the value of the N property
+  <pre><code>// retrieve the value of the N property
 Resource name = (Resource) vcard.getProperty(VCARD.N)
-                                .getObject();</pre>
+                                .getObject();</code></pre>
 </blockquote>
 
 <p>In general, the object of a statement could be a resource or a literal, so
@@ -536,28 +534,28 @@ checking can be done at compile time. The code fragment above, can be
 more conveniently written:</p>
 
 <blockquote>
-  <pre>// retrieve the value of the FN property
+  <pre><code>// retrieve the value of the FN property
 Resource name = vcard.getProperty(VCARD.N)
-                     .getResource();</pre>
+                     .getResource();</code></pre>
 </blockquote>
 
 <p>Similarly, the literal value of a property can be retrieved:</p>
 
 <blockquote>
-  <pre>// retrieve the given name property
+  <pre><code>// retrieve the given name property
 String fullName = vcard.getProperty(VCARD.FN)
-                        .getString();</pre>
+                        .getString();</code></pre>
 </blockquote>
 
 <p>In this example, the vcard resource has only one <code>vcard:FN</code> and
 one <code>vcard:N</code> property. RDF permits a resource to repeat a
-property; for example Adam might have more than one nickname.  Lets give him
+property; for example Adam might have more than one nickname.  Let's give him
 two:</p>
 
 <blockquote>
-  <pre>// add two nick name properties to vcard
+  <pre><code>// add two nickname properties to vcard
 vcard.addProperty(VCARD.NICKNAME, "Smithy")
-     .addProperty(VCARD.NICKNAME, "Adman");</pre>
+     .addProperty(VCARD.NICKNAME, "Adman");</code></pre>
 </blockquote>
 
 <p>As noted before, Jena represents an RDF Model as <em>set </em>of
@@ -575,7 +573,7 @@ objects of type <code>Statement</code>.  We can list the nicknames like
 this:</p>
 
 <blockquote>
-  <pre>// set up the output
+  <pre><code>// set up the output
 System.out.println("The nicknames of \""
                       + fullName + "\" are:");
 // list the nicknames
@@ -584,7 +582,7 @@ while (iter.hasNext()) {
     System.out.println("    " + iter.nextStatement()
                                     .getObject()
                                     .toString());
-}</pre>
+}</code></pre>
 </blockquote>
 
 <p>This code can be found in <a href="code/Tutorial06.java"> tutorial 6</a>,
@@ -605,14 +603,13 @@ which produces the following output when run:</p>
 <p>The previous section dealt with the case of navigating a model from a
 resource with a known URI. This section deals with searching a
 model. The core Jena API supports only a limited query primitive.  The
-more powerful query facilities of RDQL are described elsewhere in this
-tutorial.</p>
+more powerful query facilities of RDQL are described elsewhere.</p>
 
 <p>The <code>Model.listStatements()</code> method, which lists all the
 statements in a model, is perhaps the crudest way of querying a model.
 Its use is not recommended on very large Models.
 <code>Model.listSubjects()</code> is similar, but returns an iterator over
-all resources that have properties, i.e. are the subject of some
+all resources that have properties, <i>ie</i> are the subject of some
 statement.</p>
 
 <p><code>Model.listSubjectsWithProperty(Property p, RDFNode
@@ -632,12 +629,12 @@ will have <code>vcard:FN</code> property, and that in our data, all such
 resources have such a property, then we can find all the vcards like this:</p>
 
 <blockquote>
-  <pre>// list vcards
+  <pre><code>// list vcards
 ResIterator iter = model.listSubjectsWithProperty(VCARD.FN);
 while (iter.hasNext()) {
     Resource r = iter.nextResource();
     ...
-}</pre>
+}</code></pre>
 </blockquote>
 
 <p>All these query methods are simply syntactic sugar over a primitive query
@@ -651,37 +648,50 @@ necessary to use a specific class rather than an interface.  The
 <code>SimpleSelector</code> constructor takes three arguments:</p>
 
 <blockquote>
-  <pre>Selector selector = new SimpleSelector(subject, predicate, object)
-  </pre>
+  <pre><code>Selector selector = new SimpleSelector(subject, predicate, object)
+  </code></pre>
 </blockquote>
 
 <p>This selector will select all statements with a subject that matches
 <code>subject</code>, a predicate that matches <code>predicate</code> and an
-object that matches <code>object</code>.  If a <code>null </code>is supplied
-in any of the positions, it matches anything, otherwise resources, including
-properties since they are a subset of resources, match if their URI
-references are equal and Literals are equal if all their components are
-equal.  Thus:</p>
+object that matches <code>object</code>.  If a <code>null</code>is supplied
+in any of the positions, it matches anything; otherwise they match corresponding
+equal resources or literals. (Two resources are equal if they have equal URIs
+or are the same blank node; two literals are the same if all their components
+are equal.) Thus:</p>
 
 <blockquote>
-  <pre>Selector selector = new SimpleSelector(null, null, null);
-  </pre>
+  <pre><code>Selector selector = new SimpleSelector(null, null, null);
+  </code></pre>
 </blockquote>
 
 <p>will select all the statements in a Model.</p>
 
 <blockquote>
-  <pre>Selector selector = new SimpleSelector(null, VCARD.FN, null);
-  </pre>
+  <pre><code>Selector selector = new SimpleSelector(null, VCARD.FN, null);
+  </code></pre>
 </blockquote>
 
 <p>will select all the statements with VCARD.FN as their predicate, whatever
-the subject or object.  The following code, which can be found in full in <a
+the subject or object. As a special shorthand,
+
+<blockquote><code>listStatements( S, P, O )
+</code></blockquote>
+
+is equivalent to
+
+<blockquote><code>listStatements( new SimpleSelector( S, P, O ) )
+</code></blockquote>
+
+
+
+
+<p></p>The following code, which can be found in full in <a
 href="code/Tutorial07.java">tutorial 7</a> lists the full names on all the
 vcards in the database.</p>
 
 <blockquote>
-  <pre>// select all the resources with a VCARD.FN property
+  <pre><code>// select all the resources with a VCARD.FN property
 ResIterator iter = model.listSubjectsWithProperty(VCARD.FN);
 if (iter.hasNext()) {
     System.out.println("The database contains vcards for:");
@@ -693,40 +703,35 @@ if (iter.hasNext()) {
 } else {
     System.out.println("No vcards were found in the database");
 }
-            </pre>
+            </code></pre>
 </blockquote>
 
 <p>This should produce output similar to the following:</p>
 
 <blockquote>
-  <pre>The database contains vcards for:
+  <pre><code>The database contains vcards for:
   Sarah Jones
   John Smith
   Matt Jones
   Becky Smith
-  </pre>
+  </code></pre>
 </blockquote>
 
 <p>Your next exercise is to modify this code to use <code>SimpleSelector
 </code>instead of <code>listSubjectsWithProperty</code>.</p>
 
-<p><i>Chris to simplifiy by removing the need for isSimple</i></p>
-
 <p>Lets see how to implement some finer control over the statements selected.
-SimpleSelector can be subclassed and its selects method modified to perform
-further filtering:</p>
+<code>SimpleSelector</code> can be subclassed and its selects method modified
+to perform further filtering:</p>
 
 <blockquote>
-  <pre>// select all the resources with a VCARD.FN property
+  <pre><code>// select all the resources with a VCARD.FN property
 // whose value ends with "Smith"
 StmtIterator iter = model.listStatements(
-  new
-      SimpleSelector(null, VCARD.FN, (RDFNode) null) {
-		  public boolean isSimple()
-		  {return false;}
-		  public boolean selects(Statement s) 
-		  {return s.getString().endsWith("Smith");}
- });</pre>
+    new SimpleSelector(null, VCARD.FN, (RDFNode) null) {
+        public boolean selects(Statement s)
+            {return s.getString().endsWith("Smith");}
+    });</code></pre>
 </blockquote>
 
 <p>This sample code uses a neat Java technique of overridding a method
@@ -741,9 +746,9 @@ applied to matching statements.</p>
 8</a> and produces output like this:</p>
 
 <blockquote>
-  <pre>The database contains vcards for:
+  <pre><code>The database contains vcards for:
   John Smith
-  Becky Smith</pre>
+  Becky Smith</code></pre>
 </blockquote>
 
 <p></p>
@@ -751,7 +756,7 @@ applied to matching statements.</p>
 <p>You might think that:</p>
 
 <blockquote>
-  <pre>// do all filtering in the selects method
+  <pre><code>// do all filtering in the selects method
 StmtIterator iter = model.listStatements(
   new
       SimpleSelector(null, null, (RDFNode) null) {
@@ -761,18 +766,18 @@ StmtIterator iter = model.listStatements(
                   &amp;&amp; (object == null    || s.getObject().equals(object))
           }
      }
- });</pre>
+ });</code></pre>
 </blockquote>
 
 <p>is equivalent to:</p>
 
 <blockquote>
-  <pre>StmtIterator iter =
-  model.listStatements(new SimpleSelector(subject, predicate, object)</pre>
+  <pre><code>StmtIterator iter =
+  model.listStatements(new SimpleSelector(subject, predicate, object)</code></pre>
 </blockquote>
 
-<p>Whilst functionaly they may be equivalent, the first form will list all
-the statements in the Model and test each one individually, whilst the later
+<p>Whilst functionally they may be equivalent, the first form will list all
+the statements in the Model and test each one individually, whilst the second
 allows indexes maintained by the implementation to improve performance.  Try
 it on a large Model and see for yourself, but make a cup of coffee first.</p>
 <hr>
@@ -799,7 +804,7 @@ one and the duplicate <code>vcard:FN</code> arc is dropped to produce:</p>
 href="code/Tutorial09.java">tutorial 9</a>) and see what happens.</p>
 
 <blockquote>
-  <pre>// read the RDF/XML files
+  <pre><code>// read the RDF/XML files
 model1.read(new InputStreamReader(in1), "");
 model2.read(new InputStreamReader(in2), "");
 
@@ -807,13 +812,13 @@ model2.read(new InputStreamReader(in2), "");
 Model model = model1.union(model2);
 
 // print the Model as RDF/XML
-model.write(system.out, "RDF/XML-ABBREV");</pre>
+model.write(system.out, "RDF/XML-ABBREV");</code></pre>
 </blockquote>
 
 <p>The output produced by the pretty writer looks like this:</p>
 
 <blockquote>
-  <pre>&lt;?xml version='1.0'?&gt;
+  <pre><code>&lt;?xml version='1.0'?&gt;
 &lt;rdf:RDF
     xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
     xmlns:vcard='http://www.w3.org/2001/vcard-rdf/3.0#'&gt;
@@ -827,7 +832,7 @@ model.write(system.out, "RDF/XML-ABBREV");</pre>
              rdf:type='http://www.w3.org/2001/vcard-rdf/3.0#internet'/&gt;
     &lt;/rdf:Description&gt;
 &lt;/rdf:RDF&gt;
-  </pre>
+  </code></pre>
 </blockquote>
 
 <p>Even if you are unfamiliar with the details of the RDF/XML syntax, it
@@ -839,7 +844,7 @@ manner.</p>
 <h2><a name="ch-Containers" id="ch-Containers">Containers</a></h2>
 
 <p>RDF defines a special kind of resources for representing collections of
-things. These resources are called containers. The members of a
+things. These resources are called <i>containers</i>. The members of a
 container can be either literals or resources. There are three kinds of
 container:</p>
 <ul>
@@ -855,7 +860,7 @@ or a subclass of one of these, depending on the type of the container.
 The first member of the container is the value of the container's rdf:_1
 property; the second member of the container is the value of the container's
 rdf:_2 property and so on. The rdf:_nnn properties are known as the
-ordinal properties.</p>
+<i>ordinal properties</i>.</p>
 
 <p>For example, the Model for a simple bag containing the vcards of the
 Smith's might look like this:</p>
@@ -881,7 +886,7 @@ classes to handle them. It is not a good idea to have an object
 manipulating a container, and at the same time to modify the state of that
 container using the lower level methods.</p>
 
-<p align="left">Lets modify tutorial 8 to create this bag:</p>
+<p align="left">Let's modify tutorial 8 to create this bag:</p>
 
 <blockquote>
   <pre><code>// create a bag
@@ -904,7 +909,7 @@ while (iter.hasNext()) {
 <p>If we write out this Model, it contains something like the following:</p>
 
 <blockquote>
-  <pre>&lt;rdf:RDF
+  <pre><code>&lt;rdf:RDF
   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
   xmlns:vcard='http://www.w3.org/2001/vcard-rdf/3.0#'
  &gt;
@@ -914,7 +919,7 @@ while (iter.hasNext()) {
     &lt;rdf:_1 rdf:resource='http://somewhere/JohnSmith/'/&gt;
     &lt;rdf:_2 rdf:resource='http://somewhere/RebeccaSmith/'/&gt;
   &lt;/rdf:Description&gt;
-&lt;/rdf:RDF&gt;</pre>
+&lt;/rdf:RDF&gt;</code></pre>
 </blockquote>
 
 <p>which represents the Bag resource.</p>
@@ -977,7 +982,7 @@ parseType='Literal' attribute is used to represent it.</p>
 constructed, e.g. in <a href="code/Tutorial11.java">tutorial 11</a>:</p>
 
 <blockquote>
-  <pre>// create the resource
+  <pre><code>// create the resource
 Resource r = model.createResource();
 
 // add the property
@@ -986,13 +991,13 @@ r.addProperty(RDFS.label, model.createLiteral("chat", "en"))
  .addProperty(RDFS.label, model.createLiteral("&lt;em&gt;chat&lt;/em&gt;", true));
 
 // write out the Model
-model.write(system.out);</pre>
+model.write(system.out);</code></pre>
 </blockquote>
 
 <p>produces</p>
 
 <blockquote>
-  <pre>&lt;rdf:RDF
+  <pre><code>&lt;rdf:RDF
   xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'
   xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'
  &gt;
@@ -1001,7 +1006,7 @@ model.write(system.out);</pre>
     &lt;rdfs:label xml:lang='fr'&gt;chat&lt;/rdfs:label&gt;
     &lt;rdfs:label xml:lang='en' rdf:parseType='Literal'&gt;&lt;em&gt;chat&lt;/em&gt;&lt;/rdfs:label&gt;
   &lt;/rdf:Description&gt;
-&lt;/rdf:RDF&gt;</pre>
+&lt;/rdf:RDF&gt;</code></pre>
 </blockquote>
 
 <p>For two literals to be considered equal, they must either both be XML
@@ -1012,14 +1017,15 @@ equality.  The simple notion is that the conditions previously mentioned are
 true and the strings are also equal.  The other notion is that they can be
 equal if the cannonicalization of their strings is equal.</p>
 
-<p>Jena's interfaces also support typed literals, however, at present these
-are only convenience methods.  The typed value is converted to a string and a
-string literal is stored in the Model.  For example, try (noting that for
+<p>Jena's interfaces also support typed literals. The old-fashioned way
+(shown below) treats typed literals as shorthand for strings: type typed
+values are connverted in the usual Java way to strings and these strings
+are store din the Model. For example, try (noting that for
 simple literals, we can omit the <code>model.createLiteral</code>(...)
 call):</p>
 
 <blockquote>
-  <pre>// create the resource
+  <pre><code>// create the resource
 Resource r = model.createResource();
 
 // add the property
@@ -1027,89 +1033,66 @@ r.addProperty(RDFS.label, "11")
  .addProperty(RDFS.label, 11);
 
 // write out the Model
-model.write(system.out, "N-TRIPLE");</pre>
+model.write(system.out, "N-TRIPLE");</code></pre>
 </blockquote>
 
 <p>The output produced is:</p>
 
 <blockquote>
-  <pre>_:A... &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; "11" .</pre>
+  <pre><code>_:A... &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; "11" .</code></pre>
 </blockquote>
 
 <p>Since both literals are really just the string "11", then only one
 statement is added.</p>
 
-<p>The RDFCore WG is defining new mechanisms for supporting datatypes in RDF.
-Jena does not yet support these, but we expect to in the near future.  This
-then, is another area where changes in the interfaces and behaviour are to be
-expected.</p>
+<p>The RDFCore WG has defined mechanisms for supporting datatypes in RDF.
+Jena suports these using the <i>typed literal</i> mechanisms; they are
+not discussed in this tutorial.</p>
 <hr>
 
 <h2><a name="ch-Glossary">Glossary</a></h2>
 
-<table border="0">
-  <tbody>
-    <tr>
-      <td valign="top"><a name="glos-blank node">Blank Node</a></td>
-      <td valign="top">Represents a resource, but does not indicate a URI for
-        the resource.  Blank nodes act like existentially qualified variables
-        in first order logic.</td>
-    </tr>
-    <tr>
-      <td valign="top"><a name="glos-Dublin Core">Dublin Core</a></td>
-      <td valign="top">A standard for metadata about web resources.
-        Further information can be found at the <a
-        href="http://purl.oclc.org/dc/">Dublin Core web site</a>.</td>
-    </tr>
-    <tr>
-      <td valign="top"><a name="glos-Literal"
-      id="glos-Literal">Literal</a></td>
-      <td valign="top">A string of characters which can be the value of a
-        property.</td>
-    </tr>
-    <tr>
-      <td valign="top"><a name="glos-Object">Object</a></td>
-      <td valign="top">The part of a triple which is the value of the
-        statement</td>
-    </tr>
-    <tr>
-      <td valign="top"><a name="glos-Predicate"
-        id="glos-Predicate">Predicate</a></td>
-      <td valign="top">The property part of a triple.</td>
-    </tr>
-    <tr>
-      <td valign="top"><a name="glos-Property"
-      id="glos-Property">Property</a></td>
-      <td valign="top">A property is an attribute of a resource. For
-        example DC.title is a property, as is RDF.type.</td>
-    </tr>
-    <tr>
-      <td valign="top"><a name="glos-Resource"
-      id="glos-Resource">Resource</a></td>
-      <td valign="top">Some entity. It could be a web resource such as
-        web page, or it could be a concrete physical thing such as a tree or
-        a car. It could be an abstract idea such as chess or
-        football. Resources are named by URI's.</td>
-    </tr>
-    <tr>
-      <td valign="top"><a name="glos-Statement"
-        id="glos-Statement">Statement</a></td>
-      <td valign="top">An arc in an RDF Model, normally interpretted as a
-        fact.</td>
-    </tr>
-    <tr>
-      <td valign="top"><a name="glos-Subject"
-      id="glos-Subject">Subject</a></td>
-      <td valign="top">The resource which is the source of an arc in an RDF
-        Model</td>
-    </tr>
-    <tr>
-      <td valign="top"><a name="glos-Triple" id="glos-Triple">Triple</a></td>
-      <td valign="top">A structure containing a subject, a predicate and an
-        object. Another term for a statement.</td>
-    </tr>
-  </tbody>
-</table>
+<dl>
+
+<dt>Blank Node
+<dd>Represents a resource, but does not indicate a URI for the
+resource.  Blank nodes act like existentially qualified variables in first
+order logic.
+
+<dt>Dublin Core
+<dd>A standard for metadata about web resources. Further
+information can be found at the <a href="http://purl.oclc.org/dc/">Dublin Core
+web site</a>.
+
+<dt>Literal
+<dd>A string of characters which can be the value of a property.
+
+<dt>Object
+<dd>The part of a triple which is the value of the statement
+
+<dt>Predicate
+<dd>The property part of a triple.
+
+<dt>Property
+<dd>A property is an attribute of a resource. For example
+DC.title is a property, as is RDF.type.
+
+<dt>Resource
+<dd>Some entity. It could be a web resource such as web page, or
+it could be a concrete physical thing such as a tree or a car. It could be an
+abstract idea such as chess or football. Resources are named by URI's.
+
+<dt>Statement
+<dd>An arc in an RDF Model, normally interpreted as a fact.
+
+<dt>Subject
+<dd>The resource which is the source of an arc in an RDF Model
+
+<dt>Triple
+<dd>A structure containing a subject, a predicate and an object.
+Another term for a statement.
+
+</dl>
 <hr>
 
 <h2>Footnotes</h2>
@@ -1123,13 +1106,9 @@ expected.</p>
     language of the string. For example the literal "two" might have a
     language encoding of "en" for English and the literal "deux" might have a
     language encoding of "fr" for France.</li>
-  <li><a name="fn-04" id="fn-04"></a>Jena's current iterators do not conform
-    to the standard Java iterator interface in that their next() method has a
-    more constrained return type.  An iterator interface which is conformant
-    is likely to be defined soon, and the old interface deprecated.</li>
 </ol>
 <hr>
 <i><small> Author: <a href="mailto:bwm@hplb.hpl.hp.com">Brian McBride</a>
-<br> Updated by: Daniel Boothby and <a href=mailto:chris.dollin@hp.com> Chris Dollin</a>  
-<br> $Date: 2003-06-25 15:20:21 $ $Revision: 1.8 $</small></i></body>
+<br> Updated by: Daniel Boothby and <a href=mailto:chris.dollin@hp.com> Chris Dollin</a>
+<br> $Date: 2003-07-31 10:42:14 $ $Revision: 1.9 $</small></i></body>
 </html>

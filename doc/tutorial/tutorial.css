@@ -11,6 +11,8 @@ body {
 	margin-right: 5%;  
 }
 
+code { font-family: courier }
+
 /* Broswer CSS2 table support is rather "individual" */
 
 table {
@@ -79,8 +81,10 @@ h5 { font-size: 10pt ; font-weight: normal; font-style: italic ; }
 h6 { font-size: small-caps 100% ; }
 */
 
+/* These mess up Konqueror and you lose the left edge.
 h1 { margin-left: -4%;}
 h2,h3,h4,h5,h6 { margin-left: -4%; }
+*/
 
 ul { list-style-type: disc }
 dt { font-weight: bold }
