@@ -11,7 +11,7 @@ import com.hp.hpl.jena.rdf.model.impl.ModelLockImpl ;
 import junit.framework.*;
 /**
  * @author		Andy Seaborne
- * @version 	$Id: TestConcurrency.java,v 1.1 2003-04-28 14:39:47 andy_seaborne Exp $
+ * @version 	$Id: TestConcurrency.java,v 1.2 2003-04-29 11:04:05 andy_seaborne Exp $
  */
 public class TestConcurrency  extends TestSuite
 {
@@ -25,37 +25,63 @@ public class TestConcurrency  extends TestSuite
 	static long SLEEP = 250 ;
 	static int threadCount = 0;
 
-
+    // Note : reuse the model across tests.
+    final static Model model1 = ModelFactory.createDefaultModel() ;
+    final static Model model2 = ModelFactory.createDefaultModel() ;
+        
     public TestConcurrency()
     {
         super("Model concurrency control") ;
-        //this.addTest(new ConcurrencyTestLockPromotion("Many readers")) ;
-        //this.addTest(new ConcurrencyTestLockPromotion("Many writers")) ;
-        //this.addTest(new ConcurrencyTestLockPromotion("Readers and writers")) ;
-        
-        addTest(new Nesting("Lock nesting 1", ModelLock.READ, ModelLock.READ, false)) ;
-        addTest(new Nesting("Lock nesting 2", ModelLock.WRITE, ModelLock.WRITE, false)) ;
-        addTest(new Nesting("Lock nesting 3", ModelLock.READ, ModelLock.WRITE, true)) ;
-        addTest(new Nesting("Lock nesting 4", ModelLock.WRITE, ModelLock.READ, false)) ;
-        
+
+        // Same model: inner and outer
+        addTest(new Nesting("Lock nesting 1 - same model", 
+                model1, ModelLock.READ, ModelLock.READ, false)) ;
+        addTest(new Nesting("Lock nesting 2 - same model",
+                model1, ModelLock.WRITE, ModelLock.WRITE, false)) ;
+        addTest(new Nesting("Lock nesting 3 - same model",
+                model1, ModelLock.READ, ModelLock.WRITE, true)) ;
+        addTest(new Nesting("Lock nesting 4 - same model",
+                model1, ModelLock.WRITE, ModelLock.READ, false)) ;
+
+        // Different  model: inner and outer
+        addTest(new Nesting("Lock nesting 1 - defifferent models", 
+                model1, ModelLock.READ, model2, ModelLock.READ, false)) ;
+        addTest(new Nesting("Lock nesting 2 - defifferent models",
+                model1, ModelLock.WRITE, model2, ModelLock.WRITE, false)) ;
+        addTest(new Nesting("Lock nesting 3 - defifferent models",
+                model1, ModelLock.READ, model2, ModelLock.WRITE, false)) ;
+        addTest(new Nesting("Lock nesting 4 - defifferent models",
+                model1, ModelLock.WRITE, model2, ModelLock.READ, false)) ;
+
+        // Crude test                
         addTest(new Parallel("Parallel concurrency test")) ;
 
     }
 
     static class Nesting extends TestCase
     {
-        // Note : reuse the model across tests.
-        final static Model model = ModelFactory.createDefaultModel() ;
-        
+        Model outerModel ;
+        Model innerModel ;
         boolean outerLock ;
         boolean innerLock ;
         boolean exceptionExpected ;
 
-        Nesting(String testName,
+        // Same model
+        Nesting(String testName, Model model,
                 boolean lock1, boolean lock2, boolean exExpected)
         {
+            this(testName, model, lock1, model, lock2, exExpected) ;
+        }
+
+        // Potetnially different models
+        Nesting(String testName,
+                Model model1, boolean lock1,
+                Model model2, boolean lock2, boolean exExpected)
+        {
             super(testName);
+            outerModel = model1 ; 
             outerLock = lock1 ;
+            innerModel = model2 ;
             innerLock = lock2 ;
             exceptionExpected = exExpected ;
         }
@@ -64,21 +90,22 @@ public class TestConcurrency  extends TestSuite
         {
             boolean gotException = false ;
             try {
-                model.enterCriticalSection(outerLock) ;
+                outerModel.enterCriticalSection(outerLock) ;
                 
                 try {
                     try {
                         // Should fail if outerLock is READ and innerLock is WRITE
-                        model.enterCriticalSection(innerLock) ;
+                        // and its on the same model, inner and outer.
+                        innerModel.enterCriticalSection(innerLock) ;
                         
-                    } finally { model.leaveCriticalSection() ; }
+                    } finally { innerModel.leaveCriticalSection() ; }
                 } catch (Exception ex)
                 {
                     gotException = true ;
                 }
                 
             } finally { 
-                model.leaveCriticalSection() ;
+                outerModel.leaveCriticalSection() ;
             }
             
             if ( exceptionExpected )
