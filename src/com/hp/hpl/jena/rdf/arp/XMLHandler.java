@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.5 2004-11-16 15:37:14 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.6 2004-11-26 12:14:40 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -89,7 +89,12 @@ abstract class XMLHandler
 
 
 	void userWarning(ParseException e) throws SAXException {
+		//try {
 		handlers.getErrorHandler().warning(e.rootCause());
+		//}
+		//catch (Exception ee){
+	//		throw new WrappedException(ee);
+		//}
 	}
 	void userError(ParseException e) throws SAXException {
 		if (e.getFatal())

@@ -2,7 +2,7 @@
  *  (c)     Copyright 2004 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: ExceptionTests.java,v 1.1 2004-11-25 16:23:49 jeremy_carroll Exp $
+ *  $Id: ExceptionTests.java,v 1.2 2004-11-26 12:14:59 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -136,7 +136,7 @@ public class ExceptionTests
 
 		  Model m = ModelFactory.createDefaultModel();
 		  RDFReader rdr = m.getReader();
-		  rdr.setProperty("ERR_BAD_RDF_ATTRIBUTE","EM_FATAL");
+		  rdr.setProperty("WARN_BAD_NAME","EM_FATAL");
 		  rdr.read(m,"file:testing/arp/qname-in-ID/bug74_0.rdf");
 
 		  fail("Promoted warning did not throw exception");

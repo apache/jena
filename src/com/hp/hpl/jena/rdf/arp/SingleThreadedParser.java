@@ -140,12 +140,8 @@ class SingleThreadedParser extends XMLHandler {
 			} catch (ParseException parse) {
 				// This has not been reported???
 				// TODO more work on error reporting
-				try {
+				
 				userError(parse);
-				}
-				catch (Exception eee){
-					// might be rethrown
-					}
 				// Don't overdo it.
 				//throw parse.rootCause();
 				

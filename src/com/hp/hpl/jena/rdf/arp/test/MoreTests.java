@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.16 2004-10-20 10:40:37 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.17 2004-11-26 12:14:59 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -29,6 +29,7 @@ public class MoreTests
 		TestSuite suite = new TestSuite("ARP Plus");
 		suite.addTest(TestErrorMsg.suite());
 		suite.addTest(TestScope.suite());
+		suite.addTest(ExceptionTests.suite());
 		suite.addTest(new MoreTests("testEncodingMismatch1"));
 		suite.addTest(new MoreTests("testEncodingMismatch2"));
 		suite.addTest(new MoreTests("testNullBaseParamOK"));

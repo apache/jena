@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: ParseException.java,v 1.6 2003-12-06 21:46:59 jeremy_carroll Exp $
+ *  * $Id: ParseException.java,v 1.7 2004-11-26 12:14:40 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -134,8 +134,7 @@ public class ParseException
 
 	/**
 	 * Intended for use within an RDFErrorHandler. This method is untested.
-	 * Marks the exception to be promoted from a warning to an error, or from
-	 * an error to a fatal error, or from a fatal error to be thrown from the
+	 * Marks the exception to be promoted to be thrown from the
 	 * parser's entry method.
 	 */
 	public void promote() {

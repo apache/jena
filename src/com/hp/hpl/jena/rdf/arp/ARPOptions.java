@@ -63,8 +63,8 @@ public class ARPOptions  implements ARPErrorNumbers {
 			case EM_ERROR :
 			case EM_FATAL :
 				switch (errno) {
-					case ERR_UNABLE_TO_RECOVER :
-						break;
+					//case ERR_UNABLE_TO_RECOVER :
+					//	break;
 					default :
 						errorMode[errno] = mode;
 				}
