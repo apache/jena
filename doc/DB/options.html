@@ -2,7 +2,10 @@
 
 
 
-<HEAD><TITLE>Jena Relational Database backend</TITLE></HEAD>
+<HEAD>
+<TITLE>Jena Relational Database backend</TITLE>
+<link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
+</HEAD>
 
 
 
@@ -47,39 +50,39 @@
     <th width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top"><b>IRDBDriver Option</b></th>
     <th width="71" style="text-indent: 5; text-align: left; margin-left: 0" valign="top"><b>Type&nbsp;&nbsp;&nbsp;&nbsp; </b></th>
     <th width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0"><b>Default</b></th>
-    <th width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top"><b>
+    <th width="504" style="text-indent: 5; margin-left: 0; text-align:left" align="left" valign="top"><b>
     Description</b></th>
   </tr>
   <tr>
     <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">LongObjectLength</td>
     <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">int</td>
     <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">*</td>
-    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">Maximum length of a literal or resource to be stored 
+    <td width="504" style="text-indent: 5; margin-left: 0; text-align:left" align="left" valign="top">Maximum length of a literal or resource to be stored 
     in a statement table. &nbsp;&nbsp;&nbsp;&nbsp; </td>
   </tr>
   <tr>
     <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">IndexKeyLength</td>
     <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">int</td>
     <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">*</td>
-    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">Maximum length of the key in a long object table.</td>
+    <td width="504" style="text-indent: 5; margin-left: 0; text-align:left" align="left" valign="top">Maximum length of the key in a long object table.</td>
   </tr>
   <tr>
     <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">IsTransactionDb</td>
     <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">boolean</td>
     <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">*</td>
-    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">True if the database can support transactions.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td width="504" style="text-indent: 5; margin-left: 0; text-align:left" align="left" valign="top">True if the database can support transactions.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
   </tr>
   <tr>
     <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">DoCompressURI</td>
     <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">boolean</td>
     <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">false</td>
-    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">If true, do prefix compression on long URIs.</td>
+    <td width="504" style="text-indent: 5; margin-left: 0; text-align:left" align="left" valign="top">If true, do prefix compression on long URIs.</td>
   </tr>
   <tr>
     <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">CompressURILength</td>
     <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">int</td>
     <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">100</td>
-    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">URIs longer than this length will be compressed (if 
+    <td width="504" style="text-indent: 5; margin-left: 0; text-align:left" align="left" valign="top">URIs longer than this length will be compressed (if 
     doCompressURI is true).</td>
   </tr>
   <tr>
@@ -89,15 +92,17 @@
     String</td>
     <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">
     jena_</td>
-    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">
+    <td width="504" style="text-indent: 5; margin-left: 0; text-align:left" align="left" valign="top">
     The common prefix for all Jena table names in the database.</td>
   </tr>
   </table>
 
 
 
-  <h2><font size="3"><span style="font-weight: 400">* These options are 
-  database-dependent. See the database-specific howto for the default values.</span></font></h2>
+  <p><span style="font-weight: 400"><font size="3">*  </font><font size="2">These options are 
+  database-dependent. See the database-specific howto (<a href="mysql-howto.html">MySQL</a>,
+  <a href="oracle-howto.html">Oracle</a>,
+  <a href="postgresql-howto.html">PostgreSQL</a>) for the default values.</font></span></p>
 
 
 
@@ -196,7 +201,7 @@
     <th width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell0" valign="top"><b>IRDBDriver Option</b></th>
     <th width="71" style="text-indent: 5; text-align: left; margin-left: 0" valign="top"><b>Type&nbsp;&nbsp;&nbsp;&nbsp; </b></th>
     <th width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0"><b>Default</b></th>
-    <th width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top"><b>
+    <th width="504" style="text-indent: 5; margin-left: 0; text-align:left" align="left" valign="top"><b>
     Description</b></th>
   </tr>
   <tr>
@@ -206,7 +211,7 @@
     String</td>
     <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">
     null</td>
-    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">
+    <td width="504" style="text-indent: 5; margin-left: 0; text-align:left" align="left" valign="top">
     If not null or empty, subsequent models will share tables with the named 
     model.</td>
   </tr>
@@ -217,7 +222,7 @@
     int</td>
     <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">
     50</td>
-    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">
+    <td width="504" style="text-indent: 5; margin-left: 0; text-align:left" align="left" valign="top">
     The size of the URI prefix cache if DoCompressURI is true.</td>
   </tr>
   </table>
@@ -259,44 +264,44 @@
 
 <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1" width="790">
   <tr>
-    <th width="166" valign="top" style="text-indent: 5; margin-left: 0" align="left"><b>
+    <th width="166" valign="top" style="text-indent: 5; margin-left: 0; text-align:left" align="left"><b>
     ModelRDB Option</b></th>
-    <th width="71" align="left" valign="top" style="text-indent: 5; margin-left: 0"><b>Type</b></th>
-    <th width="69" align="left" valign="top" style="text-indent: 5; margin-left: 0"><b>Default</b></th>
-    <th width="479" valign="top" style="text-indent: 5; margin-left: 0" align="left"><b>Description</b></th>
+    <th width="71" align="left" valign="top" style="text-indent: 5; margin-left: 0; text-align:left"><b>Type</b></th>
+    <th width="69" align="left" valign="top" style="text-indent: 5; margin-left: 0; text-align:left"><b>Default</b></th>
+    <th width="479" valign="top" style="text-indent: 5; margin-left: 0; text-align:left" align="left"><b>Description</b></th>
   </tr>
   <tr>
-    <td width="166" valign="top" style="text-indent: 5; margin-left: 0">DoFastpath</td>
-    <td width="71" valign="top" style="text-indent: 5; margin-left: 0">boolean</td>
-    <td width="69" valign="top" style="text-indent: 5; margin-left: 0">true</td>
-    <td width="479" valign="top" style="text-indent: 5; margin-left: 0">If true, enable query Fastpath. &nbsp;&nbsp;&nbsp; </td>
+    <td width="166" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">DoFastpath</td>
+    <td width="71" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">boolean</td>
+    <td width="69" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">true</td>
+    <td width="479" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">If true, enable query Fastpath. &nbsp;&nbsp;&nbsp; </td>
   </tr>
   <tr>
-    <td width="166" valign="top" style="text-indent: 5; margin-left: 0">QueryOnlyAsserted</td>
-    <td width="71" valign="top" style="text-indent: 5; margin-left: 0">boolean</td>
-    <td width="69" valign="top" style="text-indent: 5; margin-left: 0">false</td>
-    <td width="479" valign="top" style="text-indent: 5; margin-left: 0">If true, Fastpath only queries asserted statement 
+    <td width="166" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">QueryOnlyAsserted</td>
+    <td width="71" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">boolean</td>
+    <td width="69" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">false</td>
+    <td width="479" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">If true, Fastpath only queries asserted statement 
     tables.</td>
   </tr>
   <tr>
-    <td width="166" valign="top" style="text-indent: 5; margin-left: 0">QueryOnlyReified</td>
-    <td width="71" valign="top" style="text-indent: 5; margin-left: 0">boolean</td>
-    <td width="69" valign="top" style="text-indent: 5; margin-left: 0">false</td>
-    <td width="479" valign="top" style="text-indent: 5; margin-left: 0">If true, Fastpath only queries reified statement 
+    <td width="166" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">QueryOnlyReified</td>
+    <td width="71" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">boolean</td>
+    <td width="69" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">false</td>
+    <td width="479" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">If true, Fastpath only queries reified statement 
     tables.</td>
   </tr>
   <tr>
-    <td width="166" valign="top" style="text-indent: 5; margin-left: 0">QueryFullReified</td>
-    <td width="71" valign="top" style="text-indent: 5; margin-left: 0">boolean</td>
-    <td width="69" valign="top" style="text-indent: 5; margin-left: 0">false</td>
-    <td width="479" valign="top" style="text-indent: 5; margin-left: 0">If true, Fastpath ignores partially reified 
+    <td width="166" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">QueryFullReified</td>
+    <td width="71" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">boolean</td>
+    <td width="69" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">false</td>
+    <td width="479" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">If true, Fastpath ignores partially reified 
     statements.</td>
   </tr>
   <tr>
-    <td width="169" valign="top" style="text-indent: 5; margin-left: 0">DoDuplicateCheck</td>
-    <td width="66" valign="top" style="text-indent: 5; margin-left: 0">boolean</td>
-    <td width="64" valign="top" style="text-indent: 5; margin-left: 0">true</td>
-    <td width="457" valign="top" style="text-indent: 5; margin-left: 0">If true, check if a statement is 
+    <td width="169" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">DoDuplicateCheck</td>
+    <td width="66" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">boolean</td>
+    <td width="64" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">true</td>
+    <td width="457" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">If true, check if a statement is 
     already in the database before adding. it.</td>
   </tr>
 </table>

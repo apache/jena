@@ -1,6 +1,7 @@
 <html>
 <head>
-   <title>Jena 2.0 enhanced node howto</title>
+<title>Jena 2.0 enhanced node howto</title>
+<link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
@@ -36,9 +37,9 @@ following versions.</p>
 
 <table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
   <tr>
-    <td>&nbsp;&nbsp;&nbsp; <b>Server:</b>&nbsp; Oracle 9.2.0.1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td> <b>Server:</b>&nbsp; Oracle 9.2.0.1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
-    <td>&nbsp;&nbsp;&nbsp; <b>JDBC Thick Driver: </b>&nbsp;oci8, oci</td>
+    <td> <b>JDBC Thick Driver: </b>&nbsp;oci8, oci</td>
   </tr>
 </table>
 
@@ -52,9 +53,9 @@ following versions.</p>
 
 <table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
   <tr>
-    <td>&nbsp;&nbsp;&nbsp; <b>Server:</b>&nbsp; Oracle 9.2.0.1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td> <b>Server:</b>&nbsp; Oracle 9.2.0.1.0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
-    <td>&nbsp;&nbsp;&nbsp; <b>JDBC Thick Driver: </b>&nbsp;oci (using the 9.2.0.3 versions of ojdbc14.jar and ocrs12.zip)</td>
+    <td> <b>JDBC Thick Driver: </b>&nbsp;oci (using the 9.2.0.3 versions of ojdbc14.jar and ocrs12.zip)</td>
     
   </tr>
 </table>
@@ -71,44 +72,33 @@ DB_USER, DB_PASSWD.&nbsp; The DB_URL value should be set as indicated below.</p>
 
   <tr>
 
-<font SIZE="2">
-
-    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:oci:@&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td height="15" style="text-align: left"> <b>jdbc:oracle:oci:@&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
-    <td height="15">&nbsp;&nbsp;&nbsp; Uses the thick JDBC client and connects 
+    <td height="15" style="text-align: left">Uses the thick JDBC client and connects 
     to the default local database.</td>
 
-</font>
   </tr>
   <tr>
 
-<font SIZE="2">
-
-    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:oci:@&lt;tnsname&gt;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td height="15" style="text-align: left"> <b>jdbc:oracle:oci:@&lt;tnsname&gt;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
-    <td height="15">&nbsp;&nbsp;&nbsp; Uses the thick JDBC client and connects 
+    <td height="15" style="text-align: left">Uses the thick JDBC client and connects 
     to the specified database.</td>
 
-</font>
   </tr>
   <tr>
 
-<font SIZE="2">
-
-    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:thin:@&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td height="15" style="text-align: left"> <b>jdbc:oracle:thin:@&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
-    <td height="15">&nbsp;&nbsp;&nbsp; Uses the thin JDBC client and connects to 
+    <td height="15" style="text-align: left">Uses the thin JDBC client and connects to 
     the default local database (untested with Jena2).</td>
 
-</font>
   </tr>
   <tr>
 
-<font SIZE="2">
-
-    <td height="15">&nbsp;&nbsp;&nbsp; <b>jdbc:oracle:thin:@&lt;host&gt;:port:&lt;sid&gt;&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td height="15" style="text-align: left"> <b>jdbc:oracle:thin:@&lt;host&gt;:port:&lt;sid&gt;&nbsp;</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
-    <td height="15">&nbsp;&nbsp;&nbsp; Uses the thin&nbsp; JDBC client and 
+    <td height="15" style="text-align: left">Uses the thin&nbsp; JDBC client and 
     connects to a database with the specified sid on the specified host on the 
     specified port
 
@@ -116,12 +106,8 @@ DB_USER, DB_PASSWD.&nbsp; The DB_URL value should be set as indicated below.</p>
 
     (untested with Jena2)</font>.</td>
 
-</font>
   </tr>
 
-<font SIZE="2">
-
-</font>
 </table>
 
 <p ALIGN="LEFT">In order to run Jena2 programs with Oracle, make sure that your 
@@ -205,14 +191,14 @@ Comment-out the stubbed-out interfaces named BLOB and OracleResultSet.
     <dd>&nbsp;</dd>
     <dd><font face="Courier New">// Alternative to creating an unnamed model ...</font></dd>
     <dd><font face="Courier New">// Create a named model</font></dd>
-    <dd><font face="Courier New">ModelRDB m = maker.createModel(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;);</font></dd>
+    <dd><font face="Courier New">ModelRDB m = maker.createModelOver(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;);</font></dd>
     <dt>&nbsp;</dt>
     <dd><font face="Courier New" size="2">...&nbsp; later, or in another Jena 
     application ...</font></dd>
     <dt>&nbsp;</dt>
     <font SIZE="2">
     <dd><font face="Courier New">// Open a named model.</font></dd>
-    <dd><font face="Courier New">ModelRDB m = maker.open(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;</font><font SIZE="2"><font face="Courier New">);</font></dd>
+    <dd><font face="Courier New">ModelRDB m = maker.openModel(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;</font><font SIZE="2"><font face="Courier New">);</font></dd>
   </dl>
 </blockquote>
 <p></p>
@@ -237,26 +223,26 @@ here (replace the names in italics by names for your database instance). To use 
 Oracle command line interface:<font face="Courier New"> SQLPlus 
 username/password</font></p>
 
-<h4><font face="Times New Roman">List  Tables: </font>
+<h4><font face="Verdana">List  Tables:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">select * from TAB;</font></span></h4>
 
-<h4><font face="Times New Roman">List Sequences: </font>
+<h4><font face="Verdana">List Sequences:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">select * from SEQ;</font></span></h4>
 
 
-<h4><font face="Times New Roman">Count All Rows in a Table: </font>
+<h4><font face="Verdana">Count All Rows in a Table:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">select count(*) from <i>
 tableName</i>;</font></span></h4>
 
-<h4><font face="Times New Roman">List All Rows in a Table: </font>
+<h4><font face="Verdana">List All Rows in a Table:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">select * from <i>
 tableName</i>;</font></span></h4>
 
-<h4><font face="Times New Roman">Execute a SQLPlus command file: </font>
+<h4><font face="Verdana">Execute a SQLPlus command file: </font>
 <span style="font-weight: 400"><font face="Courier New">@&lt;<i>filename</i>&gt;&nbsp;&nbsp;&nbsp; 
 where <i>&lt;filename&gt;</i> is the path of a file containing SQLPlus commands</font></span></h4>
 
-<h4><font face="Times New Roman">Exit SQLPlus: </font>
+<h4><font face="Verdana">Exit SQLPlus:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">quit;</font></span></h4>
 
 <p>&nbsp;</p>

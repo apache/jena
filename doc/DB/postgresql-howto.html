@@ -1,6 +1,7 @@
 <html>
 <head>
-   <title>Jena 2.0 enhanced node howto</title>
+<title>Jena 2.0 enhanced node howto</title>
+<link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
@@ -239,14 +240,14 @@ requires several steps as as follows.</p>
     <dd>&nbsp;</dd>
     <dd><font face="Courier New">// Alternative to creating an unnamed model ...</font></dd>
     <dd><font face="Courier New">// Create a named model</font></dd>
-    <dd><font face="Courier New">ModelRDB m = maker.createModel(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;);</font></dd>
+    <dd><font face="Courier New">ModelRDB m = maker.createModelOver(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;);</font></dd>
     <dt>&nbsp;</dt>
     <dd><font face="Courier New" size="2">...&nbsp; later, or in another Jena 
     application ...</font></dd>
     <dt>&nbsp;</dt>
     <font SIZE="2">
     <dd><font face="Courier New">// Open a named model.</font></dd>
-    <dd><font face="Courier New">ModelRDB m = maker.open(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;</font><font SIZE="2"><font face="Courier New">);</font></dd>
+    <dd><font face="Courier New">ModelRDB m = maker.openModel(</font></font><font SIZE="2" face="Courier New">&quot;myName&quot;</font><font SIZE="2"><font face="Courier New">);</font></dd>
   </dl>
 </blockquote>
 <p></p>
@@ -272,25 +273,25 @@ PostgreSQL command line interface:<font face="Courier New"> psql [<i>database</i
 <h4>Use a Specific Database: <span style="font-weight: 400">
 <font face="Courier New">\c <i>databaseName</i>;</font></span></h4>
 
-<h4><font face="Times New Roman">List All Objects in the Database: </font>
+<h4><font face="Verdana">List All Objects in the Database: </font>
 <span style="font-weight: 400"><font face="Courier New">\d</font></span></h4>
 
-<h4><font face="Times New Roman">List  Tables: </font>
+<h4><font face="Verdana">List  Tables:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">\dt&nbsp;&nbsp;&nbsp; 
 (or \d[ivsS] to list indexes, views, sequences, Schema objects)</font></span></h4>
 
-<h4><font face="Times New Roman">Count All Rows in a Table: </font>
+<h4><font face="Verdana">Count All Rows in a Table:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">select count(*) from <i>
 tableName</i>;</font></span></h4>
 
-<h4><font face="Times New Roman">List All Rows in a Table: </font>
+<h4><font face="Verdana">List All Rows in a Table:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">select * from <i>
 tableName</i>;</font></span></h4>
 
-<h4><font face="Times New Roman">List PSQL commands: </font>
+<h4><font face="Verdana">List PSQL commands:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">\?</font></span></h4>
 
-<h4><font face="Times New Roman">Exit PSQL: </font>
+<h4><font face="Verdana">Exit PSQL:</font><font face="Times New Roman"> </font>
 <span style="font-weight: 400"><font face="Courier New">\q</font></span></h4>
 
 <p>&nbsp;</p>

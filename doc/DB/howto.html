@@ -1,5 +1,8 @@
 <HTML>
-<HEAD><TITLE>Jean Relational Database backend</TITLE></HEAD>
+<HEAD>
+<TITLE>Jean Relational Database backend</TITLE>
+<link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
+</HEAD>
 <BODY>
 
 
@@ -82,10 +85,10 @@ Class.forName(M_DBDRIVER_CLASS);</font><font face="Courier">
 Model defModel = maker.createModel();</font></pre>
   <pre><font face="Courier New">...</font></pre>
   <pre><font face="Courier New">// create a named model
-Model nmModel = maker.createModel(&quot;MyNamedModel&quot;);</font></pre>
+Model nmModel = maker.createModelOver(&quot;MyNamedModel&quot;);</font></pre>
   <pre><font face="Courier New">...</font></pre>
   <pre><font face="Courier New">// open a previously created model
-Model prvModel = maker.openModel(&quot;AnExistingModel&quot;);</font></pre>
+Model prvModel = maker.openModelOver(&quot;AnExistingModel&quot;);</font></pre>
 </blockquote>
 </font>
 
