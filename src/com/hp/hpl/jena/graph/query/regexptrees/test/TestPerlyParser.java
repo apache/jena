@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestPerlyParser.java,v 1.9 2004-09-01 19:19:15 chris-dollin Exp $
+  $Id: TestPerlyParser.java,v 1.10 2004-09-02 11:34:45 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees.test;
 
@@ -73,13 +73,6 @@ public class TestPerlyParser extends GraphTestBase
     
     public void testDollarAtom()
         { testSimpleSpecialAtom( RegexpTree.EOL, "$" ); }
-    
-    public void testClassesUnimplemented()
-        {
-        PerlPatternParser p = new PerlPatternParser( "[" );
-        try { p.parseAtom(); fail( "should be unimplemented at the moment" ); }
-        catch (PerlPatternParser.SyntaxException e) { pass(); }
-        }
     
     public void testTerminatorsReturnNull()
         {
@@ -185,10 +178,7 @@ public class TestPerlyParser extends GraphTestBase
         }
     
     public void testBracketConstruction()
-        {
-        PerlPatternParser p = new PerlPatternParser( "(x)" );
-        assertEquals( new Paren( new Text( "x" ) ), p.parseAlts() );
-        }
+        { assertParse( new Paren( new Text( "x" ) ), "(x)" ); }
     
     public void testBracketClosure()
         {
@@ -210,12 +200,36 @@ public class TestPerlyParser extends GraphTestBase
         PerlPatternParser p = new PerlPatternParser( "abc|def" );
         assertEquals( alt( L.parseSeq(), R.parseSeq() ), p.parseAlts() );
         }
-        
+
+    public void testSimpleClass()
+        { assertParse( new AnyOf( "x1B" ), "[x1B]" ); }
+    
+    public void testSimpleClassNegated()
+        { assertParse( new NoneOf( "b0#" ), "[^b0#]" ); }
+    
+    public void testClassRangeAlphabet()
+        { assertParse( new AnyOf( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" ), "[A-Z]" ); }
+
+    public void testClassRangeSomeLetters()
+        { assertParse( new AnyOf( "abcdef" ), "[a-f]" ); }
+    
+    public void testClassRangeDigits()
+        { assertParse( new AnyOf( "abc0123456789rst" ), "[a-c0-9r-t]" ); }
+
+    public void testClassHats()
+        { assertParse( new AnyOf( "ab^cd" ), "[ab^cd]" ); }
+    
+    public void testClassRange()
+        { assertParse( new AnyOf( "-R" ), "[-R]" ); }
+    
+    public void testClassBackslash()
+        { assertParse( new AnyOf( "]" ), "[\\]]" ); }
+    
     protected RegexpTree seq2( RegexpTree a, RegexpTree b )
         {
         return Sequence.create( Arrays.asList( new RegexpTree[] {a, b} ) );
         }
-    
+        
     protected RegexpTree seq3( RegexpTree a, RegexpTree b, RegexpTree c )
         {
         return Sequence.create( Arrays.asList( new RegexpTree[] {a, b, c} ) );
@@ -245,6 +259,9 @@ public class TestPerlyParser extends GraphTestBase
         assertEquals( 5, p.getPointer() );
         assertEquals( new Nothing(), p.parseAtom() );
         }
+    
+    public void assertParse( RegexpTree wanted, String toParse )
+        { assertEquals( wanted, new PerlPatternParser( toParse ).parseAlts() ); }
     
     public void testSimpleSpecialAtom( Object wanted, String toParse )
         {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestRegexpTrees.java,v 1.3 2004-09-01 19:19:15 chris-dollin Exp $
+  $Id: TestRegexpTrees.java,v 1.4 2004-09-02 11:34:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.regexptrees.test;
@@ -80,6 +80,9 @@ public class TestRegexpTrees extends GraphTestBase
         testExtractFromOptional( RegexpTree.SOL );
         testExtractFromOptional( RegexpTree.ANY );
         }
+    
+    public void testLiteralContents()
+        { assertEquals( "hello", new Text( "hello" ).getString() ); }
 
     protected void testExtractFromOneOrMore( RegexpTree operand )
         { assertSame( operand, new OneOrMore( operand ).getOperand() ); }
