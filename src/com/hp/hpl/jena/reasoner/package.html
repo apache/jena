@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+ <body>
+<p>The Jena2 reasoner subsystem is designed to allow a range of inference 
+  engines to be plugged into Jena. Such reasoners are primarily used to derive 
+  additional RDF assertions which are entailed from some base RDF together 
+ with any optional ontology information and the axioms and rules associated 
+ with the reasoner. In addition, they can be used to test global properties 
+ of an RDF graph such as consistency.<br>
+</p>
+<p>This machinery, and the rest of this description, are appropriate for
+developers working with Graphs and Nodes at the SPI level. Application developers
+using Models should see the convenience methods built into <a href="../rdf/model/ModelFactory.html">ModelFactory</a>.<br>
+</p>
+<p>Each available reasoner is represented by an factory object which is an
+  instance of a <a href="ReasonerFactory.html">ReasonerFactory.</a>
+     It is also given a URI through which it can be identified. This URI
+is  used both as the base of a set of RDF assertions which describe the reasoner
+ capabilitiesand as an identifier for registering the reasoner with a central
+  registry. If you only need to access a specific built-in reasoner you can
+  use the factory class directly or the convenience methods built into ModelFactory
+  [TODO: ref]. However, if you need to dynamically check what reasoners are
+  registered with the Jena2 installation and examine their capabilities use
+ the  machinery in <a href="ReasonerRegistry.html">ReasonerRegistry.</a>
+<br>
+</p>
+<p>Once you have an appropriate factory you can create a reasoner instance.
+  The instance can then be bound to a set of RDF data for processing. The
+result   of such binding is an <a href="InfGraph.html">InfGraph</a>
+   , this is a specialization of the standard Graph interface - all the RDF 
+ assertions entailed from the base data via the reasoner appear as "virtual" 
+ triples within this InfGraph. Some additional methods on InfGraph offer access
+ to the reasoner, the raw data and some additional capabilities.</p>
+<p>For example, using the SPI all of the steps involved in generated an RDFS closure of 
+ a graph are:<br>
+</p>
+<pre>
+  ReasonerFactory rf = RDFSReasonerFactory.theInstance();
+  Reasoner reasoner  = rf.create(null);
+  InfGraph graph     = reasoner.bindSchema(tbox) // optional
+                               .bind(data);
+  Model model        = new ModelMem(graph);
+</pre>
+<p>For application developers working with the API then this code is accessible through
+the convenience methods in <a href="../rdf/model/ModelFactory.html">ModelFactory</a>.</p>
+<p>If the resulting <i>graph</i> or <i>model</i> are queried using find/listStatements 
+they contain the sum of all the assertions in the tbox graph, the data graph 
+and the triples entailed from them via RDF+RDFS entailment.<br>
+</p>
+<p>The ability to separately bind rule or ontology information (<i>tbox</i>
+  in the example) and raw assertional information (<i>data</i> in the example) 
+is optional. Some reasoners may require a strict separation of terminology 
+and instance data, others may allow both binds but be lax about the allowed 
+contents of each, others may not support the <i>bindSchema</i> stage. <br>
+</p>
+<p>The existing built-in reasoners allow a single <i>tbox</i> together with 
+a single <i>data</i> bind but the <i>tbox</i> is optional and unrestricted. In 
+the case of the RDFSReasoner in the example, some work is done at bindSchema time
+to cache information on property and class lattices that may be reused across 
+multiple data sets but the extent of that reuse is lessened if the data graph also 
+contains such schema assertions.</p>
+</body>
+</html>
