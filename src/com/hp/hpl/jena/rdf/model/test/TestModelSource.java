@@ -31,7 +31,7 @@ public class TestModelSource extends ModelTestBase
     public void testMethodsExist()
         { 
         ModelSource s = getModelSource();
-        s.getModel();
+        // s.getModel();
         s.createModel();
         }    
     

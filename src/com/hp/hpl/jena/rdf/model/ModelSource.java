@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSource.java,v 1.3 2005-02-11 16:23:39 chris-dollin Exp $
+  $Id: ModelSource.java,v 1.4 2005-02-11 19:20:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -32,7 +32,7 @@ public interface ModelSource
         first call on getModel. Multiple calls of getModel will
         yield the *same* model.
     */
-    Model getModel();
+    // Model getModel();
     
     /**
         Answer a Model that satisfies this ModelSource's shape. Different

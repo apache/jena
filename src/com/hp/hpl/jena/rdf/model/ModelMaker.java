@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMaker.java,v 1.11 2005-02-11 16:23:38 chris-dollin Exp $
+  $Id: ModelMaker.java,v 1.12 2005-02-11 19:20:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -31,6 +31,8 @@ public interface ModelMaker extends ModelSpec
     */
     public Model createModel( String name, boolean strict );
 
+    public Model getModel();
+    
     /**
         Create a Model that does not already exist - equivalent to
         <br><code>createModel( name, false )</code>.

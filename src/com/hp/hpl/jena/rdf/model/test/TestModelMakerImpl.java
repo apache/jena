@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.17 2004-12-06 13:50:25 andy_seaborne Exp $
+  $Id: TestModelMakerImpl.java,v 1.18 2005-02-11 19:23:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -147,6 +147,15 @@ public class TestModelMakerImpl extends ModelTestBase
 
         public Model getExistingModel(String name)
             { return null; }
+
+        /* (non-Javadoc)
+         * @see com.hp.hpl.jena.rdf.model.ModelSource#createModel()
+         */
+        public Model createModel()
+            {
+            // TODO Auto-generated method stub
+            return null;
+            }
     	}
 
     private void checkHistory( List expected )
