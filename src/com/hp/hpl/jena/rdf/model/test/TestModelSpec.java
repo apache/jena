@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.21 2003-09-11 12:47:49 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.22 2003-09-11 14:09:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
-
-import java.util.NoSuchElementException;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -280,31 +278,26 @@ public class TestModelSpec extends ModelTestBase
     public void testCreatePlainMemModel()
         {
         Resource me = ResourceFactory.createResource();
-        Model spec = modelWithStatements( "" )
-            .add( me, RDF.type, JMS.MemMakerSpec )
-            .add( me, JMS.reificationMode, JMS.rsStandard )
-            ;    
-        PlainModelSpec pms = new PlainModelSpec( spec );
+        Model spec = createPlainModelDesc( me );
+        PlainModelSpec pms = new PlainModelSpec( me, spec );
         ModelMaker mm = pms.getModelMaker();
         Model desc = mm.getDescription( me );
         assertTrue( desc.contains( me, RDF.type, JMS.MemMakerSpec ) );
-        assertTrue( desc.contains( me, JMS.reificationMode, JMS.rsStandard ) );
+        assertTrue( desc.listStatements( null, JMS.reificationMode, JMS.rsMinimal ).hasNext() );
         assertTrue( mm.getGraphMaker() instanceof SimpleGraphMaker );
-        assertEquals( ReificationStyle.Standard , mm.getGraphMaker().getReificationStyle() );
+        assertEquals( ReificationStyle.Minimal , mm.getGraphMaker().getReificationStyle() );
         }
         
     public void testCreatePlainFileModel()
         {
         Resource me = ResourceFactory.createResource();
-        Model spec = modelWithStatements( "" )
-            .add( me, RDF.type, JMS.FileMakerSpec )
-            .add( me, JMS.reificationMode, JMS.rsMinimal )
-            ;    
-        PlainModelSpec pms = new PlainModelSpec( spec );
+        Resource maker = ResourceFactory.createResource();
+        Model spec = createPlainModelDesc( me, maker, JMS.FileMakerSpec ); 
+        PlainModelSpec pms = new PlainModelSpec( me, spec );
         ModelMaker mm = pms.getModelMaker();
         Model desc = mm.getDescription( me );
-        assertTrue( desc.contains( me, RDF.type, JMS.FileMakerSpec ) );
-        assertTrue( desc.contains( me, JMS.reificationMode, JMS.rsMinimal ) );
+        assertTrue( desc.listStatements( null, RDF.type, JMS.FileMakerSpec ).hasNext() );
+        assertTrue( desc.listStatements( null, JMS.reificationMode, JMS.rsMinimal ).hasNext() );
         assertTrue( mm.getGraphMaker() instanceof FileGraphMaker );
         assertEquals( ReificationStyle.Minimal , mm.getGraphMaker().getReificationStyle() );
         }
@@ -321,14 +314,19 @@ public class TestModelSpec extends ModelTestBase
         resource is supplied.
     */        
     public static Model createPlainModelDesc( Resource root )
+        { return createPlainModelDesc( root, ResourceFactory.createResource() ); }
+        
+    public static Model createPlainModelDesc( Resource root, Resource maker )
+        { return createPlainModelDesc( root, maker, JMS.MemMakerSpec ); }
+        
+    public static Model createPlainModelDesc( Resource root, Resource maker, Resource spec )
         {
-        Resource maker = ResourceFactory.createResource();
         return ModelFactory.createDefaultModel()
             .add( root, JMS.maker, maker )
-            .add( maker, RDF.type, JMS.MemMakerSpec )
+            .add( maker, RDF.type, spec )
             .add( maker, JMS.reificationMode, JMS.rsMinimal );
         }
-                
+                                                                
     public static Model createInfModelDesc( String URI )
         { return createInfModelDesc( ResourceFactory.createResource(), URI ); }
         

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.4 2003-08-27 13:05:53 andy_seaborne Exp $
+  $Id: InfModelSpec.java,v 1.5 2003-09-11 14:09:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -29,9 +29,9 @@ public class InfModelSpec extends ModelSpecImpl
         Initialise an InfModelSpec using the ModelMaker specification and the value of
         the JMS.reasoner property.
     */
-    public InfModelSpec( Model description )
+    public InfModelSpec( Resource root, Model description )
         {
-        super( description );
+        super( getMaker( root, description ), description );
         Statement st = description.getRequiredProperty( null, JMS.reasoner );
         reasonerResource = st.getResource();
         }   

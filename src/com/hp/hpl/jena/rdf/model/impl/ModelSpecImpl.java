@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.20 2003-09-11 12:47:29 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.21 2003-09-11 14:09:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -110,7 +110,12 @@ public abstract class ModelSpecImpl implements ModelSpec
         if (sc == null) throw new BadDescriptionException( "neither ont nor inf nor mem", fullDesc );
         return sc.create( root, fullDesc );    
         }
-
+        
+    public static Resource getMaker( Resource root, Model desc )
+        {
+        return desc.listStatements( root, JMS.maker, (RDFNode) null ).nextStatement().getResource();
+        }
+        
     /**
         Answer the "most specific" type of root in desc which is an instance of type.
         We assume a single inheritance thread starting with that type. 
@@ -126,9 +131,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         while (it.hasNext())
             {
             Resource candidate = it.nextStatement().getResource();
-            // System.err.println( ">> candidate: " + candidate );
-            if (desc.contains( candidate, RDFS.subClassOf, type )) 
-                { type = candidate;  /* System.err.println( "+    accepted" ); */ }
+            if (desc.contains( candidate, RDFS.subClassOf, type )) type = candidate;  
             }
         return type;    
         }

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-09-11 14:09:55 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.21 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.22 2003-09-11 14:09:55 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -178,7 +178,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @param description an RDF model using the JMS vocabulary
     */
     public OntModelSpec( Model description )  { 
-        this( description, findRootByType( description, JMS.OntModelSpec ) );
+        this( findRootByType( description, JMS.OntModelSpec ), description );
     }
 
     /**
@@ -190,7 +190,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @param description an RDF model using the JMS vocabulary
         @param root the root of the sub-graph to use for the specification
     */    
-    public OntModelSpec( Model description, Resource root )  { 
+    public OntModelSpec( Resource root, Model description )  { 
         this( createMaker( description ), getDocumentManager( description, root ),
             getReasonerFactory( description, root ), getLanguage( description, root )  );
     }
