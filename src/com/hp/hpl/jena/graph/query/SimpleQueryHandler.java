@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryHandler.java,v 1.7 2003-07-08 09:15:29 chris-dollin Exp $
+  $Id: SimpleQueryHandler.java,v 1.8 2003-07-08 09:34:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -20,7 +20,7 @@ import java.util.*;
 public class SimpleQueryHandler implements QueryHandler
     {
     /** the Graph this handler is working for */
-    private Graph graph;
+    protected Graph graph;
     
     /** make an instance, remember the graph */
     public SimpleQueryHandler( Graph graph )
