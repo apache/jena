@@ -1,0 +1,377 @@
+<html><head>
+
+  <title>HOW TO: notes on typed literals</title>
+  <link rev="made" href="mailto:dave.reynolds@hp.com" />
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+  <meta name="author" content="Dave Reynolds" />
+  <link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body id="content">
+
+<h1 class="sectionHeading">HOW TO: notes on typed literals</h1>
+
+<h3>Index</h3>
+<ol>
+  <li><a href="#what">What are typed literals?</a></li>
+  <li><a href="#basics">Basic API operations</a></li>
+  <li><a href="#datatypes">How datatypes are represented</a></li>
+  <li><a href="#xsd">XSD data types</a></li>
+  <li><a href="#userXSD">User defined XSD data types</a></li>
+  <li><a href="#userdef">User defined non-XSD data types</a></li>
+  <li><a href="#lang">A note on xml:lang</a></li>
+</ol>
+<h2><a name="what"></a>What are typed literals?</h2>
+<p>In the original RDF specifications there were two types of literal values defined 
+  - plain literals (which are basically strings with an optional language tag) 
+  and XML literals (which are more or less plain literals plus a &quot;well-formed-xml&quot; 
+  flag).</p>
+<p>Part of the remit for the current <a href="http://www.w3.org/2001/sw/RDFCore/">RDF 
+  Core</a> working group was to add to RDF support for typed values, i.e. things 
+  like numbers. At the time of writing the core specification for these has been 
+  published in the last call documents though some modifications to the way xml:Lang 
+  tags are treated have been proposed in response to last call comments.</p>
+<p>These notes describe the support for typed literals built into Jena2 at present. 
+  Some of the details have been changed recently in response to the recent working 
+  group decisions. We will now attempt to keep the API as stable as we can, unless 
+  some major shifting in the specifications occurs.</p>
+<p>Before going into the Jena details here are some informal reminders of how 
+  typed literals work in RDF. We refer readers to the RDF core <a href="http://www.w3.org/TR/rdf-mt/">semantics</a>, 
+  <a href="http://www.w3.org/TR/rdf-syntax-grammar">syntax</a> and <a href="http://www.w3.org/TR/rdf-concepts/">concepts</a> 
+  documents for more precise details.</p>
+<p>In RDF, typed literal values comprise a string (the lexical form of the literal) 
+  and a datatype (identified by a URI). The datatype is supposed to denote a mapping 
+  from lexical forms to some space of values. The pair comprising the literal 
+  then denotes an element of the value space of the datatype. For example, a typed 
+  literal comprising (&quot;true&quot;, xsd:boolean) would denote the abstract 
+  true value T.</p>
+<p>In the RDF/XML syntax typed literals are notated with syntax such as:</p>
+<pre>&lt;age rdf:datatype="http://www.w3.org/2001/XMLSchema#int"&gt;13&lt;/age&gt;</pre>
+<p>In NTriple syntax the notation is:</p>
+<pre>
+"13"^^&lt;http://www.w3.org/2001/XMLSchema#int&gt; </pre>
+<p>and this <code>^^</code> notation will appear in literals printed by Jena.</p>
+<p>Note that a literal is either typed or plain (an old style literal) and which 
+  it is can be determined statically. There is no way to define a literal as having 
+  a lexical value of, say &quot;13&quot; but leave its datatype open and then 
+  infer the datatype from some schema or ontology definition. </p>
+<p>In the new scheme of things well-formed XML literals are treated as typed literals 
+  whose datatype is the special type &quot;rdf:XMLLiteral&quot;.</p>
+<h2><a name="basics"></a>Basic API operations</h2>
+<p>Jena2 will correctly parse typed literals within RDF/XML, NTriple and N3 source 
+  files. The same Java object, <code><a href="../javadoc/com/hp/hpl/jena/rdf/model/Literal.html">Literal</a></code>, 
+  will represent &quot;plain&quot; and &quot;typed&quot; literals. Literal now 
+  supports some new methods:</p>
+<table width="75%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="24%"> 
+      <div align="left"><code>getDatatype()</code></div>
+    </td>
+    <td width="76%"> 
+      <div align="left">Returns null for a plain literal or a Java object which 
+        represents the datatype of a typed Literal.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="24%"> 
+      <div align="left"><code>getDatatypeURI()</code></div>
+    </td>
+    <td width="76%"> 
+      <div align="left">Returns null for a plain literal or the URI of the datatype 
+        of a typed Literal.</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="24%"> 
+      <div align="left"><code>getValue()</code></div>
+    </td>
+    <td width="76%"> 
+      <div align="left">Returns a Java object representing the value of the literal, 
+        for example for an xsd:int this will be a java.lang.Integer, for plain 
+        literals it will be a String.</div>
+    </td>
+  </tr>
+</table>
+<p>The converse operation of creating a Java object to represent a typed literal 
+  in a model can be achieved using:</p>
+<blockquote> 
+  <p> <code>model.createTypedLiteral</code>(value, datatype)</p>
+</blockquote>
+<p>This allows the <code>value</code> to be specified by a lexical form (i.e. 
+  a String) or by a Java object representing the typed value; the <code>datatype</code> 
+  can be specified by a URI string or a Java object representing the datatype.</p>
+<p>In addition there is a built in mapping from standard Java wrapper objects 
+  to XSD datatypes (see later) so that the simpler call:</p>
+<blockquote> 
+  <p><code>model.createTypedLiteral(Object)</code></p>
+</blockquote>
+<p>will create a typed literal with the datatype appropriate for representing 
+  that java object. For example, </p>
+<pre>Literal l = model.createTypedLiteral(new Integer(25));</pre>
+<p>will create a typed literal with the lexical value &quot;25&quot;, of type 
+  xsd:int.</p>
+<p>Note that in Jena1 there were convenience functions which created literals 
+  from primitive values and extracted primitive values from literals:</p>
+<pre>Literal l = model.createLiteral(25);
+int age = l.getInt();</pre>
+<p>These worked by converting the primitive to a string and storing the resulting 
+  string as a plain literal. The inverse operation then attempts to parse the 
+  string of the plain literal (as an int in this example). These operations work 
+  unchanged in Jena2 just as they did before; and they still create plain, not 
+  typed, literals. This has the advantage of backward compatibility. Of course, 
+  just like in Jena1, the values written out for plain literals do not contain 
+  any datatyping information.</p>
+<h3>Equality issues</h3>
+<p>There is a well defined notion of when two typed literals should be equal, 
+  based on the equality defined for the datatype in question. Jena2 implements 
+  this equality function by using the method <code>sameValueAs</code>. Thus two 
+  literals (&quot;13&quot;, xsd:int) and (&quot;13&quot;, xsd:decimal) will test 
+  as sameValueAs each other but neither will test sameValueAs (&quot;13&quot;, 
+  xsd:string).</p>
+<p>Note that this is a different function from the Java <code>equals</code> method. 
+  Had we changed the equals method to test for semantic equality problems would 
+  have arisen because the two objects are not substitutable in the Java sense 
+  (for example they return different values from a getDatatype() call). This would, 
+  for example, have made it impossible to cache literals in a hash table.</p>
+<h2><a name="datatypes"></a>How datatypes are represented</h2>
+<p>Datatypes for typed literals are represented by instances of the interface 
+  <a href="../javadoc/com/hp/hpl/jena/datatypes/RDFDatatype.html"> <code>com.hp.hpl.jena.datatypes.RDFDatatype</code></a>. 
+  Instances of this interface can be used to parse and serialized typed data, 
+  test for equality and test if a typed or lexical value is a legal value for 
+  this datatype.</p>
+<p>Prebuilt instances of this interface are included for all the main XSD datatypes 
+  (see <a href="#xsd">below</a>).</p>
+<p>In addition, it is possible for an application to define new datatypes and 
+  register them against some URI (see <a href="#userdef">below</a>).</p>
+<h3>Error detection</h3>
+<p>When Jena parses a datatype whose lexical value is not legal for the declared 
+  datatype is does not immediately throw an error. This is because the RDFCore 
+  working group has defined that illegal datatype values are errors but are not 
+  syntactic errors so we try to avoid have parsers break at this point. Instead 
+  a literal is created which is marked internally as ill-formed and the first 
+  time an application attempts to access its value (with <code>getValue()</code>) 
+  an error will be thrown.</p>
+<p>When Jena is reading a file there is also the issue of what to do when it encounters 
+  a typed value whose datatype URI is not one that is knows about. The default 
+  behaviour is to create a new datatype object (whose value space is the same 
+  as its lexical space). Again this behaviour seems in keeping with the working 
+  group preference that illegal datatypes are semantic but not syntactic errors.</p>
+<p>However, both of these behaviours can mean that simple common errors (such 
+  as mis-spelling the xsd namespace) may go unnoticed untill very late on. To 
+  overcome this we have hidden some global switches that allow you to force Jena 
+  to report such syntactic errors earlier. These are static Boolean parameters:</p>
+<pre>com.hp.hpl.jena.shared.impl.JenaParameters.enableEagerLiteralValidation
+com.hp.hpl.jena.shared.impl.JenaParameters.enableSilentAcceptanceOfUnknownDatatypes</pre>
+<p>They are placed here in an impl package (and thus only visible in the full 
+  javadoc, not the API javadoc) because they should not be regarded as stable. 
+  We plan to develop a cleaner way of setting mode switches for Jena and these 
+  switches will migrate there in due course, if they prove to be useful.<br>
+</p>
+<h2><a name="xsd"></a>XSD data types</h2>
+<p>Jena includes prebuilt, and pre-registered, instances of <code>RDFDatatype</code> 
+  for all of the relevant XSD types:</p>
+<blockquote> 
+  <p>float double int long short byte unsignedByte unsignedShort unsignedInt unsignedLong 
+    decimal integer nonPositiveInteger nonNegativeInteger positiveInteger negativeInteger 
+    Boolean string normalizedString anyURI token Name QName language NMTOKEN ENTITIES 
+    NMTOKENS ENTITY ID NCName IDREF IDREFS NOTATION hexBinary base64Binary date 
+    time dateTime duration gDay gMonth gYear gYearMonth gMonthDay </p>
+</blockquote>
+<p>These are all available as static member variables from <a href="../javadoc/com/hp/hpl/jena/datatypes/xsd/XSDDatatype.html"><code>com.hp.hpl.jena.datatypes.xsd.XSDDatatype</code></a>.</p>
+<p>Of these types, the following are registered as the default type to use to 
+  represent certain Java classes:</p>
+<table width="50%" border="0" cellspacing="0" cellpadding="0">
+  <tr> 
+    <td width="50%"><u>Java class</u></td>
+    <td width="50%"><u>xsd type</u></td>
+  </tr>
+  <tr> 
+    <td width="50%">Float</td>
+    <td width="50%">float</td>
+  </tr>
+  <tr> 
+    <td width="50%">Double</td>
+    <td width="50%">double</td>
+  </tr>
+  <tr> 
+    <td width="50%">Integer</td>
+    <td width="50%">int</td>
+  </tr>
+  <tr> 
+    <td width="50%">Long</td>
+    <td width="50%">long</td>
+  </tr>
+  <tr> 
+    <td width="50%">Short</td>
+    <td width="50%">short</td>
+  </tr>
+  <tr> 
+    <td width="50%">Byte</td>
+    <td width="50%">byte</td>
+  </tr>
+  <tr> 
+    <td width="50%">BigInteger</td>
+    <td width="50%">integer</td>
+  </tr>
+  <tr> 
+    <td width="50%">BigDecimal</td>
+    <td width="50%">decimal</td>
+  </tr>
+  <tr>
+    <td width="50%">Boolean</td>
+    <td width="50%">Boolean</td>
+  </tr>
+  <tr> 
+    <td width="50%">String</td>
+    <td width="50%">string</td>
+  </tr>
+</table>
+<p>Thus when creating a typed literal from a Java <code>BigInteger</code> then 
+  <code>xsd:integer</code> will be used. The converse mapping is more adaptive. 
+  When parsing an xsd:integer the Java value object used will be an Integer, Long 
+  or BigInteger depending on the size of the specific value being represented.</p>
+<h2><a name="userXSD"></a>User defined XSD data types</h2>
+<p>XML schema allows derived types to be defined in which a base type is modified 
+  through some facet restriction such as limiting the min/max of an integer or 
+  restricting a string to a regular expression. It also allows new types to be 
+  created by unioning other types or by constructing lists of other types.</p>
+<p>Jena provides support for derived and union types but not for list types.</p>
+<p>These are supported through the <code>XSDDatatype.loadUserDefined</code> method 
+  which allows an XML schema datatype file to be loaded. This registers a new 
+  <code>RDFDatatype</code> that can be used to create, parse, serialize, test 
+  instances of that datatype.</p>
+<p>There is one difficult issue in here, what URI to give to the user defined 
+  datatype? This is not defined by XML Schema, nor RDF nor OWL. Jena2 adopts the 
+  position taken by DAML that the defined datatype should have the base URI of 
+  the schema file with a fragment identifier given by the datatype name.</p>
+<p>Thus the DAML example file<code> http://www.daml.org/2001/03/daml+oil-ex-dt</code> 
+  (a corrected copy of which is in <code><a href="../../testing/xsd/daml+oil-ex-dt.xsd">testing/xsd/daml+oil-ex-dt.xsd</a></code>) 
+  defines several types such as &quot;over12&quot;. The following code fragment 
+  will load this file and register the newly defined types:</p>
+<pre>String uri = "http://www.daml.org/2001/03/daml+oil-ex-DT";
+String filename = "../jena2/testing/xsd/daml+oil-ex-dt.xsd";
+TypeMapper tm = TypeMapper.getInstance();
+List typenames = XSDDatatype.loadUserDefined(uri, new FileReader(filename), null, TM);        
+System.out.println("Defined types are:");
+for (Iterator i = typenames.iterator(); i.hasNext(); ) {
+    System.out.println(" - " + i.next());
+}
+</pre>
+<p>it produces the following output:</p>
+<pre>Defined types are:
+ - http://www.daml.org/2001/03/daml+oil-ex-DT#XSDEnumerationHeight
+ - http://www.daml.org/2001/03/daml+oil-ex-DT#over12
+ - http://www.daml.org/2001/03/daml+oil-ex-DT#over17
+ - http://www.daml.org/2001/03/daml+oil-ex-DT#over59
+ - http://www.daml.org/2001/03/daml+oil-ex-DT#clothingsize
+</pre>
+<p>To illustrate working with the defined types, the following code then tries 
+  to create and use two instances of the over 12 type:</p>
+<pre>Model m = ModelFactory.createDefaultModel();
+RDFDatatype over12Type = tm.getSafeTypeByName(uri + "#over12");
+Object value = null;
+try {
+    value = "15";
+    m.createTypedLiteral((String)value, over12Type).getValue();
+    System.out.println("Over 12 value of " + value + " is ok");
+    value = "12";
+    m.createTypedLiteral((String)value, over12Type).getValue();
+    System.out.println("Over 12 value of " + value + " is OK");
+} catch (DatatypeFormatException e) {
+    System.out.println("Over 12 value of " + value + " is illegal");
+}</pre>
+<p>which products the output:</p>
+<pre>Over 12 value of 15 is OK
+Over 12 value of 12 is illegal</pre>
+
+<h2><a name="userdef"></a>User defined non-XSD data types</h2>
+<p>RDF allows any URI to be used as a datatype but provides no standard for how 
+  to map the datatype URI to a datatype definition.</p>
+<p>Within Jena2 we allow new datatypes to be created and registered by using the 
+  <a href="../javadoc/com/hp/hpl/jena/datatypes/TypeMapper.html"> <code>TypeMapper</code></a> 
+  class.</p>
+<p>The easiest way to define a new RDFDatatype is to subclass BaseDatatype and 
+  define implementations for parse, unparse and isEqual.</p>
+<p>For example here is the outline of a type used to represent rational numbers:</p>
+<pre>class RationalType extends BaseDatatype {
+    public static final String theTypeURI = "urn:x-hp-dt:rational";
+    public static final RDFDatatype theRationalType = new RationalType();
+
+    /** private constructor - single global instance */    
+    private RationalType() {
+        super(theTypeURI);
+    }
+   
+    /**
+     * Convert a value of this datatype out
+     * to lexical form.
+     */
+    public String unparse(Object value) {
+        Rational r = (Rational) value;
+        return Integer.toString(r.getNumerator()) + "/" + r.getDenominator();
+    }
+        
+    /**
+     * Parse a lexical form of this datatype to a value
+     * @throws DatatypeFormatException if the lexical form is not legal
+     */
+    public Object parse(String lexicalForm) throws DatatypeFormatException {
+        int index = lexicalForm.indexOf("/");
+        if (index == -1) {
+            throw new DatatypeFormatException(lexicalForm, theRationalType, "");
+        }
+        try {
+            int numerator = Integer.parseInt(lexicalForm.substring(0, index));
+            int denominator = Integer.parseInt(lexicalForm.substring(index+1));
+            return new Rational(numerator, denominator);
+        } catch (NumberFormatException e) {
+            throw new DatatypeFormatException(lexicalForm, theRationalType, "");
+        }
+    }
+    
+    /**
+     * Compares two instances of values of the given datatype.
+     * This does not allow rationals to be compared to other number
+     * formats, Lang tag is not significant.
+     */
+    Public Boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
+        return value1.getDatatype() == value2.getDatatype()
+             && value1.getValue().equals(value2.getValue());
+    }
+}</pre>
+<p>To register and and use this type you simply need the call:</p>
+<pre>RDFDatatype rtype = RationalType.theRationalType;
+TypeMapper.getInstance().registerDatatype(rtype);
+...
+// Create a rational literal
+Literal l1 = m.createTypedLiteral("3/5", rtype);</pre>
+<p>Note that whilst any serialization of RDF containing such user defined literals 
+  will be perfectly legal a client application has no standard way of looking 
+  up the datatype URI you have chosen. This has to be done &quot;out of band&quot; 
+  as they say.</p>
+<h2><a name="lang"></a>A note on xml:Lang</h2>
+<p>Plain literals have an xml:Lang tag as well as a string value. Two plain literals 
+  with the same string but different Lang tags are not equal.</p>
+<p>XML Schema states that xml:Lang is not meaningful on xsd datatypes. </p>
+<p>Thus for almost all typed literals there is no xml:Lang tag.</p>
+<p>At the time of last call the RDF specifications allowed the special case that 
+  <code>rdf:XMLLiteral</code>s could have a Lang tag that would be significant 
+  in equality testing. Thus in preview releases of Jena2 the createTypedLiterals 
+  calls took an extra Lang tag argument. </p>
+<p>However, at the time of writing that specification has been changed so that 
+  Lang tags will never be significant on typed literals (whether this means that 
+  xml:Lang is not significant on XMLLiterals or means that XMLLiteral will cease 
+  to be a typed literal is not completely certain).</p>
+<p>For this reason we have removed the Lang tag from the createTypedLiterals calls 
+  and deprecated the createLiteral call which allowed both wellFormedXML and Lang 
+  tag to be specified. </p>
+<p>We do not expect to need to change the API even if the working group decision 
+  changes again, the most we might expect to do would be to undeprecate the 3-argument 
+  version of createLiteral.</p>
+<hr>
+<p>
+  <i>Author: Dave Reynolds<br>
+  Last modification: $Id: typeLiterals.html,v 1.1 2003-08-27 19:50:43 der Exp $</i>
+</p>
+</body>
+</html>
