@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002   
  * All rights reserved.
   [See end of file]
-  $Id: TestXMLFeatures.java,v 1.2 2003-02-12 19:10:59 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.3 2003-03-28 13:23:15 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -24,7 +24,7 @@ import java.io.*;
 
 /** 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-02-12 19:10:59 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-03-28 13:23:15 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -48,6 +48,16 @@ public class TestXMLFeatures extends TestCase {
 		return new TestSuite(TestXMLFeatures.class);
 	}
 
+    public void testBug696057() throws IOException {
+        File f = File.createTempFile("jena",".rdf");
+        String fileName = f.getAbsolutePath();
+        Model m = new ModelMem();
+        m.read(new FileInputStream("testing/wg/rdfms-syntax-incomplete/test001.rdf"), "");
+        m.write(new FileWriter( fileName), lang );
+        Model m1 = new ModelMem();
+        m1.read(new FileInputStream(fileName), "");
+        assertTrue("Use of FileWriter",m.isIsomorphicWith(m1));
+    }
 	public void testXMLBase() throws IOException, MalformedPatternException {
 		check(file1, //any will do
 		"xml:base=['\"]" + base2 + "['\"]", new Change() {
@@ -432,5 +442,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.2 2003-02-12 19:10:59 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.3 2003-03-28 13:23:15 jeremy_carroll Exp $
  */
