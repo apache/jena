@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.59 $
+ * Revision           $Revision: 1.60 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-18 21:02:02 $
+ * Last modified on   $Date: 2004-02-22 22:50:20 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.59 2004-02-18 21:02:02 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.60 2004-02-22 22:50:20 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1905,6 +1905,9 @@ public class OntModelImpl
         // cache this model against the public uri (if caching enabled)
         getDocumentManager().addModel( uri, this );
 
+        // we don't want to load this document again if imported by one of the imports
+        addLoadedImport( uri );
+        
         // now load the imported documents
         getDocumentManager().loadImports( this );
         rebind();
