@@ -5,22 +5,24 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSForwardRuleReasoner.java,v 1.2 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: RDFSForwardRuleReasoner.java,v 1.3 2004-08-03 11:20:59 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
-import java.io.*;
 import java.util.*;
 
-import com.hp.hpl.jena.reasoner.ReasonerException;
 import com.hp.hpl.jena.reasoner.ReasonerFactory;
-/** * An pure forward chaining implementation of the RDFS closure rules
+
+/** 
+ * A pure forward chaining implementation of the RDFS closure rules
  * based upon the basic forward rule interpreter. The normal mixed
  * forward/backward implementation is generally preferred but this has 
  * two possible uses. First, it is a test and demonstration of the forward
  * chainer. Second, if you want all the RDFS entailments for an entire 
  * dataset the forward chainer will be more efficient.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:11:15 $ */
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> 
+ * @version $Revision: 1.3 $ on $Date: 2004-08-03 11:20:59 $ */
+
 public class RDFSForwardRuleReasoner extends GenericRuleReasoner {    
     /** The location of the OWL rule definitions on the class path */
     public static final String RULE_FILE = "etc/rdfs.rules";
@@ -42,13 +44,7 @@ public class RDFSForwardRuleReasoner extends GenericRuleReasoner {
      * Return the RDFS rule set, loading it in if necessary
      */
     public static List loadRules() {
-        if (ruleSet == null) {
-            try {
-                ruleSet = Rule.parseRules(Util.loadResourceFile(RULE_FILE));
-            } catch (IOException e) {
-                throw new ReasonerException("Can't load rules file: " + RULE_FILE, e);
-            }
-        }
+        if (ruleSet == null) ruleSet = loadRules( RULE_FILE ); 
         return ruleSet;
     }
         

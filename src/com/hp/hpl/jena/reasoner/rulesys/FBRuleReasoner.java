@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.12 2004-07-30 15:16:02 chris-dollin Exp $
+ * $Id: FBRuleReasoner.java,v 1.13 2004-08-03 11:20:59 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.shared.WrappedIOException;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
@@ -21,7 +22,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2004-07-30 15:16:02 $
+ * @version $Revision: 1.13 $ on $Date: 2004-08-03 11:20:59 $
  */
 public class FBRuleReasoner implements Reasoner {
     
@@ -221,6 +222,17 @@ public class FBRuleReasoner implements Reasoner {
     public List getRules() {
         return rules;
     } 
+    
+    /**
+         Answer the list of rules loaded from the given filename. May throw a
+         ReasonerException wrapping an IOException.
+    */
+    public static List loadRules( String fileName ) {
+        try 
+            { return Rule.parseRules(Util.loadResourceFile( fileName ) ); }
+        catch (WrappedIOException e) 
+            { throw new ReasonerException("Can't load rules file: " + fileName, e.getCause() ); }
+    }
     
     /**
      * Register an RDF predicate as one whose presence in a goal should force

@@ -5,13 +5,12 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMiniReasoner.java,v 1.1 2004-03-22 17:10:12 der Exp $
+ * $Id: OWLMiniReasoner.java,v 1.2 2004-08-03 11:20:59 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.reasoner.*;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -24,7 +23,7 @@ import java.util.*;
  * </UL>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2004-03-22 17:10:12 $
+ * @version $Revision: 1.2 $ on $Date: 2004-08-03 11:20:59 $
  */
 public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
 
@@ -38,13 +37,7 @@ public class OWLMiniReasoner extends GenericRuleReasoner implements Reasoner {
      * Return the rule set, loading it in if necessary
      */
     public static List loadRules() {
-        if (miniRuleSet == null) {
-            try {
-                miniRuleSet = Rule.parseRules(Util.loadResourceFile(MINI_RULE_FILE));
-            } catch (IOException e) {
-                throw new ReasonerException("Can't load rules file: " + MINI_RULE_FILE, e);
-            }
-        }
+        if (miniRuleSet == null) miniRuleSet = loadRules( MINI_RULE_FILE );
         return miniRuleSet;
     }
     

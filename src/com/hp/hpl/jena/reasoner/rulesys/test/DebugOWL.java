@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugOWL.java,v 1.25 2003-12-08 10:48:27 andy_seaborne Exp $
+ * $Id: DebugOWL.java,v 1.26 2004-08-03 11:21:00 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import java.io.IOException;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
@@ -22,6 +21,7 @@ import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.oldCode.*;
+import com.hp.hpl.jena.shared.WrappedIOException;
 //import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
 import org.apache.commons.logging.Log;
@@ -34,7 +34,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2003-12-08 10:48:27 $
+ * @version $Revision: 1.26 $ on $Date: 2004-08-03 11:21:00 $
  */
 public class DebugOWL {
 
@@ -98,8 +98,8 @@ public class DebugOWL {
             grr.setMode(GenericRuleReasoner.HYBRID);
             try {
                 grr.setRules(Rule.parseRules(Util.loadResourceFile("etc/expt.rules")));
-            } catch (IOException e) {
-                System.out.println("Failed to open rules file: " + e);
+            } catch (WrappedIOException e) {
+                System.out.println("Failed to open rules file: " + e.getCause() );
                 System.exit(1);
             }
 //            grr.setTransitiveClosureCaching(true);
@@ -134,8 +134,8 @@ public class DebugOWL {
                 try {
                     List rules = Rule.parseRules(Util.loadResourceFile("etc/expt.rules"));
                     reasoner = new FBRuleReasoner(rules);
-                } catch (IOException e) {
-                    System.out.println("Failed to open rules file: " + e);
+                } catch (WrappedIOException e) {
+                    System.out.println("Failed to open rules file: " + e.getCause());
                     System.exit(1);
                 }
                 break;

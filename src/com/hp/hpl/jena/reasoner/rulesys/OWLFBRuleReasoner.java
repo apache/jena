@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLFBRuleReasoner.java,v 1.13 2004-03-19 15:43:16 chris-dollin Exp $
+ * $Id: OWLFBRuleReasoner.java,v 1.14 2004-08-03 11:20:59 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import java.util.*;
-import java.io.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -23,7 +22,7 @@ import com.hp.hpl.jena.graph.*;
  * A hybrid forward/backward implementation of the OWL closure rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2004-03-19 15:43:16 $
+ * @version $Revision: 1.14 $ on $Date: 2004-08-03 11:20:59 $
  */
 public class OWLFBRuleReasoner extends FBRuleReasoner {
     
@@ -58,13 +57,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
      * Return the rule set, loading it in if necessary
      */
     public static List loadRules() {
-        if (ruleSet == null) {
-            try {
-                ruleSet = Rule.parseRules(Util.loadResourceFile(RULE_FILE));
-            } catch (IOException e) {
-                throw new ReasonerException("Can't load rules file: " + RULE_FILE, e);
-            }
-        }
+        if (ruleSet == null) ruleSet = loadRules( RULE_FILE );
         return ruleSet;
     }
     

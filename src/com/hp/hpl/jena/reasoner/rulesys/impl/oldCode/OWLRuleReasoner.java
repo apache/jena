@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLRuleReasoner.java,v 1.2 2003-12-08 10:48:27 andy_seaborne Exp $
+ * $Id: OWLRuleReasoner.java,v 1.3 2004-08-03 11:20:59 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
 import java.util.*;
-import java.io.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -22,6 +21,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Functor;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.reasoner.rulesys.Util;
+import com.hp.hpl.jena.shared.WrappedIOException;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.*;
 
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.graph.*;
  * figure out what should be done at the bindSchema stage).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-12-08 10:48:27 $
+ * @version $Revision: 1.3 $ on $Date: 2004-08-03 11:20:59 $
  */
 public class OWLRuleReasoner extends BasicForwardRuleReasoner {
     
@@ -80,7 +80,7 @@ public class OWLRuleReasoner extends BasicForwardRuleReasoner {
         if (ruleSet == null) {
             try {
                 ruleSet = Rule.parseRules(Util.loadResourceFile(RULE_FILE));
-            } catch (IOException e) {
+            } catch (WrappedIOException e) {
                 throw new ReasonerException("Can't load rules file: " + RULE_FILE, e);
             }
         }

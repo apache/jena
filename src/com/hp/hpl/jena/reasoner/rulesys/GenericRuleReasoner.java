@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.16 2004-06-14 10:31:01 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.17 2004-08-03 11:20:59 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -15,7 +15,6 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -27,7 +26,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2004-06-14 10:31:01 $
+ * @version $Revision: 1.17 $ on $Date: 2004-08-03 11:20:59 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -238,12 +237,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             
         } else if (parameter.equals(ReasonerVocabulary.PROPruleSet)) {
             if (value instanceof String) {
-                try {
-                    String ruleString = Util.loadResourceFile((String)value);
-                    setRules(Rule.parseRules(ruleString));
-                } catch (IOException e) {
-                    throw new ReasonerException("Failed to open rule file: " + value, e);
-                }
+                setRules( loadRules( (String)value ) );
             } else {
                 throw new IllegalParameterException("PROPruleSet value should be a URI string. Was a " + value.getClass());
             }

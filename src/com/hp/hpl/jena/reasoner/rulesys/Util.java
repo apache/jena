@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.19 2004-03-18 12:14:28 der Exp $
+ * $Id: Util.java,v 1.20 2004-08-03 11:20:59 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -16,6 +16,7 @@ import com.hp.hpl.jena.reasoner.Finder;
 import com.hp.hpl.jena.reasoner.IllegalParameterException;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
@@ -31,7 +32,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2004-03-18 12:14:28 $
+ * @version $Revision: 1.20 $ on $Date: 2004-08-03 11:20:59 $
  */
 public class Util {
 
@@ -221,34 +222,39 @@ public class Util {
     
     /**
      * Open a resource file and read it all into a single string.
-     * Treats lines starting with # as comment lines
+     * Treats lines starting with # as comment lines, as per stringFromReader
      */
-    public static String loadResourceFile(String filename) throws IOException {
-        BufferedReader src = FileUtils.openResourceFile(filename);
-        StringBuffer result = new StringBuffer();
-        String line;
-        while ((line = src.readLine()) != null) {
-            if (line.startsWith("#")) continue;     // Skip comment lines
-            if (line.startsWith("//")) continue;     // Skip comment lines
-            result.append(line);
-            result.append("\n");
-        }
-        return result.toString();
+    public static String loadResourceFile( String filename ) {
+        return stringFromReader( FileUtils.openResourceFile( filename ) );
     }
     
     /**
-     * Open a file defined by a URL and read it into a single string.
+         Answer a String which is the concatenation (with newline glue) of all the
+         non-comment lines readable from <code>src</code>. A comment line is
+         one starting "#" or "//".
+     */
+    private static String stringFromReader( BufferedReader src ) {
+        try
+            {
+            StringBuffer result = new StringBuffer();
+            String line;
+            while ((line = src.readLine()) != null) {
+                if (line.startsWith( "#" ) || line.startsWith( "//" )) continue;     // Skip comment lines
+                result.append( line );
+                result.append( "\n" );
+            }
+            return result.toString();
+            }
+        catch (IOException e) 
+            { throw new WrappedIOException( e ); }
+        }
+
+    /**
+     * Open a file defined by a URL and read all of it into a single string.
      * If the URL fails it will try a plain file name as well.
      */
     public static String loadURLFile(String urlStr) throws IOException {
-        BufferedReader dataReader;
-        try {
-            URL url = new URL(urlStr);
-            dataReader = new BufferedReader(new InputStreamReader(url.openStream())) ;
-        } catch (java.net.MalformedURLException e) {
-            // Try as a file.
-            dataReader = new BufferedReader(new FileReader(urlStr));
-        }
+        BufferedReader dataReader = readerFromURL( urlStr );
         StringWriter sw = new StringWriter(1024);
         char buff[] = new char[1024];
         while (dataReader.ready()) {
@@ -262,6 +268,24 @@ public class Util {
         return sw.toString();
     }
     
+    /**
+         Answer a BufferedReader that reads from the contents of the suppied
+         URL string or, if that is a malformed URL, treats it as a plain file name.
+    */
+    private static BufferedReader readerFromURL( String urlStr ) throws FileNotFoundException
+        {
+        try {
+            URL url = new URL(urlStr);
+            return new BufferedReader( new InputStreamReader( url.openStream() ) ) ;
+            
+        } catch (java.net.MalformedURLException e) {
+            // Try as a file.
+            return new BufferedReader(new FileReader(urlStr));
+        }
+        catch (IOException e)
+        { throw new WrappedIOException( e ); }
+        }
+
     /**
      * Helper method - extracts the truth of a boolean configuration
      * predicate.

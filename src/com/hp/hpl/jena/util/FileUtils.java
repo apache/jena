@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2002, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import java.nio.charset.Charset ;
 import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.WrappedIOException;
 import com.hp.hpl.jena.JenaRuntime ;
 
 public class FileUtils {
@@ -164,12 +165,19 @@ public class FileUtils {
         { return System.getProperty( "java.io.tmpdir" ); }
     
     /**
-     * Open an resource file for reading.
-     */
-    public static BufferedReader openResourceFile(String filename) throws IOException {
-       	InputStream is = FileUtils.openResourceFileAsStream(filename);
-        return new BufferedReader(new InputStreamReader(is, "UTF-8"));
-    }
+         Answer a BufferedReader than reads from the named resource file as
+         UTF-8, possibly throwing WrappedIOExceptions.
+    */
+    public static BufferedReader openResourceFile( String filename )  
+        {
+        try
+            {
+            InputStream is = FileUtils.openResourceFileAsStream( filename );
+            return new BufferedReader(new InputStreamReader(is, "UTF-8"));
+            }
+        catch (IOException e)
+            { throw new WrappedIOException( e ); }
+        }
 
     /**
      * Open an resource file for reading.
@@ -191,7 +199,7 @@ public class FileUtils {
 }
 
 /*
- *  (c) Copyright 2002 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestSetRules.java,v 1.1 2004-07-30 15:16:03 chris-dollin Exp $
+  $Id: TestSetRules.java,v 1.2 2004-08-03 11:21:00 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -12,8 +12,6 @@ import junit.framework.TestSuite;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.BaseRuleReasonerFactory;
-import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasoner;
-import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
 /**
      TestSetRules - tests to bring setRules into existence on RuleReasonerFactory.     

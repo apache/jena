@@ -1,18 +1,19 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.32 2004-07-30 15:16:01 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.33 2004-08-03 11:20:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -320,13 +321,20 @@ public abstract class ModelSpecImpl implements ModelSpec
    
 
     /**
-     * @param rf
-     * @param resource
-     */
+         @param rf
+         @param resource
+         Rule.parseRules(Util.loadResourceFile(RULE_FILE))
+    */
     private static void load( ReasonerFactory rf, Resource u )
         {
+        RuleReasonerFactory rrf = (RuleReasonerFactory) rf;
         String uri = u.getURI();
-        try { new URL( uri ).getContent(); } 
+        try { 
+            InputStream is = new URL( uri ).openStream();
+            BufferedReader bis = new BufferedReader( new InputStreamReader( is ) );
+            bis.close();
+        }
+            // rrf.setRules( Rule.parseRules( Util.loadResourceFile( uri ) ) ); } 
         catch (MalformedURLException e) { throw new RulesetNotFoundException( uri ); }
         catch (IOException e) { throw new RulesetNotFoundException( uri ); }
         }

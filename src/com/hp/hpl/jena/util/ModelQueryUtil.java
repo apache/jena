@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelQueryUtil.java,v 1.4 2004-06-15 14:02:17 chris-dollin Exp $
+  $Id: ModelQueryUtil.java,v 1.5 2004-08-03 11:21:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
 
