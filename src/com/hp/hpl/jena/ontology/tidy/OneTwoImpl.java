@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: OneTwoImpl.java,v 1.9 2003-11-14 08:35:32 jeremy_carroll Exp $
+  $Id: OneTwoImpl.java,v 1.10 2003-11-14 22:43:25 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -11,16 +11,27 @@ import com.hp.hpl.jena.rdf.model.*;
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-class OneTwoImpl extends CGeneral
- implements One,Two, Blank {
+class OneTwoImpl extends CGeneral implements One, Two, Blank {
 	// local *cache*, on cache miss must always go to graph.
 
 	private Triple seen[] = new Triple[3];
 
+	void getSeen(Triple a[]) {
+
+			a[0] = seen[0];
+			a[1] = seen[1];
+			a[2] = seen[2];
+	}
+	void setSeen(Triple a[]) {
+		seen[0] = a[0];
+		seen[1] = a[1];
+		seen[2] = a[2];
+
+	}
 	OneTwoImpl(Node n, AbsChecker g) {
 		super(n, g);
-		if ( getCategories() == -1 )
-			  setCategories(Grammar.blank,false);
+		if (getCategories() == -1)
+			setCategories(Grammar.blank, false);
 	}
 
 	public void first(Triple t) {
@@ -42,8 +53,9 @@ class OneTwoImpl extends CGeneral
 			Graph problem = ModelFactory.createDefaultModel().getGraph();
 			problem.add(old);
 			problem.add(t);
-       //     getChecker().setMonotoneLevel(Levels.Full);
-			getChecker().addProblem(new SyntaxProblem(shortMsg[i], problem, Levels.DL));
+			//     getChecker().setMonotoneLevel(Levels.Full);
+			getChecker().addProblem(
+				new SyntaxProblem(shortMsg[i], problem, Levels.DL));
 
 		} else {
 

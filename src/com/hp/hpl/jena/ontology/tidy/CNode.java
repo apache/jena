@@ -11,7 +11,14 @@ import com.hp.hpl.jena.graph.*;
  *
  */
 abstract class CNode implements CNodeI {
-	  static public CNode create(Node n, AbsChecker eg ) {
+	static public CNode create(Node n, AbsChecker eg ) {
+		CNode rslt = create1(n,eg);
+		if (eg.extraInfo())
+		  rslt.minimalityInfo = eg.extraInfo()?new MinimalityInfo(rslt):null;
+		return rslt;
+		  
+	}
+	  static private CNode create1(Node n, AbsChecker eg ) {
 				// work out what sort of node this is.
 	        if (n.isLiteral())
 				return new CLit(n, eg);
@@ -82,11 +89,11 @@ abstract class CNode implements CNodeI {
 
 	final AbsChecker checker;
 	final Node node;
-	final MinimalityInfo minimalityInfo;
+	MinimalityInfo minimalityInfo;
 	CNode(Node n, AbsChecker eg) {
 		checker = eg;
 		node = n;
-		  minimalityInfo = eg.extraInfo()?new MinimalityInfo(this):null;
+		  
 		  
 		  
 	}
@@ -113,6 +120,8 @@ abstract class CNode implements CNodeI {
 	public void addDisjoint1(CNodeI cn){
 		getChecker().addDisjoint(asNode(),cn.asNode());
 	}
+	 void getSeen(Triple a[]) {}
+	 void setSeen(Triple a[]) {}
 
 }
 

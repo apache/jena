@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.7 2003-11-14 10:48:32 jeremy_carroll Exp $
+  $Id: MinimalSubGraph.java,v 1.8 2003-11-14 22:43:25 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -22,10 +22,12 @@ class MinimalSubGraph extends AbsChecker {
 	private final Checker parent;
 	private final Set todo = new HashSet();
 	//private final Set done = new HashSet();
-	private final Map minInfos = new HashMap();
+	private final Map allMinInfos = new HashMap();
+	private final Set activeMinInfos = new HashSet();
 	
+	private int distance;
 	void add(MinimalityInfo x) {
-		minInfos.put(x.cn.asNode(),x);
+		allMinInfos.put(x.cn.asNode(),x);
 	}
 	/**
 	 * @param triple  triple U context is not lite/DL valid
@@ -40,8 +42,8 @@ class MinimalSubGraph extends AbsChecker {
 			// getContradicition()
 			hasBeenChecked.add(problem);
 		} else {
-			if ( true ) 
-			  return;
+	//		if ( true ) 
+	//		  return;
 			hasBeenChecked.delete(problem);
 			setDistance(problem.getSubject(),0);
 			setDistance(problem.getPredicate(),0);
@@ -80,14 +82,12 @@ class MinimalSubGraph extends AbsChecker {
 			Triple bestTriple = null;
 			boolean bestIsTrivial = true;
 			Triple tryMe = null;
-			int bestScore = 0;
+			int bestScore = -1;
 			
 
-			Iterator it2 = minInfos.values().iterator();
-			while (it2.hasNext()) {
-				MinimalityInfo mi = (MinimalityInfo)it2.next();
-				mi.oldCategory = mi.cn.getCategories();
-			}
+			Iterator it2;
+			MinimalityInfo mi;
+			setMinInfos();
 			// Foreach node in todo try extending it
 			Iterator it = todo.iterator();
 			while (it.hasNext()) {
@@ -96,6 +96,7 @@ class MinimalSubGraph extends AbsChecker {
 				
 				switch ( addX(tryMe, true) ) {
 					case 0:
+					  hasBeenChecked.add(tryMe);
 					  return;
 					case 1:
 					 if (!bestIsTrivial) break;
@@ -108,7 +109,7 @@ class MinimalSubGraph extends AbsChecker {
 					case 2:
 					  if (bestIsTrivial) {
 					  	bestIsTrivial = false;
-					  	bestScore = 0;
+					  	bestScore = -1;
 					  }
 					  sc = score();
 					  if ( sc > bestScore ) {
@@ -120,12 +121,7 @@ class MinimalSubGraph extends AbsChecker {
 					  throw new BrokenException("Can't happen");
 				}
 				hasBeenChecked.delete(tryMe);
-				it2 = minInfos.values().iterator();
-				while (it2.hasNext()) {
-					MinimalityInfo mi = (MinimalityInfo)it2.next();
-					mi.cn.setCategories(mi.oldCategory,false);
-			//		mi.cn.getCategories();
-				}
+				reset(allMinInfos);
 				
 			}
 			
@@ -135,26 +131,15 @@ class MinimalSubGraph extends AbsChecker {
 			// Choose best and extend
 			addX( bestTriple, true );
 			todo.remove(bestTriple);
-			
-			todo(bestTriple.getSubject());
-			todo(bestTriple.getPredicate());
-			todo(bestTriple.getObject());
-			int bestDistance = MAXDIST;
-			int d = getDistance(bestTriple.getSubject());
-			if ( d>= 0 && d<bestDistance) {
-				bestDistance = d;
-			}
-			d = getDistance(bestTriple.getPredicate());
-			if ( d>= 0 && d<bestDistance) {
-				bestDistance = d;
-			}
-			d = getDistance(bestTriple.getObject());
-			if ( d>= 0 && d<bestDistance) {
-				bestDistance = d;
-			}
-			setDistance(bestTriple.getSubject(),bestDistance);
-			setDistance(bestTriple.getPredicate(),bestDistance);
-			setDistance(bestTriple.getObject(),bestDistance);
+
+			distance = MAXDIST;
+			todoAndDistance(bestTriple.getSubject());
+			todoAndDistance(bestTriple.getPredicate());
+			todoAndDistance(bestTriple.getObject());
+
+			setDistance(bestTriple.getSubject(),distance);
+			setDistance(bestTriple.getPredicate(),distance);
+			setDistance(bestTriple.getObject(),distance);
 			
 			/*
 			// todo cannot be empty, because if it were
@@ -169,17 +154,42 @@ class MinimalSubGraph extends AbsChecker {
 			*/
 		}
 	}
+	private void setMinInfos() {
+		Iterator it2 = allMinInfos.values().iterator();
+		while (it2.hasNext()) {
+			MinimalityInfo mi = (MinimalityInfo)it2.next();
+			mi.oldCategory = mi.cn.getCategories();
+			mi.cn.getSeen(mi.oldSeen);
+		}
+	}
+	private void todoAndDistance(Node n) {
+		activeMinInfos.add(allMinInfos.get(n));
+		todo(n);
+		int d = getDistance(n);
+		if ( d>= 0 && d<distance) {
+			distance = d;
+		}
+	}
+	private void reset(Map m) {
+		Iterator it2;
+			it2 = m.values().iterator();
+			while (it2.hasNext()) {
+				MinimalityInfo mi = (MinimalityInfo)it2.next();
+				mi.cn.setCategories(mi.oldCategory,false);
+				mi.cn.setSeen(mi.oldSeen);
+			}
+	}
 
   int getDistance(Node n) {
-  	MinimalityInfo mi = (MinimalityInfo)minInfos.get(n);
+  	MinimalityInfo mi = (MinimalityInfo)allMinInfos.get(n);
   	return mi.distance;
   }
   void setDistance(Node n, int d) {
-	((MinimalityInfo)minInfos.get(n)).distance = d;
+	((MinimalityInfo)allMinInfos.get(n)).distance = d;
   }
   int score() {
   	int bestSc = 0;
-  	Iterator it = minInfos.values().iterator();
+  	Iterator it = activeMinInfos.iterator();
   	while (it.hasNext() ) {
   		MinimalityInfo mi = (MinimalityInfo)it.next();
   		int distScore = (MAXDIST - mi.distance)*MAXDIST;
