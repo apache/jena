@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: StateFlag.java,v 1.4 2004-12-07 09:56:32 andy_seaborne Exp $
+ * $Id: StateFlag.java,v 1.5 2005-02-18 11:59:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -14,7 +14,7 @@ package com.hp.hpl.jena.reasoner.rulesys.impl;
  * backchaining rule interepreter. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2004-12-07 09:56:32 $
+ * @version $Revision: 1.5 $ on $Date: 2005-02-18 11:59:50 $
  */
 public class StateFlag {
     
@@ -22,7 +22,7 @@ public class StateFlag {
     private String label;
 
     /** Indicates a goal has failed and return no more answers at this time */
-    public static final StateFlag FAIL = new StateFlag("FALL");
+    public static final StateFlag FAIL = new StateFlag("FAIL");
     
     /** Indicates that all currently available results have been returned and
      *  the goal should be suspended into new subgoal results have been generated */
