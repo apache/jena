@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.29 2004-03-22 13:56:48 chris-dollin Exp $
+  $Id: Node.java,v 1.30 2004-03-22 14:20:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -245,24 +245,29 @@ public abstract class Node {
         if (wantCache == false) present.clear();
         caching = wantCache;
         }
+    /**
+        We object strongly to null labels: for example, they make .equals flaky. We reuse nodes 
+        from the recent cache if we can. Otherwise, the maker knows how to construct a new
+        node of the correct class, and we add that node to the cache. create is
+        synchronised to avoid threading problems - a separate thread might zap the
+        cache entry that get is currently looking at.
+    */
+    public static synchronized Node create( NodeMaker maker, Object label )
+        {
+        if (label == null) throw new JenaException( "Node.make: null label" );
+        Node node = (Node) present.get( label );
+        return node == null ? cacheNewNode( label, maker.construct( label ) ) : node;
+        }
         
-    private static synchronized Node cacheNewNode( Object label, Node n )
+    /**
+         cache the node <code>n</code> under the key <code>label</code>,
+         and return that node.
+    */
+    private static Node cacheNewNode( Object label, Node n )
         { 
         if (present.size() > THRESHOLD) { /* System.err.println( "> trashing node cache" ); */ present.clear(); }
         if (caching) present.put( label, n );
         return n;
-        }
-    /**
-        We object strongly to null labels: for example, they make .equals flaky. We reuse nodes 
-        from the recent cache if we can. Otherwise, the maker knows how to construct a new
-        node of the correct class (and the Node constructor will then add it to the cache).
-    */
-    public static Node create( NodeMaker maker, Object label )
-        {
-        if (label == null) throw new JenaException( "Node.make: null label" );
-        Node node = (Node) present.get( label );
-        if (node == null) node = cacheNewNode( label, maker.construct( label ) ); 
-        return node;
         }
         
 	/**
