@@ -3,7 +3,7 @@
 
     <property name="Name"            value="Jena"/>
     <property name="name"            value="jena"/>
-    <property name="version"         value="2p3-RC1"/>
+    <property name="version"         value="2p3"/>
 
     <property name="dist.name"       value="${Name}-${version}"/>
 
@@ -189,6 +189,7 @@
          >
 
             <classpath refid="classpath"/>
+                <package name="com.hp.hpl.jena.db"/>
                 <package name="com.hp.hpl.jena.rdf.model"/>
                 <package name="com.hp.hpl.jena.rdf.arp"/>
                 <package name="com.hp.hpl.jena.rdf.arp.lang"/>
@@ -197,7 +198,6 @@
                 <package name="com.hp.hpl.jena.xmloutput"/>
                 <package name="com.hp.hpl.jena.ontology"/>
                 <package name="com.hp.hpl.jena.enhanced"/>
-                <package name="com.hp.hpl.jena.db"/>
                 <package name="com.hp.hpl.jena.graph"/>
                 <package name="com.hp.hpl.jena.graph.compose"/>
                 <package name="com.hp.hpl.jena.graph.query"/>
@@ -205,12 +205,13 @@
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
                 <package name="com.hp.hpl.jena.datatypes"/>
-		        <package name="com.hp.hpl.jena.datatypes.xsd"/>
+		            <package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.util"/>
                 <package name="com.hp.hpl.jena.util.iterator"/>
                 <package name="jena"/>
 
             <group title="API - Application Programming Interface">
+                <package name="com.hp.hpl.jena.db"/>
                 <package name="com.hp.hpl.jena.rdf.model"/>
                 <package name="com.hp.hpl.jena.rdf.arp"/>
                 <package name="com.hp.hpl.jena.rdf.arp.lang"/>
@@ -229,7 +230,7 @@
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
                 <package name="com.hp.hpl.jena.datatypes"/>
-		        <package name="com.hp.hpl.jena.datatypes.xsd"/>
+		            <package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.util"/>
                 <package name="com.hp.hpl.jena.util.iterator"/>
             </group>
