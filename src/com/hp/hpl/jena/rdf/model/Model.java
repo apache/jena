@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.36 2003-08-11 15:30:55 chris-dollin Exp $
+  $Id: Model.java,v 1.37 2003-08-13 12:11:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -14,26 +14,37 @@ import com.hp.hpl.jena.shared.*;
 import java.io.*;
 import java.util.*;
 
-/** An RDF Model.
- *
- * <p>An RDF model is a set of Statements.  Methods are provided for creating
- * resources, properties and literals and the Statements which link them,
- * for adding statements to and removing them from a model, for
- * querying a model and set operations for combining models.</p>
- * <P>This interface defines a set of primitive methods.  A set of
- * convenience methods which extends this interface, e.g. performing
- * automatic type conversions and support for enhanced resources,
- * is defined in {@link ModelCon}.</P>
- *
- * <h2>System Properties</h2>
- *
- *
- * <h3>Firewalls and Proxies</h3>
- *
- * <p>Some of the methods, e.g. the read methods, may have to traverse a
- * firewall.  This can be accomplished using the standard java method
- * of setting system properties.  To use a socks proxy, include on the
- * java command line:</p>
+/** 
+    An RDF Model.
+<p>    
+    An RDF model is a set of Statements.  Methods are provided for creating
+    resources, properties and literals and the Statements which link them,
+    for adding statements to and removing them from a model, for
+    querying a model and set operations for combining models.
+<p>
+    Models may create Resources [URI nodes and bnodes]. Creating a Resource does
+    <i>not</i> make the Resource visible to the model; Resources are only "in" Models
+    if Statements about them are added to the Model. Similarly the only way to "remove"
+    a Resource from a Model is to remove all the Statements that mention it.
+<p>
+    When a Resource or Literal is created by a Model, the Model is free to re-use an
+    existing Resource or Literal object with the correct values, or it may create a fresh
+    one. [All Jena RDFNodes and Statements are immutable, so this is generally safe.]
+<p>    
+    This interface defines a set of primitive methods.  A set of
+    convenience methods which extends this interface, e.g. performing
+    automatic type conversions and support for enhanced resources,
+    is defined in {@link ModelCon}.</P>
+
+ <h2>System Properties</h2>
+ 
+ 
+ <h3>Firewalls and Proxies</h3>
+ 
+    Some of the methods, e.g. the read methods, may have to traverse a
+    firewall.  This can be accomplished using the standard java method
+    of setting system properties.  To use a socks proxy, include on the
+    java command line:</p>
  * <blockquote>
  *   -DsocksProxyHost=[your-proxy-domain-name-or-ip-address]
  * </blockquote>
@@ -52,7 +63,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.36 $Date: 2003/07/30 15:20:36 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.37 $Date: 2003/08/11 15:30:55 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -99,155 +110,154 @@ public interface Model
         The namespaces returned are those of (a) every URI used as a property in the
         model and (b) those of every URI that appears as the object of an rdf:type statement.
 	 
-	 @return an iterator over every predicate and type namespace
+	   @return an iterator over every predicate and type namespace
 	 */
 	NsIterator listNameSpaces() ;
     
-	/** Return a Resource instance in this model.
-	 *
-	 * <p>Subsequent operations on the returned object may modify this model.</p>
-	 * <p>This method should be called if the resource may already exist in the
-	 *    model so that an implementation may reuse the same object.  If it does
-	 *    not an object will be created.  If it is known that an object for the
-	 *    resource does not already exist, then it may be more efficient to call
-	 * <CODE>createResource</CODE> instead.</p>
-	 * @return a resource instance
-	 * @param uri the URI of the resource
-	 .
-	 */
+	/** 
+        Return a Resource instance with the given URI in this model. <i>This method
+        behaves identically to <code>createResource(String)</code><i> and exists as
+        legacy: createResource is now capable of, and allowed to, reuse existing objects.
+    <p>
+        Subsequent operations on the returned object may modify this model.
+	   @return a resource instance
+	   @param uri the URI of the resource
+    */
 	Resource getResource(String uri) ;
 
-	/** Return a Property instance in this model.
-	 *
-	 * <p>Subsequent operations on the returned property may modify this model.</p>
-	 * <p>This method should be called if the property may already exist in the
-	 *    model so that an implementation may reuse the same object.  If it does
-	 *    not an object will be created.  If it is known that an object for the
-	 *    property does not already exist, then it may be more efficient to call
-	 * <CODE>createProperty</CODE> instead.</p>
-	 * @return a property linked to this model
-	 * @param nameSpace the RDF namespace of the property
-	 * @param localName the localName of the property in its namespace
-	 
-	 */
-	Property getProperty(String nameSpace, String localName)
-		;
+	/** 
+        Return a Property instance with the given URI in this model. <i>This method
+        behaves identically to <code>createProperty(String,String)</code><i> and exists as
+        legacy: createProperty is now capable of, and allowed to, reuse existing objects.
+    <p>
+        Subsequent operations on the returned property may modify this model.
+	   @return a property linked to this model
+	   @param nameSpace the RDF namespace of the property
+	   @param localName the localName of the property in its namespace
+	*/
+	Property getProperty(String nameSpace, String localName);
 
-	/** Create a new anonymous resource.
-	 *
-	 * <p> Subsequent operations on the returned resource may modify this model.
-	 * </p>
-	 .
-	 * @return a new anonymous resource linked to this model.
-	 */
+	/** 
+        Create a new anonymous resource whose model is this model. This bnode will 
+        have a new AnonId distinct from any allocated by any other call of this method.
+    <p> 
+        Subsequent operations on the returned resource may modify this model.
+	   @return a new anonymous resource linked to this model.
+	*/
 	public Resource createResource() ;
 
     /**
-        create a blank node resource with a specified identifier/
-        
+        Create a blank node resource with a specified identifier. The resulting bnode
+        will be equal to any other bnode with the same AnonId (even if they are in
+        separate models - be warned). The intended use for this method is to allow
+        bnode round-tripping between Jena models and other representations.
+    <p>
+        This method may return an existing bnode with the correct AnonId and model, or it 
+        may construct a fresh one, as it sees fit.
+    <p>
+        Operations on the result may modify this model
         @param id the identifier to use for this blank node
         @return a blank node with that identifier
     */
     public Resource createResource( AnonId id );
     
-	/** Create a new resource.
-	 *
-	 * <p> Subsequent operations on the returned resource may modify this model.
-	 * </p>
-	 * @param uri the URI of the resource to be created
-	 .
-	 * @return a new resource linked to this model.
-	 */
-	public Resource createResource(String uri) ;
-
-	/** Create a property.
-	 *
-	 * <p> Subsequent operations on the returned property may modify this model.
-	 * </p>
-	 * @param nameSpace the nameSpace of the property
-	 * @param localName the name of the property within its namespace
-	 
-	 * @return a property instance
-	 */
-	public Property createProperty(String nameSpace, String localName)
-		;
-
-	/** Create a literal from a String value with a specified language.
-	 *
-	 * <P>If v is null, then a literal with an empty string is created.</P>
-	 *
-	 * @param v the value of the literal
-	 * @param language the language associated with the literal
-	 
-	 * @return a new literal representing the value v with the given language
-	 */
-
-	public Literal createLiteral(String v, String language)
-		;
-
-	/** Create a literal from a String value with a specified language.
-	 *
-	 * <P>If v is null, then a literal with an empty string is created.</P>
-	 *
-	 * @param v the value of the literal
-	 * @param language the language associated with the literal
-	 * @param wellFormed true if the Literal is well formed XML
-	 
-	 * @return a new literal representing the value v with the given language
-	 */
-	public Literal createLiteral(String v, String language, boolean wellFormed)
-		;
-
-        /**
-         * Build a typed literal from its lexical form. The
-         * lexical form will be parsed now and the value stored. If
-         * the form is not legal this will throw an exception.
-         * 
-         * @param lex the lexical form of the literal
-         * @param lang the optional language tag
-         * @param dtype the type of the literal, null for old style "plain" literals
-         * @throws DatatypeFormatException if lex is not a legal form of dtype
-         */
-        public Literal createTypedLiteral(String lex, String lang, RDFDatatype dtype) 
-                                            ;
+	/** 
+        Create a new resource associated with this model. If the uri string is null, this creates
+        a bnode, as per <code>createResource()</code>. Otherwise it creates a URI node.
+        A URI resource is .equals() to any other URI Resource with the same URI (even in
+        a different model - be warned).
+    <p>
+        This method may return an existing Resource with the correct URI and model, or it 
+        may construct a fresh one, as it sees fit.
+    <p>
+        Operations on the result Resource may change this model.
         
-        /**
-         * Build a typed literal from its value form.
-         * 
-         * @param value the value of the literal
-         * @param lang the optional language tag
-         * @param dtype the type of the literal, null for old style "plain" literals
-         */
-        public Literal createTypedLiteral(Object value, String lang, RDFDatatype dtype);
-        
-        /**
-         * Build a typed literal label from its value form using
-         * whatever datatype is currently registered as the the default
-         * representation for this java class. No language tag is supplied.
-         * @param value the literal value to encapsulate
-         */
-        public Literal createTypedLiteral(Object value);
+	   @param uri the URI of the resource to be created
+	   @return a new resource linked to this model.
+	*/
+	public Resource createResource( String uri ) ;
 
-	/** Create a Statement instance.
-	 *
-	 * <p>Subsequent operations on the statement or any of its parts will
-	 * modify this model.</p>
-	 * <p>Creating a statement does not add it to the set of statements in the
-	 * model. </p>
-	 * @param s the subject of the statement
-	 * @param p the predicate of the statement
-	 * @param o the object of the statement
-	 
-	 * @return the new statement
+	/** 
+        Create a property with a given URI composed from a namespace part and a
+        localname part by concatenating the strings.
+    <p>
+        This method may return an existing property with the correct URI and model, or it 
+        may construct a fresh one, as it sees fit.
+	 <p> 
+        Subsequent operations on the returned property may modify this model.
+	   @param nameSpace the nameSpace of the property
+	   @param localName the name of the property within its namespace
+	   @return a property instance
+	*/
+	public Property createProperty(String nameSpace, String localName);
+
+	/** 
+        Create an untyped literal from a String value with a specified language. 
+	   @param v the value of the literal
+	   @param language the language associated with the literal
+	   @return a new literal representing the value v with the given language
 	 */
-	public Statement createStatement(Resource s, Property p, RDFNode o)
-		;
+
+	public Literal createLiteral(String v, String language);
+
+	/** 
+        Create a literal from a String value with a specified language. An existing literal
+        of the right value may be returned, or a fresh one created. 
+	   @param v the value of the literal
+	   @param language the language associated with the literal
+	   @param wellFormed true if the Literal is well formed XML
+	   @return a new literal representing the value v with the given language
+	 */
+	public Literal createLiteral(String v, String language, boolean wellFormed);
 
     /**
-     * <p>Answer a new empty list. This is equivalent to a list consisting only 
-     * of <code>rdf:nil</code>.</p>
-     * @return An RDF-encoded list of no elements
+        Build a typed literal from its lexical form. The
+        lexical form will be parsed now and the value stored. If
+        the form is not legal this will throw an exception.
+        
+        @param lex the lexical form of the literal
+        @param lang the optional language tag
+        @param dtype the type of the literal, null for old style "plain" literals
+        @throws DatatypeFormatException if lex is not a legal form of dtype
      */
+    public Literal createTypedLiteral(String lex, String lang, RDFDatatype dtype);
+    
+    /**
+     * Build a typed literal from its value form.
+     * 
+     * @param value the value of the literal
+     * @param lang the optional language tag
+     * @param dtype the type of the literal, null for old style "plain" literals
+     */
+    public Literal createTypedLiteral(Object value, String lang, RDFDatatype dtype);
+    
+    /**
+     * Build a typed literal label from its value form using
+     * whatever datatype is currently registered as the the default
+     * representation for this java class. No language tag is supplied.
+     * @param value the literal value to encapsulate
+     */
+    public Literal createTypedLiteral(Object value);
+
+	/** 
+       Create a Statement instance. (Creating a statement does not add it to the set of 
+       statements in the model; see Model::add). This method may return an existing 
+       Statement with the correct components and model, or it may construct a fresh one, 
+       as it sees fit.
+    <p>
+	   Subsequent operations on the statement or any of its parts may modify this model.
+	   @param s the subject of the statement
+	   @param p the predicate of the statement
+	   @param o the object of the statement
+	   @return the new statement
+	*/
+	public Statement createStatement( Resource s, Property p, RDFNode o );
+
+    /**
+        Answer a new empty list. This is equivalent to a list consisting only 
+        of <code>rdf:nil</code>.
+        @return An RDF-encoded list of no elements
+    */
     public RDFList createList();
     
     
@@ -572,8 +582,7 @@ public interface Model
 	 * @return an iterator over the objects
 	 * @param p The predicate sought
 	 */
-	NodeIterator listObjectsOfProperty(Resource s, Property p)
-		;
+	NodeIterator listObjectsOfProperty(Resource s, Property p);
 
 	/** Determine whether this model contains any statements with a given subject
 	 *  and property.
@@ -630,7 +639,6 @@ public interface Model
 	*/
 	boolean containsAll(StmtIterator iter) ;
 
-	// ModelPersonality getPersonality();
 	/** Determine if any of the statements in a model are also contained
 	 *  in this model.
 	 * @param model the model containing the statements to be tested
@@ -913,5 +921,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.36 2003-08-11 15:30:55 chris-dollin Exp $
+ * $Id: Model.java,v 1.37 2003-08-13 12:11:06 chris-dollin Exp $
  */
