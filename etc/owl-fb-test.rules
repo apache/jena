@@ -7,7 +7,7 @@
 # Warning: This version is under active development and the moment
 # and should NOT be regard as stable or usable.
 #
-# $Id: owl-fb-test.rules,v 1.1 2003-07-09 17:10:42 der Exp $
+# $Id: owl-fb-test.rules,v 1.2 2003-07-10 07:58:35 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -86,10 +86,8 @@
 # RDFS iff extensions needed for OWL
 #------------------------------------------------------------------
 
-# TODO: these won't work forwards unless rdfs8 or TGC are in operation
-# should they be backwards?
-[rdfs2a: (?x rdfs:domain ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:domain ?z)]
-[rdfs3a: (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:range  ?z)]
+[rdfs2a: (?x rdfs:domain ?z) <- (?x rdfs:domain ?y), (?y rdfs:subClassOf ?z) ]
+[rdfs3a: (?x rdfs:range  ?z) <- (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) ]
 
 [rdfs12a: (rdf:type rdfs:subPropertyOf ?z), (?z rdfs:domain ?y) -> (rdfs:Resource rdfs:subClassOf ?y)]
 [rdfs12a: (rdfs:subClassOf rdfs:subPropertyOf ?z), (?z rdfs:domain ?y) -> (rdfs:Class rdfs:subClassOf ?y)]

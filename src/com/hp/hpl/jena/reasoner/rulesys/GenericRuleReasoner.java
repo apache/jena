@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.9 2003-06-22 16:10:31 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.10 2003-07-10 07:59:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-22 16:10:31 $
+ * @version $Revision: 1.10 $ on $Date: 2003-07-10 07:59:34 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -248,7 +248,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         } else if (parameterUri.equals(ReasonerVocabulary.PROPruleSet.getURI())) {
             if (value instanceof String) {
                 try {
-                    String ruleString = Util.loadURLFile((String)value);
+                    String ruleString = Util.loadResourceFile((String)value);
                     setRules(Rule.parseRules(ruleString));
                 } catch (IOException e) {
                     throw new ReasonerException("Failed to open rule file: " + value, e);
