@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestConnection.java,v 1.9 2003-08-25 16:36:38 wkw Exp $
+  $Id: TestConnection.java,v 1.10 2003-08-26 07:47:25 hkuno Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -361,7 +361,7 @@ public class TestConnection extends TestCase {
 		d = conn.getDriver();
 		d.setTableNamePrefix(pfx);
 		m = ModelRDB.open(conn, "myName");
-		assertTrue(d.getTableNamePrefix().equals(pfx));
+		assertTrue(d.getTableNamePrefix().equalsIgnoreCase(pfx));
 		conn.cleanDB();
 	}
 
