@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.9 2003-06-16 11:20:28 chris-dollin Exp $
+ * $Id: OWLWGTester.java,v 1.10 2003-06-17 14:53:35 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-16 11:20:28 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-17 14:53:35 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -113,7 +113,6 @@ public class OWLWGTester {
      * @param stats set to true to log performance statistics
      * @return true if all the tests pass
      * @throws IOException if one of the test files can't be found
-     * @throws RDFException if the test can't be found or fails internally
      */
     public boolean runTests(String manifestFile, boolean log, boolean stats) throws IOException {
         // Load up the manifest
@@ -138,7 +137,6 @@ public class OWLWGTester {
      * @param stats set to true to log performance statistics
      * @return true if the test passes
      * @throws IOException if one of the test files can't be found
-     * @throws RDFException if the test can't be found or fails internally
      */
     public boolean runTest(Resource test, boolean log, boolean stats) throws IOException {
         // Find the specification for the named test

@@ -14,9 +14,7 @@ package com.hp.hpl.jena.db.impl;
 import java.sql.*;
 
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.db.impl.PSet_TripleStore_RDB;
 
@@ -25,7 +23,7 @@ import com.hp.hpl.jena.db.impl.PSet_TripleStore_RDB;
 * Version of ResultSetIterator that extracts database rows as Triples.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.3 $ on $Date: 2003-05-07 22:17:44 $
+* @version $Revision: 1.4 $ on $Date: 2003-06-17 14:53:27 $
 */
 public class ResultSetTripleIterator extends ResultSetIterator {
 
@@ -95,7 +93,7 @@ public class ResultSetTripleIterator extends ResultSetIterator {
      * (in which case both the object value and the object literal id 
      * columns may be populated.
      */
-    protected void extractRow() throws SQLException, RDFException {
+    protected void extractRow() throws SQLException {
         int rx = 1;
         ResultSet rs = m_resultSet;
         String subjURI = rs.getString(1);

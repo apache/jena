@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: NsIteratorImpl.java,v 1.5 2003-04-11 10:37:32 chris-dollin Exp $
+  $Id: NsIteratorImpl.java,v 1.6 2003-06-17 14:53:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -15,7 +15,7 @@ import java.util.NoSuchElementException;
 /** An NsIterator implementation
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-11 10:37:32 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-06-17 14:53:35 $'
  */
 public class NsIteratorImpl extends WrappedIterator implements NsIterator {
     
@@ -24,7 +24,7 @@ public class NsIteratorImpl extends WrappedIterator implements NsIterator {
         super( iter ); 
     }
 
-    public String nextNs() throws NoSuchElementException, RDFException {
+    public String nextNs() throws NoSuchElementException {
         return (String) next();
     }
     

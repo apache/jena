@@ -42,7 +42,7 @@ import java.util.NoSuchElementException;
  *    thatshould be called to free resources if the application does
  *    not complete the iteration.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-06-17 12:51:38 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-06-17 14:53:35 $'
  */
 public interface NodeIterator extends ClosableIterator {
     /** Determine if there any more values in the iteration.
@@ -56,18 +56,18 @@ public interface NodeIterator extends ClosableIterator {
      .
      * @return The next RDFNode from the iteration.
      */
-    public Object next() throws  NoSuchElementException, RDFException;
+    public Object next() throws  NoSuchElementException;
     /** Return the next RDFNode of the iteration.
      * @throws NoSuchElementException if there are no more nodes to be returned.
      .
      * @return The next RDFNode from the iteration.
      */
-    public RDFNode nextNode() throws  NoSuchElementException, RDFException;
+    public RDFNode nextNode() throws  NoSuchElementException;
     /** Unsupported Operation.
      * @throws NoSuchElementException
      * @
      */
-    public void remove() throws NoSuchElementException, RDFException;
+    public void remove() throws NoSuchElementException;
     /** Terminate the iteration and free up resources.
      *
      * <p>Some implementations, e.g. on relational databases, hold resources while

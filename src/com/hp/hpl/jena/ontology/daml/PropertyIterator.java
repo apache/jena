@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            11 Sept 2001
  * Filename           $RCSfile: PropertyIterator.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-12 08:55:52 $
+ * Last modified on   $Date: 2003-06-17 14:53:34 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -51,7 +51,6 @@ import java.util.*;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.*;
 
@@ -86,7 +85,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyIterator.java,v 1.8 2003-06-12 08:55:52 chris-dollin Exp $
+ * @version CVS info: $Id: PropertyIterator.java,v 1.9 2003-06-17 14:53:34 chris-dollin Exp $
  * @since Jena 1.3.0 (was previously in package com.hp.hpl.jena.ontology.daml.impl).
  */
 public class PropertyIterator
@@ -465,10 +464,8 @@ public class PropertyIterator
      *
      * @param res A resource
      * @return An iterator over the object of any statements whose subject is res.
-     * @exception RDFException if an RDF processing error occurs.
      */
     protected Iterator getStatementObjects( Resource res )
-        throws RDFException
     {
         Iterator i = null;
 
@@ -504,10 +501,8 @@ public class PropertyIterator
      *
      * @param res A resource
      * @return An iterator over the subject of any statements whose object is res.
-     * @exception RDFException if an RDF processing error occurs.
      */
     protected Iterator getStatementSubjects( Resource res )
-        throws RDFException
     {
         Iterator i = null;
 

@@ -5,7 +5,7 @@
 
 /** Class used by original, Jena1, external query engine
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.11 2003-06-17 09:18:10 chris-dollin Exp $
+ * @version  $Id: TriplePattern.java,v 1.12 2003-06-17 14:53:35 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -14,7 +14,6 @@ import java.util.* ;
 
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
-import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.shared.*;
 
 /*public*/ class TriplePattern
@@ -551,7 +550,7 @@ import com.hp.hpl.jena.shared.*;
     }
 
 
-    private RDFNode valueToRDFNode(Model m, Value v) throws RDFException
+    private RDFNode valueToRDFNode(Model m, Value v) 
     {
         if ( v.isRDFLiteral())
             return v.getRDFLiteral() ;
@@ -576,7 +575,7 @@ import com.hp.hpl.jena.shared.*;
 
     // Change this if anonymous resources as predicates are allowed.
 
-    private Property resourceToProperty(Model m, Resource r) throws EvalFailureException //, RDFException
+    private Property resourceToProperty(Model m, Resource r) throws EvalFailureException
     {
         // If it is an anon resource then error (this should have been caught elsewhere).
         // If it is a URI that can't be turned in to a property (e.g. ends in /, has no slash or #) then return null

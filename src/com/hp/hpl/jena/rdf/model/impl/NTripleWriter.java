@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleWriter.java,v 1.10 2003-06-17 13:39:28 chris-dollin Exp $
+ * $Id: NTripleWriter.java,v 1.11 2003-06-17 14:53:35 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -43,7 +43,7 @@ import java.io.UnsupportedEncodingException;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-06-17 13:39:28 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.11 $' Date='$Date: 2003-06-17 14:53:35 $'
  */
 public class NTripleWriter extends Object implements RDFWriter {
 
@@ -127,7 +127,7 @@ public class NTripleWriter extends Object implements RDFWriter {
     }
 
     public static void write(Model model, PrintWriter writer)
-        throws java.io.IOException, RDFException {
+        throws java.io.IOException {
         StmtIterator iter = model.listStatements();
         Statement stmt = null;
 

@@ -32,7 +32,7 @@ class NTripleTestSuite extends WGTestSuite {
 	}
     
 	Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
-		throws IOException, RDFException {
+		throws IOException {
 		InputStream oldIn = System.in;
 		InputStream ntIn = null;
 		File ntriples = File.createTempFile("arp", ".nt");
