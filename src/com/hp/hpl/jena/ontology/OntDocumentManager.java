@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.41 $
+ * Revision           $Revision: 1.42 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:11 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-12-07 10:04:18 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -25,10 +25,6 @@ package com.hp.hpl.jena.ontology;
 // Imports
 ///////////////
 import java.io.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.*;
-import java.net.URLConnection;
 import java.util.*;
 
 import org.apache.commons.logging.Log;
@@ -51,7 +47,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.41 2004-12-06 13:50:11 andy_seaborne Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.42 2004-12-07 10:04:18 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -985,24 +981,10 @@ public class OntDocumentManager
             InputStream is = getClass().getClassLoader().getResourceAsStream( file );
     
             if (is == null) {
-                // we can't get this URI as a system resource, so just try to read it in the normal way
-                // we have to duplicate the encoding translation here, since there's no method on Model
-                // to read from a URL with a separate baseURI
-                // TODO clean this up when bug 791843 is fixed
-                try {
-                    URLConnection conn = new URL( resolvableURI ).openConnection();
-                    String encoding = conn.getContentEncoding();
-            
-                    if (encoding == null) {
-                        model.read( conn.getInputStream(), uri, lang );
-                    }
-                    else {
-                        model.read( new InputStreamReader(conn.getInputStream(), encoding), uri, lang );
-                    }
-                } 
-                catch (IOException e) {
-                    throw new JenaException( e);
-                }
+                // we can't get this URI as a system resource, so just try to read 
+                // it in the normal way. Uses the original URI as the base (in case xml:base 
+                // is not set in the document itself)
+                model.read( resolvableURI, uri, lang );
             }
             else {
                 try {
