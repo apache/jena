@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.17 2003-08-13 10:49:46 der Exp $
+ * $Id: Rule.java,v 1.18 2003-08-24 21:17:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -56,7 +56,7 @@ import org.apache.log4j.Logger;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.17 $ on $Date: 2003-08-13 10:49:46 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.18 $ on $Date: 2003-08-24 21:17:08 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -600,7 +600,7 @@ public class Rule implements ClauseEntry {
                         return Node.createLiteral(lit, "", XSDDatatype.XSDfloat);
                     }
                 } else {
-                    // Float?
+                    // Int?
                     if (XSDDatatype.XSDint.isValid(lit)) {
                         return Node.createLiteral(lit, "", XSDDatatype.XSDint);
                     }
