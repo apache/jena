@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
     [See end of file]
-    $Id: Regression.java,v 1.8 2003-06-16 15:15:24 chris-dollin Exp $
+    $Id: Regression.java,v 1.9 2003-07-01 09:06:58 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -10,23 +10,19 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 import com.hp.hpl.jena.util.*;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.graph.*;
 
-// import java.lang.Math;
-// import java.lang.NumberFormatException;
-import java.net.ConnectException;
-import java.net.NoRouteToHostException;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.util.*;
 
-import com.hp.hpl.jena.graph.*;
+import org.apache.log4j.Logger;
 
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-06-16 15:15:24 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-07-01 09:06:58 $'
  */
 public class Regression extends Object {
 
@@ -35,6 +31,8 @@ public class Regression extends Object {
     public static void doTest(Model m1, Model m2, Model m3, Model m4) {
         (new Regression()).test(m1, m2, m3, m4);
     }
+
+    protected static Logger logger = Logger.getLogger( Regression.class );
 
     /** Run the whole batch of common tests on a model implementation
      * @param m an instance of the model to be tested
@@ -373,12 +371,8 @@ public class Regression extends Object {
                 n++; if (! m.createLiteral(tv).getObject(factory)
                 .equals(tv)) error(test, n);
             }
-
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -469,9 +463,9 @@ public class Regression extends Object {
                     n++; p = m.createProperty(null); error(test, n);
                 } catch (JenaInvalidPropertyURIException jx) {
                     // as expected.
-                    
+
                 }
-                
+
                 try {
                     n++; p = m.createProperty("abc/def");
                     n++; if (! p.getNameSpace().equals("abc/")) error(test, n);
@@ -480,7 +474,7 @@ public class Regression extends Object {
                 } catch (JenaException e) {
                     error(test, n, e);
                 }
-                
+
                 try {
                     n++; p = m.createProperty("abc/", "def");
                     n++; if (! p.getNameSpace().equals("abc/")) error(test, n);
@@ -733,10 +727,7 @@ public class Regression extends Object {
 
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -886,10 +877,7 @@ public class Regression extends Object {
                 error(test, n, e);
             }
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -989,10 +977,7 @@ public class Regression extends Object {
                 error(test, n, e);
             }
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -1022,10 +1007,7 @@ public class Regression extends Object {
                 error(test, n, e);
             }
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
         }
 //        System.out.println("End of " + test);
     }
@@ -1234,10 +1216,7 @@ public class Regression extends Object {
                 if (! (count == 25)) error(test, n+count);
             }
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -1320,10 +1299,7 @@ public class Regression extends Object {
                 error(test, n, e);
             }
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -2082,10 +2058,7 @@ public class Regression extends Object {
             }
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
        // System.out.println("End of " + test);
@@ -2245,10 +2218,7 @@ public class Regression extends Object {
             n++; if (! (count==2)) error(test,n);
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -2406,10 +2376,7 @@ public class Regression extends Object {
 
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -2536,10 +2503,7 @@ public class Regression extends Object {
                 error(test, n, e);
             }
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -2632,10 +2596,7 @@ public class Regression extends Object {
                 if (! (mm.size()==0)) error(test,n);
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -2867,10 +2828,7 @@ public class Regression extends Object {
             n++;  if (  m.contains(stmt.getSubject(), RDF.value, tvBoolean))
                         error(test,n);
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -3046,10 +3004,7 @@ public class Regression extends Object {
             }
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -3284,10 +3239,7 @@ public class Regression extends Object {
             }
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -3668,10 +3620,7 @@ public class Regression extends Object {
         }
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -3707,10 +3656,7 @@ public class Regression extends Object {
                                 m.createSeq(), m.createSeq(), m.createSeq(),
                                 m.createSeq(), test, n);
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -3802,10 +3748,7 @@ public class Regression extends Object {
             }
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -3855,10 +3798,7 @@ public class Regression extends Object {
                 error(test, n, e);
             }
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -3901,10 +3841,7 @@ public class Regression extends Object {
                 error(test, n, e);
             }
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -3997,10 +3934,7 @@ public class Regression extends Object {
                 error(test, n, e);
             }
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
 //        System.out.println("End of " + test);
@@ -4087,10 +4021,7 @@ public class Regression extends Object {
                 if (! (mm.size()==0)) error(test,n);
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
     }
@@ -4196,10 +4127,7 @@ public class Regression extends Object {
                     }
             }
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
     }
@@ -4304,10 +4232,7 @@ public class Regression extends Object {
             }
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
     }
@@ -4497,10 +4422,7 @@ public class Regression extends Object {
             }
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
     }
@@ -4684,7 +4606,7 @@ public class Regression extends Object {
                 n++; try {
                         seq4.getInt(0); error(test,n);
                     } catch (JenaSeqIndexBoundsException e) {
-                        // as required 
+                        // as required
                     }
             }
 
@@ -4858,10 +4780,7 @@ public class Regression extends Object {
         }
 
         } catch (Exception e) {
-            ErrorHelper.logInternalError(this.getClass().getName()
-            + " test " + test,
-            n,
-            e);
+            logger.error( "test " + test + "[" + n + "]", e );
             errors = true;
         }
     }
@@ -4960,5 +4879,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.8 2003-06-16 15:15:24 chris-dollin Exp $
+ * $Id: Regression.java,v 1.9 2003-07-01 09:06:58 chris-dollin Exp $
  */

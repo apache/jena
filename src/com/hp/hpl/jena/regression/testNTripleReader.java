@@ -24,20 +24,18 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testNTripleReader.java,v 1.5 2003-06-17 14:39:39 chris-dollin Exp $
+ * $Id: testNTripleReader.java,v 1.6 2003-07-01 09:06:59 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.*;
-
-
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author  bwm
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class testNTripleReader extends Object {
    
@@ -45,7 +43,9 @@ public class testNTripleReader extends Object {
     protected static void doTest(Model m1) {
         (new testNTripleReader()).test(m1);
     }
-
+    
+    protected static Logger logger = Logger.getLogger( testNTripleReader.class );
+    
     void test(Model m1) {
 
         String  test = "testNTripleReader";
@@ -61,7 +61,7 @@ public class testNTripleReader extends Object {
             n++; if (! iter.hasNext()) error(test, n);
         } catch (Exception e) {
             inError = true;
-            ErrorHelper.logInternalError(" test " + test, n, e);
+            logger.error( " test " + test + "[" + n + "]", e);
         }
   //      System.out.println("End of " + test);        
     }

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testReaderInterface.java,v 1.7 2003-06-25 07:23:14 jeremy_carroll Exp $
+ * $Id: testReaderInterface.java,v 1.8 2003-07-01 09:06:59 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -37,10 +37,12 @@ import java.net.*;
 
 import com.hp.hpl.jena.shared.*;
 
+import org.apache.log4j.Logger;
+
 /**
  *
  * @author  bwm
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class testReaderInterface extends Object {
 
@@ -49,6 +51,8 @@ public class testReaderInterface extends Object {
         (new testReaderInterface()).test(m1);
     }
 
+    protected static Logger logger = Logger.getLogger( testReaderInterface.class );
+    
     void test(Model m1) {
 
         String  test = "testReaderInterface";
@@ -115,7 +119,7 @@ public class testReaderInterface extends Object {
 
         } catch (Exception e) {
             inError = true;
-            ErrorHelper.logInternalError(" test " + test, n, e);
+            logger.error( " test " + test + "[" + n + "]", e);
         }
       //  System.out.println("End of " + test);
     }

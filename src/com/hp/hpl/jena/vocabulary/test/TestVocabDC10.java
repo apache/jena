@@ -1,37 +1,45 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestVocabularies.java,v 1.4 2003-07-01 09:06:59 chris-dollin Exp $
+  $Id: TestVocabDC10.java,v 1.1 2003-07-01 09:06:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
 
+import com.hp.hpl.jena.vocabulary.*;
 import junit.framework.*;
 
 /**
-    Collect together all the vocabulary tests.
- 	@author kers
+     @author kers
 */
-public class TestVocabularies extends TestCase
+public class TestVocabDC10 extends VocabTestBase
     {
-    public TestVocabularies( String name )
-        { super( name ); }
+    public TestVocabDC10(String name)
+    	{ super(name); }
 
-    public static TestSuite suite()
-        {
-        TestSuite result = new TestSuite();
-        result.addTest( TestVocabRDF.suite() );
-        result.addTest( TestVocabRDFS.suite() );
-        result.addTest( TestVocabVCARD.suite() );
-        result.addTest( TestVocabTestQuery.suite() );
-        result.addTest( TestVocabTestManifest.suite() );
-        result.addTest( TestVocabDB.suite() );
-        result.addTest( TestVocabRSS.suite() );
-        result.addTest( TestVocabResultSet.suite() );
-        result.addTest( TestVocabDC10.suite() );
-        return result;
-        }
-    }
+	public static TestSuite suite()
+		{ return new TestSuite( TestVocabDC10.class ); }
+
+	public void testDC10()
+		{
+		String ns = "http://purl.org/dc/elements/1.0/";
+        assertProperty( ns + "contributor", DC_10.contributor );
+        assertProperty( ns + "coverage", DC_10.coverage );
+        assertProperty( ns + "creator", DC_10.creator );
+        assertProperty( ns + "date", DC_10.date );
+        assertProperty( ns + "description", DC_10.description );
+        assertProperty( ns + "format", DC_10.format );
+        assertProperty( ns + "identifier", DC_10.identifier );
+        assertProperty( ns + "language", DC_10.language );
+        assertProperty( ns + "publisher", DC_10.publisher );
+        assertProperty( ns + "relation", DC_10.relation );
+        assertProperty( ns + "rights", DC_10.rights );
+        assertProperty( ns + "source", DC_10.source );
+        assertProperty( ns + "subject", DC_10.subject );
+        assertProperty( ns + "title", DC_10.title );
+        assertProperty( ns + "type", DC_10.type );
+		}
+	}
 
 
 /*

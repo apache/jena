@@ -37,10 +37,12 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.shared.*;
 
+import org.apache.log4j.Logger;
+
 /** An implementation of Property.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-06-17 12:25:06 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-07-01 09:06:48 $'
  */
 
 public class PropertyImpl extends ResourceImpl implements Property {
@@ -52,7 +54,8 @@ public class PropertyImpl extends ResourceImpl implements Property {
             return new PropertyImpl(n,eg);
         }
     };
-    
+    protected static Logger logger = Logger.getLogger( PropertyImpl.class );
+        
     protected int    ordinal   = 0;
 
     /** Creates new PropertyImpl */
@@ -133,7 +136,7 @@ public class PropertyImpl extends ResourceImpl implements Property {
                 try {
                   ordinal = Integer.parseInt(localName.substring(1));
                 } catch (NumberFormatException e) {
-                    ErrorHelper.logInternalError(this.getClass().getName(), 1);
+                    logger.error( "checkOrdinal fails on " + localName, e );
                 }
             }
         }

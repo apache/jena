@@ -23,15 +23,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testModelEquals.java,v 1.5 2003-06-25 07:23:14 jeremy_carroll Exp $
+ * $Id: testModelEquals.java,v 1.6 2003-07-01 09:06:58 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
 import com.hp.hpl.jena.mem.ModelMem;
 
+import org.apache.log4j.Logger;
 /**
  *
  * @author  bwm
@@ -43,6 +43,8 @@ public class testModelEquals extends Object {
         (new testModelEquals()).test(m1, m2);
     }
 
+    protected static Logger logger = Logger.getLogger( testModelEquals.class );
+    
     void test(Model m1, Model m2) {
 
         String  test = "testModelEquals";
@@ -86,7 +88,7 @@ public class testModelEquals extends Object {
             }
         } catch (Exception e) {
             inError = true;
-            ErrorHelper.logInternalError(" test " + test, n, e);
+            logger.error( " test " + test + "[" + n + "]", e);
         }
      //   System.out.println("End of " + test);        
     }

@@ -5,11 +5,7 @@
 
 package com.hp.hpl.jena.vocabulary;
 
-import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
-import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
-
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.rdf.model.*;
 
 /** Dublin Core version 1.0 vocabulary.
  */
@@ -27,60 +23,24 @@ public class DC_10 {
         return uri;
     }
 
+    private static Property cp( String ln )
+        { return ResourceFactory.createProperty( uri, ln ); }
 
-           static final String   ncontributor = "contributor";
-    public static       Property contributor;
-           static final String   ncoverage = "coverage";
-    public static       Property coverage;
-           static final String   ncreator = "creator";
-    public static       Property creator;
-           static final String   ndate = "date";
-    public static       Property date;
-           static final String   ndescription = "description";
-    public static       Property description;
-           static final String   nformat = "format";
-    public static       Property format;
-           static final String   nidentifier = "identifier";
-    public static       Property identifier;
-           static final String   nlanguage = "language";
-    public static       Property language;
-           static final String   npublisher = "publisher";
-    public static       Property publisher;
-           static final String   nrelation = "relation";
-    public static       Property relation;
-           static final String   nrights = "rights";
-    public static       Property rights;
-           static final String   nsource = "source";
-    public static       Property source;
-           static final String   nsubject = "subject";
-    public static       Property subject;
-           static final String   ntitle = "title";
-    public static       Property title;
-           static final String ntype = "type";
-    public static       Property type;
-
-
-    static {
-        try {
-            contributor   = new PropertyImpl(uri, ncontributor);
-            coverage      = new PropertyImpl(uri, ncoverage);
-            creator       = new PropertyImpl(uri, ncreator);
-            date          = new PropertyImpl(uri, ndate);
-            description   = new PropertyImpl(uri, ndescription);
-            format        = new PropertyImpl(uri, nformat);
-            identifier    = new PropertyImpl(uri, nidentifier);
-            language      = new PropertyImpl(uri, nlanguage);
-            publisher     = new PropertyImpl(uri, npublisher);
-            relation      = new PropertyImpl(uri, nrelation);
-            rights        = new PropertyImpl(uri, nrights);
-            source        = new PropertyImpl(uri, nsource);
-            subject       = new PropertyImpl(uri, nsubject);
-            title         = new PropertyImpl(uri, ntitle);
-            type          = new PropertyImpl(uri, ntype);
-        } catch (JenaException e) {
-            ErrorHelper.logInternalError("RDF", 1, e);
-        }
-    }
+    public static final Property contributor = cp( "contributor" );
+    public static final Property coverage = cp( "coverage" );
+    public static final Property creator = cp( "creator" );
+    public static final Property date = cp( "date" );
+    public static final Property description = cp( "description" );
+    public static final Property format = cp( "format" );
+    public static final Property identifier = cp( "identifier" );
+    public static final Property language = cp( "language" );
+    public static final Property publisher = cp( "publisher" );
+    public static final Property relation = cp( "relation" );
+    public static final Property rights = cp( "rights" );
+    public static final Property source = cp( "source" );
+    public static final Property subject = cp( "subject" );
+    public static final Property title = cp( "title" );
+    public static final Property type = cp( "type" );
 }
 
 
