@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.15 2003-08-18 10:50:57 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.16 2003-08-19 11:10:11 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -225,7 +225,7 @@ public class N3toRDF implements N3ParserEventHandler
                     xsdType = XSD.xdouble ;
                 if ( text.indexOf('e') >= 0 )
                     xsdType = XSD.xdouble ;
-                return model.createTypedLiteral(text, null, xsdType.getURI());
+                return model.createTypedLiteral(text, xsdType.getURI());
                 
 			case N3Parser.LITERAL :
 				// Literals have three part: value (string), lang tag, datatype
@@ -255,8 +255,8 @@ public class N3toRDF implements N3ParserEventHandler
                 // Chop leading '@'
                 String langTag = (lang!=null)?lang.getText().substring(1):null ;
                 
-                if ( datatype == null )   
-                    return model.createTypedLiteral(text, langTag, (String)null) ;
+                if ( datatype == null )
+                    return model.createLiteral(text, langTag) ;
                 
                 // If there is a datatype, it takes predence over lang tag.
                 String typeURI = datatype.getText();
@@ -291,10 +291,8 @@ public class N3toRDF implements N3ParserEventHandler
                 }
 
                 typeURI = expandHereURIRef(typeURI);
-                // 2003-08
-                // NB This will change when we don't allow XMLLIterals to have both 
-                // lang tag and datatype (RDF spec decision).
-                return model.createTypedLiteral(text, langTag, typeURI) ;
+                // 2003-08 - Ignore lang tag when there is an type. 
+                return model.createTypedLiteral(text, typeURI) ;
 
 			case N3Parser.QNAME :
 				// Is it a labelled bNode?

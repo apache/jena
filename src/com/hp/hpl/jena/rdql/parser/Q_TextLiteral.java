@@ -62,9 +62,12 @@ public class Q_TextLiteral extends ParsedLiteral {
         }
         
         // 2003-08
-        // This will change when we stop literals (XMLLiterals) having
-        // both lang tag and datatype (subject to WG decision)         
-        Literal l = model.createTypedLiteral(super.getString(), langTag, tmp_datatype) ;
+        // Can't have type and lang tag.
+        Literal l = null ;
+        if ( tmp_datatype != null)
+            l = model.createTypedLiteral(super.getString(), tmp_datatype) ;
+        else
+            l = model.createLiteral(super.getString(), langTag) ;
         super.setRDFLiteral(l) ; 
     }
   
