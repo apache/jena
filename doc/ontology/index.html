@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+	<TITLE></TITLE>
+	<META NAME="GENERATOR" CONTENT="OpenOffice.org 1.0.1  (Linux)">
+	<META NAME="CREATED" CONTENT="20030407;12455600">
+	<META NAME="CHANGED" CONTENT="20030407;12524900">
+	<STYLE>
+	<!--
+		@page { margin: 2cm }
+		H1 { margin-bottom: 0.21cm }
+		H1.western { font-family: "Luxi Sans", sans-serif; font-size: 16pt }
+		H1.cjk { font-size: 16pt }
+		H1.ctl { font-size: 16pt }
+	-->
+	</STYLE>
+</HEAD>
+<BODY LANG="en-GB">
+<H1 CLASS="western">The Jena2 Ontology API</H1>
+<P STYLE="margin-bottom: 0cm">This document describes ontology
+document handling in Jena2. Jena2 is not a full-fledged ontology
+managment application, such as Protoge [Protoge] or KAON [Kaon] or
+others. Rather, our goal is to provide suppor for developers building
+ontology-based applications using Jena as a platform. Other tools,
+such as those mentioned, are useful complements when building,
+testing and maintaining ontologies.</P>
+<P STYLE="margin-bottom: 0cm">Jena 1.X provided a basic API for
+reading and manipulating DAML+OIL [daml+oil] ontology documents.
+Though useful, this DAML API had a number of limitations, including:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0cm">very limited support for <I>ontology
+	reasoning;</I></P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">unable to
+	process ontlogies stored in <I>persistent RDF stores, </I>such as
+	the Jena 1 ModelRDB;</P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">tightly bound
+	to the DAML+OIL ontology language;</P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">limited
+	integration with the other capabilites of the Jena1 platform.</P>
+</UL>
+<P STYLE="margin-bottom: 0cm; font-style: normal">The Jena2 ontology
+support has been completely re-written to address these previous
+shortcomings, and to provide a more flexible and complete foundation
+for processing ontologies in user applications. Particuar innovations
+in this release include:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">a new internal
+	architecture, based on Jena2's <I>RDF-level polymorpism, </I>that
+	allows complete flexibility in viewing a given RDF resource though a
+	variety of differnt presentation facets (such as an <I>ontology
+	class)</I>.</P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">support for
+	pluggable reasoning services that allow reasoning over ontology
+	sources, allowing applictions to exploit much more of the rich
+	semantics provided by ontology languages;</P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">an <I>ontology
+	document manager</I> that allows much more control over building the
+	imports closure (the set of all imported ontologies) of a given
+	ontology document, and includes caching and local redirection
+	support;</P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">the ability to
+	attach ontology models to persistent RDF stores;</P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">a single API
+	for ontology processing, parameterised by the actual ontology
+	language being processed.</P>
+</UL>
+<P STYLE="margin-bottom: 0cm; font-style: normal">The last point is
+notable in that, in the time between the release of Jena1 and Jena2,
+the W3C's WebOnt working group [webont] has developed and released
+the <I>Web Ontology Language (OWL) </I>[owl]. Note: at the time of
+writing, OWL is in last-call status. We expect OWL to become the
+dominant ontology language for the Semantic Web in time. However, for
+the present, many extant ontologies and in-development projects are
+using DAML+OIL. While these languages are similar, there is
+non-trivial cost in converting from one to the other. We therefore
+expect that DAML+OIL will remain an important ontology language for
+some time to come. Rather than provide two separate API's, one for
+DAML and one for OWL, Jena2 provides a single ontology package that
+combines support for a variety of ontology languages via a <I>language
+profile</I> (note: for obvious reasons, acceptable languages have to
+be reasonable similar, as with DAML+OIL and OWL). By selecting a
+different language profile when creating an ontology model, access to
+ontology documents encoded in differnt languages is available without
+changing user-level Java code. More on language profiles can be found
+here [todo ref].</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal">Note that, to
+assist users porting code from Jena1, the Jena1 DAML+OIL API has also
+been adapted to Jena2. We recommend, however, that new applictions be
+developed against the new ontology API.</P>
+<P STYLE="margin-bottom: 0cm; font-style: normal">The remaining
+sections of this documentation cover the following topics:</P>
+<UL>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal"><a href="loading.html">
+        loading and
+	importing ontologies</a></P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">using the API
+	classes</P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">using ontology
+	inference</P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">examples</P>
+	<LI><P STYLE="margin-bottom: 0cm; font-style: normal">DAML legacy
+	API</P>
+</UL>
+</BODY>
+</HTML>
