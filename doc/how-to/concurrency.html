@@ -1,6 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+  <!-- $Id: concurrency.html,v 1.4 2003-12-15 16:21:25 andy_seaborne Exp $ -->
   <title>Concurrency in Jena</title>
   <link href="../styles/doc.css" rel="stylesheet" type="text/css">
   
@@ -10,14 +11,13 @@
        border: 1px solid ;
        background-color: #F0F0F0; 
        padding: 10;
-       page-break-inside: avoid 
+       page-break-inside: avoid ;
        }
   </style>
 </head>
-
 <body>
 
-<h1>Conncurrent access to Models</h1>
+<h1>Concurrent access to Models</h1>
 
 <p>Applications need to be aware of the concurrency issues in access Jena 
 models.&nbsp; API operations are not thread safe by default. Thread safety would 

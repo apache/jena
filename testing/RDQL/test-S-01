@@ -4,7 +4,6 @@
 SELECT *
 FROM <modelA.nt>
 WHERE
-//    (x:r ?y "value-é")
     (x:r ?y "value-\u00E9")
 USING
     x FOR <http://rdf.hp.com/>
