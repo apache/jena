@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: StmtIteratorImpl.java,v 1.5 2003-04-10 11:01:27 chris-dollin Exp $
+  $Id: StmtIteratorImpl.java,v 1.6 2003-04-11 10:37:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,12 +14,12 @@ import java.util.Iterator;
 /** An implementation of StmtIterator.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-10 11:01:27 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-04-11 10:37:32 $' 
  */
 
 import com.hp.hpl.jena.util.iterator.*;
 
-public class StmtIteratorImpl extends ClosableWrapper implements StmtIterator
+public class StmtIteratorImpl extends WrappedIterator implements StmtIterator
     {
     private Statement current;
     

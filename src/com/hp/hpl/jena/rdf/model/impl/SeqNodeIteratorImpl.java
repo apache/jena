@@ -41,9 +41,9 @@ import java.util.Iterator;
  *  A sequence node iterator.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-03-26 12:27:09 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-11 10:37:32 $'
  */
-public class SeqNodeIteratorImpl extends ClosableWrapper implements NodeIterator {
+public class SeqNodeIteratorImpl extends WrappedIterator implements NodeIterator {
     
     Statement stmt = null;
     Seq       seq;

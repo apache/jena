@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.2 2003-03-30 20:52:43 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.3 2003-04-11 10:37:50 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -39,7 +39,7 @@ import java.util.*;
  * iterator machinery as separate top level classes. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-03-30 20:52:43 $
+ * @version $Revision: 1.3 $ on $Date: 2003-04-11 10:37:50 $
  */
 public class TransitiveGraphCache implements Finder {
 
@@ -140,7 +140,7 @@ public class TransitiveGraphCache implements Finder {
                 if (o.isVariable()) {
                     // list all the graph contents
                     Iterator i = new ListAll(nodeMap.values().iterator(), closed, p);
-                    return new BaseExtendedIterator(i);
+                    return WrappedIterator.create(i);
                 } else {
                     // list all backwards from o
                     GraphNode gn_o = (GraphNode)nodeMap.get(o);
@@ -174,7 +174,7 @@ public class TransitiveGraphCache implements Finder {
      * Return an iterator over all registered property nodes
      */
     public ExtendedIterator listAllProperties() {
-        return new BaseExtendedIterator(nodeMap.keySet().iterator());
+        return WrappedIterator.create(nodeMap.keySet().iterator());
     }
    
     /**
@@ -216,7 +216,7 @@ public class TransitiveGraphCache implements Finder {
                 }
                 cache.put(node, closure);
             }
-            return new BaseExtendedIterator(closure.iterator());
+            return WrappedIterator.create(closure.iterator());
         } else {
             return new GraphWalker(node, forward, closed, predicate);
         }

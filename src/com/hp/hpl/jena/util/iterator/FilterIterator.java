@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: FilterIterator.java,v 1.2 2003-03-26 12:08:05 chris-dollin Exp $
+ * $Id: FilterIterator.java,v 1.3 2003-04-11 10:37:51 chris-dollin Exp $
  *
  */
 package com.hp.hpl.jena.util.iterator;
@@ -34,9 +34,9 @@ import java.util.NoSuchElementException;
 
 /** Creates a sub-Iterator by filtering.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-03-26 12:08:05 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-04-11 10:37:51 $'
  */
-public class FilterIterator extends ClosableWrapper
+public class FilterIterator extends WrappedIterator
 {
 	Filter f;
 	Object current;
@@ -59,8 +59,8 @@ public class FilterIterator extends ClosableWrapper
 	synchronized public boolean hasNext() {
 		if (current!=null)
 			return true;
-		while (  iterator.hasNext() ) {
-			current = iterator.next();
+		while (  super.hasNext() ) {
+			current = super.next();
 			if (f.accept(current))
 				return true;
 		}
@@ -77,7 +77,7 @@ public class FilterIterator extends ClosableWrapper
         if ( current != null || dead )
           throw new IllegalStateException(
           "FilterIterator does not permit calls to hasNext between calls to next and remove.");
-        iterator.remove();
+        super.remove();
         }
         
     /** The next acceptable object in the iterator.

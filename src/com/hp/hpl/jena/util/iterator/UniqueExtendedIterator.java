@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: UniqueExtendedIterator.java,v 1.1 2003-01-30 18:32:29 der Exp $
+ * $Id: UniqueExtendedIterator.java,v 1.2 2003-04-11 10:37:51 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util.iterator;
 
@@ -18,9 +18,9 @@ import java.util.*;
  * to be returned by the iterator. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-01-30 18:32:29 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-11 10:37:51 $
  */
-public class UniqueExtendedIterator extends BaseExtendedIterator {
+public class UniqueExtendedIterator extends WrappedIterator {
 
     /** The set of objects already seen */
     protected HashSet seen = new HashSet();
@@ -40,7 +40,7 @@ public class UniqueExtendedIterator extends BaseExtendedIterator {
      * @return the object to be returned or null if the object has been filtered.
      */
     protected Object nextIfNew() {
-        Object value = underlying.next();
+        Object value = super.next();
         if (seen.add(value)) {
             return value;
         } else {
@@ -52,7 +52,7 @@ public class UniqueExtendedIterator extends BaseExtendedIterator {
      * @see Iterator#hasNext()
      */
     public boolean hasNext() {
-        while (next == null && underlying.hasNext()) {
+        while (next == null && super.hasNext()) {
             next = nextIfNew();
         }
         return next != null;

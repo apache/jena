@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2003-04-10 08:59:48 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2003-04-11 10:37:32 $'
  */
 
 public class ModelCom extends EnhGraph
@@ -67,10 +67,6 @@ public class ModelCom extends EnhGraph
 		this( base, BuiltinPersonalities.model );
 	}
 	
-    public boolean isModel() {
-    	return true;
-    }
-    
     public QueryHandler queryHandler()
     	{ return getGraph().queryHandler(); }
 	

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.10 2003-04-08 12:24:48 jeremy_carroll Exp $
+  $Id: Model.java,v 1.11 2003-04-11 10:36:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -50,15 +50,9 @@ import java.io.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $Date: 2003/04/06 10:45:35 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.11 $Date: 2003/04/08 12:24:48 $'
  */
 public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
-	//    public BindingQueryPlan prepareBindings( Query q, Variable [] variables );
-	/** Is the underlying Graph currently compatible with
-	 *  being a Model (answer is always yes).
-	 *  This method is here to fit with the polymorphism framework.
-	 */
-	boolean isModel();
 
 	/** Every model is based on some Graph */
 	Graph getGraph();
@@ -750,5 +744,5 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.10 2003-04-08 12:24:48 jeremy_carroll Exp $
+ * $Id: Model.java,v 1.11 2003-04-11 10:36:43 chris-dollin Exp $
  */

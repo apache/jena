@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRWRule.java,v 1.3 2003-02-11 15:17:13 chris-dollin Exp $
+ * $Id: BRWRule.java,v 1.4 2003-04-11 10:37:50 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * the corresponding parts of the query being processed.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-02-11 15:17:13 $
+ * @version $Revision: 1.4 $ on $Date: 2003-04-11 10:37:50 $
  */
 public class BRWRule {
 
@@ -206,7 +206,7 @@ public class BRWRule {
      * Inner class. This implements an iterator that uses the rule to rewrite any
      * results from the supplied iterator according to the rule.
      */
-    static class RewriteIterator extends BaseExtendedIterator {
+    static class RewriteIterator extends WrappedIterator {
         /** The head of the rewrite rule */
         TriplePattern head;
         
@@ -224,7 +224,7 @@ public class BRWRule {
          * @see Iterator#next()
          */
         public Object next() {
-            Triple value = (Triple)underlying.next();
+            Triple value = (Triple)super.next();
             return new Triple( instantiate(head.getSubject(), value),
                                 instantiate(head.getPredicate(), value),
                                 instantiate(head.getObject(), value) );
