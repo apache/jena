@@ -51,7 +51,7 @@ public class ARPTests extends java.lang.Object {
 	 * copy of the tests.
 	 */
 	static public boolean internet = false;
-	static private URI wgTestDir =
+	static URI wgTestDir =
 		URI.create("http://www.w3.org/2000/10/rdf-tests/rdfcore/");
 	static private URI arpTestDir =
 		URI.create("http://jcarroll.hpl.hp.com/arp-tests/");

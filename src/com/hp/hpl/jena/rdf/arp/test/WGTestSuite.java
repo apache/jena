@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.17 2003-09-17 16:40:59 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.18 2003-11-07 20:56:04 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -19,6 +19,9 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.wg.*;
 import com.hp.hpl.jena.shared.wg.URI;
 
+import com.hp.hpl.jena.reasoner.test.*;
+import com.hp.hpl.jena.reasoner.rulesys.*;
+
 import org.xml.sax.*;
 /**
  *
@@ -26,6 +29,9 @@ import org.xml.sax.*;
  */
 class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     static public boolean checkMessages = false;
+    static private boolean doSemanticTests() {
+    	return ARPTests.internet;
+    }
     static private boolean inDevelopment = false;
      Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
         throws IOException {
@@ -71,12 +77,21 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         new ResourceImpl(testNS, "RDF-XML-Document");
         
     static private Resource ntriple = new ResourceImpl(testNS, "NT-Document");
+	  static private Resource falseDoc = new ResourceImpl(testNS, "False-Document");
 
     private URI testDir;
     
     private Act noop = new Act() {
         public void act(Resource r) {
         }
+    };
+    
+    private Act semTest = new Act() {
+		  public void act(Resource r) {
+		  	if (doSemanticTests()){
+		  		addTest(r, new ReasoningTest(r));
+		  	}
+		  }
     };
     
     TestInputStreamFactory factory;
@@ -107,14 +122,15 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 addTest(r, new NegativeTest(r));
             }
         });
+		    behaviours.put(new ResourceImpl(testNS + "False-Document"), noop);
         behaviours.put(new ResourceImpl(testNS + "RDF-XML-Document"), noop);
         behaviours.put(new ResourceImpl(testNS + "NT-Document"), noop);
         behaviours.put(
             new ResourceImpl(testNS + "PositiveEntailmentTest"),
-            noop);
+            semTest);
         behaviours.put(
             new ResourceImpl(testNS + "NegativeEntailmentTest"),
-            noop);
+		        semTest);
         behaviours
             .put(new ResourceImpl(testNS + "MiscellaneousTest"), new Act() {
             public void act(Resource r) {
@@ -162,6 +178,9 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         testDir = fact.getBase();
         if (dynamic)
             try {
+            	String wgDir = ARPTests.wgTestDir.toString();
+            	System.err.println(wgDir);
+            	  wgReasoner = new WGReasonerTester("Manifest",wgDir);
                 createMe =
                     "new "
                         + this.getClass().getName()
@@ -235,6 +254,10 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         if (sub == null) {
             if ( keyName.equals("OBSOLETED"))
               return;
+			      if ( keyName.equals("OBSOLETE"))
+			        return;
+			      if ( keyName.equals("NOT_APPROVED"))
+			        return;
             sub = new TestSuite();
             sub.setName(keyName);
             parts.put(keyName, sub);
@@ -249,7 +272,24 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     interface Act {
         void act(Resource r) ;
     }
-    
+    private WGReasonerTester wgReasoner;
+    class ReasoningTest extends Test {
+    	 ReasoningTest(Resource r) {
+    	 	super(r);
+    	 }
+		protected void runTest() throws IOException {
+			 int rslt = wgReasoner.runTestDetailedResponse(testID.getURI(),
+			     RDFSRuleReasonerFactory.theInstance(),this,null);
+			 assertTrue(rslt>=0);
+		}
+		/* (non-Javadoc)
+		 * @see com.hp.hpl.jena.rdf.arp.test.WGTestSuite.Test#createMe()
+		 */
+		String createMe() {
+			throw new UnsupportedOperationException();
+		}
+    	 
+    }
     abstract class Test extends TestCase implements RDFErrorHandler {
         Resource testID;
         String createURI() {

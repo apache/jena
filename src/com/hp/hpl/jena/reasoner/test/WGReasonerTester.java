@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.18 2003-11-07 17:43:17 der Exp $
+ * $Id: WGReasonerTester.java,v 1.19 2003-11-07 20:55:54 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -25,6 +25,7 @@ import org.apache.log4j.Logger;
 
 import java.io.*;
 import java.util.*;
+import java.net.*;
 
 /**
  * A utility to support execution of the RDFCode working group entailment
@@ -41,7 +42,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-11-07 17:43:17 $
+ * @version $Revision: 1.19 $ on $Date: 2003-11-07 20:55:54 $
  */
 public class WGReasonerTester {
 
@@ -146,8 +147,21 @@ public class WGReasonerTester {
         if (fname.startsWith(BASE_URI)) {
             fname = fname.substring(BASE_URI.length());
         }
-        Reader reader = new BufferedReader(new FileReader(baseDir + fname));
-        result.read(reader, BASE_URI + fname, langType);
+        
+        /* Change note - jjc
+         * Now use InputStream instead of Reader (general hygine).
+         * Also treat http:.... as URL not local file.
+         */
+        InputStream in;
+        if ( baseDir.startsWith("http:")) {
+        	in = new URL(baseDir+fname).openStream();
+        } else {
+        	in = new FileInputStream(baseDir + fname);
+        }
+        in = new BufferedInputStream(in);
+        
+        
+        result.read(in, BASE_URI + fname, langType);
         return result;
     }
     
@@ -220,6 +234,27 @@ public class WGReasonerTester {
      * @throws RDFException if the test can't be found or fails internally
      */
     public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
+        return runTestDetailedResponse(uri,reasonerF,testcase,configuration) != FAIL;
+    }
+    static final public int FAIL = -1;
+    static final public int NOT_APPLICABLE = 0;
+    static final public int INCOMPLETE = 1;
+    static final public int PASS  = 2;
+    
+	/**
+		 * Run a single designated test.
+		 * @param uri the uri of the test, as defined in the manifest file
+		 * @param reasonerF the factory for the reasoner to be tested
+		 * @param testcase the JUnit test case which is requesting this test
+		 * @param configuration optional configuration information
+		 * @return true if the test passes
+		 * @throws IOException if one of the test files can't be found
+		 * @throws RDFException if the test can't be found or fails internally
+		 */
+    
+	
+	   public int runTestDetailedResponse(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
+    
         // Find the specification for the named test
         Resource test = testManifest.getResource(uri);
         testType = (Resource)test.getRequiredProperty(RDF.type).getObject();
@@ -233,12 +268,12 @@ public class WGReasonerTester {
         String status = test.getRequiredProperty(statusP).getObject().toString();
         logger.debug("WG test " + test.getURI() + " - " + status);
         if (! status.equals("APPROVED")) {
-            return true;
+            return NOT_APPLICABLE;
         }
         
         // Skip the test designed for only non-datatype aware processors
         for (int i = 0; i < blockedTests.length; i++) {
-            if (test.getURI().equals(blockedTests[i])) return true;
+            if (test.getURI().equals(blockedTests[i])) return NOT_APPLICABLE;
         }
                 
         // Load up the premise documents
@@ -262,6 +297,7 @@ public class WGReasonerTester {
         
         // Check the results against the official conclusions
         boolean correct = true;
+        int goodResult = PASS;
         boolean noisy = !(baseDir.equals(DEFAULT_BASE_DIR));
         if (testType.equals(PositiveEntailmentTest)) {
             if (conclusions == null) {
@@ -280,6 +316,7 @@ public class WGReasonerTester {
                 }
             }
         } else {
+        	  goodResult = INCOMPLETE;
             // A negative entailment check
             if (conclusions == null) {
                 // Check the result is not flagged as invalid
@@ -313,7 +350,7 @@ public class WGReasonerTester {
         if (testcase != null) {
             TestCase.assertTrue("Test: " + test + "\n" +  description, correct);
         }
-        return correct;
+        return correct?goodResult:FAIL;
     }
     
     /**
