@@ -390,7 +390,7 @@ public class BoundRDFSReasoner implements Reasoner {
      * Assert a triple into the triple cache.
      * Called by FRules when they fire
      */
-    public void assert(Triple t) {
+    public void assertTriple(Triple t) {
         axioms.getGraph().add(t);
     }
     
