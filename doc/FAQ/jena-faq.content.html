@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.28 2004-11-04 22:12:18 wkw Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.29 2005-02-04 09:17:06 ian_dickinson Exp $ -->
 <!-- (c) Copyright 2003, 2004, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -63,6 +63,8 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#ontology-4">Why doesn't the ontology API handle <code>sub-class</code> 
          (or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc)
          relationships in a DAML model?</a></li>  
+  <li><a href="#ontology-5">I don't understand very clearly the difference between 
+         the various <code>OntModel</code> model profiles.</a></li>
 </ul>
 <h3>Database and persistence</h3>
 <ul>
@@ -373,6 +375,42 @@ Jena 2 &ndash; Frequently Asked Questions
   	<code>OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF, null );</code>
 	</p>
 
+<p id="ontology-5"><strong>Q: I don't understand very clearly the difference between 
+the various <code>OntModel</code> model profiles.</strong><br />
+<strong>A:</strong>
+OK, here's how it works.  The ontology API is designed to provide a single 
+set of convenient programming abstractions for a Jena model that contains 
+an ontology in either RDFS, DAML or (the various flavours of) OWL.  
+Each of these languages is structurally similar, but differ in detail. 
+So, a class is declared variously as <code>owl:Class</code>, 
+<code>rdfs:Class</code> and <code>daml:Class</code>.  
+Hence one role of the ont model profiles (i.e. <code>OntModelSpec</code> objects) is to specify the 
+details of which syntax is being used.</p>
+<p>
+Second, ontology models can be composed of many sub-models when an ontology 
+<em>imports</em> another ontology. These sub-models have to be stored 
+somewhere, perhaps in memory or in a database.  The profile contains a 
+<code>ModelMaker</code>, which provides the 
+<code>OntModel</code> with new sub-models on demand, 
+to contain the imported ontology documents.
+</p><p>
+Third, ontologies can be made richer by including the entailments of 
+the ontology assertions, given the semantics of the language. To do this, 
+you need a reasoner. Since Jena provides an open, extensible architecture 
+for adding reasoners, and some built-in pre-defined reasoners, the 
+model profile specifies which reasoner, if any, that model will use.
+</p><p>
+These are the main components of an <code>OntModelSpec</code>.  You can construct each 
+of these elements independently, programatically or with RDF, 
+but we have anticipated some common choices.  
+So we provide some 
+built-in standard profiles.  These have names like <code>OWL_MEM</code>, or <code>RDFS_MEM_RDFS_INF</code>.
+The first component of the name is the syntax (OWL, RDFS etc). The second 
+component is the model-maker strategy (MEM means in-memory models). The 
+third component, which may be absent, specifies the reasoner.  
+<code>OWL_MEM</code> has no reasoner, <code>RDFS_MEM_TRANS_INF</code> uses a 
+simple reasoner that computes transitive closure on the class and property hierarchies, but nothing else.
+</p>
 
 <h3>Database and persistence</h3>
 <p id="db-0"><strong>Q: Why do I get an exception when trying to create a new persistent model?</strong><br>
