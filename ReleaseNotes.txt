@@ -3,8 +3,6 @@ Release Notes
 
 Jena2-beta1 (July 2003)
 
-Fourth preview release of Jena2.
-
 This is Jena 2.0 beta1 - it begins the process of releasing Jena 2.0. This
 version follows on from preview4 and includes support for PostreSQL and
 Oracle as database-nbacked persistent RDF stores.
