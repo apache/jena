@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.12 2004-10-20 14:11:15 jeremy_carroll Exp $
+ * * $Id: NTriple.java,v 1.13 2005-01-26 12:00:43 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -434,10 +434,21 @@ int debugC = 0;
 		}
 	}
 	private static class NoSH implements StatementHandler {
-		public void statement(AResource subj, AResource pred, AResource obj) {
+		private int ix = 0;
+		private void userData(AResource n){
+		    if (n.isAnonymous()) {
+		        n.setUserData(new Integer(ix++));
+		    }
+		}
+	    public void statement(AResource subj, AResource pred, AResource obj) {
+		    userData(subj);
+		    userData(pred);
+		    userData(obj);
 		}
 		public void statement(AResource subj, AResource pred, ALiteral lit) {
-		}
+		    userData(subj);
+		    userData(pred);
+		    }
 	}
 	private static class SH implements StatementHandler {
 		public void statement(AResource subj, AResource pred, AResource obj) {
