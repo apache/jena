@@ -108,6 +108,24 @@ CREATE INDEX ${a}XSP ON ${a}(Subj(${d}), Prop(${d}));;
 CREATE INDEX ${a}XO ON ${a}(Obj(${d}));;
 
 #-------------------------------------------------------------------
+# Lock the database by using the existence of a table as a
+# mutex, i.e., the lock is acquired if the table can be created,
+# and if the table already exists, the lock is held by another thread.
+#
+# Parameters:
+# a - mutex table name
+lockDatabase
+CREATE TABLE ${a} (Dummy INTEGER);;
+
+#-------------------------------------------------------------------
+# Unlock the database by dropping the mutex table.
+#
+# Parameters:
+# a - mutex table name
+unlockDatabase
+DROP TABLE ${a};;
+
+#-------------------------------------------------------------------
 # Initialize a blank database - create any generators needed
 initDBgenerators
 # Generators to index the main tables
