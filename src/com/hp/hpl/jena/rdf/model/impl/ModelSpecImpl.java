@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.41 2004-11-29 15:59:40 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.42 2005-02-03 10:30:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -119,7 +119,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         @return a ModelSpec as described by the resource
     */        
     public static ModelSpec create( Resource root, Resource desc )
-        { return create( root, readModel( desc ) ); }
+        { return ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( readModel( desc ) ), root ); }
         
     /**
         see com.hp.hpl.jena.rdf.model.impl.createByRoot
@@ -127,33 +127,8 @@ public abstract class ModelSpecImpl implements ModelSpec
         @return a ModelSpec fitting that description
     */
     public static ModelSpec create( Model desc )
-        { Model d = withSchema( desc );
-        return createByRoot( findRootByType( d, JMS.ModelSpec ), d ); }
-        
-    /**
-        see com.hp.hpl.jena.rdf.model.impl.createByRoot
-        @param root theJMS:ModelSpec resource that roots the description
-        @param desc a model containing a JMS description
-        @return a ModelSpec fitting that description
-    */        
-    public static ModelSpec create( Resource root, Model desc )
-        { return createByRoot( root, withSchema( desc ) ); }
-        
-    /**
-        Answer a new ModelSpec created from the description handing of the root resource.
-        The description model must be RDFS-complete.
-        
-     	@param root theJMS:ModelSpec resource that roots the description
-     	@param fullDesc an RDFS-complete model containing a JMS description
-     	@return the ModelSpec fitting that description
-     */
-    public static ModelSpec createByRoot( Resource root, Model fullDesc )
-        {
-        Resource type = findSpecificType( fullDesc, root, JMS.ModelSpec );
-        ModelSpecCreator sc = ModelSpecCreatorRegistry.findCreator( type );
-        if (sc == null) throw new BadDescriptionException( "no model-spec creator found", fullDesc );
-        return sc.create( root, fullDesc );    
-        }
+        { Model d = ModelSpecFactory.withSchema( desc );
+        return ModelSpecFactory.createSpec( d, findRootByType( d, JMS.ModelSpec ) ); }
         
     public static Resource getMaker( Resource root, Model desc )
         {
@@ -179,15 +154,7 @@ public abstract class ModelSpecImpl implements ModelSpec
     	@return T such that (root type T) and if (root type T') then (T' subclassof T)
     */
     static Resource findSpecificType( Model desc, Resource root, Resource type )
-        {
-        StmtIterator it = desc.listStatements( root, RDF.type, (RDFNode) null );
-        while (it.hasNext())
-            {
-            Resource candidate = it.nextStatement().getResource();
-            if (desc.contains( candidate, RDFS.subClassOf, type )) type = candidate;  
-            }
-        return type;    
-        }
+        { return ModelSpecFactory.findSpecificType( (Resource) root.inModel( desc ), type ); }
         
     /**
         Answer the ModelMaker that this ModelSpec uses.
@@ -210,13 +177,6 @@ public abstract class ModelSpecImpl implements ModelSpec
         return desc;
         }
         
-    /**
-        Answer a version of the given model with RDFS completion of the JMS
-        schema applied. 
-    */
-    public static Model withSchema( Model m )
-        { return ModelFactory.createRDFSModel( JMS.schema, m ); }
-
     /**
         Answer a new bnode Resource associated with the given value. The mapping from
         bnode to value is held in a single static table, and is not intended to hold many
@@ -252,14 +212,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         @exception BadDescriptionException if there's not exactly one subject
     */        
     public static Resource findRootByType( Model description, Resource type )
-        { 
-        Model d = withSchema( description );
-        ResIterator rs  = d.listSubjectsWithProperty( RDF.type, type );
-        if (!rs.hasNext()) throw new BadDescriptionException( "no " + type + " thing found", description );
-        Resource result = rs.nextResource();
-        if (rs.hasNext()) throw new BadDescriptionException( "ambiguous " + type + " thing found", description );
-        return result;
-        }
+        { return ModelSpecFactory.findRootByType( ModelSpecFactory.withSchema( description ), type ); }
     
     /**
         Answer a ModelMaker that conforms to the supplied description. The Maker
@@ -270,11 +223,11 @@ public abstract class ModelSpecImpl implements ModelSpec
         @return a ModelMaker fitting that description
     */
     public static ModelMaker createMaker( Model description )
-        { Model d = withSchema( description );
+        { Model d = ModelSpecFactory.withSchema( description );
         return createMakerByRoot( findRootByType( d, JMS.MakerSpec ), d ); }
         
     public static ModelMaker createMaker( Resource root, Model d )
-        { return createMakerByRoot( root, withSchema( d ) ); }
+        { return createMakerByRoot( root, ModelSpecFactory.withSchema( d ) ); }
         
     public static ModelMaker createMakerByRoot( Resource root, Model fullDesc )
         { Resource type = findSpecificType( fullDesc, root, JMS.MakerSpec );

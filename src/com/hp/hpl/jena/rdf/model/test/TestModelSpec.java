@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.35 2004-12-06 13:50:25 andy_seaborne Exp $
+  $Id: TestModelSpec.java,v 1.36 2005-02-03 10:30:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -157,7 +157,7 @@ public class TestModelSpec extends ModelTestBase
         {
         Resource plain = resource();
         Model desc = createPlainModelDesc( plain );
-        ModelSpec ms = ModelSpecImpl.create( plain, desc );  
+        ModelSpec ms = ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( desc ), plain );  
         assertTrue( ms.createModel().getGraph() instanceof GraphMem );  
         }
         
@@ -167,7 +167,7 @@ public class TestModelSpec extends ModelTestBase
         Resource inf = resource();
         String URI = DAMLMicroReasonerFactory.URI;
         Model desc = createPlainModelDesc( plain ).add( createInfModelDesc( inf, URI ) );
-        ModelSpec ms = ModelSpecImpl.create( plain, desc );  
+        ModelSpec ms = ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( desc ), plain );  
         assertTrue( ms.createModel().getGraph() instanceof GraphMem );  
         }
                           
