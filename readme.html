@@ -40,6 +40,7 @@ features:</p>
   <li>enhanced resources - the application can extend the behaviour of
     resources</li>
   <li>integrated parsers and writers for RDF/XML (ARP), N3 and N-TRIPLES</li>
+  <li>support for typed literals</li>
 </ul></dd>
   <dd>&nbsp;</dd>
 <dt>ARP - Jena's RDF/XML Parser</dt>
@@ -70,12 +71,17 @@ features:</p>
   portable to other SQL database engines.</dd>
 <dd>&nbsp;</dd>
     <dt><b>Reasoning Subsystem</b></dt>
-    <dd>The Jena2 reasoner subsystem is designed to allow a range of inference 
-      engines to be plugged into Jena. Such reasoners are primarily used to derive 
-      additional RDF assertions which are entailed from some base RDF together 
-      with any optional ontology information and the axioms and rule. See the
-    <a href="doc/inference/index.html">reasoner documentation</a> 
-      for more details. </dd>
+    <dd>The Jena2 reasoner subsystem includes a generic rule based inference
+      engine together with configured rule sets for RDFS and for the OWL/Lite subset of OWL Full.
+      These reasoners can be used to construct <i>inference models</i> which
+      show the RDF statements entailed by the data being reasoned over.
+      The subsystem is designed to be extensible so that it should be possible to
+      plug a range of external reasoners into Jena, though worked examples of doing
+      so are left to a future release.
+       See the <a href="doc/inference/index.html">reasoner documentation</a> 
+      for more details. 
+      <br>Of these components, the underlying rule engine and the RDFS configuration should
+      be reasonably stable. The OWL configuration is usable but will undergo further tuning.</dd>
   <dd>&nbsp;</dd>
     <dt><b>Ontology Subsystem</b></dt>
     <dd>The Jena2 ontology API is intended to support programmers who are working
