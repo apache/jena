@@ -42,7 +42,7 @@ public class Driver_MySQL extends DriverRDB {
 		INDEX_KEY_LENGTH = 250;
 		LONG_OBJECT_LENGTH = 250;
 		HAS_XACTS = true;
-		SKIP_ALLOCATE_ID = true;
+		PRE_ALLOCATE_ID = false;
 		SKIP_DUPLICATE_CHECK = false;
 		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		SQL_FILE = "etc/mysql.sql";
@@ -75,14 +75,16 @@ public class Driver_MySQL extends DriverRDB {
 	 */
 	public int graphIdAlloc ( String graphName ) {
 		DBIDInt result = null;
+		int dbid = 0;
 		try {
 			PreparedStatement ps = m_sql.getPreparedSQLStatement("insertGraph");
 			ps.setString(1,graphName);
 			ps.executeUpdate();
+			dbid = getInsertID(GRAPH_TABLE);
 		} catch (SQLException e) {
 			throw new RDFRDBException("Failed to get last inserted ID: " + e);
 		}
-		return getLastInsertID();
+		return dbid;
 	}
 	
 	/**
@@ -101,7 +103,7 @@ public class Driver_MySQL extends DriverRDB {
 		return;
 	}
 
-	public int getLastInsertID () {
+	public int getInsertID ( String tableName ) {
 		DBIDInt result = null;
 		try {
 			PreparedStatement ps = m_sql.getPreparedSQLStatement("getLastInsertID");
