@@ -6,9 +6,9 @@
     
     <!-- The major and minor version numbers  -->
     <property name="version-major"   value="2"/>
-    <property name="version-minor"   value="1"/>
+    <property name="version-minor"   value="2"/>
     <!-- e.g. -beta1, or empty string for stable releases -->
-    <property name="version-status"  value=""/>
+    <property name="version-status"  value="-dev-1"/>
     <property name="version"
          value="${version-major}.${version-minor}${version-status}"/>
 
