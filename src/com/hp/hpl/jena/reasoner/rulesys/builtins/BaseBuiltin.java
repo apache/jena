@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseBuiltin.java,v 1.3 2003-07-25 12:16:46 der Exp $
+ * $Id: BaseBuiltin.java,v 1.4 2003-08-22 12:51:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,12 +17,12 @@ import com.hp.hpl.jena.graph.*;
  * implementations can inherit from.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-07-25 12:16:46 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-22 12:51:12 $
  */
 public abstract class BaseBuiltin implements Builtin {
 
     /** Base URI for jena builtins */
-    public static final String BASE_URI = "http://www.hpl.hp.com/semweb/2003/RuleBuiltin/";
+    public static final String BASE_URI = "http://jena.hpl.hp.com/2003/RuleBuiltin/";
     
     /**
      * Return the full URI which identifies this built in.

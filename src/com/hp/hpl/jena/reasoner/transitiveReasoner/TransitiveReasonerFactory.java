@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasonerFactory.java,v 1.8 2003-06-22 16:10:50 der Exp $
+ * $Id: TransitiveReasonerFactory.java,v 1.9 2003-08-22 12:51:03 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.*;
  * Factory class for creating blank instances of the transitive reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.9 $ on $Date: 2003-08-22 12:51:03 $
  */
 public class TransitiveReasonerFactory implements ReasonerFactory {
     
@@ -29,7 +29,7 @@ public class TransitiveReasonerFactory implements ReasonerFactory {
     protected Model capabilities;
     
     /** Static URI for this reasoner type */
-    public static final String URI = "http://www.hpl.hp.com/semweb/2003/TransitiveReasoner";
+    public static final String URI = "http://jena.hpl.hp.com/2003/TransitiveReasoner";
     
     /**
      * Return the single global instance of this factory

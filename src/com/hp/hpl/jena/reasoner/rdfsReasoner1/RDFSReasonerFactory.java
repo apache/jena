@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasonerFactory.java,v 1.10 2003-06-22 16:10:50 der Exp $
+ * $Id: RDFSReasonerFactory.java,v 1.11 2003-08-22 12:51:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * {@link com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory}.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-22 16:10:50 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-22 12:51:12 $
  */
 public class RDFSReasonerFactory implements ReasonerFactory {
     
@@ -31,7 +31,7 @@ public class RDFSReasonerFactory implements ReasonerFactory {
     private static ReasonerFactory theInstance = new RDFSReasonerFactory();
     
     /** Static URI for this reasoner type */
-    public static final String URI = "http://www.hpl.hp.com/semweb/2003/RDFSReasoner1";
+    public static final String URI = "http://jena.hpl.hp.com/2003/RDFSReasoner1";
     
     /** Cache of the capabilities description */
     protected Model capabilities;

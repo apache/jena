@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLFBRuleReasonerFactory.java,v 1.5 2003-07-10 17:05:14 der Exp $
+ * $Id: OWLFBRuleReasonerFactory.java,v 1.6 2003-08-22 12:51:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-07-10 17:05:14 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-22 12:51:12 $
  */
 public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     
@@ -37,7 +37,7 @@ public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     private static ReasonerFactory theInstance = new OWLFBRuleReasonerFactory();
     
     /** Static URI for this reasoner type */
-    public static final String URI = "http://www.hpl.hp.com/semweb/2003/OWLBRuleReasoner";
+    public static final String URI = "http://jena.hpl.hp.com/2003/OWLBRuleReasoner";
     
     /** Cache of the capabilities description */
     protected Model capabilities;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.9 2003-06-26 08:11:59 der Exp $
+ * $Id: ReasonerVocabulary.java,v 1.10 2003-08-22 12:51:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,12 +18,12 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-26 08:11:59 $
+ * @version $Revision: 1.10 $ on $Date: 2003-08-22 12:51:12 $
  */
 public class ReasonerVocabulary {
     
     /** The namespace used for system level descriptive properties of any reasoner */
-    public static String JenaReasonerNS = "http://www.hpl.hp.com/semweb/2003/JenaReasoner#";
+    public static String JenaReasonerNS = "http://jena.hpl.hp.com/2003/JenaReasoner#";
     
     /** The RDF class to which all Reasoners belong */
     public static Resource ReasonerClass = ResourceFactory.createResource(JenaReasonerNS + "ReasonerClass");
@@ -50,7 +50,7 @@ public class ReasonerVocabulary {
     public static Property directSubPropertyOf; 
 
     /** Base URI used for configuration properties for rule reasoners */
-    public static final String PropURI = "http://www.hpl.hp.com/semweb/2003/RuleReasoner";
+    public static final String PropURI = "http://jena.hpl.hp.com/2003/RuleReasoner";
 
     /** Property used to configure the derivation logging behaviour of a reasoner.
      *  Set to "true" to enable logging of derivations. */
