@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-08 21:29:58 $
+ * Last modified on   $Date: 2003-06-17 16:52:13 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.3 2003-06-08 21:29:58 ian_dickinson Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.4 2003-06-17 16:52:13 ian_dickinson Exp $
  */
 public class ResourceUtils {
     // Constants
@@ -147,36 +147,31 @@ public class ResourceUtils {
      */
     public static Resource renameResource( Resource old, String uri ) {
         Model m = old.getModel();
-        List subjectRefs = new ArrayList();
-        List objectRefs = new ArrayList();
+        List stmts = new ArrayList();
         
         // list the statements that mention old as a subject
-        for (Iterator i = old.listProperties();  i.hasNext(); subjectRefs.add( i.next() ) );
+        for (Iterator i = old.listProperties();  i.hasNext(); stmts.add( i.next() ) );
         
         // list the statements that mention old an an object
-        for (Iterator i = m.listStatements( null, null, old );  i.hasNext();  objectRefs.add( i.next() ) );
+        for (Iterator i = m.listStatements( null, null, old );  i.hasNext();  stmts.add( i.next() ) );
         
         // create a new resource to replace old
         Resource res = (uri == null) ? m.createResource() : m.createResource( uri );
         
         // now move the statements to refer to res instead of old
-        for (Iterator i = subjectRefs.iterator(); i.hasNext(); ) {
+        for (Iterator i = stmts.iterator(); i.hasNext(); ) {
             Statement s = (Statement) i.next();
             
-            res.addProperty( s.getPredicate(), s.getObject() );
             s.remove();
-        }
+            
+            Resource subj = s.getSubject().equals( old ) ? res : s.getSubject();    
+            RDFNode obj = s.getObject().equals( old ) ? res : s.getObject();
         
-        for (Iterator i = objectRefs.iterator(); i.hasNext(); ) {
-            Statement s = (Statement) i.next();
-            
-            s.getSubject().addProperty( s.getPredicate(), res );
-            s.remove();
+            m.add( subj, s.getPredicate(), obj );    
         }
         
         return res;
     }
-    
     
 
     // Internal implementation methods

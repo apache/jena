@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Jun-2003
  * Filename           $RCSfile: TestResourceUtils.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-06 21:46:25 $
+ * Last modified on   $Date: 2003-06-17 16:52:08 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResourceUtils.java,v 1.1 2003-06-06 21:46:25 ian_dickinson Exp $
+ * @version CVS $Id: TestResourceUtils.java,v 1.2 2003-06-17 16:52:08 ian_dickinson Exp $
  */
 public class TestResourceUtils 
     extends TestCase
@@ -135,6 +135,14 @@ public class TestResourceUtils
         assertTrue( "anon should have q c", anon.hasProperty( q, c ) );
         
         assertTrue( "d p b should be unchanged", d.hasProperty( p, b ) );
+        
+        // reflexive case
+        Resource f = m.createResource( NS + "f" );
+        f.addProperty( p, f );
+        
+        Resource f1 = ResourceUtils.renameResource( f, NS +"f1" );
+        assertFalse( "Should be no f statements",  m.listStatements( f, null, (RDFNode) null).hasNext() );
+        assertTrue( "f1 has p f1", f1.hasProperty( p, f1 ) );
     }
     
     // Internal implementation methods
