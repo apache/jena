@@ -13,7 +13,7 @@
     <meta name="keywords" content="" />
     <link href="../styles/doc.css" rel="stylesheet" type="text/css" />
     <!--
-      CVS: $Id: index.html,v 1.10 2003-08-28 11:29:04 andy_seaborne Exp $
+      CVS: $Id: index.html,v 1.11 2003-12-09 12:56:22 ian_dickinson Exp $
      (c) Copyright 2003, Hewlett-Packard Development Company LP
     -->
   </head>
@@ -1278,7 +1278,7 @@ OntClass c2 = m.createClass( Ns + "c2" );
     </p>
     <pre>
 OntModel m = ModelFactory.createOntModel();
-OntList Cs = m.createList(); // Cs is empty
+RDFList Cs = m.createList(); // Cs is empty
 Cs = cs.cons( m.createClass( Ns + "c0" ) );
 Cs = cs.cons( m.createClass( Ns + "c1" ) );
 Cs = cs.cons( m.createClass( Ns + "c2" ) );
