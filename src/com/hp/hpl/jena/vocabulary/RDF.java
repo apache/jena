@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: RDF.java,v 1.1.1.1 2002-12-19 19:21:39 bwm Exp $
+ *  $Id: RDF.java,v 1.2 2003-04-01 17:19:59 jeremy_carroll Exp $
  */
 
 
@@ -20,11 +20,10 @@ import com.hp.hpl.jena.rdf.model.RDFException;
 /**
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:39 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-01 17:19:59 $'
  */
 public class RDF{
     
-    // next free error code = 2
     
     protected static final String uri =
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#";

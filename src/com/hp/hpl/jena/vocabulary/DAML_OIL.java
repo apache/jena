@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            16 Jan 2001
  * Filename           $RCSfile: DAML_OIL.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:17:19 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-01 17:19:58 $
+ *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -84,7 +84,7 @@ import com.hp.hpl.jena.ontology.daml.DAMLList;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAML_OIL.java,v 1.3 2003-03-12 17:17:19 ian_dickinson Exp $
+ * @version CVS info: $Id: DAML_OIL.java,v 1.4 2003-04-01 17:19:58 jeremy_carroll Exp $
  */
 public class DAML_OIL
     implements DAMLVocabulary
@@ -99,6 +99,10 @@ public class DAML_OIL
 
     /** DAML namespace resource for the current release */
     public static final Resource NAMESPACE_DAML = new ResourceImpl( NAMESPACE_DAML_2001_03_URI );
+
+    /** DAML namespace resource for daml:collection. Note: strictly
+     * daml:collection is only a string, not a resource in the DAML namespace. */
+    public static final Resource collection = new ResourceImpl( NAMESPACE_DAML_2001_03_URI+"collection" );
 
     /** RDF resource for DAML List class.   */
     public static final DAMLClass List = new DAMLClassImpl( NAMESPACE_DAML_2001_03_URI, "List", null, s_instance );

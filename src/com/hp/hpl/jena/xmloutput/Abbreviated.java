@@ -2,14 +2,15 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.1.1.1 2002-12-19 19:21:47 bwm Exp $
+ *  $Id: Abbreviated.java,v 1.2 2003-04-01 17:20:47 jeremy_carroll Exp $
  */
-
 
 package com.hp.hpl.jena.xmloutput;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.RDFSyntax;
+import com.hp.hpl.jena.vocabulary.DAML_OIL;
 
 import java.io.*;
 //Writer;
@@ -25,68 +26,113 @@ import java.io.*;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:47 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-01 17:20:47 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
-    private Resource types[] =
-        new Resource[] {
-            DAML.Ontology,
-            DAML.Datatype,
-            DAML.Class,
-            RDFS.Class,
-            DAML.Property,
-            DAML.ObjectProperty,
-            DAML.DatatypeProperty,
-            DAML.TransitiveProperty,
-            DAML.UnambigousProperty,
-            DAML.UniqueProperty,
-            };
+	private Resource types[] =
+		new Resource[] {
+			DAML_OIL.Ontology,
+			DAML_OIL.Datatype,
+			DAML_OIL.Class,
+			RDFS.Class,
+			DAML_OIL.Property,
+			DAML_OIL.ObjectProperty,
+			DAML_OIL.DatatypeProperty,
+			DAML_OIL.TransitiveProperty,
+			DAML_OIL.UnambiguousProperty,
+			DAML_OIL.UniqueProperty,
+			};
+            
+	boolean sReification;
+    
+    
+	boolean sIdAttr;
+    boolean sDamlCollection;
+    boolean sParseTypeCollectionPropertyElt;
+    boolean sListExpand;
+    boolean sParseTypeLiteralPropertyElt;
+    boolean sParseTypeResourcePropertyElt;
+    boolean sPropertyAttr;
+    
 
-    Resource[] setTypes(Resource[] propValue) {
-        Resource[] rslt = types;
-        types = (Resource[]) propValue;
-        return rslt;
+    boolean sResourcePropertyElt;
+
+	void unblockAll() {
+		sDamlCollection = false;
+		sReification = false;
+		sResourcePropertyElt = false;
+		sParseTypeLiteralPropertyElt = false;
+		sParseTypeResourcePropertyElt = false;
+		sParseTypeCollectionPropertyElt = false;
+		sIdAttr = false;
+		sPropertyAttr = false;
+        sListExpand = false;
+	}
+    {
+        unblockAll();
     }
-
-    void writeBody(
-        Model model,
-        PrintWriter pw,
-        String base,
-        boolean useXMLBase) {
-        Unparser unp = new Unparser(this, base, model, pw);
-
-        unp.setTopLevelTypes(types);
-        //unp.useNameSpaceDecl(nameSpacePrefices);
-        if (useXMLBase)
-            unp.setXMLBase(base);
-        unp.write();
+    void blockRule(Resource r) {
+        if (r.equals(RDFSyntax.sectionReification)) sReification=true;
+        else if (r.equals(RDFSyntax.resourcePropertyElt)) sResourcePropertyElt=true;
+else if (r.equals(RDFSyntax.sectionListExpand)) sListExpand=true;
+        else if (r.equals(RDFSyntax.parseTypeLiteralPropertyElt)) sParseTypeLiteralPropertyElt=true;
+        else if (r.equals(RDFSyntax.parseTypeResourcePropertyElt)) sParseTypeResourcePropertyElt=true;
+        else if (r.equals(RDFSyntax.parseTypeCollectionPropertyElt)) sParseTypeCollectionPropertyElt=true;
+        else if (r.equals(RDFSyntax.idAttr)) {
+            sIdAttr=true;
+            sReification = true;
+        }
+        else if (r.equals(RDFSyntax.propertyAttr)) sPropertyAttr=true;
+        else if (r.equals(DAML_OIL.collection)) sDamlCollection=true;
+        else {
+            logger.warn("Cannot block rule <"+r.getURI()+">");
+        }
     }
+	Resource[] setTypes(Resource[] propValue) {
+		Resource[] rslt = types;
+		types = (Resource[]) propValue;
+		return rslt;
+	}
 
-    // Implemenatation of RDFErrorHandler
-    public void error(Exception e) {
-        errorHandler.error(e);
-    }
+	void writeBody(
+		Model model,
+		PrintWriter pw,
+		String base,
+		boolean useXMLBase) {
+		Unparser unp = new Unparser(this, base, model, pw);
 
-    public void warning(Exception e) {
-        errorHandler.warning(e);
-    }
+		unp.setTopLevelTypes(types);
+		//unp.useNameSpaceDecl(nameSpacePrefices);
+		if (useXMLBase)
+			unp.setXMLBase(base);
+		unp.write();
+	}
 
-    public void fatalError(Exception e) {
-        errorHandler.fatalError(e);
-    }
+	// Implemenatation of RDFErrorHandler
+	public void error(Exception e) {
+		errorHandler.error(e);
+	}
 
-    static public void main(String args[]) throws Exception {
-        System.out.println("Test code for bug 77");
-        Model m = new com.hp.hpl.jena.mem.ModelMem();
-        m.read(
-            new FileInputStream("modules/rdf/regression/arp/bug51_0.rdf"),
-            "http://example.org/file");
-        RDFWriter pw = m.getWriter("RDF/XML-ABBREV");
-        pw.setNsPrefix("eg", "http://example.org/");
-        pw.setNsPrefix("eg2", "http://example.org/foo#");
-        pw.write(m, System.out, "http://example.org/file");
-    }
+	public void warning(Exception e) {
+		errorHandler.warning(e);
+	}
+
+	public void fatalError(Exception e) {
+		errorHandler.fatalError(e);
+	}
+
+	static public void main(String args[]) throws Exception {
+		System.out.println("Test code for bug 77");
+		Model m = new com.hp.hpl.jena.mem.ModelMem();
+		m.read(
+			new FileInputStream("modules/rdf/regression/arp/bug51_0.rdf"),
+			"http://example.org/file");
+		RDFWriter pw = m.getWriter("RDF/XML-ABBREV");
+		pw.setNsPrefix("eg", "http://example.org/");
+		pw.setNsPrefix("eg2", "http://example.org/foo#");
+		pw.write(m, System.out, "http://example.org/file");
+	}
 
 }
 /*

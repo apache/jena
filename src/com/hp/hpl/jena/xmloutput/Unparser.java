@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.4 2003-03-29 09:42:24 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.5 2003-04-01 17:20:48 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput;
@@ -105,7 +105,7 @@ import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-03-29 09:42:24 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-04-01 17:20:48 $'
 
  */
 class Unparser {
@@ -447,6 +447,8 @@ class Unparser {
 	 */
 	private boolean wPropertyEltLiteral(WType wt,Property prop, Statement s, RDFNode r)
 		throws RDFException {
+        if ( prettyWriter.sParseTypeLiteralPropertyElt)
+            return false;
 		if (!((r instanceof Literal) && ((Literal) r).getWellFormed())) {
 			return false;
 		}
@@ -489,6 +491,8 @@ class Unparser {
 	 */
 	private boolean wPropertyEltResource(WType wt,Property prop, Statement s, RDFNode r)
 		throws RDFException {
+        if ( prettyWriter.sParseTypeResourcePropertyElt)
+           return false;
 		if (r instanceof Literal)
 			return false;
 		Resource res = (Resource) r;
@@ -569,7 +573,7 @@ class Unparser {
 	 */
 	private boolean wPropertyEltValueObj(WType wt,Property prop, Statement s, RDFNode r)
 		throws RDFException {
-		if (r instanceof Resource) {
+		if (r instanceof Resource && !prettyWriter.sResourcePropertyElt) {
 			Resource res = (Resource) r;
 			done(s);
 			tab();
@@ -755,6 +759,7 @@ class Unparser {
 		StmtIterator ss = listProperties(r);
 		try {
 			int greatest = 0;
+            if (! prettyWriter.sListExpand)
 			while (ss.hasNext()) {
 				Statement s = ss.nextStatement();
 				int ix = s.getPredicate().getOrdinal();
@@ -887,8 +892,11 @@ class Unparser {
 	 * [6.6] idAttr         ::= ' ID="' IDsymbol '"'
 	 */
 	private boolean wIdAttrOpt(Resource r) throws RDFException {
+        
 		if (isGenuineAnon(r))
 			return true; // We have output resource (with nothing).
+        if (prettyWriter.sIdAttr )
+           return false;
 		if (r.isAnon())
 			return false;
 		if (isLocalReference(r)) {
@@ -1264,7 +1272,8 @@ class Unparser {
 		if (!r.isAnon())
 			return false;
 		Integer v = (Integer) objectTable.get(r);
-		return v == null || (v.intValue() <= 1 && (!haveReified.contains(r)));
+		return v == null || ((!prettyWriter.sResourcePropertyElt)
+                    &&   v.intValue() <= 1 && (!haveReified.contains(r)));
 	}
 
 	private boolean isLocalReference(Statement s) {
@@ -1333,7 +1342,7 @@ class Unparser {
 	}
 	private boolean wantReification(Statement s, Resource ref)
 		throws RDFException {
-		if (s == null || ref == null || ref.isAnon())
+		if (s == null || ref == null || ref.isAnon() || prettyWriter.sReification )
 			return false;
 		if (!(isLocalReference(ref) && isLocalReference(s)))
 			return false;
@@ -1393,7 +1402,7 @@ class Unparser {
 	private boolean canBeAttribute(Statement s, Set seen) throws RDFException {
 		Property p = s.getPredicate();
 		// Check seen first.
-		if (seen.contains(p)) // We can't use the same attribute
+		if (prettyWriter.sPropertyAttr || seen.contains(p)) // We can't use the same attribute
 			// twice in one rule.
 			return false;
 		seen.add(p);
@@ -1466,10 +1475,12 @@ class Unparser {
 	 *
 	 */
 	private Statement[][] getDamlList(RDFNode r) {
-		return getList(r, DAML.List, DAML.first, DAML.rest, DAML.nil);
+		return prettyWriter.sDamlCollection ? null :
+        getList(r, DAML_OIL.List, DAML_OIL.first, DAML_OIL.rest, DAML_OIL.nil);
 	}
 	private Statement[][] getRDFList(RDFNode r) {
-		return getList(r, RDF.List, RDF.first, RDF.rest, RDF.nil);
+		return prettyWriter.sParseTypeCollectionPropertyElt ?null:
+         getList(r, RDF.List, RDF.first, RDF.rest, RDF.nil);
 	}
 
 	private Statement[][] getList(

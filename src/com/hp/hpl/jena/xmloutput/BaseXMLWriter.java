@@ -2,13 +2,14 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.7 2003-04-01 14:28:45 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.8 2003-04-01 17:20:47 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput;
 
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
 import com.hp.hpl.jena.rdf.model.impl.Util;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import org.apache.xerces.util.XMLChar;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
@@ -18,6 +19,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.RSS;
 import com.hp.hpl.jena.vocabulary.VCARD;
+import com.hp.hpl.jena.vocabulary.RDFSyntax;
+import com.hp.hpl.jena.vocabulary.DAML_OIL;
+
 
 import com.hp.hpl.jena.rdf.arp.URI;
 import com.hp.hpl.jena.rdf.arp.MalformedURIException;
@@ -53,7 +57,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2003-04-01 14:28:45 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2003-04-01 17:20:47 $'
  */
 abstract public class BaseXMLWriter implements RDFWriter {
 	/** log4j logger */
@@ -91,8 +95,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 
 	String xmlBase = null;
 	boolean longId = false;
-    boolean allowBadURIs = false;
-    
+	boolean allowBadURIs = false;
+
 	HashMap anonMap = new HashMap();
 	int anonCount = 0;
 	static private RDFDefaultErrorHandler defaultErrorHandler =
@@ -221,13 +225,12 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			rslt.append("\n    xmlns");
 			String prefix = (String) ent.getValue();
 			String uri = (String) ent.getKey();
-            if (!allowBadURIs)
-              try {
-                new URI(uri);
-              }
-              catch (MalformedURIException e) {
-                throw new RDFException(e);
-              }
+			if (!allowBadURIs)
+				try {
+					new URI(uri);
+				} catch (MalformedURIException e) {
+					throw new RDFException(e);
+				}
 			if (prefix.length() > 0) {
 				rslt.append(":" + prefix);
 			}
@@ -305,13 +308,12 @@ abstract public class BaseXMLWriter implements RDFWriter {
 		}
 		boolean cookUp = false;
 		if (prefix == null) {
-            if (!allowBadURIs)
-              try {
-                new URI(uri);
-              }
-              catch (MalformedURIException e) {
-                throw new RDFException(e);
-              }
+			if (!allowBadURIs)
+				try {
+					new URI(uri);
+				} catch (MalformedURIException e) {
+					throw new RDFException(e);
+				}
 			logger.warn(
 				"Internal error: unexpected QName URI: <"
 					+ uri
@@ -463,15 +465,14 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	}
 
 	String relativize(String uri) {
-        try {
-		if (relativeFlags != 0 && baseURI != null)
-			return baseURI.relativize(uri, relativeFlags);
-        else if ( !allowBadURIs)
-            new URI(uri);
-        }
-        catch (MalformedURIException e) {
-            throw new RDFException(e);
-        }
+		try {
+			if (relativeFlags != 0 && baseURI != null)
+				return baseURI.relativize(uri, relativeFlags);
+			else if (!allowBadURIs)
+				new URI(uri);
+		} catch (MalformedURIException e) {
+			throw new RDFException(e);
+		}
 		return uri;
 	}
 
@@ -581,7 +582,41 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	 *  asked to write to an OutputStreamWriter that uses some
 	 *  encoding other than UTF-8. In this case the encoding is shown
 	 *  in the XML declaration.
-	 * <dt>prettyTypes</dt>
+	 * <dt>blockRules</dt>
+	 * <dd>
+	 * A list of Resource or a String being a comma separated list
+	 * of fragment
+	 * IDs from
+	 * <a href="http://www.w3.org/TR/rdf-syntax-grammar">
+	 * http://www.w3.org/TR/rdf-syntax-grammar</a> indicating
+	 * grammar rules that will not be used.
+	 * Rules that can be avoided are:
+	 * <ul>
+	 * <li>
+	 * <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#section-Reification"
+	 * >section-Reification</a></li>
+	 * <li><a href="http://www.w3.org/TR/rdf-syntax-grammar#section-List-Expand"
+	 * >section-List-Expand</a></li>
+	<li><a href="http://www.w3.org/TR/rdf-syntax-grammar#resourcePropertyElt">resourcePropertyElt</a></li>
+	<li><a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeLiteralPropertyElt">parseTypeLiteralPropertyElt</a></li>
+	<li><a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeResourcePropertyElt">parseTypeResourcePropertyElt</a></li>
+	<li><a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeCollectionPropertyElt">parseTypeCollectionPropertyElt</a></li>
+	<li><a href="http://www.w3.org/TR/rdf-syntax-grammar#idAttr">idAttr</a></li>
+	<li><a href="http://www.w3.org/TR/rdf-syntax-grammar#propertyAttr">propertyAttr</a></li>
+	 
+	 * </ul>
+	 * In addition "daml:collection" 
+	 * (or http://www.daml.org/2001/03/daml+oil#collection) 
+	 * can be blocked. Blocking <a href=
+	 * "http://www.w3.org/TR/rdf-syntax-grammar#idAttr">idAttr</a>  also blocks
+	 * <a href="http://www.w3.org/TR/rdf-syntax-grammar#section-Reification"
+	 * >section-Reification</a>.
+	 * For the basic writer (RDF/XML) only 
+	<a href="http://www.w3.org/TR/rdf-syntax-grammar#parseTypeLiteralPropertyElt">parseTypeLiteralPropertyElt</a>
+	has any affect, since none of the other rules are implemented by that writer.
+	
+	 * 
+	 *  * <dt>prettyTypes</dt>
 	 * <dd>
 	 * the types of the principal objects in the model.  Abbreviated
 	 *  will tend to create RDF/XML with resources of these types at the
@@ -665,6 +700,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			int old = relativeFlags;
 			relativeFlags = URI.str2flags((String) propValue);
 			return URI.flags2str(old);
+		} else if (propName.equalsIgnoreCase("blockRules")) {
+			return setBlockRules(propValue);
 		} else {
 			logger.warn("Unsupported property: " + propName);
 			return null;
@@ -682,6 +719,32 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			"prettyTypes is not a property on the Basic RDF/XML writer.");
 		return null;
 	}
+    private Resource blockedRules[] = new Resource[0];
+    Resource[] setBlockRules(Object o) {
+        Resource rslt[] = blockedRules;
+        unblockAll();
+        if (o instanceof Resource[]) {
+            blockedRules = (Resource[])o;
+            for (int i=0;i<blockedRules.length;i++)
+              blockRule(blockedRules[i]);
+        } else {
+            StringTokenizer tkn = new StringTokenizer((String)o,", ");
+            Vector v = new Vector();
+            while ( tkn.hasMoreElements() ) {
+                String frag = tkn.nextToken();
+                if ( frag.equals("daml:collection") )
+                   v.add(DAML_OIL.collection);
+                else 
+                  v.add(new ResourceImpl(RDFSyntax.getURI()+frag));
+            }
+            
+            blockedRules = new Resource[v.size()];
+            v.copyInto(blockedRules);
+        }
+        return rslt;
+    }
+    abstract void unblockAll();
+    abstract void blockRule(Resource r);
 	/*
 	private boolean sameDocument = true;
 	private boolean network = false;
