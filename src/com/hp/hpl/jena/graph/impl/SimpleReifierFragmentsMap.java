@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.13 2004-11-02 14:10:08 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.14 2004-11-03 15:10:37 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;

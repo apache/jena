@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.39 2004-11-02 14:10:08 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.40 2004-11-03 15:10:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -193,10 +193,12 @@ public class SimpleReifier implements Reifier
     private void removeFragment( ReifierFragmentHandler s, Triple fragment )
         {
         Node tag = fragment.getSubject();
-        Triple already = (Triple) tripleMap.getTriple( tag );
+        Triple already = tripleMap.getTriple( tag );
         Triple complete = s.removeFragment( tag, already, fragment );
         if (complete == null)
+            {
             tripleMap.removeTriple( tag );
+            }
         else
             tripleMap.putTriple( tag, complete );
         }        
