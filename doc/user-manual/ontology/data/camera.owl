@@ -17,6 +17,7 @@
                           Leo Sauermann, Brian McBride and        
                           Jim Farrugia.                           
         </rdfs:comment>
+        <owl:imports rdf:resource="http://www.w3.org/2002/07/owl" />
     </owl:Ontology>
 
      <owl:Class rdf:ID="Money">

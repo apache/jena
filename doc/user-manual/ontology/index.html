@@ -714,7 +714,7 @@ m.read( &quot;http://www.xfront.com/owl/ontologies/camera/&quot; );</pre>
 <p>For other user interface or presentation tasks, we may want something between 
   the complete list of types and the base list of only the asserted values. Consider 
   the following class hierarchy:</p>
-<p class="centered"><img src="../../images/Direct-hierarchy.png" width="675" height="355"></p>
+<p class="centered"><img src="../../images/Direct-hierarchy.png" width="595" height="315"></p>
 <p class="caption">Figure 5: asserted and inferred relationships</p>
 <p>Figure 5.i shows a base model, containing a class hierarchy and an instance 
   x. Figure 5.ii shows a full set of relationships that might be inferred from 
@@ -931,12 +931,13 @@ body.addRange( Body );</pre>
 <p>Both DAML+OIL and OWL permit object and datatype properties to be <i>functional</i> 
   - that is, for a given individual in the domain, the range value will always 
   be the same. In DAML+OIL, this characteristic is labelled as a<i> unique </i>property, 
-  but the idea is the same. Rather than model being functional as an additional 
-  component of the Java class name (such as FunctionalObjectProperty), we have 
-  chosen to model the capability of being functional as a flag on the <code>OntProperty</code> 
-  object. Thus, when creating an object or datatype property, there is an optional 
-  Boolean parameter to indicate whether this property is functional. A property 
-  that is functional will also support the facet interface <code>FunctionalProperty</code>.</p>
+  but the idea is the same. A functional property also has a maximum cardinality 
+  of one. Rather than represent the quality of being functional in the Java class 
+  name (for example FunctionalObjectProperty), we have chosen to represent the 
+  capability of being functional as a flag on the <code>OntProperty</code> object. 
+  Thus, when creating an object or datatype property, there is an optional Boolean 
+  parameter to indicate whether this property is functional. A property that is 
+  functional will also support the facet interface <code>FunctionalProperty</code>.</p>
 <p>There are several additional subtypes of ObjectProperty that represent additional 
   capabilities of ontology properties. A <code>TransitiveProperty</code> means 
   that if p is transitive, and we know <code>A p B</code> and also <code>B p C</code>, 
@@ -1360,6 +1361,6 @@ ont.addProperty( DC.creator, &quot;John Smith&quot; );</pre>
   details. </p>
 <h2 id="builtinReasoners">FAQ, common problems and other tips</h2>
 <p><i>To be completed.</i></p>
-<p class="footnote">End of document. CVS: $Id: index.html,v 1.6 2003-06-27 20:54:25 ian_dickinson Exp $</p>
+<p class="footnote">End of document. CVS: $Id: index.html,v 1.7 2003-06-28 21:23:42 ian_dickinson Exp $</p>
 </body>
 </html>

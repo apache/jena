@@ -1,11 +1,24 @@
+/* Style sheet for Jena user manual documents */
+/* CVS $Id: $ */
+
+/* Media-specific rules */
+
+/* Nice margin on web pages, don't bother for printed pages */
+@media print {
+    body { margin-left: 0; margin-right: 0; }
+}
+
+@media screen, projection {
+    body { margin-left: 5%; margin-right: 5%; }
+}
+
+/* Non media-specific rules */
 
 body {
 	font-family: Verdana, Arial, Helvetica, sans-serif ;
 	font-size: 10pt ;
 	color: black;
 	background: white ;
-	margin-left: 5%;
-	margin-right: 5%;
 }
 
 /* Broswer CSS2 table support is rather "individual" */
