@@ -1,54 +1,73 @@
 /******************************************************************
- * File:        TestPackage.java
+ * File:        TestBugs.java
  * Created by:  Dave Reynolds
- * Created on:  30-Mar-03
+ * Created on:  22-Aug-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestPackage.java,v 1.13 2003-08-22 10:21:53 der Exp $
+ * $Id: TestBugs.java,v 1.1 2003-08-22 10:21:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.*;
 
-import junit.framework.*;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+//import java.util.*;
 
 /**
- * Aggregate tester that runs all the test associated with the rulesys package.
+ * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-08-22 10:21:53 $
+ * @version $Revision: 1.1 $ on $Date: 2003-08-22 10:21:53 $
  */
+public class TestBugs extends TestCase {
 
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
+    /**
+     * Boilerplate for junit
+     */ 
+    public TestBugs( String name ) {
+        super( name ); 
     }
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("RuleSys");
-        
-        addTest( "TestBasics", TestBasics.suite() );
-        addTest( "TestBackchainer", TestBackchainer.suite() );
-        addTest( "TestLPBasics", TestBasicLP.suite() );
-        addTest( "TestFBRules", TestFBRules.suite() );
-        addTest( "TestGenericRules", TestGenericRules.suite() );
-        addTest( "TestRETE", TestRETE.suite() );
-        addTest( "TestOWLRules", TestOWLRules.suite() );
-        addTest( "TestBugs", TestBugs.suite() );
-    }
+    /**
+     * Boilerplate for junit.
+     * This is its own test suite
+     */
+    public static TestSuite suite() {
+        return new TestSuite( TestBugs.class );
+    }  
 
-    // helper method
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+    /**
+     * Report of NPE during processing on an ontology with a faulty intersection list,
+     * from Hugh Winkler.
+     * 
+     * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
+     * @version $Revision: 1.1 $ on $Date: 2003-08-22 10:21:53 $
+     */
+    public void testIntersectionNPE() {
+        Model base = ModelFactory.createDefaultModel();
+        base.read("file:testing/reasoners/bugs/bad-intersection.owl");
+        boolean foundBadList = false;
+        try {
+            InfGraph infgraph = ReasonerRegistry.getOWLReasoner().bind(base.getGraph());
+            ExtendedIterator ci = infgraph.find(null, RDF.Nodes.type, OWL.Class.asNode());
+            ci.close();
+        } catch (ReasonerException e) {
+            foundBadList = true;
+        }
+        assertTrue("Correctly detected the illegal list", foundBadList);
     }
-
+    
 }
 
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xmlns:owl="http://www.w3.org/2002/07/owl#"  
+      	 xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+		 xmlns:xsd="http://www.w3.org/2001/XMLSchema#">
+      <owl:Class rdf:ID="C">
+            <owl:intersectionOf>
+                  <owl:Restriction>
+                        <owl:onProperty rdf:resource="#P"/>
+                  </owl:Restriction>
+            </owl:intersectionOf> 
+      </owl:Class>
+      <owl:ObjectProperty rdf:ID="P"/>
+</rdf:RDF>

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLRuleTranslationHook.java,v 1.1 2003-06-22 16:10:51 der Exp $
+ * $Id: OWLRuleTranslationHook.java,v 1.2 2003-08-22 10:21:57 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * intersection statement.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-22 16:10:51 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-22 10:21:57 $
  */
 public class OWLRuleTranslationHook implements RulePreprocessHook {
 
@@ -74,10 +74,16 @@ public class OWLRuleTranslationHook implements RulePreprocessHook {
      * @param elements the list of elements found so far
      */
     protected static void translateIntersectionList(Node node, Finder dataFind, List elements) {
+        if (node == null) {
+            throw new ReasonerException("Illegal list structure in owl:intersectionOf");
+        }
         if (node.equals(RDF.nil.asNode())) {
             return; // end of list
         } 
         Node description = Util.getPropValue(node, RDF.first.asNode(), dataFind);
+        if (description == null) {
+            throw new ReasonerException("Illegal list structure in owl:intersectionOf");
+        }
         // Translate the first description element
         if (dataFind.contains(new TriplePattern(description, RDF.type.asNode(), OWL.Restriction.asNode()))) {
             // Process a restriction element
