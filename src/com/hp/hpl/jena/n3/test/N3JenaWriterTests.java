@@ -22,7 +22,7 @@ import com.hp.hpl.jena.mem.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTests.java,v 1.4 2003-04-04 11:31:08 chris-dollin Exp $
+ * @version 	$Id: N3JenaWriterTests.java,v 1.5 2003-04-24 09:43:44 andy_seaborne Exp $
  */
 public class N3JenaWriterTests extends N3ExternalTestsCom
 {
@@ -105,7 +105,7 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 				System.out.println("#### ---- "+testName+" ------------------------------") ;
                 System.out.println("#### Model 1 ---- "+testName+" ------------------------------") ;
                 model_1.write(System.out, "N3") ;
-                System.out.println("#### -Model 2 --- "+testName+" ------------------------------") ;
+                System.out.println("#### Model 2 --- "+testName+" ------------------------------") ;
                 model_2.write(System.out, "N3") ;
                 assertTrue("Models don't match: "+testName, false) ;
 			}

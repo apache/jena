@@ -1,24 +1,10 @@
 // $ANTLR : "c:/home/afs/Projects/Jena2/src/com/hp/hpl/jena/n3/n3.g" -> "N3AntlrParser.java"$
 
 package com.hp.hpl.jena.n3 ;
-import java.io.* ;
-import antlr.TokenStreamRecognitionException ;
-
-import antlr.TokenBuffer;
-import antlr.TokenStreamException;
-import antlr.TokenStreamIOException;
-import antlr.ANTLRException;
-import antlr.LLkParser;
-import antlr.Token;
-import antlr.TokenStream;
-import antlr.RecognitionException;
-import antlr.NoViableAltException;
-import antlr.MismatchedTokenException;
-import antlr.SemanticException;
-import antlr.ParserSharedInputState;
+//import java.io.* ;
+import antlr.* ;
 import antlr.collections.impl.BitSet;
-import antlr.collections.AST;
-import antlr.ASTPair;
+import antlr.collections.* ;
 import antlr.collections.impl.ASTArray;
 
 public class N3AntlrParser extends antlr.LLkParser

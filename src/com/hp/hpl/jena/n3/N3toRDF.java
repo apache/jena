@@ -13,14 +13,13 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.6 2003-03-28 18:08:21 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.7 2003-04-24 09:43:43 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
 	static public boolean VERBOSE = false ;
 	
 	Model model ;
-	Map prefixMap = new HashMap() ;
 
 	// Maps URIref or a _:xxx bNode to a Resource
 	Map resourceRef = new HashMap() ;
@@ -94,7 +93,9 @@ public class N3toRDF implements N3ParserEventHandler
 
 			if ( VERBOSE )
 				System.out.println(prefix+" => "+uriref) ;
-			prefixMap.put(prefix, uriref) ;
+            
+            model.setNsPrefix(prefix, uriref) ;
+            
 			return ;
 		}
 		
@@ -153,8 +154,16 @@ public class N3toRDF implements N3ParserEventHandler
                     pNode = RDF.type ;
 					break ;
 				case N3Parser.QNAME:
-                    ExpandedQName qn = new ExpandedQName(line, propStr);
-                    pNode = model.createProperty(qn.firstPart, qn.secondPart) ;
+                    //ExpandedQName qn = new ExpandedQName(line, propStr);
+                    //pNode = model.createProperty(qn.firstPart, qn.secondPart) ;
+                    String uriref = model.expandPrefix(propStr) ;
+                    if ( uriref == propStr )
+                    {
+                        // Failed to expand ...
+                        error("Line "+line+": N3toRDF: Undefined qname namespace: " + propStr);
+                        return ;
+                    }
+                    pNode = model.createProperty(uriref) ;
                     break ;
 				case N3Parser.URIREF:
                     break ;
@@ -177,8 +186,6 @@ public class N3toRDF implements N3ParserEventHandler
                 pNode = model.createProperty(propStr) ;
             else
                 propStr = pNode.getURI() ;
-
-
             
 			RDFNode sNode = createNode(line, subj);
             // Must be a resource
@@ -246,11 +253,18 @@ public class N3toRDF implements N3ParserEventHandler
                                         + text+ "^^"+ typeURI);
                                 return model.createLiteral("Illegal literal: " + text + "^^" + typeURI);
                             }
-                            ExpandedQName qn = new ExpandedQName(line, typeURI);
-                            typeURI = qn.expansion;
+                            //ExpandedQName qn = new ExpandedQName(line, typeURI);
+                            //typeURI = qn.expansion;
+                            String typeURI2 = model.expandPrefix(typeURI) ;
+                            if ( typeURI2 == typeURI )
+                            {
+                                error("Line "+line+": N3toRDF: Undefined qname namespace in datatype: " + typeURI);
+                            }
                             // Fall through
+                            typeURI = typeURI2 ;
+                            
                         case N3Parser.URIREF :
-                            typeURI = expandURIRef(typeURI);
+                            typeURI = expandHereURIRef(typeURI);
                             break ;
                         default :
                             error("Line "+ line+ ": N3toRDF: Must use URIref or QName datatype URI: "
@@ -261,17 +275,28 @@ public class N3toRDF implements N3ParserEventHandler
                 return model.createTypedLiteral(text, langTag, typeURI) ;
                 
 			case N3Parser.QNAME :
-				// Is it a labeled bNode?
-				if ( text.startsWith("_:") && ! prefixMap.containsKey("_") )
+				// Is it a labelled bNode?
+                // Check if _ has been defined.
+				if ( text.startsWith("_:") && ( model.getNsPrefixURI("_") == null ) )
 				{
 					if ( ! bNodeMap.containsKey(text) )
 						bNodeMap.put(text, model.createResource()) ;
 					return (Resource)bNodeMap.get(text) ;
 				}
 			
-				ExpandedQName qn = new ExpandedQName(line, text);
-				text = qn.expansion ;
-                return model.createResource(expandURIRef(text)) ;
+				//ExpandedQName qn = new ExpandedQName(line, text);
+				//text = qn.expansion ;
+                String uriref = model.expandPrefix(text) ;
+                if ( uriref == text )
+                {
+                    error("Line "+line+": N3toRDF: Undefined qname namespace: " + text);
+                    return null ;
+                }
+                return model.createResource(expandHereURIRef(uriref)) ;
+
+            // Normal URIref - may be <> or <#>
+            case N3Parser.URIREF :
+                return model.createResource(expandHereURIRef(text)) ;
             
             // Lists
             case N3Parser.TK_LIST_NIL:
@@ -279,9 +304,6 @@ public class N3toRDF implements N3ParserEventHandler
             case N3Parser.TK_LIST:
                 return RDF.List ;
 
-			case N3Parser.URIREF :
-                return model.createResource(expandURIRef(text)) ;
-                
 			case N3Parser.ANON:			// bNodes via [] or [:- ] QNAME starts "=:"
 				if ( ! bNodeMap.containsKey(text) )
 					bNodeMap.put(text, model.createResource()) ;
@@ -299,7 +321,7 @@ public class N3toRDF implements N3ParserEventHandler
 	}
 
     // Expand shorthand forms (not QNames) for URIrefs.
-    private String expandURIRef(String text)
+    private String expandHereURIRef(String text)
     {
         // Not a "named" bNode (start with _:)
         if ( text.equals("") )
@@ -310,35 +332,6 @@ public class N3toRDF implements N3ParserEventHandler
             return base+"#" ;
         return text;
     }
-    
-	class ExpandedQName
-	{
-		public String qname;
-
-		public String firstPart;
-		public String secondPart;
-		public String expansion;
-
-		ExpandedQName (int line, String _qname)
-		{
-			qname = _qname;
-			int split = qname.indexOf(':');
-
-			String prefix = qname.substring(0, split);
-			if (! prefixMap.containsKey(prefix) )
-				error("Line "+line+": N3toRDF: Undefined qname: " + qname);
-
-			secondPart = qname.substring(split + 1);
-			firstPart = (String) prefixMap.get(prefix);
-
-			// The :x form
-			//if ( firstPart.equals("#") )
-			//	firstPart = base+"#" ;
-				
-			expansion = firstPart + secondPart;
-		}
-	}
-	
 }
 
 /*

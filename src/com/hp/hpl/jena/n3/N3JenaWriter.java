@@ -4,10 +4,13 @@
  */
 
 // To do:
-//   Choosing prefixes (await nanepsace tracking)
-//   Printing only used prefixes
+//   Split into different writers for fast and pretty
 //   Options
+//     Make some of the config variable depend on system properties
+//     Document the environment variables including I/O howto.
 //   Better layout:
+//     Better deciding when to use current line
+//       need to look at next items before deciding on a newline or not.
 //     Deciding on one line or several for:
 //       RDF lists
 //       Object lists (currently swicthed off)
@@ -15,18 +18,15 @@
 //     Clustering : rdf:type to front.
 //     Clustering : same namespace together
 
-// On layout:
-// Better deciding when to use current line
-// need to look at next items before deciding on a newline of not.
 
 package com.hp.hpl.jena.n3;
 
+//import org.apache.log4j.Logger;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom ;
-import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.vocabulary.OWL ;
 import com.hp.hpl.jena.vocabulary.RDF ;
+import com.hp.hpl.jena.util.JenaException ;
 
 import java.util.* ;
 import java.io.* ;
@@ -35,27 +35,34 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.10 2003-04-17 14:43:37 chris-dollin Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.11 2003-04-24 09:43:43 andy_seaborne Exp $
  */
 
 
 
 public class N3JenaWriter implements RDFWriter
 {
+    //static Logger logger = Logger.getLogger("com.hp.hpl.jena.n3.N3JenaWriter") ;
+    
 	// This N3 writer proceeds in 2 stages.  First, it analysises the model to be
 	// written to extract information that is going to be specially formatted
 	// (RDF lists, small anon nodes) and to calculate the prefixes that will be used.
 
     static final private boolean doObjectListsAsLists = false ;
+    
+    // Write the N3 out using the base URI to reduce certain things: 
+    // - Write URIs that match the base name as <>
+    // - Write prefix declarations for <> and/or <#> in short form.
+    
+    static final private boolean doAbbreviatedBaseURIref = true ;
 	static public boolean DEBUG = false ;
 
 	RDFErrorHandler errorHandler = null;
 	Map writerPropertyMap = new HashMap() ;
+
 	public static final String propWriteSimple = "com.hp.hpl.jena.n3.N3JenaWriter.writeSimple" ;
 
 	int bNodeCounter = 0 ;
-
-    //static DAMLVocabulary damlVocabulary = DAML_OIL.getInstance() ;
 
 	static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
 
@@ -63,11 +70,10 @@ public class N3JenaWriter implements RDFWriter
 
 	Set rdfLists      	= null ; 		// Heads of daml lists
 	Set rdfListsAll   	= null ;		// Any resources in a daml lists
-	Set rdfListsDone  	= null ;		// DAML lists written
+	Set rdfListsDone  	= null ;		// RDF lists written
 	Set roots          	= null ;		// Things to put at the top level
 	Set oneRefObjects 	= null ;		// Bnodes referred to once as an object - can inline
 	Set oneRefDone   	= null ;		// Things done - so we can check for missed items
-	Set prefixesUsed   	= null ;		// Prefixes seen
 	Map prefixMap 	   	= new HashMap() ;	// Prefixes to actually use
 	Map	bNodesMap       = null ;		// BNodes seen.
 
@@ -80,11 +86,11 @@ public class N3JenaWriter implements RDFWriter
 
 	// Work variables controlling the output
 	IndentedWriter out = null ;
-	String baseName = null ;
+	String baseURIref = null ;
+    String baseURIrefHash = null ;
 	String indent = pad(6) ;
 	int minGap = 1 ;
 
-	boolean doingBaseHash = false ;
     boolean doingPrettyWrite = true ;
 
 	public RDFErrorHandler setErrorHandler(RDFErrorHandler errHandler)
@@ -99,15 +105,12 @@ public class N3JenaWriter implements RDFWriter
 		if ( prefix.endsWith(":") )
 			prefix = prefix.substring(0,prefix.length()-1) ;
 		if ( prefix.indexOf('.') != -1 )
-		{
-			Log.warning("N3 names prefix can't contain a '.'", "N3JenaWriter", "setNsPrefix") ;
-			return ;
-		}
+            throw new JenaException("N3JenaWriter.setNsPrefix: N3 prefixes can't contain a '.':: "+prefix) ;
 		prefixMap.put(prefix, ns) ;
 	}
 
-    final public String getPrefixFor( String uri )
-        { return null; }
+    public String getPrefixFor( String uri )
+        { return (String)prefixMap.get(uri); }
 
 	public Object setProperty(String propName, Object propValue) throws RDFException
 	{
@@ -166,12 +169,19 @@ public class N3JenaWriter implements RDFWriter
             _out = new BufferedWriter(_out);
         out = new IndentedWriter(_out);
 
-        baseName = base;
-
+        // Base is (should be) a URI, not a URI ref.
+        
+        if ( base != null )
+        {
+            baseURIref = base ;
+            if ( !base.endsWith("#"))
+                baseURIrefHash = baseURIref+"#" ;
+        }
+        
 		// Allocate datastructures - allows reuse of a writer
 		startWriting() ;
 
-		prepare(model, base) ;
+		prepare(model) ;
 
 		// Phase 2:
 		// Do the output.
@@ -201,7 +211,7 @@ public class N3JenaWriter implements RDFWriter
 	}
 
 
-	private void prepare(Model model, String base) throws RDFException
+	private void prepare(Model model) throws RDFException
 	{
 		preparePrefixes(model) ;
 		prepareLists(model) ;
@@ -209,21 +219,14 @@ public class N3JenaWriter implements RDFWriter
 	}
 
 
-	// Needs to be better
 	private void preparePrefixes(Model model) throws RDFException
 	{
-		if ( !prefixMap.containsValue(RDF.getURI()) && !prefixMap.containsKey("rdf") )
-			setNsPrefix("rdf", RDF.getURI()) ;
-
-		if ( !prefixMap.containsValue(RDFS.getURI()) && !prefixMap.containsKey("rdfs") )
-			setNsPrefix("rdfs", RDFS.getURI()) ;
-
-//		if ( !prefixMap.containsValue(damlVocabulary.NAMESPACE_DAML().getURI())
-//			  && !prefixMap.containsKey("daml") )
-//			setNsPrefix("daml", damlVocabulary.NAMESPACE_DAML().getURI()) ;
-//
-		if ( !prefixMap.containsValue(NS_W3_log) && !prefixMap.containsKey("log") )
-			setNsPrefix("log", NS_W3_log) ;
+        // If no base defined for the model, but one given to writer,
+        // then use this.
+        String base2 = (String)prefixMap.get("") ;
+        
+        if ( base2 == null && baseURIrefHash != null )
+            prefixMap.put("", baseURIrefHash) ;
 
 		for ( Iterator iter = prefixMap.keySet().iterator() ; iter.hasNext() ; )
 		{
@@ -231,12 +234,11 @@ public class N3JenaWriter implements RDFWriter
 			if ( prefix.indexOf('.') != -1 )
 				iter.remove() ;
 		}
-
 	}
 
-	// Find well-form RDF lists - does not find empty lists (this is intentional)
+	// Find well-formed RDF lists - does not find empty lists (this is intentional)
 	// Works by finding all tails, and work backwards to the head.
-    // RDF lists may, not may not, have a type element.
+    // RDF lists may, or may not, have a type element.
 
 	private void prepareLists(Model model) throws RDFException
 	{
@@ -380,27 +382,31 @@ public class N3JenaWriter implements RDFWriter
 
 	private void writeModel(Model model) throws RDFException
 	{
+        if ( baseURIref != null )
+            out.println("# Base: "+baseURIref) ;
+        
 		for ( Iterator pIter = prefixMap.keySet().iterator() ; pIter.hasNext() ; )
 		{
 			String p = (String)pIter.next() ;
 			String u = (String)prefixMap.get(p) ;
+
+            // Special cases: N3 handling of base names.
+            if ( doAbbreviatedBaseURIref && p.equals("") )
+            {
+                if ( u.equals(baseURIrefHash) )
+                    u = "#" ;
+                if ( u.equals(baseURIref) )
+                    u = "" ;
+            }
+            
 			String tmp = "@prefix "+p+": " ;
 			out.print(tmp) ;
 			out.print(pad(16-tmp.length())) ;
 			out.println("<"+u+"> .") ;
 		}
 
-		if ( !prefixMap.containsKey("") )
-		{
-			doingBaseHash = true ;
-			String tmp = "@prefix : " ;
-			out.print(tmp) ;
-			out.print(pad(16-tmp.length())) ;
-			out.println("<#> .") ;
-		}
-
-		if ( doingBaseHash || prefixMap.size() != 0 )
-			out.println() ;
+        if ( prefixMap.size() != 0 )
+            out.println() ;
 
 		boolean doingFirst = true ;
 		ResIterator rIter = model.listSubjects() ;
@@ -696,23 +702,25 @@ public class N3JenaWriter implements RDFWriter
 		if ( r.equals(RDF.nil) )
 			return "()" ;
 
-		String uriStr = r.getURI() ;
-
-		if ( uriStr.equals(baseName) )
-			return "<>" ;
-
+        return formatURI(r.getURI()) ;
+    }
+    
+    private String formatURI(String uriStr)
+    {
 		String matchURI = "" ;
 		String matchPrefix = null ;
 
+        if ( doAbbreviatedBaseURIref && uriStr.equals(baseURIref) )
+            return "<>" ;
 
-		// Because we always use "@prefix : <#>."
-		if ( doingBaseHash && uriStr.startsWith(baseName+"#") )
-		{
-			String localname = uriStr.substring((baseName+"#").length()) ;
-			if ( localname.indexOf('.') == -1 )
-				return ":"+localname ;
-		}
-		else
+//		// Because we always use "@prefix : <#> ."
+//		if ( doingBaseHash && uriStr.startsWith(baseName+"#") )
+//		{
+//			String localname = uriStr.substring((baseName+"#").length()) ;
+//			if ( localname.indexOf('.') == -1 )
+//				return ":"+localname ;
+//		}
+//		else
 		{
 			// Try for a prefix and write as qname
 			for ( Iterator pIter = prefixMap.keySet().iterator() ; pIter.hasNext() ; )
@@ -737,9 +745,9 @@ public class N3JenaWriter implements RDFWriter
 					return matchPrefix+":"+localname ;
 			}
 		}
-		// Not as a qname - write a quoted URIref
+		// Not as a qname - write as a quoted URIref
 		// URIref
-		return "<"+r.getURI()+">" ;
+		return "<"+uriStr+">" ;
 	}
 
 
@@ -775,9 +783,8 @@ public class N3JenaWriter implements RDFWriter
         }
         if ( datatype != null )
         {
-            out.print("^^<") ;
-            out.print(datatype) ;
-            out.print(">") ;
+            out.print("^^") ;
+            out.print(formatURI(datatype)) ;
         }
 	}
 
@@ -798,7 +805,6 @@ public class N3JenaWriter implements RDFWriter
 		rdfListsDone 	= new HashSet() ;
 		oneRefObjects 	= new HashSet() ;
 		oneRefDone 		= new HashSet() ;
-		prefixesUsed 	= new HashSet();
 		//prefixMap - retained across runs
 		bNodesMap		= new HashMap() ;
 	}
@@ -811,7 +817,6 @@ public class N3JenaWriter implements RDFWriter
 		rdfListsDone 	= null ;
 		oneRefObjects 	= null ;
 		oneRefDone 		= null ;
-		prefixesUsed 	= null ;
 		bNodesMap		= null ;
 	}
 
@@ -894,7 +899,7 @@ public class N3JenaWriter implements RDFWriter
 			_out = new BufferedWriter(_out) ;
 		out = new IndentedWriter(_out) ;
 
-		baseName = base ;
+		baseURIref = base ;
 		startWriting() ;
 		writeModelSimple(model) ;
 		finishWriting() ;
@@ -912,12 +917,15 @@ public class N3JenaWriter implements RDFWriter
 
 		if ( !prefixMap.containsKey("") )
 		{
-			doingBaseHash = true ;
+			//doingBaseHash = true ;
 			out.println( "@prefix : <#> .") ;
 		}
 
-		if ( doingBaseHash || prefixMap.size() != 0 )
-			out.println() ;
+//		if ( doingBaseHash || prefixMap.size() != 0 )
+//			out.println() ;
+
+        if ( prefixMap.size() != 0 )
+            out.println() ;
 
 		// Works by running the same code but with empty control structures.
 		ResIterator rIter = model.listSubjects() ;

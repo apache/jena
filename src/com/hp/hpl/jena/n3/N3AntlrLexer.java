@@ -1,32 +1,32 @@
 // $ANTLR : "c:/home/afs/Projects/Jena2/src/com/hp/hpl/jena/n3/n3.g" -> "N3AntlrLexer.java"$
 
 package com.hp.hpl.jena.n3 ;
-import java.io.* ;
+//import java.io.* ;
 import antlr.TokenStreamRecognitionException ;
 
 import java.io.InputStream;
 import antlr.TokenStreamException;
 import antlr.TokenStreamIOException;
-import antlr.TokenStreamRecognitionException;
+//import antlr.TokenStreamRecognitionException;
 import antlr.CharStreamException;
 import antlr.CharStreamIOException;
-import antlr.ANTLRException;
+//import antlr.ANTLRException;
 import java.io.Reader;
 import java.util.Hashtable;
-import antlr.CharScanner;
+//import antlr.CharScanner;
 import antlr.InputBuffer;
 import antlr.ByteBuffer;
 import antlr.CharBuffer;
 import antlr.Token;
-import antlr.CommonToken;
+//import antlr.CommonToken;
 import antlr.RecognitionException;
 import antlr.NoViableAltForCharException;
-import antlr.MismatchedCharException;
+//import antlr.MismatchedCharException;
 import antlr.TokenStream;
-import antlr.ANTLRHashString;
+//import antlr.ANTLRHashString;
 import antlr.LexerSharedInputState;
 import antlr.collections.impl.BitSet;
-import antlr.SemanticException;
+//import antlr.SemanticException;
 
 public class N3AntlrLexer extends antlr.CharScanner implements N3AntlrParserTokenTypes, TokenStream
  {
