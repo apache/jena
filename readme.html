@@ -58,13 +58,13 @@ queries on to database engines.
 		<ul>
   <li>unzip the distribution file into a convenient directory, JENAROOT.</li>
   <li>set the class path to include:
-			<pre>
-  JENAROOT/lib/jena.jar
-  JENAROOT/lib/xerces.jar
+			<pre>  JENAROOT/lib/jena.jar
+  JENAROOT/lib/xercesImpl.jar
+  JENAROOT/lib/xmlParserAPIs.jar
   JENAROOT/lib/icu4j.jar
-  JENAROOT/lib/concurrent-1.3.0.jar   // if using RDQL query support
+  JENAROOT/lib/concurrent-1.3.0.jar
   JENAROOT/lib/jakarta-oro-2.0.5.jar  // if using RDQL query support
-  JENAROOT/lib/db3-3-11.jar           // if using Berkeley DB interface
+  // Not yet in Jena2 : JENAROOT/lib/db3-3-11.jar           // if using Berkeley DB interface
   JENAROOT/lib/antlr.debug.jar
   JENAROOT/lib/sesame-client.jar      // if using Jena-Sesame query engine
   JENAROOT/lib/junit.jar
@@ -73,14 +73,13 @@ queries on to database engines.
 			</li>
 			<li>Test the distribution by running the regression tests, either:</li>
 			
-<pre>
-ant test                      // if you have ant configured to run junit
+<pre>ant test                      // if you have ant configured to run junit
 test.bat                      // on windows
 . test.sh                     // on unix
 
 </pre>
 			<p>You may see some warnings about some tests being suppressed,
-			but the remaining 944 tests should run successfully.
+			but the remaining 1000+ tests should run successfully.
 			</p>
 		</ul>
 		<h2>Applications</h2>
