@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.32 $
+ * Revision           $Revision: 1.33 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-09-08 16:18:01 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -69,7 +69,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.32 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS $Id: OntModel.java,v 1.33 2003-09-08 16:18:01 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -591,9 +591,61 @@ public interface OntModel
      * MaxCardinalityRestriction facet, otherwise return null.</p>
      * 
      * @param uri The URI for the restriction
-     * @return A resource representing a mas-cardinality restriction, or null
+     * @return A resource representing a max-cardinality restriction, or null
      */
     public MaxCardinalityRestriction getMaxCardinalityRestriction( String uri );
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have a property
+     * p, all values of which are members of a given class. Typically used with a cardinality constraint.
+     * If a resource
+     * with the given uri exists in the model, and can be viewed as a QualifiedRestriction, return the
+     * QualifiedRestriction facet, otherwise return null.</p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a qualified restriction, or null
+     */
+    public QualifiedRestriction getQualifiedRestriction( String uri );
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have a property
+     * p, with cardinality N, all values of which are members of a given class.
+     * If a resource
+     * with the given uri exists in the model, and can be viewed as a CardinalityQRestriction, return the
+     * CardinalityQRestriction facet, otherwise return null.</p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a qualified cardinality restriction, or null
+     */
+    public CardinalityQRestriction getCardinalityQRestriction( String uri );
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have a property
+     * p, with min cardinality N, all values of which are members of a given class.
+     * If a resource
+     * with the given uri exists in the model, and can be viewed as a MinCardinalityQRestriction, return the
+     * MinCardinalityQRestriction facet, otherwise return null.</p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a qualified min cardinality restriction, or null
+     */
+    public MinCardinalityQRestriction getMinCardinalityQRestriction( String uri );
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have a property
+     * p, with max cardinality N, all values of which are members of a given class.
+     * If a resource
+     * with the given uri exists in the model, and can be viewed as a MaxCardinalityQRestriction, return the
+     * MaxCardinalityQRestriction facet, otherwise return null.</p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a qualified max cardinality restriction, or null
+     */
+    public MaxCardinalityQRestriction getMaxCardinalityQRestriction( String uri );
 
 
     /**
@@ -944,6 +996,51 @@ public interface OntModel
      * @return A new resource representing a mas-cardinality restriction
      */
     public MaxCardinalityRestriction createMaxCardinalityRestriction( String uri, Property prop, int cardinality );
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have at most
+     * the given number of values for the given property, all values of which belong to the given
+     * class.</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cardinality The maximum cardinality of the property
+     * @param cls The class to which all values of the restricted property should belong
+     * @return A new resource representing a mas-cardinality restriction
+     */
+    public MaxCardinalityQRestriction createMaxCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls );
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have at least
+     * the given number of values for the given property, all values of which belong to the given
+     * class.</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cardinality The minimun cardinality of the property
+     * @param cls The class to which all values of the restricted property should belong
+     * @return A new resource representing a mas-cardinality restriction
+     */
+    public MinCardinalityQRestriction createMinCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls );
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have exactly
+     * the given number of values for the given property, all values of which belong to the given
+     * class.</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cardinality The cardinality of the property
+     * @param cls The class to which all values of the restricted property should belong
+     * @return A new resource representing a mas-cardinality restriction
+     */
+    public CardinalityQRestriction createCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls );
 
 
     /**

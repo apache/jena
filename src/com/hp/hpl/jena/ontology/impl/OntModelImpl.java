@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.47 $
+ * Revision           $Revision: 1.48 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-09-08 16:18:11 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.47 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.48 2003-09-08 16:18:11 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -764,6 +764,66 @@ public class OntModelImpl
 
 
     /**
+     * <p>Answer a class description defined as the class of those individuals that have a property
+     * p, all values of which are members of a given class. Typically used with a cardinality constraint.
+     * If a resource
+     * with the given uri exists in the model, and can be viewed as a QualifiedRestriction, return the
+     * QualifiedRestriction facet, otherwise return null.</p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a qualified restriction, or null
+     */
+    public QualifiedRestriction getQualifiedRestriction( String uri ) {
+        return (QualifiedRestriction) findByURIAs( uri, QualifiedRestriction.class );
+    }
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have a property
+     * p, with cardinality N, all values of which are members of a given class.
+     * If a resource
+     * with the given uri exists in the model, and can be viewed as a CardinalityQRestriction, return the
+     * CardinalityQRestriction facet, otherwise return null.</p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a qualified cardinality restriction, or null
+     */
+    public CardinalityQRestriction getCardinalityQRestriction( String uri ) {
+        return (CardinalityQRestriction) findByURIAs( uri, CardinalityQRestriction.class );
+    }
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have a property
+     * p, with min cardinality N, all values of which are members of a given class.
+     * If a resource
+     * with the given uri exists in the model, and can be viewed as a MinCardinalityQRestriction, return the
+     * MinCardinalityQRestriction facet, otherwise return null.</p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a qualified min cardinality restriction, or null
+     */
+    public MinCardinalityQRestriction getMinCardinalityQRestriction( String uri ) {
+        return (MinCardinalityQRestriction) findByURIAs( uri, MinCardinalityQRestriction.class );
+    }
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have a property
+     * p, with max cardinality N, all values of which are members of a given class.
+     * If a resource
+     * with the given uri exists in the model, and can be viewed as a MaxCardinalityQRestriction, return the
+     * MaxCardinalityQRestriction facet, otherwise return null.</p>
+     * 
+     * @param uri The URI for the restriction
+     * @return A resource representing a qualified max cardinality restriction, or null
+     */
+    public MaxCardinalityQRestriction getMaxCardinalityQRestriction( String uri ) {
+        return (MaxCardinalityQRestriction) findByURIAs( uri, MaxCardinalityQRestriction.class );
+    }
+
+
+    /**
      * <p>
      * Answer a resource that represents an ontology description node in this model. If a resource
      * with the given uri exists in the model, it will be re-used.  If not, a new one is created in
@@ -1322,6 +1382,111 @@ public class OntModelImpl
     }
     
    
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have at most
+     * the given number of values for the given property, all values of which belong to the given
+     * class.</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cardinality The maximum cardinality of the property
+     * @param cls The class to which all values of the restricted property should belong
+     * @return A new resource representing a mas-cardinality restriction
+     */
+    public MaxCardinalityQRestriction createMaxCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls ) {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
+        checkProfileEntry( getProfile().ON_PROPERTY(), "ON_PROPERTY" );
+        checkProfileEntry( getProfile().MAX_CARDINALITY_Q(), "MAX_CARDINALITY_Q" );
+        checkProfileEntry( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q" );
+
+        if (prop == null) {
+            throw new IllegalArgumentException( "Cannot create MaxCardinalityQRestriction with a null property" );
+        }
+        if (cls == null) {
+            throw new IllegalArgumentException( "Cannot create MaxCardinalityQRestriction with a null class" );
+        }
+                        
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+                        
+        r.addProperty( getProfile().ON_PROPERTY(), prop );
+        r.addProperty( getProfile().MAX_CARDINALITY_Q(), createTypedLiteral( cardinality ) );
+        r.addProperty( getProfile().HAS_CLASS_Q(), cls );
+        
+        return (MaxCardinalityQRestriction) r.as( MaxCardinalityQRestriction.class );
+    }
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have at least
+     * the given number of values for the given property, all values of which belong to the given
+     * class.</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cardinality The minimun cardinality of the property
+     * @param cls The class to which all values of the restricted property should belong
+     * @return A new resource representing a mas-cardinality restriction
+     */
+    public MinCardinalityQRestriction createMinCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls ) {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
+        checkProfileEntry( getProfile().ON_PROPERTY(), "ON_PROPERTY" );
+        checkProfileEntry( getProfile().MIN_CARDINALITY_Q(), "MIN_CARDINALITY_Q" );
+        checkProfileEntry( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q" );
+
+        if (prop == null) {
+            throw new IllegalArgumentException( "Cannot create MinCardinalityQRestriction with a null property" );
+        }
+        if (cls == null) {
+            throw new IllegalArgumentException( "Cannot create MinCardinalityQRestriction with a null class" );
+        }
+                        
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+                        
+        r.addProperty( getProfile().ON_PROPERTY(), prop );
+        r.addProperty( getProfile().MIN_CARDINALITY_Q(), createTypedLiteral( cardinality ) );
+        r.addProperty( getProfile().HAS_CLASS_Q(), cls );
+                        
+        return (MinCardinalityQRestriction) r.as( MinCardinalityQRestriction.class );
+    }
+
+
+    /**
+     * <p>Answer a class description defined as the class of those individuals that have exactly
+     * the given number of values for the given property, all values of which belong to the given
+     * class.</p>
+     * 
+     * @param uri The optional URI for the restriction, or null for an anonymous restriction (which 
+     * should be the normal case)
+     * @param prop The property the restriction applies to
+     * @param cardinality The cardinality of the property
+     * @param cls The class to which all values of the restricted property should belong
+     * @return A new resource representing a mas-cardinality restriction
+     */
+    public CardinalityQRestriction createCardinalityQRestriction( String uri, Property prop, int cardinality, OntClass cls ) {
+        checkProfileEntry( getProfile().RESTRICTION(), "RESTRICTION" );
+        checkProfileEntry( getProfile().ON_PROPERTY(), "ON_PROPERTY" );
+        checkProfileEntry( getProfile().CARDINALITY_Q(), "CARDINALITY_Q" );
+        checkProfileEntry( getProfile().HAS_CLASS_Q(), "HAS_CLASS_Q" );
+
+        if (prop == null) {
+            throw new IllegalArgumentException( "Cannot create CardinalityQRestriction with a null property" );
+        }
+        if (cls == null) {
+            throw new IllegalArgumentException( "Cannot create CardinalityQRestriction with a null class" );
+        }
+                        
+        Restriction r = (Restriction) createOntResource( Restriction.class, getProfile().RESTRICTION(), uri );
+                        
+        r.addProperty( getProfile().ON_PROPERTY(), prop );
+        r.addProperty( getProfile().CARDINALITY_Q(), createTypedLiteral( cardinality ) );
+        r.addProperty( getProfile().HAS_CLASS_Q(), cls );
+                        
+        return (CardinalityQRestriction) r.as( CardinalityQRestriction.class );
+    }
+
+
     /**
      * <p>Answer a data range defined as the given set of concrete data values.  DataRange resources
      * are necessarily bNodes.</p>

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:45 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-09-08 16:18:01 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.12 2003-08-27 13:04:45 andy_seaborne Exp $
+ * @version CVS $Id: Profile.java,v 1.13 2003-09-08 16:18:01 ian_dickinson Exp $
  */
 public interface Profile
 {
@@ -448,6 +448,49 @@ public interface Profile
      * @return The property that denotes a local property cardinality.
      */
     public Property CARDINALITY();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes a qualified restriction on a given property to 
+     * have at least a certain number of values
+     * </p>
+     * 
+     * @return The property that denotes a local property cardinality lower bound.
+     */
+    public Property MIN_CARDINALITY_Q();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes a qualified restriction on a given property to 
+     * have at most a certain number of values
+     * </p>
+     * 
+     * @return The property that denotes a local property cardinality upper bound.
+     */
+    public Property MAX_CARDINALITY_Q();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes a qualified restriction on a given property to 
+     * have exactly a certain number of values
+     * </p>
+     * 
+     * @return The property that denotes a local property cardinality.
+     */
+    public Property CARDINALITY_Q();
+    
+    
+    /**
+     * <p>
+     * Answer the predicate that denotes a the class in a qualified restriction.
+     * </p>
+     * 
+     * @return The property that denotes the class of all values in a qualified restriction.
+     */
+    public Property HAS_CLASS_Q();
     
     
     /**

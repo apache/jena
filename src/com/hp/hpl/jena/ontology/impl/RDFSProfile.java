@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22-Jun-2003
  * Filename           $RCSfile: RDFSProfile.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:44 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-09-08 16:18:11 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFSProfile.java,v 1.4 2003-08-27 13:04:44 andy_seaborne Exp $
+ * @version CVS $Id: RDFSProfile.java,v 1.5 2003-09-08 16:18:11 ian_dickinson Exp $
  */
 public class RDFSProfile 
     extends AbstractProfile
@@ -115,6 +115,10 @@ public class RDFSProfile
     public Property RANGE() {                       return RDFS.range; }
     public Property FIRST() {                       return RDF.first; }
     public Property REST() {                        return RDF.rest; }
+    public Property MIN_CARDINALITY_Q() {           return null; }
+    public Property MAX_CARDINALITY_Q() {           return null; }
+    public Property CARDINALITY_Q() {               return null; }
+    public Property HAS_CLASS_Q() {                 return null; }
 
     // Annotations    
     public Property VERSION_INFO() {                return null; }
