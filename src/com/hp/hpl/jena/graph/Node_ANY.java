@@ -14,4 +14,7 @@ public class Node_ANY extends Node
     /** Node_ANY's are only equal to other Node_ANY's */
     public boolean equals( Object other )
         { return other instanceof Node_ANY; }
+        
+    public Object visitWith( NodeVisitor v )
+        { return v.visitAny( this ); }
     }

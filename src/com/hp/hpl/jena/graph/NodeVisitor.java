@@ -1,34 +1,30 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_URI.java,v 1.2 2003-05-19 19:37:35 chris-dollin Exp $
+  $Id: NodeVisitor.java,v 1.1 2003-05-19 19:37:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.rdf.model.*;
+
 /**
-	@author kers
+ 	@author hedgehog
+    
+    The NodeVisitor interface is used by Node::visitWith so that an application
+    can have type-dispatch on the class of a Node.
 */
-public class Node_URI extends Node
+public interface NodeVisitor
     {
-    public Node_URI( Object uri )
-        { super( uri ); }
-
-    public String getURI()
-        { return (String) label; }
-        
-    public Object visitWith( NodeVisitor v )
-        { return v.visitURI( this, (String) label ); }
-        
-    public boolean isURI()
-        { return true; }
-        
-    public boolean equals( Object other )
-        { return other instanceof Node_URI && label.equals( ((Node_URI) other).label ); }
+    Object visitAny( Node_ANY it );
+    Object visitBlank( Node_Blank it, AnonId id );
+    Object visitLiteral( Node_Literal it, LiteralLabel lit );
+    Object visitURI( Node_URI it, String uri );
+    Object visitVariable( Node_Variable it, String name );
     }
-
+    
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

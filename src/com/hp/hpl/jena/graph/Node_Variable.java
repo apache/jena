@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Variable.java,v 1.2 2003-04-08 12:27:39 jeremy_carroll Exp $
+  $Id: Node_Variable.java,v 1.3 2003-05-19 19:37:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -22,6 +22,9 @@ public class Node_Variable extends Node
     public String getName()
         { return ((String) label).substring( 1 ); }
 
+    public Object visitWith( NodeVisitor v )
+        { return v.visitVariable( this, getName() ); }
+        
     public boolean isVariable()
         { return true; }
 

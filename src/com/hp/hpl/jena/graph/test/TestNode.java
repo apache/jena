@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.10 2003-05-19 16:06:52 chris-dollin Exp $
+  $Id: TestNode.java,v 1.11 2003-05-19 19:38:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -296,6 +296,20 @@ public class TestNode extends GraphTestBase
         assertTrue( "node() making literals", node( "'hello'" ).isLiteral() );
         assertTrue( "node() making blanks", node( "_x" ).isBlank() );
         assertTrue( "node() making variables", node( "?x" ).isVariable() );
+        }
+        
+    // TODO fill in this incomplete test
+    public void testVisitorPattern()
+        {
+        NodeVisitor v = new NodeVisitor() 
+            {
+            public Object visitAny( Node_ANY it ) { return null; }
+            public Object visitBlank( Node_Blank it, AnonId id ) { return null; }
+            public Object visitLiteral( Node_Literal it, LiteralLabel lit ) { return null; }
+            public Object visitURI( Node_URI it, String uri ) { return null; }
+            public Object visitVariable( Node_Variable it, String name ) { return null; }
+            };
+        node( "hello" ).visitWith( v );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Literal.java,v 1.2 2003-03-26 12:38:13 chris-dollin Exp $
+  $Id: Node_Literal.java,v 1.3 2003-05-19 19:37:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -19,6 +19,9 @@ public class Node_Literal extends Node
          
     public boolean isLiteral() 
         { return true; }    
+        
+    public Object visitWith( NodeVisitor v )
+        { return v.visitLiteral( this, getLiteral() ); }
         
     public boolean equals( Object other )
         { return other instanceof Node_Literal && label.equals( ((Node_Literal) other).label ); }
