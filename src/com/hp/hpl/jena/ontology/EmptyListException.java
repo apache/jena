@@ -10,7 +10,7 @@
  * Revision           $Revision: 1.1 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-01-27 23:32:45 $
+ * Last modified on   $Date: 2003-01-29 22:22:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -19,7 +19,9 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.rdf.model;
+package com.hp.hpl.jena.ontology;
+
+import com.hp.hpl.jena.rdf.model.RDFException;
 
 
 // Imports
@@ -34,7 +36,7 @@ package com.hp.hpl.jena.rdf.model;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release ($Id: EmptyListException.java,v 1.1 2003-01-27 23:32:45 ian_dickinson Exp $)
+ * @version Release ($Id: EmptyListException.java,v 1.1 2003-01-29 22:22:12 ian_dickinson Exp $)
  */
 public class EmptyListException
     extends RDFException
