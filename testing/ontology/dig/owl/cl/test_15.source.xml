@@ -13,7 +13,7 @@
   xmlns:owl   ="&owl;"
   xmlns:xsd   ="&xsd;"
   xml:base    ="http://example.org/foo"
-  xmlns:      ="http://example.org/foo#"
+  xmlns       ="http://example.org/foo#"
 >
 
 <owl:DatatypeProperty rdf:ID="p" />
