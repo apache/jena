@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExampleCreate.java,v 1.4 2003-10-10 10:36:20 chris-dollin Exp $
+  $Id: ExampleCreate.java,v 1.5 2003-10-10 15:05:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -17,51 +17,78 @@ import com.hp.hpl.jena.graph.query.*;
  */
 public class ExampleCreate
     {
+    interface ObjectValuator extends Valuator
+        {
+        public Object eval( IndexValues iv );    
+        }
+        
+    public static abstract class DyadicValuator 
+        extends BaseExampleExpression.BaseExampleValuator
+        implements ObjectValuator
+        {
+        ObjectValuator L;
+        ObjectValuator R;
+        DyadicValuator( ObjectValuator L, ObjectValuator R ) { this.L = L; this.R = R; }    
+        public Object eval( IndexValues iv )
+            { return Boolean.valueOf( evalBool( iv ) ); }
+        }
+    
+    public static class FixedValuator implements ObjectValuator
+        {
+        private Object value;
+        
+        FixedValuator( Object value )
+            { this.value = value; }
+            
+        public boolean evalBool( IndexValues iv )
+            { return ((Boolean) eval( iv )).booleanValue(); }
+                
+        public Object eval( IndexValues iv )
+            { return value; }
+        }
+        
+    public static class SlotValuator implements ObjectValuator
+        {
+        private int index;
+        
+        SlotValuator( int index )
+            { this.index = index; }
+            
+        public boolean evalBool( IndexValues iv )
+            { return ((Boolean) eval( iv )).booleanValue(); }
+                
+        public Object eval( IndexValues iv )
+            { return iv.get( index ); }
+        }
+        
     public static abstract class Dyadic extends BaseExampleExpression
         {
-        protected Expression L;
-        protected Expression R;
+        protected BaseExampleExpression L;
+        protected BaseExampleExpression R;
         
         public Dyadic( Node L, Node R )
             { this.L = asExpression( L ); this.R = asExpression( R ); }
 
-        public Object eval( IndexValues iv )
-            { return evalBool( iv ) ? Boolean.TRUE : Boolean.FALSE; }
-            
-        public Object eval( VariableValues iv )
-            { return evalBool( iv ) ? Boolean.TRUE : Boolean.FALSE; }
-                                
-        public Expression prepare( VariableIndexes vi )
+        public BaseExampleExpression asExpression( final Node x )
             {
-            L = L.prepare( vi );
-            R = R.prepare( vi );
-            return this;    
-            }    
-            
-        public Expression asExpression( final Node x )
-            {
-            return new Expression()
+            return new BaseExampleExpression()
                 {
-                int xi = -1;
-                
-                public Object eval( IndexValues iv )
-                    { return xi < 0 ? x : iv.get( xi ); }
-                    
-                public Object eval( VariableValues iv )
-                    { return iv.get( x.getName() ); }
-                    
                 public boolean evalBool( VariableValues vv )
                     {
                     if (x.isVariable()) return ((Boolean) vv.get( x.getName() )).booleanValue();
                     else return false;    
                     }
                     
-                public Expression prepare( VariableIndexes vi )
-                    { if (x.isVariable()) xi = vi.indexOf( x.getName() ); 
-                    return this; }    
+                public Object eval( VariableValues vv )
+                    {
+                    if (x.isVariable()) return vv.get( x.getName() );
+                    else return x;    
+                    }
                     
-                public boolean evalBool( IndexValues iv )
-                    { return ((Boolean) iv.get( xi )).booleanValue(); }
+                public Valuator prepare( VariableIndexes vi )
+                    { if (x.isVariable()) return new SlotValuator( vi.indexOf( x.getName() ) );
+                    else return new FixedValuator( x ); }    
+                    
                 };    
             }
         }
@@ -73,9 +100,15 @@ public class ExampleCreate
             public boolean evalBool( VariableValues vv )
                 { return !L.eval( vv ).equals( R.eval( vv ) ); }
                 
-            public boolean evalBool( IndexValues iv )
-                { 
-                    return !L.eval( iv ).equals( R.eval( iv ) ); }
+            public Valuator prepare( VariableIndexes vi )
+                {
+                return new DyadicValuator( (ObjectValuator) L.prepare( vi ), (ObjectValuator) R.prepare( vi ) )
+                    {                    
+                    public boolean evalBool( IndexValues iv )
+                        { return !L.eval( iv ).equals( R.eval( iv ) ); }
+                    };    
+                }
+                
             };    
         }    
     
@@ -86,8 +119,14 @@ public class ExampleCreate
             public boolean evalBool( VariableValues vv )
                 { return L.eval( vv ).equals( R.eval( vv ) ); }
                 
-            public boolean evalBool( IndexValues iv )
-                { return L.eval( iv ).equals( R.eval( iv ) ); }
+            public Valuator prepare( VariableIndexes vi )
+                {
+                return new DyadicValuator( (ObjectValuator) L.prepare( vi ), (ObjectValuator) R.prepare( vi ) )
+                    {                    
+                    public boolean evalBool( IndexValues iv )
+                        { return L.eval( iv ).equals( R.eval( iv ) ); }
+                    };    
+                }
             };    
         }         
         
@@ -108,8 +147,15 @@ public class ExampleCreate
             public boolean evalBool( VariableValues vv )
                 { return matches( L.eval( vv ), R.eval( vv ) ); }
                 
-            public boolean evalBool( IndexValues vv )
-                { return matches( L.eval( vv ), R.eval( vv ) ); }
+            public Valuator prepare( VariableIndexes vi )
+                {
+                return new DyadicValuator( (ObjectValuator) L.prepare( vi ), (ObjectValuator) R.prepare( vi ) )
+                    {                    
+                    public String toString() { return super.toString() + " :: MATCHES()"; }
+                    public boolean evalBool( IndexValues iv )
+                        { return matches( L.eval( iv ), R.eval( iv ) ); }
+                    };    
+                }
             };    
         }
     }

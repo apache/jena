@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.6 2003-10-10 10:36:20 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.7 2003-10-10 15:05:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -158,7 +158,7 @@ public class TestExpressionConstraints extends GraphTestBase
         {
         IndexValues none = new IndexValues() 
             { public Object get( int i ) { return null; } };
-        Expression t = Expression.TRUE.prepare( new Mapping( new Node[0] ) );  
+        Valuator t = Expression.TRUE.prepare( new Mapping( new Node[0] ) );  
         assertEquals( true, t.evalBool( none ) );    
         }
         
@@ -166,7 +166,7 @@ public class TestExpressionConstraints extends GraphTestBase
         {
         IndexValues none = new IndexValues() 
             { public Object get( int i ) { return null; } };
-        Expression t = Expression.FALSE.prepare( new Mapping( new Node[0] ) );  
+        Valuator t = Expression.FALSE.prepare( new Mapping( new Node[0] ) );  
         assertEquals( false, t.evalBool( none ) );    
         }
         
@@ -174,7 +174,7 @@ public class TestExpressionConstraints extends GraphTestBase
         {
         Expression e = notEqual( X, Y );
         VariableIndexes map = new Mapping( new Node[2] );
-        // Expression ep = e.prepare( map );        
+        // Valuator ep = e.prepare( map );        
         }
     }
 

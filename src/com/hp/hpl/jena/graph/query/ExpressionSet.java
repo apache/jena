@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExpressionSet.java,v 1.4 2003-10-10 10:29:58 chris-dollin Exp $
+  $Id: ExpressionSet.java,v 1.5 2003-10-10 15:04:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -23,7 +23,7 @@ public class ExpressionSet
     */
 	public ExpressionSet() 
         {}
-
+    
     /**
         Answer this expressionset after e has been anded into it.
      	@param e the expression to and into the set
@@ -35,6 +35,11 @@ public class ExpressionSet
         return this;    
         }
     
+    public ExpressionSet add( Valuator e )
+        {
+        expressions.add( e );
+        return this;    
+        }
     /**
         Evaluate this expression set, delivering true iff no member of the set evaluates
         to false.
@@ -54,7 +59,7 @@ public class ExpressionSet
         { 
         Iterator it = expressions.iterator();
         while (it.hasNext()) 
-            if (((Expression) it.next()).evalBool( vv ) == false) return false;
+            if (((Valuator) it.next()).evalBool( vv ) == false) return false;
         return true;
         }
                 

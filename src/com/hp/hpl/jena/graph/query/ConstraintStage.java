@@ -1,14 +1,12 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ConstraintStage.java,v 1.13 2003-10-10 10:29:58 chris-dollin Exp $
+  $Id: ConstraintStage.java,v 1.14 2003-10-10 15:04:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
-
-import java.util.*;
 
 /**
     A ConstraintStage implements the constraint evaluation part of a
@@ -81,7 +79,7 @@ public class ConstraintStage extends Stage
 		        while (mine.hasNext())
 		            {
 		            Domain d = mine.get();
-		            if (evalConstraint( d, constraint )) L.put( d );
+		            if (evalConstraint( d, prepared )) L.put( d );
 		            }
 		        L.close();
         		}

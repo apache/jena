@@ -1,12 +1,11 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: BaseExampleExpression.java,v 1.4 2003-10-10 10:36:20 chris-dollin Exp $
+  $Id: BaseExampleExpression.java,v 1.5 2003-10-10 15:05:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.query.Expression;
 import com.hp.hpl.jena.graph.query.*;
 
@@ -16,25 +15,41 @@ import com.hp.hpl.jena.graph.query.*;
  */
 public abstract class BaseExampleExpression implements Expression
     {
+    public static abstract class BaseExampleValuator implements Valuator
+        {
+        public abstract boolean evalBool( IndexValues iv );      
+        
+        public Valuator and( Valuator v ) { return and( this, v ); }
+                    
+        public static Valuator and( final Valuator L, final Valuator R )
+            {
+            return new Valuator()
+                {
+                public boolean evalBool( IndexValues iv ) 
+                    { return L.evalBool( iv ) && R.evalBool( iv ); }
+                };    
+            }
+            
+        public Object eval( IndexValues iv )
+            { return evalBool( iv ) ? Boolean.TRUE : Boolean.FALSE; }
+        }    
+        
     public Expression and( Expression e ) { return and( this, e ); }
-    
-    public static Expression and( final Expression L, final Expression R )
+        
+    public Object eval( VariableValues vv )
+        { return evalBool( vv ) ? Boolean.TRUE : Boolean.FALSE; }
+ 
+    public static BaseExampleExpression and( final Expression L, final Expression R )
         {
         return new BaseExampleExpression()
             {                
-            public Expression prepare( VariableIndexes vi )
+            public Valuator prepare( VariableIndexes vi )
                 {
-                return and( L.prepare( vi ), R.prepare( vi ) );    
+                return BaseExampleValuator.and( L.prepare( vi ), R.prepare( vi ) );    
                 }
                 
-            public Object eval( IndexValues iv )
-                { return evalBool( iv ) ? Boolean.TRUE : Boolean.FALSE; }
-                
-            public Object eval( VariableValues vv )
-                { return evalBool( vv ) ? Boolean.TRUE : Boolean.FALSE; }
- 
             public boolean evalBool( IndexValues iv )
-                { return L.evalBool( iv ) && R.evalBool( iv ); }
+                { throw new RuntimeException( "argh" ); } // return L.evalBool( iv ) && R.evalBool( iv ); }
                 
             public boolean evalBool( VariableValues vv )
                 { return L.evalBool( vv ) && R.evalBool( vv ); }
