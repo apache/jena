@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-08-13 16:14:00 $
+ * Last modified on   $Date: 2004-08-13 16:41:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -49,7 +49,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.15 2004-08-13 16:14:00 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.16 2004-08-13 16:41:33 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -495,7 +495,7 @@ public class DIGAdapter
      * <p>Add a DIG reference to the class identifed in the source graph by the given Jena
      * graph Node to the given XML element.  If the class is a named class, this will be
      * a <code>&lt;catom&gt;</code> element, otherwise it will be a class description axiom.
-     * Assumes that the instance variable {@link #m_sourceData} provides the statements that
+     * Assumes that the instance variable <code>m_sourceData</code> provides the statements that
      * further define the class if it is a description not a name. 
      * </p>
      * @param elem The parent XML element to which the class description will be attached
