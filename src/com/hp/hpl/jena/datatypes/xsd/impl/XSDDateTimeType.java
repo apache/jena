@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTimeType.java,v 1.7 2003-12-04 11:01:54 der Exp $
+ * $Id: XSDDateTimeType.java,v 1.8 2003-12-04 15:58:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * base XSDAbstractDateTimeType class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-12-04 11:01:54 $
+ * @version $Revision: 1.8 $ on $Date: 2003-12-04 15:58:00 $
  */
 public class XSDDateTimeType extends XSDAbstractDateTimeType {
 
@@ -25,6 +25,7 @@ public class XSDDateTimeType extends XSDAbstractDateTimeType {
      */
     public XSDDateTimeType(String typename) {
         super(typename);
+        javaClass = XSDDateTime.class;
     }
 
     /**

@@ -31,6 +31,8 @@
 
 package com.hp.hpl.jena.rdf.model;
 
+import java.util.Calendar;
+
 import com.hp.hpl.jena.graph.Node;
 
 
@@ -54,8 +56,8 @@ import com.hp.hpl.jena.graph.Node;
  *    enhanced resources.</p>
  * @author bwm
  * @version Release='$Name: not supported by cvs2svn $'
-            Revision='$Revision: 1.12 $'
-            Date='$Date: 2003-08-27 13:05:52 $'
+            Revision='$Revision: 1.13 $'
+            Date='$Date: 2003-12-04 15:58:00 $'
  */
 public interface ModelCon {
 
@@ -291,6 +293,11 @@ public interface ModelCon {
      * @return a new literal representing the value v
      */   
     public Literal createTypedLiteral(long v) ;
+
+    /**
+     * Create a typed literal of type xsd:dateTime from a Calendar object. 
+     */
+    public Literal createTypedLiteral(Calendar d);
     
     /** create a typed literal from a char value.
      *

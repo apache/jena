@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.32 2003-12-04 14:56:14 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.33 2003-12-04 15:58:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -32,7 +32,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2003-12-04 14:56:14 $
+ * @version $Revision: 1.33 $ on $Date: 2003-12-04 15:58:00 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -481,6 +481,15 @@ public class TestTypedLiterals extends TestCase {
             xdt.getMonths();
             assertTrue("Failed to prevent illegal access", false);
         } catch (IllegalDateTimeFieldException e) {}
+        
+        // Creation of datetime from a date object
+        Calendar ncal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+        ncal.set(2003, 11, 8, 10, 50, 42);
+        ncal.set(Calendar.MILLISECOND, 0);
+        l1 = m.createTypedLiteral(ncal);
+        assertEquals("DateTime from date", XSDDatatype.XSDdateTime, l1.getDatatype());
+        assertEquals("DateTime from date", XSDDateTime.class, l1.getValue().getClass());
+        assertEquals("DateTime from date", "2003-11-08T10:50:42Z", l1.getValue().toString());
         
     }
       

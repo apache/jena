@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.84 2003-11-25 10:51:39 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.85 2003-12-04 15:58:00 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -16,6 +16,8 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
 import com.hp.hpl.jena.enhanced.*;
 
 import java.io.*;
@@ -29,7 +31,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.84 $' Date='$Date: 2003-11-25 10:51:39 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.85 $' Date='$Date: 2003-12-04 15:58:00 $'
  */
 
 public class ModelCom 
@@ -508,7 +510,16 @@ implements Model, PrefixMapping, ModelLock
         return new LiteralImpl(Node.createLiteral(ll), (Model)this);
     }
 
+    /**
+     * Create a typed literal xsd:dateTime from a Calendar object. 
+     */
+    public Literal createTypedLiteral(Calendar cal) {
+        Object value = new XSDDateTime(cal);
+        LiteralLabel ll = new LiteralLabel(value, "", XSDDatatype.XSDdateTime);
+        return new LiteralImpl(Node.createLiteral(ll), (Model)this);
         
+    }
+    
     /**
      * Build a typed literal from its lexical form. The
      * lexical form will be parsed now and the value stored. If

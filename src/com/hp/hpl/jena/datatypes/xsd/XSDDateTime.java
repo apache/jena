@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.9 2003-12-04 11:03:55 der Exp $
+ * $Id: XSDDateTime.java,v 1.10 2003-12-04 15:57:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -17,7 +17,7 @@ import java.util.*;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-12-04 11:03:55 $
+ * @version $Revision: 1.10 $ on $Date: 2003-12-04 15:57:28 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -54,6 +54,39 @@ public class XSDDateTime extends AbstractDateTime {
         this.mask = (short)mask;
     }
     
+    
+    /**
+     * Constructor - create a full DateTime object from a java calendar instance.
+     * 
+     * @param date java calendar instance
+     */
+    public XSDDateTime(Calendar date) {
+        super(convertCalendar(date));
+        this.mask = FULL_MASK;
+    }
+    
+    /**
+     * Convert a java calendar object to a new int[] in the format used by XSDAbstractDateTime
+     */
+    private static int[] convertCalendar(Calendar date) {
+        int[] data = new int[TOTAL_SIZE];
+        int offset = date.get(Calendar.ZONE_OFFSET);
+        Calendar cal = date;
+        if (offset != 0) {
+            cal = (Calendar)date.clone();
+            cal.add(Calendar.MILLISECOND, -offset);
+        }
+        data[AbstractDateTime.CY] = cal.get(Calendar.YEAR);
+        data[AbstractDateTime.M] = cal.get(Calendar.MONTH);
+        data[AbstractDateTime.D] = cal.get(Calendar.DAY_OF_MONTH);
+        data[AbstractDateTime.h] = cal.get(Calendar.HOUR);
+        data[AbstractDateTime.m] = cal.get(Calendar.MINUTE);
+        data[AbstractDateTime.s] = cal.get(Calendar.SECOND);
+        data[AbstractDateTime.ms] = cal.get(Calendar.MILLISECOND);
+        data[AbstractDateTime.utc] = 'Z';
+        return data;
+    }
+
     /**
      * Return the date time as a java Calendar object. 
      * If the timezone has been specified then the object is normalized to GMT.
