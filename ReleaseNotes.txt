@@ -1,6 +1,15 @@
 Release Notes
 =============
 
+Jena 2.1-dev-3
+  Implements W3C RDF and OWL Proposed Recommendations
+  OWL Syntax Checker - much faster, new API (error msgs still being worked on)
+  RDF/XML-ABBREV output various bug fixes
+  RDF/XML-ABBREV msg added requesting bug reports on rdf:parseType="Collection"
+  ARP new extended handler for scope of blank nodes and namespace handler
+  ARP improved syntax error messages
+  OWL Syntax checker prolog source included in download (see tools dir)
+   
 Jena 2.1-dev-2:
   Developers' release to include recent bug fixes (notably
   handling of typed literals in validation rules).
@@ -44,13 +53,20 @@ o Fixed bug in LP engine which could lead to loss of variable bindings
 o Extended is/notDTtype to check for ill-formed typed literals.
 
 OWL Syntax Checker
-o Now conforms with OWL Candidate Rec of August 2003
-  - There are minor differences with other conformant
-    syntax checkers. These are being addressed during the
-    OWL CR period.
-  - Performance has not yet been addressed. There is
-    a two or three second delay on start-up.
+o Now conforms with OWL Proposed Rec of December 2003
+  - Performance much improved. There is
+    about a one second delay on start-up.
+  - Error messages still somewhat cryptic
+    (Should be better in next release)
 
+RDF/XML-ABBREV output
+o Failed to fix bug concerning rdf:parseType="Collection"
+   - added new message trying to generate sufficient user feedback
+     on jena-dev to track down bug.
+o Fixed other bugs on bug list
+
+    
+    
 Graph query SPI [NB NOT visible at the model level]
 
 o replaced use of Graph for constraints by new Expression interface as
