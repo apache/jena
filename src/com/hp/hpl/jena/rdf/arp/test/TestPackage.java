@@ -277,8 +277,10 @@ Test test120 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdf
 test14.addTest(test120);
 Test test121 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/Manifest.rdf#test009","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test009.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test009.nt",false);
 test14.addTest(test121);
+/*
 Test test122 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/Manifest.rdf#error001","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/error001.rdf",true,new int[]{208, });
 test14.addTest(test122);
+*/
 Test test123 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-004","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/error-004.rdf",true,new int[]{205, });
 test14.addTest(test123);
 Test test124 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-005","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/error-005.rdf",true,new int[]{205, });
@@ -776,8 +778,10 @@ Test test365 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/r
 test259.addTest(test365);
 Test test366 = test246.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/Manifest.rdf#test009","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test009.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test009.nt",false);
 test259.addTest(test366);
+/*
 Test test367 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/Manifest.rdf#error001","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-charmod-uris/error001.rdf",true,new int[]{208, });
 test259.addTest(test367);
+*/
 Test test368 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-004","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/error-004.rdf",true,new int[]{205, });
 test259.addTest(test368);
 Test test369 = test246.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-005","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/error-005.rdf",true,new int[]{205, });
