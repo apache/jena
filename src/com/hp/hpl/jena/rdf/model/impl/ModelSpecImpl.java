@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.29 2004-07-28 07:44:57 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.30 2004-07-28 14:40:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.ReasonerFactory;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.vocabulary.*;
@@ -292,6 +294,24 @@ public abstract class ModelSpecImpl implements ModelSpec
         StmtIterator it = description.listStatements( root, JMS.loadWith, (RDFNode) null );
         while (it.hasNext()) FileUtils.loadModel( m, it.nextStatement().getResource().getURI() );
         return m;
+        }
+
+    /**
+         Answer a ReasonerFactory described by the properties of the resource
+         <code>R</code> in the model <code>rs</code>. Will throw 
+         NoReasonerSuppliedException if no jms:reasoner is supplied, or
+         NoSuchReasonerException if the reasoner value isn't known to
+         ReasonerRegistry. 
+    */
+    public static ReasonerFactory getReasonerFactory( Resource R, Model rs )
+        {
+        StmtIterator r = rs.listStatements( R, JMS.reasoner, (RDFNode) null );
+        if (r.hasNext() == false) throw new NoReasonerSuppliedException();
+        Resource rr = r.nextStatement().getResource();
+        String rrs = rr.getURI();
+        ReasonerFactory rf = ReasonerRegistry.theRegistry().getFactory( rrs );
+        if (rf == null) throw new NoSuchReasonerException( rrs );
+        return rf;
         }
                 
     }

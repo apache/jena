@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-07-27 08:07:43 $
+ * Last modified on   $Date: 2004-07-28 14:40:33 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.29 2004-07-27 08:07:43 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.30 2004-07-28 14:40:33 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -509,7 +509,8 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     }
 
     /**
-        Answer a ReasonerFactory as described by the reasonsWith part of this discription.
+        Answer a ReasonerFactory as described by the reasonsWith part of this discription,
+        or null if no reasoner specification has been supplied.
         
         @param description the description of this OntModel
         @param root the root of this OntModel's description
@@ -518,9 +519,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     public static ReasonerFactory getReasonerFactory( Model description, Resource root ) {
         Statement factStatement = description.getProperty( root, JMS.reasonsWith );
         if (factStatement == null) return null;
-        Statement reStatement = description.getProperty( factStatement.getResource(), JMS.reasoner );
-        String factoryURI = reStatement.getResource().getURI();
-        return ReasonerRegistry.theRegistry().getFactory( factoryURI );
+        return ModelSpecImpl.getReasonerFactory( factStatement.getResource(), description );
     }
 
     /**

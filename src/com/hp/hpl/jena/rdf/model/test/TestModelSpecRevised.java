@@ -1,17 +1,15 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.1 2004-07-28 13:31:14 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.2 2004-07-28 14:40:38 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Statement;
-import com.hp.hpl.jena.reasoner.Reasoner;
-import com.hp.hpl.jena.reasoner.ReasonerFactory;
-import com.hp.hpl.jena.reasoner.ReasonerRegistry;
-import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.vocabulary.JMS;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.shared.*;
 
 import junit.framework.TestSuite;
 
@@ -35,27 +33,49 @@ public class TestModelSpecRevised extends ModelTestBase
         String factoryURI = reStatement.getResource().getURI();
         return ReasonerRegistry.theRegistry().getFactory( factoryURI );
      */
-    public void testReasonerSupplied()
+    public void testNoReasonerSuppliedException()
         { 
         Model rs = modelWithStatements( "_a rdf:type jms:ReasonerSpec" );
-        try { createReasoner( rs ); fail( "should catch missing reasoner" ); }
+        Resource A = resource( "_a" );
+        try { ModelSpecImpl.getReasonerFactory( A, rs ); fail( "should catch missing reasoner" ); }
         catch (NoReasonerSuppliedException e) { pass(); }
         }
 
-    private static class NoReasonerSuppliedException extends JenaException
+    public void testNoSuchReasonerException()
         {
-        
+        Model rs = modelWithStatements( "_a rdf:type jms:ReasonerSpec; _a jms:reasoner nosuch:reasoner" );
+        Resource A = resource( "_a" );
+        try 
+            { ModelSpecImpl.getReasonerFactory( A, rs ); 
+            fail( "should catch unknown reasoner" ); }
+        catch (NoSuchReasonerException e) 
+            { assertEquals( "nosuch:reasoner", e.getURI() ); 
+            assertContains( "nosuch:reasoner", e.toString() ); }
         }
     
-    private static class NoSuchReasonerException extends JenaException
+    public void testGetOWLFBReasoner()
         {
+        testGetReasoner( OWLFBRuleReasonerFactory.URI, OWLFBRuleReasoner.class );
+        }
         
+    public void testGetRDFSRuleReasoner()
+        {
+        testGetReasoner( RDFSRuleReasonerFactory.URI, RDFSRuleReasoner.class );
         }
     
-    private ReasonerFactory createReasoner( Model rs )
+    private void testGetReasoner(String uri, Class wantClass)
         {
-        if (true) throw new NoReasonerSuppliedException();
-        return ReasonerRegistry.theRegistry().getFactory( "foo" );
+        Model rs = modelWithStatements( "_a jms:reasoner " + uri );
+        Resource A = resource( "_a" );
+        ReasonerFactory rf = ModelSpecImpl.getReasonerFactory( A, rs );
+        Reasoner r = rf.create( null );
+        assertEquals( wantClass, r.getClass() );
+        }
+
+    protected void assertContains( String x, String y )
+        {
+        if (y == null) fail( "<null> does not contain anything, especially '" + x + "'" );
+        if (y.indexOf( x ) < 0) fail( "'" + y + "' does not contain '" + x + "'" );
         }
     }
 
