@@ -27,7 +27,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class DBPropLSet extends DBProp {
 
@@ -53,8 +53,7 @@ public class DBPropLSet extends DBProp {
 	public String getType() { return getPropString( lSetType); };
 	
 	public DBPropPSet getPset() {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator matches = graph.find(self, lSetPSet, null, complete);
+		Iterator matches = graph.find(self, lSetPSet, null, newComplete() );
 		if( matches.hasNext() ) {
 			Triple t = (Triple)matches.next();
 			return new DBPropPSet(graph, t.getObject());

@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -81,7 +81,7 @@ public class DBPropDatabase extends DBProp {
 	}
 
 	public void removeGraph( DBPropGraph g ) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
+		SpecializedGraph.CompletionFlag complete = newComplete();
 		Iterator matches = graph.find( self, dbGraph, g.getNode(), complete);
 		if( matches.hasNext() ) {
 			graph.delete( (Triple)(matches.next()), complete );
@@ -90,8 +90,7 @@ public class DBPropDatabase extends DBProp {
 	}
 	
 	public ExtendedIterator getAllGraphs() {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator matches = graph.find( self, dbGraph, null, complete );
+		Iterator matches = graph.find( self, dbGraph, null, newComplete() );
 		return new Map1Iterator(new MapToLSet(), matches);
 	}
 	
@@ -112,10 +111,8 @@ public class DBPropDatabase extends DBProp {
 		}
 	}
 	static Node findDBPropNode( SpecializedGraph g) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Iterator matches = g.find( null, dbEngineType, null, complete );
-		if( matches.hasNext())
-			return ((Triple)matches.next()).getSubject();
+		Iterator matches = g.find( null, dbEngineType, null, newComplete() );
+		if( matches.hasNext()) return ((Triple) matches.next()).getSubject();
 		return null;		
 	}
 }

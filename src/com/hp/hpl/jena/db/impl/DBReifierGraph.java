@@ -24,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -83,15 +83,18 @@ public class DBReifierGraph implements Graph {
 	 */
 	public boolean contains(Triple t) {
         checkUnclosed();
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
+		SpecializedGraph.CompletionFlag complete = newComplete();
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
-			boolean result = sg.contains( t, complete );
+			boolean result = sg.contains( t, newComplete() );
 			if (result || complete.isDone()) return result;
 		}
 		return false;
 	}
+    
+    protected SpecializedGraph.CompletionFlag newComplete()
+        { return new SpecializedGraph.CompletionFlag(); } 
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#contains(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Node)
@@ -107,7 +110,7 @@ public class DBReifierGraph implements Graph {
 	public ExtendedIterator find(TripleMatch m) {
         checkUnclosed();
 		ExtendedIterator result = new NiceIterator();
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
+		SpecializedGraph.CompletionFlag complete = newComplete();
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();

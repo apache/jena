@@ -28,7 +28,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public abstract class DBProp {
 
@@ -46,20 +46,24 @@ public abstract class DBProp {
 	}			
 	
 	public Node getNode() { return self; }
+    
+    /**
+        Utility method for creating a CompletionFlag; its value lies in having a short name!
+        @return a new SpecializedGraph.CompletionFlag() set to <code>false</code>.
+    */
+    protected static SpecializedGraph.CompletionFlag newComplete()
+        { return new SpecializedGraph.CompletionFlag(); }
 	
 	protected void putPropString( Node_URI predicate, String value) {
 		putPropNode(predicate, new Node_Literal( new LiteralLabel(value, "")));
 	}		
 	
 	protected void putPropNode( Node_URI predicate, Node node) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		Triple t = new Triple( self, predicate, node);
-		graph.add( t, complete);
+		graph.add( Triple.create( self, predicate, node ), newComplete() );
 	}			
 	
 	protected String getPropString( Node_URI predicate) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		ClosableIterator it = graph.find(self, predicate, null, complete);
+		ClosableIterator it = graph.find(self, predicate, null, newComplete() );
 		if( !it.hasNext() ) {
 			it.close();
 			return null;
@@ -70,10 +74,9 @@ public abstract class DBProp {
 	}			
 	
 	protected void remove() {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
+		SpecializedGraph.CompletionFlag complete = newComplete();
 		ClosableIterator it = graph.find( self, null, null, complete);
-		while( it.hasNext() )
-			graph.delete( (Triple) it.next(), complete);
+		while( it.hasNext() ) graph.delete( (Triple) it.next(), complete );
 		it.close();
 		self = null;
 		graph = null;
@@ -81,15 +84,13 @@ public abstract class DBProp {
 	
 	public static ExtendedIterator listTriples( SpecializedGraph g, Node self ) {
 		// Get all the triples about the requested node.
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		return g.find( self, null, null, complete);
+		return g.find( self, null, null, newComplete() );
 	}
 		
 	protected static Node findProperty( Graph graph, Node_URI predicate ) {
 		ClosableIterator it = graph.find( null, predicate, null );
 		Node result = null;
-		if( it.hasNext() )
-			result = ((Triple)it.next()).getObject();
+		if( it.hasNext() ) result = ((Triple) it.next()).getObject();
 		it.close();
 		return result;
 	}	

@@ -20,7 +20,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * and object URI's are stored in a single collection (denormalized).
  * 
  */
-public abstract class SpecializedGraph_TripleStore implements SpecializedGraph {
+public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase {
 
 	/**
 	 * holds PSet
@@ -131,9 +131,6 @@ public abstract class SpecializedGraph_TripleStore implements SpecializedGraph {
 		return (ExtendedIterator)m_pset.find(t, my_GID);
 		}
 
-    public ExtendedIterator find( Node s, Node p, Node o, CompletionFlag complete )
-        { return find( Triple.createMatch( s, p, o ), complete ); }
-        
 	/*
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#close()
 	 */

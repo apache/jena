@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBReifier.java,v 1.5 2003-06-12 15:10:00 chris-dollin Exp $
+  $Id: DBReifier.java,v 1.6 2003-06-13 13:06:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -68,12 +68,18 @@ public class DBReifier implements Reifier
 		return m_hiddenTriples;
 	}
 
+    /**
+        Utility method useful for its short name: answer a new CompletionFlag
+        initialised to false.
+    */
+    protected static SpecializedGraph.CompletionFlag newComplete()  
+        { return new SpecializedGraph.CompletionFlag(); }
+        
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#reifyAs(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple)
 	 */
-	public Node reifyAs(Node n, Triple t) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		m_reifier.add(n,t,complete);
+	public Node reifyAs( Node n, Triple t ) {
+		m_reifier.add( n, t, newComplete() );
 		return n;
 	}
 
@@ -81,51 +87,42 @@ public class DBReifier implements Reifier
 	 * @see com.hp.hpl.jena.graph.Reifier#hasTriple(com.hp.hpl.jena.graph.Node)
 	 */
 	public boolean hasTriple(Node n) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		return m_reifier.findReifiedTriple(n, complete) != null;
+		return m_reifier.findReifiedTriple( n, newComplete() ) != null;
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#hasTriple(com.hp.hpl.jena.graph.Triple)
 	 */
-	public boolean hasTriple(Triple t) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-//		TripleMatch match = new StandardTripleMatch(t.getSubject(), t.getPredicate(), t.getObject());
-//		return m_reifier.findReifiedNodes(match, complete).hasNext();
-		return m_reifier.findReifiedNodes(t, complete).hasNext();
+	public boolean hasTriple( Triple t ) {
+		return m_reifier.findReifiedNodes(t, newComplete() ).hasNext();
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#allNodes()
 	 */
 	public ExtendedIterator allNodes() {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-//		TripleMatch match = new StandardTripleMatch(null, null, null);
-//		return m_reifier.findReifiedNodes(match, complete);
-		return m_reifier.findReifiedNodes(null, complete);
+		return m_reifier.findReifiedNodes( null, newComplete() );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#remove(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple)
 	 */
-	public void remove(Node n, Triple t) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		m_reifier.delete(n,t, complete);
+	public void remove( Node n, Triple t ) {
+		m_reifier.delete( n, t, newComplete() );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#remove(com.hp.hpl.jena.graph.Triple)
 	 */
-	public void remove(Triple t) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		m_reifier.delete(null,t, complete);
+	public void remove( Triple t ) {
+		m_reifier.delete(null,t, newComplete() );
 	}
 
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#handledAdd(com.hp.hpl.jena.graph.Triple)
 	 */
 	public boolean handledAdd(Triple t) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
+		SpecializedGraph.CompletionFlag complete = newComplete();
 		m_reifier.add(t, complete);
 		return complete.isDone();
 	}
@@ -134,7 +131,7 @@ public class DBReifier implements Reifier
 	 * @see com.hp.hpl.jena.graph.Reifier#handledRemove(com.hp.hpl.jena.graph.Triple)
 	 */
 	public boolean handledRemove(Triple t) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
+		SpecializedGraph.CompletionFlag complete = newComplete();
 		m_reifier.delete(t, complete);
 		return complete.isDone();
 	}
@@ -143,8 +140,7 @@ public class DBReifier implements Reifier
 	 * @see com.hp.hpl.jena.graph.GetTriple#getTriple(com.hp.hpl.jena.graph.Node)
 	 */
 	public Triple getTriple(Node n) {
-		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();
-		return m_reifier.findReifiedTriple(n, complete);
+		return m_reifier.findReifiedTriple(n, newComplete() );
 	}
         
 }

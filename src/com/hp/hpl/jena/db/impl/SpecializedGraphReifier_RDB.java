@@ -25,7 +25,9 @@ import com.hp.hpl.jena.shared.*;
  *  
  */
 
-public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
+public class SpecializedGraphReifier_RDB 
+    extends SpecializedGraphBase 
+    implements SpecializedGraphReifier {
 
 	/**
 	 * holds PSet
@@ -367,7 +369,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	public void add(List triples, CompletionFlag complete) {
 		ArrayList remainingTriples = new ArrayList();
 		for( int i=0; i< triples.size(); i++) {
-			CompletionFlag partialResult = new CompletionFlag();
+			CompletionFlag partialResult = newComplete();
 			add( (Triple)triples.get(i), partialResult);
 			if( !partialResult.isDone())
 				remainingTriples.add(triples.get(i));
@@ -386,7 +388,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 		boolean result = true;
 		Iterator it = triples.iterator();
 		while(it.hasNext()) {
-			CompletionFlag partialResult = new CompletionFlag();
+			CompletionFlag partialResult = newComplete();
 			delete( (Triple)it.next(), partialResult);
 			result = result && partialResult.isDone();
 		}
@@ -398,7 +400,7 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 	 */
 	public int tripleCount() {
 		// A very inefficient, but simple implementation
-		ExtendedIterator it = find( null, null, null, new CompletionFlag());
+		ExtendedIterator it = find( null, null, null, newComplete() );
 		int count = 0;
 		while (it.hasNext()) {
 			it.next(); count++;
@@ -407,9 +409,6 @@ public class SpecializedGraphReifier_RDB implements SpecializedGraphReifier {
 		return count;
 	}
 
-    public ExtendedIterator find( Node s, Node p, Node o, CompletionFlag complete )
-        { return find( Triple.createMatch( s, p, o ), complete ); }
-        
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
