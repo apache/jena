@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.36 2004-09-21 15:05:37 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.37 2004-09-22 07:16:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -130,7 +130,7 @@ public class SimpleReifier implements Reifier
         {
         if (intercepting)
             {
-            ReifierFragmentHandler s = fragmentsMap.getFragmentSelector( fragment );  
+            ReifierFragmentHandler s = fragmentsMap.getFragmentHandler( fragment );  
             if (s == null)
                 return false;
             else     
@@ -175,7 +175,7 @@ public class SimpleReifier implements Reifier
         {
         if (intercepting)
             {
-            ReifierFragmentHandler s = fragmentsMap.getFragmentSelector( fragment );  
+            ReifierFragmentHandler s = fragmentsMap.getFragmentHandler( fragment );  
             if (s == null)
                 return false;
             else     

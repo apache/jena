@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentsMap.java,v 1.10 2004-09-21 15:05:37 chris-dollin Exp $
+  $Id: SimpleReifierFragmentsMap.java,v 1.11 2004-09-22 07:16:33 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -25,10 +25,10 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
     
     protected Map forwardMap = HashUtils.createMap();
     
-    public Fragments getFragments( Node tag )
+    protected Fragments getFragments( Node tag )
         { return (Fragments) forwardMap.get( tag ); }
     
-    public void removeFragments( Node key )
+    protected void removeFragments( Node key )
         { forwardMap.remove( key ); }
     
     /**
@@ -40,7 +40,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         return value;
         }                    
     
-    public ExtendedIterator allTriples( TripleMatch tm )
+    protected ExtendedIterator allTriples( TripleMatch tm )
         {
         Triple t = tm.asTriple();
         Node subject = t.getSubject();
@@ -90,10 +90,10 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         }
 
     /**
-        given a triple t, see if it's a reification triple and if so return the internal seelctor;
-        oterwise return null.
+        given a triple t, see if it's a reification triple and if so return the internal selector;
+        otherwise return null.
     */ 
-    public ReifierFragmentHandler getFragmentSelector( Triple t )
+    public ReifierFragmentHandler getFragmentHandler( Triple t )
         {
         Node p = t.getPredicate();
         ReifierFragmentHandler x = (ReifierFragmentHandler) selectors.get( p );
@@ -101,14 +101,14 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         return x;
         }
 
-    public void putAugmentedTriple( SimpleReifierFragmentHandler s, Node tag, Node object, Triple reified )
+    protected void putAugmentedTriple( SimpleReifierFragmentHandler s, Node tag, Node object, Triple reified )
         {
         Fragments partial = new Fragments( tag, reified );
         partial.add( s, object );
         putFragments( tag, partial );
         }
     
-    public Triple reifyCompleteQuad( SimpleReifierFragmentHandler s, Triple fragment, Node tag, Node object )
+    protected Triple reifyCompleteQuad( SimpleReifierFragmentHandler s, Triple fragment, Node tag, Node object )
         {       
         Fragments partial = getFragments( tag );
         if (partial == null) putFragments( tag, partial = new Fragments( tag ) );
@@ -122,7 +122,7 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
             return null;
         }
 
-    public Triple removeFragment( SimpleReifierFragmentHandler s, Node tag, Triple already, Triple fragment )
+    protected Triple removeFragment( SimpleReifierFragmentHandler s, Node tag, Triple already, Triple fragment )
         {
         Fragments partial = getFragments( tag );
         Fragments fs = (already != null ? explode( tag, already )
@@ -142,13 +142,13 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
             }
         }
     
-    private Fragments explode( Node s, Triple t )
+    protected Fragments explode( Node s, Triple t )
         { return putFragments( s, new Fragments( s, t ) ); }
 
     public boolean hasFragments( Node tag )
         { return getFragments( tag ) != null; }
 
-    private class Fragments
+    protected static class Fragments
         { 
         
         /**
@@ -273,22 +273,22 @@ public class SimpleReifierFragmentsMap implements ReifierFragmentsMap
         the magic numbers for the slots. The order doesn't matter, but that they're
         some permutation of {0, 1, 2, 3} does. 
     */
-    private static final int TYPES_index = 0;
-    private static final int SUBJECTS_index = 1;
-    private static final int PREDICATES_index = 2;
-    private static final int OBJECTS_index = 3;
+    protected static final int TYPES_index = 0;
+    protected static final int SUBJECTS_index = 1;
+    protected static final int PREDICATES_index = 2;
+    protected static final int OBJECTS_index = 3;
     
-    private final ReifierFragmentHandler TYPES = new SimpleReifierFragmentHandler( this, TYPES_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return false; } };
-    private final ReifierFragmentHandler SUBJECTS = new SimpleReifierFragmentHandler( this, SUBJECTS_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getSubject() ); } };
-    private final ReifierFragmentHandler PREDICATES = new SimpleReifierFragmentHandler( this, PREDICATES_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getPredicate() ); } };
-    private final ReifierFragmentHandler OBJECTS = new SimpleReifierFragmentHandler( this, OBJECTS_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getObject() ); } };
+    protected final ReifierFragmentHandler TYPES = new SimpleReifierFragmentHandler( this, TYPES_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return false; } };
+    protected final ReifierFragmentHandler SUBJECTS = new SimpleReifierFragmentHandler( this, SUBJECTS_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getSubject() ); } };
+    protected final ReifierFragmentHandler PREDICATES = new SimpleReifierFragmentHandler( this, PREDICATES_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getPredicate() ); } };
+    protected final ReifierFragmentHandler OBJECTS = new SimpleReifierFragmentHandler( this, OBJECTS_index) { public boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified ) { return !n.equals( reified.getObject() ); } };
 
     public final Map selectors = makeSelectors();
           
     /**
         make the selector mapping.
     */
-    private Map makeSelectors()
+    protected Map makeSelectors()
         {
         Map result = HashUtils.createMap();
         result.put( RDF.Nodes.subject, SUBJECTS );

@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierFragmentsMap.java,v 1.5 2004-09-21 15:05:37 chris-dollin Exp $
+ $Id: ReifierFragmentsMap.java,v 1.6 2004-09-22 07:16:33 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -25,7 +25,7 @@ public interface ReifierFragmentsMap
          Answer a FragmentHandler which can handle this fragment, or null if it isn't a
          reification fragment.
     */
-    public abstract ReifierFragmentHandler getFragmentSelector( Triple fragment );
+    public abstract ReifierFragmentHandler getFragmentHandler( Triple fragment );
 
     /**
          Answer true iff this map has fragments associated with <code>tag</code>.
