@@ -5,9 +5,9 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.2 2003-02-03 16:51:50 der Exp $
+ * $Id: XSDDateTime.java,v 1.1 2003-03-31 10:01:32 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes.xsd;
 
 import org.apache.xerces.impl.dv.XSSimpleType;
 import java.util.*;
@@ -19,7 +19,7 @@ import java.util.*;
  * <p>TODO: revist and consider have separate types for each.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-03 16:51:50 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:32 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -56,12 +56,13 @@ public class XSDDateTime extends AbstractDateTime {
     protected short mask;
     
     /**
-     * Constructor - only used internally to the package
+     * Constructor - should only be used by the internals but public scope because
+     * the internals spread across multiple packages.
      * 
      * @param value the date/time value returned by the parsing
      * @param dtype the XSD type representation
      */
-    XSDDateTime(Object value, XSSimpleType dtype) {
+    public XSDDateTime(Object value, XSSimpleType dtype) {
         super(value, dtype);
         mask = ((Integer)maskMap.get(dtype.getName())).shortValue();
     }

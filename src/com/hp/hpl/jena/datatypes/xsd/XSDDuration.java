@@ -5,9 +5,9 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDuration.java,v 1.1.1.1 2002-12-19 19:13:47 bwm Exp $
+ * $Id: XSDDuration.java,v 1.1 2003-03-31 10:01:32 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes.xsd;
 
 import org.apache.xerces.impl.dv.XSSimpleType;
 
@@ -18,17 +18,18 @@ import org.apache.xerces.impl.dv.XSSimpleType;
  * decimals for seconds.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:47 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:32 $
  */
 public class XSDDuration extends AbstractDateTime {
 
     /**
-     * Constructor - only used internally to the package
+     * Constructor - should only be used by the internals but public scope because
+     * the internals spread across multiple packages.
      * 
      * @param value the date/time value returned by the parsing
      * @param dtype the XSD type representation
      */
-    XSDDuration(Object value, XSSimpleType dtype) {
+    public XSDDuration(Object value, XSSimpleType dtype) {
         super(value, dtype);
     }
     

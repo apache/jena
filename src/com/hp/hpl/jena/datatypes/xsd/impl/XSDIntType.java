@@ -1,30 +1,31 @@
 /******************************************************************
- * File:        XSDShortType.java
+ * File:        XSDIntType.java
  * Created by:  Dave Reynolds
  * Created on:  10-Dec-02
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDShortType.java,v 1.2 2003-02-10 10:00:28 der Exp $
+ * $Id: XSDIntType.java,v 1.1 2003-03-31 10:01:24 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes.xsd.impl;
 
+import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
  * Datatype template used to define XSD int types
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:00:28 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:24 $
  */
-public class XSDShortType extends XSDBaseNumericType {
+public class XSDIntType extends XSDBaseNumericType {
 
     /**
      * Constructor. 
      * @param typeName the name of the XSD type to be instantiated, this is 
      * used to lookup a type definition from the Xerces schema factory.
      */
-    public XSDShortType(String typeName) {
+    public XSDIntType(String typeName) {
         super(typeName);
     }
     
@@ -35,7 +36,7 @@ public class XSDShortType extends XSDBaseNumericType {
      * @param javaClass the java class for which this xsd type is to be
      * treated as the cannonical representation
      */
-    public XSDShortType(String typeName, Class javaClass) {
+    public XSDIntType(String typeName, Class javaClass) {
         super(typeName, javaClass);
     }
     
@@ -44,7 +45,7 @@ public class XSDShortType extends XSDBaseNumericType {
      * @throws DatatypeFormatException if the lexical form is not legal
      */
     public Object parse(String lexicalForm) throws DatatypeFormatException {        
-        return new Short(super.parse(lexicalForm).toString());
+        return new Integer(super.parse(lexicalForm).toString());
     }
     
     /**

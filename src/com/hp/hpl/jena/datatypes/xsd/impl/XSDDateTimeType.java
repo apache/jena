@@ -1,50 +1,41 @@
 /******************************************************************
- * File:        XSDLongType.java
+ * File:        XSDDateTimeType.java
  * Created by:  Dave Reynolds
- * Created on:  10-Dec-02
+ * Created on:  16-Dec-2002
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDLongType.java,v 1.2 2003-02-10 10:00:24 der Exp $
+ * $Id: XSDDateTimeType.java,v 1.1 2003-03-31 10:01:31 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes.xsd.impl;
 
+import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
- * Datatype template used to define XSD long types
+ * The XSD date/time type, the only job of this extra layer is to
+ * wrap the return value in a more convenient accessor type. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:00:24 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:31 $
  */
-public class XSDLongType extends XSDBaseNumericType {
-    
+public class XSDDateTimeType extends XSDDatatype {
+
     /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
-     * used to lookup a type definition from the Xerces schema factory.
+     * Constructor
      */
-    public XSDLongType(String typeName) {
-        super(typeName);
+    public XSDDateTimeType(String typename) {
+        super(typename);
     }
-    
-    /**
-     * Constructor. 
-     * @param typeName the name of the XSD type to be instantiated, this is 
-     * used to lookup a type definition from the Xerces schema factory.
-     * @param javaClass the java class for which this xsd type is to be
-     * treated as the cannonical representation
-     */
-    public XSDLongType(String typeName, Class javaClass) {
-        super(typeName, javaClass);
-    }
-    
+
     /**
      * Parse a lexical form of this datatype to a value
+     * @return a Duration value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {        
-        return new Long(super.parse(lexicalForm).toString());
+    public Object parse(String lexicalForm) throws DatatypeFormatException {
+        return new XSDDateTime(super.parse(lexicalForm), typeDeclaration);
     }
     
     /**
@@ -55,7 +46,6 @@ public class XSDLongType extends XSDBaseNumericType {
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
        return value1.getValue().equals(value2.getValue());
     }
-
 }
 
 /*

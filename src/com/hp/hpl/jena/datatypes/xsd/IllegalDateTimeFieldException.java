@@ -1,50 +1,29 @@
 /******************************************************************
- * File:        XSDDurationType.java
+ * File:        IllegalDateTimeField.java
  * Created by:  Dave Reynolds
- * Created on:  16-Dec-02
+ * Created on:  17-Dec-2002
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDurationType.java,v 1.2 2003-02-10 10:00:24 der Exp $
+ * $Id: IllegalDateTimeFieldException.java,v 1.1 2003-03-31 10:01:31 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes.xsd;
 
-import com.hp.hpl.jena.graph.LiteralLabel;
+import com.hp.hpl.jena.rdf.model.RDFException;
 
 /**
- * The XSD duration type, the only job of this extra layer is to
- * wrap the return value in a more convenient accessor type. We could
- * avoid this proliferation of trivial types by use of reflection but
- * since that causes allergic reactions in some we use brute force.
+ * Exception thrown when attempting to access a field of an XSDDateTime 
+ * object that is not legal for the current date/time type. For example,
+ * accessing the day from a gYearMonth object.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:00:24 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:31 $
  */
-public class XSDDurationType extends XSDDatatype {
+public class IllegalDateTimeFieldException extends RDFException {
     
-    /**
-     * Constructor
-     */
-    public XSDDurationType() {
-        super("duration");
-    }
-        
-    /**
-     * Parse a lexical form of this datatype to a value
-     * @return a Duration value
-     * @throws DatatypeFormatException if the lexical form is not legal
-     */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {
-        return new XSDDuration(super.parse(lexicalForm), typeDeclaration);
-    }
-    
-    /**
-     * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
-     */
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-       return value1.getValue().equals(value2.getValue());
+    /** Constructor */
+    public IllegalDateTimeFieldException(String msg) {
+        super(msg);
     }
 }
 

@@ -5,20 +5,20 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSD.java,v 1.1 2003-03-27 10:55:44 der Exp $
+ * $Id: XSD.java,v 1.2 2003-03-31 10:01:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
-import com.hp.hpl.jena.graph.dt.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 
 /**
  * Defines Jena resources corresponding to the URIs for 
  * the XSD primitive datatypes which are known to Jena. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-03-27 10:55:44 $
+ * @version $Revision: 1.2 $ on $Date: 2003-03-31 10:01:34 $
  */
 public class XSD {
     /** Resource URI for xsd:float */

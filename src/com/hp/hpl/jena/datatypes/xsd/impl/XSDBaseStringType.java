@@ -1,39 +1,34 @@
 /******************************************************************
- * File:        XSDBigNumberType.java
+ * File:        XSDBaseStringType.java
  * Created by:  Dave Reynolds
- * Created on:  10-Dec-2002
+ * Created on:  09-Feb-03
  * 
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDBigNumberType.java,v 1.3 2003-02-10 10:00:26 der Exp $
+ * $Id: XSDBaseStringType.java,v 1.1 2003-03-31 10:01:23 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes.xsd.impl;
 
-import org.apache.xerces.impl.dv.xs.DecimalDV;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
+import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
- * Datatype template used to define those XSD numeric types which might
- * require BigDecimal or BigNumber support. For performance, rather than
- * always use the math package we check the number of digits involved
- * and default to a Long when possible.
+ * Base implementation for all string datatypes derinved from
+ * xsd:string. The only purpose of this place holder is
+ * to support the isValidLiteral tests across string types.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-02-10 10:00:26 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:23 $
  */
-public class XSDBigNumberType extends XSDBaseNumericType {
-    
-    static final DecimalDV decimalDV = new DecimalDV();
-    
+public class XSDBaseStringType extends XSDDatatype {
+
     /**
      * Constructor. 
      * @param typeName the name of the XSD type to be instantiated, this is 
      * used to lookup a type definition from the Xerces schema factory.
      */
-    public XSDBigNumberType(String typeName) {
+    public XSDBaseStringType(String typeName) {
         super(typeName);
     }
     
@@ -44,36 +39,45 @@ public class XSDBigNumberType extends XSDBaseNumericType {
      * @param javaClass the java class for which this xsd type is to be
      * treated as the cannonical representation
      */
-    public XSDBigNumberType(String typeName, Class javaClass) {
+    public XSDBaseStringType(String typeName, Class javaClass) {
         super(typeName, javaClass);
     }
+
     
     /**
-     * Parse a lexical form of this datatype to a value
-     * @throws DatatypeFormatException if the lexical form is not legal
+     * Test whether the given LiteralLabel is a valid instance
+     * of this datatype. This takes into accound typing information
+     * as well as lexical form - for example an xsd:string is
+     * never considered valid as an xsd:integer (even if it is
+     * lexically legal like "1").
      */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {
-        Object xsdValue = super.parse(lexicalForm);
-        if (decimalDV.getFractionDigits(xsdValue) >= 1) {
-            return new BigDecimal(xsdValue.toString());
-        } else if (decimalDV.getTotalDigits(xsdValue) > 18) {
-            return new BigInteger(xsdValue.toString());
+    public boolean isValidLiteral(LiteralLabel lit) {
+        RDFDatatype dt = lit.getDatatype();
+        if (dt == null || this.equals(dt)) return true;
+        if (dt instanceof XSDBaseStringType) {
+            return isValid(lit.toString());
         } else {
-            return new Long(xsdValue.toString());
+            return false;
         }
     }
     
     /**
-     * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
+     * Compares two instances of values of the given datatype. 
+     * This ignores lang tags and optionally allows plain literals to
+     * equate to strings. The latter option is currently set by a static
+     * global flag in LiteralLabel.
      */
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-       return value1.getValue().equals(value2.getValue());
+        // value1 will have been used to dispatch here so we know value1 is an xsdstring or extension
+        if ((value2.getDatatype() == null && LiteralLabel.enablePlainSameAsString) ||
+             (value2.getDatatype() instanceof XSDBaseStringType)) {
+                return value1.getValue().equals(value2.getValue());
+        } else {
+                return false;
+        }
     }
-    
 
-}
+ }
 
 /*
     (c) Copyright Hewlett-Packard Company 2002

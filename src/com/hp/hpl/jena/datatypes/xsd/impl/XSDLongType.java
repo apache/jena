@@ -1,59 +1,61 @@
 /******************************************************************
- * File:        XMLLiteralType.java
+ * File:        XSDLongType.java
  * Created by:  Dave Reynolds
- * Created on:  08-Dec-02
+ * Created on:  10-Dec-02
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XMLLiteralType.java,v 1.1.1.1 2002-12-19 19:13:41 bwm Exp $
+ * $Id: XSDLongType.java,v 1.1 2003-03-31 10:01:26 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes.xsd.impl;
 
-import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
- * Builtin data type to represent XMLLiteral (i.e. items created
- * by use of <code>rdf:parsetype='literal'</code>.
- * 
- * @TODO implement parsing - this is just a dummy implementation at present.
+ * Datatype template used to define XSD long types
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:41 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:26 $
  */
-public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
-    /** Singleton instance */
-    public static final RDFDatatype theXMLLiteralType = new XMLLiteralType(RDF.getURI() + "XMLLiteral");
+public class XSDLongType extends XSDBaseNumericType {
     
     /**
-     * Private constructor.
+     * Constructor. 
+     * @param typeName the name of the XSD type to be instantiated, this is 
+     * used to lookup a type definition from the Xerces schema factory.
      */
-    private XMLLiteralType(String uri) {
-        super(uri);
+    public XSDLongType(String typeName) {
+        super(typeName);
     }
     
     /**
-     * Convert a serialize a value of this datatype out
-     * to lexical form.
+     * Constructor. 
+     * @param typeName the name of the XSD type to be instantiated, this is 
+     * used to lookup a type definition from the Xerces schema factory.
+     * @param javaClass the java class for which this xsd type is to be
+     * treated as the cannonical representation
      */
-    public String unparse(Object value) {
-        return value.toString();
+    public XSDLongType(String typeName, Class javaClass) {
+        super(typeName, javaClass);
     }
     
     /**
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {
-        return lexicalForm;
+    public Object parse(String lexicalForm) throws DatatypeFormatException {        
+        return new Long(super.parse(lexicalForm).toString());
     }
     
     /**
-     * Test whether the given string is a legal lexical form
-     * of this datatype.
+     * Compares two instances of values of the given datatype.
+     * This ignores lang tags and just uses the java.lang.Number 
+     * equality.
      */
-    public boolean isValid(String lexicalForm) {
-        return true;
-    }    
+    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
+       return value1.getValue().equals(value2.getValue());
+    }
 
 }
 

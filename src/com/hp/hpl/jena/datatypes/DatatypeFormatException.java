@@ -5,9 +5,9 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DatatypeFormatException.java,v 1.1.1.1 2002-12-19 19:13:38 bwm Exp $
+ * $Id: DatatypeFormatException.java,v 1.1 2003-03-31 10:01:17 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes;
 
 import com.hp.hpl.jena.rdf.model.RDFException;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.rdf.model.RDFException;
  * @TODO could hold the lexical form and datatype in local fields
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:38 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:17 $
  */
 public class DatatypeFormatException extends RDFException 
 {

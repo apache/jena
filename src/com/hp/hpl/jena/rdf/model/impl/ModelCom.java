@@ -37,6 +37,7 @@ import com.hp.hpl.jena.graph.dt.*;
 
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.mem.*;
 
@@ -51,7 +52,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-03-26 12:33:04 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-03-31 09:59:53 $'
  */
 
 abstract public class ModelCom extends EnhGraph

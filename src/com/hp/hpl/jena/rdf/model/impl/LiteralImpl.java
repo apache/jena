@@ -33,15 +33,15 @@ package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.dt.RDFDatatype;
-import com.hp.hpl.jena.graph.dt.DatatypeFormatException;
 
+import com.hp.hpl.jena.datatypes.DatatypeFormatException;
+import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.enhanced.*;
 
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-02-19 10:53:39 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-03-31 09:59:53 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
 //    private Node node;

@@ -5,12 +5,15 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TypeMapper.java,v 1.3 2003-03-05 18:07:18 der Exp $
+ * $Id: TypeMapper.java,v 1.1 2003-03-31 10:01:20 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes;
 
 import java.util.HashMap;
 import java.util.Iterator;
+
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
+import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType;
 
 /**
  * The TypeMapper provides a global registry of known datatypes.
@@ -18,7 +21,7 @@ import java.util.Iterator;
  * that is used to represent them.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-03-05 18:07:18 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:20 $
  */
 public class TypeMapper {
 

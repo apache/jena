@@ -1,32 +1,31 @@
 /******************************************************************
- * File:        XSDBaseStringType.java
+ * File:        XSDByteType.java
  * Created by:  Dave Reynolds
- * Created on:  09-Feb-03
+ * Created on:  10-Dec-02
  * 
- * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Graph.java,v 1.8 2002/11/29 23:21:13 jjc Exp $
+ * $Id: XSDByteType.java,v 1.1 2003-03-31 10:01:30 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes.xsd.impl;
 
+import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
- * Base implementation for all string datatypes derinved from
- * xsd:string. The only purpose of this place holder is
- * to support the isValidLiteral tests across string types.
- * 
+ * Datatype template used to define XSD int types
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision$ on $Date: 2000/06/22 16:03:33 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:30 $
  */
-public class XSDBaseStringType extends XSDDatatype {
+public class XSDByteType extends XSDBaseNumericType {
 
     /**
      * Constructor. 
      * @param typeName the name of the XSD type to be instantiated, this is 
      * used to lookup a type definition from the Xerces schema factory.
      */
-    public XSDBaseStringType(String typeName) {
+    public XSDByteType(String typeName) {
         super(typeName);
     }
     
@@ -37,45 +36,28 @@ public class XSDBaseStringType extends XSDDatatype {
      * @param javaClass the java class for which this xsd type is to be
      * treated as the cannonical representation
      */
-    public XSDBaseStringType(String typeName, Class javaClass) {
+    public XSDByteType(String typeName, Class javaClass) {
         super(typeName, javaClass);
     }
-
     
     /**
-     * Test whether the given LiteralLabel is a valid instance
-     * of this datatype. This takes into accound typing information
-     * as well as lexical form - for example an xsd:string is
-     * never considered valid as an xsd:integer (even if it is
-     * lexically legal like "1").
+     * Parse a lexical form of this datatype to a value
+     * @throws DatatypeFormatException if the lexical form is not legal
      */
-    public boolean isValidLiteral(LiteralLabel lit) {
-        RDFDatatype dt = lit.getDatatype();
-        if (dt == null || this.equals(dt)) return true;
-        if (dt instanceof XSDBaseStringType) {
-            return isValid(lit.toString());
-        } else {
-            return false;
-        }
+    public Object parse(String lexicalForm) throws DatatypeFormatException {        
+        return new Byte(super.parse(lexicalForm).toString());
     }
     
     /**
-     * Compares two instances of values of the given datatype. 
-     * This ignores lang tags and optionally allows plain literals to
-     * equate to strings. The latter option is currently set by a static
-     * global flag in LiteralLabel.
+     * Compares two instances of values of the given datatype.
+     * This ignores lang tags and just uses the java.lang.Number 
+     * equality.
      */
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-        // value1 will have been used to dispatch here so we know value1 is an xsdstring or extension
-        if ((value2.getDatatype() == null && LiteralLabel.enablePlainSameAsString) ||
-             (value2.getDatatype() instanceof XSDBaseStringType)) {
-                return value1.getValue().equals(value2.getValue());
-        } else {
-                return false;
-        }
+       return value1.getValue().equals(value2.getValue());
     }
 
- }
+}
 
 /*
     (c) Copyright Hewlett-Packard Company 2002

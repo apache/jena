@@ -5,10 +5,12 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.12 2003-03-05 18:05:58 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.13 2003-03-31 10:01:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
+import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.dt.*;
 import com.hp.hpl.jena.graph.query.*;
@@ -28,7 +30,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-03-05 18:05:58 $
+ * @version $Revision: 1.13 $ on $Date: 2003-03-31 10:01:36 $
  */
 public class TestTypedLiterals extends TestCase {
               

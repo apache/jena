@@ -1,72 +1,54 @@
 /******************************************************************
- * File:        BaseDatatype.java
+ * File:        Datatype.java
  * Created by:  Dave Reynolds
- * Created on:  08-Dec-02
+ * Created on:  07-Dec-02
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseDatatype.java,v 1.2 2003-02-10 10:00:20 der Exp $
+ * $Id: RDFDatatype.java,v 1.1 2003-03-31 10:01:19 der Exp $
  *****************************************************************/
-
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes;
 
 import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
- * Base level implementation of datatype from which real implementations
- * can inherit.
+ * Interface on a datatype representation. An instance of this
+ * interface is needed to convert typed literals between lexical
+ * and value forms. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:00:20 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:19 $
  */
-public class BaseDatatype implements RDFDatatype {
-    
-    /** The URI label for this data type */
-    protected String uri;
-    
-    /**
-     * Constructor.
-     * @param uri the URI label to use for this datatype
-     */
-    public BaseDatatype(String uri) {
-        this.uri = uri;
-    }
-    
+public interface RDFDatatype {
+
     /**
      * Return the URI which is the label for this datatype
      */
-    public String getURI() {
-        return uri;
-    }
+    public String getURI();
     
     /**
      * Convert a value of this datatype out
      * to lexical form.
      */
-    public String unparse(Object value) {
-        return value.toString();
-    }
+    public String unparse(Object value);
     
     /**
      * Parse a lexical form of this datatype to a value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {
-        return lexicalForm;
-    }
+    public Object parse(String lexicalForm) throws DatatypeFormatException;
     
     /**
      * Test whether the given string is a legal lexical form
      * of this datatype.
      */
-    public boolean isValid(String lexicalForm) {
-        try {
-            parse(lexicalForm);
-            return true;
-        } catch (DatatypeFormatException e) {
-            return false;
-        }
-    }    
+    public boolean isValid(String lexicalForm);
+    
+    /**
+     * Test whether the given object is a legal value form
+     * of this datatype.
+     */
+    public boolean isValidValue(Object valueForm);
     
     /**
      * Test whether the given LiteralLabel is a valid instance
@@ -75,67 +57,32 @@ public class BaseDatatype implements RDFDatatype {
      * never considered valid as an xsd:integer (even if it is
      * lexically legal like "1").
      */
-    public boolean isValidLiteral(LiteralLabel lit) {
-        // default is than only literals with the same type are valid
-        return equals(lit.getDatatype());
-    }
-     
-    /**
-     * Test whether the given object is a legal value form
-     * of this datatype.
-     */
-    public boolean isValidValue(Object valueForm) {
-        // Default to brute force
-        return isValid(unparse(valueForm));
-    }
+    public boolean isValidLiteral(LiteralLabel lit);
     
     /**
      * Compares two instances of values of the given datatype.
-     * This default requires value, datatype and lang tag equality.
+     * This defaults to just testing equality of the java value
+     * representation but datatypes can override this. We pass the
+     * entire LiteralLabel to allow the equality function to take
+     * the xml:lang tag and the datatype itself into account.
      */
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-        return value1.getDatatype() == value2.getDatatype()
-             && value1.getValue().equals(value2.getValue())
-             && langTagCompatible(value1, value2);
-    }
+    public boolean isEqual(LiteralLabel value1, LiteralLabel value2);
     
     /**
-     * Helper function to compare language tag values
+     * If this datatype is used as the cannonical representation
+     * for a particular java datatype then return that java type,
+     * otherwise returns null.
      */
-    public boolean langTagCompatible(LiteralLabel value1, LiteralLabel value2) {
-        if (value1.language() == null) {
-            return (value2.language() == null || value2.language().equals(""));
-        } else {
-            return value1.language().equalsIgnoreCase(value2.language());
-        }
-    }
-    
-    /**
-     * Returns the java class which is used to represent value
-     * instances of this datatype.
-     */
-    public Class getJavaClass() {
-        return null;
-    }
+    public Class getJavaClass();
     
     /**
      * Returns an object giving more details on the datatype.
      * This is type system dependent. In the case of XSD types
      * this will be an instance of 
-     * <code>org.apache.xerces.impl.xs.psvi.XSTypeDefinition</code>.
+     * <code>org.apache.xerces.impl.xs.dv.XSSimpleType</code>.
      */
-    public Object extendedTypeDefinition() {
-        return null;
-    }
+    public Object extendedTypeDefinition();
     
-    /**
-     * Display format
-     */
-    public String toString() {
-        return "Datatype[" + uri
-              + (getJavaClass() == null ? "" : " -> " + getJavaClass())
-              + "]";
-    }
 }
 
 /*
@@ -167,3 +114,4 @@ public class BaseDatatype implements RDFDatatype {
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+

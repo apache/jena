@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSInfGraph.java,v 1.1 2003-02-10 10:14:12 der Exp $
+ * $Id: RDFSInfGraph.java,v 1.2 2003-03-31 10:01:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
+import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.dt.*;
 import com.hp.hpl.jena.mem.GraphMem;
@@ -35,7 +36,7 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-02-10 10:14:12 $
+ * @version $Revision: 1.2 $ on $Date: 2003-03-31 10:01:33 $
  */
 public class RDFSInfGraph extends BaseInfGraph {
 

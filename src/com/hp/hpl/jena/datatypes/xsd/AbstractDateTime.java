@@ -5,9 +5,9 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: AbstractDateTime.java,v 1.2 2003-01-31 11:32:02 der Exp $
+ * $Id: AbstractDateTime.java,v 1.1 2003-03-31 10:01:32 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.graph.dt;
+package com.hp.hpl.jena.datatypes.xsd;
 
 import org.apache.xerces.impl.dv.xs.XSSimpleTypeDecl;
 import org.apache.xerces.impl.dv.XSSimpleType;
@@ -21,7 +21,7 @@ import org.apache.xerces.impl.dv.xs.AbstractDateTimeDV;
  * conventient access to the date values.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-01-31 11:32:02 $
+ * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:32 $
  */
 public class AbstractDateTime {
 
