@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.11 2003-08-24 21:20:19 der Exp $
+ * $Id: ReasonerVocabulary.java,v 1.12 2003-08-25 20:58:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-08-24 21:20:19 $
+ * @version $Revision: 1.12 $ on $Date: 2003-08-25 20:58:53 $
  */
 public class ReasonerVocabulary {
     
@@ -84,16 +84,16 @@ public class ReasonerVocabulary {
      * legal levels are "default", "simple", and "full". */
     public static Property PROPsetRDFSLevel;
     
-    /** Constant for PROPsetRDFSLevel default */
+    /** Constant for PROPsetRDFSLevel - default behaviour */
     public static String RDFS_DEFAULT = RDFSRuleReasoner.DEFAULT_RULES;
     
-    /** Constant for PROPsetRDFSLevel default */
+    /** Constant for PROPsetRDFSLevel - fullest implementation supported. */
     public static String RDFS_FULL = RDFSRuleReasoner.FULL_RULES;
     
-    /** Constant for PROPsetRDFSLevel default */
+    /** Constant for PROPsetRDFSLevel - simplified, higher performance rules. */
     public static String RDFS_SIMPLE = RDFSRuleReasoner.SIMPLE_RULES;
     
-    /** A namespace used for Rubric specific properties */
+    /** A namespace used for Rubrik specific properties */
     public static final String RBNamespace = "urn:x-hp-jena:rubrik/";
 
     /** Property used to switch on validation in owl ruleset */
