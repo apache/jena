@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testReaderInterface.java,v 1.3 2003-05-21 16:45:19 chris-dollin Exp $
+ * $Id: testReaderInterface.java,v 1.4 2003-06-16 08:13:01 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -33,14 +33,14 @@ import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 
-import java.net.ConnectException;
-import java.net.NoRouteToHostException;
-import java.net.UnknownHostException;
+import java.net.*;
+
+import com.hp.hpl.jena.shared.*;
 
 /**
  *
  * @author  bwm
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class testReaderInterface extends Object {
 
@@ -106,7 +106,20 @@ public class testReaderInterface extends Object {
                     } else {
                         throw rdfx;
                     }
-                }
+                } catch (JenaException jx)
+                    {
+                    if (jx.getCause() instanceof NoRouteToHostException
+                        || jx.getCause() instanceof UnknownHostException
+                        || jx.getCause() instanceof ConnectException
+                        )
+                        {Log.warning("Cannot access public internet" +
+                            "- part of test not executed",
+                                                "Regression",
+                                                "testReaderInterface");
+                        }
+                    else
+                        throw jx;
+                    }
 
 
             n++; m1.read(ResourceReader.getInputStream(filebase + "1.rdf"), "");
