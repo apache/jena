@@ -126,7 +126,7 @@ public class WGTests extends java.lang.Object {
 					((Literal) status).getLexicalForm(),
 					null);
 			String testURI = ((Resource) testResource).getURI();
-			System.err.println(testURI);
+		//	System.err.println(testURI);
 			int lastSl = testURI.lastIndexOf('/');
 			int penUltimateSl = testURI.lastIndexOf('/', lastSl - 1);
 			int hash = testURI.lastIndexOf('#');
