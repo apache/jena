@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.7 2003-06-18 08:00:12 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.8 2003-06-19 12:58:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-18 08:00:12 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-19 12:58:05 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -46,6 +46,9 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     /** Flag, if true then rules will be augmented by OWL translations of the schema */
     protected boolean enableOWLTranslation = false;
     
+    /** Optional set of preprocessing hooks  to be run in sequence during preparation time, only applicable to HYBRID modes */
+    protected HashSet preprocessorHooks;
+    
     /** Constant - the mode description for pure forward chaining */
     public static final RuleMode FORWARD = new RuleMode("forward");
     
@@ -55,7 +58,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     /** Constant - the mode description for pure backward chaining */
     public static final RuleMode BACKWARD = new RuleMode("backward");
     
-    /** Constant - the mode description for mixed forward/backward */
+    /** Constant - the mode description for mixed forward/backward, this is the default mode */
     public static final RuleMode HYBRID = new RuleMode("hybrid");
     
 //  =======================================================================
@@ -161,6 +164,28 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     }
     
     /**
+     * Add a new preprocessing hook defining an operation that
+     * should be run when the inference graph is being prepared. This can be
+     * used to generate additional data-dependent rules or translations.
+     * This is only guaranted to be implemented for the HYBRID mode.
+     */
+    public void addPreprocessingHook(RulePreprocessHook hook) {
+        if (preprocessorHooks == null) {
+            preprocessorHooks = new HashSet();
+        }
+        preprocessorHooks.add(hook);
+    }
+    
+    /**
+     * Remove a preprocessing hook. defining an operation that
+     */
+    public void removePreprocessingHook(RulePreprocessHook hook) {
+        if (preprocessorHooks != null) {
+            preprocessorHooks.remove(hook);
+        }
+    }
+    
+    /**
      * Set a configuration paramter for the reasoner. The supported parameters
      * are:
      * <ul>
@@ -186,7 +211,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
      * exception on parameters it does not reconize.
      * @return false if the parameter was not recognized
      */
-    private boolean doSetParameter(String parameterUri, Object value) {
+    protected boolean doSetParameter(String parameterUri, Object value) {
         if (parameterUri.equals(ReasonerVocabulary.PROPderivationLogging.getURI())) {
             recordDerivations = Util.convertBooleanPredicateArg(parameterUri, value);
             
@@ -262,6 +287,11 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         grr.setDerivationLogging(recordDerivations);
         grr.setTraceOn(traceOn);
         grr.setTransitiveClosureCaching(enableTGCCaching);
+        if (preprocessorHooks != null) {
+            for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
+                grr.addPreprocessingHook((RulePreprocessHook)i.next());
+            }
+        }
         return grr;
     }
     
@@ -293,9 +323,15 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             if (enableOWLTranslation) {
                 ruleSet = OWLFBRuleReasoner.augmentRules(ruleSet, data);
             }
-            graph = new FBRuleInfGraph(this, ruleSet, schemaArg);
-            if (enableTGCCaching) ((FBRuleInfGraph)graph).setUseTGCCache();
-            ((FBRuleInfGraph)graph).setTraceOn(traceOn);
+            FBRuleInfGraph fbgraph = new FBRuleInfGraph(this, ruleSet, schemaArg);
+            graph = fbgraph; 
+            if (enableTGCCaching) fbgraph.setUseTGCCache();
+            fbgraph.setTraceOn(traceOn);
+            if (preprocessorHooks!= null) {
+                for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
+                    fbgraph.addPreprocessingHook((RulePreprocessHook)i.next());
+                }
+            }
         }
         graph.setDerivationLogging(recordDerivations);
         graph.rebind(data);

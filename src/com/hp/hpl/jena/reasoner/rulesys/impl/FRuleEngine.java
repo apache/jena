@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.14 2003-06-17 17:14:12 der Exp $
+ * $Id: FRuleEngine.java,v 1.15 2003-06-19 12:58:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-06-17 17:14:12 $
+ * @version $Revision: 1.15 $ on $Date: 2003-06-19 12:58:05 $
  */
 public class FRuleEngine implements FRuleEngineI {
     
@@ -95,32 +95,35 @@ public class FRuleEngine implements FRuleEngineI {
      * has be prepared and loaded with any precomputed deductions. It will process
      * the rule axioms and all relevant existing exiting data entries.
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
+     * @param inserts the set of triples to be processed, normally this is the
+     * raw data graph but may include additional deductions made by preprocessing hooks
      */
-    public void init(boolean ignoreBrules) {
+    public void init(boolean ignoreBrules, Finder inserts) {
         if (clauseIndex == null) compile(rules, ignoreBrules);
         findAndProcessAxioms();
         nAxiomRulesFired = nRulesFired;
         logger.debug("Axioms fired " + nAxiomRulesFired + " rules");
-        fastInit();
+        fastInit(inserts);
     }
     
     /**
      * Process all available data. This version expects that all the axioms 
      * have already be preprocessed and the clause index already exists.
+     * @param inserts the set of triples to be processed, normally this is the
+     * raw data graph but may include additional deductions made by preprocessing hooks
      */
-    public void fastInit() {
-        if (infGraph.getRawGraph() == null) return; 
+    public void fastInit(Finder inserts) {
         // Create the reasoning context
         BFRuleContext context = new BFRuleContext(infGraph);
         // Insert the data
         if (wildcardRule) {
-            for (Iterator i = infGraph.getRawGraph().find(null, null, null); i.hasNext(); ) {
+            for (Iterator i = inserts.find(new TriplePattern(null, null, null)); i.hasNext(); ) {
                 context.addTriple((Triple)i.next());
             }
         } else {
             for (Iterator p = predicatesUsed.iterator(); p.hasNext(); ) {
                 Node predicate = (Node)p.next();
-                for (Iterator i = infGraph.getRawGraph().find(null, predicate, null); i.hasNext(); ) {
+                for (Iterator i = inserts.find(new TriplePattern(null, predicate, null)); i.hasNext(); ) {
                     context.addTriple((Triple)i.next());
                 }
             }

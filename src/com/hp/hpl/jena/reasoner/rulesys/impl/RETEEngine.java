@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEEngine.java,v 1.10 2003-06-18 08:00:11 der Exp $
+ * $Id: RETEEngine.java,v 1.11 2003-06-19 12:58:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-18 08:00:11 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-19 12:58:05 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -94,18 +94,22 @@ public class RETEEngine implements FRuleEngineI {
      * has be prepared and loaded with any precomputed deductions. It will process
      * the rule axioms and all relevant existing exiting data entries.
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
+     * @param inserts the set of triples to be processed, normally this is the
+     * raw data graph but may include additional deductions made by preprocessing hooks
      */
-    public void init(boolean ignoreBrules) {
+    public void init(boolean ignoreBrules, Finder inserts) {
         compile(rules, ignoreBrules);
         findAndProcessAxioms();
-        fastInit();
+        fastInit(inserts);
     }
     
     /**
      * Process all available data. This version expects that all the axioms 
      * have already be preprocessed and the clause index already exists.
+     * @param inserts the set of triples to be processed, normally this is the
+     * raw data graph but may include additional deductions made by preprocessing hooks
      */
-    public void fastInit() {
+    public void fastInit(Finder inserts) {
         if (infGraph.getRawGraph() != null) {
             // Insert the data
             if (wildcardRule) {
@@ -123,6 +127,20 @@ public class RETEEngine implements FRuleEngineI {
         }
         // Run the engine
         runAll();
+//        if (wildcardRule) {
+//            for (Iterator i = inserts.find(new TriplePattern(null, null, null)); i.hasNext(); ) {
+//                addTriple((Triple)i.next(), false);
+//            }
+//        } else {
+//            for (Iterator p = predicatesUsed.iterator(); p.hasNext(); ) {
+//                Node predicate = (Node)p.next();
+//                for (Iterator i = inserts.find(new TriplePattern(null, predicate, null)); i.hasNext(); ) {
+//                    addTriple((Triple)i.next(), false);
+//                }
+//            }
+//        }
+//        // Run the engine
+//        runAll();
     }
 
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.16 2003-06-18 08:00:12 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.17 2003-06-19 12:58:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-06-18 08:00:12 $
+ * @version $Revision: 1.17 $ on $Date: 2003-06-19 12:58:05 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -365,11 +365,14 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             }
             
             // Call any optional preprocessing hook
+            Finder dataSource = fdata;
             if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
+                Graph inserts = new GraphMem();
                 for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
                     RulePreprocessHook hook = (RulePreprocessHook)i.next();
-                    hook.run(this, dataFind);
+                    hook.run(this, dataFind, inserts);
                 }
+                dataSource = FinderUtil.cascade(fdata, new FGraph(inserts));
             }
             
             boolean rulesLoaded = false;
@@ -381,11 +384,11 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 rulesLoaded = preloadDeductions(schemaGraph);
             }
             if (rulesLoaded) {
-                engine.fastInit(); 
+                engine.fastInit(dataSource); 
             } else {
                 // No preload so do the rule separation
                 addBRules(extractPureBackwardRules(rules));
-                engine.init(true);
+                engine.init(true, dataSource);
             }
             // Prepare the context for builtins run in backwards engine
             context = new BBRuleContext(this, dataFind);

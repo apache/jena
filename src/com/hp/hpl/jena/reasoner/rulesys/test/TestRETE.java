@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRETE.java,v 1.5 2003-06-12 14:15:37 der Exp $
+ * $Id: TestRETE.java,v 1.6 2003-06-19 12:58:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -24,7 +24,7 @@ import junit.framework.TestSuite;
 /**
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-12 14:15:37 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-19 12:58:05 $
  */
 public class TestRETE  extends TestCase {
      
@@ -229,7 +229,7 @@ public class TestRETE  extends TestCase {
 //        infgraph.setTraceOn(true);
         RETEEngine engine = new RETEEngine(infgraph, ruleList);
         infgraph.prepare();
-        engine.init(true);
+        engine.init(true, new FGraph(new GraphMem()));
         for (int i = 0; i < adds.length; i++) {
             engine.addTriple(adds[i], true);
         }

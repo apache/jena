@@ -5,15 +5,17 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSExptRuleReasoner.java,v 1.1 2003-06-16 17:01:57 der Exp $
+ * $Id: RDFSExptRuleReasoner.java,v 1.2 2003-06-19 12:58:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import java.io.*;
 import java.util.*;
 
-import com.hp.hpl.jena.reasoner.ReasonerException;
-import com.hp.hpl.jena.reasoner.ReasonerFactory;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.RDFSCMPPreprocessHook;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 
 /**
  * An pure forward chaining implementation of the RDFS closure rules
@@ -24,7 +26,7 @@ import com.hp.hpl.jena.reasoner.ReasonerFactory;
  * dataset the forward chainer will be more efficient.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-16 17:01:57 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-19 12:58:05 $
  */
 public class RDFSExptRuleReasoner extends GenericRuleReasoner {
     
@@ -34,6 +36,9 @@ public class RDFSExptRuleReasoner extends GenericRuleReasoner {
     /** The parsed rules */
     protected static List ruleSet;
     
+    /** The (stateless) preprocessor for container membership properties */
+    protected static RulePreprocessHook cmpProcessor = new RDFSCMPPreprocessHook();
+    
     /**
      * Constructor
      */
@@ -41,6 +46,43 @@ public class RDFSExptRuleReasoner extends GenericRuleReasoner {
         super(loadRules(), parent);
         setMode(HYBRID);
         setTransitiveClosureCaching(true);
+        //addPreprocessingHook(new RDFSCMPPreprocessHook());
+    }
+    
+    /**
+     * Constructor
+     * @param factory the parent reasoner factory which is consulted to answer capability questions
+     * @param configuration RDF model to configure the rule set and mode, can be null
+     */
+    public RDFSExptRuleReasoner(ReasonerFactory factory, Model configuration) {
+        this(factory);
+        if (configuration != null) {
+            Resource base = configuration.getResource(GenericRuleReasonerFactory.URI);
+            StmtIterator i = base.listProperties();
+            while (i.hasNext()) {
+                Statement st = i.nextStatement();
+                doSetParameter(st.getPredicate().getURI(), st.getObject().toString());
+            }
+        }
+    }
+   
+    /**
+     * Internal version of setParameter that does not directly raise an
+     * exception on parameters it does not reconize.
+     * @return false if the parameter was not recognized
+     */
+    protected boolean doSetParameter(String parameterUri, Object value) {
+        if (parameterUri.equals(ReasonerVocabulary.PROPenableCMPScan.getURI())) {
+            boolean scanProperties = Util.convertBooleanPredicateArg(parameterUri, value);
+            if (scanProperties) {
+                addPreprocessingHook(cmpProcessor);
+            } else {
+                removePreprocessingHook(cmpProcessor);
+            }
+            return true;
+        } else {
+            return super.doSetParameter(parameterUri, value);
+        }
     }
     
     /**

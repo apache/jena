@@ -5,10 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RulePreprocessHook.java,v 1.1 2003-06-18 08:00:12 der Exp $
+ * $Id: RulePreprocessHook.java,v 1.2 2003-06-19 12:58:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.reasoner.Finder;
 
 /**
@@ -19,7 +20,7 @@ import com.hp.hpl.jena.reasoner.Finder;
  * this way than using the generic rule engines.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-18 08:00:12 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-19 12:58:05 $
  */
 public interface RulePreprocessHook {
 
@@ -27,12 +28,14 @@ public interface RulePreprocessHook {
      * Invoke the preprocessing hook. This will be called during the
      * preparation time of the hybrid reasoner.
      * @param infGraph the inference graph which is being prepared,
-     * the hook code can use this to addDeductions or add additional
+     * the hook code can use this to add pure deductions or add additional
      * rules (using addRuleDuringPrepare).
      * @param dataFind the finder which packages up the raw data (both
      * schema and data bind) and any cached transitive closures.
+     * @param inserts a temporary graph into which the hook should insert
+     * all new deductions that should be seen by the rules.
      */
-    public void run(FBRuleInfGraph infGraph, Finder dataFind);
+    public void run(FBRuleInfGraph infGraph, Finder dataFind, Graph inserts);
     
 }
 

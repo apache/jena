@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngineI.java,v 1.2 2003-06-17 17:14:11 der Exp $
+ * $Id: FRuleEngineI.java,v 1.3 2003-06-19 12:58:05 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.reasoner.Finder;
 //import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ import com.hp.hpl.jena.graph.Triple;
  * switch between direct and RETE style implementations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-17 17:14:11 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-19 12:58:05 $
  */
 public interface FRuleEngineI {
     
@@ -28,14 +29,18 @@ public interface FRuleEngineI {
      * has be prepared and loaded with any precomputed deductions. It will process
      * the rule axioms and all relevant existing exiting data entries.
      * @param ignoreBrules set to true if rules written in backward notation should be ignored
+     * @param inserts the set of triples to be processed, normally this is the
+     * raw data graph but may include additional deductions made by preprocessing hooks
      */
-    public void init(boolean ignoreBrules);
+    public void init(boolean ignoreBrules, Finder inserts);
     
     /**
      * Process all available data. This version expects that all the axioms 
      * have already be preprocessed and the rules have been compiled
+     * @param inserts the set of triples to be processed, normally this is the
+     * raw data graph but may include additional deductions made by preprocessing hooks
      */
-    public void fastInit();
+    public void fastInit(Finder inserts);
     
     /**
      * Add one triple to the data graph, run any rules triggered by
