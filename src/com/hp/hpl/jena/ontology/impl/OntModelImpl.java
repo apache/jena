@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.55 $
+ * Revision           $Revision: 1.56 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-29 12:34:03 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2004-01-30 17:29:11 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -52,7 +52,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.55 2004-01-29 12:34:03 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.56 2004-01-30 17:29:11 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1749,23 +1749,59 @@ public class OntModelImpl
      * statments will be according to the local language profile
      * </p>
      * 
+     * @return The imported ontology URI's as a set. Note that since the underlying graph is
+     * not ordered, the order of values in the list in successive calls to this method is
+     * not guaranteed to be preserved.
+     */
+    public Set listImportedOntologyURIs() {
+        return listImportedOntologyURIs( false );
+    }
+    
+    
+    /**
+     * <p>
+     * Answer a list of the imported URI's in this ontology model, and optionally in the closure 
+     * of this model's imports. Detection of <code>imports</code>
+     * statments will be according to the local language profile.  Note that, in order to allow this
+     * method to be called during the imports closure process, we <b>only query the base model</b>,
+     * thus side-stepping the any attached reasoner.
+     * </p>
+     * @param closure If true, the set of uri's returned will include not only those directly
+     * imported by this model, but those imported by the model's imports transitively.
      * @return The imported ontology URI's as a list. Note that since the underlying graph is
      * not ordered, the order of values in the list in successive calls to this method is
      * not guaranteed to be preserved.
      */
-    public List listImportedOntologyURIs() {
-        List imports = new ArrayList();
+    public Set listImportedOntologyURIs( boolean closure ) {
+        Set results = new HashSet();
+        List queue = new ArrayList();
+        queue.add( getBaseModel() );
         
-        // list the ontology nodes
-        if (getProfile().ONTOLOGY() != null  &&  getProfile().IMPORTS() != null) {
-            // for efficiency (specifically, avoiding the reasoner), we do the query directly on the base graph
-            StmtIterator i = getBaseModel().listStatements(null, getProfile().IMPORTS(), (RDFNode)null);
-            while (i.hasNext()) {
-                imports.add( i.nextStatement().getResource().getURI() );
+        while (!queue.isEmpty()) {
+            Model m = (Model) queue.remove( 0 ); 
+            
+            // list the ontology nodes
+            if (getProfile().ONTOLOGY() != null  &&  getProfile().IMPORTS() != null) {
+                StmtIterator i = m.listStatements(null, getProfile().IMPORTS(), (RDFNode)null);
+                while (i.hasNext()) {
+                    Statement s = i.nextStatement();
+                    String uri = s.getResource().getURI();
+                    
+                    if (!results.contains( uri )) { 
+                        // this is a new uri, so we add it
+                        results.add( uri );
+                        
+                        // and push the model on the stack if we know it
+                        Model mi = getDocumentManager().getModel( uri );
+                        if (closure && mi != null && !queue.contains( mi )) {
+                            queue.add( mi );
+                        }
+                    }
+                }
             }
         }
-                
-        return imports;
+        
+        return results;
     }
     
     
@@ -1896,6 +1932,55 @@ public class OntModelImpl
      */
     public List getSubGraphs() {
         return getUnionGraph().getSubGraphs();
+    }
+    
+    
+    /**
+     * <p>Answer an iterator over the ontologies that this ontology imports,
+     * each of which will have been wrapped as an ontology model using the same
+     * {@link OntModelSpec} as this model.  If this model has no imports, 
+     * the iterator will be non-null but will not have any values.</p>
+     * @return An iterator, each value of which will be an <code>OntModel</code>
+     * representing an imported ontology.
+     */
+    public ExtendedIterator listImportedModels() {
+        ExtendedIterator i = WrappedIterator.create( getSubGraphs().iterator() );
+
+        return i.mapWith( new Map1() {
+                    public Object map1(Object o) {
+                        Graph g = (Graph) o;
+                        Model temp = ModelFactory.createModelForGraph( g );
+                        return ModelFactory.createOntologyModel( m_spec, temp );
+                    }} );
+    }
+    
+    
+    /**
+     * <p>Answer an <code>OntModel</code> representing the imported ontology
+     * with the given URI. If an ontology with that URI has not been imported,
+     * answer null.</p>
+     * @param uri The URI of an ontology that may have been imported into the
+     * ontology represented by this model
+     * @return A model representing the imported ontology with the given URI, or
+     * null.
+     */
+    public OntModel getImportedModel( String uri ) {
+        if (listImportedOntologyURIs( true ).contains( uri )) {
+            Model mi = getDocumentManager().getModel( uri );
+            
+            if (mi != null) {
+                if (mi instanceof OntModel) {
+                    // already a suitable ont model
+                    return (OntModel) mi;
+                }
+                else {
+                    // not in ont-model clothing yet, so re-wrap
+                    return ModelFactory.createOntologyModel( m_spec, mi );
+                }
+            }
+        }
+        
+        return null;
     }
     
     

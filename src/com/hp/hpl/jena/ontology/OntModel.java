@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.36 $
+ * Revision           $Revision: 1.37 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-11-20 17:43:16 $
+ * Last modified on   $Date: 2004-01-30 17:29:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -70,7 +70,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.36 2003-11-20 17:43:16 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.37 2004-01-30 17:29:12 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -1181,11 +1181,28 @@ public interface OntModel
      * thus side-stepping the any attached reasoner.
      * </p>
      * 
+     * @return The imported ontology URI's as a set. Note that since the underlying graph is
+     * not ordered, the order of values in the list in successive calls to this method is
+     * not guaranteed to be preserved.
+     */
+    public Set listImportedOntologyURIs();
+    
+    
+    /**
+     * <p>
+     * Answer a list of the imported URI's in this ontology model, and optionally in the closure 
+     * of this model's imports. Detection of <code>imports</code>
+     * statments will be according to the local language profile.  Note that, in order to allow this
+     * method to be called during the imports closure process, we <b>only query the base model</b>,
+     * thus side-stepping the any attached reasoner.
+     * </p>
+     * @param closure If true, the set of uri's returned will include not only those directly
+     * imported by this model, but those imported by the model's imports transitively.
      * @return The imported ontology URI's as a list. Note that since the underlying graph is
      * not ordered, the order of values in the list in successive calls to this method is
      * not guaranteed to be preserved.
      */
-    public List listImportedOntologyURIs();
+    public Set listImportedOntologyURIs( boolean closure );
     
     
     /**
@@ -1255,6 +1272,29 @@ public interface OntModel
      * @return A list of graphs that are contained in this ontology model
      */
     public List getSubGraphs();
+    
+    
+    /**
+     * <p>Answer an iterator over the ontologies that this ontology imports,
+     * each of which will have been wrapped as an ontology model using the same
+     * {@link OntModelSpec} as this model.  If this model has no imports, 
+     * the iterator will be non-null but will not have any values.</p>
+     * @return An iterator, each value of which will be an <code>OntModel</code>
+     * representing an imported ontology.
+     */
+    public ExtendedIterator listImportedModels();
+    
+    
+    /**
+     * <p>Answer an <code>OntModel</code> representing the imported ontology
+     * with the given URI. If an ontology with that URI has not been imported,
+     * answer null.</p>
+     * @param uri The URI of an ontology that may have been imported into the
+     * ontology represented by this model
+     * @return A model representing the imported ontology with the given URI, or
+     * null.
+     */
+    public OntModel getImportedModel( String uri );
     
     
     /**
