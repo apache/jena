@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntList.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:14 $
+ * Last modified on   $Date: 2003-04-30 15:17:48 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -52,15 +52,10 @@ import java.util.*;
  * be invoked explicitly by clients by calling {@link #isValid}. By default, RDF
  * lists are processed in non-strict mode.
  * </p>
- * <p>
- * TODO Still to investigate: interaction of lists with writers to generate
- * appropriately compact serialisations, such as <code>rdf:parseType=&quot;
- * Collection&quot;</code>
- * </p>
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: OntList.java,v 1.5 2003-03-27 16:28:14 ian_dickinson Exp $)
+ * @version Release ($Id: OntList.java,v 1.6 2003-04-30 15:17:48 ian_dickinson Exp $)
  */
 public interface OntList
     extends OntResource

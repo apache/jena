@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            29-Apr-2003
  * Filename           $RCSfile: DisjointClassesAxiomImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-30 09:59:24 $
+ * Last modified on   $Date: 2003-04-30 15:17:14 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DisjointClassesAxiomImpl.java,v 1.1 2003-04-30 09:59:24 ian_dickinson Exp $
+ * @version CVS $Id: DisjointClassesAxiomImpl.java,v 1.2 2003-04-30 15:17:14 ian_dickinson Exp $
  */
 public class DisjointClassesAxiomImpl 
     extends ClassAxiomImpl
@@ -122,11 +122,4 @@ public class DisjointClassesAxiomImpl
     THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-
-/* TODO delete me
-public class DisjointClassesAxiomImpl{
-
-}
-
 */
