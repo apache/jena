@@ -2,40 +2,18 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian_Dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLOntologyImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-18 21:56:07 $
  *               by   $Author: ian_dickinson $
  *
- * (c) Copyright Hewlett-Packard Company 2001
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
+ * (see footer for full conditions)
  *****************************************************************************/
 
 // Package
@@ -50,8 +28,6 @@ import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.*;
-import com.hp.hpl.jena.util.Log;
-import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 
@@ -59,8 +35,8 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * Encapsulates the properties known for a given source ontology.
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLOntologyImpl.java,v 1.5 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version CVS info: $Id: DAMLOntologyImpl.java,v 1.6 2003-06-18 21:56:07 ian_dickinson Exp $
  */
 public class DAMLOntologyImpl
     extends DAMLCommonImpl
@@ -81,7 +57,7 @@ public class DAMLOntologyImpl
     public static Implementation factory = new Implementation() {
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
-                return new DAMLClassImpl( n, eg );
+                return new DAMLOntologyImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLOntology" );
@@ -89,8 +65,7 @@ public class DAMLOntologyImpl
         }
             
         public boolean canWrap( Node node, EnhGraph eg ) {
-            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  profile.isSupported( node, eg, DAMLOntology.class );
+            return hasType( node, eg, DAML_OIL.Ontology );
         }
     };
 
@@ -157,17 +132,12 @@ public class DAMLOntologyImpl
      * @param uri The URI of the model.
      */
     public void addImportedOntology( String uri ) {
-        try {
-            // assert the model we're importing
-            addProperty( getVocabulary().imports(), getModel().createLiteral( uri ) );
+        // assert the model we're importing
+        addProperty( getVocabulary().imports(), getModel().createLiteral( uri ) );
 
-            // notify the knowledge store about the included model
-            if (getDAMLModel().getLoader().getLoadImportedOntologies()) {
-               getModel().read( uri );
-            }
-        }
-        catch (JenaException e) {
-            Log.severe( "RDF exception while adding imports property: " + e, e );
+        // notify the knowledge store about the included model
+        if (getDAMLModel().getLoader().getLoadImportedOntologies()) {
+           getModel().read( uri );
         }
     }
 
@@ -184,3 +154,35 @@ public class DAMLOntologyImpl
 
 
 }
+
+
+/*
+    (c) Copyright Hewlett-Packard Company 2002-2003
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+

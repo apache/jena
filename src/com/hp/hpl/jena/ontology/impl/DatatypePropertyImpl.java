@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            01-Apr-2003
  * Filename           $RCSfile: DatatypePropertyImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:27 $
+ * Last modified on   $Date: 2003-06-18 21:56:08 $
  *               by   $Author: ian_dickinson $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.ontology.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DatatypePropertyImpl.java,v 1.4 2003-05-08 14:45:27 ian_dickinson Exp $
+ * @version CVS $Id: DatatypePropertyImpl.java,v 1.5 2003-06-18 21:56:08 ian_dickinson Exp $
  */
 public class DatatypePropertyImpl
     extends OntPropertyImpl

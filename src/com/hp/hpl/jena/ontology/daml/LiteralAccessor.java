@@ -2,14 +2,14 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian_Dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena
  * Created            26 Jan 2001
  * Filename           $RCSfile: LiteralAccessor.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-18 21:56:08 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * see {@link PropertyAccessor}.<p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: LiteralAccessor.java,v 1.2 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS info: $Id: LiteralAccessor.java,v 1.3 2003-06-18 21:56:08 ian_dickinson Exp $
  */
 public interface LiteralAccessor
     extends PropertyAccessor

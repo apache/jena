@@ -2,14 +2,14 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian_Dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLPropertyImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 16:09:02 $
+ * Last modified on   $Date: 2003-06-18 21:56:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * as a sub-class of Property), so uniqueness is modelled here as an attribute of a DAMLProperty.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.3 2003-06-17 16:09:02 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLPropertyImpl.java,v 1.4 2003-06-18 21:56:07 ian_dickinson Exp $
  */
 public class DAMLPropertyImpl
     extends OntPropertyImpl

@@ -2,40 +2,18 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian_Dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena
  * Created            11 Sept 2001
  * Filename           $RCSfile: PropertyIterator.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 14:53:34 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-06-18 21:56:08 $
+ *               by   $Author: ian_dickinson $
  *
- * (c) Copyright Hewlett-Packard Company 2001
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
+ * (see footer for full conditions)
  *****************************************************************************/
 
 // Package
@@ -48,15 +26,8 @@ package com.hp.hpl.jena.ontology.daml;
 
 import java.util.*;
 
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.RDFNode;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.shared.*;
-
-import com.hp.hpl.jena.util.Log;
-import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
-
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
 
 
@@ -84,8 +55,8 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  * it has already been returned earlier.
  * </p>
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyIterator.java,v 1.9 2003-06-17 14:53:34 chris-dollin Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version CVS info: $Id: PropertyIterator.java,v 1.10 2003-06-18 21:56:08 ian_dickinson Exp $
  * @since Jena 1.3.0 (was previously in package com.hp.hpl.jena.ontology.daml.impl).
  */
 public class PropertyIterator
@@ -414,25 +385,20 @@ public class PropertyIterator
      * @param r The resource we're expanding
      */
     protected void expandQueue( Resource r ) {
-        try {
-            // add all outgoing arcs if we're at the root or the predicate is transitive
-            if (m_pred != null  &&  (m_transitive  ||  isRoot( r ))) {
-                // we want all the related items from this node
-                for (Iterator i = getStatementObjects( r );
-                     i.hasNext();
-                     enqueue( (RDFNode) i.next() ));
-            }
-
-            // if we know the inverse, we also add the incoming arcs to this node
-            if (m_inverse != null  &&  (m_transitive  ||  isRoot( r ))) {
-                // find statements whose predicate is m_inverse and object is current node
-                for (Iterator i = getStatementSubjects( r );
-                     i.hasNext();
-                     enqueue( (RDFNode) i.next() ));
-            }
+        // add all outgoing arcs if we're at the root or the predicate is transitive
+        if (m_pred != null  &&  (m_transitive  ||  isRoot( r ))) {
+            // we want all the related items from this node
+            for (Iterator i = getStatementObjects( r );
+                 i.hasNext();
+                 enqueue( (RDFNode) i.next() ));
         }
-        catch (JenaException e) {
-            Log.severe( "RDF exception while traversing graph: " + e, e );
+
+        // if we know the inverse, we also add the incoming arcs to this node
+        if (m_inverse != null  &&  (m_transitive  ||  isRoot( r ))) {
+            // find statements whose predicate is m_inverse and object is current node
+            for (Iterator i = getStatementSubjects( r );
+                 i.hasNext();
+                 enqueue( (RDFNode) i.next() ));
         }
     }
 
@@ -444,8 +410,6 @@ public class PropertyIterator
      * @return True if resource r was one of the roots of this iteration.
      */
     protected boolean isRoot( Resource r ) {
-        boolean isRoot = false;
-
         if (m_roots != null) {
             // started with a set of roots
             return m_roots.contains( r );
@@ -630,6 +594,7 @@ public class PropertyIterator
      * @return True if equivlance is to be computed.
      */
     protected boolean getUseEquivalence() {
+        /*
         // if we have a model, it must have equivalence switched on
         // if no model, default to relying on the m_useEquivalence setting
         boolean modelEquivFlag = m_model == null  ||
@@ -637,6 +602,9 @@ public class PropertyIterator
                                  ((DAMLModel) m_model).getUseEquivalence();
 
         return m_useEquivalence  &&  modelEquivFlag;
+        */
+        // equivalence processing is now handled by the inference engines
+        return false;
     }
 
 
@@ -646,3 +614,34 @@ public class PropertyIterator
     //==============================================================================
 
 }
+
+/*
+    (c) Copyright Hewlett-Packard Company 2002-2003
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+

@@ -2,14 +2,14 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian_Dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena
  * Created            26 Jan 2001
  * Filename           $RCSfile: IntLiteralAccessorImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-18 21:56:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.ontology.daml.*;
  * see {@link PropertyAccessor}, and the literal is known to encapsulate an integer value.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: IntLiteralAccessorImpl.java,v 1.4 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS info: $Id: IntLiteralAccessorImpl.java,v 1.5 2003-06-18 21:56:07 ian_dickinson Exp $
  */
 public class IntLiteralAccessorImpl
     extends LiteralAccessorImpl

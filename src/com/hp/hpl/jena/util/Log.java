@@ -2,15 +2,15 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian_Dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena
  * Created            27 July 2001
  * Filename           $RCSfile: Log.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Released $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 14:33:50 $
- *               by   $Author: jeremy_carroll $
+ * Last modified on   $Date: 2003-06-18 21:56:08 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2000, 2001
  * All rights reserved.
@@ -116,8 +116,8 @@ import java.io.IOException;
  *                Frimbler.class.getName(), "countFrimbles" );
  * </pre></code>
  * </p>
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: Log.java,v 1.3 2003-04-01 14:33:50 jeremy_carroll Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version CVS info: $Id: Log.java,v 1.4 2003-06-18 21:56:08 ian_dickinson Exp $
  */
 public class Log
 {

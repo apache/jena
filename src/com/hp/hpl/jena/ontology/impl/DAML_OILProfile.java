@@ -7,13 +7,13 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 15:57:32 $
+ * Last modified on   $Date: 2003-06-18 21:56:08 $
  *               by   $Author: ian_dickinson $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
  *****************************************************************************/
 
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.15 2003-06-18 15:57:32 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.16 2003-06-18 21:56:08 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile

@@ -2,14 +2,14 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian_Dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLListImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 13:47:44 $
+ * Last modified on   $Date: 2003-06-18 21:56:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * in the current list interpretation.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLListImpl.java,v 1.6 2003-06-17 13:47:44 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLListImpl.java,v 1.7 2003-06-18 21:56:07 ian_dickinson Exp $
  */
 public class DAMLListImpl
     extends RDFListImpl

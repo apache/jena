@@ -2,14 +2,14 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian_Dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDataInstanceImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 12:59:56 $
+ * Last modified on   $Date: 2003-06-18 21:56:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -42,7 +42,7 @@ import java.util.Iterator;
  * of a DAML datatype. The instance is a resource whose <code>rdf:value</code> is a typed literal.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.5 2003-06-18 12:59:56 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.6 2003-06-18 21:56:07 ian_dickinson Exp $
  */
 public class DAMLDataInstanceImpl
     extends DAMLInstanceImpl

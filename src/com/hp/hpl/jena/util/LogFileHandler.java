@@ -2,15 +2,15 @@
  * Source code information
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
- * Author email       Ian_Dickinson@hp.com
+ * Author email       Ian.Dickinson@hp.com
  * Package            Jena
  * Created            27 July 2001
  * Filename           $RCSfile: LogFileHandler.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Released $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:21:00 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-06-18 21:56:08 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2000, 2001
  * All rights reserved.
@@ -54,8 +54,8 @@ import java.io.PrintWriter;
 /**
  * Basic handler for writing log messages to a log file.
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: LogFileHandler.java,v 1.1.1.1 2002-12-19 19:21:00 bwm Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version CVS info: $Id: LogFileHandler.java,v 1.2 2003-06-18 21:56:08 ian_dickinson Exp $
  */
 public class LogFileHandler
     implements LogHandler

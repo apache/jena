@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 13:02:41 $
+ * Last modified on   $Date: 2003-06-18 21:56:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,7 +28,6 @@ import java.io.*;
 import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.ontology.daml.*;
@@ -48,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.8 2003-06-18 13:02:41 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.9 2003-06-18 21:56:07 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends OntModelImpl
@@ -396,7 +395,7 @@ public class DAMLModelImpl
             return read( url.openStream(), base, lang );
         }
         catch (IOException e) {
-            throw new JenaException( "I/O error while reading from uri " + uri );
+            throw new OntologyException( "I/O error while reading from uri " + uri );
         }
     }
 
@@ -508,7 +507,6 @@ public class DAMLModelImpl
         }
 
         // now as predicate: note that this URI may not be a valid predicate URI
-        // so we ignore any RDFException in this region
         Property p = getProperty( uri );
         StmtIterator p0 = listStatements( null, p, (RDFNode) null );
         if (p0.hasNext()) {
