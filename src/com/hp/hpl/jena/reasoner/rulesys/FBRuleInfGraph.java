@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.34 2003-08-24 21:17:53 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.35 2003-08-25 20:57:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.34 $ on $Date: 2003-08-24 21:17:53 $
+ * @version $Revision: 1.35 $ on $Date: 2003-08-25 20:57:18 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -58,6 +58,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 
     /** Flag, if true then subClass and subProperty lattices will be optimized using TGCs */
     protected boolean useTGCCaching = false;
+    
+    /** Flag, if true then find results will be filtered to remove functors and illegal RDF */
+    public boolean filterFunctors = true;
     
     /** Optional precomputed cache of the subClass/subproperty lattices */
     protected TransitiveEngine transitiveEngine;
@@ -487,7 +490,11 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         if (continuation != null) {
             result = result.andThen(continuation.find(pattern));
         }
-        return result.filterDrop(Functor.acceptFilter);
+        if (filterFunctors) {
+            return result.filterDrop(Functor.acceptFilter);
+        } else {
+            return result;
+        }
     }
     
     /**
