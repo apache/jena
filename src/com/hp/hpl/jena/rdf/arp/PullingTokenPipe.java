@@ -14,14 +14,16 @@ import java.util.*;
  */
 class PullingTokenPipe extends TokenPipe {
 
+	static PullingTokenPipe lastMade;
 	private int position = 0;
 	private boolean atEOF = false;
 	final XMLHandler arp;
-	private final List pipe;
+	final List pipe;
 
 	PullingTokenPipe(XMLHandler arp) {
 		this.arp = arp;
 		pipe = createPipe();
+		lastMade = this;
 	}
 
 	void putNextToken(Token t) {

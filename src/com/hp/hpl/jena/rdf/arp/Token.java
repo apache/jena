@@ -25,65 +25,197 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Token.java,v 1.4 2004-03-16 22:23:07 jeremy_carroll Exp $
-   
-   AUTHOR:  Jeremy J. Carroll
-*/
+ * * $Id: Token.java,v 1.5 2004-12-23 15:26:51 jeremy_carroll Exp $
+ 
+ AUTHOR:  Jeremy J. Carroll
+ */
 package com.hp.hpl.jena.rdf.arp;
 
+import java.util.*;
+
 /**
- * Describes the input token stream.
+ * This class is not part of the API. It is public for test purposes only.
+ * Token's are passed from the XML parser to the RDF parser.
+ * 
  */
 
-class Token implements RDFParserConstants, Cloneable {
-	static private boolean COUNT = false;
+public class Token implements RDFParserConstants, Cloneable {
+	/**
+	 * For debugging or testing Token garbage problems, set to true.
+	 */
+	static public boolean COUNT = false;
+
+	/**
+	 * For testing Token garbage problems, set to true, also set {@link #COUNT}
+	 * to true. If set to true then no debugging messages are produced.
+	 */
+	static public boolean COUNTTEST = false;
+
+	/**
+	 * After DBGSIZE tokens a small debugging message, and hightide computations
+	 * are done.
+	 */
+	static private int DBGSIZE = 500;
+
+	/**
+	 * After BIGSIZE tokens a detailed debugging message is produced.
+	 * Must be integer multiple of {@link #DBGSIZE}.
+	 **/
+	static private int BIGSIZE = 100000;
+
+	/**
+	 * exit when {@link #BIGSIZE} tokens have been processed.
+	 */
+	static private boolean GIVEUP = true;
+
+	/**
+	 * The maximum number of tokens ever alive. Set to 0 before testing. Only
+	 * set when COUNTTEST is true.
+	 */
+	static public int highTide;
+
 	static private int dead = 0;
+
 	static private int alive = 0;
+
+	static private Map countMap = new HashMap();
+
+	static private Map weakMap = new WeakHashMap();
+
 	private boolean isDead = false;
+
 	protected void finalize() {
 		if (COUNT && !isDead) {
 			isDead = true;
 			dead++;
+			countMap.put(getClass(), new Integer(((Integer) countMap
+					.get(getClass())).intValue() - 1));
 		}
 	}
+
 	final Location location;
+
 	Token(int kind, Location where) {
-		if (COUNT) initCounting();
+		if (COUNT)
+			initCounting();
 		this.kind = kind;
 		this.location = where;
 	}
+
 	Token() {
-		if (COUNT) initCounting();
+		if (COUNT)
+			initCounting();
 		location = null;
 	}
+
 	private void initCounting() {
 		alive++;
-		if (alive % 500 == 0) {
+		weakMap.put(this, null);
+		Integer oldCnt = (Integer) countMap.get(getClass());
+		if (oldCnt == null)
+			oldCnt = new Integer(0);
+		countMap.put(getClass(), new Integer(oldCnt.intValue() + 1));
+
+		if (alive % DBGSIZE == 0) {
+			boolean big = alive % BIGSIZE == 0;
 			Runtime.getRuntime().gc();
 			Runtime.getRuntime().gc();
-			System.err.println(dead + "/" + alive);
+			if (COUNTTEST) {
+				int inUse = alive - dead;
+				if (highTide < inUse)
+					highTide = inUse;
+			} else {
+				System.err.println(dead + "/" + alive);
+				if (big) {
+					System.err.println("Total: " + (alive - dead));
+					Iterator it = countMap.keySet().iterator();
+					while (it.hasNext()) {
+						Object key = it.next();
+						System.err.println(key.toString() + ": "
+								+ countMap.get(key).toString());
+					}
+
+					if (GIVEUP || (alive - dead) < 10000) {
+						Map prev = new HashMap();
+						it = weakMap.keySet().iterator();
+						while (it.hasNext()) {
+							Object o = it.next();
+							if (o != null) {
+								Token t = (Token) o;
+								Token n = t.next;
+								if (n != null) {
+									prev.put(n, t);
+								}
+							}
+						}
+						it = weakMap.keySet().iterator();
+						while (it.hasNext()) {
+							Object o = it.next();
+							if (o != null) {
+								Token t = (Token) o;
+								if (!prev.containsKey(t)) {
+									System.err.println("No prev: " + t + " "
+											+ t.location);
+								}
+							}
+						}
+						it = PullingTokenPipe.lastMade.pipe.iterator();
+						while (it.hasNext()) {
+							Object o = it.next();
+							if (o != null) {
+								Token t = (Token) o;
+								System.err.println("Pipe: " + t + " "
+										+ t.location);
+							}
+						}
+					}
+					RDFParser rdfp = ((SingleThreadedParser) PullingTokenPipe.lastMade.arp).rdfParser;
+					Token t = rdfp.startAttr;
+					if (t != null)
+						System.err
+								.println("startAttr: " + t + " " + t.location);
+					t = rdfp.token;
+					if (t != null)
+						System.err.println("token: " + t + " " + t.location);
+					t = rdfp.jj_nt;
+					if (t != null)
+						System.err.println("jj_nt: " + t + " " + t.location);
+// change visibility of field.
+					t = rdfp.jj_scanpos;
+					if (t != null)
+						System.err.println("jj_scanpos: " + t + " "
+								+ t.location);
+					t = rdfp.jj_lastpos;
+					if (t != null)
+						System.err.println("jj_lastpos: " + t + " "
+								+ t.location);
+					if (GIVEUP)
+						System.exit(0);
+				}
+			}
 		}
 	}
 
 	/**
-	 * An integer that describes the kind of this token.  This numbering
-	 * system is determined by JavaCCParser, and a table of these numbers is
-	 * stored in the file ...Constants.java.
+	 * An integer that describes the kind of this token. This numbering system
+	 * is determined by JavaCCParser, and a table of these numbers is stored in
+	 * the file ...Constants.java.
 	 */
 	public int kind;
 
 	/**
-	  * A reference to the next regular (non-special) token from the input
-	  * stream.  If this is the last token from the input stream, or if the
-	  * token manager has not read tokens beyond this one, this field is
-	  * set to null.  
-	  */
+	 * A reference to the next regular (non-special) token from the input
+	 * stream. If this is the last token from the input stream, or if the token
+	 * manager has not read tokens beyond this one, this field is set to null.
+	 */
 	public Token next;
 
 	public Object clone() {
 		try {
-			alive++;
-			return super.clone();
+			Token rslt = (Token) super.clone();
+			if (COUNT)
+			    rslt.initCounting();
+			return rslt;
 		} catch (CloneNotSupportedException e) {
 			return "Impossible";
 		}
@@ -97,23 +229,18 @@ class Token implements RDFParserConstants, Cloneable {
 	}
 
 	/**
-	 * Returns a new Token object, by default. However, if you want, you
-	 * can create and return subclass objects based on the value of ofKind.
-	 * Simply add the cases to the switch for all those special cases.
-	 * For example, if you have a subclass of Token called IDToken that
-	 * you want to create if ofKind is ID, simlpy add something like :
-	 *
-	 *    case MyParserConstants.ID : return new IDToken();
-	 *
+	 * Returns a new Token object, by default. However, if you want, you can
+	 * create and return subclass objects based on the value of ofKind. Simply
+	 * add the cases to the switch for all those special cases. For example, if
+	 * you have a subclass of Token called IDToken that you want to create if
+	 * ofKind is ID, simlpy add something like :
+	 * 
+	 * case MyParserConstants.ID : return new IDToken();
+	 * 
 	 * to the following switch statement. Then you can cast matchedToken
 	 * variable to the appropriate type and use it in your lexical actions.
-	public static final Token newToken(int ofKind)
-	{
-	   switch(ofKind)
-	   {
-	     default : return new Token();
-	   }
-	}
+	 * public static final Token newToken(int ofKind) { switch(ofKind) { default :
+	 * return new Token(); } }
 	 */
 
 }

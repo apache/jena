@@ -108,7 +108,7 @@ class SingleThreadedParser extends XMLHandler {
 			return false;
 		}
 	}
-
+	RDFParser rdfParser;
 	synchronized public void parse(InputSource input)
 		throws IOException, SAXException {
 		parse(input, input.getSystemId());
@@ -128,11 +128,11 @@ class SingleThreadedParser extends XMLHandler {
 		// initEncodingChecks();
 		try {
 			try {
-				RDFParser p = new RDFParser(pipe, SingleThreadedParser.this);
+				rdfParser = new RDFParser(pipe, SingleThreadedParser.this);
 				if (getOptions().getEmbedding())
-					p.embeddedFile(documentContext);
+					rdfParser.embeddedFile(documentContext);
 				else
-					p.rdfFile(documentContext);
+					rdfParser.rdfFile(documentContext);
 			} catch (WrappedException wrapped) {
 				wrapped.throwMe();
 			} catch (ParseException parse) {

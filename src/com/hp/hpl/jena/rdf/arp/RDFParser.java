@@ -31,7 +31,7 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: RDFParser.java,v 1.16 2004-10-19 17:33:29 jeremy_carroll Exp $
+ * * $Id: RDFParser.java,v 1.17 2004-12-23 15:26:51 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -360,7 +360,9 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
                                                         new ARPResource(arp);
     try {
       description(ctxt,r,true);
-                                         {if (true) return r;}
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null;
+                                           {if (true) return r;}
     } catch (ParseException e) {
                                arp.endLocalScope(r);
                                {if (true) throw e;}
@@ -421,6 +423,8 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
           propertyElt(ctxt,r);
           zwhite(suggestParseType);
         }
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null;
         jj_consume_token(E_END);
         break;
       case E_OTHER:
@@ -690,9 +694,12 @@ E_END.
     v = propEltValue(ctxt);
                                          try {
                                            X.createTriple(r, p, v, reify );
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null;
                                          }
                                          finally {
                                           arp.endLocalScope(v);
+
                                          }
   }
 
@@ -1042,7 +1049,9 @@ E_END.
                                          Object rslt;
     if (jj_2_4(2147483647)) {
       rslt = string(ctxt);
-                                         {if (true) return rslt;}
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null;
+                                           {if (true) return rslt;}
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case CD_STRING:
@@ -1054,6 +1063,8 @@ E_END.
       case E_LI:
       case E_RDF_N:
         xwhite();
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null;
         rslt = xobj(ctxt);
         try {
           xwhite();
@@ -1399,6 +1410,8 @@ Notice the action within the kleene star.
       nowarning();
     }
     ctxt = xmlAttrsNoWarnings(ctxt);
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null;
     label_32:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -2005,6 +2018,12 @@ Notice the action within the kleene star.
     finally { jj_save(3, xla); }
   }
 
+  final private boolean jj_3_2() {
+    if (jj_scan_token(A_PARSETYPE)) return true;
+    if (jj_scan_token(AV_DAMLCOLLECTION)) return true;
+    return false;
+  }
+
   final private boolean jj_3_3() {
     if (jj_scan_token(A_PARSETYPE)) return true;
     if (jj_scan_token(AV_COLLECTION)) return true;
@@ -2043,16 +2062,10 @@ Notice the action within the kleene star.
     return false;
   }
 
-  final private boolean jj_3_2() {
-    if (jj_scan_token(A_PARSETYPE)) return true;
-    if (jj_scan_token(AV_DAMLCOLLECTION)) return true;
-    return false;
-  }
-
   public TokenManager token_source;
   public Token token, jj_nt;
   private int jj_ntk;
-  private Token jj_scanpos, jj_lastpos;
+  Token jj_scanpos, jj_lastpos;
   private int jj_la;
   public boolean lookingAhead = false;
   private boolean jj_semLA;

@@ -43,7 +43,7 @@ class RDFParser implements ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.15 2004-10-19 17:33:29 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.16 2004-12-23 15:26:51 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -238,7 +238,10 @@ ARPResource xobj(XMLContext ctxt) :
                                        {  ARPResource r = 
                                                         new ARPResource(arp); }
 {                            try { (
-   description(ctxt,r,true)            { return r; }
+   description(ctxt,r,true)            { 
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                           return r; }
                              ) }
                              catch (ParseException e) {
                                arp.endLocalScope(r);
@@ -266,7 +269,10 @@ void description(XMLContext ctxt, ARPResource r, boolean suggestParseType)
    zwhite(suggestParseType) 
    ( propertyElt(ctxt,r) 
      zwhite(suggestParseType) 
-   ) * 
+	   ) *                             { 
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                        }
    <E_END>
  | // OR
    typedNode(ctxt,r,suggestParseType)
@@ -416,9 +422,12 @@ void propertyEltIdAndValue( XMLContext ctxt,ARPResource r, Token p )
    [ reify = idAttr(ctxt) ] 
    v = propEltValue(ctxt)              { try {
                                            X.createTriple(r, p, v, reify );
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
                                          }
                                          finally {
                                           arp.endLocalScope(v); 
+                                  
                                          }
                                        }
 }
@@ -611,10 +620,17 @@ Token typedNodeTag()
 */
 Object value(XMLContext ctxt)        : { Object rslt; }
 {                  LOOKAHEAD( ( <CD_STRING> | <COMMENT> | <PROCESSING_INSTRUCTION> | <X_SAX_EX> ) * <E_END>  ) 
-   rslt = string(ctxt)                 { return rslt; 
+   rslt = string(ctxt)                 { 
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                           return rslt; 
                                        }
 |  // OR
-   xwhite() 
+   xwhite()                            { 
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                       }
+                            
    rslt = xobj(ctxt) 
                             try { (
    xwhite()                             { return rslt; }
@@ -787,6 +803,10 @@ void element(XMLContext ctxt)         : {}
      nowarning() 
    ) *  
    ctxt=xmlAttrsNoWarnings(ctxt) 
+                                          {
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                           }
    ( attr() ) * 
    ( content(ctxt) ) * 
    <E_END>
