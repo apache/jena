@@ -2,19 +2,24 @@
     (c) Copyright 2001, 2002 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: TestPackage.java,v 1.11 2003-12-11 11:11:31 jeremy_carroll Exp $
+    $Id: TestPackage.java,v 1.12 2004-11-12 10:39:08 chris-dollin Exp $
 */
 package com.hp.hpl.jena.xmloutput.test;
 
 // Imports
 ///////////////
+import java.io.StringWriter;
+
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.BadURIException;
+
 import junit.framework.*;
 
 /**
  * JUnit regression tests for output
  *
  * @author Jeremy Carroll
- * @version CVS info: $Id: TestPackage.java,v 1.11 2003-12-11 11:11:31 jeremy_carroll Exp $,
+ * @version CVS info: $Id: TestPackage.java,v 1.12 2004-11-12 10:39:08 chris-dollin Exp $,
  */
 public class TestPackage {
 
@@ -53,8 +58,30 @@ public class TestPackage {
             suite.addTest(testWriterAndReader.suite(langs[i]));
         }
 
+        suite.addTest( new TestSuite( TestURIExceptions.class ) );
         return suite;
     }
+    
+    /**
+         Added as a place to put the test(s) which ensure that thrown URI exceptions
+         carry the bad URI with them. I (Chris) would embed them in the other tests,
+         but I can't work out how to do so ...
+        @author kers
+    */
+    public static class TestURIExceptions extends TestCase
+        {
+        public TestURIExceptions( String name )
+            { super( name ); }
+        
+        public void testBadURIExceptionContainsBadURIInMessage()
+            {
+            String badURI = "http:";            
+            Model m = ModelFactory.createDefaultModel();
+            m.add( m.createResource( badURI ), m.createProperty( "eg:B C" ), m.createResource( "eg:C D" ) );
+            try { m.write( new StringWriter() ); fail( "should detect bad URI " + badURI ); } 
+            catch (BadURIException e) { assertTrue( "message must contain failing URI", e.getMessage().indexOf( badURI ) > 0 ); }
+            }
+        }
 
 }
 
@@ -84,5 +111,5 @@ public class TestPackage {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestPackage.java,v 1.11 2003-12-11 11:11:31 jeremy_carroll Exp $
+ * $Id: TestPackage.java,v 1.12 2004-11-12 10:39:08 chris-dollin Exp $
  */
