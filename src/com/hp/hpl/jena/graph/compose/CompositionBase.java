@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: CompositionBase.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-07-21 13:12:06 $
+ * Last modified on   $Date: 2004-09-06 17:31:27 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, moved kers' code from Dyadic to this class, added commentage
  * @author Chris Dollin (kers)
- * @version CVS $Id: CompositionBase.java,v 1.5 2004-07-21 13:12:06 chris-dollin Exp $
+ * @version CVS $Id: CompositionBase.java,v 1.6 2004-09-06 17:31:27 chris-dollin Exp $
  */
 public abstract class CompositionBase
     extends GraphBase
@@ -160,6 +160,17 @@ public abstract class CompositionBase
         return i.filterDrop( seenFilter );
         }
         
+    /**
+         Answer an iterator over the elements of <code>i</code> that are not in
+         the graph <code>seen</code>.
+    */
+    public static ExtendedIterator rejecting( final ExtendedIterator i, final Graph seen )
+        {
+        Filter seenFilter = new Filter()
+            { public boolean accept( Object x ) { return seen.contains( (Triple) x ); } };
+        return i.filterDrop( seenFilter );
+        }
+    
     /**
      * <p>
      * Answer the number of items in the closable iterator i. As a side effect, i

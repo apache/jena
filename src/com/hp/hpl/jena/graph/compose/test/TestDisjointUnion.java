@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestDisjointUnion.java,v 1.1 2004-09-06 15:19:25 chris-dollin Exp $
+  $Id: TestDisjointUnion.java,v 1.2 2004-09-06 17:33:15 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.compose.test;
 
@@ -26,25 +26,62 @@ public class TestDisjointUnion extends GraphTestBase
     
     public void testEmptyUnion()
         { 
-        DisjointUnion du = new DisjointUnion( graphWith( "" ), graphWith( "" ) );
+        DisjointUnion du = new DisjointUnion( Graph.emptyGraph, Graph.emptyGraph );
+        assertEquals( true, du.isEmpty() );
         }
-//    Graph g1 = graphWith( "x R y; p R q" );
-//    Graph g2 = graphWith( "r A s; x R y" );
-//    Union u = new Union( g1, g2 );
-//    assertContains( "Union", "x R y", u );
-//    assertContains( "Union", "p R q", u );
-//    assertContains( "Union", "r A s", u );
-//    if (u.size() != 3)
-//        fail( "oops: size of union is not 3" );
-//    u.add( triple( "cats eat cheese" ) );
-//    assertContains( "Union", "cats eat cheese", u );
-//    if 
-//        (
-//        contains( g1, "cats eat cheese" ) == false
-//        && contains( g2, "cats eat cheese" ) == false
-//        )
-//        fail( "oops: neither g1 nor g2 contains `cats eat cheese`" );
-//    }
+    
+    public void testLeftUnion()
+        {
+        Graph g = graphWith( "" );
+        testSingleComponent( g, new DisjointUnion( g, Graph.emptyGraph ) );
+        }
+    
+    public void testRightUnion()
+        {
+        Graph g = graphWith( "" );
+        testSingleComponent( g, new DisjointUnion( Graph.emptyGraph, g ) );
+        }
+
+    protected void testSingleComponent( Graph g, DisjointUnion du )
+        {
+        graphAdd( g, "x R y; a P b; x Q b" );
+        assertIsomorphic( g, du );
+        graphAdd( g, "roses growOn you" );
+        assertIsomorphic( g, du );
+        g.delete( triple( "a P b" ) );
+        assertIsomorphic( g, du );
+        }
+    
+    public void testBothComponents()
+        {
+        Graph L = graphWith( "" ), R = graphWith( "" );
+        Graph du = new DisjointUnion( L, R );
+        assertIsomorphic( Graph.emptyGraph, du );
+        L.add( triple( "x P y" ) );
+        assertIsomorphic( graphWith( "x P y" ), du );
+        R.add( triple( "A rdf:type Route" ) );
+        assertIsomorphic( graphWith( "x P y; A rdf:type Route" ), du );
+        }
+    
+    public void testRemoveBoth()
+        {
+        Graph L = graphWith( "x R y; a P b" ), R = graphWith( "x R y; p Q r" );
+        Graph du = new DisjointUnion( L, R );
+        du.delete( triple( "x R y" ) );
+        assertIsomorphic( graphWith( "a P b" ), L );
+        assertIsomorphic( graphWith( "p Q r" ), R );
+        }
+    
+    public void testAddLeftOnlyIfNecessary()
+        {
+        Graph L = graphWith( "" ), R = graphWith( "x R y" );
+        Graph du = new DisjointUnion( L, R );
+        graphAdd( du, "x R y" );
+        assertEquals( true, L.isEmpty() );
+        graphAdd( du, " a P b" );
+        assertIsomorphic( graphWith( "a P b" ), L );
+        assertIsomorphic( graphWith( "x R y" ), R );
+        }
     }
 
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.26 2004-09-06 15:19:26 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.27 2004-09-06 17:33:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -14,7 +14,7 @@ package com.hp.hpl.jena.graph.impl;
 */
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.compose.Union;
+import com.hp.hpl.jena.graph.compose.DisjointUnion;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.HashUtils;
 import com.hp.hpl.jena.util.iterator.*;
@@ -215,8 +215,8 @@ public class SimpleReifier implements Reifier
     public Graph getHiddenTriples()
         { return style == ReificationStyle.Standard ? Graph.emptyGraph : getReificationTriples(); }
     
-    public Graph getReificationTriples() // TODO use DisjointUnion
-        { if (reificationTriples == null) reificationTriples = new Union( tripleMap.asGraph(), nodeMap.asGraph() ); 
+    public Graph getReificationTriples()
+        { if (reificationTriples == null) reificationTriples = new DisjointUnion( tripleMap.asGraph(), nodeMap.asGraph() ); 
         return reificationTriples; }
         
     /**
