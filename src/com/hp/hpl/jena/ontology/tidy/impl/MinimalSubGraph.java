@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.7 2004-12-06 13:50:14 andy_seaborne Exp $
+  $Id: MinimalSubGraph.java,v 1.8 2005-01-11 10:09:27 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -62,6 +62,8 @@ class MinimalSubGraph extends AbsChecker {
 
 	Graph getContradiction() {
 		return hasBeenChecked;
+
+//		return Factory.createDefaultGraph(ReificationStyle.Minimal);
 	}
 
 	private void todo(Triple t) {

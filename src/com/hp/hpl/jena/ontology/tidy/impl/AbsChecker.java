@@ -13,6 +13,14 @@ import com.hp.hpl.jena.shared.*;
 import java.util.*;
 
 
+/*
+ * 
+ * Note: invariant is that hasBeenChecked is in OWL DL
+ * This invariant is/was broken by subclas MinimalSubGraph
+ * @author Jeremy J. Carroll
+ *
+ */
+
 abstract class AbsChecker implements Constants {
 	//Lookup look = new owlcompiler.SubCategorize();
 	boolean useRemove = true;
@@ -37,6 +45,14 @@ abstract class AbsChecker implements Constants {
 	
 	final boolean wantLite;
 	int monotoneLevel = Levels.Lite;
+	/**
+	 * Not in API.
+	 * @return
+	 */
+	public int getMonotoneLevel() {
+	    return monotoneLevel;
+	}
+	
 	
 	AbsChecker(boolean lite) {
 		hasBeenChecked = Factory.createDefaultGraph(ReificationStyle.Minimal);
