@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.14 2003-08-11 16:25:39 der Exp $
+ * $Id: TestBasicLP.java,v 1.15 2003-08-11 22:08:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-08-11 16:25:39 $
+ * @version $Revision: 1.15 $ on $Date: 2003-08-11 22:08:31 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -70,7 +70,7 @@ public class TestBasicLP  extends TestCase {
         return new TestSuite( TestBasicLP.class );
         
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBasicLP( "testBaseRules2" ));
+//        suite.addTest(new TestBasicLP( "testProblem2" ));
 //        return suite;
     }  
    
@@ -841,6 +841,83 @@ public class TestBasicLP  extends TestCase {
                 } );
     }
 
+    /**
+     * A problem from the original backchainer tests - interaction
+     * of tabling and functor expansion.
+     */
+    public void testProblem1() {
+        doTest(
+               "[r1: (a q f(?x,?y)) <- (a s ?x), (a t ?y)]" +
+               "[r2: (a p ?x) <- (a q ?x)]" +
+               "[r3: (a r ?y) <- (a p f(?x, ?y))]",
+                new Node[] { p },
+                new Triple[] {
+                    new Triple(a, s, b),
+                    new Triple(a, t, c)
+                },
+                new Triple(a, r, Node.ANY),
+                new Object[] {
+                    new Triple(a, r, c)
+                } );
+
+    }
+
+    /**
+     * A problem from the original backchainer tests - tabled closure operation.
+     */
+    public void testProblem2() {
+        String ruleSrc = 
+        "[rdfs8:  (?a rdfs:subClassOf ?c) <- (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c)]" + 
+        "[rdfs7:  (?a rdfs:subClassOf ?a) <- (?a rdf:type rdfs:Class)]";
+        doTest( ruleSrc,
+                new Node[] { ty, sC },
+                new Triple[] {
+                    new Triple(C1, sC, C2),
+                    new Triple(C2, sC, C3),
+                    new Triple(C1, ty, RDFS.Class.asNode()),
+                    new Triple(C2, ty, RDFS.Class.asNode()),
+                    new Triple(C3, ty, RDFS.Class.asNode())
+                },
+                new Triple(Node.ANY, sC, Node.ANY),
+                new Object[] {
+                    new Triple(C1, sC, C2),
+                    new Triple(C1, sC, C3),
+                    new Triple(C1, sC, C1),
+                    new Triple(C2, sC, C3),
+                    new Triple(C2, sC, C2),
+                    new Triple(C3, sC, C3)
+                } );
+    }
+
+    /**
+     * A problem from the original backchainer tests - bound/unbound primitives
+     */
+    public void testProblem3() {
+        String rules =         "[r1: (?x r ?y ) <- bound(?x), (?x p ?y) ]" +
+        "[r2: (?x r ?y) <- unbound(?x), (?x q ?y)]";
+        doTest(rules,
+                new Node[] { },
+                new Triple[] {
+                    new Triple(a, p, b),
+                    new Triple(a, q, c)
+                },
+                new Triple(a, r, Node.ANY),
+                new Object[] {
+                    new Triple(a, r, b)
+                } );
+        doTest(rules,
+                new Node[] { },
+                new Triple[] {
+                    new Triple(a, p, b),
+                    new Triple(a, q, c)
+                },
+                new Triple(Node.ANY, r, Node.ANY),
+                new Object[] {
+                    new Triple(a, r, c)
+                } );
+
+    }
+    
     /** 
      * Generic test operation.
      * @param ruleSrc the source of the rules

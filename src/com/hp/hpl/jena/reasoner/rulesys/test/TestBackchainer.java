@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.23 2003-07-25 16:34:54 der Exp $
+ * $Id: TestBackchainer.java,v 1.24 2003-08-11 22:09:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,26 +31,26 @@ import junit.framework.TestSuite;
  * Parameterizable in subclasses by overriding createReasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2003-07-25 16:34:54 $
+ * @version $Revision: 1.24 $ on $Date: 2003-08-11 22:09:06 $
  */
 public class TestBackchainer extends TestCase {
 
     // Useful constants
-    Node p = Node.createURI("p");
-    Node q = Node.createURI("q");
-    Node r = Node.createURI("r");
-    Node s = Node.createURI("s");
-    Node t = Node.createURI("t");
-    Node a = Node.createURI("a");
-    Node b = Node.createURI("b");
-    Node c = Node.createURI("c");
-    Node d = Node.createURI("d");
-    Node C1 = Node.createURI("C1");
-    Node C2 = Node.createURI("C2");
-    Node C3 = Node.createURI("C3");
-    Node sP = RDFS.subPropertyOf.getNode();
-    Node sC = RDFS.subClassOf.getNode();
-    Node ty = RDF.type.getNode();
+    protected Node p = Node.createURI("p");
+    protected Node q = Node.createURI("q");
+    protected Node r = Node.createURI("r");
+    protected Node s = Node.createURI("s");
+    protected Node t = Node.createURI("t");
+    protected Node a = Node.createURI("a");
+    protected Node b = Node.createURI("b");
+    protected Node c = Node.createURI("c");
+    protected Node d = Node.createURI("d");
+    protected Node C1 = Node.createURI("C1");
+    protected Node C2 = Node.createURI("C2");
+    protected Node C3 = Node.createURI("C3");
+    protected Node sP = RDFS.subPropertyOf.getNode();
+    protected Node sC = RDFS.subClassOf.getNode();
+    protected Node ty = RDF.type.getNode();
     
     String testRules1 = 
         "(?x ?q ?y) <- (?p rdfs:subPropertyOf ?q)(?x ?p ?y). " + 
@@ -80,7 +80,7 @@ public class TestBackchainer extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBackchainer.class ); 
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBackchainer( "testBug1" ));
+//        suite.addTest(new TestBackchainer( "testRDFSProblemsb" ));
 //        return suite;
     }  
 
@@ -570,25 +570,25 @@ public class TestBackchainer extends TestCase {
             } );
     }
   
-    /**
-     * Test multiheaded rule.
-     */
-    public void testMutliHead() {
-        Graph data = new GraphMem();
-        data.add(new Triple(a, p, b));
-        data.add(new Triple(b, r, c));
-        List rules = Rule.parseRules(
-            "[r1: (?x s ?z), (?z s ?x) <- (?x p ?y) (?y r ?z) ]"
-        );
-        Reasoner reasoner =  createReasoner(rules);
-        InfGraph infgraph = reasoner.bind(data);
-        TestUtil.assertIteratorValues(this, 
-            infgraph.find(null, s, null), 
-            new Object[] {
-                new Triple(a, s, c),
-                new Triple(c, s, a)
-            } );
-    }
+//    /**
+//     * Test multiheaded rule.
+//     */
+//    public void testMutliHead() {
+//        Graph data = new GraphMem();
+//        data.add(new Triple(a, p, b));
+//        data.add(new Triple(b, r, c));
+//        List rules = Rule.parseRules(
+//            "[r1: (?x s ?z), (?z s ?x) <- (?x p ?y) (?y r ?z) ]"
+//        );
+//        Reasoner reasoner =  createReasoner(rules);
+//        InfGraph infgraph = reasoner.bind(data);
+//        TestUtil.assertIteratorValues(this, 
+//            infgraph.find(null, s, null), 
+//            new Object[] {
+//                new Triple(a, s, c),
+//                new Triple(c, s, a)
+//            } );
+//    }
 
     /**
      * Test rebind operation

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.18 2003-08-11 16:55:31 der Exp $
+ * $Id: LPInterpreter.java,v 1.19 2003-08-11 22:08:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-08-11 16:55:31 $
+ * @version $Revision: 1.19 $ on $Date: 2003-08-11 22:08:31 $
  */
 public class LPInterpreter {
 
@@ -98,10 +98,15 @@ public class LPInterpreter {
         envFrame.pVars[2] = argVars[2] = standardize(goal.getObject());
         
         if (clauses != null && clauses.size() > 0) {
-            ChoicePointFrame newChoiceFrame = new ChoicePointFrame(this, clauses);
-            newChoiceFrame.linkTo(null);
-            newChoiceFrame.setContinuation(0, 0);
-            cpFrame = newChoiceFrame;
+//            if (engine.getRuleStore().isTabled(goal)) {
+//                setupTabledCall(0, 0);
+//            } else {
+                setupClauseCall(0, 0, clauses);
+//                ChoicePointFrame newChoiceFrame = new ChoicePointFrame(this, clauses);
+//                newChoiceFrame.linkTo(null);
+//                newChoiceFrame.setContinuation(0, 0);
+//                cpFrame = newChoiceFrame;
+//            }
         }
         
 //        TripleMatchFrame tmFrame = new TripleMatchFrame(this);
@@ -148,14 +153,13 @@ public class LPInterpreter {
      * @return either a StateFlag or  a result Triple
      */
     public synchronized Object next() {
-        boolean fastReturn = (cpFrame instanceof TripleMatchFrame) && (((TripleMatchFrame)cpFrame).envFrame.clause == RuleClauseCode.returnCodeBlock);
         StateFlag answer = run();
         if (answer == StateFlag.FAIL || answer == StateFlag.SUSPEND) {
             return answer;
         } else if (answer == StateFlag.SATISFIED) {
             return topTMFrame.lastMatch;
         } else {
-            Triple t = new Triple(deref(pVars[0]), deref(pVars[1]), deref(pVars[2]));
+            Triple t = new Triple(deref(pVars[0]), deref(pVars[1]), derefPossFunctor(pVars[2]));
             return t;
         }
     }
@@ -349,6 +353,7 @@ public class LPInterpreter {
                             Functor func = (Functor)args[ac++];
                             boolean match = false;
                             Node o = argVars[2];
+                            if (o instanceof Node_RuleVariable) o = ((Node_RuleVariable)o).deref();
                             if (Functor.isFunctor(o)) {
                                 Functor funcArg = (Functor)o.getLiteral().getValue();
                                 if (funcArg.getName().equals(func.getName())) {
@@ -360,6 +365,19 @@ public class LPInterpreter {
                                         match = true;
                                     }
                                 }
+                            } else if (o.isVariable()) {
+                                // Construct a new functor in place
+                                Node[] fargs = new Node[func.getArgLength()];
+                                Node[] templateArgs = func.getArgs();
+                                for (int i = 0; i < fargs.length; i++) {
+                                    Node template = templateArgs[i];
+                                    if (template.isVariable()) template = new Node_RuleVariable(null, i+3);
+                                    fargs[i] = template;
+                                    argVars[i+3] = template;
+                                }
+                                Node newFunc = Functor.makeFunctorNode(func.getName(), fargs);
+                                bind(((Node_RuleVariable)o).deref(), newFunc);
+                                match = true;
                             }
                             if (!match) continue main;      // fail to unify functor shape
                             break;
@@ -620,6 +638,38 @@ public class LPInterpreter {
     public static Node deref(Node node) {
         if (node instanceof Node_RuleVariable) {
             return ((Node_RuleVariable)node).deref();
+        } else {
+            return node;
+        }
+    }
+    
+    /**
+     * Derefernce a node which may be a functor node
+     */
+    public static Node derefPossFunctor(Node node) {
+        if (node instanceof Node_RuleVariable) {
+            Node dnode = ((Node_RuleVariable)node).deref();
+            if (Functor.isFunctor(dnode)) {
+                Functor f = (Functor) dnode.getLiteral().getValue();
+                Node[] fargs = f.getArgs();
+                boolean needCopy = false;
+                for (int i = 0; i < fargs.length; i++) {
+                    if (fargs[i].isVariable()) {
+                        needCopy = true;
+                        break;
+                    }
+                }
+                if (needCopy) {
+                    Node[] newArgs = new Node[fargs.length];
+                    for (int i = 0; i < fargs.length; i++) {
+                        newArgs[i] = deref(fargs[i]);
+                    }
+                    dnode = Functor.makeFunctorNode(f.getName(), newArgs);
+                }
+                return dnode;
+            } else {
+                return dnode;
+            }
         } else {
             return node;
         }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBackwardRuleReasoner.java,v 1.1 2003-07-25 16:34:34 der Exp $
+ * $Id: LPBackwardRuleReasoner.java,v 1.2 2003-08-11 22:08:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * relvant InfGraph class. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-25 16:34:34 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-11 22:08:31 $
  */
 public class LPBackwardRuleReasoner implements Reasoner {
 
@@ -90,6 +90,15 @@ public class LPBackwardRuleReasoner implements Reasoner {
             return null;
         }
     }
+    
+    /**
+     * Register an RDF predicate as one whose presence in a goal should force
+     * the goal to be tabled.
+     */
+    public synchronized void tablePredicate(Node predicate) {
+        ruleStore.tablePredicate(predicate);
+    }
+    
 
     /**
      * Determine whether the given property is recognized and treated specially

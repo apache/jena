@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestLPBackChainer.java,v 1.1 2003-07-25 16:34:34 der Exp $
+ * $Id: TestLPBackChainer.java,v 1.2 2003-08-11 22:08:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
 import com.hp.hpl.jena.reasoner.rulesys.test.TestBackchainer;
 import com.hp.hpl.jena.reasoner.*;
+
 import java.util.*;
 
 import junit.framework.TestSuite;
@@ -19,7 +20,7 @@ import junit.framework.TestSuite;
  * Run the original backchainer tests on an LP reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-07-25 16:34:34 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-11 22:08:31 $
  */
 public class TestLPBackChainer extends TestBackchainer {
     
@@ -42,7 +43,14 @@ public class TestLPBackChainer extends TestBackchainer {
      * Override in subclasses to test other reasoners.
      */
     public Reasoner createReasoner(List rules) {
-        return new LPBackwardRuleReasoner(rules);
+        LPBackwardRuleReasoner reasoner = new LPBackwardRuleReasoner(rules);
+        reasoner.tablePredicate(sP);
+        reasoner.tablePredicate(sC);
+        reasoner.tablePredicate(ty);
+        reasoner.tablePredicate(p);
+        reasoner.tablePredicate(a);
+        reasoner.tablePredicate(b);
+        return reasoner;
     }
 
 }
