@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.13 2003-11-22 18:07:40 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.14 2003-11-24 19:40:13 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -14,40 +14,7 @@ import java.util.*;
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-class SubCategorize {
-	/* In Grammar.java
-	static final int propertyOnly = saveSet(new int[]{});
-	
-	static final int classOnly = saveSet(new int[]{});
-	
-	static final int blank = saveSet(new int[]{});
-	
-	static final int userID = saveSet(new int[]{});
-	*/
-	/**
-	 * This triple should be recorded in the first slot
-	 * of the subject which is a one-slot structured node.
-	 */
-	static final int FirstOfOne = Grammar.FirstOfOne;
-	/**
-	 * This triple should be recorded in the first slot
-	 * of the subject which is a two-slot structured node.
-	 */
-	static final int FirstOfTwo = Grammar.FirstOfTwo;
-	/**
-	* This triple should be recorded in the second slot
-	* of the subject which is a two-slot structured node.
-	*/
-	static final int SecondOfTwo = Grammar.SecondOfTwo;
-	
-	
-	static private final int DL = Grammar.DL;
-
-	static private final int ObjectAction = Grammar.ObjectAction;
-	static private final int SubjectAction = Grammar.SubjectAction;
-
-	static final long FAILURE = -1;
-
+class SubCategorize implements Constants {
 	static final private int notType[] =
 		{
 			Grammar.rdfProperty,
@@ -55,13 +22,7 @@ class SubCategorize {
 			Grammar.owlDeprecatedProperty,
 			Grammar.owlFunctionalProperty,
 			Grammar.owlDeprecatedClass };
-	static private int ActionMask = (1 << Grammar.ActionShift) - 1;
-	/**
-	 *  Amount to shift.
-	 *  16 bits for s,p,o and 15bits for action.
-	 */
-	static final int W = 16;
-	static private final int M = (1 << W) - 1;
+
 	static private boolean COMPARATIVE(int prop) {
 		return prop == Grammar.rdfssubClassOf
 			|| prop == Grammar.owldisjointWith
@@ -99,12 +60,12 @@ class SubCategorize {
 						return obj == Grammar.owlClass;
 
 					if (prop == Grammar.owlonProperty
-						|| prop == Grammar.owlcardinality
+					//	|| prop == Grammar.owlcardinality
 						|| prop == Grammar.owlhasValue
-						|| prop == Grammar.owlminCardinality
+					//	|| prop == Grammar.owlminCardinality
 						|| prop == Grammar.owlmaxCardinality
 						|| prop == Grammar.owlsomeValuesFrom
-						|| prop == Grammar.owlallValuesFrom
+						//|| prop == Grammar.owlallValuesFrom
 						|| COMPARATIVE(prop))
 						return true;
 					return false;
@@ -112,11 +73,11 @@ class SubCategorize {
 
 				if ((prop == Grammar.rdftype
 					&& obj == Grammar.owlOntology) // Block restrictions
-					|| prop == Grammar.owlcardinality
-					|| prop == Grammar.owlminCardinality
+			//		|| prop == Grammar.owlcardinality
+			//		|| prop == Grammar.owlminCardinality
 					|| prop == Grammar.owlmaxCardinality
 					|| prop == Grammar.owlhasValue
-					|| prop == Grammar.owlallValuesFrom
+			//		|| prop == Grammar.owlallValuesFrom
 					|| prop == Grammar.owlsomeValuesFrom // Block descriptions
 					|| prop == Grammar.owlunionOf
 					|| prop == Grammar.owlintersectionOf
@@ -211,10 +172,10 @@ class SubCategorize {
 					// if ( !(oks[i]&&okp[j]&&oko[k]) ) - action semantics needs
 					// to check even when we don't really need it.
 					{
-					int w = Grammar.CategoryShift;
+					int w = CategoryShift;
 					int triple =
 						((((s[i] << w) | p[j]) << w) | o[k])
-							<< Grammar.ActionShift;
+							<< ActionShift;
 					int ix = Arrays.binarySearch(Grammar.triples, triple);
 					if (ix < 0) {
 						if (-ix - 1 == Grammar.triples.length)
@@ -251,7 +212,7 @@ class SubCategorize {
 			if (dbgMe)
 				System.err.println("Z");
 				*/
-			return FAILURE;
+			return Failure;
 		}
 		for (i = 0; i < s.length; i++)
 			if (oks[i] || SPECIALSYM(s[i]))
@@ -295,8 +256,17 @@ class SubCategorize {
 			System.err.println(" OK2 " + s2);
 		}
 		*/
+		return toLong(s2, p2, o2, action);
+	}
+	static long toLong(int s2, int p2, int o2, int action) {
 		return (((long) action) << (3 * W))
 			| (((long) s2) << (2 * W))
+			| (((long) p2) << (1 * W))
+			| (((long) o2) << (0 * W));
+	}
+	static long toLong(int s2, int p2, int o2) {
+		return 
+			(((long) s2) << (2 * W))
 			| (((long) p2) << (1 * W))
 			| (((long) o2) << (0 * W));
 	}
@@ -313,59 +283,7 @@ class SubCategorize {
 				s2[j++] = s[i];
 		return CategorySet.find(s2, true);
 	}
-	/**
-	 * 
-	 * @param refinement The result of {@link #refineTriple(int,int,int)}
-	 * @param subj The old subcategory for the subject.
-	 * @return The new subcategory for the subject.
-	 */
-	static int subject(long refinement) {
-		return (int) (refinement >> (2 * W)) & M;
-	}
-	/**
-	 * 
-	 * @param refinement The result of {@link #refineTriple(int,int,int)}
-	 * @param prop The old subcategory for the property.
-	 * @return The new subcategory for the property.
-	 */
-	static int prop(long refinement) {
-		return (int) (refinement >> (1 * W)) & M;
-	}
-	/**
-	 * 
-	 * @param refinement The result of {@link #refineTriple(int,int,int)}
-	 * @param obj The old subcategory for the object.
-	 * @return The new subcategory for the object.
-	 */
-	static int object(long refinement) {
-		return (int) (refinement >> (0 * W)) & M;
-	}
-	/**
-	 * 
-	 * @param refinement The result of {@link #refineTriple(int,int,int)}
-	 * @return An integer reflecting an action needed in response to this triple.
-	 */
-	static int action(long refinement) {
-		return (int) (refinement >> (3 * W)) & ~(DL | ObjectAction);
-	}
-	/**
-	* 
-	* @param refinement The result of {@link #refineTriple(int,int,int)}
-	* @return True if this triple is <em>the</em> triple for the blank node object.
-	*/
-	static boolean tripleForObject(long refinement) {
-		return ((refinement >> (3 * W)) & ObjectAction) == ObjectAction;
-	}
-	static boolean tripleForSubject(long refinement) {
-		return ((refinement >> (3 * W)) & SubjectAction) == SubjectAction;
-	}
-	/**
-	 *@param refinement The result of {@link #refineTriple(int,int,int)}
-	 * @return Is this triple in DL?.
-	 */
-	static boolean dl(long refinement) {
-		return ((refinement >> (3 * W)) & DL) == DL;
-	}
+
 }
 
 /*

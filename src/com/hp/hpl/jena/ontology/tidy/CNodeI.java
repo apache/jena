@@ -24,6 +24,7 @@ interface CNodeI {
     void addDisjoint(CNodeI foo);
     void addDisjoint1(CNodeI foo);
     AbsChecker getChecker();
+    boolean update();
 	/**
 	 * 
 	 */

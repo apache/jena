@@ -24,6 +24,13 @@ class CBuiltin extends CNode {
           throw new SyntaxException("Internal error in syntax checker.");
         return true;
     }
+	/* (non-Javadoc)
+	 * @see com.hp.hpl.jena.ontology.tidy.CNodeI#update()
+	 */
+	public boolean update() {
+		return true;
+	}
+    
     
 }
 

@@ -75,7 +75,7 @@ public class WGTests extends java.lang.Object {
 
 	static private String skipThese[] =
 		{ "http://www.w3.org/2002/03owlt/I5.8/Manifest016#test" };
-	static private boolean doLargeTests = false;
+	static boolean doLargeTests = false;
 
 	static private String manifestURI = "OWLManifest.rdf";
 	static private boolean manifestInFactory = true;

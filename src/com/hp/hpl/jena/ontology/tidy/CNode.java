@@ -10,7 +10,7 @@ import com.hp.hpl.jena.graph.*;
  * @author jjc
  *
  */
-abstract class CNode implements CNodeI {
+abstract class CNode implements CNodeI, Constants{
 	static public CNode create(Node n, AbsChecker eg ) {
 		CNode rslt = create1(n,eg);
 		if (eg.extraInfo())
@@ -37,7 +37,7 @@ abstract class CNode implements CNodeI {
 					return new CURIref(n,eg,Grammar.classID);
 					*/
                 	
-                case Grammar.DisallowedVocab:
+                case DisallowedVocab:
                 
                     ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
@@ -47,7 +47,7 @@ abstract class CNode implements CNodeI {
                        )
                     );
                     return new CURIref(n,eg);
-                case Grammar.BadOWL:
+                case BadOWL:
                     ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Unrecognised OWL vocabulary",
@@ -56,7 +56,7 @@ abstract class CNode implements CNodeI {
                        )
                     );
                     return new CURIref(n,eg);
-                case Grammar.BadRDF:
+                case BadRDF:
                     ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Unrecognised RDF vocabulary",
@@ -65,7 +65,7 @@ abstract class CNode implements CNodeI {
                        )
                     );
                     return new CURIref(n,eg);
-                case Grammar.BadXSD:
+                case BadXSD:
                     ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Illadvised XSD datatype",
@@ -74,7 +74,7 @@ abstract class CNode implements CNodeI {
                        )
                     );
                     return new CBuiltin(n,eg,Grammar.datatypeID);
-                   case Grammar.Failure:
+                   case Failure:
                     return new CURIref(n, eg);
                     default:
                     break;

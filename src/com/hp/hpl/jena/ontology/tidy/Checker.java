@@ -174,8 +174,10 @@ public class Checker extends AbsChecker {
 						.intersect(
 							Grammar.listsX,
 							CategorySet.getSet(cn.getCategories()))) {
-
+        //    System.err.println(CategorySet.catString(cn.getCategories()));
+				//		dump(n);
 						nonMonProblem("Cyclic rdf:List", n);
+						
 					}
 
 					// If this is an individual then we have to check it.
@@ -422,13 +424,13 @@ public class Checker extends AbsChecker {
 			return "DL or Full";
 		return Levels.toString(m);
 	}
-	void actions(long key, CNodeI s, CNodeI o, Triple t) {
-		if (SubCategorize.tripleForObject(key))
+	void actions(int key, CNodeI s, CNodeI o, Triple t) {
+		if (LookupTable.tripleForObject(key))
 			o.asBlank().addObjectTriple(t);
-		if (SubCategorize.tripleForSubject(key))
+		if (LookupTable.tripleForSubject(key))
 			s.asBlank().addObjectTriple(t);
 		
-		switch (SubCategorize.action(key)) {
+		switch (LookupTable.action(key)) {
 			case SubCategorize.FirstOfOne :
 				s.asOne().first(t);
 				break;

@@ -12,7 +12,7 @@ import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
 
-abstract class AbsChecker {
+abstract class AbsChecker implements Constants {
 
 	final boolean wantLite;
 	int monotoneLevel = Levels.Lite;
@@ -59,7 +59,7 @@ abstract class AbsChecker {
 		int sOrig = s1;
 		int pOrig = p1;
 		int oOrig = o1;
-		long key = Grammar.Failure;
+		int key = Failure;
 
 		if (!topLevelCall) {
 			// On recursive calls this triple is already in the hasBeenCheckedSet
@@ -77,12 +77,13 @@ abstract class AbsChecker {
 			s0 = s1; // record these values, exit when stable
 			p0 = p1;
 			o0 = o1;
-			key = SubCategorize.refineTriple(s0, p0, o0);
-			if (key == Grammar.Failure) {
+//			key = SubCategorize.refineTriple(s0, p0, o0);
+			key = LookupTable.qrefine(s0,p0,o0);
+			if (key == Failure) {
 				addProblem(Levels.DL, t);
 				success = false;
 			} else {
-				if (SubCategorize.dl(key)) {
+				if (LookupTable.dl(key)) {
 					if (wantLite) {
 						success = false;
 						addProblem(Levels.Lite, t);
@@ -90,18 +91,27 @@ abstract class AbsChecker {
 						setMonotoneLevel(Levels.DL);
 					}
 				}
+				o.setCategories(LookupTable.object(key), false);
+				p.setCategories(LookupTable.prop(key), false);
+				s.setCategories(LookupTable.subject(key), false);
 				success =
 					success
-						&& o.setCategories(SubCategorize.object(key), true)
-						&& p.setCategories(SubCategorize.prop(key), true)
-						&& s.setCategories(SubCategorize.subject(key), true);
+						&& o.update()
+						&& p.update()
+						&& s.update();
 			}
 			s1 = s.getCategories();
 			p1 = p.getCategories();
 			o1 = o.getCategories();
 		}
 		if (success) {
-			hasBeenChecked.add(t);
+			if (!LookupTable.removeTriple(key)) 
+			     hasBeenChecked.add(t);
+			else {
+//				System.err.println("D" + dCnt++);
+//				dump(s0,p0,o0);
+//				dump(t);
+			}
 			actions(key, s, o, t);
 		} else {
 			if (!topLevelCall)
@@ -129,12 +139,40 @@ abstract class AbsChecker {
 		//	System.err.println("* " + t.toString() + "[" + rr + "]");
 		return rr;
 	}
+
+//	void dump(Triple t) {
+//		dump(t.getSubject());
+//		dump(t.getPredicate());
+//		dump(t.getObject());
+//	}
+	static int dCnt = 0;
 	void setMonotoneLevel(int l) {
 		if (monotoneLevel < l)
 			monotoneLevel = l;
 	}
-	abstract void actions(long key, CNodeI s, CNodeI o, Triple t);
-
+	abstract void actions(int key, CNodeI s, CNodeI o, Triple t);
+	
+//	Map dumpSupport = new HashMap();
+//	
+//	void dump(Node n){
+//		Integer ix = (Integer)dumpSupport.get(n);
+//		if ( ix==null) {
+//			ix = new Integer(dumpSupport.size());
+//			dumpSupport.put(n,ix);
+//		}
+//		System.err.print(ix + ": ");
+//		System.err.println(CategorySet.catString(getCNode(n).getCategories()));
+//	}
+//	void dump(int s,int p, int o) {
+//		dump("S",s);
+//		dump("P",p);
+//		dump("O",o);
+//		System.err.println();
+//	}
+//	void dump(String p,int c) {
+//		System.err.println(p+CategorySet.catString(c));
+//	}
+//
 	boolean recursivelyUpdate(Node n) {
 		return rec(n, null, null) && rec(null, n, null) && rec(null, null, n);
 	}

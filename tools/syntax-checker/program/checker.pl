@@ -49,7 +49,7 @@ allBuiltins(Q,N,[Q:N],0) :-
 
 wTripleTable :-
   wlist(['static final private int SPOA(int s, int p, int o, int a) {',nl,
-  ' return (((((s << W) | p) << W) | o) << ActionShift ) | a;',nl,
+  ' return (((((s << WW) | p) << WW) | o) << ActionShift ) | a;',nl,
   '}',nl]),
   wlist(['static final int triples[] = new int[]{',nl]),
   tt(S,P,O,A),
@@ -112,6 +112,7 @@ category(badRestriction).
 category(X) :-
    setof(Z,isTTnode(Z),S),
    member(Z,S),
+   \+ notOut(Z),
    gname([Z],X).
 propertyNumber(owl:intersectionOf, 1):-!.
 propertyNumber(owl:complementOf, 1):-!.
@@ -130,6 +131,19 @@ propertyNumber(owl:someValuesFrom, 3):-!.
 propertyNumber(rdf:first, 3):-!.
 propertyNumber(P,_) :- throw(propertyNumber(P)).
 
+theSame([owl:maxCardinality,owl:minCardinality,owl:cardinality]).
+theSame([owl:someValuesFrom,owl:allValuesFrom]).
+
+outCat(In,Out) :-
+  theSame([Out|S]),
+  member(In,S),
+  !.
+outCat(In,In).
+notOut(X) :-
+  theSame([_|S]),
+  member(X,S),
+  !.
+
 
 uncan(N,Can) :-
   member([S]+Ps+Os,Can),
@@ -138,7 +152,7 @@ uncan(N,Can) :-
   member(O,Os),
   xobj(O,O1),
   tt(S,P,O1,Lvl),
-  assert(tt(S-N,P,O1,Lvl/property(PN))),
+  assertOnce(tt(S-N,P,O1,Lvl/property(PN))),
   fail.
 uncan(_,_).
   
@@ -147,7 +161,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.17 2003-11-22 15:19:09 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.18 2003-11-24 19:40:14 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
@@ -194,25 +208,28 @@ nl,
 gogo :-
   compMapping,
   buildChecker,
+  gogo('Grammar'),
+  gogo('Triples').
+gogo(G) :-
   % tt/4 is now good.
-  jfile('Grammar',JF),
+  jfile(G,JF),
   tell(JF),
   copyrightHead,
   wlist(['package com.hp.hpl.jena.ontology.tidy;',nl,
          'import java.util.Arrays;',nl,
-         'class Grammar {',nl]),
+         'class ',G,' implements Constants {',nl]),
   flag(catID,_,1),
   category(C),
   flag(catID,N,N+1),
   wsfi(C,N),
   fail.
   
-gogo :-
-  wActions,
+gogo(G) :-
+  %wActions,
   wGetBuiltinID,
   wGroups1,
   wInitSingletons,
-  wTripleTable,
+  (G=='Triples'->wTripleTable;true),
   wGroups2,
   wlist(['}',nl]),
   copyrightTail,
@@ -262,10 +279,12 @@ buildChecker :-
 buildChecker :-
    retractall(m(_)),
    retractall(m(_,_)),
-   dumbCanned(_Mapping-N,Can,D,dl),
+   dumbCanned(_Mapping-N0,Can,D,dl),
    assertOnce(m(D)),
-   ((D=description;D=restriction),comparative(_:C);
-       C=object),
+   %
+   %((D=description;D=restriction),comparative(_:C);
+   %    C=object),
+   drName(D,C,N0,N,Can),
    assert(m(D,D-N*C)),
    uncan(N*C,Can),
    fail.
@@ -316,11 +335,27 @@ buildChecker :-
   setof(D-N*disjointWith,isTTnode(D-N*disjointWith),S),
   assert(expg(S,disjointWith)).
   
+  
+drName(D,object,N,N,_) :-
+  D \= description,
+  D \= restriction.
+drName(description,C,N0,5,Can) :-
+   comparative(_:C); C=object.
+drName(restriction,C,N0,N,Can) :-
+   (comparative(_:C); C=object),
+   member([restriction]+[owl:onProperty]+[PPP],Can),
+   getN(PPP,N).
+
+getN(dataPropID,6).
+getN(objectPropID,7).
+getN(transitivePropID,8).
+  
 
 wGroups1 :-
   expg(S,N),
   wlist(['static final int ',N,'X[] = new int[]{',nl]),
   (member(M,S),
+     \+ notOut(M),
      gname([M],MM),
      wlist([MM,',',nl]),
      fail;
@@ -373,7 +408,9 @@ bits(N,NB) :-
   N < 1<<NB,
   !.
 
-gname([(Q:N)],QN) :- atom_concat(Q,N,QN),!.
+gname([(Q:N)],QN) :- 
+    outCat(Q:N,Q1:N1),
+    atom_concat(Q1,N1,QN),!.
 gname([D-_],D) :- countx(m(D,_),1),!.
 gname([D-N*S],QN) :- concat_atom([D,N,S],QN),!.
 gname([D-N],QN) :- concat_atom([D,N],QN),!.
@@ -385,11 +422,13 @@ gn1(X,XX) :-
 
 
 wGetBuiltinID :-
+/*
   wsfi('BadXSD','1<<W'),
   wsfi('BadOWL','2<<W'),
   wsfi('BadRDF','3<<W'),
   wsfi('DisallowedVocab','4<<W'),
   wsfi('Failure',-1),
+*/
   wlist(['static int getBuiltinID(String uri) {',nl]),
   wlist(['  if ( uri.startsWith("http://www.w3.org/") ) {',nl]),
   wlist(['      uri = uri.substring(18);',nl]),
@@ -443,11 +482,11 @@ jfile(Nm,Nmx) :-
   
 
 wActions :-
-  wsfi('FirstOfOne',4),
-  wsfi('FirstOfTwo',8),
-  wsfi('SecondOfTwo',12),
+  wsfi('FirstOfOne',8),
+  wsfi('FirstOfTwo',16),
+  wsfi('SecondOfTwo',24),
   wsfi('ObjectAction',2),
-  wsfi('SubjectAction',16),
+  wsfi('SubjectAction',4),
   wsfi('DL',1),
   wsfi('ActionShift',5),
   wsfi('CategoryShift',9),

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.7 2003-09-26 18:47:54 jeremy_carroll Exp $
+  $Id: SyntaxTest.java,v 1.8 2003-11-24 19:40:12 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
@@ -99,6 +99,8 @@ class SyntaxTest extends TestCase {
 			OntModel om = ModelFactory.createOntologyModel( 
 			new OntModelSpec(null,dm,null,ProfileRegistry.OWL_LANG)  ,
 			ent.mdl);
+		//	if (true)
+		//	  return;
 			//(InputStream) inI.next(),
 			//om.read()
 			chk.add(om.getGraph());

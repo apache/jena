@@ -24,6 +24,7 @@ public class Extra extends TestCase {
 		s.setName("More OWL syntax");
 		return s;
    }
+   /*
    public void testsubClassOf001() {
    	 runTest("subClassOf001", OWLTest.Full);
    }
@@ -39,7 +40,22 @@ public class Extra extends TestCase {
    public void testsubClassOf005() {
    	runTest("subClassOf005", OWLTest.Lite);
    }
-   private void runTest(String fn, Resource lvl) {
+   */
+   public void testlist001() {
+	runTest("list001", OWLTest.DL);
+   }
+/*
+   static long t;
+   
+   public void testHuge() {
+	t = System.currentTimeMillis();
+	runTest("nciOncology", OWLTest.Lite);
+   }
+   public void testEndTime() {
+	  System.err.println((System.currentTimeMillis()-t)+ " ms");
+	 }
+*/
+      private void runTest(String fn, Resource lvl) {
 
    	Checker chk = new Checker(lvl.equals(OWLTest.Lite));
    	Model m = ModelFactory.createDefaultModel();

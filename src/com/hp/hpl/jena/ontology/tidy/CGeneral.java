@@ -30,11 +30,18 @@ class CGeneral extends CNode {
     	int old = rec?getCategories():-1;
     	c = cat;
     	if ( rec && old != cat ) {
-    		return getChecker().recursivelyUpdate(asNode());
+    		return update();
     	}
     	return true;
     	
     }
+    int lastUpdate = -1;
+	public boolean update() {
+		if ( c == lastUpdate )
+		  return true;
+		lastUpdate = c;
+		return getChecker().recursivelyUpdate(asNode());
+	}
 }
 
 

@@ -1,31 +1,242 @@
 /*
  * Created on 22-Nov-2003
  * 
+ * 
+ * Perf notes:
+ * 
+ * Running WG tests
+ *  - no checking whatsoever (just parsing and imports)
+ *    12.5 sec
+ *  - checking with qrefine 18.5 (down to 17.3)
+ *  - checking with old refineTriple 28
+ *   (down to 20 with reduced grammar)
+ * 
  * To change the template for this generated file go to Window - Preferences -
  * Java - Code Generation - Code and Comments
  */
 package com.hp.hpl.jena.ontology.tidy;
 
+import com.hp.hpl.jena.shared.*;
 import java.util.*;
-
+import java.io.*;
 /**
  * @author jjc
  * 
  * To change the template for this generated type comment go to Window -
  * Preferences - Java - Code Generation - Code and Comments
  */
-public class Compiler {
-	final private int W = SubCategorize.W;
+public class Compiler implements Constants {
+
+	final private String SAVEFILE = "tmp/huge.ser";
+	static private long lookup[][];
+
+	boolean validate() {
+		if (prop(qrefine(14,80,89))!=80) {
+			System.err.println("gggg");
+			return false;
+		}
+		Iterator it = huge.keySet().iterator();
+		while (it.hasNext()) {
+			Long l = (Long) it.next();
+			long ll = l.longValue();
+			int s = subject(ll);
+			int p = prop(ll);
+			int o = object(ll);
+			long lk = qrefine(s, p, o);
+			int ik = LookupTable.qrefine(s, p, o);
+			if (subject(lk) != LookupTable.subject(ik))
+				return false;
+
+			if (prop(lk) != LookupTable.prop(ik))
+				return false;
+			if (object(lk) != LookupTable.object(ik))
+				return false;
+			if (allActions(lk) != LookupTable.allActions(ik))
+				return false;
+		}
+		return true;
+	}
+	private void saveResults() {
+		int key[] = new int[huge.size()];
+		int value[] = new int[huge.size()];
+		byte action[] = new byte[huge.size()];
+		if (1 << WW <= possible.size())
+			throw new BrokenException("Compiler failure: WW is not big enough");
+		Iterator it = huge.entrySet().iterator();
+		int i = 0;
+		while (it.hasNext()) {
+			Map.Entry ent = (Map.Entry) it.next();
+			long k = ((Long) ent.getKey()).longValue();
+			long v = ((Long) ent.getValue()).longValue();
+			short spo[] = expand(k);
+			key[i] = (spo[0] << (WW * 2)) | (spo[1] << WW) | spo[2];
+			spo = expand(v);
+			value[i] = (spo[0] << (WW * 2)) | (spo[1] << WW) | spo[2];
+			action[i] = (byte) spo[3];
+			if (i > 0 && key[i] <= key[i - 1])
+				throw new BrokenException("Sort error");
+			i++;
+		}
+
+		try {
+			FileOutputStream ostream = new FileOutputStream(DATAFILE);
+			ObjectOutputStream p = new ObjectOutputStream(ostream);
+			p.writeObject(key);
+			p.writeObject(value);
+			p.writeObject(action);
+			p.writeObject(CategorySet.unsorted);
+			p.flush();
+			ostream.close();
+		} catch (IOException e) {
+			throw new BrokenException(e);
+		}
+	}
+
+	private void initLookup() {
+		lookup = new long[huge.size()][2];
+		Iterator it = huge.entrySet().iterator();
+		int i = 0;
+		while (it.hasNext()) {
+			Map.Entry ent = (Map.Entry) it.next();
+			lookup[i][0] = ((Long) ent.getKey()).longValue();
+			lookup[i][1] = ((Long) ent.getValue()).longValue();
+			i++;
+		}
+	}
+
+	static private Comparator comp = new Comparator() {
+
+		public int compare(Object o1, Object o2) {
+
+			long rslt = ((long[]) o1)[0] - ((long[]) o2)[0];
+			if (rslt < 0)
+				return -1;
+			if (rslt > 0)
+				return 1;
+			return 0;
+		};
+	};
+	static {
+		Compiler c = new Compiler();
+		c.restore();
+		c.initLookup();
+		for (int i = 1; i < lookup.length; i++)
+			if (comp.compare(lookup[i - 1], lookup[i]) >= 0) {
+				throw new BrokenException("lookup init");
+			}
+	}
+	static long qrefine(int s, int p, int o) {
+		long key[] = { SubCategorize.toLong(s, p, o), 0 };
+		int rslt = Arrays.binarySearch(lookup, key, comp);
+		if (rslt < 0)
+			return Failure;
+		else
+			return lookup[rslt][1];
+	}
+
+	private boolean restore() {
+		try {
+			FileInputStream istream = new FileInputStream(SAVEFILE);
+			ObjectInputStream p = new ObjectInputStream(istream);
+			huge = (SortedMap) p.readObject();
+			possible = (SortedSet) p.readObject();
+			Vector v = (Vector) p.readObject();
+			Iterator it = v.iterator();
+			while (it.hasNext()) {
+				((CategorySet) it.next()).restore();
+			}
+			istream.close();
+		} catch (FileNotFoundException ee) {
+			return false;
+		} catch (IOException e) {
+			throw new BrokenException(e);
+		} catch (ClassNotFoundException e) {
+			throw new BrokenException(e);
+		}
+		return true;
+	}
+	private void save() {
+		try {
+			FileOutputStream ostream = new FileOutputStream(SAVEFILE);
+			ObjectOutputStream p = new ObjectOutputStream(ostream);
+			p.writeObject(huge);
+			p.writeObject(possible);
+			p.writeObject(CategorySet.unsorted);
+			p.flush();
+			ostream.close();
+		} catch (IOException e) {
+			throw new BrokenException(e);
+		}
+	}
+	static final private Comparator pairComp = new Comparator() {
+
+		public int compare(Object o1, Object o2) {
+			short s1[] = (short[]) o1;
+			short s2[] = (short[]) o2;
+			int rslt = s1[0] - s2[0];
+			if (rslt == 0)
+				rslt = s1[1] - s2[1];
+			return rslt;
+		}
+	};
+	SortedMap pairs[] =
+		{
+			new TreeMap(pairComp),
+			new TreeMap(pairComp),
+			new TreeMap(pairComp),
+			};
 	SortedSet possible = new TreeSet();
 	SortedMap huge = new TreeMap();
+	SortedMap moreThan = new TreeMap();
 	SortedMap lessThan = new TreeMap();
 	SortedMap meet = new TreeMap();
+	SortedMap join = new TreeMap();
 	SortedMap comparablePairs = new TreeMap();
-	Set morePossible = new TreeSet();
-	void add(int i) {
+	Map morePossible = new HashMap();
+	Map oldMorePossible = null;
+	void add(int i, int was) {
 		Integer ii = new Integer(i);
-		if (!possible.contains(ii))
-			morePossible.add(ii);
+		if ((!possible.contains(ii)) && !morePossible.containsKey(ii))
+			morePossible.put(ii, new Integer(was));
+	}
+	/** 
+	 * Perform Roy's Transitive Closure algorithm
+	 * on lessThan, comparablePairs, moreThan
+	 *
+	 */
+	private void roy() {
+		Iterator i = possible.iterator();
+		int c = 0;
+		while (i.hasNext()) {
+			Integer iii = (Integer) i.next();
+			int ii = iii.intValue();
+			Iterator k = possible.iterator();
+			while (k.hasNext()) {
+				int kk = ((Integer) k.next()).intValue();
+				Pair ik = new Pair(ii, kk);
+				if (comparablePairs.containsKey(ik))
+					continue;
+				Set lti = (Set) lessThan.get(iii);
+				if (lti == null)
+					continue;
+				Iterator j = lti.iterator();
+				while (j.hasNext()) {
+					if (c++ % 100000 == 0)
+						log("R", c);
+					int jj = ((Integer) j.next()).intValue();
+					Pair jk = new Pair(jj, kk);
+					Integer x = (Integer) comparablePairs.get(jk);
+					if (x != null && x.intValue() == kk) {
+						add(ii, kk);
+						break;
+					}
+				}
+
+			}
+		}
+	}
+	void add(int i) {
+		add(i, -1);
 	}
 	Long toLong(int s2, int p2, int o2) {
 		return new Long(
@@ -34,14 +245,77 @@ public class Compiler {
 				| (((long) o2) << (0 * W))));
 	}
 	void spo(int s, int p, int o) {
-		long r = SubCategorize.refineTriple(s, p, o);
+		//long r = SubCategorize.refineTriple(s, p, o);
+		long r1;
+		if (oldMorePossible != null) {
+			boolean sOld, pOld, oOld;
+			int s1, p1, o1;
+			Integer is0 = (Integer) oldMorePossible.get(new Integer(s));
+			if (is0 != null) {
+				sOld = true;
+				s1 = is0.intValue();
+			} else {
+				sOld = false;
+				s1 = s;
+			}
+			Integer ip0 = (Integer) oldMorePossible.get(new Integer(p));
+			if (ip0 != null) {
+				pOld = true;
+				p1 = ip0.intValue();
+			} else {
+				pOld = false;
+				p1 = p;
+			}
+			Integer io0 = (Integer) oldMorePossible.get(new Integer(o));
+			if (io0 != null) {
+				oOld = true;
+				o1 = io0.intValue();
+			} else {
+				oOld = false;
+				o1 = o;
+			}
+			Long rold = toLong(s1, p1, o1);
+			Long old = (Long) huge.get(rold);
+			if (old == null) {
+				//				if (Grammar.Failure != r) {
+				//					if (Grammar.Failure != r)
+				//						System.err.println("E2");
+				//					System.err.println(
+				//						CategorySet.toString(toLong(s1, p1, o1)));
+				//					System.err.println(CategorySet.toString(toLong(s, p, o)));
+				//					System.err.println(CategorySet.toString(r));
+				//				}
+				return;
+			}
+			long r0 = old.longValue();
+			//			if ( SubCategorize.spo(r0)==rold.longValue()) 
+			//			  r1 = r0;
+			//			else
+			r1 =
+				SubCategorize.refineTriple(
+					sOld ? s : subject(r0),
+					pOld ? p : prop(r0),
+					oOld ? o : object(r0));
+			//			if (r1 != r) {
+			//				System.err.println(CategorySet.toString(toLong(s0, p0, o0)));
+			//				System.err.println(CategorySet.toString(toLong(s, p, o)));
+			//				System.err.println(CategorySet.toString(r0));
+			//				System.err.println(CategorySet.toString(r));
+			//				System.err.println(CategorySet.toString(r1));
+			//
+			//			}
 
-		if (r != Grammar.Failure //	 && !SubCategorize.dl(r)
+		} else {
+			r1 = SubCategorize.refineTriple(s, p, o);
+			;
+		}
+
+		if (r1 != Failure //	 && !SubCategorize.dl(r)
 		) {
-			huge.put(toLong(s, p, o), new Long(r));
-			add(SubCategorize.subject(r));
-			add(SubCategorize.prop(r));
-			add(SubCategorize.object(r));
+			huge.put(toLong(s, p, o), new Long(r1));
+			add(subject(r1), s);
+			add(prop(r1), p);
+			add(object(r1), o);
 		}
 
 	}
@@ -51,7 +325,6 @@ public class Compiler {
 			spo(b, a, c);
 		if (a != c)
 			spo(b, c, a);
-
 		if (b != c) {
 			spo(a, c, b);
 			if (a != c)
@@ -71,7 +344,7 @@ public class Compiler {
 		add(Grammar.userID);
 		Set ignore = new HashSet();
 		ignore.add(new Integer(0));
-		Iterator it = morePossible.iterator();
+		Iterator it = morePossible.keySet().iterator();
 		while (it.hasNext()) {
 			int c = ((Integer) it.next()).intValue();
 			int cat[] = CategorySet.getSet(c);
@@ -83,16 +356,19 @@ public class Compiler {
 				add(i);
 	}
 	static long start = System.currentTimeMillis();
-	void go() {
+	void compute() {
 		initPossible();
 		while (!morePossible.isEmpty()) {
-			possible.addAll(morePossible);
-			Iterator it1 = morePossible.iterator();
-			morePossible = new HashSet();
+			possible.addAll(morePossible.keySet());
+			Iterator it1 = morePossible.entrySet().iterator();
+			morePossible = new HashMap();
 			int c = 0;
 			while (it1.hasNext()) {
-				log("G",c++);
-				int n1 = ((Integer) it1.next()).intValue();
+				if (c++ % 20 == 0)
+					log("G", c);
+				Map.Entry ent = (Map.Entry) it1.next();
+				int n1 = ((Integer) ent.getKey()).intValue();
+				//	int old1 = ((Integer) ent.getValue()).intValue();
 				Iterator it2 = possible.iterator();
 				while (it2.hasNext()) {
 					Integer ni2 = (Integer) it2.next();
@@ -104,10 +380,40 @@ public class Compiler {
 							((Integer) it3.next()).intValue());
 				}
 			}
+			oldMorePossible = morePossible;
 		}
-		log("GX",0);
-		lessThan();
-		makeMeet();
+		System.err.println("Saving");
+		save();
+		log("GX", 0);
+	}
+	private void go2() {
+		if (restore())
+			System.err.println("Restore successful");
+		else {
+			System.err.println("Restore unsuccessful: recomputing");
+			compute();
+		}
+		System.err.println(validate() ? "Good" : "Bad");
+	}
+	private void go() {
+		if (restore())
+			System.err.println("Restore successful");
+		else {
+			System.err.println("Restore unsuccessful: recomputing");
+			compute();
+		}
+		log("GX", 0);
+		//makeLessThan();
+		//	roy();
+		//makeMeet();
+		//makeJoin();
+		//	pairs();
+		//	System.err.println("XXX=" + evalPairs());
+		//findUseless();
+		System.err.println("Saving results");
+		saveResults();
+		System.err.println("Saving data");
+		save();
 	}
 
 	static final int[] intersection(int a[], int b[]) {
@@ -120,74 +426,174 @@ public class Compiler {
 		System.arraycopy(rslt0, 0, rslt1, 0, k);
 		return rslt1;
 	}
-	void makeMeet() {
+	private void makeJoin() {
 		Iterator it1 = possible.iterator();
 		int c = 0;
 		while (it1.hasNext()) {
 			Integer ni1 = (Integer) it1.next();
 			int i1 = ni1.intValue();
-			int c1[] = CategorySet.getSet(i1);
+			Set v1 = (Set) moreThan.get(ni1);
 			Iterator it2 = possible.tailSet(ni1).iterator();
+			//	it2.next();
 			while (it2.hasNext()) {
-				if (c++%1000==0)
-					log("MM",c);
+				if (c++ % 200000 == 0)
+					log("JJ", c);
 				Integer ni2 = (Integer) it2.next();
 				int i2 = ni2.intValue();
-				int c2[] = CategorySet.getSet(i2);
+				Set v2 = (Set) moreThan.get(ni2);
 				Pair p = new Pair(i1, i2);
-				Integer in = (Integer) comparablePairs.get(p);
+				Integer in = compare(p);
+				if (in != null) {
+					Integer j = in.equals(ni2) ? ni1 : ni2;
+					join.put(p, j);
+				} else {
+					if (v1 == null || v2 == null)
+						continue;
+					Set more = new HashSet(v1);
+					more.retainAll(v2);
+					if (more.isEmpty())
+						continue;
+					Iterator im = more.iterator();
+					Integer j = (Integer) im.next();
+					while (im.hasNext()) {
+						Integer nj = (Integer) im.next();
+						if (j.equals(nj))
+							continue;
+						j = meet(j, nj);
+						if (j == null) {
+							System.err.println("Join not well-formed");
+							throw new BrokenException("Bad join");
+						}
+					}
+					join.put(p, j);
+				}
+			}
+		}
+		log("JJX", 0);
+	}
+	private Integer compare(int i, int j) {
+		return compare(new Pair(i, j));
+	}
+	private Integer compare(Pair p) {
+		return (Integer) comparablePairs.get(p);
+	}
+	private Integer compare(Integer i, Integer j) {
+		return compare(i.intValue(), j.intValue());
+	}
+
+	private Integer meet(int i, int j) {
+		return meet(new Pair(i, j));
+	}
+	private Integer meet(Pair p) {
+		return (Integer) meet.get(p);
+	}
+	private Integer meet(Integer i, Integer j) {
+		return meet(i.intValue(), j.intValue());
+	}
+	private Integer join(int i, int j) {
+		return join(new Pair(i, j));
+	}
+	private Integer join(Pair p) {
+		return (Integer) join.get(p);
+	}
+	private Integer join(Integer i, Integer j) {
+		return join(i.intValue(), j.intValue());
+	}
+	private void makeMeet() {
+		Iterator it1 = possible.iterator();
+		int c = 0;
+		while (it1.hasNext()) {
+			Integer ni1 = (Integer) it1.next();
+			int i1 = ni1.intValue();
+			Set v1 = (Set) lessThan.get(ni1);
+			Iterator it2 = possible.tailSet(ni1).iterator();
+			//it2.next();
+			while (it2.hasNext()) {
+				if (c++ % 200000 == 0)
+					log("MM", c);
+				Integer ni2 = (Integer) it2.next();
+				int i2 = ni2.intValue();
+				Set v2 = (Set) lessThan.get(ni2);
+				Pair p = new Pair(i1, i2);
+				Integer in = compare(p);
 				if (in != null) {
 					meet.put(p, in);
 				} else {
-					int c3[] = intersection(c1, c2);
-					if (c3.length != 0) {
-						int gt = c3[0];
-						for (int i = 1; i < c3.length; i++) {
-							Pair p2 = new Pair(gt, c3[i]);
-							Integer in2 = (Integer) comparablePairs.get(p2);
-							if (in2 != null && in2.intValue() == gt) {
-								gt = c3[i];
-							}
+					if (v1 == null || v2 == null)
+						continue;
+					Set less = new HashSet(v1);
+					less.retainAll(v2);
+					if (less.isEmpty())
+						continue;
+					Iterator il = less.iterator();
+					Integer m = (Integer) il.next();
+					while (il.hasNext()) {
+						Integer nm = (Integer) il.next();
+						if (m.equals(nm))
+							continue;
+						Integer in2 = compare(m, nm);
+						if (in2 != null && in2.equals(m)) {
+							m = nm;
 						}
-						for (int i = 0; i < c3.length; i++) {
-							if (gt != c3[i]) {
-								Pair p2 = new Pair(gt, c3[i]);
-								Integer in2 = (Integer) comparablePairs.get(p2);
-								if (in2 != null && in2.intValue() == gt) {
-									System.err.println("Shouldn't happen");
-								}
-							}
+					}
+					meet.put(p, m);
+					il = less.iterator();
+					while (il.hasNext()) {
+						Integer nm = (Integer) il.next();
+						if (m.equals(nm))
+							continue;
+						Integer in2 = compare(m, nm);
+						if (in2 == null || in2.equals(m)) {
+							System.err.println("Meet not well-formed: " + in2);
+							System.err.println(
+								"A: " + CategorySet.catString(i1));
+							System.err.println(
+								"B: " + CategorySet.catString(i2));
+							System.err.println(
+								"M: " + CategorySet.catString(m.intValue()));
+							System.err.println(
+								"NM: " + CategorySet.catString(nm.intValue()));
+
+							System.exit(1);
 						}
 					}
 				}
-
 			}
-
 		}
-		log("MMX",0);
+		log("MMX", 0);
 	}
-	void lessThan(int from, int to) {
+	/*
+	 * from *>* to;  where *>* is the partial order
+	 * defined by category sets.   
+	 */
+	private void makeLessThan(int from, int to) {
+		//if (from == to)
+		//		return;
 		Pair p = new Pair(from, to);
 		if (!comparablePairs.containsKey(p)) {
 			comparablePairs.put(p, new Integer(to));
-			
-			if (from != to) {
-				Set s = (Set) lessThan.get(new Integer(from));
-				if (s == null) {
-					s = new HashSet();
-					lessThan.put(new Integer(from), s);
-				}
-				s.add(new Integer(to));
+			Set s = (Set) lessThan.get(new Integer(from));
+			if (s == null) {
+				s = new HashSet();
+				lessThan.put(new Integer(from), s);
 			}
-			
+			s.add(new Integer(to));
+			s = (Set) moreThan.get(new Integer(to));
+			if (s == null) {
+				s = new HashSet();
+				moreThan.put(new Integer(to), s);
+			}
+			s.add(new Integer(from));
 		}
 	}
+	/*
 	void lessThan() {
 		int i = 0;
 		Iterator it = huge.entrySet().iterator();
 		Map.Entry ent;
 		while (it.hasNext()) {
-			if (i++%1000==0) log("LT",i);
+			if (i++ % 200000 == 0)
+				log("LT", i);
 			ent = (Map.Entry) it.next();
 			long k = ((Long) ent.getKey()).longValue();
 			long v = ((Long) ent.getValue()).longValue();
@@ -196,10 +602,58 @@ public class Compiler {
 			lessThan(SubCategorize.object(k), SubCategorize.object(v));
 		}
 	}
-	private void log(String m,int c) {
+	*/
+	private void makeLessThan() {
+		Iterator it1 = possible.iterator();
+		int c = 0;
+		while (it1.hasNext()) {
+			Integer ni1 = (Integer) it1.next();
+			int i1 = ni1.intValue();
+			int c1[] = CategorySet.getSet(i1);
+			Iterator it2 = possible.iterator();
+			//		it2.next();
+			while (it2.hasNext()) {
+				if (c++ % 200000 == 0)
+					log("LT", c);
+				Integer ni2 = (Integer) it2.next();
+				int i2 = ni2.intValue();
+				int c2[] = CategorySet.getSet(i2);
+
+				if (isLessThan(c1, c2))
+					makeLessThan(i2, i1);
+			}
+
+		}
+		log("LTX", 0);
+
+	}
+	static private boolean isLessThan(int small[], int big[]) {
+		if (small.length > big.length)
+			return false;
+		int i = 0;
+		int j = 0;
+		while (true) {
+			if (i == small.length)
+				return true;
+			if (j == big.length)
+				return false;
+			if (small[i] == big[j]) {
+				i++;
+				j++;
+			} else {
+				if (small[i] < big[j])
+					return false;
+				j++;
+			}
+		}
+	}
+	private void log(String m, int c) {
 		System.err.println(
-				m +": " + c + " " +
-			morePossible.size()
+			m
+				+ ": "
+				+ c
+				+ " "
+				+ morePossible.size()
 				+ "/"
 				+ possible.size()
 				+ "/"
@@ -209,12 +663,288 @@ public class Compiler {
 				+ "/"
 				+ meet.size()
 				+ "/"
+				+ join.size()
+				+ "{"
+				+ pairs[0].size()
+				+ ","
+				+ pairs[1].size()
+				+ ","
+				+ pairs[2].size()
+				+ "}"
 				+ (System.currentTimeMillis() - start) / 1000);
 	}
-	public static void main(String[] args) {
+	private void pairs() {
+		Iterator it = huge.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry ent = (Map.Entry) it.next();
+			doPairs(
+				((Long) ent.getKey()).longValue(),
+				((Long) ent.getValue()).longValue());
+		}
+	}
+
+	private int evalPairs() {
+		int rslt = 0;
+		Iterator it = huge.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry ent = (Map.Entry) it.next();
+			short k[] = expand(((Long) ent.getKey()).longValue());
+			short v[] = expand(((Long) ent.getValue()).longValue());
+
+			if (basePairRefine(k[0], k[1], k[2])
+				!= SubCategorize.toLong(v[0], v[1], v[2], aBits(v[3]))) {
+
+				rslt++;
+				if (rslt % 500 == 0)
+					log("E", rslt);
+			}
+		}
+		return rslt;
+	}
+	private Iterator supers(int x) {
+		return ((Set) moreThan.get(new Integer(x))).iterator();
+	}
+	private void markSupers(long k, int act) {
+		short spo[] = expand(k);
+		boolean ok = false;
+		Iterator s = supers(spo[0]);
+		while (s.hasNext()) {
+			Integer ss = (Integer) s.next();
+			Iterator p = supers(spo[1]);
+			while (p.hasNext()) {
+				Integer pp = (Integer) p.next();
+				Iterator o = supers(spo[2]);
+				while (o.hasNext()) {
+					Integer oo = (Integer) o.next();
+					Long ll = toLong(ss, pp, oo);
+					if (allActions(((Long) huge.get(ll)).longValue()) == act)
+						plusPlus(ll);
+					ok = ok || (ll.longValue() == k);
+				}
+			}
+		}
+		if (!ok)
+			throw new BrokenException("impossible");
+	}
+	Map count = new HashMap();
+	/**
+	 * @param long1
+	 */
+	private void plusPlus(Long k) {
+		int c[] = (int[]) count.get(k);
+		if (c == null) {
+			c = new int[] { 0 };
+			count.put(k, c);
+		}
+		c[0]++;
+	}
+
+	/**
+	 * @param ss
+	 * @param pp
+	 * @param oo
+	 */
+	private Long toLong(Integer ss, Integer pp, Integer oo) {
+		return toLong(ss.intValue(), pp.intValue(), oo.intValue());
+	}
+
+	private void findUseless() {
+		int cnt = 0;
+		Iterator it = huge.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry ent = (Map.Entry) it.next();
+			markSupers(
+				((Long) ent.getKey()).longValue(),
+				allActions(((Long) ent.getValue()).longValue()));
+		}
+		it = huge.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry ent = (Map.Entry) it.next();
+			if (isUseless((Long) ent.getKey())) {
+				cnt++;
+				ent.setValue(
+					new Long(
+						(long) ((long) ((SubCategorize.RemoveTriple)
+							<< (long) (3L * W))
+							| ((Long) ent.getValue()).longValue())));
+			}
+
+		}
+		System.err.println(cnt + " marked as remove");
+	}
+	/**
+	 * @param l
+	 * @return
+	 */
+	static private int cycles[] =
+		{ Grammar.cyclic, Grammar.cyclicRest, Grammar.cyclicFirst };
+	private boolean isUseless(Long l) {
+		short spo[] = expand(l.longValue());
+		int cnt = ((int[]) count.get(l))[0];
+		if (cnt != nLessThan(spo[0]) * nLessThan(spo[1]) * nLessThan(spo[2]))
+			return false;
+		spo = expand(((Long) huge.get(l)).longValue());
+		if (Q.intersect(CategorySet.getSet(spo[0]), cycles))
+			return false;
+		if (Q.intersect(CategorySet.getSet(spo[2]), cycles))
+			return false;
+		return true;
+	}
+
+	/**
+	 * @param s
+	 */
+	private int nLessThan(int s) {
+		return ((Set) lessThan.get(new Integer(s))).size();
+
+	}
+
+	/**
+	 * @param s
+	 * @param t
+	 * @param u
+	 * @return
+	 */
+	private long basePairRefine(short s, short p, short o) {
+		short b[][] =
+			{
+				(short[]) pairs[0].get(new short[] { p, o }),
+				(short[]) pairs[1].get(new short[] { s, o }),
+				(short[]) pairs[2].get(new short[] { s, p }),
+				};
+		short ss = smeet(b[1][0], b[2][0]);
+		short pp = smeet(b[0][0], b[2][1]);
+		short oo = smeet(b[0][1], b[1][1]);
+		short aMust = (short) (b[0][2] | b[1][2] | b[2][2]);
+		if (ss == -2 || pp == -2 || oo == -2)
+			return Failure;
+		return SubCategorize.toLong(ss, pp, oo, aMust);
+	}
+
+	/**
+	 * @param s
+	 * @param t
+	 * @return
+	 */
+	private short smeet(short a, short b) {
+		if (a == -1)
+			return b;
+		if (b == -1)
+			return a;
+		Integer j = meet(a, b);
+		if (j == null)
+			return -2;
+		else
+			return j.shortValue();
+	}
+
+	private short[] expand(long k) {
+		return new short[] {
+			(short) subject(k),
+			(short) prop(k),
+			(short) object(k),
+			(short) allActions(k)};
+	}
+	private void doPairs(long k, long v) {
+		short kk[] = expand(k);
+		short vv[] = expand(v);
+		doPair(0, kk, vv);
+		doPair(1, kk, vv);
+		doPair(2, kk, vv);
+	}
+	private void doPair(int wh, short k[], short v[]) {
+		short a = aBits(v[2]);
+		short key[] = { wh == 0 ? k[1] : k[0], wh == 2 ? k[1] : k[2] };
+		short value[] = { wh == 0 ? v[1] : v[0], wh == 2 ? v[1] : v[2], a, a };
+		short oldValue[] = (short[]) pairs[wh].get(key);
+		if (oldValue != null) {
+			value[0] = sjoin(value[0], oldValue[0]);
+			value[1] = sjoin(value[1], oldValue[1]);
+			value[2] &= oldValue[2];
+			value[3] |= oldValue[3];
+		}
+		pairs[wh].put(key, value);
+	}
+	private short sjoin(short a, short b) {
+		Integer j = join(a, b);
+		if (j == null)
+			return -1;
+		else
+			return j.shortValue();
+	}
+	final short MASK =
+		~(DL | ObjectAction | SubjectAction);
+// TODO delete aBits and all related code
+	private short aBits(short act) {
+		short dlEtc = (short) (act & ~MASK);
+		switch (act & MASK) {
+			case FirstOfOne :
+				return (short) (dlEtc | (1 << 8));
+			case FirstOfTwo :
+				return (short) (dlEtc | (1 << 9));
+			case SecondOfTwo :
+				return (short) (dlEtc | (1 << 10));
+			default :
+				return dlEtc;
+		}
+	}
+
+		public static void main(String[] args) {
 		Compiler c = new Compiler();
 		c.go();
 	}
+
+	private static short allActions(long k) {
+		return (short) (k >> (3 * W));
+	} /**
+		* 
+		* @param refinement The result of {@link #refineTriple(int,int,int)}
+		* @param subj The old subcategory for the subject.
+		* @return The new subcategory for the subject.
+		*/
+	static private int subject(long refinement) {
+		return (int) (refinement >> (2 * W)) & M;
+	}
+	/**
+		* 
+		* @param refinement The result of {@link #refineTriple(int,int,int)}
+		* @param prop The old subcategory for the property.
+		* @return The new subcategory for the property.
+		*/
+	static private int prop(long refinement) {
+		return (int) (refinement >> (1 * W)) & M;
+	}
+	/**
+		* 
+		* @param refinement The result of {@link #refineTriple(int,int,int)}
+		* @param obj The old subcategory for the object.
+		* @return The new subcategory for the object.
+		*/
+	static private int object(long refinement) {
+		return (int) (refinement >> (0 * W)) & M;
+	}
+	/**
+		* @param r0
+		* @return
+		*/
+	private static String toString(long r0) {
+		if (r0 == -1)
+			return "F";
+		return "S"
+			+ CategorySet.catString(subject(r0))
+			+ " P"
+			+ CategorySet.catString(prop(r0))
+			+ " O"
+			+ CategorySet.catString(object(r0));
+	}
+	/**
+		* @param long1
+		* @return
+		*/
+	private static String toString(Long long1) {
+		return toString(long1.longValue());
+	}
+
 	static private class Pair implements Comparable {
 		final int a, b;
 		Pair(int A, int B) {
@@ -225,12 +955,11 @@ public class Compiler {
 				a = B;
 				b = A;
 			}
-		}
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Comparable#compareTo(java.lang.Object)
-		 */
+		} /*
+																							 * (non-Javadoc)
+																							 * 
+																							 * @see java.lang.Comparable#compareTo(java.lang.Object)
+																							 */
 		public int compareTo(Object o) {
 			Pair p = (Pair) o;
 			int rslt = a - p.a;

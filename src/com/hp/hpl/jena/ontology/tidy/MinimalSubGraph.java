@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.8 2003-11-14 22:43:25 jeremy_carroll Exp $
+  $Id: MinimalSubGraph.java,v 1.9 2003-11-24 19:40:13 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -42,8 +42,8 @@ class MinimalSubGraph extends AbsChecker {
 			// getContradicition()
 			hasBeenChecked.add(problem);
 		} else {
-	//		if ( true ) 
-	//		  return;
+			if ( true ) 
+			  return;
 			hasBeenChecked.delete(problem);
 			setDistance(problem.getSubject(),0);
 			setDistance(problem.getPredicate(),0);
@@ -218,7 +218,7 @@ class MinimalSubGraph extends AbsChecker {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.ontology.tidy.AbsChecker#actions(long, com.hp.hpl.jena.ontology.tidy.CNodeI, com.hp.hpl.jena.ontology.tidy.CNodeI, com.hp.hpl.jena.graph.Triple)
 	 */
-	void actions(long key, CNodeI s, CNodeI o, Triple t) {
+	void actions(int key, CNodeI s, CNodeI o, Triple t) {
 		// nothing
 	}
 

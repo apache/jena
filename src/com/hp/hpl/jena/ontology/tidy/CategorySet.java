@@ -1,17 +1,20 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.12 2003-11-22 18:07:40 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.13 2003-11-24 19:40:13 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
 import java.util.*;
+import java.io.Serializable;
+import com.hp.hpl.jena.shared.*;
 /**
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-class CategorySet implements Comparable {
-
+class CategorySet implements Comparable, Serializable {
+	//com.hp.hpl.jena.ontology.tidy.CategorySet:
+	    static final long serialVersionUID = -1280155302467590202L;
     static private final int cycles[] = new int[]{
     	Grammar.cyclic,
     	Grammar.cyclicFirst,
@@ -194,17 +197,49 @@ class CategorySet implements Comparable {
 			}
 		}
 		cs.id = unsorted.size();
-		unsorted.add(cs);
-		sorted.add(cs);
-		for (int i=0;i<various.length;i++)
-		   various[i].testAdd(cs.id,s);
-        if ( s[0]==Grammar.orphan )
-		for (int i=0;i<orphaned.length;i++)
-		   orphaned[i].testAdd(cs.id,s);
+		cs.init();
 		return cs.id;
+	}
+	private void init() {
+		unsorted.add(this);
+		sorted.add(this);
+		for (int i=0;i<various.length;i++)
+		   various[i].testAdd(id,cats);
+		if ( cats[0]==Grammar.orphan )
+		for (int i=0;i<orphaned.length;i++)
+		   orphaned[i].testAdd(id,cats);
 	}
 	static int[] getSet(int id) {
 		return ((CategorySet) unsorted.elementAt(id)).cats;
+	}
+
+	/**
+	 * @param i
+	 * @return
+	 */
+	static String catString(int j) {
+		int c[] = getSet(j);
+		StringBuffer rslt = new StringBuffer("{");
+		rslt.append(c[0]);
+		for (int i=1;i<c.length;i++) {
+			rslt.append(",");
+			rslt.append(c[i]);
+		}		
+		return rslt + "}";
+	}
+	/**
+	 * 
+	 */
+	void restore() {
+		if (id < unsorted.size()) {
+			if ( compareTo(unsorted.get(id))!=0 )
+			throw new BrokenException("Problems during restore of constants.");
+		} else if (id==unsorted.size()){
+		  init();
+		} else {
+			throw new BrokenException("Problems during restore.");
+		}
+		
 	}
 	/*
 	 * toString(int)
