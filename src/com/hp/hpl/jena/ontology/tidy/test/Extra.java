@@ -25,9 +25,12 @@ public class Extra extends TestCase {
 		s.setName("More OWL syntax");
 		return s;
    }
-/*
+
    public void testann001() {
 	 runTest("ann001", OWLTest.Lite);
+   }
+   public void testann002() {
+	 runTest("ann002", OWLTest.Lite);
    }
    
    public void testsubClassOf001() {
@@ -49,7 +52,7 @@ public class Extra extends TestCase {
    public void testlist001() {
 	runTest("list001", OWLTest.DL);
    }
-   */
+
    public void testdisjointWith001() {
 	runTest("disjointWith001", OWLTest.Full);
    }
