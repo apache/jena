@@ -198,7 +198,7 @@ Post Jena 2.1 change list
         
    ARP
       o New support for non-Xerces SAX sources.
-        Documentation shows how to parse a DOM as RDF.
+      o Support for DOM sources (Java 1.4.2 and later).
       o ARP setup rationalized, a few methods deprecated as a result.
       o Improved documentation, covering new features, (see doc/ARP)
       o *Removed* StanfordImpl, assuming noone uses it. Please
