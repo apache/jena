@@ -7,7 +7,6 @@ package com.hp.hpl.jena.rdql;
 
 import java.util.* ;
 import java.io.* ;
-import com.hp.hpl.jena.rdf.model.* ;
 
 /** <p>Takes a QueryResult object and returns formatted (in various ways)
  *  Useful for the scripting interface.
@@ -23,7 +22,7 @@ import com.hp.hpl.jena.rdf.model.* ;
  *  Don't keep QueryResultsFormatter's around unnecessarily!
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsFormatter.java,v 1.1.1.1 2002-12-19 19:18:52 bwm Exp $
+ * @version  $Id: QueryResultsFormatter.java,v 1.2 2003-01-30 13:52:10 andy_seaborne Exp $
  */
 
 public class QueryResultsFormatter

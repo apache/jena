@@ -1,12 +1,11 @@
 /*
- * $Id: QueryResults.java,v 1.1.1.1 2002-12-19 19:18:50 bwm Exp $
+ * $Id: QueryResults.java,v 1.2 2003-01-30 13:52:11 andy_seaborne Exp $
  */
 
 
 package com.hp.hpl.jena.rdql;
 
 import java.util.*;
-import java.io.PrintWriter ;
 
 /** Results from a query in a "ResultSet"-like manner.
  *  Each row corresponds to a set of bindings which fulfil the conditions
@@ -18,7 +17,7 @@ import java.io.PrintWriter ;
  * @see QueryResultsStream
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResults.java,v 1.1.1.1 2002-12-19 19:18:50 bwm Exp $
+ * @version  $Id: QueryResults.java,v 1.2 2003-01-30 13:52:11 andy_seaborne Exp $
  */
 
 public interface QueryResults extends java.util.Iterator

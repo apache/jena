@@ -6,13 +6,12 @@
 
 /** Old name for ResultBinding - for compatibility only
  * @author		Andy Seaborne
- * @version 	$Id: Environment.java,v 1.1.1.1 2002-12-19 19:18:42 bwm Exp $
+ * @version 	$Id: Environment.java,v 1.2 2003-01-30 13:52:11 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
 
 import com.hp.hpl.jena.rdf.model.* ;
-import java.util.* ;
 
 public class Environment extends ResultBinding
 {

@@ -8,23 +8,17 @@ package com.hp.hpl.jena.rdql.test;
 // Unsubtle JUnit-ization of some test code.
 // This will be replaced by a more general testing of queries.
 
-import java.io.* ;
 import junit.framework.* ;
 
 import com.hp.hpl.jena.rdql.* ;
-import com.hp.hpl.jena.rdql.parser.* ;
-
-import java.io.* ;
-import java.util.* ;
 
 import com.hp.hpl.jena.rdf.model.* ;
-import com.hp.hpl.jena.rdf.model.impl.* ;
 import com.hp.hpl.jena.mem.* ;
 
 
 /** Bunch of programmatic uses of query to complrment the script tests.
  * @author Andy Seaborne
- * @version $Id: QueryTestProgrammatic.java,v 1.1.1.1 2002-12-19 19:20:06 bwm Exp $
+ * @version $Id: QueryTestProgrammatic.java,v 1.2 2003-01-30 13:51:32 andy_seaborne Exp $
  */
 
 public class QueryTestProgrammatic extends TestSuite
