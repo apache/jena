@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.19 2003-08-21 22:14:11 der Exp $
+ * $Id: DebugOWL.java,v 1.20 2003-08-22 16:37:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-08-21 22:14:11 $
+ * @version $Revision: 1.20 $ on $Date: 2003-08-22 16:37:25 $
  */
 public class DebugOWL {
 
@@ -245,6 +245,11 @@ public class DebugOWL {
 //        if (infgraph instanceof FBRuleInfGraph) {
 //            ((FBRuleInfGraph)infgraph).resetLPProfile(true);
 //        }
+        if (infgraph instanceof FBRuleInfGraph) {
+            System.out.println("Starting prepare");
+            ((FBRuleInfGraph)infgraph).prepare();
+            System.out.println(".. finished");
+        }
     }
     
     /**
@@ -341,22 +346,23 @@ public class DebugOWL {
 //            new DebugOWL(OWLExpt).runVolz();
             
             // Test volz examples on RDFS config
-            System.out.println("Volz tests on normal RDFS, tgc + type rules");
-            new DebugOWL(RDFSFinal).runVolz();
+//            System.out.println("Volz tests on normal RDFS, tgc + type rules");
+//            new DebugOWL(RDFSFinal).runVolz();
+//            System.out.println("Volz tests on lp + expt RDFS rules");
+//            new DebugOWL(RDFSLPExpt).runVolz();
+            
 //            System.out.println("Volz tests on normal RDFS fb rules");
 //            new DebugOWL(RDFSFB).runVolz();
-            System.out.println("Volz tests on lp + expt RDFS rules");
-            new DebugOWL(RDFSLPExpt).runVolz();
 //            System.out.println("Volz tests on lp + expt owl rules");
 //            new DebugOWL(OWLExpt).runVolz();
 //            System.out.println("Volz tests on normal OWL-FB");
 //            new DebugOWL(OWLFB).runVolz();
                         
-//            DebugOWL tester = new DebugOWL(OWLFB);
-//            tester.load(dataFile2);
-//            System.out.println("Test schema + data  started ...");
-//            long t = tester.list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
-//            System.out.println("Took " + t + "ms");
+            DebugOWL tester = new DebugOWL(OWLFB);
+            tester.load(dataFile2);
+            System.out.println("Test schema + data  started ...");
+            long t = tester.list(null, RDF.type.asNode(), RDFS.Class.asNode(), false);
+            System.out.println("Took " + t + "ms");
 
 //            DebugOWL tester = new DebugOWL(EXPT);
 //            tester.runListClassesTest(1,4,10,false);
