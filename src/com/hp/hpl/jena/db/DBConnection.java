@@ -23,7 +23,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * simplify the calling pattern for ModelRDB factory methods.
 * *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.1 $
+* @version $Revision: 1.2 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -360,6 +360,7 @@ public class DBConnection implements IDBConnection {
 				m_driver.setConnection( this );
 			} 
 		} catch (Exception e) {
+            // e.printStackTrace( System.err );
 			throw new RDFRDBException("Failure to instantiate DB Driver:"+ m_databaseType+ " "+ e.toString());
 		}
 

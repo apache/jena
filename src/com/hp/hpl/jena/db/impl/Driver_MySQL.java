@@ -55,6 +55,7 @@ public class Driver_MySQL extends DriverRDB {
 			Properties defaultSQL = SQLCache.loadSQLFile(DEFAULT_SQL_FILE, null, ID_SQL_TYPE);
 			m_sql = new SQLCache(SQL_FILE, defaultSQL, dbcon, ID_SQL_TYPE);
 		} catch (Exception e) {
+            e.printStackTrace( System.err );
 			Log.severe("Unable to set connection for Driver:" + e);
 		}
 	}

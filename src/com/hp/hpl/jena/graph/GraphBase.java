@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.11 2003-04-22 15:30:56 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.12 2003-04-28 11:28:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,6 +9,8 @@ package com.hp.hpl.jena.graph;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.*;
 
+import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 /**
     GraphBase is an implementation of Graph that provides some convenient
@@ -44,6 +46,11 @@ public abstract class GraphBase implements Graph {
         
     public Capabilities getCapabilities()
         { return null; }
+        
+    private PrefixMapping pm = new PrefixMappingImpl();
+    
+    public PrefixMapping getPrefixMapping()
+        { return pm; }
 
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#add(Triple)
@@ -115,8 +122,8 @@ public abstract class GraphBase implements Graph {
 		return 0;
 	}
 
-	public boolean isIsomorphicWith(Graph g) {
-		return g != null && GraphMatcher.equals(this, g);
+	public boolean isIsomorphicWith( Graph g ) {
+		return g != null && GraphMatcher.equals( this, g );
 	}
 
 	/** for little graphs only ... */

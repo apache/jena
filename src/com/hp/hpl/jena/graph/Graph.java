@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.6 2003-04-22 15:02:16 chris-dollin Exp $
+  $Id: Graph.java,v 1.7 2003-04-28 11:28:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.shared.PrefixMapping;
+
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 
@@ -44,6 +46,12 @@ public interface Graph  {
         Reifier object.
     */
     Reifier getReifier();
+    
+    /**
+        returns this Graph's prefix mapping. Each call on a given Graph gets the
+        same PrefixMapping object, which is the one used by the Graph.
+    */
+    PrefixMapping getPrefixMapping();
     
     /** adds the triple t (if possible) to the set belong to the graph */
 	void add(Triple t) throws UnsupportedOperationException, VirtualTripleException;
