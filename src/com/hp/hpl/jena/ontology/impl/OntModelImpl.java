@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.68 $
+ * Revision           $Revision: 1.69 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-07-28 13:31:01 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2004-08-12 14:43:16 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -29,8 +29,6 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleInfGraph;
-import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleInfGraph;
-import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -56,7 +54,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.68 2004-07-28 13:31:01 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.69 2004-08-12 14:43:16 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
