@@ -40,7 +40,7 @@ import java.util.NoSuchElementException;
 /** An implementation of StmtIterator.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:39 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $' 
  */
 public class StmtIteratorImpl extends Object implements StmtIterator {
     
@@ -58,13 +58,17 @@ public class StmtIteratorImpl extends Object implements StmtIterator {
         return iterator.hasNext();
     }
     
-    public Statement next() throws NoSuchElementException, RDFException {
+    public Object next() throws NoSuchElementException, RDFException {
         if (iterator != null) {
             stmt = (Statement) iterator.next();
             return stmt;
         } else {
             throw new RDFException(RDFException.ITERATORCLOSED);
         }
+    }
+    
+    public Statement nextStatement() throws NoSuchElementException, RDFException {
+        return (Statement) next();
     }
     
     public void remove() throws NoSuchElementException, RDFException {

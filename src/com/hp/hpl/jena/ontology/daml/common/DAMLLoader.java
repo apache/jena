@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Jan 2001
  * Filename           $RCSfile: DAMLLoader.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-23 15:14:17 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-02-01 14:35:32 $
+ *               by   $Author: bwm $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -98,7 +98,7 @@ import com.hp.hpl.jena.mem.ModelMem;
  * of imports on or off overall, or by using
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLLoader.java,v 1.2 2003-01-23 15:14:17 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLLoader.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
  */
 public class DAMLLoader
 {
@@ -639,7 +639,7 @@ public class DAMLLoader
 
                 for (NodeIterator i = model.listObjectsOfProperty( ontologyRes, ontologyInstanceType.getVocabulary().imports() ); i.hasNext(); ) {
                     // add the value of each import, as a string, to the collection
-                    imports.add( i.next().toString() );
+                    imports.add( i.nextNode().toString() );
                 }
             }
 
@@ -673,7 +673,7 @@ public class DAMLLoader
             // now replace the actual statements in the main model
             for (StmtIterator i = sourceModel.listStatements();  i.hasNext();  ) {
                 // get the statement in vanilla RDF form
-                Statement sRDF = i.next();
+                Statement sRDF = i.nextStatement();
 
                 // recreate it with DAML objects
                 getDAMLModel().add( (Resource) mapDAMLNode( sRDF.getSubject() ),
@@ -700,7 +700,7 @@ public class DAMLLoader
             // iterate through all the known statements so that we can create the DAML shadow classes
             for (StmtIterator statements = sourceModel.listStatements();  statements.hasNext(); ) {
                 // get the statement, and extract its components
-                Statement s = statements.next();
+                Statement s = statements.nextStatement();
 
                 Resource subj = s.getSubject();
                 Property prop = s.getPredicate();
@@ -897,7 +897,7 @@ public class DAMLLoader
         // first try rdf:type (i.e. the most common occurrence)
         try {
             for (StmtIterator t = res.listProperties( RDF.type );  t.hasNext(); ) {
-                RDFNode typeNode = ((Statement) t.next()).getObject();
+                RDFNode typeNode = ((Statement) t.nextStatement()).getObject();
                 if (typeNode instanceof Resource) {
                     types.add( typeNode );
                 }
@@ -911,7 +911,7 @@ public class DAMLLoader
 
             try {
                 for (StmtIterator t  = res.listProperties( typeAlias );  t.hasNext(); ) {
-                    RDFNode typeNode = ((Statement) t.next()).getObject();
+                    RDFNode typeNode = ((Statement) t.nextStatement()).getObject();
                     if (typeNode instanceof Resource) {
                         types.add( typeNode );
                     }

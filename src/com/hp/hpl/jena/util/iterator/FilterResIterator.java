@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: FilterResIterator.java,v 1.1.1.1 2002-12-19 19:21:14 bwm Exp $
+ * $Id: FilterResIterator.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
  *
  */
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /** A sub iterator over Resource's.
    See FilterIterator and ResIterator.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:14 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
  * @see com.hp.hpl.jena.rdf.model.ResIterator
  * @see com.hp.hpl.jena.xmloutput.FilterIterator
  */
@@ -54,7 +54,7 @@ public class FilterResIterator implements ResIterator {
         if (current != null)
             return true;
         while (enum.hasNext()) {
-            current = enum.next();
+            current = enum.nextResource();
             try {
                 if (f.accept(current))
                     return true;
@@ -65,13 +65,17 @@ public class FilterResIterator implements ResIterator {
         current = null;
         return false;
     }
-    synchronized public Resource next() throws RDFException {
+    synchronized public Object next() throws RDFException {
         if (hasNext()) {
             Resource r = current;
             current = null;
             return r;
         }
         throw new NoSuchElementException();
+    }
+    
+    synchronized public Resource nextResource() throws RDFException {
+        return (Resource) next();
     }
     /**
      * This is more restrictive than the usual <CODE>remove()</CODE>

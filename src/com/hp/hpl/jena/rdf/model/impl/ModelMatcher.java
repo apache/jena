@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: ModelMatcher.java,v 1.1.1.1 2002-12-19 19:18:24 bwm Exp $
+ * $Id: ModelMatcher.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
  *
 * ModelMatcher.java
  *
@@ -56,7 +56,7 @@ import com.hp.hpl.jena.util.iterator.FilterIterator;
  * by a mathematician and is hence more readable.
  * @see com.hp.hpl.jena.rdf.model.Model#equals
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:24 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
  */
 public class ModelMatcher extends java.lang.Object {
     static private Random random = new Random(0);
@@ -299,7 +299,7 @@ public class ModelMatcher extends java.lang.Object {
         int hash = 0;
         try {
             while ( ss.hasNext() ) {
-                Statement s = ss.next();
+                Statement s = ss.nextStatement();
                 AnonStatement ass = new AnonStatement(s);
                 if ( ass.pattern == NOVARS ) {
                     if ( ! otherm.contains(s) )

@@ -39,7 +39,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Alt.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:05 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
  */
 public class AltImpl extends ContainerImpl implements Alt {
     
@@ -210,6 +210,6 @@ public class AltImpl extends ContainerImpl implements Alt {
         if (!iter.hasNext()) {
             return null;
         }
-        return iter.next();
+        return iter.nextStatement();
     }
 }

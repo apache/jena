@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-28 13:03:17 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-01 14:35:31 $'
  */
 
 import com.hp.hpl.jena.mem.*;
@@ -155,7 +155,7 @@ abstract public class ModelCom extends EnhGraph
     public Model add(StmtIterator iter) throws RDFException {
         try {
             while (iter.hasNext()) {
-                add(iter.next());
+                add(iter.nextStatement());
             }
             return this;
         } finally {
@@ -293,7 +293,7 @@ abstract public class ModelCom extends EnhGraph
     */
     public Model remove(StmtIterator iter) throws RDFException {
         while (iter.hasNext()) {
-            Statement s = (Statement) iter.next();
+            Statement s = (Statement) iter.nextStatement();
             this.remove( s ); // iter.remove();
         }
         return this;
@@ -304,7 +304,7 @@ abstract public class ModelCom extends EnhGraph
         if (m.getGraph().mightContain( this.getGraph() ))
             {
             ArrayList X = new ArrayList();
-            while (iter.hasNext()) X.add( iter.next() );
+            while (iter.hasNext()) X.add( iter.nextStatement() );
             for (int i = 0; i < X.size(); i += 1) this.remove( (Statement) X.get(i) );
             }
         else
@@ -360,14 +360,14 @@ abstract public class ModelCom extends EnhGraph
     
     public boolean containsAny(StmtIterator iter) throws RDFException {
         while (iter.hasNext()) {
-            if (contains(iter.next())) return true;
+            if (contains(iter.nextStatement())) return true;
         }
         return false;
     }
     
     public boolean containsAll(StmtIterator iter) throws RDFException {
         while (iter.hasNext()) {
-            if (!contains(iter.next())) return false;
+            if (!contains(iter.nextStatement())) return false;
         }
         return true;
     }
@@ -903,7 +903,7 @@ abstract public class ModelCom extends EnhGraph
         try {
             iter = listStatements(new SelectorImpl(s, p, (RDFNode) null));
             if (iter.hasNext()) {
-                return iter.next();
+                return iter.nextStatement();
             } else {
                 throw new RDFException(RDFException.PROPERTYNOTFOUND);
             }
@@ -1206,7 +1206,7 @@ abstract public class ModelCom extends EnhGraph
         try {
             iter = listStatements(selector);
             while (iter.hasNext()) {
-                model.add(iter.next());
+                model.add(iter.nextStatement());
             }
             return model;
         } finally {
@@ -1232,7 +1232,7 @@ abstract public class ModelCom extends EnhGraph
         try {
             iter = smallerModel.listStatements();
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 if (largerModel.contains(stmt)) {
                     resultModel.add(stmt);
                 }
@@ -1249,7 +1249,7 @@ abstract public class ModelCom extends EnhGraph
         try {
             iter = listStatements();
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 if (! model.contains(stmt)) {
                     resultModel.add(stmt);
                 }

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-23 15:14:20 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-02-01 14:35:32 $
+ *               by   $Author: bwm $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -103,7 +103,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.2 2003-01-23 15:14:20 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
  */
 public class DAMLModelImpl
     extends ModelMem
@@ -732,7 +732,7 @@ public class DAMLModelImpl
         try {
             // currently no better way to do this than search the whole model - yuck!
             for (StmtIterator i = listStatements();  i.hasNext();  ) {
-                Statement s = i.next();
+                Statement s = i.nextStatement();
                 Resource subj = s.getSubject();
                 Property pred = s.getPredicate();
                 RDFNode obj = s.getObject();

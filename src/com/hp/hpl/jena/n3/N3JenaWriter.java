@@ -27,7 +27,7 @@ import java.io.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.2 2003-01-27 14:29:26 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
  */
 
 
@@ -237,7 +237,7 @@ public class N3JenaWriter implements RDFWriter
 			// The resource pointing to the link we have just looked at.
 			Resource validListHead = null ;
 			// The resource for the current element being considered.
-			Resource listElement  = listTailsIter.next().getSubject() ;
+			Resource listElement  = listTailsIter.nextStatement().getSubject() ;
 			
 			// Chase to head of list
 			for ( ; ; )
@@ -259,7 +259,7 @@ public class N3JenaWriter implements RDFWriter
 					break ;
 				
 				// Valid pretty-able list.  Might be longer.
-				listElement = sPrev.next().getSubject() ;
+				listElement = sPrev.nextStatement().getSubject() ;
 				if ( sPrev.hasNext() )
 				{
 					if ( DEBUG ) out.println("# DAML shared tail from "+formatResource(listElement)) ;
@@ -309,7 +309,7 @@ public class N3JenaWriter implements RDFWriter
 		NodeIterator objIter = model.listObjects() ;
 		for ( ; objIter.hasNext() ; )
 		{
-			RDFNode n = objIter.next() ;
+			RDFNode n = objIter.nextNode() ;
 			if ( ! ( n instanceof Resource ) )
 				continue ;
 				
@@ -328,7 +328,7 @@ public class N3JenaWriter implements RDFWriter
 				// Corrupt graph!
 				throw new RuntimeException(this.getClass().getName()+": found object with no arcs!") ;
 				
-			Statement s = pointsToIter.next() ;
+			Statement s = pointsToIter.nextStatement() ;
 			if ( ! pointsToIter.hasNext() )
 			{
 				if ( DEBUG )
@@ -380,7 +380,7 @@ public class N3JenaWriter implements RDFWriter
 			// Subject:
 			// First - it is something we will write out as a structure in an object field?
 			// That is, a DAML list or the object of exactly one statement.
-			Resource subj = rIter.next() ;
+			Resource subj = rIter.nextResource() ;
 			if ( damlListsAll.contains(subj)   ||
 				 oneRefObjects.contains(subj)  )
 			{
@@ -471,7 +471,7 @@ public class N3JenaWriter implements RDFWriter
 		StmtIterator sIter = resource.listProperties();
 		for ( ; sIter.hasNext() ; )
 		{
-			properties.add(sIter.next().getPredicate()) ;	
+			properties.add(sIter.nextStatement().getPredicate()) ;	
 		}
 		sIter.close() ;
 				
@@ -521,7 +521,7 @@ public class N3JenaWriter implements RDFWriter
 		StmtIterator sIter = resource.listProperties(property) ;
 		for ( ; sIter.hasNext() ; )
 		{
-			Statement stmt = sIter.next() ;
+			Statement stmt = sIter.nextStatement() ;
 			writeObject(stmt.getObject(), allowDeep) ;
 			if (sIter.hasNext())
 				out.print( " , ");
@@ -732,7 +732,7 @@ public class N3JenaWriter implements RDFWriter
 		StmtIterator sIter = r.listProperties() ;
 		for ( ; sIter.hasNext() ; )
 		{
-			sIter.next() ;
+			sIter.nextStatement() ;
 			numProp++ ;
 		}
 		sIter.close() ;
@@ -745,7 +745,7 @@ public class N3JenaWriter implements RDFWriter
 		StmtIterator sIter = r.listProperties(p) ;
 		for ( ; sIter.hasNext() ; )
 		{
-			sIter.next() ;
+			sIter.nextStatement() ;
 			numProp++ ;
 		}
 		sIter.close() ;
@@ -764,7 +764,7 @@ public class N3JenaWriter implements RDFWriter
 		StmtIterator sIter = listStatements(resource.getModel(), null, prop, resource) ;
 		for ( ; sIter.hasNext() ; )
 		{
-			sIter.next() ;
+			sIter.nextStatement() ;
 			numArcs++ ;
 		}
 		sIter.close() ;
@@ -788,12 +788,12 @@ public class N3JenaWriter implements RDFWriter
 		for ( ; ! r.equals(damlVocabulary.nil()); )
 		{
 			StmtIterator sIter = listStatements(r.getModel(), r, damlVocabulary.first(), null) ;
-			list.add(sIter.next().getObject()) ;
+			list.add(sIter.nextStatement().getObject()) ;
 			if ( sIter.hasNext() )
 				// @@ need to cope with this (unusual) case
 				throw new RuntimeException("Multi valued list item") ;
 			sIter = listStatements(r.getModel(), r, damlVocabulary.rest(), null) ;
-			r = (Resource)sIter.next().getObject() ;
+			r = (Resource)sIter.nextStatement().getObject() ;
 			if ( sIter.hasNext() )
 				throw new RuntimeException("List has two tails") ;
 		}
@@ -840,7 +840,7 @@ public class N3JenaWriter implements RDFWriter
 		ResIterator rIter = model.listSubjects() ;
 		for ( ; rIter.hasNext() ; )	
 		{
-			writeTriples(rIter.next(), false) ;
+			writeTriples(rIter.nextResource(), false) ;
 			if ( rIter.hasNext() )
 				out.println() ;
 		}

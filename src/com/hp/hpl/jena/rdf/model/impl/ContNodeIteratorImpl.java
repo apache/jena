@@ -41,7 +41,7 @@ import java.util.Vector;
 /** An internal class not normally of interest to application developers.
  *  An iterator over the nodes in a container.
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:08 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
  */
 public class ContNodeIteratorImpl 
   extends Object implements NodeIterator{
@@ -68,7 +68,7 @@ public class ContNodeIteratorImpl
         return iterator.hasNext();
     }
     
-    public RDFNode next() throws NoSuchElementException, RDFException {
+    public Object next() throws NoSuchElementException, RDFException {
         if (iterator != null) {
             stmt = (Statement) iterator.next();
             index++;
@@ -76,6 +76,10 @@ public class ContNodeIteratorImpl
         } else {
             throw new RDFException(RDFException.ITERATORCLOSED);  
         }
+    }
+    
+    public RDFNode nextNode() throws NoSuchElementException, RDFException {
+        return (RDFNode) next();
     }
             
     public void remove() throws NoSuchElementException, RDFException {

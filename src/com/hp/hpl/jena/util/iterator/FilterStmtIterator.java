@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: FilterStmtIterator.java,v 1.1.1.1 2002-12-19 19:21:15 bwm Exp $
+ * $Id: FilterStmtIterator.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
  *
  */
 
@@ -36,7 +36,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /**A sub iterator over Statements's.
    See FilterIterator and StmtIterator.
  * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:15 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
  * @see com.hp.hpl.jena.rdf.model.StmtIterator
  * @see com.hp.hpl.jena.xmloutput.FilterIterator
  */
@@ -53,20 +53,23 @@ public class FilterStmtIterator implements StmtIterator {
         if (current != null)
             return true;
         while (enum.hasNext()) {
-            current = enum.next();
+            current = enum.nextStatement();
             if (f.accept(current))
                 return true;
         }
         current = null;
         return false;
     }
-    synchronized public Statement next() throws RDFException {
+    synchronized public Object next() throws RDFException {
         if (hasNext()) {
             Statement r = current;
             current = null;
             return r;
         }
         throw new NoSuchElementException();
+    }
+    synchronized public Statement nextStatement() throws RDFException {
+        return (Statement) next();
     }
     /**
      * This is more restrictive than the usual <CODE>remove()</CODE>

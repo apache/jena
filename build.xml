@@ -1,8 +1,8 @@
 <project name="jena" default="main" basedir=".">
 
     <property name="Name"            value="Jena"/>
-    <property name="name"            value="jena2"/>
-    <property name="version"         value="0.1.0"/>
+    <property name="name"            value="jena"/>
+    <property name="version"         value="j2p1"/>
 
     <property name="dist.name"       value="${Name}-${version}"/>
 
@@ -10,8 +10,9 @@
     <property name="deprecation"     value="true"/>
     <property name="optimize"        value="true"/>
 
-    <property name="src.dir"         value="src"/>
-    <property name="classes.dir"     value="bin"/>
+    <property name="orig-src.dir"    value="src"/>
+    <property name="src.dir"         value="bldsrc"/>
+    <property name="classes.dir"     value="bldbin"/>
     <property name="dist.root"       value="dist"/>
     <property name="dist.dir"        value="${dist.root}/${dist.name}"/>
     <property name="lib.dir"         value="lib"/>
@@ -19,6 +20,7 @@
     <property name="doc.dir"         value="doc"/>
     <property name="javadoc.dir"     value="javadoc"/>
     <property name="etc.dir"         value="etc"/>
+    <property name="test.dir"        value="testing"/>
 
     <property name="jarfile"         value="${name}.jar"/>
     <property name="srczipfile"      value="${name}-src.zip"/>
@@ -31,7 +33,7 @@
 
     <path id="classpath">
       <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-      <dirset dir="${classes.dir}" includes="*"/>
+      <dirset dir="${classes.dir}" includes="*"/> 
     </path>
 
 <!-- Main external targets -->
@@ -68,8 +70,45 @@
         <delete dir="${classes.dir}"/>
         <mkdir dir="${classes.dir}"/>
     </target>
+    
+    <target name="build-src">
+        <!-- Ensure clean source build -->
+        <delete dir="${src.dir}"/>
+        <mkdir  dir="${src.dir}"/>
+        <copy todir="${src.dir}">
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/enhanced/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/graph/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/mem/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/n3/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/ontology/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/rdf/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/rdql/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/reasoner/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/regression/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/test/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/util/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/vocabulary/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="com/hp/hpl/jena/xmloutput/**"/>
+            <fileset dir="${orig-src.dir}"
+                     includes="jena/**"/>
+        </copy>
+    
+    </target>
 
-    <target name="compile" depends="pre-compile,compile-jena,compile-apps"/>
+    <target name="compile" depends="pre-compile,build-src,compile-jena,compile-apps"/>
 
     <target name="compile-jena" depends="pre-compile">
         <javac srcdir="${src.dir}"
@@ -120,10 +159,9 @@
 
         <!-- sourcefiles="" -->
         <!-- Overview="overview.html" -->
-
+ 
         <javadoc
                  sourcepath="${src.dir}"
-                 packagenames="com.hp.hpl.jena.*"
                  destdir="javadoc"
                  author="true"
                  version="true"
@@ -132,7 +170,23 @@
                  Public="true"
                  overview="src/overview.html"
                  bottom="Copyright &#169; 2001 Hewlett-Packard. All Rights Reserved.">
-            <classpath refid="classpath" />
+            <classpath refid="classpath"/>
+                <package name="com.hp.hpl.jena.rdf.model"/>
+                <package name="com.hp.hpl.jena.rdf.arp"/>
+                <package name="com.hp.hpl.jena.rdql"/>
+                <package name="com.hp.hpl.jena.reasoner.rdfsReasoner1"/>
+                <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
+                <package name="com.hp.hpl.jena.reasoner"/>
+                <package name="com.hp.hpl.jena.vocabulary"/>
+            <group title="API">
+                <package name="com.hp.hpl.jena.rdf.model"/>
+                <package name="com.hp.hpl.jena.rdf.arp"/>
+                <package name="com.hp.hpl.jena.rdql"/>
+                <package name="com.hp.hpl.jena.reasoner.rdfsReasoner1"/>
+                <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
+                <package name="com.hp.hpl.jena.reasoner"/>
+                <package name="com.hp.hpl.jena.vocabulary"/>
+            </group>
         </javadoc>
     </target>
 
@@ -154,7 +208,7 @@
 
 
         <!-- Source : We could zip this up -->
-        <copy todir="${dist.dir}/${src.dir}">
+        <copy todir="${dist.dir}/${orig-src.dir}">
             <fileset dir="${src.dir}"
                      includes="**"
                      excludes="org/**"/>
@@ -165,7 +219,7 @@
         <copy todir="${dist.dir}" file="copyright.txt"/>
         <copy todir="${dist.dir}" file="ReleaseNotes.txt"/>
         <copy todir="${dist.dir}" file="readme.html"/>
-        <copy todir="${dist.dir}" file="JenaTutorial.html"/>
+<!--        <copy todir="${dist.dir}" file="JenaTutorial.html"/> -->
 
         <!-- RDQL support files : scripts to build the Java
         <copy todir="${dist.dir}" file="doExprNodes"/>
@@ -187,9 +241,9 @@
             <fileset dir="${javadoc.dir}" includes="**"/>
         </copy>
 
-        <copy todir="${dist.dir}/${doc.dir}">
+<!--        <copy todir="${dist.dir}/${doc.dir}">
             <fileset dir="${doc.dir}" includes="**"/>
-        </copy>
+        </copy> -->
 
         <copy todir="${dist.dir}/modules">
             <fileset dir="modules" includes="**"/>
@@ -197,6 +251,10 @@
 
         <copy todir="${dist.dir}/${etc.dir}">
             <fileset dir="${etc.dir}" includes="**"/>
+        </copy>
+
+        <copy todir="${dist.dir}/${test.dir}">
+            <fileset dir="${test.dir}" includes="**"/>
         </copy>
 
         <!-- Junk that creeps in -->
@@ -234,10 +292,32 @@
             <fileset dir="dist" includes="${dist.name}/**"/>
         </zip>
     </target>
+    
+    <target name="test">
+        <echo>install test</echo>
+        <junit fork="yes">
+        <classpath>
+            <fileset dir="${lib.dir}" includes="*.jar"/>
+        </classpath>  
+        <test name="com.hp.hpl.jena.test.TestPackage"/>      
+      </junit>    
+    </target>
+ 
+ <!-- uses the latest built jena code - not the jar in the lib -->   
+    <target name="dev-test">
+        <echo>developer test</echo>
+        <junit fork="yes">
+        <classpath>
+            <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+            <pathelement location="${classes.dir}"/>
+        </classpath>  
+        <test name="com.hp.hpl.jena.test.TestPackage"/>      
+      </junit>    
+    </target>
 
     <target name="clean">
         <delete includeEmptyDir="true">
-            <fileset dir="bin/" includes="*"/>
+            <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
         </delete>
     </target>
 </project>

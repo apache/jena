@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            10 Nov 2000
  * Filename           $RCSfile: DAMLTest.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-28 16:21:39 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-02-01 14:35:33 $
+ *               by   $Author: bwm $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -66,7 +66,7 @@ import java.io.*;
  * JUnit regression tests for the Jena DAML model.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLTest.java,v 1.2 2003-01-28 16:21:39 chris-dollin Exp $,
+ * @version CVS info: $Id: DAMLTest.java,v 1.3 2003-02-01 14:35:33 bwm Exp $,
  */
 public class DAMLTest
     extends TestCase
@@ -803,7 +803,7 @@ public class DAMLTest
             // pick an arbitrary DAML resource
             Resource r = null;
             for (StmtIterator i = m.listStatements();  i.hasNext();  ) {
-                Resource r0 = i.next().getSubject();
+                Resource r0 = i.nextStatement().getSubject();
 
                 if (r0 instanceof DAMLCommon) {
                     // got one
@@ -1145,7 +1145,7 @@ public class DAMLTest
         int count = 0;
         try {
             for (;  i.hasNext();  count++) {
-                Object x = i.next();
+                Object x = i.nextResource();
 
                 if (doLog) {
                     Log.finest( "counting iteration, " + message + x );

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testMatch.java,v 1.1.1.1 2002-12-19 19:20:51 bwm Exp $
+ * $Id: testMatch.java,v 1.2 2003-02-01 14:35:11 bwm Exp $
  *
  * testMatch.java
  *
@@ -40,7 +40,7 @@ import java.util.Random;
 /**
  *
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:20:51 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:11 $' 
  */
 
 public class testMatch extends java.lang.Object {
@@ -71,7 +71,7 @@ public class testMatch extends java.lang.Object {
     static private void empty(Model m) throws RDFException {
         StmtIterator iter = m.listStatements();
         while (iter.hasNext()) {
-            iter.next();
+            iter.nextStatement();
             iter.remove();
         }
     }

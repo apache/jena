@@ -227,7 +227,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                         new SelectorImpl(null, RDF.type, (RDFNode) null));
 
                 while (si.hasNext()) {
-                    Statement st = si.next();
+                    Statement st = si.nextStatement();
                     Act action = (Act) behaviours.get(st.getObject());
                     if (action == null) {
                         System.err.println(
@@ -467,7 +467,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             if (si.hasNext()) {
                 expected = new HashSet();
                 while (si.hasNext()) {
-                    String uri = si.next().getResource().getURI();
+                    String uri = si.nextStatement().getResource().getURI();
                     String fieldName = uri.substring(uri.lastIndexOf('#') + 1);
                     expected.add(new Integer(JenaReader.errorCode(fieldName)));
                 }

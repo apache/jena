@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            26 Jan 2001
  * Filename           $RCSfile: LiteralAccessorImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-23 15:14:21 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-02-01 14:35:32 $
+ *               by   $Author: bwm $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -63,7 +63,7 @@ import com.hp.hpl.jena.util.Log;
  * see {@link com.hp.hpl.jena.ontology.daml.PropertyAccessor PropertyAccessor}.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: LiteralAccessorImpl.java,v 1.2 2003-01-23 15:14:21 ian_dickinson Exp $
+ * @version CVS info: $Id: LiteralAccessorImpl.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
  */
 public class LiteralAccessorImpl
     extends PropertyAccessorImpl
@@ -122,7 +122,7 @@ public class LiteralAccessorImpl
     public Literal getValue() {
         try {
             NodeIterator i = getValues();
-            return (i == null  ||  !i.hasNext()) ? null : ((Literal) i.next());
+            return (i == null  ||  !i.hasNext()) ? null : ((Literal) i.nextNode());
         }
         catch (RDFException e) {
             Log.severe( "RDF exception when getting literal values: " + e, e );

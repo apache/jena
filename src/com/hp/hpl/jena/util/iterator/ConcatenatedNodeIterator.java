@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedNodeIterator.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:21:13 $
+ * Last modified on   $Date: 2003-02-01 14:35:31 $
  *               by   $Author: bwm $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -58,7 +58,7 @@ import com.hp.hpl.jena.rdf.model.RDFNode;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedNodeIterator.java,v 1.1.1.1 2002-12-19 19:21:13 bwm Exp $
+ * @version CVS info: $Id: ConcatenatedNodeIterator.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
  */
 public class ConcatenatedNodeIterator
     implements NodeIterator
@@ -124,10 +124,24 @@ public class ConcatenatedNodeIterator
      *         underlying iteration, projected to the range of the projection function.
      * @exception NoSuchElementException - iteration has no more elements.
      */
-    public RDFNode next()
+    public Object next()
         throws RDFException
     {
-        return (m_iter0.hasNext()) ? m_iter0.next() : m_iter1.next();
+        return (m_iter0.hasNext()) ? m_iter0.nextNode() : m_iter1.nextNode();
+    }
+
+
+    /**
+     * Returns the next element in the interation.
+     *
+     * @return The next object in the iteration, which will correspond to the next object in the
+     *         underlying iteration, projected to the range of the projection function.
+     * @exception NoSuchElementException - iteration has no more elements.
+     */
+    public RDFNode nextNode()
+        throws RDFException
+    {
+        return (RDFNode) next();
     }
 
 

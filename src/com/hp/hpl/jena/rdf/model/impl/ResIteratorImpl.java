@@ -40,7 +40,7 @@ import java.util.NoSuchElementException;
 /** An implementation of ResIterator.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:31 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
  */
 public class ResIteratorImpl extends Object implements ResIterator {
     
@@ -61,7 +61,7 @@ public class ResIteratorImpl extends Object implements ResIterator {
         }        
     }
     
-    public Resource next() throws NoSuchElementException, RDFException {
+    public Object next() throws NoSuchElementException, RDFException {
         if (iterator != null) {
         	Object it = iterator.next();
         	// System.out.println( it );
@@ -69,6 +69,10 @@ public class ResIteratorImpl extends Object implements ResIterator {
         } else {
             throw new RDFException(RDFException.ITERATORCLOSED);
         }
+    }
+    
+    public Resource nextResource() throws NoSuchElementException, RDFException {
+        return (Resource) next();
     }
     
     public void remove() throws NoSuchElementException, RDFException {

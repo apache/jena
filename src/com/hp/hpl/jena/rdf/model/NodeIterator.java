@@ -31,18 +31,20 @@
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import java.util.NoSuchElementException;
 
 /** An iterator which returns RDF nodes.
  *
- * <p>RDF iterators are similar to standard Java iterators, except that they
- *   return specifically typed objects, in this case RDF nodes, and have
- *   a <CODE>close()</CODE> method.  This should be called to free resources
- *   if the application does not complete the iteration.</p>
+ * <p>RDF iterators are standard Java iterators, except that they
+ *    have an extra method that returns specifically typed objects,
+ *    in this case RDF nodes, and have a <CODE>close()</CODE> method. 
+ *    thatshould be called to free resources if the application does
+ *    not complete the iteration.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:17:48 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:32 $'
  */
-public interface NodeIterator {
+public interface NodeIterator extends ClosableIterator {
     /** Determine if there any more values in the iteration.
      * @throws RDFException Generic RDF exception.
      * @return true if and only if there are more values available
@@ -54,7 +56,13 @@ public interface NodeIterator {
      * @throws RDFException Generic RDF exception.
      * @return The next RDFNode from the iteration.
      */
-    public RDFNode next() throws  NoSuchElementException, RDFException;
+    public Object next() throws  NoSuchElementException, RDFException;
+    /** Return the next RDFNode of the iteration.
+     * @throws NoSuchElementException if there are no more nodes to be returned.
+     * @throws RDFException Generic RDF exception.
+     * @return The next RDFNode from the iteration.
+     */
+    public RDFNode nextNode() throws  NoSuchElementException, RDFException;
     /** Unsupported Operation.
      * @throws NoSuchElementException
      * @throws RDFException

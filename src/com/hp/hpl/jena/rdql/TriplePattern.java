@@ -5,7 +5,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.1.1.1 2002-12-19 19:19:00 bwm Exp $
+ * @version  $Id: TriplePattern.java,v 1.2 2003-02-01 14:35:33 bwm Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -425,7 +425,7 @@ public class TriplePattern
                         return null ;
                     }
 
-                    Statement stmt = sIter.next() ;
+                    Statement stmt = sIter.nextStatement() ;
                     if ( log != null  )
                         log.debug("Triple: "+stmt) ;
 

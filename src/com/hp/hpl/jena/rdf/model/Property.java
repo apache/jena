@@ -34,21 +34,12 @@ import com.hp.hpl.jena.enhanced.*;
 
 /** An RDF Property.
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:17:50 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:32 $'
  */
 public interface Property extends Resource {
-	/** Is this resource currently the predicate of a triple,
-	 *  or explicitly of type rdfs:Property.
-	 */
 	
-    
-    public static final Type type = new Type()
-        {
-        public boolean accepts( Polymorphic p ) { return p instanceof Property;}
-     //   public Polymorphic coerce( Polymorphic p ) { return new PropertyImpl( (Resource) p ); }
-        public boolean supportedBy( Polymorphic p ) { return p instanceof Property; }
-        public String toString() { return "Property.type"; }
-        };
+ public static final Type type = new PropertyType();   
+
   public boolean isProperty();
     /** Returns the namespace associated with this property.
      * @return The namespace for this property.
@@ -71,3 +62,15 @@ public interface Property extends Resource {
      */
   public int    getOrdinal();
 }
+
+
+/** Is this resource currently the predicate of a triple,
+ *  or explicitly of type rdfs:Property.
+ */
+class PropertyType implements Type
+        {
+        public boolean accepts( Polymorphic p ) { return p instanceof Property;}
+     //   public Polymorphic coerce( Polymorphic p ) { return new PropertyImpl( (Resource) p ); }
+        public boolean supportedBy( Polymorphic p ) { return p instanceof Property; }
+        public String toString() { return "Property.type"; }
+        };

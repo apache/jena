@@ -61,17 +61,12 @@ import com.hp.hpl.jena.enhanced.*;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:01 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:32 $'
  */
 public interface Seq extends Container {
     
-    public static final Type type = new Type()
-        {
-        public boolean accepts( Polymorphic p ) { return p instanceof Seq;}
-     //   public Polymorphic coerce( Polymorphic p ) { return new SeqImpl( (Resource) p ); }
-        public boolean supportedBy( Polymorphic p ) { return p instanceof Seq; }
-        public String toString() { return "Seq.type"; }
-        };
+    public static final Type type = new SeqType();
+    
     /** Insert a new member into the sequence at the specified position.
      *
      * <p>The existing member at that position, and all others with higher indexes,
@@ -548,3 +543,11 @@ public interface Seq extends Container {
      */
     public Seq set(int index, Object o) throws RDFException;
 }
+
+class SeqType implements Type
+        {
+        public boolean accepts( Polymorphic p ) { return p instanceof Seq;}
+     //   public Polymorphic coerce( Polymorphic p ) { return new SeqImpl( (Resource) p ); }
+        public boolean supportedBy( Polymorphic p ) { return p instanceof Seq; }
+        public String toString() { return "Seq.type"; }
+        };

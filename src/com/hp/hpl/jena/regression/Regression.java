@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.1.1.1 2002-12-19 19:20:46 bwm Exp $
+ * $Id: Regression.java,v 1.2 2003-02-01 14:35:13 bwm Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -48,7 +48,7 @@ import com.hp.hpl.jena.graph.*;
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:20:46 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:13 $'
  */
 public class Regression extends Object {
 
@@ -65,25 +65,25 @@ public class Regression extends Object {
         try {
             StmtIterator iter = m1.listStatements();
             while (iter.hasNext()) {
-                iter.next();
+                iter.nextStatement();
                 iter.remove();
             }
 
             iter = m2.listStatements();
             while (iter.hasNext()) {
-                iter.next();
+                iter.nextStatement();
                 iter.remove();
             }
 
             iter = m3.listStatements();
             while (iter.hasNext()) {
-                iter.next();
+                iter.nextStatement();
                 iter.remove();
             }
 
             iter = m4.listStatements();
             while (iter.hasNext()) {
-                iter.next();
+                iter.nextStatement();
                 iter.remove();
             }
         } catch (Exception e) {
@@ -1052,7 +1052,7 @@ public class Regression extends Object {
                 n=100;
                 n++; iter = m.listStatements();
                 while (iter.hasNext()) {
-                    iter.next();
+                    iter.nextStatement();
                     n++;    iter.remove();
                 }
                 n++; iter.close();
@@ -1128,7 +1128,7 @@ public class Regression extends Object {
             boolean found = false;
             ResIterator rIter = m.listSubjects();
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1160,7 +1160,7 @@ public class Regression extends Object {
 
             NsIterator nIter = m.listNameSpaces();                
             while (nIter.hasNext()) {
-                String ns = nIter.next();
+                String ns = nIter.nextNs();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (ns.equals(predicate[i].getNameSpace())) {
@@ -1177,7 +1177,7 @@ public class Regression extends Object {
 
             StmtIterator sIter = m.listStatements();
             while (sIter.hasNext()) {
-                Statement stmt = sIter.next();
+                Statement stmt = sIter.nextStatement();
                 found = false;
                 for (int i=0; i<numStmts; i++) {
                     if (stmt.equals(stmts[i])) {
@@ -1227,7 +1227,7 @@ public class Regression extends Object {
                 }
                 iter = m.listObjectsOfProperty(predicate[0]);
                 while (iter.hasNext()) {
-                    Literal l = (Literal) iter.next();
+                    Literal l = (Literal) iter.nextNode();
                     int i = l.getInt();
                     object[i] = true;
                 }
@@ -1252,7 +1252,7 @@ public class Regression extends Object {
 
                 iter = m.listObjectsOfProperty(subj, RDF.value);
                 while (iter.hasNext()) {
-                    int i = ((Literal)iter.next()).getInt();
+                    int i = ((Literal)iter.nextNode()).getInt();
                     object[i] = true;
                 }
                 for (int i=0; i<(num); i++) {
@@ -1266,7 +1266,7 @@ public class Regression extends Object {
                 n = 500;
                 iter = m.listObjects();
                 while (iter.hasNext()) {
-                    iter.next();
+                    iter.nextNode();
                     count++;
                 }
                 if (! (count == 25)) error(test, n+count);
@@ -1300,12 +1300,12 @@ public class Regression extends Object {
                 n++; iter = m1.listStatements();
                 n=110;
                 while (iter.hasNext()) {
-                    n++;    if (! m2.contains(iter.next())) error(test, n);
+                    n++;    if (! m2.contains(iter.nextStatement())) error(test, n);
                 }
                 n=200;
                 iter = m2.listStatements();
                 while (iter.hasNext()) {
-                    n++;    if (! m1.contains(iter.next())) error(test,n);
+                    n++;    if (! m1.contains(iter.nextStatement())) error(test,n);
                 }
             } catch (Exception e) {
                 error(test, n, e);
@@ -1323,7 +1323,7 @@ public class Regression extends Object {
                        RDF.value,
                        m1.createResource());
                 n++; iter = m1.listStatements();
-                n++; m2.remove(iter.next());
+                n++; m2.remove(iter.nextStatement());
                 n++; m2.remove(iter); iter.close();
                 n++; if (! (m2.size() == 0)) error(test,n);
             } catch (Exception e) {
@@ -1337,12 +1337,12 @@ public class Regression extends Object {
                 n++; iter = m1.listStatements();
                 n=410;
                 while (iter.hasNext()) {
-                    n++;    if (! m2.contains(iter.next())) error(test, n);
+                    n++;    if (! m2.contains(iter.nextStatement())) error(test, n);
                 }
                 n=500;
                 iter = m2.listStatements();
                 while (iter.hasNext()) {
-                    n++;    if (! m1.contains(iter.next())) error(test,n);
+                    n++;    if (! m1.contains(iter.nextStatement())) error(test,n);
                 }
             } catch (Exception e) {
                 error(test, n, e);
@@ -1478,7 +1478,7 @@ public class Regression extends Object {
 
             ResIterator rIter = m.listSubjectsWithProperty(predicate[4]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1499,7 +1499,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1526,7 +1526,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvBoolean[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1551,7 +1551,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvBoolean[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1574,7 +1574,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], (byte)tvLong[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 // System.out.println( "+ " + subj );
                 found = false;
                 for (int i=0; i<num; i++) {
@@ -1601,7 +1601,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], (byte) tvLong[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1625,7 +1625,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], (short) tvLong[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1650,7 +1650,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], (short) tvLong[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1673,7 +1673,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], (int) tvLong[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1698,7 +1698,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], (int) tvLong[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1722,7 +1722,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvLong[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1747,7 +1747,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvLong[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1769,7 +1769,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvChar[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1794,7 +1794,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvChar[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1817,7 +1817,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvDouble[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1842,7 +1842,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvDouble[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1865,7 +1865,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvDouble[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1890,7 +1890,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvDouble[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1913,7 +1913,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvString[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1938,7 +1938,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvString[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1962,7 +1962,7 @@ public class Regression extends Object {
             rIter = m.listSubjectsWithProperty(predicate[0], tvString[0],
                                                 lang[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -1987,7 +1987,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvString[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -2010,7 +2010,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvLitObj[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -2035,7 +2035,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvLitObj[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -2058,7 +2058,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvResObj[0]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -2083,7 +2083,7 @@ public class Regression extends Object {
             found = false;
             rIter = m.listSubjectsWithProperty(predicate[0], tvResObj[1]);
             while (rIter.hasNext()) {
-                Resource subj = rIter.next();
+                Resource subj = rIter.nextResource();
                 found = false;
                 for (int i=0; i<num; i++) {
                     if (subj.equals(subject[i])) {
@@ -2105,7 +2105,7 @@ public class Regression extends Object {
             }
             NodeIterator nIter = m.listObjectsOfProperty(predicate[1]);
             while (nIter.hasNext()) {
-                RDFNode obj = nIter.next();
+                RDFNode obj = nIter.nextNode();
                 found = false;
                 for (int i=0; i<numObj; i++) {
                     if (obj.equals(object[i])) {
@@ -2204,7 +2204,7 @@ public class Regression extends Object {
             n++; iter = m.listStatements(
                                   new SelectorImpl(null, null, (RDFNode)null));
             while (iter.hasNext()) {
-                iter.next();
+                iter.nextStatement();
                 count++;
             }
             n++; iter.close();
@@ -2228,7 +2228,7 @@ public class Regression extends Object {
             n++; iter = m.listStatements(
                            new SelectorImpl(subject[0], null, (RDFNode) null));
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 if (! stmt.getSubject().equals(subject[0])) error(test, n);
                 count++;
             }
@@ -2240,7 +2240,7 @@ public class Regression extends Object {
             n++; iter = m.listStatements(
                            new SelectorImpl(null, predicate[1], (RDFNode) null));
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 if (! stmt.getPredicate().equals(predicate[1])) error(test, n);
                 count++;
             }
@@ -2252,7 +2252,7 @@ public class Regression extends Object {
             n++; iter = m.listStatements(
                             new SelectorImpl(null, null, tvResObj[1]));
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 if (! stmt.getObject().equals(tvResObj[1])) error(test, n);
                 count++;
             }
@@ -2264,7 +2264,7 @@ public class Regression extends Object {
             n++; iter = m.listStatements(
                             new SelectorImpl(null, null, false));
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 if (  stmt.getBoolean()) error(test, n);
                 count++;
             }
@@ -2276,7 +2276,7 @@ public class Regression extends Object {
             n++; iter=m.listStatements(
                           new SelectorImpl(null, null, tvString[1], lang[1]));
             n++; while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! stmt.getLanguage().equals(lang[1])) error(test,n);
                     count++;
                 }
@@ -2372,7 +2372,7 @@ public class Regression extends Object {
             n++; mm = m.query(new SelectorImpl(null, null, (RDFNode)null));
             n++; iter = mm.listStatements();
             while (iter.hasNext()) {
-                iter.next();
+                iter.nextStatement();
                 count++;
             }
             n++; iter.close();
@@ -2385,7 +2385,7 @@ public class Regression extends Object {
                            new SelectorImpl(subject[0], null, (RDFNode) null));
             n++; iter = mm.listStatements();
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 if (! stmt.getSubject().equals(subject[0])) error(test, n);
                 count++;
             }
@@ -2399,7 +2399,7 @@ public class Regression extends Object {
                         new SelectorImpl(null, predicate[1], (RDFNode) null));
             n++; iter = mm.listStatements();
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 if (! stmt.getPredicate().equals(predicate[1])) error(test, n);
                 count++;
             }
@@ -2412,7 +2412,7 @@ public class Regression extends Object {
             n++; mm = m.query(new SelectorImpl(null, null, tvResObj[1]));
             n++; iter = mm.listStatements();
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 if (! stmt.getObject().equals(tvResObj[1])) error(test, n);
                 count++;
             }
@@ -2425,7 +2425,7 @@ public class Regression extends Object {
             n++; mm = m.query(new SelectorImpl(null, null, false));
             n++; iter = mm.listStatements();
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 if (  stmt.getBoolean()) error(test, n);
                 count++;
             }
@@ -2438,7 +2438,7 @@ public class Regression extends Object {
             n++; if (! (mm.size()==1)) error(test,n);
             n++; iter=mm.listStatements();
             n++; while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! stmt.getLanguage().equals(lang[0])) error(test,n);
                 }
                 iter.close();
@@ -2482,7 +2482,7 @@ public class Regression extends Object {
                 n++; um = m1.union(m2);
                 n++; iter = um.listStatements();
                 while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! (m1.contains(stmt) || m2.contains(stmt))) {
                         System.out.println(stmt.toString());
                         error(test,n);
@@ -2491,13 +2491,13 @@ public class Regression extends Object {
                 n++; iter.close();
                 n++; iter = m1.listStatements();
                 while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! um.contains(stmt)) error(test,n);
                 }
                 n++; iter.close();
                 n++; iter = m2.listStatements();
                 while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! um.contains(stmt)) error(test,n);
                 }
                 n++; iter.close();
@@ -2516,14 +2516,14 @@ public class Regression extends Object {
                 im= um.intersection(m1);
                 n++; iter = im.listStatements();
                 while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! (um.contains(stmt) && m1.contains(stmt)))
                         error(test,n);
                 }
                 n++; iter.close();
                 n++; iter = um.listStatements();
                 while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (m1.contains(stmt)) {
                         if (! im.contains(stmt)) error(test,n);
                     }
@@ -2531,7 +2531,7 @@ public class Regression extends Object {
                 n++; iter.close();
                 n++; iter = m1.listStatements();
                 while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (m1.contains(stmt)) {
                         if (! im.contains(stmt)) error(test,n);
                     }
@@ -2546,14 +2546,14 @@ public class Regression extends Object {
                 dm = um.difference(m2);
                 n++; iter = dm.listStatements();
                 while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! (um.contains(stmt) && !(m2.contains(stmt))))
                         error(test,n);
                 }
                 n++; iter.close();
                 n++; iter = um.listStatements();
                 while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (m2.contains(stmt)) {
                         if (  dm.contains(stmt)) error(test,n);
                     } else {
@@ -2563,7 +2563,7 @@ public class Regression extends Object {
                 n++; iter.close();
                 n++; iter = m2.listStatements();
                 while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (  dm.contains(stmt)) error(test,n);
                 }
                 n++; iter.close();
@@ -2646,7 +2646,7 @@ public class Regression extends Object {
             n++; iter = r.listProperties(RDF.value);
                  int count = 0;
                  while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! stmt.getSubject().equals(r)) error(test, n);
                     count++;
                 }
@@ -2654,7 +2654,7 @@ public class Regression extends Object {
            n++; iter = r.listProperties(RDF.type);
                  count = 0;
                  while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! stmt.getSubject().equals(r)) error(test, n);
                     count++;
                 }
@@ -2662,7 +2662,7 @@ public class Regression extends Object {
            n++; iter = r.listProperties();
                  count = 0;
                  while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! stmt.getSubject().equals(r)) error(test, n);
                     count++;
                 }
@@ -2990,7 +2990,7 @@ public class Regression extends Object {
                 n++; if (! (bag.size()==num)) error(test,n);
                 n++; nIter = bag.iterator();
                     for (int i=0; i<num; i++) {
-                        if ( ! (((Literal) nIter.next()).getInt() == i))
+                        if ( ! (((Literal) nIter.nextNode()).getInt() == i))
                             error(test, 320+i);
                     }
                     nIter.close();
@@ -3005,7 +3005,7 @@ public class Regression extends Object {
                 n=400;
                 n++; nIter=bag.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -3013,7 +3013,7 @@ public class Regression extends Object {
                 n=450;
                 n++; nIter = bag.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -3037,7 +3037,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=bag.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -3045,7 +3045,7 @@ public class Regression extends Object {
                 n=550;
                 n++; nIter = bag.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -3069,7 +3069,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=bag.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -3077,7 +3077,7 @@ public class Regression extends Object {
                 n=650;
                 n++; nIter = bag.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -3170,7 +3170,7 @@ public class Regression extends Object {
                 n++; if (! (alt.size()==num)) error(test,n);
                 n++; nIter = alt.iterator();
                     for (int i=0; i<num; i++) {
-                        if ( ! (((Literal) nIter.next()).getInt() == i))
+                        if ( ! (((Literal) nIter.nextNode()).getInt() == i))
                             error(test, 320+i);
                     }
                     nIter.close();
@@ -3185,7 +3185,7 @@ public class Regression extends Object {
                 n=400;
                 n++; nIter=alt.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -3193,7 +3193,7 @@ public class Regression extends Object {
                 n=450;
                 n++; nIter = alt.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -3217,7 +3217,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=alt.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -3225,7 +3225,7 @@ public class Regression extends Object {
                 n=550;
                 n++; nIter = alt.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -3249,7 +3249,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=alt.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -3257,7 +3257,7 @@ public class Regression extends Object {
                 n=650;
                 n++; nIter = alt.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -3408,7 +3408,7 @@ public class Regression extends Object {
                 n++; if (! (seq.size()==num)) error(test,n);
                 n++; nIter = seq.iterator();
                     for (int i=0; i<num; i++) {
-                        if ( ! (((Literal) nIter.next()).getInt() == i))
+                        if ( ! (((Literal) nIter.nextNode()).getInt() == i))
                             error(test, 320+i);
                     }
                     nIter.close();
@@ -3423,7 +3423,7 @@ public class Regression extends Object {
                 n=400;
                 n++; nIter=seq.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -3431,7 +3431,7 @@ public class Regression extends Object {
                 n=450;
                 n++; nIter = seq.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -3455,7 +3455,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=seq.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -3463,7 +3463,7 @@ public class Regression extends Object {
                 n=550;
                 n++; nIter = seq.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -3487,7 +3487,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=seq.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -3495,7 +3495,7 @@ public class Regression extends Object {
                 n=650;
                 n++; nIter = seq.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -3786,7 +3786,7 @@ public class Regression extends Object {
 
             StmtIterator iter = m.listStatements();
             while (iter.hasNext()) {
-                iter.next();
+                iter.nextStatement();
                 iter.remove();
             }
 
@@ -3812,7 +3812,7 @@ public class Regression extends Object {
 
             iter = m.listStatements();
             while (iter.hasNext()) {
-                iter.next();
+                iter.nextStatement();
                 iter.remove();
             }
             n++;
@@ -3821,7 +3821,7 @@ public class Regression extends Object {
 
             iter = m.listStatements();
             while (iter.hasNext()) {
-                iter.next();
+                iter.nextStatement();
                 iter.remove();
             }
 
@@ -3892,7 +3892,7 @@ public class Regression extends Object {
                 sIter = m1.listStatements(
                                     new SelectorImpl(r11, RDF.value, r12));
                 n++; if (! sIter.hasNext()) error(test, n);
-                n++; stmt = sIter.next();
+                n++; stmt = sIter.nextStatement();
                 n++; if (! (stmt.getSubject().getModel() == m1)) error(test,n);
                 n++; if (! (stmt.getResource().getModel() == m1)) error(test,n);
                 sIter.close();
@@ -3986,7 +3986,7 @@ public class Regression extends Object {
                                                                 null,
                                                                 (String) null));
                while (iter.hasNext()) {
-                   RDFNode o = iter.next().getObject();
+                   RDFNode o = iter.nextStatement().getObject();
                }
 
                n=103;
@@ -3994,7 +3994,7 @@ public class Regression extends Object {
                                                         null,
                                                         (Object) null));
                while (iter.hasNext()) {
-                   RDFNode o = iter.next().getObject();
+                   RDFNode o = iter.nextStatement().getObject();
                }
 
             } catch (Exception e) {
@@ -4018,7 +4018,7 @@ public class Regression extends Object {
                 n=100;
                 n++; iter = m.listStatements();
                 while (iter.hasNext()) {
-                    iter.next();
+                    iter.nextStatement();
                     n++;    iter.remove();
                 }
                 n++; iter.close();
@@ -4091,7 +4091,7 @@ public class Regression extends Object {
             n++; iter = r.listProperties(RDF.value);
                  int count = 0;
                  while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! stmt.getSubject().equals(r)) error(test, n);
                     count++;
                 }
@@ -4099,7 +4099,7 @@ public class Regression extends Object {
            n++; iter = r.listProperties(p);
                  count = 0;
                  while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! stmt.getSubject().equals(r)) error(test, n);
                     count++;
                 }
@@ -4107,7 +4107,7 @@ public class Regression extends Object {
            n++; iter = r.listProperties();
                  count = 0;
                  while (iter.hasNext()) {
-                    stmt = iter.next();
+                    stmt = iter.nextStatement();
                     if (! stmt.getSubject().equals(r)) error(test, n);
                     count++;
                 }
@@ -4193,7 +4193,7 @@ public class Regression extends Object {
                 n++; if (! (cont2.size()==num)) error(test,n);
                 n++; nIter = cont2.iterator();
                     for (int i=0; i<num; i++) {
-                        if ( ! (((Literal) nIter.next()).getInt() == i))
+                        if ( ! (((Literal) nIter.nextNode()).getInt() == i))
                             error(test, 320+i);
                     }
                     nIter.close();
@@ -4208,7 +4208,7 @@ public class Regression extends Object {
                 n=(n/100+1)*100;;
                 n++; nIter=cont2.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -4216,7 +4216,7 @@ public class Regression extends Object {
                 n=(n/100+1)*100;;
                 n++; nIter = cont2.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -4253,7 +4253,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=bag1.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -4261,7 +4261,7 @@ public class Regression extends Object {
                 n=(n/100+1)*100;
                 n++; nIter = bag1.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -4284,7 +4284,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=bag2.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -4292,7 +4292,7 @@ public class Regression extends Object {
                n=(n/100+1)*100;
                 n++; nIter = bag2.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -4315,7 +4315,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=bag3.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -4323,7 +4323,7 @@ public class Regression extends Object {
                 n=(n/100+1)*100;;
                 n++; nIter = bag3.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -4382,7 +4382,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=alt1.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -4390,7 +4390,7 @@ public class Regression extends Object {
                 n=(n/100+1)*100;
                 n++; nIter = alt1.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -4413,7 +4413,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=alt2.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -4421,7 +4421,7 @@ public class Regression extends Object {
                 n=550;
                 n++; nIter = alt2.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -4444,7 +4444,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=alt3.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -4452,7 +4452,7 @@ public class Regression extends Object {
                 n=(n/100+1)*100;
                 n++; nIter = alt3.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -4571,7 +4571,7 @@ public class Regression extends Object {
                 n++; if (! (seq1.size()==num)) error(test,n);
                 n++; nIter = seq1.iterator();
                     for (int i=0; i<num; i++) {
-                        if ( ! (((Literal) nIter.next()).getInt() == i))
+                        if ( ! (((Literal) nIter.nextNode()).getInt() == i))
                             error(test, 320+i);
                     }
                     nIter.close();
@@ -4586,7 +4586,7 @@ public class Regression extends Object {
                 n=(n/100)*100 + 100;
                 n++; nIter=seq1.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -4594,7 +4594,7 @@ public class Regression extends Object {
                 n=(n/100)*100 + 100;
                 n++; nIter = seq1.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -4617,7 +4617,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=seq2.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -4625,7 +4625,7 @@ public class Regression extends Object {
                 n=(n/100)*100 + 100;
                 n++; nIter = seq2.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }
@@ -4648,7 +4648,7 @@ public class Regression extends Object {
                     }
                 n++; nIter=seq3.iterator();
                      for (int i=0; i<num; i++) {
-                n++;    nIter.next();
+                n++;    nIter.nextNode();
                 n++;    if (! pattern[i]) nIter.remove();
                         found[i] = false;
                      }
@@ -4656,7 +4656,7 @@ public class Regression extends Object {
                 n=(n/100)*100 + 100;
                 n++; nIter = seq3.iterator();
                      while (nIter.hasNext()) {
-                        int v = ((Literal) nIter.next()).getInt();
+                        int v = ((Literal) nIter.nextNode()).getInt();
                 n++;    if (  found[v]) error(test,n);
                         found[v] = true;
                      }

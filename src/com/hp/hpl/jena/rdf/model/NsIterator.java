@@ -31,19 +31,21 @@
 
 package com.hp.hpl.jena.rdf.model;
 
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
+
 import java.util.NoSuchElementException;
 
 /** An iterator which returns namespace URI's.
  *
- * <p>RDF iterators are similar to standard Java iterators, except that they
- *   return specifically typed objects, in this case Strings representing 
- *   namespace URI's, and have a <CODE>close()</CODE> method.
- *   This should be called to free resources
- *   if the application does not complete the iteration.</p>
+ * <p>RDF iterators are standard Java iterators, except that they
+ *    have an extra method that returns a specifically typed object,
+ *    in this case a String representing a namespace URI, and have
+ *    a <CODE>close()</CODE> method that should be called to free
+ *    resources if the application does not complete the iteration.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:17:49 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:32 $'
  */
-public interface NsIterator {
+public interface NsIterator extends ClosableIterator {
     
     /** Determine if there any more values in the iteration.
      * @throws RDFException Generic RDF exception.
@@ -57,7 +59,14 @@ public interface NsIterator {
      * @throws RDFException Generic RDF exception.
      * @return The next name space URI from the iteration.
      */
-    public String next() throws  NoSuchElementException, RDFException;
+    public Object next() throws  NoSuchElementException, RDFException;
+    
+    /** Return the next namespace name of the iteration.
+     * @throws NoSuchElementException if there are no more to be returned.
+     * @throws RDFException Generic RDF exception.
+     * @return The next name space URI from the iteration.
+     */
+    public String nextNs() throws  NoSuchElementException, RDFException;
     
     /** Unsupported Operation.
      * @throws NoSuchElementException

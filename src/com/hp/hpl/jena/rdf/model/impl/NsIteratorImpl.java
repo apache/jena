@@ -40,7 +40,7 @@ import java.util.NoSuchElementException;
 /** An NsIterator implementation
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:25 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
  */
 public class NsIteratorImpl extends Object implements NsIterator {
     
@@ -61,12 +61,16 @@ public class NsIteratorImpl extends Object implements NsIterator {
         }        
     }
     
-    public String next() throws NoSuchElementException, RDFException {
+    public Object next() throws NoSuchElementException, RDFException {
         if (iterator != null) {
             return (String) iterator.next();
         } else {
             throw new RDFException(RDFException.ITERATORCLOSED);
         }
+    }
+    
+    public String nextNs() throws NoSuchElementException, RDFException {
+        return (String) next();
     }
     
     public void remove() throws NoSuchElementException, RDFException {

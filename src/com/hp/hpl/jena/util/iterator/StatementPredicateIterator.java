@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            6 Sept 2001
  * Filename           $RCSfile: StatementPredicateIterator.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:21:24 $
+ * Last modified on   $Date: 2003-02-01 14:35:31 $
  *               by   $Author: bwm $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -61,7 +61,7 @@ import java.util.NoSuchElementException;
  * is a sub-class of Resource).
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: StatementPredicateIterator.java,v 1.1.1.1 2002-12-19 19:21:24 bwm Exp $
+ * @version CVS info: $Id: StatementPredicateIterator.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
  */
 public class StatementPredicateIterator
     implements ResIterator
@@ -120,10 +120,24 @@ public class StatementPredicateIterator
      * @throws RDFException Generic RDF exception.
      * @return The next Resource from the iteration.
      */
-    public Resource next()
+    public Object next()
         throws  NoSuchElementException, RDFException
     {
-        return m_sIterator.next().getPredicate();
+        return m_sIterator.nextStatement().getPredicate();
+    }
+
+
+    /**
+     * Return the next Resource of the iteration.
+     *
+     * @throws NoSuchElementException if there are no more to be returned.
+     * @throws RDFException Generic RDF exception.
+     * @return The next Resource from the iteration.
+     */
+    public Resource nextResource()
+        throws  NoSuchElementException, RDFException
+    {
+        return (Resource) next();
     }
 
 

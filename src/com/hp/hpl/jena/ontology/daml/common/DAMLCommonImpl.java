@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-01-23 15:14:20 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-02-01 14:35:32 $
+ *               by   $Author: bwm $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -87,7 +87,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * properties, such as comment, label, and equivalentTo.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.2 2003-01-23 15:14:20 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
  */
 public abstract class DAMLCommonImpl
     extends ResourceImpl
@@ -426,7 +426,7 @@ public abstract class DAMLCommonImpl
             int count = 0;
 
             // lookup the super-classes from this model
-            for (NodeIterator i = getPropertyValues( property );  i.hasNext();  i.next()) {
+            for (NodeIterator i = getPropertyValues( property );  i.hasNext();  i.nextNode()) {
                 count++;
             }
 
@@ -570,7 +570,7 @@ public abstract class DAMLCommonImpl
     public void remove() {
         try {
             // first remove all of the statements corresponding to this object
-            for (StmtIterator i = listProperties();  i.hasNext();  i.next().remove() );
+            for (StmtIterator i = listProperties();  i.hasNext();  i.nextStatement().remove() );
 
             // now remove this object from the DAML indexes
             ((DAMLModelImpl) getModel()).unindex( this );
@@ -702,7 +702,7 @@ public abstract class DAMLCommonImpl
 
                 try {
                     for (StmtIterator j = getModel().listStatements( new SelectorImpl( this, p, n ) );  j.hasNext(); ) {
-                        j.next().remove();
+                        j.nextStatement().remove();
                     }
                 }
                 catch (RDFException e) {
@@ -725,7 +725,7 @@ public abstract class DAMLCommonImpl
                 Property p = (Property) preds.next();
 
                 for (StmtIterator i = getModel().listStatements( new SelectorImpl( this, p, (RDFNode) null ) );  i.hasNext(); ) {
-                    i.next().remove();
+                    i.nextStatement().remove();
                 }
             }
         }

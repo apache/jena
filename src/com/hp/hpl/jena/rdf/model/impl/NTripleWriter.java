@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleWriter.java,v 1.2 2003-01-27 14:30:01 andy_seaborne Exp $
+ * $Id: NTripleWriter.java,v 1.3 2003-02-01 14:35:31 bwm Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -41,7 +41,7 @@ import java.io.UnsupportedEncodingException;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-27 14:30:01 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-01 14:35:31 $'
  */
 public class NTripleWriter extends Object implements RDFWriter {
 
@@ -77,7 +77,7 @@ public class NTripleWriter extends Object implements RDFWriter {
             Statement stmt = null;
 
             while (iter.hasNext()) {
-                stmt = iter.next();
+                stmt = iter.nextStatement();
                 writeResource(stmt.getSubject(), pw);
                 pw.print(" ");
                 writeResource(stmt.getPredicate(), pw);
@@ -122,7 +122,7 @@ public class NTripleWriter extends Object implements RDFWriter {
         Statement stmt = null;
 
         while (iter.hasNext()) {
-            stmt = iter.next();
+            stmt = iter.nextStatement();
             writeResource(stmt.getSubject(), writer);
             writer.print(" ");
             writeResource(stmt.getPredicate(), writer);

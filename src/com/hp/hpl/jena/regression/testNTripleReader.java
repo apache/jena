@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testNTripleReader.java,v 1.1.1.1 2002-12-19 19:20:52 bwm Exp $
+ * $Id: testNTripleReader.java,v 1.2 2003-02-01 14:35:13 bwm Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 /**
  *
  * @author  bwm
- * @version $Revision: 1.1.1.1 $
+ * @version $Revision: 1.2 $
  */
 public class testNTripleReader extends Object {
    
@@ -70,7 +70,7 @@ public class testNTripleReader extends Object {
     protected void empty(Model m) throws RDFException {
         StmtIterator iter = m.listStatements();
         while (iter.hasNext()) {
-            iter.next();
+            iter.nextStatement();
             iter.remove();
         }
     }

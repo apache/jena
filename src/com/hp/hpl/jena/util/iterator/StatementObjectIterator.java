@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            6 Sept 2001
  * Filename           $RCSfile: StatementObjectIterator.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:21:23 $
+ * Last modified on   $Date: 2003-02-01 14:35:31 $
  *               by   $Author: bwm $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -59,7 +59,7 @@ import java.util.NoSuchElementException;
  * a NodeIterator.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: StatementObjectIterator.java,v 1.1.1.1 2002-12-19 19:21:23 bwm Exp $
+ * @version CVS info: $Id: StatementObjectIterator.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
  */
 public class StatementObjectIterator
     implements NodeIterator
@@ -118,10 +118,24 @@ public class StatementObjectIterator
      * @throws RDFException Generic RDF exception.
      * @return The next Resource from the iteration.
      */
-    public RDFNode next()
+    public Object next()
         throws  NoSuchElementException, RDFException
     {
-        return m_sIterator.next().getObject();
+        return m_sIterator.nextStatement().getObject();
+    }
+
+
+    /**
+     * Return the next Node of the iteration.
+     *
+     * @throws NoSuchElementException if there are no more to be returned.
+     * @throws RDFException Generic RDF exception.
+     * @return The next Resource from the iteration.
+     */
+    public RDFNode nextNode()
+        throws  NoSuchElementException, RDFException
+    {
+        return (RDFNode) next();
     }
 
 

@@ -2,7 +2,7 @@
  *  (c)      Copyright Hewlett-Packard Company 2001, 2002
  * All rights reserved.
   [See end of file]
-  $Id: testWriterAndReader.java,v 1.2 2003-01-31 12:10:27 jeremy_carroll Exp $
+  $Id: testWriterAndReader.java,v 1.3 2003-02-01 14:35:31 bwm Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import junit.framework.*;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-31 12:10:27 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-01 14:35:31 $'
  */
 public class testWriterAndReader extends TestCase implements RDFErrorHandler {
     static private boolean showProgress = false;
@@ -270,11 +270,11 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
         StmtIterator ss = m.listStatements();
         try {
             for (int i = 0; i < cnt; i++)
-                die[i] = ss.next();
+                die[i] = ss.nextStatement();
             while (ss.hasNext()) {
                 int ix = random.nextInt(sz);
                 if (ix < cnt)
-                    die[ix] = ss.next();
+                    die[ix] = ss.nextStatement();
             }
         } finally {
             ss.close();
@@ -298,13 +298,13 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
         StmtIterator ss = m.listStatements();
         try {
             for (int i = 0; i < cnt; i++) {
-                Statement s = ss.next();
+                Statement s = ss.nextStatement();
                 subject[i] = s.getSubject();
                 predicate[i] = s.getPredicate();
                 object[i] = s.getObject();
             }
             while (ss.hasNext()) {
-                Statement s = ss.next();
+                Statement s = ss.nextStatement();
                 Resource subj = s.getSubject();
                 RDFNode obj = s.getObject();
                 int ix = random.nextInt(sz);
@@ -355,7 +355,7 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
     static public void empty(Model m) throws RDFException {
         StmtIterator iter = m.listStatements();
         while (iter.hasNext()) {
-            iter.next();
+            iter.nextStatement();
             iter.remove();
         }
     }
@@ -388,5 +388,5 @@ public class testWriterAndReader extends TestCase implements RDFErrorHandler {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.2 2003-01-31 12:10:27 jeremy_carroll Exp $
+ * $Id: testWriterAndReader.java,v 1.3 2003-02-01 14:35:31 bwm Exp $
  */

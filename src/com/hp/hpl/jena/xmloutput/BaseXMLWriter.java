@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.1.1.1 2002-12-19 19:21:50 bwm Exp $
+ *  $Id: BaseXMLWriter.java,v 1.2 2003-02-01 14:35:32 bwm Exp $
  */
 
 package com.hp.hpl.jena.xmloutput;
@@ -48,7 +48,7 @@ import org.apache.xerces.util.EncodingMap;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:21:50 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:32 $'
  */
 abstract public class BaseXMLWriter implements RDFWriter {
 	private Relation nameSpaces = new Relation();
@@ -195,7 +195,7 @@ abstract public class BaseXMLWriter implements RDFWriter {
 		NsIterator nsIter = model.listNameSpaces();
 		String uri;
 		while (nsIter.hasNext()) {
-			this.addNameSpace(nsIter.next());
+			this.addNameSpace(nsIter.nextNs());
 		}
 	}
 

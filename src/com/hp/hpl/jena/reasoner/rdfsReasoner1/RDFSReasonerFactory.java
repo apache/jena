@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasonerFactory.java,v 1.2 2003-02-01 13:35:01 der Exp $
+ * $Id: RDFSReasonerFactory.java,v 1.3 2003-02-01 14:35:31 bwm Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * Factory class for creating blank instances of the RDFS reasoner.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-01 13:35:01 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-01 14:35:31 $
  */
 public class RDFSReasonerFactory implements ReasonerFactory {
     
@@ -88,7 +88,7 @@ public class RDFSReasonerFactory implements ReasonerFactory {
         Resource rdfsDescr = ReasonerRegistry.theRegistry().getDescription(URI);
         System.out.println("Reasoner: " + rdfsDescr);
         for (StmtIterator i = rdfsDescr.listProperties(); i.hasNext(); ) {
-            Statement s = i.next();
+            Statement s = i.nextStatement();
             System.out.println(s.getPredicate().getLocalName() + " = " + s.getObject());
         }
     }

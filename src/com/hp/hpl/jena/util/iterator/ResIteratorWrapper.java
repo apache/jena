@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            13 Sept 2001
  * Filename           $RCSfile: ResIteratorWrapper.java,v $
- * Revision           $Revision: 1.1.1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2002-12-19 19:21:22 $
+ * Last modified on   $Date: 2003-02-01 14:35:31 $
  *               by   $Author: bwm $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -60,7 +60,7 @@ import java.util.Iterator;
  * and anyway the need for it may go away in a future version of Jena.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ResIteratorWrapper.java,v 1.1.1.1 2002-12-19 19:21:22 bwm Exp $
+ * @version CVS info: $Id: ResIteratorWrapper.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
  */
 public class ResIteratorWrapper
     implements Iterator
@@ -123,7 +123,7 @@ public class ResIteratorWrapper
         throws NoSuchElementException
     {
         try {
-            return m_nIterator.next();
+            return m_nIterator.nextResource();
         }
         catch (RDFException e) {
             throw new RuntimeException( "RDFException while accessing ResIterator: " + e );

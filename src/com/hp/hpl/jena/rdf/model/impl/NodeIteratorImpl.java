@@ -40,7 +40,7 @@ import java.util.NoSuchElementException;
 /** A NodeIterator implementation.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1.1.1 $' Date='$Date: 2002-12-19 19:18:24 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-02-01 14:35:31 $'
  */
 public class NodeIteratorImpl extends Object implements NodeIterator {
     
@@ -61,12 +61,16 @@ public class NodeIteratorImpl extends Object implements NodeIterator {
         }        
     }
     
-    public RDFNode next() throws NoSuchElementException, RDFException {
+    public Object next() throws NoSuchElementException, RDFException {
         if (iterator != null) {
-            return (RDFNode) iterator.next();
+            return iterator.next();
         } else {
             throw new RDFException(RDFException.ITERATORCLOSED);
         }
+    }
+    
+    public RDFNode nextNode() throws NoSuchElementException, RDFException {
+        return (RDFNode) iterator.next();
     }
     
     public void remove() throws NoSuchElementException, RDFException {

@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.2 2003-01-31 06:17:47 jeremy_carroll Exp $
+  $Id: Basic.java,v 1.3 2003-02-01 14:35:32 bwm Exp $
 */
 
 package com.hp.hpl.jena.xmloutput;
@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-31 06:17:47 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-02-01 14:35:32 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -65,7 +65,7 @@ public class Basic extends BaseXMLWriter {
 		throws RDFException {
 		ResIterator rIter = model.listSubjects();
 		while (rIter.hasNext()) {
-			writeRDFStatements(model, rIter.next(), writer);
+			writeRDFStatements(model, rIter.nextResource(), writer);
 		}
 	}
 
@@ -89,7 +89,7 @@ public class Basic extends BaseXMLWriter {
 			writeReifiedProperties((Statement) subject, writer);
 		}
 		while (sIter.hasNext()) {
-			writePredicate(sIter.next(), writer);
+			writePredicate(sIter.nextStatement(), writer);
 		}
 		writeDescriptionTrailer(writer);
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.3 2003-02-01 13:35:01 der Exp $
+ * $Id: RDFSReasoner.java,v 1.4 2003-02-01 14:35:31 bwm Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-02-01 13:35:01 $
+ * @version $Revision: 1.4 $ on $Date: 2003-02-01 14:35:31 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -65,7 +65,7 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
             Resource base = configuration.getResource(RDFSReasonerFactory.URI);
             StmtIterator i = base.listProperties(RDFSReasonerFactory.scanProperties);
             if (i.hasNext()) {
-                scanProperties = i.next().getObject().toString().equalsIgnoreCase("true");
+                scanProperties = i.nextStatement().getObject().toString().equalsIgnoreCase("true");
             }
         }
     }
