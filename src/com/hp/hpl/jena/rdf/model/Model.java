@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.15 2003-04-17 14:43:38 chris-dollin Exp $
+  $Id: Model.java,v 1.16 2003-04-23 10:59:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -11,6 +11,7 @@ import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.graph.*;
 
 import java.io.*;
+import java.util.*;
 
 /** An RDF Model.
  *
@@ -50,7 +51,7 @@ import java.io.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.15 $Date: 2003/04/15 09:55:28 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.16 $Date: 2003/04/17 14:43:38 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping
@@ -234,6 +235,38 @@ public interface Model
 	 * @throws RDFException Generic RDF Exception
 	 */
 	Model add(Statement s) throws RDFException;
+    
+    /**
+        Add all the statements to the Model, using through the bulk update interface.
+
+        @param statements the array of statements to add
+        @return this model, to allow cascading
+    */    
+    Model add( Statement [] statements );
+    
+    /**
+        Remove all the statements from the Model, using the bulk update interface.
+        @param statements the array of statements to be added
+        @return this model, to allow cascading
+    */
+    Model remove( Statement [] statements );
+    
+    /**
+        add all the statements in the List to this Model, going through the bulk
+        update interface (which means turning them into triples in one form or
+        another).
+        @param statements a List of Statements
+        @return this model, to allow cascading
+    */    
+    Model add( List statements );
+    
+    /**
+        Remove all the statements in the list from this model, using the bulk
+        update interface.
+        @param statements a List of Statements to remove
+        @return this model, to allow cascading
+    */
+    Model remove( List statements );
 
 	/** Add all the statements returned by an iterator to this model.
 	 * @return this model
@@ -779,5 +812,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.15 2003-04-17 14:43:38 chris-dollin Exp $
+ * $Id: Model.java,v 1.16 2003-04-23 10:59:23 chris-dollin Exp $
  */

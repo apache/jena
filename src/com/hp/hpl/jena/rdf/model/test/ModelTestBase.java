@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelTestBase.java,v 1.1 2003-04-15 09:55:29 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.2 2003-04-23 11:00:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -38,6 +38,21 @@ public class ModelTestBase extends JenaTestBase
          RDFNode obj = m.createResource( st.nextToken() );
          return m.createStatement( sub, pred, obj );    
          }    
+         
+     /**
+        Create an array of Statements parsed from a semi-separated string.
+        
+        @param m a model to serve as a statement factory
+        @param facts a sequence of semicolon-separated "S P O" facts
+        @return a Statement[] of the (S P O) statements from the string
+     */
+     public static Statement [] statements( Model m, String facts )
+        {
+        ArrayList sl = new ArrayList();
+        StringTokenizer st = new StringTokenizer( facts, ";" );
+        while (st.hasMoreTokens()) sl.add( statement( m, st.nextToken() ) );  
+        return (Statement []) sl.toArray( new Statement[sl.size()] );
+        }
         
     /**
         add to a model all the statements expressed by a string.

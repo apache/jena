@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.26 $' Date='$Date: 2003-04-22 15:03:43 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.27 $' Date='$Date: 2003-04-23 11:00:15 $'
  */
 
 public class ModelCom 
@@ -897,6 +897,44 @@ implements Model, ModelI, PrefixMapping
         return add( s.getSubject(), s.getPredicate(), s.getObject() );
     }
     
+    /**
+        Add all the statements to the model by converting them to an array of corresponding
+        triples and removing those from the underlying graph.
+    */
+    public Model add( Statement [] statements )
+        {
+        getGraph().getBulkUpdateHandler().add( StatementImpl.asTriples( statements ) );
+        return this;
+        }
+        
+    /**
+        Add all the statements to the model by converting the list to an array of
+        Statement and removing that.
+    */
+    public Model add( List statements )
+        {
+        return add( (Statement []) statements.toArray( new Statement[statements.size()] ) );
+        }
+        
+    /**
+        remove all the Statements from the model by converting them to triples and
+        removing those triples from the underlying graph.        
+    */ 
+    public Model remove( Statement [] statements )
+        {
+        getGraph().getBulkUpdateHandler().delete( StatementImpl.asTriples( statements ) );        
+        return this;
+        }
+     
+     /**
+        Remove all the Statements from the model by converting the List to a
+        Statement [] and removing that.
+     */
+    public Model remove( List statements )
+        {
+        return remove(  (Statement []) statements.toArray( new Statement[statements.size()] ) );
+        }
+           
     public Model add(Resource s,Property p,RDFNode o) throws RDFException {
         modelReifier.noteIfReified( s, p, o );
         graph.add( new Triple( s.asNode(), p.asNode(), o.asNode() ) );
