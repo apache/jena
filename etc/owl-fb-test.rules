@@ -9,7 +9,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.6 2003-07-17 11:02:11 der Exp $
+# $Id: owl-fb-test.rules,v 1.7 2003-07-18 16:19:00 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -232,7 +232,7 @@
 	-> (?E owl:equivalentClass ?C)]
 	
 [cardRec3: (?C owl:equivalentClass card(?P, '0')) ->
-	[cardRec2b: (?X rdf:type ?C) <- (?X rdf:type max(P, '0'))] ]
+	[cardRec2b: (?X rdf:type ?C) <- (?X rdf:type max(?P, '0'))] ]
 
 #------------------------------------------------------------------
 # cardinality 1
