@@ -47,7 +47,7 @@ public class TestErrorMsg extends TestCase {
 		String filename,
 		String regexPresent,
 		String regexAbsent)
-		throws IOException, MalformedPatternException, SAXException {
+		throws IOException, MalformedPatternException {
 		final StringBuffer buf = new StringBuffer();
 		ARP arp = new ARP();
 		arp.setErrorHandler(new ErrorHandler() {
@@ -67,7 +67,12 @@ public class TestErrorMsg extends TestCase {
 
 		});
 		InputStream in = new FileInputStream("testing/arp/error-msgs/"+filename+".rdf");
+		try {
 		arp.load(in, "file:///" + filename);
+		}
+		catch (SAXException e){
+			
+		}
 
 		in.close();
 		String contents = buf.toString();
@@ -102,6 +107,9 @@ public class TestErrorMsg extends TestCase {
 	public void testErrMsg05() throws Exception {
 		check("test05",null,"Unusual");
 	}
+	public void testUTF8() throws Exception {
+		check("testutf8","UTF","Unusual");
+	}
 }
 /*
  * (c) Copyright  2003 Hewlett-Packard Development Company, LP All
@@ -128,5 +136,5 @@ public class TestErrorMsg extends TestCase {
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: TestErrorMsg.java,v 1.1 2003-12-05 12:29:04 jeremy_carroll Exp $
+ * $Id: TestErrorMsg.java,v 1.2 2003-12-05 14:47:17 jeremy_carroll Exp $
  */

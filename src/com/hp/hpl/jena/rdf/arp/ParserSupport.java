@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.11 2003-12-05 12:29:04 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.12 2003-12-05 14:47:03 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -175,7 +175,7 @@ class ParserSupport
 			+(maybeMissingPT?" Maybe a missing rdf:parseType='Literal'":""));
 	}
 	void saxException(Token t) throws ParseException {
-		SaxExceptionToken sax = (SaxExceptionToken) t;
+		ExceptionToken sax = (ExceptionToken) t;
 		arp.parseWarning(sax.errorCode, t.location, sax.toString());
 	}
 	CollectionAction collectionAction(AResource rslt[]){

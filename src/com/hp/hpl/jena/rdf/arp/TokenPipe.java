@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: TokenPipe.java,v 1.4 2003-08-27 13:05:52 andy_seaborne Exp $
+ * * $Id: TokenPipe.java,v 1.5 2003-12-05 14:47:03 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -63,7 +63,7 @@ class TokenPipe implements TokenManager {
 	}
 
 	void putNextToken(Token t) {
-     //  System.err.print(t.toString()+", ");
+   //    System.err.print(t.toString()+", ");
 		pipe.add(t);
 	}
 

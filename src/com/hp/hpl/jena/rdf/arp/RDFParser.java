@@ -31,7 +31,7 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: RDFParser.java,v 1.9 2003-12-05 12:29:04 jeremy_carroll Exp $
+ * * $Id: RDFParser.java,v 1.10 2003-12-05 14:47:03 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -1969,6 +1969,12 @@ Notice the action within the kleene star.
        failure.setFatal(true);
        throw failure;
      case E_END: needed--; break;
+     case X_SAX_EX:
+        X.saxException(t);
+        break;
+     case X_WARNING:
+        arp.parseWarning((Warn)t);
+        break;
      case E_LI:
      case E_RDF:
      case E_RDF_N:

@@ -10,12 +10,12 @@ import org.xml.sax.SAXParseException;
  * @author jjc
  *
  */
-class SaxExceptionToken extends Token implements RDFParserConstants {
+class ExceptionToken extends Token implements RDFParserConstants {
 
-    final SAXParseException value;
+    final Exception value;
     final int errorCode;
     
-    SaxExceptionToken(int errCode,Location where,SAXParseException v) {
+    ExceptionToken(int errCode,Location where,Exception v) {
         super(X_SAX_EX,where);
         value = v;
         errorCode = errCode;
