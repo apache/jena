@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSelectors.java,v 1.1 2003-06-04 15:15:55 chris-dollin Exp $
+  $Id: TestSelectors.java,v 1.2 2003-08-21 09:26:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -26,7 +26,7 @@ public class TestSelectors extends ModelTestBase
         check( null, null, null );
         check( resource( m, "A" ), null, null );
         check( null, property( m, "B" ), null );
-        check( null, null, resource( m, "10" ) );
+        check( null, null, literal( m, "10" ) );
         check( resource( m, "C" ), property( m, "D" ), resource( m, "_E" ) );
         }
         

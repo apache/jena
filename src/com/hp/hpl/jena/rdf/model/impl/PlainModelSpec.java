@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PlainModelSpec.java,v 1.1 2003-08-20 15:12:48 chris-dollin Exp $
+  $Id: PlainModelSpec.java,v 1.2 2003-08-21 09:26:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -10,36 +10,46 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
+    A ModelSpec that describes plain (non-inference, non-ontological) models.
+    
  	@author kers
 */
 public class PlainModelSpec extends ModelSpecImpl implements ModelSpec
-    {
-    protected ModelMaker maker;
-    
-    public PlainModelSpec( ModelMaker maker )
-        { this.maker = maker == null ? ModelFactory.createMemModelMaker(): maker; }
+    {    
+    /**
+        Initialise this Spec with the ModelMaker that will be used to create all Models that
+        this Spec is used to construct.
         
+        @param maker the ModelMaker used to make models.
+    */
+    public PlainModelSpec( ModelMaker maker )
+        { super( maker ); }
+        
+    /**
+        Initialise this Spec with a description that will specify the ModelMaker that this
+        Spec is used to construct.
+        
+        @param description the RDF who's JMS.maker describes the ModelMaker
+    */
     public PlainModelSpec( Model description )
-        { this( createMaker( description ) ); }
-    
-    public ModelMaker getModelMaker()
-        { return maker; }
+        { super( description ); }
 
+    /**
+        Answer a Model that satisfies the description that this ModelSpec was constructed
+        with.
+    */
     public Model createModel()
         { return maker.createModel(); }
 
-    public Model addDescription( Model desc, Resource root )
-        {
-        Resource makerRoot = desc.createResource();
-        desc.add( root, getMakerProperty(), makerRoot );
-        maker.addDescription( desc, makerRoot );
-        return desc;
-        }
-
+    /**
+        Answer the sub-property of JMS.maker that describes how this ModelSpec uses the
+        attached ModelMaker.
+        
+        @return JMS.maker
+    */
     public Property getMakerProperty()
         { return JMS.maker; }
     }
-
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

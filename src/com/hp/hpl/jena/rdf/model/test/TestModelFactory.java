@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelFactory.java,v 1.10 2003-08-20 15:12:56 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.11 2003-08-21 09:26:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.*;
 
@@ -35,8 +35,14 @@ public class TestModelFactory extends ModelTestBase
         
     public void testCreateSpec()
         {
-        Model desc = ModelFactory.createDefaultModel();
+        Resource root = ResourceFactory.createResource();
+        Resource maker = ResourceFactory.createResource();
+        Model desc = ModelFactory.createDefaultModel()
+            .add( root, JMS.maker, maker )
+            .add( maker, RDF.type, JMS.MemMakerClass )
+            .add( maker, JMS.reificationMode, JMS.rsMinimal );
         ModelSpec spec = ModelFactory.createSpec( desc ); 
+        
         assertIsoModels( desc, spec.getDescription() );
         }
     }
