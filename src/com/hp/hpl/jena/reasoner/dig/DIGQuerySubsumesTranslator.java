@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQuerySubsumesTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-12 23:41:22 $
+ * Last modified on   $Date: 2004-04-21 19:24:10 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.reasoner.dig;
 ///////////////
 import org.w3c.dom.*;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -36,13 +37,13 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * <p>
  * Translator that generates DIG allconcepts queries in response to a find query:
  * <pre>
- * * rdf:type owl:Class
+ * :x rdf:subClassOf :y
  * </pre>
  * or similar.
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQuerySubsumesTranslator.java,v 1.3 2003-12-12 23:41:22 ian_dickinson Exp $)
+ * @version CVS $Id: DIGQuerySubsumesTranslator.java,v 1.4 2004-04-21 19:24:10 ian_dickinson Exp $
  */
 public class DIGQuerySubsumesTranslator 
     extends DIGQueryTranslator
@@ -80,9 +81,39 @@ public class DIGQuerySubsumesTranslator
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
         Element subsumes = da.addElement( query.getDocumentElement(), DIGProfile.SUBSUMES );
+        
+        // note reversal of subject-object: x rdfs:subClassOf y --> y dig:subsumes x
         da.addClassDescription( subsumes, pattern.getObject() );
         da.addClassDescription( subsumes, pattern.getSubject() );
 
+        return query;
+    }
+
+
+    /**
+     * <p>Answer a query that will test subsumption between two classes, given that either one
+     * or both may be defined as an expression given the premises</p>
+     */
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
+        DIGConnection dc = da.getConnection();
+        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
+        Element subsumes = da.addElement( query.getDocumentElement(), DIGProfile.SUBSUMES );
+        
+        // note reversal of subject-object: x rdfs:subClassOf y --> y dig:subsumes x
+        if (pattern.getObject().isBlank()) {
+            da.addClassDescription( subsumes, pattern.getObject(), premises );
+        }
+        else {
+            da.addClassDescription( subsumes, pattern.getObject() );
+        }
+        
+        if (pattern.getSubject().isBlank()) {
+            da.addClassDescription( subsumes, pattern.getSubject(), premises );
+        }
+        else {
+            da.addClassDescription( subsumes, pattern.getSubject() );
+        }
+        
         return query;
     }
 

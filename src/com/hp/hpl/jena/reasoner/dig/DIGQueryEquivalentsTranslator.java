@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10-Dec-2003
  * Filename           $RCSfile: DIGQueryEquivalentsTranslator.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-12 23:41:22 $
+ * Last modified on   $Date: 2004-04-21 19:24:26 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -27,6 +27,7 @@ package com.hp.hpl.jena.reasoner.dig;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -37,7 +38,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.3 2003-12-12 23:41:22 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryEquivalentsTranslator.java,v 1.4 2004-04-21 19:24:26 ian_dickinson Exp $
  */
 public class DIGQueryEquivalentsTranslator 
     extends DIGQueryTranslator
@@ -93,6 +94,11 @@ public class DIGQueryEquivalentsTranslator
         return translateConceptSetResponse( response, query, !m_subjectFree );
     }
     
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
+        // not used
+        return null;
+    }
+
     
     public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da ) {
         return m_subjectFree || subject.isConcrete();

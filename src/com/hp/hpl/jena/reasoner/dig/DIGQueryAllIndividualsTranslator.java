@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryAllIndividualsTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-12 23:41:22 $
+ * Last modified on   $Date: 2004-04-21 19:24:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -23,6 +23,7 @@ package com.hp.hpl.jena.reasoner.dig;
 
 import org.w3c.dom.Document;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -36,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * Translator that generates DIG allIndividualNames queries </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryAllIndividualsTranslator.java,v 1.1 2003-12-12 23:41:22 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryAllIndividualsTranslator.java,v 1.2 2004-04-21 19:24:15 ian_dickinson Exp $)
  */
 public class DIGQueryAllIndividualsTranslator 
     extends DIGQueryTranslator
@@ -82,6 +83,12 @@ public class DIGQueryAllIndividualsTranslator
     
     
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
+        // not used
+        return null;
+    }
+
+
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
         // not used
         return null;
     }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-29 18:45:01 $
+ * Last modified on   $Date: 2004-04-21 19:26:53 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.10 2004-01-29 18:45:01 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.11 2004-04-21 19:26:53 ian_dickinson Exp $)
  */
 public class TestDigReasoner 
     extends TestCase
@@ -81,8 +81,8 @@ public class TestDigReasoner
     public static TestSuite suite() {
         TestSuite s = new TestSuite( "TestDigReasoner" );
         
-        //buildConceptLangSuite( "testing/ontology/dig/owl/cl", OntModelSpec.OWL_MEM, s );
-        //buildBasicQuerySuite( "testing/ontology/dig/owl/basicq", OntModelSpec.OWL_MEM, s );
+        buildConceptLangSuite( "testing/ontology/dig/owl/cl", OntModelSpec.OWL_MEM, s );
+        buildBasicQuerySuite( "testing/ontology/dig/owl/basicq", OntModelSpec.OWL_MEM, s );
 
         // add the standard tests from this class
         s.addTestSuite( TestDigReasoner.class );
@@ -365,7 +365,7 @@ public class TestDigReasoner
         ObjectProperty p2 = m.getObjectProperty( NS + "p2" );
         
         TestUtil.assertIteratorValues( this, p0.listSuperProperties(), 
-                                       new Resource[] {p1, p2} );
+                                       new Resource[] {p1, p2, p0} );
     }
 
     public void testRDescendants() {
@@ -383,7 +383,7 @@ public class TestDigReasoner
         ObjectProperty p2 = m.getObjectProperty( NS + "p2" );
         
         TestUtil.assertIteratorValues( this, p2.listSubProperties(), 
-                                       new Resource[] {p1, p0} );
+                                       new Resource[] {p1, p0, p2} );
     }
 
     

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryInstanceTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-12 23:41:22 $
+ * Last modified on   $Date: 2004-04-21 19:24:26 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -26,6 +26,7 @@ package com.hp.hpl.jena.reasoner.dig;
 ///////////////
 import org.w3c.dom.*;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -42,7 +43,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryInstanceTranslator.java,v 1.1 2003-12-12 23:41:22 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGQueryInstanceTranslator.java,v 1.2 2004-04-21 19:24:26 ian_dickinson Exp $)
  */
 public class DIGQueryInstanceTranslator 
     extends DIGQueryTranslator
@@ -74,7 +75,8 @@ public class DIGQueryInstanceTranslator
 
 
     /**
-     * <p>Answer a query that will test subsumption between two classes</p>
+     * <p>Answer a query that will test whether an invidividual is a member of 
+     * a given named class</p>
      */
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
@@ -83,6 +85,27 @@ public class DIGQueryInstanceTranslator
         da.addNamedElement( instance, DIGProfile.INDIVIDUAL, da.getNodeID( pattern.getSubject() ) );
         da.addClassDescription( instance, pattern.getObject() );
 
+        return query;
+    }
+
+
+    /**
+     * <p>Answer a query that will test whether an invidividual is a member of 
+     * a given named class or class expression (defined by the premises)</p>
+     */
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
+        DIGConnection dc = da.getConnection();
+        Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
+        Element instance = da.addElement( query.getDocumentElement(), DIGProfile.INSTANCE );
+        
+        da.addNamedElement( instance, DIGProfile.INDIVIDUAL, da.getNodeID( pattern.getSubject() ) );
+        
+        if (pattern.getObject().isBlank()) {
+            da.addClassDescription( instance, pattern.getObject(), premises );
+        }
+        else {
+            da.addClassDescription( instance, pattern.getObject() );
+        }
         return query;
     }
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryClassHierarchyTranslator.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-09 13:02:30 $
+ * Last modified on   $Date: 2004-04-21 19:24:25 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryClassHierarchyTranslator.java,v 1.1 2003-12-09 13:02:30 ian_dickinson Exp $)
+ * @version CVS $Id: DIGQueryClassHierarchyTranslator.java,v 1.2 2004-04-21 19:24:25 ian_dickinson Exp $
  */
 public class DIGQueryClassHierarchyTranslator 
     extends DIGIteratedQueryTranslator

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-12 23:41:22 $
+ * Last modified on   $Date: 2004-04-21 19:24:12 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -48,7 +48,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.7 2003-12-12 23:41:22 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.8 2004-04-21 19:24:12 ian_dickinson Exp $
  */
 public class DIGAdapter 
 {
@@ -315,7 +315,7 @@ public class DIGAdapter
     
     /**
      * <p>Basic pattern lookup interface - answer an iterator over the triples
-     * matching the givenpattern.  Where possible, this query will first be
+     * matching the given pattern.  Where possible, this query will first be
      * given to the external reasoner, with the local graph used to generate
      * supplemental bindings.</p> 
      * @param pattern a TriplePattern to be matched against the data
@@ -326,6 +326,35 @@ public class DIGAdapter
         DIGQueryTranslator tr = getQueryTranslator( pattern );
         
         ExtendedIterator remote = (tr == null) ? null : tr.find( pattern, this );
+        ExtendedIterator local = m_sourceData.getGraph().find( pattern.getSubject(), 
+                                                               pattern.getPredicate(), 
+                                                               pattern.getObject() );
+        
+        // if we have a remote iterator, prepend to the local one and drop duplicates
+        ExtendedIterator i = (remote == null) ? local : remote.andThen( local );
+        
+        // make sure we don't have duplicates
+        return UniqueExtendedIterator.create( i );
+    }
+
+
+    /**
+     * <p>Basic pattern lookup interface - answer an iterator over the triples
+     * matching the given (S,P,O) pattern, given also some premises for the 
+     * query.  Where possible, this query will first be
+     * given to the external reasoner, with the local graph used to generate
+     * supplemental bindings.</p> 
+     * @param pattern a TriplePattern to be matched against the data
+     * @param premises A model containing additional premises for the find query,
+     * typically used to allow the subject and/or object to be an expression
+     * rather than just a simple node
+     * @return An ExtendedIterator over all Triples in the data set
+     *  that match the pattern
+     */ 
+    public ExtendedIterator find( TriplePattern pattern, Model premises ) {
+        DIGQueryTranslator tr = getQueryTranslator( pattern );
+        
+        ExtendedIterator remote = (tr == null) ? null : tr.find( pattern, this, premises );
         ExtendedIterator local = m_sourceData.getGraph().find( pattern.getSubject(), 
                                                                pattern.getPredicate(), 
                                                                pattern.getObject() );
@@ -394,12 +423,54 @@ public class DIGAdapter
     /**
      * <p>Add a DIG reference to the class identifed in the source graph by the given Jena
      * graph Node to the given XML element.  If the class is a named class, this will be
-     * a <code>&lt;catom&gt;</code> element, otherwise it will be a class description axiom.</p>
+     * a <code>&lt;catom&gt;</code> element, otherwise it will be a class description axiom.
+     * Assumes that the instance variable {@link #m_sourceData} provides the statements that
+     * further define the class if it is a description not a name. 
+     * </p>
      * @param elem The parent XML element to which the class description will be attached
      * @param node An RDF graph node representing a class we wish to describe.
      */
     public void addClassDescription( Element elem, com.hp.hpl.jena.graph.Node node ) {
-        translateClassIdentifier( elem, (Resource) m_sourceData.getRDFNode( node ) );
+        addClassDescription( elem, node, m_sourceData );
+    }
+    
+    
+    /**
+     * <p>Add a DIG reference to the class identifed in the source graph by the given Jena
+     * graph Node to the given XML element.  If the class is a named class, this will be
+     * a <code>&lt;catom&gt;</code> element, otherwise it will be a class description axiom.
+     * </p>
+     * @param elem The parent XML element to which the class description will be attached
+     * @param node An RDF graph node representing a class we wish to describe.
+     * @param sourceData A model containing the statements about the given class description
+     * resource
+     */
+    public void addClassDescription( Element elem, com.hp.hpl.jena.graph.Node node, Model sourceData ) {
+        addClassDescription( elem, (Resource) sourceData.getRDFNode( node ), sourceData );
+    }
+    
+    
+    /**
+     * <p>Add a DIG reference to the class identifed in the source graph by the given Jena
+     * resource to the given XML element.  If the class is a named class, this will be
+     * a <code>&lt;catom&gt;</code> element, otherwise it will be a class description axiom.</p>
+     * @param elem The parent XML element to which the class description will be attached
+     * @param res An RDF resource representing a class we wish to describe.
+     * @param sourceData A model containing the statements about the given class description
+     * resource
+     */
+    public void addClassDescription( Element elem, Resource res, Model sourceData ) {
+        // ensure we have a resource from the source data model
+        Resource cls = (res.getModel() != sourceData) ? sourceData.getResource( res.getURI() ) : res;
+        
+        if (cls.isAnon()) {
+            // an anon-node will be a class expression
+            translateClassDescription( elem, (OntClass) cls.as( OntClass.class ) );
+        }
+        else {
+            // a named class
+            translateClassIdentifier( elem, cls );
+        }
     }
     
     
@@ -623,6 +694,31 @@ public class DIGAdapter
                 case ENUMERATED:     translateEnumeratedClass( equalc, cls );   break;
                 case RESTRICTION:    translateRestrictionClass( equalc, cls );   break;
             }
+        }
+    }
+    
+    
+    /**
+     * <p>Translate a node representing a class expression (presumed anonymous, though
+     * this is not tested) into the appropriate DIG class axiom.</p>
+     * @param parent The XML node that will be the parent of the class description axiom
+     * @param classDescr An OntClass representing the class expression to be translated
+     */
+    protected void translateClassDescription( Element parent, OntClass classDescr ) {
+        if (classDescr.isUnionClass()) {
+            translateUnionClass( parent, classDescr );
+        }
+        else if (classDescr.isIntersectionClass()) {
+            translateIntersectionClass( parent, classDescr );
+        }
+        else if (classDescr.isComplementClass()) {
+            translateComplementClass( parent, classDescr );
+        }
+        else if (classDescr.isEnumeratedClass()) {
+            translateEnumeratedClass( parent, classDescr );
+        }
+        else if (classDescr.isRestriction()) {
+            translateRestrictionClass( parent, classDescr );
         }
     }
     

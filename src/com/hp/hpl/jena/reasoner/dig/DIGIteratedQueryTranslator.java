@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            09-Dec-2003
  * Filename           $RCSfile: DIGIteratedQueryTranslator.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-12-11 22:59:10 $
+ * Last modified on   $Date: 2004-04-21 19:24:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -29,6 +29,7 @@ import java.util.Iterator;
 
 import org.w3c.dom.Document;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -39,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGIteratedQueryTranslator.java,v 1.2 2003-12-11 22:59:10 ian_dickinson Exp $
+ * @version CVS $Id: DIGIteratedQueryTranslator.java,v 1.3 2004-04-21 19:24:29 ian_dickinson Exp $
  */
 public abstract class DIGIteratedQueryTranslator 
     extends DIGQueryTranslator
@@ -109,6 +110,11 @@ public abstract class DIGIteratedQueryTranslator
      * Not needed in this class - delegated to the specific query handlers
      */
     public Document translatePattern( TriplePattern query, DIGAdapter da ) {
+        return null;
+    }
+
+    public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
+        // not used
         return null;
     }
 
