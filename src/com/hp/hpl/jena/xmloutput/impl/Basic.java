@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.1 2003-04-02 10:07:30 jeremy_carroll Exp $
+  $Id: Basic.java,v 1.2 2003-04-04 20:54:18 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.1 $' Date='$Date: 2003-04-02 10:07:30 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-04 20:54:18 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -32,9 +32,7 @@ public class Basic extends BaseXMLWriter {
 		PrintWriter pw,
 		String base,
 		boolean inclXMLBase) {
-		// 	System.err.println(base +" - "+inclXMLBase + " + " + (model!=null));
-		//	setupMaps();
-		//pw = new PrintWriter(System.out);
+		
         space = "";
         for (int i=0; i<tab;i++)
          space += " ";
@@ -43,13 +41,7 @@ public class Basic extends BaseXMLWriter {
 		writeRDFStatements(model, pw);
 		writeRDFTrailer(pw, base);
 		pw.flush();
-		/*
-		} catch (Exception e) {
 		
-		System.err.println(base + " - " + inclXMLBase);
-		errorHandler.error(e);
-		}
-		*/
 	}
 
 	private void writeRDFHeader(Model model, PrintWriter writer) {
@@ -88,34 +80,11 @@ public class Basic extends BaseXMLWriter {
 				new SimpleSelector(subject, null, (RDFNode) null));
 
 		writeDescriptionHeader(subject, writer);
-        /*
-		if ((subject instanceof Statement)
-			&& !model.contains((Statement) subject)) {
-			// an unasserted reified statement
-			writeReifiedProperties((Statement) subject, writer);
-		}
-        */
+        
 		while (sIter.hasNext()) {
 			writePredicate(sIter.nextStatement(), writer);
 		}
 		writeDescriptionTrailer(writer);
-
-		// if the subject of subject is a reified statement not in the model
-		// need to write it out too
-        /*
-		if (subject instanceof Statement) {
-			Resource innerSubject = ((Statement) subject).getSubject();
-			if (innerSubject instanceof Statement
-				&& !model.contains((Statement) innerSubject)) {
-				writeRDFStatements(model, innerSubject, writer);
-			}
-			RDFNode innerObject = ((Statement) subject).getObject();
-			if (innerObject instanceof Statement
-				&& !model.contains((Statement) innerObject)) {
-				writeRDFStatements(model, (Resource) innerObject, writer);
-			}
-		}
-        */
 
 	}
 
@@ -138,10 +107,7 @@ public class Basic extends BaseXMLWriter {
 					predicate.getNameSpace(),
 					predicate.getLocalName()));
 
-		//        if (stmt.isReified()) {
-		//            writer.print(" " + nsPrefix(RDFNS) + ":ID='" + anonId(stmt) + "'");
-		//        }
-
+		
 		if (object instanceof Resource) {
 			writer.print(" ");
 			writeResourceReference(((Resource) object), writer);
@@ -171,38 +137,6 @@ public class Basic extends BaseXMLWriter {
 	protected void writeDescriptionTrailer(PrintWriter writer) {
 		writer.println(space + "</" + rdfEl("Description") + ">");
 	}
-/*
-	protected void writeReifiedProperties(Statement stmt, PrintWriter writer)
-		throws RDFException {
-		writer.println(
-			"    <"
-				+ rdfEl("type")
-				+ rdfAt("resource")
-				+ "='"
-				+ RDFNS
-				+ "Statement'/>");
-		writer.print("    <" + rdfEl("subject") + " ");
-		writeResourceReference(stmt.getSubject(), writer);
-		writer.println("/>");
-		writer.println(
-			"    <"
-				+ rdfEl("predicate")
-				+ rdfAt("resource")
-				+ "='"
-				+ Util.substituteStandardEntities(stmt.getPredicate().getURI())
-				+ "'/>");
-		writer.print("    <" + rdfEl("object") + " ");
-
-		RDFNode object = stmt.getObject();
-		if (object instanceof Resource) {
-			writeResourceReference((Resource) stmt.getObject(), writer);
-			writer.println("/>");
-		} else {
-			writeLiteral((Literal) object, writer);
-			writer.println("</" + rdfEl("object") + ">");
-		}
-	}
-*/
 	protected void writeResourceId(Resource r, PrintWriter writer)
 		throws RDFException {
 		if (r.isAnon()) {

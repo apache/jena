@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.3 2003-04-02 13:26:34 jeremy_carroll Exp $
+ *  $Id: Unparser.java,v 1.4 2003-04-04 20:54:04 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -14,19 +14,15 @@ package com.hp.hpl.jena.xmloutput.impl;
  * - easy efficiency gains in listSubjects() and modelListSubjects()
  *   by removing those subjects that we have already considered.
 
- *
- *Don't want TODO List - BagIDs - not interesting to me. - Set Default language
- *during first pass.
+ * - Set Default language during first pass.
  *
  *
  *Notes on ID and BagID:
  *Our preferences are follows:
  * for a Stating with an explicit local ID we avoid explicitly
  * constructing the reification, and try and use rule 6.12 with an idAttr.
- * If the Stating is anonymous (e.g. from a BagID use) or non-local then
- * we construct the reification explicitly. If and when we implemnet BagID
- * then anonymous Statings should be deferred in preference to a use of the
- * BagID construct, where plausible.
+ * If the Stating is anonymous or non-local then we construct the reification
+ * explicitly.
  *
  *
  * Notes:
@@ -106,7 +102,7 @@ import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-04-02 13:26:34 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-04-04 20:54:04 $'
 
  */
 class Unparser {
@@ -143,21 +139,7 @@ class Unparser {
 		} finally {
 			ss.close();
 		}
-		/*
-		try {
-		    allReifiedStatements = new HashSet();
-		    ss = m.listReifiedStatements();
-		    while (ss.hasNext())
-		        allReifiedStatements.add(ss.next());
-		}
-		finally {
-		    ss.close();
-		}
-		 */
-
-		// Well I think reification in Jena isn't working ....
-		// Here's my code.
-		try {
+        try {
 			res2statement = new HashMap();
 			statement2res = new HashMap();
 			ClosableIterator reified = new MapFilterIterator(new MapFilter() {
@@ -384,7 +366,6 @@ class Unparser {
 		indentPlus();
 		wIdRefAttrOpt(s, r);
 		if (!doing.contains(r)) {
-			wBagIdAttrOpt(r);
 			wPropAttrAll(r);
 		} else if (isGenuineAnon(r)) {
 			error("Genuine anon resource in cycle?");
@@ -764,7 +745,6 @@ class Unparser {
 		wt.wTypeStart(ty);
 		indentPlus();
 		wIdAboutAttrOpt(r);
-		wBagIdAttrOpt(r);
 		wPropAttrAll(r);
 		print("/>");
 		indentMinus();
@@ -814,7 +794,6 @@ class Unparser {
 		wt.wTypeStart(ty);
 		indentPlus();
 		wIdAboutAttrOpt(r);
-		wBagIdAttrOpt(r);
 		wPropAttrSome(r);
 		print(">");
 		wLiEltStar(li.iterator());
@@ -906,11 +885,8 @@ class Unparser {
 	[6.16] idRefAttr      ::= idAttr | resourceAttr
 	 */
 	private void wIdRefAttrOpt(Statement s, Resource r) throws RDFException {
-		if (wantReification(s)) {
-			if (!isGenuineAnon(r))
-				error("Bad use of wIdRefAttrOpt rule - want both ID and resource");
-			wIdAttrReified(s);
-		} else if (!isGenuineAnon(r)) {
+		wIdAttrReified(s);
+		if (!isGenuineAnon(r)) {
 			wResourceNodeIDAttr(r);
 		}
 	}
@@ -919,7 +895,13 @@ class Unparser {
 	 */
 	private void wIdAttrReified(Statement s) throws RDFException {
 		if (wantReification(s)) {
-			Statement reify[] = reification(s);
+            /*
+            if ( prettyWriter.sReification )
+              System.err.println("???");
+            else
+              System.err.println("!!!");
+			*/
+            Statement reify[] = reification(s);
 			Resource res = (Resource) statement2res.get(s);
 			idDone.add(res);
 			int i;
@@ -965,9 +947,6 @@ class Unparser {
 		return true;
 	}
 
-	private void wBagIdAttrOpt(Resource r) {
-		// return;
-	}
 	int codeCoverage[] = new int[8];
 	
 	/*
@@ -1164,9 +1143,6 @@ class Unparser {
 				&& (!haveReified.contains(r)));
 	}
 
-	private boolean isLocalReference(Statement s) {
-		return false;
-	}
 
 	private boolean isLocalReference(Resource r) throws RDFException {
 		return (!r.isAnon())
@@ -1220,10 +1196,10 @@ class Unparser {
 	/*
 	  Is the use of ID in rule [6.12] to create a reification helpful or not?
 	 */
-	private boolean wantReification(Statement s) throws RDFException {
+	private boolean wantReification(Statement s) {
 		return wantReification(s, (Resource) statement2res.get(s));
 	}
-	private boolean wantReification(Resource res) throws RDFException {
+	private boolean wantReification(Resource res) {
 		return wantReification((Statement) res2statement.get(res), res);
 	}
 	private boolean wantReification(Statement s, Resource ref)
@@ -1233,7 +1209,7 @@ class Unparser {
 			|| ref.isAnon()
 			|| prettyWriter.sReification)
 			return false;
-		if (!(isLocalReference(ref) && isLocalReference(s)))
+		if (!(isLocalReference(ref)))
 			return false;
 		Statement reify[] = reification(s);
 		int i;
@@ -1566,13 +1542,14 @@ class Unparser {
 	 *  The current implementation goes for:
 	 * <ul>
 	 * <li> The current file - mainly intended for good DAML.
-	 * <li> Subjects that are not objects of anything.
+	 * <li> Subjects that are not objects of anything, excluding reifications
 	 * <li> At these stage we evaluate a dependency graph of the remaining resources.
 	 * <li>non-anonymous resources that are the object of more than one
 	 * rule that are in infinite cycles.
 	 * <li> any non genuinely anonymous resources that are in infinite cycles
 	 * <li>any other resource in an infinite cyle
 	 * <li>any other resource.
+     * <li>reifications
 	 *</ul>
 	 *
 	 *
@@ -1599,7 +1576,8 @@ class Unparser {
 		// Subjects that are not objects of anything.
 		Iterator nonObjects = new FilterIterator(new Filter() {
 			public boolean accept(Object o) {
-				return !objectTable.containsKey(o);
+				return (!objectTable.containsKey(o)) 
+                  && (!wantReification((Resource)o));
 			}
 		}, modelListSubjects());
 		// At these stage we evaluate a dependency graph of the remaining resources.
@@ -1646,7 +1624,7 @@ class Unparser {
 		Iterator reifications = new FilterIterator(new Filter() {
 			public boolean accept(Object o) {
 				codeCoverage[6]++;
-				return o instanceof Statement;
+				return res2statement.containsKey(o);
 			}
 		}, allInfiniteLeft());
 		// any other resource.

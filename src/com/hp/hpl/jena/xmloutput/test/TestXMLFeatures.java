@@ -2,7 +2,7 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003    
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.11 2003-04-02 13:26:35 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.12 2003-04-04 20:56:03 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.util.TestLogger;
 
 /** 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.11 $ $Date: 2003-04-02 13:26:35 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.12 $ $Date: 2003-04-04 20:56:03 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -397,19 +397,19 @@ public class TestXMLFeatures extends TestCase {
     }
     public void testNoReification()
         throws IOException, MalformedPatternException {
-            System.err.println("WARNING: reification output tests suppressed.");
-            /*
-        check(
-            "testing/abbreviated/reification.rdf",
-            null, //"rdf:ID",
+           // System.err.println("WARNING: reification output tests suppressed.");
+         String filename = "testing/abbreviated/reification.rdf";
+         String base = "http://example.org/foo";
+         check(filename,null,null,"rdf:subject",false,new Change(){
+                    public void code(RDFWriter w){}
+                },base);
+        check(filename, null, "rdf:subject",null,  false, 
             new Change() {
             public void code(RDFWriter writer) {
                 writer.setProperty("blockrules", "section-reification");
             }
-            },
-            "http://example.org/foo"
-        );
-        */
+            }, base);
+        
     }
     public void testNoStripes()
         throws IOException, MalformedPatternException {
@@ -1049,5 +1049,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.11 2003-04-02 13:26:35 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.12 2003-04-04 20:56:03 jeremy_carroll Exp $
  */
