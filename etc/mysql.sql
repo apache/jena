@@ -406,7 +406,7 @@ UPDATE ${a} SET PropRes=? WHERE StmtRes = ? AND GraphID = ?
 #-------------------------------------------------------------------
 # Update the object of a reified statement 
 updateReifObj
-UPDATE ${a} SET ObjRes=?, ObjStr=? ObjLiteral=? WHERE StmtRes = ? AND GraphID = ?
+UPDATE ${a} SET ObjRes=?, ObjStr=?, ObjLiteral=? WHERE StmtRes = ? AND GraphID = ?
 
 #-------------------------------------------------------------------
 # Update the hasType of a reified statement 
