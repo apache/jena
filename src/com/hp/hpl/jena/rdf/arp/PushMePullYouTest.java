@@ -9,6 +9,7 @@ import junit.framework.TestCase;
 import java.util.*;
 
 /**
+ * Not part of API.
  * @author Jeremy J. Carroll
  *
  */

@@ -8,6 +8,9 @@ package com.hp.hpl.jena.rdf.arp;
 import org.xml.sax.ErrorHandler;
 
 /**
+ * Configure error reporting options etc on
+ * {@link ARP}, {@link SAX2RDF} and {@link SAX2Model}
+ * instances.
  * @author Jeremy J. Carroll
  *
  */

@@ -22,7 +22,7 @@ public class SAX2Model extends SAX2RDF {
      * used while parsing.
      * @param m A Jena Model in which to put the triples,
      * this can be null. If it is null, then use
-     * {@link #getHandlers} or {@link #setHandlers} to provide
+     * {@link #getHandlers} or {@link #setHandlersWith} to provide
      * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
 	 * @return A new SAX2RDF
 	 * @throws MalformedURIException
@@ -42,9 +42,9 @@ public class SAX2Model extends SAX2RDF {
      * used while parsing.
      * @param m A Jena Model in which to put the triples,
      * this can be null. If it is null, then use
-     * {@link #getHandlers} or {@link #setHandlers} to provide
+     * {@link #getHandlers} or {@link #setHandlersWith} to provide
      * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
-	 * @param lang The current value of xml:lang when parsing starts, usually "".
+	 * @param lang The current value of <code>xml:lang</code> when parsing starts, usually "".
 	 * @return A new SAX2RDF
 	 * @throws MalformedURIException
 	 */

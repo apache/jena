@@ -8,6 +8,9 @@ package com.hp.hpl.jena.rdf.arp;
 import org.xml.sax.ErrorHandler;
 
 /**
+ * Used for configuring user code to
+ * respond to statements and other events
+ * detected in input file.
  * @author Jeremy J. Carroll
  *
  */

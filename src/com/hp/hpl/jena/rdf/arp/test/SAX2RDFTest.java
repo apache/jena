@@ -18,76 +18,46 @@ import org.xml.sax.*;
 
 /**
  * @author Jeremy J. Carroll
- *
+ *  
  */
 public class SAX2RDFTest extends TestCase {
-	
+
 	static final private String all[] = {
-			
-			"abbreviated/collection.rdf",
-			"abbreviated/container.rdf",
-			"abbreviated/cookup.rdf",
-			"abbreviated/daml.rdf",
-			"abbreviated/namespaces.rdf",
-			"abbreviated/reification.rdf",
-			"abbreviated/relative-uris.rdf",
-			"arp/comments/test01.rdf",
-			"arp/comments/test02.rdf",
-			"arp/comments/test03.rdf",
-			"arp/comments/test04.rdf",
-			"arp/comments/test05.rdf",
-			"arp/comments/test06.rdf",
-			"arp/comments/test07.rdf",
-			"arp/comments/test08.rdf",
-			"arp/comments/test09.rdf",
-			"arp/comments/test10.rdf",
-			"arp/comments/test11.rdf",
-			"arp/comments/test12.rdf",
-			"arp/comments/test13.rdf",
-			"arp/error-msgs/test01.rdf",
-			"arp/error-msgs/test02.rdf",
-			"arp/error-msgs/test03.rdf",
-			"arp/error-msgs/test04.rdf",
+
+	"abbreviated/collection.rdf", "abbreviated/container.rdf",
+			"abbreviated/cookup.rdf", "abbreviated/daml.rdf",
+			"abbreviated/namespaces.rdf", "abbreviated/reification.rdf",
+			"abbreviated/relative-uris.rdf", "arp/comments/test01.rdf",
+			"arp/comments/test02.rdf", "arp/comments/test03.rdf",
+			"arp/comments/test04.rdf", "arp/comments/test05.rdf",
+			"arp/comments/test06.rdf", "arp/comments/test07.rdf",
+			"arp/comments/test08.rdf", "arp/comments/test09.rdf",
+			"arp/comments/test10.rdf", "arp/comments/test11.rdf",
+			"arp/comments/test12.rdf", "arp/comments/test13.rdf",
+			"arp/error-msgs/test01.rdf", "arp/error-msgs/test02.rdf",
+			"arp/error-msgs/test03.rdf", "arp/error-msgs/test04.rdf",
 			"arp/error-msgs/test05.rdf",
-	//		"arp/error-msgs/testutf8.rdf",
-			"arp/i18n/eq-bug73_0.rdf",
-			"arp/i18n/eq-bug73_1.rdf",
-			"arp/i18n/eq-bug73_2.rdf",
-			"arp/i18n/i18nID.rdf",
-			"arp/i18n/t9000.rdf",
-			"arp/Manifest.rdf",
-			"arp/parsetype/bug68_0.rdf",
-			"arp/qname-in-ID/bug74_0.rdf",
-			"arp/rdf-nnn/bad-bug67_0.rdf",
-			"arp/rdf-nnn/bad-bug67_1.rdf",
-			"arp/rdf-nnn/bad-bug67_2.rdf",
-			"arp/rdf-nnn/bad-bug67_3.rdf",
-			"arp/rdf-nnn/bad-bug67_4.rdf",
-			"arp/rdf-nnn/bad-bug67_5.rdf",
-			"arp/rdf-nnn/bad-bug67_6.rdf",
-			"arp/rdf-nnn/bad-bug67_7.rdf",
-			"arp/rdf-nnn/bad-bug67_8.rdf",
-			"arp/rdf-nnn/bad-bug67_9.rdf",
+			//		"arp/error-msgs/testutf8.rdf",
+			"arp/i18n/eq-bug73_0.rdf", "arp/i18n/eq-bug73_1.rdf",
+			"arp/i18n/eq-bug73_2.rdf", "arp/i18n/i18nID.rdf",
+			"arp/i18n/t9000.rdf", "arp/Manifest.rdf",
+			"arp/parsetype/bug68_0.rdf", "arp/qname-in-ID/bug74_0.rdf",
+			"arp/rdf-nnn/bad-bug67_0.rdf", "arp/rdf-nnn/bad-bug67_1.rdf",
+			"arp/rdf-nnn/bad-bug67_2.rdf", "arp/rdf-nnn/bad-bug67_3.rdf",
+			"arp/rdf-nnn/bad-bug67_4.rdf", "arp/rdf-nnn/bad-bug67_5.rdf",
+			"arp/rdf-nnn/bad-bug67_6.rdf", "arp/rdf-nnn/bad-bug67_7.rdf",
+			"arp/rdf-nnn/bad-bug67_8.rdf", "arp/rdf-nnn/bad-bug67_9.rdf",
 			"arp/relative-namespaces/bad-bug50_0.rdf",
-			"arp/rfc2396-issue/bug51_0.rdf",
-			"arp/rfc2396-issue/fileURI.rdf",
-		//	"arp/scope/test01.rdf",
-			"arp/scope/test02.rdf",
-			"arp/scope/test03.rdf",
-			"arp/scope/test04.rdf",
-			"arp/scope/test05.rdf",
-			"arp/syntax-errors/error001.rdf",
-			"arp/syntax-errors/error002.rdf",
-			"arp/syntax-errors/error003.rdf",
-			"arp/xml-literals/reported1.rdf",
-			"arp/xml-literals/reported2.rdf",
-			"arp/xml-literals/reported3.rdf",
-			"arp/xmlns/bad01.rdf",
-			"arp/xmlns/food.rdf",
-			"arp/xmlns/test01.rdf",
-			"arp/xmlns/test02.rdf",
-			"arp/xmlns/test03.rdf",
-			"arp/xmlns/wine.rdf",
+			"arp/rfc2396-issue/bug51_0.rdf", "arp/rfc2396-issue/fileURI.rdf",
+			//	"arp/scope/test01.rdf",
+			"arp/scope/test02.rdf", "arp/scope/test03.rdf",
+			"arp/scope/test04.rdf", "arp/scope/test05.rdf",
+			"arp/syntax-errors/error001.rdf", "arp/syntax-errors/error002.rdf",
+			"arp/syntax-errors/error003.rdf", "arp/xml-literals/reported1.rdf",
+			"arp/xml-literals/reported2.rdf", "arp/xml-literals/reported3.rdf",
+			"arp/xmlns/bad01.rdf", "arp/xmlns/food.rdf",
+			"arp/xmlns/test01.rdf", "arp/xmlns/test02.rdf",
+			"arp/xmlns/test03.rdf", "arp/xmlns/wine.rdf",
 			"ontology/daml/Axioms/test.rdf",
 			"ontology/daml/ClassExpression/test-boolean.rdf",
 			"ontology/daml/ClassExpression/test-enum.rdf",
@@ -96,13 +66,9 @@ public class SAX2RDFTest extends TestCase {
 			"ontology/daml/list-syntax/test-proptypes.rdf",
 			"ontology/daml/list-syntax/test.rdf",
 			"ontology/daml/Ontology/test.rdf",
-			"ontology/daml/Property/test.rdf",
-			"ontology/list0.rdf",
-			"ontology/list1.rdf",
-			"ontology/list2.rdf",
-			"ontology/list3.rdf",
-			"ontology/list4.rdf",
-			"ontology/list5.rdf",
+			"ontology/daml/Property/test.rdf", "ontology/list0.rdf",
+			"ontology/list1.rdf", "ontology/list2.rdf", "ontology/list3.rdf",
+			"ontology/list4.rdf", "ontology/list5.rdf",
 			"ontology/owl/Axioms/test.rdf",
 			"ontology/owl/ClassExpression/test-boolean.rdf",
 			"ontology/owl/ClassExpression/test-enum.rdf",
@@ -111,104 +77,73 @@ public class SAX2RDFTest extends TestCase {
 			"ontology/owl/list-syntax/test-proptypes.rdf",
 			"ontology/owl/list-syntax/test-with-import.rdf",
 			"ontology/owl/list-syntax/test.rdf",
-			"ontology/owl/Ontology/test.rdf",
-			"ontology/owl/Property/test.rdf",
+			"ontology/owl/Ontology/test.rdf", "ontology/owl/Property/test.rdf",
 			"ontology/rdfs/ClassExpression/test.rdf",
 			"ontology/rdfs/list-syntax/test.rdf",
 			"ontology/rdfs/Ontology/test.rdf",
-			"ontology/rdfs/Property/test.rdf",
-			"ontology/relativenames.rdf",
-			"ontology/testImport5/ont-policy.rdf",
-			"ontology/tidy/ann001.rdf",
-			"ontology/tidy/ann002.rdf",
-			"ontology/tidy/ann003.rdf",
-			"ontology/tidy/ann004.rdf",
-			"ontology/tidy/ann005.rdf",
-			"ontology/tidy/cycle001.rdf",
-			"ontology/tidy/cycle002.rdf",
-			"ontology/tidy/cycle003.rdf",
-			"ontology/tidy/cycle004.rdf",
-			"ontology/tidy/cycle005.rdf",
-			"ontology/tidy/disjointWith001.rdf",
-			"ontology/tidy/disjointWith002.rdf",
-			"ontology/tidy/emess.rdf",
-			"ontology/tidy/imports001.rdf",
-			"ontology/tidy/imports002.rdf",
-			"ontology/tidy/list001.rdf",
-			"ontology/tidy/ontologyProp001.rdf",
-			"ontology/tidy/sameAs001.rdf",
-			"ontology/tidy/subClassOf001.rdf",
+			"ontology/rdfs/Property/test.rdf", "ontology/relativenames.rdf",
+			"ontology/testImport5/ont-policy.rdf", "ontology/tidy/ann001.rdf",
+			"ontology/tidy/ann002.rdf", "ontology/tidy/ann003.rdf",
+			"ontology/tidy/ann004.rdf", "ontology/tidy/ann005.rdf",
+			"ontology/tidy/cycle001.rdf", "ontology/tidy/cycle002.rdf",
+			"ontology/tidy/cycle003.rdf", "ontology/tidy/cycle004.rdf",
+			"ontology/tidy/cycle005.rdf", "ontology/tidy/disjointWith001.rdf",
+			"ontology/tidy/disjointWith002.rdf", "ontology/tidy/emess.rdf",
+			"ontology/tidy/imports001.rdf", "ontology/tidy/imports002.rdf",
+			"ontology/tidy/list001.rdf", "ontology/tidy/ontologyProp001.rdf",
+			"ontology/tidy/sameAs001.rdf", "ontology/tidy/subClassOf001.rdf",
 			"ontology/tidy/subClassOf002.rdf",
 			"ontology/tidy/subClassOf003.rdf",
 			"ontology/tidy/subClassOf004.rdf",
-			"ontology/tidy/subClassOf005.rdf",
-			"ontology/tidy/ugly001.rdf",
-			"RDQL/model5.rdf",
-			"RDQL/vc-db-1.rdf",
-			"RDQL/vc-db-2.rdf",
-			"RDQL/vc-db-3.rdf",
-			"reasoners/bugs/sbug.rdf",
+			"ontology/tidy/subClassOf005.rdf", "ontology/tidy/ugly001.rdf",
+			"RDQL/model5.rdf", "RDQL/vc-db-1.rdf", "RDQL/vc-db-2.rdf",
+			"RDQL/vc-db-3.rdf", "reasoners/bugs/sbug.rdf",
 			"reasoners/owl/consistentData.rdf",
 			"reasoners/owl/inconsistent1.rdf",
 			"reasoners/owl/inconsistent2.rdf",
 			"reasoners/owl/inconsistent3.rdf",
 			"reasoners/owl/inconsistent4.rdf",
-			"reasoners/owl/inconsistent5.rdf",
-			"reasoners/rdfs/data1.rdf",
-			"reasoners/rdfs/data2.rdf",
-			"reasoners/rdfs/data3.rdf",
+			"reasoners/owl/inconsistent5.rdf", "reasoners/rdfs/data1.rdf",
+			"reasoners/rdfs/data2.rdf", "reasoners/rdfs/data3.rdf",
 			"reasoners/rdfs/dataRDFS12.rdf",
 			"reasoners/rdfs/manifest-nodirect-noresource.rdf",
 			"reasoners/rdfs/manifest-nodirect.rdf",
 			"reasoners/rdfs/manifest-rdfs12.rdf",
 			"reasoners/rdfs/manifest-simple.rdf",
 			"reasoners/rdfs/manifest-standard.rdf",
-			"reasoners/rdfs/manifest.rdf",
-			"reasoners/rdfs/result1.rdf",
+			"reasoners/rdfs/manifest.rdf", "reasoners/rdfs/result1.rdf",
 			"reasoners/rdfs/result10.rdf",
 			"reasoners/rdfs/result11-noresource.rdf",
 			"reasoners/rdfs/result11.rdf",
 			"reasoners/rdfs/result12-noresource.rdf",
 			"reasoners/rdfs/result12.rdf",
 			"reasoners/rdfs/result13-noresource.rdf",
-			"reasoners/rdfs/result13.rdf",
-			"reasoners/rdfs/result14.rdf",
+			"reasoners/rdfs/result13.rdf", "reasoners/rdfs/result14.rdf",
 			"reasoners/rdfs/result15.rdf",
 			"reasoners/rdfs/result16-noresource.rdf",
-			"reasoners/rdfs/result16.rdf",
-			"reasoners/rdfs/result17.rdf",
+			"reasoners/rdfs/result16.rdf", "reasoners/rdfs/result17.rdf",
 			"reasoners/rdfs/result18-simple.rdf",
 			"reasoners/rdfs/result18.rdf",
 			"reasoners/rdfs/result19-nodirect.rdf",
-			"reasoners/rdfs/result19.rdf",
-			"reasoners/rdfs/result2.rdf",
+			"reasoners/rdfs/result19.rdf", "reasoners/rdfs/result2.rdf",
 			"reasoners/rdfs/result20-nodirect.rdf",
-			"reasoners/rdfs/result20.rdf",
-			"reasoners/rdfs/result3.rdf",
-			"reasoners/rdfs/result4.rdf",
-			"reasoners/rdfs/result7.rdf",
-			"reasoners/rdfs/result8.rdf",
-			"reasoners/rdfs/result9.rdf",
-			"reasoners/rdfs/resultRDFS12.rdf",
-			"reasoners/rdfs/tbox1.rdf",
-			"reasoners/rdfs/timing-data.rdf",
-			"reasoners/rdfs/timing-tbox.rdf",
+			"reasoners/rdfs/result20.rdf", "reasoners/rdfs/result3.rdf",
+			"reasoners/rdfs/result4.rdf", "reasoners/rdfs/result7.rdf",
+			"reasoners/rdfs/result8.rdf", "reasoners/rdfs/result9.rdf",
+			"reasoners/rdfs/resultRDFS12.rdf", "reasoners/rdfs/tbox1.rdf",
+			"reasoners/rdfs/timing-data.rdf", "reasoners/rdfs/timing-tbox.rdf",
 			"reasoners/transitive/data1.rdf",
 			"reasoners/transitive/data11.rdf",
-			"reasoners/transitive/data2.rdf",
-			"reasoners/transitive/data3.rdf",
-			"reasoners/transitive/data6.rdf",
-			"reasoners/transitive/data8.rdf",
-			"reasoners/transitive/data9.rdf",
-			"reasoners/transitive/empty.rdf",
+			"reasoners/transitive/data2.rdf", "reasoners/transitive/data3.rdf",
+			"reasoners/transitive/data6.rdf", "reasoners/transitive/data8.rdf",
+			"reasoners/transitive/data9.rdf", "reasoners/transitive/empty.rdf",
 			"reasoners/transitive/manifest.rdf",
 			"reasoners/transitive/result11.rdf",
 			"reasoners/transitive/result2.rdf",
 			"reasoners/transitive/result4.rdf",
 			"reasoners/transitive/result5.rdf",
 			"reasoners/transitive/result6.rdf",
-			"reasoners/transitive/tbox1.rdf",
-			"reasoners/transitive/tbox7.rdf",
+			"reasoners/transitive/tbox1.rdf", "reasoners/transitive/tbox7.rdf",
 			"wg/AllDifferent/conclusions001.rdf",
 			"wg/AllDifferent/Manifest001.rdf",
 			"wg/AllDifferent/premises001.rdf",
@@ -217,8 +152,7 @@ public class SAX2RDFTest extends TestCase {
 			"wg/allValuesFrom/Manifest002.rdf",
 			"wg/allValuesFrom/nonconclusions002.rdf",
 			"wg/allValuesFrom/premises001.rdf",
-			"wg/allValuesFrom/premises002.rdf",
-			"wg/amp-in-url/test001.rdf",
+			"wg/allValuesFrom/premises002.rdf", "wg/amp-in-url/test001.rdf",
 			"wg/AnnotationProperty/conclusions002.rdf",
 			"wg/AnnotationProperty/consistent003.rdf",
 			"wg/AnnotationProperty/consistent004.rdf",
@@ -268,30 +202,20 @@ public class SAX2RDFTest extends TestCase {
 			"wg/cardinality/premises005-mod.rdf",
 			"wg/cardinality/premises005.rdf",
 			"wg/cardinality/premises006-mod.rdf",
-			"wg/cardinality/premises006.rdf",
-			"wg/Class/conclusions001.rdf",
-			"wg/Class/conclusions002.rdf",
-			"wg/Class/conclusions003.rdf",
-			"wg/Class/conclusions006.rdf",
-			"wg/Class/Manifest001.rdf",
-			"wg/Class/Manifest002.rdf",
-			"wg/Class/Manifest003.rdf",
-			"wg/Class/Manifest004.rdf",
-			"wg/Class/Manifest005.rdf",
-			"wg/Class/Manifest006.rdf",
-			"wg/Class/nonconclusions004.rdf",
-			"wg/Class/nonconclusions005.rdf",
-			"wg/Class/premises002.rdf",
-			"wg/Class/premises003.rdf",
-			"wg/Class/premises004.rdf",
-			"wg/Class/premises005.rdf",
-			"wg/Class/premises006.rdf",
+			"wg/cardinality/premises006.rdf", "wg/Class/conclusions001.rdf",
+			"wg/Class/conclusions002.rdf", "wg/Class/conclusions003.rdf",
+			"wg/Class/conclusions006.rdf", "wg/Class/Manifest001.rdf",
+			"wg/Class/Manifest002.rdf", "wg/Class/Manifest003.rdf",
+			"wg/Class/Manifest004.rdf", "wg/Class/Manifest005.rdf",
+			"wg/Class/Manifest006.rdf", "wg/Class/nonconclusions004.rdf",
+			"wg/Class/nonconclusions005.rdf", "wg/Class/premises002.rdf",
+			"wg/Class/premises003.rdf", "wg/Class/premises004.rdf",
+			"wg/Class/premises005.rdf", "wg/Class/premises006.rdf",
 			"wg/complementOf/conclusions001.rdf",
 			"wg/complementOf/Manifest001.rdf",
 			"wg/complementOf/premises001.rdf",
 			"wg/DatatypeProperty/consistent001.rdf",
-			"wg/DatatypeProperty/Manifest001.rdf",
-			"wg/datatypes/test001.rdf",
+			"wg/DatatypeProperty/Manifest001.rdf", "wg/datatypes/test001.rdf",
 			"wg/datatypes/test002.rdf",
 			"wg/description-logic/conclusions001.rdf",
 			"wg/description-logic/conclusions002.rdf",
@@ -654,8 +578,7 @@ public class SAX2RDFTest extends TestCase {
 			"wg/disjointWith/premises002.rdf",
 			"wg/distinctMembers/conclusions001.rdf",
 			"wg/distinctMembers/Manifest001.rdf",
-			"wg/distinctMembers/premises001.rdf",
-			"wg/empty.rdf",
+			"wg/distinctMembers/premises001.rdf", "wg/empty.rdf",
 			"wg/equivalentClass/conclusions001.rdf",
 			"wg/equivalentClass/conclusions002.rdf",
 			"wg/equivalentClass/conclusions003.rdf",
@@ -708,8 +631,7 @@ public class SAX2RDFTest extends TestCase {
 			"wg/extra-credit/Manifest004.rdf",
 			"wg/extra-credit/premises002.rdf",
 			"wg/extra-credit/premises003.rdf",
-			"wg/extra-credit/premises004.rdf",
-			"wg/false.rdf",
+			"wg/extra-credit/premises004.rdf", "wg/false.rdf",
 			"wg/FunctionalProperty/conclusions001.rdf",
 			"wg/FunctionalProperty/conclusions002.rdf",
 			"wg/FunctionalProperty/conclusions003.rdf",
@@ -728,233 +650,119 @@ public class SAX2RDFTest extends TestCase {
 			"wg/FunctionalProperty/premises003.rdf",
 			"wg/FunctionalProperty/premises004.rdf",
 			"wg/FunctionalProperty/premises005-mod.rdf",
-			"wg/FunctionalProperty/premises005.rdf",
-			"wg/I3.2/bad001.rdf",
-			"wg/I3.2/bad002.rdf",
-			"wg/I3.2/bad003.rdf",
-			"wg/I3.2/Manifest001.rdf",
-			"wg/I3.2/Manifest002.rdf",
-			"wg/I3.2/Manifest003.rdf",
-			"wg/I3.4/bad001.rdf",
-			"wg/I3.4/Manifest001.rdf",
-			"wg/I4.1/bad001.rdf",
-			"wg/I4.1/Manifest001.rdf",
-			"wg/I4.5/conclusions001.rdf",
-			"wg/I4.5/inconsistent002.rdf",
-			"wg/I4.5/Manifest001.rdf",
-			"wg/I4.5/Manifest002.rdf",
-			"wg/I4.5/premises001.rdf",
-			"wg/I4.6/bad006.rdf",
-			"wg/I4.6/bad007.rdf",
-			"wg/I4.6/bad008.rdf",
-			"wg/I4.6/conclusions003.rdf",
-			"wg/I4.6/conclusions004.rdf",
-			"wg/I4.6/Manifest003.rdf",
-			"wg/I4.6/Manifest004.rdf",
-			"wg/I4.6/Manifest005.rdf",
-			"wg/I4.6/Manifest006.rdf",
-			"wg/I4.6/Manifest007.rdf",
-			"wg/I4.6/Manifest008.rdf",
-			"wg/I4.6/nonconclusions004.rdf",
-			"wg/I4.6/nonconclusions005.rdf",
-			"wg/I4.6/premises003.rdf",
-			"wg/I4.6/premises004.rdf",
-			"wg/I4.6/premises005.rdf",
-			"wg/I5.1/conclusions001.rdf",
-			"wg/I5.1/consistent010.rdf",
-			"wg/I5.1/Manifest001.rdf",
-			"wg/I5.1/Manifest010.rdf",
-			"wg/I5.1/premises001.rdf",
-			"wg/I5.2/conclusions002.rdf",
-			"wg/I5.2/conclusions004.rdf",
-			"wg/I5.2/conclusions006.rdf",
-			"wg/I5.2/consistent001.rdf",
-			"wg/I5.2/consistent003.rdf",
-			"wg/I5.2/consistent005.rdf",
-			"wg/I5.2/consistent010.rdf",
-			"wg/I5.2/consistent011.rdf",
-			"wg/I5.2/Manifest001.rdf",
-			"wg/I5.2/Manifest002.rdf",
-			"wg/I5.2/Manifest003.rdf",
-			"wg/I5.2/Manifest004.rdf",
-			"wg/I5.2/Manifest005.rdf",
-			"wg/I5.2/Manifest006.rdf",
-			"wg/I5.2/Manifest010.rdf",
-			"wg/I5.2/Manifest011.rdf",
-			"wg/I5.2/premises002.rdf",
-			"wg/I5.2/premises004.rdf",
-			"wg/I5.2/premises006.rdf",
-			"wg/I5.21/bad001.rdf",
-			"wg/I5.21/conclusions002.rdf",
-			"wg/I5.21/Manifest001.rdf",
-			"wg/I5.21/Manifest002.rdf",
-			"wg/I5.21/premises002.rdf",
-			"wg/I5.24/conclusions001.rdf",
-			"wg/I5.24/conclusions002-mod.rdf",
-			"wg/I5.24/conclusions002.rdf",
-			"wg/I5.24/conclusions003-mod.rdf",
-			"wg/I5.24/conclusions003.rdf",
-			"wg/I5.24/conclusions004.rdf",
-			"wg/I5.24/Manifest001.rdf",
-			"wg/I5.24/Manifest002-mod.rdf",
-			"wg/I5.24/Manifest002.rdf",
-			"wg/I5.24/Manifest003-mod.rdf",
-			"wg/I5.24/Manifest003.rdf",
-			"wg/I5.24/Manifest004-mod.rdf",
-			"wg/I5.24/Manifest004.rdf",
-			"wg/I5.24/premises001.rdf",
-			"wg/I5.24/premises002-mod.rdf",
-			"wg/I5.24/premises002.rdf",
-			"wg/I5.24/premises003-mod.rdf",
-			"wg/I5.24/premises003.rdf",
-			"wg/I5.24/premises004-mod.rdf",
-			"wg/I5.24/premises004.rdf",
-			"wg/I5.26/conclusions009.rdf",
-			"wg/I5.26/conclusions010.rdf",
-			"wg/I5.26/consistent001.rdf",
-			"wg/I5.26/consistent002.rdf",
-			"wg/I5.26/consistent003.rdf",
-			"wg/I5.26/consistent004.rdf",
-			"wg/I5.26/consistent005.rdf",
-			"wg/I5.26/consistent006.rdf",
-			"wg/I5.26/consistent007.rdf",
-			"wg/I5.26/Manifest001.rdf",
-			"wg/I5.26/Manifest002.rdf",
-			"wg/I5.26/Manifest003.rdf",
-			"wg/I5.26/Manifest004.rdf",
-			"wg/I5.26/Manifest005.rdf",
-			"wg/I5.26/Manifest006.rdf",
-			"wg/I5.26/Manifest007.rdf",
-			"wg/I5.26/Manifest009.rdf",
-			"wg/I5.26/Manifest010.rdf",
-			"wg/I5.26/premises009.rdf",
-			"wg/I5.26/premises010.rdf",
-			"wg/I5.3/conclusions014.rdf",
-			"wg/I5.3/conclusions015.rdf",
-			"wg/I5.3/consistent005.rdf",
-			"wg/I5.3/consistent006.rdf",
-			"wg/I5.3/consistent007.rdf",
-			"wg/I5.3/consistent008.rdf",
-			"wg/I5.3/consistent009.rdf",
-			"wg/I5.3/consistent010.rdf",
-			"wg/I5.3/consistent011.rdf",
-			"wg/I5.3/Manifest005.rdf",
-			"wg/I5.3/Manifest006.rdf",
-			"wg/I5.3/Manifest007.rdf",
-			"wg/I5.3/Manifest008.rdf",
-			"wg/I5.3/Manifest009.rdf",
-			"wg/I5.3/Manifest010.rdf",
-			"wg/I5.3/Manifest011.rdf",
-			"wg/I5.3/Manifest014.rdf",
-			"wg/I5.3/Manifest015.rdf",
-			"wg/I5.3/premises014.rdf",
-			"wg/I5.3/premises015.rdf",
-			"wg/I5.5/conclusions001.rdf",
-			"wg/I5.5/conclusions002.rdf",
-			"wg/I5.5/conclusions005.rdf",
-			"wg/I5.5/inconsistent003.rdf",
-			"wg/I5.5/inconsistent004.rdf",
-			"wg/I5.5/Manifest001.rdf",
-			"wg/I5.5/Manifest002.rdf",
-			"wg/I5.5/Manifest003.rdf",
-			"wg/I5.5/Manifest004.rdf",
-			"wg/I5.5/Manifest005.rdf",
-			"wg/I5.5/Manifest006.rdf",
-			"wg/I5.5/Manifest007.rdf",
-			"wg/I5.5/nonconclusions006.rdf",
-			"wg/I5.5/nonconclusions007.rdf",
-			"wg/I5.5/premises001.rdf",
-			"wg/I5.5/premises002.rdf",
-			"wg/I5.5/premises005.rdf",
-			"wg/I5.5/premises006.rdf",
-			"wg/I5.5/premises007.rdf",
-			"wg/I5.8/conclusions004.rdf",
-			"wg/I5.8/conclusions006.rdf",
-			"wg/I5.8/conclusions008.rdf",
-			"wg/I5.8/conclusions009.rdf",
-			"wg/I5.8/conclusions010.rdf",
-			"wg/I5.8/conclusions011.rdf",
-			"wg/I5.8/conclusions017.rdf",
-			"wg/I5.8/consistent002.rdf",
-			"wg/I5.8/consistent012.rdf",
-			"wg/I5.8/consistent013.rdf",
-			"wg/I5.8/consistent014.rdf",
-			"wg/I5.8/consistent015.rdf",
-			"wg/I5.8/consistent016.rdf",
-			"wg/I5.8/inconsistent001.rdf",
-			"wg/I5.8/inconsistent003.rdf",
-			"wg/I5.8/Manifest001.rdf",
-			"wg/I5.8/Manifest002.rdf",
-			"wg/I5.8/Manifest003.rdf",
-			"wg/I5.8/Manifest004.rdf",
-			"wg/I5.8/Manifest005.rdf",
-			"wg/I5.8/Manifest006.rdf",
-			"wg/I5.8/Manifest007.rdf",
-			"wg/I5.8/Manifest008.rdf",
-			"wg/I5.8/Manifest009.rdf",
-			"wg/I5.8/Manifest010.rdf",
-			"wg/I5.8/Manifest011.rdf",
-			"wg/I5.8/Manifest012.rdf",
-			"wg/I5.8/Manifest013.rdf",
-			"wg/I5.8/Manifest014.rdf",
-			"wg/I5.8/Manifest015.rdf",
-			"wg/I5.8/Manifest016.rdf",
-			"wg/I5.8/Manifest017.rdf",
-			"wg/I5.8/nonconclusions005.rdf",
-			"wg/I5.8/nonconclusions007.rdf",
-			"wg/I5.8/premises004.rdf",
-			"wg/I5.8/premises005.rdf",
-			"wg/I5.8/premises006.rdf",
-			"wg/I5.8/premises007.rdf",
-			"wg/I5.8/premises008.rdf",
-			"wg/I5.8/premises009.rdf",
-			"wg/I5.8/premises010.rdf",
-			"wg/I5.8/premises011.rdf",
-			"wg/I5.8/premises017.rdf",
-			"wg/I6.1/consistent001.rdf",
-			"wg/I6.1/Manifest001.rdf",
-			"wg/imports/conclusions001.rdf",
-			"wg/imports/conclusions002.rdf",
-			"wg/imports/conclusions003.rdf",
-			"wg/imports/conclusions010.rdf",
-			"wg/imports/conclusions011.rdf",
-			"wg/imports/consistent012.rdf",
-			"wg/imports/imports004.rdf",
-			"wg/imports/imports005.rdf",
-			"wg/imports/imports006.rdf",
-			"wg/imports/imports007.rdf",
-			"wg/imports/imports008.rdf",
-			"wg/imports/imports013.rdf",
-			"wg/imports/imports014.rdf",
-			"wg/imports/main004.rdf",
-			"wg/imports/main005.rdf",
-			"wg/imports/main006.rdf",
-			"wg/imports/main007.rdf",
-			"wg/imports/main008.rdf",
-			"wg/imports/main013.rdf",
-			"wg/imports/main014.rdf",
-			"wg/imports/Manifest001.rdf",
-			"wg/imports/Manifest002.rdf",
-			"wg/imports/Manifest003.rdf",
-			"wg/imports/Manifest004.rdf",
-			"wg/imports/Manifest005.rdf",
-			"wg/imports/Manifest006.rdf",
-			"wg/imports/Manifest007.rdf",
-			"wg/imports/Manifest008.rdf",
-			"wg/imports/Manifest010.rdf",
-			"wg/imports/Manifest011.rdf",
-			"wg/imports/Manifest012.rdf",
-			"wg/imports/Manifest013.rdf",
-			"wg/imports/Manifest014.rdf",
-			"wg/imports/nonconclusions002.rdf",
-			"wg/imports/premises001.rdf",
-			"wg/imports/premises002.rdf",
-			"wg/imports/premises003.rdf",
-			"wg/imports/premises011.rdf",
-			"wg/imports/support001-A.rdf",
-			"wg/imports/support002-A.rdf",
-			"wg/imports/support003-A.rdf",
-			"wg/imports/support003-B.rdf",
+			"wg/FunctionalProperty/premises005.rdf", "wg/I3.2/bad001.rdf",
+			"wg/I3.2/bad002.rdf", "wg/I3.2/bad003.rdf",
+			"wg/I3.2/Manifest001.rdf", "wg/I3.2/Manifest002.rdf",
+			"wg/I3.2/Manifest003.rdf", "wg/I3.4/bad001.rdf",
+			"wg/I3.4/Manifest001.rdf", "wg/I4.1/bad001.rdf",
+			"wg/I4.1/Manifest001.rdf", "wg/I4.5/conclusions001.rdf",
+			"wg/I4.5/inconsistent002.rdf", "wg/I4.5/Manifest001.rdf",
+			"wg/I4.5/Manifest002.rdf", "wg/I4.5/premises001.rdf",
+			"wg/I4.6/bad006.rdf", "wg/I4.6/bad007.rdf", "wg/I4.6/bad008.rdf",
+			"wg/I4.6/conclusions003.rdf", "wg/I4.6/conclusions004.rdf",
+			"wg/I4.6/Manifest003.rdf", "wg/I4.6/Manifest004.rdf",
+			"wg/I4.6/Manifest005.rdf", "wg/I4.6/Manifest006.rdf",
+			"wg/I4.6/Manifest007.rdf", "wg/I4.6/Manifest008.rdf",
+			"wg/I4.6/nonconclusions004.rdf", "wg/I4.6/nonconclusions005.rdf",
+			"wg/I4.6/premises003.rdf", "wg/I4.6/premises004.rdf",
+			"wg/I4.6/premises005.rdf", "wg/I5.1/conclusions001.rdf",
+			"wg/I5.1/consistent010.rdf", "wg/I5.1/Manifest001.rdf",
+			"wg/I5.1/Manifest010.rdf", "wg/I5.1/premises001.rdf",
+			"wg/I5.2/conclusions002.rdf", "wg/I5.2/conclusions004.rdf",
+			"wg/I5.2/conclusions006.rdf", "wg/I5.2/consistent001.rdf",
+			"wg/I5.2/consistent003.rdf", "wg/I5.2/consistent005.rdf",
+			"wg/I5.2/consistent010.rdf", "wg/I5.2/consistent011.rdf",
+			"wg/I5.2/Manifest001.rdf", "wg/I5.2/Manifest002.rdf",
+			"wg/I5.2/Manifest003.rdf", "wg/I5.2/Manifest004.rdf",
+			"wg/I5.2/Manifest005.rdf", "wg/I5.2/Manifest006.rdf",
+			"wg/I5.2/Manifest010.rdf", "wg/I5.2/Manifest011.rdf",
+			"wg/I5.2/premises002.rdf", "wg/I5.2/premises004.rdf",
+			"wg/I5.2/premises006.rdf", "wg/I5.21/bad001.rdf",
+			"wg/I5.21/conclusions002.rdf", "wg/I5.21/Manifest001.rdf",
+			"wg/I5.21/Manifest002.rdf", "wg/I5.21/premises002.rdf",
+			"wg/I5.24/conclusions001.rdf", "wg/I5.24/conclusions002-mod.rdf",
+			"wg/I5.24/conclusions002.rdf", "wg/I5.24/conclusions003-mod.rdf",
+			"wg/I5.24/conclusions003.rdf", "wg/I5.24/conclusions004.rdf",
+			"wg/I5.24/Manifest001.rdf", "wg/I5.24/Manifest002-mod.rdf",
+			"wg/I5.24/Manifest002.rdf", "wg/I5.24/Manifest003-mod.rdf",
+			"wg/I5.24/Manifest003.rdf", "wg/I5.24/Manifest004-mod.rdf",
+			"wg/I5.24/Manifest004.rdf", "wg/I5.24/premises001.rdf",
+			"wg/I5.24/premises002-mod.rdf", "wg/I5.24/premises002.rdf",
+			"wg/I5.24/premises003-mod.rdf", "wg/I5.24/premises003.rdf",
+			"wg/I5.24/premises004-mod.rdf", "wg/I5.24/premises004.rdf",
+			"wg/I5.26/conclusions009.rdf", "wg/I5.26/conclusions010.rdf",
+			"wg/I5.26/consistent001.rdf", "wg/I5.26/consistent002.rdf",
+			"wg/I5.26/consistent003.rdf", "wg/I5.26/consistent004.rdf",
+			"wg/I5.26/consistent005.rdf", "wg/I5.26/consistent006.rdf",
+			"wg/I5.26/consistent007.rdf", "wg/I5.26/Manifest001.rdf",
+			"wg/I5.26/Manifest002.rdf", "wg/I5.26/Manifest003.rdf",
+			"wg/I5.26/Manifest004.rdf", "wg/I5.26/Manifest005.rdf",
+			"wg/I5.26/Manifest006.rdf", "wg/I5.26/Manifest007.rdf",
+			"wg/I5.26/Manifest009.rdf", "wg/I5.26/Manifest010.rdf",
+			"wg/I5.26/premises009.rdf", "wg/I5.26/premises010.rdf",
+			"wg/I5.3/conclusions014.rdf", "wg/I5.3/conclusions015.rdf",
+			"wg/I5.3/consistent005.rdf", "wg/I5.3/consistent006.rdf",
+			"wg/I5.3/consistent007.rdf", "wg/I5.3/consistent008.rdf",
+			"wg/I5.3/consistent009.rdf", "wg/I5.3/consistent010.rdf",
+			"wg/I5.3/consistent011.rdf", "wg/I5.3/Manifest005.rdf",
+			"wg/I5.3/Manifest006.rdf", "wg/I5.3/Manifest007.rdf",
+			"wg/I5.3/Manifest008.rdf", "wg/I5.3/Manifest009.rdf",
+			"wg/I5.3/Manifest010.rdf", "wg/I5.3/Manifest011.rdf",
+			"wg/I5.3/Manifest014.rdf", "wg/I5.3/Manifest015.rdf",
+			"wg/I5.3/premises014.rdf", "wg/I5.3/premises015.rdf",
+			"wg/I5.5/conclusions001.rdf", "wg/I5.5/conclusions002.rdf",
+			"wg/I5.5/conclusions005.rdf", "wg/I5.5/inconsistent003.rdf",
+			"wg/I5.5/inconsistent004.rdf", "wg/I5.5/Manifest001.rdf",
+			"wg/I5.5/Manifest002.rdf", "wg/I5.5/Manifest003.rdf",
+			"wg/I5.5/Manifest004.rdf", "wg/I5.5/Manifest005.rdf",
+			"wg/I5.5/Manifest006.rdf", "wg/I5.5/Manifest007.rdf",
+			"wg/I5.5/nonconclusions006.rdf", "wg/I5.5/nonconclusions007.rdf",
+			"wg/I5.5/premises001.rdf", "wg/I5.5/premises002.rdf",
+			"wg/I5.5/premises005.rdf", "wg/I5.5/premises006.rdf",
+			"wg/I5.5/premises007.rdf", "wg/I5.8/conclusions004.rdf",
+			"wg/I5.8/conclusions006.rdf", "wg/I5.8/conclusions008.rdf",
+			"wg/I5.8/conclusions009.rdf", "wg/I5.8/conclusions010.rdf",
+			"wg/I5.8/conclusions011.rdf", "wg/I5.8/conclusions017.rdf",
+			"wg/I5.8/consistent002.rdf", "wg/I5.8/consistent012.rdf",
+			"wg/I5.8/consistent013.rdf", "wg/I5.8/consistent014.rdf",
+			"wg/I5.8/consistent015.rdf", "wg/I5.8/consistent016.rdf",
+			"wg/I5.8/inconsistent001.rdf", "wg/I5.8/inconsistent003.rdf",
+			"wg/I5.8/Manifest001.rdf", "wg/I5.8/Manifest002.rdf",
+			"wg/I5.8/Manifest003.rdf", "wg/I5.8/Manifest004.rdf",
+			"wg/I5.8/Manifest005.rdf", "wg/I5.8/Manifest006.rdf",
+			"wg/I5.8/Manifest007.rdf", "wg/I5.8/Manifest008.rdf",
+			"wg/I5.8/Manifest009.rdf", "wg/I5.8/Manifest010.rdf",
+			"wg/I5.8/Manifest011.rdf", "wg/I5.8/Manifest012.rdf",
+			"wg/I5.8/Manifest013.rdf", "wg/I5.8/Manifest014.rdf",
+			"wg/I5.8/Manifest015.rdf", "wg/I5.8/Manifest016.rdf",
+			"wg/I5.8/Manifest017.rdf", "wg/I5.8/nonconclusions005.rdf",
+			"wg/I5.8/nonconclusions007.rdf", "wg/I5.8/premises004.rdf",
+			"wg/I5.8/premises005.rdf", "wg/I5.8/premises006.rdf",
+			"wg/I5.8/premises007.rdf", "wg/I5.8/premises008.rdf",
+			"wg/I5.8/premises009.rdf", "wg/I5.8/premises010.rdf",
+			"wg/I5.8/premises011.rdf", "wg/I5.8/premises017.rdf",
+			"wg/I6.1/consistent001.rdf", "wg/I6.1/Manifest001.rdf",
+			"wg/imports/conclusions001.rdf", "wg/imports/conclusions002.rdf",
+			"wg/imports/conclusions003.rdf", "wg/imports/conclusions010.rdf",
+			"wg/imports/conclusions011.rdf", "wg/imports/consistent012.rdf",
+			"wg/imports/imports004.rdf", "wg/imports/imports005.rdf",
+			"wg/imports/imports006.rdf", "wg/imports/imports007.rdf",
+			"wg/imports/imports008.rdf", "wg/imports/imports013.rdf",
+			"wg/imports/imports014.rdf", "wg/imports/main004.rdf",
+			"wg/imports/main005.rdf", "wg/imports/main006.rdf",
+			"wg/imports/main007.rdf", "wg/imports/main008.rdf",
+			"wg/imports/main013.rdf", "wg/imports/main014.rdf",
+			"wg/imports/Manifest001.rdf", "wg/imports/Manifest002.rdf",
+			"wg/imports/Manifest003.rdf", "wg/imports/Manifest004.rdf",
+			"wg/imports/Manifest005.rdf", "wg/imports/Manifest006.rdf",
+			"wg/imports/Manifest007.rdf", "wg/imports/Manifest008.rdf",
+			"wg/imports/Manifest010.rdf", "wg/imports/Manifest011.rdf",
+			"wg/imports/Manifest012.rdf", "wg/imports/Manifest013.rdf",
+			"wg/imports/Manifest014.rdf", "wg/imports/nonconclusions002.rdf",
+			"wg/imports/premises001.rdf", "wg/imports/premises002.rdf",
+			"wg/imports/premises003.rdf", "wg/imports/premises011.rdf",
+			"wg/imports/support001-A.rdf", "wg/imports/support002-A.rdf",
+			"wg/imports/support003-A.rdf", "wg/imports/support003-B.rdf",
 			"wg/imports/support011-A.rdf",
 			"wg/intersectionOf/conclusions001.rdf",
 			"wg/intersectionOf/Manifest001.rdf",
@@ -972,10 +780,8 @@ public class SAX2RDFTest extends TestCase {
 			"wg/InverseFunctionalProperty/premises002.rdf",
 			"wg/InverseFunctionalProperty/premises003.rdf",
 			"wg/InverseFunctionalProperty/premises004.rdf",
-			"wg/inverseOf/conclusions001.rdf",
-			"wg/inverseOf/Manifest001.rdf",
-			"wg/inverseOf/premises001.rdf",
-			"wg/localtests/conclusions001.rdf",
+			"wg/inverseOf/conclusions001.rdf", "wg/inverseOf/Manifest001.rdf",
+			"wg/inverseOf/premises001.rdf", "wg/localtests/conclusions001.rdf",
 			"wg/localtests/conclusions002.rdf",
 			"wg/localtests/conclusions003.rdf",
 			"wg/localtests/conclusions004.rdf",
@@ -983,24 +789,17 @@ public class SAX2RDFTest extends TestCase {
 			"wg/localtests/conclusions006.rdf",
 			"wg/localtests/conclusionsRestriction001.rdf",
 			"wg/localtests/conclusionsSubclass001.rdf",
-			"wg/localtests/Manifest001.rdf",
-			"wg/localtests/Manifest002.rdf",
-			"wg/localtests/Manifest003.rdf",
-			"wg/localtests/Manifest004.rdf",
-			"wg/localtests/Manifest005.rdf",
-			"wg/localtests/Manifest006.rdf",
+			"wg/localtests/Manifest001.rdf", "wg/localtests/Manifest002.rdf",
+			"wg/localtests/Manifest003.rdf", "wg/localtests/Manifest004.rdf",
+			"wg/localtests/Manifest005.rdf", "wg/localtests/Manifest006.rdf",
 			"wg/localtests/ManifestRestriction001.rdf",
 			"wg/localtests/ManifestSubclass001.rdf",
-			"wg/localtests/premises001.rdf",
-			"wg/localtests/premises003.rdf",
-			"wg/localtests/premises004.rdf",
-			"wg/localtests/premises005.rdf",
+			"wg/localtests/premises001.rdf", "wg/localtests/premises003.rdf",
+			"wg/localtests/premises004.rdf", "wg/localtests/premises005.rdf",
 			"wg/localtests/premises006.rdf",
 			"wg/localtests/premisesRestriction001.rdf",
-			"wg/localtests/premisesSubclass001.rdf",
-			"wg/Manifest-extra.rdf",
-			"wg/Manifest-wrong.rdf",
-			"wg/Manifest.rdf",
+			"wg/localtests/premisesSubclass001.rdf", "wg/Manifest-extra.rdf",
+			"wg/Manifest-wrong.rdf", "wg/Manifest.rdf",
 			"wg/maxCardinality/inconsistent001.rdf",
 			"wg/maxCardinality/inconsistent002.rdf",
 			"wg/maxCardinality/Manifest001.rdf",
@@ -1041,32 +840,19 @@ public class SAX2RDFTest extends TestCase {
 			"wg/miscellaneous/premises011.rdf",
 			"wg/miscellaneous/premises301.rdf",
 			"wg/miscellaneous/premises302.rdf",
-			"wg/Nothing/conclusions002.rdf",
-			"wg/Nothing/inconsistent001.rdf",
-			"wg/Nothing/Manifest001.rdf",
-			"wg/Nothing/Manifest002.rdf",
-			"wg/Nothing/premises002.rdf",
-			"wg/oneOf/conclusions002.rdf",
-			"wg/oneOf/conclusions003.rdf",
-			"wg/oneOf/conclusions004.rdf",
-			"wg/oneOf/consistent001.rdf",
-			"wg/oneOf/Manifest001.rdf",
-			"wg/oneOf/Manifest002.rdf",
-			"wg/oneOf/Manifest003.rdf",
-			"wg/oneOf/Manifest004.rdf",
-			"wg/oneOf/premises002.rdf",
-			"wg/oneOf/premises003.rdf",
-			"wg/oneOf/premises004.rdf",
-			"wg/Ontology/conclusions001.rdf",
-			"wg/Ontology/conclusions004.rdf",
-			"wg/Ontology/Manifest001.rdf",
-			"wg/Ontology/Manifest003.rdf",
-			"wg/Ontology/Manifest004.rdf",
-			"wg/Ontology/nonconclusions003.rdf",
-			"wg/Ontology/premises001.rdf",
-			"wg/Ontology/premises003.rdf",
-			"wg/Ontology/premises004.rdf",
-			"wg/OWLManifest.rdf",
+			"wg/Nothing/conclusions002.rdf", "wg/Nothing/inconsistent001.rdf",
+			"wg/Nothing/Manifest001.rdf", "wg/Nothing/Manifest002.rdf",
+			"wg/Nothing/premises002.rdf", "wg/oneOf/conclusions002.rdf",
+			"wg/oneOf/conclusions003.rdf", "wg/oneOf/conclusions004.rdf",
+			"wg/oneOf/consistent001.rdf", "wg/oneOf/Manifest001.rdf",
+			"wg/oneOf/Manifest002.rdf", "wg/oneOf/Manifest003.rdf",
+			"wg/oneOf/Manifest004.rdf", "wg/oneOf/premises002.rdf",
+			"wg/oneOf/premises003.rdf", "wg/oneOf/premises004.rdf",
+			"wg/Ontology/conclusions001.rdf", "wg/Ontology/conclusions004.rdf",
+			"wg/Ontology/Manifest001.rdf", "wg/Ontology/Manifest003.rdf",
+			"wg/Ontology/Manifest004.rdf", "wg/Ontology/nonconclusions003.rdf",
+			"wg/Ontology/premises001.rdf", "wg/Ontology/premises003.rdf",
+			"wg/Ontology/premises004.rdf", "wg/OWLManifest.rdf",
 			"wg/rdf-charmod-literals/error001.rdf",
 			"wg/rdf-charmod-literals/error002.rdf",
 			"wg/rdf-charmod-literals/test001.rdf",
@@ -1080,9 +866,9 @@ public class SAX2RDFTest extends TestCase {
 			"wg/rdf-containers-syntax-vs-schema/test002.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test003.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test004.rdf",
-			
+
 			"wg/rdf-containers-syntax-vs-schema/test005.rdf",
-			
+
 			"wg/rdf-containers-syntax-vs-schema/test006.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test007.rdf",
 			"wg/rdf-containers-syntax-vs-schema/test008.rdf",
@@ -1145,10 +931,10 @@ public class SAX2RDFTest extends TestCase {
 			"wg/rdfms-literal-is-xml-structure/test002.rdf",
 			"wg/rdfms-literal-is-xml-structure/test003.rdf",
 			"wg/rdfms-literal-is-xml-structure/test004.rdf",
-			"wg/rdfms-literal-is-xml-structure/test005.rdf", 
-		//	"wg/rdfms-nested-bagIDs/test001.rdf", 
+			"wg/rdfms-literal-is-xml-structure/test005.rdf",
+			//	"wg/rdfms-nested-bagIDs/test001.rdf",
 			"wg/rdfms-nested-bagIDs/test002.rdf",
-		//	"wg/rdfms-nested-bagIDs/test003.rdf",
+			//	"wg/rdfms-nested-bagIDs/test003.rdf",
 			"wg/rdfms-nested-bagIDs/test004.rdf",
 			"wg/rdfms-nested-bagIDs/test005.rdf",
 			"wg/rdfms-nested-bagIDs/test006.rdf",
@@ -1163,17 +949,12 @@ public class SAX2RDFTest extends TestCase {
 			"wg/rdfms-not-id-and-resource-attr/test003.rdf",
 			"wg/rdfms-not-id-and-resource-attr/test004.rdf",
 			"wg/rdfms-not-id-and-resource-attr/test005.rdf",
-			"wg/rdfms-para196/test001.rdf",
-			"wg/rdfms-parseType/error001.rdf",
+			"wg/rdfms-para196/test001.rdf", "wg/rdfms-parseType/error001.rdf",
 			"wg/rdfms-parseType/error002.rdf",
-			"wg/rdfms-parseType/error003.rdf",
-			"wg/rdfms-rdf-id/error001.rdf",
-			"wg/rdfms-rdf-id/error002.rdf",
-			"wg/rdfms-rdf-id/error003.rdf",
-			"wg/rdfms-rdf-id/error004.rdf",
-			"wg/rdfms-rdf-id/error005.rdf",
-			"wg/rdfms-rdf-id/error006.rdf",
-			"wg/rdfms-rdf-id/error007.rdf",
+			"wg/rdfms-parseType/error003.rdf", "wg/rdfms-rdf-id/error001.rdf",
+			"wg/rdfms-rdf-id/error002.rdf", "wg/rdfms-rdf-id/error003.rdf",
+			"wg/rdfms-rdf-id/error004.rdf", "wg/rdfms-rdf-id/error005.rdf",
+			"wg/rdfms-rdf-id/error006.rdf", "wg/rdfms-rdf-id/error007.rdf",
 			"wg/rdfms-rdf-names-use/error-001.rdf",
 			"wg/rdfms-rdf-names-use/error-002.rdf",
 			"wg/rdfms-rdf-names-use/error-003.rdf",
@@ -1249,12 +1030,9 @@ public class SAX2RDFTest extends TestCase {
 			"wg/rdfms-uri-substructure/test001.rdf",
 			"wg/rdfms-xml-literal-namespaces/test001.rdf",
 			"wg/rdfms-xml-literal-namespaces/test002.rdf",
-			"wg/rdfms-xmllang/test001.rdf",
-			"wg/rdfms-xmllang/test002.rdf",
-			"wg/rdfms-xmllang/test003.rdf",
-			"wg/rdfms-xmllang/test004.rdf",
-			"wg/rdfms-xmllang/test005.rdf",
-			"wg/rdfms-xmllang/test006.rdf",
+			"wg/rdfms-xmllang/test001.rdf", "wg/rdfms-xmllang/test002.rdf",
+			"wg/rdfms-xmllang/test003.rdf", "wg/rdfms-xmllang/test004.rdf",
+			"wg/rdfms-xmllang/test005.rdf", "wg/rdfms-xmllang/test006.rdf",
 			"wg/rdfs-container-membership-superProperty/not1C.rdf",
 			"wg/rdfs-container-membership-superProperty/not1P.rdf",
 			"wg/rdfs-domain-and-range/nonconclusions005.rdf",
@@ -1272,17 +1050,12 @@ public class SAX2RDFTest extends TestCase {
 			"wg/Restriction/consistent004.rdf",
 			"wg/Restriction/inconsistent001.rdf",
 			"wg/Restriction/inconsistent002.rdf",
-			"wg/Restriction/Manifest001.rdf",
-			"wg/Restriction/Manifest002.rdf",
-			"wg/Restriction/Manifest003.rdf",
-			"wg/Restriction/Manifest004.rdf",
-			"wg/Restriction/Manifest005.rdf",
-			"wg/Restriction/Manifest006.rdf",
+			"wg/Restriction/Manifest001.rdf", "wg/Restriction/Manifest002.rdf",
+			"wg/Restriction/Manifest003.rdf", "wg/Restriction/Manifest004.rdf",
+			"wg/Restriction/Manifest005.rdf", "wg/Restriction/Manifest006.rdf",
 			"wg/Restriction/nonconclusions005.rdf",
-			"wg/Restriction/premises005.rdf",
-			"wg/Restriction/premises006.rdf",
-			"wg/sameAs/conclusions001.rdf",
-			"wg/sameAs/Manifest001.rdf",
+			"wg/Restriction/premises005.rdf", "wg/Restriction/premises006.rdf",
+			"wg/sameAs/conclusions001.rdf", "wg/sameAs/Manifest001.rdf",
 			"wg/sameAs/premises001.rdf",
 			"wg/someValuesFrom/conclusions001.rdf",
 			"wg/someValuesFrom/conclusions003.rdf",
@@ -1301,225 +1074,208 @@ public class SAX2RDFTest extends TestCase {
 			"wg/SymmetricProperty/Manifest003.rdf",
 			"wg/SymmetricProperty/premises001.rdf",
 			"wg/SymmetricProperty/premises002.rdf",
-			"wg/SymmetricProperty/premises003.rdf",
-			"wg/testOntology.rdf",
-			"wg/Thing/consistent004.rdf",
-			"wg/Thing/inconsistent003.rdf",
-			"wg/Thing/inconsistent005.rdf",
-			"wg/Thing/Manifest003.rdf",
-			"wg/Thing/Manifest004.rdf",
-			"wg/Thing/Manifest005.rdf",
+			"wg/SymmetricProperty/premises003.rdf", "wg/testOntology.rdf",
+			"wg/Thing/consistent004.rdf", "wg/Thing/inconsistent003.rdf",
+			"wg/Thing/inconsistent005.rdf", "wg/Thing/Manifest003.rdf",
+			"wg/Thing/Manifest004.rdf", "wg/Thing/Manifest005.rdf",
 			"wg/TransitiveProperty/conclusions001.rdf",
 			"wg/TransitiveProperty/conclusions002.rdf",
 			"wg/TransitiveProperty/Manifest001.rdf",
 			"wg/TransitiveProperty/Manifest002.rdf",
 			"wg/TransitiveProperty/premises001.rdf",
 			"wg/TransitiveProperty/premises002.rdf",
-			"wg/unionOf/conclusions001.rdf",
-			"wg/unionOf/conclusions002.rdf",
-			"wg/unionOf/conclusions003.rdf",
-			"wg/unionOf/conclusions004.rdf",
-			"wg/unionOf/Manifest001.rdf",
-			"wg/unionOf/Manifest002.rdf",
-			"wg/unionOf/Manifest003.rdf",
-			"wg/unionOf/Manifest004.rdf",
-			"wg/unionOf/premises001.rdf",
-			"wg/unionOf/premises002.rdf",
-			"wg/unionOf/premises003.rdf",
-			"wg/unionOf/premises004.rdf",
+			"wg/unionOf/conclusions001.rdf", "wg/unionOf/conclusions002.rdf",
+			"wg/unionOf/conclusions003.rdf", "wg/unionOf/conclusions004.rdf",
+			"wg/unionOf/Manifest001.rdf", "wg/unionOf/Manifest002.rdf",
+			"wg/unionOf/Manifest003.rdf", "wg/unionOf/Manifest004.rdf",
+			"wg/unionOf/premises001.rdf", "wg/unionOf/premises002.rdf",
+			"wg/unionOf/premises003.rdf", "wg/unionOf/premises004.rdf",
 			"wg/unrecognised-xml-attributes/test001.rdf",
 			"wg/unrecognised-xml-attributes/test002.rdf",
-			"wg/xmlbase/error001.rdf",
-			"wg/xmlbase/test001.rdf",
-			"wg/xmlbase/test002.rdf",
-			"wg/xmlbase/test003.rdf",
-			"wg/xmlbase/test004.rdf",
-			"wg/xmlbase/test005.rdf",
-			"wg/xmlbase/test006.rdf",
-			"wg/xmlbase/test007.rdf",
-			"wg/xmlbase/test008.rdf",
-			"wg/xmlbase/test009.rdf",
-			"wg/xmlbase/test010.rdf",
-			"wg/xmlbase/test011.rdf",
-			"wg/xmlbase/test012.rdf",
-			"wg/xmlbase/test013.rdf",
-			"wg/xmlbase/test014.rdf",
-			"wg/xmlbase/test015.rdf",
+			"wg/xmlbase/error001.rdf", "wg/xmlbase/test001.rdf",
+			"wg/xmlbase/test002.rdf", "wg/xmlbase/test003.rdf",
+			"wg/xmlbase/test004.rdf", "wg/xmlbase/test005.rdf",
+			"wg/xmlbase/test006.rdf", "wg/xmlbase/test007.rdf",
+			"wg/xmlbase/test008.rdf", "wg/xmlbase/test009.rdf",
+			"wg/xmlbase/test010.rdf", "wg/xmlbase/test011.rdf",
+			"wg/xmlbase/test012.rdf", "wg/xmlbase/test013.rdf",
+			"wg/xmlbase/test014.rdf", "wg/xmlbase/test015.rdf",
 			"wg/xmlbase/test016.rdf",
 
 	};
 
 	/**
 	 * @author Jeremy J. Carroll
-	 *
+	 *  
 	 */
 	static class RDFEHArray implements RDFErrorHandler {
 
 		Vector v = new Vector();
-		
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see com.hp.hpl.jena.rdf.model.RDFErrorHandler#warning(java.lang.Exception)
 		 */
 		public void warning(Exception e) {
-			s("W",e);
+			s("W", e);
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see com.hp.hpl.jena.rdf.model.RDFErrorHandler#error(java.lang.Exception)
 		 */
 		public void error(Exception e) {
-			s("E",e);
+			s("E", e);
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see com.hp.hpl.jena.rdf.model.RDFErrorHandler#fatalError(java.lang.Exception)
 		 */
 		public void fatalError(Exception e) {
-			s("F",e);		
-			}
-		private void s(String s, Exception e){
-			v.add(s+e.getMessage());
+			s("F", e);
+		}
+
+		private void s(String s, Exception e) {
+			v.add(s + e.getMessage());
 		}
 
 	}
+
 	static public TestSuite suite() {
 		TestSuite s = new TestSuite("SAX2RDF");
 		s.addTestSuite(PushMePullYouTest.class);
 		s.addTestSuite(SAX2RDFMoreTests.class);
 		//for (int j=0; j<20; j++)
-		for (int i =0; i<all.length; i+=20){
+		for (int i = 0; i < all.length; i += 20) {
 			String nm = all[i];
 			//if (all[i].indexOf("premises663")==-1)
 			//	continue;
 			if (all[i].startsWith("wg/")) {
-				s.addTest(new SAX2RDFTest("wg/",ARPTests.wgTestDir.toString(),all[i].substring(3)));
+				s.addTest(new SAX2RDFTest("wg/", ARPTests.wgTestDir.toString(),
+						all[i].substring(3)));
 			} else if (all[i].startsWith("arp/")) {
-				s.addTest(new SAX2RDFTest("arp/",ARPTests.arpTestDir.toString(),all[i].substring(4)));
+				s.addTest(new SAX2RDFTest("arp/", ARPTests.arpTestDir
+						.toString(), all[i].substring(4)));
 			} else {
-				s.addTest(new SAX2RDFTest("","http://example.org/",all[i]));
-					
+				s.addTest(new SAX2RDFTest("", "http://example.org/", all[i]));
+
 			}
 		}
-	//	s.addTest(new SAX2RDFTest("wg/",ARPTests.wgTestDir.toString(),"Manifest.rdf"));
-		
+		//	s.addTest(new
+		// SAX2RDFTest("wg/",ARPTests.wgTestDir.toString(),"Manifest.rdf"));
+
 		return s;
 	}
-	
+
 	//final private String dir;
 	final private String base;
+
 	final private String file;
-	SAX2RDFTest(String dir, String base0, String file){
+
+	SAX2RDFTest(String dir, String base0, String file) {
 		super(file);
 		//this.dir = dir;
-		this.base = base0+file;
-		this.file = "testing/" +dir+file;
-	//	System.err.println(base+" + "+this.file);
+		this.base = base0 + file;
+		this.file = "testing/" + dir + file;
+		//	System.err.println(base+" + "+this.file);
 	}
-	
+
 	public void runTest() throws Exception {
-		
+
 		Model m = ModelFactory.createDefaultModel();
 		Model m2 = ModelFactory.createDefaultModel();
-		InputStream in = new FileInputStream( file);
+		InputStream in = new FileInputStream(file);
 		RDFEHArray eh = new RDFEHArray();
 		RDFReader w = m.getReader();
 		w.setErrorHandler(eh);
-		w.read(m,in,base);
+		w.read(m, in, base);
 		in.close();
-		in = new FileInputStream( file);
-		
+		in = new FileInputStream(file);
 
 		RDFEHArray eh2 = new RDFEHArray();
-		
-/*
-		w = m.getReader();
-		w.setErrorHandler(eh2);
-		w.read(m2,in,base);
-		in.close();
-		*/
+
+		/*
+		 * w = m.getReader(); w.setErrorHandler(eh2); w.read(m2,in,base);
+		 * in.close();
+		 */
 		XMLReader saxParser = new SAXParser();
-		SAX2Model handler = SAX2Model.newInstance(base,m2);
-		SAX2RDF.installHandlers(saxParser,handler);
+		SAX2Model handler = SAX2Model.newInstance(base, m2);
+		SAX2RDF.installHandlers(saxParser, handler);
 		handler.setErrorHandler(eh2);
-		
+
 		InputSource ins = new InputSource(in);
 		ins.setSystemId(base);
-	try {
 		try {
-		   saxParser.parse(ins);
-		}
-		finally {
-			   handler.close();
-		}
-	}
-		catch (SAXParseException e){
+			try {
+				saxParser.parse(ins);
+			} finally {
+				handler.close();
+			}
+		} catch (SAXParseException e) {
 			// already reported, leave it be.
 		}
-		
-		in.close();
-		
-	/*	
-		System.out.println("Normal:");
-		m.write(System.out,"N-TRIPLE");
 
-		System.out.println("New:");
-		m2.write(System.out,"N-TRIPLE");
-		*/
-		if (eh.v.size()==0)
-		assertTrue("Not isomorphic",m.isIsomorphicWith(m2));
-		
-		if ( eh.v.size()!=eh2.v.size()) {
-			for (int i=0; i<eh.v.size();i++)
+		in.close();
+
+		/*
+		 * System.out.println("Normal:"); m.write(System.out,"N-TRIPLE");
+		 * 
+		 * System.out.println("New:"); m2.write(System.out,"N-TRIPLE");
+		 */
+		if (eh.v.size() == 0)
+			assertTrue("Not isomorphic", m.isIsomorphicWith(m2));
+
+		if (eh.v.size() != eh2.v.size()) {
+			for (int i = 0; i < eh.v.size(); i++)
 				System.err.println(eh.v.get(i));
 			System.err.println("---");
-			for (int i=0; i<eh2.v.size();i++)
+			for (int i = 0; i < eh2.v.size(); i++)
 				System.err.println(eh2.v.get(i));
-			
+
 		}
-		
-		assertEquals("Different number of errors",eh.v.size(),
-				eh2.v.size());
+
+		assertEquals("Different number of errors", eh.v.size(), eh2.v.size());
 
 		Object a[] = eh.v.toArray();
 		Object a2[] = eh2.v.toArray();
 		Arrays.sort(a);
 		Arrays.sort(a2);
-		
-		for (int i=0; i<eh.v.size();i++) {
-			assertEquals("Error "+i+ " different.",
-					a[i],a2[i]);
+
+		for (int i = 0; i < eh.v.size(); i++) {
+			assertEquals("Error " + i + " different.", a[i], a2[i]);
 		}
-		
+
 	}
 
 }
 
-
 /*
- *  (c) Copyright 2004 Hewlett-Packard Development Company, LP
- *  All rights reserved.
- *
+ * (c) Copyright 2004 Hewlett-Packard Development Company, LP All rights
+ * reserved.
+ * 
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * modification, are permitted provided that the following conditions are met:
+ * 1. Redistributions of source code must retain the above copyright notice,
+ * this list of conditions and the following disclaimer. 2. Redistributions in
+ * binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or other
+ * materials provided with the distribution. 3. The name of the author may not
+ * be used to endorse or promote products derived from this software without
+ * specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ * EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ * PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ * OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+

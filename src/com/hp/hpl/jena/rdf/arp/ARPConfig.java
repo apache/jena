@@ -6,6 +6,9 @@
 package com.hp.hpl.jena.rdf.arp;
 
 /**
+ * Used to set event handlers and options
+ * on {@link ARP}, {@link SAX2Model}, and
+ * {@link SAX2RDF} instances.
  * @author Jeremy J. Carroll
  *
  */
@@ -21,7 +24,7 @@ public interface ARPConfig {
 	 * @see ARPHandlers#setErrorHandler(ErrorHandler)
 	 * @see ARPHandlers#setExtendedHandler(ExtendedHandler)
 	 * @see ARPHandlers#setNamespaceHandler(NamespaceHandler)
-	 * @see #setHandlers
+	 * @see #setHandlersWith
 	 * @return The handlers used during parsing.
 	 */
 	public ARPHandlers getHandlers();
@@ -50,7 +53,7 @@ public interface ARPConfig {
 	 * @see ARPOptions#setEmbedding(boolean)
 	 * @see ARPOptions#setErrorMode(int, int)
 	 * 
-	 * @see #setOptions
+	 * @see #setOptionsWith
 	 * @return The handlers used during parsing.
 	 */
 	public ARPOptions getOptions();

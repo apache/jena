@@ -1,0 +1,232 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<HTML>
+  <HEAD>
+  <TITLE>SAX Input into Jena and ARP</TITLE>
+
+ <LINK REL ="stylesheet" TYPE="text/css" 
+	HREF="../javadoc/stylesheet.css" TITLE="Style">
+ <link rel="stylesheet" type="text/css" href="../styles/doc.css" />
+<style>
+td { text-align:left; } 
+  </style>
+  </HEAD>
+  <BODY>
+  <h1>SAX Input into Jena and ARP</h1>
+<p>
+Normally, both ARP and Jena are used to read files
+either from the local machine or from the Web.
+A different use case, addressed here, is when
+the XML source is available in-memory in some way.
+In these cases, ARP and Jena can be used as a SAX event handler,
+turning SAX events into triples.
+If you have a DOM tree, it is necessary to turn it into
+a stream of SAX events.
+</p>
+<h2>Contents</h2>
+<ul>
+
+<li><a href="#overview">1. Overview</a></li>
+<li><a href="#sample">2. Sample Code</a></li>
+<li><a href="#install">3. Initializing SAX event source</a></li>
+<li><a href="#errorhandler">4. Error Handler</a></li>
+<li><a href="#options">5. Options</a></li>
+<li><a href="#xmllang">6. XML Lang and Namespaces</a></li>
+<li><a href="#not-jena">7. Using your own statement handler</a></li>
+
+</ul>
+<h2><a name="overview">1. Overview</a></h2>
+<p>
+To read an arbitrary SAX source as triples to be added
+into a Jena Model, it is not possible to use a 
+Model.<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html#read(java.io.InputStream, java.lang.String)">read</A>()
+operation.
+Instead, you construct a SAX event handler of class
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2Model.html">SAX2Model</A>, 
+using the 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2Model.html#newInstance(java.lang.String, com.hp.hpl.jena.rdf.model.Model)">
+newInstance</A> method,
+install these as the handler on your SAX event source,
+and then stream the SAX events.
+It is possible to have fine-grained control over the SAX events,
+for instance, by inserting or deleting events, before passing
+them to the 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2Model.html">SAX2Model</A> handler.
+</p>
+<p>
+The implementation uses a second thread to do the RDF parsing,
+this has five main drawbacks:
+</p>
+<ul>
+<li>It is slower than a single thread.</li>
+<li>It is asynchronous, so that, except on the final
+endElement event, the exact state of the Model does not
+correspond to the position in the SAX event stream.
+Errors get reported some time after the SAX events that
+cause them.</li>
+<li>Exception handling is tricky. The code is intended
+to behave very similarly as if it were single threaded,
+but in some corner cases behaviour may be surprising.
+In particular, exceptions during RDF parsing occur on
+a different thread, and are then rethrown on the main
+thread.
+</li>
+<li>
+If the SAX event stream terminates unnaturally, it is
+necessary to explicitly close the SAX2Model handler, in order
+to terminate the RDF parsing thread.</li>
+<li>I/O interrupts are not supported.</li>
+</ul>
+<h2><a name="sample">2. Sample Code</a></h2>
+<p>
+This code uses the Xerces parser as a SAX event stream,
+and adds the triple to a 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/Model.html">Model</A> 
+using default options.
+</p>
+<pre>
+// Use your own SAX source.
+	XMLReader saxParser = new SAXParser();
+// set up SAX input
+	InputStream in = new FileInputStream("kb.rdf");
+	InputSource ins = new InputSource(in);
+	ins.setSystemId(base);
+
+
+	Model m = ModelFactory.createDefaultModel();
+	String base = "http://example.org/";
+	
+// create handler, linked to Model	
+	SAX2Model handler = SAX2Model.newInstance(base, m);
+	
+// install handler on SAX event stream
+	SAX2RDF.installHandlers(saxParser, handler);
+
+	
+	
+	try {
+		try {
+			saxParser.parse(ins);
+		} finally {
+// MUST ensure handler is closed.
+			handler.close();
+		}
+	} catch (SAXParseException e) {
+	// Fatal parsing errors end here,
+	// but they will already have been reported.
+	}
+</pre>
+
+<h2><a name="install">3. Initializing SAX event source</a></h2>
+<p>
+If your SAX event source is a subclass of XMLReader,
+then the 
+<a href="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2RDF.html#installHandlers(org.xml.sax.XMLReader,%20com.hp.hpl.jena.rdf.arp.XMLHandler)">installHandlers</a> 
+static method can be used as
+shown in the sample. Otherwise, you have to
+do it yourself. The 
+<a href="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2RDF.html#installHandlers(org.xml.sax.XMLReader,%20com.hp.hpl.jena.rdf.arp.XMLHandler)">installHandlers</a> 
+code is like this:
+</p>
+<pre>
+	static public void installHandlers(XMLReader rdr, XMLHandler sax2rdf) 
+	throws SAXException 
+	{
+		rdr.setEntityResolver(sax2rdf);
+		rdr.setDTDHandler(sax2rdf);
+		rdr.setContentHandler(sax2rdf);
+		rdr.setErrorHandler(sax2rdf);
+		rdr.setFeature("http://xml.org/sax/features/namespaces", true);
+		rdr.setFeature(
+			"http://xml.org/sax/features/namespace-prefixes",
+			true);
+		rdr.setProperty(
+			"http://xml.org/sax/properties/lexical-handler",
+			sax2rdf);	
+	}
+</pre>
+<p>
+For some other SAX source, the exact code will differ,
+but the required operations are as above.
+</p>
+<h2><a name="errorhandler">4. Error Handler</a></h2>
+<p>
+The 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2Model.html">SAX2Model</A> handler supports 
+the
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html#setErrorHandler(com.hp.hpl.jena.rdf.model.RDFErrorHandler)">
+setErrorHandler</A> method,
+from the Jena 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html">RDFReader</A> interface.
+This is used in the same way as that method to
+control error reporting.
+</p>
+<h2><a name="options">5. Options</a></h2>
+<p>
+The 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2Model.html">SAX2Model</A> handler 
+supports the 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html#setProperty(java.lang.String, java.lang.Object)">
+setProperty</A> method,
+from the Jena 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/model/RDFReader.html">RDFReader</A> interface.
+This is used in nearly the same way  to
+have fine grain control over ARPs behaviour,
+particularly over error reporting, see the 
+<a href="../IO/iohowto.html#arp-properties">I/O howto</a>.
+Setting SAX or Xerces properties cannot be done using this method.
+</p>
+<h2><a name="xmllang">6. XML Lang and Namespaces</a></h2>
+<p>
+If you are only treating some document subset as RDF/XML
+then it is necessary to ensure that ARP knows the correct
+value for <code>xml:lang</code> and desirable
+that it knows the correct mappings of namespace prefixes.
+</p>
+<p>
+There is a second version of the 
+<A HREF="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2Model.html#newInstance(java.lang.String, com.hp.hpl.jena.rdf.model.Model, java.lang.String)">
+newInstance</A>
+ method,
+which allows specification of the <code>xml:lang</code> value from
+the outer context. If this is inappropriate it is possible,
+but hard work, to synthesis an appropriate SAX event.
+</p>
+<p>
+For the namespaces prefixes, it is possible to
+call the 
+<a href="../javadoc/com/hp/hpl/jena/rdf/arp/SAX2RDF.html#startPrefixMapping(java.lang.String, java.lang.String)">
+startPrefixMapping</a> SAX event, before passing
+the other SAX events, to declare each namespace, one by one.
+Failure to do this is permitted, but, for instance, a Jena
+Model will then not know the (advisory) namespace prefix bindings.
+These should be paired with endPrefixMapping events, but
+nothing untoward is likely if such code is omitted.
+</p>
+<h2><a name="not-jena">7. Using your own triple handler</a></h2>
+<p>
+As with ARP, it is possible to use this functionality,
+without using other Jena features, in particular,
+without using a Jena Model.
+Instead of using the class SAX2Model,
+you use its superclass SAX2RDF.
+The newInstance method on this class does not
+provide any means of specifying what to do with
+the triples. Instead, the class implements the ARPConfig
+interface, which permits the setting of handlers
+and parser options.
+</p>
+<p>
+Thus you need to:
+</p>
+<ol>
+<li>Create a SAX2RDF using SAX2RDF.newInstance()</li>
+<li>Attach your StatementHandler and SAXErrorHandler
+and optionally your NamespaceHandler and
+ExtendedHandler to the SAX2RDF instance.</li>
+<li>Install the SAX2RDF instance as the SAX handler
+on your SAX source.</li>
+<li>Follow the remainder of the code sample above.</li>
+</ol>
+ </BODY>
+</HTML>

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.6 2004-10-20 15:32:32 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.7 2004-10-21 14:40:24 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -50,7 +50,7 @@ import org.xml.sax.*;
  * for some source of SAX events (e.g. from a parser).
  * It must be configured to use namespaces, and namespace
  * prefixes. This initializing can be done for XMLReaders
- * using {@link #initialize}.
+ * using {@link #installHandlers}.
  * </p>
  * <p>
  * Triples and errors are reported on a different thread.
@@ -67,13 +67,13 @@ public class SAX2RDF extends SAX2RDFImpl
 implements ARPConfig {
 	/**
 	 * Factory method to create a new SAX2RDF.
+	 * Use
+     * {@link #getHandlers} or {@link #setHandlersWith} to provide
+     * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
+	 *
 	 * @param base The retrieval URL, or the base URI to be 
      * used while parsing.
-     * @param m A Jena Model in which to put the triples,
-     * this can be null. If it is null, then use
-     * {@link #getHandlers} or {@link #setHandlers} to provide
-     * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
-	 * @return A new SAX2RDF
+     *  @return A new SAX2RDF
 	 * @throws MalformedURIException
 	 */
 	static public SAX2RDF newInstance(String base) throws MalformedURIException { 
@@ -89,7 +89,7 @@ implements ARPConfig {
      * outer context using {@link #startPrefixMapping}.
 	 * @param base The retrieval URL, or the base URI to be 
      * used while parsing. Use
-     * {@link #getHandlers} or {@link #setHandlers} to provide
+     * {@link #getHandlers} or {@link #setHandlersWith} to provide
      * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
 	 * @param lang The current value of xml:lang when parsing starts, usually "".
 	 * @return A new SAX2RDF

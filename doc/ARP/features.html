@@ -8,13 +8,13 @@
 <body>
 <h1>ARP Features</h1>
 <ul>
-  <li>Java based <a
-    href="http://www.w3.org/TR/1999/REC-rdf-syntax-19990222">RDF</a>
-  parser.</li>
-  <li>Compliant with latest working group <a
+  <li>Java based RDF parser.</li>
+  <li>Compliant with  <a
     href="http://www.w3.org/TR/rdf-syntax-grammar">
-    syntax</a> and <a href="http://www.w3.org/TR/rdf-testcases"> test
-    cases</a> working drafts.</li>
+    RDF
+    Syntax</a> and 
+    <a href="http://www.w3.org/TR/rdf-testcases">RDF Test
+    Cases</a> Recommendations.</li>
   <li>Compliant with following standards and recommendations:
     <dl>
       <dt><b>daml:collection</b></dt>
@@ -38,7 +38,7 @@
           treatment of international URIs follows the approach of anyURI in
           XML Schema Datatypes.</dd>
       <dt><b>XML Names</b></dt>
-        <dd>All rdf:ID and rdf:BagID's are checked against the <a
+        <dd>All rdf:ID's are checked against the <a
           href="http://www.w3.org/TR/REC-xml#dt-name">XML Names</a>
           specification.</dd>
       <dt><b>International URI refs</b></dt>
@@ -51,9 +51,7 @@
       <dt><b>XML Literals</b></dt>
         <dd><code>rdf:parseType='Literal'</code> is processed respecting
           namespaces, processing instructions and XML comments. This follows
-          the XML exclusive canonicalizations recommendation with comments,
-          and treating namespace (re)declarations as visible uses of the
-          namespace.</dd>
+          the XML exclusive canonicalizations recommendation with comments.</dd>
       <dt><b>Relative Namespace URI references</b></dt>
         <dd>Namespace URI references are checked in light of the <a
           href="http://www.w3.org/2000/09/xppa">W3C XML Plenary
@@ -70,6 +68,7 @@
   <li>Xerces based XML parsing.</li>
   <li>Processes both standalone and embedded RDF/XML.</li>
   <li>Streaming parser, suitable for large files.</li>
+  <li>Supports SAX, for integration with non-file XML sources.</li>
 </ul>
 
 <h3>Modular <a href="http://www.w3.org/TR/xml-infoset/">XML InfoSet</a> 

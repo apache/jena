@@ -14,8 +14,9 @@ to prioritise fixes.
     href="saxdoc/org/xml/sax/SAXParseException.html#getLineNumber()">end of
     the XML element tag </a> rather than the  appropriate attribute. This
     <b>will not</b> be fixed.</li>
-  <li>Xerces 2.2.1 is the only supported XML parser.
-  We aim to support other Xerces 2 parsers.</li>
+  <li>ARP should normally be used with the Xerces version shipping with Jena;
+  if you need to use your own SAX parser, see the 
+  <a href="sax.html">detailed instructions.</a></li>
   <li>Does not include normalizing transcoder support. This is needed for
     correct processing of some non-European character sets.</li>
   <li>Please <a href="mailto:jjc@hpl.hp.com">e-mail me</a> with any further

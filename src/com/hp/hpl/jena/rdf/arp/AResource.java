@@ -1,11 +1,12 @@
 /*
  *  (c) Copyright 2001, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AResource.java,v 1.5 2003-12-13 21:10:58 jeremy_carroll Exp $
+  $Id: AResource.java,v 1.6 2004-10-21 14:40:24 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 
 /**
+ * A URI or blank node reported to a {@link StatementHandler}.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
