@@ -210,6 +210,16 @@
     If not null or empty, subsequent models will share tables with the named 
     model.</td>
   </tr>
+  <tr>
+    <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell7" valign="top">
+    CompressCacheSize</td>
+    <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">
+    int</td>
+    <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">
+    50</td>
+    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">
+    The size of the URI prefix cache if DoCompressURI is true.</td>
+  </tr>
   </table>
 
 
@@ -226,6 +236,11 @@
     also true of the default model, i.e., it is not automatically created. If 
     the specified model name is null or the empty string, then subsequently 
     created models are stored in separate tables.</dd>
+    <dt>CompressCacheSize</dt>
+    <dd>If URI compression is enabled (DoCompressURI is true), an in-memory LRU 
+    cache of URI prefixes is maintained to reduce the need to access the 
+    database to expand compressed URIs. The cache size can be adjusted at any 
+    time after a connection to the database is established.</dd>
     <dt>&nbsp;</dt>
 </dl>
 
