@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.16 2004-06-29 08:45:52 chris-dollin Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.17 2004-06-29 09:43:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.db.*;
     handling for bulk updates.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.16 $
+ 	@version $Revision: 1.17 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -38,7 +38,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
     */
 	public void add(Triple[] triples) {
 		add( Arrays.asList(triples), false );
-        manager.notifyAddArray( triples );
+        manager.notifyAddArray( graph, triples );
 	}
 
 	public void add( List triples ) 
@@ -49,7 +49,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
     */
     protected void add( List triples, boolean notify ) {
 		graph.add(triples);
-        if (notify) manager.notifyAddList( triples );
+        if (notify) manager.notifyAddList( graph, triples );
 	}
 
     /**
@@ -65,7 +65,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
             {
             List L = GraphUtil.iteratorToList( it );
             add( L, false );
-            manager.notifyAddIterator( L );    
+            manager.notifyAddIterator( graph, L );    
             }
         else
             addIterator( it ); 
@@ -90,7 +90,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 		ExtendedIterator triplesToAdd = GraphUtil.findAll( g );
 		try { addIterator( triplesToAdd ); } finally { triplesToAdd.close(); }
         if (withReifications) SimpleBulkUpdateHandler.addReifications( graph, g );
-        manager.notifyAddGraph( g );
+        manager.notifyAddGraph( graph, g );
 	}
 
     /**
@@ -99,7 +99,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
     */
 	public void delete( Triple[] triples ) {
 		delete( Arrays.asList(triples), false );
-        manager.notifyDeleteArray( triples );
+        manager.notifyDeleteArray( graph, triples );
 	}
 
     public void delete( List triples )
@@ -110,7 +110,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
     */
 	protected void delete(List triples, boolean notify ) {
 		graph.delete( triples );
-        if (notify) manager.notifyDeleteList( triples );
+        if (notify) manager.notifyDeleteList( graph, triples );
 	}
     
     /**
@@ -126,7 +126,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
             {
             List L = GraphUtil.iteratorToList( it );
             delete( L, false );
-            manager.notifyDeleteIterator( L );    
+            manager.notifyDeleteIterator( graph, L );    
             }
         else
             deleteIterator( it ); 
@@ -150,7 +150,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 		ExtendedIterator triplesToDelete = GraphUtil.findAll( g );
 		try { deleteIterator( triplesToDelete ); } finally { triplesToDelete.close(); }
         if (withReifications) SimpleBulkUpdateHandler.deleteReifications( graph, g );
-        manager.notifyDeleteGraph( g );
+        manager.notifyDeleteGraph( graph, g );
    	}
     
     public void removeAll()

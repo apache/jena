@@ -22,7 +22,10 @@ Post Jena 2.1 change list
 
   Event handling
       o added new graph.GraphEvents as holder of event constants with one
-        such, .removeAll, issued by BulkUpdateHandler for removeAll()
+        such, .removeAll, issued by BulkUpdateHandler for removeAll(), and
+        a static method for creating removed-by-pattern triple values.
+      o all the Graph events now come with their source Graph attached as an
+        argument to the event method.
 
   Reasoners
       o Fixed ommission in handling of someValuesFrom applied to an rdfs:Datatype.

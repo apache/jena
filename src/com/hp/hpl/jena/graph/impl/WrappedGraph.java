@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedGraph.java,v 1.6 2004-06-28 14:43:17 chris-dollin Exp $
+  $Id: WrappedGraph.java,v 1.7 2004-06-29 09:43:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -58,11 +58,11 @@ public class WrappedGraph implements GraphWithPerform
 
     public void add( Triple t ) 
         { base.add( t );
-        getEventManager().notifyAddTriple( t ); }
+        getEventManager().notifyAddTriple( this, t ); }
 
     public void delete( Triple t ) 
         { base.delete( t ); 
-        getEventManager().notifyDeleteTriple( t ); }
+        getEventManager().notifyDeleteTriple( this, t ); }
 
     public ExtendedIterator find( TripleMatch m )
         { return base.find( m ); }

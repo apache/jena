@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphListener.java,v 1.14 2004-04-27 14:50:43 chris-dollin Exp $
+  $Id: GraphListener.java,v 1.15 2004-06-29 09:43:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -22,56 +22,56 @@ public interface GraphListener
     /**
         Method called when a single triple has been added to the graph.
     */
-    void notifyAddTriple( Triple t );
+    void notifyAddTriple( Graph g, Triple t );
     
     /**
         Method called when an array of triples has been added to the graph.
     */
-    void notifyAddArray( Triple [] triples );
+    void notifyAddArray( Graph g, Triple [] triples );
     
     /**
         Method called when a list [of triples] has been added to the graph.
     */
-    void notifyAddList( List triples );
+    void notifyAddList( Graph g, List triples );
     
     /**
         Method called when an iterator [of triples] has been added to the graph
     */
-    void notifyAddIterator( Iterator it );
+    void notifyAddIterator( Graph g, Iterator it );
     
     /**
         Method called when another graph <code>g</code> has been used to
         specify the triples added to our attached graph.
     	@param g the graph of triples added
      */
-    void notifyAddGraph( Graph g );
+    void notifyAddGraph( Graph g, Graph added );
     
     /**
         Method called when a single triple has been deleted from the graph.
     */
-    void notifyDeleteTriple( Triple t );
+    void notifyDeleteTriple( Graph g, Triple t );
     
     /**
         Method called when a list [of triples] has been deleted from the graph.
     */
-    void notifyDeleteList( List L );
+    void notifyDeleteList( Graph g, List L );
     
     /**
         Method called when an array of triples has been deleted from the graph.
     */
-    void notifyDeleteArray( Triple [] triples );
+    void notifyDeleteArray( Graph g, Triple [] triples );
     
     /**
         Method called when an iterator [of triples] has been deleted from the graph.
     */
-    void notifyDeleteIterator( Iterator it );
+    void notifyDeleteIterator( Graph g, Iterator it );
     
     /**
         Method to call when another graph has been used to specify the triples 
         deleted from our attached graph. 
     	@param g the graph of triples added
      */
-    void notifyDeleteGraph( Graph g );
+    void notifyDeleteGraph( Graph g, Graph removed );
     
     /**
          method to call for a general event

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.46 2004-06-29 08:46:32 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.47 2004-06-29 09:43:21 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph.test;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
@@ -20,7 +21,7 @@ import java.util.*;
     
  	@author kers
 */
-public abstract class AbstractTestGraph extends GraphTestBase
+public /* abstract */ class AbstractTestGraph extends GraphTestBase
     {
     public AbstractTestGraph( String name )
         { super( name ); }
@@ -29,7 +30,9 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Returns a Graph to take part in the test. Must be overridden in
         a subclass.
     */
-    public abstract Graph getGraph();
+    // public abstract Graph getGraph();
+    
+    public Graph getGraph() { return new GraphMem(); }
     
     public Graph getGraphWith( String facts )
         {
@@ -390,14 +393,16 @@ public abstract class AbstractTestGraph extends GraphTestBase
         
     public void testAddTriple()
         {
-        getAndRegister( L ).add( SPO );
-        L.assertHas( new Object[] {"add", SPO} );
+        Graph g = getAndRegister( L );
+        g.add( SPO );
+        L.assertHas( new Object[] {"add", g, SPO} );
         }
         
     public void testDeleteTriple()
         {        
-        getAndRegister( L ).delete( SPO );
-        L.assertHas( new Object[] { "delete", SPO} );
+        Graph g = getAndRegister( L );
+        g.delete( SPO );
+        L.assertHas( new Object[] { "delete", g, SPO} );
         }
         
     public void testTwoListeners()
@@ -408,8 +413,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
         GraphEventManager gem = g.getEventManager();
         gem.register( L1 ).register( L2 );
         g.add( SPO );
-        L2.assertHas( new Object[] {"add", SPO} );
-        L1.assertHas( new Object[] {"add", SPO} );
+        L2.assertHas( new Object[] {"add", g, SPO} );
+        L1.assertHas( new Object[] {"add", g, SPO} );
         }
         
     public void testUnregisterWorks()
@@ -426,7 +431,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph g = getAndRegister( L );
         g.getEventManager().register( L );
         g.add( SPO );
-        L.assertHas( new Object[] {"add", SPO, "add", SPO} );
+        L.assertHas( new Object[] {"add", g, SPO, "add", g, SPO} );
         }
         
     public void testUnregisterOnce()
@@ -434,23 +439,23 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph g = getAndRegister( L );
         g.getEventManager().register( L ).unregister( L );
         g.delete( SPO );
-        L.assertHas( new Object[] {"delete", SPO} );
+        L.assertHas( new Object[] {"delete", g, SPO} );
         }
         
-    public void testBulkAddArray()
+    public void testBulkAddArrayEvent()
         {
         Graph g = getAndRegister( L );
         Triple [] triples = tripleArray( "x R y; a P b" );
         g.getBulkUpdateHandler().add( triples );
-        L.assertHas( new Object[] {"add[]", triples} );
+        L.assertHas( new Object[] {"add[]", g, triples} );
         }
-        
+      
     public void testBulkAddList()
         {
         Graph g = getAndRegister( L );
         List elems = Arrays.asList( tripleArray( "bells ring loudly; pigs might fly" ) );
         g.getBulkUpdateHandler().add( elems );
-        L.assertHas( new Object[] {"addList", elems} );
+        L.assertHas( new Object[] {"addList", g, elems} );
         }
     
     public void testBulkDeleteArray()
@@ -458,7 +463,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph g = getAndRegister( L );
         Triple [] triples = tripleArray( "x R y; a P b" );
         g.getBulkUpdateHandler().delete( triples );
-        L.assertHas( new Object[] {"delete[]", triples} );
+        L.assertHas( new Object[] {"delete[]", g, triples} );
         }
         
     public void testBulkDeleteList()
@@ -466,7 +471,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph g = getAndRegister( L );
         List elems = Arrays.asList( tripleArray( "bells ring loudly; pigs might fly" ) );
         g.getBulkUpdateHandler().delete( elems );
-        L.assertHas( new Object[] {"deleteList", elems} );
+        L.assertHas( new Object[] {"deleteList", g, elems} );
         }
         
     public void testBulkAddIterator()
@@ -474,7 +479,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph g = getAndRegister( L ); 
         Triple [] triples = tripleArray( "I wrote this; you read that; I wrote this" );
         g.getBulkUpdateHandler().add( asIterator( triples ) );
-        L.assertHas( new Object[] {"addIterator", Arrays.asList( triples )} );
+        L.assertHas( new Object[] {"addIterator", g, Arrays.asList( triples )} );
         }
         
     public void testBulkDeleteIterator()
@@ -482,7 +487,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph g = getAndRegister( L );
         Triple [] triples = tripleArray( "I wrote this; you read that; I wrote this" );
         g.getBulkUpdateHandler().delete( asIterator( triples ) );
-        L.assertHas( new Object[] {"deleteIterator", Arrays.asList( triples )} );
+        L.assertHas( new Object[] {"deleteIterator", g, Arrays.asList( triples )} );
         }
         
     public Iterator asIterator( Triple [] triples )
@@ -493,7 +498,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph g = getAndRegister( L );
         Graph triples = graphWith( "this type graph; I type slowly" );
         g.getBulkUpdateHandler().add( triples );
-        L.assertHas( new Object[] {"addGraph", triples} );
+        L.assertHas( new Object[] {"addGraph", g, triples} );
         }
         
     public void testBulkDeleteGraph()
@@ -501,7 +506,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph g = getAndRegister( L );
         Graph triples = graphWith( "this type graph; I type slowly" );
         g.getBulkUpdateHandler().delete( triples );
-        L.assertHas( new Object[] {"deleteGraph", triples} );
+        L.assertHas( new Object[] {"deleteGraph", g, triples} );
         }
     
     public void testGeneralEvent()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RecordingListener.java,v 1.8 2004-03-23 13:47:41 chris-dollin Exp $
+  $Id: RecordingListener.java,v 1.9 2004-06-29 09:43:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -19,35 +19,35 @@ public class RecordingListener implements GraphListener
     {
     public List history = new ArrayList();
     
-    public void notifyAddTriple( Triple t )
-        { record( "add", t ); }
+    public void notifyAddTriple( Graph g, Triple t )
+        { record( "add", g, t ); }
         
-    public void notifyAddArray( Triple [] triples )
-        { record( "add[]", triples ); }
+    public void notifyAddArray( Graph g, Triple [] triples )
+        { record( "add[]", g, triples ); }
         
-    public void notifyAddList( List triples )
-        { record( "addList", triples ); }
+    public void notifyAddList( Graph g, List triples )
+        { record( "addList", g, triples ); }
         
-    public void notifyAddIterator( Iterator it )
-        { record( "addIterator", GraphTestBase.iteratorToList( it ) ); }
+    public void notifyAddIterator( Graph g, Iterator it )
+        { record( "addIterator", g, GraphTestBase.iteratorToList( it ) ); }
         
-    public void notifyAddGraph( Graph g )
-        { record( "addGraph", g ); }
+    public void notifyAddGraph( Graph g, Graph added )
+        { record( "addGraph", g, added ); }
         
-    public void notifyDeleteTriple( Triple t )
-        { record( "delete", t ); }
+    public void notifyDeleteTriple( Graph g, Triple t )
+        { record( "delete", g, t ); }
         
-    public void notifyDeleteArray( Triple [] triples )
-        { record( "delete[]", triples ); }
+    public void notifyDeleteArray( Graph g, Triple [] triples )
+        { record( "delete[]", g, triples ); }
         
-    public void notifyDeleteList( List triples )
-        { record( "deleteList", triples ); }
+    public void notifyDeleteList( Graph g, List triples )
+        { record( "deleteList", g, triples ); }
         
-    public void notifyDeleteIterator( Iterator it )
-        { record( "deleteIterator", GraphTestBase.iteratorToList( it ) ); }
+    public void notifyDeleteIterator( Graph g, Iterator it )
+        { record( "deleteIterator", g, GraphTestBase.iteratorToList( it ) ); }
         
-    public void notifyDeleteGraph( Graph g )
-        { record( "deleteGraph", g ); }
+    public void notifyDeleteGraph( Graph g, Graph removed )
+        { record( "deleteGraph", g, removed ); }
     
     public void notifyEvent( Graph source, Object event )
         { record( "someEvent", source, event ); }

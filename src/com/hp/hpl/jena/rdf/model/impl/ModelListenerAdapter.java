@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelListenerAdapter.java,v 1.13 2004-03-23 13:47:41 chris-dollin Exp $
+  $Id: ModelListenerAdapter.java,v 1.14 2004-06-29 09:43:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -30,38 +30,38 @@ public class ModelListenerAdapter implements GraphListener
     ModelListenerAdapter( ModelCom m, ModelChangedListener L )
         { this.m = m; this.L = L; }
 
-    public void notifyAddArray( Triple [] triples )
+    public void notifyAddArray( Graph graph, Triple [] triples )
         { L.addedStatements( m.asStatements( triples ) ); }
         
-    public void notifyDeleteArray( Triple [] triples )
+    public void notifyDeleteArray( Graph g, Triple [] triples )
         { L.removedStatements( m.asStatements( triples ) ); }
         
-    public void notifyAddTriple( Triple t )
+    public void notifyAddTriple( Graph g, Triple t )
         { L.addedStatement( m.asStatement( t ) ); }
 
-    public void notifyAddList( List triples )
+    public void notifyAddList( Graph g, List triples )
         { L.addedStatements( m.asStatements( triples ) ); }  
               
-    public void notifyAddIterator( Iterator it )
+    public void notifyAddIterator( Graph g, Iterator it )
         { L.addedStatements( m.asStatements( it ) ); }
         
-    public void notifyAddGraph( Graph g )
-        { L.addedStatements( m.asModel( g ) ); }
+    public void notifyAddGraph( Graph g, Graph added )
+        { L.addedStatements( m.asModel( added ) ); }
         
-    public void notifyDeleteIterator( Iterator it )
+    public void notifyDeleteIterator( Graph g, Iterator it )
         { L.removedStatements( m.asStatements( it ) ); }
         
-    public void notifyDeleteTriple( Triple t )
+    public void notifyDeleteTriple( Graph g, Triple t )
         { L.removedStatement( m.asStatement( t ) ); }
         
-    public void notifyAddIterator( List triples )
+    public void notifyAddIterator( Graph g, List triples )
         { L.addedStatements( m.asStatements( triples ) ); }
         
-    public void notifyDeleteList( List triples )
+    public void notifyDeleteList( Graph g, List triples )
         { L.removedStatements( m.asStatements( triples ) ); }
 
-    public void notifyDeleteGraph( Graph g )
-        { L.removedStatements( m.asModel( g ) ); }
+    public void notifyDeleteGraph( Graph g, Graph removed )
+        { L.removedStatements( m.asModel( removed ) ); }
     
     public void notifyEvent( Graph g, Object event )
         { L.notifyEvent( m, event ); }

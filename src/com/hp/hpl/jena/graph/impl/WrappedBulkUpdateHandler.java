@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedBulkUpdateHandler.java,v 1.2 2004-06-29 08:46:31 chris-dollin Exp $
+  $Id: WrappedBulkUpdateHandler.java,v 1.3 2004-06-29 09:43:21 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -34,63 +34,63 @@ public class WrappedBulkUpdateHandler
     public void add( Triple [] triples )
         {
         base.add( triples );
-        manager.notifyAddArray( triples );
+        manager.notifyAddArray( graph, triples );
         }
     
     public void add( List triples )
         {
         base.add( triples );
-        manager.notifyAddList( triples );
+        manager.notifyAddList( graph, triples );
         }
 
     public void add( Iterator it )
         {
         List s = GraphUtil.iteratorToList( it );
         base.add( s );
-        manager.notifyAddIterator( s );
+        manager.notifyAddIterator( graph, s );
         }
 
     public void add( Graph g, boolean withReifications )
         {
         base.add( g, withReifications );
-        manager.notifyAddGraph( g );
+        manager.notifyAddGraph( graph, g );
         }
     
     public void add( Graph g )
         {
 	    base.add( g );
-	    manager.notifyAddGraph( g );
+	    manager.notifyAddGraph( graph, g );
         }
 
     public void delete( Triple[] triples )
         {
         base.delete( triples );
-        manager.notifyDeleteArray( triples );
+        manager.notifyDeleteArray( graph, triples );
         }
 
     public void delete( List triples )
         {
         base.delete( triples );
-        manager.notifyDeleteList( triples );
+        manager.notifyDeleteList( graph, triples );
         }
 
     public void delete( Iterator it )
         {
         List s = GraphUtil.iteratorToList( it );
         base.delete( s );
-        manager.notifyDeleteIterator( s );
+        manager.notifyDeleteIterator( graph, s );
         }
 
     public void delete( Graph g )
         {
         base.delete( g );
-        manager.notifyDeleteGraph( g );
+        manager.notifyDeleteGraph( graph, g );
         }
 
     public void delete( Graph g, boolean withReifications )
         {
         base.delete( g, withReifications );
-        manager.notifyDeleteGraph( g );
+        manager.notifyDeleteGraph( graph, g );
         }
 
     public void removeAll()
