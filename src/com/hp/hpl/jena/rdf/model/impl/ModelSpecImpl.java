@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.10 2003-08-25 10:26:19 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.11 2003-08-25 11:22:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -9,11 +9,6 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
-
-import com.hp.hpl.jena.graph.impl.WrappedGraph;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
-
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.ontology.*;
@@ -76,27 +71,61 @@ public abstract class ModelSpecImpl implements ModelSpec
     
     /**
         Answer a new ModelSpec created according to the supplied RDF description.
-        <i>in progress</i>.
+        The description should have a single resource of type JMS.ModelSpec.
+        The most specific subclass of JMS.ModelSpec that that resource has is
+        use to find the register ModelSpecCreator, and that Creator is then run to
+        get a genuine ModelSepc result.
+        
+        @param desc a model containing a JMS description
+        @return a ModelSpec fitting that description
     */
     public static ModelSpec create( Model desc )
         {
-        // showModel( "desc", desc );
-        Model d = withSchema( tracking( desc ) );
-        // showModel( "d", d );
+        Model d = withSchema( desc );
         Resource r = findRootByType( d, JMS.ModelSpec );
-        System.err.println( ">> root=" + r );
         Resource type = findSpecificType( d, r, JMS.ModelSpec );
-        System.err.println( ">> type = " + type.asNode().toString( PrefixMapping.Standard ) );
-        if (type.equals( JMS.OntModelSpec )) 
-            {
-            return new OntModelSpec( desc );
-            }
-        if (type.equals( JMS.InfModelSpec ))
-        // if (d.listStatements( null, RDF.type, JMS.InfModelSpec).hasNext())
-            return new InfModelSpec( desc );
-        if (d.listStatements( null, RDF.type, JMS.PlainModelSpec).hasNext())
-            return new PlainModelSpec( desc );
-        throw new BadDescriptionException( "neither ont nor inf nor mem", desc );
+        ModelSpecCreator sc = findCreator( type );
+        if (sc == null) throw new BadDescriptionException( "neither ont nor inf nor mem", desc );
+        return findCreator( type ).create( desc );
+        }
+        
+    public interface ModelSpecCreator
+        {
+        public ModelSpec create( Model desc );    
+        }
+        
+    static Map creators = new HashMap();
+    
+    public static ModelSpecCreator findCreator( Resource type )
+        {
+        return (ModelSpecCreator) creators.get( type );    
+        }
+        
+    public static void register( Resource type, ModelSpecCreator c )
+        {
+        creators.put( type, c );  
+        }
+        
+    static class InfSpecCreator implements ModelSpecCreator
+        {
+        public ModelSpec create( Model desc ) { return new InfModelSpec( desc ); }    
+        }
+        
+    static class PlainSpecCreator implements ModelSpecCreator
+        {
+        public ModelSpec create( Model desc ) { return new PlainModelSpec( desc ); }    
+        }
+            
+    static class OntSpecCreator implements ModelSpecCreator
+        {
+        public ModelSpec create( Model desc ) { return new OntModelSpec( desc ); }    
+        }
+            
+    static
+        {
+        register( JMS.InfModelSpec, new InfSpecCreator() );  
+        register( JMS.OntModelSpec, new OntSpecCreator() );  
+        register( JMS.PlainModelSpec, new PlainSpecCreator() );    
         }
         
     static void showModel( String title, Model m )
@@ -120,54 +149,11 @@ public abstract class ModelSpecImpl implements ModelSpec
         while (it.hasNext())
             {
             Resource candidate = it.nextStatement().getResource();
-            System.err.println( ">> candidate: " + candidate );
+            // System.err.println( ">> candidate: " + candidate );
             if (desc.contains( candidate, RDFS.subClassOf, type )) 
-                { type = candidate;  System.err.println( "+    accepted" );  }
+                { type = candidate;  /* System.err.println( "+    accepted" ); */ }
             }
         return type;    
-        }
-        
-        
-    static Model tracking( Model d )
-        {
-        return d; // new ModelCom( tracking( d.getGraph() ) );    
-        }
-        
-    static Graph tracking( Graph d )
-        {
-        System.err.println( ">> constructing tracking graph" );
-        ExtendedIterator it = GraphUtil.findAll( d );
-        while (it.hasNext())
-            {
-            System.err.println( "||  " + ((Triple) it.next()).toString( PrefixMapping.Standard ) );    
-            }
-        return new WrappedGraph( d )
-            {
-            public ExtendedIterator find( Node s, Node p, Node o )
-                { return tracking( Triple.createMatch( s, p, o ), super.find( s, p, o ) ); }      
-                
-            public ExtendedIterator find( TripleMatch tm )
-                { return tracking( tm.asTriple(), super.find( tm ) ); }  
-            };
-        }
-     
-                        
-    static private int counter = 0;  
-     
-    static ExtendedIterator tracking( Triple triple, ExtendedIterator it )
-        {
-        final String label = triple.toString( PrefixMapping.Standard );
-        return new WrappedIterator( it )
-            {
-            private int instance = counter++;
-
-            public Object next()
-                {
-                Object result = super.next();     
-                System.err.println( "next[" + instance + ";" + label + "] -> " + ((Triple) result).getObject().toString( PrefixMapping.Standard ) );     
-                return result;              
-                }
-            };    
         }
         
     /**
@@ -196,68 +182,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         schema applied. 
      */
     public static Model withSchema( Model m )
-        {
-//        Model result = ModelFactory.createDefaultModel();
-//        prime( JMS.schema );
-//        prime( result );
-//        result.add( m );
-//        addByDomain( result );
-//        addBySubclass( result );
-//        return result;
-        return ModelFactory.createRDFSModel( JMS.schema, m );    
-        }
-        
-    static void prime( Model m )
-        {
-        m.add( JMS.OntModelSpec, RDFS.subClassOf, JMS.InfModelSpec ); 
-        m.add( JMS.OntModelSpec, RDFS.subClassOf, JMS.PlainModelSpec );    
-        m.add( JMS.OntModelSpec, RDFS.subClassOf, JMS.ModelSpec );      
-    /* */ 
-        m.add( JMS.InfModelSpec, RDFS.subClassOf, JMS.PlainModelSpec );    
-        m.add( JMS.InfModelSpec, RDFS.subClassOf, JMS.ModelSpec );   
-    /* */ 
-        m.add( JMS.PlainModelSpec, RDFS.subClassOf, JMS.ModelSpec );   
-        }
-        
-    static void addByDomain( Model m )
-        {
-        System.err.println( ">> addByDomain" );
-        StmtIterator all = m.listStatements();
-        List bucket = new ArrayList();
-        while (all.hasNext())
-            {
-            Statement s = all.nextStatement();
-            Property p = s.getPredicate();
-            StmtIterator dit = JMS.schema.listStatements( p, RDFS.domain, (RDFNode) null );
-            while (dit.hasNext()) 
-                {
-                bucket.add( m.createStatement( s.getSubject(), RDF.type, dit.nextStatement().getObject() ) );    
-                }
-            }
-        System.err.println( ">> bucket: " + bucket );
-        m.add( bucket );
-        for (int i = 0; i < bucket.size(); i += 1)
-            if (!m.contains( (Statement) bucket.get(i) )) throw new RuntimeException( "BOTHER" );
-        }
-        
-    static void addBySubclass( Model m )
-        {
-        List bucket = new ArrayList();
-        StmtIterator types = m.listStatements( null, RDF.type, (RDFNode) null );
-        while (types.hasNext())
-            {
-            Statement s = types.nextStatement();
-            Resource subject = s.getSubject();
-            Resource type = s.getResource();
-            StmtIterator subs = JMS.schema.listStatements( type, RDFS.subClassOf, (RDFNode) null );    
-            while (subs.hasNext())
-                {
-                Statement sub = subs.nextStatement();
-                bucket.add( m.createStatement( subject, RDF.type, sub.getResource() ) );    
-                }
-            }    
-        m.add( bucket );
-        }
+        { return ModelFactory.createRDFSModel( JMS.schema, m ); }
 
     /**
         Answer a new bnode Resource associated with the given value. The mapping from
