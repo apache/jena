@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelEvents.java,v 1.1 2003-07-08 13:15:55 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.2 2003-07-08 14:36:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -35,6 +35,9 @@ public class TestModelEvents extends ModelTestBase
         public void addedStatement( Statement s )
             { history.add( "add" ); history.add( s ); }
             
+        public void removedStatement( Statement s )
+            { history.add( "remove" ); history.add( s ); }
+            
         boolean has( Object [] things ) 
             { return history.equals( Arrays.asList( things ) ); }
         }
@@ -52,11 +55,46 @@ public class TestModelEvents extends ModelTestBase
     public void testAddSingleStatements()
         {
         Statement S1 = statement( model, "S P O" );
+        Statement S2 = statement( model, "A B C" );
         SimpleListener SL = new SimpleListener();
         assertFalse( SL.has( new Object [] { "add", S1 } ) );
         model.register( SL );
         model.add( S1 );
         assertTrue( SL.has( new Object[] { "add", S1 } ) );
+        model.add( S2 );
+        assertTrue( SL.has( new Object[] { "add", S1, "add", S2 } ) );
+        model.add( S1 );
+        assertTrue( SL.has( new Object[] { "add", S1, "add", S2, "add", S1 } ) );
+        }
+        
+    public void testTwoListeners()
+        {
+        Statement S = statement( model, "S P O" );
+        SimpleListener SL1 = new SimpleListener();
+        SimpleListener SL2 = new SimpleListener();
+        model.register( SL1 ).register( SL2 );
+        model.add( S );
+        assertTrue( SL2.has( new Object[] { "add", S } ) );
+        assertTrue( SL1.has( new Object[] { "add", S } ) );
+        }
+        
+    public void testUnregisterWorks()
+        {
+        SimpleListener SL = new SimpleListener();
+        model.register( SL );
+        model.unregister( SL );
+        model.add( statement( model, "X R Y" ) );
+        assertTrue( "SL should not have been poked", SL.has( new Object[] {} ) );
+        }
+        
+    public void testRemoveSingleStatements()
+        {
+        Statement S = statement( model, "D E F" );
+        SimpleListener SL = new SimpleListener();
+        model.register( SL );
+        model.add( S );
+        model.remove( S );
+        assertTrue( SL.has( new Object[] { "add", S, "remove", S } ) );
         }
     }
 

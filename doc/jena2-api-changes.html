@@ -86,6 +86,13 @@ The <i>RDFNode</i> method <i>inModel(Model m)</i> constructs a version of the
 If the <i>RDFNode</i> is a <i>Literal</i>, or already in <i>m</i>, then
 it is returned unchanged.
 
+<h1>Model::isEmpty()</h1>
+
+Model's method <i>isEmpty</i> returns true if and only if the model is
+empty, that is, if <i>size()</i> would return 0 or <i>listStatements()</i>
+would return an empty iterator. Implementations of <i>Model</i> may
+be significantly more efficient than either of these alternatives.
+
 <h1>rdfNode.as(Class)</h1>
 
 This method converts an <i>RDFNode</i> of one kind to another, if possible,
