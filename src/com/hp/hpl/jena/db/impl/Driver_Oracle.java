@@ -21,7 +21,7 @@ import java.util.Properties;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
 
-//* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE IMPORT STATEMENTS)  -------
+/* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE IMPORT STATEMENTS)  -------
 import oracle.jdbc.OracleResultSet;
 import oracle.sql.BLOB;
 /*--------------------------------------------------------------------*/
@@ -37,7 +37,7 @@ import oracle.sql.BLOB;
  */
    public class Driver_Oracle extends DriverRDB {
 
-/* <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
+//* <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
 	public interface BLOB extends java.sql.Blob {
 		OutputStream getBinaryOutputStream();
 		int getBufferSize();
