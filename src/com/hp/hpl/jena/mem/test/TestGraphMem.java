@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.7 2004-07-19 18:45:19 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.8 2004-07-20 10:15:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -49,7 +49,7 @@ public class TestGraphMem extends AbstractTestGraph
     public void testBrokenPredicate()
         {
         Graph g = getGraphWith( "x brokenPredicate y" );
-        ExtendedIterator it = g.find( Node.ANY, node( "R"), Node.ANY );
+        ExtendedIterator it = g.find( Node.ANY, node( "brokenPredicate"), Node.ANY );
         it.next(); it.remove();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
         }
