@@ -46,6 +46,7 @@ public class Driver_MySQL extends DriverRDB {
 		SKIP_DUPLICATE_CHECK = false;
 		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		SQL_FILE = "etc/mysql.sql";
+		DB_NAMES_TO_UPPER = false;
 		
 		m_psetClassName = myPackageName + ".PSet_TripleStore_RDB";
 		m_psetReifierClassName = myPackageName + ".PSet_ReifStore_RDB";
@@ -195,9 +196,10 @@ public class Driver_MySQL extends DriverRDB {
 		getTblParams (parms);
 		int tblCnt = getTableCount(graphId);
 		String tblName = TABLE_BASE_NAME + 
-					"G" + Integer.toString(graphId) +
-					"T" + Integer.toString(tblCnt) +
-					(isReif ? "_REIF" : "_STMT");		
+					"g" + Integer.toString(graphId) +
+					"t" + Integer.toString(tblCnt) +
+					(isReif ? "_reif" : "_stmt");	
+		tblName = stringToDBname(tblName);	
 		res[0] = tblName;
 		res[1] = parms[0];
 		res[2] = parms[1];
@@ -205,26 +207,6 @@ public class Driver_MySQL extends DriverRDB {
 		return res;
 	}
 	
-	protected int getTableCount ( int graphId ) {		
-	try {
-		DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
-		String[] tableTypes = { "TABLE" };
-		int	res = 0;
-		String	tblPattern = TABLE_BASE_NAME + "G" + Integer.toString(graphId) + "%";
-		ResultSet alltables = dbmd.getTables(null, null, tblPattern, tableTypes);
-		while (alltables.next()) {
-			res += 1;
-		}
-		alltables.close();
-		return res;
-	} catch (SQLException e1) {
-		throw new RDFRDBException("Internal SQL error in driver", e1);
-	}
-}
-
-	
-
-		
 }
 
 /*
