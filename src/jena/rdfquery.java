@@ -11,7 +11,6 @@ import junit.framework.* ;
 import java.io.* ;
 
 import com.hp.hpl.jena.util.* ;
-import com.hp.hpl.jena.util.file.* ;
 import com.hp.hpl.jena.rdql.* ;
 import com.hp.hpl.jena.rdql.test.* ;
 import com.hp.hpl.jena.rdf.model.* ;
@@ -49,7 +48,7 @@ import org.apache.commons.logging.LogFactory;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.20 2004-08-31 09:49:49 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.21 2004-08-31 09:56:20 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
