@@ -33,7 +33,7 @@ import java.io.*;
  * class in the second then a Full reasoner is needed.
  * 
  * @author Jeremy Carroll
- * @version $Id: owlsyntax.java,v 1.5 2004-12-13 17:17:57 jeremy_carroll Exp $
+ * @version $Id: owlsyntax.java,v 1.6 2004-12-14 13:31:10 jeremy_carroll Exp $
  */
 public class owlsyntax {
 	private owlsyntax() {
@@ -89,6 +89,7 @@ public class owlsyntax {
 			+ NL
 			+ NL
 			+ "  -l --lite     Give error messages for OWL DL or OWL Full constructions."
+			+ NL
 			+ "  -d --dl       Give error messages for OWL Full constructions (default)."
 			+ NL
 			+ "  -q --quiet    No error messages."
