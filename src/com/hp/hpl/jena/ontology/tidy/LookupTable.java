@@ -6,6 +6,7 @@ package com.hp.hpl.jena.ontology.tidy;
 import java.io.*;
 import com.hp.hpl.jena.shared.*;
 import java.util.*;
+import com.hp.hpl.jena.reasoner.rulesys.Util;
 /**
  * @author Jeremy J. Carroll
  *
@@ -21,27 +22,30 @@ class LookupTable implements Constants {
 static {
 
 	try {
-		long t = System.currentTimeMillis();
-		FileInputStream istream = new FileInputStream(DATAFILE);
+	//	long t = System.currentTimeMillis();
+		InputStream istream = Util.openResourceFileAsStream(DATAFILE);
+		
+		if ( istream == null )
+		  throw new BrokenException("Failed to find compiled table.");
 		ObjectInputStream p = new ObjectInputStream(istream);
 		key = (int[]) p.readObject();
-		System.err.println("keys: "+(System.currentTimeMillis()-t));
-		t = System.currentTimeMillis();
+	//	System.err.println("keys: "+(System.currentTimeMillis()-t));
+	//	t = System.currentTimeMillis();
 		
 		value = (int[]) p.readObject();
-		System.err.println("values: "+(System.currentTimeMillis()-t));
-		t = System.currentTimeMillis();
+		//System.err.println("values: "+(System.currentTimeMillis()-t));
+		//t = System.currentTimeMillis();
 		action = (byte[])p.readObject();
-		System.err.println("actions: "+(System.currentTimeMillis()-t));
-		t = System.currentTimeMillis();
+		//System.err.println("actions: "+(System.currentTimeMillis()-t));
+		//t = System.currentTimeMillis();
 		Vector v = (Vector) p.readObject();
-		System.err.println("cats: "+(System.currentTimeMillis()-t));
-		t = System.currentTimeMillis();
+		//System.err.println("cats: "+(System.currentTimeMillis()-t));
+		//t = System.currentTimeMillis();
 		Iterator it = v.iterator();
 		while (it.hasNext()) {
 			((CategorySet) it.next()).restore();
 		}
-		System.err.println("catsini: "+(System.currentTimeMillis()-t));
+		//System.err.println("catsini: "+(System.currentTimeMillis()-t));
 		
 		istream.close();
 	} catch (IOException e) {

@@ -544,7 +544,7 @@ public class Compiler implements Constants {
 
 	private void findUseless() {
 		int cnt = 0;
-		int bad = 0;
+		//int bad = 0;
 		Iterator it = huge.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry ent = (Map.Entry) it.next();
@@ -558,35 +558,9 @@ public class Compiler implements Constants {
 			if (isUseless((Long) ent.getKey())) {
 				cnt++;
 				long old = ((Long) ent.getValue()).longValue();
-				long newv = (long) RemoveTriple << (long) (3L * W) | old;
-				if (subject(old) == subject(newv)
-					&& prop(old) == prop(newv)
-					&& object(old) == prop(newv)
-					&& (allActions(old) | RemoveTriple) == allActions(newv)) {
+				long newv = (long) RemoveTriple << (3 * W) | old;
 					ent.setValue(new Long(newv));
-				} else {
-					if (
-					foo(subject(old), subject(newv))
-					&&
-					foo(prop(old), prop(newv))
-					&&
-					foo(object(old), object(newv))
-					&&
-					foo((allActions(old) | RemoveTriple), allActions(newv)) ) {
-						//System.err.println("Hmm not so bad.");
-						ent.setValue(new Long(newv));
-					} else {
-						bad++;
-						System.err.println(
-							bad
-								+ " Error: "
-								+ Long.toHexString(old)
-								+ " != "
-								+ Long.toHexString(newv));
-					}
-					
-
-				}
+				
 			}
 
 		}

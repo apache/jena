@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.15 2003-09-23 08:57:32 der Exp $
+ * $Id: Util.java,v 1.16 2003-11-25 15:10:40 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-09-23 08:57:32 $
+ * @version $Revision: 1.16 $ on $Date: 2003-11-25 15:10:40 $
  */
 public class Util {
 
@@ -181,17 +181,23 @@ public class Util {
      * Open an resource file for reading.
      */
     public static BufferedReader openResourceFile(String filename) throws IOException {
-        InputStream is = ClassLoader.getSystemResourceAsStream(filename);
-        if (is == null) {
-            // Try local loader with absolute path
-            is = Util.class.getResourceAsStream("/" + filename);
-            if (is == null) {
-                // Can't find it on classpath, so try relative to current directory
-                is = new FileInputStream(filename);
-            }
-        }
+       	InputStream is = openResourceFileAsStream(filename);
         return new BufferedReader(new InputStreamReader(is, "UTF-8"));
     }
+
+	public static InputStream openResourceFileAsStream(String filename)
+		throws FileNotFoundException {
+		 InputStream is = ClassLoader.getSystemResourceAsStream(filename);
+		    if (is == null) {
+		        // Try local loader with absolute path
+		        is = Util.class.getResourceAsStream("/" + filename);
+		        if (is == null) {
+		            // Can't find it on classpath, so try relative to current directory
+		            is = new FileInputStream(filename);
+		        }
+		    }
+		return is;
+	}
     
     /**
      * Open a resource file and read it all into a single string.
