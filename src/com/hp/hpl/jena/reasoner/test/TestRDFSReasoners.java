@@ -5,12 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.1 2003-06-19 12:56:49 der Exp $
+ * $Id: TestRDFSReasoners.java,v 1.2 2003-06-19 20:46:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.reasoner.rdfsReasoner1.*;
+import com.hp.hpl.jena.reasoner.rulesys.RDFSExptRuleReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -27,7 +29,7 @@ import org.apache.log4j.Logger;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-19 12:56:49 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-19 20:46:56 $
  */
 public class TestRDFSReasoners extends TestCase {
     
@@ -49,102 +51,189 @@ public class TestRDFSReasoners extends TestCase {
      * This is its own test suite
      */
     public static TestSuite suite() {
-        return new TestSuite(TestRDFSReasoners.class);
-    }  
+        TestSuite suite = new TestSuite();
+        try {
+            
+            constructRDFWGtests(suite, RDFSReasonerFactory.theInstance(), null);
+            constructQuerytests(suite, "rdfs/manifest.rdf", RDFSReasonerFactory.theInstance(), null);
 
+            // FB reasoner doesn't support validation so the full set of wg tests are
+            // comment out            
+//            constructRDFWGtests(suite, RDFSFBRuleReasonerFactory.theInstance(), null);
+            constructQuerytests(suite, "rdfs/manifest-nodirect-noresource.rdf", RDFSFBRuleReasonerFactory.theInstance(), null);
+            
+//            constructRDFWGtests(suite, RDFSExptRuleReasonerFactory.theInstance(), null);
+            constructQuerytests(suite, "rdfs/manifest-nodirect-noresource.rdf", RDFSExptRuleReasonerFactory.theInstance(), null);
+            
+            suite.addTest(new TestRDFSMisc(RDFSReasonerFactory.theInstance(), null));
+            
+        } catch (IOException e) {
+            // failed to even built the test harness
+            logger.error("Failed to construct RDFS test harness", e);
+        }
+        return suite;
+    }  
     
     /**
-     * Test the basic functioning of an RDFS reasoner
+     * Building the query tests for the given reasoner.
      */
-    public void testRDFSReasoner() throws IOException {
-        ReasonerTester tester = new ReasonerTester("rdfs/manifest.rdf");
-        ReasonerFactory rf = RDFSReasonerFactory.theInstance();
-        assertTrue("RDFS reasoner tests", tester.runTests(rf, this, null));
-        // Test effect of switching off property scan - should break container property test case
-        Model configuration = new ModelMem();
-        configuration.createResource(RDFSReasonerFactory.URI)
-                     .addProperty(RDFSReasonerFactory.scanProperties, "false");
-        assertTrue("RDFS reasoner tests", 
-                    !tester.runTest(NAMESPACE + "rdfs/test17", rf, null, configuration));
-        
-        // Check capabilities description
-        Reasoner r = rf.create(null);
-        assertTrue(r.supportsProperty(RDFS.subClassOf));
-        assertTrue(r.supportsProperty(RDFS.domain));
-        assertTrue(r.supportsProperty(RDFS.range));
-    }
-
-
-    /**
-     * Test the simple datatype range validation code.
-     */
-    public void testRDFSDTRange() throws IOException {
-        assertTrue( ! doTestRDFSDTRange("dttest1.nt"));
-        assertTrue( ! doTestRDFSDTRange("dttest2.nt"));
-        assertTrue( doTestRDFSDTRange("dttest3.nt"));
-    }
-
-    /**
-     * Helper for dt range testing - loads a file, validates it using RDFS/DT
-     * and returns error status of the result
-     */
-    private boolean doTestRDFSDTRange(String file) throws IOException {
-        Model m = WGReasonerTester.loadFile("../reasoners/rdfs/" + file);
-        ReasonerFactory rf = RDFSReasonerFactory.theInstance();
-        InfGraph g = rf.create(null).bind(m.getGraph());
-        ValidityReport report = g.validate();
-        if (!report.isValid()) {
-            logger.debug("Validation error report:");
-            for (Iterator i = report.getReports(); i.hasNext(); ) {
-                logger.debug(i.next().toString());
-            }
+    private static void constructQuerytests(TestSuite suite, String manifest, ReasonerFactory rf, Model config) throws IOException {
+        ReasonerTester tester = new ReasonerTester(manifest);
+        for (Iterator i = tester.listTests().iterator(); i.hasNext(); ) {
+            String test = (String)i.next();
+            suite.addTest(new TestReasonerFromManifest(tester, test, rf, config));
         }
-        return report.isValid();
+    }
+    
+    /**
+     * Building the working group tests for the given reasoner.
+     */
+    private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Model config) throws IOException {
+        WGReasonerTester tester = new WGReasonerTester("Manifest.rdf");
+        for (Iterator i = tester.listTests().iterator(); i.hasNext(); ) {
+            String test = (String)i.next();
+            suite.addTest(new TestReasonerWG(tester, test, rf, config));
+        }
     }
         
     /**
-     * Run the relevant working group tests
+     * Inner class defining a test framework for invoking a single locally
+     * defined query-over-inference test.
      */
-    // /*
-    public void testWGRDFStests() throws IOException {
-        WGReasonerTester tester = new WGReasonerTester("Manifest.rdf");
-        ReasonerFactory rf = RDFSReasonerFactory.theInstance();
-
-        /*
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#semantic-equivalence-within-type-2", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#semantic-equivalence-between-datatypes", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#semantic-equivalence-within-type-1", rf, this, null);
-        tester.runTest(tester.BASE_URI + "rdfs-domain-and-range/Manifest.rdf#conjunction-test", rf, this, null);
-        tester.runTest(tester.BASE_URI + "rdfs-subPropertyOf-semantics/Manifest.rdf#test001", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#non-well-formed-literal-1", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#test010", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#test008", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#language-ignored-for-numeric-types-3", rf, this, null);
-        tester.runTest(tester.BASE_URI + "rdfs-no-cycles-in-subPropertyOf/Manifest.rdf#test001", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#language-ignored-for-numeric-types-2", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#language-ignored-for-numeric-types-1", rf, this, null);
-        tester.runTest(tester.BASE_URI + "rdfs-no-cycles-in-subClassOf/Manifest.rdf#test001", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#range-clash", rf, this, null);
-        tester.runTest(tester.BASE_URI + "rdfs-domain-and-range/Manifest.rdf#intensionality-range", rf, this, null);
-        tester.runTest(tester.BASE_URI + "statement-entailment/Manifest.rdf#test004", rf, this, null);
-        tester.runTest(tester.BASE_URI + "rdfs-domain-and-range/Manifest.rdf#intensionality-domain", rf, this, null);
-        tester.runTest(tester.BASE_URI + "statement-entailment/Manifest.rdf#test003", rf, this, null);
-        tester.runTest(tester.BASE_URI + "statement-entailment/Manifest.rdf#test002", rf, this, null);
-        tester.runTest(tester.BASE_URI + "statement-entailment/Manifest.rdf#test001", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#non-well-formed-literal-2", rf, this, null);
-        tester.runTest(tester.BASE_URI + "rdfs-container-membership-superProperty/Manifest.rdf#test001", rf, this, null);
-        tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#test009", rf, this, null);
-        */
-
-        // Suppressed until we figure how to turn off datatype entailments and why we should want to
-        //tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#language-important-for-non-dt-entailment-2", rf, this, null);
-        //tester.runTest(tester.BASE_URI + "datatypes/Manifest.rdf#language-important-for-non-dt-entailment-1", rf, this, null);
+    static class TestReasonerFromManifest extends TestCase {
         
-        // Run all test found
-        tester.runTests(rf, this, null);
-    }
-    // */
+        /** The tester which already has the test manifest loaded */
+        ReasonerTester tester;
+        
+        /** The name of the specific test to run */
+        String test;
+        
+        /** The factory for the reasoner type under test */
+        ReasonerFactory reasonerFactory;
+        
+        /** An optional configuration model */
+        Model config;
+        
+        /** Constructor */
+        TestReasonerFromManifest(ReasonerTester tester, String test, 
+                                 ReasonerFactory reasonerFactory, Model config) {
+            super(test);
+            this.tester = tester;
+            this.test = test;
+            this.reasonerFactory = reasonerFactory;
+            this.config = config;
+        }
+        
+    
+        /**
+         * The test runner
+         */
+        public void runTest() throws IOException {
+            tester.runTest(test, reasonerFactory, this, config);
+        }
 
+    }
+
+    /**
+     * Inner class defining a test framework for invoking a single 
+     * RDFCore working group test.
+     */
+    static class TestReasonerWG extends TestCase {
+        
+        /** The tester which already has the test manifest loaded */
+        WGReasonerTester tester;
+        
+        /** The name of the specific test to run */
+        String test;
+        
+        /** The factory for the reasoner type under test */
+        ReasonerFactory reasonerFactory;
+        
+        /** An optional configuration model */
+        Model config;
+        
+        /** Constructor */
+        TestReasonerWG(WGReasonerTester tester, String test, 
+                                 ReasonerFactory reasonerFactory, Model config) {
+            super(test);
+            this.tester = tester;
+            this.test = test;
+            this.reasonerFactory = reasonerFactory;
+            this.config = config;
+        }
+        
+        /**
+         * The test runner
+         */
+        public void runTest() throws IOException {
+            tester.runTest(test, reasonerFactory, this, config);
+        }
+
+    }
+    
+    /**
+     * Inner class defining the misc extra tests needed to check out a
+     * candidate RDFS reasoner.
+     */
+    static class TestRDFSMisc extends TestCase {
+        
+        /** The factory for the reasoner type under test */
+        ReasonerFactory reasonerFactory;
+        
+        /** An optional configuration model */
+        Model config;
+        
+        /** Constructor */
+        TestRDFSMisc(ReasonerFactory reasonerFactory, Model config) {
+            super("TestRDFSMisc");
+            this.reasonerFactory = reasonerFactory;
+            this.config = config;
+        }
+
+        /**
+         * The test runner
+         */
+        public void runTest() throws IOException {
+            ReasonerTester tester = new ReasonerTester("rdfs/manifest.rdf");
+            // Test effect of switching off property scan - should break container property test case
+            Model configuration = new ModelMem();
+            if (config != null) configuration.add(config);
+            configuration.createResource(RDFSReasonerFactory.URI)
+                         .addProperty(RDFSReasonerFactory.scanProperties, "false");
+            assertTrue("RDFS reasoner tests", 
+                        !tester.runTest(NAMESPACE + "rdfs/test17", reasonerFactory, null, configuration));
+        
+            // Check capabilities description
+            Reasoner r = reasonerFactory.create(null);
+            assertTrue(r.supportsProperty(RDFS.subClassOf));
+            assertTrue(r.supportsProperty(RDFS.domain));
+            assertTrue(r.supportsProperty(RDFS.range));
+
+            // Datatype tests
+            assertTrue( ! doTestRDFSDTRange("dttest1.nt", reasonerFactory));
+            assertTrue( ! doTestRDFSDTRange("dttest2.nt", reasonerFactory));
+            assertTrue( doTestRDFSDTRange("dttest3.nt", reasonerFactory));
+        }
+
+        /**
+         * Helper for dt range testing - loads a file, validates it using RDFS/DT
+         * and returns error status of the result
+         */
+        private boolean doTestRDFSDTRange(String file, ReasonerFactory rf) throws IOException {
+            Model m = WGReasonerTester.loadFile("../reasoners/rdfs/" + file);
+            InfGraph g = rf.create(null).bind(m.getGraph());
+            ValidityReport report = g.validate();
+            if (!report.isValid()) {
+                logger.debug("Validation error report:");
+                for (Iterator i = report.getReports(); i.hasNext(); ) {
+                    logger.debug(i.next().toString());
+                }
+            }
+            return report.isValid();
+        }
+          
+    }
+    
 }
 
 

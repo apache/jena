@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.12 2003-06-16 11:20:28 chris-dollin Exp $
+ * $Id: WGReasonerTester.java,v 1.13 2003-06-19 20:46:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -41,7 +41,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-06-16 11:20:28 $
+ * @version $Revision: 1.13 $ on $Date: 2003-06-19 20:46:56 $
  */
 public class WGReasonerTester {
 
@@ -161,17 +161,27 @@ public class WGReasonerTester {
      * @throws RDFException if the test can't be found or fails internally
      */
     public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Model configuration) throws IOException {
-        ResIterator tests = testManifest.listSubjectsWithProperty(RDF.type, PositiveEntailmentTest);
-        while (tests.hasNext()) {
-            String test = tests.next().toString();
-            if (!runTest(test, reasonerF, testcase, configuration)) return false;
-        }
-        tests = testManifest.listSubjectsWithProperty(RDF.type, NegativeEntailmentTest);
-        while (tests.hasNext()) {
-            String test = tests.next().toString();
+        for (Iterator i = listTests().iterator(); i.hasNext(); ) {
+            String test = (String)i.next();
             if (!runTest(test, reasonerF, testcase, configuration)) return false;
         }
         return true;
+    }
+    
+    /**
+     * Return a list of all test names defined in the manifest for this test harness.
+     */
+    public List listTests() {
+        List testList = new ArrayList();
+        ResIterator tests = testManifest.listSubjectsWithProperty(RDF.type, PositiveEntailmentTest);
+        while (tests.hasNext()) {
+            testList.add(tests.next().toString());
+        }
+        tests = testManifest.listSubjectsWithProperty(RDF.type, NegativeEntailmentTest);
+        while (tests.hasNext()) {
+            testList.add(tests.next().toString());
+        }
+        return testList;
     }
     
     /**
@@ -245,8 +255,10 @@ public class WGReasonerTester {
                 logger.debug("  - " + i.nextStatement());
             }
             logger.debug("Conclusions: " );
-            for (StmtIterator i = conclusions.listStatements(); i.hasNext(); ) {
-                logger.debug("  - " + i.nextStatement());
+            if (conclusions != null) {
+                for (StmtIterator i = conclusions.listStatements(); i.hasNext(); ) {
+                    logger.debug("  - " + i.nextStatement());
+                }
             }
         }
         

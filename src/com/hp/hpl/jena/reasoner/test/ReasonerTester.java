@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.15 2003-06-18 08:00:12 der Exp $
+ * $Id: ReasonerTester.java,v 1.16 2003-06-19 20:46:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -46,7 +46,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-06-18 08:00:12 $
+ * @version $Revision: 1.16 $ on $Date: 2003-06-19 20:46:56 $
  */
 public class ReasonerTester {
 
@@ -181,12 +181,23 @@ public class ReasonerTester {
      * @throws RDFException if the test can't be found or fails internally
      */
     public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Model configuration) throws IOException {
-        ResIterator tests = testManifest.listSubjectsWithProperty(RDF.type, testClass);
-        while (tests.hasNext()) {
-            String test = tests.next().toString();
+        for (Iterator i = listTests().iterator(); i.hasNext(); ) {
+            String test = (String)i.next();
             if (!runTest(test, reasonerF, testcase, configuration)) return false;
         }
         return true;
+    }
+    
+    /**
+     * Return a list of all test names defined in the manifest for this test harness.
+     */
+    public List listTests() {
+        List testList = new ArrayList();
+        ResIterator tests = testManifest.listSubjectsWithProperty(RDF.type, testClass);
+        while (tests.hasNext()) {
+            testList.add(tests.next().toString());
+        }
+        return testList;
     }
     
     /**
