@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.32 2003-12-08 10:48:28 andy_seaborne Exp $
+ *  $Id: BaseXMLWriter.java,v 1.33 2003-12-10 18:04:06 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -48,7 +48,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.32 $' Date='$Date: 2003-12-08 10:48:28 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.33 $' Date='$Date: 2003-12-10 18:04:06 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -56,13 +56,13 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         setupMaps();
     }
     
-	//protected static Log logger = LogFactory.getLog( BaseXMLWriter.class );
+	private static Log xlogger = LogFactory.getLog( BaseXMLWriter.class );
   protected static SimpleLogger logger = new SimpleLogger() {
   	public void warn(String s) {
-  		System.err.println(s);
+  		xlogger.warn(s);
   	}
   	public void warn(String s, Exception e) {
-  		System.err.println(s);
+  		xlogger.warn(s,e);
   	}
   };
   
