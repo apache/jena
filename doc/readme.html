@@ -106,10 +106,19 @@ directory</a> of the Jena download.</p>
   <li>unzip the distribution file into a convenient directory, JENAROOT.</li>
   <li>set the Java classpath to include all the JAR files in the
 JENAROOT/lib/ directory
-    <pre>  JENAROOT/lib/jena.jar<br>  JENAROOT/lib/xercesImpl.jar<br>  JENAROOT/lib/xml-apis.jar<br>  JENAROOT/lib/icu4j.jar<br>  JENAROOT/lib/concurrent.jar<br>  JENAROOT/lib/jakarta-oro-2.0.5.jar<br>  JENAROOT/lib/antlr.jar<br>  JENAROOT/lib/junit.jar<br>  JENAROOT/lib/commons-logging.jar<br>  JENAROOT/lib/log4j-1.2.7.jar<br>  JENAROOT/lib/rdf-api-2001-01-19.jar<br></pre>
+    <pre>  JENAROOT/lib/jena.jar
+  JENAROOT/lib/xercesImpl.jar
+  JENAROOT/lib/xml-apis.jar
+  JENAROOT/lib/icu4j.jar
+  JENAROOT/lib/concurrent.jar
+  JENAROOT/lib/jakarta-oro-2.0.5.jar
+  JENAROOT/lib/antlr.jar
+  JENAROOT/lib/junit.jar
+  JENAROOT/lib/commons-logging.jar
+  JENAROOT/lib/log4j-1.2.7.jar</pre>
   </li>
   <li>Test the distribution by running the regression tests, either:
-    <pre>	ant test          // if you have ant configured to run junit<br>	test.bat          // on windows<br>	. test.sh         // on unix<br>	</pre>
+    <pre>	ant test          // if you have ant configured to run junit<br>	test.bat          // on windows<br>	sh test.sh         // on unix<br>	</pre>
 The tests should all pass. If you are behind a firewall, you may have
 to configure a proxy for some of the tests - see below for the
 appropriate properties. </li>
