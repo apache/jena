@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.4 2003-03-29 09:42:24 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.5 2003-03-31 20:07:00 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.xmloutput;
@@ -32,7 +32,6 @@ import java.util.*;
 import org.apache.xerces.util.EncodingMap;
 import org.apache.log4j.Logger;
 
-
 /** 
  * This is not part of the public API.
  * Base class for XML serializers.
@@ -53,11 +52,41 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-03-29 09:42:24 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-03-31 20:07:00 $'
  */
 abstract public class BaseXMLWriter implements RDFWriter {
-    /** log4j logger */
-    protected static Logger logger = Logger.getLogger(BaseXMLWriter.class);
+	/** log4j logger */
+	protected static Logger logger = Logger.getLogger(BaseXMLWriter.class);
+
+	static private class Fake extends EncodingMap {
+		static {
+			Iterator it = EncodingMap.fJava2IANAMap.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry me = (Map.Entry) it.next();
+				if (!me
+					.getKey()
+					.equals(EncodingMap.fIANA2JavaMap.get(me.getValue()))) {
+				//	System.err.println(
+				//		"?1? " + me.getKey() + " => " + me.getValue());
+				}
+			}
+			it = EncodingMap.fIANA2JavaMap.entrySet().iterator();
+			while (it.hasNext()) {
+				Map.Entry me = (Map.Entry) it.next();
+				if (null == EncodingMap.fJava2IANAMap.get(me.getValue())) {
+				//	System.err.println(
+				//		"?2? " + me.getKey() + " => " + me.getValue());
+                    EncodingMap.fJava2IANAMap.put(me.getValue(),me.getKey());
+				}
+			}
+
+		}
+		static void foo() {
+		}
+	}
+	static {
+		Fake.foo();
+	}
 
 	private Relation nameSpaces = new Relation();
 	private Map ns;
@@ -158,8 +187,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 		namespacesNeeded.add(uri);
 	}
 	void workOutNamespaces() {
-		if ( ns != null )
-		  return;
+		if (ns != null)
+			return;
 		ns = new HashMap();
 		Set used = new HashSet(); // prefixes used.
 		Iterator it = namespacesNeeded.iterator();
@@ -171,7 +200,7 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			String val = Util.getProperty(RDFWriter.NSPREFIXPROPBASE + uri);
 			if (val != null && checkPrefix(val) && !used.contains(val)) {
 				ns.put(uri, val);
-			used.add(val);
+				used.add(val);
 			}
 		}
 
@@ -180,8 +209,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 		// Repeat for those that are not system properties.
 		while (it.hasNext()) {
 			String uri = (String) it.next();
-			if ( ns.containsKey(uri))
-			  continue;
+			if (ns.containsKey(uri))
+				continue;
 			String val = null;
 			Set s = nameSpaces.forward(uri);
 			if (s != null) {
@@ -290,8 +319,8 @@ abstract public class BaseXMLWriter implements RDFWriter {
 		boolean cookUp = false;
 		if (prefix == null) {
 			logger.warn(
-				"Internal error using j.cook.up code: <" + uri+">",
-				 new RuntimeException());
+				"Internal error using j.cook.up code: <" + uri + ">",
+				new RuntimeException());
 			cookUp = true;
 		} else if (prefix.length() == 0) {
 			if (type == ATTR || type == FASTATTR)
@@ -324,8 +353,7 @@ abstract public class BaseXMLWriter implements RDFWriter {
 				case END :
 					break;
 				case FAST :
-					logger.fatal(
-						"Unreachable code - reached.");
+					logger.fatal("Unreachable code - reached.");
 					throw new RuntimeException("Shouldn't happen.");
 			}
 		}
@@ -385,16 +413,13 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			String decl = null;
 			if (out instanceof OutputStreamWriter) {
 				String javaEnc = ((OutputStreamWriter) out).getEncoding();
-               // System.err.println(javaEnc);
+				// System.err.println(javaEnc);
 				if (!(javaEnc.equals("UTF8") || javaEnc.equals("UTF-16"))) {
-			//		System.out.println(javaEnc);
-                    String xEnc = EncodingMap.getJava2IANAMapping(javaEnc);
-                    if (xEnc == null)
-                      xEnc = javaEnc; // hmm.. incorrect
-					decl =
-						"<?xml version='1.0' encoding='"
-							+ xEnc
-							+ "'?>";
+					//		System.out.println(javaEnc);
+					String xEnc = EncodingMap.getJava2IANAMapping(javaEnc);
+					if (xEnc == null)
+						xEnc = javaEnc; // hmm.. incorrect
+					decl = "<?xml version='1.0' encoding='" + xEnc + "'?>";
 				}
 			}
 			if (decl == null && showXmlDeclaration != null)
@@ -403,22 +428,22 @@ abstract public class BaseXMLWriter implements RDFWriter {
 				pw.println(decl);
 			}
 		}
-        try {
-		if (xmlBase == null) {
-            
-            baseURI = (base == null || base.length()==0) ? null : new URI(base);
-			writeBody(model, pw, base, false);
-		} else {
-            baseURI =  xmlBase.length()==0 ? null : new URI(xmlBase);
-			writeBody(model, pw, xmlBase, true);
+		try {
+			if (xmlBase == null) {
+
+				baseURI =
+					(base == null || base.length() == 0) ? null : new URI(base);
+				writeBody(model, pw, base, false);
+			} else {
+				baseURI = xmlBase.length() == 0 ? null : new URI(xmlBase);
+				writeBody(model, pw, xmlBase, true);
+			}
+		} catch (MalformedURIException e) {
+			throw new RDFException(e);
 		}
-        }
-        catch (MalformedURIException e) {
-            throw new RDFException(e);
-        }
 		pw.flush();
 	}
-    private URI baseURI;
+	private URI baseURI;
 	private boolean checkPrefix(String prefix) {
 		if (prefix.equals(""))
 			return true;
@@ -440,12 +465,12 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			nameSpaces.set11(ns, prefix);
 		}
 	}
-    
-    String relativize(String uri) {
-        if ( relativeFlags != 0 && baseURI != null)
-           return baseURI.relativize(uri,relativeFlags);
-        return uri;
-    }
+
+	String relativize(String uri) {
+		if (relativeFlags != 0 && baseURI != null)
+			return baseURI.relativize(uri, relativeFlags);
+		return uri;
+	}
 
 	abstract void writeBody(
 		Model mdl,
@@ -512,7 +537,6 @@ abstract public class BaseXMLWriter implements RDFWriter {
 		return new String(result + ESCAPE);
 	}
 
-
 	/** Sets properties on this writer.
 	 *  Current properties are:
 	 * <dl>
@@ -523,25 +547,25 @@ abstract public class BaseXMLWriter implements RDFWriter {
 	 * <dd> (true or false) Whether to use long or short id's for anon
 	 * resources. Short id's are easier to read and are the default, but can run
 	 * out of memory on very large models.
-     * <dt>relativeURIs
-     * <dd>A comma separate list of options:
-     *    <dl>
-     *    <dt>same-document
-     *    <dd>same-document references (e.g. "" or "#foo")
-     *    <dt>network
-     *    <dd>network paths e.g. "//example.org/foo" omitting the URI scheme
-     *    <dt>absolute
-     *    <dd>absolute paths e.g. "/foo" omitting the scheme and authority
-     *    <dt>relative
-     *    <dd>relative path not begining in "../"
-     *    <dt>parent
-     *    <dd>relative path begining in "../"
-     *    <dt>grandparent
-     *    <dd>relative path begining in "../../"
-     *    </dl>
-     *    The default value is "same-document, absolute, relative, parent".
-     *    Relative    URIs of any of these types are output where possible if
-     * and only if the option has been specified.
+	 * <dt>relativeURIs
+	 * <dd>A comma separate list of options:
+	 *    <dl>
+	 *    <dt>same-document
+	 *    <dd>same-document references (e.g. "" or "#foo")
+	 *    <dt>network
+	 *    <dd>network paths e.g. "//example.org/foo" omitting the URI scheme
+	 *    <dt>absolute
+	 *    <dd>absolute paths e.g. "/foo" omitting the scheme and authority
+	 *    <dt>relative
+	 *    <dd>relative path not begining in "../"
+	 *    <dt>parent
+	 *    <dd>relative path begining in "../"
+	 *    <dt>grandparent
+	 *    <dd>relative path begining in "../../"
+	 *    </dl>
+	 *    The default value is "same-document, absolute, relative, parent".
+	 *    Relative    URIs of any of these types are output where possible if
+	 * and only if the option has been specified.
 	 * <dt>showXmlDeclaration
 	 * <dd>can be true, false or "default" (null)
 	 *  If true, an XML Declaration is included in the output, if false
@@ -627,13 +651,11 @@ abstract public class BaseXMLWriter implements RDFWriter {
 		} else if (propName.equalsIgnoreCase("prettyTypes")) {
 			return setTypes((Resource[]) propValue);
 		} else if (propName.equalsIgnoreCase("relativeURIs")) {
-            int old = relativeFlags;
-            relativeFlags = URI.str2flags((String)propValue);
-            return URI.flags2str(old);
-        } else {
-			logger.warn(
-				"Unsupported property: " + propName
-				);
+			int old = relativeFlags;
+			relativeFlags = URI.str2flags((String) propValue);
+			return URI.flags2str(old);
+		} else {
+			logger.warn("Unsupported property: " + propName);
 			return null;
 		}
 	}
@@ -643,15 +665,16 @@ abstract public class BaseXMLWriter implements RDFWriter {
 			"prettyTypes is not a property on the Basic RDF/XML writer.");
 		return null;
 	}
-    /*
-    private boolean sameDocument = true;
-    private boolean network = false;
-    private boolean absolute = true;
-    private boolean relative = true;
-    private boolean parent = true;
-    private boolean grandparent = false;
-*/
-   private int relativeFlags = URI.SAMEDOCUMENT|URI.ABSOLUTE|URI.RELATIVE|URI.PARENT;
+	/*
+	private boolean sameDocument = true;
+	private boolean network = false;
+	private boolean absolute = true;
+	private boolean relative = true;
+	private boolean parent = true;
+	private boolean grandparent = false;
+	*/
+	private int relativeFlags =
+		URI.SAMEDOCUMENT | URI.ABSOLUTE | URI.RELATIVE | URI.PARENT;
 }
 
 /*
