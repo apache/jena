@@ -6,36 +6,14 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLObjectPropertyImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 20:45:58 $
+ * Last modified on   $Date: 2003-06-17 17:11:56 $
  *               by   $Author: ian_dickinson $
  *
- * (c) Copyright Hewlett-Packard Company 2001
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
+ * (see footer for full conditions)
  *****************************************************************************/
 
 // Package
@@ -54,16 +32,16 @@ import com.hp.hpl.jena.vocabulary.*;
 
 
 /**
- * Implementation for Java encapsulation of an object property in a DAML ontology. An object property
+ * <p>Java encapsulation of an object property in a DAML ontology. An object property
  * is a partition of the class of properties, in which the range of the property
  * is a DAML instance (rather than a datatype). Object properties may be transitive
  * and unambiguous, which are modelled in the specification by sub-classes of
  * <code>ObjectProperty</code> named <code>TransitiveProperty</code> and
  * <code>UnambiguousProperty</code>.  In this API, transitivity and uniqueness are
- * modelled as attributes of the DAMLObjectProperty object.
+ * modelled as attributes of the DAMLObjectProperty object.</p>
  *
- * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLObjectPropertyImpl.java,v 1.3 2003-06-13 20:45:58 ian_dickinson Exp $
+ * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
+ * @version CVS info: $Id: DAMLObjectPropertyImpl.java,v 1.4 2003-06-17 17:11:56 ian_dickinson Exp $
  */
 public class DAMLObjectPropertyImpl 
     extends DAMLPropertyImpl
@@ -77,7 +55,7 @@ public class DAMLObjectPropertyImpl
     //////////////////////////////////
 
     /**
-     * A factory for generating DAMLDataInstance facets from nodes in enhanced graphs.
+     * A factory for generating DAMLObjectProperty facets from nodes in enhanced graphs.
      * Note: should not be invoked directly by user code: use 
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
@@ -87,13 +65,12 @@ public class DAMLObjectPropertyImpl
                 return new DAMLObjectPropertyImpl( n, eg );
             }
             else {
-                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLOntology" );
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLObjectProperty" );
             } 
         }
             
-        public boolean canWrap( Node node, EnhGraph eg ) {
-            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            return (profile != null)  &&  profile.isSupported( node, eg, DAMLDatatypeProperty.class );
+        public boolean canWrap( Node n, EnhGraph g ) {
+            return hasType( n, g, DAML_OIL.ObjectProperty );
         }
     };
 
@@ -102,7 +79,7 @@ public class DAMLObjectPropertyImpl
     //////////////////////////////////
 
     /** Property accessor for inverseOf */
-    private PropertyAccessor m_propInverseOf = null;
+    private PropertyAccessor m_propInverseOf = new PropertyAccessorImpl( getVocabulary().inverseOf(), this );
 
 
 
@@ -111,7 +88,7 @@ public class DAMLObjectPropertyImpl
 
     /**
      * <p>
-     * Construct a DAML list represented by the given node in the given graph.
+     * Construct a DAML object property represented by the given node in the given graph.
      * </p>
      * 
      * @param n The node that represents the resource
@@ -127,51 +104,23 @@ public class DAMLObjectPropertyImpl
 
 
     /**
-     * Return a readable representation of the DAML value
-     *
-     * @return a string denoting this value
-     */
-    public String toString() {
-        // get the public name for this value type (e.g. we change DAMLClassImpl -> DAMLClass)
-        String cName = getClass().getName();
-        int i = cName.indexOf( "Impl" );
-        int j = cName.lastIndexOf( "." ) + 1;
-        cName = (i > 0) ? cName.substring( j, i ) : cName.substring( j );
-
-        // property attributes
-        String attribs;
-        attribs = isUnique() ? "unique " : "";
-        attribs = attribs + (isTransitive() ? "transitive " : "");
-        attribs = attribs + (isUnambiguous() ? "unambiguous " : "");
-
-        // now format the return string
-        return (getURI() == null) ?
-                   ("<" + attribs + "Anonymous " + cName + "@" + Integer.toHexString( hashCode() ) + ">") :
-                   ("<" + attribs + cName + " " + getURI() + ">");
-    }
-
-
-    /**
-     * Set the flag to indicate that this property is to be considered
-     * transitive - that is, it is defined by the DAML class TransitiveProperty.
+     * <p>Set the flag to indicate that this property is to be considered
+     * transitive - that is, it is defined by the DAML class <code>TransitiveProperty</code>.</p>
      *
      * @param transitive True for a transitive property
      */
     public void setIsTransitive( boolean transitive ) {
         if (transitive) {
-            // add the transitive type to this property
-            setRDFType( getVocabulary().TransitiveProperty(), false );
+            addRDFType( getVocabulary().TransitiveProperty() );
         }
         else {
-            // remove the transitive type from this property
-            removeProperty( RDF.type, getVocabulary().TransitiveProperty() );
+            removeRDFType( getVocabulary().TransitiveProperty() );
         }
     }
 
 
     /**
-     * Answer true if this property is to be considered transitive, that is
-     * it is characterised by the DAML class TransitiveProperty
+     * <p>Answer true if this property is transitive.</p>
      *
      * @return True if this property is transitive
      */
@@ -182,26 +131,23 @@ public class DAMLObjectPropertyImpl
 
 
     /**
-     * Set the flag to indicate that this property is to be considered
-     * unambiguous - that is, it is defined by the DAML class UnambiguousProperty.
+     * <p>Set the flag to indicate that this property is to be considered
+     * unabiguous - that is, it is defined by the DAML class <code>UnambiguousProperty</code>.</p>
      *
-     * @param unambiguous True for a unambiguous property
+     * @param unambiguous True for a unabiguous property
      */
     public void setIsUnambiguous( boolean unambiguous ) {
         if (unambiguous) {
-            // add the transitive type to this property
-            setRDFType( getVocabulary().UnambiguousProperty(), false );
+            addRDFType( getVocabulary().UnambiguousProperty() );
         }
         else {
-            // remove the transitive type from this property
-            removeProperty( RDF.type, getVocabulary().UnambiguousProperty() );
+            removeRDFType( getVocabulary().UnambiguousProperty() );
         }
     }
 
 
     /**
-     * Answer true if this property is to be considered unabiguous, that is
-     * it is characterised by the DAML class UnambiguousProperty
+     * <p>Answer true if this property is an unambiguous property.</p>
      *
      * @return True if this property is unambiguous
      */
@@ -211,29 +157,16 @@ public class DAMLObjectPropertyImpl
 
 
     /**
-     * Property accessor for the 'inverseOf' property of a DAML Property. This denotes
+     * <p>Property accessor for the <code>inverseOf</code> property of a DAML Property. This denotes
      * that the named property (say, P) is an inverse of this property (say, Q). Formally,
-     * if (x, y) is an instance of P, then (y, x) is an instance of Q.
+     * if (x, y) is an instance of P, then (y, x) is an instance of Q. According to the
+     * DAML specification, inverseOf is only defined for object properties (i.e. not
+     * datatype properties).</p>
      *
-     * @return Property accessor for 'inverseOf'
+     * @return Property accessor for <code>inverseOf</code>
      */
     public PropertyAccessor prop_inverseOf() {
-        if (m_propInverseOf == null) {
-            m_propInverseOf = new PropertyAccessorImpl( getVocabulary().inverseOf(), this );
-        }
-
         return m_propInverseOf;
-    }
-
-
-    /**
-     * Answer a key that can be used to index collections of this DAML property for
-     * easy access by iterators.  Package access only.
-     *
-     * @return a key object.
-     */
-    Object getKey() {
-        return DAML_OIL.Property.getURI();
     }
 
 

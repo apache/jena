@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            17-Jun-2003
  * Filename           $RCSfile: TestDAMLProperty.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-17 16:23:48 $
+ * Last modified on   $Date: 2003-06-17 17:11:49 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLProperty.java,v 1.2 2003-06-17 16:23:48 ian_dickinson Exp $
+ * @version CVS $Id: TestDAMLProperty.java,v 1.3 2003-06-17 17:11:49 ian_dickinson Exp $
  */
 public class TestDAMLProperty 
     extends DAMLTestBase
@@ -222,6 +222,35 @@ public class TestDAMLProperty
                 public void doTest( DAMLModel m ) throws Exception {
                     DAMLDatatypeProperty p = m.createDAMLDatatypeProperty( NS + "p" );
                     assertNotNull( p );
+                }
+            },
+            new OntTestCase( "unambiguous property" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLObjectProperty p = m.createDAMLObjectProperty( NS + "p" );
+                    assertFalse( "p not unambiguous", p.isUnambiguous() );
+                    p.setIsUnambiguous( true );
+                    assertTrue( "p not unambiguous", p.isUnambiguous() );
+                    p.setIsUnambiguous( false );
+                    assertFalse( "p not unambiguous", p.isUnambiguous() );
+                }
+            },
+            new OntTestCase( "Transitive property" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLObjectProperty p = m.createDAMLObjectProperty( NS + "p" );
+                    assertFalse( "p not Transitive", p.isTransitive() );
+                    p.setIsTransitive( true );
+                    assertTrue( "p not Transitive", p.isTransitive() );
+                    p.setIsTransitive( false );
+                    assertFalse( "p not Transitive", p.isTransitive() );
+                }
+            },
+            new OntTestCase( "DAMLObjectProperty.prop_inverseOf" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLObjectProperty p = m.createDAMLObjectProperty( NS + "p" );
+                    DAMLObjectProperty q = m.createDAMLObjectProperty( NS + "q" );
+                   
+                    p.prop_inverseOf().add( q );
+                    assertEquals( "inverse", q, p.prop_inverseOf().get() );
                 }
             },
         };
