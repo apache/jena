@@ -40,7 +40,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 /**
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-30 10:25:18 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-01-30 17:24:23 $'
  */
 public class RDFS {
     
@@ -82,6 +82,8 @@ public class RDFS {
     public static       Property subClassOf          = null;
            static final String   nsubPropertyOf      = "subPropertyOf";
     public static       Property subPropertyOf       = null;
+           static final String   nmember             = "member";
+    public static       Property member             = null;
     
     static {
         try {
@@ -102,6 +104,7 @@ public class RDFS {
             seeAlso = new PropertyImpl(uri, nseeAlso);
             subClassOf = new PropertyImpl(uri, nsubClassOf);
             subPropertyOf = new PropertyImpl(uri, nsubPropertyOf);
+            member = new PropertyImpl(uri, nmember);
         } catch (Exception e) {
             ErrorHelper.logInternalError("RDFS", 1, e);
         }
