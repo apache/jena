@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.42 2004-11-19 14:38:10 chris-dollin Exp $
+  $Id: Node.java,v 1.43 2004-12-01 17:50:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -177,17 +177,14 @@ public abstract class Node {
     */
     public static Node createLiteral( String lit, String lang, boolean isXml )
         {
-        if (lit == null) 
-            {
-            // throw new SomeSuitableException( "null in createLiteral" );
-            System.err.println /* log.warn */ ( "null treated as empty string in createLiteral: this will become illegal." );
-            lit = "";
-            } 
+        if (lit == null) throw new NullPointerException( "null for literals has been illegal since Jena 2.0" );
+//            {
+//            // throw new SomeSuitableException( "null in createLiteral" );
+//            System.err.println /* log.warn */ ( "null treated as empty string in createLiteral: this will become illegal." );
+//            lit = "";
+//            } 
         return createLiteral( new LiteralLabel( lit, lang, isXml ) ); 
         }    
-        
-    public static void nullLiteralsGenerateWarnings()
-        {}  
         
     /**
      * Build a typed literal node from its lexical form. The

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.17 2004-06-15 14:02:05 chris-dollin Exp $
+    $Id: Regression.java,v 1.18 2004-12-01 17:52:29 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
 /** A common set of regression tests.
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2004-06-15 14:02:05 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2004-12-01 17:52:29 $'
  */
 public class Regression extends Object {
 
@@ -3859,33 +3859,30 @@ public class Regression extends Object {
 //            System.out.println("Beginning " + test);
 
                 /*
-                    the _null_ argument to LiteralImpl is preserved only for backward
-                    compatability. It should be logged and later on become an exception.
+                    the _null_ argument to LiteralImpl was preserved only for backward
+                    compatability. It was be logged and has now become an exception.
                     (Brian and Chris had a discussion about this and agreed).
-
-                    When the method below is deleted, the test code can be installed.
-                    Replace RuntimeException with whatever the appropriate exception
-                    type is. If we can't decide, perhaps we should delete the test entirely ...
                 */
-                Node.nullLiteralsGenerateWarnings();
-//                try
-//                    {
-//                   n=100; m.query(new SimpleSelector(null,
-//                                                   null,
-//                                                   new LiteralImpl( Node.createLiteral( null, "", false ), m)));
-//                    error( test, n );
-//                    }
-//                catch (RuntimeException e)
-//                        {}
-//                try
-//                    {
-//                   n=101; m.query(new SimpleSelector(null,
-//                                                   null,
-//                                                   new LiteralImpl( Node.createLiteral( null, "en", false ), m)));
-//                    error( test, n );
-//                    }
-//                catch (RuntimeException e)
-//                    {}
+                // Node.nullLiteralsGenerateWarnings();
+                try
+                    {
+                   n=100; m.query(new SimpleSelector(null,
+                                                   null,
+                                                   new LiteralImpl( Node.createLiteral( null, "", false ), (ModelCom) m)));
+                    error( test, n );
+                    }
+                catch (NullPointerException e)
+                        {}
+                try
+                    {
+                   n=101; m.query(new SimpleSelector(null,
+                                                   null,
+                                                   new LiteralImpl( Node.createLiteral( null, "en", false ), (ModelCom) m)));
+                    error( test, n );
+                    }
+                catch (NullPointerException e)
+                    {}
+                // end of nullLiteralsGenerateWarnings code
 
                n=102;
                StmtIterator iter
@@ -4879,5 +4876,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.17 2004-06-15 14:02:05 chris-dollin Exp $
+ * $Id: Regression.java,v 1.18 2004-12-01 17:52:29 chris-dollin Exp $
  */
