@@ -5,7 +5,7 @@
 
 /** Class used by original, Jena1, external query engine
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.13 2003-06-17 15:21:51 chris-dollin Exp $
+ * @version  $Id: TriplePattern.java,v 1.14 2003-06-19 16:09:50 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -32,6 +32,14 @@ import com.hp.hpl.jena.shared.*;
     RDFNode fixed_o ;
 
     QueryEngineExt queryEngine = null ;
+
+    /**
+     * Deprecated - but not mentioned here to avoid warnings elsewhere
+     * and its not public anyway. 
+     * @param s
+     * @param p
+     * @param o
+     */
 
     public TriplePattern(Slot s, Slot p, Slot o)
     {
