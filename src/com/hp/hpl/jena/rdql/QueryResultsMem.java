@@ -5,129 +5,123 @@
 
 package com.hp.hpl.jena.rdql;
 
-/** 
- * @author		Andy Seaborne
- * @version 	$Id: QueryResultsMem.java,v 1.3 2003-02-20 16:45:49 andy_seaborne Exp $
- */
-
 import java.util.*;
-import java.io.*;
-import java.net.*;
+import java.io.* ;
 
-import com.hp.hpl.jena.rdql.parser.ParsedLiteral; 
-import com.hp.hpl.jena.rdql.* ;
+import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.vocabulary.* ;
 
-import com.hp.hpl.jena.util.tuple.*;
 import com.hp.hpl.jena.util.*;
 
 /**
- * @author		Andy Seaborne
- * @version 	$Id: QueryResultsMem.java,v 1.3 2003-02-20 16:45:49 andy_seaborne Exp $
+ * @author      Andy Seaborne
+ * @version     $Id: QueryResultsMem.java,v 1.4 2003-03-10 09:45:28 andy_seaborne Exp $
  */
 
 
 public class QueryResultsMem implements QueryResults
 {
-	static boolean DEBUG = false;
-	// In-memory structures for a results Iterator.
+    static boolean DEBUG = false;
+    // The result set in memory
+    List rows = new ArrayList();
+    List varNames = null ;
+    int rowNumber = 0 ;
+    Iterator iterator = null ;
 
-	List rows = new ArrayList();
-	List varNames = null ;
-	int rowNumber = 0 ;
-	Iterator iterator ;
-	boolean isEmpty = false ;
-	
-	// Duplicate
-	public QueryResultsMem(QueryResultsMem imrs2)
-	{
-		this(imrs2, false) ;
-	}
+    /** Create an in-memory result set from another one
+     * 
+     * @param imrs2     The other QueryResultsMem object
+     */
+    
+    public QueryResultsMem(QueryResultsMem imrs2)
+    {
+        this(imrs2, false) ;
+    }
+    
+    /** Create an in-memory result set from another one
+     * 
+     * @param imrs2     The other QueryResultsMem object
+     * @param takeCopy  Should we copy the rows?
+     */
 
+    public QueryResultsMem(QueryResultsMem imrs2, boolean takeCopy)
+    {
+        varNames = imrs2.varNames;
+        if ( takeCopy )
+        {
+            for (Iterator iter = imrs2.rows.iterator(); iter.hasNext();)
+            {
+                rows.add((ResultBinding) iter.next());
+            }
+        }
+        else
+            // Share results (not the iterator).
+            rows = imrs2.rows ;
+        reset() ;
+    }
 
-	public QueryResultsMem(QueryResultsMem imrs2, boolean takeCopy)
-	{
-		varNames = imrs2.varNames;
-		if ( takeCopy )
-		{
-			for (Iterator iter = imrs2.rows.iterator(); iter.hasNext();)
-			{
-				rows.add((ResultBinding) iter.next());
-			}
-		}
-		else
-			// Share results (not the iterator.
-			rows = imrs2.rows ;
-		iterator = rows.iterator() ;
-		reset() ;
-	}
+    /** Create an in-memory result set from any QueryResults object.
+     *  If the QueryResults is an in-memory one already, then no
+     *  copying is done - the necessary internal datastructures
+     *  are shared.  This operation destroys (uses up) a QueryResults
+     *  object that is not an in memory one.
+     */
 
-	/** Create an in-memory result set from any QueryResults object.
-	 *  If the QueryResults is an in-memory one already, then no
-	 *  copying is done - the necessary internal datastructures
-	 *  are shared.
-	 */
+    public QueryResultsMem(QueryResults qr)
+    {
+        if (qr instanceof QueryResultsMem)
+        {
+            QueryResultsMem qrm = (QueryResultsMem) qr;
+            this.rows = qrm.rows;
+            this.varNames = qrm.varNames;
+        }
+        else
+        {
+            varNames = qr.getResultVars();
+            while (qr.hasNext())
+            {
+                ResultBinding rb = (ResultBinding) qr.next();
+                rows.add(rb);
+            }
+            qr.close();
+        }
+        reset();
+    }
 
-	public QueryResultsMem(QueryResults qr)
-	{
-		if ( qr instanceof QueryResultsMem )
-		{
-			QueryResultsMem qrm = (QueryResultsMem)qr ;
-			this.rows = qrm.rows ;
-		}
-		else
-			while(qr.hasNext()) 
-			{
-				ResultBinding rb = (ResultBinding)qr.next() ;
-				rows.add(rb) ;
-			}
-			
-		varNames = qr.getResultVars() ;
-		qr.close() ;
-		reset() ;
-	}
+    /** Prcoess a result set encoded in RDF according to
+     * <code>http://jena.hpl.hp.com/2003/03/result-set#</code>
+     * 
+     * @param model
+     */ 
+    public QueryResultsMem(Model model)
+    {
+        buildFromDumpFormat(model);
+    }
 
-	// Read in a result set in the mysterious dump format
-	// ?var value ?var value ...
-	public QueryResultsMem(Reader reader)
-	{
-		// Awaiting interface-ization of QueryResult?
-		buildFromDumpFormat(reader);
-	}
+    /** Read in a result set encoded in RDF according to
+     * <code>http://jena.hpl.hp.com/2003/03/result-set#</code>
+     * 
+     * @param model
+     */ 
 
-	public QueryResultsMem(String urlStr)
-		throws java.io.FileNotFoundException
-	{
-		// Awaiting interface-ization of QueryResult?
-		Reader reader = null;
-		try
-		{
-			URL url = new URL(urlStr);
-			reader =
-				new BufferedReader(new InputStreamReader(url.openStream()));
-		} catch (java.net.MalformedURLException e)
-		{
-			// Try as a file.
-			String filename = urlStr;
-			FileReader fr = new FileReader(filename);
-			reader = new BufferedReader(fr);
-		} catch (java.io.IOException ioEx)
-		{
-			Log.severe("IOException: " + ioEx, "QueryResultsUtils", "", ioEx);
-			return;
-		}
-		buildFromDumpFormat(reader);
-	}
-	
-	
+    public QueryResultsMem(String urlStr)
+        throws java.io.FileNotFoundException
+    {
+        Model m = ModelLoader.loadModel(urlStr) ;
+        buildFromDumpFormat(m);
+    }
+    
+    
+   // -------- QueryResults interface ------------------------------ 
    /**
      *  @throws UnsupportedOperationException Always thrown.
      */
 
-	public void remove() throws java.lang.UnsupportedOperationException
-	{
-		throw new java.lang.UnsupportedOperationException(
-			"QueryResultsMem: Attempt to remove an element");
-	}
+    public void remove() throws java.lang.UnsupportedOperationException
+    {
+        throw new java.lang.UnsupportedOperationException(
+            "QueryResultsMem: Attempt to remove an element");
+    }
 
     /**
      * Is there another possibility?
@@ -140,20 +134,20 @@ public class QueryResultsMem implements QueryResults
     
     public Object next() { rowNumber++ ; return iterator.next() ; }
 
-	/** Close the results set.
-	 *  Should be called on all QueryResults objects
-	 */
-	
+    /** Close the results set.
+     *  Should be called on all QueryResults objects
+     */
+    
     public void close() { return ; }
 
-	public void reset() { iterator = rows.iterator() ; rowNumber = 0 ; }
+    public void reset() { iterator = rows.iterator() ; rowNumber = 0 ; }
 
-	/** Return the "row" number for the current iterator item
-	 */
+    /** Return the "row" number for the current iterator item
+     */
     public int getRowNumber() { return rowNumber ; }
     
-	/** Return the number of rows
-	 */
+    /** Return the number of rows
+     */
     public int size() { return rows.size() ; }
     
     /** Get the variable names for the projection
@@ -169,256 +163,96 @@ public class QueryResultsMem implements QueryResults
 
     public List getAll() { return rows ; }
     
+    // -------- End QueryResults interface ------------------------------ 
 
-	private void buildFromDumpFormat(Reader reader)
-	{
-		varNames = new ArrayList() ;
-		TupleSet ts = new TupleSet(reader);
-		// The first row is special - it records the variables.
-		// If there is none, then there were no variables in the query 
-		// and none specified in the SELECT.
-		
-		// First row.
-		if ( ! ts.hasNext() )
-		{
-			// Empty
-			varNames = new ArrayList() ;
-			isEmpty = true ;
-			return ;
-		}
-				
-		List firstRow = (List)ts.next() ;
-		if ( firstRow.size() == 0 )
-		{
-			Log.severe("No variable names yet result set is not empty") ;
-			return ;
-		}
-		
-		for ( Iterator iter1 = firstRow.iterator() ; iter1.hasNext() ; )
-		{
-			// Trim the ?
-			TupleItem tmp = (TupleItem)iter1.next() ;
-			String v = tmp.get().substring(1);
-			varNames.add(v) ;
-		}
-		
-		// Data		
+    // Convert from RDF model to in-memory result set
 
-		for (; ts.hasNext();)
-		{
-			List row = (List) ts.next();
-			//System.err.println("New row") ;
+    private void buildFromDumpFormat(Model resultsModel)
+    {
+        varNames = new ArrayList() ;
+        StmtIterator sIter = resultsModel.listStatements(null, RDF.type, ResultSet.ResultSet) ;
+        for ( ; sIter.hasNext() ;)
+        {
+            Statement s = sIter.nextStatement() ;
+            Resource root = s.getSubject() ;
+            
+            // Variables
+            StmtIterator rVarsIter = root.listProperties(ResultSet.resultVariable) ;
+            for ( ; rVarsIter.hasNext() ; )
+            {
+                String varName = rVarsIter.nextStatement().getString() ;
+                varNames.add(varName) ;
+            }
+            
+            // Now the results themselves
+            int count = 0 ;
+            StmtIterator solnIter = root.listProperties(ResultSet.solution) ;
+            for ( ; solnIter.hasNext() ; )
+            {
+                // foreach row
+                ResultBinding rb = new ResultBinding() ;
+                count++ ;
+                
+                Resource soln = solnIter.nextStatement().getResource() ;
+                StmtIterator bindingIter = soln.listProperties(ResultSet.binding) ;
+                for ( ; bindingIter.hasNext() ; )
+                {
+                    Resource binding = bindingIter.nextStatement().getResource() ;
+                    String var = binding.getProperty(ResultSet.variable).getString() ;
+                    RDFNode val = binding.getProperty(ResultSet.value).getObject() ;
+                    rb.add(var, val) ;
+                }
+                rows.add(rb) ;
+            }
+            
+            if ( root.hasProperty(ResultSet.size))
+            {
+                try {
+                    int size = root.getProperty(ResultSet.size).getInt() ;
+                    if ( size != count )
+                        System.err.println("Warning: Declared size = "+size+" : Count = "+count) ;
+                } catch (RDFException rdfEx) {}
+            }
+            reset();
+        }
+        
+        reset() ;
+    }
 
-			ResultBinding thisRow = new ResultBinding();
-			for (Iterator iter = row.iterator(); iter.hasNext();)
-			{
-				TupleItem varName = (TupleItem) iter.next();
-				if (!iter.hasNext())
-				{
-					Log.severe(
-						"Odd number of items in dumped result set",
-						"QueryResult2",
-						"");
-					return;
-				}
-				TupleItem value = (TupleItem) iter.next();
-				if (!varName.get().startsWith("?"))
-				{
-					Log.severe(
-						"Variable name does not start with a ?",
-						"QueryResult2",
-						"");
-					return;
-				}
+    /** Are two result sets the same (isomorphic)?
+     * 
+     * @param irs1
+     * @param irs2
+     * @return boolean
+     */
 
-				String var = varName.get().substring(1);
-				
-				if (!varNames.contains(var))
-				{
-					Log.severe("Variable " + var + " is unknown");
-					return;
-				}
-				// Maybe should try to create "real" Jena objects
-				// Query literal - not a Jena RDf Literal
-				ParsedLiteral l = null;
-				if (value.isURI())
-					l = ParsedLiteral.makeURI(value.get());
-				else
-					l = ParsedLiteral.makeString(value.get());
-				thisRow.add(var, l);
-				//System.err.println("This row: "+thisRow) ;
-			}
-			rows.add(thisRow);
-		}
-		// Set internal structures
-		reset() ;
-	}
+    static public boolean equivalent(
+        QueryResultsMem irs1,
+        QueryResultsMem irs2)
+    {
+        QueryResultsFormatter fmt1 = new QueryResultsFormatter(irs1) ;
+        Model model1 = fmt1.toModel() ;
+        fmt1.close() ;
 
-	// Not efficient - could "sort" each result set then compare.
-	// Must be clear and correct because it is used in testing.
-	// COPY (or DESTRUCTIVE).  Which is why its is not the "equal" operation
+        QueryResultsFormatter fmt2 = new QueryResultsFormatter(irs2) ;
+        Model model2 = fmt2.toModel() ;
+        fmt2.close() ;
+        
+        return model1.isIsomorphicWith(model2) ;
+    }
+    
+    /** Print out the result set in dump format.  Easeier to read than computed N3
+     */
 
-	static public boolean equivalent(
-		QueryResultsMem irs1,
-		QueryResultsMem irs2)
-	{
-		if (irs1.rows.size() != irs2.rows.size())
-		{
-			if ( DEBUG )
-				System.err.println("Not equivalent: different row sizes: ("+
-								   irs1.rows.size()+", "+irs2.rows.size()+")") ;
-			return false;
-		}
+    public void list(PrintWriter pw)
+    {
+        // Duplicate so we can reset the iterator.
+        QueryResultsMem qrm = new QueryResultsMem(this) ;
+        QueryResultsFormatter fmt = new QueryResultsFormatter(qrm) ;
+        fmt.dump(pw, false) ;
+        qrm.close() ;
+    }
 
-		if (irs1.varNames.size() != irs2.varNames.size())
-		{
-			if ( DEBUG )
-				System.err.println("Not equivalent: different numbers of variables: ("+
-								   irs1.varNames.size()+", "+irs2.varNames.size()+")") ;
-			return false;
-		}
-
-		List varNames = irs1.varNames;
-
-		// Compare var names
-		for (Iterator vIter1 = irs1.varNames.iterator(); vIter1.hasNext();)
-		{
-			String vn1 = (String) vIter1.next();
-			if (!irs2.varNames.contains(vn1))
-			{
-				return false;
-			}
-		}
-
-		// Copy for destructive testing
-		irs2 = new QueryResultsMem(irs2, true);
-
-		// For every row, find a match.
-		// Note we remove the match each time from irs2.  DESTRUCTIVE.
-		for (Iterator iter1 = irs1.rows.iterator(); iter1.hasNext();)
-		{
-			if (DEBUG)
-			{
-				System.err.println("Set 1");
-				int i = 0;
-				for (Iterator iter = irs1.rows.iterator(); iter.hasNext();)
-				{
-					i++;
-					ResultBinding rb = (ResultBinding) iter.next();
-					System.err.println(i + " " + rb);
-				}
-
-				System.err.println("Set 2");
-				i = 0;
-				for (Iterator iter = irs2.rows.iterator(); iter.hasNext();)
-				{
-					i++;
-					ResultBinding rb = (ResultBinding) iter.next();
-					System.err.println(i + " " + rb);
-				}
-			}
-
-			ResultBinding rb1 = (ResultBinding) iter1.next();
-
-			// Can we find a match to the row rb1?
-			boolean foundRowMatch = false;
-			for (Iterator iter2 = irs2.rows.iterator(); iter2.hasNext();)
-			{
-				ResultBinding rb2 = (ResultBinding) iter2.next();
-				if (sameRow(varNames, rb1, rb2))
-				{
-					// Match!
-					foundRowMatch = true;
-					iter2.remove();
-					break;
-				}
-			}
-			if (!foundRowMatch)
-				return false;
-		}
-		if (irs2.rows.size() != 0)
-		{
-			System.err.println("Warning: still got some rows left");
-			System.err.println(irs2.toString());
-		}
-		// Couldn't find a difference so must be the same.
-		return true;
-
-	}
-
-
-	// Only checks that mentioned variables are the same.
-	// There may be working variables in the rows but these are ignored.
-	private static boolean sameRow(
-		List varNames,
-		ResultBinding row1,
-		ResultBinding row2)
-	{
-		Map bNodeMap = new HashMap() ;
-		
-		if (DEBUG)
-		{
-			System.err.println("Row1 = " + row1.toString());
-			System.err.println("Row2 = " + row2.toString());
-		}
-
-		// Note: we have already checked the declared variable names agree.
-
-		for (Iterator i1 = varNames.iterator(); i1.hasNext();)
-		{
-			String vname = (String) i1.next();
-			Object obj1 = row1.get(vname) ;
-			Object obj2 = row2.get(vname) ;
-			Value v1 = row1.getValue(vname);
-			Value v2 = row2.getValue(vname);
-
-			if (DEBUG)
-			{
-				System.err.println("Compare: ?"+vname);
-				System.err.println("    " + v1.asQuotedString());
-				System.err.println("    " + v2.asQuotedString());
-			}
-
-			// See if the two things are bNodes.
-			// We test their string forms because result sets can be read in from a dump file.
-//			if ( obj1 instanceof Resource && obj2 instanceof Resource &&
-//				 ((Resource)obj1).isAnon() && ((Resource)obj2).isAnon() )
-			
-			if ( v1.asQuotedString().startsWith("<anon:") &&
-	 			 v2.asQuotedString().startsWith("<anon:") )
-			{
-				String bNode1 = v1.asQuotedString() ;
-				String bNode2 = v2.asQuotedString() ;
-				if ( bNodeMap.containsKey(bNode1) )
-				{
-					if ( ! bNodeMap.get(bNode1).equals(bNode2) )
-						return false ;
-					if ( DEBUG )
-						System.err.println("BNodes the same") ;
-					// Do match
-					continue ;
-				}
-				// New in this row.  Assume matches.
-				bNodeMap.put(bNode1, bNode2) ;
- 				continue ;
-			}
-			if (!v1.asQuotedString().equals(v2.asQuotedString()))
-				return false;
-		}
-		
-		return true;
-	}
-
-	/** Print out the result set in dump format.
-	 */
-
-	public void list(PrintWriter pw)
-	{
-		QueryResultsMem qr2 = new QueryResultsMem(this) ;
-		QueryResultsFormatter fmt = new QueryResultsFormatter(this) ;
-		fmt.dump(pw, false) ;
-		qr2.close() ;
-	}
 }
 
 
