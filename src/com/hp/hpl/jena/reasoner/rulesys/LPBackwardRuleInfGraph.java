@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBackwardRuleInfGraph.java,v 1.5 2004-12-07 09:56:28 andy_seaborne Exp $
+ * $Id: LPBackwardRuleInfGraph.java,v 1.6 2004-12-10 11:22:54 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2004-12-07 09:56:28 $
+ * @version $Revision: 1.6 $ on $Date: 2004-12-10 11:22:54 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -112,7 +112,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * inference graph and the raw data, before processing.
      * @param data the new raw data graph
      */
-    public void rebind(Graph data) {
+    public synchronized void rebind(Graph data) {
         engine.checkSafeToUpdate();
         fdata = new FGraph(data);
         isPrepared = false;
@@ -125,7 +125,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
      * are made "behind the InfGraph's back" and this forces a full reconsult of
      * the changed data. 
      */
-    public void rebind() {
+    public synchronized void rebind() {
         engine.checkSafeToUpdate();
         isPrepared = false;
     }
@@ -133,7 +133,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /**
      * Flush out all cached results. Future queries have to start from scratch.
      */
-    public void reset() {
+    public synchronized void reset() {
         engine.checkSafeToUpdate();
         engine.reset();
     }
@@ -193,7 +193,7 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     /** 
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
-    public void performDelete(Triple t) {
+    public synchronized void performDelete(Triple t) {
         engine.checkSafeToUpdate();
         fdata.getGraph().delete(t);
         isPrepared = false;
