@@ -2,17 +2,19 @@
  *  (c) Copyright Hewlett-Packard Company 2001-2003    
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.6 2003-03-31 20:10:39 jeremy_carroll Exp $
+  $Id: TestXMLFeatures.java,v 1.7 2003-04-01 14:36:11 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
 
 import com.hp.hpl.jena.xmloutput.BaseXMLWriter;
-import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.rdf.arp.URI;
+import com.hp.hpl.jena.rdf.arp.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.Log;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -28,7 +30,7 @@ import com.hp.hpl.jena.util.TestLogger;
 
 /** 
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.6 $ $Date: 2003-03-31 20:10:39 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2003-04-01 14:36:11 $
  */
 public class TestXMLFeatures extends TestCase {
 	static AwkCompiler awk = PrettyWriterTest.awk;
@@ -419,7 +421,102 @@ public class TestXMLFeatures extends TestCase {
 			}
 		});
 	}
+	static final int BadPropURI = 1;
+	static final int NoError = 0;
+	static final int ExtraTriples = 2;
+	static final int BadURI = 3;
+    
+	public void checkPropURI(String s, String p, Object val, int behaviour)
+		throws IOException {
+		// create triple and graph.
+        //BaseXMLWriter.dbg = true;
+        int oldLogLevel = Log.getInstance().getLevel();
+        Log.getInstance().setLevel(Log.OFF);
+            TestLogger tl = new TestLogger(BaseXMLWriter.class);
+		Node blank = Node.createAnon();
+		Node prop = Node.createURI(s);
+		Graph g = new GraphMem();
+		g.add(new Triple(blank, prop, blank));
+		// create Model
+		Model m = new ModelMem(g);
+		// serialize
+		StringWriter w = new StringWriter();
+		RDFWriter rw = m.getWriter(lang);
+		if (p != null)
+			rw.setProperty(p, val);
+		try {
+			rw.write(m, w, "http://example.org/");
+			w.close();
+			String f = w.toString();
 
+			switch (behaviour) {
+				case BadPropURI :
+					fail("Bad property URI <" + s + "> was not detected.");
+				case BadURI :
+					fail("Bad URI <" + s + "> was not detected.");
+			}
+			// read back in
+			Model m2 = new ModelMem();
+			m2.read(new StringReader(f), "http://example.org/", lang);
+
+			// check
+			switch (behaviour) {
+				case ExtraTriples :
+					assertTrue("Expecting Brickley behaviour.", m2.size() == 3);
+					break;
+				case NoError :
+					assertTrue(
+						"Comparing Model written out and read in.",
+						m.isIsomorphicWith(m2));
+					break;
+
+			}
+		} catch (RDFException e) {
+            switch (behaviour)
+            { case BadPropURI:
+			if (e.getErrorCode() == e.INVALIDPROPERTYURI )
+              return;
+              case BadURI:
+              if (e.getErrorCode() == e.NESTEDEXCEPTION &&
+                  e.getNestedException() instanceof MalformedURIException )
+                  return;
+            }
+				throw e;
+		} finally {
+          //          BaseXMLWriter.dbg = false;
+          Log.getInstance().setLevel(oldLogLevel);
+          tl.end();
+        }
+	}
+
+    public void testBadURIAsProperty1() throws IOException {
+        checkPropURI("_:aa", null, null, BadURI);
+    }
+
+    public void testBadURIAsProperty2() throws IOException {
+        checkPropURI("_:aa", "allowBadURIs", "true", NoError);
+    }
+
+    public void testLiAsProperty1() throws IOException {
+        checkPropURI(RDF.getURI()+"li", null, null, BadPropURI);
+    }
+    /*
+    public void testLiAsProperty2() throws IOException {
+        checkPropURI(RDF.getURI()+"li", "brickley", "true", ExtraTriples);
+    }
+    */
+    public void testDescriptionAsProperty()throws IOException {
+            checkPropURI(RDF.getURI()+"Description", null, null, BadPropURI);
+    }
+
+    public void testBadProperty1() throws IOException {
+        checkPropURI("http:/a.b/", null, null, BadPropURI);
+    }
+    /*
+    public void testBadProperty2() throws IOException {
+        checkPropURI("http:/a.b/", "brickley", "http://example.org/b#", ExtraTriples);
+    } 
+    */  
 	public void testRelativeAPI() {
 		RDFWriter w = new ModelMem().getWriter(lang);
 		String old = (String) w.setProperty("relativeURIs", "");
@@ -475,9 +572,9 @@ public class TestXMLFeatures extends TestCase {
 					!matcher.contains(
 						contents,
 						awk.compile(
-							"[\"']" +
-                            Util.substituteStandardEntities(regexAbsent)
-                + "[\"']" )));
+							"[\"']"
+								+ Util.substituteStandardEntities(regexAbsent)
+								+ "[\"']")));
 			}
 			contents = null;
 		} finally {
@@ -490,66 +587,203 @@ public class TestXMLFeatures extends TestCase {
 			}
 		}
 	}
-    static String rData1[][] = {
-    // http://www.example.org/a/b/c/d/
-        { "", "http://www.example.org/a/b/c/d/", "http://www.example.org/a/b/c/d/e/f/g/", "http://www.example.org/a/b/C/D", "http://www.example.org/A/B#foo/", "http://www.example.org/a/b/c/d/X#bar", "http://example.com/A", "http://www.example.org/a/b/c/d/z[?]x=a", },
-        { "same-document", "", null, null, null, null, null, null, },
-        { "absolute", "/a/b/c/d/", "/a/b/c/d/e/f/g/", "/a/b/C/D", "/A/B#foo/", "/a/b/c/d/X#bar", null, "/a/b/c/d/z[?]x=a", },
-        { "relative", "[.]", "e/f/g/", null, null, "X#bar", null, "z[?]x=a", },
-        { "parent", "[.][.]/d/", "[.][.]/d/e/f/g/", null, null, "[.][.]/d/X#bar", null, "[.][.]/d/z[?]x=a", },
-        { "network", "//www.example.org/a/b/c/d/", "//www.example.org/a/b/c/d/e/f/g/", "//www.example.org/a/b/C/D", "//www.example.org/A/B#foo/", "//www.example.org/a/b/c/d/X#bar", "//example.com/A", "//www.example.org/a/b/c/d/z[?]x=a", },
-        { "grandparent", "[.][.]/[.][.]/c/d/", "[.][.]/[.][.]/c/d/e/f/g/", "[.][.]/[.][.]/C/D", null, "[.][.]/[.][.]/c/d/X#bar", null, "[.][.]/[.][.]/c/d/z[?]x=a", },
+	static String rData1[][] = {
+		// http://www.example.org/a/b/c/d/
+		{
+			"",
+			"http://www.example.org/a/b/c/d/",
+			"http://www.example.org/a/b/c/d/e/f/g/",
+			"http://www.example.org/a/b/C/D",
+			"http://www.example.org/A/B#foo/",
+			"http://www.example.org/a/b/c/d/X#bar",
+			"http://example.com/A",
+			"http://www.example.org/a/b/c/d/z[?]x=a",
+			},
+			{
+			"same-document", "", null, null, null, null, null, null, }, {
+			"absolute",
+				"/a/b/c/d/",
+				"/a/b/c/d/e/f/g/",
+				"/a/b/C/D",
+				"/A/B#foo/",
+				"/a/b/c/d/X#bar",
+				null,
+				"/a/b/c/d/z[?]x=a",
+				},
+				{
+			"relative",
+				"[.]",
+				"e/f/g/",
+				null,
+				null,
+				"X#bar",
+				null,
+				"z[?]x=a",
+				},
+				{
+			"parent",
+				"[.][.]/d/",
+				"[.][.]/d/e/f/g/",
+				null,
+				null,
+				"[.][.]/d/X#bar",
+				null,
+				"[.][.]/d/z[?]x=a",
+				},
+				{
+			"network",
+				"//www.example.org/a/b/c/d/",
+				"//www.example.org/a/b/c/d/e/f/g/",
+				"//www.example.org/a/b/C/D",
+				"//www.example.org/A/B#foo/",
+				"//www.example.org/a/b/c/d/X#bar",
+				"//example.com/A",
+				"//www.example.org/a/b/c/d/z[?]x=a",
+				},
+				{
+			"grandparent",
+				"[.][.]/[.][.]/c/d/",
+				"[.][.]/[.][.]/c/d/e/f/g/",
+				"[.][.]/[.][.]/C/D",
+				null,
+				"[.][.]/[.][.]/c/d/X#bar",
+				null,
+				"[.][.]/[.][.]/c/d/z[?]x=a",
+				},
+				};
+	static String rData2[][] = {
 
-    };
-    static String rData2[][] = {
+		// http://www.example.org/a/b/c/d
+		{
+			"",
+			"http://www.example.org/a/b/c/d/",
+			"http://www.example.org/a/b/c/d/e/f/g/",
+			"http://www.example.org/a/b/C/D",
+			"http://www.example.org/A/B#foo/",
+			"http://www.example.org/a/b/c/d/X#bar",
+			"http://example.com/A",
+			"http://www.example.org/a/b/c/d/z[?]x=a",
+			},
+			{
+			"same-document", null, null, null, null, null, null, null, }, {
+			"absolute",
+				"/a/b/c/d/",
+				"/a/b/c/d/e/f/g/",
+				"/a/b/C/D",
+				"/A/B#foo/",
+				"/a/b/c/d/X#bar",
+				null,
+				"/a/b/c/d/z[?]x=a",
+				},
+				{
+			"relative",
+				"d/",
+				"d/e/f/g/",
+				null,
+				null,
+				"d/X#bar",
+				null,
+				"d/z[?]x=a",
+				},
+				{
+			"parent",
+				"[.][.]/c/d/",
+				"[.][.]/c/d/e/f/g/",
+				"[.][.]/C/D",
+				null,
+				"[.][.]/c/d/X#bar",
+				null,
+				"[.][.]/c/d/z[?]x=a",
+				},
+				{
+			"network",
+				"//www.example.org/a/b/c/d/",
+				"//www.example.org/a/b/c/d/e/f/g/",
+				"//www.example.org/a/b/C/D",
+				"//www.example.org/A/B#foo/",
+				"//www.example.org/a/b/c/d/X#bar",
+				"//example.com/A",
+				"//www.example.org/a/b/c/d/z[?]x=a",
+				},
+				{
+			"grandparent",
+				"[.][.]/[.][.]/b/c/d/",
+				"[.][.]/[.][.]/b/c/d/e/f/g/",
+				"[.][.]/[.][.]/b/C/D",
+				null,
+				"[.][.]/[.][.]/b/c/d/X#bar",
+				null,
+				"[.][.]/[.][.]/b/c/d/z[?]x=a",
+				},
+				};
+	static String rData3[][] = {
+		// http://www.example.org/A/B#
+		{
+			"",
+			"http://www.example.org/a/b/c/d/",
+			"http://www.example.org/a/b/c/d/e/f/g/",
+			"http://www.example.org/a/b/C/D",
+			"http://www.example.org/A/B#foo/",
+			"http://www.example.org/a/b/c/d/X#bar",
+			"http://example.com/A",
+			"http://www.example.org/a/b/c/d/z[?]x=a",
+			},
+			{
+			"same-document", null, null, null, "#foo/", null, null, null, }, {
+			"absolute",
+				"/a/b/c/d/",
+				"/a/b/c/d/e/f/g/",
+				"/a/b/C/D",
+				"/A/B#foo/",
+				"/a/b/c/d/X#bar",
+				null,
+				"/a/b/c/d/z[?]x=a",
+				},
+				{
+			"relative", null, null, null, "B#foo/", null, null, null, }, {
+			"parent",
+				"[.][.]/a/b/c/d/",
+				"[.][.]/a/b/c/d/e/f/g/",
+				"[.][.]/a/b/C/D",
+				"[.][.]/A/B#foo/",
+				"[.][.]/a/b/c/d/X#bar",
+				null,
+				"[.][.]/a/b/c/d/z[?]x=a",
+				},
+				{
+			"network",
+				"//www.example.org/a/b/c/d/",
+				"//www.example.org/a/b/c/d/e/f/g/",
+				"//www.example.org/a/b/C/D",
+				"//www.example.org/A/B#foo/",
+				"//www.example.org/a/b/c/d/X#bar",
+				"//example.com/A",
+				"//www.example.org/a/b/c/d/z[?]x=a",
+				},
+				{
+			"grandparent", null, null, null, null, null, null, null, }, };
+	private void relative(int i, String base, String d[][])
+		throws IOException, MalformedPatternException {
+		Set in = new HashSet();
+		Set out = new HashSet();
+		for (int j = 1; j < d[i].length; j++) {
 
-    // http://www.example.org/a/b/c/d
-        { "", "http://www.example.org/a/b/c/d/", "http://www.example.org/a/b/c/d/e/f/g/", "http://www.example.org/a/b/C/D", "http://www.example.org/A/B#foo/", "http://www.example.org/a/b/c/d/X#bar", "http://example.com/A", "http://www.example.org/a/b/c/d/z[?]x=a", },
-        { "same-document", null, null, null, null, null, null, null, },
-        { "absolute", "/a/b/c/d/", "/a/b/c/d/e/f/g/", "/a/b/C/D", "/A/B#foo/", "/a/b/c/d/X#bar", null, "/a/b/c/d/z[?]x=a", },
-        { "relative", "d/", "d/e/f/g/", null, null, "d/X#bar", null, "d/z[?]x=a", },
-        { "parent", "[.][.]/c/d/", "[.][.]/c/d/e/f/g/", "[.][.]/C/D", null, "[.][.]/c/d/X#bar", null, "[.][.]/c/d/z[?]x=a", },
-        { "network", "//www.example.org/a/b/c/d/", "//www.example.org/a/b/c/d/e/f/g/", "//www.example.org/a/b/C/D", "//www.example.org/A/B#foo/", "//www.example.org/a/b/c/d/X#bar", "//example.com/A", "//www.example.org/a/b/c/d/z[?]x=a", },
-        { "grandparent", "[.][.]/[.][.]/b/c/d/", "[.][.]/[.][.]/b/c/d/e/f/g/", "[.][.]/[.][.]/b/C/D", null, "[.][.]/[.][.]/b/c/d/X#bar", null, "[.][.]/[.][.]/b/c/d/z[?]x=a", },
+			in.add(d[i][j] == null ? d[0][j] : d[i][j]);
+			if (i != 0 && d[i][j] != null)
+				out.add(d[0][j]);
+		}
+		// System.out.println(base + "["+i+"]");
+		relative(d[i][0], base, in, out);
 
-       };
-        static String rData3[][] = {
-    // http://www.example.org/A/B#
-            { "", "http://www.example.org/a/b/c/d/", "http://www.example.org/a/b/c/d/e/f/g/", "http://www.example.org/a/b/C/D", "http://www.example.org/A/B#foo/", "http://www.example.org/a/b/c/d/X#bar", "http://example.com/A", "http://www.example.org/a/b/c/d/z[?]x=a", },
-             { "same-document", null, null, null, "#foo/", null, null, null, },
-             { "absolute", "/a/b/c/d/", "/a/b/c/d/e/f/g/", "/a/b/C/D", "/A/B#foo/", "/a/b/c/d/X#bar", null, "/a/b/c/d/z[?]x=a", },
-             { "relative", null, null, null, "B#foo/", null, null, null, },
-             { "parent", "[.][.]/a/b/c/d/", "[.][.]/a/b/c/d/e/f/g/", "[.][.]/a/b/C/D", "[.][.]/A/B#foo/", "[.][.]/a/b/c/d/X#bar", null, "[.][.]/a/b/c/d/z[?]x=a", },
-             { "network", "//www.example.org/a/b/c/d/", "//www.example.org/a/b/c/d/e/f/g/", "//www.example.org/a/b/C/D", "//www.example.org/A/B#foo/", "//www.example.org/a/b/c/d/X#bar", "//example.com/A", "//www.example.org/a/b/c/d/z[?]x=a", },
-             { "grandparent", null, null, null, null, null, null, null, },
+	}
 
-            };
-    private void relative(int i, String base, String d[][]) 
-         throws IOException, MalformedPatternException{
-        Set in = new HashSet();
-        Set out = new HashSet();
-        for (int j=1;j<d[i].length;j++){
-            
-            in.add(d[i][j]==null?d[0][j]:d[i][j]);
-            if ( i != 0 && d[i][j] != null )
-             out.add(d[0][j]);
-        }
-       // System.out.println(base + "["+i+"]");
-        relative(
-                d[i][0],
-                base,
-                in,
-                out);
-    
-    }
-    
-    public void testRelative() throws Exception {
-        for (int i=0; i<7; i++) {
-            relative(i, "http://www.example.org/a/b/c/d/", rData1);
-            relative(i, "http://www.example.org/a/b/c/d", rData2);
-            relative(i, "http://www.example.org/A/B#", rData3);
-        }
-    }
+	public void testRelative() throws Exception {
+		for (int i = 0; i < 7; i++) {
+			relative(i, "http://www.example.org/a/b/c/d/", rData1);
+			relative(i, "http://www.example.org/a/b/c/d", rData2);
+			relative(i, "http://www.example.org/A/B#", rData3);
+		}
+	}
 	private static String uris[] =
 		{
 			"http://www.example.org/a/b/c/d/",
@@ -587,7 +821,9 @@ public class TestXMLFeatures extends TestCase {
 				for (int j = 0; j < uris.length; j++) {
 					String r = bb.relativize(uris[j], f);
 					System.out.print(
-						(i!=0 && r.equals(uris[j])) ? "null, " : "\"" + r + "\"" + ", ");
+						(i != 0 && r.equals(uris[j]))
+							? "null, "
+							: "\"" + r + "\"" + ", ");
 				}
 				System.out.println("},");
 			}
@@ -620,5 +856,5 @@ public class TestXMLFeatures extends TestCase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.6 2003-03-31 20:10:39 jeremy_carroll Exp $
+ * $Id: TestXMLFeatures.java,v 1.7 2003-04-01 14:36:11 jeremy_carroll Exp $
  */
