@@ -1,0 +1,25 @@
+<!--++ someValuesFrom/nonconclusions002.rdf ** generated using webont test editor. ++-->
+<!--++ Created 30 Jan 2003 21:39:26 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: nonconclusions002.rdf,v 1.1 2003-04-17 14:33:20 der Exp $
+-->
+<!--
+See allValuesFrom
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:first="http://www.w3.org/2002/03owlt/someValuesFrom/premises002#"
+    xml:base="http://www.w3.org/2002/03owlt/someValuesFrom/nonconclusions002" >
+    <first:c rdf:about="premises001#o"/>
+
+</rdf:RDF>

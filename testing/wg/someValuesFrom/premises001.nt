@@ -1,0 +1,24 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Jeremy J. Carroll
+#
+# Description: 
+#
+# A simple example.
+#
+<http://www.w3.org/2002/03owlt/someValuesFrom/premises001#r> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
+_:a <http://www.w3.org/2002/07/owl#onProperty> <http://www.w3.org/2002/03owlt/someValuesFrom/premises001#p> .
+_:a <http://www.w3.org/2002/07/owl#someValuesFrom> <http://www.w3.org/2002/03owlt/someValuesFrom/premises001#c> .
+<http://www.w3.org/2002/03owlt/someValuesFrom/premises001#r> <http://www.w3.org/2000/01/rdf-schema#subClassOf> _:a .
+<http://www.w3.org/2002/03owlt/someValuesFrom/premises001#p> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#ObjectProperty> .
+<http://www.w3.org/2002/03owlt/someValuesFrom/premises001#c> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Class> .
+<http://www.w3.org/2002/03owlt/someValuesFrom/premises001#i> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/03owlt/someValuesFrom/premises001#r> .

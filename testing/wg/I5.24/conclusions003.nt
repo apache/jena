@@ -1,0 +1,21 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Ian Horrocks
+#
+# Description: 
+#
+# This is a typical definition of range from description logic.
+#
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Thing> .
+_:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
+_:b <http://www.w3.org/2002/07/owl#onProperty> <http://www.w3.org/2002/03owlt/I5.24/premises003#prop> .
+_:b <http://www.w3.org/2002/07/owl#allValuesFrom> <http://www.w3.org/2002/03owlt/I5.24/premises003#A> .
+_:a <http://www.w3.org/2000/01/rdf-schema#subClassOf> _:b .

@@ -1,0 +1,23 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, European Research Consortium for Informatics and
+# Mathematics, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Author: Peter F. Patel-Schneider
+#
+# Description: 
+#
+# If prop belongs to <code>owl:FunctionalProperty</code>
+# then an OWL object has at most one value for prop.
+#
+<http://www.example.org/foo#object> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Thing> .
+_:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#Restriction> .
+<http://www.example.org/foo#prop> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2002/07/owl#FunctionalProperty> .
+_:a <http://www.w3.org/2002/07/owl#onProperty> <http://www.example.org/foo#prop> .
+_:a <http://www.w3.org/2002/07/owl#maxCardinality> "1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>  .
+<http://www.example.org/foo#object> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> _:a .

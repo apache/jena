@@ -1,0 +1,31 @@
+<!--++ FunctionalProperty/premises001.rdf ** generated using webont test editor. ++-->
+<!--++ Created 27 Sep 2002 10:40:15 GMT ++-->
+<!--
+  Copyright World Wide Web Consortium, (Massachusetts Institute of
+  Technology, European Research Consortium for Informatics and
+  Mathematics, Keio University).
+
+  All Rights Reserved.
+
+  Please see the full Copyright clause at
+  <http://www.w3.org/Consortium/Legal/copyright-software.html>
+
+  $Id: premises001.rdf,v 1.1 2003-04-17 14:33:17 der Exp $
+-->
+<!--
+If <code>prop</code> belongs to <code>owl:FunctionalProperty</code>,
+and <code>subject</code> denotes a resource and
+has two outgoing <code>prop</code> arcs, then the <code>object</code>s of these arcs 
+have the same denotation.
+-->
+<!-- Author: Jeremy J. Carroll -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:owl ="http://www.w3.org/2002/07/owl#"
+  xmlns:first="http://www.w3.org/2002/03owlt/FunctionalProperty/premises001#" 
+  xml:base="http://www.w3.org/2002/03owlt/FunctionalProperty/premises001" >
+    <owl:FunctionalProperty rdf:ID="prop"/>
+    <rdf:Description rdf:ID="subject">
+      <first:prop rdf:resource="#object1" />
+      <first:prop rdf:resource="#object2" />
+    </rdf:Description>
+</rdf:RDF>
