@@ -18,7 +18,7 @@ import java.io.* ;
 /** Common framework for implemening N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.7 2003-06-19 16:12:03 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.8 2003-07-29 14:37:54 chris-dollin Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
@@ -186,7 +186,7 @@ public class N3JenaWriterCommon implements RDFWriter
     protected void processModel(Model baseModel)
     {
         prefixMap = baseModel.getNsPrefixMap() ;
-        Model model = ModelCom.withHiddenStatements( baseModel );
+        Model model = ModelFactory.withHiddenStatements( baseModel );
         bNodesMap = new HashMap() ;
 
         // If no base defined for the model, but one given to writer,

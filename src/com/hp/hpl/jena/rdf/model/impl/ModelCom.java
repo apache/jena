@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelCom.java,v 1.68 2003-07-24 12:01:07 chris-dollin Exp $
+  $Id: ModelCom.java,v 1.69 2003-07-29 14:37:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.68 $' Date='$Date: 2003-07-24 12:01:07 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.69 $' Date='$Date: 2003-07-29 14:37:54 $'
  */
 
 public class ModelCom 
@@ -245,15 +245,6 @@ implements Model, PrefixMapping, ModelLock
         getWriter(lang) .write(this, writer, base);
   		return this;
   	    }
-        
-	/**
-		a read-only Model with all the statements of this Model and any
-		statements "hidden" by reification. That model is dynamic, ie
-		any changes this model will be reflected that one.
-		[TODO: Except this implementation delivers only a static Model]
-	*/
-    public static Model withHiddenStatements( Model m )
-        { return ModelReifier.withHiddenStatements( m ); }
     
     public Model remove(Statement s)  {
         graph.delete(s.asTriple());
@@ -1304,8 +1295,8 @@ implements Model, PrefixMapping, ModelLock
     */
     public boolean isIsomorphicWith(Model m)
         {
-        ModelCom L = (ModelCom) withHiddenStatements( this );            
-        EnhGraph R = (EnhGraph) withHiddenStatements( m );
+        ModelCom L = (ModelCom) ModelFactory.withHiddenStatements( this );            
+        EnhGraph R = (EnhGraph) ModelFactory.withHiddenStatements( m );
         return L.isIsomorphicWith( R );
         }
         

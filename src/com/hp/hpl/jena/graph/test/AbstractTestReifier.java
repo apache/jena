@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.3 2003-07-25 09:03:41 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.4 2003-07-29 14:37:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
@@ -158,7 +159,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         R.reifyAs( X, triple( "x R y" ) );
         R.reifyAs( X, triple( "x R y" ) );
         try { R.reifyAs( X, triple( "x R z" ) ); fail( "did not detect already reified node" ); }
-        catch (Reifier.AlreadyReifiedException e) { }      
+        catch (AlreadyReifiedException e) { }      
         }
         
     public void testKevinCaseA()
@@ -180,7 +181,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
             G.getReifier().reifyAs( X, new Triple( a, b, c ) );
             fail( "X already has subject Y: cannot make it a" );
             }
-        catch (Reifier.CannotReifyException e)
+        catch (CannotReifyException e)
             { /* as required */ }
         }
         

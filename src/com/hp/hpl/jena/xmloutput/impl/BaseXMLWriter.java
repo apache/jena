@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.20 2003-07-21 10:54:10 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.21 2003-07-29 14:37:55 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -60,7 +60,7 @@ import org.apache.log4j.Logger;
  * </ul>
  *
  * @author  jjc
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2003-07-21 10:54:10 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2003-07-29 14:37:55 $'
  */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	/** log4j logger */
@@ -420,7 +420,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 		 {
         primeNamespace( baseModel );
 		//ns = new HashMap();
-        Model model = ModelCom.withHiddenStatements( baseModel );
+        Model model = ModelFactory.withHiddenStatements( baseModel );
 		this.namespacesNeeded = new HashSet();
 		ns = null;
 		count = 0;

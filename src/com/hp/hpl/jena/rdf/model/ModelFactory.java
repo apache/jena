@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.20 2003-07-15 14:44:17 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.21 2003-07-29 14:37:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -38,6 +38,14 @@ public class ModelFactory extends ModelFactoryBase
     */
     public static Model createDefaultModel()
         { return new ModelCom( new GraphMem( Reifier.Standard ) ); }
+        
+    /**
+        Answer a read-only Model with all the statements of this Model and any
+        statements "hidden" by reification. That model is dynamic, ie
+        any changes this model will be reflected that one.
+    */
+    public static Model withHiddenStatements( Model m )
+        { return ModelReifier.withHiddenStatements( m ); }
         
     /**
         construct a new memory-based model that does not capture reification triples

@@ -8,13 +8,14 @@
 package com.hp.hpl.jena.db.impl;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 /**
  * Interface for a specialized graphs that are optimized for reification.
  *
  * @author csayers
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  */
 public interface SpecializedGraphReifier extends SpecializedGraph {
@@ -34,7 +35,7 @@ public interface SpecializedGraphReifier extends SpecializedGraph {
 	 * @param complete is true if a subsequent call to contains(triple) will return true.
 	 * @throws Reifier.AlreadyReifiedException if the node already reifies a triple
 	 */
-	public void add(Node n, Triple t, CompletionFlag complete) throws Reifier.AlreadyReifiedException;
+	public void add(Node n, Triple t, CompletionFlag complete) throws AlreadyReifiedException;
 		
 	/** 
 	 * Attempt to delete a reified triple from the specialized graph.

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: NTripleWriter.java,v 1.14 2003-07-21 11:01:32 chris-dollin Exp $
+ * $Id: NTripleWriter.java,v 1.15 2003-07-29 14:37:54 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -40,7 +40,7 @@ import org.apache.log4j.*;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2003-07-21 11:01:32 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2003-07-29 14:37:54 $'
  */
 public class NTripleWriter extends Object implements RDFWriter {
 
@@ -70,7 +70,7 @@ public class NTripleWriter extends Object implements RDFWriter {
     public void write(Model baseModel, Writer writer, String base)
          {
         try {
-            Model model = ModelCom.withHiddenStatements(baseModel);
+            Model model = ModelFactory.withHiddenStatements(baseModel);
             PrintWriter pw;
             if (writer instanceof PrintWriter) {
                 pw = (PrintWriter) writer;

@@ -84,7 +84,7 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#add(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void add(Node n, Triple t, CompletionFlag complete) throws Reifier.CannotReifyException {
+	public void add(Node n, Triple t, CompletionFlag complete) throws CannotReifyException {
 		StmtMask same = new StmtMask();
 		StmtMask diff = new StmtMask();
 		ReifCache rs = m_reifCache.load(n, t, same, diff);
@@ -121,9 +121,9 @@ public class SpecializedGraphReifier_RDB
 			} else {
 				/* node reifies something that is not a subset of triple t */
 				if ( rs.mask.isStmt() )
-					throw new Reifier.AlreadyReifiedException(n);
+					throw new AlreadyReifiedException(n);
 				else
-					throw new Reifier.CannotReifyException(n);
+					throw new CannotReifyException(n);
 			}
 		}
 		complete.setDone();
@@ -218,7 +218,7 @@ public class SpecializedGraphReifier_RDB
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#add(com.hp.hpl.jena.graph.Triple, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
-	public void add(Triple frag, CompletionFlag complete) throws Reifier.AlreadyReifiedException {
+	public void add(Triple frag, CompletionFlag complete) throws AlreadyReifiedException {
 		StmtMask fragMask = new StmtMask(frag);
 		if (fragMask.hasNada())
 			return;
@@ -242,7 +242,7 @@ public class SpecializedGraphReifier_RDB
 					dup = it.hasNext();
 					if ( dup == false ) {
 						if ( cachedMask.isStmt())
-							throw new Reifier.AlreadyReifiedException(frag.getSubject());
+							throw new AlreadyReifiedException(frag.getSubject());
 						// cannot perform a reificiation; store fragment
 						m_reif.storeFrag(stmtURI, frag, fragMask, my_GID);
 						m_reifCache.flush(cachedFrag);
