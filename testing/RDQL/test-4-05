@@ -1,0 +1,5 @@
+// Test 4-05 : Anonymous nodes
+
+SELECT ?y, ?a, ?b
+SOURCE <model3.nt>
+WHERE  (?x, ?y, ?z), (?z, ?a, ?b)

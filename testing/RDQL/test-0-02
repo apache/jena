@@ -1,0 +1,5 @@
+// Syntactic test
+
+SELECT *
+FROM   <model0.nt>
+WHERE  (<urn:/*not_a_comment*/>, ?y, ?z)

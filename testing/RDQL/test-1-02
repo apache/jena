@@ -1,0 +1,5 @@
+// Test 1-02 : bound subject
+
+SELECT *
+SOURCE <model1.nt>
+WHERE  (<http://rdf.hp.com/r-1>, ?y, ?z)

@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# $Id: run-tests,v 1.1 2003-02-20 15:59:55 andy_seaborne Exp $
+
+# You will probably need to change this script if you use it.
+
+JENADIR=~/Projects/jena
+RDQL_ARGS=""
+
+for arg in "$@"
+do
+    case $arg in
+    -v | --v)              shift ; RDQL_ARGS="$RDQL_ARGS --verbose" ;;
+    -time | --time)        shift ; RDQL_ARGS="$RDQL_ARGS --time" ;;
+    -debug | --debug)      shift ; RDQL_ARGS="$RDQL_ARGS --debug" ;;
+    -*)                    echo "Unknown argument: $arg" 1>&2 ; exit 1 ;;
+    *)                   break ;;
+    esac
+    done
+
+
+CP="${CP:-}"
+for jar in $JENADIR/lib/*.jar
+do
+    if [ "$CP" = "" ]
+    then
+	CP="$jar"
+    else
+	CP="$CP;$jar"
+	fi
+done
+
+TESTFILE="${1:-_control_}"
+
+java -cp "$CP" jena.rdfquery $RDQL_ARGS --test "$TESTFILE"

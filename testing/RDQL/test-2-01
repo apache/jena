@@ -1,0 +1,5 @@
+// Test 2-01 : 2 triple patterns the same
+
+SELECT ?x, ?y, ?z
+SOURCE <model1.nt>
+WHERE  (?x, ?y, ?z), (?x, ?y, ?z)
