@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.17 2003-06-11 11:23:41 chris-dollin Exp $
+  $Id: TestNode.java,v 1.18 2003-06-19 13:56:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -295,6 +295,12 @@ public class TestNode extends GraphTestBase
             if (in.equals( wanted )) fail( "should preserve " + in );
             else fail( "should translate " + in + " to " + wanted + " not " + got );
             }
+        }
+        
+    public void testCreatePrefixed()
+        {
+        PrefixMapping pm = PrefixMapping.Factory.create();
+        // Node n = Node.create( pm, "xyz" );
         }
         
     public void testNodeHelp()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.8 2003-04-30 12:55:31 chris-dollin Exp $
+  $Id: Graph.java,v 1.9 2003-06-19 13:56:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -71,6 +71,8 @@ public interface Graph  {
 	 * Compare this graph with another using the method
 	 * described in 
 	 * <a href="http://www.w3.org/TR/rdf-concepts#section-Graph-syntax">
+     * http://www.w3.org/TR/rdf-concepts#section-Graph-syntax
+     * </a>
 	 * @param g Compare against this.
 	 * @return boolean True if the two graphs are isomorphic.
 	 */

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMapping.java,v 1.7 2003-06-19 12:58:47 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.8 2003-06-19 13:56:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
 
 import java.util.*;
+import com.hp.hpl.jena.shared.impl.*;
 
 /**
     Methods for recording namepsace prefix mappings and applying and
@@ -25,6 +26,7 @@ public interface PrefixMapping
         Specify the prefix name for a URI prefix string. Any existing use of that prefix
         name is overwritten. Any existing prefix for the same URI is removed.
         (We still have to decide what happens if there are *overlapping* URIs.)
+        The result is this same prefixMapping.
   <p>      
         The empty string is allowed as a prefix, for internal historical reasons.
         Do not rely on this continuing.
@@ -32,22 +34,26 @@ public interface PrefixMapping
         @param prefix the string to be used for the prefix.
         @param uri the URI prefix to be named
         @exception IllegalPrefixException if the prefix is not an XML NCName
+        @return this PrefixMapping
     */
     PrefixMapping setNsPrefix( String prefix, String uri );
     
     /**
         Copies the prefixes from other into this. Any existing binding of the
-        same prefix is lost. 
-        
+        same prefix is lost.  The result is this same prefixMapping.
+
         @param other the PrefixMapping to add
+        @return this PrefixMapping
     */
     PrefixMapping setNsPrefixes( PrefixMapping other );
     
     /**
         Copies the prefix mapping from other into this. Illegal prefix mappings
-        are detected. Existing binds of the same prefix are lost.
+        are detected. Existing binds of the same prefix are lost.  The result is this 
+        same prefixMapping.
         
         @param map the Map whose maplets are to be added
+        @return this PrefixMapping
     */
     PrefixMapping setNsPrefixes( Map map );
        
@@ -96,6 +102,12 @@ public interface PrefixMapping
         {
         public IllegalPrefixException( String prefixName ) { super( prefixName ); }     
         }
+        
+    /**
+        Factory class to create an unspecified kind of PrefixMapping.
+    */
+    public static class Factory
+        { public static PrefixMapping create() { return new PrefixMappingImpl(); } }
     }
 
 
