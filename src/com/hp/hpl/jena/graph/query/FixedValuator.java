@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FixedValuator.java,v 1.1 2004-07-20 19:39:09 chris-dollin Exp $
+  $Id: FixedValuator.java,v 1.2 2004-07-21 07:36:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -12,7 +12,7 @@ package com.hp.hpl.jena.graph.query;
  	
  	@author hedgehog
  */
-public class FixedValuator implements ObjectValuator
+public class FixedValuator implements Valuator
 	{
 	private Object value;
 	
@@ -28,12 +28,12 @@ public class FixedValuator implements ObjectValuator
 	 	are irrelevant.
 	*/
 	public boolean evalBool( IndexValues iv )
-	    { return ((Boolean) eval( iv )).booleanValue(); }
+	    { return ((Boolean) evalObject( iv )).booleanValue(); }
 	        
 	/**
 	 	Answer this FixedValuator's value, as supplied when it was constructed.
 	*/
-	public Object eval( IndexValues iv )
+	public Object evalObject( IndexValues iv )
 	    { return value; }
 	}
 

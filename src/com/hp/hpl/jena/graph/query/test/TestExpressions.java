@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.1 2004-07-20 17:17:19 chris-dollin Exp $
+  $Id: TestExpressions.java,v 1.2 2004-07-21 07:38:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -13,8 +13,8 @@ import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
 
 /**
- @author hedgehog
- */
+ 	@author hedgehog
+*/
 public class TestExpressions extends GraphTestBase
     {
     public TestExpressions( String name ) 
@@ -22,27 +22,14 @@ public class TestExpressions extends GraphTestBase
     
     public static TestSuite suite()
         { return new TestSuite( TestExpressions.class ); }
-    
+
+    protected static final IndexValues none = new IndexValues() 
+        { public Object get( int i ) { return null; } };
+        
     public void testSpoo()
         {
         }
-    
-    public void testPrepareTRUE()
-        {
-        IndexValues none = new IndexValues() 
-            { public Object get( int i ) { return null; } };
-        Valuator t = Expression.TRUE.prepare( new Mapping( new Node[0] ) );  
-        assertEquals( true, t.evalBool( none ) );    
-        }
-        
-    public void testPrepareFALSE()
-        {
-        IndexValues none = new IndexValues() 
-            { public Object get( int i ) { return null; } };
-        Valuator t = Expression.FALSE.prepare( new Mapping( new Node[0] ) );  
-        assertEquals( false, t.evalBool( none ) );    
-        }
-    
+
     public void testLiterals()
         {
         assertTrue( Expression.TRUE.isConstant() );
@@ -50,6 +37,21 @@ public class TestExpressions extends GraphTestBase
         assertEquals( Boolean.TRUE, Expression.TRUE.getValue() );
         assertEquals( Boolean.FALSE, Expression.FALSE.getValue() );
         }
+    
+    public void testPrepareTRUE()
+        {
+        Valuator t = Expression.TRUE.prepare( new Mapping( new Node[0] ) );  
+        assertEquals( true, t.evalBool( none ) );    
+        assertEquals( Boolean.TRUE, t.evalObject( none ) );
+        }
+        
+    public void testPrepareFALSE()
+        {
+        Valuator t = Expression.FALSE.prepare( new Mapping( new Node[0] ) );  
+        assertEquals( false, t.evalBool( none ) );    
+        assertEquals( Boolean.FALSE, t.evalObject( none ) );
+        }
+    
     
     }
 

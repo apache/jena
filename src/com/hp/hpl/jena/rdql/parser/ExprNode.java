@@ -37,21 +37,7 @@ abstract class ExprNode
     // --- interface Constraint : map to Expr. 
     public boolean isSatisfied(Query q, IndexValues env)
     {
-        try {
-            return eval(q, env).getBoolean() ;
-        }
-        catch (EvalFailureException e) //Includes EvalTypeException
-        {
-            // Check all exceptions possible.
-            //expr = null ;
-            return false ;
-        }
-        catch (Exception e)
-        {
-            log.warn("RDQL : general exception!", e) ;
-            // Shouldn't happen
-            return false ;
-        }
+        return evalBool( q, env ) ;
     }
     
     public void postParse(Query q)
@@ -81,12 +67,61 @@ abstract class ExprNode
         return this ;
     }
 
-    public boolean evalBool(IndexValues iv)
+    /**
+     	Answer the result of evaluating the constraint expression; implements
+     	Expression.evalObject(*).
+    */
+    public Object evalObject( IndexValues iv )
     {
-        return isSatisfied(query, iv) ;
-        
-        //throw new EvalFailureException("Valuator.evalBool(IndexValues) called - should not happen") ;
+        return evalNode( query, iv ) ;
     }
+
+    /**
+     	Answer the result of evaluating the constraint expression as a
+     	primitive boolean value; implements Expression.evalBool(*).
+    */
+    public boolean evalBool( IndexValues iv )
+    {
+        return evalBool( query, iv ) ;
+    }
+    
+    /**
+     	Answer the result of evaluating the constraint expression with 
+     	a specified query - helper function to allow isSatisfied() to be
+     	implemented in terms of the eval methods.
+    */
+    protected boolean evalBool( Query q, IndexValues iv)
+    {
+        NodeValue v = evalNode( q, iv ) ;
+        return v == null ? false : v.getBoolean() ;
+    }
+    
+    /**
+     	Answer the NodeValue result of evaluating the constraints
+     	relative to the query and with the specified environment.
+     	Traps and handles exceptions. This code used to be in
+     	isSatisfied() until Expressions gained evalObject(), then
+     	it was factored out so that it could be shared by both
+     	evalXXX() methods.
+    */
+    public NodeValue evalNode( Query q, IndexValues env )
+        {
+            try {
+                return eval(q, env) ;
+            }
+            catch (EvalFailureException e) //Includes EvalTypeException
+            {
+                // Check all exceptions possible.
+                //expr = null ;
+                return null ;
+            }
+            catch (Exception e)
+            {
+                log.warn("RDQL : general exception!", e) ;
+                // Shouldn't happen
+                return null ;
+            }
+        }
 
     // com.hpl.hpl.jena.graph.query.Expression
     // -- Variables

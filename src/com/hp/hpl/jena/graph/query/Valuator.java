@@ -1,19 +1,30 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Valuator.java,v 1.5 2003-10-10 15:04:49 chris-dollin Exp $
+  $Id: Valuator.java,v 1.6 2004-07-21 07:36:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 /**
-	Valuator
+	Valuator - an interface for things that evaluate to some 
+	value, given a binding of variable (inexes) to values. 
 
 	@author kers
 */
 public interface Valuator 
     {
+    /**
+     	Answer the evaluated value as a primitive boolean
+    	@param iv the mapping from variable (indexes) to values
+    */
     boolean evalBool( IndexValues iv );
+    
+    /**
+     	Answer the evaluated value
+    	@param iv the mapping from variable (indexes) to values
+    */
+    Object evalObject( IndexValues iv );
     }
 
 /*
