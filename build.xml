@@ -7,13 +7,14 @@
     <!-- The major and minor version numbers  -->
     <property name="version-major"   value="2"/>
     <property name="version-minor"   value="0"/>
-    <property name="version-status"  value="-beta1"/>  <!-- e.g. -beta1, or empty string for stable releases -->
-    <property name="version"         value="${version-major}.${version-minor}${version-status}"/>
+    <!-- e.g. -beta1, or empty string for stable releases -->
+    <property name="version-status"  value=""/>
+    <property name="version"
+         value="${version-major}.${version-minor}${version-status}"/>
 
     <property name="dist.name"       value="${Name}-${version}"/>
     
-	<property name="web.site"		 value="http://sourceforge.net/projects/jena" />
-	<property name="copyright"		 value="Copyright &#169;2001-2003 Hewlett-Packard. All Rights Reserved." />
+	  <property name="web.site"        value="http://jena.sourceforge.net/" />
 	
     <property name="debug"           value="true"/>
     <property name="debuglevel"      value="source,lines"/>
@@ -51,7 +52,6 @@
     <!-- keyword substitutions -->
     <filterset id="filters.shared">
         <filter token="Name"          value="${Name}" />
-        <filter token="copyright"     value="${copyright}" />
         <filter token="website"       value="${web.site}" />
         <filter token="version-major" value="${version-major}" />
         <filter token="version-minor" value="${version-minor}" />
@@ -213,7 +213,7 @@
                  Public="true"
                  Use="true"
                  overview="src/link2readme.html"
-                 bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved."
+                 bottom="Copyright &#169; 2000-2003 Hewlett-Packard. All Rights Reserved."
                  additionalparam="-breakiterator"
          >
 
@@ -289,7 +289,7 @@
 	     windowtitle="${Name} Framework"
 	     doctitle="${Name} Framework"
 	     overview="${src.dir}/link2readme.html"
-	     bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved."
+	     bottom="Copyright &#169; 2000-2003 Hewlett-Packard. All Rights Reserved."
 	     packagenames="com.hp.hpl.*"
              additionalparam="-breakiterator"
              Use="true"
@@ -347,7 +347,16 @@
         <!-- Documentation -->
         <!-- Javadoc is part of the documentation directory -->
         <copy todir="${dist.dir}/${doc.dir}">
-            <fileset dir="${doc.dir}" includes="**"/>
+            <fileset dir="${doc.dir}">
+              <include name="**"/>
+              <exclude name="*.content.html"/>
+              <!-- Scripts -->
+              <exclude name="produce"/>
+              <exclude name="merge"/>
+              <exclude name="linkcheck"/>
+              <exclude name="release"/>
+              <exclude name="readme-site.txt"/>
+            </fileset>
         </copy>
 
         <copy todir="${dist.dir}/${vocab.dir}">
