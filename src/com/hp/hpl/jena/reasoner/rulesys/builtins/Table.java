@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Table.java,v 1.6 2004-12-07 09:53:54 andy_seaborne Exp $
+ * $Id: Table.java,v 1.7 2004-12-14 10:02:54 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Arrange that the given predicate is tabled by the backchaining engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2004-12-07 09:53:54 $
+ * @version $Revision: 1.7 $ on $Date: 2004-12-14 10:02:54 $
  */
 public class Table extends BaseBuiltin {
 
@@ -36,8 +36,6 @@ public class Table extends BaseBuiltin {
      * @param length the length of the argument list, may be less than the length of the args array
      * for some rule engines
      * @param context an execution context giving access to other relevant data
-     * @return return true if the buildin predicate is deemed to have succeeded in
-     * the current environment
      */
     public void headAction(Node[] args, int length, RuleContext context) {
         InfGraph infgraph = context.getGraph();

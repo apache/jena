@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AbstractDateTime.java,v 1.7 2003-12-15 15:26:38 der Exp $
+ * $Id: AbstractDateTime.java,v 1.8 2004-12-14 10:02:48 andy_seaborne Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -21,7 +21,7 @@ package com.hp.hpl.jena.datatypes.xsd;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-12-15 15:26:38 $
+ * @version $Revision: 1.8 $ on $Date: 2004-12-14 10:02:48 $
  */
 public class AbstractDateTime {
 
@@ -210,7 +210,6 @@ public class AbstractDateTime {
       * Public to allow reuse with type objects.
       * 
       * @param date   CCYY-MM-DDThh:mm:ss+03
-      * @return CCYY-MM-DDThh:mm:ssZ
       */
      public static void normalize (int[] date, int[] timeZone) {
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: ComplementClass.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:10 $
+ * Last modified on   $Date: 2004-12-14 10:02:53 $
  *               by   $Author: andy_seaborne $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClass.java,v 1.6 2004-12-06 13:50:10 andy_seaborne Exp $
+ * @version CVS $Id: ComplementClass.java,v 1.7 2004-12-14 10:02:53 andy_seaborne Exp $
  */
 public interface ComplementClass 
     extends BooleanClassDescription
@@ -59,7 +59,6 @@ public interface ComplementClass
 	 * <p>Set the class that the class represented by this class expression is
 	 * a complement of. Any existing value for <code>complementOf</code> will
 	 * be replaced.</p>
-	 * @return The class that this class is a complement of.
 	 */
 	public void setOperand( Resource cls );
 }
