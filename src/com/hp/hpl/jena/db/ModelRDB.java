@@ -34,7 +34,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class ModelRDB extends ModelCom implements Model {    
     
@@ -88,6 +88,11 @@ public class ModelRDB extends ModelCom implements Model {
     public ModelRDB(GraphPersonality p, GraphRDB graph) throws RDFRDBException {
     	super( graph, p);
     	m_graphRDB = graph;
+    }
+    
+    public ModelRDB( GraphRDB graph ) {
+        super( graph ); 
+        m_graphRDB = graph; 
     }
 
     /**

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-01-29 12:33:25 $
+ * Last modified on   $Date: 2004-01-29 15:15:00 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.10 2004-01-29 12:33:25 chris-dollin Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.11 2004-01-29 15:15:00 chris-dollin Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -97,6 +97,9 @@ public class MultiUnion
     // External signature methods
     //////////////////////////////////
 
+    /**
+        Unions share the reifiers of their base graphs. 
+    */
     public Reifier getReifier()
         { Graph base = getBaseGraph();
         return base == null ? super.getReifier() : base.getReifier(); }

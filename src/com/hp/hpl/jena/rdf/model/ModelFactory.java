@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.33 2004-01-13 19:28:00 ian_dickinson Exp $
+  $Id: ModelFactory.java,v 1.34 2004-01-29 15:15:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -209,8 +209,16 @@ public class ModelFactory extends ModelFactoryBase
     */        
     public static ModelMaker createModelRDBMaker
         ( IDBConnection c, ReificationStyle style )
-        { return new ModelMakerImpl( new GraphRDBMaker( c, style ) ); }
+        { return new ModelRDBMaker( new GraphRDBMaker( c, style ) ); }
         
+    static class ModelRDBMaker extends ModelMakerImpl implements ModelMaker
+        {
+        public ModelRDBMaker( GraphRDBMaker gm ) { super( gm ); }
+        
+        public Model makeModel( Graph graphRDB )
+            { return new ModelRDB( (GraphRDB) graphRDB ); }
+        }
+    
     /**
         Answer a plain IDBConnection to a database with the given URL, with
         the given user having the given password. For more complex ways of

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.26 2004-01-29 12:34:04 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.27 2004-01-29 15:15:00 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.26 $ on $Date: 2004-01-29 12:34:04 $
+ * @version $Revision: 1.27 $ on $Date: 2004-01-29 15:15:00 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -36,9 +36,19 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /** Flag to record if the preparation call has been made and so the graph is ready for queries */
     protected boolean isPrepared = false;
     
+    /**
+         Inference graphs share the prefix-mapping of their underlying raw graph. 
+     	@see com.hp.hpl.jena.graph.Graph#getPrefixMapping()
+    */
     public PrefixMapping getPrefixMapping()
         { return getRawGraph().getPrefixMapping(); }
     
+    /**
+        Inference graphs share the reifiers of their underlying raw graphs. This may 
+        be too simplistic - they won't see quads flying past.
+        TODO write a test case that reveals this.  
+     	@see com.hp.hpl.jena.graph.Graph#getReifier()
+    */
     public Reifier getReifier()
         { return getRawGraph().getReifier(); }
 

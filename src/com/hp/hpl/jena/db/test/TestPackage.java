@@ -6,13 +6,16 @@
 package com.hp.hpl.jena.db.test;
 
 import junit.framework.* ;
+
+import com.hp.hpl.jena.db.IDBConnection;
+import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.24 $
+ * @version 	$Revision: 1.25 $
  */
 public class TestPackage extends TestSuite
 {
@@ -86,8 +89,21 @@ public class TestPackage extends TestSuite
 		addTest( "TestReifierCompareToMem", TestReifierCompareToMem.suite());
 		addTest( "TestQueryRDB", TestQueryRDB.suite());
 		addTest( "TestQuery1", TestQuery1.suite());
+        addTest( "TestModelFactory", TestModelFactory.suite() );
         }
 
+    public static class TestModelFactory extends TestCase
+        {
+        public TestModelFactory( String name ) { super( name ); }
+        public static TestSuite suite() { return new TestSuite( TestModelFactory.class ); }
+        
+        public void testModelFactory()
+            {
+            IDBConnection c = TestConnection.makeAndCleanTestConnection();
+            assertTrue( ModelFactory.createModelRDBMaker( c ).createModel() instanceof ModelRDB );
+            }
+        }
+    
     private void addTest(String name, TestSuite tc) {
         tc.setName(name);
         addTest(tc);
