@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleReifier.java,v 1.9 2003-07-31 15:22:20 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.10 2003-08-01 09:46:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -38,7 +38,7 @@ public class SimpleReifier implements Reifier
         this.parent = parent;
         this.nodeMap = new FragmentMap();
         this.intercepting = style.intercepts();
-        this.concealing = true; // style.conceals();
+        this.concealing = style.conceals();
         }
             
     /** return the parent graph we are bound to */
