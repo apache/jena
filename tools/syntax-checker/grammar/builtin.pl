@@ -84,7 +84,7 @@ builtiny(rdfs,'Datatype').
 builtiny(owl,'DataRange').
 builtiny(owl,'DatatypeProperty').
 builtiny(owl, equivalentClass ).
-builtiny(owl, sameIndividualAs ).
+builtiny(owl, sameAs ).
 builtiny(rdfs, subClassOf ).
 builtiny(rdfs, subPropertyOf ).
 builtiny(rdfs, domain ).
@@ -169,7 +169,7 @@ disallowed(owl,oneOf).
 disallowed(owl,onProperty).
 disallowed(owl,'Ontology').
 disallowed(owl,'Restriction').
-disallowed(owl,sameAs).
+%disallowed(owl,sameAs).
 disallowed(owl,someValuesFrom).
 disallowed(owl,'SymmetricProperty').
 disallowed(owl,'TransitiveProperty').

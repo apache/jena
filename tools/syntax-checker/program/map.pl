@@ -1,3 +1,4 @@
+% Prolog file
 
 :- dynamic mRule0/7.
 

@@ -178,7 +178,7 @@ D+value(cdp,dataLiteral) ->
 comment(2, heading(1,'Comparison of Individuals')).
 
 D+sameIndividual(i)->
-   t(D,owl:sameIndividualAs,x(i)).
+   t(D,owl:sameAs,x(i)).
 D+differentIndividuals(i)->
    t(D,owl:differentFrom,x(i)).
 
