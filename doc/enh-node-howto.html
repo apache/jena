@@ -1,0 +1,196 @@
+<html>
+<head>
+   <title>Jena 2.0 enhanced node howto</title>
+</head>
+<body>
+
+Author: Chris Dollin based on material from Ian Dickinson.
+<br/> This version: 0.3
+<br/> Date: 1st May 2003
+
+<h1>Enhanced Node HowTo</h1>
+
+<p>
+This note is a development of Ian's original note on the enhanced node and graph design of Jena 2.
+</p>
+
+<h2>Key objectives for the enhanced node design</h2>
+
+<p>
+One problem with the Jena 1 design was that both the DAML layer and the RDB layer independantly extended
+Resource with domain-specific information. That made it impossible to have a DAML-over-RDB implementation.
+While this could have been fixed by using the "enhanced resource" meachanism of Jena 1, that would have
+left a second problem.
+</p>
+
+<p>
+In Jena 1.0, once a resource has been determined to be a DAML Class (for instance),
+that remains true for the lifetime of the model. If a resource starts out not qualifying
+as a DAML Class (no <code>rdf:type daml:Class</code>) then adding the type assertion
+later doesn't make it a Class. Similarly, of a resource is a DAML Class, but then the
+type assertion is retracted, the resource is still apparently a class.
+</p>
+
+<p>Hence being a DAMLClass is a <i>view</i> of the
+resource that may change over time.
+Moreover, a given resource may validly have a number of different views simultaneously.
+Using the current <code>DAMLClass</code> implementation method means that a given resource is limited to a single such view.
+</p>
+
+<p>
+A key objective of the new design is to allow different views, or <em>facets</em>, to be used dynamically when accessing a node.
+The new design allows nodes to be polymorphic, in the sense that the same underlying node from the graph can present different
+encapsulations - thus different affordances to the programmer - on request.</p>
+
+<p>In summary, the enhanced node design in Jena 2.0 allows programmers to:</p>
+<ul>
+  <li>provide alternative perspectives onto a node from a graph, supporting additional functionality particular to that
+  perspective;</li>
+  <li>dynamically convert a between perspectives on nodes;</li>
+  <li>register implementations of implementation classes that present the node as an alternative perspective.</li>
+</ul>
+
+<h2>Terminology</h2>
+
+<p>To assist the following discussion, the key terms are introduced first.
+</p>
+
+<dl>
+  <dt>node</dt>
+  <dd>A subject or object from a triple in the underlying graph</dd>
+
+  <dt>graph</dt>
+  <dd>The underlying container of RDF triples that simplifies the previous abstraction Model</dd>
+
+  <dt>enhanced node</dt>
+  <dd>An encapsulation of a node that adds additional state or functionality to the interface defined for node.
+  For example, a bag is a resource that contains a number of other resources; an enhanced node encapsulating a bag might
+  provide simplified programmatic access to the members of the bag.</dd>
+
+  <dt>enhanced graph</dt>
+  <dd>Just as an enhanced node encapsulates a node and adds extra functionality, an enhanced graph encapsulates an
+  underlying graph and provides additional features.
+  For example, both Model and DAMLModel can be thought of as enhancements to the (deliberately simple) interface to graphs.</dd>
+
+  <dt>polymorphic</dt>
+  <dd>An abstract super-class  of enhanced graph and enhanced node that exists purely to provide shared implementation.</dd>
+
+  <dt>personality</dt>
+  <dd>An abstraction that circumscribes the set of alternative views that are available in a given context.
+  In particular, defines a mapping from types (q.v.) to implementations (q.v.).
+  This seems to be  taken to be closed for graphs.</dd>
+
+  <dt>implementation</dt>
+  <dd>A factory object that is able to generate polymorphic objects that present a given enhanced node according to a given type.
+   For example, an alt implementation can produce a sub-class of enhanced node that provides accessors for the members of the alt.
+   </dd>
+</dl>
+
+<h2>Class diagram</h2>
+
+[INSERT REVISED CLASS DIAGRAM HERE]
+
+
+<h3>Key points</h3>
+
+<p>Some key features of the design are:</p>
+
+<ul>
+  <li>every enhanced graph has a single graph personality, which represents the types of all the enhanced nodes that can be
+  created in this graph;</li>
+
+  <li>every enhanced node refers to that personality</li>
+
+  <li>different kinds of enhanced graph can have different personalities, for example, may implement interfaces
+  in different ways, or not implement some at all.</li>
+
+  <li>enhanced nodes wrap information in the graph, but keep no independant state; they may be discarded and
+  regenerated at whim.</li>
+</ul>
+
+<h2>How an enhanced node is created</h2>
+
+<h3>creation from another enhanced node</h3>
+
+<p>
+If <code>en</code> is an enhanced node representing some resource we wish to be able to view as
+being of some (Java) class/interface <code>T</code>, the expression <code>en.as(T.class)</code> will
+either deliver an EnhNode of type <code>C</code>, if it is possible to do so, or throw an
+exception if not.
+</p>
+
+<p>To check if the conversion is allowed, without having to catch exceptions, the expression
+<code>en.canAs(T.class)</code> delivers <code>true</code> iff the conversion is possible.
+</p>
+
+<h3>creation from a base node</h3>
+
+Somehow, some seed enhanced node must be created, otherwise <code>as()</code> would have nothing
+to work on. Subclasses of enhanced node provide constructors (perhaps hidden behind factories)
+which wrap plain nodes up in enhanced graphs. Eventually these invoke the constructor
+
+<blockquote><code>EnhNode(Node,EnhGraph)</code></blockquote>
+
+It's up to the constructors for the enhanced node subclasses to ensure that they are called
+with appropriate arguments.
+
+<h3>internal operation of the conversion</h3>
+
+<p><code>as(Class T)</code> is defined on EnhNode to invoke <code>asInternal(T)</code>
+in <code>Polymorphic</code>.
+If the original enhanced node <code>en</code>is already a valid instance of <code>T</code>,
+it is returned as
+the result. Validity is checked by the method <code>isValue()</code>.
+</p>
+
+<p>
+If <code>en</code> is not already of type <code>T</code>, then a cache of alternative views
+of <code>en</code> is consulted to see if a suitable alternative exists. The cache is implemented
+as a <em>sibling ring</em> of enhanced nodes - each enhanced node has a link to its next sibling,
+and the "last" node links back to the "first". This makes it cheap to find alternative views if
+there are not too many of them, and avoids caches filling up with dead nodes and having to be
+flushed.
+</p>
+
+<p>
+If there is no existing suitable enhanced node, the node's personality is consulted. The personality
+maps the desired class type to an <code>Implementation</code> object, which is a factory with
+a <code>wrap</code> method which takes a (plain) node and an enhanced graph and delivers the
+new enhanced node after checking that its conditions apply. The new enhanced node is then linked
+into the sibling ring.
+</p>
+
+
+
+<h2>How to build an enhanced node &amp; graph</h2>
+
+<p>What you have to do to define an enhanced node/graph implementation:</p>
+
+<ol>
+	<li>define an interface <code>I</code> for the new enhanced node.
+	(You could use just the implementation class, but we've stuck with the interface,
+	because there might be different implementations)</li>
+	
+	<li>
+	define the implementation class <code>C</code>. This is just a front for the enhanced node.
+	All the state of <code>C</code> is reflected in the graph (except for caching; but beware
+	that the graph can change without notice).
+	</li>
+	
+	<li>
+	define an <code>Implementation</code> class for the factory. This class defines methods <code>canWrap</code>
+	and <code>wrap</code></code>, which test a node to see if it is allowed to represent <code>I</code> and
+	construct an implementation of <code>C</code>respectively.
+	</li>
+	
+	<li>
+	Arrange that the personality of the graph maps the class of <code>I</code> to the factory. At the moment
+	we do this by using (a copy of) the built-in graph personality as the personality for the enhanced
+	graph.
+	</li>
+</ol>
+
+For an example, see the code for <code>ReifiedStatementImpl</code>.
+
+</body>
+</html>
