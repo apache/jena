@@ -1,12 +1,16 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSimpleTripleSorter.java,v 1.1 2003-08-12 09:06:34 chris-dollin Exp $
+  $Id: TestSimpleTripleSorter.java,v 1.2 2003-08-12 09:56:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
-import com.hp.hpl.jena.graph.test.GraphTestBase;
+import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.graph.*;
+
+import java.util.*;
 import junit.framework.*;
 
 /**
@@ -20,9 +24,57 @@ public class TestSimpleTripleSorter extends GraphTestBase
     public static TestSuite suite()
         { return new TestSuite( TestSimpleTripleSorter.class ); }
         
-    public void testXXX()
+    private TripleSorter sorter = new SimpleTripleSorter();
+        
+    /**
+        Test that the empty triple array sorts into an empty triple array
+    */
+    public void testEmpty()
         {
-        // fail( "unwritten" );
+        Triple [] triples = new Triple [] {};
+        assertEquals( 0, sorter.sort( triples ).length ); 
+        }
+       
+    /**
+        Test that a singleton triple array sorts into that same singleton array
+        for various different search-styles of triples
+    */ 
+    public void testSingle()
+        {
+        testSingle( "S P O" );
+        testSingle( "S ?P O" );
+        testSingle( "S P ?O" );
+        testSingle( "?S ?P O" );
+        testSingle( "?S P ?O" );
+        testSingle( "S ?P ?O" );
+        testSingle( "?S ?P ?O" );
+        testSingle( "?? P O" );
+        testSingle( "S ?? O" );
+        testSingle( "S P ??O" );
+        testSingle( "?? ?? O" );
+        testSingle( "?? P ??" );
+        testSingle( "S ?? ??" );
+        testSingle( "?? ?? ??" );
+        }
+        
+    public void testSingle(String ts )
+        {
+        Triple t = Triple.create( ts );
+        assertEquals( Arrays.asList( new Triple[] {t} ), Arrays.asList( sorter.sort( new Triple[] {t} ) ) );
+        }
+        
+    public void testConcreteFirst()
+        {
+        testReordersTo( "S P O; ?s ?p ?o", "S P O; ?s ?p ?o" );    
+        testReordersTo( "S P O; ?s ?p ?o", "?s ?p ?o; S P O" );    
+        testReordersTo( "S P O; ?s ?p ?o; ?a ?b ?c", "?s ?p ?o; ?a ?b ?c; S P O" );
+        testReordersTo( "S P O; ?s ?p ?o; ?a ?b ?c", "?s ?p ?o; S P O; ?a ?b ?c" );
+        }
+        
+    public void testReordersTo( String desired, String original )
+        {
+        Triple [] o = tripleArray( original ), d = tripleArray( desired );    
+        assertEquals( Arrays.asList( d ), Arrays.asList( sorter.sort( o ) ) );
         }
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleTripleSorter.java,v 1.1 2003-08-12 09:07:08 chris-dollin Exp $
+  $Id: SimpleTripleSorter.java,v 1.2 2003-08-12 09:56:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -17,9 +17,19 @@ public class SimpleTripleSorter implements TripleSorter
     public SimpleTripleSorter()
         {}
 
-    public void sort( Triple[] triples )
+    /**
+        Sort the triple array so that more-bound triples come before less-bound triples.
+        Preserve the order of the elements unless they <i>have<i> to move. 
+    */
+    public Triple [] sort( Triple[] triples )
         {
-
+        Triple [] copy = new Triple[triples.length];
+        int here = 0;
+        for (int i = 0; i < triples.length; i += 1)
+            if (triples[i].isConcrete()) copy[here++] = triples[i];
+        for (int i = 0; i < triples.length; i += 1)
+            if (!triples[i].isConcrete()) copy[here++] = triples[i];
+        return copy;
         }
 
     }

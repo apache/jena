@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.6 2003-08-12 09:06:34 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.7 2003-08-12 09:56:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -582,22 +582,21 @@ public abstract class AbstractTestQuery extends GraphTestBase
         {
         return new TripleSorter()
             {
-            public void sort( Triple [] triples )
+            public Triple [] sort( Triple [] triples )
                 {
-                Triple [] copy = new Triple[] {triples[0], triples[1], triples[2]};
-                triples[0] = copy[a];
-                triples[1] = copy[b];
-                triples[2] = copy[c];
+                Triple [] copy = new Triple[] {triples[a], triples[b], triples[c]};
+                return copy;
                 }    
             };    
         }
         
     protected static final TripleSorter sortReverse = new TripleSorter()
         {
-        public void sort( Triple [] triples )
+        public Triple [] sort( Triple [] triples )
             { 
-            for (int i = 0, j = triples.length; i < triples.length / 2; i += 1) 
-                { Triple t = triples[i]; triples[i] = triples[--j]; triples[j] = t; }    
+            Triple [] copy = new Triple[triples.length];
+            for (int i = 0, j = triples.length; i < triples.length; i += 1) copy[i] = triples[--j];
+            return copy;
             }
         };
         

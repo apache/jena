@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TripleSorter.java,v 1.1 2003-08-08 15:08:55 chris-dollin Exp $
+  $Id: TripleSorter.java,v 1.2 2003-08-12 09:56:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -15,10 +15,13 @@ import com.hp.hpl.jena.graph.*;
 public interface TripleSorter
     {
     /**
-        Sort the triple array in whatever fashion deemed suitable; all that is required is that
-        the result is a permutation of the original.
+        Sort the array triples and return the reorganised array. A new array may be returned
+        or the existing array reorganised in-place. The result array may have a different
+        size from the original; the requirement is just that a query using the result must
+        deliver the same results as one using the original. We hope, of course, that the
+        performance of the query is improved ...
     */
-    public void sort( Triple [] triples );
+    public Triple [] sort( Triple [] triples );
     }
 
 
