@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.9 2003-06-19 13:56:39 chris-dollin Exp $
+  $Id: Graph.java,v 1.10 2003-06-24 10:34:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -54,10 +54,10 @@ public interface Graph  {
     PrefixMapping getPrefixMapping();
     
     /** adds the triple t (if possible) to the set belong to the graph */
-	void add(Triple t) throws UnsupportedOperationException;
+	void add(Triple t) throws JenaAddDeniedException;
     
     /** removes the triple t (if possible) from the set belonging to this graph */   
-	void delete(Triple t) throws UnsupportedOperationException;
+	void delete(Triple t) throws JenaDeleteDeniedException;
       
 	  /** Returns an iterator over Triple.
 	   */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.24 2003-06-21 15:11:36 ian_dickinson Exp $
+  $Id: Model.java,v 1.25 2003-06-24 10:34:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.24 $Date: 2003/06/18 22:30:44 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.25 $Date: 2003/06/21 15:11:36 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -661,7 +661,7 @@ public interface Model
      *  that match a pattern.  The statements selected are those
      *  whose subject matches the <code>subject</code> argument,
      *  whose predicate matches the <code>predicate</code> argument
-     *  and whose object matchesthe <code>object</code> argument.
+     *  and whose object matches the <code>object</code> argument.
      *  If an argument is <code>null</code> it matches anything.</p>
      * @return an iterator over the subjects
      * @param subject   The subject sought
@@ -856,5 +856,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.24 2003-06-21 15:11:36 ian_dickinson Exp $
+ * $Id: Model.java,v 1.25 2003-06-24 10:34:25 chris-dollin Exp $
  */

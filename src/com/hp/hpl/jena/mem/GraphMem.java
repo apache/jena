@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphMem.java,v 1.13 2003-06-11 12:49:42 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.14 2003-06-24 10:34:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -68,7 +68,10 @@ public class GraphMem extends GraphBase implements Graph {
 
     public boolean contains(Node s, Node p, Node o) {
         return 
-            s == null || p == null || o == null ? super.contains( s, p, o )
+            s == null || Node.ANY.equals( s ) 
+            || p == null || Node.ANY.equals( p )
+            || o == null || Node.ANY.equals( o )
+            ? super.contains( s, p, o )
             : contains( new Triple(s, p, o) )
             ;
     }
