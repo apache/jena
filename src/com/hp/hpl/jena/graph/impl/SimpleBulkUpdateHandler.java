@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.22 2004-11-24 18:30:17 chris-dollin Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.23 2004-12-02 16:13:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -119,7 +119,7 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     private List triplesOf( Graph g )
         {
         ArrayList L = new ArrayList();
-        Iterator it = g.find( null, null, null );
+        Iterator it = g.find( Triple.ANY );
         while (it.hasNext()) L.add( it.next() );
         return L;
         }

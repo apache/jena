@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.52 2004-12-02 15:48:13 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.53 2004-12-02 16:13:08 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -136,7 +136,7 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         assertContainsAll( title + ": modified simple graph", g, "p S q; spindizzies lift cities; Diracs communicate instantaneously" );
         assertOmitsAll( title + ": modified simple graph", g, "x R y; a T b" );
     /* */ 
-        ClosableIterator it = g.find( null, node("lift"), null );
+        ClosableIterator it = g.find( Node.ANY, node("lift"), Node.ANY );
         assertTrue( title + ": finds some triple(s)", it.hasNext() );
         assertEquals( title + ": finds a 'lift' triple", triple("spindizzies lift cities"), it.next() );
         assertFalse( title + ": finds exactly one triple", it.hasNext() );
@@ -343,15 +343,15 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getGraph();
         graphAdd( g, "S P O" );
-        assertTrue( g.find( Node.ANY, null, null ).hasNext() );
-        assertTrue( g.find( null, Node.ANY, null ).hasNext() );
+        assertTrue( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
+        assertTrue( g.find( Triple.ANY ).hasNext() );
         }
         
     public void testFind2()
         {
-         Graph g = getGraphWith( "S P O" );   
-         TripleIterator waitingForABigRefactoringHere = null;
-         ExtendedIterator it = g.find( Node.ANY, Node.ANY, Node.ANY );
+        Graph g = getGraphWith( "S P O" );   
+        TripleIterator waitingForABigRefactoringHere = null;
+        ExtendedIterator it = g.find( Triple.ANY );
         }
 
     protected boolean canBeEmpty( Graph g )

@@ -26,7 +26,7 @@ import com.hp.hpl.jena.shared.*;
  * performance.
  *<p>
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.7 $' Date='$Date: 2004-11-19 14:38:11 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.8 $' Date='$Date: 2004-12-02 16:13:08 $'
  */
 public class GraphMatcher extends java.lang.Object {
     static private Random random = new Random(0);
@@ -47,7 +47,7 @@ public class GraphMatcher extends java.lang.Object {
     }  
     
     static public int hashCode(Graph g) {
-    	ClosableIterator ci = g.find(null,null,null);
+    	ClosableIterator ci = GraphUtil.findAll( g );
     	int hash = 0;
     	GraphMatcher gm = new GraphMatcher(g);
     	while ( ci.hasNext() ) {
@@ -268,7 +268,7 @@ public class GraphMatcher extends java.lang.Object {
         in(HASH_BAD);
     }
     private int prepare(Graph otherm)  {
-        ClosableIterator ss = m.find(null,null,null);
+        ClosableIterator ss = GraphUtil.findAll( m );
         myHashLevel = 0;
         int hash = 0;
         try {
@@ -939,5 +939,5 @@ public class GraphMatcher extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: GraphMatcher.java,v 1.7 2004-11-19 14:38:11 chris-dollin Exp $
+ * $Id: GraphMatcher.java,v 1.8 2004-12-02 16:13:08 chris-dollin Exp $
  */
