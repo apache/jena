@@ -6,19 +6,19 @@
 package com.hp.hpl.jena.n3;
 
 import java.io.* ;
+import com.hp.hpl.jena.JenaRuntime ;
 
 /** Simple class that provides output with moving left margin.
  *  Does not cope with tabs or newlines in output strings.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: IndentedWriter.java,v 1.4 2003-08-27 13:01:45 andy_seaborne Exp $
+ * @version 	$Id: IndentedWriter.java,v 1.5 2004-07-06 13:36:58 andy_seaborne Exp $
  */
 
 // Not robust/complete enough for public use
 /*public*/ class IndentedWriter //extends Writer
 {
-	String lineSeparator = (String) java.security.AccessController.doPrivileged(
-               new sun.security.action.GetPropertyAction("line.separator"));
+	String lineSeparator = JenaRuntime.getLineSeparator() ;
 	
 	Writer writer ;
 	int column ;

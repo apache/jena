@@ -6,32 +6,28 @@
 package com.hp.hpl.jena.n3;
 import java.io.*;
 import antlr.collections.AST;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3EventPrinter.java,v 1.6 2003-08-27 13:01:45 andy_seaborne Exp $
+ * @version 	$Id: N3EventPrinter.java,v 1.7 2004-07-06 13:36:58 andy_seaborne Exp $
  */
 public class N3EventPrinter implements N3ParserEventHandler
 {
 	public boolean printStartFinish = false ;
-	static final String NL = System.getProperty("line.separator","\n") ;
-
-
 	
-	Writer out = null;
+	PrintWriter out = null;
 	
 	public N3EventPrinter(OutputStream _out)
 	{
-		try {
-			out = new BufferedWriter(new OutputStreamWriter(_out, "UTF-8")) ;
-		} catch (java.io.UnsupportedEncodingException ex) {}
+		out = FileUtils.asPrintWriterUTF8(_out) ;
 	}
 	
 	/** Best not to use a PrintWriter, but use an OutputStreamWriter (buffered)
 	 * 	with charset "UTF-8".
 	 */
 	
-	public N3EventPrinter(Writer _out)
+	public N3EventPrinter(PrintWriter _out)
 	{
 		out = _out;
 	}
@@ -238,41 +234,23 @@ public class N3EventPrinter implements N3ParserEventHandler
     }
 
 
-	private static void print(Writer out, String s)
+	private static void print(PrintWriter out, String s)
 	{
-		try
-		{
-			out.write(s);
-		}
-		catch (java.io.IOException ex)
-		{
-		}
+	    out.print(s);
 	}
-	private static void println(Writer out, String s)
+	private static void println(PrintWriter out, String s)
 	{
-		try
-		{
-			out.write(s);
-			out.write(NL);
-			out.flush();
-		}
-		catch (java.io.IOException ex)
-		{
-		}
+        out.println(s) ;
 	}
-	private static void println(Writer out)
+	private static void println(PrintWriter out)
 	{
-		try
-		{
-			out.write(NL);
-		}
-		catch (java.io.IOException ex)
-		{
-		}
+        out.println() ;
 	}
-	private static void flush(Writer out)
+
+    private static void flush(PrintWriter out)
 	{
-		try{ out.flush() ; } catch (java.io.IOException ex) {} }
+        out.flush() ;
+    }
 }
 
 /*

@@ -11,13 +11,14 @@ import jena.cmdline.*;
 import java.util.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
-
+import com.hp.hpl.jena.JenaRuntime ;
+import com.hp.hpl.jena.util.FileUtils ;
 import com.hp.hpl.jena.n3.* ;
 
 /**
     Read N3 files and print in a variery of formats.
  * @author		Andy Seaborne
- * @version 	$Id: n3.java,v 1.10 2003-09-09 14:24:43 chris-dollin Exp $
+ * @version 	$Id: n3.java,v 1.11 2004-07-06 13:36:59 andy_seaborne Exp $
  */
 public class n3
 {
@@ -34,7 +35,7 @@ public class n3
     static boolean debug = false ;		// Help!
 	static boolean verbose = false ;
 	
-	static final String NL = System.getProperty("line.separator","\n") ;
+	static final String NL = JenaRuntime.getLineSeparator();
 
 	// Parse a file (no RDF production)
 
@@ -195,25 +196,10 @@ public class n3
 	
 	static void doOneFile(InputStream input, OutputStream output, String baseName, String filename)
 	{
-		// Make a UTF-8 reader
-		BufferedReader reader = null ;
-		try {
-			// Sometime people use "literal 8" which can be approximated with ISO-8859-1
-			reader = new BufferedReader(new InputStreamReader(input, "UTF-8")) ;
-		} catch (java.io.UnsupportedEncodingException ex)
-		{
-			System.err.println("UnsupportedEncodingException: "+ex) ;
-			//ex.printStackTrace(System.err) ;
-			System.exit(8) ;
-		}
+		BufferedReader reader = FileUtils.asBufferedUTF8(input) ;
+		PrintWriter writer = FileUtils.asPrintWriterUTF8(output) ;
 
-		// Make a UTF-8 writer
-		Writer writer = null ;
-		try {
-			writer = new BufferedWriter(new OutputStreamWriter(output, "UTF-8")) ;
-		} catch (java.io.UnsupportedEncodingException ex) {}
-
-		if ( doRDF )
+        if ( doRDF )
 			rdfOneFile(reader, writer, baseName, filename) ;
 		else
 			parseOneFile(reader, writer, baseName, filename) ;
@@ -266,7 +252,7 @@ public class n3
 	}
 	
 		
-	static private void parseOneFile(Reader reader, Writer writer, String baseName, String filename)
+	static private void parseOneFile(Reader reader, PrintWriter writer, String baseName, String filename)
 	{
 		N3ParserEventHandler handler = null ;
 		

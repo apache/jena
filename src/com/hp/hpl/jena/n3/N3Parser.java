@@ -8,10 +8,11 @@ package com.hp.hpl.jena.n3;
 import java.io.* ;
 
 import antlr.TokenStreamException;
+import com.hp.hpl.jena.util.FileUtils ;
 
 /** The formal interface to the N3 parser.  Wraps up the antlr parser and lexer.
  * @author		Andy Seaborne
- * @version 	$Id: N3Parser.java,v 1.4 2003-11-28 16:18:25 andy_seaborne Exp $
+ * @version 	$Id: N3Parser.java,v 1.5 2004-07-06 13:36:58 andy_seaborne Exp $
  */
 public class N3Parser implements N3AntlrParserTokenTypes
 {
@@ -36,15 +37,7 @@ public class N3Parser implements N3AntlrParserTokenTypes
     
 	public N3Parser(InputStream in, N3ParserEventHandler h)
 	{
-        Reader r = null ;
-        try { 
-            // UTF-8 always exists.
-            r = new InputStreamReader(in, "UTF-8") ;
-        } catch (UnsupportedEncodingException ex) {}
-        lexer = new N3AntlrLexer(r) ;
-        parser = new N3AntlrParser(lexer) ;
-		parser.setEventHandler(h) ;
-		parser.setLexer(lexer) ;
+        this(new BufferedReader(FileUtils.asUTF8(in)), h) ;
     }
 
     static public String[] getTokenNames() { return N3AntlrParser._tokenNames ; }

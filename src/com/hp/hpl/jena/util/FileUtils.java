@@ -9,7 +9,7 @@ import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
+import java.nio.charset.Charset ;
 import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.shared.JenaException;
 
@@ -82,24 +82,31 @@ public class FileUtils {
 		return sw.toString();
 	}
 
+    static Charset utf8 = Charset.forName("utf-8") ;
+    
+    /** Create a reader that uses UTF-8 encoding */ 
+    
 	static public Reader asUTF8(InputStream in) {
-		try {
-			return new InputStreamReader(in, "utf-8");
-		} catch (UnsupportedEncodingException e) {
-			// Give up and die.
-			throw new Error("utf-8 *must* be a supported encoding.");
-		}
+	    return new InputStreamReader(in, utf8);
 	}
-	
 
-	static public Writer asUTF8(OutputStream out) {
-		try {
-			return new OutputStreamWriter(out, "utf-8");
-		} catch (UnsupportedEncodingException e) {
-			// Give up and die.
-			throw new Error("utf-8 *must* be a supported encoding.");
-		}
-	}
+    /** Create a buffered reader that uses UTF-8 encoding */ 
+	
+    static public BufferedReader asBufferedUTF8(InputStream in) {
+        return new BufferedReader(asUTF8(in)) ;
+    }
+
+    /** Create a writer that uses UTF-8 encoding */ 
+
+    static public Writer asUTF8(OutputStream out) {
+        return new OutputStreamWriter(out, utf8);
+    }
+
+    /** Create a print writer that uses UTF-8 encoding */ 
+
+    static public PrintWriter asPrintWriterUTF8(OutputStream out) {
+        return new PrintWriter(asUTF8(out)); 
+    }
 
 	/**
 	    create a temporary file that will be deleted on exit, and do something

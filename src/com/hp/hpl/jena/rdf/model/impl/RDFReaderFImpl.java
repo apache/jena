@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFReaderFImpl.java,v 1.8 2004-06-19 18:47:40 chris-dollin Exp $
+ * $Id: RDFReaderFImpl.java,v 1.9 2004-07-06 13:36:59 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -33,11 +33,12 @@ import com.hp.hpl.jena.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 import java.util.Properties;
+import com.hp.hpl.jena.JenaRuntime ;
 
 /**
  *
  * @author  bwm
- * @version $Revision: 1.8 $ $Date: 2004-06-19 18:47:40 $
+ * @version $Revision: 1.9 $ $Date: 2004-07-06 13:36:59 $
  */
 public class RDFReaderFImpl extends Object implements RDFReaderF {
 
@@ -69,7 +70,7 @@ public class RDFReaderFImpl extends Object implements RDFReaderF {
         for (int i = 0; i<LANGS.length; i++) {
             langToClassName.setProperty(
                                LANGS[i],
-                               Util.getProperty(PROPNAMEBASE + LANGS[i],
+                               JenaRuntime.getSystemProperty(PROPNAMEBASE + LANGS[i],
                                                   DEFAULTREADERS[i]));
         }
     }

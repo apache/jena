@@ -11,10 +11,12 @@ import junit.framework.* ;
 
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.tuple.* ;
+import com.hp.hpl.jena.util.FileUtils;
+
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3ExternalTestsCom.java,v 1.8 2003-08-27 13:01:46 andy_seaborne Exp $
+ * @version 	$Id: N3ExternalTestsCom.java,v 1.9 2004-07-06 13:36:59 andy_seaborne Exp $
  */
 public abstract class N3ExternalTestsCom extends TestSuite
 {
@@ -79,20 +81,14 @@ public abstract class N3ExternalTestsCom extends TestSuite
 
 	// Utilities.
 		
-	static protected Writer makeWriter(OutputStream out)
+	static protected PrintWriter makeWriter(OutputStream out)
 	{
-		try {
-			return new BufferedWriter(new OutputStreamWriter(out, "UTF-8")) ;
-		} catch (java.io.UnsupportedEncodingException ex) { return null ; }
+        return FileUtils.asPrintWriterUTF8(out) ;
 	}
 
 	static protected BufferedReader makeReader(InputStream in)
 	{
-		// Make a UTF-8 reader
-		try {
-			// Sometime people use "literal 8" which can be approximated with ISO-8859-1
-			return new BufferedReader(new InputStreamReader(in, "UTF-8")) ;
-		} catch (java.io.UnsupportedEncodingException ex) { return null ; }
+	    return new BufferedReader(FileUtils.asUTF8(in)) ;
 	}
 }
 

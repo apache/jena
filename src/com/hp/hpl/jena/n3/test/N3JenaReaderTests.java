@@ -14,7 +14,7 @@ import com.hp.hpl.jena.util.ModelLoader;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaReaderTests.java,v 1.5 2003-09-09 12:14:26 chris-dollin Exp $
+ * @version 	$Id: N3JenaReaderTests.java,v 1.6 2004-07-06 13:36:59 andy_seaborne Exp $
  */
 public class N3JenaReaderTests extends N3ExternalTestsCom
 {
@@ -95,41 +95,36 @@ public class N3JenaReaderTests extends N3ExternalTestsCom
 			reader.read(dModel, rData, basename) ;
 			if ( VERBOSE )
 			{
-				Writer w = makeWriter(System.out) ;
+				PrintWriter w = makeWriter(System.out) ;
 				BufferedReader r = makeReader(new FileInputStream(n3File)) ;
-				println(w, "+++++++ "+this.getName()) ;
+				w.println("+++++++ "+this.getName()) ;
 				for ( String s = r.readLine(); s != null ; s = r.readLine())
-					println(w,s) ;
-				println(w,"+++++++") ;
+					w.println(s) ;
+				w.println("+++++++") ;
 				dModel.write(w, "N-TRIPLE") ;
-				println(w,"+++++++") ;
-				flush(w) ;
+				w.println("+++++++") ;
+				w.flush() ;
 			}
 			if ( rModel != null )
 			{
                 if ( ! dModel.isIsomorphicWith(rModel) )
 				{
                     
-					Writer w = makeWriter(System.out) ;
-					println(w, "+++++++ "+super.getName()) ;
-					println(w, "---- Created") ;
+					PrintWriter w = makeWriter(System.out) ;
+					w.println("+++++++ "+super.getName()) ;
+					w.println("---- Created") ;
 					dModel.write(w, "N-TRIPLE") ;
-					println(w, "---- Expected ") ;
+					w.println("---- Expected ") ;
 					rModel.write(w, "N-TRIPLE") ;
-					println(w, "+++++++"+super.getName()) ;
-					flush(w) ;
+					w.println("+++++++"+super.getName()) ;
+					w.flush() ;
 					assertTrue("Model compare failed: "+super.getName(), false) ;
                 }
 			}
 				
 		}
 	}
-	
-	static final String NL = System.getProperty("line.separator","\n") ;
-	static private void print(Writer out, String s) { try { out.write(s) ; } catch (java.io.IOException ex) {} }
-	static private void println(Writer out, String s) { try { out.write(s) ; out.write(NL) ;}catch (java.io.IOException ex) {} }
-	static private void println(Writer out) { try { out.write(NL) ;} catch (java.io.IOException ex) {} }
-	static private void flush(Writer out) { try { out.flush() ; } catch (java.io.IOException ex) {} }
+
 }
 
 /*

@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.36 2004-03-05 15:52:36 chris-dollin Exp $
+ *  $Id: BaseXMLWriter.java,v 1.37 2004-07-06 13:35:38 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.rdf.model.impl.Util;
+import com.hp.hpl.jena.JenaRuntime ;
 
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
@@ -48,7 +49,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.36 $' Date='$Date: 2004-03-05 15:52:36 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.37 $' Date='$Date: 2004-07-06 13:35:38 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -258,7 +259,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
         Iterator it = namespacesNeeded.iterator();
         while (it.hasNext()) {
             String uri = (String) it.next();
-            String val = Util.getProperty( RDFWriter.NSPREFIXPROPBASE + uri );
+            String val = JenaRuntime.getSystemProperty( RDFWriter.NSPREFIXPROPBASE + uri );
             if (val != null && checkLegalPrefix( val ) && !prefixesUsed.contains( val )) {
                 ns.put(uri, val);
                 prefixesUsed.add(val);
