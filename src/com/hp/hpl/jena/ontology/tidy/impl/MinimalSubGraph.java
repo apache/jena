@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
+  $Id: MinimalSubGraph.java,v 1.2 2003-11-30 21:12:58 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.shared.*;
  */
 class MinimalSubGraph extends AbsChecker {
 	static final int MAXDIST = 10000;
-	private final Checker parent;
+	private final CheckerImpl parent;
 	private final Set todo = new HashSet();
 	//private final Set done = new HashSet();
 	private final Map allMinInfos = new HashMap();
@@ -34,7 +34,7 @@ class MinimalSubGraph extends AbsChecker {
 	 * @param context A lite/DL valid graph
 	 * @param lite
 	 */
-	MinimalSubGraph(boolean lite, Triple problem, Checker parent) {
+	MinimalSubGraph(boolean lite, Triple problem, CheckerImpl parent) {
 		super(lite, new SimpleGraphMaker());
 		this.parent = parent;
 		if (!add(problem, false)) {

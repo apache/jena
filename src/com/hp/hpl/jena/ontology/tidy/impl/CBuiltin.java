@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.ontology.tidy.impl;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.BrokenException;
 
 /**
  * @author jjc
@@ -21,7 +22,7 @@ class CBuiltin extends CNode {
     }
     public boolean setCategories(int c, boolean rec) {
         if (c!=category)
-          throw new SyntaxException("Internal error in syntax checker.");
+          throw new BrokenException("Internal error in syntax checker.");
         return true;
     }
 	/* (non-Javadoc)

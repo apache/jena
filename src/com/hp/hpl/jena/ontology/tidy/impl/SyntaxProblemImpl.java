@@ -1,31 +1,55 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Levels.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
+  $Id: SyntaxProblemImpl.java,v 1.1 2003-11-30 21:12:58 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
+
+import com.hp.hpl.jena.enhanced.EnhNode;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.ontology.tidy.SyntaxProblem;
 
 /**
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
  *
 */
-class Levels {
-	static public final int Warning = 0;   
-  static public final int Lite = 1;
-  static public final int DL = 2;
-  static public final int Full = 3;
-  static public final int Other = 4; // Bad RDF doc
-  static private String desc[] = {
-  	"Warning", "Lite", "DL", "Full", "Other"
-  	
-  };
-  static public String toString(int i) {
-  	return desc[i];
-  }
+class SyntaxProblemImpl extends SyntaxProblem {
+
+	/**
+	 * @param shortD
+	 * @param en
+	 * @param lvl
+	 */
+	public SyntaxProblemImpl(String shortD, EnhNode en, int lvl) {
+		super(shortD, en, lvl);
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @param shortD
+	 * @param n
+	 * @param lvl
+	 */
+	public SyntaxProblemImpl(String shortD, Node n, int lvl) {
+		super(shortD, n, lvl);
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @param shortD
+	 * @param g
+	 * @param lvl
+	 */
+	public SyntaxProblemImpl(String shortD, Graph g, int lvl) {
+		super(shortD, g, lvl);
+		// TODO Auto-generated constructor stub
+	}
+
 }
 
 /*
-	(c) Copyright 2003 Hewlett-Packard Development Company, LP
+	(c) Copyright Hewlett-Packard Company 2003
 	All rights reserved.
 
 	Redistribution and use in source and binary forms, with or without

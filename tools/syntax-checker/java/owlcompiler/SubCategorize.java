@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.1 2003-11-28 07:47:00 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.2 2003-11-30 21:14:41 jeremy_carroll Exp $
 */
 package owlcompiler;
 
@@ -10,7 +10,7 @@ import java.util.*;
 import com.hp.hpl.jena.ontology.tidy.impl.CategorySet;
 import com.hp.hpl.jena.ontology.tidy.impl.Constants;
 import com.hp.hpl.jena.ontology.tidy.impl.Lookup;
-import com.hp.hpl.jena.ontology.tidy.impl.SyntaxException;
+import com.hp.hpl.jena.shared.BrokenException;
 
 /**
  * This file is a front-end onto the Grammar.java file.
@@ -119,7 +119,7 @@ public class SubCategorize implements Constants,Lookup {
 					// Block list nodes - handled specially
 					prop != Grammar.rdfrest && prop != Grammar.rdffirst;
 				}
-				throw new SyntaxException("Logic error - should not happen.");
+				throw new BrokenException("Logic error - should not happen.");
 			case 2 :
 				return prop == Grammar.notype;
 			case 4 :
@@ -144,7 +144,7 @@ public class SubCategorize implements Constants,Lookup {
 					return true;
 				return true;
 		}
-		throw new SyntaxException("Logic error - unhandled case in switch.");
+		throw new BrokenException("Logic error - unhandled case in switch.");
 	}
 
 	/**

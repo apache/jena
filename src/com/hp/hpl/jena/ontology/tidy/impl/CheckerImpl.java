@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.tidy.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.BrokenException;
 
@@ -38,7 +39,7 @@ import java.util.*;
  * @author Jeremy J. Carroll
  *
  */
-public class Checker extends AbsChecker {
+public class CheckerImpl extends AbsChecker {
 //	private GraphMaker gf;
 	private Vector monotoneProblems = new Vector();
 	private Vector warnings = new Vector();
@@ -46,7 +47,6 @@ public class Checker extends AbsChecker {
 
 	private Vector nonMonotoneProblems = null;
 	private int nonMonotoneLevel;
-
 
     /**
      * Answer an Iterator over {@link SyntaxProblem}'s which
@@ -82,7 +82,7 @@ public class Checker extends AbsChecker {
 			nonMonotoneProblems = new Vector();
 			nonMonotoneLevel = Levels.Lite;
 			//Model m = ModelFactory.createModelForGraph(asGraph());
-			Checker m = this;
+			CheckerImpl m = this;
       
       final Set toAdd = new HashSet();
    // Make sure there is a node for every user defined datatype.
@@ -313,14 +313,14 @@ public class Checker extends AbsChecker {
 		while (it.hasNext())
 			mg.add((Triple) it.next());
 
-		this.nonMonotoneProblems.add(new SyntaxProblem(shortD, enh, lvl));
+		this.nonMonotoneProblems.add(new SyntaxProblemImpl(shortD, enh, lvl));
 	}
 /**
  * Build a syntax checker with custom GraphMaker
  * @param lite True if the checker should indicate why this is not lite.
  * @param gf  The GraphMaker to use for the SyntaxChecker internal scratch area.
  */
-	public Checker(boolean lite, GraphMaker gf) {
+	public CheckerImpl(boolean lite, GraphMaker gf) {
 		super(lite, gf);
 		//this.gf = gf;
 	}
@@ -329,7 +329,7 @@ public class Checker extends AbsChecker {
 	 * Construct a syntax checker.
 	 * Will not explain why something is in DL rather than Lite.	 
 	 * */
-	public Checker() {
+	public CheckerImpl() {
 		this(false);
 	}
 	/**
@@ -338,7 +338,7 @@ public class Checker extends AbsChecker {
 	 * explain why the graph is in DL rather than Lite.
 	 * @param lite
 	 */
-	public Checker(boolean lite) {
+	public CheckerImpl(boolean lite) {
 		this(lite, new SimpleGraphMaker());
 	}
 	/**
@@ -347,7 +347,7 @@ public class Checker extends AbsChecker {
 	 * Does not process imports.
 	 * @param g A graph to include in the check.
 	 */
-	public void add(Graph g) {
+	public void rawAdd(Graph g) {
 		// Add every triple
 		ClosableIterator it = null;
 		try {
@@ -370,7 +370,7 @@ public class Checker extends AbsChecker {
 		OntModel m =
 			ModelFactory.createOntologyModel(
 				new OntModelSpec(
-					ModelFactory.createMemModelMaker(),
+					null,
 					null,
 					null,
 					ProfileRegistry.OWL_LANG),
@@ -381,7 +381,7 @@ public class Checker extends AbsChecker {
 		m.read(url);
 
 		// since we specified the null reasoner, the graph of the model is the union graph
-		add(m.getGraph());
+		rawAdd(m.getGraph());
 	}
 	//private boolean wantLite = true;
 
@@ -393,15 +393,15 @@ public class Checker extends AbsChecker {
 		Graph min =
 			new MinimalSubGraph(lvl == Levels.Lite, t, this).getContradiction();
 		addProblem(
-			new SyntaxProblem(
+			new SyntaxProblemImpl(
 				"Not a " + Levels.toString(lvl) + " subgraph",
 				min,
 				lvl));
 				
 	}
-	void addProblem(SyntaxProblem sp) {
+	void addProblem(SyntaxProblemImpl sp) {
 		super.addProblem(sp);
-		switch (sp.level) {
+		switch (sp.getLevel()) {
 			case Levels.Warning :
 				warnings.add(sp);
 			case Levels.Lite :
@@ -444,63 +444,6 @@ public class Checker extends AbsChecker {
 		}
 
 	}
-	/**
-	 * A command-line syntax checker.
-	 * First argument, URL of document to check,
-	 * Optional second argument is "Lite", "DL" or "Full"
-	 * and error messages will be generated if needed.
-	 * @param argv
-	 */
-	static public void main(String argv[]) {
-	//	GraphMaker gf = ModelFactory.createMemModelMaker().getGraphMaker();
-
-		// create an ontology model with no reasoner and the default doc manager
-		OntModel m =
-			ModelFactory.createOntologyModel(
-				new OntModelSpec(
-					ModelFactory.createMemModelMaker(),
-					null,
-					null,
-					ProfileRegistry.OWL_LANG),
-				null);
-		m.getDocumentManager().setProcessImports(true);
-
-		//Model m = ModelFactory.createDefaultModel();
-		m.read(argv[0]);
-		//m.write(System.out);
-		// m.getDocumentManager();
-
-		// the ont model graph must be the union graph, since we specified the null reasoner (hence no inf graph)
-		Graph g = m.getGraph();
-
-		Checker chk =
-			new Checker(
-				argv.length == 2 && argv[1].equalsIgnoreCase("Lite")
-				//gf
-				);
-		chk.add(g);
-		//  System.err.println("g added.");
-		String subLang = chk.getSubLanguage();
-		System.out.println(subLang);
-
-		if (argv.length > 1) {
-			if (argv[1].equals(subLang))
-				return;
-			if (argv[1].equalsIgnoreCase("Full") || subLang.equals("Lite")) {
-				System.err.println(
-					"All constructs were in OWL " + subLang + ".");
-				return;
-			}
-		}
-
-		Iterator it = chk.getProblems();
-		while (it.hasNext()) {
-			SyntaxProblem sp = (SyntaxProblem) it.next();
-			System.err.println(sp.longDescription());
-		}
-
-	}
-
   Map disjoints = new HashMap();
   
   void addDisjoint(Node a,Node b) {
@@ -517,6 +460,24 @@ public class Checker extends AbsChecker {
  */
 boolean extraInfo() {
 	return false;
+}
+
+protected Graph importsClosure(Graph g) {
+	// create an ontology model with no reasoner and the default doc manager
+	OntModelSpec dullOWL =
+		new OntModelSpec(
+			null,
+			null,
+			null,
+			ProfileRegistry.OWL_LANG);
+	dullOWL.getDocumentManager().setProcessImports(true);
+	OntModel m =
+		ModelFactory.createOntologyModel(
+			dullOWL,
+			ModelFactory.createModelForGraph(g));
+
+	// the ont model graph must be the union graph, since we specified the null reasoner (hence no inf graph)
+	return m.getGraph();
 }
 }
 

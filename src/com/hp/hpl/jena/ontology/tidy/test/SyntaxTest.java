@@ -1,13 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxTest.java,v 1.9 2003-11-28 07:47:00 jeremy_carroll Exp $
+  $Id: SyntaxTest.java,v 1.10 2003-11-30 21:13:19 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.test;
 
 import junit.framework.TestCase;
 import com.hp.hpl.jena.ontology.tidy.*;
-import com.hp.hpl.jena.ontology.tidy.impl.*;
+//import com.hp.hpl.jena.ontology.tidy.impl.*;
 import com.hp.hpl.jena.ontology.*;
 import java.util.*;
 import java.io.*;
@@ -104,7 +104,7 @@ class SyntaxTest extends TestCase {
 		//	  return;
 			//(InputStream) inI.next(),
 			//om.read()
-			chk.add(om.getGraph());
+			chk.rawAdd(om.getGraph());
 			
 			String rslt = chk.getSubLanguage();
 			if (!level.getURI().endsWith(rslt)) {

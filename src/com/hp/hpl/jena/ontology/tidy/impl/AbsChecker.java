@@ -8,6 +8,7 @@ package com.hp.hpl.jena.ontology.tidy.impl;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.ontology.tidy.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import java.util.*;
@@ -205,8 +206,8 @@ abstract class AbsChecker implements Constants {
 		setMonotoneLevel(lvl + 1);
 	}
 
-	void addProblem(SyntaxProblem sp) {
-		setMonotoneLevel(sp.level + 1);
+	void addProblem(SyntaxProblemImpl sp) {
+		setMonotoneLevel(sp.getLevel() + 1);
 	}
 	/**
 	 * @param node

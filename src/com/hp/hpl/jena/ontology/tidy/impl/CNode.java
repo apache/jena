@@ -5,6 +5,7 @@
 
 package com.hp.hpl.jena.ontology.tidy.impl;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.tidy.*;
 
 /**
  * @author jjc
@@ -40,7 +41,7 @@ abstract class CNode implements CNodeI, Constants{
                 case DisallowedVocab:
                 
                     ((AbsChecker)eg).addProblem(
-                       new SyntaxProblem(
+                       new SyntaxProblemImpl(
                          "Disallowed vocabulary",
                          n,
                          Levels.DL
@@ -49,7 +50,7 @@ abstract class CNode implements CNodeI, Constants{
                     return new CURIref(n,eg);
                 case BadOWL:
                     ((AbsChecker)eg).addProblem(
-                       new SyntaxProblem(
+                       new SyntaxProblemImpl(
                          "Unrecognised OWL vocabulary",
                          n,
                          Levels.Warning
@@ -58,7 +59,7 @@ abstract class CNode implements CNodeI, Constants{
                     return new CURIref(n,eg);
                 case BadRDF:
                     ((AbsChecker)eg).addProblem(
-                       new SyntaxProblem(
+                       new SyntaxProblemImpl(
                          "Unrecognised RDF vocabulary",
                          n,
                          Levels.Warning
@@ -67,7 +68,7 @@ abstract class CNode implements CNodeI, Constants{
                     return new CURIref(n,eg);
                 case BadXSD:
                     ((AbsChecker)eg).addProblem(
-                       new SyntaxProblem(
+                       new SyntaxProblemImpl(
                          "Illadvised XSD datatype",
                          n,
                          Levels.Warning

@@ -11,7 +11,7 @@ import junit.framework.TestCase;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.OWLTest;
 import com.hp.hpl.jena.ontology.tidy.*;
-import com.hp.hpl.jena.ontology.tidy.impl.*;
+//import com.hp.hpl.jena.ontology.tidy.impl.*;
 
 /**
  * @author jjc
@@ -65,7 +65,7 @@ public class Extra extends TestCase {
    	Checker chk = new Checker(lvl.equals(OWLTest.Lite));
    	Model m = ModelFactory.createDefaultModel();
    	m.read("file:testing/ontology/tidy/"+fn+".rdf");
-   	chk.add(m.getGraph());
+   	chk.rawAdd(m.getGraph());
    	
    	String rslt = chk.getSubLanguage();
    	assertTrue(lvl.getURI().endsWith(rslt));

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SyntaxProblem.java,v 1.1 2003-11-28 07:46:59 jeremy_carroll Exp $
+  $Id: SyntaxProblem.java,v 1.9 2003-11-30 21:13:19 jeremy_carroll Exp $
 */
-package com.hp.hpl.jena.ontology.tidy.impl;
+package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import java.util.*;
@@ -21,7 +22,7 @@ public class SyntaxProblem {
 	static Model emptyModel = ModelFactory.createDefaultModel();
 	private Graph pgraph;
 	private EnhNode pnode;
-	final int level;
+	protected final int level;
 	private String shortDescription;
 
 	static EnhNode inEmptyModel(Node n) {
@@ -34,13 +35,13 @@ public class SyntaxProblem {
 	 * @param g The problem graph (or null)
 	 * @param lvl The highest level at which this is illegal.
 	 */
-	SyntaxProblem( String shortDesc,
+	private SyntaxProblem( String shortDesc,
 	               EnhNode en,
 	               Graph g,
 	               int lvl
 	             ) {
 	     if ( en == null && g == null )
-	        throw new SyntaxException("Logic error in OWL Syntax Checker");
+	        throw new BrokenException("Logic error in OWL Syntax Checker");
 	     shortDescription = shortDesc;
 	     pnode = en;
 	     pgraph = g;
@@ -52,7 +53,7 @@ public class SyntaxProblem {
 	 * @param en The problem node
 	 * @param lvl The highest level at which this is illegal.
 	 */
-	SyntaxProblem(String shortD, EnhNode en, int lvl) {
+	protected SyntaxProblem(String shortD, EnhNode en, int lvl) {
 		this(shortD, en, null, lvl );
 	}	
 	/**
@@ -61,7 +62,7 @@ public class SyntaxProblem {
 	* @param n The problem node
 	* @param lvl The highest level at which this is illegal.
 	*/
-   SyntaxProblem(String shortD, Node n, int lvl) {
+   protected SyntaxProblem(String shortD, Node n, int lvl) {
 	   this(shortD, inEmptyModel(n), null, lvl );
    }
 	/**
@@ -70,7 +71,7 @@ public class SyntaxProblem {
 	 * @param g The problem graph
 	 * @param lvl The highest level at which this is illegal.
 	 */
-	SyntaxProblem(String shortD, Graph g, int lvl) {
+	protected SyntaxProblem(String shortD, Graph g, int lvl) {
 		this(shortD, null, g, lvl);
 	}
 
@@ -180,6 +181,12 @@ public class SyntaxProblem {
 	 */
 	public Graph problemSubGraph() {
 		return pgraph;
+	}
+	/** The level associated with this problem.
+	* @return
+	*/
+	public int getLevel() {
+		return level;
 	}
 	
 
