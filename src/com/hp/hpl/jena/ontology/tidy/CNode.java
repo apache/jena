@@ -19,7 +19,7 @@ abstract class CNode extends EnhNode implements CNodeI {
                 switch ( type ) {
                 case Grammar.DisallowedVocab:
                 
-                    ((Checker)eg).addProblem(
+                    ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Disallowed vocabulary",
                          inEmptyModel(n),
@@ -28,7 +28,7 @@ abstract class CNode extends EnhNode implements CNodeI {
                     );
                     return new CURIref(n,eg);
                 case Grammar.BadOWL:
-                    ((Checker)eg).addProblem(
+                    ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Unrecognised OWL vocabulary",
                          inEmptyModel(n),
@@ -37,7 +37,7 @@ abstract class CNode extends EnhNode implements CNodeI {
                     );
                     return new CURIref(n,eg);
                 case Grammar.BadRDF:
-                    ((Checker)eg).addProblem(
+                    ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Unrecognised RDF vocabulary",
                          inEmptyModel(n),
@@ -46,7 +46,7 @@ abstract class CNode extends EnhNode implements CNodeI {
                     );
                     return new CURIref(n,eg);
                 case Grammar.BadXSD:
-                    ((Checker)eg).addProblem(
+                    ((AbsChecker)eg).addProblem(
                        new SyntaxProblem(
                          "Illadvised XSD datatype",
                          inEmptyModel(n),

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: OneTwoImpl.java,v 1.4 2003-04-17 13:12:00 jeremy_carroll Exp $
+  $Id: OneTwoImpl.java,v 1.5 2003-04-17 20:16:25 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -33,7 +33,7 @@ class OneTwoImpl extends CGeneral {
 			"Illegal description/restriction/list/alldifferent structure",
 			"Illegal restriction/list structure",
 			"Node may not be object of multiple triples" };
-	private void check(int i, Triple t) {
+	void check(int i, Triple t) {
 		Triple old = get(i);
 		if (old != null) {
 			if (old.equals(t))
@@ -51,13 +51,10 @@ class OneTwoImpl extends CGeneral {
 			Node n = Node.createAnon();
 			R.reifyAs(n, t);
 			getGraph().asGraph().add(
-				new Triple(asNode(), Vocab.objectOfTriple, n));
+				new Triple(asNode(), gProp[i], n));
 			seen[i] = t;
 
 		}
-	}
-	public void addObjectTriple(Triple t) {
-		check(2, t);
 	}
     static private Node gProp[] = {
     	Vocab.firstPart,

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SubCategorize.java,v 1.2 2003-04-17 13:11:58 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.3 2003-04-17 20:16:24 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -182,6 +182,8 @@ class SubCategorize {
 							<< Grammar.ActionShift;
 					int ix = Arrays.binarySearch(Grammar.triples, triple);
 					if (ix < 0) {
+						if ( -ix-1 == Grammar.triples.length )
+						   continue;
 						if ((Grammar.triples[-ix - 1] & (~ActionMask))
 							== triple) {
 							int action = Grammar.triples[-ix - 1] & ActionMask;

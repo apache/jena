@@ -147,11 +147,11 @@ public class Checker extends AbsChecker {
 		);
 	}
 
-	Checker(boolean lite, GraphFactory gf) {
+	public Checker(boolean lite, GraphFactory gf) {
 		super(lite, gf);
 		this.gf = gf;
 	}
-	Checker(boolean lite) {
+	public Checker(boolean lite) {
 		this(lite, new DefaultGraphFactory());
 	}
 	public void add(Graph g) {
