@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Graph;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.5 $
+* @version $Revision: 1.6 $
 */
 
 public interface IRDBDriver {
@@ -181,6 +181,14 @@ public interface IRDBDriver {
      */
 
     public boolean supportsJenaReification();
+    
+    /**
+     * Convert a string into a form suitable for a legal identifier
+     * name for the database type.
+     * @author hkuno
+     *
+     */
+    public String toDBIdentifier(String aString);
 }
 
 /*
