@@ -3,14 +3,10 @@
  *  All rights reserved.
  *
  */
-
-
 package com.hp.hpl.jena.db.impl;
 
 import com.hp.hpl.jena.db.GraphRDB;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**

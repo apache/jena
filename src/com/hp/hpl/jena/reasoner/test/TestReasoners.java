@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestReasoners.java,v 1.24 2004-08-04 08:01:04 chris-dollin Exp $
+ * $Id: TestReasoners.java,v 1.25 2004-12-01 12:16:06 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -18,18 +18,16 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.vocabulary.*;
-import com.hp.hpl.jena.rdf.model.impl.StatementImpl;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.IOException;
-import java.util.*;
 
 /**
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2004-08-04 08:01:04 $
+ * @version $Revision: 1.25 $ on $Date: 2004-12-01 12:16:06 $
  */
 public class TestReasoners extends TestCase {
     

@@ -1,13 +1,11 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: AbstractTestTripleStore.java,v 1.4 2004-09-14 17:11:35 chris-dollin Exp $
+  $Id: AbstractTestTripleStore.java,v 1.5 2004-12-01 12:16:05 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.impl.TripleStore;
-
-import junit.framework.TestSuite;
 
 /**
      AbstractTestTripleStore - post-hoc tests for TripleStores.

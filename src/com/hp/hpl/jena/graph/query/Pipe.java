@@ -1,21 +1,24 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Pipe.java,v 1.5 2004-11-30 16:07:40 chris-dollin Exp $
+  $Id: Pipe.java,v 1.6 2004-12-01 12:16:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 /**
-    A Pipe is anything that can be used to get and put Domain objects; it can be closed,
-    and it can be tested for whether more elements are available.
+    A Pipe is anything that can be used to get and put Domain objects; it can be 
+    closed, and it can be tested for whether more elements are available. A pipe 
+    may be closed with an exception, in which case hasNext/get will fail with that 
+    exception when they are called.
     
 	@author kers
 */
 public interface Pipe
     {
     /**
-        Answer true iff there are more elements for <code>get()</code> to get.
+        Answer true iff there are more elements for <code>get()</code> to get. If
+        the pipe was closed with an exception, throw that exception.
     */
     public boolean hasNext();
     
@@ -37,7 +40,9 @@ public interface Pipe
     
     /**
          Close the pipe (see close()) and record <code>e</code> as its termination
-         status.
+         status. Any <code>get</code> from the pipe must then fail, throwing an
+         exception.
+         
          @param e the exception that caused the pipe to be closed
     */
     public void close( Exception e );

@@ -1,20 +1,15 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.46 2004-11-17 01:37:51 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.47 2004-12-01 12:15:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
-import java.sql.BatchUpdateException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.db.impl.DriverRDB;
@@ -43,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.46 $ on $Date: 2004-11-17 01:37:51 $
+* @version $Revision: 1.47 $ on $Date: 2004-12-01 12:15:23 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {

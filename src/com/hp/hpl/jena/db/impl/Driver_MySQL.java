@@ -10,10 +10,8 @@ package com.hp.hpl.jena.db.impl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 
 import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.graph.Node;
 
 
 /**

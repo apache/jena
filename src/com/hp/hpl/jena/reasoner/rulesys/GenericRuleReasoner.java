@@ -5,13 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.19 2004-11-30 10:14:25 chris-dollin Exp $
+ * $Id: GenericRuleReasoner.java,v 1.20 2004-12-01 12:16:06 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
-import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
@@ -28,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2004-11-30 10:14:25 $
+ * @version $Revision: 1.20 $ on $Date: 2004-12-01 12:16:06 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
