@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.17 2004-01-27 00:46:26 wkw Exp $
+  $Id: TestConnection.java,v 1.18 2004-11-04 21:56:24 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -22,6 +22,7 @@ package com.hp.hpl.jena.db.test;
 
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.IRDBDriver;
+
 
 import junit.framework.*;
 
@@ -66,8 +67,30 @@ public class TestConnection extends TestCase {
     public static IDBConnection makeAndCleanTestConnection()
         {
         IDBConnection result = makeTestConnection();
-        try { result.cleanDB(); }
-        catch (Exception e) { throw new JenaException( e ); }        
+        boolean tryClean = true;
+        boolean didClean = false;
+        boolean tryUnlock = true;
+        String err = null;
+        while ( tryClean && !didClean ) {
+        	try {
+        		result.cleanDB();
+        		didClean = true;
+        	} catch (Exception e) {
+        		err = err + "\n" + e;
+        		if ( tryUnlock ) {
+        			tryUnlock = false;
+        			if ( result.getDriver().DBisLocked() )
+        				try {
+        					result.getDriver().unlockDB();
+        				} catch ( Exception e1 ) {
+        					err = err + "\n" + e1;
+        				}
+        		} else
+        			tryClean = false;
+        	}
+        }
+        if ( didClean == false )
+        	throw new JenaException("Failed to clean database.\n" + err);       
         return result;
         }
         
@@ -83,23 +106,37 @@ public class TestConnection extends TestCase {
 		} catch (Exception e) {
 		}
 	} */
-           
+
+    public void testRecovery() throws java.lang.Exception {
+        IDBConnection conn = makeAndCleanTestConnection();
+        ModelRDB m = null;
+        try {
+		m = ModelRDB.createModel(conn, "myName");
+		m.close();
+        } catch ( Exception e ) {
+			assertTrue(false);
+        }
+		try {
+			m = ModelRDB.createModel(conn, "myName");
+			assertTrue(false);
+		} catch ( Exception e ) {
+		}
+    	conn.close();
+    }
+
+    
     public void testDBConnect() throws java.lang.Exception {
 		IDBConnection conn = makeTestConnection();
     	conn.close();
     }
     
 	public void testBadConnection() throws java.lang.Exception {
-		/*try {
-			IDBConnection conn = new DBConnection(
-			"Bad URL", 
-			TestPackage.M_DB_USER, 
-			TestPackage.M_DB_PASSWD, 
-			TestPackage.M_DB);
-			conn.cleanDB();
-			assertTrue(false); // should not get here
-		} catch (Exception e) {
-		}*/
+		/*
+		 * try { IDBConnection conn = new DBConnection( "Bad URL",
+		 * TestPackage.M_DB_USER, TestPackage.M_DB_PASSWD, TestPackage.M_DB);
+		 * conn.cleanDB(); assertTrue(false); // should not get here } catch
+		 * (Exception e) { }
+		 */
 		try {
 			IDBConnection conn = new DBConnection(
 			TestPackage.M_DB_URL, 
@@ -419,6 +456,206 @@ public class TestConnection extends TestCase {
 		m.close();
 		conn.close();
 	}
+	
+	public void testDBMutex() {
+		IDBConnection conn = makeAndCleanTestConnection();
+		IRDBDriver d = conn.getDriver();
+
+		d.lockDB();
+		try {
+			ModelRDB foo = ModelRDB.createModel(conn,"foo");
+			assertTrue(false); // db lock should prevent model create
+		} catch ( Exception e) {			
+		}
+
+		d.unlockDB();
+		
+		if ( d.isDBFormatOK() )
+			assertTrue(false); // db contains no model
+		
+		if ( conn.containsModel("foo") )
+			assertTrue(false);
+		
+		// check that containsModel does not format db
+		if ( d.isDBFormatOK() )
+			assertTrue(false); // db contains no model
+		
+		ModelRDB foo = ModelRDB.createModel(conn,"foo");
+		
+		if ( d.isDBFormatOK() == false )
+			assertTrue(false); // db should be formatted
+		
+		if ( conn.containsModel("foo") == false )
+			assertTrue(false);
+		
+		if ( conn.containsModel("bar") )
+			assertTrue(false);
+
+		// now, delete a system table so db fmt is bad
+		d.deleteTable(d.getSystemTableName(0));
+		
+		if ( d.isDBFormatOK() )
+			assertTrue(false); // db should not be formatted
+		
+		try {
+			conn.close();
+		} catch ( Exception e) {
+			assertTrue(false);
+		}
+		
+		conn = makeTestConnection();
+		d = conn.getDriver();
+
+		if ( conn.containsModel("foo") )
+			assertTrue(false);
+		
+		if ( d.isDBFormatOK() )
+			assertTrue(false); // db should still not be formatted
+	
+		// following should format db
+		ModelRDB bar = ModelRDB.createModel(conn,"bar");
+		
+		if ( d.isDBFormatOK() == false )
+			assertTrue(false); // db should be formatted
+			
+		if ( conn.containsModel("foo") )
+			assertTrue(false);
+
+		if ( conn.containsModel("bar") == false )
+			assertTrue(false);
+		
+		bar.begin();
+		
+		try {
+			bar.remove(); // should fail due to active xact
+			assertTrue(false);
+		} catch ( Exception e) {			
+		}
+		
+		bar.abort();
+		
+		bar.remove();
+		
+		try {
+			conn.close();
+		} catch ( Exception e) {
+			assertTrue(false);
+		}
+	}
+
+	// helper class to sync threads
+    public class syncOnCount {
+    	private int count;
+    	
+    	public syncOnCount () { count = 0; }
+    	
+    	public synchronized boolean testCount ( int i ) {
+    		return count >= i;
+    	}
+    	
+    	public synchronized void incCount() {
+    		count++;
+    	}
+ 
+    	public void waitOnCount ( int cnt ) {
+        	int i = 0;
+        	for ( i=0; i<100; i++ )
+        		try {
+        			if ( !testCount(cnt) ) {
+        				Thread.yield();
+        				Thread.sleep(1000);
+        			}
+        		} catch ( Exception e ) {
+        			throw new RuntimeException("waitOnCount interrupted" + e);       			
+        		}
+        	assertTrue(testCount(cnt));
+        }
+
+    }
+    
+	syncOnCount s;
+
+    public void testConcurrentThread() {
+		class thread1 extends Thread {
+			syncOnCount s;
+
+			public thread1(syncOnCount sc) {
+				super("thread1");
+				s = sc;
+			}
+
+			public void run() {
+				IDBConnection conn = makeAndCleanTestConnection();
+				ModelRDB foo = ModelRDB.createModel(conn, "foo");
+				s.incCount(); // count is now 1
+				s.waitOnCount(2);
+				Resource u = foo.createResource("test#subject");
+				Property p = foo.createProperty("test#predicate");
+				Resource o = foo.createResource("test#object");
+				Statement stmt = foo.createStatement(u, p, o);
+				assertFalse(foo.contains(stmt));
+				s.incCount();
+				s.waitOnCount(4);
+				assertTrue(foo.contains(stmt));
+				foo.remove(stmt);
+				s.incCount();
+				try {
+					conn.close();
+				} catch (Exception e) {
+					assertTrue(false);
+				}
+			}
+		}
+
+		class thread2 extends Thread {
+			syncOnCount s;
+
+			public thread2(syncOnCount sc) {
+				super("thread2");
+				s = sc;
+			}
+
+			public void run() {
+				s.waitOnCount(1);
+				IDBConnection conn = makeTestConnection();
+				ModelRDB foo = ModelRDB.open(conn, "foo");
+				foo.begin();
+				Resource u = foo.createResource("test#subject");
+				Property p = foo.createProperty("test#predicate");
+				Resource o = foo.createResource("test#object");
+				Statement stmt = foo.createStatement(u, p, o);
+				foo.add(stmt);
+				s.incCount();
+				s.waitOnCount(3);
+				assertTrue(foo.contains(stmt));
+				try {
+					foo.commit();
+				} catch (Exception e) {
+					assertTrue(false);
+				}
+				s.incCount(); // wake up thread1
+				s.waitOnCount(5); // thread1 has now removed stmt
+				assertFalse(foo.contains(stmt));
+				try {
+					conn.close();
+				} catch (Exception e) {
+					assertTrue(false);
+				}
+			}
+		}
+
+		syncOnCount s = new syncOnCount();
+		Thread t1 = new thread1(s);
+		Thread t2 = new thread2(s);
+		t2.start();
+		t1.start();
+		try {
+			t1.join();
+			t2.join();
+		} catch (Exception e) {
+			assertTrue(false);
+		}
+	}	
 
 }
     	
