@@ -9,7 +9,7 @@
 #
 # TODO: Replace current owl:Nothing usage by an inconsistency mechanism
 #
-# $Id: owl-fb-test.rules,v 1.15 2003-08-18 21:13:45 der Exp $
+# $Id: owl-fb-test.rules,v 1.16 2003-08-19 17:16:43 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -135,8 +135,8 @@
 #-> (owl:equivalentClass rdf:type owl:SymmetricProperty).
 #-> (owl:equivalentClass rdf:type owl:TransitiveProperty).
 -> (owl:sameAs rdf:type owl:SymmetricProperty).
--> (owl:sameIndividualAs rdf:type owl:SymmetricProperty).
--> (owl:sameIndividualAs rdf:type owl:TransitiveProperty).
+#-> (owl:sameIndividualAs rdf:type owl:SymmetricProperty).
+#-> (owl:sameIndividualAs rdf:type owl:TransitiveProperty).
 -> (owl:sameIndividualAs owl:equivalentProperty owl:sameAs).
 -> (owl:differentFrom rdf:type owl:SymmetricProperty).
 -> (owl:disjointWith rdf:type owl:SymmetricProperty).
@@ -223,10 +223,11 @@
 # max cardinality 1
 #------------------------------------------------------------------
 
-[max1: (?C rdfs:subClassOf max(?P, 1)) -> table(?P),
-    [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- bound(?Y1),   (?X ?P ?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notEqual(?Y1, ?Y2)]
-    [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- unbound(?Y1), (?X ?P ?Y2), (?X rdf:type ?C), (?X ?P ?Y1), notEqual(?Y1, ?Y2)]
-    ]
+# Rule move to sameInstance block below to ease experimentation
+#[max1: (?C rdfs:subClassOf max(?P, 1)) -> table(?P),
+#    [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- bound(?Y1),   (?X ?P ?Y1), (?X rdf:type ?C), (?X ?P ?Y2), notEqual(?Y1, ?Y2)]
+#    [max1b: (?Y1 owl:sameIndividualAs ?Y2) <- unbound(?Y1), (?X ?P ?Y2), (?X rdf:type ?C), (?X ?P ?Y1), notEqual(?Y1, ?Y2)]
+#    ]
     
 [maxRec: (?C owl:equivalentClass max(?P, 1)), (?P rdf:type owl:FunctionalProperty) ->
     [ (?X rdf:type ?C) <- (?X rdf:type owl:Thing)] ]
@@ -341,27 +342,57 @@
 
 # sameIndividualAs
 
-[sameIndividualAs1: (?P rdf:type owl:FunctionalProperty) -> table(?P),
-      [sameIndividualAs1b: (?B owl:sameIndividualAs ?C) <- unbound(?C), (?A ?P ?B), (?A ?P ?C) ] 
-      [sameIndividualAs1b: (?B owl:sameIndividualAs ?C) <-   bound(?C), (?A ?P ?C), (?A ?P ?B) ] 
-      ]
-                    
-[sameIndividualAs2: (?P rdf:type owl:InverseFunctionalProperty) -> table(?P),
-      [sameIndividualAs2b: (?A owl:sameIndividualAs ?C) <- unbound(?C), (?A ?P ?B), (?C ?P ?B) ] 
-      [sameIndividualAs2b: (?A owl:sameIndividualAs ?C) <-   bound(?C), (?C ?P ?B), (?A ?P ?B) ] 
-      ]
-      
-[sameIndividualAs3: (?X owl:sameAs ?Y), (?X rdf:type owl:Thing), (?Y rdf:type owl:Thing) 
-                    -> (?X owl:sameIndividualAs ?Y) ]                    
+#[sameIndividualAs1: (?P rdf:type owl:FunctionalProperty) -> table(?P),
+#      [sameIndividualAs1b: (?B owl:sameIndividualAs ?C) <- unbound(?C), (?A ?P ?B), (?A ?P ?C) ] 
+#      [sameIndividualAs1b: (?B owl:sameIndividualAs ?C) <-   bound(?C), (?A ?P ?C), (?A ?P ?B) ] 
+#      ]
+#                    
+#[sameIndividualAs2: (?P rdf:type owl:InverseFunctionalProperty) -> table(?P),
+#      [sameIndividualAs2b: (?A owl:sameIndividualAs ?C) <- unbound(?C), (?A ?P ?B), (?C ?P ?B) ] 
+#      [sameIndividualAs2b: (?A owl:sameIndividualAs ?C) <-   bound(?C), (?C ?P ?B), (?A ?P ?B) ] 
+#      ]
+#      
+##[sameIndividualAs3: (?X owl:sameAs ?Y), (?X rdf:type owl:Thing), (?Y rdf:type owl:Thing) 
+##                    -> (?X owl:sameIndividualAs ?Y) ]                    
+#
+#[sameIndividualAs4a: (?Y ?P ?V) <- unbound(?V), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?X ?P ?V) ]
+#[sameIndividualAs4c: (?Y ?P ?V) <- bound(?V), (?X ?P ?V), notEqual(?X,?Y), (?X owl:sameIndividualAs ?Y)  ]
+#[sameIndividualAs5a: (?V ?P ?Y) <- unbound(?V), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?V ?P ?X)  ]
+#[sameIndividualAs5c: (?V ?P ?Y) <- bound(?V), (?V ?P ?X), notEqual(?X,?Y), (?X owl:sameIndividualAs ?Y) ]
+#
+#[sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
+##[sameIndividualAs6: (?Y rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
 
-[sameIndividualAs4a: (?Y ?P ?V) <- unbound(?V), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?X ?P ?V) ]
-[sameIndividualAs4c: (?Y ?P ?V) <- bound(?V), (?X ?P ?V), notEqual(?X,?Y), (?X owl:sameIndividualAs ?Y)  ]
-[sameIndividualAs5a: (?V ?P ?Y) <- unbound(?V), (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y), (?V ?P ?X)  ]
-[sameIndividualAs5c: (?V ?P ?Y) <- bound(?V), (?V ?P ?X), notEqual(?X,?Y), (?X owl:sameIndividualAs ?Y) ]
+#------------------------------------------------------------------
+# Experimental forward version of instance equality
+#------------------------------------------------------------------
+
+# sameIndividualAs recognition rules - forward version
+
+[fp1: (?P rdf:type owl:FunctionalProperty), (?A ?P ?B), (?A ?P ?C) 
+					notEqual(?B, ?C) -> (?B owl:sameIndividualAs ?C) ]
+
+[ifp1: (?P rdf:type owl:InverseFunctionalProperty), (?A ?P ?B), (?C ?P ?B) 
+					notEqual(?A, ?C) -> (?A owl:sameIndividualAs ?C) ]
+
+# This rule is not sufficient if the type inference is being done backwards
+[max1: (?C rdfs:subClassOf max(?P, 1)), (?X ?P ?Y1), (?X rdf:type ?C), (?X ?P ?Y2), 
+					notEqual(?Y1, ?Y2) -> (?Y1 owl:sameIndividualAs ?Y2) ]
+					
+# sameIndividualAs propagation rules - forward version
+
+[sameIndividualAs1: (?A owl:sameIndividualAs ?B) -> (?B owl:sameIndividualAs ?A) ]
+
+[sameIndividualAs2: (?A owl:sameIndividualAs ?B) (?B owl:sameIndividualAs ?C) -> (?A owl:sameIndividualAs ?C) ]
 
 [sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
-#[sameIndividualAs6: (?Y rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]
 
+# Equality processing rules
+
+[equality1: (?X owl:sameIndividualAs ?Y), notEqual(?X,?Y) ->
+		[(?X ?P ?V) <- (?Y ?P ?V)]
+		[(?V ?P ?X) <- (?V ?P ?Y)] ]
+		
 #------------------------------------------------------------------
 # Property rules
 #------------------------------------------------------------------
