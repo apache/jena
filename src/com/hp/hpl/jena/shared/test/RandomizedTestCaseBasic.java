@@ -1,30 +1,30 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: TestCaseBasic.java,v 1.2 2003-12-04 17:26:44 jeremy_carroll Exp $
+    $Id: RandomizedTestCaseBasic.java,v 1.1 2003-12-04 17:26:44 jeremy_carroll Exp $
 */
  
-package com.hp.hpl.jena.mem.test;
+package com.hp.hpl.jena.shared.test;
 
-import com.hp.hpl.jena.mem.ModelMem;
+import com.hp.hpl.jena.shared.RandomOrderGraph;
 
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-12-04 17:26:44 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.1 $ $Date: 2003-12-04 17:26:44 $
  */
 
-public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic {
+public class RandomizedTestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic {
 
-    public TestCaseBasic(String name) {
+    public RandomizedTestCaseBasic(String name) {
         super(name);
     }
     
     public void setUp() {
-        m1 = new ModelMem();
-        m2 = new ModelMem();
-        m3 = new ModelMem();
-        m4 = new ModelMem();
+        m1 = RandomOrderGraph.createDefaultModel();
+        m2 = RandomOrderGraph.createDefaultModel();
+        m3 = RandomOrderGraph.createDefaultModel();
+        m4 = RandomOrderGraph.createDefaultModel();
     }
     public void tearDown() {
     	m1 = null;
@@ -60,5 +60,5 @@ public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestCaseBasic.java,v 1.2 2003-12-04 17:26:44 jeremy_carroll Exp $
+ * $Id: RandomizedTestCaseBasic.java,v 1.1 2003-12-04 17:26:44 jeremy_carroll Exp $
  */

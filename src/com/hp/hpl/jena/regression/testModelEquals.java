@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: testModelEquals.java,v 1.8 2003-09-09 14:41:08 chris-dollin Exp $
+    $Id: testModelEquals.java,v 1.9 2003-12-04 17:26:05 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.regression;
 
@@ -14,24 +14,20 @@ import org.apache.log4j.Logger;
  */
 public class testModelEquals extends Object {
    
-    
-    protected static void doTest(Model m1, Model m2) {
-        (new testModelEquals()).test(m1, m2);
-    }
 
     protected static Logger logger = Logger.getLogger( testModelEquals.class );
     
-    void test(Model m1, Model m2) {
-
+    void test(GetModel gm) {
+        Model m1, m2;
         String  test = "testModelEquals";
         String  filebase = "modules/rdf/regression/" + test + "/";
         boolean results[] = { 
             false, true, true, true, true, false, false, true, false };
-    //    System.out.println("Beginning " + test);
         int n = 0;
         try {
             for (n=1; n<7; n++) {
-                empty(m1); empty(m2);
+                m1 = gm.get(); 
+                m2= gm.get();
                 m1.read(
                     ResourceReader.getInputStream(filebase + Integer.toString(n) + "-1.rdf"),
                     "http://www.example.org/");
@@ -47,7 +43,8 @@ public class testModelEquals extends Object {
                 }
             }
             for (n=7; n<9; n++) {
-                empty(m1); empty(m2);
+                m1 = gm.get(); 
+                m2= gm.get();
                 m1.read(
                     ResourceReader.getInputStream(filebase + Integer.toString(n) + "-1.nt"),
                                    "", "N-TRIPLE");
@@ -66,15 +63,6 @@ public class testModelEquals extends Object {
             inError = true;
             logger.error( " test " + test + "[" + n + "]", e);
         }
-     //   System.out.println("End of " + test);        
-    }
-    
-    static protected void empty(Model m) {
-        StmtIterator iter = m.listStatements();
-        while (iter.hasNext()) {
-            iter.nextStatement();
-            iter.remove();
-        }
     }
     
     private boolean inError = false;
@@ -86,12 +74,6 @@ public class testModelEquals extends Object {
     
     public boolean getErrors() {
         return inError;
-    }
-    
-    // RUN THIS TEST ONLY
-    static public void main(String args[])
-    {
-        doTest( ModelFactory.createDefaultModel(), ModelFactory.createDefaultModel() );
     }
 }
 
@@ -120,5 +102,5 @@ public class testModelEquals extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testModelEquals.java,v 1.8 2003-09-09 14:41:08 chris-dollin Exp $
+ * $Id: testModelEquals.java,v 1.9 2003-12-04 17:26:05 jeremy_carroll Exp $
  */

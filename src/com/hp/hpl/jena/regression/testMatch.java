@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: testMatch.java,v 1.5 2003-09-09 14:41:08 chris-dollin Exp $
+    $Id: testMatch.java,v 1.6 2003-12-04 17:26:05 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.regression;
 
@@ -11,17 +11,16 @@ import java.util.Random;
 /**
  *
  * @author  jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-09-09 14:41:08 $' 
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2003-12-04 17:26:05 $' 
  */
 
 public class testMatch extends java.lang.Object {
     static int QUANTITY = 1;
     static int DIMENSION = 6;
-    static boolean QUIET = true;
-    protected static void doTest(Model m1, Model m2) {
+    protected static void doTest(GetModel gm1) {
         new testMatch(0xfab
         //(int)System.currentTimeMillis()
-        , m1, m2).test();
+        , gm1).test();
         System.out.println("End testMatch");
     }
 
@@ -29,26 +28,17 @@ public class testMatch extends java.lang.Object {
     private Random random;
     private int n = 0;
     private Model m1, m2;
+    private GetModel gm1, gm2;
 
     /** Creates new testMatch */
-    testMatch(int seed, Model m1, Model m2) {
+    testMatch(int seed, GetModel gm) {
         test = "testMatch seed=" + seed;
-        if (!QUIET)
-            System.out.println("Beginning " + test);
         random = new Random(seed);
-        this.m1 = m1;
-        this.m2 = m2;
-    }
-    static private void empty(Model m) {
-        StmtIterator iter = m.listStatements();
-        while (iter.hasNext()) {
-            iter.nextStatement();
-            iter.remove();
-        }
+        this.gm1 = gm;
+        this.gm2 = gm;        
     }
     
     void test() {
-        //  test4DiHyperCube(5,1,true);
         test2HyperCube(DIMENSION, QUANTITY);
         test4DiHyperCube(DIMENSION, QUANTITY, true);
         test4DiHyperCube(DIMENSION, QUANTITY, false);
@@ -60,27 +50,16 @@ public class testMatch extends java.lang.Object {
             test4HyperCube(DIMENSION, QUANTITY, true);
             test4HyperCube(DIMENSION, QUANTITY, false);
         }
-
     }
     
     private void test2DiHyperCube(int dim, int cnt, boolean type) {
         try {
             int sz = 1 << dim;
-            int tenth = cnt / 10;
-            if (tenth == 0)
-                tenth = 1;
-            if (!QUIET) {
-                System.out.print("2di " + dim + "x" + cnt + ":");
-                System.out.flush();
-            }
-            long startTime = System.currentTimeMillis();
-            long equalsTime = 0;
-
             for (int i = 0; i < cnt; i++) {
                 n++;
-                empty(m1);
+                m1 = gm1.get();
                 n++;
-                empty(m2);
+                m2 = gm2.get();
                 int a1, b1;
                 do {
                     a1 = random.nextInt(sz);
@@ -90,22 +69,11 @@ public class testMatch extends java.lang.Object {
                 new DiHyperCube(dim, m1).dupe(a1).dupe(a1).dupe(a1);
                 n++;
                 new DiHyperCube(dim, m2).dupe(b1).dupe(b1).dupe(b1);
-                if ((!QUIET) && (i + 1) % tenth == 0) {
-                    System.out.print(type ? "+" : "-");
-                    System.out.flush();
-                }
                 n++;
-                long beforeEquals = System.currentTimeMillis();
                 if (m1.isIsomorphicWith(m2) != type)
                     error();
-                equalsTime += System.currentTimeMillis() - beforeEquals;
             }
-            long totalTime = System.currentTimeMillis() - startTime;
-            int percent = (int) (equalsTime * 100 / totalTime);
-            int millis = (int) (equalsTime / cnt);
 
-            if (!QUIET)
-                System.out.println("time: " + millis + "ms (" + percent + "%)");
         } catch (Exception e) {
             error(e);
         }
@@ -114,20 +82,11 @@ public class testMatch extends java.lang.Object {
     private void test4DiHyperCube(int dim, int cnt, boolean type) {
         try {
             int sz = 1 << dim;
-            int tenth = cnt / 10;
-            if (tenth == 0)
-                tenth = 1;
-            if (!QUIET)
-                System.out.print("4di " + dim + "x" + cnt + ":");
-            System.out.flush();
-            long startTime = System.currentTimeMillis();
-            long equalsTime = 0;
-
             for (int i = 0; i < cnt; i++) {
-                n++;
-                empty(m1);
-                n++;
-                empty(m2);
+            	n++;
+            	m1 = gm1.get();
+            	n++;
+            	m2 = gm2.get();
                 int a1, b1, a2, b2;
                 do {
                     a1 = random.nextInt(sz);
@@ -145,27 +104,13 @@ public class testMatch extends java.lang.Object {
                     b2).dupe(
                     b2).dupe(
                     b2);
-                if ((!QUIET) && (i + 1) % tenth == 0) {
-                    System.out.print(type ? "+" : "-");
-                    System.out.flush();
-                }
                 n++;
-                long beforeEquals = System.currentTimeMillis();
-                // if ( n == 45 )
-                //     System.out.println("Here");
                 if (m1.isIsomorphicWith(m2) != type) {
                     System.out.println(
                         "(" + a1 + "," + a2 + "),(" + b1 + "," + b2 + ")");
                     error();
                 }
-                equalsTime += System.currentTimeMillis() - beforeEquals;
             }
-            long totalTime = System.currentTimeMillis() - startTime;
-            int percent = (int) (equalsTime * 100 / totalTime);
-            int millis = (int) (equalsTime / cnt);
-
-            if (!QUIET)
-                System.out.println("time: " + millis + "ms (" + percent + "%)");
         } catch (Exception e) {
             error(e);
         }
@@ -174,20 +119,12 @@ public class testMatch extends java.lang.Object {
     private void test2HyperCube(int dim, int cnt) {
         try {
             int sz = 1 << dim;
-            int tenth = cnt / 10;
-            if (tenth == 0)
-                tenth = 1;
-            if (!QUIET)
-                System.out.print("2:  " + dim + "x" + cnt + ":");
-            System.out.flush();
-            long startTime = System.currentTimeMillis();
-            long equalsTime = 0;
 
             for (int i = 0; i < cnt; i++) {
-                n++;
-                empty(m1);
-                n++;
-                empty(m2);
+            	n++;
+            	m1 = gm1.get();
+            	n++;
+            	m2 = gm2.get();
                 int a1, b1;
                 a1 = random.nextInt(sz);
                 b1 = random.nextInt(sz);
@@ -195,22 +132,10 @@ public class testMatch extends java.lang.Object {
                 new HyperCube(dim, m1).dupe(a1).dupe(a1).dupe(a1);
                 n++;
                 new HyperCube(dim, m2).dupe(b1).dupe(b1).dupe(b1);
-                if ((!QUIET) && (i + 1) % tenth == 0) {
-                    System.out.print("+");
-                    System.out.flush();
-                }
                 n++;
-                long beforeEquals = System.currentTimeMillis();
                 if (!m1.isIsomorphicWith(m2))
                     error();
-                equalsTime += System.currentTimeMillis() - beforeEquals;
             }
-            long totalTime = System.currentTimeMillis() - startTime;
-            int percent = (int) (equalsTime * 100 / totalTime);
-            int millis = (int) (equalsTime / cnt);
-
-            if (!QUIET)
-                System.out.println("time: " + millis + "ms (" + percent + "%)");
         } catch (Exception e) {
             error(e);
         }
@@ -219,20 +144,12 @@ public class testMatch extends java.lang.Object {
     private void test4HyperCube(int dim, int cnt, boolean type) {
         try {
             int sz = 1 << dim;
-            int tenth = cnt / 10;
-            if (tenth == 0)
-                tenth = 1;
-            if (!QUIET)
-                System.out.print("4:  " + dim + "x" + cnt + ":");
-            System.out.flush();
-            long startTime = System.currentTimeMillis();
-            long equalsTime = 0;
 
             for (int i = 0; i < cnt; i++) {
-                n++;
-                empty(m1);
-                n++;
-                empty(m2);
+            	n++;
+            	m1 = gm1.get();
+            	n++;
+            	m2 = gm2.get();
                 int a1, b1, a2, b2;
                 do {
                     a1 = random.nextInt(sz);
@@ -250,27 +167,13 @@ public class testMatch extends java.lang.Object {
                     b2).dupe(
                     b2).dupe(
                     b2);
-                if ((!QUIET) && (i + 1) % tenth == 0) {
-                    System.out.print(type ? "+" : "-");
-                    System.out.flush();
-                }
                 n++;
-                long beforeEquals = System.currentTimeMillis();
-                // if ( n == 45 )
-                //     System.out.println("Here");
                 if (m1.isIsomorphicWith(m2) != type) {
                     System.out.println(
                         "(" + a1 + "," + a2 + "),(" + b1 + "," + b2 + ")");
                     error();
                 }
-                equalsTime += System.currentTimeMillis() - beforeEquals;
             }
-            long totalTime = System.currentTimeMillis() - startTime;
-            int percent = (int) (equalsTime * 100 / totalTime);
-            int millis = (int) (equalsTime / cnt);
-
-            if (!QUIET)
-                System.out.println("time: " + millis + "ms (" + percent + "%)");
         } catch (Exception e) {
             error(e);
         }
@@ -279,20 +182,12 @@ public class testMatch extends java.lang.Object {
     private void test4ToggleHyperCube(int dim, int cnt, boolean type) {
         try {
             int sz = 1 << dim;
-            int tenth = cnt / 10;
-            if (tenth == 0)
-                tenth = 1;
-            if (!QUIET)
-                System.out.print("4T: " + dim + "x" + cnt + ":");
-            System.out.flush();
-            long startTime = System.currentTimeMillis();
-            long equalsTime = 0;
 
             for (int i = 0; i < cnt; i++) {
-                n++;
-                empty(m1);
-                n++;
-                empty(m2);
+            	n++;
+            	m1 = gm1.get();
+            	n++;
+            	m2 = gm2.get();
                 int a1, b1, a2, b2;
                 do {
                     a1 = random.nextInt(sz);
@@ -304,26 +199,13 @@ public class testMatch extends java.lang.Object {
                 new HyperCube(dim, m1).toggle(a1, a2);
                 n++;
                 new HyperCube(dim, m2).toggle(b1, b2);
-                if ((!QUIET) && (i + 1) % tenth == 0) {
-                    System.out.print(type ? "+" : "-");
-                    System.out.flush();
-                }
                 n++;
-                long beforeEquals = System.currentTimeMillis();
-                // if ( n == 45 )
-                //     System.out.println("Here");
                 if (m1.isIsomorphicWith(m2) != type) {
                     System.out.println(
                         "(" + a1 + "," + a2 + "),(" + b1 + "," + b2 + ")");
                     error();
                 }
-                equalsTime += System.currentTimeMillis() - beforeEquals;
             }
-            long totalTime = System.currentTimeMillis() - startTime;
-            int percent = (int) (equalsTime * 100 / totalTime);
-            int millis = (int) (equalsTime / cnt);
-            if (!QUIET)
-                System.out.println("time: " + millis + "ms (" + percent + "%)");
         } catch (Exception e) {
             error(e);
         }
@@ -340,18 +222,11 @@ public class testMatch extends java.lang.Object {
         System.out.println(
             "Test Failed: " + test + " " + n + " " + e.toString());
         inError = true;
+        e.printStackTrace();
     }
     
     public boolean getErrors() {
         return inError;
-    }
-    
-    // RUN THIS TEST ONLY
-    static public void main(String args[]) {
-        DIMENSION = 8;
-        QUANTITY = 10;
-        QUIET = false;
-        doTest( ModelFactory.createDefaultModel(), ModelFactory.createDefaultModel() );
     }
 }
 
@@ -381,7 +256,7 @@ public class testMatch extends java.lang.Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testMatch.java,v 1.5 2003-09-09 14:41:08 chris-dollin Exp $
+ * $Id: testMatch.java,v 1.6 2003-12-04 17:26:05 jeremy_carroll Exp $
  *
  * testMatch.java
  *

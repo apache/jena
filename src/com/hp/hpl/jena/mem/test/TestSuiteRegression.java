@@ -24,17 +24,17 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestSuiteRegression.java,v 1.2 2003-09-30 15:34:03 chris-dollin Exp $
+ * $Id: TestSuiteRegression.java,v 1.3 2003-12-04 17:26:44 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.mem.test;
 
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-09-30 15:34:03 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-12-04 17:26:44 $
  */
 public class TestSuiteRegression extends Object {
 
@@ -66,6 +66,7 @@ public class TestSuiteRegression extends Object {
         suite.addTest(new TestCaseBasic("test97"));
 
         suite.addTest(new TestCaseBasic("testModelEquals"));
+      
         suite.addTest(new TestCaseBasic("testMatch"));
         //    suite.addTest(new TestCaseBasic("testWriterAndReader"));
         suite.addTest(new TestCaseBasic("testNTripleReader"));
