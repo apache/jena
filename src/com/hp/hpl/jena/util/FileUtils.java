@@ -12,6 +12,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 import java.nio.charset.Charset ;
 import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.JenaRuntime ;
 
 public class FileUtils {
     
@@ -82,12 +83,20 @@ public class FileUtils {
 		return sw.toString();
 	}
 
-    static Charset utf8 = Charset.forName("utf-8") ;
+    
+    static Charset utf8 = null ;
+    static {
+        try {
+            utf8 = Charset.forName("utf-8") ;
+        } catch (Throwable ex) {}
+    }
     
     /** Create a reader that uses UTF-8 encoding */ 
     
 	static public Reader asUTF8(InputStream in) {
-	    return new InputStreamReader(in, utf8);
+        if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
+            return new InputStreamReader(in) ;
+        return new InputStreamReader(in, utf8);
 	}
 
     /** Create a buffered reader that uses UTF-8 encoding */ 
@@ -99,6 +108,8 @@ public class FileUtils {
     /** Create a writer that uses UTF-8 encoding */ 
 
     static public Writer asUTF8(OutputStream out) {
+        if ( JenaRuntime.runUnder(JenaRuntime.featureNoCharset) )
+            return new OutputStreamWriter(out) ;
         return new OutputStreamWriter(out, utf8);
     }
 
