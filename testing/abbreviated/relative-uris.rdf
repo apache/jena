@@ -1,0 +1,30 @@
+<!-- $Id: relative-uris.rdf,v 1.1 2003-03-29 09:46:09 jeremy_carroll Exp $ -->
+
+
+<rdf:RDF
+  xmlns:rdf ="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:eg="http://www.example.org/2001/03/#"
+  xml:base="http://www.example.org/a/b/c/d/"
+>
+
+<!-- 
+http://www.example.org/a/b/c/d/
+http://www.example.org/a/b/c/d/e/f/g/
+http://www.example.org/a/b/C/D
+http://www.example.org/A/B#foo/
+http://www.example.org/a/b/c/d/X#bar
+http://example.com/A
+-->
+
+<rdf:Description rdf:about="e/f/g/">
+   <eg:prop rdf:resource="../../C/D"/>
+   <eg:prop rdf:resource="."/>
+   <eg:prop rdf:resource="//example.com/A" />
+   <eg:prop rdf:resource="z?x=a" />
+</rdf:Description>
+
+<rdf:Description rdf:about="/A/B#foo/">
+   <eg:prop rdf:resource="X#bar"/>
+</rdf:Description>
+
+</rdf:RDF>
