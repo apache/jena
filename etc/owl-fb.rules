@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.18 2003-09-05 16:16:56 der Exp $
+# $Id: owl-fb.rules,v 1.19 2003-09-05 16:43:44 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -276,8 +276,11 @@
 #    [some1b: (?T rdf:type ?D) <- (?X rdf:type ?C), bound(?T), makeInstance(?X, ?P, ?D, ?T) ] 
     ]
     
-[someRec: (?C owl:equivalentClass some(?P, ?D)), (?P rdfs:range ?D) ->
-     [someRecb: (?X rdf:type ?C) <- (?X ?P ?A) ] ]
+#[someRec: (?C owl:equivalentClass some(?P, ?D)), (?P rdfs:range ?D) ->
+#     [someRecb: (?X rdf:type ?C) <- (?X ?P ?A) ] ]
+    
+[someRec2: (?C owl:equivalentClass some(?P, ?D)) ->
+     [someRec2b: (?X rdf:type ?C) <- (?X ?P ?A) (?A rdf:type ?D) ] ]
     
 #------------------------------------------------------------------
 # allValuesFrom
