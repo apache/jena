@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.19 2005-02-14 08:49:55 chris-dollin Exp $
+  $Id: TestModelMakerImpl.java,v 1.20 2005-02-14 15:25:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -123,15 +123,6 @@ public class TestModelMakerImpl extends ModelTestBase
         {
         maker.getDescription();
         checkHistory( one( "getDescription()" ) ); 
-        }
-
-    public void testModelSource()
-        {
-        assertTrue( hasAsParent( ModelMaker.class, ModelSource.class ) );
-        assertTrue( hasAsParent( ModelSpec.class, ModelSource.class ) );
-        ModelSource s = new TestModelSource.ModelSourceImpl();
-        assertNotNull( s.openModel( "henry" ) );
-        assertNull( s.getExistingModel( "splendid" ) );
         }
     
     private void checkHistory( List expected )

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMaker.java,v 1.12 2005-02-11 19:20:05 chris-dollin Exp $
+  $Id: ModelMaker.java,v 1.13 2005-02-14 15:23:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -14,6 +14,13 @@ import com.hp.hpl.jena.util.iterator.*;
     new models [both named and anonymous] and opening previously-named
     models, removing models, and accessing a single "default" Model for this
     Maker.
+    
+    <p>Additional constraints are placed on a ModelMaker as compared to its
+    ancestor <code>ModelSource</code>. ModelMakers do not arbitrarily forget
+    their contents - once they contain a named model, that model stays inside
+    the ModelMaker until that ModelMaker goes away, and maybe for longer
+    (eg if the ModelMaker fronted a database or directory). And new models
+    can be added to a ModelMaker.
     
  	@author kers
 */
@@ -30,38 +37,27 @@ public interface ModelMaker extends ModelSpec
         @exception AlreadyExistsException if that name is already bound.
     */
     public Model createModel( String name, boolean strict );
-
-    public Model getModel();
     
     /**
         Create a Model that does not already exist - equivalent to
         <br><code>createModel( name, false )</code>.
     */
     public Model createModel( String name );
-    
-    /**
-        Create a new anonymous Model, as per ModelSpec.
-        
-        @return a fresh Model, not accessible under a[nother] name.
-    */
-    public Model createModel();
 
     /**
         Find an existing Model that this factory knows about under the given
         name. If such a Model exists, return it. Otherwise, if <code>strict</code>
         is false, create a new Model, associate it with the name, and return it.
         Otherwise throw a DoesNotExistException. 
+        
+        <p>When called with <code>strict=false</code>, is equivalent to the
+        ancestor <code>openModel(String)</code> method.
     
         @param name the name of the Model to find and return
         @param strict false to create a new one if one doesn't already exist
         @exception DoesNotExistException if there's no such named Model
     */
     public Model openModel( String name, boolean strict );
-
-    /**
-        Equivalent to <code>openModel( name, false )</code> 
-    */
-    public Model openModel( String name );
 
     /**
         Remove the association between the name and the Model. create
@@ -100,7 +96,7 @@ public interface ModelMaker extends ModelSpec
         order is expected from the list.
         @return an extended iterator over the names of models known to this Maker.
     */
-    ExtendedIterator listModels();
+    public ExtendedIterator listModels();
     }
 
 

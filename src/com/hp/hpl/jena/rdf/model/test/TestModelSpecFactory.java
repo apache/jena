@@ -160,7 +160,7 @@ public class TestModelSpecFactory extends ModelTestBase
         public Model openModel( String name )
             { return null; }
 
-        public Model getExistingModel( String name )
+        public Model openModelIfPresent( String name )
             { return null; }
         }
 

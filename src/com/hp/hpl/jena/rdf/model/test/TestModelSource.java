@@ -31,8 +31,10 @@ public class TestModelSource extends ModelTestBase
     public void testMethodsExist()
         { 
         ModelSource s = getModelSource();
-        // s.getModel();
+        s.getModel();
         s.createModel();
+        s.openModel( "spoo" );
+        s.openModelIfPresent( "flarn" );
         }    
     
     /**
@@ -46,7 +48,7 @@ public class TestModelSource extends ModelTestBase
         public Model openModel( String name )
             { return ModelFactory.createDefaultModel(); }
     
-        public Model getExistingModel(String name)
+        public Model openModelIfPresent(String name)
             { return null; }
     
         Model theDefaultModel = ModelFactory.createDefaultModel();

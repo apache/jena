@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSource.java,v 1.4 2005-02-11 19:20:06 chris-dollin Exp $
+  $Id: ModelSource.java,v 1.5 2005-02-14 15:23:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -19,8 +19,8 @@ package com.hp.hpl.jena.rdf.model;
     <li>a named model from the collection this ModelSource supplies
     </ul>
     
-    ModelSources may choose to not implement certain aspects of the
-    full interface, but must document which aspects are available.
+    A ModelSource is free to "forget" named models if it so wishes;
+    for example, it may be a discard-if-getting-full cache.
  	
  	@author hedgehog
 */
@@ -28,16 +28,16 @@ public interface ModelSource
     {
     /**
         Answer this ModelSource's default model. Every ModelSource
-        has a default model. That model may not be created until the
+        has a default model. That model need not be created until the
         first call on getModel. Multiple calls of getModel will
-        yield the *same* model.
+        yield the *same* model. This method never returns <code>null</code>.
     */
-    // Model getModel();
+    Model getModel();
     
     /**
         Answer a Model that satisfies this ModelSource's shape. Different
         calls may return different models, or they may all return the same
-        model. 
+        model. This method never returns <code>null</code>.
     */
     Model createModel();
     
@@ -46,23 +46,25 @@ public interface ModelSource
      	in very different ways - ModelSource imposes few constraints
      	other than the result is a proper Model. A ModelSource may
      	use the name to identify an existing Model and re-use it,
-     	or it may create a fresh Model each time. However it *is*
-     	expected that uses of different names will answer different models
-     	(different in the strong sense of not having the same underlying
-     	graph, too).
-     	
-     	TODO implement that last sentence as a test.
+     	or it may create a fresh Model each time.         
+        
+        <p>It is expected that uses of different names will answer 
+        different models (different in the strong sense of not having 
+        the same underlying graph, too).
+        
+        <p>If the ModelSource does not have a model with this name,
+        and if it is not prepared to create one, it should throw a
+        DoesNotExistException. This method never returns <code>null</code>.
     */
     Model openModel( String name );
 
     /**
-     	If this ModelSource admits to having a Model with the given
-     	<code>name</code>, answer that Model, otherwise answer null.
-     	A ModelSource may freely forget existing Models, even ones 
-     	that have just been created via openModel. (ModelMakers are not
-     	allowed to do that - as a subinterface they satisfy extra constraints.)
+     	Answer the model named by <code>string</code> in this ModelSource,
+        if it [still] has one, or <code>null</code> if there isn't one. 
+        The ModelSource should <i>not</i> create a fresh model if it 
+        doesn't already have one.
     */
-    Model getExistingModel( String name );
+    Model openModelIfPresent( String string );
     }
 
 /*

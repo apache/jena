@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.44 2005-02-14 08:49:14 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.45 2005-02-14 15:24:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -111,7 +111,7 @@ public abstract class ModelSpecImpl implements ModelSpec
      	Answer null, as ModelSpecs as ModelSources don't remember any Models.
      	This is consistent with openModel() always creating a new Model.
     */
-    public Model getExistingModel( String URI )
+    public Model openModelIfPresent( String URI )
         { return null; }
         
     /**
