@@ -1,19 +1,18 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestEarlyConstraints.java,v 1.2 2003-10-15 09:23:01 chris-dollin Exp $
+  $Id: TestEarlyConstraints.java,v 1.3 2004-07-22 11:31:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import java.util.*;
 
-import junit.framework.TestSuite;
+import junit.framework.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.graph.test.GraphTestBase;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -21,7 +20,7 @@ import com.hp.hpl.jena.util.iterator.*;
 
 	@author kers
 */
-public class TestEarlyConstraints extends GraphTestBase 
+public class TestEarlyConstraints extends QueryTestBase 
     {
 	public TestEarlyConstraints(String name)
         { super( name ); }
@@ -53,18 +52,10 @@ public class TestEarlyConstraints extends GraphTestBase
         assertEquals( nodeSet( "c" ), s );
         assertEquals( 1, count[0] );
         }
-
-    protected static final Map1 getFirst = new Map1()
-        { public Object map1(Object x) { return ((List) x).get(0); }};   
-    
-    private Expression notEqual( Node x, Node y )
-        {
-        return ExampleCreate.NE( x, y );
-        }
     }
 
 /*
-    (c) Copyright 2003, Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

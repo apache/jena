@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryTestBase.java,v 1.1 2004-07-22 10:11:47 chris-dollin Exp $
+  $Id: QueryTestBase.java,v 1.2 2004-07-22 11:31:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -10,6 +10,8 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.graph.query.Expression.Fixed;
+import com.hp.hpl.jena.graph.query.Expression.Variable;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
 import com.hp.hpl.jena.util.iterator.Map1;
 
@@ -29,23 +31,59 @@ public abstract class QueryTestBase extends GraphTestBase
      	are treated as variables, non-variable nodes as constants.
     */
     protected Expression notEqual( Node x, Node y )
-        { return ExampleCreate.NE( x, y );  }
+        { 
+        return new Dyadic( asExpression( x ), "http://jena.hpl.hp.com/constraints/NE", asExpression( y ) )
+        	{
+            public boolean evalBool( Object x, Object y )
+                { return !x.equals( y ); }
+        	};  
+        }
         
     /**
      	An expression that is true if x and y are equal. Variable nodes
      	are treated as variables, non-variable nodes as constants.
     */
     protected Expression areEqual( Node x, Node y )
-        { return ExampleCreate.EQ( x, y );  }
+        { 
+        return new Dyadic( asExpression( x ), "http://jena.hpl.hp.com/constraints/EQ", asExpression( y ) ) 
+        	{            
+            public boolean evalBool( Object x, Object y )
+                { return x.equals( y ); }
+        	};  
+        }
         
     /**
      	An expression that is true if x and y "match", in the sense
-     	that x contains y. Variable nodes 	are treated as variables, 
+     	that x contains y. Variable nodes are treated as variables, 
      	non-variable nodes as constants.
     */
     protected Expression matches( Node x, Node y )
-        { return ExampleCreate.MATCHES( x, y ); }
-    
+	    {
+	    return new Dyadic( asExpression( x ), "http://jena.hpl.hp.com/constraints/MATCHES", asExpression( y ) ) 
+	        {
+	        public boolean evalBool( Object L, Object R )
+	            { return L.toString().indexOf( R.toString() ) > -1; }       
+	        };    
+	    }
+
+    /**
+     	Answer an expression that evaluates the node <code>x</code>,
+     	treating variable nodes as variables (<i>quelle surprise</i>) and other
+     	nodes as constants.
+    */
+    public static Expression asExpression( final Node x )
+	    {
+	    if( x.isVariable()) return new Expression.Variable()
+	        {
+	        public String getName()
+	            { return x.getName(); }
+	    
+	        public Valuator prepare( VariableIndexes vi )
+	            { return new SlotValuator( vi.indexOf( x.getName() ) ); }
+	        };
+	    return new Expression.Fixed( x );
+	    }
+
     /**
      	A Map1 (suitable for a .mapWith iterator conversion) which 
      	assumes the elements are lists and extracts their first elements.
