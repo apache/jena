@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.35 2003-12-13 21:10:59 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.36 2004-03-05 15:52:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -48,10 +48,16 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.35 $' Date='$Date: 2003-12-13 21:10:59 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.36 $' Date='$Date: 2004-03-05 15:52:36 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
+    /**
+         Introduced to cope with bug 832682: double spacing on windows platforms
+    */
+    private static final String newline_XMLNS = 
+        System.getProperty( "line.separator" ) + "    xmlns";
+    
     public BaseXMLWriter() {
         setupMaps();
     }
@@ -306,7 +312,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			Map.Entry ent = (Map.Entry) it.next();
 			String prefix = (String) ent.getValue();
 			String uri = (String) ent.getKey();
-            rslt.append( "\n    xmlns" );
+            rslt.append( newline_XMLNS );
 			if (prefix.length() > 0) rslt.append( ':' ).append( prefix );
 			rslt.append( '=' ).append( qq( checkURI( uri ) ) );
 		}

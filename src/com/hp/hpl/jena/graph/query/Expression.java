@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.15 2003-12-02 16:17:04 chris-dollin Exp $
+  $Id: Expression.java,v 1.16 2004-03-05 15:52:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -16,7 +16,7 @@ import java.util.*;
 <p>
     An Expression can be a variable, an application, or a literal value. If an access
     method (eg getName) is applied to an Expression for which it is not appropriate
-    (eg an application), <em>the result is unspecified</code>; an implementation is
+    (eg an application), <em>the result is unspecified</em>; an implementation is
     free to throw an exception, deliver a null result, deliver a misleading value,
     whatever is convenient.
 <p>
