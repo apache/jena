@@ -18,7 +18,7 @@ import java.util.*;
  * @see QueryResultsStream
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResults.java,v 1.6 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version  $Id: QueryResults.java,v 1.7 2004-04-30 13:22:41 andy_seaborne Exp $
  */
 
 public interface QueryResults extends java.util.Iterator
@@ -33,6 +33,11 @@ public interface QueryResults extends java.util.Iterator
      * Is there another possibility?
      */
     public boolean hasNext() ;
+
+    /** Moves onto the next result possibility.
+     */
+    
+    public ResultBinding nextResultBinding() ;
 
     /** Moves onto the next result possibility.
      *  The returned object should be of class ResultBinding

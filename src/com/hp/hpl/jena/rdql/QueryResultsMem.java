@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.*;
 
 /**
  * @author      Andy Seaborne
- * @version     $Id: QueryResultsMem.java,v 1.11 2004-01-20 14:27:43 andy_seaborne Exp $
+ * @version     $Id: QueryResultsMem.java,v 1.12 2004-04-30 13:22:41 andy_seaborne Exp $
  */
 
 
@@ -130,10 +130,19 @@ public class QueryResultsMem implements QueryResultsRewindable
     public boolean hasNext() { return iterator.hasNext() ; }
 
     /** Moves onto the next result possibility.
+     */
+    
+    public ResultBinding nextResultBinding()
+    {
+        rowNumber++ ;
+        return (ResultBinding)iterator.next() ;
+    }
+    
+    /** Moves onto the next result possibility.
      *  The returned object should be of class ResultBinding
      */
 
-    public Object next() { rowNumber++ ; return iterator.next() ; }
+    public Object next() { return  nextResultBinding() ; }
 
     /** Close the results set.
      *  Should be called on all QueryResults objects

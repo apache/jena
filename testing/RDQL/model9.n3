@@ -8,5 +8,7 @@
 :r :p3 "value" .
 :r :p4 "value"@en^^ns:someType .
 :r :p5 5 . # Same as "1"^^xsd:integer
-:r :p5 5.7 . # Same as "5.7"^^xsd:double
+
+# Turtle does not have doubles.
+:r :p5 "5.7"^^xsd:double . # Same as 5.7 in N3
 :r :p6 "true" .

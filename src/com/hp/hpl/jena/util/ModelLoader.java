@@ -21,7 +21,7 @@ import com.hp.hpl.jena.db.*;
  *  {@link #guessLang(String) guessLang}
  *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.18 2004-03-19 13:32:54 chris-dollin Exp $
+ * @version $Id: ModelLoader.java,v 1.19 2004-04-30 13:22:39 andy_seaborne Exp $
  */
 
 public class ModelLoader
@@ -127,7 +127,7 @@ public class ModelLoader
         //m.setReaderClassName(langNTriple, com.hp.hpl.jena.rdf.arp.NTriple.class.getName()) ;
 
         try {
-            loadModel(m, urlStr, lang) ;
+            _loadModel(m, urlStr, lang) ;
         } catch (JenaException rdfEx)
         {
             logger.warn("Error loading data source", rdfEx);
@@ -144,14 +144,34 @@ public class ModelLoader
     /** Load a model from a file into a model.
      * @param model   Model to read into
      * @param urlStr  URL (or filename) to read from
-     * @param lang    Null mean guess based on the URI String
      * @return Returns the model passed in.
-     * @throws java.io.FileNotFoundException
      */
 
+    public static Model loadModel(Model model, String urlStr)
+    {
+        return loadModel(model, urlStr, null) ;
+    }
+    /** Load a model from a file into a model.
+     * @param model   Model to read into
+     * @param urlStr  URL (or filename) to read from
+     * @param lang    Null mean guess based on the URI String
+     * @return Returns the model passed in.
+     */
 
     public static Model loadModel(Model model, String urlStr, String lang)
-        throws java.io.FileNotFoundException
+    {
+        try {
+            return _loadModel(model, urlStr, null) ;
+        }
+        catch (FileNotFoundException e)
+        {
+            logger.warn("No such data source: "+urlStr);
+            return null ;
+        }
+    }
+
+    private static Model _loadModel(Model model, String urlStr, String lang)
+        throws FileNotFoundException
     {
         // Wild guess at the language!
         // Yes - repeated from above.

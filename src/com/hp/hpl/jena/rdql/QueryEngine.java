@@ -15,7 +15,7 @@ import com.hp.hpl.jena.util.ModelLoader ;
 
 /**
  * @author     Andy Seaborne
- * @version    $Id: QueryEngine.java,v 1.9 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version    $Id: QueryEngine.java,v 1.10 2004-04-30 13:22:41 andy_seaborne Exp $
  */
  
 public class QueryEngine implements QueryExecution
@@ -76,9 +76,16 @@ public class QueryEngine implements QueryExecution
     
     public QueryResults exec(ResultBinding startBinding)
     {
-        init() ;
-        resultsIter = new ResultsIterator(query, startBinding) ;
-        return new QueryResultsStream(query, this, resultsIter) ;
+        resultsIter = null ;
+        try {
+            init() ;
+            resultsIter = new ResultsIterator(query, startBinding) ;
+            return new QueryResultsStream(query, this, resultsIter) ;
+        } catch (RuntimeException ex) {
+            if ( resultsIter != null )
+                resultsIter.close();
+            throw ex ;
+        }
     }
 
     public void abort()

@@ -18,7 +18,7 @@ import java.util.*;
  * @see QueryResultsStream
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsStream.java,v 1.5 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version  $Id: QueryResultsStream.java,v 1.6 2004-04-30 13:22:41 andy_seaborne Exp $
  */
 
 public class QueryResultsStream implements QueryResults
@@ -59,18 +59,23 @@ public class QueryResultsStream implements QueryResults
     }
 
     /** Moves onto the next result possibility.
-     *  The returned object is actual the binding for this
-     *  result; it is possible to access the bound variables
-     *  for the current possibility through the additional variable
-     *  accessor opertations.
      */
-    public Object next()
+    
+    public ResultBinding nextResultBinding()
     {
         currentEnv = (ResultBinding)queryExecutionIter.next() ;
         if ( currentEnv != null )
             rowNumber++ ;
         return currentEnv ;
     }
+    
+    /** Moves onto the next result possibility.
+     *  The returned object is actual the binding for this
+     *  result; it is possible to access the bound variables
+     *  for the current possibility through the additional variable
+     *  accessor opertations.
+     */
+    public Object next() { return nextResultBinding() ; }
 
     /** Close the results iterator and stop query evaluation as soon as convenient.
      */
