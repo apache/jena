@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-26 18:33:43 $
- *               by   $Author: der $
+ * Last modified on   $Date: 2003-08-27 11:21:34 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -32,6 +32,8 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.ReasonerRegistry;
 import com.hp.hpl.jena.vocabulary.OWL;
 
 import junit.framework.*;
@@ -44,7 +46,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.12 2003-08-26 18:33:43 der Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.13 2003-08-27 11:21:34 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -272,6 +274,50 @@ public class TestBugReports
         assertTrue( found );
     }
     
+    
+    /** Problem reported by Andy Seaborne - combine abox and tbox in RDFS with ontmodel */
+    public void test_afs_01() {
+        String sourceT = 
+        "<rdf:RDF " +
+        "    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
+        "    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#'" +
+        "   xmlns:owl=\"http://www.w3.org/2002/07/owl#\">" +
+       "    <owl:Class rdf:about='http://example.org/foo#A'>" +
+        "   </owl:Class>" +
+        "</rdf:RDF>" ;
+        
+        String sourceA = 
+        "<rdf:RDF " +
+        "    xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'" +
+        "    xmlns:rdfs='http://www.w3.org/2000/01/rdf-schema#' " +
+        "   xmlns:owl=\"http://www.w3.org/2002/07/owl#\">" +
+       "    <rdf:Description rdf:about='http://example.org/foo#x'>" +
+        "    <rdf:type rdf:resource='http://example.org/foo#A' />" +
+        "   </rdf:Description>" +
+        "</rdf:RDF>" ;
+        
+        Model tBox = ModelFactory.createDefaultModel();
+        tBox.read( new ByteArrayInputStream( sourceT.getBytes() ), "http://example.org/foo" );
+        
+        Model aBox = ModelFactory.createDefaultModel();
+        aBox.read( new ByteArrayInputStream( sourceA.getBytes() ), "http://example.org/foo" );
+        
+        Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
+        reasoner = reasoner.bindSchema( tBox );
+        
+        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_MEM_RULE_INF );
+        spec.setReasoner( reasoner );
+        
+        OntModel m = ModelFactory.createOntologyModel( spec, aBox );
+        
+        List inds = new ArrayList();
+        for (Iterator i = m.listIndividuals(); i.hasNext(); ) {
+            inds.add( i.next() );
+        }
+        
+        assertTrue( "x should be an individual", inds.contains( m.getResource( "http://example.org/foo#x" ) ) );
+        
+    }
     
     // Internal implementation methods
     //////////////////////////////////
