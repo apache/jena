@@ -3,7 +3,7 @@
 
     <property name="Name"            value="Jena"/>
     <property name="name"            value="jena"/>
-    <property name="version"         value="2p4-RC1"/>
+    <property name="version"         value="2p4"/>
 
     <property name="dist.name"       value="${Name}-${version}"/>
 
@@ -311,11 +311,10 @@
         <!-- Should all be in the lib directory -->
 
         <!-- Documentation -->
-        <!-- Part of the documentation directory 
-        <copy todir="${dist.dir}/${javadoc.dir}">
-            <fileset dir="${javadoc.dir}" includes="**"/>
+        <!-- Javadoc is part of the documentation directory -->
+        <copy todir="${dist.dir}/${doc.dir}">
+            <fileset dir="${doc.dir}" includes="**"/>
         </copy>
-        -->
 
         <copy todir="${dist.dir}/${vocab.dir}">
             <fileset dir="${vocab.dir}" includes="**"/>
