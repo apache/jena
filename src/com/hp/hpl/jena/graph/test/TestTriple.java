@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTriple.java,v 1.11 2003-06-24 15:28:04 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.12 2003-07-24 09:10:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -46,14 +46,6 @@ public class TestTriple extends GraphTestBase
               Node.createLiteral(L),  Node.createLiteral(L2),
               Node.createURI(U),      Node.createURI(U2),
               Node.createVariable(N), Node.createVariable(N2)
-            };
-            
-            String[] types= {
-                "ANY",
-                "blank", "blank", "blank",
-                "literal", "literal", "literal",
-                "uri", "uri", "uri",
-                "variable", "variable", "variable"
             };
             
             Triple[] triples = 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.1 2003-07-18 09:50:32 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.2 2003-07-24 09:10:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -68,7 +68,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         {
         Graph g = GraphBase.withReification( getGraph() );
         Reifier r = g.getReifier();
-        Node S = node( "SSS" ), P = node( "PPP" ), O = node( "OOO " );
+        Node S = node( "SSS" ), P = node( "PPP" );
         g.add( new Triple( S, RDF.Nodes.predicate, P ) );
         assertEquals( "graph must still be empty", 0, g.size() );
         assertEquals( "reifier must have the triple", 1, r.getHiddenTriples().size() );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.6 2003-07-23 07:20:02 chris-dollin Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.7 2003-07-24 09:10:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -60,10 +60,10 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
     public void testCannotCreateTwice()
         {
         String name = jName( "bonsai" );
-        Graph g1 = gf.createGraph( name, true );
+        gf.createGraph( name, true );
         try
             {
-            Graph g2 = gf.createGraph( name, true );
+            gf.createGraph( name, true );
             fail( "should not be able to create " + name + " twice" );
             }
         catch (AlreadyExistsException e)
@@ -101,7 +101,7 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         String name = jName( "willBeCreated" );
         Graph g1 = gf.openGraph( name );
         g1.close();
-        Graph g2 = gf.openGraph( name, true );
+        gf.openGraph( name, true );
         }
     
     /**
@@ -155,8 +155,8 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
     public void testCanRemoveGraph()
         {
         String alpha = jName( "bingo" ), beta = jName( "brillo" );
-        Graph g1 = gf.createGraph( alpha, true );
-        Graph g2 = gf.createGraph( beta, true );
+        gf.createGraph( alpha, true );
+        gf.createGraph( beta, true );
         testExists( alpha );
         testExists( beta );
         gf.removeGraph( alpha );

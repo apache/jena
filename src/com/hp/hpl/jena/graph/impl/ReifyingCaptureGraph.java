@@ -1,14 +1,12 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ReifyingCaptureGraph.java,v 1.4 2003-07-17 09:10:19 chris-dollin Exp $
+  $Id: ReifyingCaptureGraph.java,v 1.5 2003-07-24 09:09:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.graph.query.*;
 
 /**
     A Graph that is layered over another graph and defers all its
@@ -17,39 +15,45 @@ import com.hp.hpl.jena.graph.query.*;
 <p>
     @author kers
 */
-public class ReifyingCaptureGraph extends GraphBase
+public class ReifyingCaptureGraph extends WrappedGraph
     {
-    Graph under;
+    /**
+        The capturing reifier that this graph uses instead of the base.
+    */
+    protected Reifier reifier = new SimpleReifier( this, true );
     
-    ReifyingCaptureGraph( Graph under )
-        { this.under = under; }
+    /**
+        Initialise the capture graph with the base graph.
+        @param base the graph to which all real work is deferred
+    */
+    ReifyingCaptureGraph( Graph base )
+        { super( base ); }
         
+    /**
+        Answer the reifier that is bound into this Graph
+    */
     public Reifier getReifier() 
-        {
-        if (reifier == null) reifier = new SimpleReifier( this, true );
-        return reifier;
-        }
+        { return reifier; }
+       
+    /**
+        Add a triple to the graph, but allow the reifier to capture it first if it likes.
+        @param t the triple to add to the base, unless its a reification triple
+    */ 
+    public void add( Triple t )
+        { if (reifier.handledAdd( t ) == false) base.add( t ); }
         
-    public ExtendedIterator find( TripleMatch m ) 
-        { return under.find( m ); }
+    /**
+        Remove a triple from the graph, but allow the reifier to capture it first if it likes.
+        @param t the triple to remove from the base, unless its a reification triple
+    */ 
+    public void delete( Triple t )
+        { if (reifier.handledRemove( t ) == false) base.delete( t ); }
         
-    public QueryHandler queryHandler()
-        { return under.queryHandler(); }
-        
-    public boolean contains( Node s, Node p, Node o )
-        { return under.contains( s, p, o ); }
-        
-    public void performAdd( Triple t )
-        { if (getReifier().handledAdd( t ) == false) under.add( t ); }
-        
-    public void performDelete( Triple t )
-        { if (getReifier().handledRemove( t ) == false) under.delete( t ); }
-        
-    public int size()
-        { return under.size(); }
-        
+    /**
+        Answer a friendly printable string (if the base has one ...)
+    */
     public String toString()
-        { return "ReifyingCaptureGraph " + super.toString(); }
+        { return "ReifyingCaptureGraph " + base.toString(); }
     }
 
 /*

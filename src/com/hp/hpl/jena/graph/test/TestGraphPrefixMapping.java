@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraphPrefixMapping.java,v 1.2 2003-07-23 07:20:02 chris-dollin Exp $
+  $Id: TestGraphPrefixMapping.java,v 1.3 2003-07-24 09:10:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -26,7 +26,7 @@ public class TestGraphPrefixMapping extends GraphTestBase
     public void testGraphPrefixMapping()
         { 
         Graph g = Factory.createDefaultGraph();
-        TestPrefixMapping.testUseEasyPrefix
+        AbstractTestPrefixMapping.testUseEasyPrefix
             ( "from Graph", g.getPrefixMapping() ); 
         testSameMapping( g );
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.22 2003-07-23 07:20:02 chris-dollin Exp $
+  $Id: TestNode.java,v 1.23 2003-07-24 09:10:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -135,13 +135,13 @@ public class TestNode extends GraphTestBase
             }
         }
         
-    private void testEquality( boolean testEq, Object L, Object R )
+    private void testEquality( boolean testEq, Object x, Object y )
         {
-        String testName = getType( L ) + " " + L + " and " + getType( R ) + " " + R;
+        String testName = getType( x ) + " " + x + " and " + getType( y ) + " " + y;
         if (testEq)
-            assertEquals( testName + "should be equal", L, R );
+            assertEquals( testName + "should be equal", x, y );
         else
-            assertDiffer( testName + " should differ", L, R );
+            assertDiffer( testName + " should differ", x, y );
         }
         
     private String getType( Object x )
@@ -176,7 +176,6 @@ public class TestNode extends GraphTestBase
     public void testLabels()
         {
         AnonId id = new AnonId();
-        Triple T = triple( "x R y" );
         assertEquals( "get URI value", U, Node.createURI( U ).getURI() );
         assertEquals( "get blank value", id, Node.createAnon( id ).getBlankNodeId() );
         assertEquals( "get literal value", L, Node.createLiteral( L ).getLiteral() );
@@ -254,11 +253,11 @@ public class TestNode extends GraphTestBase
     */
     public void testCreateAnon()
         {
-        String A = "_xxx", B = "_yyy";
-        Node a = Node.create( A ), b = Node.create( B );
+        String idA = "_xxx", idB = "_yyy";
+        Node a = Node.create( idA ), b = Node.create( idB );
         assertTrue( "both must be bnodes", a.isBlank() && b.isBlank() );
-        assertEquals( new AnonId( A ), a.getBlankNodeId() );
-        assertEquals( new AnonId( B ), b.getBlankNodeId() );
+        assertEquals( new AnonId( idA ), a.getBlankNodeId() );
+        assertEquals( new AnonId( idB ), b.getBlankNodeId() );
         }
         
     public void testCreateVariable()
