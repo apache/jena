@@ -647,13 +647,13 @@ method <code>model.listStatements(Selector s)</code>.  This method returns an
 iterator over all the statements in the model 'selected' by <code>s</code>.
 The selector interface is designed to be extensible, but for now, there is
 only one implementation of it, the class <code>SelectorImpl</code> from the
-package <code>com.hp.hpl.mesa.rdf.jena.common</code>.  Using
-<code>SelectorImpl </code>is one of the rare occasions in Jena when it is
+package <code>com.hp.hpl.jena.common</code>.  Using
+<code>SimpleSelector </code>is one of the rare occasions in Jena when it is
 necessary to use a specific class rather than an interface.  The
-<code>SelectorImp</code>l constructor takes three arguments:</p>
+<code>SimpleSelector</code>l constructor takes three arguments:</p>
 
 <blockquote>
-  <pre>Selector selector = new SelectorImpl(subject, predicate, object)
+  <pre>Selector selector = new SimpleSelector(subject, predicate, object)
   </pre>
 </blockquote>
 
@@ -666,14 +666,14 @@ references are equal and Literals are equal if all their components are
 equal.  Thus:</p>
 
 <blockquote>
-  <pre>Selector selector = new SelectorImpl(null, null, null);
+  <pre>Selector selector = new SimpleSelector(null, null, null);
   </pre>
 </blockquote>
 
 <p>will select all the statements in a graph.</p>
 
 <blockquote>
-  <pre>Selector selector = new SelectorImpl(null, VCARD.FN, null);
+  <pre>Selector selector = new SimpleSelector(null, VCARD.FN, null);
   </pre>
 </blockquote>
 
@@ -709,11 +709,13 @@ if (iter.hasNext()) {
   </pre>
 </blockquote>
 
-<p>Your next exercise is to modify this code to use <code>SelectorImpl
+<p>Your next exercise is to modify this code to use <code>SimpleSelector
 </code>instead of <code>listSubjectsWithProperty</code>.</p>
 
+<p><i>Chris to simplifiy by removing the need for isSimple</i></p>
+
 <p>Lets see how to implement some finer control over the statements selected.
-SelectorImpl can be subclassed and its selects method modified to perform
+SimpleSelector can be subclassed and its selects method modified to perform
 further filtering:</p>
 
 <blockquote>
@@ -722,9 +724,10 @@ further filtering:</p>
 StmtIterator iter = model.listStatements(
   new
       SelectorImpl(null, VCARD.FN, (RDFNode) null) {
-          public boolean selects(Statement s) {
-              return s.getString().endsWith("Smith");
-     }
+		  public boolean isSimple()
+		  {return false;}
+		  public boolean selects(Statement s) 
+		  {return s.getString().endsWith("Smith");}
  });</pre>
 </blockquote>
 
@@ -755,12 +758,9 @@ StmtIterator iter = model.listStatements(
   new
       SelectorImpl(null, null, (RDFNode) null) {
           public boolean selects(Statement s) {
-          try {
               return (subject == null   || s.getSubject().equals(subject))
                   &amp;&amp; (predicate == null || s.getPredicate().equals(predicate))
                   &amp;&amp; (object == null    || s.getObject().equals(object))
-          } catch (RDFException e) {
-            throw new RDFError(e);
           }
      }
  });</pre>
@@ -836,24 +836,6 @@ model.write(system.out, "RDF/XML-ABBREV");</pre>
 should be reasonably clear that the graphs have merged as expected.  The
 intersection and difference of the graphs can be computed in a similar
 manner.</p>
-<hr>
-
-<h2><a name="ch-Exceptions" id="ch-Exceptions">Exceptions</a></h2>
-
-<p>Jena's current exceptions policy has proved to be unpopular and will be
-changed in the near future.  The original design took a strict approach and
-required a checked exception wherever an application should check for a
-possible error.  Because Jena was designed to be highly flexible and capable
-of being extended to support, for example, different storage managers, it was
-possible that a storage manager could give an unexpected error at any time.
-Thus nearly all Jena methods ended up declaring that it throws an
-RDFException.  Experience has shown that this is not a popular approach, that
-these exceptions when caught are usually ignored and no benefit is gained
-from making them checked.</p>
-
-<p>Thus Jena's exception policy will be reviewed in the near future.  Most,
-if not all exceptions, will become unchecked.  In the meantime, though folks,
-I'm afraid you are still going to have to catch and ignore them.</p>
 <hr>
 
 <h2><a name="ch-Containers" id="ch-Containers">Containers</a></h2>
@@ -1152,5 +1134,6 @@ expected.</p>
 </ol>
 <hr>
 <i><small> Author: <a href="mailto:bwm@hplb.hpl.hp.com">Brian McBride</a>
-$Date: 2003-06-25 13:26:22 $ $Revision: 1.5 $</small></i></body>
+<br> Updated by: Daniel Boothby and <a href=mailto:chris.dollin@hp.com> Chris Dollin</a>  
+<br> $Date: 2003-06-25 13:47:40 $ $Revision: 1.6 $</small></i></body>
 </html>
