@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-14 14:58:29 $
+ * Last modified on   $Date: 2003-05-14 15:39:01 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,6 +24,8 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import org.apache.log4j.*;
@@ -43,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.11 2003-05-14 14:58:29 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.12 2003-05-14 15:39:01 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -384,7 +386,7 @@ public class OntDocumentManager
         } 
         
         OntModel m = ModelFactory.createOntologyModel( spec, null );
-        m.read( uri );
+        read( m, uri, true );
 
         return m;
     }
@@ -556,13 +558,8 @@ public class OntDocumentManager
 
         // try to read each path entry in turn
         while (!loaded  &&  pathElems.hasMoreTokens()) {
-            try {
-                m.read( pathElems.nextToken() );
-                loaded = true;
-            }
-            catch (RDFException e) {
-                // we take this to mean that the resolution failed, so try another path element
-            }
+            String mdURI = pathElems.nextToken();
+            loaded = read( m, mdURI, false );
         }
 
         // only return m if we found some metadata
@@ -645,7 +642,7 @@ public class OntDocumentManager
             
             // if the graph was already in existence, we don't need to read the contents (we assume)!
             if (!loaded) {
-                read( in, doAltURLMapping( importURI ) ); 
+                read( in, importURI, true ); 
             } 
         }
 
@@ -664,29 +661,46 @@ public class OntDocumentManager
      *
      * @param model A model to read statements into
      * @param uri A URI string
+     * @param warn If true, warn on RDF exception
+     * @return True if the uri was read successfully
      */
-    protected void read( Model model, String uri ) {
+    protected boolean read( Model model, String uri, boolean warn ) {
         // map to the cache URI if defined
-        String resolvableURI = (String) (m_uriMap.containsKey( uri ) ? m_uriMap.get( uri ) : uri);
-
+        String resolvableURI = doAltURLMapping( uri );
+        String file = resolvableURI.startsWith( "file:" ) ? resolvableURI.substring( 5 ) : resolvableURI;
+        
         // try to load the URI
         try {
             // try to use the extension of the url to guess what syntax to use (.n3 => "N3", etc)
             String lang = ModelLoader.guessLang( uri );
             
-            if (lang != null) {
+            // see if we can find the file as a system resource
+            InputStream is = ClassLoader.getSystemResourceAsStream( file );
+            
+            if (is == null) {
+                // we can't get this URI as a system resource, so just try to read it in the normal way
                 model.read( resolvableURI, lang );
-            } 
+            }
             else {
-                model.read( resolvableURI );
+                try {
+                    // we have opened the file as a system resource - try to load it into the model
+                    model.read( is, null, lang );
+                }
+                finally {
+                    try {is.close();} catch (IOException ignore) {}
+                }
             }
 
             // success: cache the model against the uri
             addModel( uri, model );
+            return true;
         }
         catch (RDFException e) {
-            Logger.getLogger( OntDocumentManager.class )
-                  .warn( "RDFException while reading model from " + resolvableURI + ", with message: " + e.getMessage(), e );
+            if (warn) {
+                Logger.getLogger( OntDocumentManager.class )
+                      .warn( "RDFException while reading model from " + resolvableURI + ", with message: " + e.getMessage(), e );
+            }
+            return false;
         }
     }
 
