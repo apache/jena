@@ -1,5 +1,7 @@
 # Generic SQL driver file for MySQL suitable for multi-model formats
 #
+# (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+#
 #-------------------------------------------------------------------
 # Initialize a blank database - create system tables and indexes
 #

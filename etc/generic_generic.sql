@@ -1,4 +1,6 @@
-# Generic SQL driver file for Oracle suitable for multi-model formats
+# Generic SQL driver file suitable for multi-model formats
+#
+# (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
 #
 #-------------------------------------------------------------------
 # Initialize a blank database - create tables and indexes - compound statement group
