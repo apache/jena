@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: PerlPatternParser.java,v 1.2 2004-08-16 18:30:57 chris-dollin Exp $
+  $Id: PerlPatternParser.java,v 1.3 2004-08-17 07:30:26 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.regexptrees;
 
@@ -15,19 +15,21 @@ public class PerlPatternParser
     public PerlPatternParser( String toParse )
         { this.toParse = toParse; }
     
+    protected RegexpTreeGenerator gen = new SimpleGenerator();
+    
     public RegexpTree parseAtom()
         {
         if (pointer < toParse.length())
             {
             char ch = toParse.charAt( pointer++ );
             if (ch == '.')
-                return new AnySingle();
+                return gen.getAnySingle();
             else if (ch == '^')
-                return new StartOfLine();
+                return gen.getStartOfLine();
             else if (ch == '$')
-                return new EndOfLine();
+                return gen.getEndOfLine();
             else if (notSpecial( ch ))
-                return new Text( "" + ch );
+                return gen.getText( ch );
             else
                 return null;
             }
@@ -68,15 +70,15 @@ public class PerlPatternParser
                 {
                 case '*':
                     pointer += 1;
-                    return new ZeroOrMore( d );
+                    return gen.getZeroOrMore( d );
                     
                 case '+':
                     pointer += 1;
-                    return new OneOrMore( d );
+                    return gen.getOneOrMore( d );
                     
                 case '?':
                     pointer += 1;
-                    return new Optional( d );
+                    return gen.getOptional( d );
                     
                 case '{':
                     return null;
@@ -101,7 +103,7 @@ public class PerlPatternParser
             if (next == null) break;
             operands.add( next );
             }
-        return Sequence.create( operands );
+        return gen.getSequence( operands );
         }
     
     private RegexpTree parseElement()
