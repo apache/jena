@@ -2,6 +2,9 @@ Release Notes
 =============
 
 Jena 2.1 - Main changes from Jena 2.0
+  Installation
+      The names of some jars have changed be sure to update your classpath
+      
   OWL Syntax Checker
       Major update from alpha version (Jena 2.0), to production 
       version (Jena 2.1).
@@ -29,6 +32,9 @@ Jena 2.1 - Main changes from Jena 2.0
 
   Reasoner
       Small bug fixes (see below).
+      
+  Xerces
+      Now requires Xerces 2.6.0 or better. The included jars are Xerces 2.6.1.
       	 
 Jena 2.1 changes from Jena 2.1-dev-3
   Minor bug fixes in OWL Syntax Checker.
@@ -78,6 +84,8 @@ o ModelFactory improvements:
 
 Reasoner subsystem:
 
+o Fixed delete bug in FORWARD_RETE configurations, remove of statements 
+  should now remove the consequents of that statement.
 o Added a check for constructing one OWL reasoner instance layered on top
   of another because this can have a large performance impact to no benefit.
 o Added a "hide" primitive which marks nodes as hidden. When querying an
