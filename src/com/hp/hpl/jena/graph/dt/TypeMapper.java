@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TypeMapper.java,v 1.2 2003-02-10 10:00:24 der Exp $
+ * $Id: TypeMapper.java,v 1.3 2003-03-05 18:07:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.dt;
 
@@ -18,7 +18,7 @@ import java.util.Iterator;
  * that is used to represent them.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:00:24 $
+ * @version $Revision: 1.3 $ on $Date: 2003-03-05 18:07:18 $
  */
 public class TypeMapper {
 
@@ -61,17 +61,24 @@ public class TypeMapper {
 //=======================================================================
 // Methods
 
+
     /**
-     * Method getSafeTypeByName.
+     * Version of getTypeByName which will treat unknown URIs as typed
+     * literals but with just the default implementation
      * 
      * @param uri the URI of the desired datatype
      * @return Datatype the datatype definition
      * registered at uri, if there is no such registered type it
-     * returns the default datatype implementation.
+     * returns a new instance of the default datatype implementation, if the
+     * uri is null it returns null (indicating a plain RDF literal).
      */
     public RDFDatatype getSafeTypeByName(String uri) {
         RDFDatatype dtype = (RDFDatatype) uriToDT.get(uri);
         if (dtype == null) {
+            if (uri == null) {
+                // Plain literal
+                return null;
+            }
             // @TODO add log message
             // @TODO add switch to prevent warning messages
             dtype = new BaseDatatype(uri);
@@ -81,8 +88,8 @@ public class TypeMapper {
     }
     
     /**
-     * Lookup a known datatype. Differs from getSafeTypeByName in
-     * that it will return null if the datatype is not registered.
+     * Lookup a known datatype. An unkown datatype or a datatype with uri null
+     * will return null will mean that the value will be treated as a old-style plain literal.
      * 
      * @param uri the URI of the desired datatype
      * @return Datatype the datatype definition of null if not known.

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.11 2003-03-05 17:42:10 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.12 2003-03-05 18:05:58 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-03-05 17:42:10 $
+ * @version $Revision: 1.12 $ on $Date: 2003-03-05 18:05:58 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -269,10 +269,14 @@ public class TestTypedLiterals extends TestCase {
     public void testPlainSameValueAs() {
         Literal lString = m.createTypedLiteral("10", "", XSDDatatype.XSDstring );
         Literal lPlain = m.createTypedLiteral("10", "", (RDFDatatype)null );
+        Literal lPlain3 = m.createTypedLiteral("10", "", (String)null );
         Literal lPlain2 = m.createLiteral("10");
         Literal lInt =  m.createTypedLiteral("10", "", XSDDatatype.XSDint );
         
         assertSame("Null type = plain literal", lPlain, lPlain2);
+        assertSame("Null type = plain literal", lPlain, lPlain3);
+        assertSame("Null type = plain literal", lPlain2, lPlain3);
+        assertTrue("null type", lPlain3.getDatatype() == null);
         assertDiffer("String != int", lString, lInt);
         assertDiffer("Plain != int", lPlain, lInt);
         assertDiffer("Plain != int", lPlain2, lInt);
@@ -285,6 +289,7 @@ public class TestTypedLiterals extends TestCase {
             assertDiffer("String != plain??", lString, lPlain);
             assertDiffer("String != plain??", lString, lPlain2);
         }
+        
     }
     
     /**
