@@ -1,0 +1,318 @@
+<HTML>
+
+
+
+<HEAD><TITLE>Jena Relational Database backend</TITLE></HEAD>
+
+
+
+<BODY bgcolor="#FFFFFF">
+
+
+
+<h1>Jena2 Database Interface - Options for Initialization and Access</h1>
+
+
+
+<h3>28 August, 2003</h3>
+
+
+
+  <p>The following options are available for use with the persistence subsystem. 
+  For each option Xyz, there are getXyz and setXyz methods in the associated 
+  interface. Some options must be set when initializing (formatting) the database and others may 
+  be set while accessing models.</p>
+
+
+
+  <h2><a name="dbengines"></a>Database Initialization Options</h2>
+
+
+
+  <p>The following options may only be set before the database is 
+  initialized. To set these options, invoke the associated set method on the database driver. There 
+  is also a get method that may be called at any time to retrieve the option 
+  value. If the database has already been formatted, i.e., if
+  <font size="2">IDBConnection.isFormatOK()</font> returns <b><font size="2">
+  true</font></b>, then these set methods  will throw an 
+  exception. These options are 
+  persisted in the database. When (a model in) a previously formatted database 
+  is opened, the option values in the database override (silently) any 
+  user-specified values.</p>
+
+
+
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1" width="822">
+  <tr>
+    <th width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top"><b>IRDBDriver Option</b></th>
+    <th width="71" style="text-indent: 5; text-align: left; margin-left: 0" valign="top"><b>Type&nbsp;&nbsp;&nbsp;&nbsp; </b></th>
+    <th width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0"><b>Default</b></th>
+    <th width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top"><b>
+    Description</b></th>
+  </tr>
+  <tr>
+    <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">LongObjectLength</td>
+    <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">int</td>
+    <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">*</td>
+    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">Maximum length of a literal or resource to be stored 
+    in a statement table. &nbsp;&nbsp;&nbsp;&nbsp; </td>
+  </tr>
+  <tr>
+    <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">IndexKeyLength</td>
+    <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">int</td>
+    <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">*</td>
+    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">Maximum length of the key in a long object table.</td>
+  </tr>
+  <tr>
+    <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">IsTransactionDb</td>
+    <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">boolean</td>
+    <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">*</td>
+    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">True if the database can support transactions.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
+  </tr>
+  <tr>
+    <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">DoCompressURI</td>
+    <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">boolean</td>
+    <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">false</td>
+    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">If true, do prefix compression on long URIs.</td>
+  </tr>
+  <tr>
+    <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">CompressURILength</td>
+    <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">int</td>
+    <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">100</td>
+    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">URIs longer than this length will be compressed (if 
+    doCompressURI is true).</td>
+  </tr>
+  <tr>
+    <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell" valign="top">
+    TableNamePrefix</td>
+    <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">
+    String</td>
+    <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">
+    jena_</td>
+    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">
+    The common prefix for all Jena table names in the database.</td>
+  </tr>
+  </table>
+
+
+
+  <h2><font size="3"><span style="font-weight: 400">* These options are 
+  database-dependent. See the database-specific howto for the default values.</span></font></h2>
+
+
+
+  <dl>
+    <dt>LongObjectLength</dt>
+    <dd>This defines the maximum length of a value in a statement table where 
+    the value may be either a literal or a resource URI. Values longer than this 
+    length are stored in either the long literals or the long resources table. 
+    Smaller values of LongObjectLength reduce database space consumption at the 
+    cost of increased retrieval time. Each database engine has a maximum 
+    permissible value for LongObjectLength and attempts to set a larger length 
+    will throw an exception.</dd>
+    <dd>&nbsp;&nbsp;&nbsp; Note that LongObjectLength is an upper bound due to 
+    the database encoding used for values. For example, if LongObjectLength is 
+    ten, a literal string of ten or even nine characters would be stored as a 
+    long object because, when stored, the string value is encoded with type 
+    information which makes the actual stored value even longer.&nbsp; </dd>
+    <dt>IndexKeyLength</dt>
+    <dd>This defines the maximum length of an index key for long object values 
+    (literals or resource URIs). Long objects are stored in three parts, a head, 
+    a hash and a tail. The head is the prefix of the long value that can be 
+    indexed. The hash is a content-based hash value of the remainder (the tail). 
+    Exact matching is done by comparing the head and the hash value. In the 
+    future, we plan to do prefix matching on the head for inequality and range 
+    queries. Generally, there is no need to change IndexKeyLength. However, 
+    smaller values could reduce database space consumption at the expense of 
+    reducing the (future) effectiveness of inequality and range queries. Note 
+    that IndexKeyLength is an upper bound due to the database encoding (see 
+    comments in LongObjectLength).</dd>
+    <dt>IsTransactionDb</dt>
+    <dd>Some database engines support a non-transactional configuration in which 
+    begin-end transactions are not supported but the individual database 
+    operations are atomic. MySQL has both transactional and non-transactional 
+    configurations. This option can be used to set the transaction mode. Since 
+    it affects the physical database structure, it can only be set prior to 
+    database initialization.</dd>
+    <dt>DoCompressURI</dt>
+    <dd>By default, resource URIs are stored fully expanded in the database. If 
+    DoCompressURI is true, URIs will be compressed by storing a prefix of the 
+    URI (typically a namespace) in a separate table. This can be used to reduce 
+    database space consumption. Ideally, it should not significantly increase 
+    retrieval time since it is expected that the number of prefixes will be 
+    relatively small and it should be possible to cache them in main memory for 
+    expansion. </dd>
+    <dd>&nbsp;&nbsp;&nbsp; Note that there is an interaction between 
+    DoCompressURI and LongObjectLength. The prefix is compressed before the 
+    object length is checked. For example, if LongObjectLength is ten and 
+    DoCompressURI is <b><font size="2">true</font></b>, the URI&nbsp; <i>
+    myNamespace.com/foo:123</i> would be stored as a compressed URI directly in 
+    a statement table. However, if DoCompressURI is false, then that URI would 
+    be stored in the long resources table and the statement table would have a 
+    reference to it.</dd>
+    <dt>CompressURILength</dt>
+    <dd>If DoCompressURI is true, this specifies the minimum length URI that 
+    should be compressed. Resource URI's shorter than this value will be stored 
+    fully expanded.</dd>
+    <dt>TableNamePrefix</dt>
+    <dd>Every database table created by Jena uses a common prefix. This option 
+    allows users to specify the prefix. This option affects all Jena tables, 
+    including the Jena system table. Consequently, with this option it is 
+    possible to have multiple Jena persistent stores, each with different 
+    formatting options (e.g., LongObjectLength, DoCompressURI, etc.) in a single 
+    database instance, with each store having a distinct prefix.</dd>
+    <dd>&nbsp;&nbsp;&nbsp; Note that this option differs from the previous 
+    options in that it must be set on every connection that access the store. 
+    Otherwise, the subsystem will assume the default prefix and will not be able 
+    to locate the Jena system table which contains the configuration.</dd>
+    <dd>&nbsp;&nbsp;&nbsp; The maximum 
+    length of the prefix is database-dependent and an exception may be thrown if 
+    the prefix is too long. Otherwise, it is the user's responsibility to ensure 
+    that the prefix name conforms to the naming conventions for the underlying 
+    database engine (e.g., certain prohibited special characters).</dd>
+    <dd>&nbsp;&nbsp;&nbsp; This option has subtle semantics and should be used 
+    with care. Always use the following code sequence to ensure that the prefix 
+    is set correctly for the database connection.<font SIZE="2"><blockquote>
+      <p>IDBConnection conn = ( make a database connection )<br>
+      conn.getDriver().setTableNamePrefix(&quot;myNewNamePrefix&quot;); <br>
+&nbsp;</p>
+    </blockquote>
+    </font></dd>
+</dl>
+
+
+
+  <h2><a name="dbengines"></a>Database Access Options</h2>
+
+
+
+  <p>The following options may be set at any time and are not persistent. They 
+  exist only for the duration of a database connection. </p>
+
+
+
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber2" width="822">
+  <tr>
+    <th width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell0" valign="top"><b>IRDBDriver Option</b></th>
+    <th width="71" style="text-indent: 5; text-align: left; margin-left: 0" valign="top"><b>Type&nbsp;&nbsp;&nbsp;&nbsp; </b></th>
+    <th width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0"><b>Default</b></th>
+    <th width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top"><b>
+    Description</b></th>
+  </tr>
+  <tr>
+    <td width="173" align="left" style="text-indent: 5; text-align: left; margin-left: 0" id="mycell7" valign="top">
+    StoreWithModel</td>
+    <td valign="top" width="71" style="text-indent: 5; text-align: left; margin-left: 0">
+    String</td>
+    <td width="69" align="left" valign="top" style="text-align: left; text-indent: 5; margin-left: 0">
+    null</td>
+    <td width="504" style="text-indent: 5; margin-left: 0" align="left" valign="top">
+    If not null or empty, subsequent models will share tables with the named 
+    model.</td>
+  </tr>
+  </table>
+
+
+
+  <dl>
+    <dt>StoreWithModel</dt>
+    <dd>By default, models are stored in separate database tables. This option 
+    enables models to share tables. Once specified, all subsequently created 
+    models created on the current connection are stored in the same tables as 
+    the specified model. A model name of &quot;DEFAULT&quot; references the default 
+    (unnamed) model.</dd>
+    <dd>&nbsp;&nbsp;&nbsp; If the specified model does not exist, an exception 
+    is thrown when attempting to create a new model that references it. This is 
+    also true of the default model, i.e., it is not automatically created. If 
+    the specified model name is null or the empty string, then subsequently 
+    created models are stored in separate tables.</dd>
+    <dt>&nbsp;</dt>
+</dl>
+
+
+
+  <h2>Model Access Options</h2>
+
+
+
+  <p>The following options affect the behavior of query processing. These 
+  options are not persisted in the database. The options are set by calling the 
+  associated set method on the database model (an instance of ModelRDB). There 
+  is also a get method to retrieve the option value. </p>
+
+
+
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" id="AutoNumber1" width="790">
+  <tr>
+    <th width="166" valign="top" style="text-indent: 5; margin-left: 0" align="left"><b>
+    ModelRDB Option</b></th>
+    <th width="71" align="left" valign="top" style="text-indent: 5; margin-left: 0"><b>Type</b></th>
+    <th width="69" align="left" valign="top" style="text-indent: 5; margin-left: 0"><b>Default</b></th>
+    <th width="479" valign="top" style="text-indent: 5; margin-left: 0" align="left"><b>Description</b></th>
+  </tr>
+  <tr>
+    <td width="166" valign="top" style="text-indent: 5; margin-left: 0">DoFastpath</td>
+    <td width="71" valign="top" style="text-indent: 5; margin-left: 0">boolean</td>
+    <td width="69" valign="top" style="text-indent: 5; margin-left: 0">true</td>
+    <td width="479" valign="top" style="text-indent: 5; margin-left: 0">If true, enable query Fastpath. &nbsp;&nbsp;&nbsp; </td>
+  </tr>
+  <tr>
+    <td width="166" valign="top" style="text-indent: 5; margin-left: 0">QueryOnlyAsserted</td>
+    <td width="71" valign="top" style="text-indent: 5; margin-left: 0">boolean</td>
+    <td width="69" valign="top" style="text-indent: 5; margin-left: 0">false</td>
+    <td width="479" valign="top" style="text-indent: 5; margin-left: 0">If true, Fastpath only queries asserted statement 
+    tables.</td>
+  </tr>
+  <tr>
+    <td width="166" valign="top" style="text-indent: 5; margin-left: 0">QueryOnlyReified</td>
+    <td width="71" valign="top" style="text-indent: 5; margin-left: 0">boolean</td>
+    <td width="69" valign="top" style="text-indent: 5; margin-left: 0">false</td>
+    <td width="479" valign="top" style="text-indent: 5; margin-left: 0">If true, Fastpath only queries reified statement 
+    tables.</td>
+  </tr>
+  <tr>
+    <td width="166" valign="top" style="text-indent: 5; margin-left: 0">QueryFullReified</td>
+    <td width="71" valign="top" style="text-indent: 5; margin-left: 0">boolean</td>
+    <td width="69" valign="top" style="text-indent: 5; margin-left: 0">false</td>
+    <td width="479" valign="top" style="text-indent: 5; margin-left: 0">If true, Fastpath ignores partially reified 
+    statements.</td>
+  </tr>
+  <tr>
+    <td width="169" valign="top" style="text-indent: 5; margin-left: 0">DoDuplicateCheck</td>
+    <td width="66" valign="top" style="text-indent: 5; margin-left: 0">boolean</td>
+    <td width="64" valign="top" style="text-indent: 5; margin-left: 0">true</td>
+    <td width="457" valign="top" style="text-indent: 5; margin-left: 0">If true, check if a statement is 
+    already in the database before adding. it.</td>
+  </tr>
+</table>
+
+
+
+  <dl>
+    <dt>DoFastpath</dt>
+    <dd>This option enables and disables Fastpath query processing. Generally, 
+    it should be enabled but it may be useful to disable it for experiments or 
+    debugging. For details on Fastpath processing and explanations of the 
+    three query options in this table, see the <a href="fastpath.html">Fastpath</a> 
+    notes.</dd>
+    <dt>DoDuplicateCheck</dt>
+    <dd>When a statement is added to a persistent model, Jena first checks if 
+    the statement already exists in the model. This prevents the occurrence of 
+    duplicate rows in the statement tables. However, if a user knows that the 
+    rows to be inserted do not already exist, DoDuplicateCheck may be disabled 
+    to reduce overhead for adding statements. This can  substantially reduce load times.</dd>
+    <dd>&nbsp;&nbsp;&nbsp; Note that, once set, the value applies not just to 
+    the specified model but to any model subsequently created in the database 
+    during the user's session (the life of the database connection). The setting 
+    for existing models is not affected.</dd>
+    <dt>&nbsp;</dt>
+</dl>
+<p>&nbsp;</p>
+
+
+
+  </BODY>
+
+
+
+</HTML>

@@ -10,11 +10,11 @@
 
 
 
-<h1>Jena2 Database Interface - Preliminary Release Notes</h1>
+<h1>Jena2 Database Interface -  Release Notes</h1>
 
 
 
-<h3>14 July, 2003</h3>
+<h3>28 August, 2003</h3>
 
 
 
@@ -22,11 +22,10 @@
 
 
 
-  interface but with the ability to store and retrieve RDF statements using a database. A preliminary 
-release is currently available for experimentation and feedback. However, it is 
-missing some features and should not be considered stable. Databases created 
-with this preliminary release may not be accessible in a later preliminary 
-release or in the final, full featured Jena2 release.</p>
+  interface but with the ability to store and retrieve RDF statements using a database. 
+It currently supports MySQL, Oracle and PostgreSQL for persistent storage and 
+runs under Linux and WindowsXP. Jena1 databases cannot be accessed by Jena2 and 
+must be reloaded. Little performance tuning has been done.</p>
 
 
 
@@ -55,11 +54,11 @@ release or in the final, full featured Jena2 release.</p>
 
 
 
-<p>The jena/db module provides persistence for asserted and reified statements. It uses a 
-  different layout than Jena1 that enables faster insertion and retrieval but 
-  uses more storage than Jena1. It is largely backwards-compatible for Jena1 
-  applications with the exception of some database configuration options. This 
-  preliminary release does not support BerkeleyDB.</p>
+<p>The jena/db module provides persistence for asserted and reified statements. 
+It uses a different layout than Jena1 that enables faster insertion and 
+retrieval but uses more storage than Jena1. It is largely backwards-compatible 
+for Jena1 applications with the exception of some database configuration 
+options.</p>
 
 
 
@@ -67,33 +66,28 @@ release or in the final, full featured Jena2 release.</p>
 
 
 
-  <p>The following work, with the possible exception of application-specific 
-  layouts, will be completed for the final Jena2  release. In the meantime, 
-  the code base for persistence is a&nbsp; work-in-progress and liable to 
-  change. However, experimentation and feedback is encouraged and welcome.</p>
+  <p>In the future, we would like to address the following issues.</p>
 
 
 
   <ul>
     <li> <i>
-  BerkeleyDB</i>  <font face="Times New Roman">is not yet supported.</font></li>
-    <li><i>Namespace compression</i>, an internal optimization to reduce disk 
-    space usage will be added. Jena2 persistence optimizes storage and retrieval speed at the expense of 
-  disk space (see <a href="#notes">below</a>).</li>
-    <li>A<i>pplication-specific database layouts</i>, through use of a 
-    generalized implementation of the attribute tables studied in Jena1 (see 
-    &quot;Jena relational database interface - performance notes&quot; in the Jena1 
-    release), may be added.</li>
+  BerkeleyDB</i>  <font face="Times New Roman">- use of BerkeleyDB as a 
+    persistent store is desirable for performance and compatibility with Jena1.</font></li>
+    <li> <font face="Times New Roman"><i>Native Java persistence</i> - a native 
+    Java persistent store would be convenient for some users.</font></li>
+    <li> <font face="Times New Roman"><i>Performance tuning and characterization</i> 
+    - a better understanding of the trade-offs of the various configuration 
+    options would be useful.</font></li>
+    <li><i>Application-specific database layouts</i> - Jena2 supports 
+    reification with a property-class table but this capability should be 
+    generalized to support user-defined property and property class tables.</li>
 </ul>
 
 
 
-  <p>Note that significant code restructuring is 
-  anticipated to support these new capabilities. These changes should be 
-  transparent to applications with the following caveat. The database layouts (the schema) should not be 
-  considered stable. Databases created with one preliminary release of
-  <font face="monospace" size="2">jena.db.ModelRDB </font>may not be accessible 
-  with a later  release. </p>
+  <p>A list of open issues and known problems with the current release is in
+  <a href="issues.html">issues.html</a>.</p>
 
 
 
@@ -103,7 +97,9 @@ release or in the final, full featured Jena2 release.</p>
 
   <p>The following table lists the platforms, database engines and JDBC drivers 
   currently supported for Jena2 persistence. Older and newer versions may work 
-  but have not been tested.</p>
+  but have not been tested. See the howto documents for more details (<a href="mysql-howto.html">MySQL</a>,
+  <a href="oracle-howto.html">Oracle</a>,
+  <a href="postgresql-howto.html">PostgreSQL</a>).</p>
 
 
 
@@ -139,12 +135,9 @@ release or in the final, full featured Jena2 release.</p>
     <td>&nbsp;&nbsp; Oracle oci8 JDBC driver (thick client)&nbsp;&nbsp;&nbsp;&nbsp; </td>
   </tr>
   <tr>
-    <td>&nbsp;&nbsp; Linux (RedHat 7.2)&nbsp;&nbsp;&nbsp;&nbsp; </td>
+    <td>&nbsp;&nbsp; Linux (RedHat AS)&nbsp;&nbsp;&nbsp;&nbsp; </td>
     <td>&nbsp;&nbsp; Oracle 9.2.0.1.0</td>
-    <td>&nbsp;&nbsp; Oracle thin JDBC driver (thin client)&nbsp;<br>
-        NOTE: Jena2's treatment of Blobs with Oracle on Linux does not work at this time,<br>
-        so huge Literals are currently not supported with Oracle on Linux. 
-    </td>
+    <td>&nbsp;&nbsp; Oracle oci JDBC driver (thick client)&nbsp;</td>
   </tr>
 </table>
 
@@ -185,8 +178,9 @@ release or in the final, full featured Jena2 release.</p>
 
 
 
-  <p>In Jena2, all databases are multi-model. However, by default, each model is 
-  stored in separate tables. To share tables among models, see
+  <p>In Jena2, all databases are multi-model. By default, each model is 
+  stored in separate tables and two tables are used for each model, one for 
+  asserted statements and another for reified statements. To share tables among models, see
   <a href="#migrating">migrating</a>, below.</p>
 
 
@@ -213,31 +207,9 @@ release or in the final, full featured Jena2 release.</p>
   persistence architecture and layout are  different from Jena1. However, 
   these differences are largely transparent to applications and only affect code 
   that creates new persistent models. In particular, the way in which database 
-  configuration options are specified is changed. In Jena2, configuration options are specified as statements in an RDF 
-  memory model. The statements describe properties of the model, such as the 
-  database type and the database layout. Some properties are part of the 
-  database and some are part of the connection. See
-  <font face="Courier New" size="2">ModelDB.getModelProperties and 
-  DBConnection.getDatabaseProperties</font><font face="Times New Roman">.</font></p>
-
-
-
-  <p><font face="Times New Roman">The 
-  vocabulary for these properties is given in </font>
-  <font face="Courier New" size="2">jena.vocabulary.DB</font><font face="Times New Roman">.&nbsp; Note that only a 
-  few configuration parameters are defined in the default configuration property 
-  model provided in this preview release. This was done for experimentation. A 
-  richer 
-  set of configuration properties will be provided in the final release. A 
-  configuration property is used to enable models to share database tables. By 
-  default, each model is stored in its own tables. To enable graphs to share 
-  tables, add the property </font><font face="Courier New" size="2">
-  DB.graphDBSchema</font><font face="Times New Roman">. to the configuration 
-  model. The property value should be the name of some other existing model, or 
-  &quot;DEFAULT&quot; to share the tables with the default model. For an example of how 
-  this is done, see the test program </font><font size="2" face="Courier New">
-  testConstructNamedModelSchema</font><font face="Times New Roman"> in </font>
-  <font face="Courier New" size="2">jena.db.test.testConnection</font><font face="Times New Roman">.</font></p>
+  configuration options are specified is changed. In Jena2, configuration options are specified 
+  using get and set methods on models or drivers. See <a href="options.html">
+  Options</a> details on the options and how to specify them.</p>
 
 
 
@@ -262,17 +234,7 @@ release or in the final, full featured Jena2 release.</p>
   from <a href="http://sourceforge.net/projects/jena/">
   http://sourceforge.net/projects/jena/</a>) show Jena2 to be up to three times 
   faster than Jena1 (see <a href="perftestWin32.html">perftest.html</a>). 
-  However, Jena2 models may consume more disk space than Jena1 models. The final
-  release will provide more guidance on the space differences and tuning.
-  In the meantime, do not be surprised to find significant size differences between
-  Jena1 and Jena2. Our goal is that that Jena2 performance be comparable to 
-  Jena1. The jena-perf results given here are primarily intended for comparing 
-  different Jena configurations and releases. These results should not be 
-  considered indicative of real Jena applications.</p>
-
-
-
-  <p>These differences are due to the different table layouts used in Jena1 and 
+  However, Jena2 models may consume more disk space than Jena1 models. This is due to the different table layouts used in Jena1 and 
   Jena2. In Jena1, all resources were stored in a separate table that was referenced 
   from the statement table. Similarly for all literals. This greatly reduced space 
   consumption since resources and literals that appeared in multiple statements 
@@ -281,14 +243,24 @@ release or in the final, full featured Jena2 release.</p>
 
 
 
-  <p>In Jena2, <i>short</i> resources and <i>short</i> literals may be stored directly in the statement table.
+  <p>In Jena2, <i>short</i> resources and <i>short</i> literals are stored directly in the statement table.
   Separate tables for resources and literals exist but are only used for objects
-  whose length exceeds a database-dependent threshold (currently, 250 bytes for
-  all database engines). Consequently, Jena2 requires fewer join operations than 
-  Jena1 at the expense of more memory since a resource or literal may be stored 
-  multiple times. For the final release, Jena2 will support namespace 
-  compression for the statement table which should  reduce space 
-  consumption.</p>
+  whose length exceeds some threshold. The threshold has a database-dependent 
+  default but may be redefined by users (see <a href="options.html">LongObjectLength</a>). Consequently, Jena2 requires fewer join operations than 
+  Jena1 at the expense of greater memory consumption. If disk space consumption 
+  is deemed excessive, two options may be used to reduce the amount of space 
+  used, <a href="options.html">DoCompressURI</a>&nbsp; and 
+  &nbsp;<a href="options.html">LongObjectLength </a>.</p>
+
+
+
+  <p>Little performance tuning has been done. For loading large databases, we 
+  have found two techniques can help. First, if the dataset to be loaded 
+  contains no duplicate statements, the option 
+  <a href="options.html">DoDuplicateCheck</a> &nbsp;may be used to disable checking for duplicate statements on 
+  insertion. Another option is to manually delete the database indexes and then 
+  recreate them after the loading has completed. Unfortunately, Jena2 does not 
+  currently support a utility to do this on behalf of users.</p>
 
 
 
