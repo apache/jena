@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.2 2003-03-28 19:18:14 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.3 2003-04-01 10:44:56 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -128,7 +128,7 @@ PARSER_END(RDFParser)
 // No kleene star - there can only be one document level element.
 void rdfFile(XMLContext ctxt) :     {}   
 {   
-   white1(false)
+   whiteOrErr()
    rdfFileSub(ctxt)
    white1(false)
    
@@ -146,6 +146,9 @@ void white() :                         {}
 
 void white1(boolean warnOnPi) :         {}
 {  ( oneWhite(warnOnPi) ) * 
+}
+void whiteOrErr() :                     {}
+{  ( oneWhite(true)| warning() ) * 
 }
 
 void oneWhite(boolean warnOnPi) :      { Token w; }
@@ -389,6 +392,7 @@ Object propEltValue(XMLContext ctxt) : { String xml;
                                          AResource daml;
                                          ARPString dtLex;
                                          URIReference dtURI;
+                                         Location wh;
                                        }
 { 
                              LOOKAHEAD(2) 
@@ -398,10 +402,11 @@ Object propEltValue(XMLContext ctxt) : { String xml;
                                          // Allow garbage collector
                                          // to operate for very large 
                                          // xml:literals
+                                         wh = parseType.location;
                                          parseType = null; 
                                        }
    ( warning() ) *
-   xml=litValue(ctxt.getNamespaces())
+   xml=litValue(ctxt.getNamespaces(),wh)
                                        { return 
                                           new ARPString(xml,
                                                  ctxt.getLang(),
@@ -712,7 +717,7 @@ void warning()                       : { Token t; }
 // Entry point for a file containing RDF somewhere
 // indicated by the rdf:RDF element.
 void embeddedFile(XMLContext ctxt)    : {}
-{  white1(false)
+{  whiteOrErr()
    root(ctxt)
    white1(false)
 }
@@ -890,10 +895,13 @@ void litContent(StringBuffer val,Map allNs, Map ns)
    saxEx()   
 }
 
-String litValue(Map allNs)           : { StringBuffer buf = new StringBuffer(); 
+String litValue(Map allNs, Location wh): { StringBuffer buf = new StringBuffer(); 
                                        }
 { ( litContent(buf,allNs,X.xmlNameSpace()) ) *                
-                                       { return buf.toString(); }
+                                       { String r = buf.toString(); 
+                                         X.checkEncoding(r,wh);
+                                         return r;
+                                       }
 }
 JAVACODE
 void error_recovery(ParseException e) throws ParseException {

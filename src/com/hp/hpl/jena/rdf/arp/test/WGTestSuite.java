@@ -286,7 +286,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         sub.addTest(test);
     }
 
-    private static String errorLevelName[] =
+    final static String errorLevelName[] =
         new String[] { "warning", "error", "fatal error" };
     interface Act {
         void act(Resource r) throws RDFException;

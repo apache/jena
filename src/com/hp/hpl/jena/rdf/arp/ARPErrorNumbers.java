@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.3 2003-03-29 09:42:00 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.4 2003-04-01 10:44:56 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -330,6 +330,15 @@ public interface ARPErrorNumbers {
      * error in strict mode.
      */
     public int WARN_BAD_XML_NAMESPACE_URI = 128;
+    
+    /**
+     * ARP was called with an InputSteamReader or a FileReader which used
+     * an encoding differnt from that in the XML declaration. The usual fix
+     * is to use an InputStream or a FileInputStream instead. (W129).  
+     * A warning in default mode, an error in strict mode.
+     * @see ERR_ENCODING_MISMATCH
+     */
+    public int WARN_ENCODING_MISMATCH = 129;
 
     /** Should not happen. 
         Please report occurrence to jjc@hpl.hp.com with test case, if possible. 
@@ -390,6 +399,17 @@ public interface ARPErrorNumbers {
     * Treated as an error in both default and strict modes. (E209)
     */
     public int ERR_SAX_ERROR = 209;
+    
+
+    /**
+     * ARP was called with an InputSteamReader or a FileReader which used
+     * an encoding differnt from that in the XML declaration. Moreover, this
+     * was detected as probably significant (i.e. the document includes
+     * characters outside the ascii range). The usual fix is to use an
+     * InputStream or a FileInputStream instead. (E210).
+     * @see WARN_ENCODING_MISMATCH
+     */
+    public int ERR_ENCODING_MISMATCH = 210;
     /**   The error recovery code failed; this can occur. (E300)
     **/
     public int ERR_UNABLE_TO_RECOVER = 300;
