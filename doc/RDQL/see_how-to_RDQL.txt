@@ -1,1 +1,0 @@
-The RDQL file shave moved to <Jena>/doc/how-to/RDQL/
