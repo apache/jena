@@ -14,7 +14,7 @@ package com.hp.hpl.jena.graph;
 
 public class Node_ANY extends Node_Fluid
     {
-    public Node_ANY() { super( "" ); }
+    /* package */ Node_ANY() { super( "" ); }
     
     /** Node_ANY's are only equal to other Node_ANY's */
     public boolean equals( Object other )

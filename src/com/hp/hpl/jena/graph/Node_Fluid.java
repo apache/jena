@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Fluid.java,v 1.2 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Node_Fluid.java,v 1.3 2004-03-20 09:28:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -13,7 +13,7 @@ package com.hp.hpl.jena.graph;
 */
 public abstract class Node_Fluid extends Node
     {
-    public Node_Fluid(Object label)
+    protected Node_Fluid(Object label)
         { super(label); }
 
     public boolean isConcrete()

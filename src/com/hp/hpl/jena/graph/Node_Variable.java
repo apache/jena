@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Variable.java,v 1.8 2003-10-13 15:02:28 chris-dollin Exp $
+  $Id: Node_Variable.java,v 1.9 2004-03-20 09:28:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -15,7 +15,7 @@ package com.hp.hpl.jena.graph;
 
 public class Node_Variable extends Node_Fluid
     {
-    public Node_Variable( Object name )
+    protected Node_Variable( Object name )
         { super( name ); }
 
     public String getName()

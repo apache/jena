@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Blank.java,v 1.6 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Node_Blank.java,v 1.7 2004-03-20 09:28:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.*;
 
 public class Node_Blank extends Node_Concrete
     {    
-    Node_Blank( Object id ) { super( id ); }
+    /* package */ Node_Blank( Object id ) { super( id ); }
 
     public boolean isBlank() { return true; }
 

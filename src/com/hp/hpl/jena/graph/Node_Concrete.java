@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Concrete.java,v 1.3 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Node_Concrete.java,v 1.4 2004-03-20 09:28:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -13,8 +13,8 @@ package com.hp.hpl.jena.graph;
 */
 public abstract class Node_Concrete extends Node
     {
-    public Node_Concrete( Object label )
-        {  super(label); }
+    protected Node_Concrete( Object label )
+        {  super( label ); }
         
     public boolean isConcrete()
         { return true; }

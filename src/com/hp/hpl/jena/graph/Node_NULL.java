@@ -13,7 +13,7 @@ package com.hp.hpl.jena.graph;
 
 public class Node_NULL extends Node_Concrete
     {
-    public Node_NULL() { super( "" ); }
+    /* package */  Node_NULL() { super( "" ); }
     
     /** Node_NULL's are equal to no null nodes; strictly speaking,
      *  this incorrect but suits our purposes. really want an isNull

@@ -28,7 +28,7 @@ import com.hp.hpl.jena.vocabulary.DB;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public abstract class DBProp {
 
@@ -106,9 +106,9 @@ public abstract class DBProp {
 		return (hostname + uid.toString()).replace('.','_').replace(':','_').replace('-','_');
 	}
 
-	public static Node_URI generateNodeURI() {
+	public static Node generateNodeURI() {
 		String generateUniqueID = null;
-		return new Node_URI(DB.uri + generateUniqueID());
+		return Node.createURI( DB.uri + generateUniqueID() );
 	}
 	
 
