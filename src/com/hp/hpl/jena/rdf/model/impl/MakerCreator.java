@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MakerCreator.java,v 1.2 2003-08-27 13:05:53 andy_seaborne Exp $
+  $Id: MakerCreator.java,v 1.3 2003-09-08 11:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.graph.Reifier;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.vocabulary.JMS;
 
 /**
@@ -27,10 +28,10 @@ class MakerCreator
     	@param root the entity which may have the property
     	@return the reification style given by the property, or Standard if none
      */
-    public Reifier.Style style( Model desc, Resource root )
+    public ReificationStyle style( Model desc, Resource root )
         {
         Statement st = desc.getProperty( root, JMS.reificationMode );
-        return st == null ? Reifier.Standard : JMS.findStyle( st.getObject() );
+        return st == null ? ReificationStyle.Standard : JMS.findStyle( st.getObject() );
         } 
     }
 

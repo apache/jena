@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery1.java,v 1.2 2003-08-27 12:56:19 andy_seaborne Exp $
+  $Id: AbstractTestQuery1.java,v 1.3 2003-09-08 11:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.db.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -27,7 +28,7 @@ public abstract class AbstractTestQuery1 extends GraphTestBase
         { super(name); }
 
     public abstract Graph getGraph();
-	public abstract Graph getGraph(Reifier.Style style);
+	public abstract Graph getGraph(ReificationStyle style);
 
     
     // in the stmt strings below, L indicates a long (object or predicate)
@@ -284,8 +285,8 @@ public abstract class AbstractTestQuery1 extends GraphTestBase
      
     public void testBinding1( )
         {
-        Graph g = getGraph(Reifier.Standard);
-        Graph gc = getGraph (Reifier.Convenient);
+        Graph g = getGraph(ReificationStyle.Standard);
+        Graph gc = getGraph (ReificationStyle.Convenient);
         loadGraph(g); loadGraph(gc);
         
         Query q;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.45 2003-09-08 10:54:58 chris-dollin Exp $
+  $Id: Model.java,v 1.46 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -63,7 +63,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.45 $Date: 2003/09/03 13:41:05 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.46 $Date: 2003/09/08 10:54:58 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -774,7 +774,7 @@ public interface Model
         Answer the reification style of the model.
      	@return the reification style
     */
-    Reifier.Style getReificationStyle();
+    ReificationStyle getReificationStyle();
 
 	/** Create a new model containing the statements matching a query.
 	 *
@@ -957,5 +957,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.45 2003-09-08 10:54:58 chris-dollin Exp $
+ * $Id: Model.java,v 1.46 2003-09-08 11:28:23 chris-dollin Exp $
  */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.15 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: ModelTestBase.java,v 1.16 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 
@@ -113,7 +114,7 @@ public class ModelTestBase extends GraphTestBase
         @return a model containing those facts
     */
     public static Model modelWithStatements( String facts )
-        { return modelWithStatements( Reifier.Standard, facts ); }
+        { return modelWithStatements( ReificationStyle.Standard, facts ); }
 
     /**
         makes a model with a given reiifcation style, initialised with statements parsed 
@@ -123,7 +124,7 @@ public class ModelTestBase extends GraphTestBase
         @param facts a string in semicolon-separated "S P O" format
         @return a model containing those facts
     */        
-    public static Model modelWithStatements( Reifier.Style style, String facts )
+    public static Model modelWithStatements( ReificationStyle style, String facts )
         { return modelAdd( ModelFactory.createDefaultModel( style ), facts ); }
          
      /**

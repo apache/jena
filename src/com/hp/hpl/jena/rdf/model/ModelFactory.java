@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.27 2003-08-27 14:07:19 andy_seaborne Exp $
+  $Id: ModelFactory.java,v 1.28 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.daml.impl.DAMLModelImpl;
@@ -35,19 +36,19 @@ public class ModelFactory extends ModelFactoryBase
         The standard reification style; quadlets contribute to reified statements,
         and are visible to listStatements().
     */
-    public static final Reifier.Style Standard = Reifier.Standard;
+    public static final ReificationStyle Standard = ReificationStyle.Standard;
     
     /**
         The convenient reification style; quadlets contribute to reified statements,
         but are invisible to listStatements().
     */
-    public static final Reifier.Style Convenient = Reifier.Convenient;
+    public static final ReificationStyle Convenient = ReificationStyle.Convenient;
     
     /**
         The minimal reification style; quadlets do not contribute to reified statements,
         and are visible to listStatements(). 
     */
-    public static final Reifier.Style Minimal = Reifier.Minimal;
+    public static final ReificationStyle Minimal = ReificationStyle.Minimal;
     
     /**
         Answer a ModelSpec which can create models to the specifcations in the RDF
@@ -84,7 +85,7 @@ public class ModelFactory extends ModelFactoryBase
     /** 
         Answer a new memory-based model with the given reification style
     */
-    public static Model createDefaultModel( Reifier.Style style )
+    public static Model createDefaultModel( ReificationStyle style )
         { return new ModelCom( new GraphMem( style ) ); }   
 
     /**
@@ -132,7 +133,7 @@ public class ModelFactory extends ModelFactoryBase
         @param style the desired reification style
         @return a ModelMaker linked to the files in the root
     */
-    public static ModelMaker createFileModelMaker( String root, Reifier.Style style )
+    public static ModelMaker createFileModelMaker( String root, ReificationStyle style )
         { return new ModelMakerImpl( new FileGraphMaker( root, style ) ); }
         
     /**
@@ -152,7 +153,7 @@ public class ModelFactory extends ModelFactoryBase
         @param style the reification style for the model
         @return a ModelMaker that constructs memory-based models
     */
-      public static ModelMaker createMemModelMaker( Reifier.Style style )
+      public static ModelMaker createMemModelMaker( ReificationStyle style )
         { return new ModelMakerImpl( new SimpleGraphMaker( style ) ); }
         
     /**
@@ -176,7 +177,7 @@ public class ModelFactory extends ModelFactoryBase
         @return a ModelMaker whose Models are held in the database at c
     */        
     public static ModelMaker createModelRDBMaker
-        ( IDBConnection c, Reifier.Style style )
+        ( IDBConnection c, ReificationStyle style )
         { return new ModelMakerImpl( new GraphRDBMaker( c, style ) ); }
         
         

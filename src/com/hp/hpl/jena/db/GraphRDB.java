@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -127,13 +127,13 @@ public class GraphRDB extends GraphBase implements Graph {
     /**
         Answer the integer representing the RDB reifier style given the Reifier style.
     */
-	public static int styleRDB( Reifier.Style style )
+	public static int styleRDB( ReificationStyle style )
         {
-        if (style == Reifier.Standard) 
+        if (style == ReificationStyle.Standard) 
             return GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING;
-        if (style == Reifier.Convenient)
+        if (style == ReificationStyle.Convenient)
             return GraphRDB.OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS;
-        if (style == Reifier.Minimal)
+        if (style == ReificationStyle.Minimal)
             return GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS;
         throw new JenaException( "unsupported reification style" );
         }

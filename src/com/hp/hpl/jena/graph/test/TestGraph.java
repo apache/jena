@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.14 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: TestGraph.java,v 1.15 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -15,6 +15,7 @@ package com.hp.hpl.jena.graph.test;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.shared.*;
 
 import junit.framework.*;
 
@@ -62,21 +63,21 @@ public class TestGraph extends GraphTestBase
         {
         public TestStandardGraph( String name ) { super( name ); }
         public static TestSuite suite() { return new TestSuite( TestStandardGraph.class ); }
-        public Graph getGraph() { return new GraphMem( Reifier.Standard ); }
+        public Graph getGraph() { return new GraphMem( ReificationStyle.Standard ); }
         }
         
     public static class TestMinimalGraph extends AbstractTestGraph
         {
         public TestMinimalGraph( String name ) { super( name ); }
         public static TestSuite suite() { return new TestSuite( TestMinimalGraph.class ); }
-        public Graph getGraph() { return new GraphMem( Reifier.Minimal ); }
+        public Graph getGraph() { return new GraphMem( ReificationStyle.Minimal ); }
         }
         
     public static class TestConvenientGraph extends AbstractTestGraph
         {
         public TestConvenientGraph( String name ) { super( name ); }
         public static TestSuite suite() { return new TestSuite( TestConvenientGraph.class ); }
-        public Graph getGraph() { return new GraphMem( Reifier.Convenient ); }
+        public Graph getGraph() { return new GraphMem( ReificationStyle.Convenient ); }
         }
                 
     }

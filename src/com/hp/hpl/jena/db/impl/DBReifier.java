@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBReifier.java,v 1.11 2003-08-27 12:56:39 andy_seaborne Exp $
+  $Id: DBReifier.java,v 1.12 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -57,7 +57,7 @@ public class DBReifier implements Reifier
 	public Graph getParentGraph() { 
     	return m_parent; }
         
-    public Style getStyle()
+    public ReificationStyle getStyle()
         { throw new RuntimeException( "NOT YET IMPLEMENTED" ); }
 
 	/* (non-Javadoc)

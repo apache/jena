@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleGraphMaker.java,v 1.8 2003-08-27 13:00:58 andy_seaborne Exp $
+  $Id: SimpleGraphMaker.java,v 1.9 2003-09-08 11:28:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -26,14 +26,14 @@ public class SimpleGraphMaker extends BaseGraphMaker
         Initialise a SimpleGraphMaker with the given style.
         @param style the reification style of all the graphs we create
     */
-    public SimpleGraphMaker( Reifier.Style style )
+    public SimpleGraphMaker( ReificationStyle style )
         { super( style ); }
        
     /**
         Initialise a SimpleGraphMaker with reification style Minimal
     */ 
     public SimpleGraphMaker()
-        { this( Reifier.Minimal ); }
+        { this( ReificationStyle.Minimal ); }
        
     /**
         Answer the RDFS class of this Maker

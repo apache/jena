@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelCom.java,v 1.77 2003-09-08 10:54:58 chris-dollin Exp $
+  $Id: ModelCom.java,v 1.78 2003-09-08 11:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -30,7 +30,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.77 $' Date='$Date: 2003-09-08 10:54:58 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.78 $' Date='$Date: 2003-09-08 11:28:22 $'
  */
 
 public class ModelCom 
@@ -946,7 +946,7 @@ implements Model, PrefixMapping, ModelLock
         return this;
     }
     
-    public Reifier.Style getReificationStyle()
+    public ReificationStyle getReificationStyle()
         { return modelReifier.getReificationStyle(); }
         
     /**

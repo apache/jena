@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraphMaker.java,v 1.3 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: TestFileGraphMaker.java,v 1.4 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
-
+import com.hp.hpl.jena.shared.*;
 import junit.framework.*;
 
 /**
@@ -23,7 +23,7 @@ public class TestFileGraphMaker extends AbstractTestGraphMaker
         { return new TestSuite( TestFileGraphMaker.class ); }
 
     public GraphMaker getGraphFactory()
-        { return new FileGraphMaker( getTempDirectory(), Reifier.Minimal, true ); } 
+        { return new FileGraphMaker( getTempDirectory(), ReificationStyle.Minimal, true ); } 
     }
 
 

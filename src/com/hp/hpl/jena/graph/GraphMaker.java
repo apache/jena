@@ -1,10 +1,13 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMaker.java,v 1.8 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: GraphMaker.java,v 1.9 2003-09-08 11:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
+
+import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.shared.*;
 
 /**
     A factory for providing instances of named graphs with appropriate storage models.
@@ -20,7 +23,7 @@ public interface GraphMaker
         Answer the reification style of all the graphs that this GraphMaker constructs.
         @return the reification style given to all created graphs
     */
-    public Reifier.Style getReificationStyle();
+    public ReificationStyle getReificationStyle();
     
     /**
         Answer the default graph of this ModelMaker. The same graph is returned on
@@ -126,8 +129,8 @@ public interface GraphMaker
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  *
- * Last modified on   $Date: 2003-08-27 13:01:00 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2003-09-08 11:28:22 $
+ *               by   $Author: chris-dollin $
 
  *****************************************************************************/
 

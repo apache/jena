@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.17 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: TestModelSpec.java,v 1.18 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.ontology.*;
 
@@ -244,7 +245,7 @@ public class TestModelSpec extends ModelTestBase
     public void testCreateModelMaker( Resource style, Resource cl, Class required )
         {
         Resource me = ResourceFactory.createResource();
-        Reifier.Style wanted = JMS.findStyle( style );
+        ReificationStyle wanted = JMS.findStyle( style );
         Model spec = modelWithStatements( "" )
             .add( me, RDF.type, cl )
             .add( me, JMS.reificationMode, style );
@@ -266,7 +267,7 @@ public class TestModelSpec extends ModelTestBase
         assertTrue( desc.contains( me, RDF.type, JMS.MemMakerSpec ) );
         assertTrue( desc.contains( me, JMS.reificationMode, JMS.rsStandard ) );
         assertTrue( mm.getGraphMaker() instanceof SimpleGraphMaker );
-        assertEquals( Reifier.Standard , mm.getGraphMaker().getReificationStyle() );
+        assertEquals( ReificationStyle.Standard , mm.getGraphMaker().getReificationStyle() );
         }
         
     public void testCreatePlainFileModel()
@@ -282,7 +283,7 @@ public class TestModelSpec extends ModelTestBase
         assertTrue( desc.contains( me, RDF.type, JMS.FileMakerSpec ) );
         assertTrue( desc.contains( me, JMS.reificationMode, JMS.rsMinimal ) );
         assertTrue( mm.getGraphMaker() instanceof FileGraphMaker );
-        assertEquals( Reifier.Minimal , mm.getGraphMaker().getReificationStyle() );
+        assertEquals( ReificationStyle.Minimal , mm.getGraphMaker().getReificationStyle() );
         }
 
 	/**

@@ -1,72 +1,43 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestQuery1.java,v 1.3 2003-09-08 11:28:22 chris-dollin Exp $
+  $Id: ReificationStyle.java,v 1.1 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.db.test;
-
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.shared.*;
-
-import junit.framework.*;
+package com.hp.hpl.jena.shared;
 
 /**
-    Apply the abstract query tests to an RDB graph.
- 	@author kers
+    Reification styles have two boolean components: whether the
+    graph+reifier will intercept reification triples or not [if not, the only
+    in-Jena reification is through the reifyAs operation], and whether or
+    not reification triples will be visible in the graph.
 */
-public class TestQuery1 extends AbstractTestQuery1
+public class ReificationStyle
     {
-    public TestQuery1( String name )
-        {
-        	super( name );
-        }
-
-
-	public static TestSuite suite()
-        { return new TestSuite( TestQuery1.class ); }     
-
-        
-    private IDBConnection theConnection;
-    private int count = 0;
+    public static final ReificationStyle Standard = new ReificationStyle( true, false );
+    public static final ReificationStyle Convenient = new ReificationStyle( true, true );
+    public static final ReificationStyle Minimal = new ReificationStyle( false, true );
     
-    public void setUp()
+    private boolean intercept;
+    private boolean conceal;
+    
+    public ReificationStyle( boolean intercept, boolean conceal )
         {
-        theConnection = TestConnection.makeAndCleanTestConnection();
+        this.intercept = intercept;
+        this.conceal = conceal;
         }
         
-    public void tearDown()
-        {
-        try { theConnection.close(); }
-        catch (Exception e) { throw new JenaException( e ); }
-        }
-
-	public Graph getGraph ( ) {
-		return getGraph(ReificationStyle.Minimal);
-	}
+    public boolean intercepts()
+        { return intercept; }
         
-    public Graph getGraph ( ReificationStyle style )
-        { 
-        return new GraphRDB
-            (
-            theConnection,
-            "testGraph-" + count ++, 
-            theConnection.getDefaultModelProperties().getGraph(),
-			GraphRDB.styleRDB(style), 
-            // GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS, 
-            true
-            );
-        }
-
+    public boolean conceals()
+        { return conceal; }
+        
+    public String toString()
+        { return "<style int=" + intercept + ", con=" + conceal + ">"; }
     }
-
-        
-
-
-
 /*
-    (c) Copyright 2003 Hewlett-Packard Development Company, LP
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

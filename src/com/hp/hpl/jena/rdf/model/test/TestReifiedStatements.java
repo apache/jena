@@ -3,11 +3,13 @@ package com.hp.hpl.jena.rdf.model.test;
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifiedStatements.java,v 1.10 2003-09-08 10:54:45 chris-dollin Exp $
+  $Id: TestReifiedStatements.java,v 1.11 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 import com.hp.hpl.jena.graph.Reifier;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.ReificationStyle;
+
 import junit.framework.*;
 
 /**
@@ -32,7 +34,7 @@ public class TestReifiedStatements extends ModelTestBase
     public static class TestStandard extends AbstractTestReifiedStatements
         {
         public TestStandard( String name ) { super( name ); }
-        public static final Reifier.Style style = ModelFactory.Standard;
+        public static final ReificationStyle style = ModelFactory.Standard;
         public Model getModel() { return ModelFactory.createDefaultModel( style ); } 
         public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
         }
@@ -40,7 +42,7 @@ public class TestReifiedStatements extends ModelTestBase
     public static class TestConvenient extends AbstractTestReifiedStatements
         {
         public TestConvenient( String name ) { super( name ); }
-        public static final Reifier.Style style = ModelFactory.Convenient;
+        public static final ReificationStyle style = ModelFactory.Convenient;
         public Model getModel() { return ModelFactory.createDefaultModel( style ); } 
         public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
         }
@@ -48,7 +50,7 @@ public class TestReifiedStatements extends ModelTestBase
     public static class TestMinimal extends AbstractTestReifiedStatements
         {
         public TestMinimal( String name ) { super( name ); }
-        public static final Reifier.Style style = ModelFactory.Minimal;
+        public static final ReificationStyle style = ModelFactory.Minimal;
         public Model getModel() { return ModelFactory.createDefaultModel( style); } 
         public void testStyle() { assertEquals( style, getModel().getReificationStyle() ); }
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.13 2003-08-27 12:56:40 andy_seaborne Exp $
+  $Id: GraphRDBMaker.java,v 1.14 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
@@ -34,7 +35,7 @@ public class GraphRDBMaker extends BaseGraphMaker
         Construct a new GraphRDB factory based on the supplied DB connection.
         @param c the database connection
     */
-    public GraphRDBMaker( IDBConnection c, Reifier.Style style ) 
+    public GraphRDBMaker( IDBConnection c, ReificationStyle style ) 
         {
         super( style ); 
         this.c = c; 

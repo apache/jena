@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.9 2003-08-27 13:00:36 andy_seaborne Exp $
+  $Id: AbstractTestReifier.java,v 1.10 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -21,7 +21,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public abstract Graph getGraph();
     
-    public abstract Graph getGraph( Reifier.Style style );
+    public abstract Graph getGraph( ReificationStyle style );
 
     protected final Graph getGraphWith( String facts )
         {
@@ -53,7 +53,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testIntercept()
         {
-        Graph g = getGraph( Reifier.Convenient );
+        Graph g = getGraph( ReificationStyle.Convenient );
         Reifier r = g.getReifier();
         Node S = node( "sub" ), O = node( "obj" );
         Node RS = node( "http://example.org/type" );
@@ -71,7 +71,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
     */
     public void testStandard()
         {
-        Graph g = getGraph( Reifier.Standard );
+        Graph g = getGraph( ReificationStyle.Standard );
         assertFalse( g.getReifier().hasTriple( triple( "s p o" ) ) );
         g.add( Triple.create( "x rdf:subject s" ) );
         assertEquals( 1, g.size() );
@@ -89,9 +89,9 @@ public abstract class AbstractTestReifier extends GraphTestBase
     */
     public void testStandardExplode()
         {
-        Graph g = getGraph( Reifier.Standard );
+        Graph g = getGraph( ReificationStyle.Standard );
         g.getReifier().reifyAs( node( "a" ), triple( "p Q r" ) );
-        Graph r = Factory.createDefaultGraph( Reifier.Minimal );
+        Graph r = Factory.createDefaultGraph( ReificationStyle.Minimal );
         graphAdd( r, "a rdf:type rdf:Statement; a rdf:subject p; a rdf:predicate Q; a rdf:object r" );
         assertEquals( 4, g.size() );
         assertEquals( "", r, g );
@@ -99,14 +99,14 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testMinimalExplode()
         {
-        Graph g = getGraph( Reifier.Minimal );
+        Graph g = getGraph( ReificationStyle.Minimal );
         g.getReifier().reifyAs( node( "a" ), triple( "p Q r" ) );
         assertEquals( 0, g.size() );
         }
         
     public void testHiddenTriples()
         {
-        Graph g = getGraph( Reifier.Convenient );
+        Graph g = getGraph( ReificationStyle.Convenient );
         Reifier r = g.getReifier();
         Node S = node( "SSS" ), P = node( "PPP" );
         g.add( new Triple( S, RDF.Nodes.predicate, P ) );
@@ -203,7 +203,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testKevinCaseA()
         {
-        Graph G = getGraph( Reifier.Standard );
+        Graph G = getGraph( ReificationStyle.Standard );
         Node X = node( "x" ), a = node( "a" ), b = node( "b" ), c = node( "c" );
         G.add( new Triple( X, RDF.Nodes.type, RDF.Nodes.Statement ) );
         G.getReifier().reifyAs( X, new Triple( a, b, c ) ); 
@@ -211,7 +211,7 @@ public abstract class AbstractTestReifier extends GraphTestBase
         
     public void testKevinCaseB()
         {
-        Graph G = getGraph( Reifier.Standard );
+        Graph G = getGraph( ReificationStyle.Standard );
         Node X = node( "x" ), Y = node( "y" );
         Node a = node( "a" ), b = node( "b" ), c = node( "c" );
         G.add( new Triple( X, RDF.Nodes.subject, Y ) );

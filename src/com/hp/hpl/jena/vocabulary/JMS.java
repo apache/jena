@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.14 2003-08-27 13:59:20 chris-dollin Exp $
+  $Id: JMS.java,v 1.15 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.*;
 
 /**
     The Jena Model Specification vocabulary, schema, and some conversion methods.
@@ -215,26 +216,26 @@ public class JMS
         @param style the reification style for which the JMS representation is required
         @return the Node version of the appropriate JMS.rs[name] vocabulary item
     */
-    public static Node styleAsJMS( Reifier.Style style )
+    public static Node styleAsJMS( ReificationStyle style )
         {
-        if (style == Reifier.Minimal) return JMS.rsMinimal.asNode();
-        if (style == Reifier.Convenient) return JMS.rsConvenient.asNode();
-        if (style == Reifier.Standard) return JMS.rsStandard.asNode();
+        if (style == ReificationStyle.Minimal) return JMS.rsMinimal.asNode();
+        if (style == ReificationStyle.Convenient) return JMS.rsConvenient.asNode();
+        if (style == ReificationStyle.Standard) return JMS.rsStandard.asNode();
         return null;
         }
 
     /**
-        Answer the Reifier.Style value named by the argument, which should be a
+        Answer the Reifier.ReificationStyle value named by the argument, which should be a
         JMS.rs[something] value
         
         @param style the JMS name of the reifier style
-        @return the actual Reifier.Style value
+        @return the actual Reifier.ReificationStyle value
     */
-    public static Reifier.Style findStyle( RDFNode style )
+    public static ReificationStyle findStyle( RDFNode style )
         {
-        if (style.equals(JMS.rsStandard )) return Reifier.Standard;    
-        if (style.equals(JMS.rsMinimal)) return Reifier.Minimal;    
-        if (style.equals( JMS.rsConvenient)) return Reifier.Convenient;
+        if (style.equals(JMS.rsStandard )) return ReificationStyle.Standard;    
+        if (style.equals(JMS.rsMinimal)) return ReificationStyle.Minimal;    
+        if (style.equals( JMS.rsConvenient)) return ReificationStyle.Convenient;
         return null;
         }
     }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.24 2003-08-27 15:17:52 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.25 2003-09-08 11:28:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -30,15 +30,15 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
 
 public abstract class GraphBase implements Graph {
 
-    protected final Reifier.Style style;
+    protected final ReificationStyle style;
     
     protected boolean closed = false;
     
-    public GraphBase( Reifier.Style style )
+    public GraphBase( ReificationStyle style )
         { this.style = style; }
         
     public GraphBase()
-        { this( Reifier.Minimal ); }
+        { this( ReificationStyle.Minimal ); }
         
     protected void checkOpen()
         { if (closed) throw new ClosedException( "already closed", this ); }

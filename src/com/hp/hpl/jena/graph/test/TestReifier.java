@@ -1,13 +1,15 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.15 2003-08-27 13:00:37 andy_seaborne Exp $
+  $Id: TestReifier.java,v 1.16 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.shared.*;
+
 import junit.framework.*;
 
 /**
@@ -28,9 +30,9 @@ public class TestReifier extends AbstractTestReifier
         }   
         
     public Graph getGraph()
-        { return getGraph( Reifier.Standard ); }       
+        { return getGraph( ReificationStyle.Standard ); }       
         
-    public Graph getGraph( Reifier.Style style )
+    public Graph getGraph( ReificationStyle style )
         { return new GraphMem( style ); }
     }
 

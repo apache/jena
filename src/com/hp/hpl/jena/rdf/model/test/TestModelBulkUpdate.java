@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelBulkUpdate.java,v 1.7 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: TestModelBulkUpdate.java,v 1.8 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -104,10 +104,10 @@ public class TestModelBulkUpdate extends ModelTestBase
         
     public void testBulkByModelReifying( boolean suppress )
         {
-        Model m = modelWithStatements( Reifier.Minimal, "a P b" );
+        Model m = modelWithStatements( ReificationStyle.Minimal, "a P b" );
         addReification( m, "x", "S P O" );
         addReification( m, "a", "x R y" );
-        Model target = modelWithStatements( Reifier.Minimal, "" );
+        Model target = modelWithStatements( ReificationStyle.Minimal, "" );
         target.add( m, suppress );
         target.setNsPrefixes( PrefixMapping.Standard );
         assertIsoModels( (suppress ? modelWithStatements("a P b") : m), target );
@@ -121,7 +121,7 @@ public class TestModelBulkUpdate extends ModelTestBase
         
     public void testBulkDeleteByModelReifying( boolean suppress )
         {
-        Model target = modelWithStatements( Reifier.Minimal, "" );
+        Model target = modelWithStatements( ReificationStyle.Minimal, "" );
         addReification( target, "x", "S P O" );
         addReification( target, "y", "A P B" ); 
         Model remove = modelWithStatements( "" );

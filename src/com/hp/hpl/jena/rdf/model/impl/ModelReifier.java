@@ -1,12 +1,13 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.9 2003-09-08 10:54:58 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.10 2003-09-08 11:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.*;
 import com.hp.hpl.jena.util.iterator.*;
@@ -39,7 +40,7 @@ public class ModelReifier
         this.reifier = model.asGraph().getReifier();
         }
         
-    public Reifier.Style getReificationStyle()
+    public ReificationStyle getReificationStyle()
         { return reifier.getStyle(); }
         
     /**

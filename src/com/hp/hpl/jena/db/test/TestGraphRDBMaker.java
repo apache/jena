@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDBMaker.java,v 1.3 2003-08-27 12:56:20 andy_seaborne Exp $
+  $Id: TestGraphRDBMaker.java,v 1.4 2003-09-08 11:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
+import com.hp.hpl.jena.shared.*;
 
 import junit.framework.*;
 
@@ -43,7 +44,7 @@ public class TestGraphRDBMaker extends AbstractTestGraphMaker
         Invent a new factory on the connection, record it, and return it.    
     */
     public GraphMaker getGraphFactory()
-        { return current = new GraphRDBMaker( connection, Reifier.Minimal ); }    
+        { return current = new GraphRDBMaker( connection, ReificationStyle.Minimal ); }    
         
     /**
         Run the parent teardown, and then remove all the freshly created graphs.

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.8 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: Factory.java,v 1.9 2003-09-08 11:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;
 
@@ -23,12 +24,12 @@ public class Factory
         Answer a memory-based Graph with the Standard reification style.
     */
     public static Graph createDefaultGraph()
-        { return createDefaultGraph( Reifier.Standard ); }
+        { return createDefaultGraph( ReificationStyle.Standard ); }
         
     /**
         Answer a memory-based Graph with the given reification style.
     */
-    public static Graph createDefaultGraph( Reifier.Style style )
+    public static Graph createDefaultGraph( ReificationStyle style )
         { return new GraphMem( style ); }
         
     /**
@@ -36,7 +37,7 @@ public class Factory
         TODO answer this question ...
     */
     public static GraphMaker createRDBGraphFactory( IDBConnection c )
-        { return new GraphRDBMaker( c, Reifier.Minimal ); }
+        { return new GraphRDBMaker( c, ReificationStyle.Minimal ); }
               
     private Factory()
         { super(); }

@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.10 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: TestModelMakerImpl.java,v 1.11 2003-09-08 11:28:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 
@@ -135,7 +136,7 @@ public class TestModelMakerImpl extends ModelTestBase
         public MockGraphMaker( Graph graph )
             { this.graph = graph; }
             
-        public Reifier.Style getReificationStyle()
+        public ReificationStyle getReificationStyle()
             {
             history.add( "getReificationStyle()" );
             return null; 

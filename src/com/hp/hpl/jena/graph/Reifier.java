@@ -1,12 +1,12 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Reifier.java,v 1.21 2003-09-08 10:25:37 chris-dollin Exp $
+  $Id: Reifier.java,v 1.22 2003-09-08 11:28:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
-
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -18,37 +18,6 @@ import com.hp.hpl.jena.util.iterator.*;
 
 public interface Reifier extends GetTriple
     {
-    public static final Style Standard = new Style( true, false );
-    public static final Style Convenient = new Style( true, true );
-    public static final Style Minimal = new Style( false, true );
-    
-    /**
-        Reification styles have two boolean components: whether the
-        graph+reifier will intercept reification triples or not [if not, the only
-        in-Jena reification is through the reifyAs operation], and whether or
-        not reification triples will be visible in the graph.
-    */
-    public static class Style
-        {
-        private boolean intercept;
-        private boolean conceal;
-        
-        Style( boolean intercept, boolean conceal )
-            {
-            this.intercept = intercept;
-            this.conceal = conceal;
-            }
-            
-        public boolean intercepts()
-            { return intercept; }
-            
-        public boolean conceals()
-            { return conceal; }
-            
-        public String toString()
-            { return "<style int=" + intercept + ", con=" + conceal + ">"; }
-        }
-        
     /**
          return a read-only Graph of the triples used for reification.
     */    
@@ -57,7 +26,7 @@ public interface Reifier extends GetTriple
     /**
         Answer this reifier's style.
     */
-    Style getStyle();
+    ReificationStyle getStyle();
     
     /**
         get the Graph which uses this reifier.
