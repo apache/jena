@@ -1,7 +1,7 @@
 /*
      (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
      [See end of file]
-     $Id: AbstractTestReifierFragmentsMap.java,v 1.4 2004-09-21 09:19:38 chris-dollin Exp $
+     $Id: AbstractTestReifierFragmentsMap.java,v 1.5 2004-09-21 15:07:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -24,12 +24,7 @@ public abstract class AbstractTestReifierFragmentsMap extends GraphTestBase
     
     public void setUp()
         { fragMap = getFragmentsMap(); }
-    
-    public void testEmpty_emptyAllTriples()
-        {
-        assertEquals( tripleSet( "" ), iteratorToSet( fragMap.allTriples( triple( "?? ?? ??" ) ) ) );
-        }
-    
+
     public void testEmpty_emptyGraph()
         { assertIsomorphic( Graph.emptyGraph, fragMap.asGraph() ); }
     

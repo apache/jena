@@ -1,36 +1,49 @@
 /*
- (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
- [See end of file]
- $Id: ReifierFragmentsMap.java,v 1.5 2004-09-21 15:05:37 chris-dollin Exp $
- */
+     (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+     [See end of file]
+     $Id: ReifierFragmentHandler.java,v 1.1 2004-09-21 15:05:36 chris-dollin Exp $
+*/
 
 package com.hp.hpl.jena.graph.impl;
 
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 
 /**
-     ReifierFragmentsMap: how a SimpleReifier manages its incomplete reifications.
-     Most of the active operations are deferred to FragmentHandler.
+     ReifierFragmentHandler: instances of this class handle fragments of reifications,
+     ie the triples (tag rdf:subject/predicate/object X) and (tag rdf:type Statement).
+     They are delivered from FragmentHandler instances and remain bound to
+     their originating instance.
      
      @author kers
 */
-public interface ReifierFragmentsMap
+public interface ReifierFragmentHandler
     {
     /**
-         Answer the fragment map as a read-only Graph of quadlets. 
-    */
-    public abstract Graph asGraph();
+         
+     * @param n
+     * @param reified
+     * @return
+     */
+    public abstract boolean clashedWith( Node n, Triple reified );
 
     /**
-         Answer a FragmentHandler which can handle this fragment, or null if it isn't a
-         reification fragment.
-    */
-    public abstract ReifierFragmentHandler getFragmentSelector( Triple fragment );
+     * @param fragment
+     * @param tag
+     * @param object
+     * @return
+     */
+    public abstract Triple reifyCompleteQuad( Triple fragment, Node tag,
+            Node object );
 
     /**
-         Answer true iff this map has fragments associated with <code>tag</code>.
-    */
-    public abstract boolean hasFragments( Node tag );
+     * @param tag
+     * @param already
+     * @param fragment
+     * @return
+     */
+    public abstract Triple removeFragment( Node tag, Triple already,
+            Triple fragment );
     }
 
 /*

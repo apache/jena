@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.35 2004-09-20 14:42:19 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.36 2004-09-21 15:05:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -77,8 +77,8 @@ public class SimpleReifier implements Reifier
         { return tripleMap.tagIterator( t ); }
 
     /** 
-        reifiy a triple _t_ with tag _tag_. If a different triple is already
-        reified under _tag_, throw an AlreadyReifiedException.
+        reifiy <code>toReify</code> with tag <code>tag</code>. If a different triple is 
+        already reified under <code>tag</code>, throw an AlreadyReifiedException.
     */
     public Node reifyAs( Node tag, Triple toReify )
     	{
@@ -92,10 +92,11 @@ public class SimpleReifier implements Reifier
     	}
         
     /**
-     * @param tag
-     * @param toReify
-     * @param partial
-     */
+         Reify <code>toReify</code> under <code>tag</code>; there is no existing
+         complete reification. This code goes around the houses by adding the
+         fragments one-by-one and then seeing if that made a complete reification.
+         Perhaps there's a better way, but I couldn't see it. 
+    */
     protected void reifyNewTriple( Node tag, Triple toReify )
         {
         if (fragmentsMap.hasFragments( tag ))           
@@ -129,7 +130,7 @@ public class SimpleReifier implements Reifier
         {
         if (intercepting)
             {
-            SimpleReifierFragmentsMap.Slot s = fragmentsMap.getFragmentSelector( fragment );  
+            ReifierFragmentHandler s = fragmentsMap.getFragmentSelector( fragment );  
             if (s == null)
                 return false;
             else     
@@ -148,13 +149,13 @@ public class SimpleReifier implements Reifier
      * @param s
      * @param fragment
      */
-    protected void addFragment( SimpleReifierFragmentsMap.Slot s, Triple fragment )
+    protected void addFragment( ReifierFragmentHandler s, Triple fragment )
         {
         Node tag = fragment.getSubject(), object = fragment.getObject();
         Triple reified = tripleMap.getTriple( tag );
-        if (reified == null) 
+        if (reified == null)
             updateFragments( s, fragment, tag, object );
-        else if (s.clashedWith( fragmentsMap, object, reified )) 
+        else if (s.clashedWith( object, reified )) 
             tripleMap.removeTriple( tag, reified );
         }
 
@@ -164,17 +165,17 @@ public class SimpleReifier implements Reifier
      * @param tag
      * @param object
      */
-    private void updateFragments( SimpleReifierFragmentsMap.Slot s, Triple fragment, Node tag, Node object )
+    private void updateFragments( ReifierFragmentHandler s, Triple fragment, Node tag, Node object )
         {
-        Triple t = fragmentsMap.reifyCompleteQuad( s, fragment, tag, object );
-        if (t instanceof Triple) tripleMap.putTriple( fragment.getSubject(), t );
+        Triple t = s.reifyCompleteQuad( fragment, tag, object );
+        if (t instanceof Triple) tripleMap.putTriple( tag, t );
         }
 
     public boolean handledRemove( Triple fragment )
         {
         if (intercepting)
             {
-            SimpleReifierFragmentsMap.Slot s = fragmentsMap.getFragmentSelector( fragment );  
+            ReifierFragmentHandler s = fragmentsMap.getFragmentSelector( fragment );  
             if (s == null)
                 return false;
             else     
@@ -191,11 +192,11 @@ public class SimpleReifier implements Reifier
      * @param s
      * @param fragment
      */
-    private void removeFragment( SimpleReifierFragmentsMap.Slot s, Triple fragment )
+    private void removeFragment( ReifierFragmentHandler s, Triple fragment )
         {
         Node tag = fragment.getSubject();
         Triple already = (Triple) tripleMap.getTriple( tag );
-        Triple complete = fragmentsMap.removeFragment( s, tag, already, fragment );
+        Triple complete = s.removeFragment( tag, already, fragment );
         if (complete == null)
             tripleMap.removeTriple( tag );
         else
