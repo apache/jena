@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.11 2003-11-15 15:51:09 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.12 2003-11-22 14:29:06 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -44,6 +44,7 @@ class SubCategorize {
 	static private final int DL = Grammar.DL;
 
 	static private final int ObjectAction = Grammar.ObjectAction;
+	static private final int SubjectAction = Grammar.SubjectAction;
 
 	static final long FAILURE = -1;
 
@@ -202,6 +203,7 @@ class SubCategorize {
 		boolean bad = true;
 		boolean dl = true;
 		boolean objectAction = true;
+		boolean subjectAction = true;
 		int structuredAction = -1;
 		for (i = 0; i < s.length; i++)
 			for (j = 0; j < p.length; j++)
@@ -223,8 +225,11 @@ class SubCategorize {
 							dl = dl && ((action & DL) == DL);
 							objectAction =
 								objectAction
-									&& ((action & ObjectAction) == ObjectAction);
-							int sAction = action & ~(DL | ObjectAction);
+									&& ((action & ObjectAction) == ObjectAction);	
+							subjectAction =
+							subjectAction
+							&& ((action & SubjectAction) == SubjectAction);
+							int sAction = action & ~(DL | ObjectAction | SubjectAction);
 							if (structuredAction == -1)
 								structuredAction = sAction;
 							else if (structuredAction != sAction)
@@ -235,6 +240,7 @@ class SubCategorize {
 						dl = false;
 						structuredAction = 0;
 						objectAction = false;
+						subjectAction = false;
 					}
 
 					oks[i] = okp[j] = oko[k] = true;
@@ -262,7 +268,8 @@ class SubCategorize {
 		int o2 = getSubSet(o, oko);
 		int action =
 			(dl ? DL : 0)
-				| (objectAction ? ObjectAction : 0)
+				| (objectAction ? ObjectAction : 0)	
+		        | (subjectAction ? SubjectAction : 0)
 				| structuredAction;
 /*
 		if (dbgMe && Arrays.binarySearch(CategorySet.getSet(o2), Grammar.badRestriction) < 0) {
@@ -348,6 +355,9 @@ class SubCategorize {
 	*/
 	static boolean tripleForObject(long refinement) {
 		return ((refinement >> (3 * W)) & ObjectAction) == ObjectAction;
+	}
+	static boolean tripleForSubject(long refinement) {
+		return ((refinement >> (3 * W)) & SubjectAction) == SubjectAction;
 	}
 	/**
 	 *@param refinement The result of {@link #refineTriple(int,int,int)}

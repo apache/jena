@@ -13,7 +13,7 @@ grouping( [annotationPropID, dataPropID, objectPropID,
 
 grouping([classID,notype],classOnly).
 
-grouping([orphan, ontologyPropertyID], ontologyPropertyHack ).
+%grouping([orphan, ontologyPropertyID], ontologyPropertyHack ).
 grouping([allDifferent, description, listOfDataLiteral, listOfDescription, 
 listOfIndividualID, orphan, unnamedOntology,cyclic, 
 cyclicFirst, cyclicRest, restriction, unnamedDataRange, 
@@ -57,20 +57,27 @@ wTripleTable :-
   gname([P],PP),
   gname([O],OO),
   objectAction(P,O,AA),
+  subjectAction(P,S,SA),
   dlPart(A,DL),
   pp(A,Pos),
-  wlist(['SPOA( ',SS,', ',PP,', ',OO,', ',AA,DL,Pos,' ),',nl]),
+  wlist(['SPOA( ',SS,', ',PP,', ',OO,', ',AA,SA,DL,Pos,' ),',nl]),
   fail.
 wTripleTable :-
   wlist(['};',nl,
   'static { Arrays.sort(triples); }',nl]).
   
 objectAction(P,O,'ObjectAction') :-
-   \+ comparative(P),
+   (\+ comparative(P);P==rdfs:subClassOf),
    expg(B,blank),
    member(O,B),
    !.
 objectAction(_,_,0).
+   
+subjectAction(rdfs:subClassOf,S,'|SubjectAction') :-
+   expg(B,blank),
+   member(S,B),
+   !.
+subjectAction(_,_,'').
    
 dlPart(lite,'') :- !.
 dlPart(lite/_,'') :- !.
@@ -127,7 +134,7 @@ copyrightHead :-
      wDate,
      wlist([' Hewlett-Packard Company, all rights reserved.',nl,
               '  [See end of file]',nl,
-              '  $Id: checker.pl,v 1.15 2003-11-15 15:51:31 jeremy_carroll Exp $',nl,
+              '  $Id: checker.pl,v 1.16 2003-11-22 14:29:07 jeremy_carroll Exp $',nl,
               '*/',nl]).
 
 wDate :-
@@ -359,7 +366,8 @@ getBuiltins(Q) :-
          '       if (false) {',nl]),
   allBuiltins(Q,Nm,P,Special),
   wlist(['       } else if ( uri.equals("',Nm,'") ) {',nl]),
-  (P=[ontologyPropertyID]->Gp=ontologyPropertyHack;gname(P,Gp)),
+ %(P=[ontologyPropertyID]->Gp=ontologyPropertyHack;
+  gname(P,Gp),
   specialBuiltin(Special,SpCode),
   wlist(['          return ',Gp,SpCode,';',nl]),
   fail.
@@ -394,8 +402,9 @@ wActions :-
   wsfi('FirstOfTwo',8),
   wsfi('SecondOfTwo',12),
   wsfi('ObjectAction',2),
+  wsfi('SubjectAction',16),
   wsfi('DL',1),
-  wsfi('ActionShift',4),
+  wsfi('ActionShift',5),
   wsfi('CategoryShift',9),
   wlist(['    static private final int W = CategoryShift;',nl]).
   

@@ -425,7 +425,9 @@ public class Checker extends AbsChecker {
 	void actions(long key, CNodeI s, CNodeI o, Triple t) {
 		if (SubCategorize.tripleForObject(key))
 			o.asBlank().addObjectTriple(t);
-
+		if (SubCategorize.tripleForSubject(key))
+			s.asBlank().addObjectTriple(t);
+		
 		switch (SubCategorize.action(key)) {
 			case SubCategorize.FirstOfOne :
 				s.asOne().first(t);
