@@ -47,7 +47,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -228,7 +228,7 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#add(com.hp.hpl.jena.graph.Triple)
 	 */
-	public void add(Triple t) {
+	public void performAdd(Triple t) {
 		if(m_specializedGraphs == null)
 			throw new RDFRDBException("Error - attempt to call add on a GraphRDB that has already been closed");
 
@@ -274,7 +274,7 @@ public class GraphRDB extends GraphBase implements Graph {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#delete(com.hp.hpl.jena.graph.Triple)
 	 */
-	public void delete(Triple t) {
+	public void performDelete(Triple t) {
 		if(m_specializedGraphs == null)
 			throw new RDFRDBException("Error - attempt to call delete on a GraphRDB that has already been closed");
 		SpecializedGraph.CompletionFlag complete = new SpecializedGraph.CompletionFlag();

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelEvents.java,v 1.3 2003-07-09 07:54:11 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.4 2003-07-09 10:43:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -102,7 +102,7 @@ public class TestModelEvents extends ModelTestBase
         {
         model.register( SL );
         model.add( resource( model, "S" ), property( model, "P" ), resource( model, "O" ) );
-        // assertTrue( SL.has( new Object[] { "add", statement( model, "S P O ") } ) );
+        assertTrue( SL.has( new Object[] { "add", statement( model, "S P O ") } ) );
         }
     }
 
