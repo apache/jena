@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>PersistentOntology (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">PersistentOntology.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="FormalComment">/*****************************************************************************
+<A NAME="2"></A> * Source code information
+<A NAME="3"></A> * -----------------------
+<A NAME="4"></A> * Original author    Ian Dickinson, HP Labs Bristol
+<A NAME="5"></A> * Author email       ian.dickinson@hp.com
+<A NAME="6"></A> * Package            Jena 2
+<A NAME="7"></A> * Web                http://sourceforge.net/projects/jena/
+<A NAME="8"></A> * Created            25-Jul-2003
+<A NAME="9"></A> * Filename           $RCSfile: PersistentOntology.java.html,v $
+<A NAME="10"></A> * Revision           $Revision: 1.1 $
+<A NAME="11"></A> * Release status     $State: Exp $
+<A NAME="12"></A> *
+<A NAME="13"></A> * Last modified on   $Date: 2003-08-28 13:18:38 $
+<A NAME="14"></A> *               by   $Author: ian_dickinson $
+<A NAME="15"></A> *
+<A NAME="16"></A> *****************************************************************************/</FONT>
+<A NAME="17"></A>
+<A NAME="18"></A><FONT ID="SingleLineComment">// Package
+<A NAME="19"></A></FONT><FONT ID="SingleLineComment">///////////////
+<A NAME="20"></A></FONT>
+<A NAME="21"></A><FONT ID="SingleLineComment">// Imports
+<A NAME="22"></A></FONT><FONT ID="SingleLineComment">///////////////
+<A NAME="23"></A></FONT><FONT ID="Import">import</FONT> java.util.*;
+<A NAME="24"></A>
+<A NAME="25"></A><FONT ID="Import">import</FONT> com.hp.hpl.jena.db.*;
+<A NAME="26"></A><FONT ID="Import">import</FONT> com.hp.hpl.jena.ontology.*;
+<A NAME="27"></A><FONT ID="Import">import</FONT> com.hp.hpl.jena.rdf.model.*;
+<A NAME="28"></A>
+<A NAME="29"></A>
+<A NAME="30"></A><FONT ID="FormalComment">/**
+<A NAME="31"></A> * &lt;p&gt;
+<A NAME="32"></A> * Simple example of using the persistent db layer with ontology models.  Assumes
+<A NAME="33"></A> * that a PostgreSQL database called 'jenatest' has been set up, for a user named ijd.
+<A NAME="34"></A> * &lt;/p&gt;
+<A NAME="35"></A> *
+<A NAME="36"></A> * @author Ian Dickinson, HP Labs
+<A NAME="37"></A> *         (&lt;a  href="mailto:Ian.Dickinson@hp.com" &gt;email&lt;/a&gt;)
+<A NAME="38"></A> * @version CVS $Id: PersistentOntology.java.html,v 1.1 2003-08-28 13:18:38 ian_dickinson Exp $
+<A NAME="39"></A> */</FONT>
+<A NAME="40"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> PersistentOntology {
+<A NAME="41"></A>    <FONT ID="SingleLineComment">// Constants
+<A NAME="42"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="43"></A></FONT>
+<A NAME="44"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String ONT1 = <FONT ID="StringLiteral">"urn:x-hp-jena:test1"</FONT>;
+<A NAME="45"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String ONT2 = <FONT ID="StringLiteral">"urn:x-hp-jena:test2"</FONT>;
+<A NAME="46"></A>
+<A NAME="47"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String DB_URL = <FONT ID="StringLiteral">"jdbc:postgresql://localhost/jenatest"</FONT>;
+<A NAME="48"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String DB_USER = <FONT ID="StringLiteral">"ijd"</FONT>;
+<A NAME="49"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String DB_PASSWD = <FONT ID="StringLiteral">""</FONT>;
+<A NAME="50"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Final">final</FONT> String DB = <FONT ID="StringLiteral">"PostgreSQL"</FONT>;
+<A NAME="51"></A>
+<A NAME="52"></A>
+<A NAME="53"></A>    <FONT ID="SingleLineComment">// Static variables
+<A NAME="54"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="55"></A></FONT>
+<A NAME="56"></A>    <FONT ID="SingleLineComment">// Instance variables
+<A NAME="57"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="58"></A></FONT>
+<A NAME="59"></A>    <FONT ID="SingleLineComment">// Constructors
+<A NAME="60"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="61"></A></FONT>
+<A NAME="62"></A>    <FONT ID="SingleLineComment">// External signature methods
+<A NAME="63"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="64"></A></FONT>
+<A NAME="65"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Void">void</FONT> main( String[] args ) {
+<A NAME="66"></A>        <FONT ID="New">new</FONT> <A HREF="PersistentOntology.java.html">PersistentOntology</A>().go( args );
+<A NAME="67"></A>    }
+<A NAME="68"></A>
+<A NAME="69"></A>
+<A NAME="70"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> go( String[] args ) {
+<A NAME="71"></A>        <FONT ID="If">if</FONT> (args.length &gt; <FONT ID="IntegerLiteral">0</FONT> &amp;&amp; args[<FONT ID="IntegerLiteral">0</FONT>].equals( <FONT ID="StringLiteral">"reload"</FONT> )) {
+<A NAME="72"></A>            reloadDB();
+<A NAME="73"></A>        }
+<A NAME="74"></A>        listClasses();
+<A NAME="75"></A>    }
+<A NAME="76"></A>
+<A NAME="77"></A>
+<A NAME="78"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> reloadDB() {
+<A NAME="79"></A>        ModelMaker maker = getMaker();
+<A NAME="80"></A>
+<A NAME="81"></A>        <FONT ID="SingleLineComment">// clear out the old
+<A NAME="82"></A></FONT>        <FONT ID="If">if</FONT> (maker.hasModel( ONT1 )) maker.removeModel( ONT1 );
+<A NAME="83"></A>        <FONT ID="If">if</FONT> (maker.hasModel( ONT2 )) maker.removeModel( ONT2 );
+<A NAME="84"></A>
+<A NAME="85"></A>        <FONT ID="SingleLineComment">// create a spec for the new ont model
+<A NAME="86"></A></FONT>        OntModelSpec spec = <FONT ID="New">new</FONT> OntModelSpec( OntModelSpec.OWL_MEM_RULE_INF );
+<A NAME="87"></A>        spec.setModelMaker( maker );
+<A NAME="88"></A>
+<A NAME="89"></A>        <FONT ID="SingleLineComment">// create the base model as a persistent model
+<A NAME="90"></A></FONT>        Model base = maker.createModel( ONT1 );
+<A NAME="91"></A>        OntModel m = ModelFactory.createOntologyModel( spec, base );
+<A NAME="92"></A>
+<A NAME="93"></A>        <FONT ID="SingleLineComment">// tell m where to find the content for ont2
+<A NAME="94"></A></FONT>        m.getDocumentManager().addAltEntry( ONT2, <FONT ID="StringLiteral">"file:test2.owl"</FONT> );
+<A NAME="95"></A>
+<A NAME="96"></A>        <FONT ID="SingleLineComment">// now load the document for test1, which will import ONT2
+<A NAME="97"></A></FONT>        m.read( <FONT ID="StringLiteral">"file:test.owl"</FONT> );
+<A NAME="98"></A>    }
+<A NAME="99"></A>
+<A NAME="100"></A>    <FONT ID="Protected">protected</FONT> <FONT ID="Void">void</FONT> listClasses() {
+<A NAME="101"></A>        OntModelSpec spec = <FONT ID="New">new</FONT> OntModelSpec( OntModelSpec.OWL_MEM_RULE_INF );
+<A NAME="102"></A>        spec.setModelMaker( getMaker() );
+<A NAME="103"></A>
+<A NAME="104"></A>        OntModel m = ModelFactory.createOntologyModel( spec, getMaker().createModel( ONT1 ) );
+<A NAME="105"></A>
+<A NAME="106"></A>        <FONT ID="For">for</FONT> (Iterator i = m.listClasses(); i.hasNext(); ) {
+<A NAME="107"></A>            OntClass c = (OntClass) i.next();
+<A NAME="108"></A>            System.out.println( <FONT ID="StringLiteral">"Class "</FONT> + c.getURI() );
+<A NAME="109"></A>        }
+<A NAME="110"></A>    }
+<A NAME="111"></A>
+<A NAME="112"></A>
+<A NAME="113"></A>    <FONT ID="Protected">protected</FONT> ModelMaker getMaker() {
+<A NAME="114"></A>        <FONT ID="Try">try</FONT> {
+<A NAME="115"></A>            <FONT ID="SingleLineComment">// Load the Driver
+<A NAME="116"></A></FONT>            String className = <FONT ID="StringLiteral">"org.postgresql.Driver"</FONT>;
+<A NAME="117"></A>            Class.forName(className);
+<A NAME="118"></A>
+<A NAME="119"></A>            <FONT ID="SingleLineComment">// Create database connection
+<A NAME="120"></A></FONT>            IDBConnection conn  = <FONT ID="New">new</FONT> DBConnection ( DB_URL, DB_USER, DB_PASSWD, DB );
+<A NAME="121"></A>
+<A NAME="122"></A>            <FONT ID="SingleLineComment">// Create a model maker object
+<A NAME="123"></A></FONT>            <FONT ID="Return">return</FONT> ModelFactory.createModelRDBMaker(conn);
+<A NAME="124"></A>        }
+<A NAME="125"></A>        <FONT ID="Catch">catch</FONT> (Exception e) {
+<A NAME="126"></A>            e.printStackTrace();
+<A NAME="127"></A>            System.exit( <FONT ID="IntegerLiteral">1</FONT> );
+<A NAME="128"></A>        }
+<A NAME="129"></A>
+<A NAME="130"></A>        <FONT ID="Return">return</FONT> <FONT ID="Null">null</FONT>;
+<A NAME="131"></A>    }
+<A NAME="132"></A>
+<A NAME="133"></A>
+<A NAME="134"></A>
+<A NAME="135"></A>
+<A NAME="136"></A>    <FONT ID="SingleLineComment">// Internal implementation methods
+<A NAME="137"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="138"></A></FONT>
+<A NAME="139"></A>    <FONT ID="SingleLineComment">//==============================================================================
+<A NAME="140"></A></FONT>    <FONT ID="SingleLineComment">// Inner class definitions
+<A NAME="141"></A></FONT>    <FONT ID="SingleLineComment">//==============================================================================
+<A NAME="142"></A></FONT>
+<A NAME="143"></A>}
+<A NAME="144"></A></pre>
+</BODY>
+</HTML>

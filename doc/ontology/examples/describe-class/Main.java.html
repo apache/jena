@@ -1,0 +1,105 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0//EN">
+<HTML>
+<HEAD>
+<LINK REL=STYLESHEET TYPE="text/css" HREF="stylesheet.css" TITLE="Style">
+<META NAME="GENERATOR" CONTENT="Java2HTML Version 1.3.1">
+<TITLE>Main (Java2HTML)</TITLE>
+</HEAD>
+<BODY><TABLE id="Header" border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td colspan="2" width="33%">&nbsp;</td>
+<td align="center" colspan="2" width="33%">
+<font size="4">Main.java</font>
+</td>
+<td align="right" colspan="2" width="33%">&nbsp;</td>
+</tr>
+</TABLE>
+<pre ID="Classes">
+<A NAME="1"></A><FONT ID="FormalComment">/*****************************************************************************
+<A NAME="2"></A> * Source code information
+<A NAME="3"></A> * -----------------------
+<A NAME="4"></A> * Original author    Ian Dickinson, HP Labs Bristol
+<A NAME="5"></A> * Author email       ian.dickinson@hp.com
+<A NAME="6"></A> * Package            Jena 2
+<A NAME="7"></A> * Web                http://sourceforge.net/projects/jena/
+<A NAME="8"></A> * Created            22-Aug-2003
+<A NAME="9"></A> * Filename           $RCSfile: Main.java.html,v $
+<A NAME="10"></A> * Revision           $Revision: 1.1 $
+<A NAME="11"></A> * Release status     $State: Exp $
+<A NAME="12"></A> *
+<A NAME="13"></A> * Last modified on   $Date: 2003-08-28 13:18:27 $
+<A NAME="14"></A> *               by   $Author: ian_dickinson $
+<A NAME="15"></A> *
+<A NAME="16"></A> * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
+<A NAME="17"></A> * (see footer for full conditions)
+<A NAME="18"></A> *****************************************************************************/</FONT>
+<A NAME="19"></A>
+<A NAME="20"></A><FONT ID="SingleLineComment">// Package
+<A NAME="21"></A></FONT><FONT ID="SingleLineComment">///////////////
+<A NAME="22"></A></FONT>
+<A NAME="23"></A><FONT ID="SingleLineComment">// Imports
+<A NAME="24"></A></FONT><FONT ID="SingleLineComment">///////////////
+<A NAME="25"></A></FONT><FONT ID="Import">import</FONT> java.util.Iterator;
+<A NAME="26"></A>
+<A NAME="27"></A><FONT ID="Import">import</FONT> com.hp.hpl.jena.ontology.*;
+<A NAME="28"></A><FONT ID="Import">import</FONT> com.hp.hpl.jena.rdf.model.ModelFactory;
+<A NAME="29"></A>
+<A NAME="30"></A>
+<A NAME="31"></A><FONT ID="FormalComment">/**
+<A NAME="32"></A> * &lt;p&gt;
+<A NAME="33"></A> * Execution wrapper for describe-class example
+<A NAME="34"></A> * &lt;/p&gt;
+<A NAME="35"></A> *
+<A NAME="36"></A> * @author Ian Dickinson, HP Labs
+<A NAME="37"></A> *         (&lt;a  href="mailto:Ian.Dickinson@hp.com" &gt;email&lt;/a&gt;)
+<A NAME="38"></A> * @version CVS $Id: Main.java.html,v 1.1 2003-08-28 13:18:27 ian_dickinson Exp $
+<A NAME="39"></A> */</FONT>
+<A NAME="40"></A><FONT ID="Public">public</FONT> <FONT ID="Class">class</FONT> Main {
+<A NAME="41"></A>    <FONT ID="SingleLineComment">// Constants
+<A NAME="42"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="43"></A></FONT>
+<A NAME="44"></A>    <FONT ID="SingleLineComment">// Static variables
+<A NAME="45"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="46"></A></FONT>
+<A NAME="47"></A>    <FONT ID="SingleLineComment">// Instance variables
+<A NAME="48"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="49"></A></FONT>
+<A NAME="50"></A>    <FONT ID="SingleLineComment">// Constructors
+<A NAME="51"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="52"></A></FONT>
+<A NAME="53"></A>    <FONT ID="SingleLineComment">// External signature methods
+<A NAME="54"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="55"></A></FONT>
+<A NAME="56"></A>    <FONT ID="Public">public</FONT> <FONT ID="Static">static</FONT> <FONT ID="Void">void</FONT> main( String[] args ) {
+<A NAME="57"></A>        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, <FONT ID="Null">null</FONT> );
+<A NAME="58"></A>        
+<A NAME="59"></A>        <FONT ID="SingleLineComment">// we have a local copy of the wine ontology
+<A NAME="60"></A></FONT>        m.getDocumentManager().addAltEntry( <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/wine"</FONT>, 
+<A NAME="61"></A>                                            <FONT ID="StringLiteral">"file:testing/reasoners/bugs/wine.owl"</FONT> );
+<A NAME="62"></A>        m.getDocumentManager().addAltEntry( <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/food"</FONT>, 
+<A NAME="63"></A>                                            <FONT ID="StringLiteral">"file:testing/reasoners/bugs/food.owl"</FONT> );
+<A NAME="64"></A>        m.getDocumentManager().addAltEntry( <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/food.owl"</FONT>, 
+<A NAME="65"></A>                                            <FONT ID="StringLiteral">"file:testing/reasoners/bugs/food.owl"</FONT> );
+<A NAME="66"></A>
+<A NAME="67"></A>        m.read( <FONT ID="StringLiteral">"http://www.w3.org/2001/sw/WebOnt/guide-src/wine"</FONT> );
+<A NAME="68"></A>        
+<A NAME="69"></A>        <FONT ID="SingleLineComment">// now list the classes
+<A NAME="70"></A></FONT>        <A HREF="DescribeClass.java.html">DescribeClass</A> dc = <FONT ID="New">new</FONT> <A HREF="DescribeClass.java.html">DescribeClass</A>();
+<A NAME="71"></A>        <FONT ID="For">for</FONT> (Iterator i = m.listClasses();  i.hasNext(); ) {
+<A NAME="72"></A>            dc.describeClass( System.out, (OntClass) i.next() );
+<A NAME="73"></A>        }
+<A NAME="74"></A>    }
+<A NAME="75"></A>    
+<A NAME="76"></A>    
+<A NAME="77"></A>    <FONT ID="SingleLineComment">// Internal implementation methods
+<A NAME="78"></A></FONT>    <FONT ID="SingleLineComment">//////////////////////////////////
+<A NAME="79"></A></FONT>
+<A NAME="80"></A>    <FONT ID="SingleLineComment">//==============================================================================
+<A NAME="81"></A></FONT>    <FONT ID="SingleLineComment">// Inner class definitions
+<A NAME="82"></A></FONT>    <FONT ID="SingleLineComment">//==============================================================================
+<A NAME="83"></A></FONT>
+<A NAME="84"></A>}
+<A NAME="85"></A>
+<A NAME="86"></A></pre>
+</BODY>
+</HTML>
