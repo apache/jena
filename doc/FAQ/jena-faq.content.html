@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.12 2004-01-08 11:55:18 der Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.13 2004-01-10 11:26:00 ian_dickinson Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -28,13 +28,12 @@ Jena 2 &ndash; Frequently Asked Questions
 <h2>Index</h2>
 <h3>General</h3>
 <ul>
-  <li>
-    <p><a href="#general-0">Why do I get a ClassNotFoundException when I run Jena?</a></p>
-  </li>
+  <li><a href="#general-0">Why do I get a ClassNotFoundException when I run Jena?</a></li>
 </ul>
 <h3>RDF model API</h3>
 <ul>
       <li><a href="#api-0">Why does the localname part of my URI look wrong?</a></li>
+      <li><a href="#api-1">How do I change the URI or localName of a Resource?</a></li>
 </ul>
 <h3>Reasoner and inference models</h3>
 <ul>
@@ -63,7 +62,7 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h3>XML serialisation (reading and writing)</h3>
 <ul>
-  <li>no entries yet</li>
+  <li><a href="#xml-0">Why are some of my statement objects serialised as XML elements, and some as XML attributes?</a></li>
 </ul>
 <h3>RDQL and query processing</h3>
 <ul>
@@ -97,6 +96,18 @@ Jena 2 &ndash; Frequently Asked Questions
       anyway. In general, it is best to not use the localname split to encode
       any information, you should only be concerned with it if you are coding
       a parser or writer.</p>
+
+    <p id="api-1"><strong>Q. How do I change the URI or localName of a Resource?</strong><br />
+      <strong>A:</strong> In Jena, the URI of a resource is invariant.  
+      So there is no <code>setLocalName()</code>, or <code>setURI()</code> method, 
+      and there will never be one.<br />
+      The only way to "rename" a resource is to remove all of the statements that 
+      mention resource <em>R</em>, add add new statements with <em>R</em> replaced by <em>R'</em>.  
+      A utility for doing this is provided: <br />
+      &nbsp;&nbsp;<code>com.hp.hpl.jena.util.ResourceUtils.renameResource()</code><br />
+      If you are working with inference or ontology models, you need to be 
+      careful to do this on the base model, not the entailment model.
+    </p>
 
 <h3>Reasoner and inference models</h3>
   <p id="reasoner-0"><strong>Q. I want to develop my own rules, how do I get started?</strong><br />
@@ -136,7 +147,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <h3>Ontology API</h3>
 <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
   etc) work?</strong><br />
-  A: It does work. Extensive unit tests are used to check the correctness of Jena,
+  <strong>A:</strong> It does work. Extensive unit tests are used to check the correctness of Jena,
   and are included in the downloaded source code for your reference. If <code>listClasses()</code>,
   or a similar method, is not producing the answers you expect, or no answers
   at all, you should first check that your model is correctly defined. Print a
@@ -150,7 +161,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <p id="ontology-1"><strong>Q: Why doesn't the ontlogy API handle <code>sub-class</code>
 	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc)
   	relationships in a DAML model?</strong><br />
-  	A: These relationships are handled correctly, but the results you see are dependent on the
+  	<strong>A:</strong> These relationships are handled correctly, but the results you see are dependent on the
   	model configuration.  The DAML specification includes a number of aliases for RDFS constructs to
   	copy them into the DAML+OIL namespace. This means that, for a DAML processor, <code>daml:subClassOf</code>
   	and <code>rdfs:subClassOf</code> are equivalent.  This is declared by means of a
@@ -226,9 +237,9 @@ source is available at <a href="http://www.ur.se/jena/Jena2MsSql.zip">
 http://www.ur.se/jena/Jena2MsSql.zip</a>. Contact <a href="mailto:eba@ur.se">
 Erik Barke</a> for more information.</p>
 
-<p id="db-3"><strong>Q: </strong><b>Is there a limit on 
-the number of models in a database?</b><br>
-  A:&nbsp; The limit depends on the Jena database (schema) configuration and the 
+<p id="db-3"><strong>Q: Is there a limit on 
+the number of models in a database?</strong><br>
+  <strong>A:</strong> The limit depends on the Jena database (schema) configuration and the 
 database engine (MySQL, PostgreSQL, Oracle, etc). Recall that a Jena model may 
 either be stored separately in its own database tables (the default) or, 
 alternatively, in tables that are shared with other models (see <i>
@@ -239,7 +250,19 @@ maximum number of tables allowed in a database (which depends on the database
 engine) or by the maximum value of a 32 bit integer, i.e., 2G.</p>
 
 <h3>XML serialisation (reading and writing)</h3>
-<p>no entries yet</p>
+<p id="xml-0"><strong>Q: Why are some of my statement objects serialised as XML elements, and some as XML attributes?</strong><br />
+  <strong>A:</strong> This is a feature of the default RDF/XML writer settings in Jena 2.0.
+  Semantically, writing the object of a statement as an XML element or XML attribute makes
+  no difference to the RDF meaning. However, we have recognised that this is confusing, so
+  from Jena-2.1-dev3 onwards, the default is to write out all statements objects as XML elements.<br />
+  The process that is behind the output is the invocation of a rule in the RDF/XML writer, that 
+  writes values that contain no spaces as attributes.  This rule can be turned on or off
+  selectively by using an explicit <code>RDFWriter</code> object, rather than relying on the
+  defaults that apply by calling <code>Model.write()</code>. The means of doing this are described
+  in the <a href="IO/iohowto.html#output">I/O howto</a>. In particular, the rule <code>propertyAttr</code>
+  must be enabled or disabled.
+  </p>
+
 <h3>RDQL and query processing</h3>
 <p>no entries yet</p>
 
