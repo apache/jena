@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.13 2003-06-08 17:49:17 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.14 2003-06-09 10:30:54 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-06-08 17:49:17 $
+ * @version $Revision: 1.14 $ on $Date: 2003-06-09 10:30:54 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -62,7 +62,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     * Constructor. Creates a new inference graph to which a (compiled) rule set
     * and a data graph can be attached. This separation of binding is useful to allow
     * any configuration parameters (such as logging) to be set before the data is added.
-    * Note that until the data is added using {@link #bindData bindData} then any operations
+    * Note that until the data is added using {@link #rebind rebind} then any operations
     * like add, remove, find will result in errors.
     * 
     * @param reasoner the parent reasoner 
@@ -78,7 +78,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     * Constructor. Creates a new inference graph based on the given rule set. 
     * No data graph is attached at this stage. This is to allow
     * any configuration parameters (such as logging) to be set before the data is added.
-    * Note that until the data is added using {@link #bindData bindData} then any operations
+    * Note that until the data is added using {@link #rebind rebind} then any operations
     * like add, remove, find will result in errors.
     * 
     * @param reasoner the parent reasoner 
