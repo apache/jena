@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: OneToManyMap.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-20 23:28:13 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-05 15:14:54 $
+ *               by   $Author: der $
  *
  * (c) Copyright Hewlett-Packard Company 2001-2003
  * See end of file for details
@@ -32,7 +32,7 @@ import java.util.*;
  * may be zero, one or many values corresponding to a given key.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: OneToManyMap.java,v 1.2 2003-02-20 23:28:13 ian_dickinson Exp $
+ * @version CVS info: $Id: OneToManyMap.java,v 1.3 2003-05-05 15:14:54 der Exp $
  */
 public class OneToManyMap
     implements Map
@@ -312,7 +312,7 @@ public class OneToManyMap
         HashSet s = new HashSet();
 
         for (Iterator e = m_table.keySet().iterator();  e.hasNext();  ) {
-            s.addAll( (ArrayList) e.next() );
+            s.addAll( (ArrayList) m_table.get(e.next()) );
         }
 
         return s;
