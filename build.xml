@@ -391,8 +391,11 @@
             <fileset dir="${etc.dir}" includes="**"/>
         </copy>
 
+	<!-- Exclude any zips of the RDQL test scripts -->
         <copy todir="${dist.dir}/${test.dir}">
-            <fileset dir="${test.dir}" includes="**"/>
+            <fileset dir="${test.dir}"
+		     includes="**"
+		     excludes="${test.dir}/RDQL/rdql-tests-jena*.zip"/>
         </copy>
 
         <copy todir="${dist.dir}/${tools.dir}">
