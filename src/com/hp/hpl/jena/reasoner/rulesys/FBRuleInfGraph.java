@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.14 2003-06-17 15:51:16 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.15 2003-06-17 17:14:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-06-17 15:51:16 $
+ * @version $Revision: 1.15 $ on $Date: 2003-06-17 17:14:11 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -188,9 +188,17 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * infgraphs support this.
      */
     public void addBRule(Rule brule) {
-        logger.debug("Adding rule " + brule);
+        // logger.debug("Adding rule " + brule);
         bEngine.addRule(brule);
         bEngine.reset();
+    }
+       
+    /**
+     * Deletes a new Backward rule as a rules of a forward rule process. Only some
+     * infgraphs support this.
+     */
+    public void deleteBRule(Rule brule) {
+        // TODO: Implement
     }
     
     /**

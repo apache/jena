@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ForwardRuleInfGraphI.java,v 1.6 2003-06-17 15:51:16 der Exp $
+ * $Id: ForwardRuleInfGraphI.java,v 1.7 2003-06-17 17:14:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * are needed to support the forward rule engine. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-17 15:51:16 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-17 17:14:11 $
  */
 public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
     
@@ -33,6 +33,12 @@ public interface ForwardRuleInfGraphI extends InfGraph, SilentAddI {
      * infgraphs support this.
      */
     public void addBRule(Rule brule);
+        
+    /**
+     * Deletes a new Backward rule as a rules of a forward rule process. Only some
+     * infgraphs support this.
+     */
+    public void deleteBRule(Rule brule);
     
     /**
      * Return the Graph containing all the static deductions available so far.

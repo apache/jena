@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.15 2003-06-08 17:49:17 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.16 2003-06-17 17:14:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-06-08 17:49:17 $
+ * @version $Revision: 1.16 $ on $Date: 2003-06-17 17:14:11 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -193,6 +193,23 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
     public void reset() {
         engine.reset();
         isPrepared = false;
+    }
+        
+    /**
+     * Add one triple to the data graph, run any rules triggered by
+     * the new data item, recursively adding any generated triples.
+     */
+    public synchronized void add(Triple t) {
+        fdata.getGraph().add(t);
+        reset();
+    }
+     
+    /** 
+     * Removes the triple t (if possible) from the set belonging to this graph. 
+     */   
+    public void delete(Triple t) {
+        fdata.getGraph().delete(t);
+        reset();
     }
     
 //=======================================================================

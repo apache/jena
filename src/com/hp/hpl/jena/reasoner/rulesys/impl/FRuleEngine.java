@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.13 2003-06-17 15:51:17 der Exp $
+ * $Id: FRuleEngine.java,v 1.14 2003-06-17 17:14:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-06-17 15:51:17 $
+ * @version $Revision: 1.14 $ on $Date: 2003-06-17 17:14:12 $
  */
 public class FRuleEngine implements FRuleEngineI {
     
@@ -137,6 +137,16 @@ public class FRuleEngine implements FRuleEngineI {
         BFRuleContext context = new BFRuleContext(infGraph);
         context.addTriple(t);
         addSet(context);
+    }
+    
+    /**
+     * Remove one triple to the data graph.
+     * @return true if the effects could be correctly propagated or
+     * false if not (in which case the entire engine should be restarted).
+     */
+    public synchronized boolean delete(Triple t) {
+        // Incremental delete not supported
+        return false;
     }
     
     /**

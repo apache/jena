@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.21 2003-06-17 15:51:16 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.22 2003-06-17 17:14:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-06-17 15:51:16 $
+ * @version $Revision: 1.22 $ on $Date: 2003-06-17 17:14:11 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -257,9 +257,10 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * the new data item, recursively adding any generated triples.
      */
     public synchronized void add(Triple t) {
-        if (!isPrepared) prepare();
         fdata.getGraph().add(t);
-        engine.add(t);
+        if (isPrepared) {
+            engine.add(t);
+        }
     }
     
     /**
@@ -284,14 +285,15 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * Removes the triple t (if possible) from the set belonging to this graph. 
      */   
     public void delete(Triple t) {
-        if (!isPrepared) prepare();
         if (fdata != null) {
             Graph data = fdata.getGraph();
             if (data != null) {
                 data.delete(t);
             }
         }
-        fdeductions.getGraph().delete(t);
+        if (isPrepared) {
+            fdeductions.getGraph().delete(t);
+        }
     }
 
 //  =======================================================================
@@ -303,6 +305,14 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
      * infgraphs support this.
      */
     public void addBRule(Rule brule) {
+        throw new ReasonerException("Forward reasoner does not support hybrid rules - " + brule.toShortString());
+    }
+        
+    /**
+     * Deletes a new Backward rule as a rules of a forward rule process. Only some
+     * infgraphs support this.
+     */
+    public void deleteBRule(Rule brule) {
         throw new ReasonerException("Forward reasoner does not support hybrid rules - " + brule.toShortString());
     }
     

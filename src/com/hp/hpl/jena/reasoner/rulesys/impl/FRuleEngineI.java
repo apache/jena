@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngineI.java,v 1.1 2003-06-11 08:14:36 der Exp $
+ * $Id: FRuleEngineI.java,v 1.2 2003-06-17 17:14:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.Triple;
  * switch between direct and RETE style implementations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-11 08:14:36 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-17 17:14:11 $
  */
 public interface FRuleEngineI {
     
@@ -36,11 +36,19 @@ public interface FRuleEngineI {
      * have already be preprocessed and the rules have been compiled
      */
     public void fastInit();
+    
     /**
      * Add one triple to the data graph, run any rules triggered by
      * the new data item, recursively adding any generated triples.
      */
     public void add(Triple t);
+    
+    /**
+     * Remove one triple to the data graph.
+     * @return true if the effects could be correctly propagated or
+     * false if not (in which case the entire engine should be restarted).
+     */
+    public boolean delete(Triple t);
     
     /**
      * Return the number of rules fired since this rule engine instance

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETETerminal.java,v 1.5 2003-06-11 17:08:28 der Exp $
+ * $Id: RETETerminal.java,v 1.6 2003-06-17 17:14:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-11 17:08:28 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-17 17:14:12 $
  */
 public class RETETerminal implements RETESinkNode {
 
@@ -97,7 +97,7 @@ public class RETETerminal implements RETESinkNode {
         RETEEngine engine = context.getEngine();
         engine.incRuleCount();
         List matchList = null;
-        if (infGraph.shouldLogDerivations()) {
+        if (infGraph.shouldLogDerivations() && isAdd) {
             // Create derivation record
             matchList = new ArrayList(rule.bodyLength());
             for (int i = 0; i < rule.bodyLength(); i++) {
@@ -135,10 +135,14 @@ public class RETETerminal implements RETESinkNode {
                 } else {
                     throw new ReasonerException("Invoking undefined Functor " + f.getName() +" in " + rule.toShortString());
                 }
-            } else if (hClause instanceof Rule && isAdd) {
+            } else if (hClause instanceof Rule) {
                 Rule r = (Rule)hClause;
                 if (r.isBackward()) {
-                    infGraph.addBRule(r.instantiate(env));
+                    if (isAdd) {
+                        infGraph.addBRule(r.instantiate(env));
+                    } else {
+                        infGraph.deleteBRule(r.instantiate(env));
+                    }
                 } else {
                     throw new ReasonerException("Found non-backward subrule : " + r); 
                 }
