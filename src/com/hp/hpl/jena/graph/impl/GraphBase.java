@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.38 2005-02-21 11:52:10 andy_seaborne Exp $
+  $Id: GraphBase.java,v 1.39 2005-03-17 13:51:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -257,7 +257,8 @@ public abstract class GraphBase implements GraphWithPerform
          probably have specialised reifiers).
     */
     protected boolean reifierContains( Triple t )
-        { return getReifier().findExposed( t ).hasNext(); }
+        { ClosableIterator it = getReifier().findExposed( t );
+        try { return it.hasNext(); } finally { it.close(); } }
 
 	/**
          Answer true if the graph contains any triple matching <code>t</code>.
