@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Functor.java,v 1.10 2003-06-23 16:28:07 der Exp $
+ * $Id: Functor.java,v 1.11 2003-06-25 07:57:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-23 16:28:07 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-25 07:57:14 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -129,7 +129,7 @@ public class Functor implements ClauseEntry {
      * @return true if the functor has an implementation and that implementation returns true when evaluated
      */
     public boolean evalAsBodyClause(RuleContext context) {
-        if (implementor == null) {
+        if (getImplementor() == null) {
             logger.warn("Invoking undefined functor " + getName() + " in " + context.getRule().toShortString());
             return false;
         }
@@ -142,7 +142,7 @@ public class Functor implements ClauseEntry {
      * @return true if the functor has an implementation and that implementation returns true when evaluated
      */
     public boolean safeEvalAsBodyClause(RuleContext context) {
-        if (implementor == null) {
+        if (getImplementor() == null) {
             logger.warn("Invoking undefined functor " + getName() + " in " + context.getRule().toShortString());
             return false;
         }
@@ -169,6 +169,9 @@ public class Functor implements ClauseEntry {
      * @return the Builtin or null if there isn't one
      */
     public Builtin getImplementor() {
+        if (implementor == null) {
+            implementor = BuiltinRegistry.theRegistry.getImplementation(name);
+        }
         return implementor;
     }
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.11 2003-06-24 10:55:24 der Exp $
+ * $Id: Rule.java,v 1.12 2003-06-25 07:57:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -18,6 +18,8 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.datatypes.xsd.*;
+
+import org.apache.log4j.Logger;
 
 /** * Representation of a generic inference rule. 
  * <p>
@@ -55,7 +57,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.11 $ on $Date: 2003-06-24 10:55:24 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.12 $ on $Date: 2003-06-25 07:57:14 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -75,6 +77,9 @@ public class Rule implements ClauseEntry {
     
     /** Flags whether the rule was written as a forward or backward rule */
     protected boolean isBackward = false;
+    
+    /** log4j logger*/
+    static Logger logger = Logger.getLogger(Rule.class);
     
     /**
      * Constructor
@@ -621,7 +626,13 @@ public class Rule implements ClauseEntry {
             } else {
                 String name = nextToken();
                 List args = parseNodeList();
-                return new Functor(name, args, BuiltinRegistry.theRegistry);
+                Functor clause = new Functor(name, args, BuiltinRegistry.theRegistry);
+                if (clause.getImplementor() == null) {
+                    // Not a fatal error becase later processing can add this
+                    // implementation to the registry
+                    logger.warn("Rule references unimplemented functor: " + name);
+                }
+                return clause;
             }
         }
         
