@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.12 2003-11-08 15:53:33 der Exp $
+  $Id: LiteralLabel.java,v 1.13 2003-12-04 14:54:06 der Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -185,13 +185,15 @@ final public class LiteralLabel {
 	public boolean isXML() {
 		return dtype == XMLLiteralType.theXMLLiteralType && this.wellformed;
 	}
+    
 	/**
 	* Return true if the literal is a typed literal and the
-    * lexicalForm is in the lexical space.
+        * lexicalForm is in the lexical space.
 	*/
 	public boolean isWellFormed() {
 		return dtype != null && this.wellformed;
 	}
+    
 	/**
 	    Answer a human-acceptable representation of this literal value.
 	    This is NOT intended for a machine-processed result. 
