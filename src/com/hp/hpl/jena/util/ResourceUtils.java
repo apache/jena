@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-06-30 12:58:02 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2004-08-11 22:27:46 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.7 2004-06-30 12:58:02 chris-dollin Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.8 2004-08-11 22:27:46 ian_dickinson Exp $
  */
 public class ResourceUtils {
     // Constants
@@ -72,7 +72,7 @@ public class ResourceUtils {
      * @return The collection that contains only those <code>resources</code> are not
      * greater than another resource under the partial order.
      */
-    public static Collection maximalLowerElements( Collection resources, Property rel, boolean inverse ) {
+    public static List maximalLowerElements( Collection resources, Property rel, boolean inverse ) {
         return maximalLowerElements( resources.iterator(), rel, inverse );
     }
     
@@ -90,10 +90,10 @@ public class ResourceUtils {
      * @param inverse If true, we invert the given property (by reversing the order
      * of the arguments), which allows us to use eg subClassOf as a partial order 
      * operator for both sub-class and super-class relationships
-     * @return The collection that contains only those <code>resources</code> are not
+     * @return The list that contains only those <code>resources</code> are not
      * greater than another resource under the partial order.
      */
-    public static Collection maximalLowerElements( Iterator resources, Property rel, boolean inverse ) {
+    public static List maximalLowerElements( Iterator resources, Property rel, boolean inverse ) {
         List in = new ArrayList();
         List out = new ArrayList();
         
@@ -126,7 +126,38 @@ public class ResourceUtils {
         return out;
     }
 
+    
+    /**
+     * <p>Remove from the given list l of {@link Resource Resources}, any Resource that is equivalent
+     * to the reference resource <code>ref</code> under the relation <code>p</code>. Typically,
+     * <code>p</code> will be <code>owl:subClassOf</code> or <code>owl:subPropertyOf</code>
+     * or some similar predicate.  A resource R is defined to be equivalent to <code>ref</code>
+     * iff <code>R&nbsp;p&nbsp;ref</code> is true <em>and</em> <code>ref&nbsp;p&nbsp;R</code> is true.
+     * </p>
+     * <p>The equivalent resources are removed from list <code>l</code>
+     * </em>in place</em>, the return value is the list of <em>removed</em> resources.</p>
+     * @param l A list of resources from which the resources equivalent to ref will be removed
+     * @param p An equivalence predicate
+     * @param ref A reference resource
+     * @return A list of the resources removed from the parameter list l
+     */
+    public static List removeEquiv( List l, Property p, Resource ref ) {
+        List equiv = new ArrayList();
+        
+        for (Iterator i = l.iterator(); i.hasNext(); ) {
+            Resource r = (Resource) i.next();
+            
+            if (r.hasProperty( p, ref ) && ref.hasProperty( p, r )) {
+                // resource r is equivalent to the reference resource
+                equiv.add( r );
+            }
+        }
+        
+        l.removeAll( equiv );
+        return equiv;
+    }
 
+    
     /**
      * <p>Answer a new resource that occupies the same position in the graph as the current
      * resource <code>old</code>, but that has the given URI.  In the process, the existing
