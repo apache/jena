@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.17 2003-04-28 11:28:36 chris-dollin Exp $
+  $Id: Model.java,v 1.18 2003-04-28 14:36:52 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -52,10 +52,10 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.17 $Date: 2003/04/23 10:59:23 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.18 $Date: 2003/04/28 11:28:36 $'
  */
 public interface Model 
-    extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping
+    extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
 {
 
 	/** Every model is based on some Graph */
@@ -785,7 +785,15 @@ public interface Model
 	 *     rather than leave it to the finalizer.</p>
 	 */
 	public void close();
-
+    
+    /** Get the model lock for this model.
+     *  See also the convenience operations enterCriticalSection and leaveCriticalSection.
+     *  
+     * @see ModelLock
+     * @return The ModelLock object associated with this model 
+     */
+    public ModelLock getModelLock() ;
+    
 }
 
 /*
@@ -813,5 +821,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.17 2003-04-28 11:28:36 chris-dollin Exp $
+ * $Id: Model.java,v 1.18 2003-04-28 14:36:52 andy_seaborne Exp $
  */
