@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.36 $
+ * Revision           $Revision: 1.37 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-29 09:50:42 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-07-31 20:53:01 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -26,7 +26,7 @@ package com.hp.hpl.jena.ontology.impl;
 ///////////////
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.reasoner.InfGraph;
+import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.ontology.*;
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.36 2003-07-29 09:50:42 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.37 2003-07-31 20:53:01 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -455,7 +455,7 @@ public class OntModelImpl
      */
     public ExtendedIterator listAnnotationProperties() {
         checkProfileEntry( getProfile().ANNOTATION_PROPERTY(), "ANNOTATION_PROPERTY" );
-        Resource r = (Resource) getProfile().ANNOTATION_PROPERTY();
+        Resource r = getProfile().ANNOTATION_PROPERTY();
         
         if (r == null) {
             return WrappedIterator.create( new ArrayList().iterator() ); 
@@ -1734,6 +1734,110 @@ public class OntModelImpl
         return super.write( out, lang, base );
     }
     
+
+    // Implementation of inf model interface methods
+    
+    /**
+     * Return the raw RDF model being processed (i.e. the argument
+     * to the Reasonder.bind call that created this InfModel).
+     */
+    public Model getRawModel() {
+        return getBaseModel();
+    }
+    
+    /**
+     * Return the Reasoner which is being used to answer queries to this graph.
+     */
+    public Reasoner getReasoner() {
+        return (getGraph() instanceof InfGraph) ? ((InfGraph) getGraph()).getReasoner() : null;
+    }
+
+    /**
+     * Cause the inference model  to reconsult the underlying data to take
+     * into account changes. Normally changes are made through the InfModel's add and
+     * remove calls are will be handled appropriately. However, in some cases changes
+     * are made "behind the InfModels's back" and this forces a full reconsult of
+     * the changed data. 
+     */
+    public void rebind() {
+        if (getGraph() instanceof InfGraph) {
+            ((InfGraph) getGraph()).rebind();
+        }
+    }
+    
+    /**
+     * Perform any initial processing and caching. This call is optional. Most
+     * engines either have negligable set up work or will perform an implicit
+     * "prepare" if necessary. The call is provided for those occasions where
+     * substantial preparation work is possible (e.g. running a forward chaining
+     * rule system) and where an application might wish greater control over when
+     * this prepration is done rather than just leaving to be done at first query time.
+     */
+    public void prepare() {
+        if (getGraph() instanceof InfGraph) {
+            ((InfGraph) getGraph()).prepare();
+        }
+    }
+    
+    /**
+     * Test the consistency of the underlying data. This normally tests
+     * the validity of the bound instance data against the bound
+     * schema data. 
+     * @return a ValidityReport structure
+     */
+    public ValidityReport validate() {
+        return (getGraph() instanceof InfGraph) ? ((InfGraph) getGraph()).validate() : null;
+    }
+    
+    /** Find all the statements matching a pattern.
+     * <p>Return an iterator over all the statements in a model
+     *  that match a pattern.  The statements selected are those
+     *  whose subject matches the <code>subject</code> argument,
+     *  whose predicate matches the <code>predicate</code> argument
+     *  and whose object matchesthe <code>object</code> argument.
+     *  If an argument is <code>null</code> it matches anything.</p>
+     * <p>
+     * The s/p/o terms may refer to resources which are temporarily defined in the "posit" model.
+     * This allows one, for example, to query what resources are of type CE where CE is a
+     * class expression rather than a named class - put CE in the posit arg.</p>
+     * 
+     * @return an iterator over the subjects
+     * @param subject   The subject sought
+     * @param predicate The predicate sought
+     * @param object    The value sought
+     */ 
+    public StmtIterator listStatements( Resource subject, Property predicate, RDFNode object, Model posit ) {
+        if (getGraph() instanceof InfGraph) {
+            Iterator iter = ((InfGraph) getGraph()).find(subject.asNode(), predicate.asNode(), object.asNode(), posit.getGraph());
+            return IteratorFactory.asStmtIterator(iter,this);
+        }
+        else {
+            return null;
+        }
+    }
+    
+    /**
+     * Switch on/off drivation logging. If this is switched on then every time an inference
+     * is a made that fact is recorded and the resulting record can be access through a later
+     * getDerivation call. This may consume a lot of space!
+     */
+    public void setDerivationLogging(boolean logOn) {
+        if (getGraph() instanceof InfGraph) {
+            ((InfGraph) getGraph()).setDerivationLogging( logOn );
+        }
+    }
+   
+    /**
+     * Return the derivation of the given statement (which should be the result of
+     * some previous list operation).
+     * Not all reasoneers will support derivations.
+     * @return an iterator over Derivation records or null if there is no derivation information
+     * available for this triple.
+     */
+    public Iterator getDerivation(Statement statement) {
+        return (getGraph() instanceof InfGraph) ? ((InfGraph) getGraph()).getDerivation( statement.asTriple() ) : null;
+    }
+
     
     
     // Internal implementation methods
@@ -1762,15 +1866,6 @@ public class OntModelImpl
         return m_union;
     }
     
-    
-    /**
-     * <p>Notify the embedded reasoner, if any, that the data in the sub-graphs has changed</p>
-     */
-    protected void rebind() {
-        if (getGraph() instanceof InfGraph) {
-            ((InfGraph) getGraph()).rebind();
-        }
-    }
     
     /** Answer the resource with the given URI, if present, as the given facet */
     protected Resource findByURIAs( String uri, Class asKey ) {

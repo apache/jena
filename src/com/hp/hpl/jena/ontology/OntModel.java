@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.27 $
+ * Revision           $Revision: 1.28 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-04 14:13:42 $
+ * Last modified on   $Date: 2003-07-31 20:53:09 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -57,13 +57,21 @@ import java.util.*;
  * semantics, the widget's types will include <code>:B</code>, <code>:A</code>,
  * and <code>owl:Thing</code>.
  * </p>
- *
+ * <p>
+ * <strong>Note:</strong> that <code>OntModel</code> is an extension to the
+ * {@link InfModel} interface.  This is to support the case where an ontology model
+ * wraps an inference graph, and we want to make the special capabilities of the
+ * <code>InfModel</code>, for example global consistency checking, accessible to 
+ * client programs.  Since not all ont models use a reasoner, using these methods
+ * may result in a {@link RequiresReasonerException}.
+ * </p>
+ * 
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.27 2003-07-04 14:13:42 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.28 2003-07-31 20:53:09 ian_dickinson Exp $
  */
 public interface OntModel
-    extends Model
+    extends InfModel
 {
     // Constants
     //////////////////////////////////
