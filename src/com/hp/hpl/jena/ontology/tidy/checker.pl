@@ -1,4 +1,12 @@
 
+/* This Prolog program has to be loaded with the Prolog
+   available at:
+   http://www.w3.org/2001/sw/WebOnt/syntaxTF/prolog/
+start at
+   http://www.w3.org/2001/sw/WebOnt/syntaxTF/prolog/load.pl
+to work out all the links :(
+*/
+
 isQname(_:_).
 isNode(NN) :-
   typedTriple(t(NN,_,_),_,_).
@@ -42,6 +50,28 @@ grouping([allDifferent, description, listOfDataLiteral, listOfDescription,
 restriction, unnamedDataRange, unnamedIndividual],blank).
 
 grouping(H) :- grouping(H,_).
+
+
+% allBuiltins(Q,N,T,F) :-
+
+allBuiltins(Q,N,[T],0) :-
+  builtinx(Q,N,T).
+
+
+allBuiltins(Q,N,[T],bad) :-
+  badbuiltin(Q,N,T).
+
+allBuiltins(Q,N,[classID],notQuite) :-
+  classOnly(Q,N).
+
+allBuiltins(Q,N,P,notQuite) :-
+  grouping(P,propertyOnly),
+  propertyOnly(Q,N).
+
+allBuiltins(Q,N,[Q:N],0) :-
+  builtiny(Q,N).
+
+   
 
 :-dynamic tt/4.
 :- dynamic g/1.
@@ -110,6 +140,8 @@ gn1(X,XX) :-
   gname([X],XX).
 
 
+
+
 classfile :-
   wlist(['package com.hp.hpl.jena.ontology.tidy;',nl,nl]),
   wlist(['/** automatically generated. */',nl]),
@@ -121,8 +153,40 @@ classfile :-
   wlist(['}',nl]).
 
 wGetBuiltinID :-
+  wsfi('NotQuiteBuiltin',1),
+  wsfi('BadXSD',2),
   wsfi('Failure',-1),
-  wlist(['static int getBuiltinID(String uri) { return Failure; }',nl]).
+  wlist(['static int getBuiltinID(String uri) {',nl]),
+  wlist(['  if ( uri.startsWith("http://www.w3.org/") ) {',nl]),
+  wlist(['      uri = uri.substring(18);',nl]),
+  wlist(['      if (false) {}',nl]),
+  getBuiltins(owl),
+  getBuiltins(rdf),
+  getBuiltins(xsd),
+  getBuiltins(rdfs),
+  wlist(['     }',nl,'     return Failure; ',nl,'}',nl]).
+
+getBuiltins(Q) :-
+  namespace(Q,URI),
+  atom_concat('http://www.w3.org/',R,URI),
+  atom_length(R,N),
+  wlist(['   else if ( uri.startsWith("',R,'") ) {',nl,
+         '       uri = uri.substring(',N,');',nl,
+         '       if (false) {',nl]),
+  allBuiltins(Q,Nm,P,Special),
+  wlist(['       } else if ( uri.equals("',Nm,'") ) {',nl]),
+  gn(P,Gp),
+  specialBuiltin(Special,SpCode),
+  wlist(['          return ',Gp,SpCode,';',nl]),
+  fail.
+getBuiltins(_) :-
+  wlist(['     }',nl,'   }',nl]).
+
+specialBuiltin(bad,'| BadXSD').
+specialBuiltin(0,'').
+specialBuiltin(notQuite,'| NotQuiteBuiltin').
+
+  
 
 wActions :-
   wsfi('ActionShift',3).
@@ -161,7 +225,7 @@ wAddTriple :-
    wlist(['      switch(triple) {',nl]),
    x(S,P,O,SS,PP,OO,DL),
    write('case '),spo(S,P,O),wlist([':',nl,'return ']),spo(SS,PP,OO),
-   (DL=dl?write('| DL;');write(';')),nl,fail.
+   (DL=dl->write('| DL;');write(';')),nl,fail.
 wAddTriple :-
    wlist(['      default: return Failure;',nl,'   }',nl,
          '}',nl]).
@@ -181,7 +245,10 @@ spo(S,P,O) :-
    R is (SN<<(2*W))\/(PN<<W)\/ON,
    write(R).
 
+
+
   
+
 isTTnode(N) :-
   tt(N,_,_,_).
 isTTnode(N) :-
