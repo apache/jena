@@ -1140,7 +1140,9 @@ public class SAX2RDFTest extends TestCase {
 		}
 
 		private void s(String s, Exception e) {
-			v.add(s + e.getMessage());
+			String msg = s + e.getMessage();
+            if (!v.contains(msg))
+                   v.add(msg);
 		}
 
 	}
@@ -1177,12 +1179,12 @@ public class SAX2RDFTest extends TestCase {
 
 		TestCase tc = new SAX2RDFTest(dir,base,file);
 		tc.setName("SAX "+tc.getName());
-		//s.addTest(tc);
+		s.addTest(tc);
 		
 		tc = new DOM2RDFTest(dir,base,file);
 		
 		tc.setName("DOM "+tc.getName());
-		s.addTest(tc);
+		//s.addTest(tc);
 		
 
 	}
