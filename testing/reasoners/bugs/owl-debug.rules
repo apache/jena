@@ -1,0 +1,23 @@
+#------------------------------------------------------------------
+# OWL rule set - temp debug version
+#
+# $Id: owl-debug.rules,v 1.1 2003-10-03 13:12:33 der Exp $
+#------------------------------------------------------------------
+
+-> tableAll().
+[rdfs7b: (?a rdf:type rdfs:Class) -> (?a rdfs:subClassOf rdfs:Resource)] 
+[rdfs3-partial: (?p rdfs:range ?c)  -> (?c rdf:type rdfs:Class)]
+[rdfs3a: (?x rdfs:range  ?z) <- bound(?x), (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) ]
+           						
+-> (xsd:nonPositiveInteger rb:xsdBase xsd:decimal).
+-> (xsd:string rb:xsdBase xsd:string).
+
+[xsd2: (?X rdfs:subClassOf ?Y) <- 
+        (?X rb:xsdRange xsd(?B, 1, ?L)) (?Y rb:xsdRange xsd(?B, 1, ?L2)) le(?L, ?L2)]
+[range3: (?P rdfs:range owl:Nothing) <- (?P rdfs:range ?C), (?P rdfs:range ?D), 
+								print('before', ?C, ?D) (?C owl:disjointWith ?D) print('after')]
+
+[xsd3: (?C owl:disjointWith ?D) <- print('xsd3', ?C, ?D) (?C rb:xsdBase ?BC), (?D rb:xsdBase ?BD), notEqual(?BC, ?BD) ]
+
+										
+
