@@ -1,16 +1,12 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.6 2003-09-22 12:16:35 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.7 2003-09-29 14:54:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
 
-import com.hp.hpl.jena.shared.JenaException;
-
-import java.io.*;
 import java.lang.reflect.*;
-
 import junit.framework.*;
 
 /**
@@ -52,64 +48,6 @@ public class JenaTestBase extends TestCase
     public static void pass()
         {}
         
-    /**
-        create a temporary file that will be deleted on exit, and do something
-        sensible with any IO exceptions - namely, throw them up wrapped in
-        a JenaException.
-    
-        @param prefix the prefix for File.createTempFile
-        @param suffix the suffix for File.createTempFile
-        @return the temporary File
-    */
-    public static  File tempFileName( String prefix, String suffix )
-        {
-        File result = new File( getTempDirectory(), prefix + randomNumber() + suffix );
-        if (result.exists()) return tempFileName( prefix, suffix );
-        result.deleteOnExit();
-        return result;
-        }  
-
-    private static int counter = 0;
-
-    private static int randomNumber()
-        {
-        return ++counter;
-        }
- 
-    /**
-        Answer a File naming a freshly-created directory in the temporary directory. This
-        directory should be deleted on exit.
-        TODO handle threading issues, mkdir failure, and better cleanup
-        
-        @param prefix the prefix for the directory name
-        @return a File naming the new directory
-     */
-    public static File getScratchDirectory( String prefix )
-        {
-        File result = new File( getTempDirectory(), prefix + randomNumber() );
-        if (result.exists()) return getScratchDirectory( prefix );
-        assertTrue( "make temp directory", result.mkdir() );
-        result.deleteOnExit();
-        return result;   
-        } 
-        
-    public static String getTempDirectory()
-        { return temp; }
-    
-    private static String temp = constructTempDirectory();
-
-    private static String constructTempDirectory()
-        {
-        try 
-            { 
-            File x = File.createTempFile( "xxx", ".none" );
-            x.delete();
-            return x.getParent(); 
-            }
-        catch (IOException e) 
-            { throw new JenaException( e ); }
-        }
-                 
     /**
         Answer the constructor of the class <code>c</code> which takes arguments of the
         type(s) in <code>args</code>, or <code>null</code> if there isn't one.

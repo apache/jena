@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestFileGraph.java,v 1.9 2003-09-17 12:14:05 chris-dollin Exp $
+  $Id: TestFileGraph.java,v 1.10 2003-09-29 14:54:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.util.FileUtils;
 
 import java.io.*;
 
@@ -103,7 +104,7 @@ public class TestFileGraph extends GraphTestBase
             
         public void runTest()
             {
-            File foo = tempFileName( prefix, suffix );
+            File foo = FileUtils.tempFileName( prefix, suffix );
             Graph original = graphWith( content );
             Graph g = new FileGraph( foo, true, true );
             g.getBulkUpdateHandler().add( original );

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraph.java,v 1.19 2003-09-26 07:42:32 chris-dollin Exp $
+  $Id: FileGraph.java,v 1.20 2003-09-29 14:54:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.test.*;
+import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.impl.ModelCom;
@@ -79,7 +80,7 @@ public class FileGraph extends GraphMem
         { this( new File( s ), create, true ); }
         
     public static FileGraph create()
-        { return new FileGraph( JenaTestBase.tempFileName( "xxx", ".rdf" ), true, true ); }
+        { return new FileGraph( FileUtils.tempFileName( "xxx", ".rdf" ), true, true ); }
         
     /**
         Guess the language of the specified file by looking at the suffix.
