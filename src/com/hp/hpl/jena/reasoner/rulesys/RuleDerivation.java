@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleDerivation.java,v 1.5 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: RuleDerivation.java,v 1.6 2003-10-03 13:17:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * provide more specific information.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.6 $ on $Date: 2003-10-03 13:17:18 $
  */
 public class RuleDerivation implements Derivation {
     
@@ -91,12 +91,22 @@ public class RuleDerivation implements Derivation {
         }
         out.println(" <-");
         int margin = indent + 4;
-        for (Iterator matchlist = matches.iterator(); matchlist.hasNext(); ) {
-            Triple match = (Triple)matchlist.next();
+        for (int i = 0; i < matches.size(); i++) {
+            Triple match = (Triple)matches.get(i);
             Iterator derivations = infGraph.getDerivation(match);
             if (derivations == null || !derivations.hasNext()) {
                 PrintUtil.printIndent(out, margin);
-                out.println("Fact " + PrintUtil.print(match));
+                if (match == null) {
+                    // A primitive
+                    ClauseEntry term = rule.getBodyElement(i);
+                    if (term instanceof Functor) {
+                        out.println(((Functor)term).getName() + "()");
+                    } else {
+                        out.println("call to built in");
+                    }
+                } else {
+                    out.println("Fact " + PrintUtil.print(match));
+                }
             } else {
                 RuleDerivation derivation = (RuleDerivation)derivations.next();
                 if (seen.contains(derivation)) {
