@@ -7,6 +7,7 @@ package com.hp.hpl.jena.util;
 
 import java.io.*;
 
+import com.hp.hpl.jena.reasoner.rulesys.Util;
 import com.hp.hpl.jena.shared.JenaException;
 
 public class FileUtils {
@@ -102,6 +103,31 @@ public class FileUtils {
         catch (IOException e) 
             { throw new JenaException( e ); }
         }
+
+    /**
+     * Open an resource file for reading.
+     */
+    public static BufferedReader openResourceFile(String filename) throws IOException {
+       	InputStream is = FileUtils.openResourceFileAsStream(filename);
+        return new BufferedReader(new InputStreamReader(is, "UTF-8"));
+    }
+
+    /**
+     * Open an resource file for reading.
+     */
+    public static InputStream openResourceFileAsStream(String filename)
+    	throws FileNotFoundException {
+        InputStream is = ClassLoader.getSystemResourceAsStream(filename);
+    	if (is == null) {
+    	    // Try local loader with absolute path
+            is = Util.class.getResourceAsStream("/" + filename);
+            if (is == null) {
+                // Can't find it on classpath, so try relative to current directory
+    	        is = new FileInputStream(filename);
+    	    }
+    	}
+    	return is;
+    }
                  
 }
 

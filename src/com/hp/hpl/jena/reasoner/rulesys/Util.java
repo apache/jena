@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.16 2003-11-25 15:10:40 jeremy_carroll Exp $
+ * $Id: Util.java,v 1.17 2003-12-04 14:48:15 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.Finder;
 import com.hp.hpl.jena.reasoner.IllegalParameterException;
 import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -26,7 +27,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-11-25 15:10:40 $
+ * @version $Revision: 1.17 $ on $Date: 2003-12-04 14:48:15 $
  */
 public class Util {
 
@@ -178,33 +179,11 @@ public class Util {
     }
     
     /**
-     * Open an resource file for reading.
-     */
-    public static BufferedReader openResourceFile(String filename) throws IOException {
-       	InputStream is = openResourceFileAsStream(filename);
-        return new BufferedReader(new InputStreamReader(is, "UTF-8"));
-    }
-
-	public static InputStream openResourceFileAsStream(String filename)
-		throws FileNotFoundException {
-		 InputStream is = ClassLoader.getSystemResourceAsStream(filename);
-		    if (is == null) {
-		        // Try local loader with absolute path
-		        is = Util.class.getResourceAsStream("/" + filename);
-		        if (is == null) {
-		            // Can't find it on classpath, so try relative to current directory
-		            is = new FileInputStream(filename);
-		        }
-		    }
-		return is;
-	}
-    
-    /**
      * Open a resource file and read it all into a single string.
      * Treats lines starting with # as comment lines
      */
     public static String loadResourceFile(String filename) throws IOException {
-        BufferedReader src = openResourceFile(filename);
+        BufferedReader src = FileUtils.openResourceFile(filename);
         StringBuffer result = new StringBuffer();
         String line;
         while ((line = src.readLine()) != null) {

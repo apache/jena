@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LookupTable.java,v 1.6 2003-12-04 10:49:15 jeremy_carroll Exp $
+  $Id: LookupTable.java,v 1.7 2003-12-04 14:48:42 der Exp $
 */
 package com.hp.hpl.jena.ontology.tidy.impl;
 import java.util.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.FileUtils;
+
 import java.io.*;
-import com.hp.hpl.jena.reasoner.rulesys.Util;
 
 /**
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
@@ -162,7 +163,7 @@ public class LookupTable
 		Lookup rslt;
 		try {
 			//  long t = System.currentTimeMillis();
-			InputStream istream = Util.openResourceFileAsStream(DATAFILE);
+			InputStream istream = FileUtils.openResourceFileAsStream(DATAFILE);
 
 			if (istream == null)
 				throw new BrokenException("Failed to find compiled table.");
