@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TripleMatchFilter.java,v 1.1.1.1 2002-12-19 19:13:35 bwm Exp $
+  $Id: TripleMatchFilter.java,v 1.2 2003-04-03 11:24:26 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -11,7 +11,6 @@ import com.hp.hpl.jena.util.iterator.Filter;
 /**
  *
  * @author  bwm
- * @version 
  */
 public class TripleMatchFilter implements Filter {
     

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: AnonId.java,v 1.1.1.1 2002-12-19 19:17:34 bwm Exp $
+ * $Id: AnonId.java,v 1.2 2003-04-03 11:22:52 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.model;
@@ -36,13 +36,13 @@ import java.rmi.server.UID;
  * <p>This id is guaranteed to be unique on this machine.</p>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.1.1.1 $ $Date: 2002-12-19 19:17:34 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-04-03 11:22:52 $
  */
 public class AnonId extends java.lang.Object {
     
     String id = null;
 
-    /** Creates new AnonId
+    /** Creates new AnonId.
      *
      * <p>This id is guaranteed to be unique on this machine.</p>
  */
