@@ -1,22 +1,20 @@
 /*
       (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
       [See end of file]
-      $Id: TestGraphExtract.java,v 1.2 2004-08-07 12:02:33 chris-dollin Exp $
+      $Id: TestGraphExtract.java,v 1.3 2004-08-07 12:31:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 
 import junit.framework.TestSuite;
 
 /**
- @author hedgehog
- */
-public class TestGraphExtract extends ModelTestBase
+     Tests for recursive sub-graph extraction.
+     @author hedgehog
+*/
+public class TestGraphExtract extends GraphTestBase
 	{
 	public TestGraphExtract(String name)
 		{ super( name ); }
@@ -66,35 +64,20 @@ public class TestGraphExtract extends ModelTestBase
     
     public void testTripleFilter()
         {
-        assertTrue( stopAtAnonObject.stopAt( triple( "a R _b" ) ) );
-        assertFalse( stopAtAnonObject.stopAt( triple( "a R b" ) ) );
-        assertFalse( stopAtAnonObject.stopAt( triple( "a _R b" ) ) );
-        assertFalse( stopAtAnonObject.stopAt( triple( "_a R b" ) ) );
+        assertTrue( TripleBoundary.stopAtAnonObject.stopAt( triple( "a R _b" ) ) );
+        assertFalse( TripleBoundary.stopAtAnonObject.stopAt( triple( "a R b" ) ) );
+        assertFalse( TripleBoundary.stopAtAnonObject.stopAt( triple( "a _R b" ) ) );
+        assertFalse( TripleBoundary.stopAtAnonObject.stopAt( triple( "_a R b" ) ) );
         }
-    
-    protected static final TripleBoundary stopAtAnonObject = new TripleBoundary()
-        {
-        public boolean stopAt( Triple t ) { return t.getObject().isBlank(); }
-        };
-        
-    protected static final TripleBoundary stopNowhere = new TripleBoundary()
-        {
-        public boolean stopAt( Triple t ) { return false; }
-        };
-    
-    interface TripleBoundary
-        {
-        boolean stopAt( Triple t );
-        }   
     
     public void testExtractBoundary()
         {
-        testExtract( "a R b; b S _c", "a", "a R b; b S _c; _c T d", stopAtAnonObject );
+        testExtract( "a R b; b S _c", "a", "a R b; b S _c; _c T d", TripleBoundary.stopAtAnonObject );
         }
 
     public void testExtract( String wanted, String node, String source )
         {
-        testExtract( wanted, node, source, stopNowhere );
+        testExtract( wanted, node, source, TripleBoundary.stopNowhere );
         }
         
     /**
@@ -104,27 +87,9 @@ public class TestGraphExtract extends ModelTestBase
         assertIsomorphic( graphWith( wanted ), extract( node( node ), b, graphWith( source ) ) );
         }
 
-    /**
-    	@param node
-    	@param graph
-    	@return
-    */
-    private Graph extract( Node node, TripleBoundary b, Graph graph )
-        { return extractInto( graphWith( "" ), node, b, graph ); }
-    
-    private Graph extractInto( Graph toUpdate, Node root, TripleBoundary b, Graph extractFrom )
-        {
-        Iterator it = extractFrom.find( root, Node.ANY, Node.ANY );
-        while (it.hasNext())
-            {
-            Triple t = (Triple) it.next();
-            Node subRoot = t.getObject();
-            toUpdate.add( t );
-            if (toUpdate.contains( subRoot, Node.ANY, Node.ANY ) == false && b.stopAt( t ) == false)
-                extractInto( toUpdate, subRoot, b, extractFrom );
-            }
-        return toUpdate;
-        }
+    public Graph extract( Node node, TripleBoundary b, Graph graph )
+        { return new GraphExtract( b ).extract( node, graph ); }
+
     }
 
 /*

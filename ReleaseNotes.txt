@@ -26,6 +26,11 @@ Post Jena 2.1 change list
       o ModelFactory has gained createUnion(Model, Model) which creates a
         dynamic union of the two argument models.
 
+      o The class GraphExtract and its related interface TripleBoundary
+        have been created to allow the extraction of rooted subgraphs
+        from a graph, terminating at triples satisfying some boundary
+        condition.
+
   GraphMem, SmallGraphMem
       o GraphMem has had the redundant Set(Triple) excised, and changes made
         to NodeToTriplesMap to push the triple-matching inwards and simplify
