@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.8 2003-08-12 12:53:05 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.9 2003-08-12 15:23:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -583,23 +583,10 @@ public abstract class AbstractTestQuery extends GraphTestBase
         return new TripleSorter()
             {
             public Triple [] sort( Triple [] triples )
-                {
-                Triple [] copy = new Triple[] {triples[a], triples[b], triples[c]};
-                return copy;
-                }    
+                { return new Triple[] {triples[a], triples[b], triples[c]}; }    
             };    
         }
-        
-    protected static final TripleSorter sortReverse = new TripleSorter()
-        {
-        public Triple [] sort( Triple [] triples )
-            { 
-            Triple [] copy = new Triple[triples.length];
-            for (int i = 0, j = triples.length; i < triples.length; i += 1) copy[i] = triples[--j];
-            return copy;
-            }
-        };
-        
+
     protected Graph dataGraph()
         {
         Graph result = getGraph();
@@ -640,6 +627,10 @@ public abstract class AbstractTestQuery extends GraphTestBase
     int queryCount( TripleSorter sort )
         {
         CountingGraph g = bigCountingGraph();
+        for (int a = 0; a < 10; a += 1)
+            for (int b = 0; b < 10; b += 1)
+                for (int X = 0; X < 3; X += 1)
+                    graphAdd( g, "a" + a + " X" + (X == 0 ? "" : X + "") + " b" + b );
         graphAdd( g, "a SPOO d; a X b; b Y c" );
         getAnswer( g, sort );
         return g.getCount();

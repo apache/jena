@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleTripleSorter.java,v 1.4 2003-08-12 14:32:56 chris-dollin Exp $
+  $Id: SimpleTripleSorter.java,v 1.5 2003-08-12 15:22:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -54,24 +54,26 @@ public class SimpleTripleSorter implements TripleSorter
         Sort the triple array so that more-bound triples come before less-bound triples.
         Preserve the order of the elements unless they <i>have<i> to move. 
     <p>      
-        The algorithm just repeatedly looks for the lightest triples, moves them into the result
-        array, and re-weighs triples in the light of the new bindings that makes.
+        The algorithm just repeatedly looks for a lightest triple, moves it into the result
+        array, and re-weighs triples in the light of the new bindings that makes. Of several
+        lightest triples, the first is picked [mostly so that it's easier to write the tests].
     */
     protected Triple [] sort() 
         {
         while (remaining.size() > 0)
             {
-                
-                
-                
-            for (int i = 0; i < remaining.size(); i += 1) consider( (Triple) remaining.get(i) );
-            currentWeight += 1;
+            int minWeight = 100;
+            Triple firstLightest = null;
+            for (int i = 0; i < remaining.size(); i +=1)
+                {
+                Triple t = (Triple) remaining.get(i);
+                int w = weight( t );
+                if (w < minWeight) { minWeight = w; firstLightest = t; }    
+                }    
+            accept( firstLightest );    
             }
         return result;
         }
-
-    protected void consider( Triple t )
-        { if (weight( t ) <= currentWeight) accept( t ); }
         
     protected void accept( Triple t )
         {
@@ -91,6 +93,9 @@ public class SimpleTripleSorter implements TripleSorter
         In this simple sorter, the weight of a triple is the sum of the weights of its nodes.
         None of the positions get weighted differently. One might choose to weigh 
         positions that were more search-intensive more heavily.
+        
+        @param t the triple to be weighed [with respect to the bound variables]
+        @return the weight of the triple, rising as the triple is more variable
     */
     protected int weight( Triple t )
         {
@@ -101,6 +106,18 @@ public class SimpleTripleSorter implements TripleSorter
         In this simple sorter, concrete nodes weigh nothing. [This is, after all, computing
         rather than building.] ANYs cost the most, because they cannot be bound, and
         variable nodes cost a little if they are bound and a lot if they are not. 
+    <p>
+        The rules are
+    <ul>
+        <li>any concrete node weighs nothing
+        <li>a bound variable node weighs something, but a triple which is three bound
+            variables must weigh less than a triple with an unbound variable
+        <li>an ANY node weighs more than an unbound variable node but less than
+            two unbound variable nodes
+    </ul>
+    
+        @param n the node to be weighed [with respect to the bound variables]
+        @return the weight of the node
     */
     protected int weight( Node n )
         { return n.isConcrete() ? 0 : n.equals( Node.ANY ) ? 5 : bound.contains( n ) ? 1 : 4; }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestSimpleTripleSorter.java,v 1.3 2003-08-12 12:53:05 chris-dollin Exp $
+  $Id: TestSimpleTripleSorter.java,v 1.4 2003-08-12 15:23:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -63,6 +63,9 @@ public class TestSimpleTripleSorter extends GraphTestBase
         assertEquals( Arrays.asList( new Triple[] {t} ), Arrays.asList( sorter.sort( new Triple[] {t} ) ) );
         }
         
+    /**
+        Test that concrete nodes get sorted to the beginning of the result
+    */
     public void testConcreteFirst()
         {
         testReordersTo( "S P O; ?s ?p ?o", "S P O; ?s ?p ?o" );    
@@ -71,6 +74,9 @@ public class TestSimpleTripleSorter extends GraphTestBase
         testReordersTo( "S P O; ?s ?p ?o; ?a ?b ?c", "?s ?p ?o; S P O; ?a ?b ?c" );
         }
         
+    /**
+        Test that bound variables get sorted nearer the beginning than unbound ones
+    */
     public void testBoundFirst()
         {
         testReordersTo( "?s R a; ?s ?p ?o", "?s ?p ?o; ?s R a" );    
@@ -78,11 +84,27 @@ public class TestSimpleTripleSorter extends GraphTestBase
         testReordersTo( "?a P b; ?c Q d; ?a P ?c", "?a P b; ?a P ?c; ?c Q d" );
         }
         
+    /**
+        Test that ANY is heavier than one variable but lighter than two
+    */
+    public void testANY()
+        {
+        testReordersTo( "?? C d; ?a X ?b",  "?a X ?b; ?? C d" );    
+        testReordersTo( "?a B c; ?? D e", "?? D e; ?a B c" );
+        }
+       
+    /**
+        Test that binding a variable makes it lighter than an unbound variable
+    */ 
     public void testInteraction()
         {
         testReordersTo( "?a P b; ?a Q ?b; ?b R ?c", "?b R ?c; ?a Q ?b; ?a P b" );    
         }
         
+    /**
+        Utility: test that the triple array described by <code>original</code> gets reordered
+        to the triple array described by <code>desired</code>.
+    */
     public void testReordersTo( String desired, String original )
         {
         Triple [] o = tripleArray( original ), d = tripleArray( desired );    
