@@ -1,41 +1,51 @@
 /******************************************************************
- * File:        XSDDateTimeType.java
+ * File:        XSDByteType.java
  * Created by:  Dave Reynolds
- * Created on:  16-Dec-2002
+ * Created on:  10-Dec-02
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDateTimeType.java,v 1.1 2003-03-31 10:01:31 der Exp $
+ * $Id: XSDByteType.java,v 1.3 2003-04-15 21:05:10 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
 import com.hp.hpl.jena.datatypes.*;
-import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
- * The XSD date/time type, the only job of this extra layer is to
- * wrap the return value in a more convenient accessor type. 
- * 
+ * Datatype template used to define XSD int types
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-03-31 10:01:31 $
+ * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:05:10 $
  */
-public class XSDDateTimeType extends XSDDatatype {
+public class XSDByteType extends XSDBaseNumericType {
 
     /**
-     * Constructor
+     * Constructor. 
+     * @param typeName the name of the XSD type to be instantiated, this is 
+     * used to lookup a type definition from the Xerces schema factory.
      */
-    public XSDDateTimeType(String typename) {
-        super(typename);
+    public XSDByteType(String typeName) {
+        super(typeName);
     }
-
+    
+    /**
+     * Constructor. 
+     * @param typeName the name of the XSD type to be instantiated, this is 
+     * used to lookup a type definition from the Xerces schema factory.
+     * @param javaClass the java class for which this xsd type is to be
+     * treated as the cannonical representation
+     */
+    public XSDByteType(String typeName, Class javaClass) {
+        super(typeName, javaClass);
+    }
+    
     /**
      * Parse a lexical form of this datatype to a value
-     * @return a Duration value
      * @throws DatatypeFormatException if the lexical form is not legal
      */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {
-        return new XSDDateTime(super.parse(lexicalForm), typeDeclaration);
+    public Object parse(String lexicalForm) throws DatatypeFormatException {        
+        return new Byte(super.parse(lexicalForm).toString());
     }
     
     /**
@@ -46,6 +56,7 @@ public class XSDDateTimeType extends XSDDatatype {
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
        return value1.getValue().equals(value2.getValue());
     }
+
 }
 
 /*
