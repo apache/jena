@@ -46,7 +46,7 @@ directive ::=
    fact .
 
 header ::=
-   header( o, {metaPropValue}, {annotation} ).
+   header( [o], {metaPropValue}, {annotation} ).
 
 
 metaPropValue ::= 

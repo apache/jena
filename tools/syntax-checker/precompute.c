@@ -8,6 +8,19 @@
 #include <assert.h>
 #define null 0
 #define MAX_SYM 1024
+
+/* otherwise we need more than 31 bits for a triple. 
+
+Note:
+   1290^3 < 2^31 < 1291^3 
+   
+Some of these sets may be spurious, so maybe we could go
+upto 1293 ???; it might be possible to use the top bit; 
+it would be real work to move to a long.
+maybe three levels of switches ... (never turn S,P,O into
+single value)
+Not clear what real max is. 3 or 4 MB?
+*/
 #define MAX_SET 5000
 #define MAX_TRIPLES 5000
 #define O(x)  ((x)&1023)
@@ -22,11 +35,13 @@
    orphaned owl:'OntologyProperty' s.
 */
 int orphan = -1;
+int notype = -1;
 int rdffirst;
 int rdfrest;
 int rdftype;
 int orphanSet = -1;
 int notypeSet = -1;
+int orphanNotypeSet = -1;
 int rdfList;
 int owlOntologyProperty;
 
@@ -35,6 +50,7 @@ int notType[5];
 #define DIM(array) (sizeof(array)/sizeof(array[0]))
 struct { char * str; int * sym; } specials[] = {
   { "orphan", &orphan },
+  { "notype", &notype },
   { "rdf:type", &rdftype },
   { "rdf:first", &rdffirst },
   { "rdf:rest", &rdfrest },
@@ -121,7 +137,7 @@ int saveSet(const int * set,int sz) {
     qsort(sets[setCnt]->syms,sz,sizeof(int),tcmp);
     sortedSets[setCnt] = sets[setCnt];
     if ( set[0] == orphan && sz==1) orphanSet = setCnt;
-   /* if ( set[0] == notype && sz==1) notypeSet = setCnt; */
+    if ( set[0] == notype && sz==1) notypeSet = setCnt;
 	return setCnt++;
 }
 /*
@@ -140,10 +156,7 @@ int saveSubSet(Set s, int * ok) {
      if (ok[i]) 
        sub->syms[j++] = s->syms[i];
     sub->sz = j;
-    if (j==0) {
-      badCnt++;
-      return -1;
-    }
+   
     prslt =  bsearch(&sub, sortedSets, 
                     setCnt, sizeof(Set), setCmp );   
     if ( prslt )
@@ -154,6 +167,12 @@ int saveSubSet(Set s, int * ok) {
     sets[setCnt] = rslt;
     sortedSets[setCnt] = rslt;
     qsort( sortedSets, setCnt+1, sizeof(Set), setCmp );
+    if ( rslt -> sz == 2  && (
+             ( rslt->syms[0] == orphan && rslt->syms[1] == notype )
+          || ( rslt->syms[1] == orphan && rslt->syms[0] == notype )
+          ) ) {
+          orphanNotypeSet = setCnt;
+          }
     return setCnt++;
 }
 
@@ -250,14 +269,16 @@ void dump(void) {
 */
 
 int pseudotriple( int subj, int prop,int obj) {
+   int i;
    if ( subj == orphan ) {
       return obj != orphan && 
               ( prop == rdfrest || prop == rdffirst
-                || ( prop = rdftype && 
+                || ( prop == rdftype && 
                         ( obj == rdfList || 
                           obj == owlOntologyProperty ) ) );
    } 
-   /*
+   if ( prop == orphan || obj == orphan ) return 0;
+   
    if ( subj == notype ) {
       if ( prop != rdftype ) return 1;
       for (i = 0; i< DIM(notType); i++)
@@ -265,9 +286,7 @@ int pseudotriple( int subj, int prop,int obj) {
            return 1;
       return 0;
    }
-   return prop == notype || obj == notype;
-   */
-   return 0; 
+   return prop == notype ||  obj == notype; 
 }
 
 void xform(int s, int p, int o) {
@@ -278,6 +297,7 @@ void xform(int s, int p, int o) {
    int okp[MAX_SYM];
    int oko[MAX_SYM];
    int i,j,k, ss, pp, oo;
+   int bad = 1;
    memset(oks,0,sizeof(oks));
    memset(okp,0,sizeof(okp));
    memset(oko,0,sizeof(oko));
@@ -285,24 +305,42 @@ void xform(int s, int p, int o) {
     for (j=0; j<prop->sz;j++)
      for (k=0; k<obj->sz; k++) 
       if ( !(oks[i]&&okp[j]&&oko[k]) ) {
-         if ( pseudotriple( subj->syms[i],prop->syms[j],obj->syms[i])
-            || istriple(SPO(subj->syms[i],
+         if ( istriple(SPO(subj->syms[i],
                            prop->syms[j],
                            obj->syms[k])) ) {
              oks[i] = okp[j] = oko[k] = 1;
+             bad = 0;
          }
       }
+    if (bad)  {
+      badCnt++;
+      return;
+    }
+   for (i=0;i<subj->sz;i++)
+    if (oks[i] 
+       || subj->syms[i]==orphan 
+       || subj->syms[i]==notype )
+      for (j=0; j<prop->sz;j++)
+    if (okp[j] 
+       || prop->syms[j]==orphan 
+       || prop->syms[j]==notype )
+       for (k=0; k<obj->sz; k++)
+        if (oko[k] 
+       || obj->syms[k]==orphan 
+       || obj->syms[k]==notype )   {
+         if ( pseudotriple( subj->syms[i],prop->syms[j],obj->syms[i]) ) {
+             oks[i] = okp[j] = oko[k] = 1;
+         }
+       }
    ss = saveSubSet(subj,oks);
    if ( ss == -1 )
       return;
    if ( ss == orphanSet )
       return;
-      /*
    if ( ss == notypeSet )
       return;
-   if ( ss = orphanNotypeSet )
+   if ( ss == orphanNotypeSet )
       return;
-      */
    pp = saveSubSet(prop,okp);
    assert( pp != -1 );
    oo = saveSubSet(obj,oko);

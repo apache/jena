@@ -199,6 +199,7 @@ findType(_,x(L),T, Lvl) :-
 findType(_Seq,0 ^^ (xsd:nonNegativeInteger),0 ^^ (xsd:nonNegativeInteger),_ ).
 findType(_Seq,1 ^^ (xsd:nonNegativeInteger),1 ^^ (xsd:nonNegativeInteger),_ ).
 findType(_Seq,naturalNumber ^^ (xsd:nonNegativeInteger),nonNegativeInteger,_ ).
+findType([open(header)|_],blank,unnamedOntology,_).
 findType([open(individual)|_],blank,unnamedIndividual,_).
 findType([open(restriction)|_],blank,restriction,_).
 findType([open(intersectionOf)|_],blank,description,_).

@@ -42,21 +42,21 @@ namespace(xsd,'http://www.w3.org/2001/XMLSchema#').
 grouping(
 [annotationPropID, classID, dataPropID, 
 datatypeID, individualID,  
-objectPropID, ontologyID, transitivePropID %,notype
+objectPropID, ontologyID, transitivePropID,notype
 ],userID).
 
 grouping(
 [annotationPropID, dataPropID, 
-objectPropID, transitivePropID %,notype
+objectPropID, transitivePropID,notype
 ],propertyOnly).
-/*
+
 grouping(
 [classID,notype],classOnly).
-*/
+
 grouping([orphan, ontologyPropertyID], ontologyPropertyHack ).
 grouping([allDifferent, description, listOfDataLiteral, listOfDescription, 
-listOfIndividualID, orphan,
-restriction, unnamedDataRange, unnamedIndividual %,notype
+listOfIndividualID, orphan, unnamedOntology,
+restriction, unnamedDataRange, unnamedIndividual,notype
 ],blank).
 
 %grouping(H) :- grouping(H,_).
@@ -236,7 +236,7 @@ buildChecker :-
 buildChecker :-
    tell('tmpSubCategorizationInput'),
    wlist([orphan,nl]),
-%   wlist([notype,nl]),
+   wlist([notype,nl]),
    g([A]),
    writeq(A),nl,
    fail.
@@ -257,7 +257,7 @@ buildChecker :-
   write('%%'),nl,told,
   (
   shell(echo) ->
-   shell('c/precompute < tmpSubCategorizationInput > tmpSubCategorizationOutput.pl');
+   shell('precompute < tmpSubCategorizationInput > tmpSubCategorizationOutput.pl');
   shell('precomp.bat')),
   [tmpSubCategorizationOutput].
 
@@ -322,7 +322,8 @@ bits(N,NB) :-
 
 gname(L,N) :- expg(L1,N),sort(L,L2),sort(L1,L2), !.
 gname([(Q:N)],QN) :- atom_concat(Q,N,QN),!.
-gname([D-N],QN) :- atom_concat(D,N,QN),!.
+gname([D-N*S],QN) :- concat_atom([D,N,S],QN),!.
+gname([D-N],QN) :- concat_atom([D,N],QN),!.
 gname([X],X) :- !.
 gname([],'Empty') :- !.
 gname(L,N) :-

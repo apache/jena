@@ -88,6 +88,10 @@ header(o,{metaPropValue},{annotation}) ->
           t(x(o),rdf:type,owl:ontology),
           {x(x(o),metaPropValue)},
           {x(x(o),annotation)}.
+header({metaPropValue},{annotation}) -> 
+          t(blank,rdf:type,owl:ontology),
+          {x(blank,metaPropValue)},
+          {x(blank,annotation)}; blank.
 
 D+metaPropValue( m, o ) -> 
           t(D,x(m),x(o) ).

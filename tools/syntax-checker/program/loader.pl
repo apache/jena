@@ -60,6 +60,6 @@ assertIfNotOne(_,G) :- assert(G).
 
 load :-
   retractall(ruleCount(_,_)),
-  load(program,[ops,apply,util,syntax,map,html,out,prove]),
+  load(program,[ops,apply,util,syntax,map,html,out,prove,checker]),
   load(grammar,[lite,dl,mapping,builtin,uri]).
   
