@@ -27,7 +27,7 @@ Not clear what real max is. 3 or 4 MB?
 #define P(x)  (((x)>>10)&1023)
 #define S(x)  (((x)>>20)&1023)
 #define SPO(s,p,o) (((s)<<20)|((p)<<10)|(o))
-#define MAX_RESULTS 500000
+#define MAX_RESULTS 2000000
 
 /* Special subcategory support:
     orphan
