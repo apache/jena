@@ -112,9 +112,9 @@ and the <code>jena.owlsyntax</code>
 class and the following arguments:
 </p>
 <pre>
-   jena.owlsyntax [--lite|--quiet] [--big] [file1] [file2]
-   jena.owlsyntax --help
-   jena.owlsyntax [--textui] --test [ManifestURL]
+    jena.owlsyntax [--lite|--quiet|--dl] [--big|--lang [N-TRIPLE|N3]] [file1] [file2]
+    jena.owlsyntax --help
+    jena.owlsyntax [--textui] --test [ManifestURL]
 </pre>
 <p>
 The first form reports "Lite", "DL", or "Full"
@@ -125,12 +125,29 @@ If no files are specified then standard input is used,
  against <code>&lt;urn:x-jena:syntaxchecker></code>).
  </p>
 
+  -L --lang     Specify N3 or N-TRIPLE input.
+
+  -m --manager  Specify OWL Document Manager.
+
+  --test        Run a test suite - default latest OWL Test publication.
+                URL of file:testing/wg/OWLManifest.rdf uses local copy.
+  --textui      Use the junit.textui instead of the swingui
+   jena.owlsyntax [--lite|--quiet] [--big] [file1] [file2]
+   jena.owlsyntax --help
+   jena.owlsyntax [--textui] --test [ManifestURL]
+
 <dl>
 <dt>
   -l
  </dt>
  <dt> --lite</dt>
  <dd>     Give error messages for OWL DL or OWL Full constructions.
+ </dd> 
+<dt>
+  -d
+ </dt>
+ <dt> --dl</dt>
+ <dd>(default) Give error messages for OWL Full constructions.
  </dd> 
   <dt>-q</dt><dt> --quiet</dt>
   <dd>    No error messages.</dd>
@@ -140,7 +157,7 @@ If no files are specified then standard input is used,
   <dt>--short
   </dt>
   <dd>    Give short error messages
-                                (Default is long messages for OWL Full only)
+                                (Default is long messages for OWL Full constructs only)
                                 </dd>
                                 
 <dt>  -b</dt><dt> --big</dt>
@@ -148,6 +165,16 @@ If no files are specified then standard input is used,
 
                                 Quality of long error messages suffers.
 </dd>
+
+<dt>-L</dt>
+<dt>--lang</dt>     
+<dd>Specify N3 or N-TRIPLE input, note 
+memory optimizations (<code>--big</code>) are not implemented.</dd>
+
+<dt>-m</dt> 
+<dt>--manager</dt>  
+<dd>Specify OWL Document Manager.</dd>
+
 <dt>
   --test</dt>
   <dd>        Run a test suite - default latest OWL Test publication.
@@ -198,6 +225,15 @@ code with custom Models or Graphs you should use
 either <code>addGraphAndImports</code> or
 <code>addRaw</code> depending on whether or not the
 custom graph is already imports closed or not.
+</p>
+<p>
+If the <code>Checker</code> does imports processing
+it uses a private <code>OntDocumentManager</code>
+constructed from the default profile (as shipped, this
+does not redirect any URLs). If you wish to
+use a custom <code>OntDocumentManager</code> to redirect
+some URLs, then construct an <code>OntModel</code>, and then
+add it to the <code>Checker</code>.
 </p>
 <h3><a name="sample"></a>Sample code</h3>
 <pre>
@@ -254,6 +290,14 @@ It is a streaming mode parser in that it does not
 remember all the triples from start to finish
 but intelligently discards those which have been
 fully analysed. 
+</p>
+<p>
+If there is a need to redirect the GET requests on any URLs
+being processed as a result of <code>owl:imports</code>,
+then the <code>StreamingChecker</code> can be given an
+appropriate <code>OntDocumentManager</code> when it
+is constructed. By default, it uses a private document
+manager, constructed from the default profile.
 </p>
  <h2><a name="Futures"></a>Future Plans</h2>
 <p>
