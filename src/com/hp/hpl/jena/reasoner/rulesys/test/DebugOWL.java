@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.14 2003-08-03 09:39:18 der Exp $
+ * $Id: DebugOWL.java,v 1.15 2003-08-03 20:45:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-08-03 09:39:18 $
+ * @version $Revision: 1.15 $ on $Date: 2003-08-03 20:45:41 $
  */
 public class DebugOWL {
 
@@ -334,8 +334,8 @@ public class DebugOWL {
 //            new DebugOWL(OWLExpt).runVolz();
             
             // Test volz examples on RDFS config
-            System.out.println("Volz tests on RDFSRule");
-            new DebugOWL(RDFSExpt).runVolz();
+//            System.out.println("Volz tests on RDFSRule");
+//            new DebugOWL(RDFSExpt).runVolz();
             System.out.println("Volz tests on expt, not tgc just type rules");
             new DebugOWL(EXPT).runVolz();
             System.out.println("Volz tests on lp variant of expt, not tgc just type rules");

@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPRuleStore.java,v 1.4 2003-07-25 16:34:34 der Exp $
+ * $Id: LPRuleStore.java,v 1.5 2003-08-03 20:45:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
-import com.hp.hpl.jena.reasoner.ReasonerException;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.RuleStore;
@@ -22,7 +21,7 @@ import java.util.*;
  * for compile the rules into internal byte codes before use.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-07-25 16:34:34 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-03 20:45:59 $
  */
 public class LPRuleStore extends RuleStore {
     
@@ -31,12 +30,17 @@ public class LPRuleStore extends RuleStore {
     
     /** A map from predicate to a list of RuleClauseCode objects for that predicate.
      *  Uses Node_RuleVariable.ANY for wildcard predicates.
-     *  TODO; Check ordering.
      */ 
     protected Map predicateToCodeMap;
     
     /** The list of all RuleClauseCode objects, used to implement wildcard queries */
     protected ArrayList allRuleClauseCodes;
+
+    /** Two level index map - index on predicate then on object */
+    protected Map indexPredicateToCodeMap;
+        
+    /** Threshold for number of rule entries in a predicate bucket before second level indexing kicks in */
+    private static final int INDEX_THRESHOLD = 20;
     
     /**
      * Construct a rule store containing the given rules.
@@ -74,10 +78,26 @@ public class LPRuleStore extends RuleStore {
      * query pattern. This may use indexing to narrow the rule set more that the predicate-only case. 
      * @param goal the triple pattern that makes up the query
      */
-    public List codeFor(TriplePattern goal) {
-        // TODO: add indexing
-        // Is use of TriplePattern ok here - check it doesn't lead to store turn over
-        return codeFor(goal.getPredicate());
+    public Collection codeFor(TriplePattern goal) {
+        List allRules = codeFor(goal.getPredicate());
+        if (allRules == null) {
+            return allRules;
+        }
+        Map indexedCodeTable = (Map) indexPredicateToCodeMap.get(goal.getPredicate());
+        if (indexedCodeTable != null) {
+            List indexedCode = (List) indexedCodeTable.get(goal.getObject());
+            if (indexedCode != null) {
+                return indexedCode;
+            }
+        }
+        return allRules;
+    }
+    
+    /**
+     * Return true if the given predicate is indexed.
+     */
+    public boolean indexedPredicate(Node predicate) {
+        return (indexPredicateToCodeMap.get(predicate) != null);
     }
     
     /**
@@ -87,30 +107,80 @@ public class LPRuleStore extends RuleStore {
     protected void compileAll() {
         isCompiled = true;
         
-        // TODO: add support for wildcard rules
         predicateToCodeMap = new HashMap();
         allRuleClauseCodes = new ArrayList();
+        indexPredicateToCodeMap = new HashMap();
         for (Iterator ri = getAllRules().iterator(); ri.hasNext(); ) {
             Rule r = (Rule)ri.next();
             ClauseEntry term = r.getHeadElement(0);
             if (term instanceof TriplePattern) {
+                RuleClauseCode code = new RuleClauseCode(r);
+                allRuleClauseCodes.add(code);
                 Node predicate = ((TriplePattern)term).getPredicate();
                 if (predicate.isVariable()) {
-                    throw new ReasonerException("Wildcard predicates not yet supported");
-                } else {
-                    RuleClauseCode code = new RuleClauseCode(r);
-                    allRuleClauseCodes.add(code);
-                    List predicateCode = (List)predicateToCodeMap.get(predicate);
-                    if (predicateCode == null) {
-                        predicateCode = new ArrayList();
-                        predicateToCodeMap.put(predicate, predicateCode);
-                    }
-                    predicateCode.add(code);
+                    predicate = Node_RuleVariable.ANY;
+                }
+                List predicateCode = (List)predicateToCodeMap.get(predicate);
+                if (predicateCode == null) {
+                    predicateCode = new ArrayList();
+                    predicateToCodeMap.put(predicate, predicateCode);
+                }
+                predicateCode.add(code);
+                if (predicateCode.size() > INDEX_THRESHOLD) {
+                    indexPredicateToCodeMap.put(predicate, new HashMap());
                 }
             }
         }
-        predicateToCodeMap.put(Node_RuleVariable.ANY, allRuleClauseCodes);
+
+        // Now add the wild card rules into the list for each non-wild predicate)
+        List wildRules = (List) predicateToCodeMap.get(Node_RuleVariable.ANY);
+        if (wildRules != null) {
+            for (Iterator i = predicateToCodeMap.entrySet().iterator(); i.hasNext(); ) {
+                Map.Entry entry = (Map.Entry)i.next();
+                Node predicate = (Node)entry.getKey();
+                List predicateCode = (List)entry.getValue();
+                if (predicate != Node_RuleVariable.ANY) {
+                    predicateCode.addAll(wildRules);
+                }
+            }
+        }
         
+        // Now built any required two level indices
+        for (Iterator i = indexPredicateToCodeMap.entrySet().iterator(); i.hasNext(); ) {
+            Map.Entry entry = (Map.Entry)i.next();
+            Node predicate = (Node) entry.getKey();
+            HashMap predicateMap = (HashMap) entry.getValue();
+            List wildRulesForPredicate = new ArrayList();
+            List allRulesForPredicate = (List) predicateToCodeMap.get(predicate);
+            for (Iterator j = allRulesForPredicate.iterator(); j.hasNext(); ) {
+                RuleClauseCode code = (RuleClauseCode)j.next();
+                ClauseEntry head = code.getRule().getHeadElement(0);
+                boolean indexed = false;
+                if (head instanceof TriplePattern) {
+                    Node objectPattern = ((TriplePattern)head).getObject();
+                    if (!objectPattern.isVariable() && !Functor.isFunctor(objectPattern)) {
+                        // Index against object
+                        List indexedCode = (List) predicateMap.get(objectPattern);
+                        if (indexedCode == null) {
+                            indexedCode = new ArrayList();
+                            predicateMap.put(objectPattern, indexedCode);
+                        }
+                        indexedCode.add(code);
+                        indexed = true;
+                    }
+                }
+                if (!indexed) {
+                    wildRulesForPredicate.add(code);
+                }
+            }
+            // Now fold the rules that apply to any index entry into all the indexed entries
+            for (Iterator k = predicateMap.entrySet().iterator(); k.hasNext(); ) {
+                Map.Entry ent = (Map.Entry)k.next();
+                Node pred = (Node)ent.getKey();
+                List predicateCode = (List)ent.getValue();
+                predicateCode.addAll(wildRulesForPredicate);
+            }
+        }
         
         // Now compile all the clauses
         for (Iterator i = allRuleClauseCodes.iterator(); i.hasNext(); ) {

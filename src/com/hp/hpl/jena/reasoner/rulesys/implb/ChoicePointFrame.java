@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ChoicePointFrame.java,v 1.5 2003-08-03 09:39:18 der Exp $
+ * $Id: ChoicePointFrame.java,v 1.6 2003-08-03 20:45:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -22,7 +22,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-03 09:39:18 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-03 20:45:59 $
  */
 public class ChoicePointFrame extends FrameObject {
 
@@ -57,7 +57,7 @@ public class ChoicePointFrame extends FrameObject {
      * @param interpreter the LPInterpreter whose state is to be preserved
      * @param predicateClauses the list of predicates for this choice point
      */
-    public void init(LPInterpreter interpreter, List predicateClauses) {
+    public void init(LPInterpreter interpreter, Collection predicateClauses) {
         envFrame = interpreter.envFrame;
 //        envFrame.incRefCount();
         trailIndex = interpreter.trail.size();

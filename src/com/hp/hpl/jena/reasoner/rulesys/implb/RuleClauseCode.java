@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.10 2003-08-03 09:39:18 der Exp $
+ * $Id: RuleClauseCode.java,v 1.11 2003-08-03 20:45:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-03 09:39:18 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-03 20:45:59 $
  */
 public class RuleClauseCode {
     
@@ -75,6 +75,9 @@ public class RuleClauseCode {
     /** call a predicate code object (predicateCodeList) */
     public static final byte CALL_PREDICATE = 0x9;
     
+    /** call a predicate code object with run time indexing (predicateCodeList) */
+    public static final byte CALL_PREDICATE_INDEX = 0x17;
+    
     /** call a predicate code object with special case of wildcard predicate */
     public static final byte CALL_WILD_PREDICATE = 0xa;
     
@@ -105,7 +108,7 @@ public class RuleClauseCode {
     /** Allocate a new environment frame */
     public static final byte ALLOCATE = 0x16;
     
-    // current next = 0x17
+    // current next = 0x18
     
     /** The maximum number of permanent variables allowed in a single rule clause. 
      *   Future refactorings will remove this restriction. */
@@ -191,37 +194,7 @@ public class RuleClauseCode {
         code = state.getFinalCode();
         args = state.getFinalArgs();
     }
-    
-    /**
-     * Construct a dummy code sequence for a top level goal.
-     * The current version assumes the top level caller arranges the argument registers correctly,
-     * so in fact the call sequence is trivial.
-     */
-    public static RuleClauseCode createGoalCode(TriplePattern goal, List predicateCode) {
-        byte[] code = new byte[3];
-        int p = 0;
-        Object[] args = new Object[1];
-        int a = 0;
-        
-        Node predicate = goal.getPredicate();
-        // TODO: wildcard predicate support here
-        if (predicateCode == null || predicateCode.size() == 0) {
-            code[p++] = CALL_TRIPLE_MATCH;
-        } else {
-            if (predicate.isVariable()) {
-                code[p++] = CALL_WILD_PREDICATE;
-            } else {
-                code[p++] = CALL_PREDICATE;
-            }
-            args[a++] = predicateCode;
-        }
-        code[p++] = PROCEED;
-        RuleClauseCode clause = new RuleClauseCode(null);
-        clause.args = args;
-        clause.code = code;
-        return clause;
-    }
-        
+            
     /**
      * Debug helper - list the code to a stream
      */
@@ -265,6 +238,9 @@ public class RuleClauseCode {
                     break;
                 case CALL_PREDICATE:
                     out.println("CALL_PREDICATE " + args[argi++]);
+                    break;
+                case CALL_PREDICATE_INDEX:
+                    out.println("CALL_PREDICATE_INDEX " + args[argi++]);
                     break;
                 case LAST_CALL_PREDICATE:
                     out.println("LAST_CALL_PREDICATE " + args[argi++]);
@@ -398,14 +374,23 @@ public class RuleClauseCode {
             // TODO: Add predicate test in variable predicate case
             emitBodyPut(goal.getPredicate(), 1);
             emitBodyPut(goal.getObject(), 2);
-            List predicateCode = store.codeFor(goal);
+            Collection predicateCode = store.codeFor(goal);
             if (predicateCode == null || predicateCode.size() == 0) {
                 code[p++] = CALL_TRIPLE_MATCH;
             } else {
                 if (goal.getPredicate().isVariable()) {
                     code[p++] = CALL_WILD_PREDICATE;
                 } else {
-                    code[p++] = (permanentVars.size() == 0) ? LAST_CALL_PREDICATE : CALL_PREDICATE;
+                    if (permanentVars.size() == 0) {
+                        code[p++] = LAST_CALL_PREDICATE;
+                    } else {
+                        // Normal call, but can it be indexed further?
+                        if (store.indexedPredicate(goal.getPredicate()) && goal.getObject().isVariable()) {
+                            code[p++] = CALL_PREDICATE_INDEX;
+                        } else {
+                            code[p++] = CALL_PREDICATE;
+                        }
+                    }
                 }
                 args.add(predicateCode);
             }
