@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.7 2003-05-16 16:39:56 der Exp $
+ * $Id: RuleState.java,v 1.8 2003-05-19 08:25:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-05-16 16:39:56 $
+ * @version $Revision: 1.8 $ on $Date: 2003-05-19 08:25:46 $
  */
 public class RuleState {
 
@@ -43,7 +43,7 @@ public class RuleState {
     protected GoalState goalState;
     
     /** Flag to indicate that rule state is scheduled on the agenda */
-    protected boolean isScheduled;
+    protected boolean isScheduled = false;
     
     /** The clause number in the rule to be processed next.
      *  TODO this needs revising if we enable clause reordering */
@@ -59,7 +59,7 @@ public class RuleState {
     int objectBind;
     
     /** functor node for object binding */
-    protected Functor functorMatch;
+    protected Functor functorMatch = null;
     
     /**
      * Normal constructor. Creates a new RuleState as an extension to an existing one.
@@ -124,7 +124,7 @@ public class RuleState {
                     for (int i = 0; i < margs.length; i++) {
                         Node match = margs[i];
                         if (match instanceof Node_RuleVariable) {
-                            newenv.bind(match, args[i]);
+                            if (!newenv.bind(match, args[i])) return null;
                         }
                     }
                 } else {
@@ -171,6 +171,17 @@ public class RuleState {
             }
         }
         return clauseIndex;
+    }
+    
+    /**
+     * Close a non-longer needed rule state. This will decrement
+     * the reference count of the goal table entry (this might have been
+     * the last RuleState working on that entry) and will close any
+     * iterators in the goal state.
+     */
+    public void close() {
+        if (goalState != null) goalState.close();
+        ruleInstance.generator.decRefCount();
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.11 2003-05-16 16:46:39 der Exp $
+ * $Id: TestBackchainer.java,v 1.12 2003-05-19 08:24:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
+import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.RDF;
 
@@ -27,7 +28,7 @@ import junit.framework.TestSuite;
  *  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-05-16 16:46:39 $
+ * @version $Revision: 1.12 $ on $Date: 2003-05-19 08:24:26 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -77,18 +78,18 @@ public class TestBackchainer extends TestCase {
         return new TestSuite( TestBackchainer.class ); 
     }  
 
-//    /**
-//     * Test parser modes to support backarrow notation are working
-//     */
-//    public void testParse() {
-//        List rules = Rule.parseRules(testRules1);
-//        assertEquals("BRule parsing", 
-//                        "[ (?p rdfs:subPropertyOf ?q) (?x ?p ?y) -> (?x ?q ?y) ]", 
-//                        rules.get(0).toString());
-//        assertEquals("BRule parsing", 
-//                        "[ (?a rdfs:subPropertyOf ?b) (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c) ]", 
-//                        rules.get(1).toString());
-//    }
+    /**
+     * Test parser modes to support backarrow notation are working
+     */
+    public void testParse() {
+        List rules = Rule.parseRules(testRules1);
+        assertEquals("BRule parsing", 
+                        "[ (?p rdfs:subPropertyOf ?q) (?x ?p ?y) -> (?x ?q ?y) ]", 
+                        rules.get(0).toString());
+        assertEquals("BRule parsing", 
+                        "[ (?a rdfs:subPropertyOf ?b) (?b rdfs:subPropertyOf ?c) -> (?a rdfs:subPropertyOf ?c) ]", 
+                        rules.get(1).toString());
+    }
     
     /**
      * Test goal/head unify operation.
@@ -155,8 +156,6 @@ public class TestBackchainer extends TestCase {
         doTestUnify(gf, hf1, true, new Node[] {null, null, yh});
         doTestUnify(gf, hf2, false, null);
         doTestUnify(gf, hf3, true, new Node[] {null, b});
-        doTestUnify(new TriplePattern(xg, p, Functor.makeFunctorNode("all", new Node[] {xg, yg })),
-                    new TriplePattern(xh, p, yh), true, new Node[]{null, null});
         
         // Check binding environment use
         BindingVector env = BindingVector.unify(g2, h1);
@@ -465,7 +464,7 @@ public class TestBackchainer extends TestCase {
                 new Triple(a, s, d)
             } );
     }
-    
+
     /**
      * Test basic builtin usage.
      */
@@ -724,8 +723,34 @@ public class TestBackchainer extends TestCase {
               new Object[] {
                   new Triple(c, r, a)
               } );
-      }
+    }
 
+    /**
+     * Test restriction example
+     */
+    public void testRestriction1() {    
+        Graph data = new GraphMem();
+        data.add(new Triple(a, ty, r));
+        data.add(new Triple(a, p, b));
+        data.add(new Triple(r, sC, C1));
+        data.add(new Triple(C1, ty, OWL.Restriction.asNode()));
+        data.add(new Triple(C1, OWL.onProperty.asNode(), p));
+        data.add(new Triple(C1, OWL.allValuesFrom.asNode(), c));
+        List rules = Rule.parseRules(
+    "[rdfs9:  (?x rdfs:subClassOf ?y) (?a rdf:type ?x) -> (?a rdf:type ?y)]" +
+    "[restriction2: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), (?C owl:allValuesFrom ?D) -> (?C owl:equivalentClass all(?P, ?D))]" +
+    "[rs2: (?D owl:equivalentClass all(?P,?C)), (?X rdf:type ?D) -> (?X rdf:type all(?P,?C))]" +
+    "[rp4: (?X rdf:type all(?P, ?C)), (?X ?P ?Y) -> (?Y rdf:type ?C)]"
+                          );        
+        Reasoner reasoner =  new BasicBackwardRuleReasoner(rules);
+        InfGraph infgraph = reasoner.bind(data);
+        ((BasicBackwardRuleInfGraph)infgraph).setTraceOn(true);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(b, ty, c), new Object[] {
+                  new Triple(b, ty, c)
+              } );
+    }
+    
 }
 
 

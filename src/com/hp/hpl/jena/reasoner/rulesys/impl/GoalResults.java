@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalResults.java,v 1.5 2003-05-16 16:39:56 der Exp $
+ * $Id: GoalResults.java,v 1.6 2003-05-19 08:25:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * the OR graph of the evaluation trace.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-16 16:39:56 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-19 08:25:46 $
  */
 public class GoalResults {
 
@@ -50,7 +50,7 @@ public class GoalResults {
     
     /** The set of RuleStates which are currently blocked
      *  waiting for this table entry to have more results */
-    protected Set dependents;
+    protected Set dependents = new HashSet();
     
     /** The rule engine which this table entry is part of */
     protected BRuleEngine engine; 
@@ -78,7 +78,6 @@ public class GoalResults {
         resultSet = new ArrayList();
         resultSetIndex = new HashSet();
         isComplete = false;
-        dependents = new HashSet();
         engine = ruleEngine;
         isSingleton = !(goal.getSubject().isVariable() || goal.getPredicate().isVariable() || goal.getObject().isVariable());
     }
@@ -122,7 +121,7 @@ public class GoalResults {
             RuleState dep = (RuleState)i.next();
             engine.prependToAgenda(dep);
         }
-        dependents.clear();
+//        dependents.clear();
     }
     
     /**
@@ -136,11 +135,15 @@ public class GoalResults {
      * Indicate that the goal has completed.
      */
     public void setComplete() {
-        if (engine.isTraceOn()) {
-            logger.debug("Completed " + this);
+        if (!isComplete) {
+            if (engine.isTraceOn()) {
+                logger.debug("Completed " + this);
+            }
+            isComplete = true;
+            resultSetIndex = null;
+            flushDependents();
+            dependents.clear();
         }
-        isComplete = true;
-        flushDependents();
     }
     
     /**
@@ -165,6 +168,7 @@ public class GoalResults {
                 engine.appendToAgenda(rs);
             }
         }
+        if (refCount <= 0) setComplete();
         started = true;
     }
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.7 2003-05-16 16:39:57 der Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.8 2003-05-19 08:25:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-05-16 16:39:57 $
+ * @version $Revision: 1.8 $ on $Date: 2003-05-19 08:25:47 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph {
 
@@ -156,7 +156,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
      * will be asked for additional match results if the implementor
      * may not have completely satisfied the query.
      */
-    public synchronized ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
+    public ExtendedIterator findWithContinuation(TriplePattern pattern, Finder continuation) {
         if (!isPrepared) prepare();
         return WrappedIterator.create(
              new TopGoalIterator( engine.findGoal(pattern) )
@@ -238,6 +238,14 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
      */
     public boolean isTraceOn() {
         return traceOn;
+    }
+    
+    /**
+     * Dump an a summary of the goal table state to stdout.
+     * Just debugging, do not use for real.
+     */
+    public void dump() {
+        engine.dump();        
     }
     
 //  =======================================================================
@@ -326,6 +334,8 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph {
                 } else {
                     lookAhead = null;
                 }
+            } else if (lookAhead == StateFlag.FAIL) {
+                lookAhead = null;
             }
         }
         

@@ -5,13 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.4 2003-05-09 08:08:36 der Exp $
+ * $Id: OWLWGTester.java,v 1.5 2003-05-19 08:24:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleInfGraph;
-import com.hp.hpl.jena.reasoner.rulesys.BasicForwardRuleReasoner;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.WGReasonerTester;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.util.PrintUtil;
@@ -33,7 +32,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-09 08:08:36 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-19 08:24:26 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -164,15 +163,7 @@ public class OWLWGTester {
                          .addProperty(BasicForwardRuleReasoner.PROPderivationLogging, "true");
         }
         Reasoner reasoner = reasonerF.create(configuration);
-        // Temp ...
-            /*
-            Graph data = premises.getGraph();
-            logger.debug("Initial graph state");
-            for (Iterator i = data.find(null, null, null); i.hasNext(); ) {
-                logger.debug(i.next().toString());
-            }
-            */
-        // ... end temp
+        long t1 = System.currentTimeMillis();
         InfGraph graph = reasoner.bind(premises.getGraph());
         Model result = ModelFactory.createModelForGraph(graph);
         
@@ -184,8 +175,12 @@ public class OWLWGTester {
             // A negative entailment check
             correct = !testConclusions(conclusions.getGraph(), result.getGraph());
         }
-        logger.debug("Fired " + ((BasicForwardRuleInfGraph)graph).getNRulesFired() +" rules");
-
+        long t2 = System.currentTimeMillis();
+        logger.info("Time=" + (t2-t1) + "ms for " + test.getURI());
+        //logger.debug("Fired " + ((BasicForwardRuleInfGraph)graph).getNRulesFired() +" rules");
+        // Temp ...
+        //((BasicBackwardRuleInfGraph) graph).dump();
+        // ... end temp
         // Debug output on failure
         if (!correct) {
             // Temp
@@ -205,15 +200,6 @@ public class OWLWGTester {
                     logger.debug(sw.getBuffer().toString() );
                 }
             }
-            // Temp ...
-            /*
-            data = graph.getRawGraph();
-            logger.debug("Final graph state");
-            for (Iterator i = data.find(null, null, null); i.hasNext(); ) {
-                logger.debug(PrintUtil.print((Triple)i.next()));
-            }
-            */
-            // ... end temp
         }
         
         // Signal the results        

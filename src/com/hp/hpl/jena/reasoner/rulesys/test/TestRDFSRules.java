@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.6 2003-05-16 16:39:58 der Exp $
+ * $Id: TestRDFSRules.java,v 1.7 2003-05-19 08:24:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,7 +25,7 @@ import java.util.Iterator;
 import org.apache.log4j.Logger;
 
 /** * Test suite to test the production rule version of the RDFS implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.6 $ on $Date: 2003-05-16 16:39:58 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.7 $ on $Date: 2003-05-19 08:24:26 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -79,13 +79,13 @@ public class TestRDFSRules extends TestCase {
         for (Iterator i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
         long t2 = System.currentTimeMillis();
         System.out.println(name + ": " + count +" results in " + (t2-t1) +"ms");
-        t1 = System.currentTimeMillis();
-        for (int j = 0; j < 10; j++) {
-            count = 0;
-            for (Iterator i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
-        }
-        t2 = System.currentTimeMillis();
-        System.out.println(name + ": " + count + " results in " + (t2-t1)/10 +"ms");
+//        t1 = System.currentTimeMillis();
+//        for (int j = 0; j < 10; j++) {
+//            count = 0;
+//            for (Iterator i = m.listStatements(null, RDF.type, C1); i.hasNext(); i.next()) count++;
+//        }
+//        t2 = System.currentTimeMillis();
+//        System.out.println(name + ": " + count + " results in " + (t2-t1)/10 +"ms");
     }
     
     /**
@@ -104,6 +104,9 @@ public class TestRDFSRules extends TestCase {
             Reasoner rdfsBRule = RDFSBRuleReasonerFactory.theInstance().create(null);
             Reasoner rdfs1    = RDFSReasonerFactory.theInstance().create(null);
         
+            doTiming(rdfs1, tbox, data, "RDFS1");    
+            doTiming(rdfsRule, tbox, data, "RDFS F rule");    
+            doTiming(rdfsBRule, tbox, data, "RDFS B rule");    
             doTiming(rdfs1, tbox, data, "RDFS1");    
             doTiming(rdfsRule, tbox, data, "RDFS F rule");    
             doTiming(rdfsBRule, tbox, data, "RDFS B rule");    

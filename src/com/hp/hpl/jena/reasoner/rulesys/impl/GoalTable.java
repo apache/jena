@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GoalTable.java,v 1.4 2003-05-13 08:18:13 der Exp $
+ * $Id: GoalTable.java,v 1.5 2003-05-19 08:25:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
  *  is a table of partially evaluated goals.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-05-13 08:18:13 $
+ * @version $Revision: 1.5 $ on $Date: 2003-05-19 08:25:47 $
  */
 public class GoalTable {
 
@@ -76,6 +76,22 @@ public class GoalTable {
             ((GoalResults)i.next()).setAllComplete();
         }
     }
+    
+    /**
+     * Dump an a summary of the goal table state to stdout.
+     * Just debugging, do not use for real.
+     */
+    public void dump() {
+        System.out.println("Final goal table");
+        for (Iterator i = table.values().iterator(); i.hasNext(); ) {
+            GoalResults gr = (GoalResults)i.next();
+            System.out.println(gr.toString() );
+            for (int j = 0; j < gr.numResults(); j++) {
+                System.out.println(" - " + gr.getResult(j));
+            }
+        }
+    }
+    
 }
 
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleInstance.java,v 1.5 2003-05-15 21:34:32 der Exp $
+ * $Id: RuleInstance.java,v 1.6 2003-05-19 08:25:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-15 21:34:32 $
+ * @version $Revision: 1.6 $ on $Date: 2003-05-19 08:25:47 $
  */
 public class RuleInstance {
 
@@ -43,7 +43,7 @@ public class RuleInstance {
     protected boolean clausesReordered = false;
     
     /** If the clauses are reordered this contains the index of the second clause */
-    protected int secondClause;
+    protected int secondClause = -1;
     
     /**
      * Constructor. Create a new continuation point for a rule in
