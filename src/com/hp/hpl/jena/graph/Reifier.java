@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Reifier.java,v 1.1.1.1 2002-12-19 19:13:32 bwm Exp $
+  $Id: Reifier.java,v 1.2 2003-03-26 12:38:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -18,7 +18,7 @@ package com.hp.hpl.jena.graph;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.iterator.*;
 
-public interface Reifier
+public interface Reifier extends GetTriple
     {
     /**
         return an immutable Graph of the reified triples, allowing them to be
@@ -38,7 +38,7 @@ public interface Reifier
     Node reify( Triple t );
     
     /**
-        node the triple _t_ as reified using _n_ as its representing node.
+        note the triple _t_ as reified using _n_ as its representing node.
         If _n_ is already reifying something, a AlreadyReifiedException is thrown.
     */
     Node reifyAs( Node n, Triple t );
@@ -49,21 +49,36 @@ public interface Reifier
     boolean hasTriple( Node n );
     
     /**
-        get the triple associated with the node _n_, null if there isn't one.
+        @return true iff there's > 0 mappings to this triple
     */
-    Triple getTriple( Node n );
-       
+    boolean hasTriple( Triple t );
+    
     /**
         return an iterator over all the nodes that are reifiying something in 
         this reifier.
     */
-    ClosableIterator allNodes();
+    ExtendedIterator allNodes();
     
     /**
         remove any existing binding for _n_; hasNode(n) will return false
         and getTriple(n) will return null. 
     */
-    void remove( Node n );
+    void remove( Node n, Triple t );
+    
+    /**
+        remove all bindings which map to this triple.
+    */
+    void remove( Triple t );
+    
+    /**
+        true iff the Reifier has handled an add of the triple _t_.
+    */
+    boolean handledAdd( Triple t );
+    
+    /**
+        true iff the Reifier has handled a remove of the triple _t_.
+    */
+    boolean handledRemove( Triple t );
     
     /**
         the exception raised by _reifyAs_ if a node is already bound to

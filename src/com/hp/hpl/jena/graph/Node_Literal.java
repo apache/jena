@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node_Literal.java,v 1.1.1.1 2002-12-19 19:13:31 bwm Exp $
+  $Id: Node_Literal.java,v 1.2 2003-03-26 12:38:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -22,7 +22,7 @@ public class Node_Literal extends Node
         
     public boolean equals( Object other )
         { return other instanceof Node_Literal && label.equals( ((Node_Literal) other).label ); }
-   
+        
     /**
      * Test that two nodes are semantically equivalent.
      * In some cases this may be the sames as equals, in others
@@ -41,7 +41,7 @@ public class Node_Literal extends Node
 }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.4 2003-03-04 18:00:16 ian_dickinson Exp $
+  $Id: GraphTestBase.java,v 1.5 2003-03-26 12:38:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -111,6 +111,12 @@ public class GraphTestBase extends TestCase
         assertTrue( title, g.isIsomorphicWith( graphWith( template ) ) );
         }
         
+    public void assertEquals( String name, Graph wanted, Graph obtained )
+        {
+        Model mWanted = new ModelMem( wanted ), mObtained = new ModelMem( obtained );
+        assertTrue( name + ": wanted " + wanted + " got " + obtained, mWanted.isIsomorphicWith( mObtained ) );
+        }
+    
     public static void assertContains( String name, Graph g, String s )
         {
         assertTrue( name + " must contain " + s, g.contains( triple( s ) ) );

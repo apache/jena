@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.2 2003-02-11 15:17:05 chris-dollin Exp $
+  $Id: Node.java,v 1.3 2003-03-26 12:38:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -113,8 +113,16 @@ public abstract class Node {
     public LiteralLabel getLiteral()
         { throw new UnsupportedOperationException( "this is not a literal node" ); }
     
+    /** get the URI of this node if it has one, else die horribly */
     public String getURI()
         { throw new UnsupportedOperationException( "this is not a URI node" ); }
+        
+    /**
+        get the triple associated with this node; if no direct association, use the
+        triple-getter _r_. 
+    */
+    public Triple getTriple( GetTriple r )
+        { return r.getTriple( this ); }
         
     /** get a variable nodes name, otherwise die horribly */
     public String getName()
