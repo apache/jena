@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.13 2004-04-22 12:42:27 chris-dollin Exp $
+  $Id: Triple.java,v 1.14 2004-10-26 13:13:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -16,7 +16,7 @@ import java.util.*;
     
     @author Jeremy Carroll
  */
-final public class Triple implements TripleMatch {
+public class Triple implements TripleMatch {
 	private final Node subj, pred, obj;
     
 	public Triple(Node s, Node p, Node o) {
@@ -119,9 +119,7 @@ final public class Triple implements TripleMatch {
         together: see hashCode(S, P, O).
     */
     public int hashCode() 
-        { return hashCode( subj, pred, obj );
-    	// return (subj.hashCode() >> 1) ^ pred.hashCode() ^ (obj.hashCode() << 1);
-        }
+        { return hashCode( subj, pred, obj ); }
     
     /**
         Return the munged hashCodes of the specified nodes, an exclusive-or of 
