@@ -37,6 +37,7 @@ ontology/
 tutorial/
 images/
 styles/
+contrib/
 javadoc/
 EOF
 )
