@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.14 2003-12-10 11:58:48 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.15 2004-03-17 11:20:49 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -86,7 +86,12 @@ class ParserSupport
 	 */
 	void checkIdSymbol(XMLContext ctxt, StrToken s, String str)
 		throws ParseException {
-		Location prev = (Location) idsUsed.get(str);
+			Map idsUsedForBase = (Map)idsUsed.get(ctxt.getBase());
+			if (idsUsedForBase==null){
+				idsUsedForBase = new HashMap();
+				idsUsed.put(ctxt.getBase(),idsUsedForBase);
+			}
+		Location prev = (Location) idsUsedForBase.get(s.value);
 		if (prev != null) {
 			arp.parseWarning(
 				WARN_REDEFINITION_OF_ID,
@@ -97,16 +102,16 @@ class ParserSupport
 				prev,
 				"Previous definition of '" + s.value + "'.");
 		} else {
-			idsUsed.put(str, s.location);
-			prev = (Location) idsUsed.get(s.value);
-			if (prev != null)
-				arp.parseWarning(
-					WARN_LEGAL_REUSE_OF_ID,
-					s.location,
-					"The ID: "
-						+ s.value
-						+ " is reused in different xml:base contexts; this may be confusing.");
-			idsUsed.put(s.value, s.location);
+//			idsUsed.put(str, s.location);
+//			prev = (Location) idsUsed.get(s.value);
+//			if (prev != null)
+//				arp.parseWarning(
+//					WARN_LEGAL_REUSE_OF_ID,
+//					s.location,
+//					"The ID: "
+//						+ s.value
+//						+ " is reused in different xml:base contexts; this may be confusing.");
+			idsUsedForBase.put(s.value, s.location);
 		}
 		if (!ctxt.isSameAsDocument())
 			arp.parseWarning(
