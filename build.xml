@@ -206,8 +206,9 @@
                 <package name="com.hp.hpl.jena.reasoner.rdfsReasoner1"/>
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
+		<package name="com.hp.hpl.jena.shared"/>
                 <package name="com.hp.hpl.jena.datatypes"/>
-		            <package name="com.hp.hpl.jena.datatypes.xsd"/>
+	        <package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.util"/>
                 <package name="com.hp.hpl.jena.util.iterator"/>
                 <package name="jena"/>
@@ -218,6 +219,7 @@
                 <package name="com.hp.hpl.jena.rdf.arp"/>
                 <package name="com.hp.hpl.jena.rdf.arp.lang"/>
                 <package name="com.hp.hpl.jena.rdql"/>
+		<package name="com.hp.hpl.jena.shared"/>
                 <package name="com.hp.hpl.jena.vocabulary"/>
                 <package name="com.hp.hpl.jena.xmloutput"/>
                 <package name="com.hp.hpl.jena.ontology"/>
@@ -232,7 +234,7 @@
                 <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
                 <package name="com.hp.hpl.jena.reasoner"/>
                 <package name="com.hp.hpl.jena.datatypes"/>
-		            <package name="com.hp.hpl.jena.datatypes.xsd"/>
+	        <package name="com.hp.hpl.jena.datatypes.xsd"/>
                 <package name="com.hp.hpl.jena.util"/>
                 <package name="com.hp.hpl.jena.util.iterator"/>
             </group>
@@ -249,16 +251,16 @@
         <mkdir dir="${javadoc.dir}"/>
 
         <javadoc
-	         sourcepath="${src.dir}"
-	         destdir="${javadoc.dir}"
-	         author="true"
-	         version="true"
-                 classpathref="classpath"
-	         windowtitle="${Name} Framework"
-	         doctitle="${Name} Framework"
-	         overview="${src.dir}/link2readme.html"
-	         bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved."
-	         packagenames="com.hp.hpl.*"
+	     sourcepath="${src.dir}"
+	     destdir="${javadoc.dir}"
+	     author="true"
+	     version="true"
+             classpathref="classpath"
+	     windowtitle="${Name} Framework"
+	     doctitle="${Name} Framework"
+	     overview="${src.dir}/link2readme.html"
+	     bottom="Copyright &#169; 2001-2003 Hewlett-Packard. All Rights Reserved."
+	     packagenames="com.hp.hpl.*"
              additionalparam="-breakiterator"
              Use="true"
 		/>
