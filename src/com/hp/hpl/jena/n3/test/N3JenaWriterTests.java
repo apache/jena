@@ -22,7 +22,7 @@ import com.hp.hpl.jena.mem.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterTests.java,v 1.5 2003-04-24 09:43:44 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterTests.java,v 1.6 2003-06-09 14:51:14 andy_seaborne Exp $
  */
 public class N3JenaWriterTests extends N3ExternalTestsCom
 {
@@ -31,7 +31,7 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
         return new N3JenaWriterTests() ;
     }
 	
-		static final String uriBase = "http://host/base/" ;
+    static final String uriBase = "http://host/base/" ;
 	
 	public N3JenaWriterTests()
 	{
@@ -54,12 +54,19 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 		if ( basedir != null && resultsFile != null && !resultsFile.equals("") )
 			resultsFile = basedir + "/" + resultsFile ;
 			
-		addTest(new Test(testName, inputFile, resultsFile)) ; 
+        // Run on each of the writers
+		addTest(new Test(testName, inputFile, resultsFile,
+                         N3JenaWriter.n3WriterPrettyPrinter)) ;
+        addTest(new Test(testName, inputFile, resultsFile,
+                         N3JenaWriter.n3WriterPlain)) ;
+        addTest(new Test(testName, inputFile, resultsFile,
+                         N3JenaWriter.n3WriterTriples)) ;
 	}
 
 
 	static class Test extends TestCase
 	{
+        String writerName = null ;
 		String testName = null ;
 		String basename = null ;
 		String inputFile = null ;
@@ -67,12 +74,13 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 		Reader data = null ;
 		
 		
-		Test(String _testName, String _inputFile, String _resultsFile)
+		Test(String _testName, String _inputFile, String _resultsFile, String wName)
 		{
-			super("N3 Jena Writer test: "+_testName) ;
+			super("N3 Jena Writer test: "+_testName+"-"+wName) ;
 			testName = _testName ;
 			inputFile = _inputFile ;
 			resultsFile = _resultsFile ;
+            writerName = wName ;
 		}
 		
 		protected void runTest() throws Throwable
@@ -89,12 +97,23 @@ public class N3JenaWriterTests extends N3ExternalTestsCom
 			
 			Model model_1 = new ModelMem() ;
 			model_1.read(data, uriBase, "N3") ;
-			
+            
+            // Set the writer name.
+            String oldName = System.getProperty(N3JenaWriter.propWriterName) ;
+            System.setProperty(N3JenaWriter.propWriterName, writerName) ;
 			StringWriter w = new StringWriter() ;
-			N3JenaWriter out = new N3JenaWriter() ;
-			out.write(model_1, w, uriBase) ;
-			//model1.write(w, "N3", uriBase) ;
+            
+			//N3JenaWriter out = new N3JenaWriter() ;
+			//out.write(model_1, w, uriBase) ;
+            
+			model_1.write(w, "N3", uriBase) ;
 			w.close() ;
+            
+            // Set the writer name back again.
+            if ( oldName == null )
+                System.getProperties().remove(N3JenaWriter.propWriterName) ;
+            else
+                System.setProperty(N3JenaWriter.propWriterName, oldName) ;
 			
 			StringReader r = new StringReader(w.toString()) ;
 			Model model_2 = new ModelMem() ;

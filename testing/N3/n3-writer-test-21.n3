@@ -1,9 +1,7 @@
 # Test names with .'s in potential qnames.
 
-@prefix log:    <http://www.w3.org/2000/10/swap/log#> .
+@prefix foo:    <http://example.org/foo#> .
 @prefix : <#> .
 
-# Invade the log name space as this is always in the prefixes set
-
-<http://www.w3.org/2000/10/swap/log#local.name>
-    <http://www.w3.org/2000/10/swap/log#p.local.name> :localname .
+<http://example.org/foo#local.name>
+    <http://example.org/foo#p.local.name> :localname .

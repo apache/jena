@@ -3,30 +3,39 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.n3.test;
+package com.hp.hpl.jena.n3;
 
-import junit.framework.* ;
+//import org.apache.log4j.Logger;
+import com.hp.hpl.jena.rdf.model.*;
 
-/**
+/** A simple N3 writer - writes N3 out as triples with prefixes done.
+ *  "N3 triples" - tripels with N3 abbreviations and prefixes.
+ *  Very simple.  
+ *
  * @author		Andy Seaborne
- * @version 	$Id: N3TestSuite.java,v 1.5 2003-06-09 14:51:14 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterTriples.java,v 1.1 2003-06-09 14:50:11 andy_seaborne Exp $
  */
-public class N3TestSuite extends TestSuite
+
+
+
+public class N3JenaWriterTriples extends N3JenaWriterCommon
 {
-	/* JUnit swingUI needed this */
-    static public TestSuite suite() {
-        return new N3TestSuite() ;
+    protected void writeModel(Model model)
+    {
+        alwaysAllocateBNodeLabel = true ;
+        StmtIterator sIter = model.listStatements() ;
+        for ( ; sIter.hasNext() ; )
+        {
+            Statement stmt = sIter.nextStatement() ;
+            out.print( formatResource(stmt.getSubject()) ) ;
+            out.print(" ") ;
+            out.print( formatProperty(stmt.getPredicate()) ) ;
+            out.print(" ") ;
+            out.print( formatNode(stmt.getObject()) ) ;
+            out.println(" .") ; 
+        }
+        sIter.close() ;
     }
-	
-	
-	private N3TestSuite()
-	{
-		super("N3") ;
-		addTest(new N3InternalTests()) ;
-		addTest(new N3ExternalTests()) ;
-		addTest(new N3JenaReaderTests()) ;
-		addTest(new N3JenaWriterTests()) ;
-	}
 }
 
 /*

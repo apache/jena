@@ -11,7 +11,7 @@ import java.io.* ;
  *  Does not cope with tabs or newlines in output strings.
  * 
  * @author		Andy Seaborne
- * @version 	$Id: IndentedWriter.java,v 1.2 2003-02-20 16:48:25 andy_seaborne Exp $
+ * @version 	$Id: IndentedWriter.java,v 1.3 2003-06-09 14:50:09 andy_seaborne Exp $
  */
 
 // Not robust/complete enough for public use
@@ -32,6 +32,8 @@ import java.io.* ;
 		row = 0 ;
 		currentIndent = 0 ;
 	}
+
+    public Writer getWriter() { return writer ; }
 
 	public int getRow() { return row ; }
 	public int getCol() { return column ; }
