@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.7 2003-04-08 14:13:56 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.8 2003-04-15 09:55:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -12,14 +12,17 @@ package com.hp.hpl.jena.graph;
     A version of TestCase with assorted extra goodies.
 */
 
-import java.util.*;
-import java.io.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.mem.*;
-import junit.framework.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.test.*;
 
-public class GraphTestBase extends TestCase
+import java.util.*;
+import java.io.*;
+
+import junit.framework.*;
+
+public class GraphTestBase extends JenaTestBase
     {
     public GraphTestBase( String name )
     	{ super( name ); }
@@ -101,14 +104,6 @@ public class GraphTestBase extends TestCase
         return graphAdd( new GraphMem(), s );
         }
         
-    public static void assertFalse( String title, boolean b )
-        {
-        assertTrue( title, !b );
-        }
-        
-    public static void assertDiffer( String title, Object x, Object y )
-    	{ assertFalse( title, x.equals( y ) ); }
-    	
     public static void printGraph( PrintStream sink, Graph g )
     	{
     	ClosableIterator it = g.find( null, null, null );
@@ -138,12 +133,12 @@ public class GraphTestBase extends TestCase
         while (semis.hasMoreTokens()) assertContains( name, semis.nextToken(), g );       
         }
         
-    public static void assertOmits( String name, Graph g, String s )
+    public void assertOmits( String name, Graph g, String s )
         {
         assertFalse( name + " must not contain " + s, g.contains( triple( s ) ) );
         }
         
-    public static void assertOmitsAll( String name, Graph g, String s )
+    public void assertOmitsAll( String name, Graph g, String s )
         {
         StringTokenizer semis = new StringTokenizer( s, ";" );
         while (semis.hasMoreTokens()) assertOmits( name, g, semis.nextToken() );     

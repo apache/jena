@@ -1,47 +1,56 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.8 2003-04-15 09:55:29 chris-dollin Exp $
+  $Id: TestContains.java,v 1.1 2003-04-15 09:55:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.graph.*;
+
 import junit.framework.*;
 
 /**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
+ 	@author kers
 */
-
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
+public class TestContains extends ModelTestBase
+    {
+    public TestContains( String name )
+        { super( name ); }
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("Model");
-        addTest( "TestModel", TestModelFactory.suite() );
-        addTest( "TestModelFactory", TestModelFactory.suite() );
-        addTest( "TestSimpleListStatements", TestSimpleListStatements.suite() );
-        addTest( "TestModelPolymorphism", TestModelPolymorphism.suite() );
-        addTest( "TestSimpleSelector", TestSimpleSelector.suite() );
-        addTest( "TestStatements", TestReifiedStatements.suite() );
-        addTest( "TestReifiedStatements", TestReifiedStatements.suite() );
-        addTest( "TestIterators", TestIterators.suite() );
-        addTest( "TestContains", TestContains.suite() );
+    public static TestSuite suite()
+        { return new TestSuite( TestContains.class ); }          
+        
+    public void testContains( boolean yes, String facts, String resource )
+        {
+        Model m = modelWithStatements( facts );
+        RDFNode r = m.createResource( resource );
+        assertTrue( "spoo", modelWithStatements( facts ).containsResource( r ) == yes );
         }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+        
+    public void testContains()
+        {
+        testContains( false, "", "x" );
+        testContains( false, "a R b", "x" );
+        testContains( false, "a R b; c P d", "x" );
+    /* */
+        testContains( false, "a R b", "z" );
+    /* */
+        testContains( true, "x R y", "x" );
+        testContains( true, "a P b", "P" );
+        testContains( true, "i  Q  j", "j" );
+        testContains( true, "x R y; a P b, i Q j", "y" );
+    /* */
+        testContains( true, "x R y; a P b, i Q j", "y" );
+        testContains( true, "x R y; a P b, i Q j", "R" );
+        testContains( true, "x R y; a P b, i Q j", "a" );
+        }
     }
 
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

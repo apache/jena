@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.13 2003-04-14 15:10:50 chris-dollin Exp $
+  $Id: Model.java,v 1.14 2003-04-15 09:55:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -50,7 +50,7 @@ import java.io.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.13 $Date: 2003/04/14 10:56:10 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.14 $Date: 2003/04/14 15:10:50 $'
  */
 public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 
@@ -486,6 +486,16 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
 	 * @throws RDFException Generic RDF Exception
 	 */
 	boolean contains(Resource s, Property p) throws RDFException;
+    
+    /**
+        determine if the RDFNode r appears in any statement of this model.
+        (containsRDFNode is a horrible name, and in any case, even literals
+        will be resources one day)
+        
+        @param r the RDFNode to be searched for
+        @return true iff r appears as some subject, predicate, or object
+    */
+    boolean containsResource( RDFNode r );
 
 	/** Determine if a statement is present in this model.
 	 * @return true if the statement with subject s, property p and object o
@@ -767,5 +777,5 @@ public interface Model extends ModelCon, RDFReaderF, RDFWriterF {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.13 2003-04-14 15:10:50 chris-dollin Exp $
+ * $Id: Model.java,v 1.14 2003-04-15 09:55:28 chris-dollin Exp $
  */

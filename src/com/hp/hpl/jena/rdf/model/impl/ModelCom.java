@@ -51,7 +51,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2003-04-14 15:10:53 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2003-04-15 09:55:29 $'
  */
 
 public class ModelCom extends EnhGraph
@@ -877,6 +877,15 @@ public class ModelCom extends EnhGraph
     public boolean contains(Statement s) throws RDFException {
         return graph.contains( s.asTriple() );
     }
+    
+    public boolean containsResource( RDFNode r )
+        {
+        return 
+            listStatements( (Resource) r, null, (RDFNode) null ).hasNext()
+            || listStatements( null, (Property) r.as(Property.class), (RDFNode) null ).hasNext()
+            || listStatements( null, null, r ).hasNext()
+            ;
+        }
   
     public boolean contains(Resource s, Property p) throws RDFException {
         ClosableIterator it = graph.find( s.asNode(), p.asNode(), null );

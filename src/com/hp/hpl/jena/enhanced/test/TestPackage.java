@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.5 2003-03-26 12:36:46 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.6 2003-04-15 09:54:55 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -188,7 +188,7 @@ public class TestPackage extends GraphTestBase implements SPO {
     // or not, we just try it.
     // Obviously sometimes it is broken, which should be reported using
     // an IllegalStateException.
-	private static void canImplement(String title, TestNode n, int wh, boolean rslt ) {
+	private  void canImplement(String title, TestNode n, int wh, boolean rslt ) {
 		try {
 			switch (wh) {
 				case S:
@@ -208,18 +208,18 @@ public class TestPackage extends GraphTestBase implements SPO {
 		}
 	}
 
-	private static void canImplement(String title, TestNode n, boolean rslts[] ) {
+	private  void canImplement(String title, TestNode n, boolean rslts[] ) {
 		canImplement(title+"/TestSubject",n,S,rslts[0]);
 		canImplement(title+"/TestProperty",n,P,rslts[1]);
 		canImplement(title+"/TestObject",n,O,rslts[2]);
 	}
-	private static void canImplement(String title, TestNode n[], boolean rslts[][] ) {
+	private  void canImplement(String title, TestNode n[], boolean rslts[][] ) {
 		for (int i=0;i<n.length;i++){
 		  canImplement(title+"["+i+"]",n[i],rslts[i]);
 		}
 	}
 	
-    private static void follow(String title, Personality p) {
+    private  void follow(String title, Personality p) {
         Graph g = new GraphMem();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
@@ -274,7 +274,7 @@ public class TestPackage extends GraphTestBase implements SPO {
         });                
         assertTrue("Model cache test",nodes[0].asProperty().anObject()==nodes[2]);
     }
-    private static void cache(String title, Personality p) {
+    private  void cache(String title, Personality p) {
         Graph g = new GraphMem();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
@@ -297,28 +297,28 @@ public class TestPackage extends GraphTestBase implements SPO {
     public static void testComboBasic() {
      basic("Combo: ",combo);
     }
-    public static void testSplitFollow() {
+    public  void testSplitFollow() {
        follow("Split: ",split);
     }
-    public static void testComboFollow() {
+    public  void testComboFollow() {
      follow("Combo: ",combo);
     }
     
-    public static void testSplitCache() {
+    public  void testSplitCache() {
         cache("Split: ",split);
     }
-    public static void testComboCache() {
+    public  void testComboCache() {
      cache("Combo: ",combo);
     }
     
     public static void testBitOfBothBasic() {
        basic("bob: ",bitOfBoth);
     }
-    public static void testBitOfBothFollow() {
+    public  void testBitOfBothFollow() {
        follow("bob: ",bitOfBoth);
     }
     
-    public static void testBitOfBothCache() {
+    public  void testBitOfBothCache() {
         cache("bob: ",bitOfBoth);
     }
     

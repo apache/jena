@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraph.java,v 1.3 2003-04-08 14:14:57 chris-dollin Exp $
+  $Id: TestGraph.java,v 1.4 2003-04-15 09:55:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -28,7 +28,7 @@ public class TestGraph extends GraphTestBase
     public static TestSuite suite()
         { return new TestSuite( TestGraph.class ); }   
 
-    public static void testAGraph( String title, Graph g )
+    public void testAGraph( String title, Graph g )
         {
         graphAdd( g, "x R y; p S q; a T b" );
     /* */
@@ -48,7 +48,7 @@ public class TestGraph extends GraphTestBase
         assertFalse( title + ": finds exactly one triple", it.hasNext() );
         }
 
-    public static void testStuff()
+    public void testStuff()
         {
         testAGraph( "StoreMem", new GraphMem() );
         testAGraph( "StoreMemBySubject", new GraphMem() );

@@ -1,47 +1,46 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.8 2003-04-15 09:55:29 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.1 2003-04-15 09:55:30 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model.test;
+package com.hp.hpl.jena.test;
 
 import junit.framework.*;
 
 /**
-    Collected test suite for the .graph package.
-    @author  jjc + kers
-*/
-
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
+    A basis for Jena test cases which provides assertFalse and assertDiffer.
+    Often the logic of the names is clearer than using a negation (well, Chris
+    thinks so anyway).
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("Model");
-        addTest( "TestModel", TestModelFactory.suite() );
-        addTest( "TestModelFactory", TestModelFactory.suite() );
-        addTest( "TestSimpleListStatements", TestSimpleListStatements.suite() );
-        addTest( "TestModelPolymorphism", TestModelPolymorphism.suite() );
-        addTest( "TestSimpleSelector", TestSimpleSelector.suite() );
-        addTest( "TestStatements", TestReifiedStatements.suite() );
-        addTest( "TestReifiedStatements", TestReifiedStatements.suite() );
-        addTest( "TestIterators", TestIterators.suite() );
-        addTest( "TestContains", TestContains.suite() );
-        }
-
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
+ 	@author kers
+*/
+public class JenaTestBase extends TestCase
+    {
+    public JenaTestBase( String name )
+        { super( name ); }
+        
+    /**
+        assert that the specified boolean must be false.
+        @param title a labelling string for the assertion failure text
+        @param b the boolean to test
+    */
+    public void assertFalse( String title, boolean b )
+        { assertTrue( title, !b ); }
+        
+    /**
+        assert that the two objects must be unequal according to .equals().
+        @param title a labelling string for the assertion failure text
+        @param x an object to test; the subject of a .equals()
+        @param y the other object; the argument of the .equals()
+    */
+    public void assertDiffer( String title, Object x, Object y )
+        { assertFalse( title, x.equals( y ) ); }
     }
 
-}
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
