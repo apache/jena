@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:17:06 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-03-26 12:13:45 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.4 2003-03-12 17:17:06 ian_dickinson Exp $
+ * @version CVS $Id: TestList.java,v 1.5 2003-03-26 12:13:45 chris-dollin Exp $
  */
 public class TestList
     extends TestCase
@@ -699,6 +699,7 @@ public class TestList
                 list0 = list0.removeHead();
                 checkValid( "removeTest0", list0, true );
             }
+            
             
             // delete all of list1 in one go
             list1.removeAll();
