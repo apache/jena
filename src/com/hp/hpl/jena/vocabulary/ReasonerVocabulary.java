@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.7 2003-06-23 08:10:41 der Exp $
+ * $Id: ReasonerVocabulary.java,v 1.8 2003-06-24 10:54:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.reasoner.ReasonerRegistry;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-23 08:10:41 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-24 10:54:31 $
  */
 public class ReasonerVocabulary {
     
@@ -49,7 +49,7 @@ public class ReasonerVocabulary {
     public static Property directSubPropertyOf; 
 
     /** Base URI used for configuration properties for rule reasoners */
-    public static final String PropURI = "http://www.hpl.hp.com/semweb/2003/RuleReasoner";
+    public static final String PropURI = "http://www.hpl.hp.com/semweb/2003/RuleReasoner/";
 
     /** Property used to configure the derivation logging behaviour of a reasoner.
      *  Set to "true" to enable logging of derivations. */
