@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.23 2004-05-04 15:25:09 der Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.24 2004-05-25 15:00:59 der Exp $ -->
 <!-- (c) Copyright 2003, 2004, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -42,6 +42,7 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#reasoner-1">Why are there two different arrows ( -&gt; and &lt;- ) in the rule syntax?</a></li>
   <li><a href="#reasoner-2">The domain and range inferences look wrong, is that a bug?</a></li>
   <li><a href="#reasoner-3">Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></a></li>
+  <li><a href="#reasoner-4">Why do I get out of memory errors when working with the wine ontology?</a></li>
 </ul>
 <h3>Ontology API</h3>
 <ul>
@@ -217,6 +218,17 @@ Jena 2 &ndash; Frequently Asked Questions
 	  final InfModel/OntModel is specified to use OWL inference. If this is not
 	  appropriate for some reason you can disable the check and warning messages 
 	  using the global flag <code>com.hp.hpl.jena.shared.impl.JenaParameters.enableOWLRuleOverOWLRuleWarnings.</code></p>
+      
+      
+  <p id="reasoner-4"><strong>Q: Why do I get out of memory errors when working with the wine ontology?</strong><br />
+      <strong>A:</strong> 
+      The wine/food ontology is specifically designed to exercise all OWL/DL constructs. The 
+      Jena rule-based reasoner only supports the OWL/lite subset of OWL/Full and has scaling
+      problems with some of the constructs used in the wine ontology. If you need full
+      reasoning support for the wine (or similar) ontologies then use the new DIG interface
+      onto a reasoner such as Racer. If you only need to do things like traverse the class
+      hiearchy and infernce over RDFS plus OWL property relations is enough for you then the
+      OWL micro reasoner may be an option.</p>
       
       
     <h3>Ontology API</h3>
