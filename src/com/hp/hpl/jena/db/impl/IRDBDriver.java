@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.7 $
+* @version $Revision: 1.8 $
 */
 
 public interface IRDBDriver {
@@ -201,6 +201,12 @@ public interface IRDBDriver {
 	 */
 	 public int graphIdAlloc ( String graphName );
 	
+	/**
+	 * Deallocate an identifier for a new graph.
+	 * @param graphId The graph identifier.
+	 */
+	 public void graphIdDealloc ( int graphId );
+
 	/**
  	* Return the identifier of the most recently inserted auto-incremented row.
  	* @return the identifier of the most recently inserted auto-increment row.
