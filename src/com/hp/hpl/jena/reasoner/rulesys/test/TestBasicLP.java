@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.7 2003-11-06 17:31:45 ian_dickinson Exp $
+ * $Id: TestBasicLP.java,v 1.8 2003-11-07 10:32:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-11-06 17:31:45 $
+ * @version $Revision: 1.8 $ on $Date: 2003-11-07 10:32:39 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -1143,15 +1143,14 @@ public class TestBasicLP  extends TestCase {
 
     /**
      * A suspect problem, originally derived from the OWL rules - risk of unbound variables escaping.
-     * Not managed to isolate are reproduce the problem yet.
+     * Not managed to isolate or reproduce the problem yet.
      */ 
-    /** !!!!!!!!!! TODO commented out - ijd - sameIndividualAs no longer in OWL
     public void testProblem9() {
         String ruleSrc = 
-        "[test:   (?x owl:sameIndividualAs ?x) <- (?x rdf:type owl:Thing) ]" +
-        "[sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameIndividualAs ?Y) ]" +
-        "[ans:    (?x p C1) <- (?y owl:sameIndividualAs ?x)]";
-        Node sI = OWL.sameIndividualAs.asNode();
+        "[test:   (?x owl:sameAs ?x) <- (?x rdf:type owl:Thing) ]" +
+        "[sameIndividualAs6: (?X rdf:type owl:Thing) <- (?X owl:sameAs ?Y) ]" +
+        "[ans:    (?x p C1) <- (?y owl:sameAs ?x)]";
+        Node sI = OWL.sameAs.asNode();
         doTest( ruleSrc,
                 new Node[] { ty, sI },                      // Tabled predicates
                 new Triple[] {                              // init data
@@ -1169,7 +1168,7 @@ public class TestBasicLP  extends TestCase {
 //                    new Triple(a, ty, OWL.Thing.asNode()),
 //                    new Triple(b, ty, OWL.Thing.asNode())
 //                } );
-    } end ijd edit */
+    } 
     
     /**
      * Test 3-arg builtins such as arithmetic.
