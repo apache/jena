@@ -1,79 +1,89 @@
-@prefix log:    <http://www.w3.org/2000/10/swap/log#> .
-@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rs:     <http://jena.hpl.hp.com/2003/03/queryResults#> .
-@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix :       <#> .
+@prefix rs:      <http://jena.hpl.hp.com/2003/03/result-set#> .
 
-[]  a   <http://jena.hpl.hp.com/2003/03/result-set#ResultSet> ;
-    <http://jena.hpl.hp.com/2003/03/result-set#solution>
-        [ <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    <http://rdf.hp.com/r> ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "x" ] ;
-          <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    <http://rdf.hp.com/p4> ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "y" ] ;
-          <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    "value"@en^^<http://rdf.hp.com/ns#someType> ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "z" ] ] ;
-    <http://jena.hpl.hp.com/2003/03/result-set#solution>
-        [ <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    <http://rdf.hp.com/r> ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "x" ] ;
-          <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    <http://rdf.hp.com/p2> ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "y" ] ;
-          <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    "value"@en ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "z" ] ] ;
-    <http://jena.hpl.hp.com/2003/03/result-set#solution>
-        [ <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    <http://rdf.hp.com/r> ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "x" ] ;
-          <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    <http://rdf.hp.com/p3> ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "y" ] ;
-          <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    "value" ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "z" ] ] ;
-    <http://jena.hpl.hp.com/2003/03/result-set#solution>
-        [ <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    <http://rdf.hp.com/r> ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "x" ] ;
-          <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    <http://rdf.hp.com/p1> ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "y" ] ;
-          <http://jena.hpl.hp.com/2003/03/result-set#binding>
-              [ <http://jena.hpl.hp.com/2003/03/result-set#value>
-                    "value"@en^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> ;
-                <http://jena.hpl.hp.com/2003/03/result-set#variable>
-                    "z" ] ] ;
-    <http://jena.hpl.hp.com/2003/03/result-set#resultVariable>
-        "x" ;
-    <http://jena.hpl.hp.com/2003/03/result-set#resultVariable>
-        "y" ;
-    <http://jena.hpl.hp.com/2003/03/result-set#resultVariable>
-        "z" ;
-    <http://jena.hpl.hp.com/2003/03/result-set#size>
-        "4" .
+[]    a       rs:ResultSet ;
+      rs:resultVariable "z" , "y" , "x" ;
+      rs:size "6" ;
+      rs:solution
+              [ rs:binding
+                        [ rs:value <http://rdf.hp.com/p2> ;
+                          rs:variable "y"
+                        ] ;
+                rs:binding
+                        [ rs:value "value"@en ;
+                          rs:variable "z"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ]
+              ] ;
+      rs:solution
+              [ rs:binding
+                        [ rs:value "value" ;
+                          rs:variable "z"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/p3> ;
+                          rs:variable "y"
+                        ]
+              ] ;
+      rs:solution
+              [ rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ] ;
+                rs:binding
+                        [ rs:value "value"^^<http://rdf.hp.com/ns#someType> ;
+                          rs:variable "z"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/p4> ;
+                          rs:variable "y"
+                        ]
+              ] ;
+      rs:solution
+              [ rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ] ;
+                rs:binding
+                        [ rs:value "value"^^<http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral> ;
+                          rs:variable "z"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/p1> ;
+                          rs:variable "y"
+                        ]
+              ] ;
+      rs:solution
+              [ rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/p5> ;
+                          rs:variable "y"
+                        ] ;
+                rs:binding
+                        [ rs:value 5 ;
+                          rs:variable "z"
+                        ]
+              ] ;
+      rs:solution
+              [ rs:binding
+                        [ rs:value "true" ;
+                          rs:variable "z"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/p6> ;
+                          rs:variable "y"
+                        ] ;
+                rs:binding
+                        [ rs:value <http://rdf.hp.com/r> ;
+                          rs:variable "x"
+                        ]
+              ] .
