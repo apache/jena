@@ -16,7 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Iterator;
-import java.util.Properties;
 
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
@@ -35,12 +34,12 @@ import oracle.jdbc.OracleDatabaseMetaData;
  * Note: To use this class with Oracle:
  *       1. Uncomment the import statements above.
  *       2. Comment out the interface stubs below.
+ *       3. Uncomment the try block in setConnection below.
+ *
  */
    public class Driver_Oracle extends DriverRDB {
 
-
 //* <----- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "/*" (I.E., TO HIDE INTERFACE STUBS) ------
-    import oracle.jdbc.OracleDatabaseMetaData;
 	
 	public interface BLOB extends java.sql.Blob {
 		OutputStream getBinaryOutputStream();
@@ -97,15 +96,17 @@ import oracle.jdbc.OracleDatabaseMetaData;
 	 */
 	public void setConnection( IDBConnection dbcon ) {
 		m_dbcon = dbcon;
+/* <---- TO WORK WITH ORACLE, PREFIX THIS LINE WITH "//" (I.E., TO EXPOSE TRY BLOCK)  -------
 		try {
 			OracleDatabaseMetaData dmd = (OracleDatabaseMetaData)dbcon.getConnection().getMetaData();
 			if (dmd == null)
 				throw new RDFRDBException("Oracle database metadata not available.");
 			TABLE_NAME_LENGTH_MAX =	dmd.getMaxTableNameLength();
+			setTableNames(TABLE_NAME_PREFIX);  // need to recheck that table names are not too long
 		} catch ( SQLException e ) {
 			throw new RDFRDBException("Problem accessing Oracle database metadata.");
 		}	  
-		
+/*--------------------------------------------------------------------*/		
 		try {   		
 			// Properties defaultSQL = SQLCache.loadSQLFile(DEFAULT_SQL_FILE, null, ID_SQL_TYPE);
 			// m_sql = new SQLCache(SQL_FILE, defaultSQL, dbcon, ID_SQL_TYPE);
