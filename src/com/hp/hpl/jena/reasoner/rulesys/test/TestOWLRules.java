@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.26 2003-10-07 10:52:48 der Exp $
+ * $Id: TestOWLRules.java,v 1.27 2003-12-06 11:59:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,7 +21,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.26 $ on $Date: 2003-10-07 10:52:48 $
+ * @version $Revision: 1.27 $ on $Date: 2003-12-06 11:59:17 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -81,8 +81,6 @@ public class TestOWLRules extends TestCase {
         suite.addTest(new TestOWLRules("equivalentProperty/Manifest001.rdf"));    // bx - long but terminates
         suite.addTest(new TestOWLRules("equivalentProperty/Manifest002.rdf"));    // bx - long but terminates
         suite.addTest(new TestOWLRules("equivalentProperty/Manifest003.rdf"));
-        suite.addTest(new TestOWLRules("I4.6/Manifest001.rdf"));
-        suite.addTest(new TestOWLRules("I4.6/Manifest002.rdf"));
         suite.addTest(new TestOWLRules("I5.1/Manifest001.rdf"));   // bx - v. long but terminates
         suite.addTest(new TestOWLRules("I5.24/Manifest001.rdf"));
         suite.addTest(new TestOWLRules("I5.24/Manifest002-mod.rdf"));
