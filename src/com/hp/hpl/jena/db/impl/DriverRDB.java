@@ -31,6 +31,8 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.*;
 
+import com.hp.hpl.jena.vocabulary.RDF;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
@@ -49,7 +51,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.37 $ on $Date: 2004-01-27 00:37:31 $
+* @version $Revision: 1.38 $ on $Date: 2004-02-06 04:06:55 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1753,6 +1755,15 @@ public abstract class DriverRDB implements IRDBDriver {
 			// should really optimize this and not
 			// even run the query but ok for now.
 			val = RDBCodeInvalid;
+		return colAliasToString(alias,pred) + "=" + QUOTE_CHAR + val + QUOTE_CHAR;		
+	}
+
+	public String genSQLReifQualConst ( int alias, char pred, Node lit ) {
+		String val = "";
+		if ( (pred == 'T') && (lit.equals(RDF.Nodes.Statement)) )
+			val = "T";
+		else
+			val = nodeToRDBString(lit, false);
 		return colAliasToString(alias,pred) + "=" + QUOTE_CHAR + val + QUOTE_CHAR;		
 	}
 	

@@ -31,7 +31,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.16 $
+* @version $Revision: 1.17 $
 */
 
 public interface IRDBDriver {
@@ -277,6 +277,14 @@ public interface IRDBDriver {
 	 */	
 	
 	public String genSQLQualConst ( int alias, char col, Node lit );
+	
+	/**
+	 * Similar to genSQLQualConst except that it generates SQL strings
+	 * for the reification statement table.
+	 *
+	 */
+	public String genSQLReifQualConst ( int alias, char pred, Node lit );
+
 	
 	/**
 	 * Generate an SQL string to match a table column value to a parameter.
