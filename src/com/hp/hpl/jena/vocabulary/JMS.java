@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JMS.java,v 1.1 2003-08-18 14:23:19 chris-dollin Exp $
+  $Id: JMS.java,v 1.2 2003-08-18 15:26:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -9,6 +9,8 @@ package com.hp.hpl.jena.vocabulary;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
+    The Jena Model Specification vocabulary.
+    
  	@author kers
 */
 public class JMS
@@ -22,6 +24,7 @@ public class JMS
     public static final Property importMaker = property( "importMaker" );
     public static final Property reasonsWith = property( "reasonsWith" );
     
+    public static final Property reificationMode = property( "reificationMode" );
     public static final Property reasoner = property( "reasoner" );
     
     public static final Resource TypeMemMaker = resource( "type/MemMaker");

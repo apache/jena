@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelMakerImpl.java,v 1.4 2003-08-18 10:37:04 chris-dollin Exp $
+  $Id: ModelMakerImpl.java,v 1.5 2003-08-18 15:26:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -10,10 +10,13 @@ import com.hp.hpl.jena.graph.GraphMaker;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelMaker;
 
-
+/**
+    A ModelMakerImpl implements a ModelMaker over a GraphMaker.
+*/
 public class ModelMakerImpl implements ModelMaker
     {
-    private GraphMaker maker;
+    protected GraphMaker maker;
+    protected Model description;
     
     public ModelMakerImpl( GraphMaker maker )
         { this.maker = maker; }
@@ -39,12 +42,13 @@ public class ModelMakerImpl implements ModelMaker
     public Model createModel()
         { return new ModelCom( maker.createGraph() ); }
         
-    protected Model defaultModel;
-    
     public Model getModel()
-        {
-        if (defaultModel == null) defaultModel = createModel();
-        return defaultModel;
+        { return new ModelCom( maker.getGraph() ); }
+        
+    public Model getDescription()
+        { 
+        if (description == null) description = new ModelCom( maker.getDescription() );    
+        return description; 
         }
         
     public void removeModel( String name )

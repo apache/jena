@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpec.java,v 1.2 2003-08-18 14:23:19 chris-dollin Exp $
+  $Id: ModelSpec.java,v 1.3 2003-08-18 15:26:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -13,8 +13,14 @@ package com.hp.hpl.jena.rdf.model;
 */
 public interface ModelSpec
     {
+    /**
+        Answer a new Model which fits the specification of this ModelSpec.
+    */
     Model createModel();
     
+    /**
+        Answer an RDF description of this Model using the JMS vocabulary.
+    */
     Model getDescription();
     }
 
