@@ -11,6 +11,7 @@ import java.util.*;
 import com.hp.hpl.jena.ontology.tidy.test.WGTests;
 import com.hp.hpl.jena.ontology.tidy.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.rdf.model.*;
 import java.io.*;
 
 /**
@@ -27,7 +28,7 @@ import java.io.*;
     Lite but a URI is used as an individual in the first
     and a class in the second then a Full reasoner is needed.
  * @author		Jeremy Carroll
- * @version 	$Id: owlsyntax.java,v 1.2 2004-01-27 15:45:24 jeremy_carroll Exp $
+ * @version 	$Id: owlsyntax.java,v 1.3 2004-12-01 14:27:03 jeremy_carroll Exp $
  */
 public class owlsyntax {
 	private owlsyntax(){
@@ -40,13 +41,15 @@ public class owlsyntax {
 	private static ArgDecl quietDecl = new ArgDecl(false, "-q", "--quiet");
 	private static ArgDecl helpDecl = new ArgDecl(false, "-h", "--help");
 	private static ArgDecl liteDecl = new ArgDecl(false, "-l", "--lite");
+	private static ArgDecl dlDecl = new ArgDecl(false, "-d", "--dl");
 	private static ArgDecl bigDecl = new ArgDecl(false, "-b", "--big");
+	private static ArgDecl langDecl = new ArgDecl(true, "-L", "--lang");
 	private static ArgDecl shortDecl = new ArgDecl(false, "-s", "--short");
 	private static ArgDecl textUIDecl = new ArgDecl(false, "--textui");
 	private static ArgDecl testDecl = new ArgDecl(false, "--test");
 	private static String usageMessage =
 		"    " + owlsyntax.class.getName()
-			+ " [--lite|--quiet] [--big] [file1] [file2]"
+			+ " [--lite|--quiet|--dl] [--big|--lang [N-TRIPLE|N3]] [file1] [file2]"
 			+ NL
 			+ "    " + owlsyntax.class.getName()
 			+ " --help"
@@ -67,6 +70,7 @@ public class owlsyntax {
 			+ " against <urn:x-jena:syntaxchecker>)."
 			+ NL + NL
 			+ "  -l --lite     Give error messages for OWL DL or OWL Full constructions."
+			+ "  -d --dl       Give error messages for OWL Full constructions (default)."
 			+ NL
 			+ "  -q --quiet    No error messages."
 			+ NL
@@ -78,6 +82,8 @@ public class owlsyntax {
 			+ NL
 			+ "                Quality of long error messages suffers."
 			+ NL + NL
+			+ "  -L --lang     Specify N3 or N-TRIPLE input."
+			+ NL + NL
 			+ "  --test        Run a test suite - default latest OWL Test publication."
 			+ NL
 			+ "                URL of file:testing/wg/OWLManifest.rdf uses local copy."
@@ -88,7 +94,7 @@ public class owlsyntax {
 	 * Run the OWL Syntax Checker.
 	 * Usage message is:
 	 * <pre>
-   jena.owlsyntax [--lite|--quiet] [--big] [file1] [file2]
+   jena.owlsyntax [--lite|--quiet|--dl] [--big|--lang [N-TRIPLE|N3]] [file1] [file2]
    jena.owlsyntax --help
    jena.owlsyntax [--textui] --test [ManifestURL]
 
@@ -100,11 +106,15 @@ If no files are specified then standard input is used,
  against <urn:x-jena:syntaxchecker>).
 
   -l --lite     Give error messages for OWL DL or OWL Full constructions.
+  -d --dl       Give error messages for OWL Full constructions (default).
   -q --quiet    No error messages.
   -s --short    Give short error messages
 				(Default is long messages for OWL Full only)
   -b --big      Input file is big - optimize memory usage.
 				Quality of long error messages suffers.
+				(RDF/XML only)
+				
+  -L --lang     Specify N3 or N-TRIPLE input
 
   --test        Run a test suite - default latest OWL Test publication.
 				URL of file:testing/wg/OWLManifest.rdf uses local copy.
@@ -113,7 +123,7 @@ If no files are specified then standard input is used,
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+        String lang = "RDF/XML";
 		CommandLine cmd = new CommandLine();
 		cmd.setUsage(usageMessage);
 		cmd.setOutput(System.err);
@@ -122,7 +132,9 @@ If no files are specified then standard input is used,
 			.add(quietDecl)
 			.add(helpDecl)
 			.add(liteDecl)
+			.add(dlDecl)
 			.add(bigDecl)
+			.add(langDecl)
 			.add(shortDecl)
 			.add(textUIDecl)
 			.add(testDecl);
@@ -132,7 +144,9 @@ If no files are specified then standard input is used,
 		} catch (IllegalArgumentException illEx) {
 			System.exit(1);
 		}
-
+        if (cmd.contains(langDecl))
+        	lang = cmd.getArg(langDecl).getValue();
+        
 		boolean testing = cmd.contains(testDecl) || cmd.contains(textUIDecl);
 		boolean running =
 			(!testing)
@@ -144,7 +158,9 @@ If no files are specified then standard input is used,
 			testing
 				? (running || cmd.items().size() > 1)
 				: (cmd.items().size() > 2)
-				|| (cmd.contains(liteDecl) && cmd.contains(quietDecl));
+				|| (cmd.contains(liteDecl) && cmd.contains(quietDecl))
+				|| (cmd.contains(dlDecl) && cmd.contains(quietDecl))
+				|| (cmd.contains(liteDecl) && cmd.contains(dlDecl));
 		if (cmd.contains(helpDecl) || bad) {
 			System.out.println(usageMessage);
 			System.exit(bad ? 1 : 0);
@@ -155,7 +171,7 @@ If no files are specified then standard input is used,
 				manifest = (String) cmd.items().get(0);
 			}
 			WGTests.test(cmd.contains(textUIDecl), manifest);
-		} else {
+		} else if (lang.equals("RDF/XML")) {
 			StreamingChecker chk = new StreamingChecker(cmd.contains(liteDecl));
 			boolean big =
 				cmd.contains(bigDecl)
@@ -188,6 +204,34 @@ If no files are specified then standard input is used,
 				default :
 					throw new BrokenException("Logic error");
 			}
+		} else {
+			Checker chk = new Checker(cmd.contains(liteDecl));
+			if( cmd.contains(bigDecl) )
+				System.err.println("--big ignored for "+lang+" files.");
+			switch (cmd.items().size()) {
+				case 0 :
+					check(chk, System.in, lang, "", cmd);
+					break;
+				case 1 :
+					check(chk, (String) cmd.items().get(0), lang, "", cmd);
+					break;
+				case 2 :
+					check(
+						chk,
+						(String) cmd.items().get(0), lang,
+						(String) cmd.items().get(0),
+						cmd);
+					Checker chk2 = new Checker(cmd.contains(liteDecl));
+					check(
+						chk2,
+						(String) cmd.items().get(1), lang,
+						(String) cmd.items().get(1),
+						cmd);
+					check(chk, (String) cmd.items().get(1), lang, "togther", cmd);
+					break;
+				default :
+					throw new BrokenException("Logic error");
+			}
 		}
 	}
 	static private void check(
@@ -199,13 +243,33 @@ If no files are specified then standard input is used,
 		results(chk, msgPrefix, cmd);
 	}
 	static private void check(
-		StreamingChecker chk,
+		Checker chk,
 		String url,
+		String lang,
 		String msgPrefix,
 		CommandLine cmd) {
-		chk.load(url);
+		chk.load(url,lang);
 		results(chk, msgPrefix, cmd);
 	}
+	static private void check(
+			Checker chk,
+			InputStream in,
+			String lang,
+			String msgPrefix,
+			CommandLine cmd) {
+		    Model m = ModelFactory.createDefaultModel();
+		    m.read(in,"urn:x-jena:syntaxchecker",lang);
+			chk.add(m);
+			results(chk, msgPrefix, cmd);
+		}
+		static private void check(
+			StreamingChecker chk,
+			String url,
+			String msgPrefix,
+			CommandLine cmd) {
+			chk.load(url);
+			results(chk, msgPrefix, cmd);
+		}
 	static private String prefix(String m) {
 		if (m.length() == 0)
 			return m;
