@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.9 2003-05-09 08:08:13 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.10 2003-06-06 14:01:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -16,7 +16,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
-import com.hp.hpl.jena.reasoner.rulesys.OWLRuleReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.OWLFBRuleReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
 import java.util.*;
@@ -33,7 +34,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-05-09 08:08:13 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-06 14:01:25 $
  */
 public class ReasonerRegistry {
 
@@ -84,6 +85,8 @@ public class ReasonerRegistry {
         // Preload the known Jena reasoers
         register(TransitiveReasonerFactory.theInstance());
         register(RDFSReasonerFactory.theInstance());
+        register(RDFSFBRuleReasonerFactory.theInstance());
+        register(OWLFBRuleReasonerFactory.theInstance());
         
     }
     
@@ -211,7 +214,7 @@ public class ReasonerRegistry {
      * a pure forward rule-based reasoner that will compute all entailments from the ontology + instamnce
      * data at bind time.
      */
-    public static final Reasoner OWL = OWLRuleReasonerFactory.theInstance().create(null);
+    public static final Reasoner OWL = OWLFBRuleReasonerFactory.theInstance().create(null);
     
 }
 

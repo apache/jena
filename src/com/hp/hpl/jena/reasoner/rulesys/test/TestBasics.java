@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestBasics.java,v 1.9 2003-06-02 09:04:32 der Exp $
+ * $Id: TestBasics.java,v 1.10 2003-06-06 14:02:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,12 +27,14 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-02 09:04:32 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-06 14:02:51 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
     Node p = Node.createURI("p");
     Node q = Node.createURI("q");
+    Node r = Node.createURI("r");
+    Node s = Node.createURI("s");
     Node n1 = Node.createURI("n1");
     Node n2 = Node.createURI("n2");
     Node n3 = Node.createURI("n3");
@@ -438,7 +440,7 @@ public class TestBasics extends TestCase  {
                 new Triple(n1, q, n3)
             });
     }
-    
+        
 }
 
 /*

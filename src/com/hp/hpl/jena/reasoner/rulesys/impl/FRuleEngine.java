@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FRuleEngine.java,v 1.5 2003-06-02 22:19:13 der Exp $
+ * $Id: FRuleEngine.java,v 1.6 2003-06-06 14:02:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-02 22:19:13 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-06 14:02:51 $
  */
 public class FRuleEngine {
     
@@ -39,6 +39,12 @@ public class FRuleEngine {
     /** Map from predicate node to rule + clause, Node_ANY is used for wildcard predicates */
     protected OneToManyMap clauseIndex;
     
+    /** List of predicates used in rules to assist in fast data loading */
+    protected HashSet predicatesUsed;
+    
+    /** Flag, if true then there is a wildcard predicate in the rule set so that selective insert is not useful */
+    protected boolean wildcardRule;
+     
     /** Set to true to flag that derivations should be logged */
     protected boolean recordDerivations;
     
@@ -97,9 +103,17 @@ public class FRuleEngine {
         // Create the reasoning context
         BFRuleContext context = new BFRuleContext(infGraph);
         // Insert the data
-        // TODO This could do a set of searches over just the data which might match a rule
-        for (Iterator i = infGraph.getRawGraph().find(null, null, null); i.hasNext(); ) {
-            context.addTriple((Triple)i.next());
+        if (wildcardRule) {
+            for (Iterator i = infGraph.getRawGraph().find(null, null, null); i.hasNext(); ) {
+                context.addTriple((Triple)i.next());
+            }
+        } else {
+            for (Iterator p = predicatesUsed.iterator(); p.hasNext(); ) {
+                Node predicate = (Node)p.next();
+                for (Iterator i = infGraph.getRawGraph().find(null, predicate, null); i.hasNext(); ) {
+                    context.addTriple((Triple)i.next());
+                }
+            }
         }
         // Run the engine
         addSet(context);
@@ -143,14 +157,17 @@ public class FRuleEngine {
      * internal axiom closures.
      */
     public Object getRuleStore() {
-        return clauseIndex;
+        return new RuleStore(clauseIndex, predicatesUsed, wildcardRule);
     }
     
     /**
      * Set the internal rule from from a precomputed state.
      */
     public void setRuleStore(Object ruleStore) {
-        clauseIndex = (OneToManyMap)ruleStore;
+        RuleStore rs = (RuleStore)ruleStore;
+        clauseIndex = rs.clauseIndex;
+        predicatesUsed = rs.predicatesUsed;
+        wildcardRule = rs.wildcardRule;
     }
     
 //  =======================================================================
@@ -199,6 +216,8 @@ public class FRuleEngine {
     protected void buildClauseIndex(boolean ignoreBrules) {
         if (clauseIndex == null) {
             clauseIndex = new OneToManyMap();
+            predicatesUsed = new HashSet();
+            wildcardRule = false;
             
             for (Iterator i = rules.iterator(); i.hasNext(); ) {
                 Rule r = (Rule)i.next();
@@ -208,14 +227,20 @@ public class FRuleEngine {
                     if (body[j] instanceof TriplePattern) {
                         Node predicate = ((TriplePattern) body[j]).getPredicate();
                         ClausePointer cp = new ClausePointer(r, j);
-                        if (predicate instanceof Node_ANY || predicate instanceof Node_RuleVariable) {
+                        if (predicate.isVariable()) {
                             clauseIndex.put(Node.ANY, cp);
+                            wildcardRule = true;
                         } else {
                             clauseIndex.put(predicate, cp);
+                            if (! wildcardRule) {
+                                predicatesUsed.add(predicate);
+                            }
                         }
                     }
                 }
             }
+            
+            if (wildcardRule) predicatesUsed = null;
         }
     }
     
@@ -316,7 +341,6 @@ public class FRuleEngine {
         int index = clauses.size() - 1;
         if (index == -1) {
             // Check any non-pattern clauses 
-            // TODO refactor this by a complete restructure of the match loop
             for (int i = 0; i < rule.bodyLength(); i++) {
                 Object clause = rule.getBodyElement(i);
                 if (clause instanceof Functor) {
@@ -544,6 +568,28 @@ public class FRuleEngine {
             super(msg);
         }
         
+    }
+    
+    /**
+     * Structure used to wrap up processed rule indexes.
+     */
+    protected static class RuleStore {
+    
+        /** Map from predicate node to rule + clause, Node_ANY is used for wildcard predicates */
+        OneToManyMap clauseIndex;
+    
+        /** List of predicates used in rules to assist in fast data loading */
+        HashSet predicatesUsed;
+    
+        /** Flag, if true then there is a wildcard predicate in the rule set so that selective insert is not useful */
+        boolean wildcardRule;
+        
+        /** Constructor */
+        RuleStore(OneToManyMap clauseIndex, HashSet predicatesUsed, boolean wildcardRule) {
+            this.clauseIndex = clauseIndex;
+            this.predicatesUsed = predicatesUsed;
+            this.wildcardRule = wildcardRule;
+        }
     }
 
 }
