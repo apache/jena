@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLDLProfile.java,v $
- * Revision           $Revision: 1.11 $
+ * Revision           $Revision: 1.12 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-12-06 13:50:08 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-02-10 11:08:07 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLDLProfile.java,v 1.11 2004-12-06 13:50:08 andy_seaborne Exp $
+ * @version CVS $Id: OWLDLProfile.java,v 1.12 2005-02-10 11:08:07 ian_dickinson Exp $
  */
 public class OWLDLProfile
     extends OWLProfile
@@ -64,7 +64,6 @@ public class OWLDLProfile
 
     // External signature methods
     //////////////////////////////////
-	public Property SAME_AS() {                     return null; }
 
 
     /**
