@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.13 2003-11-04 09:54:41 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.14 2004-04-16 15:16:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -274,7 +274,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         Test that adding a new prefix mapping for U from another prefix
         map throws away any existing prefix for U.
     */
-    public void testSameURIMaply()
+    public void testSameURIKillsExistingPrefix()
         {
         PrefixMapping A = getMapping();
         PrefixMapping B = getMapping();
@@ -283,6 +283,18 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         A.setNsPrefixes( B );
         assertEquals( crispURI, A.getNsPrefixURI( "sharp" ) );
         assertEquals( null, A.getNsPrefixURI( "crisp" ) );
+        }
+    
+    /**
+        Test that adding a new prefix mapping for U does not throw away a default 
+        mapping for U.
+    */
+    public void testSameURIKeepsDefault()
+        {
+        PrefixMapping A = getMapping();
+        A.setNsPrefix( "", crispURI );
+        A.setNsPrefix( "crisp", crispURI );
+        assertEquals( crispURI, A.getNsPrefixURI( "" ) );
         }
         
     public void testReturnsSelf()
