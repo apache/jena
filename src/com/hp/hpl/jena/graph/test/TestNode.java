@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.20 2003-07-02 08:24:05 chris-dollin Exp $
+  $Id: TestNode.java,v 1.21 2003-07-09 15:47:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.vocabulary.*;
 
-import java.util.*;
 import junit.framework.*;
 
 /**

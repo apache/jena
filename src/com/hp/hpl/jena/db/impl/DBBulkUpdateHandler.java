@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.2 2003-05-05 22:10:29 csayers Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.3 2003-07-09 15:47:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -16,20 +16,23 @@ import com.hp.hpl.jena.db.*;
     An implementation of the bulk update interface.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.2 $
+ 	@version $Revision: 1.3 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
 	private GraphRDB graph;
-
+    private GraphEventManager manager;
+    
 	protected static int CHUNK_SIZE = 50;
 
 	public DBBulkUpdateHandler(GraphRDB graph) {
 		this.graph = graph;
+        this.manager = graph.getEventManager();
 	}
 
 	public void add(Triple[] triples) {
 		add(Arrays.asList(triples));
+        manager.notifyAdd( triples );
 	}
 
 	public void add(List triples) {
@@ -55,6 +58,7 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 
 	public void delete(Triple[] triples) {
 		delete(Arrays.asList(triples));
+        manager.notifyDelete( triples );
 	}
 
 	public void delete(List triples) {
