@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphQueryPackage.java,v 1.5 2004-07-20 17:17:19 chris-dollin Exp $
+  $Id: TestGraphQueryPackage.java,v 1.6 2004-08-16 14:53:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
+
+import com.hp.hpl.jena.graph.query.regexptrees.test.TestPerlyParser;
 
 import junit.framework.*;
 
@@ -24,6 +26,7 @@ public class TestGraphQueryPackage
         result.addTest( TestExpressions.suite() );
         result.addTest( TestExpressionConstraints.suite() );
         result.addTest( TestEarlyConstraints.suite() );
+        result.addTest( TestPerlyParser.suite() );
         return result;
         }
     }
