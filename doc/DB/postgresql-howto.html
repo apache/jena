@@ -107,7 +107,7 @@ Guide</i>. Then, perform the commands below while using that account.</p>
   program needs to be running anytime you start the PostgreSQL server 
   (postmaster) or initialize a database (initdb).</li>
   <li>
-  <p ALIGN="LEFT">Before creating a database, a PostgreSQL <i>database cluster</i> 
+  <p ALIGN="LEFT"><a name="Step5"></a>Before creating a database, a PostgreSQL <i>database cluster</i> 
   must be created and initialized. This is simply a data storage area on the 
   disk to hold a collection of databases accessible by a single instance of a 
   PostgreSQL server. Use the following command:<tt class="PROMPT"><br>
@@ -118,49 +118,56 @@ Guide</i>. Then, perform the commands below while using that account.</p>
   -D /usr/local/pgsql/data</font></tt></font></tt><font face="Times New Roman"><tt class="USERINPUT"><font face="Courier New" size="2">
   </font></tt></font><tt class="USERINPUT"><b><br>
   </b></tt><font face="Times New Roman"><tt class="USERINPUT">
-  <font face="Times New Roman">Any directory may be used although the one given 
+  <font face="Verdana">Any directory may be used although the one given 
   above is a popular convention. Note, initdb will create the directories if 
   they do not exist.</font></tt></font></li>
   <li>
-  <p ALIGN="LEFT">Creating the database cluster also installs a PostgreSQL 
+  <p ALIGN="LEFT"><a name="Step6"></a>Creating the database cluster also installs a PostgreSQL 
   configuration file in the cluster directory. The file name is postgresql.conf 
   and this file holds various runtime configuration parameters for PostgreSQL. 
   You need to set the following configuration parameter in postgresql.conf:
   <tt class="LITERAL">tcpip_socket = true</tt>.&nbsp; This configures the 
-  PostgreSQL server to accept TCP/IP connections.</li>
+  PostgreSQL server to accept TCP/IP connections. An alternative to setting the
+  <font face="Courier New">tcpip_socket</font> parameter is to use the &quot;-i&quot; 
+  option when starting Postmaster (<a href="#Step7">Step7</a>).</li>
   <li>
-  <p ALIGN="LEFT"><font face="Times New Roman">Start the PostgreSQL server with 
-  the following command.<br>
+  <p ALIGN="LEFT"><font face="Verdana"><a name="Step7"></a>Start the PostgreSQL server with 
+  the following command.</font><font face="Times New Roman"><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font><font face="Courier New" size="2">&nbsp;$
-  </font><tt class="USERINPUT"><font size="2" face="Courier New">postmaster -D /usr/local/pgsql/data 
+  </font><tt class="USERINPUT"><font size="2" face="Courier New">postmaster [-i] -D /usr/local/pgsql/data 
   &gt; logfile 2&gt;&amp;1 &amp;</font></tt><br>
-  <font face="Times New Roman">Check the logfile to ensure the server started 
+  <font face="Verdana">The &quot;</font><font face="Courier New">-i</font><font face="Verdana">&quot; 
+  option is an alternative to setting the
+  </font>
+  <font face="Courier New">tcpip_socket</font><font face="Verdana"> 
+  configuration parameter (<a href="#Step6">Step6</a>). Check the logfile to ensure the server started 
   correctly. Of course, specify the actual location of your database cluster if 
-  you did not use the conventional location in step 5. To stop the server, send 
+  you did not use the conventional location in <a href="#Step5">Step5</a>. To stop the server, send 
   it a signal (SIGTERM disables new transaction but allows current ones to 
   continue, SIGINT aborts existing transactions, SIGQUIT is immediate shutdown 
   which will require database recovery to be run upon restart; SIGKILL is not 
   recommended as PostgreSQL may be unable to release system resources). As an 
   alternative, the script pg_ctl can be used to start and stop the server, e.g.,
-  </font><font face="Courier New" size="2">pg_ctl start</font><font face="Times New Roman"> 
-  and </font><font size="2" face="Courier New">pg_ctl stop</font><font face="Times New Roman">. 
+  </font><font face="Courier New" size="2">pg_ctl start</font><font face="Verdana"> 
+  and </font><font size="2" face="Courier New">pg_ctl stop</font><font face="Verdana">. 
   It takes the same options as the postmaster command.</font></li>
   <li>
-  <p ALIGN="LEFT"><font face="Times New Roman">You can use either the 
-  "Create DATABASE [ database name ]"  command 
+  <p ALIGN="LEFT"><font face="Verdana">You can use either the 
+  "</font><font face="Courier New">Create DATABASE [ database name ]</font><font face="Verdana">"  command 
   from within psql, or else the createdb script from the shell
   to create a new database.</font><br>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font size="2" face="Courier New">$ createdb [ database name ]</font></li>
   <li>
-  <p ALIGN="LEFT"><font face="Times New Roman">Start the PostgreSQL interactive 
+  <p ALIGN="LEFT"><font face="Verdana">Start the PostgreSQL interactive 
   SQL interface.</font><font face="Courier New" size="2"><br>
 &nbsp;&nbsp;&nbsp; $ psql [ database_name ]<br>
-  </font><font face="Times New Roman">Note: to exit the SQL interface, enter 
-  &quot;\q&quot;. See below for other useful commands within psql.</font></li>
+  </font><font face="Verdana">Note: to exit the SQL interface, enter 
+  &quot;</font><font face="Courier New">\q</font><font face="Verdana">&quot;. See
+  <a href="#Commands">below</a> for other useful commands within psql.</font></li>
   <li>
   <p ALIGN="LEFT">Now the JDBC driver must be installed. It may be obtained from
   <a href="http://jdbc.postgresql.org/">http://jdbc.postgresql.org/</a>. Jena2 
-  has been tested with the JDBC2 (file name pg72jdbc2.jar). Install this on your 
+  has been tested with the JDBC2 (file name pg73jdbc2.jar). Install this on your 
   machine. Make sure the jar file is accessible on the classpath.</li>
   <li>
   <p ALIGN="LEFT">If you use the run the Jena unit/regression tests, you need to 
@@ -209,7 +216,7 @@ requires several steps as as follows.</p>
     // database type</font></dd>
     <dt>&nbsp;</dt>
     <dd><font face="Courier New">// Create database connection</font></dd>
-    <dd><font face="Courier New">IDBConnection result&nbsp; =</font></font><font SIZE="2" face="Courier New"><b> 
+    <dd><font face="Courier New">IDBConnection conn =</font></font><font SIZE="2" face="Courier New"><b> 
     new</b> DBConnection ( URL, DB_USER, DB_PASSWD, DB ); </font></dd>
     <dd><font SIZE="2"><font face="Courier New">// Create a model in the 
     database</font></dd>
@@ -260,7 +267,7 @@ requires several steps as as follows.</p>
 <p>Jena stores all models in a single database using whatever database (name) specified on the database connection. See the <a href="index.html">Jena Database Release Notes</a> for 
 details on the physical layout.</p>
 
-<h4>PostgreSQL Utility Commands</h4>
+<h4><a name="Commands"></a>PostgreSQL Utility Commands</h4>
 
 <p>Some Jena users may wish to occasionally access the PostgreSQL database directly 
 to determine if changes have taken effect. Some useful PostgreSQL commands are listed 
