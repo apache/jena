@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModel.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 12:59:56 $
+ * Last modified on   $Date: 2003-06-18 13:02:34 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,7 +28,6 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.daml.impl.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
@@ -42,7 +41,7 @@ import java.util.*;
  * information from all loaded ontologies.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModel.java,v 1.5 2003-06-18 12:59:56 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModel.java,v 1.6 2003-06-18 13:02:34 ian_dickinson Exp $
  */
 public interface DAMLModel
     extends OntModel

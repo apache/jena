@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLModelImpl.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 12:59:56 $
+ * Last modified on   $Date: 2003-06-18 13:02:41 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLModelImpl.java,v 1.7 2003-06-18 12:59:56 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLModelImpl.java,v 1.8 2003-06-18 13:02:41 ian_dickinson Exp $
  */
 public class DAMLModelImpl
     extends OntModelImpl
@@ -90,10 +90,6 @@ public class DAMLModelImpl
 
     /** The loader that will load DAML source documents for this store */
     private DAMLLoader m_loader = new DAMLLoader( this );
-
-    /** A registry for mapping XML data to Java types */
-    protected XMLDatatypeRegistry m_xmlDatatypeRegistry = new XMLDatatypeRegistry();
-
 
 
 
