@@ -36,7 +36,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class ModelRDB extends ModelCom implements Model, ModelI {    
     
@@ -109,7 +109,7 @@ public class ModelRDB extends ModelCom implements Model, ModelI {
      * @param name the name of the RDF model to open
      */
     public static ModelRDB open(IDBConnection dbcon, String name) throws RDFRDBException {
-        GraphRDB graph = new GraphRDB(dbcon, name, null, false);
+        GraphRDB graph = new GraphRDB(dbcon, name, null, GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ,false);
 		return new ModelRDB(BuiltinPersonalities.model, graph);
     }
 
@@ -180,9 +180,9 @@ public class ModelRDB extends ModelCom implements Model, ModelI {
     	
         GraphRDB graph;
     	if( modelProperties != null )
-    		graph = new GraphRDB(dbcon, name, modelProperties.getGraph(), true);
+    		graph = new GraphRDB(dbcon, name, modelProperties.getGraph(), GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ,true);
     	else
-        	graph = new GraphRDB(dbcon, name, null, true);
+        	graph = new GraphRDB(dbcon, name, null, GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS, true);
         return new ModelRDB(BuiltinPersonalities.model, graph);
     }
 

@@ -47,7 +47,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -58,8 +58,65 @@ public class GraphRDB extends GraphBase implements Graph {
 	protected DBPrefixMappingImpl m_prefixMapping = null;
 	protected List m_specializedGraphs = null;
 	protected List m_specializedGraphReifiers = null;
-	protected boolean m_hideReifiers = true; // Jena 1 behaviour is to hide reification triples
 	protected Reifier m_reifier = null;
+
+	protected int m_reificationBehaviour = 0;
+	
+	/**
+	 * Optimize all triples representing part or all of a reified statement.
+	 * 
+	 * <p>
+	 * For common cases, where Graphs either contain mostly reified triples,
+	 * or mostly non-reified triples, this is the best choice.  It optimizes
+	 * all reified triples regardless of how they are added to the graph,
+	 * provides a simple interface, and is quite efficient.
+	 * </p>
+	 * 
+	 * <p> 
+	 * With this choice, if you do <code>add(A)</code> then 
+	 * <code>contains(A)</code> will return true for all A.
+	 * </p>
+	 * 
+	 */
+	public static final int OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING = 1;
+
+	/**
+	 * Optimize and hide any triples representing part or all of a reified statement.
+	 * (regardless of whether added by <code>add(Triple)</code> or using the Reifier interface).
+	 * 
+	 * <p>
+	 * If you store a mix of reified and non-reified statments within a single graph
+	 * and you wish to query only non-reified statements, then this is more efficient than
+	 * the other options.  However, it can cause unexpected behaviour, for example, if you do:
+	 *   <code>
+	 * 		add(new Triple( s, RDF.predicate, o))
+	 *   </code>
+	 * then that triple will be hidden and a subsequent call to <code>contains</code>, 
+	 * <code>find</code>, or <code>size</code> will not show it's presence.  The only 
+	 * way to see that statement is to use <code>Reifier.getHiddenTriples</code>.
+	 * </p>
+	 * 
+	 */
+	public static final int OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS = 2;
+
+	/**
+	 * Optimize and hide only fully reified statements added via the Reifier interface.
+	 * 
+	 * <p>
+	 * This treats triples added through the Reifier interface as distinct from those
+	 * added using the normal Graph.add function.  Those added via the reifier interface
+	 * will be optimized and hidden from view.  Those added via Graph.add will not
+	 * be optimized and will be visible.
+	 * </p>
+	 * 
+	 * <p>
+	 * Since many of the techniques for adding triple to Graphs use Graph.add, and
+	 * that is never optimized, this is not usually a good choice.  It is included 
+	 * for backward compability with Jena 1.	
+	 * </p>
+	 */
+	public static final int OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS = 3;
+	
 	
 	/**
 	 * Construct a new GraphRDB
@@ -71,9 +128,32 @@ public class GraphRDB extends GraphBase implements Graph {
 	 * @param isNew is true if the graph doesn't already exist and 
 	 * false otherwise.  (If unsure, test for existance by using 
 	 * IDBConnection.containsGraph ).
+	 * @deprecated Please use the alernate constructor and explicely choose the desired 
+	 * reification behaviour.
 	 */
 	public GraphRDB( IDBConnection con, String graphID, Graph requestedProperties, boolean isNew) {
+		this(con, graphID, requestedProperties, OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS, isNew);
+	}
+		
+	/**
+	 * Construct a new GraphRDB
+	 * @param con an open connection to the database
+	 * @param graphID is the name of a graph or GraphRDB.DEFAULT
+	 * @param requestedProperties a set of default properties. 
+	 * (May be null, if non-null should be a superset of the properties 
+	 * obtained by calling ModelRDB.getDefaultModelProperties ).
+	 * @param reificationBehaviour specifies how this graph should handle reified triples.
+	 * The options are 	OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS, 
+	 * OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS or OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING.
+	 *
+	 * @param isNew is true if the graph doesn't already exist and 
+	 * false otherwise.  (If unsure, test for existance by using
+	 * IDBConnection.containsGraph ).
+	 */
+	public GraphRDB( IDBConnection con, String graphID, Graph requestedProperties, int reificationBehaviour, boolean isNew) {
 	
+		m_reificationBehaviour = reificationBehaviour;
+		
 		if(graphID == null)
 			graphID = DEFAULT;
 		else
@@ -158,6 +238,8 @@ public class GraphRDB extends GraphBase implements Graph {
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
+			if( sg instanceof SpecializedGraphReifier && m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS)
+				continue; // don't let the reifier graphs see partial reifications
 			sg.add( t, complete);
 			if( complete.isDone())
 				return;
@@ -180,6 +262,8 @@ public class GraphRDB extends GraphBase implements Graph {
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
+			if( sg instanceof SpecializedGraphReifier && m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS)
+				continue; // don't let the reifier graphs see partial reifications
 			sg.add( localTriples, complete);
 			if( complete.isDone())
 				return;
@@ -199,6 +283,8 @@ public class GraphRDB extends GraphBase implements Graph {
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
+			if( sg instanceof SpecializedGraphReifier && m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS)
+				continue; // don't let the reifier graphs see partial reifications
 			sg.delete( t, complete);
 			if( complete.isDone())
 				return;
@@ -220,6 +306,8 @@ public class GraphRDB extends GraphBase implements Graph {
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
+			if( sg instanceof SpecializedGraphReifier && m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS)
+				continue; // don't let the reifier graphs see partial reifications
 			sg.delete( localTriples, complete);
 			if( complete.isDone())
 				return;
@@ -239,8 +327,10 @@ public class GraphRDB extends GraphBase implements Graph {
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
-			if( m_hideReifiers && (sg instanceof SpecializedGraphReifier) )
-				continue;
+			if( sg instanceof SpecializedGraphReifier && 
+				m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
+				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS)
+				continue; // don't let the reifier graphs see partial reifications
 			result += sg.tripleCount();
 		}
 		return result;
@@ -256,8 +346,10 @@ public class GraphRDB extends GraphBase implements Graph {
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
-			if( m_hideReifiers && (sg instanceof SpecializedGraphReifier) )
-				continue;
+			if( sg instanceof SpecializedGraphReifier && 
+				m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
+				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS)
+				continue; // don't let the reifier graphs see partial reifications
 			boolean result = sg.contains( t, complete);
 			if( result == true || complete.isDone() == true )
 				return result;
@@ -284,8 +376,10 @@ public class GraphRDB extends GraphBase implements Graph {
 		Iterator it = m_specializedGraphs.iterator();
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
-			if( m_hideReifiers && (sg instanceof SpecializedGraphReifier) )
-				continue;
+			if( sg instanceof SpecializedGraphReifier && 
+				m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
+				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS)
+				continue; // don't let the reifier graphs see partial reifications
 			ExtendedIterator partialResult = sg.find( m, complete);
 			result = result.andThen(partialResult);
 			if( complete.isDone())
@@ -306,10 +400,12 @@ public class GraphRDB extends GraphBase implements Graph {
 	 */
 	public Reifier getReifier() {
 		if (m_reifier == null) {
-			if (m_hideReifiers)
+			if (m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS
+				|| m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS) {
 				m_reifier = new DBReifier(this, m_specializedGraphReifiers, m_specializedGraphReifiers);
-			else
+			} else {
 				m_reifier = new DBReifier(this, m_specializedGraphReifiers, new ArrayList());
+			}
 		}
 		return m_reifier;
 	}
