@@ -1,0 +1,132 @@
+<HTML>
+
+
+
+<HEAD>
+<TITLE>Jena Relational Database backend</TITLE>
+<link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
+</HEAD>
+
+
+
+<BODY bgcolor="#FFFFFF">
+
+
+
+<h1>Jena2 Database Interface - Performance Notes</h1>
+
+
+
+<h3>28 August, 2003</h3>
+
+
+
+  <p>Very little tuning or performance analysis has been done. Early 
+  measurements of the Jena2 preview 1 release using the jena-perf benchmark (available as a package 
+  from <a href="http://sourceforge.net/projects/jena/">
+  http://sourceforge.net/projects/jena/</a>) show Jena2 to be up to three times 
+  faster than Jena1 (see <a href="perftestWin32.html">perftest</a>). 
+  However, Jena2 models may consume more disk space than Jena1 models. This is due to the different table layouts used in Jena1 and 
+  Jena2 (see <a href="perftestSpaceWin32.html">perftestSpace</a>). In Jena1, all resources were stored in a separate table that was referenced 
+  from the statement table. Similarly for all literals. This greatly reduced space 
+  consumption since resources and literals that appeared in multiple statements 
+  were only stored once. However, retrieving a statement required joining the 
+  statement table with the literals and resources tables.</p>
+
+
+
+  <p>In Jena2, <i>short</i> resources and <i>short</i> literals are stored directly in the statement table.
+  Separate tables for resources and literals exist but are only used for objects
+  whose length exceeds some threshold. The threshold has a database-dependent 
+  default but may be redefined by users (see <a href="options.html">LongObjectLength</a>). Consequently, Jena2 requires fewer join operations than 
+  Jena1 at the expense of greater memory consumption. If disk space consumption 
+  is deemed excessive, two options may be used to reduce the amount of space 
+  used, <a href="options.html">DoCompressURI</a>&nbsp; and 
+  &nbsp;<a href="options.html">LongObjectLength </a>.</p>
+
+
+
+  <p>Little performance tuning has been done. For loading large databases, we 
+  have found two techniques can help. First, if the dataset to be loaded 
+  contains no duplicate statements, the option 
+  <a href="options.html">DoDuplicateCheck</a> &nbsp;may be used to disable checking for duplicate statements on 
+  insertion. Another option is to manually delete the database indexes and then 
+  recreate them after the loading has completed. Unfortunately, Jena2 does not 
+  currently support a utility to do this on behalf of users. We cannot provide 
+  any guidance on the benefit of deleting and recreating the indexes and mention 
+  it only as an option users may wish to try if load performance cannot be 
+  improved through other techniques.</p>
+
+
+
+  <h2><a name="dbengines"><span style="background-position: 0 0">Effect of 
+  Database Options on Loading</span></a></h2>
+
+
+
+  <p>A simple study was conducted to determine the effect of some of the 
+  database options on database space and load time. A synthetic test data set 
+  consisting of 1000 Dublin Core documents was loaded under various 
+  configurations. This data set contained 22,000 RDF statements with no 
+  duplicates statements. Some property values were long. The tests were run 
+  using MySQL on WindowsXP.</p>
+
+
+
+<table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="785" id="AutoNumber3">
+  <tr>
+    <td style="text-align: left" width="260"><b>Option Settings</b></td>
+    <td width="138"><b>Database Space</b></td>
+    <td width="111"><b>Load Time</b></td>
+    <td width="359" style="text-align: left"><b>Comments</b></td>
+  </tr>
+  <tr>
+    <td style="text-align: left" width="260">Default option settings</td>
+    <td width="138" style="text-align: right">16.38 MB</td>
+    <td width="111" style="text-align: right">29.5 sec.</td>
+    <td width="359" style="text-align: left">Default long object length of 250, 
+    dup checking enabled, no compression.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left" width="260">Duplicate checking disabled</td>
+    <td width="138" style="text-align: right">16.38 MB</td>
+    <td width="111" style="text-align: right">16.3 sec.</td>
+    <td width="359" style="text-align: left">Only possible when no duplicates in 
+    load set.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left" width="260">Long Object Length = 25 bytes</td>
+    <td width="138" style="text-align: right">9.62 MB</td>
+    <td width="111" style="text-align: right">58.7 sec.</td>
+    <td width="359" style="text-align: left">Heavy use of literals and resources 
+    table.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left" width="260">Long Object Length = 50 bytes</td>
+    <td width="138" style="text-align: right">13.40 MB</td>
+    <td width="111" style="text-align: right">35.3 sec.</td>
+    <td width="359" style="text-align: left">Moderate cost and savings.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left" width="260">Long Object Length = 100 bytes</td>
+    <td width="138" style="text-align: right">15.50 MB</td>
+    <td width="111" style="text-align: right">29.5 sec.</td>
+    <td width="359" style="text-align: left">Similar to default case.</td>
+  </tr>
+  <tr>
+    <td style="text-align: left" width="260">URI Compression, Length = 20 bytes, 
+    Cache Size = 100</td>
+    <td width="138" style="text-align: right">9.01 MB</td>
+    <td width="111" style="text-align: right">24.0 sec.</td>
+    <td width="359" style="text-align: left">Use of memory cache for URIs is 
+    beneficial.</td>
+  </tr>
+</table>
+
+
+
+  </BODY>
+
+
+
+</HTML>
