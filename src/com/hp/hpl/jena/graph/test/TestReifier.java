@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifier.java,v 1.19 2003-09-22 12:16:28 chris-dollin Exp $
+  $Id: TestReifier.java,v 1.20 2004-09-07 07:37:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -9,8 +9,15 @@ package com.hp.hpl.jena.graph.test;
 import java.lang.reflect.Constructor;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.GraphBase;
+import com.hp.hpl.jena.graph.impl.ReifierFragmentsMap;
+import com.hp.hpl.jena.graph.impl.ReifierTripleMap;
+import com.hp.hpl.jena.graph.impl.SimpleReifier;
+import com.hp.hpl.jena.graph.impl.SimpleReifierFragmentsMap;
+import com.hp.hpl.jena.graph.impl.SimpleReifierTripleMap;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import junit.framework.*;
 
@@ -56,6 +63,20 @@ public class TestReifier extends AbstractTestReifier
         catch (Exception e)
             { throw new JenaException( e ); }
         }        
+    
+    public void testExtendedConstructorExists()
+        {
+        GraphBase parent = new GraphBase() {
+
+            public ExtendedIterator find( TripleMatch m )
+                {
+                // TODO Auto-generated method stub
+                return null;
+                }};
+        ReifierTripleMap tm = new SimpleReifierTripleMap();
+        ReifierFragmentsMap fm = new SimpleReifierFragmentsMap();
+        SimpleReifier sr = new SimpleReifier( parent, tm, fm, ReificationStyle.Minimal );
+        }
     }
 
 /*

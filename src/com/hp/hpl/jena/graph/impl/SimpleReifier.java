@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.27 2004-09-06 17:33:15 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.28 2004-09-07 07:36:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -42,13 +42,17 @@ public class SimpleReifier implements Reifier
         @param style the reification style to use
     */
     public SimpleReifier( GraphBase parent, ReificationStyle style )
+        { this( parent, new SimpleReifierTripleMap(), new SimpleReifierFragmentsMap(), style ); }
+    
+    public SimpleReifier
+        ( GraphBase parent, ReifierTripleMap tm, ReifierFragmentsMap fm, ReificationStyle style )
         {
         this.parent = parent;
-        this.nodeMap = new SimpleReifierFragmentsMap();
-        this.tripleMap = new SimpleReifierTripleMap();
+        this.nodeMap = fm;
+        this.tripleMap = tm;
         this.intercepting = style.intercepts();
         this.concealing = style.conceals();
-        this.style = style;
+        this.style = style; 
         }
         
     public ReificationStyle getStyle()
