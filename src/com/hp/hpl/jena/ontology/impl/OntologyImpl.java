@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            14-Mar-2003
- * Filename           $RCSfile: NamedUnitPathExpr.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            25-Mar-2003
+ * Filename           $RCSfile: OntologyImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:45 $
+ * Last modified on   $Date: 2003-03-27 16:28:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -19,30 +19,40 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.path.impl;
+package com.hp.hpl.jena.ontology.impl;
 
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.ontology.path.*;
-
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.path.PathSet;
 
 
 /**
  * <p>
- * Path expression for unit (length one) named paths
+ * Class comment
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: NamedUnitPathExpr.java,v 1.2 2003-03-27 16:28:45 ian_dickinson Exp $
+ * @version CVS $Id: OntologyImpl.java,v 1.1 2003-03-27 16:28:46 ian_dickinson Exp $
  */
-public class NamedUnitPathExpr
-    extends AnyUnitPathExpr 
+public class OntologyImpl
+    extends OntResourceImpl
+    implements Ontology 
 {
     // Constants
     //////////////////////////////////
+
+    /**
+     * A factory for generating Ontology facets from nodes in enhanced graphs.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { return new OntologyImpl( n, eg ); }
+    };
+
 
     // Static variables
     //////////////////////////////////
@@ -50,67 +60,44 @@ public class NamedUnitPathExpr
     // Instance variables
     //////////////////////////////////
 
-    /** The named property that forms this unit path */
-    protected Property m_predicate;
-    
-    
     // Constructors
     //////////////////////////////////
 
     /**
      * <p>
-     * Construct an expression for the unit path with the named predicate as the edge.
+     * Construct an ontology metadata node represented by the given node in the given graph.
      * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
      */
-    public NamedUnitPathExpr( Property predicate ) {
-        m_predicate = predicate;
+    public OntologyImpl( Node n, EnhGraph g ) {
+        super( n, g );
     }
-    
-    
+
+
     // External signature methods
     //////////////////////////////////
 
-    /**
-     * <p>
-     * Add the given value to the given root, using this path (if possible).  Not
-     * all paths evaluate to a form that makes add possible; in this case an
-     * exception is thrown.
-     * </p>
-     * 
-     * @param root The resource that the path is to start from
-     * @param value The value to add to the root
-     * @exception PathException if this path expression cannot perform an add operation
-     */
-    public void add( Resource root, RDFNode value ) {
-        root.addProperty( m_predicate, value );
+    public PathSet p_imports() {
+        return asPathSet( getProfile().IMPORTS() );
     }
     
-
-    /**
-     * <p>
-     * Evaluate the path expression against the given root, which will result in a set of paths
-     * that can be iterated through
-     * </p>
-     * 
-     * @param root
-     * @return StmtIterator
-     */
-    public PathIterator evaluate( Resource root ) {
-        return new UnitPathIterator( root.listProperties( m_predicate ) );
-    }
-
-
-    /**
-     * <p>
-     * Answer the named predicate in this path
-     * </p>
-     * 
-     * @return The property that labels this unit path expression
-     */
-    public Property getProperty() {
-        return m_predicate;
+    public PathSet p_backwardCompatibleWith() {
+        return asPathSet( getProfile().BACKWARD_COMPATIBLE_WITH() );
+    } 
+    
+    public PathSet p_priorVersion() {
+        return asPathSet( getProfile().PRIOR_VERSION() );
     }
     
+    public PathSet p_incompatibleWith() {
+        return asPathSet( getProfile().INCOMPATIBLE_WITH() );
+    }
+    
+    public PathSet p_versionInfo() {
+        return asPathSet( getProfile().VERSION_INFO() );
+    }
     
     // Internal implementation methods
     //////////////////////////////////
@@ -118,7 +105,6 @@ public class NamedUnitPathExpr
     //==============================================================================
     // Inner class definitions
     //==============================================================================
-
 
 }
 

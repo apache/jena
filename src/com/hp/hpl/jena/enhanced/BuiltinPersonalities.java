@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: BuiltinPersonalities.java,v 1.4 2003-03-26 12:39:08 chris-dollin Exp $
+  $Id: BuiltinPersonalities.java,v 1.5 2003-03-27 16:28:47 ian_dickinson Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.ontology.OntList;
-import com.hp.hpl.jena.ontology.impl.OntListImpl;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.impl.*;
 
 
 /**
@@ -25,8 +25,11 @@ public class BuiltinPersonalities {
         .add( Alt.class, AltImpl.factory )
         .add( Bag.class, BagImpl.factory )
         .add( Seq.class, SeqImpl.factory )
-        .add( OntList.class, OntListImpl.factory )
         .add( ReifiedStatement.class, ReifiedStatementImpl.factory )
+        
+        // ontology additions
+        .add( OntList.class, OntListImpl.factory )
+        .add( Ontology.class, OntologyImpl.factory )
         ;		
 }
 

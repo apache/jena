@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Ontology.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-02-13 22:48:46 $
+ * Last modified on   $Date: 2003-03-27 16:28:14 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -22,8 +22,10 @@
 package com.hp.hpl.jena.ontology;
 
 
+
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.path.PathSet;
 
 
 /**
@@ -35,7 +37,7 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Ontology.java,v 1.1 2003-02-13 22:48:46 ian_dickinson Exp $
+ * @version CVS $Id: Ontology.java,v 1.2 2003-03-27 16:28:14 ian_dickinson Exp $
  */
 public interface Ontology
     extends OntResource
@@ -48,7 +50,77 @@ public interface Ontology
     // External signature methods
     //////////////////////////////////
 
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>imports</code>
+     * property of an ontology. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     */
+    public PathSet p_imports();
+    
 
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>backwardCompatibleWith</code>
+     * property of an ontology. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     * @exception {@link OntologyException} if language profile for the ontology model that this
+     * resource is attached to does not support this property.
+     */
+    public PathSet p_backwardCompatibleWith();
+    
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>priorVersion</code>
+     * property of an ontology. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     * @exception {@link OntologyException} if language profile for the ontology model that this
+     * resource is attached to does not support this property.
+     */
+    public PathSet p_priorVersion();
+    
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>incompatibleWith</code>
+     * property of an ontology. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     * @exception {@link OntologyException} if language profile for the ontology model that this
+     * resource is attached to does not support this property.
+     */
+    public PathSet p_incompatibleWith();
+    
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>versionInfo</code>
+     * property of an ontology. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the imports of an ontology element
+     * @exception {@link OntologyException} if language profile for the ontology model that this
+     * resource is attached to does not support this property.
+     */
+    public PathSet p_versionInfo();
 }
 
 

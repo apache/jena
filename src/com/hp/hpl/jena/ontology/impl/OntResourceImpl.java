@@ -5,45 +5,70 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            10 Feb 2003
- * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            25-Mar-2003
+ * Filename           $RCSfile: OntResourceImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:15 $
+ * Last modified on   $Date: 2003-03-27 16:28:46 $
  *               by   $Author: ian_dickinson $
  *
- * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
+ * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
- * ****************************************************************************/
+ *****************************************************************************/
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology;
+package com.hp.hpl.jena.ontology.impl;
 
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.rdf.model.*;
-
+import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.ontology.path.*;
+import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 
 
 /**
  * <p>
- * Provides a common super-type for all of the abstractions in this ontology
- * representation package. 
+ * Abstract base class to provide shared implementation for implementations of ontology
+ * resources.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.2 2003-03-27 16:28:15 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.1 2003-03-27 16:28:46 ian_dickinson Exp $
  */
-public interface OntResource
-    extends Resource
+public abstract class OntResourceImpl
+    extends ResourceImpl
+    implements OntResource 
 {
     // Constants
     //////////////////////////////////
 
+    // Static variables
+    //////////////////////////////////
+
+    // Instance variables
+    //////////////////////////////////
+
+    // Constructors
+    //////////////////////////////////
+
+    /**
+     * <p>
+     * Construct an ontology resource represented by the given node in the given graph.
+     * </p>
+     * 
+     * @param n The node that represents the resource
+     * @param g The enh graph that contains n
+     */
+    public OntResourceImpl( Node n, EnhGraph g ) {
+        super( n, g );
+    }
 
 
     // External signature methods
@@ -57,7 +82,30 @@ public interface OntResource
      * 
      * @return The language profile for this ontology resource
      */
-    public Profile getProfile();
+    public Profile getProfile() {
+        return ((OntModel) getModel()).getProfile();
+    }
+
+
+    // Internal implementation methods
+    //////////////////////////////////
+
+
+    protected PathSet asPathSet( Property p ) {
+        if (p == null) {
+            // TODO ideally should name the property to be helpful here
+            throw new OntologyException( "This property is not defined in the current language profile" );
+        }
+        else {
+            return new PathSet( this, PathFactory.unit( p ) );
+        }
+    }
+    
+    
+    //==============================================================================
+    // Inner class definitions
+    //==============================================================================
+
 }
 
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLProfile.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:17:04 $
+ * Last modified on   $Date: 2003-03-27 16:28:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLProfile.java,v 1.1 2003-03-12 17:17:04 ian_dickinson Exp $
+ * @version CVS $Id: OWLProfile.java,v 1.2 2003-03-27 16:28:46 ian_dickinson Exp $
  */
 public class OWLProfile
     implements Profile
@@ -100,7 +100,7 @@ public class OWLProfile
     public Property IMPORTS() {                     return OWL.imports; }
     public Property VERSION_INFO() {                return OWL.versionInfo; }
     public Property PRIOR_VERSION() {               return OWL.priorVersion; }
-    public Property BACKWARDS_COMPATIBLE_WITH() {   return OWL.backwardCompatibleWith; }
+    public Property BACKWARD_COMPATIBLE_WITH() {    return OWL.backwardCompatibleWith; }
     public Property INCOMPATIBLE_WITH() {           return OWL.incompatibleWith; }
     
     

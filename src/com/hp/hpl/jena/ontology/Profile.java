@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Profile.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:33 $
+ * Last modified on   $Date: 2003-03-27 16:28:14 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Profile.java,v 1.1 2003-03-12 17:16:33 ian_dickinson Exp $
+ * @version CVS $Id: Profile.java,v 1.2 2003-03-27 16:28:14 ian_dickinson Exp $
  */
 public interface Profile
 {
@@ -466,7 +466,7 @@ public interface Profile
      * 
      * @return The property that denotes ontology element backwards compatability.
      */
-    public Property BACKWARDS_COMPATIBLE_WITH();
+    public Property BACKWARD_COMPATIBLE_WITH();
     
     
     /**

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Mar-2003
  * Filename           $RCSfile: ProfileRegistry.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:35 $
+ * Last modified on   $Date: 2003-03-27 16:28:15 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,7 +24,7 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.ontology.daml.impl.DAML_OILProfile;
+import com.hp.hpl.jena.ontology.impl.DAML_OILProfile;
 import com.hp.hpl.jena.ontology.impl.OWLProfile;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ProfileRegistry.java,v 1.1 2003-03-12 17:16:35 ian_dickinson Exp $
+ * @version CVS $Id: ProfileRegistry.java,v 1.2 2003-03-27 16:28:15 ian_dickinson Exp $
  */
 public class ProfileRegistry {
     // Constants

@@ -10,7 +10,7 @@
  * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:22 $
+ * Last modified on   $Date: 2003-03-27 16:28:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -19,7 +19,7 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.daml.impl;
+package com.hp.hpl.jena.ontology.impl;
 
 
 // Imports
@@ -35,7 +35,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.1 2003-03-12 17:16:22 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.1 2003-03-27 16:28:46 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     implements Profile
@@ -153,7 +153,7 @@ public class DAML_OILProfile
     public Property IMPORTS() {                     return m_imports; }
     public Property VERSION_INFO() {                return m_versionInfo; }
     public Property PRIOR_VERSION() {               return m_priorVersion; }
-    public Property BACKWARDS_COMPATIBLE_WITH() {   return m_backwardsCompatibleWith; }
+    public Property BACKWARD_COMPATIBLE_WITH() {    return m_backwardsCompatibleWith; }
     public Property INCOMPATIBLE_WITH() {           return m_incompatibleWith; }
     
     

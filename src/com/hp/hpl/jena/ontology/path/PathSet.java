@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Mar-2003
  * Filename           $RCSfile: PathSet.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 10:11:40 $
+ * Last modified on   $Date: 2003-03-27 16:28:47 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: PathSet.java,v 1.1 2003-03-25 10:11:40 ian_dickinson Exp $
+ * @version CVS $Id: PathSet.java,v 1.2 2003-03-27 16:28:47 ian_dickinson Exp $
  */
 public class PathSet {
     // Constants
@@ -227,6 +227,19 @@ public class PathSet {
         }
     }
     
+    
+    /**
+     * <p>
+     * Answer the path expression underlying this set
+     * </p>
+     * 
+     * @return A path expression
+     */
+    public PathExpr getExpression() {
+        return m_expr;
+    }
+
+
     
     // Internal implementation methods
     //////////////////////////////////

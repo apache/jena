@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: OntList.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     @releaseStatus@ $State: Exp $
  *
- * Last modified on   $Date: 2003-02-20 17:11:11 $
+ * Last modified on   $Date: 2003-03-27 16:28:14 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
@@ -60,7 +60,7 @@ import java.util.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version Release ($Id: OntList.java,v 1.4 2003-02-20 17:11:11 ian_dickinson Exp $)
+ * @version Release ($Id: OntList.java,v 1.5 2003-03-27 16:28:14 ian_dickinson Exp $)
  */
 public interface OntList
     extends OntResource
@@ -68,16 +68,6 @@ public interface OntList
     // Constants
     //////////////////////////////////
 
-    /**
-     * This type value defines the polymorphic type of OntList, which is
-     * used to generate list facets of resources.
-     */
-//    public static final Type type = new Type() {
-//        public Class represents() { return OntList.class; }
-//        public String toString()                    { return "OntList.type"; }
-//    };
-//    
-    public static final Class type = OntList.class;
 
     // External signature methods
     //////////////////////////////////
