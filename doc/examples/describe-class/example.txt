@@ -1,0 +1,948 @@
+Class vin:Wine 
+  is a sub-class of Class food:PotableLiquid 
+  is a sub-class of Anonymous restriction with ID a-0 on property vin:hasMaker,  
+  is a sub-class of Anonymous restriction with ID a-1 on property vin:hasMaker,  all values from vin:Winery,  
+  is a sub-class of Anonymous restriction with ID a-2 on property vin:madeFromGrape,  
+  is a sub-class of Anonymous restriction with ID a-3 on property vin:hasSugar,  
+  is a sub-class of Anonymous restriction with ID a-4 on property vin:hasFlavor,  
+  is a sub-class of Anonymous restriction with ID a-5 on property vin:hasBody,  
+  is a sub-class of Anonymous restriction with ID a-6 on property vin:hasColor,  
+  is a sub-class of Anonymous restriction with ID a-7 on property vin:hasMaker,  
+  is a sub-class of Anonymous restriction with ID a-8 on property vin:locatedIn,  
+  is a super-class of Class vin:LateHarvest 
+  is a super-class of Class vin:EarlyHarvest 
+  is a super-class of Class vin:DessertWine 
+Class vin:Vintage 
+  is a sub-class of Anonymous restriction with ID a-9 on property vin:hasVintageYear,  
+Class vin:WineGrape 
+  is a sub-class of Class food:Grape 
+Class vin:WhiteWine 
+Class vin:WhiteTableWine 
+Class vin:TableWine 
+Class vin:WhiteNonSweetWine 
+Anonymous class with ID a-10
+Class vin:WhiteLoire 
+  is a sub-class of Anonymous restriction with ID a-11 on property vin:madeFromGrape,  all values from Anonymous resource with ID a-12,  
+Class vin:Loire 
+Anonymous class with ID a-12
+Class vin:WhiteBurgundy 
+  is a sub-class of Anonymous restriction with ID a-13 on property vin:madeFromGrape,  has value vin:ChardonnayGrape,  
+  is a sub-class of Anonymous restriction with ID a-14 on property vin:madeFromGrape,  
+Class vin:Burgundy 
+  is a sub-class of Anonymous restriction with ID a-15 on property vin:hasSugar,  has value vin:Dry,  
+Class vin:WhiteBordeaux 
+  is a sub-class of Anonymous restriction with ID a-16 on property vin:madeFromGrape,  all values from Anonymous resource with ID a-17,  
+Class vin:Bordeaux 
+  is a super-class of Class vin:Sauterne 
+Anonymous class with ID a-17
+Class vin:Region 
+Class vin:VintageYear 
+Class vin:Zinfandel 
+  is a sub-class of Anonymous restriction with ID a-18 on property vin:hasColor,  has value vin:Red,  
+  is a sub-class of Anonymous restriction with ID a-19 on property vin:hasSugar,  has value vin:Dry,  
+  is a sub-class of Anonymous restriction with ID a-20 on property vin:hasBody,  all values from Anonymous resource with ID a-21,  
+  is a sub-class of Anonymous restriction with ID a-22 on property vin:hasFlavor,  all values from Anonymous resource with ID a-23,  
+Anonymous class with ID a-21
+Anonymous class with ID a-23
+Class vin:Winery 
+Class vin:WineDescriptor 
+  is a super-class of Class vin:WineTaste 
+  is a super-class of Class vin:WineColor 
+Class vin:WineTaste 
+  is a sub-class of Class vin:WineDescriptor 
+  is a super-class of Class vin:WineSugar 
+  is a super-class of Class vin:WineFlavor 
+  is a super-class of Class vin:WineBody 
+Class vin:WineColor 
+  is a sub-class of Class vin:WineDescriptor 
+Class vin:WineSugar 
+  is a sub-class of Class vin:WineTaste 
+Class vin:WineFlavor 
+  is a sub-class of Class vin:WineTaste 
+Class vin:WineBody 
+  is a sub-class of Class vin:WineTaste 
+Class vin:Tours 
+  is a sub-class of Anonymous restriction with ID a-24 on property vin:madeFromGrape,  has value vin:CheninBlancGrape,  
+  is a sub-class of Anonymous restriction with ID a-25 on property vin:madeFromGrape,  
+Class vin:SweetWine 
+Class vin:SweetRiesling 
+  is a sub-class of Class vin:DessertWine 
+  is a sub-class of Anonymous restriction with ID a-26 on property vin:hasBody,  has value vin:Full,  
+  is a sub-class of Anonymous restriction with ID a-27 on property vin:hasFlavor,  all values from Anonymous resource with ID a-28,  
+Anonymous class with ID a-28
+Class vin:Riesling 
+  is a sub-class of Anonymous restriction with ID a-29 on property vin:hasColor,  has value vin:White,  
+Class vin:StEmilion 
+  is a sub-class of Anonymous restriction with ID a-30 on property vin:hasColor,  has value vin:Red,  
+  is a sub-class of Anonymous restriction with ID a-31 on property vin:hasFlavor,  has value vin:Strong,  
+  is a sub-class of Anonymous restriction with ID a-32 on property vin:madeFromGrape,  has value vin:CabernetSauvignonGrape,  
+  is a sub-class of Anonymous restriction with ID a-33 on property vin:madeFromGrape,  
+Class vin:SemillonOrSauvignonBlanc 
+  is a sub-class of Anonymous restriction with ID a-34 on property vin:hasColor,  has value vin:White,  
+  is a sub-class of Anonymous restriction with ID a-35 on property vin:hasBody,  all values from Anonymous resource with ID a-36,  
+Anonymous class with ID a-36
+Anonymous class with ID a-37
+Class vin:Semillon 
+Class vin:SauvignonBlanc 
+Class vin:Sauterne 
+  is a sub-class of Class vin:LateHarvest 
+  is a sub-class of Class vin:Bordeaux 
+  is a sub-class of Anonymous restriction with ID a-38 on property vin:locatedIn,  has value vin:SauterneRegion,  
+  is a sub-class of Anonymous restriction with ID a-39 on property vin:hasBody,  has value vin:Medium,  
+  is a sub-class of Anonymous restriction with ID a-40 on property vin:hasColor,  has value vin:White,  
+Class vin:Sancerre 
+  is a sub-class of Anonymous restriction with ID a-41 on property vin:hasBody,  has value vin:Medium,  
+  is a sub-class of Anonymous restriction with ID a-42 on property vin:hasSugar,  has value vin:OffDry,  
+  is a sub-class of Anonymous restriction with ID a-43 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a sub-class of Anonymous restriction with ID a-44 on property vin:madeFromGrape,  has value vin:SauvignonBlancGrape,  
+  is a sub-class of Anonymous restriction with ID a-45 on property vin:madeFromGrape,  
+Class vin:RoseWine 
+Class vin:RedWine 
+  is a super-class of Class vin:Port 
+Class vin:RedTableWine 
+Class vin:RedBurgundy 
+  is a sub-class of Anonymous restriction with ID a-46 on property vin:madeFromGrape,  has value vin:PinotNoirGrape,  
+  is a sub-class of Anonymous restriction with ID a-47 on property vin:madeFromGrape,  
+Class vin:RedBordeaux 
+  is a sub-class of Anonymous restriction with ID a-48 on property vin:madeFromGrape,  all values from Anonymous resource with ID a-49,  
+Anonymous class with ID a-49
+Class vin:Port 
+  is a sub-class of Class vin:RedWine 
+  is a sub-class of Anonymous restriction with ID a-50 on property vin:locatedIn,  has value vin:PortugalRegion,  
+  is a sub-class of Anonymous restriction with ID a-51 on property vin:hasBody,  has value vin:Full,  
+  is a sub-class of Anonymous restriction with ID a-52 on property vin:hasFlavor,  has value vin:Strong,  
+  is a sub-class of Anonymous restriction with ID a-53 on property vin:hasSugar,  has value vin:Sweet,  
+Class vin:PinotNoir 
+  is a sub-class of Anonymous restriction with ID a-54 on property vin:hasColor,  has value vin:Red,  
+Class vin:PinotBlanc 
+  is a sub-class of Anonymous restriction with ID a-55 on property vin:hasColor,  has value vin:White,  
+Class vin:PetiteSyrah 
+  is a sub-class of Anonymous restriction with ID a-56 on property vin:hasColor,  has value vin:Red,  
+  is a sub-class of Anonymous restriction with ID a-57 on property vin:hasSugar,  has value vin:Dry,  
+  is a sub-class of Anonymous restriction with ID a-58 on property vin:hasFlavor,  all values from Anonymous resource with ID a-59,  
+  is a sub-class of Anonymous restriction with ID a-60 on property vin:hasBody,  all values from Anonymous resource with ID a-61,  
+Anonymous class with ID a-59
+Anonymous class with ID a-61
+Class vin:Pauillac 
+  is a sub-class of Anonymous restriction with ID a-62 on property vin:hasBody,  has value vin:Full,  
+  is a sub-class of Anonymous restriction with ID a-63 on property vin:hasFlavor,  has value vin:Strong,  
+  is a sub-class of Anonymous restriction with ID a-64 on property vin:madeFromGrape,  has value vin:CabernetSauvignonGrape,  
+  is a sub-class of Anonymous restriction with ID a-65 on property vin:madeFromGrape,  
+Class vin:Medoc 
+  is a sub-class of Anonymous restriction with ID a-66 on property vin:hasColor,  has value vin:Red,  
+  is a sub-class of Anonymous restriction with ID a-67 on property vin:hasSugar,  has value vin:Dry,  
+Class vin:Muscadet 
+  is a sub-class of Anonymous restriction with ID a-68 on property vin:hasBody,  has value vin:Light,  
+  is a sub-class of Anonymous restriction with ID a-69 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a sub-class of Anonymous restriction with ID a-70 on property vin:hasSugar,  has value vin:Dry,  
+  is a sub-class of Anonymous restriction with ID a-71 on property vin:madeFromGrape,  has value vin:PinotBlancGrape,  
+  is a sub-class of Anonymous restriction with ID a-72 on property vin:madeFromGrape,  
+Class vin:Meursault 
+  is a sub-class of Anonymous restriction with ID a-73 on property vin:hasBody,  has value vin:Full,  
+Class vin:Merlot 
+  is a sub-class of Anonymous restriction with ID a-74 on property vin:hasColor,  has value vin:Red,  
+  is a sub-class of Anonymous restriction with ID a-75 on property vin:hasSugar,  has value vin:Dry,  
+  is a sub-class of Anonymous restriction with ID a-76 on property vin:hasFlavor,  all values from Anonymous resource with ID a-77,  
+  is a sub-class of Anonymous restriction with ID a-78 on property vin:hasBody,  all values from Anonymous resource with ID a-79,  
+Anonymous class with ID a-77
+Anonymous class with ID a-79
+Class vin:Meritage 
+  is a sub-class of Anonymous restriction with ID a-80 on property vin:hasColor,  has value vin:Red,  
+Anonymous class with ID a-81
+Class vin:Margaux 
+  is a sub-class of Anonymous restriction with ID a-82 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a sub-class of Anonymous restriction with ID a-83 on property vin:madeFromGrape,  has value vin:MerlotGrape,  
+  is a sub-class of Anonymous restriction with ID a-84 on property vin:madeFromGrape,  
+Class vin:LateHarvest 
+  is a sub-class of Class vin:Wine 
+  is a sub-class of Anonymous restriction with ID a-85 on property vin:hasSugar,  has value vin:Sweet,  
+  is a sub-class of Anonymous restriction with ID a-86 on property vin:hasFlavor,  all values from Anonymous resource with ID a-87,  
+  is a super-class of Class vin:Sauterne 
+Anonymous class with ID a-87
+Class vin:ItalianWine 
+  is a super-class of Class vin:Chianti 
+Class vin:IceWine 
+  is a sub-class of Anonymous restriction with ID a-88 on property vin:hasBody,  all values from Anonymous resource with ID a-89,  
+  is a sub-class of Anonymous restriction with ID a-90 on property vin:hasFlavor,  all values from Anonymous resource with ID a-91,  
+Anonymous class with ID a-89
+Anonymous class with ID a-91
+Class vin:DessertWine 
+  is a sub-class of Class vin:Wine 
+  is a sub-class of Anonymous restriction with ID a-92 on property vin:hasSugar,  all values from Anonymous resource with ID a-93,  
+  is a super-class of Class vin:SweetRiesling 
+Class vin:GermanWine 
+Class vin:Gamay 
+Class vin:FullBodiedWine 
+Class vin:FrenchWine 
+Class vin:EarlyHarvest 
+  is a sub-class of Class vin:Wine 
+  is a sub-class of Anonymous restriction with ID a-94 on property vin:hasSugar,  all values from Anonymous resource with ID a-95,  
+Anonymous class with ID a-95
+Class vin:DryWine 
+Class vin:DryWhiteWine 
+Class vin:DryRiesling 
+  is a sub-class of Anonymous restriction with ID a-96 on property vin:hasColor,  has value vin:White,  
+  is a sub-class of Anonymous restriction with ID a-97 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a sub-class of Anonymous restriction with ID a-98 on property vin:hasBody,  all values from Anonymous resource with ID a-99,  
+Anonymous class with ID a-99
+Class vin:DryRedWine 
+Anonymous class with ID a-93
+Class vin:CotesDOr 
+  is a sub-class of Anonymous restriction with ID a-100 on property vin:hasFlavor,  has value vin:Moderate,  
+Class vin:Chianti 
+  is a sub-class of Class vin:ItalianWine 
+  is a sub-class of Anonymous restriction with ID a-101 on property vin:locatedIn,  has value vin:ChiantiRegion,  
+  is a sub-class of Anonymous restriction with ID a-102 on property vin:hasColor,  has value vin:Red,  
+  is a sub-class of Anonymous restriction with ID a-103 on property vin:madeFromGrape,  has value vin:SangioveseGrape,  
+  is a sub-class of Anonymous restriction with ID a-104 on property vin:hasFlavor,  has value vin:Moderate,  
+  is a sub-class of Anonymous restriction with ID a-105 on property vin:hasSugar,  has value vin:Dry,  
+  is a sub-class of Anonymous restriction with ID a-106 on property vin:hasBody,  all values from Anonymous resource with ID a-107,  
+Anonymous class with ID a-107
+Class vin:CheninBlanc 
+  is a sub-class of Anonymous restriction with ID a-108 on property vin:hasColor,  has value vin:White,  
+  is a sub-class of Anonymous restriction with ID a-109 on property vin:hasFlavor,  has value vin:Moderate,  
+  is a sub-class of Anonymous restriction with ID a-110 on property vin:hasBody,  all values from Anonymous resource with ID a-111,  
+  is a sub-class of Anonymous restriction with ID a-112 on property vin:hasSugar,  all values from Anonymous resource with ID a-113,  
+Anonymous class with ID a-111
+Anonymous class with ID a-113
+Class vin:Chardonnay 
+  is a sub-class of Anonymous restriction with ID a-114 on property vin:hasColor,  has value vin:White,  
+  is a sub-class of Anonymous restriction with ID a-115 on property vin:hasBody,  all values from Anonymous resource with ID a-116,  
+  is a sub-class of Anonymous restriction with ID a-117 on property vin:hasFlavor,  all values from Anonymous resource with ID a-118,  
+Anonymous class with ID a-116
+Anonymous class with ID a-118
+Class vin:CaliforniaWine 
+Class vin:TexasWine 
+Class vin:CabernetSauvignon 
+  is a sub-class of Anonymous restriction with ID a-119 on property vin:hasColor,  has value vin:Red,  
+  is a sub-class of Anonymous restriction with ID a-120 on property vin:hasSugar,  has value vin:Dry,  
+  is a sub-class of Anonymous restriction with ID a-121 on property vin:hasFlavor,  all values from Anonymous resource with ID a-122,  
+  is a sub-class of Anonymous restriction with ID a-123 on property vin:hasBody,  all values from Anonymous resource with ID a-124,  
+Anonymous class with ID a-122
+Anonymous class with ID a-124
+Class vin:CabernetFranc 
+  is a sub-class of Anonymous restriction with ID a-125 on property vin:hasColor,  has value vin:Red,  
+  is a sub-class of Anonymous restriction with ID a-126 on property vin:hasFlavor,  has value vin:Moderate,  
+  is a sub-class of Anonymous restriction with ID a-127 on property vin:hasBody,  has value vin:Medium,  
+  is a sub-class of Anonymous restriction with ID a-128 on property vin:hasSugar,  has value vin:Dry,  
+Class vin:Beaujolais 
+  is a sub-class of Anonymous restriction with ID a-129 on property vin:hasColor,  has value vin:Red,  
+  is a sub-class of Anonymous restriction with ID a-130 on property vin:hasBody,  has value vin:Light,  
+  is a sub-class of Anonymous restriction with ID a-131 on property vin:hasSugar,  has value vin:Dry,  
+  is a sub-class of Anonymous restriction with ID a-132 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a sub-class of Anonymous restriction with ID a-133 on property vin:madeFromGrape,  has value vin:GamayGrape,  
+  is a sub-class of Anonymous restriction with ID a-134 on property vin:madeFromGrape,  
+Class vin:Anjou 
+  is a sub-class of Anonymous restriction with ID a-135 on property vin:hasColor,  has value vin:Rose,  
+  is a sub-class of Anonymous restriction with ID a-136 on property vin:hasBody,  has value vin:Light,  
+  is a sub-class of Anonymous restriction with ID a-137 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a sub-class of Anonymous restriction with ID a-138 on property vin:hasSugar,  has value vin:OffDry,  
+Class vin:AmericanWine 
+Class vin:AlsatianWine 
+Class food:ConsumableThing 
+  is a super-class of Class food:EdibleThing 
+  is a super-class of Class food:PotableLiquid 
+  is a super-class of Class food:MealCourse 
+  is a super-class of Class food:Meal 
+Class food:NonConsumableThing 
+Class food:EdibleThing 
+  is a sub-class of Class food:ConsumableThing 
+  is a super-class of Class food:Pasta 
+  is a super-class of Class food:OtherTomatoBasedFood 
+  is a super-class of Class food:NonSweetFruit 
+  is a super-class of Class food:Meat 
+  is a super-class of Class food:Fowl 
+  is a super-class of Class food:Dessert 
+  is a super-class of Class food:SweetFruit 
+  is a super-class of Class food:Seafood 
+Class food:PotableLiquid 
+  is a sub-class of Class food:ConsumableThing 
+  is a super-class of Class vin:Wine 
+Class food:Wine 
+Class food:Grape 
+  is a sub-class of Class food:SweetFruit 
+  is a super-class of Class vin:WineGrape 
+  is a super-class of Class food:EatingGrape 
+Class food:Pasta 
+  is a sub-class of Class food:EdibleThing 
+  is a super-class of Class food:PastaWithWhiteSauce 
+  is a super-class of Class food:PastaWithRedSauce 
+Class food:PastaWithWhiteSauce 
+  is a sub-class of Class food:Pasta 
+  is a super-class of Class food:PastaWithLightCreamSauce 
+  is a super-class of Class food:PastaWithHeavyCreamSauce 
+Class food:PastaWithSpicyRedSauceCourse 
+  is a sub-class of Anonymous restriction with ID a-139 on property food:hasDrink,  all values from Anonymous resource with ID a-140,  
+  is a sub-class of Anonymous restriction with ID a-141 on property food:hasDrink,  all values from Anonymous resource with ID a-142,  
+  is a sub-class of Anonymous restriction with ID a-143 on property food:hasDrink,  all values from Anonymous resource with ID a-144,  
+  is a sub-class of Anonymous restriction with ID a-145 on property food:hasDrink,  all values from Anonymous resource with ID a-146,  
+Class food:MealCourse 
+  is a sub-class of Class food:ConsumableThing 
+  is a sub-class of Anonymous restriction with ID a-147 on property food:hasFood,  
+  is a sub-class of Anonymous restriction with ID a-148 on property food:hasFood,  all values from food:EdibleThing,  
+  is a sub-class of Anonymous restriction with ID a-149 on property food:hasDrink,  
+  is a sub-class of Anonymous restriction with ID a-150 on property food:hasDrink,  all values from food:Wine,  
+Class food:PastaWithSpicyRedSauce 
+  is a sub-class of Class food:PastaWithRedSauce 
+Class food:PastaWithRedSauce 
+  is a sub-class of Class food:Pasta 
+  is a super-class of Class food:PastaWithSpicyRedSauce 
+  is a super-class of Class food:PastaWithNonSpicyRedSauce 
+Class food:PastaWithNonSpicyRedSauceCourse 
+  is a sub-class of Anonymous restriction with ID a-151 on property food:hasDrink,  all values from Anonymous resource with ID a-152,  
+  is a sub-class of Anonymous restriction with ID a-153 on property food:hasDrink,  all values from Anonymous resource with ID a-154,  
+  is a sub-class of Anonymous restriction with ID a-155 on property food:hasDrink,  all values from Anonymous resource with ID a-156,  
+  is a sub-class of Anonymous restriction with ID a-157 on property food:hasDrink,  all values from Anonymous resource with ID a-158,  
+Class food:PastaWithNonSpicyRedSauce 
+  is a sub-class of Class food:PastaWithRedSauce 
+Class food:PastaWithLightCreamSauce 
+  is a sub-class of Class food:PastaWithWhiteSauce 
+Class food:PastaWithLightCreamCourse 
+  is a sub-class of Anonymous restriction with ID a-159 on property food:hasDrink,  all values from Anonymous resource with ID a-160,  
+  is a sub-class of Anonymous restriction with ID a-161 on property food:hasDrink,  all values from Anonymous resource with ID a-162,  
+  is a sub-class of Anonymous restriction with ID a-163 on property food:hasDrink,  all values from Anonymous resource with ID a-164,  
+  is a sub-class of Anonymous restriction with ID a-165 on property food:hasDrink,  all values from Anonymous resource with ID a-166,  
+Class food:PastaWithHeavyCreamSauce 
+  is a sub-class of Class food:PastaWithWhiteSauce 
+Class food:PastaWithHeavyCreamCourse 
+  is a sub-class of Anonymous restriction with ID a-167 on property food:hasDrink,  all values from Anonymous resource with ID a-168,  
+  is a sub-class of Anonymous restriction with ID a-169 on property food:hasDrink,  all values from Anonymous resource with ID a-170,  
+  is a sub-class of Anonymous restriction with ID a-171 on property food:hasDrink,  all values from Anonymous resource with ID a-172,  
+  is a sub-class of Anonymous restriction with ID a-173 on property food:hasDrink,  all values from Anonymous resource with ID a-174,  
+Class food:OysterShellfishCourse 
+  is a sub-class of Anonymous restriction with ID a-175 on property food:hasDrink,  all values from Anonymous resource with ID a-176,  
+Class food:OysterShellfish 
+  is a sub-class of Class food:Shellfish 
+Class food:OtherTomatoBasedFoodCourse 
+  is a sub-class of Anonymous restriction with ID a-177 on property food:hasDrink,  all values from Anonymous resource with ID a-178,  
+  is a sub-class of Anonymous restriction with ID a-179 on property food:hasDrink,  all values from Anonymous resource with ID a-180,  
+  is a sub-class of Anonymous restriction with ID a-181 on property food:hasDrink,  all values from Anonymous resource with ID a-182,  
+  is a sub-class of Anonymous restriction with ID a-183 on property food:hasDrink,  all values from Anonymous resource with ID a-184,  
+Class food:OtherTomatoBasedFood 
+  is a sub-class of Class food:EdibleThing 
+Class food:NonSweetFruitCourse 
+  is a sub-class of Anonymous restriction with ID a-185 on property food:hasDrink,  all values from Anonymous resource with ID a-186,  
+  is a sub-class of Anonymous restriction with ID a-187 on property food:hasDrink,  all values from Anonymous resource with ID a-188,  
+Class food:SweetFruitCourse 
+  is a sub-class of Anonymous restriction with ID a-189 on property food:hasDrink,  all values from Anonymous resource with ID a-190,  
+  is a sub-class of Anonymous restriction with ID a-191 on property food:hasDrink,  all values from Anonymous resource with ID a-192,  
+Class food:NonSweetFruit 
+  is a sub-class of Class food:EdibleThing 
+Class food:NonSpicyRedMeatCourse 
+  is a sub-class of Anonymous restriction with ID a-193 on property food:hasDrink,  all values from Anonymous resource with ID a-194,  
+  is a sub-class of Anonymous restriction with ID a-195 on property food:hasDrink,  all values from Anonymous resource with ID a-196,  
+  is a sub-class of Anonymous restriction with ID a-197 on property food:hasDrink,  all values from Anonymous resource with ID a-198,  
+  is a sub-class of Anonymous restriction with ID a-199 on property food:hasDrink,  all values from Anonymous resource with ID a-200,  
+Anonymous class with ID a-201
+Class food:NonSpicyRedMeat 
+  is a sub-class of Class food:RedMeat 
+Class food:NonRedMeatCourse 
+  is a sub-class of Anonymous restriction with ID a-202 on property food:hasDrink,  all values from Anonymous resource with ID a-203,  
+  is a sub-class of Anonymous restriction with ID a-204 on property food:hasDrink,  all values from Anonymous resource with ID a-205,  
+  is a sub-class of Anonymous restriction with ID a-206 on property food:hasDrink,  all values from Anonymous resource with ID a-207,  
+  is a sub-class of Anonymous restriction with ID a-208 on property food:hasDrink,  all values from Anonymous resource with ID a-209,  
+Class food:NonRedMeat 
+  is a sub-class of Class food:Meat 
+Class food:NonOysterShellfishCourse 
+  is a sub-class of Anonymous restriction with ID a-210 on property food:hasDrink,  all values from Anonymous resource with ID a-211,  
+Class food:NonOysterShellfish 
+  is a sub-class of Class food:Shellfish 
+Class food:NonBlandFishCourse 
+  is a sub-class of Anonymous restriction with ID a-212 on property food:hasDrink,  all values from Anonymous resource with ID a-213,  
+Class food:NonBlandFish 
+  is a sub-class of Class food:Fish 
+Class food:Meat 
+  is a sub-class of Class food:EdibleThing 
+  is a super-class of Class food:NonRedMeat 
+  is a super-class of Class food:RedMeat 
+Class food:Meal 
+  is a sub-class of Class food:ConsumableThing 
+  is a sub-class of Anonymous restriction with ID a-214 on property food:course,  
+  is a sub-class of Anonymous restriction with ID a-215 on property food:course,  all values from food:MealCourse,  
+Class food:LightMeatFowlCourse 
+  is a sub-class of Anonymous restriction with ID a-216 on property food:hasDrink,  all values from Anonymous resource with ID a-217,  
+  is a sub-class of Anonymous restriction with ID a-218 on property food:hasDrink,  all values from Anonymous resource with ID a-219,  
+  is a sub-class of Anonymous restriction with ID a-220 on property food:hasDrink,  all values from Anonymous resource with ID a-221,  
+  is a sub-class of Anonymous restriction with ID a-222 on property food:hasDrink,  all values from Anonymous resource with ID a-223,  
+Class food:LightMeatFowl 
+  is a sub-class of Class food:Fowl 
+Class food:FruitCourse 
+  is a sub-class of Anonymous restriction with ID a-224 on property food:hasDrink,  all values from Anonymous resource with ID a-225,  
+  is a sub-class of Anonymous restriction with ID a-226 on property food:hasDrink,  all values from Anonymous resource with ID a-227,  
+Class food:Fruit 
+Class food:SweetFruit 
+  is a sub-class of Class food:EdibleThing 
+  is a super-class of Class food:Grape 
+Class food:Fowl 
+  is a sub-class of Class food:EdibleThing 
+  is a super-class of Class food:LightMeatFowl 
+  is a super-class of Class food:DarkMeatFowl 
+Class food:FishCourse 
+  is a sub-class of Anonymous restriction with ID a-228 on property food:hasDrink,  all values from Anonymous resource with ID a-229,  
+  is a sub-class of Anonymous restriction with ID a-230 on property food:hasDrink,  all values from Anonymous resource with ID a-231,  
+Class food:DessertCourse 
+  is a sub-class of Anonymous restriction with ID a-232 on property food:hasDrink,  all values from Anonymous resource with ID a-233,  
+  is a sub-class of Anonymous restriction with ID a-234 on property food:hasDrink,  all values from Anonymous resource with ID a-235,  
+  is a sub-class of Anonymous restriction with ID a-236 on property food:hasDrink,  all values from Anonymous resource with ID a-237,  
+Class food:Dessert 
+  is a sub-class of Class food:EdibleThing 
+  is a super-class of Class food:SweetDessert 
+  is a super-class of Class food:CheeseNutsDessert 
+Class food:SweetDessertCourse 
+  is a sub-class of Anonymous restriction with ID a-238 on property food:hasDrink,  all values from Anonymous resource with ID a-239,  
+Class food:SweetDessert 
+  is a sub-class of Class food:Dessert 
+Class food:DarkMeatFowlCourse 
+  is a sub-class of Anonymous restriction with ID a-240 on property food:hasDrink,  all values from Anonymous resource with ID a-241,  
+  is a sub-class of Anonymous restriction with ID a-242 on property food:hasDrink,  all values from Anonymous resource with ID a-243,  
+  is a sub-class of Anonymous restriction with ID a-244 on property food:hasDrink,  all values from Anonymous resource with ID a-245,  
+  is a sub-class of Anonymous restriction with ID a-246 on property food:hasDrink,  all values from Anonymous resource with ID a-247,  
+Class food:DarkMeatFowl 
+  is a sub-class of Class food:Fowl 
+Class food:CheeseNutsDessertCourse 
+  is a sub-class of Anonymous restriction with ID a-248 on property food:hasDrink,  all values from Anonymous resource with ID a-249,  
+Class food:CheeseNutsDessert 
+  is a sub-class of Class food:Dessert 
+Class food:BlandFishCourse 
+  is a sub-class of Anonymous restriction with ID a-250 on property food:hasDrink,  all values from Anonymous resource with ID a-251,  
+Class food:BlandFish 
+  is a sub-class of Class food:Fish 
+Class food:Fish 
+  is a sub-class of Class food:Seafood 
+  is a super-class of Class food:NonBlandFish 
+  is a super-class of Class food:BlandFish 
+Class food:SpicyRedMeat 
+  is a sub-class of Class food:RedMeat 
+Class food:ShellfishCourse 
+  is a sub-class of Anonymous restriction with ID a-252 on property food:hasDrink,  all values from Anonymous resource with ID a-253,  
+  is a sub-class of Anonymous restriction with ID a-254 on property food:hasDrink,  all values from Anonymous resource with ID a-255,  
+Anonymous class with ID a-256
+Class food:Shellfish 
+  is a sub-class of Class food:Seafood 
+  is a super-class of Class food:OysterShellfish 
+  is a super-class of Class food:NonOysterShellfish 
+Class food:SeafoodCourse 
+  is a sub-class of Anonymous restriction with ID a-257 on property food:hasDrink,  all values from Anonymous resource with ID a-258,  
+Class food:Seafood 
+  is a sub-class of Class food:EdibleThing 
+  is a super-class of Class food:Fish 
+  is a super-class of Class food:Shellfish 
+Class food:RedMeatCourse 
+  is a sub-class of Anonymous restriction with ID a-259 on property food:hasDrink,  all values from Anonymous resource with ID a-260,  
+Class food:RedMeat 
+  is a sub-class of Class food:Meat 
+  is a super-class of Class food:NonSpicyRedMeat 
+  is a super-class of Class food:SpicyRedMeat 
+Class food:EatingGrape 
+  is a sub-class of Class food:Grape 
+Class food:SpicyRedMeatCourse 
+  is a sub-class of Anonymous restriction with ID a-261 on property food:hasDrink,  all values from Anonymous resource with ID a-262,  
+  is a sub-class of Anonymous restriction with ID a-263 on property food:hasDrink,  all values from Anonymous resource with ID a-264,  
+  is a sub-class of Anonymous restriction with ID a-265 on property food:hasDrink,  all values from Anonymous resource with ID a-266,  
+  is a sub-class of Anonymous restriction with ID a-267 on property food:hasDrink,  all values from Anonymous resource with ID a-268,  
+Anonymous restriction with ID a-0 on property vin:hasMaker,  
+  is a super-class of Class vin:Wine 
+Anonymous restriction with ID a-1 on property vin:hasMaker,  all values from vin:Winery,  
+  is a super-class of Class vin:Wine 
+Anonymous restriction with ID a-2 on property vin:madeFromGrape,  
+  is a super-class of Class vin:Wine 
+Anonymous restriction with ID a-3 on property vin:hasSugar,  
+  is a super-class of Class vin:Wine 
+Anonymous restriction with ID a-4 on property vin:hasFlavor,  
+  is a super-class of Class vin:Wine 
+Anonymous restriction with ID a-5 on property vin:hasBody,  
+  is a super-class of Class vin:Wine 
+Anonymous restriction with ID a-6 on property vin:hasColor,  
+  is a super-class of Class vin:Wine 
+Anonymous restriction with ID a-7 on property vin:hasMaker,  
+  is a super-class of Class vin:Wine 
+Anonymous restriction with ID a-8 on property vin:locatedIn,  
+  is a super-class of Class vin:Wine 
+Anonymous restriction with ID a-9 on property vin:hasVintageYear,  
+  is a super-class of Class vin:Vintage 
+Anonymous restriction with ID a-269 on property vin:hasColor,  has value vin:White,  
+Anonymous restriction with ID a-270 on property vin:hasColor,  has value vin:White,  
+Anonymous restriction with ID a-271 on property vin:hasSugar,  all values from Anonymous resource with ID a-10,  
+Anonymous restriction with ID a-11 on property vin:madeFromGrape,  all values from Anonymous resource with ID a-12,  
+  is a super-class of Class vin:WhiteLoire 
+Anonymous restriction with ID a-13 on property vin:madeFromGrape,  has value vin:ChardonnayGrape,  
+  is a super-class of Class vin:WhiteBurgundy 
+Anonymous restriction with ID a-14 on property vin:madeFromGrape,  
+  is a super-class of Class vin:WhiteBurgundy 
+Anonymous restriction with ID a-16 on property vin:madeFromGrape,  all values from Anonymous resource with ID a-17,  
+  is a super-class of Class vin:WhiteBordeaux 
+Anonymous restriction with ID a-272 on property vin:madeFromGrape,  has value vin:ZinfandelGrape,  
+Anonymous restriction with ID a-273 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-18 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:Zinfandel 
+Anonymous restriction with ID a-19 on property vin:hasSugar,  has value vin:Dry,  
+  is a super-class of Class vin:Zinfandel 
+Anonymous restriction with ID a-20 on property vin:hasBody,  all values from Anonymous resource with ID a-21,  
+  is a super-class of Class vin:Zinfandel 
+Anonymous restriction with ID a-22 on property vin:hasFlavor,  all values from Anonymous resource with ID a-23,  
+  is a super-class of Class vin:Zinfandel 
+Anonymous restriction with ID a-274 on property vin:locatedIn,  has value vin:ToursRegion,  
+Anonymous restriction with ID a-24 on property vin:madeFromGrape,  has value vin:CheninBlancGrape,  
+  is a super-class of Class vin:Tours 
+Anonymous restriction with ID a-25 on property vin:madeFromGrape,  
+  is a super-class of Class vin:Tours 
+Anonymous restriction with ID a-275 on property vin:hasSugar,  has value vin:Dry,  
+Anonymous restriction with ID a-276 on property vin:hasSugar,  has value vin:Sweet,  
+Anonymous restriction with ID a-26 on property vin:hasBody,  has value vin:Full,  
+  is a super-class of Class vin:SweetRiesling 
+Anonymous restriction with ID a-27 on property vin:hasFlavor,  all values from Anonymous resource with ID a-28,  
+  is a super-class of Class vin:SweetRiesling 
+Anonymous restriction with ID a-277 on property vin:hasSugar,  has value vin:Sweet,  
+Anonymous restriction with ID a-30 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:StEmilion 
+Anonymous restriction with ID a-31 on property vin:hasFlavor,  has value vin:Strong,  
+  is a super-class of Class vin:StEmilion 
+Anonymous restriction with ID a-32 on property vin:madeFromGrape,  has value vin:CabernetSauvignonGrape,  
+  is a super-class of Class vin:StEmilion 
+Anonymous restriction with ID a-33 on property vin:madeFromGrape,  
+  is a super-class of Class vin:StEmilion 
+Anonymous restriction with ID a-278 on property vin:locatedIn,  has value vin:StEmilionRegion,  
+Anonymous restriction with ID a-34 on property vin:hasColor,  has value vin:White,  
+  is a super-class of Class vin:SemillonOrSauvignonBlanc 
+Anonymous restriction with ID a-35 on property vin:hasBody,  all values from Anonymous resource with ID a-36,  
+  is a super-class of Class vin:SemillonOrSauvignonBlanc 
+Anonymous restriction with ID a-279 on property vin:madeFromGrape,  all values from Anonymous resource with ID a-37,  
+Anonymous restriction with ID a-280 on property vin:madeFromGrape,  has value vin:SemillonGrape,  
+Anonymous restriction with ID a-281 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-282 on property vin:madeFromGrape,  has value vin:SauvignonBlancGrape,  
+Anonymous restriction with ID a-283 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-38 on property vin:locatedIn,  has value vin:SauterneRegion,  
+  is a super-class of Class vin:Sauterne 
+Anonymous restriction with ID a-39 on property vin:hasBody,  has value vin:Medium,  
+  is a super-class of Class vin:Sauterne 
+Anonymous restriction with ID a-40 on property vin:hasColor,  has value vin:White,  
+  is a super-class of Class vin:Sauterne 
+Anonymous restriction with ID a-41 on property vin:hasBody,  has value vin:Medium,  
+  is a super-class of Class vin:Sancerre 
+Anonymous restriction with ID a-42 on property vin:hasSugar,  has value vin:OffDry,  
+  is a super-class of Class vin:Sancerre 
+Anonymous restriction with ID a-43 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a super-class of Class vin:Sancerre 
+Anonymous restriction with ID a-44 on property vin:madeFromGrape,  has value vin:SauvignonBlancGrape,  
+  is a super-class of Class vin:Sancerre 
+Anonymous restriction with ID a-45 on property vin:madeFromGrape,  
+  is a super-class of Class vin:Sancerre 
+Anonymous restriction with ID a-284 on property vin:locatedIn,  has value vin:SancerreRegion,  
+Anonymous restriction with ID a-285 on property vin:hasColor,  has value vin:Rose,  
+Anonymous restriction with ID a-29 on property vin:hasColor,  has value vin:White,  
+  is a super-class of Class vin:Riesling 
+Anonymous restriction with ID a-286 on property vin:madeFromGrape,  has value vin:RieslingGrape,  
+Anonymous restriction with ID a-287 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-288 on property vin:hasColor,  has value vin:Red,  
+Anonymous restriction with ID a-289 on property vin:hasColor,  has value vin:Red,  
+Anonymous restriction with ID a-46 on property vin:madeFromGrape,  has value vin:PinotNoirGrape,  
+  is a super-class of Class vin:RedBurgundy 
+Anonymous restriction with ID a-47 on property vin:madeFromGrape,  
+  is a super-class of Class vin:RedBurgundy 
+Anonymous restriction with ID a-48 on property vin:madeFromGrape,  all values from Anonymous resource with ID a-49,  
+  is a super-class of Class vin:RedBordeaux 
+Anonymous restriction with ID a-50 on property vin:locatedIn,  has value vin:PortugalRegion,  
+  is a super-class of Class vin:Port 
+Anonymous restriction with ID a-51 on property vin:hasBody,  has value vin:Full,  
+  is a super-class of Class vin:Port 
+Anonymous restriction with ID a-52 on property vin:hasFlavor,  has value vin:Strong,  
+  is a super-class of Class vin:Port 
+Anonymous restriction with ID a-53 on property vin:hasSugar,  has value vin:Sweet,  
+  is a super-class of Class vin:Port 
+Anonymous restriction with ID a-54 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:PinotNoir 
+Anonymous restriction with ID a-290 on property vin:madeFromGrape,  has value vin:PinotNoirGrape,  
+Anonymous restriction with ID a-291 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-55 on property vin:hasColor,  has value vin:White,  
+  is a super-class of Class vin:PinotBlanc 
+Anonymous restriction with ID a-292 on property vin:madeFromGrape,  has value vin:PinotBlancGrape,  
+Anonymous restriction with ID a-293 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-56 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:PetiteSyrah 
+Anonymous restriction with ID a-57 on property vin:hasSugar,  has value vin:Dry,  
+  is a super-class of Class vin:PetiteSyrah 
+Anonymous restriction with ID a-58 on property vin:hasFlavor,  all values from Anonymous resource with ID a-59,  
+  is a super-class of Class vin:PetiteSyrah 
+Anonymous restriction with ID a-60 on property vin:hasBody,  all values from Anonymous resource with ID a-61,  
+  is a super-class of Class vin:PetiteSyrah 
+Anonymous restriction with ID a-294 on property vin:madeFromGrape,  has value vin:PetiteSyrahGrape,  
+Anonymous restriction with ID a-295 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-62 on property vin:hasBody,  has value vin:Full,  
+  is a super-class of Class vin:Pauillac 
+Anonymous restriction with ID a-63 on property vin:hasFlavor,  has value vin:Strong,  
+  is a super-class of Class vin:Pauillac 
+Anonymous restriction with ID a-64 on property vin:madeFromGrape,  has value vin:CabernetSauvignonGrape,  
+  is a super-class of Class vin:Pauillac 
+Anonymous restriction with ID a-65 on property vin:madeFromGrape,  
+  is a super-class of Class vin:Pauillac 
+Anonymous restriction with ID a-296 on property vin:locatedIn,  has value vin:PauillacRegion,  
+Anonymous restriction with ID a-68 on property vin:hasBody,  has value vin:Light,  
+  is a super-class of Class vin:Muscadet 
+Anonymous restriction with ID a-69 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a super-class of Class vin:Muscadet 
+Anonymous restriction with ID a-70 on property vin:hasSugar,  has value vin:Dry,  
+  is a super-class of Class vin:Muscadet 
+Anonymous restriction with ID a-71 on property vin:madeFromGrape,  has value vin:PinotBlancGrape,  
+  is a super-class of Class vin:Muscadet 
+Anonymous restriction with ID a-72 on property vin:madeFromGrape,  
+  is a super-class of Class vin:Muscadet 
+Anonymous restriction with ID a-297 on property vin:locatedIn,  has value vin:MuscadetRegion,  
+Anonymous restriction with ID a-73 on property vin:hasBody,  has value vin:Full,  
+  is a super-class of Class vin:Meursault 
+Anonymous restriction with ID a-298 on property vin:locatedIn,  has value vin:MeursaultRegion,  
+Anonymous restriction with ID a-74 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:Merlot 
+Anonymous restriction with ID a-75 on property vin:hasSugar,  has value vin:Dry,  
+  is a super-class of Class vin:Merlot 
+Anonymous restriction with ID a-76 on property vin:hasFlavor,  all values from Anonymous resource with ID a-77,  
+  is a super-class of Class vin:Merlot 
+Anonymous restriction with ID a-78 on property vin:hasBody,  all values from Anonymous resource with ID a-79,  
+  is a super-class of Class vin:Merlot 
+Anonymous restriction with ID a-299 on property vin:madeFromGrape,  has value vin:MerlotGrape,  
+Anonymous restriction with ID a-300 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-80 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:Meritage 
+Anonymous restriction with ID a-301 on property vin:madeFromGrape,  all values from Anonymous resource with ID a-81,  
+Anonymous restriction with ID a-302 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-66 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:Medoc 
+Anonymous restriction with ID a-67 on property vin:hasSugar,  has value vin:Dry,  
+  is a super-class of Class vin:Medoc 
+Anonymous restriction with ID a-303 on property vin:locatedIn,  has value vin:MedocRegion,  
+Anonymous restriction with ID a-82 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a super-class of Class vin:Margaux 
+Anonymous restriction with ID a-83 on property vin:madeFromGrape,  has value vin:MerlotGrape,  
+  is a super-class of Class vin:Margaux 
+Anonymous restriction with ID a-84 on property vin:madeFromGrape,  
+  is a super-class of Class vin:Margaux 
+Anonymous restriction with ID a-304 on property vin:locatedIn,  has value vin:MargauxRegion,  
+Anonymous restriction with ID a-305 on property vin:locatedIn,  has value vin:LoireRegion,  
+Anonymous restriction with ID a-85 on property vin:hasSugar,  has value vin:Sweet,  
+  is a super-class of Class vin:LateHarvest 
+Anonymous restriction with ID a-86 on property vin:hasFlavor,  all values from Anonymous resource with ID a-87,  
+  is a super-class of Class vin:LateHarvest 
+Anonymous restriction with ID a-306 on property vin:locatedIn,  has value vin:ItalianRegion,  
+Anonymous restriction with ID a-88 on property vin:hasBody,  all values from Anonymous resource with ID a-89,  
+  is a super-class of Class vin:IceWine 
+Anonymous restriction with ID a-90 on property vin:hasFlavor,  all values from Anonymous resource with ID a-91,  
+  is a super-class of Class vin:IceWine 
+Anonymous restriction with ID a-307 on property vin:hasColor,  has value vin:White,  
+Anonymous restriction with ID a-308 on property vin:locatedIn,  has value vin:GermanyRegion,  
+Anonymous restriction with ID a-309 on property vin:madeFromGrape,  has value vin:GamayGrape,  
+Anonymous restriction with ID a-310 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-311 on property vin:hasBody,  has value vin:Full,  
+Anonymous restriction with ID a-312 on property vin:locatedIn,  has value vin:FrenchRegion,  
+Anonymous restriction with ID a-94 on property vin:hasSugar,  all values from Anonymous resource with ID a-95,  
+  is a super-class of Class vin:EarlyHarvest 
+Anonymous restriction with ID a-313 on property vin:hasSugar,  has value vin:Dry,  
+Anonymous restriction with ID a-96 on property vin:hasColor,  has value vin:White,  
+  is a super-class of Class vin:DryRiesling 
+Anonymous restriction with ID a-97 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a super-class of Class vin:DryRiesling 
+Anonymous restriction with ID a-98 on property vin:hasBody,  all values from Anonymous resource with ID a-99,  
+  is a super-class of Class vin:DryRiesling 
+Anonymous restriction with ID a-314 on property vin:hasSugar,  has value vin:Dry,  
+Anonymous restriction with ID a-92 on property vin:hasSugar,  all values from Anonymous resource with ID a-93,  
+  is a super-class of Class vin:DessertWine 
+Anonymous restriction with ID a-100 on property vin:hasFlavor,  has value vin:Moderate,  
+  is a super-class of Class vin:CotesDOr 
+Anonymous restriction with ID a-315 on property vin:locatedIn,  has value vin:CotesDOrRegion,  
+Anonymous restriction with ID a-101 on property vin:locatedIn,  has value vin:ChiantiRegion,  
+  is a super-class of Class vin:Chianti 
+Anonymous restriction with ID a-102 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:Chianti 
+Anonymous restriction with ID a-103 on property vin:madeFromGrape,  has value vin:SangioveseGrape,  
+  is a super-class of Class vin:Chianti 
+Anonymous restriction with ID a-104 on property vin:hasFlavor,  has value vin:Moderate,  
+  is a super-class of Class vin:Chianti 
+Anonymous restriction with ID a-105 on property vin:hasSugar,  has value vin:Dry,  
+  is a super-class of Class vin:Chianti 
+Anonymous restriction with ID a-106 on property vin:hasBody,  all values from Anonymous resource with ID a-107,  
+  is a super-class of Class vin:Chianti 
+Anonymous restriction with ID a-108 on property vin:hasColor,  has value vin:White,  
+  is a super-class of Class vin:CheninBlanc 
+Anonymous restriction with ID a-109 on property vin:hasFlavor,  has value vin:Moderate,  
+  is a super-class of Class vin:CheninBlanc 
+Anonymous restriction with ID a-110 on property vin:hasBody,  all values from Anonymous resource with ID a-111,  
+  is a super-class of Class vin:CheninBlanc 
+Anonymous restriction with ID a-112 on property vin:hasSugar,  all values from Anonymous resource with ID a-113,  
+  is a super-class of Class vin:CheninBlanc 
+Anonymous restriction with ID a-316 on property vin:madeFromGrape,  has value vin:CheninBlancGrape,  
+Anonymous restriction with ID a-317 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-114 on property vin:hasColor,  has value vin:White,  
+  is a super-class of Class vin:Chardonnay 
+Anonymous restriction with ID a-115 on property vin:hasBody,  all values from Anonymous resource with ID a-116,  
+  is a super-class of Class vin:Chardonnay 
+Anonymous restriction with ID a-117 on property vin:hasFlavor,  all values from Anonymous resource with ID a-118,  
+  is a super-class of Class vin:Chardonnay 
+Anonymous restriction with ID a-318 on property vin:madeFromGrape,  has value vin:ChardonnayGrape,  
+Anonymous restriction with ID a-319 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-320 on property vin:locatedIn,  has value vin:CaliforniaRegion,  
+Anonymous restriction with ID a-321 on property vin:locatedIn,  has value vin:TexasRegion,  
+Anonymous restriction with ID a-119 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:CabernetSauvignon 
+Anonymous restriction with ID a-120 on property vin:hasSugar,  has value vin:Dry,  
+  is a super-class of Class vin:CabernetSauvignon 
+Anonymous restriction with ID a-121 on property vin:hasFlavor,  all values from Anonymous resource with ID a-122,  
+  is a super-class of Class vin:CabernetSauvignon 
+Anonymous restriction with ID a-123 on property vin:hasBody,  all values from Anonymous resource with ID a-124,  
+  is a super-class of Class vin:CabernetSauvignon 
+Anonymous restriction with ID a-322 on property vin:madeFromGrape,  has value vin:CabernetSauvignonGrape,  
+Anonymous restriction with ID a-323 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-125 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:CabernetFranc 
+Anonymous restriction with ID a-126 on property vin:hasFlavor,  has value vin:Moderate,  
+  is a super-class of Class vin:CabernetFranc 
+Anonymous restriction with ID a-127 on property vin:hasBody,  has value vin:Medium,  
+  is a super-class of Class vin:CabernetFranc 
+Anonymous restriction with ID a-128 on property vin:hasSugar,  has value vin:Dry,  
+  is a super-class of Class vin:CabernetFranc 
+Anonymous restriction with ID a-324 on property vin:madeFromGrape,  has value vin:CabernetFrancGrape,  
+Anonymous restriction with ID a-325 on property vin:madeFromGrape,  
+Anonymous restriction with ID a-326 on property vin:locatedIn,  has value vin:BourgogneRegion,  
+Anonymous restriction with ID a-15 on property vin:hasSugar,  has value vin:Dry,  
+  is a super-class of Class vin:Burgundy 
+Anonymous restriction with ID a-327 on property vin:locatedIn,  has value vin:BordeauxRegion,  
+Anonymous restriction with ID a-129 on property vin:hasColor,  has value vin:Red,  
+  is a super-class of Class vin:Beaujolais 
+Anonymous restriction with ID a-130 on property vin:hasBody,  has value vin:Light,  
+  is a super-class of Class vin:Beaujolais 
+Anonymous restriction with ID a-131 on property vin:hasSugar,  has value vin:Dry,  
+  is a super-class of Class vin:Beaujolais 
+Anonymous restriction with ID a-132 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a super-class of Class vin:Beaujolais 
+Anonymous restriction with ID a-133 on property vin:madeFromGrape,  has value vin:GamayGrape,  
+  is a super-class of Class vin:Beaujolais 
+Anonymous restriction with ID a-134 on property vin:madeFromGrape,  
+  is a super-class of Class vin:Beaujolais 
+Anonymous restriction with ID a-328 on property vin:locatedIn,  has value vin:BeaujolaisRegion,  
+Anonymous restriction with ID a-135 on property vin:hasColor,  has value vin:Rose,  
+  is a super-class of Class vin:Anjou 
+Anonymous restriction with ID a-136 on property vin:hasBody,  has value vin:Light,  
+  is a super-class of Class vin:Anjou 
+Anonymous restriction with ID a-137 on property vin:hasFlavor,  has value vin:Delicate,  
+  is a super-class of Class vin:Anjou 
+Anonymous restriction with ID a-138 on property vin:hasSugar,  has value vin:OffDry,  
+  is a super-class of Class vin:Anjou 
+Anonymous restriction with ID a-329 on property vin:locatedIn,  has value vin:AnjouRegion,  
+Anonymous restriction with ID a-330 on property vin:locatedIn,  has value vin:USRegion,  
+Anonymous restriction with ID a-331 on property vin:locatedIn,  has value vin:AlsaceRegion,  
+Anonymous restriction with ID a-332 on property food:hasFood,  all values from food:PastaWithSpicyRedSauce,  
+Anonymous restriction with ID a-139 on property food:hasDrink,  all values from Anonymous resource with ID a-140,  
+  is a super-class of Class food:PastaWithSpicyRedSauceCourse 
+Anonymous restriction with ID a-140 on property vin:hasColor,  has value food:Red,  
+Anonymous restriction with ID a-141 on property food:hasDrink,  all values from Anonymous resource with ID a-142,  
+  is a super-class of Class food:PastaWithSpicyRedSauceCourse 
+Anonymous restriction with ID a-142 on property vin:hasBody,  has value food:Full,  
+Anonymous restriction with ID a-143 on property food:hasDrink,  all values from Anonymous resource with ID a-144,  
+  is a super-class of Class food:PastaWithSpicyRedSauceCourse 
+Anonymous restriction with ID a-144 on property vin:hasFlavor,  has value food:Strong,  
+Anonymous restriction with ID a-145 on property food:hasDrink,  all values from Anonymous resource with ID a-146,  
+  is a super-class of Class food:PastaWithSpicyRedSauceCourse 
+Anonymous restriction with ID a-146 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-333 on property food:hasFood,  all values from food:PastaWithNonSpicyRedSauce,  
+Anonymous restriction with ID a-151 on property food:hasDrink,  all values from Anonymous resource with ID a-152,  
+  is a super-class of Class food:PastaWithNonSpicyRedSauceCourse 
+Anonymous restriction with ID a-152 on property vin:hasColor,  has value food:Red,  
+Anonymous restriction with ID a-153 on property food:hasDrink,  all values from Anonymous resource with ID a-154,  
+  is a super-class of Class food:PastaWithNonSpicyRedSauceCourse 
+Anonymous restriction with ID a-154 on property vin:hasBody,  has value food:Medium,  
+Anonymous restriction with ID a-155 on property food:hasDrink,  all values from Anonymous resource with ID a-156,  
+  is a super-class of Class food:PastaWithNonSpicyRedSauceCourse 
+Anonymous restriction with ID a-156 on property vin:hasFlavor,  has value food:Moderate,  
+Anonymous restriction with ID a-157 on property food:hasDrink,  all values from Anonymous resource with ID a-158,  
+  is a super-class of Class food:PastaWithNonSpicyRedSauceCourse 
+Anonymous restriction with ID a-158 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-334 on property food:hasFood,  all values from food:PastaWithLightCreamSauce,  
+Anonymous restriction with ID a-159 on property food:hasDrink,  all values from Anonymous resource with ID a-160,  
+  is a super-class of Class food:PastaWithLightCreamCourse 
+Anonymous restriction with ID a-160 on property vin:hasColor,  has value food:White,  
+Anonymous restriction with ID a-161 on property food:hasDrink,  all values from Anonymous resource with ID a-162,  
+  is a super-class of Class food:PastaWithLightCreamCourse 
+Anonymous restriction with ID a-162 on property vin:hasBody,  has value food:Light,  
+Anonymous restriction with ID a-163 on property food:hasDrink,  all values from Anonymous resource with ID a-164,  
+  is a super-class of Class food:PastaWithLightCreamCourse 
+Anonymous restriction with ID a-164 on property vin:hasFlavor,  has value food:Delicate,  
+Anonymous restriction with ID a-165 on property food:hasDrink,  all values from Anonymous resource with ID a-166,  
+  is a super-class of Class food:PastaWithLightCreamCourse 
+Anonymous restriction with ID a-166 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-335 on property food:hasFood,  all values from food:PastaWithHeavyCreamSauce,  
+Anonymous restriction with ID a-167 on property food:hasDrink,  all values from Anonymous resource with ID a-168,  
+  is a super-class of Class food:PastaWithHeavyCreamCourse 
+Anonymous restriction with ID a-168 on property vin:hasColor,  has value food:White,  
+Anonymous restriction with ID a-169 on property food:hasDrink,  all values from Anonymous resource with ID a-170,  
+  is a super-class of Class food:PastaWithHeavyCreamCourse 
+Anonymous restriction with ID a-170 on property vin:hasBody,  has value food:Medium,  
+Anonymous restriction with ID a-171 on property food:hasDrink,  all values from Anonymous resource with ID a-172,  
+  is a super-class of Class food:PastaWithHeavyCreamCourse 
+Anonymous restriction with ID a-172 on property vin:hasFlavor,  has value food:Moderate,  
+Anonymous restriction with ID a-173 on property food:hasDrink,  all values from Anonymous resource with ID a-174,  
+  is a super-class of Class food:PastaWithHeavyCreamCourse 
+Anonymous restriction with ID a-174 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-336 on property food:hasFood,  all values from food:OysterShellfish,  
+Anonymous restriction with ID a-175 on property food:hasDrink,  all values from Anonymous resource with ID a-176,  
+  is a super-class of Class food:OysterShellfishCourse 
+Anonymous restriction with ID a-176 on property vin:hasSugar,  has value food:Sweet,  
+Anonymous restriction with ID a-337 on property food:hasFood,  all values from food:OtherTomatoBasedFood,  
+Anonymous restriction with ID a-177 on property food:hasDrink,  all values from Anonymous resource with ID a-178,  
+  is a super-class of Class food:OtherTomatoBasedFoodCourse 
+Anonymous restriction with ID a-178 on property vin:hasColor,  has value food:Red,  
+Anonymous restriction with ID a-179 on property food:hasDrink,  all values from Anonymous resource with ID a-180,  
+  is a super-class of Class food:OtherTomatoBasedFoodCourse 
+Anonymous restriction with ID a-180 on property vin:hasBody,  has value food:Medium,  
+Anonymous restriction with ID a-181 on property food:hasDrink,  all values from Anonymous resource with ID a-182,  
+  is a super-class of Class food:OtherTomatoBasedFoodCourse 
+Anonymous restriction with ID a-182 on property vin:hasFlavor,  has value food:Moderate,  
+Anonymous restriction with ID a-183 on property food:hasDrink,  all values from Anonymous resource with ID a-184,  
+  is a super-class of Class food:OtherTomatoBasedFoodCourse 
+Anonymous restriction with ID a-184 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-338 on property food:hasFood,  all values from food:NonSweetFruit,  
+Anonymous restriction with ID a-185 on property food:hasDrink,  all values from Anonymous resource with ID a-186,  
+  is a super-class of Class food:NonSweetFruitCourse 
+Anonymous restriction with ID a-186 on property vin:hasFlavor,  has value food:Delicate,  
+Anonymous restriction with ID a-187 on property food:hasDrink,  all values from Anonymous resource with ID a-188,  
+  is a super-class of Class food:NonSweetFruitCourse 
+Anonymous restriction with ID a-188 on property vin:hasSugar,  has value food:OffDry,  
+Anonymous restriction with ID a-339 on property food:hasFood,  all values from food:SweetFruit,  
+Anonymous restriction with ID a-189 on property food:hasDrink,  all values from Anonymous resource with ID a-190,  
+  is a super-class of Class food:SweetFruitCourse 
+Anonymous restriction with ID a-190 on property vin:hasFlavor,  has value food:Moderate,  
+Anonymous restriction with ID a-191 on property food:hasDrink,  all values from Anonymous resource with ID a-192,  
+  is a super-class of Class food:SweetFruitCourse 
+Anonymous restriction with ID a-192 on property vin:hasSugar,  has value food:Sweet,  
+Anonymous restriction with ID a-340 on property food:hasFood,  all values from food:NonSpicyRedMeat,  
+Anonymous restriction with ID a-193 on property food:hasDrink,  all values from Anonymous resource with ID a-194,  
+  is a super-class of Class food:NonSpicyRedMeatCourse 
+Anonymous restriction with ID a-194 on property vin:hasColor,  has value food:Red,  
+Anonymous restriction with ID a-195 on property food:hasDrink,  all values from Anonymous resource with ID a-196,  
+  is a super-class of Class food:NonSpicyRedMeatCourse 
+Anonymous restriction with ID a-196 on property vin:hasBody,  has value food:Medium,  
+Anonymous restriction with ID a-197 on property food:hasDrink,  all values from Anonymous resource with ID a-198,  
+  is a super-class of Class food:NonSpicyRedMeatCourse 
+Anonymous restriction with ID a-198 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-199 on property food:hasDrink,  all values from Anonymous resource with ID a-200,  
+  is a super-class of Class food:NonSpicyRedMeatCourse 
+Anonymous restriction with ID a-200 on property vin:hasFlavor,  
+Anonymous restriction with ID a-341 on property food:hasFood,  all values from food:NonRedMeat,  
+Anonymous restriction with ID a-202 on property food:hasDrink,  all values from Anonymous resource with ID a-203,  
+  is a super-class of Class food:NonRedMeatCourse 
+Anonymous restriction with ID a-203 on property vin:hasColor,  has value food:White,  
+Anonymous restriction with ID a-204 on property food:hasDrink,  all values from Anonymous resource with ID a-205,  
+  is a super-class of Class food:NonRedMeatCourse 
+Anonymous restriction with ID a-205 on property vin:hasBody,  has value food:Medium,  
+Anonymous restriction with ID a-206 on property food:hasDrink,  all values from Anonymous resource with ID a-207,  
+  is a super-class of Class food:NonRedMeatCourse 
+Anonymous restriction with ID a-207 on property vin:hasFlavor,  has value food:Strong,  
+Anonymous restriction with ID a-208 on property food:hasDrink,  all values from Anonymous resource with ID a-209,  
+  is a super-class of Class food:NonRedMeatCourse 
+Anonymous restriction with ID a-209 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-342 on property food:hasFood,  all values from food:NonOysterShellfish,  
+Anonymous restriction with ID a-210 on property food:hasDrink,  all values from Anonymous resource with ID a-211,  
+  is a super-class of Class food:NonOysterShellfishCourse 
+Anonymous restriction with ID a-211 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-343 on property food:hasFood,  all values from food:NonBlandFish,  
+Anonymous restriction with ID a-212 on property food:hasDrink,  all values from Anonymous resource with ID a-213,  
+  is a super-class of Class food:NonBlandFishCourse 
+Anonymous restriction with ID a-213 on property vin:hasFlavor,  has value food:Moderate,  
+Anonymous restriction with ID a-147 on property food:hasFood,  
+  is a super-class of Class food:MealCourse 
+Anonymous restriction with ID a-148 on property food:hasFood,  all values from food:EdibleThing,  
+  is a super-class of Class food:MealCourse 
+Anonymous restriction with ID a-149 on property food:hasDrink,  
+  is a super-class of Class food:MealCourse 
+Anonymous restriction with ID a-150 on property food:hasDrink,  all values from food:Wine,  
+  is a super-class of Class food:MealCourse 
+Anonymous restriction with ID a-214 on property food:course,  
+  is a super-class of Class food:Meal 
+Anonymous restriction with ID a-215 on property food:course,  all values from food:MealCourse,  
+  is a super-class of Class food:Meal 
+Anonymous restriction with ID a-344 on property food:hasFood,  all values from food:LightMeatFowl,  
+Anonymous restriction with ID a-216 on property food:hasDrink,  all values from Anonymous resource with ID a-217,  
+  is a super-class of Class food:LightMeatFowlCourse 
+Anonymous restriction with ID a-217 on property vin:hasColor,  has value food:White,  
+Anonymous restriction with ID a-218 on property food:hasDrink,  all values from Anonymous resource with ID a-219,  
+  is a super-class of Class food:LightMeatFowlCourse 
+Anonymous restriction with ID a-219 on property vin:hasBody,  has value food:Medium,  
+Anonymous restriction with ID a-220 on property food:hasDrink,  all values from Anonymous resource with ID a-221,  
+  is a super-class of Class food:LightMeatFowlCourse 
+Anonymous restriction with ID a-221 on property vin:hasFlavor,  has value food:Moderate,  
+Anonymous restriction with ID a-222 on property food:hasDrink,  all values from Anonymous resource with ID a-223,  
+  is a super-class of Class food:LightMeatFowlCourse 
+Anonymous restriction with ID a-223 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-345 on property food:hasFood,  all values from food:Fruit,  
+Anonymous restriction with ID a-224 on property food:hasDrink,  all values from Anonymous resource with ID a-225,  
+  is a super-class of Class food:FruitCourse 
+Anonymous restriction with ID a-225 on property vin:hasColor,  has value food:White,  
+Anonymous restriction with ID a-226 on property food:hasDrink,  all values from Anonymous resource with ID a-227,  
+  is a super-class of Class food:FruitCourse 
+Anonymous restriction with ID a-227 on property vin:hasBody,  has value food:Medium,  
+Anonymous restriction with ID a-346 on property food:hasFood,  all values from food:Fish,  
+Anonymous restriction with ID a-228 on property food:hasDrink,  all values from Anonymous resource with ID a-229,  
+  is a super-class of Class food:FishCourse 
+Anonymous restriction with ID a-229 on property vin:hasBody,  has value food:Medium,  
+Anonymous restriction with ID a-230 on property food:hasDrink,  all values from Anonymous resource with ID a-231,  
+  is a super-class of Class food:FishCourse 
+Anonymous restriction with ID a-231 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-347 on property food:hasFood,  all values from food:Dessert,  
+Anonymous restriction with ID a-232 on property food:hasDrink,  all values from Anonymous resource with ID a-233,  
+  is a super-class of Class food:DessertCourse 
+Anonymous restriction with ID a-233 on property vin:hasBody,  has value food:Full,  
+Anonymous restriction with ID a-234 on property food:hasDrink,  all values from Anonymous resource with ID a-235,  
+  is a super-class of Class food:DessertCourse 
+Anonymous restriction with ID a-235 on property vin:hasFlavor,  has value food:Strong,  
+Anonymous restriction with ID a-236 on property food:hasDrink,  all values from Anonymous resource with ID a-237,  
+  is a super-class of Class food:DessertCourse 
+Anonymous restriction with ID a-237 on property vin:hasSugar,  has value food:Sweet,  
+Anonymous restriction with ID a-348 on property food:hasFood,  all values from food:SweetDessert,  
+Anonymous restriction with ID a-238 on property food:hasDrink,  all values from Anonymous resource with ID a-239,  
+  is a super-class of Class food:SweetDessertCourse 
+Anonymous restriction with ID a-239 on property vin:hasColor,  has value food:White,  
+Anonymous restriction with ID a-349 on property food:hasFood,  all values from food:DarkMeatFowl,  
+Anonymous restriction with ID a-240 on property food:hasDrink,  all values from Anonymous resource with ID a-241,  
+  is a super-class of Class food:DarkMeatFowlCourse 
+Anonymous restriction with ID a-241 on property vin:hasColor,  has value food:Red,  
+Anonymous restriction with ID a-242 on property food:hasDrink,  all values from Anonymous resource with ID a-243,  
+  is a super-class of Class food:DarkMeatFowlCourse 
+Anonymous restriction with ID a-243 on property vin:hasBody,  has value food:Light,  
+Anonymous restriction with ID a-244 on property food:hasDrink,  all values from Anonymous resource with ID a-245,  
+  is a super-class of Class food:DarkMeatFowlCourse 
+Anonymous restriction with ID a-245 on property vin:hasFlavor,  has value food:Delicate,  
+Anonymous restriction with ID a-246 on property food:hasDrink,  all values from Anonymous resource with ID a-247,  
+  is a super-class of Class food:DarkMeatFowlCourse 
+Anonymous restriction with ID a-247 on property vin:hasSugar,  has value food:Dry,  
+Anonymous restriction with ID a-350 on property food:hasFood,  all values from food:CheeseNutsDessert,  
+Anonymous restriction with ID a-248 on property food:hasDrink,  all values from Anonymous resource with ID a-249,  
+  is a super-class of Class food:CheeseNutsDessertCourse 
+Anonymous restriction with ID a-249 on property vin:hasColor,  has value food:Red,  
+Anonymous restriction with ID a-351 on property food:hasFood,  all values from food:BlandFish,  
+Anonymous restriction with ID a-250 on property food:hasDrink,  all values from Anonymous resource with ID a-251,  
+  is a super-class of Class food:BlandFishCourse 
+Anonymous restriction with ID a-251 on property vin:hasFlavor,  has value food:Delicate,  
+Anonymous restriction with ID a-352 on property food:hasFood,  all values from food:Shellfish,  
+Anonymous restriction with ID a-252 on property food:hasDrink,  all values from Anonymous resource with ID a-253,  
+  is a super-class of Class food:ShellfishCourse 
+Anonymous restriction with ID a-253 on property vin:hasFlavor,  
+Anonymous restriction with ID a-254 on property food:hasDrink,  all values from Anonymous resource with ID a-255,  
+  is a super-class of Class food:ShellfishCourse 
+Anonymous restriction with ID a-255 on property vin:hasBody,  has value food:Full,  
+Anonymous restriction with ID a-353 on property food:hasFood,  all values from food:Seafood,  
+Anonymous restriction with ID a-257 on property food:hasDrink,  all values from Anonymous resource with ID a-258,  
+  is a super-class of Class food:SeafoodCourse 
+Anonymous restriction with ID a-258 on property vin:hasColor,  has value food:White,  
+Anonymous restriction with ID a-354 on property food:hasFood,  all values from food:RedMeat,  
+Anonymous restriction with ID a-259 on property food:hasDrink,  all values from Anonymous resource with ID a-260,  
+  is a super-class of Class food:RedMeatCourse 
+Anonymous restriction with ID a-260 on property vin:hasColor,  has value food:Red,  
+Anonymous restriction with ID a-355 on property food:hasFood,  all values from food:SpicyRedMeat,  
+Anonymous restriction with ID a-261 on property food:hasDrink,  all values from Anonymous resource with ID a-262,  
+  is a super-class of Class food:SpicyRedMeatCourse 
+Anonymous restriction with ID a-262 on property vin:hasColor,  has value food:Red,  
+Anonymous restriction with ID a-263 on property food:hasDrink,  all values from Anonymous resource with ID a-264,  
+  is a super-class of Class food:SpicyRedMeatCourse 
+Anonymous restriction with ID a-264 on property vin:hasBody,  has value food:Full,  
+Anonymous restriction with ID a-265 on property food:hasDrink,  all values from Anonymous resource with ID a-266,  
+  is a super-class of Class food:SpicyRedMeatCourse 
+Anonymous restriction with ID a-266 on property vin:hasFlavor,  has value food:Moderate,  
+Anonymous restriction with ID a-267 on property food:hasDrink,  all values from Anonymous resource with ID a-268,  
+  is a super-class of Class food:SpicyRedMeatCourse 
+Anonymous restriction with ID a-268 on property vin:hasSugar,  has value food:Dry,  

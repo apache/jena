@@ -1,0 +1,81 @@
+Class vin:WhiteWine 
+Class vin:WhiteTableWine 
+Class vin:TableWine 
+Class vin:WhiteNonSweetWine 
+Class vin:Loire 
+Class vin:Bordeaux 
+  Class vin:Sauterne 
+Class vin:Region 
+Class vin:VintageYear 
+Class vin:Winery 
+Class vin:WineDescriptor 
+  Class vin:WineTaste 
+    Class vin:WineSugar 
+    Class vin:WineFlavor 
+    Class vin:WineBody 
+  Class vin:WineColor 
+Class vin:SweetWine 
+Class vin:Semillon 
+Class vin:SauvignonBlanc 
+Class vin:RoseWine 
+Class vin:RedWine 
+  Class vin:Port 
+Class vin:RedTableWine 
+Class vin:ItalianWine 
+  Class vin:Chianti 
+Class vin:GermanWine 
+Class vin:Gamay 
+Class vin:FullBodiedWine 
+Class vin:FrenchWine 
+Class vin:DryWine 
+Class vin:DryWhiteWine 
+Class vin:DryRedWine 
+Class vin:CaliforniaWine 
+Class vin:TexasWine 
+Class vin:AmericanWine 
+Class vin:AlsatianWine 
+Class food:ConsumableThing 
+  Class food:EdibleThing 
+    Class food:Pasta 
+      Class food:PastaWithWhiteSauce 
+        Class food:PastaWithLightCreamSauce 
+        Class food:PastaWithHeavyCreamSauce 
+      Class food:PastaWithRedSauce 
+        Class food:PastaWithSpicyRedSauce 
+        Class food:PastaWithNonSpicyRedSauce 
+    Class food:OtherTomatoBasedFood 
+    Class food:NonSweetFruit 
+    Class food:Meat 
+      Class food:NonRedMeat 
+      Class food:RedMeat 
+        Class food:NonSpicyRedMeat 
+        Class food:SpicyRedMeat 
+    Class food:Fowl 
+      Class food:LightMeatFowl 
+      Class food:DarkMeatFowl 
+    Class food:Dessert 
+      Class food:SweetDessert 
+      Class food:CheeseNutsDessert 
+    Class food:SweetFruit 
+      Class food:Grape 
+        Class vin:WineGrape 
+        Class food:EatingGrape 
+    Class food:Seafood 
+      Class food:Fish 
+        Class food:NonBlandFish 
+        Class food:BlandFish 
+      Class food:Shellfish 
+        Class food:OysterShellfish 
+        Class food:NonOysterShellfish 
+  Class food:PotableLiquid 
+    Class vin:Wine 
+      Class vin:LateHarvest 
+        Class vin:Sauterne 
+      Class vin:EarlyHarvest 
+      Class vin:DessertWine 
+        Class vin:SweetRiesling 
+  Class food:MealCourse 
+  Class food:Meal 
+Class food:NonConsumableThing 
+Class food:Wine 
+Class food:Fruit 
