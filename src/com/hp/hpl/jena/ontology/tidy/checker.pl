@@ -39,14 +39,16 @@ namespace(xsd,'http://www.w3.org/2001/XMLSchema#').
 
 grouping(
 [annotationPropID, classID, dataPropID, 
-datatypeID, individualID, listOfIndividualID, 
+datatypeID, individualID,  
 objectPropID, ontologyID, transitivePropID],userID).
 
 grouping(
 [annotationPropID, dataPropID, 
 objectPropID, transitivePropID],propertyOnly).
 
+grouping([orphan, ontologyPropertyID], ontologyPropertyHack ).
 grouping([allDifferent, description, listOfDataLiteral, listOfDescription, 
+listOfIndividualID, orphan,
 restriction, unnamedDataRange, unnamedIndividual],blank).
 
 grouping(H) :- grouping(H,_).
@@ -169,6 +171,7 @@ buildChecker :-
   member(X,S),
   assert(g([X])),
   fail.
+
 /*
 buildChecker :-
   retractall(x(_,_,_,_,_,_,_)),
@@ -209,22 +212,28 @@ buildChecker :-
 */
 
 buildChecker :-
+   tell('tmpSubCategorizationInput'),
+   wlist([orphan,nl]),
    g([A]),
-   wlist([A,nl]),
+   writeq(A),nl,
    fail.
 buildChecker :-
    write('%%'),nl,
    tt(S,P,O,_),
-   wlist([S,' ',P,' ',O,nl]),
+   writeq(S),write(' '),
+   writeq(P),write(' '),
+   writeq(O),nl,
    fail.
 buildChecker :-
    write('%%'),nl,
    g([A,B|T]),
    (member(X,[A,B|T]),
-   write(X),put(" "),
+   writeq(X),put(" "),
    fail;nl),fail.
 buildChecker :-
-  write('%%'),nl.
+  write('%%'),nl,told,
+  shell('./c/precompute < tmpSubCategorizationInput > tmpSubCategorizationOutput.pl'),
+  [tmpSubCategorizationOutput].
 
 choose(X,X,B,C) :- h(X,B),h(X,C).
 choose(X,A,X,C) :- h(A),h(X,C).

@@ -15,6 +15,21 @@
 #define S(x)  (((x)>>20)&1023)
 #define SPO(s,p,o) (((s)<<20)|((p)<<10)|(o))
 #define MAX_RESULTS 500000
+
+/* Special subcategory support:
+    orphan
+   Used to detected orphaned rdf:'List' s and
+   orphaned owl:'OntologyProperty' s.
+*/
+int orphan = -1;
+int rdffirst;
+int rdfrest;
+int rdftype;
+int orphanSet = -1;
+
+
+
+
 int results[MAX_RESULTS][6];
 int rCnt = 0;
 int triples[MAX_TRIPLES];
@@ -73,6 +88,7 @@ int saveSet(const int * set,int sz) {
 	
     qsort(sets[setCnt]->syms,sz,sizeof(int),tcmp);
     sortedSets[setCnt] = sets[setCnt];
+    if ( set[0] == orphan && sz==1) orphanSet = setCnt;
 	return setCnt++;
 }
 /*
@@ -84,6 +100,7 @@ int saveSubSet(Set s, int * ok) {
    int _sub[MAX_SYM+2];
    Set sub = (Set)_sub;
    Set rslt;
+   Set *prslt;
    int j = 0;
    int i;
    for (i=0;i<s->sz;i++)
@@ -94,10 +111,10 @@ int saveSubSet(Set s, int * ok) {
       badCnt++;
       return -1;
     }
-    rslt =  bsearch(&sub, sortedSets, 
+    prslt =  bsearch(&sub, sortedSets, 
                     setCnt, sizeof(Set), setCmp );   
-    if ( rslt )
-       return rslt->id;
+    if ( prslt )
+       return (*prslt)->id;
     rslt = malloc(sizeof(int)*(sub->sz+2));
     memcpy(rslt,sub,sizeof(int)*(sub->sz+2));
     rslt->id = setCnt;
@@ -125,6 +142,17 @@ int symlookup(const char * str) {
 	return -1;
 }
 
+void specialCases(char * s) {
+  if (!strcmp(s,"orphan"))
+    orphan = symCnt;
+  if (!strcmp(s,"rdf:type"))
+    rdftype = symCnt;
+  if (!strcmp(s,"rdf:first"))
+    rdffirst = symCnt;
+  if (!strcmp(s,"rdf:rest"))
+    rdfrest = symCnt;
+}
+
 void read(void) {
    char buf[2560];
    char buf1[256];
@@ -133,9 +161,15 @@ void read(void) {
    int s,p,o;
    while ( gets(buf) != null ) {
 	   if ( strcmp(buf,"%%") ) {
+               specialCases(buf);
                symbols[symCnt++] = allocStr(buf);
 	   } else break;
    }
+   fprintf(stderr,"Specials: %s=%d %s=%d %s=%d %s=%d\n",
+                 orphan==-1?"":symbols[orphan],orphan,
+                 symbols[rdftype],rdftype,
+                 symbols[rdffirst],rdffirst,
+                 symbols[rdfrest],rdfrest);
    while ( gets(buf) != null ) {
 	   if ( strcmp(buf,"%%") ) {
 	   sscanf(buf,"%s %s %s",buf1,buf2,buf3);
@@ -184,6 +218,17 @@ void dump(void) {
 		fprintf(stderr," }\n");
 	}
 }
+/*
+  Orphaned list nodes only occur as subjects
+  of triples with these properties.
+  Orphaned ontologyPropertyID's only occur as
+  subjects of triples with property rdftype
+  (may occur as object of annotation triple
+   or as property)
+*/
+int orphanProp(int sym) {
+   return sym==rdftype || sym==rdfrest || sym==rdffirst;
+}
 
 void xform(int s, int p, int o) {
    Set subj = sets[s];
@@ -200,7 +245,8 @@ void xform(int s, int p, int o) {
     for (j=0; j<prop->sz;j++)
      for (k=0; k<obj->sz; k++) 
       if ( !(oks[i]&&okp[j]&&oko[k]) ) {
-         if ( istriple(SPO(subj->syms[i],
+         if ( ( subj->syms[i]==orphan && orphanProp(prop->syms[j]) )
+            || istriple(SPO(subj->syms[i],
                            prop->syms[j],
                            obj->syms[k])) ) {
              oks[i] = okp[j] = oko[k] = 1;
@@ -208,6 +254,8 @@ void xform(int s, int p, int o) {
       }
    ss = saveSubSet(subj,oks);
    if ( ss == -1 )
+      return;
+   if ( ss == orphanSet )
       return;
    pp = saveSubSet(prop,okp);
    assert( pp != -1 );
@@ -234,6 +282,7 @@ void partial(void) {
                xform(i,j,k);
             }
    }
+   fprintf(stderr,"%5d %5d %6d %7d %7d %7d\n",upto,setCnt,rCnt, badCnt,ist,isntt);
 }
 
 void addSingletons(void) {
@@ -241,17 +290,50 @@ void addSingletons(void) {
   for (i=0; i<symCnt;i++)
     saveSet(&i,1);
 }
+
+void pSet(int i) {
+   Set s = sets[i];
+   int j;
+   printf("/* %d */ ",i);
+   fflush(stdout);
+   printf("[");
+   for (j=0;j<s->sz;j++) {
+       if ( j!=0 ) printf(", ");
+       printf("%s",symbols[s->syms[j]]);
+    }
+    printf("]");
+       fflush(stdout);
+}
+void pResults(void) {
+   int i;
+   int j;
+   printf("/* The subCategorization sets. */\n");
+   for ( i=0; i< setCnt; i++) {
+       printf("subCategory(");
+       pSet(i);
+       printf(").\n");
+       fflush(stdout);
+   }
+   printf("/* The subCategorization rules. */\n");
+   for (i=0; i<rCnt; i++) {
+     printf("refineSubCat(");
+     for (j=0;j<6;j++) {
+       if (j!=0) printf(",\n  ");
+       pSet(results[i][j]);
+     }
+     printf(" ).\n");
+   }
+}
 int main(int argc,char**argv) {
 	read();
 	
-	fprintf(stderr,"X\n");
     addSingletons();
-	fprintf(stderr,"Y\n");
     qsort( sortedSets, setCnt, sizeof(Set), setCmp );
-	fprintf(stderr,"Z\n");
-	dump();
+    /* dump(); */
     
     partial();
+
+   pResults();
 
    return 0;
 }
