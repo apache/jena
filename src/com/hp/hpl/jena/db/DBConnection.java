@@ -19,7 +19,7 @@ import com.hp.hpl.jena.util.iterator.*;
 * This is mostly used to simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.11 $
+* @version $Revision: 1.12 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -181,7 +181,7 @@ public class DBConnection implements IDBConnection {
 		if (m_driver == null)
 			m_driver = getDriver();
 		Model resultModel = ModelFactory.createDefaultModel();
-		copySpecializedGraphToModel( m_driver.getSystemSpecializedGraph(),
+		copySpecializedGraphToModel( m_driver.getSystemSpecializedGraph(true),
 			                         resultModel,
 			                         Triple.createMatch( null, null, null ));
 		return resultModel;
@@ -195,7 +195,7 @@ public class DBConnection implements IDBConnection {
 			m_driver = getDriver();
 		DBPropGraph defaultProps = m_driver.getDefaultModelProperties();
 		Model resultModel = ModelFactory.createDefaultModel();
-		copySpecializedGraphToModel( m_driver.getSystemSpecializedGraph(),
+		copySpecializedGraphToModel( m_driver.getSystemSpecializedGraph(true),
 			                         resultModel,
 			                         Triple.createMatch(defaultProps.getNode(), null, null));
 		return resultModel;
@@ -207,26 +207,37 @@ public class DBConnection implements IDBConnection {
 	public ExtendedIterator getAllModelNames() throws RDFRDBException {
 		if (m_driver == null)
 			m_driver = getDriver();
-		DBPropDatabase dbprops = new DBPropDatabase( m_driver.getSystemSpecializedGraph());
-		return dbprops.getAllGraphNames();		
+		SpecializedGraph sg = m_driver.getSystemSpecializedGraph(false);
+		ExtendedIterator it;
+		if ( sg == null )
+			it = new ResultSetIterator();
+		else {
+			DBPropDatabase dbprops = new DBPropDatabase(sg);
+			it = dbprops.getAllGraphNames();
+		}
+		return it;
 	}
 	
 	 /* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#containsModel(java.lang.String)
 	 */
 	public boolean containsModel(String name) throws RDFRDBException {
+		boolean res = false;
 		if (m_driver == null)
 			m_driver = getDriver();
-		return (DBPropGraph.findPropGraphByName(m_driver.getSystemSpecializedGraph(), name ) != null );		
+		SpecializedGraph sg = m_driver.getSystemSpecializedGraph(false);
+		if ( sg != null ) {
+			DBPropGraph g = DBPropGraph.findPropGraphByName(sg,name);
+			res = g == null ? false : g.isDBPropGraphOk(name);
+		}
+		return res;		
 	 }
 
 	 /* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.IDBConnection#containsDefaultModel()
 	 */
 	public boolean containsDefaultModel() throws RDFRDBException {
-		if (m_driver == null)
-			m_driver = getDriver();
-		return (DBPropGraph.findPropGraphByName(m_driver.getSystemSpecializedGraph(), GraphRDB.DEFAULT ) != null );		
+		return containsModel(GraphRDB.DEFAULT);
 	 }
 
 	/** 
