@@ -1,51 +1,39 @@
 /******************************************************************
- * File:        TestPackage.java
+ * File:        StateFlag.java
  * Created by:  Dave Reynolds
- * Created on:  30-Mar-03
+ * Created on:  03-May-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestPackage.java,v 1.2 2003-05-05 15:16:01 der Exp $
+ * $Id: StateFlag.java,v 1.1 2003-05-05 15:16:00 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.test;
-
-
-import junit.framework.*;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 /**
- * Aggregate tester that runs all the test associated with the rulesys package.
+ * A set of constants used to record state information in the
+ * backchaining rule interepreter. 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-05 15:16:01 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:16:00 $
  */
+public class StateFlag {
 
-public class TestPackage extends TestSuite {
-
-    static public TestSuite suite() {
-        return new TestPackage();
-    }
+    /** Indicates a goal has failed and return no more answers at this time */
+    public static final StateFlag FAIL = new StateFlag();
     
-    /** Creates new TestPackage */
-    private TestPackage() {
-        super("RuleSys");
-        addTest( "TestBasics", TestBasics.suite() );
-        addTest( "TestRDFSRules", TestRDFSRules.suite() );
-        addTest( "TestBackchainer", TestBackchainer.suite() );
-        
-        // Omited temporarily in the interests of speed?
-        // addTest( "TestOWLRules", TestOWLRules.suite() );
-    }
-
-    // helper method
-    private void addTest(String name, TestSuite tc) {
-        tc.setName(name);
-        addTest(tc);
-    }
-
+    /** Indicates that all currently available results have been returned and
+     *  the goal should be suspended into new subgoal results have been generated */
+    public static final StateFlag SUSPEND = new StateFlag();
+    
+    /** Indicates that the goal remains active */
+    public static final StateFlag ACTIVE = new StateFlag();
+    
 }
 
+
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,69 +1,70 @@
 /******************************************************************
- * File:        Print.java
+ * File:        GoalTable.java
  * Created by:  Dave Reynolds
- * Created on:  11-Apr-2003
+ * Created on:  03-May-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Print.java,v 1.2 2003-04-28 20:19:36 der Exp $
+ * $Id: GoalTable.java,v 1.1 2003-05-05 15:15:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.util.PrintUtil;
-import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.BasicBackwardRuleInfGraph;
+
+import java.util.*;
 
 /**
- * Print its argument list as a side effect
+ *  Part of the backwared chaining rule interpreter. The goal table
+ *  is a table of partially evaluated goals.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:19:36 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:59 $
  */
-public class Print implements Builtin {
+public class GoalTable {
+
+    /** The set of goal entries indexed by goal */
+    protected Map table = new HashMap();
+    
+    /** The parent inference engine for the goal table */
+    BasicBackwardRuleInfGraph ruleEngine;
+        
+    /**
+     * Constructor. Creates a new, empty GoalTable. Any goal search on
+     * this table will include the results from searching the given set of
+     * raw data graphs.
+     * @param ruleEngine the parent inference engine instance for this table
+     */
+    public GoalTable(BasicBackwardRuleInfGraph ruleEngine) {
+        this.ruleEngine = ruleEngine;
+    }
 
     /**
-     * Return a name for this builtin, normally this will be the name of the 
-     * functor that will be used to invoke it.
+     * Find the set of memoized solutions for the given goal
+     * and return a GoalState that can traverse all the solutions.
+     * 
+     * @param goal the goal to be solved
+     * @return a GoalState which can iterate over all of the goal solutions
      */
-    public String getName() {
-        return "print";
-    }
-
-    /**
-     * This method is invoked when the builtin is called in a rule body.
-     * @param args the array of argument values for the builtin, this is an array 
-     * of Nodes, some of which may be Node_RuleVariables.
-     * @param context an execution context giving access to other relevant data
-     * @return return true if the buildin predicate is deemed to have succeeded in
-     * the current environment
-     */
-    public boolean bodyCall(Node[] args, RuleContext context) {
-        print(args);
-        return true;
-    }
-    
-    
-    /**
-     * This method is invoked when the builtin is called in a rule head.
-     * Such a use is only valid in a forward rule.
-     * @param args the array of argument values for the builtin, this is an array 
-     * of Nodes.
-     * @param context an execution context giving access to other relevant data
-     */
-    public void headAction(Node[] args, RuleContext context) {
-        print(args);
-    }
-    
-    /**
-     * Print a node list to stdout
-     */
-    public void print(Node[] args) {
-        for (int i = 0 ; i < args.length; i++) {
-            System.out.print( PrintUtil.print(args[i]) + " ");
+    public GoalState findGoal(TriplePattern goal) {
+        GoalResults results = (GoalResults) table.get(goal);
+        if (results == null) {
+            results = new GoalResults(goal, ruleEngine);
+            table.put(goal, results);
         }
-        System.out.println("");
+        return new GoalState(ruleEngine.findDataMatches(goal), results);
     }
+        
+    /**
+     * Clear all tabled results. 
+     */
+    public void reset() {
+        table = new HashMap();
+    }
+    
 }
+
+
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

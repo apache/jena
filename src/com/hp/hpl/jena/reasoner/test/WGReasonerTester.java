@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.10 2003-04-22 14:34:57 der Exp $
+ * $Id: WGReasonerTester.java,v 1.11 2003-05-05 15:16:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -34,12 +34,12 @@ import java.util.*;
  * of data files to load. For normal positive entailment tests we check each
  * triple in the conclusions file to ensure it is included in the inferred
  * graph. For postive entailment tests which are supposed to entail the 
- * false document we run an additional validation check (TODO implement!). For
+ * false document we run an additional validation check. For
  * negative entailment tests which tests all triples in the non-conclusions file 
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-04-22 14:34:57 $
+ * @version $Revision: 1.11 $ on $Date: 2003-05-05 15:16:01 $
  */
 public class WGReasonerTester {
 

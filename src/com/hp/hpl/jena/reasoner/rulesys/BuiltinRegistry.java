@@ -5,11 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BuiltinRegistry.java,v 1.1 2003-04-17 15:24:22 der Exp $
+ * $Id: BuiltinRegistry.java,v 1.2 2003-05-05 15:16:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
-import com.hp.hpl.jena.reasoner.rulesys.impl.*;
+import com.hp.hpl.jena.reasoner.rulesys.builtins.*;
 import java.util.*;
 
 /**
@@ -21,7 +21,7 @@ import java.util.*;
  * 
  * @see Builtin
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:24:22 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-05 15:16:00 $
  */
 public class BuiltinRegistry {
 

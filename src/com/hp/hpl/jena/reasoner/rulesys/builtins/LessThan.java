@@ -1,32 +1,32 @@
 /******************************************************************
- * File:        IsFunctor.java
+ * File:        lessThan.java
  * Created by:  Dave Reynolds
- * Created on:  15-Apr-2003
+ * Created on:  11-Apr-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: IsFunctor.java,v 1.2 2003-04-28 20:19:37 der Exp $
+ * $Id: LessThan.java,v 1.1 2003-05-05 15:15:58 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.impl;
+package com.hp.hpl.jena.reasoner.rulesys.builtins;
+
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * Tests the single argument to make sure it is not a Functor.
- * Used to prevent runaway nesting of functors
+ * Bind the second argument to 1+ the first argument. Just used for testing builtins.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:19:37 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:58 $
  */
-public class IsFunctor implements Builtin {
+public class LessThan implements Builtin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
     public String getName() {
-        return "isFunctor";
+        return "lessThan";
     }
 
     /**
@@ -38,10 +38,14 @@ public class IsFunctor implements Builtin {
      * the current environment
      */
     public boolean bodyCall(Node[] args, RuleContext context) {
-        if (args.length != 1) {
-            throw new BuiltinException(this, context, "must have 1 arguments");
+        if (args.length != 2) {
+            throw new BuiltinException(this, context, "must have 2 arguments");
         }
-        return Functor.isFunctor(args[0]);
+        if ( Util.isNumeric(args[0]) && Util.isNumeric(args[1]) ) {
+            return Util.getIntValue(args[0]) < Util.getIntValue(args[1]);
+        } else {
+            return false;
+        }
     }
     
     
@@ -55,7 +59,7 @@ public class IsFunctor implements Builtin {
      */
     public void headAction(Node[] args, RuleContext context) {
         // Can't be used in the head
-        throw new BuiltinException(this, context, "can't do notFunctor in rule heads");
+        throw new BuiltinException(this, context, "can't do lessThan in rule heads");
     }
 }
 

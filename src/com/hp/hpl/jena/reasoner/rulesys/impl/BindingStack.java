@@ -5,18 +5,22 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingStack.java,v 1.1 2003-04-28 20:17:58 der Exp $
+ * $Id: BindingStack.java,v 1.1 2003-05-05 15:15:59 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
+import com.hp.hpl.jena.reasoner.rulesys.Functor;
+import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
+
 import java.util.*;
 
 /**
  * Provides a trail of possible variable bindings for a forward rule.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-28 20:17:58 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:59 $
  */
 public class BindingStack implements BindingEnvironment {
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugRules.java,v 1.1 2003-04-17 15:24:29 der Exp $
+ * $Id: DebugRules.java,v 1.2 2003-05-05 15:16:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -18,14 +18,10 @@ import com.hp.hpl.jena.util.PrintUtil;
 import java.util.*;
 import java.io.*;
 
-/**
- * Using during debuging of the rule systems.
+/** * Using during debuging of the rule systems.
  * Runs a named set of rules (can contain axioms and rules) and
  * lists all the resulting entailments.
- * 
- * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:24:29 $
- */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.2 $ on $Date: 2003-05-05 15:16:01 $ */
 public class DebugRules {
 
     /** The name of the rule set to load */

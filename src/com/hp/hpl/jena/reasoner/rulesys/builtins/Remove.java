@@ -1,31 +1,32 @@
 /******************************************************************
- * File:        addOne.java
+ * File:        Remove.java
  * Created by:  Dave Reynolds
  * Created on:  11-Apr-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: AddOne.java,v 1.2 2003-04-28 20:19:38 der Exp $
+ * $Id: Remove.java,v 1.1 2003-05-05 15:15:58 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.impl;
+package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
+import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * Bind the second argument to 1+ the first argument. Just used for testing builtins.
+ * Remove the body clause given by index arguments from the database.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:19:38 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:58 $
  */
-public class AddOne implements Builtin {
+public class Remove implements Builtin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
     public String getName() {
-        return "addOne";
+        return "remove";
     }
 
     /**
@@ -37,19 +38,8 @@ public class AddOne implements Builtin {
      * the current environment
      */
     public boolean bodyCall(Node[] args, RuleContext context) {
-        if (args.length != 2) {
-            throw new BuiltinException(this, context, "must have 2 arguments");
-        }
-        BindingEnvironment env = context.getEnv();
-        boolean ok = false;
-        if (Util.isNumeric(args[0])) {
-            Node newVal = Util.makeIntNode( Util.getIntValue(args[0]) + 1 );
-            ok = env.bind(args[1], newVal);
-        } else if (Util.isNumeric(args[1])) {
-            Node newVal = Util.makeIntNode( Util.getIntValue(args[1]) - 1 );
-            ok = env.bind(args[0], newVal);
-        }
-        return ok;
+        // Can't be used in the body
+        throw new BuiltinException(this, context, "can't do remove in rule bodies");
     }
     
     
@@ -59,11 +49,24 @@ public class AddOne implements Builtin {
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes.
      * @param context an execution context giving access to other relevant data
-     * @param rule the invoking rule
      */
     public void headAction(Node[] args, RuleContext context) {
-       // Can't be used in the head
-        throw new BuiltinException(this, context, "can't do addOne in rule heads");
+        boolean ok = false;
+        for (int i = 0; i < args.length; i++) {
+            Node clauseN = args[i];
+            if (Util.isNumeric(clauseN)) {
+                int clauseIndex = Util.getIntValue(clauseN);
+                Object clause = context.getRule().getBodyElement(clauseIndex);
+                if (clause instanceof TriplePattern) {
+                    Triple t = BasicForwardRuleInfGraph.instantiate((TriplePattern)clause, context.getEnv());
+                    context.getGraph().delete(t);
+                } else {
+                    throw new BuiltinException(this, context, "illegal triple to remove non-triple clause");
+                }
+            } else {
+                throw new BuiltinException(this, context, "illegal arg to remove (" + clauseN + "), must be an integer");
+            }
+        }
     }
 }
 

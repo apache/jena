@@ -1,32 +1,32 @@
 /******************************************************************
- * File:        Remove.java
+ * File:        IsFunctor.java
  * Created by:  Dave Reynolds
- * Created on:  11-Apr-2003
+ * Created on:  15-Apr-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Remove.java,v 1.2 2003-04-28 20:19:37 der Exp $
+ * $Id: IsFunctor.java,v 1.1 2003-05-05 15:15:58 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.impl;
+package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
-import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * Remove the body clause given by index arguments from the database.
+ * Tests the single argument to make sure it is not a Functor.
+ * Used to prevent runaway nesting of functors
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:19:37 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:58 $
  */
-public class Remove implements Builtin {
+public class IsFunctor implements Builtin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
     public String getName() {
-        return "remove";
+        return "isFunctor";
     }
 
     /**
@@ -38,8 +38,10 @@ public class Remove implements Builtin {
      * the current environment
      */
     public boolean bodyCall(Node[] args, RuleContext context) {
-        // Can't be used in the body
-        throw new BuiltinException(this, context, "can't do remove in rule bodies");
+        if (args.length != 1) {
+            throw new BuiltinException(this, context, "must have 1 arguments");
+        }
+        return Functor.isFunctor(args[0]);
     }
     
     
@@ -49,24 +51,11 @@ public class Remove implements Builtin {
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes.
      * @param context an execution context giving access to other relevant data
+     * @param rule the invoking rule
      */
     public void headAction(Node[] args, RuleContext context) {
-        boolean ok = false;
-        for (int i = 0; i < args.length; i++) {
-            Node clauseN = args[i];
-            if (Util.isNumeric(clauseN)) {
-                int clauseIndex = Util.getIntValue(clauseN);
-                Object clause = context.getRule().getBodyElement(clauseIndex);
-                if (clause instanceof TriplePattern) {
-                    Triple t = BasicForwardRuleInfGraph.instantiate((TriplePattern)clause, context.getEnv());
-                    context.getGraph().delete(t);
-                } else {
-                    throw new BuiltinException(this, context, "illegal triple to remove non-triple clause");
-                }
-            } else {
-                throw new BuiltinException(this, context, "illegal arg to remove (" + clauseN + "), must be an integer");
-            }
-        }
+        // Can't be used in the head
+        throw new BuiltinException(this, context, "can't do notFunctor in rule heads");
     }
 }
 

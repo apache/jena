@@ -1,14 +1,13 @@
 /******************************************************************
- * File:        lessThan.java
+ * File:        addOne.java
  * Created by:  Dave Reynolds
  * Created on:  11-Apr-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LessThan.java,v 1.2 2003-04-28 20:19:37 der Exp $
+ * $Id: AddOne.java,v 1.1 2003-05-05 15:15:58 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.impl;
-
+package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
@@ -17,16 +16,16 @@ import com.hp.hpl.jena.graph.*;
  * Bind the second argument to 1+ the first argument. Just used for testing builtins.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:19:37 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:58 $
  */
-public class LessThan implements Builtin {
+public class AddOne implements Builtin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
     public String getName() {
-        return "lessThan";
+        return "addOne";
     }
 
     /**
@@ -41,11 +40,16 @@ public class LessThan implements Builtin {
         if (args.length != 2) {
             throw new BuiltinException(this, context, "must have 2 arguments");
         }
-        if ( Util.isNumeric(args[0]) && Util.isNumeric(args[1]) ) {
-            return Util.getIntValue(args[0]) < Util.getIntValue(args[1]);
-        } else {
-            return false;
+        BindingEnvironment env = context.getEnv();
+        boolean ok = false;
+        if (Util.isNumeric(args[0])) {
+            Node newVal = Util.makeIntNode( Util.getIntValue(args[0]) + 1 );
+            ok = env.bind(args[1], newVal);
+        } else if (Util.isNumeric(args[1])) {
+            Node newVal = Util.makeIntNode( Util.getIntValue(args[1]) - 1 );
+            ok = env.bind(args[0], newVal);
         }
+        return ok;
     }
     
     
@@ -58,8 +62,8 @@ public class LessThan implements Builtin {
      * @param rule the invoking rule
      */
     public void headAction(Node[] args, RuleContext context) {
-        // Can't be used in the head
-        throw new BuiltinException(this, context, "can't do lessThan in rule heads");
+       // Can't be used in the head
+        throw new BuiltinException(this, context, "can't do addOne in rule heads");
     }
 }
 

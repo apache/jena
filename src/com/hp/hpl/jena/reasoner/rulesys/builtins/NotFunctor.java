@@ -1,31 +1,32 @@
 /******************************************************************
- * File:        NotEqual.java
+ * File:        notFunctor.java
  * Created by:  Dave Reynolds
  * Created on:  13-Apr-03
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: NotEqual.java,v 1.2 2003-04-28 20:19:37 der Exp $
+ * $Id: NotFunctor.java,v 1.1 2003-05-05 15:15:58 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.impl;
+package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * Check that the two args are different. This uses a structural equality test.
+ * Tests the single argument to make sure it is not a Functor.
+ * Used to prevent runaway nesting of functors
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:19:37 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:58 $
  */
-public class NotEqual implements Builtin {
+public class NotFunctor implements Builtin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
     public String getName() {
-        return "notEqual";
+        return "notFunctor";
     }
 
     /**
@@ -37,10 +38,10 @@ public class NotEqual implements Builtin {
      * the current environment
      */
     public boolean bodyCall(Node[] args, RuleContext context) {
-        if (args.length != 2) {
-            throw new BuiltinException(this, context, "must have 2 arguments");
+        if (args.length != 1) {
+            throw new BuiltinException(this, context, "must have 1 arguments");
         }
-        return !(args[0].equals(args[1]));
+        return !Functor.isFunctor(args[0]);
     }
     
     
@@ -54,7 +55,7 @@ public class NotEqual implements Builtin {
      */
     public void headAction(Node[] args, RuleContext context) {
         // Can't be used in the head
-        throw new BuiltinException(this, context, "can't do " + getName() + " in rule heads");
+        throw new BuiltinException(this, context, "can't do notFunctor in rule heads");
     }
 }
 

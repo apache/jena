@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Rule.java,v 1.1 2003-04-17 15:24:24 der Exp $
+ * $Id: Rule.java,v 1.2 2003-05-05 15:16:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -55,7 +55,7 @@ import com.hp.hpl.jena.datatypes.xsd.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:24:24 $
+ * @version $Revision: 1.2 $ on $Date: 2003-05-05 15:16:00 $
  */
 public class Rule {
     
@@ -442,9 +442,12 @@ public class Rule {
                 varMap = new HashMap();
                 // Body
                 List body = new ArrayList();
-                while (!peekToken().equals("->")) {
+                token = peekToken();
+                while ( !(token.equals("->") || token.equals("<-")) ) {
                     body.add(parseClause());
+                    token = peekToken();
                 }
+                boolean backwardRule = token.equals("<-");
                 List head = new ArrayList();
                 token = nextToken();   // skip -> token
                 do {
@@ -452,7 +455,11 @@ public class Rule {
                     token = peekToken();
                 } while ( !(token.equals(".") || token.equals("]")) );
                 nextToken();        // consume the terminating token
-                return new Rule(name, head, body);
+                if (backwardRule) {
+                    return new Rule(name, body, head);
+                } else {
+                    return new Rule(name, head, body);
+                }
             } catch (NoSuchElementException e) {
                 throw new ParserException("Malformed rule", this);
             }

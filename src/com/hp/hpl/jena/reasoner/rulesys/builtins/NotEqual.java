@@ -1,73 +1,62 @@
 /******************************************************************
- * File:        RuleContext.java
+ * File:        NotEqual.java
  * Created by:  Dave Reynolds
- * Created on:  28-Apr-03
+ * Created on:  13-Apr-03
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleContext.java,v 1.3 2003-05-05 15:16:00 der Exp $
+ * $Id: NotEqual.java,v 1.1 2003-05-05 15:15:58 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys;
+package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
-import com.hp.hpl.jena.reasoner.InfGraph;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * Interface used to convey context information from a rule engine
- * to the stack of procedural builtins. This gives access
- * to the triggering rule, the variable bindings and the set of
- * currently known triples. 
+ * Check that the two args are different. This uses a structural equality test.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-05 15:16:00 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:58 $
  */
-public interface RuleContext {
-    /**
-     * Returns the current variable binding environment for the current rule.
-     * @return BindingEnvironment
-     */
-    public BindingEnvironment getEnv();
+public class NotEqual implements Builtin {
 
     /**
-     * Returns the parent inference graph.
-     * @return InfGraph
+     * Return a name for this builtin, normally this will be the name of the 
+     * functor that will be used to invoke it.
      */
-    public InfGraph getGraph();
-    
-    /**
-     * Returns the rule.
-     * @return Rule
-     */
-    public Rule getRule();
+    public String getName() {
+        return "notEqual";
+    }
 
     /**
-     * Sets the rule.
-     * @param rule The rule to set
+     * This method is invoked when the builtin is called in a rule body.
+     * @param args the array of argument values for the builtin, this is an array 
+     * of Nodes, some of which may be Node_RuleVariables.
+     * @param context an execution context giving access to other relevant data
+     * @return return true if the buildin predicate is deemed to have succeeded in
+     * the current environment
      */
-    public void setRule(Rule rule);
+    public boolean bodyCall(Node[] args, RuleContext context) {
+        if (args.length != 2) {
+            throw new BuiltinException(this, context, "must have 2 arguments");
+        }
+        return !(args[0].equals(args[1]));
+    }
+    
     
     /**
-     * Return true if the triple is already in either the graph or the stack.
-     * I.e. it has already been deduced.
+     * This method is invoked when the builtin is called in a rule head.
+     * Such a use is only valid in a forward rule.
+     * @param args the array of argument values for the builtin, this is an array 
+     * of Nodes.
+     * @param context an execution context giving access to other relevant data
+     * @param rule the invoking rule
      */
-    public boolean contains(Triple t);
-    
-    /**
-     * Return true if the triple pattern is already in either the graph or the stack.
-     * I.e. it has already been deduced.
-     */
-    public boolean contains(Node s, Node p, Node o);
-    
-    /**
-     * In some formulations the context includes deductions that are not yet
-     * visible to the underlying graph but need to be checked for.
-     * However, currently this calls the graph find directly.
-     */
-    public ClosableIterator find(Node s, Node p, Node o);
-
+    public void headAction(Node[] args, RuleContext context) {
+        // Can't be used in the head
+        throw new BuiltinException(this, context, "can't do " + getName() + " in rule heads");
+    }
 }
-
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

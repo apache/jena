@@ -1,32 +1,32 @@
 /******************************************************************
- * File:        NoValue.java
+ * File:        Print.java
  * Created by:  Dave Reynolds
- * Created on:  13-Apr-03
+ * Created on:  11-Apr-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: NoValue.java,v 1.2 2003-04-28 20:19:38 der Exp $
+ * $Id: Print.java,v 1.1 2003-05-05 15:15:58 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys.impl;
+package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * Checks that resource given by the first arg has no current value for
- * the predicate given by the second arg.
+ * Print its argument list as a side effect
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:19:38 $
+ * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:58 $
  */
-public class NoValue implements Builtin {
+public class Print implements Builtin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
      * functor that will be used to invoke it.
      */
     public String getName() {
-        return "noValue";
+        return "print";
     }
 
     /**
@@ -38,26 +38,30 @@ public class NoValue implements Builtin {
      * the current environment
      */
     public boolean bodyCall(Node[] args, RuleContext context) {
-        if (args.length != 2) {
-            throw new BuiltinException(this, context, "must have 2 arguments");
-        }
-        return !context.contains(args[0], args[1], null);
+        print(args);
+        return true;
     }
     
     
     /**
      * This method is invoked when the builtin is called in a rule head.
      * Such a use is only valid in a forward rule.
-     * Exected args are the instance to be annotated, the property to use and the type
-     * of the resulting bNode.
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes.
      * @param context an execution context giving access to other relevant data
-     * @param rule the invoking rule
      */
     public void headAction(Node[] args, RuleContext context) {
-        // Can't be used in the head
-        throw new BuiltinException(this, context, "can't do " + getName() + " in rule heads");
+        print(args);
+    }
+    
+    /**
+     * Print a node list to stdout
+     */
+    public void print(Node[] args) {
+        for (int i = 0 ; i < args.length; i++) {
+            System.out.print( PrintUtil.print(args[i]) + " ");
+        }
+        System.out.println("");
     }
 }
 
