@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.7 2003-04-28 11:28:36 chris-dollin Exp $
+  $Id: Graph.java,v 1.8 2003-04-30 12:55:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -54,12 +54,10 @@ public interface Graph  {
     PrefixMapping getPrefixMapping();
     
     /** adds the triple t (if possible) to the set belong to the graph */
-	void add(Triple t) throws UnsupportedOperationException, VirtualTripleException;
+	void add(Triple t) throws UnsupportedOperationException;
     
     /** removes the triple t (if possible) from the set belonging to this graph */   
-	void delete(Triple t) throws UnsupportedOperationException,
-	  NoSuchTripleException,
-	  VirtualTripleException;
+	void delete(Triple t) throws UnsupportedOperationException;
       
 	  /** Returns an iterator over Triple.
 	   */
