@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Reifier.java,v 1.20 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Reifier.java,v 1.21 2003-09-08 10:25:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -94,7 +94,7 @@ public interface Reifier extends GetTriple
     
     /**
         remove any existing binding for _n_; hasNode(n) will return false
-        and getTriple(n) will return null. 
+        and getTriple(n) will return null. This only removes *unique, single* bindings.
     */
     void remove( Node n, Triple t );
     

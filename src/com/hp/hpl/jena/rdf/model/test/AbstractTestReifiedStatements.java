@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.6 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.7 2003-09-08 10:25:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -296,6 +296,19 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
         assertTrue( "st is now reified", st.isReified() );
         m.removeAllReifications( st );
         assertFalse( "st is no longer reified", st.isReified() );
+        }
+    
+    /**
+        Leo Bard spotted a problem whereby removing a reified statement from a model
+        with style Standard didn't leave the model empty. Here's a test for it. 
+    */
+    public void testLeosBug()
+        {
+        Model A = getModel();
+        Statement st = statement( A,  "pigs fly south" );
+        ReifiedStatement rst = st.createReifiedStatement( "eh:pointer" );
+        A.removeReification( rst );
+        assertIsoModels( ModelFactory.createDefaultModel(), A );
         }
     
     public void testRR()

@@ -3,7 +3,7 @@ package com.hp.hpl.jena.rdf.model.test;
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifiedStatements.java,v 1.8 2003-08-27 13:05:52 andy_seaborne Exp $
+  $Id: TestReifiedStatements.java,v 1.9 2003-09-08 10:25:10 chris-dollin Exp $
 */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -13,16 +13,38 @@ import junit.framework.*;
     test the properties required of ReifiedStatement objects.
     @author kers 
 */
-public class TestReifiedStatements extends AbstractTestReifiedStatements
+public class TestReifiedStatements extends ModelTestBase
     {
     public TestReifiedStatements( String name )
         { super( name ); }
     
     public static TestSuite suite()
-        { return new TestSuite( TestReifiedStatements.class ); }   
+        { TestSuite result = new TestSuite();
+        result.addTest( new TestSuite( TestStandard.class ) );
+        result.addTest( new TestSuite( TestConvenient.class ) );
+        // result.addTest( new TestSuite( TestMinimal.class ) );
+        return result; }   
         
     public Model getModel()
         { return ModelFactory.createDefaultModel(); }
+        
+    public static class TestStandard extends AbstractTestReifiedStatements
+        {
+        public TestStandard( String name ) { super( name ); }
+        public Model getModel() { return ModelFactory.createDefaultModel( ModelFactory.Standard ); } 
+        }
+        
+    public static class TestConvenient extends AbstractTestReifiedStatements
+        {
+        public TestConvenient( String name ) { super( name ); }
+        public Model getModel() { return ModelFactory.createDefaultModel( ModelFactory.Convenient ); } 
+        }
+        
+    public static class TestMinimal extends AbstractTestReifiedStatements
+        {
+        public TestMinimal( String name ) { super( name ); }
+        public Model getModel() { return ModelFactory.createDefaultModel( ModelFactory.Minimal ); } 
+        }
     }
     
 /*
