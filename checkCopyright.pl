@@ -1,5 +1,6 @@
 #!/bin/perl
 
+# Run with: find src -name \*.java | xargs perl checkCopyright.pl
 # Check source code
 
 &setExclude ;
