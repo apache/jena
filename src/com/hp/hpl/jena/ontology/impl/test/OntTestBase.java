@@ -5,9 +5,9 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            01-Apr-2003
- * Filename           $RCSfile: TestAxioms.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            23-May-2003
+ * Filename           $RCSfile: OntTestBase.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-05-23 11:13:05 $
@@ -24,101 +24,126 @@ package com.hp.hpl.jena.ontology.impl.test;
 
 // Imports
 ///////////////
-import junit.framework.TestSuite;
+import java.util.*;
 
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.*;
-import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.rdf.model.*;
 
+import junit.framework.*;
 
 
 /**
  * <p>
- * Class comment
+ * Generic test case for ontology unit testing
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestAxioms.java,v 1.2 2003-05-23 11:13:05 ian_dickinson Exp $
+ * @version CVS $Id: OntTestBase.java,v 1.1 2003-05-23 11:13:05 ian_dickinson Exp $
  */
-public class TestAxioms
-    extends PathTestCase 
+public abstract class OntTestBase 
+    extends TestSuite
 {
     // Constants
     //////////////////////////////////
 
+    protected String NS = "http://example.org/onttest#";
+    
+    
     // Static variables
     //////////////////////////////////
 
     // Instance variables
     //////////////////////////////////
 
+    
     // Constructors
     //////////////////////////////////
 
-    public TestAxioms( String s ) {
-        super( s );
+    public OntTestBase( String name ) {
+        super( name );
+        TestCase[] tc = getTests();
+        
+        for (int i = 0;  i < tc.length;  i++) {
+            addTest( tc[i] );
+        }
     }
     
     // External signature methods
     //////////////////////////////////
 
-    protected String getTestName() {
-        return "TestAxioms";
-    }
-    
-    public static TestSuite suite() {
-        return new TestAxioms( "TestAxioms" ).getSuite();
-    }
-    
-    
-    /** Fields are testID, pathset, property, profileURI, sourceData, expected, count, valueURI, rdfTypeURI, valueLit */
-    protected Object[][] psTestData() {
-        return new Object[][] {
-            {   
-                "OWL AllDifferent.distinctMembers",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        Resource r = m.listSubjectsWithProperty( RDF.type, m.getProfile().ALL_DIFFERENT() ).nextResource();
-                        return ((AllDifferent) r.as( AllDifferent.class )).p_distinctMembers(); } 
-                },
-                OWL.distinctMembers,
-                ProfileRegistry.OWL_LANG,
-                "file:testing/ontology/owl/Axioms/test.rdf",
-                T,
-                new Integer( 1 ),
-                null,
-                OWL.List,
-                null
-            },
-            {   
-                "DAML AllDifferent.distinctMembers",
-                new PS() { 
-                    public PathSet ps( OntModel m ) { 
-                        Resource r = m.createResource();  // there's no resource of rdf:type AllDifferent in the test file
-                        return ((AllDifferent) r.as( AllDifferent.class )).p_distinctMembers(); } 
-                },
-                OWL.distinctMembers,
-                ProfileRegistry.DAML_LANG,
-                "file:testing/ontology/daml/Axioms/test.rdf",
-                F,
-                null,
-                null,
-                null,
-                null
-            },
-        };
-    }
-    
-    
+
     // Internal implementation methods
     //////////////////////////////////
 
+    /** Return the array of tests for the suite */
+    protected  OntTestCase[] getTests() {
+        return null;
+    }
+    
+    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
+    protected abstract class OntTestCase
+        extends TestCase
+    {
+        protected boolean m_inOWL;
+        protected boolean m_inOWLLite;
+        protected boolean m_inDAML;
+        protected String m_langElement;
+
+        public OntTestCase( String langElement, boolean inOWL, boolean inOWLLite, boolean inDAML ) {
+            super( "Ontology API test " + langElement );
+            m_langElement = langElement;
+            m_inOWL = inOWL;
+            m_inOWLLite = inOWLLite;
+            m_inDAML = inDAML;
+        }
+
+        public void runTest()
+            throws Exception
+        {
+            runTest( ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null ), m_inOWL );
+            runTest( ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM, null ), m_inOWLLite );
+            runTest( ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM, null ), m_inDAML );
+        }
+    
+        protected void runTest( OntModel m, boolean inModel )
+            throws Exception 
+        {
+            boolean profileEx = false;
+        
+            try {
+                ontTest( m );
+            }
+            catch (ProfileException e) {
+                profileEx = true;
+            }
+        
+            assertEquals( "language element " + m_langElement + " was " + (inModel ? "" : "not") + " expected in model " + m.getProfile().getLabel(), inModel, !profileEx );
+        }
+    
+        /** Does the work in the test sub-class */
+        protected abstract void ontTest( OntModel m ) throws Exception;
+    
+        /** Test that an iterator delivers the expected values */
+        protected void iteratorTest( Iterator i, Object[] expected ) {
+            List expList = new ArrayList();
+            for (int j = 0; j < expected.length; j++) {
+                expList.add( expected[j] );
+            }
+        
+            while (i.hasNext()) {
+                Object next = i.next();
+                assertTrue( "Value " + next + " was not expected as a result from this iterator ", expList.contains( next ) );
+                assertTrue( "Value " + next + " was not removed from the list ", expList.remove( next ) );
+            }
+        
+            assertEquals( "There were expected elements from the iterator that were not found", 0, expList.size() );
+        }
+    }
 }
 
 

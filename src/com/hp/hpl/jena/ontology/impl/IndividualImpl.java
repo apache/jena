@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: IndividualImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-20 12:42:09 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-05-23 11:12:51 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -24,7 +24,11 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import java.util.Iterator;
+
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 
@@ -36,7 +40,7 @@ import com.hp.hpl.jena.graph.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: IndividualImpl.java,v 1.3 2003-05-20 12:42:09 chris-dollin Exp $
+ * @version CVS $Id: IndividualImpl.java,v 1.4 2003-05-23 11:12:51 ian_dickinson Exp $
  */
 public class IndividualImpl
     extends OntResourceImpl
@@ -84,6 +88,54 @@ public class IndividualImpl
     // External signature methods
     //////////////////////////////////
 
+    /**
+     * <p>Assert equivalence between the given individual and this individual. Any existing 
+     * statements for <code>sameIndividualAs</code> will be removed.</p>
+     * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
+     * @param res The resource that declared to be the same as this individual
+     * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     */ 
+    public void setSameIndividualAs( Resource res ) {
+        checkProfile( getProfile().SAME_INDIVIDUAL_AS(), "SAME_INDIVIDUAL_AS" );
+        removeAll( getProfile().SAME_INDIVIDUAL_AS() );
+        addSameAs( res );
+    }
+
+    /**
+     * <p>Add an individual that is declared to be equivalent to this individual.</p>
+     * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
+     * @param res A resource that declared to be the same as this individual
+     * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     */ 
+    public void addSameIndividualAs( Resource res ) {
+        checkProfile( getProfile().SAME_INDIVIDUAL_AS(), "SAME_INDIVIDUAL_AS" );
+        addProperty( getProfile().SAME_INDIVIDUAL_AS(), res );
+    }
+
+    /**
+     * <p>Answer a resource that is declared to be the same as this individual. If there are
+     * more than one such resource, an arbitrary selection is made.</p>
+     * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
+     * @return res An ont resource that declared to be the same as this individual
+     * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     */ 
+    public OntResource getSameIndividualAs() {
+        checkProfile( getProfile().SAME_INDIVIDUAL_AS(), "SAME_INDIVIDUAL_AS" );
+        return (OntResource) getProperty( getProfile().SAME_INDIVIDUAL_AS() ).getResource().as( OntResource.class );            
+    }
+
+    /**
+     * <p>Answer an iterator over all of the resources that are declared to be equivalent to
+     * this individual. Each elemeent of the iterator will be an {@link #OntResource}.</p>
+     * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
+     * @return An iterator over the resources equivalent to this individual.
+     * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     */ 
+    public Iterator listSameIndividualAs() {
+        checkProfile( getProfile().SAME_INDIVIDUAL_AS(), "SAME_INDIVIDUAL_AS" );
+        return WrappedIterator.create( listProperties( getProfile().SAME_INDIVIDUAL_AS() ) )
+               .mapWith( new ObjectAsMapper( OntResource.class ) );
+    }
 
      
     // Internal implementation methods

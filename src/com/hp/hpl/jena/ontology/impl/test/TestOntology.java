@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestOntology.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-07 09:34:39 $
+ * Last modified on   $Date: 2003-05-23 11:13:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,10 +38,10 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntology.java,v 1.3 2003-04-07 09:34:39 ian_dickinson Exp $
+ * @version CVS $Id: TestOntology.java,v 1.4 2003-05-23 11:13:05 ian_dickinson Exp $
  */
 public class TestOntology
-    extends OntTestCase 
+    extends PathTestCase 
 {
     // Constants
     //////////////////////////////////
@@ -71,7 +71,7 @@ public class TestOntology
     
     
     /** Fields are testID, pathset, property, profileURI, sourceData, expected, count, valueURI, rdfTypeURI, valueLit */
-    protected Object[][] testData() {
+    protected Object[][] psTestData() {
         return new Object[][] {
             {   
                 "OWL Ontology.imports",
@@ -153,7 +153,7 @@ public class TestOntology
                 null,
                 null
             },
-            {   
+/*            {   
                 "OWL Ontology.comment",
                 new PS() { 
                     public PathSet ps( OntModel m ) { 
@@ -217,7 +217,7 @@ public class TestOntology
                 null,
                 "abc"
             },
-            {   
+*/            {   
                 "DAML Ontology.imports",
                 new PS() { 
                     public PathSet ps( OntModel m ) { 
@@ -297,7 +297,7 @@ public class TestOntology
                 null,
                 null
             },
-            {   
+/*            {   
                 "DAML Ontology.comment",
                 new PS() { 
                     public PathSet ps( OntModel m ) { 
@@ -361,7 +361,7 @@ public class TestOntology
                 null,
                 "abc"
             },
-      };
+*/      };
     }
     
     

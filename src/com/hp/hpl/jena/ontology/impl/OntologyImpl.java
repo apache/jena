@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntologyImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:29 $
+ * Last modified on   $Date: 2003-05-23 11:12:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntologyImpl.java,v 1.4 2003-05-08 14:45:29 ian_dickinson Exp $
+ * @version CVS $Id: OntologyImpl.java,v 1.5 2003-05-23 11:12:51 ian_dickinson Exp $
  */
 public class OntologyImpl
     extends OntResourceImpl
@@ -95,23 +95,23 @@ public class OntologyImpl
     //////////////////////////////////
 
     public PathSet p_imports() {
-        return asPathSet( getProfile().IMPORTS() );
+        return asPathSet( getProfile().IMPORTS(), "IMPORTS" );
     }
     
     public PathSet p_backwardCompatibleWith() {
-        return asPathSet( getProfile().BACKWARD_COMPATIBLE_WITH() );
+        return asPathSet( getProfile().BACKWARD_COMPATIBLE_WITH(), "BACKWARD_COMPATIBLE_WITH" );
     } 
     
     public PathSet p_priorVersion() {
-        return asPathSet( getProfile().PRIOR_VERSION() );
+        return asPathSet( getProfile().PRIOR_VERSION(), "PRIOR_VERSION" );
     }
     
     public PathSet p_incompatibleWith() {
-        return asPathSet( getProfile().INCOMPATIBLE_WITH() );
+        return asPathSet( getProfile().INCOMPATIBLE_WITH(), "INCOMPATIBLE_WITH" );
     }
     
     public PathSet p_versionInfo() {
-        return asPathSet( getProfile().VERSION_INFO() );
+        return asPathSet( getProfile().VERSION_INFO(), "VERSION_INFO" );
     }
     
     // Internal implementation methods

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: EnumeratedClassImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:27 $
+ * Last modified on   $Date: 2003-05-23 11:12:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.ontology.path.PathSet;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: EnumeratedClassImpl.java,v 1.4 2003-05-08 14:45:27 ian_dickinson Exp $
+ * @version CVS $Id: EnumeratedClassImpl.java,v 1.5 2003-05-23 11:12:51 ian_dickinson Exp $
  */
 public class EnumeratedClassImpl 
     extends OntClassImpl
@@ -107,7 +107,7 @@ public class EnumeratedClassImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_oneOf() {
-        return asPathSet( getProfile().ONE_OF() );
+        return asPathSet( getProfile().ONE_OF(), "ONE_OF" );
     }
     
 

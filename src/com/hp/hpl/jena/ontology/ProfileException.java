@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            28-Apr-2003
- * Filename           $RCSfile: ComplementClassImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Created            22-May-2003
+ * Filename           $RCSfile: ProfileException.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-23 11:12:51 $
+ * Last modified on   $Date: 2003-05-23 11:13:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -19,30 +19,29 @@
 
 // Package
 ///////////////
-package com.hp.hpl.jena.ontology.impl;
+package com.hp.hpl.jena.ontology;
 
 
 // Imports
 ///////////////
-import com.hp.hpl.jena.enhanced.*;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.PathSet;
-import com.hp.hpl.jena.rdf.model.Property;
-
 
 /**
  * <p>
- * Implementation of a node representing a complement class description.
+ * Exception that is raised when an ontology operation is attempted that is 
+ * not present in the language profile for the current ontology model. For example,
+ * if the language profile is 
+ * {@linkplain com.hp.hpl.jena.ontology.ProfileRegistry#OWL_LITE_LANG owl lite},
+ * class complements are not permitted and so that element of the profile is null.
+ * An attempt to create a class complement in an OWL Lite model will raise a 
+ * ProfileException. 
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ComplementClassImpl.java,v 1.3 2003-05-23 11:12:51 ian_dickinson Exp $
+ * @version CVS $Id: ProfileException.java,v 1.1 2003-05-23 11:13:05 ian_dickinson Exp $
  */
-public class ComplementClassImpl 
-    extends OntClassImpl
-    implements ComplementClass
+public class ProfileException
+    extends OntologyException 
 {
     // Constants
     //////////////////////////////////
@@ -50,70 +49,20 @@ public class ComplementClassImpl
     // Static variables
     //////////////////////////////////
 
-    /**
-     * A factory for generating ComplementClass facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
-     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
-     */
-    public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
-            if (canWrap( n, eg )) {
-                return new ComplementClassImpl( n, eg );
-            }
-            else {
-                throw new ConversionException( "Cannot convert node " + n + " to ComplementClass");
-            } 
-        }
-            
-        public boolean canWrap( Node node, EnhGraph eg ) {
-            // node will support being an ComplementClass facet if it has rdf:type owl:Class and an owl:complementOf statement (or equivalents) 
-            Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
-            Property comp = (profile == null) ? null : profile.COMPLEMENT_OF();
-
-            return (profile != null)  &&  
-                   profile.isSupported( node, eg, OntClass.class )  &&
-                   comp != null && 
-                   eg.asGraph().contains( node, comp.asNode(), null );
-        }
-    };
-
-
     // Instance variables
     //////////////////////////////////
 
     // Constructors
     //////////////////////////////////
 
-    /**
-     * <p>
-     * Construct a complement class node represented by the given node in the given graph.
-     * </p>
-     * 
-     * @param n The node that represents the resource
-     * @param g The enh graph that contains n
-     */
-    public ComplementClassImpl( Node n, EnhGraph g ) {
-        super( n, g );
+    public ProfileException( String element, Profile profile ) {
+        super( "Attempted to use language construct " + element + " that is not supported in the current language profile: " + 
+               ((profile == null) ? "not specified" : profile.getLabel()) );
     }
-
-
+    
+    
     // External signature methods
     //////////////////////////////////
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>complementOf</code>
-     * property of a class or class description. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the complement class description
-     */
-    public PathSet p_complementOf() {
-        return asPathSet( getProfile().COMPLEMENT_OF(), "COMPLEMENT_OF" );
-    }
-
 
     // Internal implementation methods
     //////////////////////////////////

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-16 13:14:06 $
+ * Last modified on   $Date: 2003-05-23 11:12:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.18 2003-05-16 13:14:06 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.19 2003-05-23 11:12:51 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -1655,7 +1655,7 @@ public class OntModelImpl
     protected void checkProfileEntry( Object profileTerm, String desc ) {
         if (profileTerm == null) {
             // not in the profile
-            throw new OntologyException( "Ontology term " + desc + " is not defined in the language profile for " + getProfile().getLabel() );
+            throw new ProfileException( desc, getProfile() );
         }
     }
     

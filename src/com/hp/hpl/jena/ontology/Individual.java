@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Individual.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 16:06:06 $
+ * Last modified on   $Date: 2003-05-23 11:13:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -23,8 +23,12 @@ package com.hp.hpl.jena.ontology;
 
 
 
+
 // Imports
 ///////////////
+import java.util.Iterator;
+
+import com.hp.hpl.jena.rdf.model.*;
 
 
 /**
@@ -38,7 +42,7 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Individual.java,v 1.2 2003-04-01 16:06:06 ian_dickinson Exp $
+ * @version CVS $Id: Individual.java,v 1.3 2003-05-23 11:13:05 ian_dickinson Exp $
  */
 public interface Individual
     extends OntResource
@@ -49,6 +53,42 @@ public interface Individual
 
     // External signature methods
     //////////////////////////////////
+
+    /**
+     * <p>Assert equivalence between the given individual and this individual. Any existing 
+     * statements for <code>sameIndividualAs</code> will be removed.</p>
+     * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
+     * @param res The resource that declared to be the same as this individual
+     * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     */ 
+    public void setSameIndividualAs( Resource res );
+
+    /**
+     * <p>Add an individual that is declared to be equivalent to this individual.</p>
+     * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
+     * @param res A resource that declared to be the same as this individual
+     * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     */ 
+    public void addSameIndividualAs( Resource res );
+
+    /**
+     * <p>Answer a resource that is declared to be the same as this individual. If there are
+     * more than one such resource, an arbitrary selection is made.</p>
+     * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
+     * @return res An ont resource that declared to be the same as this individual
+     * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     */ 
+    public OntResource getSameIndividualAs();
+
+    /**
+     * <p>Answer an iterator over all of the resources that are declared to be equivalent to
+     * this individual. Each elemeent of the iterator will be an {@link #OntResource}.</p>
+     * <p>Note that <code>sameAs</code> and <code>sameIndividualAs</code> are aliases.</p>
+     * @return An iterator over the resources equivalent to this individual.
+     * @exception OntProfileException If the sameIndividualAs property is not supported in the current language profile.   
+     */ 
+    public Iterator listSameIndividualAs();
+
 
 
 }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            26-Mar-2003
  * Filename           $RCSfile: TestProperty.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-08 14:28:23 $
+ * Last modified on   $Date: 2003-05-23 11:13:05 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,10 +39,10 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestProperty.java,v 1.2 2003-04-08 14:28:23 ian_dickinson Exp $
+ * @version CVS $Id: TestProperty.java,v 1.3 2003-05-23 11:13:05 ian_dickinson Exp $
  */
 public class TestProperty
-    extends OntTestCase 
+    extends PathTestCase 
 {
     // Constants
     //////////////////////////////////
@@ -72,7 +72,7 @@ public class TestProperty
     
     
     /** Fields are testID, pathset, property, profileURI, sourceData, expected, count, valueURI, rdfTypeURI, valueLit */
-    protected Object[][] testData() {
+    protected Object[][] psTestData() {
         return new Object[][] {
             {   
                 "OWL OntProperty.subPropertyOf",

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: RestrictionImpl.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 16:56:52 $
+ * Last modified on   $Date: 2003-05-23 11:12:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.ontology.path.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RestrictionImpl.java,v 1.7 2003-05-08 16:56:52 ian_dickinson Exp $
+ * @version CVS $Id: RestrictionImpl.java,v 1.8 2003-05-23 11:12:51 ian_dickinson Exp $
  */
 public class RestrictionImpl 
     extends OntClassImpl
@@ -106,7 +106,7 @@ public class RestrictionImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_onProperty() {
-        return asPathSet( getProfile().ON_PROPERTY() );
+        return asPathSet( getProfile().ON_PROPERTY(), "ON_PROPERTY" );
     }
     
 
@@ -121,7 +121,7 @@ public class RestrictionImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_allValuesFrom() {
-        return asPathSet( getProfile().ALL_VALUES_FROM() );
+        return asPathSet( getProfile().ALL_VALUES_FROM(), "ALL_VALUES_FROM" );
     }
     
 
@@ -136,7 +136,7 @@ public class RestrictionImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_someValuesFrom() {
-        return asPathSet( getProfile().SOME_VALUES_FROM() );
+        return asPathSet( getProfile().SOME_VALUES_FROM(), "SOME_VALUES_FROM" );
     }
     
 
@@ -151,7 +151,7 @@ public class RestrictionImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_hasValue() {
-        return asPathSet( getProfile().HAS_VALUE() );
+        return asPathSet( getProfile().HAS_VALUE(), "HAS_VALUE" );
     }
     
 
@@ -166,7 +166,7 @@ public class RestrictionImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_cardinality() {
-        return asPathSet( getProfile().CARDINALITY() );
+        return asPathSet( getProfile().CARDINALITY(), "CARDINALITY" );
     }
     
 
@@ -181,7 +181,7 @@ public class RestrictionImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_minCardinality() {
-        return asPathSet( getProfile().MIN_CARDINALITY() );
+        return asPathSet( getProfile().MIN_CARDINALITY(), "MIN_CARDINALITY" );
     }
     
 
@@ -196,7 +196,7 @@ public class RestrictionImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_maxCardinality() {
-        return asPathSet( getProfile().MAX_CARDINALITY() );
+        return asPathSet( getProfile().MAX_CARDINALITY(), "MAX_CARDINALITY" );
     }
     
 

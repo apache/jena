@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 16:56:52 $
+ * Last modified on   $Date: 2003-05-23 11:12:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -43,7 +43,7 @@ import java.util.Iterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.9 2003-05-08 16:56:52 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.10 2003-05-23 11:12:51 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -112,7 +112,7 @@ public class OntClassImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_subClassOf() {
-        return asPathSet( getProfile().SUB_CLASS_OF() );
+        return asPathSet( getProfile().SUB_CLASS_OF(), "SUB_CLASS_OF" );
     }
     
     /**
@@ -126,7 +126,7 @@ public class OntClassImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_equivalentClass() {
-        return asPathSet( getProfile().EQUIVALENT_CLASS() );
+        return asPathSet( getProfile().EQUIVALENT_CLASS(), "EQUIVALENT_CLASS" );
     }
     
     /**
@@ -140,7 +140,7 @@ public class OntClassImpl
      * @return An abstract accessor for the imports of an ontology element
      */
     public PathSet p_disjointWith() {
-        return asPathSet( getProfile().DISJOINT_WITH() );
+        return asPathSet( getProfile().DISJOINT_WITH(), "DISJOINT_WITH" );
     }
      
     /**

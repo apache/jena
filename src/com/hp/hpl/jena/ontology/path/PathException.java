@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Mar-2003
  * Filename           $RCSfile: PathException.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 10:11:41 $
+ * Last modified on   $Date: 2003-05-23 11:13:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -21,11 +21,12 @@
 ///////////////
 package com.hp.hpl.jena.ontology.path;
 
-import com.hp.hpl.jena.ontology.OntologyException;
 
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.OntologyException;
+
 
 /**
  * <p>
@@ -34,7 +35,7 @@ import com.hp.hpl.jena.ontology.OntologyException;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: PathException.java,v 1.1 2003-03-25 10:11:41 ian_dickinson Exp $
+ * @version CVS $Id: PathException.java,v 1.2 2003-05-23 11:13:06 ian_dickinson Exp $
  */
 public class PathException
     extends OntologyException 

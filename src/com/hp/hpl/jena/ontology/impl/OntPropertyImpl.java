@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            31-Mar-2003
  * Filename           $RCSfile: OntPropertyImpl.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 16:56:52 $
+ * Last modified on   $Date: 2003-05-23 11:12:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntPropertyImpl.java,v 1.6 2003-05-08 16:56:52 ian_dickinson Exp $
+ * @version CVS $Id: OntPropertyImpl.java,v 1.7 2003-05-23 11:12:51 ian_dickinson Exp $
  */
 public class OntPropertyImpl
     extends OntResourceImpl
@@ -127,7 +127,7 @@ public class OntPropertyImpl
      * @return An abstract accessor for the super-property of a property
      */
     public PathSet p_subPropertyOf() {
-        return asPathSet( getProfile().SUB_PROPERTY_OF() );
+        return asPathSet( getProfile().SUB_PROPERTY_OF(), "SUB_PROPERTY_OF" );
     }
 
     /**
@@ -141,7 +141,7 @@ public class OntPropertyImpl
      * @return An abstract accessor for the domain of a property
      */
     public PathSet p_domain() {
-        return asPathSet( getProfile().DOMAIN() );
+        return asPathSet( getProfile().DOMAIN(), "DOMAIN" );
     }
 
 
@@ -156,7 +156,7 @@ public class OntPropertyImpl
      * @return An abstract accessor for the range of a property
      */
     public PathSet p_range() {
-        return asPathSet( getProfile().RANGE() );
+        return asPathSet( getProfile().RANGE(), "RANGE" );
     }
 
     
@@ -171,7 +171,7 @@ public class OntPropertyImpl
      * @return An abstract accessor for property equivalence
      */
     public PathSet p_equivalentProperty() {
-        return asPathSet( getProfile().EQUIVALENT_PROPERTY() );
+        return asPathSet( getProfile().EQUIVALENT_PROPERTY(), "EQUIVALENT_PROPERTY" );
     }
 
 
@@ -186,7 +186,7 @@ public class OntPropertyImpl
      * @return An abstract accessor for property invserses
      */
     public PathSet p_inverseOf() {
-        return asPathSet( getProfile().INVERSE_OF() );
+        return asPathSet( getProfile().INVERSE_OF(), "INVERSE_OF" );
     }
 
     /** 

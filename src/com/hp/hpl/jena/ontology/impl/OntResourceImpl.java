@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-08 14:45:30 $
+ * Last modified on   $Date: 2003-05-23 11:12:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -24,16 +24,14 @@ package com.hp.hpl.jena.ontology.impl;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.path.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.Map1;
-import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
@@ -47,9 +45,9 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.5 2003-05-08 14:45:30 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.6 2003-05-23 11:12:51 ian_dickinson Exp $
  */
-public abstract class OntResourceImpl
+public class OntResourceImpl
     extends ResourceImpl
     implements OntResource 
 {
@@ -58,6 +56,28 @@ public abstract class OntResourceImpl
 
     // Static variables
     //////////////////////////////////
+    
+    /**
+     * A factory for generating OntResource facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { 
+            if (canWrap( n, eg )) {
+                return new OntResourceImpl( n, eg );
+            }
+            else {
+                throw new ConversionException( "Cannot convert node " + n.toString() + " to OntResource");
+            } 
+        }
+            
+        public boolean canWrap( Node node, EnhGraph eg ) {
+            // node will support being an OntResource facet if it is a uri or bnode
+            return node.isURI() || node.isBlank();
+        }
+    };
+
 
     // Instance variables
     //////////////////////////////////
@@ -94,128 +114,389 @@ public abstract class OntResourceImpl
     }
 
 
+    // sameAs
+    
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>sameAs</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * <b>Note:</b> that any ontology resource can be declared to be the same as another. However,
-     * in the case of OWL, doing so for class or property resources necessarily implies that
-     * OWL Full is being used, since in OWL DL and Lite classes and properties cannot be used
-     * as instances.
-     * </p>
-     * 
-     * @return An abstract accessor for identity between individuals
-     */
-    public PathSet p_sameAs() {
-        return asPathSet( getProfile().SAME_AS() );
+     * <p>Assert equivalence between the given resource and this resource. Any existing 
+     * statements for <code>sameAs</code> will be removed.</p>
+     * @param res The resource that is declared to be the same as this resource
+     * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.   
+     */ 
+    public void setSameAs( Resource res ) {
+        checkProfile( getProfile().SAME_AS(), "SAME_AS" );
+        removeAll( getProfile().SAME_AS() );
+        addSameAs( res );
+    }
+
+    /**
+     * <p>Add a resource that is declared to be equivalent to this resource.</p>
+     * @param res A resource that declared to be the same as this resource
+     * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.   
+     */ 
+    public void addSameAs( Resource res ) {
+        checkProfile( getProfile().SAME_AS(), "SAME_AS" );
+        addProperty( getProfile().SAME_AS(), res );
+    }
+
+    /**
+     * <p>Answer a resource that is declared to be the same as this resource. If there is
+     * more than one such resource, an arbitrary selection is made.</p>
+     * @return res An ont resource that declared to be the same as this resource
+     * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.   
+     */ 
+    public OntResource getSameAs() {
+        checkProfile( getProfile().SAME_AS(), "SAME_AS" );
+        return (OntResource) getProperty( getProfile().SAME_AS() )
+                            .getObject()
+                            .as( OntResource.class );
+    }
+
+    /**
+     * <p>Answer an iterator over all of the resources that are declared to be the same as
+     * this resource. Each elemeent of the iterator will be an {@link #OntResource}.</p>
+     * @return An iterator over the resources equivalent to this resource.
+     * @exception OntProfileException If the {@link Profile#SAME_AS()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listSameAs() {
+        checkProfile( getProfile().SAME_AS(), "SAME_AS" );
+        return WrappedIterator.create( listProperties( getProfile().SAME_AS() ) )
+               .mapWith( new ObjectAsMapper( OntResource.class ) );
+    }
+
+    // differentFrom
+    
+    /**
+     * <p>Assert that the given resource and this resource are distinct. Any existing 
+     * statements for <code>differentFrom</code> will be removed.</p>
+     * @param res The resource that is declared to be distinct from this resource
+     * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.   
+     */ 
+    public void setDifferentFrom( Resource res ) {
+        checkProfile( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM" );
+        removeAll( getProfile().DIFFERENT_FROM() );
+        addDifferentFrom( res );
+    }
+
+    /**
+     * <p>Add a resource that is declared to be equivalent to this resource.</p>
+     * @param res A resource that declared to be the same as this resource
+     * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.   
+     */ 
+    public void addDifferentFrom( Resource res ) {
+        checkProfile( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM" );
+        addProperty( getProfile().DIFFERENT_FROM(), res );
+    }
+
+    /**
+     * <p>Answer a resource that is declared to be distinct from this resource. If there is
+     * more than one such resource, an arbitrary selection is made.</p>
+     * @return res An ont resource that declared to be different from this resource
+     * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.   
+     */ 
+    public OntResource getDifferentFrom() {
+        checkProfile( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM" );
+        return (OntResource) getProperty( getProfile().DIFFERENT_FROM() ).getObject().as( OntResource.class );
+    }
+
+    /**
+     * <p>Answer an iterator over all of the resources that are declared to be different from
+     * this resource. Each elemeent of the iterator will be an {@link #OntResource}.</p>
+     * @return An iterator over the resources different from this resource.
+     * @exception OntProfileException If the {@link Profile#DIFFERENT_FROM()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listDifferentFrom() {
+        checkProfile( getProfile().DIFFERENT_FROM(), "DIFFERENT_FROM" );
+        return WrappedIterator.create( listProperties( getProfile().DIFFERENT_FROM() ) )
+               .mapWith( new ObjectAsMapper( OntResource.class ) );
+    }
+
+    // version info
+
+    /**
+     * <p>Assert that the given string is the value of the version info for this resource. Any existing 
+     * statements for <code>versionInfo</code> will be removed.</p>
+     * @param info The version information for this resource
+     * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.   
+     */ 
+    public void setVersionInfo( String info ) {
+        checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
+        removeAll( getProfile().VERSION_INFO() );
+        addVersionInfo( info );
+    }
+
+    /**
+     * <p>Add the given version information to this resource.</p>
+     * @param info A version information string for this resource 
+     * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.   
+     */ 
+    public void addVersionInfo( String info ) {
+        checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
+        addProperty( getProfile().VERSION_INFO(), getModel().createTypedLiteral( info, null, XSDDatatype.XSDstring ) );
+    }
+
+    /**
+     * <p>Answer the version information string for this object. If there is
+     * more than one such resource, an arbitrary selection is made.</p>
+     * @return A version info string
+     * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.   
+     */ 
+    public String getVersionInfo() {
+        checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
+        return getProperty( getProfile().VERSION_INFO() ).getString();
+    }
+
+    /**
+     * <p>Answer an iterator over all of the version info strings for this resource.</p>
+     * @return An iterator over the version info strings for this resource.
+     * @exception OntProfileException If the {@link Profile#VERSION_INFO()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listVersionInfo() {
+        checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
+        return WrappedIterator.create( listProperties( getProfile().VERSION_INFO() ) )
+               .mapWith( new ObjectAsStringMapper() );
+    }
+
+    // label
+    
+    /**
+     * <p>Assert that the given string is the value of the label for this resource. Any existing 
+     * statements for <code>label</code> will be removed.</p>
+     * @param label The label for this resource
+     * @param lang The language attribute for this label (EN, FR, etc) or null if not specified. 
+     * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.   
+     */ 
+    public void setLabel( String label, String lang ) {
+        checkProfile( getProfile().LABEL(), "LABEL" );
+        removeAll( getProfile().LABEL() );
+        addLabel( label, lang );
+    }
+
+    /**
+     * <p>Add the given label to this resource.</p>
+     * @param label A label string for this resource
+     * @param lang The language attribute for this label (EN, FR, etc) or null if not specified. 
+     * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.   
+     */ 
+    public void addLabel( String label, String lang ) {
+        addLabel( getModel().createTypedLiteral( label, lang, XSDDatatype.XSDstring ) );
+    }
+
+    /**
+     * <p>Add the given label to this resource.</p>
+     * @param label The literal label
+     * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.   
+     */ 
+    public void addLabel( Literal label ) {
+        checkProfile( getProfile().LABEL(), "LABEL" );
+        addProperty( getProfile().LABEL(), label );
+    }
+
+    /**
+     * <p>Answer the label string for this object. If there is
+     * more than one such resource, an arbitrary selection is made.</p>
+     * @param lang The language attribute for the desired label (EN, FR, etc) or null for don't care. Will 
+     * attempt to retreive the most specific label matching the given language</p>
+     * @return A label string matching the given language, or null if there is no matching label.
+     * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.   
+     */ 
+    public String getLabel( String lang ) {
+        checkProfile( getProfile().LABEL(), "LABEL" );
+        if (lang == null) {
+            // don't care which language version we get
+            return getProperty( getProfile().LABEL() ).getString();
+        }
+        else {
+            // search for the best match for the specified language
+            return selectLang( listProperties( getProfile().LABEL() ), lang );
+        }
+    }
+
+    /**
+     * <p>Answer an iterator over all of the label literals for this resource.</p>
+     * @return An iterator over RDF {@link Literal}'s.
+     * @exception OntProfileException If the {@link Profile#LABEL()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listLabels() {
+        checkProfile( getProfile().LABEL(), "LABEL" );
+        return WrappedIterator.create( listProperties( getProfile().LABEL() ) )
+               .mapWith( new ObjectMapper() );
+    }
+
+    // comment
+
+    /**
+     * <p>Assert that the given string is the comment on this resource. Any existing 
+     * statements for <code>comment</code> will be removed.</p>
+     * @param comment The comment for this resource
+     * @param lang The language attribute for this comment (EN, FR, etc) or null if not specified. 
+     * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.   
+     */ 
+    public void setComment( String comment, String lang ) {
+        checkProfile( getProfile().COMMENT(), "COMMENT" );
+        removeAll( getProfile().COMMENT() );
+        addComment( comment, lang );
+    }
+
+    /**
+     * <p>Add the given comment to this resource.</p>
+     * @param comment A comment string for this resource
+     * @param lang The language attribute for this comment (EN, FR, etc) or null if not specified. 
+     * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.   
+     */ 
+    public void addComment( String comment, String lang ) {
+        addComment( getModel().createTypedLiteral( comment, lang, XSDDatatype.XSDstring ) );
+    }
+
+    /**
+     * <p>Add the given comment to this resource.</p>
+     * @param comment The literal comment
+     * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.   
+     */ 
+    public void addComment( Literal comment ) {
+        checkProfile( getProfile().COMMENT(), "COMMENT" );
+        addProperty( getProfile().COMMENT(), comment );
+    }
+
+    /**
+     * <p>Answer the comment string for this object. If there is
+     * more than one such resource, an arbitrary selection is made.</p>
+     * @param lang The language attribute for the desired comment (EN, FR, etc) or null for don't care. Will 
+     * attempt to retreive the most specific comment matching the given language</p>
+     * @return A comment string matching the given language, or null if there is no matching comment.
+     * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.   
+     */ 
+    public String getComment( String lang ) {
+        checkProfile( getProfile().COMMENT(), "COMMENT" );
+        if (lang == null) {
+            // don't care which language version we get
+            return getProperty( getProfile().COMMENT() ).getString();
+        }
+        else {
+            // search for the best match for the specified language
+            return selectLang( listProperties( getProfile().COMMENT() ), lang );
+        }
+    }
+
+    /**
+     * <p>Answer an iterator over all of the comment literals for this resource.</p>
+     * @return An iterator over RDF {@link Literal}'s.
+     * @exception OntProfileException If the {@link Profile#COMMENT()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listComments() {
+        checkProfile( getProfile().COMMENT(), "COMMENT" );
+        return WrappedIterator.create( listProperties( getProfile().COMMENT() ) )
+               .mapWith( new ObjectMapper() );
+    }
+
+    
+    // seeAlso
+    
+    /**
+     * <p>Assert that the given resource provides additional information about the definition of this resource</p>
+     * @param res A resource that can provide additional information about this resource
+     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
+     */ 
+    public void setSeeAlso( Resource res ) {
+        checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
+        removeAll( getProfile().SEE_ALSO() );
+        addSeeAlso( res );
+    }
+
+    /**
+     * <p>Add a resource that is declared to provided additional information about the definition of this resource</p>
+     * @param res A resource that provides extra information on this resource
+     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
+     */ 
+    public void addSeeAlso( Resource res ) {
+        checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
+        addProperty( getProfile().SEE_ALSO(), res );
+    }
+
+    /**
+     * <p>Answer a resource that provides additional information about this resource. If more than one such resource
+     * is defined, make an arbitrary choice.</p>
+     * @return res A resource that provides additional information about this resource
+     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
+     */ 
+    public Resource getSeeAlso() {
+        checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
+        return (Resource) getProperty( getProfile().SEE_ALSO() ).getObject();
+    }
+
+    /**
+     * <p>Answer an iterator over all of the resources that are declared to provide addition
+     * information about this resource.</p>
+     * @return An iterator over the resources providing additional definition on this resource.
+     * @exception OntProfileException If the {@link Profile#SEE_ALSO()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listSeeAlso() {
+        checkProfile( getProfile().SEE_ALSO(), "SEE_ALSO" );
+        return WrappedIterator.create( listProperties( getProfile().SEE_ALSO() ) )
+               .mapWith( new ObjectMapper() );
+    }
+
+    // is defined by
+    
+    /**
+     * <p>Assert that the given resource provides a source of definitions about this resource. Any existing 
+     * statements for <code>isDefinedBy</code> will be removed.</p>
+     * @param res The resource that is declared to be a definition of this resource.
+     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
+     */ 
+    public void setIsDefinedBy( Resource res ) {
+        checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
+        removeAll( getProfile().IS_DEFINED_BY() );
+        addIsDefinedBy( res );
+    }
+
+    /**
+     * <p>Add a resource that is declared to provide a definition of this resource.</p>
+     * @param res A defining resource 
+     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
+     */ 
+    public void addIsDefinedBy( Resource res ) {
+        checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
+        addProperty( getProfile().IS_DEFINED_BY(), res );
+    }
+
+    /**
+     * <p>Answer a resource that is declared to provide a definition of this resource. If there is
+     * more than one such resource, an arbitrary selection is made.</p>
+     * @return res An ont resource that is declared to provide a definition of this resource
+     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
+     */ 
+    public Resource getIsDefinedBy() {
+        checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
+        return (Resource) getProperty( getProfile().IS_DEFINED_BY() ).getObject();
+    }
+
+    /**
+     * <p>Answer an iterator over all of the resources that are declared to define
+     * this resource. </p>
+     * @return An iterator over the resources defining this resource.
+     * @exception OntProfileException If the {@link Profile#IS_DEFINED_BY()} property is not supported in the current language profile.   
+     */ 
+    public Iterator listIsDefinedBy() {
+        checkProfile( getProfile().IS_DEFINED_BY(), "IS_DEFINED_BY" );
+        return WrappedIterator.create( listProperties( getProfile().IS_DEFINED_BY() ) )
+               .mapWith( new ObjectMapper() );
     }
 
 
     /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>sameIndidualAs</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * A synonym for {@link #p_sameAs sameAs}.
-     * </p>
-     * 
-     * @return An abstract accessor for identity between individuals
+     * <p>Answer the cardinality of the given property on this resource. The cardinality
+     * is the number of distinct values there are for the property.</p>
+     * @param p A property
+     * @return The cardinality for the property <code>p</code> on this resource, as an
+     * integer greater than or equal to zero.
      */
-    public PathSet p_sameIndividualAs() {
-        return asPathSet( getProfile().SAME_INDIVIDUAL_AS() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>differentFrom</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for asserting non-identity between individuals
-     */
-    public PathSet p_differentFrom() {
-        return asPathSet( getProfile().DIFFERENT_FROM() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>versionInfo</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the owl:versionInfo annotation property
-     */
-    public PathSet p_versionInfo() {
-        return asPathSet( getProfile().VERSION_INFO() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>label</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the rdfs:label annotation property
-     */
-    public PathSet p_label() {
-        return asPathSet( getProfile().LABEL() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>comment</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the rdfs:comment annotation property
-     */
-    public PathSet p_comment() {
-        return asPathSet( getProfile().COMMENT() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>seeAlso</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the rdfs:seeAlso annotation property
-     */
-    public PathSet p_seeAlso() {
-        return asPathSet( getProfile().SEE_ALSO() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>isDefinedBy</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for the rdfs:isDefinedBy annotation property
-     */
-    public PathSet p_isDefinedBy() {
-        return asPathSet( getProfile().IS_DEFINED_BY() );
+    public int getCardinality( Property p ) {
+        int n = 0;
+        for (Iterator i = listProperties( p );  i.hasNext(); n++) {
+            i.next(); 
+        }
+        
+        return n;
     }
     
     
@@ -227,10 +508,11 @@ public abstract class OntResourceImpl
      * </p>
      * 
      * @param p A property
+     * @param name The name of the property, so that an appropriate message can be printed if not in the profile
      * @return An abstract accessor for the property p
      */
-    public PathSet accessor( Property p ) {
-        return asPathSet( p );
+    public PathSet accessor( Property p, String name ) {
+        return asPathSet( p, name );
     }
     
     
@@ -440,14 +722,64 @@ public abstract class OntResourceImpl
     //////////////////////////////////
 
 
-    protected PathSet asPathSet( Property p ) {
+    protected PathSet asPathSet( Property p, String name ) {
         if (p == null) {
-            // TODO ideally should name the property to be helpful here
-            throw new OntologyException( "This property is not defined in the current language profile" );
+            throw new ProfileException( name, getProfile() );
         }
         else {
             return new PathSet( this, PathFactory.unit( p ) );
         }
+    }
+    
+    /** 
+     * Throw an exception if a term is not in the profile
+     * @param term The term being checked
+     * @param name The name of the term
+     * @exception ProfileException if term is null (indicating it is not in the profile) 
+     **/
+    protected void checkProfile( Object term, String name ) {
+        if (term == null) {
+            throw new ProfileException( name, getProfile() );
+        }
+    }
+    
+    
+    /**
+     * <p>Answer the literal with the language tag that best matches the required language</p>
+     * @param stmts A StmtIterator over the candidates
+     * @param lang The language we're searching for, assumed non-null.
+     * @return The literal value that best matches the given language tag, or null if there are no matches
+     */
+    protected String selectLang( StmtIterator stmts, String lang ) {
+        String found = null;
+        
+        while (stmts.hasNext()) {
+            RDFNode n = stmts.nextStatement().getObject();
+            
+            if (n instanceof Literal) {
+                Literal l = (Literal) n; 
+                String lLang = l.getLanguage();
+                
+                // is this a better match?
+                if (lang.equals( lLang )) {
+                    // exact match
+                    found = l.getString();
+                    break;
+                }
+                else if (lang.equals( lLang.substring( 0, 2 ) )) {
+                    // partial match - want EN, found EN-GB
+                    // keep searching in case there's a better
+                    found = l.getString();
+                }
+                else if (found == null && lLang == null) {
+                    // found a string with no (i.e. default) language - keep this unless we've got something better
+                    found = l.getString();
+                }
+            }
+        }
+        
+        stmts.close();
+        return found;
     }
     
     
@@ -455,6 +787,46 @@ public abstract class OntResourceImpl
     // Inner class definitions
     //==============================================================================
 
+    /** Implementation of Map1 that performs as( Class ) for a given class */
+    protected class AsMapper
+        implements Map1
+    {
+        private Class m_as;
+        protected AsMapper( Class as ) { m_as = as; }
+        public Object map1( Object x ) { return (x instanceof Resource) ? ((Resource) x).as( m_as ) : x; }
+    }
+    
+    /** Implementation of Map1 that performs as( Class ) for a given class, on the subject of a statement */
+    protected class SubjectAsMapper
+        implements Map1
+    {
+        private Class m_as;
+        protected SubjectAsMapper( Class as ) { m_as = as; }
+        public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getSubject().as( m_as ) : x; }
+    }
+    
+    /** Implementation of Map1 that performs as( Class ) for a given class, on the object of a statement */
+    protected class ObjectAsMapper
+        implements Map1
+    {
+        private Class m_as;
+        protected ObjectAsMapper( Class as ) { m_as = as; }
+        public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getObject().as( m_as ) : x; }
+    }
+    
+    /** Implementation of Map1 that performs getString on the object of a statement */
+    protected class ObjectAsStringMapper
+        implements Map1
+    {
+        public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getString() : x; }
+    }
+    
+    /** Implementation of Map1 that returns the object of a statement */
+    protected class ObjectMapper
+        implements Map1
+    {
+        public Object map1( Object x ) { return (x instanceof Statement) ? ((Statement) x).getObject() : x; }
+    }
 }
 
 
