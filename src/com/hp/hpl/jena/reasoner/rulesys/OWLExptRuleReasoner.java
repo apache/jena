@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLExptRuleReasoner.java,v 1.4 2003-08-15 16:11:35 der Exp $
+ * $Id: OWLExptRuleReasoner.java,v 1.5 2003-08-18 16:55:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,12 +23,13 @@ import com.hp.hpl.jena.graph.*;
  * A hybrid forward/backward implementation of the OWL closure rules - experimental variant.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-15 16:11:35 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-18 16:55:04 $
  */
 public class OWLExptRuleReasoner extends FBLPRuleReasoner  {
     
     /** The location of the OWL rule definitions on the class path */
     protected static final String RULE_FILE = "etc/owl-fb-test.rules";
+//    protected static final String RULE_FILE = "etc/owl-fb.rules";
     
     /** The parsed rules */
     protected static List ruleSet;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.16 2003-08-11 22:09:06 der Exp $
+ * $Id: DebugOWL.java,v 1.17 2003-08-18 16:54:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,6 +21,7 @@ import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.reasoner.rulesys.implb.FBLPRuleInfGraph;
 import com.hp.hpl.jena.reasoner.rulesys.implb.FBLPRuleReasoner;
 //import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
@@ -33,7 +34,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-08-11 22:09:06 $
+ * @version $Revision: 1.17 $ on $Date: 2003-08-18 16:54:53 $
  */
 public class DebugOWL {
 
@@ -73,8 +74,8 @@ public class DebugOWL {
     /** reasoner config: normal RDFS */
     public static final int RDFSFB = 4;
     
-    /** reasoner config: experimental RDFS - hybrid + TGC */
-    public static final int RDFSExpt = 5;
+    /** reasoner config: final RDFS - hybrid + TGC */
+    public static final int RDFSFinal = 5;
     
     /** reasoner config: experimental OWL */
     public static final int OWLExpt = 6;
@@ -121,7 +122,7 @@ public class DebugOWL {
                 reasoner = RDFSFBRuleReasonerFactory.theInstance().create(null);
                 break;
             
-            case RDFSExpt:
+            case RDFSFinal:
                 reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
                 break;
             
@@ -242,6 +243,9 @@ public class DebugOWL {
 //            infgraph = reasoner.bindSchema(schema).bind(testdata);
             infgraph = reasoner.bind(new Union(schema, testdata));
         }
+//        if (infgraph instanceof FBLPRuleInfGraph) {
+//            ((FBLPRuleInfGraph)infgraph).resetLPProfile(true);
+//        }
     }
     
     /**
@@ -286,6 +290,9 @@ public class DebugOWL {
         createTest(depth, NS, NI, withProps);
         long t = listC0(false);
         System.out.println("Took " + t + "ms");
+        if (infgraph instanceof FBLPRuleInfGraph) {
+            ((FBLPRuleInfGraph)infgraph).printLPProfile();
+        }
     }
     
     /**
@@ -295,7 +302,7 @@ public class DebugOWL {
         runVolz(3,5,10, false);
         runVolz(3,5,10, false);
         runVolz(4,5,10, false);
-        runVolz(5,5,10, false);
+//        runVolz(5,5,10, false);
         
 //        runVolz(3,5,30, false);
 //        runVolz(4,5,30, false);
@@ -335,12 +342,14 @@ public class DebugOWL {
 //            new DebugOWL(OWLExpt).runVolz();
             
             // Test volz examples on RDFS config
-//            System.out.println("Volz tests on RDFSRule");
-//            new DebugOWL(RDFSExpt).runVolz();
-            System.out.println("Volz tests on expt, not tgc just type rules");
-            new DebugOWL(EXPT).runVolz();
-            System.out.println("Volz tests on lp variant of expt, not tgc just type rules");
+            System.out.println("Volz tests on normal RDFS, tgc + type rules");
+            new DebugOWL(RDFSFinal).runVolz();
+            System.out.println("Volz tests on normal OWL-FB");
+            new DebugOWL(OWLFB).runVolz();
+            System.out.println("Volz tests on lp + expt RDFS rules");
             new DebugOWL(RDFSLPExpt).runVolz();
+            System.out.println("Volz tests on lp + expt owl rules");
+            new DebugOWL(OWLExpt).runVolz();
                         
 //            DebugOWL tester = new DebugOWL(OWLFB);
 //            tester.load(dataFile2);

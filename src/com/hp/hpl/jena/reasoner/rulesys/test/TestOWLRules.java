@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestOWLRules.java,v 1.16 2003-08-17 20:09:56 der Exp $
+ * $Id: TestOWLRules.java,v 1.17 2003-08-18 16:54:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -20,7 +20,7 @@ import java.io.IOException;
  * Test suite to test the production rule version of the OWL reasoner
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-08-17 20:09:56 $
+ * @version $Revision: 1.17 $ on $Date: 2003-08-18 16:54:53 $
  */
 public class TestOWLRules extends TestCase {
 
@@ -63,7 +63,7 @@ public class TestOWLRules extends TestCase {
         suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest001.rdf"));
         suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest002.rdf"));
         suite.addTest(new TestOWLRules("InverseFunctionalProperty/Manifest003.rdf"));
-//        
+        
         suite.addTest(new TestOWLRules("rdf-charmod-uris/Manifest.rdf"));
         suite.addTest(new TestOWLRules("I5.5/Manifest001.rdf"));
         suite.addTest(new TestOWLRules("I5.5/Manifest002.rdf"));
