@@ -19,7 +19,7 @@ import com.hp.hpl.jena.util.iterator.*;
 * This is mostly used to simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.10 $
+* @version $Revision: 1.11 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -154,13 +154,15 @@ public class DBConnection implements IDBConnection {
 	 * @see com.hp.hpl.jena.db.IDBConnection#isFormatOK()
 	 */
 	public boolean isFormatOK() {
-		try {
+// Removed exception trap, an exception might be a connection
+// failure on a well formated database - der 24/7/04        
+//		try {
 			if( m_driver == null )
 				m_driver = getDriver();
 			return m_driver.isDBFormatOK();
-		} catch (Exception e) {
-			return false;
-		}
+//		} catch (Exception e) {
+//			return false;
+//		}
 	}
 
 	/* (non-Javadoc)

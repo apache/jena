@@ -51,7 +51,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.39 $ on $Date: 2004-03-11 21:48:41 $
+* @version $Revision: 1.40 $ on $Date: 2004-07-24 21:43:57 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -291,10 +291,13 @@ public abstract class DriverRDB implements IRDBDriver {
 		setTableNames(TABLE_NAME_PREFIX);
 			
 		if( !isDBFormatOK() ) {
-			// Re-format the DB
-			cleanDB();
-			prefixCache = new LRUCache(PREFIX_CACHE_SIZE);
-			return formatAndConstructSystemSpecializedGraph();
+                    throw new JenaException("The database appears to be unformatted or corrupted.\n" +
+                        "If possible, call IDBConnection.cleanDB(). \n" +
+                        "Warning: cleanDB will remove all Jena models from the databases.");
+//			// Re-format the DB
+//			cleanDB();
+//			prefixCache = new LRUCache(PREFIX_CACHE_SIZE);
+//			return formatAndConstructSystemSpecializedGraph();
 		}
 		prefixCache = new LRUCache(PREFIX_CACHE_SIZE);
         getDbInitTablesParams();  //this call is a hack. it's needed because
@@ -647,7 +650,7 @@ public abstract class DriverRDB implements IRDBDriver {
 					alltables.close();
 					result = i >= 5;
 			} catch (Exception e1) {
-					// if anything goes wrong, the database is not formatted correctly;
+                            throw new JenaException("DB connection problem while testing formating", e1);
 			}
 			return result;
 	}
