@@ -49,7 +49,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.28 $ on $Date: 2003-08-25 02:16:36 $
+* @version $Revision: 1.29 $ on $Date: 2003-08-26 01:49:23 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -731,7 +731,7 @@ public abstract class DriverRDB implements IRDBDriver {
 		ResultSetIterator it = null;
 		try {
 			String opname = "SelectJenaSequences";
-			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname);
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, TABLE_NAME_PREFIX);
 		    ResultSet rs = ps.executeQuery();
 		    while (rs.next()) {
 		    	results.add(rs.getString(1));
