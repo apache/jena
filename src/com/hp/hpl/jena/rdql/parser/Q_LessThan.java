@@ -1,5 +1,5 @@
 /*
- * (c) Copyright 2001, 2002, 2003, 2004 2004, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004, Hewlett-Packard Development Company, LP
  * [See end of file]
  */
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdql.*;
 
 /** 
  * @author Automatically generated class: Operator: LessThan
- * @version $Id: Q_LessThan.java,v 1.6 2004-05-28 16:57:31 andy_seaborne Exp $
+ * @version $Id: Q_LessThan.java,v 1.7 2004-07-30 13:43:53 andy_seaborne Exp $
  */
 
 public class Q_LessThan extends ExprNode implements Expr, ExprBoolean
@@ -112,7 +112,7 @@ public class Q_LessThan extends ExprNode implements Expr, ExprBoolean
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

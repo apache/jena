@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Q_String.java,v 1.5 2004-05-28 16:57:32 andy_seaborne Exp $
+ * $Id: Q_String.java,v 1.6 2004-07-30 13:43:53 andy_seaborne Exp $
  */
 
 
@@ -19,7 +19,7 @@ public class Q_String extends SimpleNode {
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

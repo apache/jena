@@ -5,7 +5,7 @@
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: NodeValueSettable.java,v 1.1 2004-05-28 16:57:31 andy_seaborne Exp $
+ * @version  $Id: NodeValueSettable.java,v 1.2 2004-07-30 13:43:53 andy_seaborne Exp $
  */
 
 package com.hp.hpl.jena.rdql.parser;
@@ -24,7 +24,7 @@ interface NodeValueSettable extends NodeValue
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2004 2004 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
