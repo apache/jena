@@ -34,7 +34,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class ModelRDB extends ModelCom implements Model {    
     
@@ -425,6 +425,15 @@ public class ModelRDB extends ModelCom implements Model {
 	public boolean getQueryFullReified() {
 		return ((DBQueryHandler)m_graphRDB.queryHandler()).getQueryFullReified();
 	}
+	
+	/**
+	 * Set the value of DoImplicitJoin.
+	 * @param val boolean
+	 */
+	public void setDoImplicitJoin ( boolean val ) {
+		((DBQueryHandler)m_graphRDB.queryHandler()).setDoImplicitJoin(val);
+	}
+
 	
 }
 
