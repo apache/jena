@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000-2003
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.1 2003-04-01 10:44:56 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.2 2003-04-09 12:09:53 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -28,7 +28,11 @@ public class MoreTests extends TestCase implements RDFErrorHandler, ARPErrorNumb
    public void testEncodingMismatch1() throws IOException {
       Model m = new ModelMem();
       RDFReader rdr = m.getReader();
-      Reader r = new FileReader("testing/wg/rdfms-syntax-incomplete/test001.rdf");
+      FileReader r = new FileReader("testing/wg/rdfms-syntax-incomplete/test001.rdf");
+     if ( r.getEncoding().startsWith("UTF")) {
+       System.err.println("WARNING: Encoding mismatch tests not executed on platform with default UTF encoding.");
+       return;
+     }
       rdr.setErrorHandler(this);
     expected = new int[]{WARN_ENCODING_MISMATCH};
       rdr.read(m,r,"http://example.org/");
@@ -41,7 +45,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler, ARPErrorNumb
        RDFReader rdr = m.getReader();
        FileReader r = new FileReader("testing/wg/rdf-charmod-literals/test001.rdf");
        if ( r.getEncoding().startsWith("UTF")) {
-         System.err.println("WARNING: Encoding mismatch tests not executed on platform with default UTF encoding.");
+        // see above for warning message.
          return;
        }
        rdr.setErrorHandler(this);
