@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.23 2003-09-30 15:34:28 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.24 2003-10-02 08:35:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -142,17 +142,97 @@ public class GraphMem extends GraphBase implements Graph
         Node ms = tm.getSubject();
         // @@ some redundant compares in this code which could be improved
         if (ms.isConcrete()) {
-            return new TripleMatchIterator(tm, subjects.iterator( ms ));
+            return subjectIterator(tm, ms);
         } else if (o != null && !o.isLiteral()) {
             // der - added guard on isLiteral to support typed literal semantics
-            return new TripleMatchIterator(tm, objects.iterator(o));
+            return objectIterator(tm, o);
         } else if (p != null) {
-            return new TripleMatchIterator(tm, predicates.iterator(p));
+            return predicateIterator( tm, p );
         } else {
-            return new TripleMatchIterator(tm, triples.iterator());
+            return baseIterator( tm );
         }
     }
 
+    private TripleMatchIterator objectIterator(Triple tm, Node o)
+        {
+        return new TripleMatchIterator(tm, objects.iterator(o))
+            {
+            private Object current;
+            
+            public Object next()
+                { return current = super.next(); }       
+             
+            public void remove()
+                {
+                Triple t = (Triple) current;
+                super.remove();     
+                triples.remove( t );
+                predicates.remove( t.getSubject(), t );
+                subjects.remove( t.getObject(), t );
+                }       
+            };
+        }
+
+    private TripleMatchIterator subjectIterator(Triple tm, Node ms)
+        {
+        return new TripleMatchIterator(tm, subjects.iterator( ms ))
+            {
+            private Object current;
+            
+            public Object next()
+                { return current = super.next(); }       
+             
+            public void remove()
+                {
+                Triple t = (Triple) current;
+                super.remove();     
+                triples.remove( t );
+                predicates.remove( t.getSubject(), t );
+                objects.remove( t.getObject(), t );
+                }       
+            };
+        }
+
+    private TripleMatchIterator predicateIterator(Triple tm, Node p)
+        {
+        return new TripleMatchIterator(tm, predicates.iterator(p))
+            {
+            private Object current;
+            
+            public Object next()
+                { return current = super.next(); }       
+             
+            public void remove()
+                {
+                Triple t = (Triple) current;
+                super.remove();     
+                triples.remove( t );
+                subjects.remove( t.getSubject(), t );
+                objects.remove( t.getObject(), t );
+                }   
+            };
+        }
+
+    protected ExtendedIterator baseIterator( Triple t )
+        {
+        return new TripleMatchIterator( t, triples.iterator() )
+            {
+            private Object current;
+            
+            public Object next()
+                { return current = super.next(); }       
+            
+            public void remove()
+                {
+                Triple t = (Triple) current;
+                super.remove();    
+                subjects.remove( t.getSubject(), t );
+                predicates.remove( t.getPredicate(), t );
+                objects.remove( t.getObject(), t );
+                }
+            };
+        }
+        
     protected static class NodeMap {
         HashMap map = new HashMap();
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.1 2003-09-29 14:08:52 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.2 2003-10-02 08:35:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.mem.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.*;
 import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
 import junit.framework.*;
 
@@ -25,6 +26,41 @@ public class TestGraphMem extends AbstractTestGraph
         
     public Graph getGraph()
         { return new GraphMem(); }
+        
+    public void testBrokenIndexes()
+        {
+        Graph g = graphWith( "x R y; x S z" );
+        ExtendedIterator it = g.find( Node.ANY, Node.ANY, Node.ANY );
+        it.next(); it.remove(); it.next(); it.remove();
+        assertFalse( g.find( node( "x" ), Node.ANY, Node.ANY ).hasNext() );
+        assertFalse( g.find( Node.ANY, node( "R" ), Node.ANY ).hasNext() );
+        assertFalse( g.find( Node.ANY, Node.ANY, node( "y" ) ).hasNext() );
+        }   
+            
+    public void testBrokenSubject()
+        {
+        Graph g = graphWith( "x R y" );
+        ExtendedIterator it = g.find( node( "x" ), Node.ANY, Node.ANY );
+        it.next(); it.remove();
+        assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
+        }
+        
+    public void testBrokenPredicate()
+        {
+        Graph g = graphWith( "x R y" );
+        ExtendedIterator it = g.find( Node.ANY, node( "R"), Node.ANY );
+        it.next(); it.remove();
+        assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
+        }
+        
+    public void testBrokenObject()
+        {
+        Graph g = graphWith( "x R y" );
+        ExtendedIterator it = g.find( Node.ANY, Node.ANY, node( "y" ) );
+        it.next(); it.remove();
+        assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
+        }
+               
     }
 
 
