@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.16 2003-06-13 19:09:29 ian_dickinson Exp $
+  $Id: ModelFactory.java,v 1.17 2003-06-22 16:10:50 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -13,7 +13,6 @@ import com.hp.hpl.jena.db.impl.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.ontology.daml.impl.DAMLModelImpl;
@@ -169,8 +168,7 @@ public class ModelFactory extends ModelFactoryBase
      * @param model the Model containing both instance data and schema assertions to be inferenced over
      */
     public static Model createRDFSModel(Model model) {
-         ReasonerFactory rf = RDFSReasonerFactory.theInstance();
-         Reasoner reasoner  = rf.create(null);
+         Reasoner reasoner = ReasonerRegistry.getRDFSReasoner();
          InfGraph graph     = reasoner.bind(model.getGraph());
          return createModelForGraph(graph);
     }
@@ -191,8 +189,7 @@ public class ModelFactory extends ModelFactoryBase
      * @param schema a Model containing RDFS schema data
      */
     public static Model createRDFSModel(Model schema, Model model) {
-         ReasonerFactory rf = RDFSReasonerFactory.theInstance();
-         Reasoner reasoner  = rf.create(null);
+         Reasoner reasoner = ReasonerRegistry.getRDFSReasoner();
          InfGraph graph     = reasoner.bindSchema(schema.getGraph()).bind(model.getGraph());
          return createModelForGraph(graph);
     }

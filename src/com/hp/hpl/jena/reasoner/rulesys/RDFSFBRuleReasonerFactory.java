@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSFBRuleReasonerFactory.java,v 1.3 2003-06-16 17:01:57 der Exp $
+ * $Id: RDFSFBRuleReasonerFactory.java,v 1.4 2003-06-22 16:10:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * Factory class for creating blank instances of the hybrid rule RDFS reasoner. 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-16 17:01:57 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-22 16:10:31 $
  */
 public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
     
@@ -42,7 +42,7 @@ public class RDFSFBRuleReasonerFactory implements ReasonerFactory {
      * passed the reasoner encoded within an RDF graph, the current implemenation
      * is not configurable and will ignore this parameter.
      */
-    public Reasoner create(Model configuration) {
+    public Reasoner create(Resource configuration) {
         return new RDFSFBRuleReasoner(this);
     }
    

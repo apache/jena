@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DebugOWL.java,v 1.7 2003-06-17 15:51:08 der Exp $
+ * $Id: DebugOWL.java,v 1.8 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-17 15:51:08 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-22 16:10:50 $
  */
 public class DebugOWL {
 
@@ -112,7 +112,7 @@ public class DebugOWL {
                 break;
             
             case RDFSExpt:
-                reasoner = RDFSExptRuleReasonerFactory.theInstance().create(null);
+                reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
                 break;
             
         } 
@@ -141,8 +141,9 @@ public class DebugOWL {
      * @param depth the depth of the concept tree
      * @param NS the number of subclasses at each tree level
      * @param NI the number of instances of each concept
+     * @param withProps if true then properties are created for each concept and instiated for every third instance
      */
-    public void createTest(int depth, int NS, int NI) {
+    public void createTest(int depth, int NS, int NI, boolean withProps) {
         // Calculate total store sizes and allocate
         int numClasses = 0;
         int levelSize = 1;
@@ -151,8 +152,10 @@ public class DebugOWL {
             numClasses += levelSize;
         }
         concepts = new Node[numClasses];
+        properties = new Node[numClasses];
         instances = new Node[numClasses * NI];
-        logger.info("Classes: " + numClasses +" Instances: " + (numClasses * NI));
+        logger.info("Classes: " + numClasses +" Instances: " + (numClasses * NI)
+                        + (withProps ? " with properties" : ""));
         
         // Create the tree
         testdata = new GraphMem();
@@ -163,9 +166,14 @@ public class DebugOWL {
         int instancePtr = 0;
         for (int i = 0; i < depth; i++) {
             // Class tree
+            Node property = null;
             if (i == 0) {
                 for (int j = 0; j < NS; j++) {
                     Node concept = Node.createURI("concept" + conceptPtr);
+                    if (withProps) { 
+                        property = Node.createURI("prop" + conceptPtr);
+                        properties[conceptPtr] = property;
+                    }
                     concepts[conceptPtr++] = concept;
                 }
             } else {
@@ -173,6 +181,10 @@ public class DebugOWL {
                     Node superConcept = concepts[j];
                     for (int k = 0; k < NS; k++) {
                         Node concept = Node.createURI("concept" + conceptPtr);
+                        if (withProps) { 
+                            property = Node.createURI("prop" + conceptPtr);
+                            properties[conceptPtr] = property;
+                        }
                         concepts[conceptPtr++] = concept;
                         testdata.add(new Triple(concept, RDFS.subClassOf.asNode(), superConcept));
                     }
@@ -185,8 +197,11 @@ public class DebugOWL {
                 Node concept = concepts[j];
                 for (int k = 0; k < NI; k++) {
                     Node instance = Node.createURI("instance"+instancePtr);
-                    instances[instancePtr++] = instance;
                     testdata.add(new Triple(instance, RDF.type.asNode(), concept));
+                    if (withProps && (k-1)%3 == 0) {
+                        testdata.add(new Triple(instances[instancePtr-1], property, instance));
+                    }
+                    instances[instancePtr++] = instance;
                 }
             }
         }
@@ -233,8 +248,8 @@ public class DebugOWL {
     /**
      * Create and run a standard test.
      */
-    public void run(int depth, int NS, int NI) {
-        createTest(depth, NS, NI);
+    public void run(int depth, int NS, int NI, boolean withProps) {
+        createTest(depth, NS, NI, withProps);
         long t = listC0(false);
         System.out.println("Took " + t + "ms");
     }
@@ -243,13 +258,16 @@ public class DebugOWL {
      * Run a standard test squence based on Volz et al sets
      */
     public void run() {
-        run(3,5,10);
-        run(3,5,10);
-        run(4,5,10);
-        run(5,5,10);
-        run(3,5,30);
-        run(4,5,30);
-        run(5,5,30);
+        run(3,5,10, false);
+        run(3,5,10, false);
+        run(4,5,10, false);
+        run(5,5,10, false);
+        run(3,5,30, false);
+        run(4,5,30, false);
+        run(5,5,30, false);
+        run(3,5,10, true);
+        run(4,5,10, true);
+        run(5,5,10, true);
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLRuleReasonerFactory.java,v 1.6 2003-06-08 17:49:16 der Exp $
+ * $Id: OWLRuleReasonerFactory.java,v 1.7 2003-06-22 16:10:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-08 17:49:16 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-22 16:10:31 $
  */
 public class OWLRuleReasonerFactory implements ReasonerFactory {
     
@@ -53,16 +53,17 @@ public class OWLRuleReasonerFactory implements ReasonerFactory {
     /**
      * Constructor method that builds an instance of the associated Reasoner
      * @param configuration a set of arbitrary configuration information to be 
-     * passed the reasoner encoded within an RDF graph
+     * passed the reasoner, encoded as RDF properties of a base configuration resource,
+     * can be null in no custom configuration is required.
      */
-    public Reasoner create(Model configuration) {
+    public Reasoner create(Resource configuration) {
         OWLRuleReasoner reasoner = new OWLRuleReasoner();
         if (configuration != null) {
-            Boolean doLog = Util.checkBinaryPredicate(URI, ReasonerVocabulary.PROPderivationLogging, configuration);
+            Boolean doLog = Util.checkBinaryPredicate(ReasonerVocabulary.PROPderivationLogging, configuration);
             if (doLog != null) {
                 reasoner.setDerivationLogging(doLog.booleanValue());
             }
-            Boolean doTrace = Util.checkBinaryPredicate(URI, ReasonerVocabulary.PROPtraceOn, configuration);
+            Boolean doTrace = Util.checkBinaryPredicate(ReasonerVocabulary.PROPtraceOn, configuration);
             if (doTrace != null) {
                 reasoner.setTraceOn(doTrace.booleanValue());
             }

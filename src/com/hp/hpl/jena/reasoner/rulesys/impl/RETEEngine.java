@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEEngine.java,v 1.11 2003-06-19 12:58:05 der Exp $
+ * $Id: RETEEngine.java,v 1.12 2003-06-22 16:10:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-06-19 12:58:05 $
+ * @version $Revision: 1.12 $ on $Date: 2003-06-22 16:10:51 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -113,13 +113,13 @@ public class RETEEngine implements FRuleEngineI {
         if (infGraph.getRawGraph() != null) {
             // Insert the data
             if (wildcardRule) {
-                for (Iterator i = infGraph.getRawGraph().find(null, null, null); i.hasNext(); ) {
+                for (Iterator i = inserts.find(new TriplePattern(null, null, null)); i.hasNext(); ) {
                     addTriple((Triple)i.next(), false);
                 }
             } else {
                 for (Iterator p = predicatesUsed.iterator(); p.hasNext(); ) {
                     Node predicate = (Node)p.next();
-                    for (Iterator i = infGraph.getRawGraph().find(null, predicate, null); i.hasNext(); ) {
+                    for (Iterator i = inserts.find(new TriplePattern(null, predicate, null)); i.hasNext(); ) {
                         addTriple((Triple)i.next(), false);
                     }
                 }
@@ -127,20 +127,6 @@ public class RETEEngine implements FRuleEngineI {
         }
         // Run the engine
         runAll();
-//        if (wildcardRule) {
-//            for (Iterator i = inserts.find(new TriplePattern(null, null, null)); i.hasNext(); ) {
-//                addTriple((Triple)i.next(), false);
-//            }
-//        } else {
-//            for (Iterator p = predicatesUsed.iterator(); p.hasNext(); ) {
-//                Node predicate = (Node)p.next();
-//                for (Iterator i = inserts.find(new TriplePattern(null, predicate, null)); i.hasNext(); ) {
-//                    addTriple((Triple)i.next(), false);
-//                }
-//            }
-//        }
-//        // Run the engine
-//        runAll();
     }
 
     /**

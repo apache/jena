@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.10 2003-06-17 14:53:35 chris-dollin Exp $
+ * $Id: OWLWGTester.java,v 1.11 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-06-17 14:53:35 $
+ * @version $Revision: 1.11 $ on $Date: 2003-06-22 16:10:50 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -162,10 +162,10 @@ public class OWLWGTester {
         
         // Construct the inferred graph
         // Optional logging
-        Model configuration = null;
+        Resource configuration = null;
         if (log) {
-            configuration = ModelFactory.createDefaultModel();
-            configuration.createResource(reasonerF.getURI())
+            Model m = ModelFactory.createDefaultModel();
+            configuration = m.createResource()
                          .addProperty(ReasonerVocabulary.PROPtraceOn, "true")
                          .addProperty(ReasonerVocabulary.PROPderivationLogging, "true");
         }

@@ -1,41 +1,115 @@
 /******************************************************************
  * File:        RDFSRuleReasoner.java
  * Created by:  Dave Reynolds
- * Created on:  06-Apr-03
+ * Created on:  16-Jun-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSRuleReasoner.java,v 1.6 2003-06-16 17:01:57 der Exp $
+ * $Id: RDFSRuleReasoner.java,v 1.7 2003-06-22 16:10:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import java.io.*;
 import java.util.*;
 
-import com.hp.hpl.jena.reasoner.ReasonerException;
-import com.hp.hpl.jena.reasoner.ReasonerFactory;
-/** * An pure forward chaining implementation of the RDFS closure rules
- * based upon the basic forward rule interpreter. The normal mixed
- * forward/backward implementation is generally preferred but this has 
- * two possible uses. First, it is a test and demonstration of the forward
- * chainer. Second, if you want all the RDFS entailments for an entire 
- * dataset the forward chainer will be more efficient.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.6 $ on $Date: 2003-06-16 17:01:57 $ */
-public class RDFSRuleReasoner extends GenericRuleReasoner {    
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.RDFSCMPPreprocessHook;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
+
+/**
+ * A full implemention of RDFS reasoning using a hybrid rule system, together
+ * with optimized subclass/subproperty closure using the transitive graph caches.
+ * Implements the container membership property rules using an optional
+ * data scanning hook. Implements datatype range validation.
+ * 
+ * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
+ * @version $Revision: 1.7 $ on $Date: 2003-06-22 16:10:31 $
+ */
+public class RDFSRuleReasoner extends GenericRuleReasoner {
+    
     /** The location of the OWL rule definitions on the class path */
-    public static final String RULE_FILE = "etc/rdfs.rules";
-//    public static final String RULE_FILE = "etc/rdfs-noresource.rules";
+    public static final String RULE_FILE = "etc/rdfs-fb-tgc.rules";
     
     /** The parsed rules */
     protected static List ruleSet;
+    
+    /** The (stateless) preprocessor for container membership properties */
+    protected static RulePreprocessHook cmpProcessor = new RDFSCMPPreprocessHook();
     
     /**
      * Constructor
      */
     public RDFSRuleReasoner(ReasonerFactory parent) {
         super(loadRules(), parent);
-//        setMode(FORWARD_RETE);
-        setMode(FORWARD);
+        setMode(HYBRID);
+        setTransitiveClosureCaching(true);
+        //addPreprocessingHook(new RDFSCMPPreprocessHook());
+    }
+    
+    /**
+     * Constructor
+     * @param factory the parent reasoner factory which is consulted to answer capability questions
+     * @param configuration RDF information to configure the rule set and mode, can be null
+     */
+    public RDFSRuleReasoner(ReasonerFactory factory, Resource configuration) {
+        this(factory);
+        if (configuration != null) {
+            StmtIterator i = configuration.listProperties();
+            while (i.hasNext()) {
+                Statement st = i.nextStatement();
+                doSetParameter(st.getPredicate().getURI(), st.getObject().toString());
+            }
+        }
+    }
+   
+    /**
+     * Internal version of setParameter that does not directly raise an
+     * exception on parameters it does not reconize.
+     * @return false if the parameter was not recognized
+     */
+    protected boolean doSetParameter(String parameterUri, Object value) {
+        if (parameterUri.equals(ReasonerVocabulary.PROPenableCMPScan.getURI())) {
+            boolean scanProperties = Util.convertBooleanPredicateArg(parameterUri, value);
+            if (scanProperties) {
+                addPreprocessingHook(cmpProcessor);
+            } else {
+                removePreprocessingHook(cmpProcessor);
+            }
+            return true;
+        } else {
+            return super.doSetParameter(parameterUri, value);
+        }
+    }
+    
+    /**
+     * Attach the reasoner to a set of RDF data to process.
+     * The reasoner may already have been bound to specific rules or ontology
+     * axioms (encoded in RDF) through earlier bindRuleset calls.
+     * 
+     * @param data the RDF data to be processed, some reasoners may restrict
+     * the range of RDF which is legal here (e.g. syntactic restrictions in OWL).
+     * @return an inference graph through which the data+reasoner can be queried.
+     * @throws ReasonerException if the data is ill-formed according to the
+     * constraints imposed by this reasoner.
+     */
+    public InfGraph bind(Graph data) throws ReasonerException {
+        Graph schemaArg = schemaGraph == null ? getPreload() : schemaGraph;
+        InfGraph graph = null; 
+        List ruleSet = ((FBRuleInfGraph)schemaArg).getRules();
+        FBRuleInfGraph fbgraph = new RDFSRuleInfGraph(this, ruleSet, schemaArg);
+        graph = fbgraph; 
+        if (enableTGCCaching) fbgraph.setUseTGCCache();
+        fbgraph.setTraceOn(traceOn);
+        if (preprocessorHooks!= null) {
+            for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
+                fbgraph.addPreprocessingHook((RulePreprocessHook)i.next());
+            }
+        }
+        graph.setDerivationLogging(recordDerivations);
+        graph.rebind(data);
+        return graph;
     }
     
     /**

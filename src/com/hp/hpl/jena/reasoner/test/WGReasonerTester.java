@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.13 2003-06-19 20:46:56 der Exp $
+ * $Id: WGReasonerTester.java,v 1.14 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -41,7 +41,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-06-19 20:46:56 $
+ * @version $Revision: 1.14 $ on $Date: 2003-06-22 16:10:50 $
  */
 public class WGReasonerTester {
 
@@ -160,7 +160,7 @@ public class WGReasonerTester {
      * @throws IOException if one of the test files can't be found
      * @throws RDFException if the test can't be found or fails internally
      */
-    public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Model configuration) throws IOException {
+    public boolean runTests(ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
         for (Iterator i = listTests().iterator(); i.hasNext(); ) {
             String test = (String)i.next();
             if (!runTest(test, reasonerF, testcase, configuration)) return false;
@@ -194,7 +194,7 @@ public class WGReasonerTester {
      * @throws IOException if one of the test files can't be found
      * @throws RDFException if the test can't be found or fails internally
      */
-    public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase, Model configuration) throws IOException {
+    public boolean runTest(String uri, ReasonerFactory reasonerF, TestCase testcase, Resource configuration) throws IOException {
         // Find the specification for the named test
         Resource test = testManifest.getResource(uri);
         Resource testType = (Resource)test.getProperty(RDF.type).getObject();

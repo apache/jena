@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasonerFactory.java,v 1.9 2003-06-08 17:49:51 der Exp $
+ * $Id: RDFSReasonerFactory.java,v 1.10 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -19,8 +19,11 @@ import com.hp.hpl.jena.vocabulary.*;
 /**
  * Factory class for creating blank instances of the RDFS reasoner.
  *
+ * @deprecated Obsoleted at jena2p4, replaced by 
+ * {@link com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory}.
+ * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-08 17:49:51 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-22 16:10:50 $
  */
 public class RDFSReasonerFactory implements ReasonerFactory {
     
@@ -47,9 +50,10 @@ public class RDFSReasonerFactory implements ReasonerFactory {
     /**
      * Constructor method that builds an instance of the associated Reasoner
      * @param configuration a set of arbitrary configuration information to be 
-     * passed the reasoner encoded within an RDF graph.
+     * passed the reasoner, encoded as RDF properties of a base configuration resource,
+     * can be null in no custom configuration is required.
      */
-    public Reasoner create(Model configuration) {
+    public Reasoner create(Resource configuration) {
         return new RDFSReasoner(configuration);
     }
    

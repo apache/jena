@@ -5,13 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRDFSReasoners.java,v 1.2 2003-06-19 20:46:56 der Exp $
+ * $Id: TestRDFSReasoners.java,v 1.3 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.reasoner.rdfsReasoner1.*;
-import com.hp.hpl.jena.reasoner.rulesys.RDFSExptRuleReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * Test the set of admissable RDFS reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-19 20:46:56 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-22 16:10:50 $
  */
 public class TestRDFSReasoners extends TestCase {
     
@@ -53,7 +53,7 @@ public class TestRDFSReasoners extends TestCase {
     public static TestSuite suite() {
         TestSuite suite = new TestSuite();
         try {
-            
+            // Even though it is deprecated, maintain the tests for now
             constructRDFWGtests(suite, RDFSReasonerFactory.theInstance(), null);
             constructQuerytests(suite, "rdfs/manifest.rdf", RDFSReasonerFactory.theInstance(), null);
 
@@ -62,10 +62,12 @@ public class TestRDFSReasoners extends TestCase {
 //            constructRDFWGtests(suite, RDFSFBRuleReasonerFactory.theInstance(), null);
             constructQuerytests(suite, "rdfs/manifest-nodirect-noresource.rdf", RDFSFBRuleReasonerFactory.theInstance(), null);
             
-//            constructRDFWGtests(suite, RDFSExptRuleReasonerFactory.theInstance(), null);
-            constructQuerytests(suite, "rdfs/manifest-nodirect-noresource.rdf", RDFSExptRuleReasonerFactory.theInstance(), null);
+            Resource config = new ModelMem().createResource().addProperty(ReasonerVocabulary.PROPenableCMPScan, true);
+//            config.addProperty(ReasonerVocabulary.PROPtraceOn, true);
+            constructRDFWGtests(suite, RDFSRuleReasonerFactory.theInstance(), null);
+            constructQuerytests(suite, "rdfs/manifest-standard.rdf", RDFSRuleReasonerFactory.theInstance(), config);
             
-            suite.addTest(new TestRDFSMisc(RDFSReasonerFactory.theInstance(), null));
+            suite.addTest(new TestRDFSMisc(RDFSRuleReasonerFactory.theInstance(), null));
             
         } catch (IOException e) {
             // failed to even built the test harness
@@ -75,9 +77,17 @@ public class TestRDFSReasoners extends TestCase {
     }  
     
     /**
-     * Building the query tests for the given reasoner.
+     * Build a single named query test
      */
-    private static void constructQuerytests(TestSuite suite, String manifest, ReasonerFactory rf, Model config) throws IOException {
+    private static void constructSingleQuerytests(TestSuite suite, String manifest, String test, ReasonerFactory rf, Resource config) throws IOException {
+        ReasonerTester tester = new ReasonerTester(manifest);
+        suite.addTest(new TestReasonerFromManifest(tester, test, rf, config));
+    }
+    
+    /**
+     * Build the query tests for the given reasoner.
+     */
+    private static void constructQuerytests(TestSuite suite, String manifest, ReasonerFactory rf, Resource config) throws IOException {
         ReasonerTester tester = new ReasonerTester(manifest);
         for (Iterator i = tester.listTests().iterator(); i.hasNext(); ) {
             String test = (String)i.next();
@@ -86,9 +96,9 @@ public class TestRDFSReasoners extends TestCase {
     }
     
     /**
-     * Building the working group tests for the given reasoner.
+     * Build the working group tests for the given reasoner.
      */
-    private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Model config) throws IOException {
+    private static void constructRDFWGtests(TestSuite suite, ReasonerFactory rf, Resource config) throws IOException {
         WGReasonerTester tester = new WGReasonerTester("Manifest.rdf");
         for (Iterator i = tester.listTests().iterator(); i.hasNext(); ) {
             String test = (String)i.next();
@@ -112,11 +122,11 @@ public class TestRDFSReasoners extends TestCase {
         ReasonerFactory reasonerFactory;
         
         /** An optional configuration model */
-        Model config;
+        Resource config;
         
         /** Constructor */
         TestReasonerFromManifest(ReasonerTester tester, String test, 
-                                 ReasonerFactory reasonerFactory, Model config) {
+                                 ReasonerFactory reasonerFactory, Resource config) {
             super(test);
             this.tester = tester;
             this.test = test;
@@ -150,11 +160,11 @@ public class TestRDFSReasoners extends TestCase {
         ReasonerFactory reasonerFactory;
         
         /** An optional configuration model */
-        Model config;
+        Resource config;
         
         /** Constructor */
         TestReasonerWG(WGReasonerTester tester, String test, 
-                                 ReasonerFactory reasonerFactory, Model config) {
+                                 ReasonerFactory reasonerFactory, Resource config) {
             super(test);
             this.tester = tester;
             this.test = test;
@@ -181,10 +191,10 @@ public class TestRDFSReasoners extends TestCase {
         ReasonerFactory reasonerFactory;
         
         /** An optional configuration model */
-        Model config;
+        Resource config;
         
         /** Constructor */
-        TestRDFSMisc(ReasonerFactory reasonerFactory, Model config) {
+        TestRDFSMisc(ReasonerFactory reasonerFactory, Resource config) {
             super("TestRDFSMisc");
             this.reasonerFactory = reasonerFactory;
             this.config = config;
@@ -196,11 +206,15 @@ public class TestRDFSReasoners extends TestCase {
         public void runTest() throws IOException {
             ReasonerTester tester = new ReasonerTester("rdfs/manifest.rdf");
             // Test effect of switching off property scan - should break container property test case
-            Model configuration = new ModelMem();
-            if (config != null) configuration.add(config);
-            configuration.createResource(RDFSReasonerFactory.URI)
-                         .addProperty(RDFSReasonerFactory.scanProperties, "false");
-            assertTrue("RDFS reasoner tests", 
+            Resource configuration = new ModelMem().createResource();
+            if (config != null) {
+                for (StmtIterator i = config.listProperties(); i.hasNext();) {
+                    Statement s = i.nextStatement();
+                    configuration.addProperty(s.getPredicate(), s.getObject());
+                }
+            }
+            configuration.addProperty(ReasonerVocabulary.PROPenableCMPScan, "false");
+            assertTrue("scanproperties off", 
                         !tester.runTest(NAMESPACE + "rdfs/test17", reasonerFactory, null, configuration));
         
             // Check capabilities description

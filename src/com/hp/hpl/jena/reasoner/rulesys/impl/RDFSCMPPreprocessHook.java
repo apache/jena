@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSCMPPreprocessHook.java,v 1.1 2003-06-19 12:56:19 der Exp $
+ * $Id: RDFSCMPPreprocessHook.java,v 1.2 2003-06-22 16:10:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of container membership properties and adds those to the deductions set.  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-19 12:56:19 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-22 16:10:51 $
  */
 public class RDFSCMPPreprocessHook implements RulePreprocessHook {
 
@@ -39,7 +39,7 @@ public class RDFSCMPPreprocessHook implements RulePreprocessHook {
      * all new deductions that should be seen by the rules.
      */
     public void run(FBRuleInfGraph infGraph, Finder dataFind, Graph inserts) {
-        ExtendedIterator it = dataFind.findWithContinuation(new TriplePattern(null, null, null), null);
+        ExtendedIterator it = dataFind.find(new TriplePattern(null, null, null));
         HashSet properties = new HashSet();
         String memberPrefix = RDF.getURI() + "_";
         while (it.hasNext()) {

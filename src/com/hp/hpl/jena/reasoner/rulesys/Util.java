@@ -5,14 +5,17 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Util.java,v 1.6 2003-06-08 17:49:17 der Exp $
+ * $Id: Util.java,v 1.7 2003-06-22 16:10:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.Finder;
 import com.hp.hpl.jena.reasoner.IllegalParameterException;
+import com.hp.hpl.jena.reasoner.TriplePattern;
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import java.io.*;
@@ -23,7 +26,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-08 17:49:17 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-22 16:10:31 $
  */
 public class Util {
 
@@ -50,13 +53,16 @@ public class Util {
      * Helper - returns the (singleton) value for the given property on the given
      * root node in the data graph.
      */
+    public static Node getPropValue(Node root, Node prop, Finder context) {
+        return doGetPropValue(context.find(new TriplePattern(root, prop, null)));
+    }
+   
+    /**
+     * Helper - returns the (singleton) value for the given property on the given
+     * root node in the data graph.
+     */
     public static Node getPropValue(Node root, Node prop, Graph context) {
-        Iterator i = context.find(root, prop, null);
-        if (i.hasNext()) {
-            return ((Triple)i.next()).getObject();
-        } else {
-            return null;
-        }
+        return doGetPropValue(context.find(root, prop, null));
     }
     
     /**
@@ -64,12 +70,19 @@ public class Util {
      * root node in the data graph.
      */
     public static Node getPropValue(Node root, Node prop, RuleContext context) {
-        Iterator i = context.find(root, prop, null);
-        if (i.hasNext()) {
-            return ((Triple)i.next()).getObject();
-        } else {
-            return null;
+        return doGetPropValue(context.find(root, prop, null));
+    }
+    
+    /**
+     * Internall implementation of all the getPropValue variants.
+     */
+    private static Node doGetPropValue(ClosableIterator it) {
+        Node result = null;
+        if (it.hasNext()) {
+            result = ((Triple)it.next()).getObject();
         }
+        it.close();
+        return result;
     }
     
     /**
@@ -155,14 +168,12 @@ public class Util {
     /**
      * Helper method - extracts the truth of a boolean configuration
      * predicate.
-     * @param uri the base URI of the reasoner being configured
      * @param predicate the predicate to be tested
-     * @param configuration the configuration model
+     * @param configuration the configuration node
      * @return null if there is no setting otherwise a Boolean giving the setting value
      */
-    public static Boolean checkBinaryPredicate(String uri, Property predicate, Model configuration) {
-        Resource base = configuration.getResource(uri);
-        StmtIterator i = base.listProperties(predicate);
+    public static Boolean checkBinaryPredicate(Property predicate, Resource configuration) {
+        StmtIterator i = configuration.listProperties(predicate);
         if (i.hasNext()) {
             return new Boolean(i.nextStatement().getObject().toString().equalsIgnoreCase("true"));
         } else {
@@ -173,14 +184,12 @@ public class Util {
     /**
      * Helper method - extracts the value of an integer configuration
      * predicate.
-     * @param uri the base URI of the reasoner being configured
      * @param predicate the predicate to be tested
-     * @param configuration the configuration model
+     * @param configuration the configuration node
      * @return null if there is no such configuration parameter otherwise the value as an integer
      */
-    public static Integer getIntegerPredicate(String uri, Property predicate, Model configuration) {
-        Resource base = configuration.getResource(uri);
-        StmtIterator i = base.listProperties(predicate);
+    public static Integer getIntegerPredicate(Property predicate, Resource configuration) {
+        StmtIterator i = configuration.listProperties(predicate);
         if (i.hasNext()) {
             RDFNode lit = i.nextStatement().getObject();
             if (lit instanceof Literal) {

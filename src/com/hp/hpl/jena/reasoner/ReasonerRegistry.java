@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.14 2003-06-12 14:16:46 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.15 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -13,9 +13,9 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.OWLFBRuleReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSFBRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-06-12 14:16:46 $
+ * @version $Revision: 1.15 $ on $Date: 2003-06-22 16:10:50 $
  */
 public class ReasonerRegistry {
 
@@ -53,7 +53,7 @@ public class ReasonerRegistry {
         allDescriptions = new ModelMem();
         // Preload the known Jena reasoers
         register(TransitiveReasonerFactory.theInstance());
-        register(RDFSReasonerFactory.theInstance());
+        register(RDFSRuleReasonerFactory.theInstance());
         register(RDFSFBRuleReasonerFactory.theInstance());
         register(OWLFBRuleReasonerFactory.theInstance());
         register(GenericRuleReasonerFactory.theInstance());
@@ -133,9 +133,6 @@ public class ReasonerRegistry {
     /**
      * Create and return a new instance of the reasoner identified by
      * the given uri.
-     * <p>TODO: It might be useful to all pass the descriptive information to
-     * the reasoner to allow multiple configurations of the same reasoner class to
-     * be registered as if they were different reasoners. </p>
      * @param uri the uri of the reasoner to be created, expressed as a simple string
      * @param configuration an optional set of configuration information encoded in RDF this 
      * parameter can be null if no configuration information is required.
@@ -143,7 +140,7 @@ public class ReasonerRegistry {
      * @throws ReasonerException if there is not such reasoner or if there is
      * some problem during instantiation
      */
-    public Reasoner create(String uri, Model configuration) throws ReasonerException {
+    public Reasoner create(String uri, Resource configuration) throws ReasonerException {
         ReasonerFactory factory = getFactory(uri);
         if (factory != null) {
             return factory.create(configuration);
@@ -176,7 +173,7 @@ public class ReasonerRegistry {
      * Return a prebuilt standard configuration for the default RDFS reasoner
      */
      public static Reasoner getRDFSReasoner() {
-         if (theRDFSReasoner == null) theRDFSReasoner = RDFSReasonerFactory.theInstance().create(null);
+         if (theRDFSReasoner == null) theRDFSReasoner = RDFSRuleReasonerFactory.theInstance().create(null);
          return theRDFSReasoner;
      }
      

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.2 2003-06-18 08:00:12 der Exp $
+ * $Id: TestGenericRules.java,v 1.3 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-18 08:00:12 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-22 16:10:50 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -166,11 +166,11 @@ public class TestGenericRules extends TestCase {
         data.add(new Triple(a, r, b));
         data.add(new Triple(p, ty, s));
 
-        Model configuration = ModelFactory.createDefaultModel();
-        Resource base = configuration.createResource(GenericRuleReasonerFactory.URI);
-        base.addProperty(ReasonerVocabulary.PROPderivationLogging, "true");
-        base.addProperty(ReasonerVocabulary.PROPruleMode, "hybrid");
-        base.addProperty(ReasonerVocabulary.PROPruleSet, "file:testing/reasoners/genericRuleTest.rules");
+        Model m = ModelFactory.createDefaultModel();
+        Resource configuration= m.createResource(GenericRuleReasonerFactory.URI);
+        configuration.addProperty(ReasonerVocabulary.PROPderivationLogging, "true");
+        configuration.addProperty(ReasonerVocabulary.PROPruleMode, "hybrid");
+        configuration.addProperty(ReasonerVocabulary.PROPruleSet, "file:testing/reasoners/genericRuleTest.rules");
         GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(configuration);
         
         InfGraph infgraph = reasoner.bind(data);

@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.8 2003-06-19 12:58:05 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.9 2003-06-22 16:10:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.OWLRuleTranslationHook;
 import com.hp.hpl.jena.reasoner.rulesys.impl.RuleStore;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
@@ -27,7 +28,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-19 12:58:05 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-22 16:10:31 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -48,6 +49,9 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     
     /** Optional set of preprocessing hooks  to be run in sequence during preparation time, only applicable to HYBRID modes */
     protected HashSet preprocessorHooks;
+    
+    /** A prebuilt copy of the OWL translation hook */
+    private static final OWLRuleTranslationHook owlTranslator = new OWLRuleTranslationHook();
     
     /** Constant - the mode description for pure forward chaining */
     public static final RuleMode FORWARD = new RuleMode("forward");
@@ -76,13 +80,12 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     /**
      * Constructor
      * @param factory the parent reasoner factory which is consulted to answer capability questions
-     * @param configuration RDF model to configure the rule set and mode, can be null
+     * @param configuration RDF node to configure the rule set and mode, can be null
      */
-    public GenericRuleReasoner(ReasonerFactory factory, Model configuration) {
+    public GenericRuleReasoner(ReasonerFactory factory, Resource configuration) {
         super(factory);
         if (configuration != null) {
-            Resource base = configuration.getResource(GenericRuleReasonerFactory.URI);
-            StmtIterator i = base.listProperties();
+            StmtIterator i = configuration.listProperties();
             while (i.hasNext()) {
                 Statement st = i.nextStatement();
                 doSetParameter(st.getPredicate().getURI(), st.getObject().toString());
@@ -149,7 +152,12 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         if (enableOWLTranslation && (mode != HYBRID)) {
             throw new ReasonerException("Can only enable OWL rule translation in HYBRID mode");
         }
-        this.enableOWLTranslation = enableOWLTranslation;        
+        this.enableOWLTranslation = enableOWLTranslation;    
+        if (enableOWLTranslation) {
+            addPreprocessingHook(owlTranslator);    
+        } else {
+            removePreprocessingHook(owlTranslator);
+        }
     }
     
     /**
@@ -276,9 +284,6 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             graph = tbox;
         } else {
             List ruleSet = rules;
-            if (enableOWLTranslation) {
-                ruleSet = OWLFBRuleReasoner.augmentRules(ruleSet, tbox);
-            }
             graph = new FBRuleInfGraph(this, ruleSet, getPreload(), tbox);
             if (enableTGCCaching) ((FBRuleInfGraph)graph).setUseTGCCache();
             ((FBRuleInfGraph)graph).prepare();
@@ -320,9 +325,6 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             ((BasicBackwardRuleInfGraph)graph).setTraceOn(traceOn);
         } else {
             List ruleSet = ((FBRuleInfGraph)schemaArg).getRules();
-            if (enableOWLTranslation) {
-                ruleSet = OWLFBRuleReasoner.augmentRules(ruleSet, data);
-            }
             FBRuleInfGraph fbgraph = new FBRuleInfGraph(this, ruleSet, schemaArg);
             graph = fbgraph; 
             if (enableTGCCaching) fbgraph.setUseTGCCache();

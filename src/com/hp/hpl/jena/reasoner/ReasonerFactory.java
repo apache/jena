@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerFactory.java,v 1.6 2003-05-27 15:48:52 der Exp $
+ * $Id: ReasonerFactory.java,v 1.7 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,16 +17,17 @@ import com.hp.hpl.jena.rdf.model.*;
  * ReasonerRegistry.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-05-27 15:48:52 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-22 16:10:50 $
  */
 public interface ReasonerFactory {
 
     /**
      * Constructor method that builds an instance of the associated Reasoner
      * @param configuration a set of arbitrary configuration information to be 
-     * passed the reasoner encoded within an RDF model, can be null.
+     * passed the reasoner, encoded as RDF properties of a base configuration resource,
+     * can be null in no custom configuration is required.
      */
-    public Reasoner create(Model configuration);
+    public Reasoner create(Resource configuration);
 
     /**
      * Return a description of the capabilities of this reasoner encoded in

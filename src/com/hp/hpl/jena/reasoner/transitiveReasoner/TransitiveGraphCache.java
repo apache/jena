@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.9 2003-06-18 08:00:11 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.10 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -37,7 +37,7 @@ import java.util.*;
  * <p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-18 08:00:11 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-22 16:10:50 $
  */
 public class TransitiveGraphCache implements Finder {
 
@@ -182,6 +182,16 @@ public class TransitiveGraphCache implements Finder {
             // No matching triples in this cache
             return new NiceIterator();
         }
+    }
+
+    /**
+     * Return true if the given pattern occurs somewhere in the find sequence.
+     */
+    public boolean contains(TriplePattern pattern) {
+        ClosableIterator it = find(pattern);
+        boolean result = it.hasNext();
+        it.close();
+        return result;
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLFBRuleReasonerFactory.java,v 1.3 2003-06-08 17:49:16 der Exp $
+ * $Id: OWLFBRuleReasonerFactory.java,v 1.4 2003-06-22 16:10:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-08 17:49:16 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-22 16:10:31 $
  */
 public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     
@@ -54,14 +54,14 @@ public class OWLFBRuleReasonerFactory implements ReasonerFactory {
      * @param configuration a set of arbitrary configuration information to be 
      * passed the reasoner encoded within an RDF graph
      */
-    public Reasoner create(Model configuration) {
+    public Reasoner create(Resource configuration) {
         OWLFBRuleReasoner reasoner = new OWLFBRuleReasoner();
         if (configuration != null) {
-            Boolean doLog = Util.checkBinaryPredicate(URI, ReasonerVocabulary.PROPderivationLogging, configuration);
+            Boolean doLog = Util.checkBinaryPredicate(ReasonerVocabulary.PROPderivationLogging, configuration);
             if (doLog != null) {
                 reasoner.setDerivationLogging(doLog.booleanValue());
             }
-            Boolean doTrace = Util.checkBinaryPredicate(URI, ReasonerVocabulary.PROPtraceOn, configuration);
+            Boolean doTrace = Util.checkBinaryPredicate(ReasonerVocabulary.PROPtraceOn, configuration);
             if (doTrace != null) {
                 reasoner.setTraceOn(doTrace.booleanValue());
             }

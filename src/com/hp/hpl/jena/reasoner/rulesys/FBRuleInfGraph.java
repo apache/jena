@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.17 2003-06-19 12:58:05 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.18 2003-06-22 16:10:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.mem.GraphMem;
-import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasoner;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveGraphCache;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasoner;
@@ -37,7 +36,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-06-19 12:58:05 $
+ * @version $Revision: 1.18 $ on $Date: 2003-06-22 16:10:31 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -277,6 +276,8 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             } else {
                 rules = new ArrayList(rawRules);
             }
+            // Rebuild the forward engine to use the cloned rules
+            instantiateRuleEngine(rules);
         }
         rules.add(rule);
     }
@@ -320,10 +321,10 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 if (schemaGraph != null) {
                     // Check if we can just reuse the copy of the raw 
                     if (
-                        (RDFSReasoner.checkOccurance(RDFSReasoner.subPropertyOf, data, subPropertyCache) ||
-                         RDFSReasoner.checkOccurance(RDFSReasoner.subClassOf, data, subPropertyCache) ||
-                         RDFSReasoner.checkOccurance(RDFSReasoner.domainP, data, subPropertyCache) ||
-                         RDFSReasoner.checkOccurance(RDFSReasoner.rangeP, data, subPropertyCache) )) {
+                        (TransitiveReasoner.checkOccurance(TransitiveReasoner.subPropertyOf, data, subPropertyCache) ||
+                         TransitiveReasoner.checkOccurance(TransitiveReasoner.subClassOf, data, subPropertyCache) ||
+                         TransitiveReasoner.checkOccurance(RDFS.domain.asNode(), data, subPropertyCache) ||
+                         TransitiveReasoner.checkOccurance(RDFS.range.asNode(), data, subPropertyCache) )) {
                 
                         // The data graph contains some ontology knowledge so split the caches
                         // now and rebuild them using merged data
@@ -372,7 +373,11 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                     RulePreprocessHook hook = (RulePreprocessHook)i.next();
                     hook.run(this, dataFind, inserts);
                 }
-                dataSource = FinderUtil.cascade(fdata, new FGraph(inserts));
+                if (inserts.size() > 0) {
+                    FGraph finserts = new FGraph(inserts);
+                    dataSource = FinderUtil.cascade(fdata, finserts);
+                    dataFind = FinderUtil.cascade(dataFind, finserts);
+                }
             }
             
             boolean rulesLoaded = false;

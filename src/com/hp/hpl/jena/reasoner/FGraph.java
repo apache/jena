@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FGraph.java,v 1.5 2003-06-19 12:58:05 der Exp $
+ * $Id: FGraph.java,v 1.6 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-19 12:58:05 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-22 16:10:50 $
  */
 public class FGraph implements Finder {
 
@@ -68,6 +68,13 @@ public class FGraph implements Finder {
      */
     public Graph getGraph() {
         return graph;
+    }
+
+    /**
+     * Return true if the given pattern occurs somewhere in the find sequence.
+     */
+    public boolean contains(TriplePattern pattern) {
+        return graph.contains(pattern.getSubject(), pattern.getPredicate(), pattern.getObject());
     }
 
 }

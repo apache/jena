@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasonerFactory.java,v 1.7 2003-06-08 17:49:51 der Exp $
+ * $Id: TransitiveReasonerFactory.java,v 1.8 2003-06-22 16:10:50 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.*;
  * Factory class for creating blank instances of the transitive reasoner.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-08 17:49:51 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-22 16:10:50 $
  */
 public class TransitiveReasonerFactory implements ReasonerFactory {
     
@@ -41,9 +41,10 @@ public class TransitiveReasonerFactory implements ReasonerFactory {
     /**
      * Constructor method that builds an instance of the associated Reasoner
      * @param configuration a set of arbitrary configuration information to be 
-     * passed the reasoner encoded within an RDF graph.
+     * passed the reasoner encoded within an RDF graph. This reasoner has no
+     * configuration parameters so this arg is always ignored.
      */
-    public Reasoner create(Model configuration) {
+    public Reasoner create(Resource configuration) {
         return new TransitiveReasoner();
     }
    
