@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.46 2004-03-04 16:29:11 der Exp $
+# $Id: owl-fb.rules,v 1.47 2004-03-09 18:36:30 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -462,7 +462,11 @@
 
 [sameAs6: (?X rdf:type owl:Thing) <- (?X owl:sameAs ?Y) ]
 
-[sameAs7: (?X owl:sameAs ?X) <- bound(?X) (?X rdf:type owl:Thing) ]
+# Was
+# [sameAs7: (?X owl:sameAs ?X) <- bound(?X) (?X rdf:type owl:Thing) ]
+# which is not complete and breaks the find() contract.
+# Investigate why I though this was a useful thing to do in the first place!
+[sameAs7: (?X owl:sameAs ?X) <- (?X rdf:type owl:Thing) ]
 
 # Equality processing rules
 
