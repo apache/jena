@@ -1,0 +1,99 @@
+/*
+  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
+  [See end of file]
+  $Id: Dyadic.java,v 1.1 2004-07-21 13:12:06 chris-dollin Exp $
+*/
+package com.hp.hpl.jena.graph.query;
+
+import com.hp.hpl.jena.graph.query.Expression.Application;
+import com.hp.hpl.jena.shared.JenaException;
+
+/**
+    A base class for dyadic expressions with a built-in Valuator; subclasses must
+    define an evalObject and evalBool method which will be supplied with the
+    evaluated operands.
+    
+    @author kers
+*/
+public abstract class Dyadic extends Application
+    {
+    protected Expression L;
+    protected Expression R;
+    protected String F;
+    
+    public Dyadic( Expression L, String F, Expression R )
+        {
+        this.L = L;
+        this.F = F;
+        this.R = R;
+        }
+    
+    public int argCount()
+        { return 2; }
+    
+    public Expression getArg( int i )
+        { return i == 0 ? L : R; }
+    
+    public String getFun()
+        { return F; }
+    
+    public Object evalObject( Object l, Object r )
+        { return evalBool( l, r ) ? Boolean.TRUE : Boolean.FALSE; }
+    
+    public boolean evalBool( Object l, Object r )
+        { Object x = evalObject( l, r );
+        if (x instanceof Boolean) return ((Boolean) x).booleanValue();
+        throw new JenaException( "not Boolean: " + x );
+        }
+    
+    public Valuator prepare( VariableIndexes vi )
+        {
+        final Valuator l = L.prepare( vi ), r = R.prepare( vi );
+        return new Valuator()
+            {
+            public boolean evalBool( IndexValues iv)
+                {
+                return ((Boolean) evalObject( iv )).booleanValue();
+                }
+    
+            public Object evalObject( IndexValues iv )
+                {
+                return Dyadic.this.evalObject( l.evalObject( iv ), r.evalObject( iv ) );
+                }
+                
+            };
+        }
+    
+    public String toString()
+        { return L.toString() + " " + F + " " + R.toString(); }
+    }
+
+/*
+(c) Copyright 2004, Hewlett-Packard Development Company, LP
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+
+3. The name of the author may not be used to endorse or promote products
+   derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/

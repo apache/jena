@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.23 2004-07-21 08:38:46 chris-dollin Exp $
+  $Id: Expression.java,v 1.24 2004-07-21 13:12:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -109,6 +109,9 @@ public interface Expression
         public int argCount() { return 0; }
         public String getFun() { return null; }
         public Expression getArg( int i ) { return null; }
+        
+        public boolean equals( Object other )
+            { return other instanceof Expression && Expression.Util.equals( this, (Expression) other ); }
         }
     
     /**
@@ -136,6 +139,9 @@ public interface Expression
         
         public Valuator prepare( VariableIndexes vi ) 
             { return new FixedValuator( value ); }
+        
+        public String toString()
+            { return value.toString(); }
     	}
     
     /**
@@ -159,50 +165,6 @@ public interface Expression
         public abstract Expression getArg( int i );
         }
     
-    public static abstract class Dyadic extends Application
-    	{
-        protected Expression L;
-        protected Expression R;
-        protected String F;
-        
-        public Dyadic( Expression L, String F, Expression R )
-            {
-            this.L = L;
-            this.F = F;
-            this.R = R;
-            }
-        
-        public int argCount()
-            { return 2; }
-        
-        public Expression getArg( int i )
-            { return i == 0 ? L : R; }
-        
-        public String getFun()
-            { return F; }
-        
-        public abstract Object eval( Object l, Object r );
-        
-        public Valuator prepare( VariableIndexes vi )
-            {
-            final Valuator l = L.prepare( vi ), r = R.prepare( vi );
-            return new Valuator()
-	            {
-
-                public boolean evalBool( IndexValues iv)
-                    {
-                    return false;
-                    }
-
-                public Object evalObject( IndexValues iv )
-                    {
-                    return eval( l.evalObject( iv ), r.evalObject( iv ) );
-                    }
-	                
-	            };
-            }
-    	}
-
     /**
         Utility methods for Expressions, captured in a class because they can't be
         written directly in the interface.
@@ -243,8 +205,33 @@ public interface Expression
     		    return true;
     		    }
     		return false;
-    		}           
-       }
+    		}      
+        
+		public static boolean equals( Expression L, Expression R )
+            {
+            return
+                L.isConstant() ? R.isConstant() && L.getValue().equals( R.getValue() )
+                : L.isVariable() ? R.isVariable() && R.getName().equals( R.getName() )
+                : L.isApply() ? R.isApply() && sameApply( L, R )
+                : false
+                ;
+            }
+        
+        public static boolean sameApply( Expression L, Expression R )
+            {
+            return 
+                L.argCount() == R.argCount() && L.getFun().equals( R.getFun() )
+                && sameArgs( L, R )
+                ;
+            }
+        
+        public static boolean sameArgs( Expression L, Expression R )
+            {
+            for (int i = 0; i < L.argCount(); i += 1)
+                if (!equals( L.getArg( i ), R.getArg( i ) )) return false;
+            return true;
+            }
+        }
      
     /**
     	Valof provides an implementation of VariableValues which composes the
@@ -285,7 +272,7 @@ public interface Expression
     }
 
 /*
-    (c) Copyright 2003, Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

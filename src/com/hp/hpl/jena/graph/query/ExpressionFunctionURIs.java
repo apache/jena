@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExpressionFunctionURIs.java,v 1.1 2003-10-16 09:45:08 chris-dollin Exp $
+  $Id: ExpressionFunctionURIs.java,v 1.2 2004-07-21 13:12:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -14,7 +14,7 @@ package com.hp.hpl.jena.graph.query;
 */
 public interface ExpressionFunctionURIs 
     {
-    public static final String prefix = "http://jena.hpl.hp.com/query/functions#";
+    public static final String prefix = "urn:x-jena:expr:";
     public static final String AND = prefix + "AND"; 
     }
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.3 2004-07-21 08:39:41 chris-dollin Exp $
+  $Id: TestExpressions.java,v 1.4 2004-07-21 13:12:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -29,8 +29,17 @@ public class TestExpressions extends GraphTestBase
         
     protected static final Mapping empty = new Mapping( new Node[0] );
         
-    public void testSpoo()
+    public void testBooleanEquality()
         {
+        assertEquals( Expression.TRUE, Expression.TRUE );
+        assertEquals( Expression.FALSE, Expression.FALSE );
+        assertDiffer( Expression.TRUE, Expression.FALSE );
+        assertDiffer( Expression.FALSE, Expression.TRUE );
+        }
+    
+    public void testDyadicEquality()
+        {
+        
         }
 
     public void testLiterals()
@@ -74,9 +83,9 @@ public class TestExpressions extends GraphTestBase
         {
         Expression L = new Expression.Fixed( "a" );
         Expression R = new Expression.Fixed( "b" );
-        Expression e = new Expression.Dyadic( L, "eh:op", R )
+        Expression e = new Dyadic( L, "eh:op", R )
         	{
-            public Object eval( Object x, Object y )
+            public Object evalObject( Object x, Object y )
                 { return "" + x + "--" + y; }
             };
         assertEquals( 2, e.argCount() );

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.40 2004-07-16 08:10:06 chris-dollin Exp $
+  $Id: Node.java,v 1.41 2004-07-21 13:11:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -121,7 +121,6 @@ public abstract class Node {
             start = b + 2;
             }
         result.append( spelling.substring( start ) );
-        // System.err.println( ">> escaped => " + result );
         return result.toString();
         }
     
