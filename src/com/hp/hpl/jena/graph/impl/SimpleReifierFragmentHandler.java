@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentHandler.java,v 1.1 2004-09-21 15:05:37 chris-dollin Exp $
+  $Id: SimpleReifierFragmentHandler.java,v 1.2 2004-09-23 14:37:39 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -13,29 +13,23 @@ public abstract class SimpleReifierFragmentHandler implements ReifierFragmentHan
     int which; 
     SimpleReifierFragmentsMap map;
     
-    SimpleReifierFragmentHandler( SimpleReifierFragmentsMap map, int n ) 
+    public SimpleReifierFragmentHandler( SimpleReifierFragmentsMap map, int n ) 
         { which = n; this.map = map; }
     
-    public abstract boolean clashesWith( ReifierFragmentsMap map, Node n, Triple reified );
+    public abstract boolean clashesWith( ReifierFragmentsMap map, Node fragmentObject, Triple reified );
     
-    public boolean clashedWith( Node n, Triple reified )
+    public boolean clashedWith( Node fragmentObject, Triple reified )
         {
-        if (clashesWith( map, n, reified ))
+        if (clashesWith( map, fragmentObject, reified ))
             {
-            map.putAugmentedTriple( this, reified.getSubject(), n, reified );
+            map.putAugmentedTriple( this, reified.getSubject(), fragmentObject, reified );
             return true;
             }
         else
             return false;
         }
     
-    /**
-     * @param fragment
-     * @param tag
-     * @param object
-     * @return
-     */
-    public Triple reifyCompleteQuad( Triple fragment, Node tag, Node object )
+    public Triple reifyIfCompleteQuad( Triple fragment, Node tag, Node object )
         {
         return map.reifyCompleteQuad( this, fragment, tag, object );
         }

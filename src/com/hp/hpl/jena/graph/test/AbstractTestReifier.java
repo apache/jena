@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.15 2004-09-16 14:12:58 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.16 2004-09-23 14:40:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -271,6 +271,13 @@ public abstract class AbstractTestReifier extends GraphTestBase
         assertEquals( "triple Y still there", triple( "y R a" ), R.getTriple( Y ) );
         }
         
+    public void testRemoveFromNothing()
+        {
+        Graph G = getGraph();
+        Reifier R = G.getReifier();
+        G.delete( triple( "quint rdf:subject S" ) );
+        }
+    
 //    public void testRemoveByTriple()
 //        {
 //        Graph G = getGraph();

@@ -1,7 +1,7 @@
 /*
      (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
      [See end of file]
-     $Id: ReifierFragmentHandler.java,v 1.1 2004-09-21 15:05:36 chris-dollin Exp $
+     $Id: ReifierFragmentHandler.java,v 1.2 2004-09-23 14:37:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -20,21 +20,30 @@ import com.hp.hpl.jena.graph.Triple;
 public interface ReifierFragmentHandler
     {
     /**
+         If this handler clashed with the complete reification of <code>reified</code>,
+         because its predicate and the given object aren't the same as that of
+         <code>reified</code>, add all five fragments to the its underlying 
+         fragmentsMap and answer <code>true</code>; otherwise answer
+         <code>false</code>.
          
-     * @param n
-     * @param reified
-     * @return
-     */
-    public abstract boolean clashedWith( Node n, Triple reified );
+         @param fragmentObject the object of the reification fragment
+         @param reified the completely reified triple
+         @return true iff the fragment clashed with the triple
+    */
+    public abstract boolean clashedWith( Node fragmentObject, Triple reified );
 
     /**
-     * @param fragment
-     * @param tag
-     * @param object
-     * @return
-     */
-    public abstract Triple reifyCompleteQuad( Triple fragment, Node tag,
-            Node object );
+         If this <code>fragment</code> completes a reification for <code>tag</code>,
+         remove all the fragments from the underlying fragmentsMap and answer the
+         reified triple; otherwise add this fragment to the map and answer
+         <code>null</code>.
+         
+         @param fragment the new fragment to consider
+         @param tag the tag for the reification [equals the fragment subject]
+         @param object the object of the fragment. Hmm.
+         @return the reified triple, if there is one, otherwise null
+    */
+    public abstract Triple reifyIfCompleteQuad( Triple fragment, Node tag, Node object );
 
     /**
      * @param tag
@@ -42,8 +51,7 @@ public interface ReifierFragmentHandler
      * @param fragment
      * @return
      */
-    public abstract Triple removeFragment( Node tag, Triple already,
-            Triple fragment );
+    public abstract Triple removeFragment( Node tag, Triple already, Triple fragment );
     }
 
 /*
