@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.13 2004-07-09 11:27:01 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.14 2004-07-09 15:05:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -131,7 +131,7 @@ public abstract class NodeToTriplesMap
         { return size == 0; }
 
     /**
-         Answer an iterator over all the triples in this NTM wich are accepted by
+         Answer an iterator over all the triples in this NTM which are accepted by
          <code>pattern</code>.
     */
     public ExtendedIterator iterator( Triple pattern )
@@ -155,13 +155,12 @@ public abstract class NodeToTriplesMap
         { return remove( getIndexNode( t ), t ); }
 
     /**
-     * @param triple
-     * @return
-     */
-    public boolean contains( Triple triple )
+        Answer true iff this NTM contains the concrete triple <code>t</code>.
+    */
+    public boolean contains( Triple t )
         { 
-        Set s = (Set) map.get( getIndexNode( triple ) );
-        return s == null ? false : s.contains( triple );
+        Set s = (Set) map.get( getIndexNode( t ) );
+        return s == null ? false : s.contains( t );
         }
     }
 

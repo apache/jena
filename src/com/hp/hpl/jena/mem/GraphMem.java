@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.37 2004-07-09 11:27:01 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.38 2004-07-09 15:05:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -122,9 +122,7 @@ public class GraphMem extends GraphMemBase implements Graph
          index graphs -- doesn't matter which one, but we've picked the subjects.
     */
     public boolean contains( Triple t )
-        {
-        return t.isConcrete() ? subjects.contains( t ) : super.contains( t );
-        }
+        { return t.isConcrete() ? subjects.contains( t ) : super.contains( t ); }
     
     /**
          An iterator wrapper for NodeToTriplesMap iterators which ensures that
