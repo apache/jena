@@ -14,13 +14,14 @@
   xmlns:rdf ="&rdf;"
   xmlns:rdfs="&rdfs;"
   xmlns     ="&ont;"
+  xml:base  ="&base;"
 >
 
 <!--
 	The default set of mappings for locally cached ontologies
 
 	Author: Ian Dickinson, mailto:ian.dickinson@hp.com
-	CVS:    $Id: ont-policy.rdf,v 1.4 2003-06-22 19:19:22 ian_dickinson Exp $
+	CVS:    $Id: ont-policy.rdf,v 1.5 2003-11-06 17:37:24 ian_dickinson Exp $
 -->
 
 <DocumentManagerPolicy>
