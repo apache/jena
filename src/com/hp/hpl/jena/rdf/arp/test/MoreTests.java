@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.19 2004-12-23 16:05:23 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.20 2005-01-05 23:38:58 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -296,7 +296,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 			Token.reinitHighTide();
 			NTriple.main(new String[] { "-t", file });
 			assertTrue("Too many tokens used: "+ Token.highTide,
-					Token.highTide<100);
+					Token.highTide<200);
 		} finally {
 			Token.COUNT = false;
 			Token.COUNTTEST = false;
