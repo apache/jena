@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TypeMapper.java,v 1.4 2003-04-15 20:53:00 jeremy_carroll Exp $
+ * $Id: TypeMapper.java,v 1.5 2003-08-23 12:19:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes;
 
@@ -14,6 +14,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType;
+import com.hp.hpl.jena.shared.impl.JenaParameters;
 
 /**
  * The TypeMapper provides a global registry of known datatypes.
@@ -21,7 +22,7 @@ import com.hp.hpl.jena.datatypes.xsd.impl.XMLLiteralType;
  * that is used to represent them.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 20:53:00 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-23 12:19:48 $
  */
 public class TypeMapper {
 
@@ -81,11 +82,16 @@ public class TypeMapper {
             if (uri == null) {
                 // Plain literal
                 return null;
+            } else {
+                // Uknown datatype
+                if (JenaParameters.enableSilentAcceptanceOfUnknownDatatypes) {
+                    dtype = new BaseDatatype(uri);
+                    registerDatatype(dtype);
+                } else {
+                    throw new DatatypeFormatException(
+                        "Attempted to created typed literal using an unknown datatype - " + uri);
+                }
             }
-            // TODO add log message
-            // TODO add switch to prevent warning messages
-            dtype = new BaseDatatype(uri);
-            registerDatatype(dtype);
         }
         return dtype;
     }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.6 2003-06-19 17:14:03 der Exp $
+ * $Id: XSDDateTime.java,v 1.7 2003-08-23 12:19:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -16,10 +16,9 @@ import java.util.*;
  * Represent an XSD date/time value. Rather than have a separate type for each
  * legal date/time value combination this is a combination type than does runtime
  * checks whether a given field is legal in the current circumstances.
- * <p>TODO: revist and consider have separate types for each.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-19 17:14:03 $
+ * @version $Revision: 1.7 $ on $Date: 2003-08-23 12:19:37 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */

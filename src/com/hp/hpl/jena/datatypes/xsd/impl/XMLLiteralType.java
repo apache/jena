@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XMLLiteralType.java,v 1.4 2003-04-15 21:03:43 jeremy_carroll Exp $
+ * $Id: XMLLiteralType.java,v 1.5 2003-08-23 12:19:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -16,10 +16,8 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * Builtin data type to represent XMLLiteral (i.e. items created
  * by use of <code>rdf:parsetype='literal'</code>.
  * 
- * <p>TODO implement parsing - this is just a dummy implementation at present.</p>
- * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-04-15 21:03:43 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-23 12:19:48 $
  */
 public class XMLLiteralType extends BaseDatatype implements RDFDatatype {
     /** Singleton instance */

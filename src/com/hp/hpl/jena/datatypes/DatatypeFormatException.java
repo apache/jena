@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: DatatypeFormatException.java,v 1.7 2003-06-17 15:21:29 chris-dollin Exp $
+ * $Id: DatatypeFormatException.java,v 1.8 2003-08-23 12:19:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes;
 
@@ -15,13 +15,15 @@ import com.hp.hpl.jena.shared.*;
  * Exception thrown when a lexical form does not match the stated
  * datatype.
  * 
- * TODO could hold the lexical form and datatype in local fields
- * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-17 15:21:29 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-23 12:19:48 $
  */
 public class DatatypeFormatException extends JenaException 
 {
+    
+    // TODO Could consider storing the lexical form and datatype in locals
+    // with accessors.
+    
     /**
      * Preferred constructor.
      * @param lexicalForm the illegal string discovered

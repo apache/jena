@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.24 2003-08-21 17:28:37 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.25 2003-08-23 12:19:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -16,6 +16,7 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.impl.JenaParameters;
 import com.hp.hpl.jena.vocabulary.XSD;
 
 import junit.framework.TestCase;
@@ -30,7 +31,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2003-08-21 17:28:37 $
+ * @version $Revision: 1.25 $ on $Date: 2003-08-23 12:19:48 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -66,23 +67,21 @@ public class TestTypedLiterals extends TestCase {
         String typeURI = "urn:x-hp-dt:unknown";
         String typeURI2 = "urn:x-hp-dt:unknown2";
 
-        Literal l1 = m.createTypedLiteral("foo", "lang1", typeURI);
-        Literal l2 = m.createTypedLiteral("foo", "lang2", typeURI);
-        Literal l3 = m.createTypedLiteral("15", "lang1", typeURI);
-        Literal l4 = m.createTypedLiteral("foo", "lang1", typeURI);
-        Literal l5 = m.createTypedLiteral("foo", "lang1", typeURI2);
+        boolean originalFlag = JenaParameters.enableSilentAcceptanceOfUnknownDatatypes;
+        JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = true;
+        Literal l1 = m.createTypedLiteral("foo", typeURI);
+        Literal l3 = m.createTypedLiteral("15", typeURI);
+        Literal l5 = m.createTypedLiteral("foo", typeURI2);
         Literal l6 = m.createLiteral("foo", "lang1");
-        
+        Literal l7 = m.createLiteral("foo");
+        JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = originalFlag;
         // Check for successful creation
+        
         assertNotNull(l1);
-        assertNotNull(l2);
         assertNotNull(l3);
-        assertNotNull(l4);
         assertNotNull(l5);
         
         // check equality function
-        assertEquals("language sensitive comparison", l1, l4);
-        assertEquals("language sensitive", l1, l2);
         assertDiffer("datatype sensitive", l1, l5);
         assertDiffer("value sensitive", l1, l3);
         assertDiffer("typed and plain differ", l1, l6);
@@ -93,8 +92,17 @@ public class TestTypedLiterals extends TestCase {
             assertTrue("Allowed int conversion", false);
         } catch (DatatypeFormatException e) {}
         assertEquals("Extract value", l1.getValue(), "foo");
-        assertEquals("Extract lang", l1.getLanguage(), "lang1");
         assertEquals("Extract xml tag", l1.getWellFormed(), false);
+        
+        JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = false;
+        boolean foundException = false;
+        try {
+            Literal l8 = m.createTypedLiteral("food", typeURI+"3");
+        } catch (DatatypeFormatException e2) {
+            foundException = true;
+        }
+        JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = originalFlag;
+        assertTrue("Detected unknown datatype", foundException);
     }
     
     /**
@@ -106,17 +114,14 @@ public class TestTypedLiterals extends TestCase {
         TypeMapper.getInstance().registerDatatype(rtype);
 
 
-        Literal l1 = m.createTypedLiteral("3/5", "lang1", rtype);
-        Literal l2 = m.createTypedLiteral("3/5", "lang2", rtype);
-        Literal l3 = m.createTypedLiteral("7/5", "lang1", rtype);
+        Literal l1 = m.createTypedLiteral("3/5", rtype);
+        Literal l3 = m.createTypedLiteral("7/5", rtype);
         
         // Check for successful creation
         assertNotNull(l1);
-        assertNotNull(l2);
         assertNotNull(l3);
         
         // check equality function
-        assertEquals("language should be ignored", l1, l2);
         assertDiffer("values should be tested!", l1, l3);
 
         // Check typed accessors
@@ -130,7 +135,6 @@ public class TestTypedLiterals extends TestCase {
             int i = l1.getInt();
             assertTrue("Allowed int conversion", false);
         } catch (DatatypeFormatException e) {}
-        assertEquals("Extract lang", l1.getLanguage(), "lang1");
         assertEquals("Extract xml tag", l1.getWellFormed(), false);
     }
 
@@ -142,8 +146,7 @@ public class TestTypedLiterals extends TestCase {
         
         // Check int and basic equality processing
         Literal l1 = m.createTypedLiteral(42);  // default map
-        Literal l2 = m.createTypedLiteral("42", "", XSDDatatype.XSDint);
-        Literal l3 = m.createTypedLiteral("42", "lang", XSDDatatype.XSDint);
+        Literal l2 = m.createTypedLiteral("42", XSDDatatype.XSDint);
         Literal l4 = m.createTypedLiteral("63");  // default map
         
         assertEquals("Default map failed", l1, l2);
@@ -152,15 +155,14 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("Value accessor problem", l1.getInt(), 42);
         assertEquals("wrong type name", l2.getDatatypeURI(), xsdIntURI);
         assertEquals("wrong type", l2.getDatatype(), XSDDatatype.XSDint);
-        assertEquals("Lang sensitive", l2, l3);
         assertDiffer("Not value sensitive", l1, l4);
         checkIllegalLiteral("zap", XSDDatatype.XSDint);
         checkIllegalLiteral("42.1", XSDDatatype.XSDint);
         
         // Check float/double
         l1 = m.createTypedLiteral(42.42);  // default map
-        l2 = m.createTypedLiteral("42.42", "", XSDDatatype.XSDfloat);
-        l3 = m.createTypedLiteral("42.42", "", XSDDatatype.XSDdouble);
+        l2 = m.createTypedLiteral("42.42", XSDDatatype.XSDfloat);
+        Literal l3 = m.createTypedLiteral("42.42", XSDDatatype.XSDdouble);
         
         assertEquals("class wrong", l1.getValue().getClass(), Double.class);
         assertFloatEquals("value wrong", ((Double)(l1.getValue())).floatValue(), 42.42);
@@ -256,20 +258,14 @@ public class TestTypedLiterals extends TestCase {
      * Some selected equality tests which caused problems in WG tests
      */
     public void testMiscEquality() {
-        Literal l1 = m.createTypedLiteral("10", "", "http://www.w3.org/2001/XMLSchema#integer");
-        Literal l2 = m.createTypedLiteral("010", "en", "http://www.w3.org/2001/XMLSchema#integer");
-        Literal l3 = m.createTypedLiteral("010", "", "http://www.w3.org/2001/XMLSchema#integer");
-        Literal l4 = m.createTypedLiteral("010", "fr", "http://www.w3.org/2001/XMLSchema#integer");
+        Literal l1 = m.createTypedLiteral("10", "http://www.w3.org/2001/XMLSchema#integer");
+        Literal l3 = m.createTypedLiteral("010", "http://www.w3.org/2001/XMLSchema#integer");
         assertEquals("Int lex form", l1, l3);
-        assertEquals("Ignore language in integer", l1, l2);
-        assertEquals("Ignore language in integer", l1, l4);
         
         l1 = m.createTypedLiteral("1", XSDDatatype.XSDint);
-        l2 = m.createTypedLiteral("1", XSDDatatype.XSDinteger);
         l3 = m.createTypedLiteral("1", XSDDatatype.XSDnonNegativeInteger);
         
-        assertEquals("numeric comparisons", l1, l2);
-        assertEquals("numeric comparisons", l3, l2);
+        assertEquals("numeric comparisons", l1, l3);
     }
     
     /**
@@ -291,7 +287,7 @@ public class TestTypedLiterals extends TestCase {
         assertDiffer("Plain != int", lPlain2, lInt);
         
         // The correct answer to this is currently up to us
-        if (LiteralLabel.enablePlainSameAsString) {
+        if (JenaParameters.enablePlainLiteralSameAsString) {
             assertEquals("String != plain??", lString, lPlain);
             assertEquals("String != plain??", lString, lPlain2);
         } else {
@@ -475,8 +471,8 @@ public class TestTypedLiterals extends TestCase {
     public void testTypedQueries() {
         Model model = new ModelMem();
         Property p = model.createProperty("urn:x-eg/p");
-        Literal l1 = model.createTypedLiteral("10", "fr", "http://www.w3.org/2001/XMLSchema#integer");
-        Literal l2 = model.createTypedLiteral("010", "en", "http://www.w3.org/2001/XMLSchema#integer");
+        Literal l1 = model.createTypedLiteral("10", "http://www.w3.org/2001/XMLSchema#integer");
+        Literal l2 = model.createTypedLiteral("010", "http://www.w3.org/2001/XMLSchema#integer");
         assertEquals("sameas test", l1, l2);
         Resource a = model.createResource("urn:x-eg/a");
         a.addProperty(p, l1);
@@ -560,7 +556,7 @@ public class TestTypedLiterals extends TestCase {
         TypeMapper typeMapper=TypeMapper.getInstance(); 
         RDFDatatype dt = typeMapper.getSafeTypeByName(XSDDateURI); 
         Object obj = dt.parse("2003-05-21"); 
-        Literal literal = m.createTypedLiteral(obj, "", dt);        String serialization = literal.toString();     
+        Literal literal = m.createTypedLiteral(obj, dt);        String serialization = literal.toString();     
         Object value2 = dt.parse(obj.toString());
         assertEquals(obj, value2);
         
@@ -577,7 +573,51 @@ public class TestTypedLiterals extends TestCase {
         checkSerialization("--05-12", XSDDatatype.XSDgMonthDay);
         checkSerialization("---12", XSDDatatype.XSDgDay);
     }
-      
+    
+    /**
+     * Test global parameter flags.
+     */
+    public void testFlags() {
+        boolean originalFlag = JenaParameters.enableEagerLiteralValidation;
+        JenaParameters.enableEagerLiteralValidation = true;
+        boolean foundException = false;
+        try {
+            Literal l = m.createTypedLiteral("fool", XSDDatatype.XSDint);
+        } catch (DatatypeFormatException e1) {
+            foundException = true;
+        }
+        JenaParameters.enableEagerLiteralValidation = originalFlag;
+        assertTrue("Early datatype format exception", foundException);
+        
+        JenaParameters.enableEagerLiteralValidation = false;
+        foundException = false;
+        Literal l = null;
+        try {
+            l = m.createTypedLiteral("fool", XSDDatatype.XSDint);
+        } catch (DatatypeFormatException e1) {
+            JenaParameters.enableEagerLiteralValidation = originalFlag;
+            assertTrue("Delayed datatype format validation", false);
+        }
+        try {
+            l.getValue();
+        } catch (DatatypeFormatException e2) {
+            foundException = true;
+        }
+        JenaParameters.enableEagerLiteralValidation = originalFlag;
+        assertTrue("Early datatype format exception", foundException);
+        
+        originalFlag = JenaParameters.enablePlainLiteralSameAsString;
+        Literal l1 = m.createLiteral("test string");
+        Literal l2 = m.createTypedLiteral("test string", XSDDatatype.XSDstring);
+        JenaParameters.enablePlainLiteralSameAsString = true;
+        boolean ok1 = l1.sameValueAs(l2); 
+        JenaParameters.enablePlainLiteralSameAsString = false;
+        boolean ok2 = ! l1.sameValueAs(l2); 
+        JenaParameters.enablePlainLiteralSameAsString = originalFlag;
+        assertTrue( ok1 );
+        assertTrue( ok2 );
+    }
+    
     /**
      * Test that two objects are not semantically the same
      */

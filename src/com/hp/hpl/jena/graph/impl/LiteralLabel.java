@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: LiteralLabel.java,v 1.6 2003-08-19 09:25:06 der Exp $
+  $Id: LiteralLabel.java,v 1.7 2003-08-23 12:19:14 der Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.graph.impl;
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.datatypes.xsd.impl.*;
+import com.hp.hpl.jena.shared.impl.JenaParameters;
 
 /**
  * Represents the "contents" of a Node_Literal.
@@ -19,20 +20,6 @@ import com.hp.hpl.jena.datatypes.xsd.impl.*;
  */
 final public class LiteralLabel {
 
-    /** 
-     * Global flag - set to true to switch on eager checking of literal validity.
-     * <p>TODO - this needs to be connected to or replaced by the global flag
-     * setting mechanism - whatever that is.</p>
-     */
-    public static boolean enableEagerValidation = false;
-
-    /** 
-     * Global flag - set to true to treat plain literals and xsd:string literals as semantically equal.
-     * <p>TODO - this needs to be connected to or replaced by the global flag
-     * setting mechanism - whatever that is.</p>
-     */
-    public static boolean enablePlainSameAsString = true;
-    
     //=======================================================================
     // Variables
 
@@ -169,7 +156,7 @@ final public class LiteralLabel {
             value = dtype.parse(lex);
             wellformed = true;
         } catch  (DatatypeFormatException e) {
-            if (enableEagerValidation) {
+            if (JenaParameters.enableEagerLiteralValidation) {
                 e.fillInStackTrace();
                 throw e;
             } else {
@@ -311,7 +298,8 @@ final public class LiteralLabel {
         if (dtype == null) {
             // Plain literal
             if (other.dtype == null || 
-                (enablePlainSameAsString && other.dtype.equals(XSDDatatype.XSDstring))) {
+                (JenaParameters.enablePlainLiteralSameAsString 
+                  && other.dtype.equals(XSDDatatype.XSDstring))) {
                     return lexicalForm.equals(other.lexicalForm)
                         && lang.equalsIgnoreCase(other.lang);
             } else {

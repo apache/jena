@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDBaseStringType.java,v 1.5 2003-05-28 11:13:46 chris-dollin Exp $
+ * $Id: XSDBaseStringType.java,v 1.6 2003-08-23 12:19:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.shared.impl.JenaParameters;
 
 /**
  * Base implementation for all string datatypes derinved from
@@ -19,7 +20,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * to support the isValidLiteral tests across string types.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-05-28 11:13:46 $
+ * @version $Revision: 1.6 $ on $Date: 2003-08-23 12:19:48 $
  */
 public class XSDBaseStringType extends XSDDatatype {
 
@@ -69,7 +70,7 @@ public class XSDBaseStringType extends XSDDatatype {
      */
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
         // value1 will have been used to dispatch here so we know value1 is an xsdstring or extension
-        if ((value2.getDatatype() == null && LiteralLabel.enablePlainSameAsString) ||
+        if ((value2.getDatatype() == null && JenaParameters.enablePlainLiteralSameAsString) ||
              (value2.getDatatype() instanceof XSDBaseStringType)) {
                 return value1.getValue().equals(value2.getValue());
         } else {
