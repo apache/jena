@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.29 $
+ * Revision           $Revision: 1.30 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-19 19:25:44 $
+ * Last modified on   $Date: 2003-06-19 19:29:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -49,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.29 2003-06-19 19:25:44 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.30 2003-06-19 19:29:22 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -391,7 +391,12 @@ public class OntResourceImpl
      */ 
     public String getVersionInfo() {
         checkProfile( getProfile().VERSION_INFO(), "VERSION_INFO" );
-        return getProperty( getProfile().VERSION_INFO() ).getString();
+        try {
+            return getProperty( getProfile().VERSION_INFO() ).getString();
+        }
+        catch (JenaPropertyNotFoundException ignore) {
+            return null;
+        }
     }
 
     /**
@@ -478,7 +483,12 @@ public class OntResourceImpl
         checkProfile( getProfile().LABEL(), "LABEL" );
         if (lang == null) {
             // don't care which language version we get
-            return getProperty( getProfile().LABEL() ).getString();
+            try {
+                return getProperty( getProfile().LABEL() ).getString();
+            }
+            catch (JenaPropertyNotFoundException ignore) {
+                return null;
+            }
         }
         else {
             // search for the best match for the specified language
@@ -914,7 +924,12 @@ public class OntResourceImpl
      *         returns null.
      */
     public RDFNode getPropertyValue( Property property ) {
-        return getProperty( property ).getObject();
+        try {
+            return getProperty( property ).getObject();
+        }
+        catch (JenaPropertyNotFoundException ignore) {
+            return null;
+        }
     }
 
 
