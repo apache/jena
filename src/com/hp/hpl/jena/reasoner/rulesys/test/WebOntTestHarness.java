@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.16 2003-09-23 21:07:29 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.17 2003-09-24 15:10:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-09-23 21:07:29 $
+ * @version $Revision: 1.17 $ on $Date: 2003-09-24 15:10:47 $
  */
 public class WebOntTestHarness {
 
@@ -37,7 +37,7 @@ public class WebOntTestHarness {
     public static boolean includeModified = false;
     
     /** Set to true to use approved tests only */
-    public static boolean approvedOnly = false;
+    public static boolean approvedOnly = true;
     
 //  =======================================================================
 //  Internal state
@@ -108,6 +108,7 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/unionOf/Manifest003#test",
         "http://www.w3.org/2002/03owlt/unionOf/Manifest004#test",
         "http://www.w3.org/2002/03owlt/equivalentClass/Manifest006#test",
+        "http://www.w3.org/2002/03owlt/equivalentClass/Manifest007#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest201#test",
         "http://www.w3.org/2002/03owlt/I5.8/Manifest004#test",
         "http://www.w3.org/2002/03owlt/I5.2/Manifest004#test",
@@ -123,6 +124,7 @@ public class WebOntTestHarness {
         "http://www.w3.org/2002/03owlt/description-logic/Manifest030#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest032#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest033#test",
+        "http://www.w3.org/2002/03owlt/description-logic/Manifest035#test",
 
         "http://www.w3.org/2002/03owlt/description-logic/Manifest101#test",
         "http://www.w3.org/2002/03owlt/description-logic/Manifest102#test",
@@ -233,9 +235,8 @@ public class WebOntTestHarness {
             resultFile = args[0];
         }
         WebOntTestHarness harness = new WebOntTestHarness();
-//        harness.runTests();
+        harness.runTests();
 //        harness.runTest("http://www.w3.org/2002/03owlt/description-logic/Manifest664#test");
-        harness.runTest("http://www.w3.org/2002/03owlt/description-logic/Manifest664#test");
         RDFWriter writer = harness.testResults.getWriter("RDF/XML-ABBREV");
         OutputStream stream = new FileOutputStream(resultFile);
         writer.setProperty("showXmlDeclaration", "true");
