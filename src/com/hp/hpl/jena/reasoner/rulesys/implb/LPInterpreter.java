@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.15 2003-08-08 16:12:53 der Exp $
+ * $Id: LPInterpreter.java,v 1.16 2003-08-10 21:49:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-08-08 16:12:53 $
+ * @version $Revision: 1.16 $ on $Date: 2003-08-10 21:49:41 $
  */
 public class LPInterpreter {
 
@@ -33,6 +33,9 @@ public class LPInterpreter {
     /** The engine which is using this interpreter */
     protected LPBRuleEngine engine;
 
+    /** The execution context that should be notified of suspended branches */
+    protected LPInterpreterContext iContext;
+    
     /** Set to true to flag that derivations should be logged */
     protected boolean recordDerivations;
 
@@ -123,9 +126,19 @@ public class LPInterpreter {
     public void setDerivationLogging(boolean recordDerivations) {
         this.recordDerivations = recordDerivations;
     }
-
+    
     /**
-     * Return the next result from this engine.
+     * Start the interpreter running with the given context.
+     */
+    public void setState(LPInterpreterState state) {
+        if (state instanceof ConsumerChoicePointFrame) {
+            restoreState((ConsumerChoicePointFrame) state);
+        } else {
+            iContext = (LPInterpreterContext) state;
+        }
+    }
+    /**
+     * Return the next result from this engine, no further initialization.
      * @param context the generator choice point or top level iterator which 
      * is requesting this result and might have preserved state to restore
      * @return either a StateFlag or  a result Triple
@@ -249,7 +262,7 @@ public class LPInterpreter {
                 } else if (state == StateFlag.SUSPEND) {
                     // Require other generators to cycle before resuming this one
                     preserveState(ccp);
-                    ccp.notifyBlocked();        // TODO: is this the right call here
+                    iContext.notifyBlockedOn(ccp);
                     cpFrame = cpFrame.getLink();
                     continue main;
                 }
@@ -531,6 +544,7 @@ public class LPInterpreter {
         for (int i = 0; i < ccp.trailLength; i++) {
             bind(ccp.trailVars[i], ccp.trailValues[i]);
         }
+        iContext = ccp.context;
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.4 2003-08-08 16:12:53 der Exp $
+ * $Id: LPTopGoalIterator.java,v 1.5 2003-08-10 21:49:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -14,24 +14,35 @@ import java.util.NoSuchElementException;
 import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
+import java.util.*;
+
 /**
  * Wraps up the results an LP rule engine instance into a conventional
  * iterator. Ensures that the engine is closed and detached from the 
  * inference graph if the iterator hits the end of the result set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-08 16:12:53 $
+ * @version $Revision: 1.5 $ on $Date: 2003-08-10 21:49:41 $
  */
-public class LPTopGoalIterator implements ClosableIterator {
+public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
     Object lookAhead;
     
     /** The parent backward chaining engine */
     LPInterpreter interpreter;
     
-    /** The generator that the top level interpter last blocked on */
-    protected Generator blockedOn;
+    /** The set of choice points that the top level interpter is waiting for */
+    protected Set choicePoints = new HashSet();
     
+    /** The choice point most recently notified as ready to run. */
+    protected ConsumerChoicePointFrame nextToRun;
+    
+    /** set to true if we should be able to usefully run */
+    protected boolean isReady = true;
+    
+    /** set to true if at least one branch has block so an active readiness check is required */
+    protected boolean checkReadyNeeded = false;
+
     /** True if the iteration has started */
     boolean started = false;
     
@@ -40,6 +51,7 @@ public class LPTopGoalIterator implements ClosableIterator {
      */
     public LPTopGoalIterator(LPInterpreter engine) {
         this.interpreter = engine;
+        engine.setState(this);
     }
     
     /**
@@ -47,22 +59,84 @@ public class LPTopGoalIterator implements ClosableIterator {
      * lookahead buffer.
      */
     private void moveForward() {
+        started = true;
         lookAhead = interpreter.next();
         if (lookAhead == StateFlag.FAIL) {
-            close();
-        } else if (lookAhead == StateFlag.SUSPEND) {
-            interpreter.getEngine().pump(blockedOn);
-            moveForward();
+            if (choicePoints.isEmpty()) {
+                // Nothing left to try
+                close();
+            } else {
+                // Some options open, continue pumping
+                nextToRun = null;
+                interpreter.getEngine().pump(this);
+                if (nextToRun == null) {
+                    // Reached final closure
+                    close();
+                } else {
+                    interpreter.setState(nextToRun);
+                    moveForward();
+                }
+            }
         }
-        started = true;
+    }
+
+    /** Notify this context that a brach was suspended awaiting futher
+     *  results from the given generator. */
+    public void notifyBlockedOn(ConsumerChoicePointFrame ccp) {
+        choicePoints.add(ccp);
+        checkReadyNeeded = true;
     }
     
+    /** 
+     * Notify this context that the given choice point has terminated
+     * and can be remove from the wait list. 
+     */
+    public void notifyFinished(ConsumerChoicePointFrame ccp) {
+        choicePoints.remove(ccp);
+        checkReadyNeeded = true;
+    }
+    
+    /**
+     * Directly set that this generator is ready (because the generating
+     * for one of its generatingCPs has produced new results).
+     */
+    public void setReady(ConsumerChoicePointFrame ccp) {
+        nextToRun = ccp;
+        isReady = true;
+        checkReadyNeeded = false;
+    }
+    
+    /**
+     * Return true if the iterator is ready to be scheduled (i.e. it is not
+     * known to be complete and not known to be waiting for a dependent generator).
+     */
+    public boolean isReady() {
+        if (checkReadyNeeded) {
+            isReady = false;
+            for (Iterator i = choicePoints.iterator(); i.hasNext(); ) {
+                if ( ((ConsumerChoicePointFrame)i.next()).isReady() ) {
+                    isReady =  true;
+                    break; 
+                }
+            }
+            checkReadyNeeded = false;
+            return isReady;
+        } else {
+            return isReady;
+        }
+    }
+        
     /**
      * @see com.hp.hpl.jena.util.iterator.ClosableIterator#close()
      */
     public void close() {
         lookAhead = null;
         interpreter.close();
+        interpreter = null;
+        isReady = false;
+        checkReadyNeeded = false;
+        nextToRun = null;
+        choicePoints = null;
     }
 
     /**

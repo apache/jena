@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ConsumerChoicePointFrame.java,v 1.3 2003-08-08 16:12:53 der Exp $
+ * $Id: ConsumerChoicePointFrame.java,v 1.4 2003-08-10 21:49:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -24,9 +24,10 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-08 16:12:53 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-10 21:49:41 $
  */
-public class ConsumerChoicePointFrame extends GenericTripleMatchFrame implements LPAgendaEntry {
+public class ConsumerChoicePointFrame extends GenericTripleMatchFrame 
+                implements LPAgendaEntry, LPInterpreterState {
         
     /** The generator whose tabled results we are selecting over */
     protected Generator generator;
@@ -46,6 +47,9 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame implements
     /** The length of the preserved trail */
     protected int trailLength;
     
+    /** The generator or top iterator we are producting results for */
+    protected LPInterpreterContext context;
+        
     /**
      * Constructor.
      * @param interpreter the parent interpreter whose state is to be preserved here, its arg stack
@@ -62,7 +66,9 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame implements
      */
     public void init(LPInterpreter interpreter) {
         super.init(interpreter);
+        context = interpreter.iContext;
         generator = interpreter.getEngine().generatorFor(goal);
+        generator.addConsumer(this);
         resultIndex = 0;
     }
     
@@ -81,37 +87,40 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame implements
             }            
         }
         if (generator.isComplete()) {
+            setFinished();
             return StateFlag.FAIL;
         } else {
-            // TODO: pickle interpeter state here??
-            
             return StateFlag.SUSPEND;
         }
     }
     
     /**
-     * Called to preserve the interpreter state
-     */
-    /**
      * Return true if this choice point could usefully be restarted.
      */
     public boolean isReady() {
-        return generator.isReady();
+        return generator.numResults() > resultIndex;
     }
     
     /**
-     * Reactive this choice point to generate new results.
+     * Called by generator when there are more results available.
+     */
+    public void setReady() {
+        context.setReady(this);
+    }
+    
+    /**
+     * Notify that this consumer choice point has finished consuming all
+     * the results of a closed generator.
+     */
+    public void setFinished() {
+        context.notifyFinished(this);
+    }
+    
+    /**
+     * Reactivate this choice point to generate new results.
      */
     public void pump() {
-        // TODO: some code would be nice ...
-    }
-
-    /**
-     * Notify that the interpreter has now blocked, awaiting more data
-     * for a generator via the given choice point.
-     */
-    public void notifyBlocked() {
-        // TODO: implement
+        generator.pump(this);
     }
     
 }
