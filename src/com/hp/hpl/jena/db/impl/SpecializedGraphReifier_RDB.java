@@ -111,7 +111,7 @@ public class SpecializedGraphReifier_RDB
 					didUpdate = true;
 				}
 				if ( !rs.mask.hasType() ) {
-					Triple tt = new Triple(n,Reifier.subject,Reifier.Statement);
+					Triple tt = new Triple(n,Reifier.type,Reifier.Statement);
 					m_reif.updateFrag(n, tt, new StmtMask(tt), my_GID);
 					didUpdate = true;
 				}
@@ -159,7 +159,7 @@ public class SpecializedGraphReifier_RDB
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraphReifier#findReifiedTriple(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.db.impl.SpecializedGraph.CompletionFlag)
 	 */
 	public Triple findReifiedTriple(Node n, CompletionFlag complete) {
-		ExtendedIterator it = m_reif.findReifStmt(n, true, my_GID, false);
+		ResultSetReifIterator it = m_reif.findReifStmt(n, true, my_GID, false);
 		Triple res = null;
 		if ( it.hasNext() ) {
 				res = (Triple) it.next();
@@ -190,7 +190,7 @@ public class SpecializedGraphReifier_RDB
 	 */
 	public ExtendedIterator findReifiedTriples(Node n, CompletionFlag complete) {
 		complete.setDone();
-		return m_reif.findReifStmt(n, false, my_GID, false);
+		return m_reif.findReifStmt(n, false, my_GID, true);
 	}
 
 	/** 
@@ -309,28 +309,29 @@ public class SpecializedGraphReifier_RDB
 	 * try to merge them with the hasType fragment, deleting each as they are merged.
 	 */
 	protected void fragCompact ( Node stmtURI ) {
-		ResultSetTripleIterator itHasType;
+		ResultSetReifIterator itHasType;
+		Triple t;
 		
-		itHasType = (ResultSetTripleIterator) m_reif.findReifStmt(stmtURI,true,my_GID, false);
+		itHasType = m_reif.findReifStmt(stmtURI,true,my_GID, false);
 		if ( itHasType.hasNext() ) {
 			/* something to do */
-			itHasType.next();
+			t = (Triple) itHasType.next();
 			if ( itHasType.hasNext() ) 
                 throw new JenaException("Multiple HasType fragments for URI");			
-			StmtMask htMask = new StmtMask(itHasType.m_triple);
+			StmtMask htMask = new StmtMask(t);
 			itHasType.close();
 					
 			// now, look at fragments and try to merge them with the hasType fragement 
-			ResultSetTripleIterator itFrag = (ResultSetTripleIterator) m_reif.findReifStmt(stmtURI,false,my_GID, false);
+			ResultSetReifIterator itFrag = m_reif.findReifStmt(stmtURI,false,my_GID, false);
 			StmtMask upMask = new StmtMask();
 			while ( itFrag.hasNext() ) {
-				itFrag.next();
+				t = (Triple) itFrag.next();
 				if ( itFrag.getHasType() ) continue;
-				StmtMask fm = new StmtMask(rowToFrag(stmtURI, itFrag.m_triple));
+				StmtMask fm = new StmtMask(rowToFrag(stmtURI, t));
 				if ( htMask.hasIntersect(fm) )
 					break; // can't merge all fragments
 				// at this point, we can merge in the current fragment
-				m_reif.updateFrag(stmtURI, itFrag.m_triple, fm, my_GID);
+				m_reif.updateFrag(stmtURI, t, fm, my_GID);
 				htMask.setMerge(fm);
 				itFrag.deleteRow();
 			}
@@ -415,58 +416,13 @@ public class SpecializedGraphReifier_RDB
 	 */
 	public ExtendedIterator find(TripleMatch t, CompletionFlag complete) {
 		
-		Node stmtURI = t.getMatchSubject();	// note: can be null
-
-		ResultSetIterator it = m_reif.findReifStmt(stmtURI, false, my_GID, true);
-//		ExtendedIterator nodes = m_reif.findReifNodes(stmtURI, my_GID);
-		ExtendedIterator allTriples = new MapMany(it, new ExpandReifiedTriples(this));
-
-		return allTriples.filterKeep( new TripleMatchFilter( t.asTriple() ) );
+//		Node stmtURI = t.getMatchSubject();	// note: can be null
+//		ResultSetReifIterator it = m_reif.findReifStmt(stmtURI, false, my_GID, true);
+//		return it.filterKeep( new TripleMatchFilter( t.asTriple() ) );		
+		ResultSetReifIterator it = m_reif.findReifTripleMatch(t, my_GID);
+		return it;
 	}
 
-	public class ExpandReifiedTriples implements MapFiller {
-
-		SpecializedGraphReifier_RDB m_sgr;
-
-		ExpandReifiedTriples( SpecializedGraphReifier_RDB sgr ) { 
-			m_sgr = sgr;
-		}
-		/* (non-Javadoc)
-		 * @see com.hp.hpl.jena.util.iterator.MapFiller#refill(java.lang.Object, java.util.ArrayList)
-		 */
-		public boolean refill(Object x, ArrayList pending) {
-			ArrayList res = (ArrayList) x;
-			boolean addedToPending = false;
-			IRDBDriver	drvr = m_pset.driver();
-			
-			String subj = (String) res.get(0);
-			String pred = (String) res.get(1);
-			String obj = (String) res.get(2);
-			String stmtURI = (String) res.get(3);
-			String hasType = (String) res.get(4);
-			Node node = drvr.RDBStringToNode(stmtURI);
-				
-			if ( hasType.equals("T") ) {
-					pending.add( new Triple( node, Reifier.type, Reifier.Statement ));
-					addedToPending = true;					
-				}
-				if( subj != null ) {
-					pending.add( new Triple( node, Reifier.subject,
-								drvr.RDBStringToNode(subj) ));
-					addedToPending = true;
-				}
-				if( pred != null ) {
-					pending.add( new Triple( node, Reifier.predicate, drvr.RDBStringToNode(pred)));
-					addedToPending = true;
-				}
-			if( obj != null ) {
-				pending.add( new Triple( node, Reifier.object, drvr.RDBStringToNode(obj)));
-				addedToPending = true;
-			}
-			return addedToPending;
-		}
-
-	}
 	/**
 	 * Tests if a triple is contained in the specialized graph.
 	 * @param t is the triple to be tested
@@ -555,24 +511,24 @@ public class SpecializedGraphReifier_RDB
 			boolean  hasSubj, hasPred, hasObj, hasType;
 			boolean  checkSame = sm != null;
 			int cnt = 0;
-			ResultSetTripleIterator it = (ResultSetTripleIterator) m_reif.findReifStmt(stmtURI,false,my_GID, false);
+			ResultSetReifIterator it = m_reif.findReifStmt(stmtURI,false,my_GID, false);
 			while (it.hasNext()) {
 				cnt++;
 				Triple db = (Triple) it.next();				
 				StmtMask n = new StmtMask();
-				hasSubj = db.getSubject() != null;
+				hasSubj = !db.getSubject().equals(Node.ANY);
 				if ( hasSubj && checkSame )
 					if ( db.getSubject().equals(s.getSubject()) )
 						sm.setHasSubj();
 					else
 						dm.setHasSubj();
-				hasPred = db.getPredicate() != null;
+				hasPred = !db.getPredicate().equals(Node.ANY);
 				if ( hasPred && checkSame )
 					if ( db.getPredicate().equals(s.getPredicate()) )
 						sm.setHasPred();
 					else
 						dm.setHasPred();
-				hasObj = db.getObject() != null;
+				hasObj = !db.getObject().equals(Node.ANY);
 				if ( hasObj && checkSame )
 					if ( db.getObject().equals(s.getObject()) )
 						sm.setHasObj();

@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.9 $ on $Date: 2003-07-01 12:48:12 $
+* @version $Revision: 1.10 $ on $Date: 2003-07-10 18:40:00 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -77,17 +77,13 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.db.impl.IPSet#find(com.hp.hpl.jena.graph.TripleMatch, com.hp.hpl.jena.db.impl.IDBID)
 	 */
-	public ResultSetIterator findReifStmt(
+	public ResultSetReifIterator findReifStmt(
 		Node stmtURI,
 		boolean hasType,
-		IDBID graphID, boolean useRSI) {
+		IDBID graphID, boolean getTriples) {
 		String astName = getASTname();
 		String gid = graphID.getID().toString();
-		ResultSetIterator result;
-		if ( useRSI ) 
-		 result = new ResultSetIterator();
-		else  result =
-			new ResultSetTripleIterator(this, true, graphID);
+		ResultSetReifIterator result = new ResultSetReifIterator(this, getTriples, graphID);
 
 		PreparedStatement ps = null;
 
@@ -98,9 +94,9 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		boolean notFound = false;
 
 		if ( findAll )
-			stmtStr = hasType ? "SelectAllReifTypeStmt" :  "SelectAllReifStatement";
+			stmtStr = hasType ? "selectReifiedT" :  "selectReified";
 		else
-			stmtStr = hasType ? "SelectReifTypeStatement" : "SelectReifStatement";
+			stmtStr = hasType ? "selectReifiedNT" : "selectReifiedN";
 		try {
 			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
 
@@ -131,6 +127,92 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		return result;
 	}
 	
+	public ResultSetReifIterator findReifTripleMatch(
+		TripleMatch t,
+		IDBID graphID) {
+		String astName = getASTname();
+		String gid = graphID.getID().toString();
+		ResultSetReifIterator result = new ResultSetReifIterator(this, true, graphID);
+
+		PreparedStatement ps = null;
+
+		String stmtStr = "*findReif ";
+		boolean gotStmt = false;
+		boolean gotPred = false;
+		boolean gotObj = false;
+		boolean objIsStmt = false;
+		char reifProp = ' ';
+		boolean done = false;
+		int argc = 1;
+		
+		Node stmtURI = t.getMatchSubject();
+		Node obj = t.getMatchObject();
+		Node pred = t.getMatchPredicate();
+		
+		if ( (stmtURI != null) && !stmtURI.equals(Node.ANY) ) {
+			gotStmt = true;
+			stmtStr += "N";
+		}
+		if ( (pred != null) && !pred.equals(Node.ANY) ) {
+			gotPred = true;
+			if ( pred.equals(Reifier.subject) ) reifProp = 'S';
+			else if ( pred.equals(Reifier.predicate) ) reifProp = 'P';
+			else if ( pred.equals(Reifier.object) ) reifProp = 'O';
+			else if ( pred.equals(Reifier.type) ) reifProp = 'T';
+			else done = true;
+			stmtStr += ("P" + reifProp);
+		}
+		if ( (obj != null) && !obj.equals(Node.ANY) ) {
+			gotObj = true;
+			stmtStr += "O";
+			if ( obj.equals(Reifier.Statement) ) {
+				objIsStmt = true;
+				stmtStr += "C"; 
+			} else if ( reifProp == 'T' )	
+				// reifier only stores patterns like (-, rdf:type, rdf:Statement)
+				done = true;			
+		}
+
+		if ( done == false ) try {
+			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
+			ps.setString(argc++, gid);
+			if ( gotStmt ) {
+				String stmtNode = m_driver.nodeToRDBString(stmtURI, false);
+				if ( stmtNode == null ) done = true;
+				else ps.setString(argc++, stmtNode);
+			}
+			if ( gotObj ) {
+				// no arguments in case match is <-,rdf:type,rdf:Statement>
+				if ( !(gotPred && objIsStmt) ) {
+					String objNode = m_driver.nodeToRDBString(obj, false);
+					ps.setString(argc++,objNode);
+					if ( gotPred == false ) {
+						// if no predicate, object value could be in subj, pred or obj column
+						ps.setString(argc++,objNode);
+						ps.setString(argc++,objNode);
+					}
+				}
+			}
+
+		} catch (Exception e) {
+			done = true;
+			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
+		}
+
+		if ( done )
+			result.close();
+		else {
+			try {
+			m_sql.executeSQL(ps, stmtStr, result);
+			} catch (Exception e) {
+				logger.debug( "find encountered exception ", e);
+			}
+		}
+		return result;
+	}
+
+
+	
 	/*
 	 * (non-Javadoc)
 	 * return all nodes which reify the triple as a statement. no
@@ -144,8 +226,8 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		ResultSetIterator result = new ResultSetIterator();
 		boolean notFound = false;
 
-		stmtStr = "SelectReifURI";
-		if (t != null) stmtStr += "SPO";
+		stmtStr = "selectReifNode";
+		stmtStr += (t == null) ? "T" : "SPOT";
 
 		try {
 			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
@@ -210,7 +292,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		boolean notFound = false;
 
 		String stmtStr =
-			stmtURI == null ? "SelectAllReifNodes" : "SelectReifNode";
+			stmtURI == null ? "selectReifNode" : "selectReifNodeN";
 		try {
 			ps = m_sql.getPreparedSQLStatement(stmtStr, getASTname());
 
@@ -266,16 +348,16 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			PreparedStatement ps = null;
 
 			if ( fragMask.hasSubj() ) {
-				stmtStr = "updateReifSubj";
+				stmtStr = "updateReifiedS";
 				if ( !nullify ) val = frag.getObject();
 			} else if ( fragMask.hasPred() ) {
-				stmtStr = "updateReifProp";
+				stmtStr = "updateReifiedP";
 				if ( !nullify ) val = frag.getObject();
 			} else if ( fragMask.hasObj() ) {
-				stmtStr = "updateReifObj";
+				stmtStr = "updateReifiedO";
 				if ( !nullify ) val = frag.getObject();
 			} else if ( fragMask.hasType() ) {
-				stmtStr = "updateReifHasType";
+				stmtStr = "updateReifiedT";
 			} 
 				
 			try {
@@ -352,13 +434,13 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 
 			val = frag.getObject();
 			if ( fragMask.hasSubj() ) {
-				stmtStr = "findFragSubj";
+				stmtStr = "selectReifiedNS";
 			} else if ( fragMask.hasPred() ) {
-				stmtStr = "findFragProp";
+				stmtStr = "selectReifiedNP";
 			} else if ( fragMask.hasObj() ) {
-				stmtStr = "findFragObj";
+				stmtStr = "selectReifiedNO";
 			} else if ( fragMask.hasType() ) {
-				stmtStr = "findFragHasType";
+				stmtStr = "selectReifiedNT";
 			}
 				
 			try {
