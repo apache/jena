@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.25 2003-10-02 09:13:25 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.26 2003-10-02 11:18:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -29,9 +29,9 @@ public class GraphMem extends GraphBase implements Graph
     /** the set storing all the triples in this GraphMem */
     HashSet triples = new HashSet();
 
-    NodeMap subjects = new NodeMap();
-    NodeMap predicates = new NodeMap();
-    NodeMap objects = new NodeMap();
+    NodeToTriplesMap subjects = new NodeToTriplesMap();
+    NodeToTriplesMap predicates = new NodeToTriplesMap();
+    NodeToTriplesMap objects = new NodeToTriplesMap();
 
     protected int count;
     
@@ -153,38 +153,6 @@ public class GraphMem extends GraphBase implements Graph
         }
     }
 
-    protected static class TrackingTripleIterator extends TripleMatchIterator
-        {
-        TrackingTripleIterator( Triple t, Iterator it ) { super( t, it ); }    
-        
-        protected Triple current;
-            
-        public Object next()
-            { return current = (Triple) super.next(); }       
-         
-        public void remove()
-            {
-            super.remove();     
-            }       
-        }
-        
-    protected static class TripleFieldIterator extends TrackingTripleIterator
-        {
-        private NodeMap A, B;
-        private Set triples;
-        
-        TripleFieldIterator( Triple t , Iterator it, Set triples, NodeMap A, NodeMap B )
-            { super( t, it ); this.triples = triples; this.A = A; this.B = B; }    
-            
-        public void remove()
-            {
-            super.remove();     
-            triples.remove( current );
-            A.remove( current.getSubject(), current );
-            B.remove( current.getObject(), current );
-            }       
-        }
-        
     protected TripleMatchIterator objectIterator(Triple tm, Node o)
         { return new TripleFieldIterator
             ( tm, objects.iterator( o ), triples, subjects, predicates ); }
@@ -210,38 +178,6 @@ public class GraphMem extends GraphBase implements Graph
                 }
             };
         }
-        
-    protected static class NodeMap {
-        HashMap map = new HashMap();
-
-        protected void add(Node o, Triple t) {
-            LinkedList l = (LinkedList) map.get(o);
-            if (l==null) {
-                l = new LinkedList();
-                map.put(o,l);
-            }
-            l.add(t);
-        }
-
-        protected void remove(Node o, Triple t ) {
-            LinkedList l = (LinkedList) map.get(o);
-            if (l != null) {
-                l.remove(t);
-                if (l.size() == 0) {
-                    map.put(o, null);
-                }
-            }
-        }
-
-        protected Iterator iterator(Node o) {
-            LinkedList l = (LinkedList) map.get(o);
-            if (l==null) {
-                return (new LinkedList()).iterator();
-            } else {
-                return l.iterator();
-            }
-        }
-    }
     
 
 }
