@@ -34,7 +34,7 @@ package com.hp.hpl.jena.rdf.model;
 /**
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-06-17 14:39:38 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-07-30 13:28:47 $'
  */
 
 import com.hp.hpl.jena.util.iterator.*;
@@ -42,15 +42,16 @@ import com.hp.hpl.jena.util.iterator.*;
 import java.util.NoSuchElementException;
 
 
-/** An iterator which returns RDF Statements.
- *
- * <p>RDF iterators are standard Java iterators, except that they
- *   have an extra method to return specifically typed objects,
- *   in this case RDF Statements and have a <CODE>close()</CODE> method
+/** 
+    An iterator which returns RDF Statements.
+    
+    <p>RDF iterators are standard Java iterators, except that they
+    have extras method to return specifically typed objects,
+    in this case RDF Statements and have a <CODE>close()</CODE> method
  *   that should be called to free resources if the application does 
  *   not complete the iteration.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2003-06-17 14:39:38 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2003-07-30 13:28:47 $'
  */
 public interface StmtIterator extends ExtendedIterator {
     

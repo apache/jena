@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            8 Aug 2001
  * Filename           $RCSfile: ConcatenatedIterator.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-18 21:56:09 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-30 13:28:47 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
  * (see footer for full conditions)
@@ -34,7 +34,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * followed by the elements of the second.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ConcatenatedIterator.java,v 1.5 2003-06-18 21:56:09 ian_dickinson Exp $
+ * @version CVS info: $Id: ConcatenatedIterator.java,v 1.6 2003-07-30 13:28:47 chris-dollin Exp $
  */
 public class ConcatenatedIterator
     implements Iterator
@@ -77,34 +77,9 @@ public class ConcatenatedIterator
      * @param iter1 The second iterator. Elements of this iterator will appear
      *              second in the elements read from the concatenation.
      */
-    public ConcatenatedIterator( Object iter0, Object iter1 ) {
-        // find out which kind of iterator iter0 is
-        if (iter0 instanceof Iterator) {
-            m_iter0 = (Iterator) iter0;
-        }
-        else if (iter0 instanceof NodeIterator) {
-            m_iter0 =  (NodeIterator) iter0;
-        }
-        else if (iter0 instanceof ResIterator) {
-            m_iter0 = (ResIterator) iter0; 
-        }
-        else {
-            throw new IllegalArgumentException( "Found a non-iterator when constructing ConcatenatedIterator: " + iter0 );
-        }
-
-        // do the same for iter1
-        if (iter1 instanceof Iterator) {
-            m_iter1 = (Iterator) iter1;
-        }
-        else if (iter1 instanceof NodeIterator) {
-            m_iter1 =  (NodeIterator) iter1;
-        }
-        else if (iter1 instanceof ResIterator) {
-            m_iter1 = (ResIterator) iter1;
-        }
-        else {
-            throw new IllegalArgumentException( "Found a non-iterator when constructing ConcatenatedIterator: " + iter1 );
-        }
+    public ConcatenatedIterator( Iterator iter0, Iterator iter1 ) {
+        m_iter0 = iter0;
+        m_iter1 = iter1;
     }
 
 

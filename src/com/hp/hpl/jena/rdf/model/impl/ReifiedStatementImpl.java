@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
 	[see end of file]
-	$Id: ReifiedStatementImpl.java,v 1.4 2003-07-23 07:34:50 chris-dollin Exp $
+	$Id: ReifiedStatementImpl.java,v 1.5 2003-07-30 13:28:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -31,7 +31,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         assertStatement( s ); 
         }
         
-    private ReifiedStatementImpl( EnhGraph m, Node n, Statement s )
+    protected ReifiedStatementImpl( EnhGraph m, Node n, Statement s )
         {
         super( n, m );
         assertStatement( s );
@@ -49,7 +49,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
     public Statement getStatement() 
         { return statement; }
        
-    static final public Implementation factory = new Implementation() 
+    static final public Implementation reifiedStatementFactory = new Implementation() 
         {
         /**
             convert a _node_ into a ReifiedStatement in the enhanced graph 
@@ -58,21 +58,40 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
         */
         public EnhNode wrap( Node n, EnhGraph eg ) 
             {
-            Triple x = n.getTriple( eg.asGraph().getReifier() );
+            Triple x = getTriple( eg, n );
             if (x == null) throw new DoesNotReifyException( n );
             Statement st = StatementImpl.toStatement( x, eg );
             return new ReifiedStatementImpl( eg, n, st );
             }
-            
+
         /**
-            see if it's possible to convert _n_
+            Answer true iff the node <code>n</code> can become a reified statement,
+            ie it is associated with a triple by <code>eg</code>'s Reifier.
+            @param eg the (enhanced) graph who's Reifier might hold the triple
+            @param n the node who's triple is required
+            @return true iff there's an associated triple
         */
         public boolean canWrap( Node n, EnhGraph eg )
-            { return n.getTriple( eg.asGraph().getReifier() ) != null; }
+            { return getTriple( eg, n ) != null; }
+            
+        /**
+            Answer the triple associated with <code>n</code> by eg's graph's Reifier.
+            @param eg the (enhanced) graph who's Reifier might hold the triple
+            @param n the node who's triple is required
+            @return the associated triple if any, otherwise null
+        */
+        private Triple getTriple( EnhGraph eg, Node n )
+            { return eg.asGraph().getReifier().getTriple( n ); }
         };
         
+    /**
+        Answer our Reifier (ie our Model's Graph's Reifier).
+    */
+    protected Reifier getReifier()
+        { return getModel().getGraph().getReifier(); }
+        
     public boolean isValid()
-        { return this.asNode().getTriple( getModel().getGraph().getReifier() ) != null; }
+        { return getModel().getGraph().getReifier().getTriple( this.asNode() ) != null; }
         
     /**
         tell the underlying graph's reifier that this ReifiedStatement's node
@@ -81,7 +100,7 @@ public class ReifiedStatementImpl extends ResourceImpl implements ReifiedStateme
     */        
     private ReifiedStatementImpl cache()
         {
-        getModel().getGraph().getReifier().reifyAs( this.asNode(), statement.asTriple() );
+        getReifier().reifyAs( this.asNode(), statement.asTriple() );
         return this;
         }
       
