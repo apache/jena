@@ -2,6 +2,9 @@ package com.hp.hpl.jena.ontology.tidy;
 
 /** automatically generated. */
 class Grammar {
+	static final int lists[] = new int[]{};
+	static final int restrictions[] = new int[]{};
+	static final int descriptions[] = new int[]{};
     static final int CategoryShift = 8;
     static final int annotationPropID = 1;
     static final int userID = 2;

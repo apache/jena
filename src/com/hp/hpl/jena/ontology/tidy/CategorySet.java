@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: CategorySet.java,v 1.1 2003-04-15 11:25:32 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.2 2003-04-15 14:01:42 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -12,55 +12,96 @@ import java.util.*;
 */
 class CategorySet implements Comparable {
 
+    static private final int cycles[] = new int[]{
+    	Grammar.cyclic,
+    	Grammar.cyclicFirst,
+    	Grammar.cyclicRest
+    };
 	/**
 	 * 
 	 * @return The ids of all CategorySet which might be cyclic. 
 	 */
-	static int[] cyclicSets() {
-		return null;
-	}
+	static final Q cyclicSets = new Q() {
+	   boolean test(int a[]) {
+	   	  return intersect(cycles,a);
+	   }
+	};
 
 	/**
 	 * 
 	 * @return The ids of all CategorySet which are of illegal 
 	 * untyped nodes  in the graph. 
 	 */
-	static int[] untypedSets() {
-		return null;
-	}
+	static final Q untypedSets= new Q() {
+		boolean test(int all[]){
+			return member(Grammar.notype,all);
+		}
+	};
 
+    static final private int orphanTypes[] = new int[]{
+    	Grammar.owlOntologyProperty,
+    	Grammar.rdfList
+    };
 	/**
 	 * 
 	 * @return The ids of all CategorySet which are of illegal orphans
 	 *  in the graph. 
 	 */
-	static int[] orphanSets() {
-		return null;
-	}
+	static final Q orphanSets = new Q() {
+		boolean test(int all[]){
+			return all[0]==Grammar.orphan
+			  && intersect(orphanTypes,all);
+		}
+	};
+	/**
+		 * 
+		 * @return The ids of all CategorySet which are DL only orphans
+		 *  in the graph. 
+		 */
+	static final Q dlOrphanSets = new Q() {
+	boolean test(int all[]){
+		return all[0]==Grammar.orphan
+		  && ( intersect(Grammar.restrictions,all)
+		  || intersect(Grammar.descriptions,all) );
+	} 
+};
 	/**
 	 * The ids of all orphaned unnamed individuals, which are
 	 * not known not to be cyclic.
 	 * In fact, these are not cyclic.
 	 * @return
 	 */
-	static int[] cyclicOrphanSets() {
-		return null;
-	}
+	static final Q cyclicOrphanSets= new Q() {
+	boolean test(int all[]){
+		return all[0]==Grammar.orphan
+		  && member(Grammar.unnamedIndividual,all)
+		  && intersect(cycles,all);
+	} 
+};
 
 	/**
 	 * @return the ids of all categories for which the node must be structured
 	 * with one member.
 	 */
-	static int[] structuredOne() {
-		return null;
-	}
+	static final Q structuredOne = new Q() {
+	boolean test(int all[]){
+		return member(Grammar.allDifferent72,all)
+          || member(Grammar.unnamedDataRange80,all)
+		  || intersect(Grammar.descriptions,all);
+	} 
+};
 	/**
 		 * @return the ids of all categories for which the node must be structured
 		 * with two members.
 		 */
-	static int[] structuredTwo() {
-		return null;
-	}
+	static final Q structuredTwo= new Q() {
+	boolean test(int all[]){
+		return  intersect(Grammar.lists,all)
+		  || intersect(Grammar.restrictions,all);
+	} 
+};
+	
+	
 	static private final SortedSet sorted = new TreeSet();
 	static private final Vector unsorted = new Vector();
 	/**
