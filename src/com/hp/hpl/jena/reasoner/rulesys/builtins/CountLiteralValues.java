@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: CountLiteralValues.java,v 1.2 2003-08-27 13:09:18 andy_seaborne Exp $
+ * $Id: CountLiteralValues.java,v 1.3 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * distinct values for P on resource X. This is expensive.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:09:18 $
+ * @version $Revision: 1.3 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class CountLiteralValues extends BaseBuiltin {
 
@@ -49,7 +49,9 @@ public class CountLiteralValues extends BaseBuiltin {
      */
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         ArrayList values = new ArrayList();
-        for (Iterator ni = context.find(args[0], args[1], null); ni.hasNext(); ) {
+        Node a0 = getArg(0, args, context);
+        Node a1 = getArg(1, args, context);
+        for (Iterator ni = context.find(a0, a1, null); ni.hasNext(); ) {
             Node v = ((Triple)ni.next()).getObject();
             if (v.isLiteral()) {
                 // Can't just use contains because distinct objects may

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Print.java,v 1.4 2003-08-27 13:11:14 andy_seaborne Exp $
+ * $Id: Print.java,v 1.5 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Print its argument list as a side effect
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-27 13:11:14 $
+ * @version $Revision: 1.5 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class Print extends BaseBuiltin {
 
@@ -40,7 +40,7 @@ public class Print extends BaseBuiltin {
      * the current environment
      */
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
-        print(args, length);
+        print(args, length, context);
         return true;
     }
     
@@ -53,15 +53,15 @@ public class Print extends BaseBuiltin {
      * @param context an execution context giving access to other relevant data
      */
     public void headAction(Node[] args, int length, RuleContext context) {
-        print(args, length);
+        print(args, length, context);
     }
     
     /**
      * Print a node list to stdout
      */
-    public void print(Node[] args, int length) {
+    public void print(Node[] args, int length, RuleContext context) {
         for (int i = 0 ; i < length; i++) {
-            System.out.print( PrintUtil.print(args[i]) + " ");
+            System.out.print( PrintUtil.print(getArg(i, args, context)) + " ");
         }
         System.out.println("");
     }

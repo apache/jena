@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: NotFunctor.java,v 1.4 2003-08-27 13:11:14 andy_seaborne Exp $
+ * $Id: NotFunctor.java,v 1.5 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Used to prevent runaway nesting of functors
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-27 13:11:14 $
+ * @version $Revision: 1.5 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class NotFunctor extends BaseBuiltin {
 
@@ -46,7 +46,7 @@ public class NotFunctor extends BaseBuiltin {
      */
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
-        return !Functor.isFunctor(args[0]);
+        return !Functor.isFunctor(getArg(0, args, context));
     }
     
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseBuiltin.java,v 1.6 2003-08-27 13:09:18 andy_seaborne Exp $
+ * $Id: BaseBuiltin.java,v 1.7 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * implementations can inherit from.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-27 13:09:18 $
+ * @version $Revision: 1.7 $ on $Date: 2003-10-05 15:35:49 $
  */
 public abstract class BaseBuiltin implements Builtin {
 
@@ -85,6 +85,13 @@ public abstract class BaseBuiltin implements Builtin {
         return true;
     }
     
+    /**
+     * Return the n'th argument node after dererencing by what ever type of
+     * rule engine binding environment is appropriate.
+     */
+    public Node getArg(int n, Node[] args, RuleContext context) {
+        return context.getEnv().getGroundVersion(args[n]);
+    }
 
 }
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: NoValue.java,v 1.5 2003-09-29 20:51:12 der Exp $
+ * $Id: NoValue.java,v 1.6 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.*;
  * for (X, P, *).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-09-29 20:51:12 $
+ * @version $Revision: 1.6 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class NoValue extends BaseBuiltin {
 
@@ -47,9 +47,11 @@ public class NoValue extends BaseBuiltin {
         }
         Node obj = null;
         if (length == 3) {
-            obj = args[2];
+            obj = getArg(2, args, context);
         }
-        return !context.contains(args[0], args[1], obj);
+        Node subj = getArg(0, args, context);
+        Node pred = getArg(1, args, context);
+        return !context.contains(subj, pred, obj);
     }
     
 }

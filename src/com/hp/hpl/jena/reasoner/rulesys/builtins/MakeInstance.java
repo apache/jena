@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: MakeInstance.java,v 1.8 2003-09-29 20:52:27 der Exp $
+ * $Id: MakeInstance.java,v 1.9 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.graph.*;
  * an optional type cor the T value.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-09-29 20:52:27 $
+ * @version $Revision: 1.9 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class MakeInstance extends BaseBuiltin {
 
@@ -52,9 +52,9 @@ public class MakeInstance extends BaseBuiltin {
 //            System.out.println(" - " + PrintUtil.print(args[i]));
 //        }
         if (length == 3 || length == 4) {
-            Node inst = args[0];
-            Node prop = args[1];
-            Node pclass = length == 4 ? args[2] : null;
+            Node inst = getArg(0, args, context);
+            Node prop = getArg(1, args, context);
+            Node pclass = length == 4 ? getArg(2, args, context) : null;
             if (context instanceof BBRuleContext) {
                 Node temp = ((BBRuleContext)context).getTemp(inst, prop, pclass);
                 return context.getEnv().bind(args[length-1], temp); 

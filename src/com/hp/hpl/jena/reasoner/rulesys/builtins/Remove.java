@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Remove.java,v 1.6 2003-08-27 13:11:14 andy_seaborne Exp $
+ * $Id: Remove.java,v 1.7 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Remove the body clause given by index arguments from the database.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-08-27 13:11:14 $
+ * @version $Revision: 1.7 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class Remove extends BaseBuiltin {
 
@@ -41,7 +41,7 @@ public class Remove extends BaseBuiltin {
     public void headAction(Node[] args, int length, RuleContext context) {
         boolean ok = false;
         for (int i = 0; i < length; i++) {
-            Node clauseN = args[i];
+            Node clauseN = getArg(i, args, context);
             if (Util.isNumeric(clauseN)) {
                 int clauseIndex = Util.getIntValue(clauseN);
                 Object clause = context.getRule().getBodyElement(clauseIndex);

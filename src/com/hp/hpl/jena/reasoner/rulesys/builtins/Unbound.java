@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Unbound.java,v 1.4 2003-08-27 13:11:14 andy_seaborne Exp $
+ * $Id: Unbound.java,v 1.5 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Predicate used to check if a variable has not been bound.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-27 13:11:14 $
+ * @version $Revision: 1.5 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class Unbound extends BaseBuiltin {
 
@@ -42,7 +42,7 @@ public class Unbound extends BaseBuiltin {
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         BindingEnvironment env = context.getEnv();
         for (int i = 0; i < length; i++) {
-            if ( !(args[i] instanceof Node_RuleVariable) ) return false;
+            if ( !(getArg(i, args, context) instanceof Node_RuleVariable) ) return false;
         }
         return true;
     }

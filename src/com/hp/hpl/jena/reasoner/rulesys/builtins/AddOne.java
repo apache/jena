@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: AddOne.java,v 1.4 2003-08-27 13:09:18 andy_seaborne Exp $
+ * $Id: AddOne.java,v 1.5 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  * Bind the second argument to 1+ the first argument. Just used for testing builtins.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-27 13:09:18 $
+ * @version $Revision: 1.5 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class AddOne extends BaseBuiltin {
 
@@ -49,11 +49,13 @@ public class AddOne extends BaseBuiltin {
         checkArgs(length, context);
         BindingEnvironment env = context.getEnv();
         boolean ok = false;
-        if (Util.isNumeric(args[0])) {
-            Node newVal = Util.makeIntNode( Util.getIntValue(args[0]) + 1 );
+        Node a0 = getArg(0, args, context);
+        Node a1 = getArg(1, args, context);
+        if (Util.isNumeric(a0)) {
+            Node newVal = Util.makeIntNode( Util.getIntValue(a0) + 1 );
             ok = env.bind(args[1], newVal);
-        } else if (Util.isNumeric(args[1])) {
-            Node newVal = Util.makeIntNode( Util.getIntValue(args[1]) - 1 );
+        } else if (Util.isNumeric(a1)) {
+            Node newVal = Util.makeIntNode( Util.getIntValue(a1) - 1 );
             ok = env.bind(args[0], newVal);
         }
         return ok;

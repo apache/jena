@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Min.java,v 1.2 2003-09-22 15:35:04 der Exp $
+ * $Id: Min.java,v 1.3 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  *  Bind the third arg to the min of the first two args.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-09-22 15:35:04 $
+ * @version $Revision: 1.3 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class Min extends BaseBuiltin {
 
@@ -49,8 +49,8 @@ public class Min extends BaseBuiltin {
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         BindingEnvironment env = context.getEnv();
-        Node n1 = args[0];
-        Node n2 = args[1];
+        Node n1 = getArg(0, args, context);
+        Node n2 = getArg(1, args, context);
         if (n1.isLiteral() && n2.isLiteral()) {
             Object v1 = n1.getLiteral().getValue();
             Object v2 = n2.getLiteral().getValue();

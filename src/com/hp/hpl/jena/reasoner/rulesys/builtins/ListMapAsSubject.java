@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ListMapAsSubject.java,v 1.1 2003-09-23 08:57:32 der Exp $
+ * $Id: ListMapAsSubject.java,v 1.2 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * forward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-09-23 08:57:32 $
+ * @version $Revision: 1.2 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class ListMapAsSubject extends BaseBuiltin {
 
@@ -50,10 +50,13 @@ public class ListMapAsSubject extends BaseBuiltin {
      */
     public void headAction(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
-        List l = Util.convertList(args[0], context);
+        Node n0 = getArg(0, args, context);
+        Node n1 = getArg(1, args, context);
+        Node n2 = getArg(2, args, context);
+        List l = Util.convertList(n0, context);
         for (Iterator i = l.iterator(); i.hasNext(); ) {
             Node x = (Node)i.next();
-            context.add( new Triple(x, args[1], args[2]));
+            context.add( new Triple(x, n1, n2));
         }
     }
     

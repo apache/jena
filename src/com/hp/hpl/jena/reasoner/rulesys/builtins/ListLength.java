@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ListLength.java,v 1.1 2003-09-22 15:36:46 der Exp $
+ * $Id: ListLength.java,v 1.2 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * Fails if the list is malformed.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-09-22 15:36:46 $
+ * @version $Revision: 1.2 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class ListLength extends BaseBuiltin {
 
@@ -50,7 +50,7 @@ public class ListLength extends BaseBuiltin {
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
         BindingEnvironment env = context.getEnv();
-        int len = getLength(args[0], context);
+        int len = getLength(getArg(0, args, context), context);
         if (len == -1) {
             return false;
         } else {

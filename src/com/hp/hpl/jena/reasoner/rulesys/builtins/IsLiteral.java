@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: IsLiteral.java,v 1.4 2003-08-27 13:09:41 andy_seaborne Exp $
+ * $Id: IsLiteral.java,v 1.5 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.graph.*;
  * Tests the single argument to make sure it is a literal.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-08-27 13:09:41 $
+ * @version $Revision: 1.5 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class IsLiteral extends BaseBuiltin {
 
@@ -47,7 +47,7 @@ public class IsLiteral extends BaseBuiltin {
      */
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
-        return args[0].isLiteral();
+        return getArg(0, args, context).isLiteral();
     }
     
 }

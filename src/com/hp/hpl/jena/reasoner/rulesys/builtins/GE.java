@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GE.java,v 1.2 2003-08-27 13:09:18 andy_seaborne Exp $
+ * $Id: GE.java,v 1.3 2003-10-05 15:35:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.*;
  * Tests if the first argument is greater than or equal to the second.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-27 13:09:18 $
+ * @version $Revision: 1.3 $ on $Date: 2003-10-05 15:35:49 $
  */
 public class GE extends BaseBuiltin {
 
@@ -46,8 +46,10 @@ public class GE extends BaseBuiltin {
      */
     public boolean bodyCall(Node[] args, int length, RuleContext context) {
         checkArgs(length, context);
-        if ( Util.isNumeric(args[0]) && Util.isNumeric(args[1]) ) {
-            return Util.compareNumbers(args[0], args[1]) >= 0;
+        Node n0 = getArg(0, args, context);
+        Node n1 = getArg(1, args, context);
+        if ( Util.isNumeric(n0) && Util.isNumeric(n1) ) {
+            return Util.compareNumbers(n0, n1) >= 0;
         } else {
             return false;
         }
