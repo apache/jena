@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.25 $
+ * Revision           $Revision: 1.26 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-02-18 21:02:01 $
+ * Last modified on   $Date: 2004-04-26 18:25:46 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.25 2004-02-18 21:02:01 ian_dickinson Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.26 2004-04-26 18:25:46 ian_dickinson Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -62,6 +62,12 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     
     /** A specification for OWL models that are stored in memory and use the OWL rules inference engine for additional entailments */
     public static final OntModelSpec OWL_MEM_RULE_INF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, OWLFBRuleReasonerFactory.theInstance(), ProfileRegistry.OWL_LANG );
+    
+    /** A specification for OWL models that are stored in memory and use the micro OWL rules inference engine for additional entailments */
+    public static final OntModelSpec OWL_MEM_MICRO_RULE_INF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, OWLMicroReasonerFactory.theInstance(), ProfileRegistry.OWL_LANG );
+    
+    /** A specification for OWL models that are stored in memory and use the mini OWL rules inference engine for additional entailments */
+    public static final OntModelSpec OWL_MEM_MINI_RULE_INF = new OntModelSpec( ModelFactory.createMemModelMaker(), null, OWLMiniReasonerFactory.theInstance(), ProfileRegistry.OWL_LANG );
     
     /** A specification for OWL DL models that are stored in memory and do no additional entailment reasoning */
     public static final OntModelSpec OWL_DL_MEM = new OntModelSpec( ModelFactory.createMemModelMaker(), null, null, ProfileRegistry.OWL_DL_LANG );
