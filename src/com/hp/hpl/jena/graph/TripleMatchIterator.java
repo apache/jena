@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TripleMatchIterator.java,v 1.6 2004-07-08 12:59:49 chris-dollin Exp $
+  $Id: TripleMatchIterator.java,v 1.7 2004-07-08 15:32:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -10,9 +10,10 @@ import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.Iterator;
 
-/** An iterator that selects triples from an underlying iterators of triples
- * It used to take TripleMatch's, but those are obsolete.
- * @author  bwm, kers
+/** 
+ 	An iterator that selects triples from an underlying iterators of triples
+ 	It used to take TripleMatch's, but those are obsolete.
+ 	@author  bwm, kers
 */
 public class TripleMatchIterator 
     extends FilterIterator

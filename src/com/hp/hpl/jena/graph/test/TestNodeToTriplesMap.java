@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.2 2004-07-08 13:00:15 chris-dollin Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.3 2004-07-08 15:32:59 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -27,15 +27,22 @@ public class TestNodeToTriplesMap extends GraphTestBase
     public static TestSuite suite()
         { return new TestSuite( TestNodeToTriplesMap.class ); }
     
-    protected NodeToTriplesMap nt = new NodeToTriplesMap();
+    protected NodeToTriplesMap ntS = new NodeToTriplesMap()
+    	{ public Node getIndexNode( Triple t ) { return t.getSubject(); } };
+    	
+    protected NodeToTriplesMap ntP = new NodeToTriplesMap()
+    	{ public Node getIndexNode( Triple t ) { return t.getPredicate(); } };
+    	
+    protected NodeToTriplesMap ntO = new NodeToTriplesMap()
+    	{ public Node getIndexNode( Triple t ) { return t.getObject(); } };
 
     protected static final Node x = node( "x" );
     
-    protected static final Node y= node( "y" );
+    protected static final Node y = node( "y" );
     
     public void testZeroSize()
         {
-        testZeroSize( "fresh NTM", nt );
+        testZeroSize( "fresh NTM", ntS );
         }
     
     protected void testZeroSize( String title, NodeToTriplesMap nt )
@@ -47,14 +54,14 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testAddOne()
         {
-        nt.add( x, triple( "x P y" ) );
-        testJustOne( x, nt );
+        ntS.add( x, triple( "x P y" ) );
+        testJustOne( x, ntS );
         }
     
     public void testAddOneTwice()
         {
-        addTriples( nt, "x P y; x P y" );
-        testJustOne( x, nt );
+        addTriples( ntS, "x P y; x P y" );
+        testJustOne( x, ntS );
         }
     
     protected void testJustOne( Node x, NodeToTriplesMap nt )
@@ -66,88 +73,109 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testAddTwoUnshared()
         {
-        addTriples( nt, "x P a; y Q b" );
-        assertEquals( 2, nt.size() );
-        assertEquals( false, nt.isEmpty() );
-        assertEquals( both( x, y ), iteratorToSet( nt.domain() ) );
+        addTriples( ntS, "x P a; y Q b" );
+        assertEquals( 2, ntS.size() );
+        assertEquals( false, ntS.isEmpty() );
+        assertEquals( both( x, y ), iteratorToSet( ntS.domain() ) );
         }
     
     public void testAddTwoShared()
         {
-        addTriples( nt, "x P a; x Q b" );
-        assertEquals( 2, nt.size() );
-        assertEquals( false, nt.isEmpty() );
-        assertEquals( just( x ), iteratorToSet( nt.domain() ) );
+        addTriples( ntS, "x P a; x Q b" );
+        assertEquals( 2, ntS.size() );
+        assertEquals( false, ntS.isEmpty() );
+        assertEquals( just( x ), iteratorToSet( ntS.domain() ) );
         }
     
     public void testClear()
         {
-        addTriples( nt, "x P a; x Q b; y R z" );
-        nt.clear();
-        testZeroSize( "cleared NTM", nt );
+        addTriples( ntS, "x P a; x Q b; y R z" );
+        ntS.clear();
+        testZeroSize( "cleared NTM", ntS );
         }
     
     public void testAllIterator()
         {
         String triples = "x P b; y P d; y P f";
-        addTriples( nt, triples );
-        assertEquals( tripleSet( triples ), iteratorToSet( nt.iterator() ) );
+        addTriples( ntS, triples );
+        assertEquals( tripleSet( triples ), iteratorToSet( ntS.iterator() ) );
         }
     
     public void testOneIterator()
         {
-        addTriples( nt, "x P b; y P d; y P f" );
-        assertEquals( tripleSet( "x P b" ), iteratorToSet( nt.iterator( x ) ) );
-        assertEquals( tripleSet( "y P d; y P f" ), iteratorToSet( nt.iterator( y ) ) );
+        addTriples( ntS, "x P b; y P d; y P f" );
+        assertEquals( tripleSet( "x P b" ), iteratorToSet( ntS.iterator( x ) ) );
+        assertEquals( tripleSet( "y P d; y P f" ), iteratorToSet( ntS.iterator( y ) ) );
         }
     
     public void testRemove()
         {
-        addTriples( nt, "x P b; y P d; y R f" );
-        nt.remove( y, triple( "y P d" ) );
-        assertEquals( 2, nt.size() );
-        assertEquals( tripleSet( "x P b; y R f" ), iteratorToSet( nt.iterator() ) );
+        addTriples( ntS, "x P b; y P d; y R f" );
+        ntS.remove( y, triple( "y P d" ) );
+        assertEquals( 2, ntS.size() );
+        assertEquals( tripleSet( "x P b; y R f" ), iteratorToSet( ntS.iterator() ) );
         }
     
     public void testRemoveByIterator()
         {
-        addTriples( nt, "x nice a; a nasty b; x nice c" );
-        addTriples( nt, "y nice d; y nasty e; y nice f" );
-        Iterator it = nt.iterator();
+        addTriples( ntS, "x nice a; a nasty b; x nice c" );
+        addTriples( ntS, "y nice d; y nasty e; y nice f" );
+        Iterator it = ntS.iterator();
         while (it.hasNext())
             {
             Triple t = (Triple) it.next();
             if (t.getPredicate().equals( node( "nasty") )) it.remove();
             }
-        assertEquals( tripleSet( "x nice a; x nice c; y nice d; y nice f" ), iteratorToSet( nt.iterator() ) );
+        assertEquals( tripleSet( "x nice a; x nice c; y nice d; y nice f" ), iteratorToSet( ntS.iterator() ) );
         }
     
     public void testIteratorWIthPatternOnEmpty()
         {
-        assertEquals( tripleSet( "" ), iteratorToSet( nt.iterator( triple( "a P b" ) ) ) );
+        assertEquals( tripleSet( "" ), iteratorToSet( ntS.iterator( triple( "a P b" ) ) ) );
         }
 
     public void testIteratorWIthPatternOnSomething()
         {
-        addTriples( nt, "x P a; y P b; y R c" );
-        assertEquals( tripleSet( "x P a" ), iteratorToSet( nt.iterator( triple( "x P ??" ) ) ) );
-        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( nt.iterator( triple( "y ?? ??" ) ) ) );
-        assertEquals( tripleSet( "x P a; y P b" ), iteratorToSet( nt.iterator( triple( "?? P ??" ) ) ) );
-        assertEquals( tripleSet( "y R c" ), iteratorToSet( nt.iterator( triple( "?? ?? c" ) ) ) );
+        addTriples( ntS, "x P a; y P b; y R c" );
+        assertEquals( tripleSet( "x P a" ), iteratorToSet( ntS.iterator( triple( "x P ??" ) ) ) );
+        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( ntS.iterator( triple( "y ?? ??" ) ) ) );
+        assertEquals( tripleSet( "x P a; y P b" ), iteratorToSet( ntS.iterator( triple( "?? P ??" ) ) ) );
+        assertEquals( tripleSet( "y R c" ), iteratorToSet( ntS.iterator( triple( "?? ?? c" ) ) ) );
         }
     
     public void testSpecificIteratorWithPatternOnEmpty()
         {
-        assertEquals( tripleSet( "" ), iteratorToSet( nt.iterator( x, triple( "x P b" ) ) ) );
+        assertEquals( tripleSet( "" ), iteratorToSet( ntS.iterator( x, triple( "x P b" ) ) ) );
         }
     
     public void testSpecificIteratorWithPatternOnSomething()
         {
-        addTriples( nt, "x P a; y P b; y R c" );
-        assertEquals( tripleSet( "x P a" ), iteratorToSet( nt.iterator( x, triple( "x P ??" ) ) ) );
-        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( nt.iterator( y, triple( "y ?? ??" ) ) ) );
-        assertEquals( tripleSet( "x P a" ), iteratorToSet( nt.iterator( x, triple( "?? P ??" ) ) ) );
-        assertEquals( tripleSet( "y R c" ), iteratorToSet( nt.iterator( y, triple( "?? ?? c" ) ) ) );
+        addTriples( ntS, "x P a; y P b; y R c" );
+        assertEquals( tripleSet( "x P a" ), iteratorToSet( ntS.iterator( x, triple( "x P ??" ) ) ) );
+        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( ntS.iterator( y, triple( "y ?? ??" ) ) ) );
+        assertEquals( tripleSet( "x P a" ), iteratorToSet( ntS.iterator( x, triple( "?? P ??" ) ) ) );
+        assertEquals( tripleSet( "y R c" ), iteratorToSet( ntS.iterator( y, triple( "?? ?? c" ) ) ) );
+        }
+
+    public void testUnspecificRemoveS()
+        {
+        addTriples( ntS, "x P a; y Q b; z R c" );
+        ntS.remove( triple( "x P a" ) );
+        assertEquals( tripleSet( "y Q b; z R c" ), iteratorToSet( ntS.iterator() ) );
+        }
+    
+    public void testUnspecificRemoveP()
+        {
+        addTriples( ntP, "x P a; y Q b; z R c" );
+        ntP.remove( triple( "y Q b" ) );
+        assertEquals( tripleSet( "x P a; z R c" ), iteratorToSet( ntP.iterator() ) );
+        }
+    
+    public void testUnspecificRemoveO()
+        {
+        addTriples( ntO, "x P a; y Q b; z R c" );
+        ntO.remove( triple( "z R c" ) );
+        assertEquals( tripleSet( "x P a; y Q b" ), iteratorToSet( ntO.iterator() ) );
         }
     
     // TODO more here
@@ -155,7 +183,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
     protected void addTriples( NodeToTriplesMap nt, String facts )
         {
         Triple [] t = tripleArray( facts );
-        for (int i = 0; i < t.length; i += 1) nt.add( t[i].getSubject(), t[i] );
+        for (int i = 0; i < t.length; i += 1) nt.add( nt.getIndexNode( t[i] ), t[i] );
         }
     
     protected static Set just( Object x )

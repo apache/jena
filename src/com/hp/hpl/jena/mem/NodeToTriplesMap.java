@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.9 2004-07-08 13:00:15 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.10 2004-07-08 15:33:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.iterator.*;
 	NodeToTriplesMap: a map from nodes to sets of triples.
 	@author kers
 */
-public final class NodeToTriplesMap 
+public abstract class NodeToTriplesMap 
     {
     private Map map = HashUtils.createMap();
     
@@ -24,6 +24,8 @@ public final class NodeToTriplesMap
     
     public Iterator domain()
         { return map.keySet().iterator(); }
+    
+    public abstract Node getIndexNode( Triple t );
     
     public void add( Node o, Triple t ) 
         {
@@ -91,22 +93,31 @@ public final class NodeToTriplesMap
     /**
      * @param triple
      * @return
-     */
+    */
     public ExtendedIterator iterator( Triple triple )
         {
-        return  iterator() .filterKeep ( new TripleMatchFilter( triple ) );
+        return iterator() .filterKeep ( new TripleMatchFilter( triple ) );
         }
 
     /**
      * @param x
      * @param triple
      * @return
-     */
+    */
     public ExtendedIterator iterator( Node x, Triple triple )
         {
         return new FilterIterator( new TripleMatchFilter( triple ), iterator( x ) );
         }
+
+    /**
+     * @param t
+    */
+    public void remove( Triple t )
+        {
+        remove( getIndexNode( t ), t );
+        }
     }
+
 /*
     (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
     All rights reserved.

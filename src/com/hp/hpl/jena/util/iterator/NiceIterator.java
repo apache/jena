@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.7 2004-07-08 13:00:15 chris-dollin Exp $
+  $Id: NiceIterator.java,v 1.8 2004-07-08 15:33:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -117,7 +117,6 @@ public class NiceIterator implements ExtendedIterator
     */     
     public ExtendedIterator mapWith( Map1 map1 )
         { return new Map1Iterator( map1, this ); }
-    
 
     /**
         If <code>it</code> is a Closableiterator, close it. Abstracts away from

@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
+  (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TrackingTripleIterator.java,v 1.1 2003-10-02 11:18:09 chris-dollin Exp $
+  $Id: TrackingTripleIterator.java,v 1.2 2004-07-08 15:33:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -9,17 +9,19 @@ package com.hp.hpl.jena.mem;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.iterator.WrappedIterator;
 
 /**
-    A subclass of TripleMatchIterator which remembers the last object next'ed in a
-    protected instance variable, so that subclasses have access to it during .remove.
+    A WrappedIterator which remembers the last object next'ed in a
+    protected instance variable, so that subclasses have access to it 
+    during .remove.
 
 	@author kers
 */
-public class TrackingTripleIterator extends TripleMatchIterator
+public class TrackingTripleIterator extends WrappedIterator
     {
-    TrackingTripleIterator( Triple t, Iterator it ) 
-        { super( t, it ); }    
+    TrackingTripleIterator( Iterator it ) 
+        { super( it ); }    
     
     /**
         The remembered current triple. Subclass should *not* assign to this variable. 
@@ -33,8 +35,9 @@ public class TrackingTripleIterator extends TripleMatchIterator
     public Object next()
         { return current = (Triple) super.next(); }       
     }
+
 /*
-    (c) Copyright 2003, Hewlett-Packard Development Company, LP
+    (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

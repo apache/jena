@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Development Company, LP
+  (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.33 2004-07-08 13:00:15 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.34 2004-07-08 15:33:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -10,9 +10,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.HashUtils;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import com.hp.hpl.jena.util.iterator.*;
 
 import java.util.*;
 
@@ -29,9 +27,14 @@ import java.util.*;
 public class GraphMem extends GraphBase implements Graph 
     {
 
-    NodeToTriplesMap subjects = new NodeToTriplesMap();
-    NodeToTriplesMap predicates = new NodeToTriplesMap();
-    NodeToTriplesMap objects = new NodeToTriplesMap();
+    NodeToTriplesMap subjects = new NodeToTriplesMap()
+    	{ public Node getIndexNode( Triple t ) { return t.getSubject(); } };
+    	
+    NodeToTriplesMap predicates = new NodeToTriplesMap()
+    	{ public Node getIndexNode( Triple t ) { return t.getPredicate(); } };
+    	
+    NodeToTriplesMap objects = new NodeToTriplesMap()
+    	{ public Node getIndexNode( Triple t ) { return t.getObject(); } };
 
     protected int count;
     
@@ -120,7 +123,7 @@ public class GraphMem extends GraphBase implements Graph
     */
     public boolean contains( Triple t ) {
         checkOpen();
-        return containsByFind( t ); // return t.isConcrete() ? triples.contains( t ) : containsByFind( t );
+        return containsByFind( t ); 
     }
 
     /**
@@ -133,117 +136,86 @@ public class GraphMem extends GraphBase implements Graph
         return contains( Triple.create( s, p, o ) );
     }
 
-    /** Returns an iterator over Triple.
-     */
-    public ExtendedIterator find( TripleMatch m ) {
+    /** 
+     	Answer an ExtendedIterator returning all the triples from this Graph that
+     	match the pattern <code>m = (S, P, O)</code>.
+     	
+     	<p>Because the node-to-triples maps index on each of subject, predicate,
+     	and (non-literal) object, concrete S/P/O patterns can immediately select
+        an appropriate map. Because the match for literals must be by sameValueAs,
+        not equality, the optimisation is not applied for literals.
+    */
+    public ExtendedIterator find( TripleMatch m ) 
+        {
         checkOpen();
         Triple tm = m.asTriple();
-        Node p = m.getMatchPredicate();
-        Node o = m.getMatchObject();
-        Node ms = tm.getSubject();
-        // @@ some redundant compares in this code which could be improved
-        if (ms.isConcrete()) {
-            return subjectIterator(tm, ms);
-        } else if (o != null && !o.isLiteral()) {
-            // der - added guard on isLiteral to support typed literal semantics
-            return objectIterator(tm, o);
-        } else if (p != null) {
-            return predicateIterator( tm, p );
-        } else {
-            return baseIterator( tm );
+        Node pm = tm.getPredicate();
+        Node om = tm.getObject();
+        Node sm = tm.getSubject();
+        if (sm.isConcrete())
+            return new Removable( subjects.iterator( sm , tm ), predicates, objects );
+        else if (pm.isConcrete())
+            return new Removable( predicates.iterator( pm, tm ), subjects, objects );
+        else if (om.isConcrete() && !om.isLiteral())
+            return new Removable( objects.iterator( om, tm ), subjects, predicates );
+        else
+            return new Removable( subjects.iterator( tm ), predicates, objects );
         }
-    }
 
-    static class TrackCurrent extends WrappedIterator
+    /**
+         An iterator wrapper for NodeToTriplesMap iterators which ensures that
+         a .remove on the base iterator is copied to the other two maps of this
+         GraphMem. The current triple (the most recent result of .next) is
+         tracked by the parent <code>TrackingTripleIterator</code> so that it
+         can be removed from the other two maps, passed in when this Removable
+         is created.
+         
+        @author kers
+    */
+    static class Removable extends TrackingTripleIterator
     	{
-        TrackCurrent( Iterator it )
-        	{ super( it ); }
+        protected NodeToTriplesMap A;
+        protected NodeToTriplesMap B;
         
-        protected Triple current;
-        
-        public Object next()
-            { return current = (Triple) super.next(); }      
+        Removable( Iterator it, NodeToTriplesMap A, NodeToTriplesMap B )
+        	{ 
+            super( it ); 
+            this.A = A; 
+            this.B = B; 
+            }
 
+        public void remove()
+            {
+            super.remove();
+            A.remove( current );
+            B.remove( current );
+            }
     	}
-    
-    protected ExtendedIterator objectIterator(Triple tm, Node o)
-        { 
-        return new TrackCurrent( objects.iterator( o, tm ) )
-            {
-            public void remove()
-                {
-                super.remove();
-                subjects.remove( current.getSubject(), current );
-                predicates.remove( current.getPredicate(), current );
-                }
-            }
-            ; 
-        }
-
-    protected ExtendedIterator subjectIterator(Triple tm, Node ms)
-        { 
-        return new TrackCurrent( subjects.iterator( ms , tm) )
-            {            
-            public void remove()
-                {
-                super.remove();
-                predicates.remove( current.getPredicate(), current );
-                objects.remove( current.getObject(), current );
-                }
-            }
-            ; 
-        }
-
-    protected ExtendedIterator predicateIterator( Triple tm, Node p )
-        { 
-        return new TrackCurrent( predicates.iterator( p, tm ) )
-            {
-            public void remove()
-                {
-                super.remove();
-                subjects.remove( current.getSubject(), current );
-                objects.remove( current.getObject(), current );
-                }
-            };
-        }
-
-    protected ExtendedIterator baseIterator( Triple t )
-        {
-        return new TrackCurrent( subjects.iterator( t ) )
-            {
-            public void remove()
-                {
-                super.remove();    
-                predicates.remove( current.getPredicate(), current );
-                objects.remove( current.getObject(), current );
-                }
-            };
-        }
     }
 
 /*
- *  (c) Copyright 2000, 2001 Hewlett-Packard Development Company, LP
- *  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. The name of the author may not be used to endorse or promote products
- *    derived from this software without specific prior written permission.
-
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
- * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
- * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
- * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
- * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	 *  (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
+	 *  All rights reserved.
+	 *
+	 * Redistribution and use in source and binary forms, with or without
+	 * modification, are permitted provided that the following conditions
+	 * are met:
+	 * 1. Redistributions of source code must retain the above copyright
+	 *    notice, this list of conditions and the following disclaimer.
+	 * 2. Redistributions in binary form must reproduce the above copyright
+	 *    notice, this list of conditions and the following disclaimer in the
+	 *    documentation and/or other materials provided with the distribution.
+	 * 3. The name of the author may not be used to endorse or promote products
+	 *    derived from this software without specific prior written permission.
+	
+	 * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+	 * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+	 * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+	 * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+	 * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+	 * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	 * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+	 * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+	 * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
