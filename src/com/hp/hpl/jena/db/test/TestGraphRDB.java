@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraphRDB.java,v 1.4 2003-05-05 11:07:32 chris-dollin Exp $
+  $Id: TestGraphRDB.java,v 1.5 2003-05-09 10:22:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -24,20 +24,25 @@ public class TestGraphRDB extends AbstractTestGraph
     public static TestSuite suite()
         { return new TestSuite( TestGraphRDB.class ); }
 
-	private ModelRDB theModel;
     private Graph theGraph;
     private IDBConnection theConnection;
     
     public void setUp()
         {
         theConnection = TestConnection.makeAndCleanTestConnection();
-		theModel = ModelRDB.createModel( theConnection );
-		theGraph = theModel.getGraph();
+        theGraph = new GraphRDB
+            (
+            theConnection,
+            "bootle", 
+            theConnection.getDefaultModelProperties().getGraph(), 
+            GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS, 
+            true
+            );
         }
         
     public void tearDown()
         { 
-        theModel.close();
+        theGraph.close();
         try { theConnection.close(); }
         catch (Exception e) { throw new JenaException( e ); }
         }

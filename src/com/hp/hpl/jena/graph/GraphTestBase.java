@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.13 2003-05-05 11:09:03 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.14 2003-05-09 10:22:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -158,7 +158,10 @@ public class GraphTestBase extends JenaTestBase
         }
       
     public void testContains( Graph g, Triple [] triples )
-        { for (int i = 0; i < triples.length; i += 1) assertTrue( g.contains( triples[i] ) ); }
+        { 
+        for (int i = 0; i < triples.length; i += 1) 
+            assertTrue( "contains " + triples[i], g.contains( triples[i] ) ); 
+        }
 
     public void testContains( Graph g, List triples )
         {

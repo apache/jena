@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.2 2003-05-08 17:54:25 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.3 2003-05-09 10:20:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -63,8 +63,9 @@ public class GraphRDBMaker extends BaseGraphMaker
         
     private Graph consGraph( String name, boolean fresh )
         {        
+        int reificationStyle = GraphRDB.OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS;
         Graph p = c.getDefaultModelProperties().getGraph();
-        return new GraphRDB( c, name, (fresh ? p : null), fresh );
+        return new GraphRDB( c, name, (fresh ? p : null), reificationStyle, fresh );
         }
         
     /**
@@ -82,15 +83,10 @@ public class GraphRDBMaker extends BaseGraphMaker
         }
         
     /**
-        Return true iff there's a graph with the given name. The implementation
-        is horrid.
+        Return true iff there's a graph with the given name.
     */
     public boolean hasGraph( String name )
-        {
-        DBPropGraph properties = DBPropGraph.findPropGraphByName
-            ( c.getDriver().getSystemSpecializedGraph(), name.toUpperCase() );
-        return properties != null; 
-        }
+        { return c.containsModel( name ); }
         
     /**
         Remove all the graphs that have been created by this factory.

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraphMaker.java,v 1.1 2003-05-08 15:19:31 chris-dollin Exp $
+  $Id: AbstractTestGraphMaker.java,v 1.2 2003-05-09 10:22:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -138,6 +138,7 @@ public abstract class AbstractTestGraphMaker extends GraphTestBase
         Node S = node( "S" ), P = node( "P" ), O = node( "O" );
         g1.add( new Triple( S, P, O ) );
         g2.add( new Triple( O, P, S ) );
+        System.err.println( ">> " + g1 + " && " + g2 );
         return g2.contains( S, P, O ) && g1.contains( O, P, S );
         }
         
