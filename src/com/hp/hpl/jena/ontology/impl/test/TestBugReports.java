@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.36 $
+ * Revision           $Revision: 1.37 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-03-02 13:17:01 $
+ * Last modified on   $Date: 2004-03-08 23:13:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -829,6 +829,17 @@ public class TestBugReports extends TestCase {
             m.close();
             //System.out.println("Closed model");
         }
+    }
+    
+    /** Bug report by sinclair bain (slbain) SF bugID 912202 - NPE in createOntResource() when 2nd param is null */
+    public void test_sb_01() {
+        OntModel model= ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_RDFS_INF, null);
+
+        Resource result= null;
+        Resource nullValueForResourceType= null;
+
+        result= model.createOntResource( OntResource.class, nullValueForResourceType, "http://www.somewhere.com/models#SomeResourceName" );
+        assertNotNull( result );
     }
     
     

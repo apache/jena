@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.61 $
+ * Revision           $Revision: 1.62 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-03-01 11:48:38 $
+ * Last modified on   $Date: 2004-03-08 23:13:33 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.61 2004-03-01 11:48:38 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.62 2004-03-08 23:13:33 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2603,16 +2603,20 @@ public class OntModelImpl
     
     /**
      * <p>
-     * Answer the resource with the given uri and that has the given rdf:type -
+     * Answer the resource with the given uri and that optionally has the given <code>rdf:type</code>, 
      * creating the resource if necessary.
      * </p>
      * 
-     * @param uri The uri to use, or null
-     * @param rdfType The resource to assert as the rdf:type
+     * @param uri The uri to use, or null for an anonymous resource
+     * @param rdfType The resource to assert as the <code>rdf:type</code>, or null to leave untyped
      * @return A new or existing Resource
      */
     protected Resource getResourceWithType( String uri, Resource rdfType ) {
-        return getResource( uri ).addProperty( RDF.type, rdfType );
+        Resource r = getResource( uri );
+        if (rdfType != null) {
+            r.addProperty( RDF.type, rdfType );
+        }
+        return r;
     }
     
     
