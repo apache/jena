@@ -106,7 +106,7 @@ public class Driver_MySQL extends DriverRDB {
 	public int getInsertID ( String tableName ) {
 		DBIDInt result = null;
 		try {
-			PreparedStatement ps = m_sql.getPreparedSQLStatement("getLastInsertID");
+			PreparedStatement ps = m_sql.getPreparedSQLStatement("getInsertID");
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				result = wrapDBID(rs.getObject(1));
