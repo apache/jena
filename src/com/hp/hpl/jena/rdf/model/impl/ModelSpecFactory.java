@@ -7,7 +7,7 @@
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.BadDescriptionException;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -78,8 +78,10 @@ public class ModelSpecFactory
     */
     public static Resource findRootByType( Model m, Resource type )
         { StmtIterator it = m.listStatements( null, RDF.type, type );
-        if (!it.hasNext()) throw new BadDescriptionException( "no subject with rdf:type " + type, m );
-        return it.nextStatement().getSubject(); }
+        if (!it.hasNext()) throw new BadDescriptionNoRootException( m, type );
+        Resource root = it.nextStatement().getSubject();
+        if (it.hasNext()) throw new BadDescriptionMultipleRootsException( m, type );
+        return root; }
     
     /**
         Answer the "most specific" type of root in desc which is an instance of type.

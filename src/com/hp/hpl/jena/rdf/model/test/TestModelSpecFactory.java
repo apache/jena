@@ -10,7 +10,7 @@ import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelSpecFactory;
-import com.hp.hpl.jena.shared.BadDescriptionException;
+import com.hp.hpl.jena.shared.*;
 
 
 /**
@@ -25,6 +25,36 @@ public class TestModelSpecFactory extends ModelTestBase
     
     public static TestSuite suite()
         { return new TestSuite( TestModelSpecFactory.class ); }
+    
+    public void testFindUniqueRootByType()
+        {
+        Model m = modelWithStatements( "eh:x rdf:type eh:T; eh:y rdf:type eh:U" );
+        assertEquals( resource( "eh:x" ), ModelSpecFactory.findRootByType( m, resource( "eh:T" ) ) );
+        }
+    
+    public void testFindMissingRootByType()
+        {
+        Model m = modelWithStatements( "eh:y rdf:type eh:U" );
+        Resource type = resource( "eh:T" );
+        try 
+            { ModelSpecFactory.findRootByType( m, type ); 
+            fail( "should trap missing root" ); }
+        catch (BadDescriptionNoRootException e) 
+            { assertEquals( type, e.type ); 
+            assertSame( m, e.badModel ); }
+        }
+    
+    public void testFindMultipleRootByType()
+        {
+        Model m = modelWithStatements( "eh:x rdf:type eh:T; eh:y rdf:type eh:T" );
+        Resource type = resource( "eh:T" );
+        try 
+            { ModelSpecFactory.findRootByType( m, type ); 
+            fail( "should trap multiple roots" ); }
+        catch (BadDescriptionMultipleRootsException e) 
+            { assertEquals( type, e.type ); 
+            assertSame( m, e.badModel ); }
+        }
     
     public void testFactoryReturnsAModelSpec()
         {
