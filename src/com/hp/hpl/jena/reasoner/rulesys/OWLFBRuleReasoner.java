@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLFBRuleReasoner.java,v 1.12 2004-01-31 16:13:18 der Exp $
+ * $Id: OWLFBRuleReasoner.java,v 1.13 2004-03-19 15:43:16 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.graph.*;
  * A hybrid forward/backward implementation of the OWL closure rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2004-01-31 16:13:18 $
+ * @version $Revision: 1.13 $ on $Date: 2004-03-19 15:43:16 $
  */
 public class OWLFBRuleReasoner extends FBRuleReasoner {
     
@@ -34,7 +34,7 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
     protected static List ruleSet;
     
     /** The precomputed axiom closure and compiled rule set */
-    protected static FBRuleInfGraph preload; 
+    protected static FBRuleInfGraph staticPreload; 
     
     protected static Log logger = LogFactory.getLog(OWLFBRuleReasoner.class);
     
@@ -114,11 +114,17 @@ public class OWLFBRuleReasoner extends FBRuleReasoner {
      */
     public InfGraph getPreload() {
         synchronized (OWLFBRuleReasoner.class) {
-            if (preload == null) {
-                preload = new FBRuleInfGraph(this, rules, null);
-                preload.prepare();
+            if (staticPreload == null) {
+                boolean prior = JenaParameters.enableFilteringOfHiddenInfNodes;
+                try {
+                    JenaParameters.enableFilteringOfHiddenInfNodes = true;
+                    staticPreload = new FBRuleInfGraph(this, rules, null);
+                    staticPreload.prepare();
+                } finally {
+                    JenaParameters.enableFilteringOfHiddenInfNodes = prior;
+                }
             }
-            return preload;
+            return staticPreload;
         }
     }
     

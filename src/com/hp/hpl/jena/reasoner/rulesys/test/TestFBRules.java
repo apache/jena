@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.35 2004-03-02 11:56:12 der Exp $
+ * $Id: TestFBRules.java,v 1.36 2004-03-19 15:43:12 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.35 $ on $Date: 2004-03-02 11:56:12 $
+ * @version $Revision: 1.36 $ on $Date: 2004-03-19 15:43:12 $
  */
 public class TestFBRules extends TestCase {
     
@@ -850,31 +850,34 @@ public class TestFBRules extends TestCase {
      */
     public void testDuplicatesEC4() throws IOException {
         boolean prior = JenaParameters.enableFilteringOfHiddenInfNodes;
-        JenaParameters.enableFilteringOfHiddenInfNodes = false;
-        Model premisesM = ModelLoader.loadModel("file:testing/wg/equivalentClass/premises004.rdf");
-        Graph data = premisesM.getGraph();
-        Reasoner reasoner =  new OWLFBRuleReasoner(OWLFBRuleReasonerFactory.theInstance());
-        InfGraph infgraph = reasoner.bind(data);
-        Node rbPrototypeProp = Node.createURI(ReasonerVocabulary.RBNamespace+"prototype");
-        int count = 0;
-        for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
-            Object t = i.next();
-//            System.out.println(" - " + PrintUtil.print(t));
-            count++;
+        try {
+            JenaParameters.enableFilteringOfHiddenInfNodes = false;
+            Model premisesM = ModelLoader.loadModel("file:testing/wg/equivalentClass/premises004.rdf");
+            Graph data = premisesM.getGraph();
+            Reasoner reasoner =  new OWLFBRuleReasoner(OWLFBRuleReasonerFactory.theInstance());
+            InfGraph infgraph = reasoner.bind(data);
+            Node rbPrototypeProp = Node.createURI(ReasonerVocabulary.RBNamespace+"prototype");
+            int count = 0;
+            for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
+                Object t = i.next();
+    //            System.out.println(" - " + PrintUtil.print(t));
+                count++;
+            }
+    //        listFBGraph("direct databind case", (FBRuleInfGraph)infgraph);
+            assertEquals(5, count);
+            
+            infgraph = reasoner.bindSchema(data).bind(new GraphMem());
+            count = 0;
+            for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
+                Object t = i.next();
+    //            System.out.println(" - " + PrintUtil.print(t));
+                count++;
+            }
+    //        listFBGraph("bindSchema case", (FBRuleInfGraph)infgraph);
+            assertEquals(5, count);
+        } finally {
+            JenaParameters.enableFilteringOfHiddenInfNodes = prior;
         }
-//        listFBGraph("direct databind case", (FBRuleInfGraph)infgraph);
-        assertEquals(5, count);
-        
-        infgraph = reasoner.bindSchema(data).bind(new GraphMem());
-        count = 0;
-        for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
-            Object t = i.next();
-//            System.out.println(" - " + PrintUtil.print(t));
-            count++;
-        }
-//        listFBGraph("bindSchema case", (FBRuleInfGraph)infgraph);
-        assertEquals(5, count);
-        JenaParameters.enableFilteringOfHiddenInfNodes = prior;
     }
     
     /**
