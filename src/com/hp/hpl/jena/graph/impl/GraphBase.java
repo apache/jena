@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.11 2003-07-16 15:29:41 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.12 2003-07-21 09:04:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -105,7 +105,7 @@ public abstract class GraphBase implements Graph {
         }
     
     public void performAdd( Triple t )
-        { throw new JenaAddDeniedException( "GraphBase::performAdd" ); }
+        { throw new AddDeniedException( "GraphBase::performAdd" ); }
 
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#delete(Triple)

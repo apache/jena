@@ -24,7 +24,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class DBReifierGraph implements Graph {
 
@@ -48,7 +48,7 @@ public class DBReifierGraph implements Graph {
 	 * @see com.hp.hpl.jena.graph.Graph#add(com.hp.hpl.jena.graph.Triple)
 	 */
 	public void add( Triple t ) {
-		throw new JenaAddDeniedException( "cannot add to DB reifier", t );		
+		throw new AddDeniedException( "cannot add to DB reifier", t );		
 	}
 
 	/* (non-Javadoc)

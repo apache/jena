@@ -212,7 +212,7 @@ public class SpecializedGraphReifier_RDB
 	 * @param complete is true if a subsequent call to contains(triple) will return true for any triple in g.
 	 */
 	public void add( Graph g, CompletionFlag complete ) {
-		throw new JenaAddDeniedException( "sorry, not implemented" );
+		throw new AddDeniedException( "sorry, not implemented" );
 	}
 
 	/* (non-Javadoc)

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Graph.java,v 1.14 2003-07-18 15:14:00 chris-dollin Exp $
+  $Id: Graph.java,v 1.15 2003-07-21 09:04:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -66,9 +66,9 @@ public interface Graph  {
         Add the triple t (if possible) to the set belonging to this graph 
      
         @param t the triple to add to the graph
-        @throws JenaAddDeniedException if the triple cannot be added 
+        @throws AddDeniedException if the triple cannot be added 
     */
-	void add(Triple t) throws JenaAddDeniedException;
+	void add(Triple t) throws AddDeniedException;
     
     /** 
         Remove the triple t (if possible) from the set belonging to this graph 
