@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.13 2004-03-14 17:08:38 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.14 2004-03-17 12:04:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -37,7 +37,7 @@ import java.util.*;
  * <p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2004-03-14 17:08:38 $
+ * @version $Revision: 1.14 $ on $Date: 2004-03-17 12:04:25 $
  */
 public class TransitiveGraphCache implements Finder {
 
@@ -98,7 +98,7 @@ public class TransitiveGraphCache implements Finder {
     /**
      * Clear the closure cache, if any.
      */
-    private void clearClosureCache() {
+    private synchronized void clearClosureCache() {
         if (cacheOn) {
             // blow away the cache, don't try to do incremental updates
             if (cacheClosureBackward.size() > 0) cacheClosureBackward.clear();
@@ -112,7 +112,7 @@ public class TransitiveGraphCache implements Finder {
      * will be cached for future reuse.
      * @param cacheOn set to true to start cache, to false to stop caching
      */
-    public void setCaching(boolean cacheOn) {
+    public synchronized void setCaching(boolean cacheOn) {
         if (this.cacheOn != cacheOn) {
             this.cacheOn = cacheOn;
             if (cacheOn) {
@@ -235,7 +235,7 @@ public class TransitiveGraphCache implements Finder {
      * Return an iterator over all the forward or backward links to 
      * a given node. May be cached.
      */
-    private ExtendedIterator walk(GraphNode node, boolean forward, boolean closed, Node predicate) {
+    private synchronized ExtendedIterator walk(GraphNode node, boolean forward, boolean closed, Node predicate) {
         if (cacheOn && closed) {
             // Check cache
             Map cache = forward ? cacheClosureForward : cacheClosureBackward;
