@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Util.java,v 1.10 2003-08-26 15:16:14 andy_seaborne Exp $
+ * $Id: Util.java,v 1.11 2003-08-26 18:15:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-08-26 15:16:14 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-26 18:15:21 $
  */
 public class Util {
 
@@ -159,8 +159,12 @@ public class Util {
     public static BufferedReader openResourceFile(String filename) throws IOException {
         InputStream is = ClassLoader.getSystemResourceAsStream(filename);
         if (is == null) {
-            // Can't find it on classpath, so try relative to current directory
-            is = new FileInputStream(filename);
+            // Try non-system loader
+            is = Util.class.getResourceAsStream(filename);
+            if (is == null) {
+                // Can't find it on classpath, so try relative to current directory
+                is = new FileInputStream(filename);
+            }
         }
         return new BufferedReader(new InputStreamReader(is, "UTF-8"));
     }

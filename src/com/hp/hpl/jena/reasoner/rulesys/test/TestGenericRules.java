@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.7 2003-08-22 09:48:39 der Exp $
+ * $Id: TestGenericRules.java,v 1.8 2003-08-26 18:15:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-22 09:48:39 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-26 18:15:21 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -213,8 +213,31 @@ public class TestGenericRules extends TestCase {
             m2.createStatement(newConfig, ReasonerVocabulary.PROPruleMode, "hybrid"),
             m2.createStatement(newConfig, ReasonerVocabulary.PROPruleSet, "testing/reasoners/genericRuleTest.rules")
             } );
+    }
+    
+    /**
+     * Test control of functor filtering
+     */
+    public void testHybridFunctorFilter() {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, r, b));
+        data.add(new Triple(a, p, s));
+        List rules = Rule.parseRules( "[r0: (?x r ?y) (?x p ?z) -> (?x q func(?y, ?z)) ]" );        
+        GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
+        reasoner.setRules(rules);
+        reasoner.setMode(GenericRuleReasoner.HYBRID);
         
-        
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(null, q, null), new Object[] {
+              } );
+              
+        reasoner.setFunctorFiltering(false);
+        infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(null, q, null), new Object[] {
+                  new Triple(a, q, Functor.makeFunctorNode("func", new Node[]{b, s}))
+              } );
     }
 
     /**

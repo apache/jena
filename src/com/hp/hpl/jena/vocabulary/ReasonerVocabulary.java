@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.12 2003-08-25 20:58:53 der Exp $
+ * $Id: ReasonerVocabulary.java,v 1.13 2003-08-26 18:15:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-25 20:58:53 $
+ * @version $Revision: 1.13 $ on $Date: 2003-08-26 18:15:21 $
  */
 public class ReasonerVocabulary {
     
@@ -91,8 +91,12 @@ public class ReasonerVocabulary {
     public static String RDFS_FULL = RDFSRuleReasoner.FULL_RULES;
     
     /** Constant for PROPsetRDFSLevel - simplified, higher performance rules. */
-    public static String RDFS_SIMPLE = RDFSRuleReasoner.SIMPLE_RULES;
+    public static String RDFS_SIMPLE = RDFSRuleReasoner.SIMPLE_RULES;    
     
+    /** Property used to switch on/off filtering of functors from returned results
+     *  in the generic rule engine. Default is filtering on. */
+    public static Property PROPenableFunctorFiltering;
+
     /** A namespace used for Rubrik specific properties */
     public static final String RBNamespace = "urn:x-hp-jena:rubrik/";
 
@@ -135,6 +139,7 @@ public class ReasonerVocabulary {
             PROPenableTGCCaching = ResourceFactory.createProperty(PropURI+"#", "enableTGCCaching");
             PROPenableCMPScan = ResourceFactory.createProperty(PropURI+"#", "enableCMPScan");
             PROPsetRDFSLevel = ResourceFactory.createProperty(PropURI+"#", "setRDFSLevel");
+            PROPenableFunctorFiltering= ResourceFactory.createProperty(PropURI+"#", "enableFunctorFiltering");
         } catch (Exception e) {
             System.err.println("Initialization error: " + e);
             e.printStackTrace(System.err);

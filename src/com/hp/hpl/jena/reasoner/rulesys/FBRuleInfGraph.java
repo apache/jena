@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.35 2003-08-25 20:57:18 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.36 2003-08-26 18:15:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.35 $ on $Date: 2003-08-25 20:57:18 $
+ * @version $Revision: 1.36 $ on $Date: 2003-08-26 18:15:21 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -462,6 +462,14 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
     }
    
+    /**
+     * Set to true to cause functor-valued literals to be dropped from rule output.
+     * Default is true.
+     */
+    public void setFunctorFiltering(boolean param) {
+        filterFunctors = param;
+    }
+    
     /**
      * Return the number of rules fired since this rule engine instance
      * was created and initialized. The current implementation only counts

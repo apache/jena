@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.13 2003-08-22 09:48:28 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.14 2003-08-26 18:15:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-08-22 09:48:28 $
+ * @version $Revision: 1.14 $ on $Date: 2003-08-26 18:15:21 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -48,6 +48,9 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     
     /** Optional set of preprocessing hooks  to be run in sequence during preparation time, only applicable to HYBRID modes */
     protected HashSet preprocessorHooks;
+    
+    /** Flag, if true then find results will be filtered to remove functors and illegal RDF */
+    public boolean filterFunctors = true;
     
     /** A prebuilt copy of the OWL translation hook */
     private static final OWLRuleTranslationHook owlTranslator = new OWLRuleTranslationHook();
@@ -162,6 +165,14 @@ public class GenericRuleReasoner extends FBRuleReasoner {
     public void setTransitiveClosureCaching(boolean enableTGCCaching) {
         this.enableTGCCaching = enableTGCCaching;
     }
+   
+    /**
+     * Set to true to cause functor-valued literals to be dropped from rule output.
+     * Default is true.
+     */
+    public void setFunctorFiltering(boolean param) {
+        filterFunctors = param;
+    }
     
     /**
      * Add a new preprocessing hook defining an operation that
@@ -196,6 +207,9 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             
         } else if (parameter.equals(ReasonerVocabulary.PROPtraceOn)) {
             traceOn =  Util.convertBooleanPredicateArg(parameter, value);
+            
+        } else if (parameter.equals(ReasonerVocabulary.PROPenableFunctorFiltering)) {
+            filterFunctors =  Util.convertBooleanPredicateArg(parameter, value);
             
         } else if (parameter.equals(ReasonerVocabulary.PROPenableOWLTranslation)) {
             enableOWLTranslation =  Util.convertBooleanPredicateArg(parameter, value);
@@ -268,6 +282,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         grr.setDerivationLogging(recordDerivations);
         grr.setTraceOn(traceOn);
         grr.setTransitiveClosureCaching(enableTGCCaching);
+        grr.setFunctorFiltering(filterFunctors);
         if (preprocessorHooks != null) {
             for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
                 grr.addPreprocessingHook((RulePreprocessHook)i.next());
@@ -305,6 +320,7 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             graph = fbgraph; 
             if (enableTGCCaching) fbgraph.setUseTGCCache();
             fbgraph.setTraceOn(traceOn);
+            fbgraph.setFunctorFiltering(filterFunctors);
             if (preprocessorHooks!= null) {
                 for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
                     fbgraph.addPreprocessingHook((RulePreprocessHook)i.next());
