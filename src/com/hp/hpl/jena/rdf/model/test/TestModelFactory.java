@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelFactory.java,v 1.12 2003-08-21 11:08:56 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.13 2003-08-21 17:28:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -11,6 +11,8 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.mem.*;
 
 import junit.framework.*;
 
@@ -36,17 +38,28 @@ public class TestModelFactory extends ModelTestBase
         m.close();
         }    
         
+    public void testCreateSpecFails()
+        {
+        try
+            {
+            ModelFactory.createSpec( ModelFactory.createDefaultModel() );    
+            fail( "empty descriptions should throw the appropriate exception" );
+            }    
+        catch (BadDescriptionException e) { pass(); }
+        }
+        
     public void testCreatePlainSpec()
         {
         Resource root = ResourceFactory.createResource();
         Resource maker = ResourceFactory.createResource();
         Model desc = ModelFactory.createDefaultModel()
             .add( root, JMS.maker, maker )
-            .add( maker, RDF.type, JMS.MemMakerClass )
+            .add( maker, RDF.type, JMS.MemMakerSpec )
             .add( maker, JMS.reificationMode, JMS.rsMinimal );
         ModelSpec spec = ModelFactory.createSpec( desc ); 
         assertIsoModels( desc, spec.getDescription() );
         assertTrue( spec instanceof PlainModelSpec );
+        assertTrue( spec.createModel().getGraph() instanceof GraphMem );
         }
         
     public void testCreateOntSpec()
@@ -58,7 +71,7 @@ public class TestModelFactory extends ModelTestBase
         Resource reasonerURI = ResourceFactory.createResource( DAMLMicroReasonerFactory.URI );
         Model desc = ModelFactory.createDefaultModel()
             .add( root, JMS.importMaker, maker )
-            .add( maker, RDF.type, JMS.MemMakerClass )
+            .add( maker, RDF.type, JMS.MemMakerSpec )
             .add( maker, JMS.reificationMode, JMS.rsMinimal )
             .add( root, JMS.ontLanguage, ProfileRegistry.DAML_LANG )
             .add( root, JMS.docManager, ModelSpecImpl.createValue( docManager ) )
@@ -67,7 +80,28 @@ public class TestModelFactory extends ModelTestBase
         ModelSpec spec = ModelFactory.createSpec( desc ); 
         assertTrue( spec instanceof OntModelSpec );           
         assertIsoModels( desc, spec.getDescription() );
+        assertTrue( spec.createModel() instanceof OntModel );
         }
+        
+    public void testCreateInfSpec()
+        {
+        Resource root = ResourceFactory.createResource();
+        Resource maker = ResourceFactory.createResource();
+        Resource reasoner = ResourceFactory.createResource();
+        Resource reasonerURI = ResourceFactory.createResource( DAMLMicroReasonerFactory.URI );
+        Model desc = ModelFactory.createDefaultModel()
+            .add( root, JMS.reasoner, reasonerURI )
+            .add( root, JMS.maker, maker )
+            .add( maker, RDF.type, JMS.MemMakerSpec )
+            .add( maker, JMS.reificationMode, JMS.rsMinimal )
+            ;
+        ModelSpec spec = ModelFactory.createSpec( desc );
+        assertTrue( spec instanceof InfModelSpec );    
+        assertIsoModels( desc, spec.getDescription() );
+        assertTrue( spec.createModel() instanceof InfModel );
+        }
+        
+        
     }
 
 /*

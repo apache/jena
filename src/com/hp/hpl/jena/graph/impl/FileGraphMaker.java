@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.10 2003-08-20 13:02:12 chris-dollin Exp $
+  $Id: FileGraphMaker.java,v 1.11 2003-08-21 17:28:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -66,7 +66,7 @@ public class FileGraphMaker extends BaseGraphMaker
         @return JMS.FileMakerClass [node version]
     */
     public Node getMakerClass()
-        { return JMS.FileMakerClass.asNode(); }
+        { return JMS.FileMakerSpec.asNode(); }
 
     /**
         Answer the fileBase of all the graphs created by this FileGraphMaker.

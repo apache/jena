@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.23 2003-08-19 09:25:15 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.24 2003-08-21 17:28:37 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -30,7 +30,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.23 $ on $Date: 2003-08-19 09:25:15 $
+ * @version $Revision: 1.24 $ on $Date: 2003-08-21 17:28:37 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -81,8 +81,8 @@ public class TestTypedLiterals extends TestCase {
         assertNotNull(l5);
         
         // check equality function
-        assertSame("language sensitive comparison", l1, l4);
-        assertSame("language sensitive", l1, l2);
+        assertEquals("language sensitive comparison", l1, l4);
+        assertEquals("language sensitive", l1, l2);
         assertDiffer("datatype sensitive", l1, l5);
         assertDiffer("value sensitive", l1, l3);
         assertDiffer("typed and plain differ", l1, l6);
@@ -116,7 +116,7 @@ public class TestTypedLiterals extends TestCase {
         assertNotNull(l3);
         
         // check equality function
-        assertSame("language should be ignored", l1, l2);
+        assertEquals("language should be ignored", l1, l2);
         assertDiffer("values should be tested!", l1, l3);
 
         // Check typed accessors
@@ -146,13 +146,13 @@ public class TestTypedLiterals extends TestCase {
         Literal l3 = m.createTypedLiteral("42", "lang", XSDDatatype.XSDint);
         Literal l4 = m.createTypedLiteral("63");  // default map
         
-        assertSame("Default map failed", l1, l2);
+        assertEquals("Default map failed", l1, l2);
         assertEquals("Value wrong", l1.getValue(), new Integer(42));
         assertEquals("class wrong", l1.getValue().getClass(), Integer.class);
         assertEquals("Value accessor problem", l1.getInt(), 42);
         assertEquals("wrong type name", l2.getDatatypeURI(), xsdIntURI);
         assertEquals("wrong type", l2.getDatatype(), XSDDatatype.XSDint);
-        assertSame("Lang sensitive", l2, l3);
+        assertEquals("Lang sensitive", l2, l3);
         assertDiffer("Not value sensitive", l1, l4);
         checkIllegalLiteral("zap", XSDDatatype.XSDint);
         checkIllegalLiteral("42.1", XSDDatatype.XSDint);
@@ -168,7 +168,7 @@ public class TestTypedLiterals extends TestCase {
         assertFloatEquals("value wrong", ((Float)(l2.getValue())).floatValue(), 42.42);
         assertFloatEquals("Value accessor problem", l1.getFloat(), 42.42);
         assertEquals("wrong type", l2.getDatatype(), XSDDatatype.XSDfloat);
-        assertSame("equality fn", l1, l3);
+        assertEquals("equality fn", l1, l3);
         
         // Minimal check on long, short, byte
         checkLegalLiteral("12345", XSDDatatype.XSDlong, Long.class, new Long(12345));
@@ -260,16 +260,16 @@ public class TestTypedLiterals extends TestCase {
         Literal l2 = m.createTypedLiteral("010", "en", "http://www.w3.org/2001/XMLSchema#integer");
         Literal l3 = m.createTypedLiteral("010", "", "http://www.w3.org/2001/XMLSchema#integer");
         Literal l4 = m.createTypedLiteral("010", "fr", "http://www.w3.org/2001/XMLSchema#integer");
-        assertSame("Int lex form", l1, l3);
-        assertSame("Ignore language in integer", l1, l2);
-        assertSame("Ignore language in integer", l1, l4);
+        assertEquals("Int lex form", l1, l3);
+        assertEquals("Ignore language in integer", l1, l2);
+        assertEquals("Ignore language in integer", l1, l4);
         
         l1 = m.createTypedLiteral("1", XSDDatatype.XSDint);
         l2 = m.createTypedLiteral("1", XSDDatatype.XSDinteger);
         l3 = m.createTypedLiteral("1", XSDDatatype.XSDnonNegativeInteger);
         
-        assertSame("numeric comparisons", l1, l2);
-        assertSame("numeric comparisons", l3, l2);
+        assertEquals("numeric comparisons", l1, l2);
+        assertEquals("numeric comparisons", l3, l2);
     }
     
     /**
@@ -282,9 +282,9 @@ public class TestTypedLiterals extends TestCase {
         Literal lPlain2 = m.createLiteral("10");
         Literal lInt =  m.createTypedLiteral("10", XSDDatatype.XSDint );
         
-        assertSame("Null type = plain literal", lPlain, lPlain2);
-        assertSame("Null type = plain literal", lPlain, lPlain3);
-        assertSame("Null type = plain literal", lPlain2, lPlain3);
+        assertEquals("Null type = plain literal", lPlain, lPlain2);
+        assertEquals("Null type = plain literal", lPlain, lPlain3);
+        assertEquals("Null type = plain literal", lPlain2, lPlain3);
         assertTrue("null type", lPlain3.getDatatype() == null);
         assertDiffer("String != int", lString, lInt);
         assertDiffer("Plain != int", lPlain, lInt);
@@ -292,8 +292,8 @@ public class TestTypedLiterals extends TestCase {
         
         // The correct answer to this is currently up to us
         if (LiteralLabel.enablePlainSameAsString) {
-            assertSame("String != plain??", lString, lPlain);
-            assertSame("String != plain??", lString, lPlain2);
+            assertEquals("String != plain??", lString, lPlain);
+            assertEquals("String != plain??", lString, lPlain2);
         } else {
             assertDiffer("String != plain??", lString, lPlain);
             assertDiffer("String != plain??", lString, lPlain2);
@@ -477,7 +477,7 @@ public class TestTypedLiterals extends TestCase {
         Property p = model.createProperty("urn:x-eg/p");
         Literal l1 = model.createTypedLiteral("10", "fr", "http://www.w3.org/2001/XMLSchema#integer");
         Literal l2 = model.createTypedLiteral("010", "en", "http://www.w3.org/2001/XMLSchema#integer");
-        assertSame("sameas test", l1, l2);
+        assertEquals("sameas test", l1, l2);
         Resource a = model.createResource("urn:x-eg/a");
         a.addProperty(p, l1);
         assertTrue(model.getGraph().find(null, p.asNode(), l1.asNode()).hasNext());
@@ -587,8 +587,9 @@ public class TestTypedLiterals extends TestCase {
      
     /**
      * Test that two objects are not semantically the same
+     * [changed from assertSame by kers, as assertSame means "==" in junit]
      */
-    private void assertSame( String title, Literal x, Literal y ) {
+    private void assertEquals( String title, Literal x, Literal y ) {
         assertTrue( title, x.sameValueAs( y ) ); 
     }
      

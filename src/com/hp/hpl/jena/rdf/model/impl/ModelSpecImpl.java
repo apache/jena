@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.5 2003-08-21 09:26:50 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.6 2003-08-21 17:28:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -74,12 +74,14 @@ public abstract class ModelSpecImpl implements ModelSpec
     */
     public static ModelSpec create( Model desc )
         {
-        Model d = ModelFactory.createRDFSModel( schema, desc );
-        if (d.listStatements( null, RDF.type, JMS.OntMakerClass ).hasNext())
+        Model d = ModelFactory.createRDFSModel( JMS.schema, desc );
+        if (d.listStatements( null, RDF.type, JMS.OntModelSpec ).hasNext())
             return new OntModelSpec( desc );
-        if (d.listStatements( null, RDF.type, JMS.MemMakerClass).hasNext())
+        if (d.listStatements( null, RDF.type, JMS.ReasonerSpec).hasNext())
+            return new InfModelSpec( desc );
+        if (d.listStatements( null, RDF.type, JMS.MemMakerSpec).hasNext())
             return new PlainModelSpec( desc );
-        throw new RuntimeException( "blast" );
+        throw new BadDescriptionException( "neither ont nor inf nor mem", desc );
         }
     
     /**
@@ -130,32 +132,6 @@ public abstract class ModelSpecImpl implements ModelSpec
         { return values.get( it ); }
         
     /**
-        Answer the Reifier.Style value named by the argument, which should be a
-        JMS.rs[something] value
-        
-        @param style the JMS name of the reifier style
-        @return the actual Reifier.Style value
-    */
-    public static Reifier.Style findStyle( RDFNode style )
-        {
-        if (style.equals(JMS.rsStandard )) return Reifier.Standard;    
-        if (style.equals(JMS.rsMinimal)) return Reifier.Minimal;    
-        if (style.equals( JMS.rsConvenient)) return Reifier.Convenient;
-        return null;
-        }
-        
-    /**
-        The JMS schema encoded into a model.
-    */
-    static final public Model schema = ModelFactory.createDefaultModel()
-        .add( JMS.MemMakerClass, RDFS.subClassOf, JMS.MakerClass )
-        .add( JMS.FileMakerClass, RDFS.subClassOf, JMS.MakerClass )
-        .add( JMS.reificationMode, RDFS.domain, JMS.MakerClass )
-        .add( JMS.ontLanguage, RDFS.domain, JMS.OntMakerClass )
-        .add( JMS.importMaker, RDFS.subClassOf, JMS.maker )
-        ;
-
-    /**
         Answer the unique subject with the given rdf:type.
         
         @param m the model in which the typed subject is sought
@@ -165,7 +141,7 @@ public abstract class ModelSpecImpl implements ModelSpec
     */        
     public static Resource findRootByType( Model description, Resource r )
         { 
-        Model d = ModelFactory.createRDFSModel( schema, description );
+        Model d = ModelFactory.createRDFSModel( JMS.schema, description );
         ResIterator rs  = d.listSubjectsWithProperty( RDF.type, r );
         if (rs.hasNext()) return rs.nextResource();
         throw new JenaException( "no " + r + " thing found" );
@@ -177,18 +153,18 @@ public abstract class ModelSpecImpl implements ModelSpec
     */
     public static ModelMaker createMaker( Model d )
         {
-        Model description = ModelFactory.createRDFSModel( schema, d );
-        Resource root = findRootByType( description, JMS.MakerClass );
+        Model description = ModelFactory.createRDFSModel( JMS.schema, d );
+        Resource root = findRootByType( description, JMS.MakerSpec );
         Reifier.Style style = Reifier.Standard;
         Statement st = description.getProperty( root, JMS.reificationMode );
-        if (st != null) style = findStyle( st.getObject() );
-        if (description.listStatements( null, RDF.type, JMS.FileMakerClass ).hasNext())
+        if (st != null) style = JMS.findStyle( st.getObject() );
+        if (description.listStatements( null, RDF.type, JMS.FileMakerSpec ).hasNext())
             {
             Statement fb = description.getProperty( root, JMS.fileBase );
             String fileBase = fb == null ? "/tmp" : fb.getString();
             return ModelFactory.createFileModelMaker( fileBase, style );
             }
-        if (description.listStatements( null, RDF.type, JMS.MemMakerClass ).hasNext())
+        if (description.listStatements( null, RDF.type, JMS.MemMakerSpec ).hasNext())
             return ModelFactory.createMemModelMaker( style );
         throw new RuntimeException( "no maker type" );    
         }

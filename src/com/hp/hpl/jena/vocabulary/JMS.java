@@ -1,15 +1,18 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: JMS.java,v 1.6 2003-08-20 15:12:56 chris-dollin Exp $
+  $Id: JMS.java,v 1.7 2003-08-21 17:28:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
 
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
-    The Jena Model Specification vocabulary.
+    The Jena Model Specification vocabulary, schema, and some conversion methods.
+    TODO ensure these have explicit tests [they were developed implicitly from the
+    ModelSpec tests].
     
  	@author kers
 */
@@ -28,27 +31,71 @@ public class JMS
     public static final Property reasoner = property( "reasoner" );
     public static final Property fileBase = property( "fileBase" );
     
-    public static final Resource TypeMemMaker = resource( "type/MemMaker");
+    public static final Resource MakerSpec = resource( "MakerSpec" );
+    public static final Resource FileMakerSpec = resource( "FileMakerSpec" );
+    public static final Resource MemMakerSpec = resource( "MemMakerSpec" );
+    public static final Resource RDBMakerSpec = resource( "RDBMakerSpec" );
     
-    public static final Resource MakerClass = resource( "class/ModelMaker" );
-    public static final Resource FileMakerClass = resource( "class/FileModelMaker" );
-    public static final Resource MemMakerClass = resource( "class/MemModelMaker" );
-    public static final Resource RDBMakerClass = resource( "class/RDBModelMaker" );
+    public static final Resource ReasonerSpec = resource( "ReasonerSpec" );
+    public static final Resource OntModelSpec = resource( "OntModelSpec" );
     
-    public static final Resource OntMakerClass = resource( "class/OntModelSpec" );
+    public static final Resource rsStandard = resource( "rsStandard" );
+    public static final Resource rsMinimal = resource( "rsMinimal" );
+    public static final Resource rsConvenient = resource( "rsConvenient" );
+
+    /**
+        The JMS schema encoded into a model. 
+        
+        TODO make this model immutable once created. 
+    */
+    static final public Model schema = ModelFactory.createDefaultModel()
+        .add( JMS.MemMakerSpec, RDFS.subClassOf, JMS.MakerSpec )
+        .add( JMS.FileMakerSpec, RDFS.subClassOf, JMS.MakerSpec )
+        .add( JMS.reificationMode, RDFS.domain, JMS.MakerSpec )
+        .add( JMS.ontLanguage, RDFS.domain, JMS.OntModelSpec )
+        .add( JMS.reasoner, RDFS.domain, JMS.ReasonerSpec )
+        .add( JMS.importMaker, RDFS.subClassOf, JMS.maker )
+        ;
     
-    public static final Literal rsStandard = literal( "Standard" );
-    public static final Literal rsMinimal = literal( "Minimal" );
-    public static final Literal rsConvenient = literal( "Convenient" );
-    
-    public static Literal literal( String lex )
+    protected static Literal literal( String lex )
         { return ResourceFactory.createPlainLiteral( lex ); }
         
-    public static Resource resource( String ln )
+    protected static Resource resource( String ln )
         { return ResourceFactory.createResource( baseURI + ln ); }
         
-    public static Property property( String ln )
+    protected static Property property( String ln )
         { return ResourceFactory.createProperty( baseURI + ln ); }
+
+    /**
+        Answer the Node which corresponds to the supplied reification style. [Node,
+        not resource, purely because the use happens in BaseGraphMaker, ie at the
+        Graph level.]
+        
+        @param style the reification style for which the JMS representation is required
+        @return the Node version of the appropriate JMS.rs[name] vocabulary item
+    */
+    public static Node styleAsJMS( Reifier.Style style )
+        {
+        if (style == Reifier.Minimal) return JMS.rsMinimal.asNode();
+        if (style == Reifier.Convenient) return JMS.rsConvenient.asNode();
+        if (style == Reifier.Standard) return JMS.rsStandard.asNode();
+        return null;
+        }
+
+    /**
+        Answer the Reifier.Style value named by the argument, which should be a
+        JMS.rs[something] value
+        
+        @param style the JMS name of the reifier style
+        @return the actual Reifier.Style value
+    */
+    public static Reifier.Style findStyle( RDFNode style )
+        {
+        if (style.equals(JMS.rsStandard )) return Reifier.Standard;    
+        if (style.equals(JMS.rsMinimal)) return Reifier.Minimal;    
+        if (style.equals( JMS.rsConvenient)) return Reifier.Convenient;
+        return null;
+        }
     }
 
 
