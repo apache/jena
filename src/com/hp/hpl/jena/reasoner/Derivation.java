@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Derivation.java,v 1.1 2003-04-17 15:30:02 der Exp $
+ * $Id: Derivation.java,v 1.2 2003-04-25 09:31:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -16,8 +16,11 @@ import java.io.PrintWriter;
  * was derived from a set of source triples and a reasoner. SubClasses
  * provide more specific information.
  * 
+ * TODO Consider replacing this with methods than can generate RDF models
+ * of the derivation tree.
+ * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:30:02 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-25 09:31:02 $
  */
 public interface Derivation {
 

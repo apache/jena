@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: OWLWGTester.java,v 1.2 2003-04-22 14:20:12 der Exp $
+ * $Id: OWLWGTester.java,v 1.3 2003-04-25 09:33:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * different namespaces, document references lack suffix ...).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-22 14:20:12 $
+ * @version $Revision: 1.3 $ on $Date: 2003-04-25 09:33:49 $
  */
 public class OWLWGTester {
     /** The base URI in which the files are purported to reside */
@@ -165,11 +165,13 @@ public class OWLWGTester {
         }
         Reasoner reasoner = reasonerF.create(configuration);
         // Temp ...
+            /*
             Graph data = premises.getGraph();
             logger.debug("Initial graph state");
             for (Iterator i = data.find(null, null, null); i.hasNext(); ) {
                 logger.debug(i.next().toString());
             }
+            */
         // ... end temp
         InfGraph graph = reasoner.bind(premises.getGraph());
         Model result = ModelFactory.createModelForGraph(graph);
@@ -204,11 +206,13 @@ public class OWLWGTester {
                 }
             }
             // Temp ...
+            /*
             data = graph.getRawGraph();
             logger.debug("Final graph state");
             for (Iterator i = data.find(null, null, null); i.hasNext(); ) {
                 logger.debug(PrintUtil.print((Triple)i.next()));
             }
+            */
             // ... end temp
         }
         

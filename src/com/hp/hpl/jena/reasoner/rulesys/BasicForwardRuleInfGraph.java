@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.1 2003-04-17 15:24:18 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.2 2003-04-25 09:32:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -16,6 +16,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.util.OneToManyMap;
 import com.hp.hpl.jena.util.PrintUtil;
+import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 import org.apache.log4j.Logger;
@@ -30,7 +31,7 @@ import org.apache.log4j.Logger;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-04-17 15:24:18 $
+ * @version $Revision: 1.2 $ on $Date: 2003-04-25 09:32:51 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph {
 
@@ -220,7 +221,10 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      * equivalance.
      */
     public boolean contains(Node s, Node p, Node o) {
-        return find(s, p, o).hasNext();
+        ClosableIterator i = find(s, p, o);
+        boolean contained =  i.hasNext();
+        i.close();
+        return contained;
     }
         
     /**
@@ -435,9 +439,9 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
                 BindingEnvironment env = context.getEnv();
                 if (body[i] instanceof TriplePattern) {
                     TriplePattern clause = (TriplePattern) body[i];
-                    int score = scoreNodeBoundness(clause.getSubject(), env) +
-                                 scoreNodeBoundness(clause.getPredicate(), env) +
-                                 scoreNodeBoundness(clause.getObject(), env);
+                    int score = scoreNodeBoundness(clause.getSubject(), env) * 3 +
+                                 scoreNodeBoundness(clause.getPredicate(), env) * 2 +
+                                 scoreNodeBoundness(clause.getObject(), env) * 3;
                     if (score > bestscore) {
                         bestscore = score;
                         best = i;
@@ -563,12 +567,12 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph {
      */
     private static int scoreNodeBoundness(Node n, BindingEnvironment env) {
         if (n instanceof Node_ANY) {
-            return 1;
+            return 0;
         } else if (n instanceof Node_RuleVariable) {
             if (env.getBinding(n) != null) {
                 return 3;
             } else {
-                return 2;
+                return 1;
             }
         } else {
             return 3;
