@@ -1,0 +1,183 @@
+<HTML>
+<HEAD>
+<TITLE>Jena - OWL Syntax Checker</TITLE>
+<link href="../styles/usermanual.css" rel="stylesheet" type="text/css" />
+</HEAD>
+<BODY>
+
+
+
+<h1>Jena OWL Syntax Checker HowTo</h1>
+
+
+<h2>Contents</h2>
+
+<ul>
+<li>
+<a href="#status">Conformance and Status</a>
+</li>
+<li>
+<a href="#usage-overview">Overview of Usage</a>
+</li>
+<li><a href="#sample">Sample code</a></li>
+<li>
+<a href="#code-documentation">In Lieu of Javadoc</a></li>
+</ul>
+
+<h2><a name="status"> </a>Conformance and Status</h2>
+<p>
+The OWL syntax checker shipping with Jena2.0 is <b>alpha</b> quality
+(mostly) conforming with the Last Call of the OWL design.
+</p>
+<p>
+Two known conformance errors are:
+</p>
+<ul>
+<li>triples <code>_:b rdf:type owl:Class</code> are incorrectly
+not allowed on blank nodes corresponding to restrictions.
+</li>
+<li>the <a href="http://www.w3.org/2001/sw/WebOnt/rqim">feature at risk</a> in the OWL call for implementations is not implemented.
+</li>
+</ul>
+<p>
+Further conformance issues concern changes made between the OWL Last Call and Candidate
+Recommendation. The most significant of these is that the
+<code>_:b rdf:type rdf:List</code> triples are no longer required.
+However, the Jena2.0 syntax checker code has not been updated reflecting this.
+Since the Jena2.0 version of ARP has been updated and does not generate these triples, 
+it means that the syntax checker
+is difficult to use in practice.
+</p>
+<p>
+The three main aspects that are expected to change on the next revision of this software 
+(from alpha to beta quality) are:
+</p>
+<ul>
+<li>Reducing the startup overhead - currently a few seconds</li>
+<li>Designing an API - currently there is no coherent API, see below</li>
+<li>Conforming with OWL Candidate Rec, probably continuing to not support the feature at risk</li>
+</ul>
+
+<h2><a name="usage-overview"></a>Overview of Usage</h2>
+<p>
+The OWL Syntax Checker takes a graph and sees whether it conforms with OWL Lite
+or OWL DL syntax.
+</p>
+<p>
+The basic usage returns a single word being one of "Lite" "DL" or "Full".
+</p>
+<p>
+Error messages can indicate why it is not in a lower level.
+</p>
+<p>
+No rationale is offered as to why it is in this level rather than a higher level;
+such a rationale can be found from a different tool that provides the abstract syntax
+form corresponding to the graph. This functionality is not planned within Jena.
+</p>
+<p>It is generally desirous to compute an imports closure before doing a syntax check,
+the code sample below shows how to do this. A future revision is likely to simplify this.
+</p>
+<p>If it is desired to have error messages indicating why a graph is in OWL DL rather than OWL Lite
+then appropriate constructor arguments must be given.</p>
+<h2><a name="sample"></a>Sample code</h2>
+<pre>
+    // set this boolean to true if error msgs should
+    // indicate why the graph is not in Lite.
+    boolean expectingLite = false;
+    Model baseModel;
+    Writer w; // for error messages.
+    
+    ...
+    // construct imports closure 
+    OntModel m = ModelFactory.createOntologyModel(
+                   OntModelSpec.OWL_MEM,
+                   baseModel);
+
+   // Get a snytax checker
+   Checker chk = new Checker(expectingLite);
+
+   // Add one or more graphs.
+   chk.add(m.getGraph());
+   // get result.
+   String subLang = chk.getSubLanguage();
+   ...
+
+   ...
+   // If we do not like the answer we can 
+   // get error messages.
+
+   if (!(subLang.equals("Lite"))) {
+     // There is no explaination offered why something
+     // is in a lower level than expected, only why it 
+     // is in a higher level than expected.
+     Iterator it = chk.getProblems();
+     while (it.hasNext()) {
+       SyntaxProblem sp = (SyntaxProblem) it.next();
+       String s = sp.longDescription();
+
+       w.write(s);
+       w.write("\n");
+     }
+   }
+</pre>
+<h2><a name="code-documentation"></a>In Lieu of Javadoc</h2>
+<p>
+The Javadoc has not been finished since the API has not been fully designed.
+This section sketches the current interface.
+<h3>Checker</h3>
+<p>
+<code>com.hp.hpl.jena.ontology.tidy.Checker</code>
+</p>
+<h4>Constructor</h4>
+<dl>
+<dt>
+<code>Checker(boolean expectingLite)</code></dt>
+<dd>If
+<code>expectingLite</code>
+is true then the checker will use an OWL Lite grammar and error messages will be generated for 
+constructs that are in OWL DL but not OWL Lite.
+However, if this is true then the checker cannot distinguish OWL DL from OWL Full.
+If false the checker can distinguish OWL Lite from OWL DL, but cannot justify itself.
+</dd>
+</dl>
+<h4>Methods</h4>
+<dl>
+<dt><code>void add(Graph g)</code></dt>
+<dd>Check this graph (and any others that are added)</dd>
+<dt><code>void load(String url)</code><dt>
+<dd>Add the imports closure of the RDF/XML document found at URL</dd>
+<dt><code>String getSubLanguage()</code></dt>
+<dd>
+Returns one of "Lite", "DL", "Full" or "DL or Full". The latter is only returned
+when the checker was constructed with the <code>expectingLite</code> flag as true.
+This should work incrementally (not tested). i.e. calls to <code>add(Graph)</code>
+and <code>getSubLanguage()</code> can be interleaved.</dd>
+</dd>
+<dt><code>Iterator getErrors()</code></dt>
+<dt><code>Iterator getProblems()</code></dt>
+<dd>Both these methods return an <code>Iterator</code> over <code>SyntaxProblem</code>'s.
+The second returns errors and warnings, the first just the errors.</dd>
+</dl>
+<h3>SyntaxProblem</h3>
+<p>Typically, use either the shortDescription or the longDescription method, and
+none of the others.</p>
+<p>
+<code>com.hp.hpl.jena.ontology.tidy.SyntaxProblem</code>
+</p>
+<h4>Methods</h4>
+<dl>
+<dt><code>String shortDescription()</code></dt>
+<dt><code>String longDescription()</code></dt>
+<dd>A description of the problem detected, often somewhat cryptic.</dd>
+<dt><code>RDFWriter setWriter(RDFWriter)</code></dt>
+<dd>Sets the RDFWriter used for creation of the <code>longDescription()</code>.
+Returns the previous value.</dd>
+<dt><code>EnhNode problemNode()</code></dt>
+<dt><code>Graph problemSubGraph()</code></dt>
+<dd>
+Helps identify the problem. At least one of these two is non-null.
+</dd>
+</dl>
+
+</BODY>
+</HTML>
