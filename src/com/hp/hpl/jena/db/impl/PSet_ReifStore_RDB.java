@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.20 $ on $Date: 2004-04-22 12:42:26 $
+* @version $Revision: 1.21 $ on $Date: 2004-07-24 20:07:37 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -111,6 +111,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		} catch (Exception e) {
 			notFound = true;
 			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
+            throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 		}
 
 		if ( notFound )
@@ -120,6 +121,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			m_sql.executeSQL(ps, stmtStr, result);
 			} catch (Exception e) {
 				logger.debug( "find encountered exception ", e);
+                                throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 			}
 		}
 		return result;
@@ -195,6 +197,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		} catch (Exception e) {
 			done = true;
 			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
+                        throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 		}
 
 		if ( done )
@@ -204,6 +207,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			m_sql.executeSQL(ps, stmtStr, result);
 			} catch (Exception e) {
 				logger.debug( "find encountered exception ", e);
+                                throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 			}
 		}
 		return result;
@@ -248,6 +252,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		} catch (Exception e) {
 			notFound = true;
 			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ",  e);
+                        throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 		}
 
 		// find on object field
@@ -258,6 +263,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			m_sql.executeSQL(ps, stmtStr, result);
 		} catch (Exception e) {
 			logger.debug("find encountered exception ", e);
+            throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 		}
 		}
 		return result.mapWith(new MapResultSetToNode());
@@ -308,6 +314,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		} catch (Exception e) {
 			notFound = true;
 			logger.warn( "Getting prepared statement for " + stmtStr + " Caught exception ", e);
+            throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 		}
 
 		if ( notFound )
@@ -316,6 +323,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			result = m_sql.executeSQL(ps, stmtStr, result);
 		} catch (Exception e) {
 			logger.debug("find encountered exception ", e);
+            throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 		}
 		return result;
 	}
@@ -388,12 +396,14 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 				ps.setString(argc++,my_GID.getID().toString());
 			} catch (Exception e) {
 				logger.warn( "Getting prepared statement for "	+ stmtStr + " Caught exception ", e);
+                throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 			}
 			try {
 	  			ps.executeUpdate();
  			 } catch (SQLException e1) {
 				 logger.error("SQLException caught during reification update" + e1.getErrorCode(), e1);
-	 		}
+                throw new JenaException("Exception during database access", e1);    // Rethrow in case there is a recovery option
+}
 		}
 
 	public void nullifyFrag(Node stmtURI, StmtMask fragMask, IDBID my_GID) {

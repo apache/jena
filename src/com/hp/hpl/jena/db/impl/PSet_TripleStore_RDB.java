@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.43 2004-04-22 12:42:26 chris-dollin Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.44 2004-07-24 20:07:37 der Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -11,7 +11,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -44,7 +43,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.43 $ on $Date: 2004-04-22 12:42:26 $
+* @version $Revision: 1.44 $ on $Date: 2004-07-24 20:07:37 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -207,8 +206,9 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	     } 
 		m_sql.returnPreparedSQLStatement(ps);
 	} catch (SQLException e) {
-	 		logger.debug("tried to count rows in " + tName);
-		   	logger.debug("Caught exception: ", e);
+	   logger.debug("tried to count rows in " + tName);
+	   logger.debug("Caught exception: ", e);
+           throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 	}
 	return(result);
 	}
@@ -330,7 +330,8 @@ public void deleteTripleAR(
 		//ps.clearParameters();
 
 	} catch (SQLException e1) {
-		logger.debug( "SQLException caught " + e1.getErrorCode(), e1);
+	    logger.debug( "SQLException caught " + e1.getErrorCode(), e1);
+            throw new JenaException("Exception during database access", e1);    // Rethrow in case there is a recovery option
 	}
 
 	// now fill in parameters
@@ -347,7 +348,8 @@ public void deleteTripleAR(
 			ps.setString(argc++,"T");
 		}
 	} catch (SQLException e1) {
-		logger.debug("(in delete) SQLException caught ", e1);
+	    logger.debug("(in delete) SQLException caught ", e1);
+            throw new JenaException("Exception during database access", e1);    // Rethrow in case there is a recovery option
 	}
 
 	try {
@@ -359,6 +361,7 @@ public void deleteTripleAR(
 		}
 	} catch (SQLException e1) {
 		logger.error("Exception executing delete: ", e1);
+                throw new JenaException("Exception during database access", e1);    // Rethrow in case there is a recovery option
 	}
 }
 
@@ -494,6 +497,7 @@ public void deleteTripleAR(
 
 		} catch (SQLException e1) {
 			logger.debug("SQLException caught " + e1.getErrorCode(), e1);
+                        throw new JenaException("Exception during database access", e1);    // Rethrow in case there is a recovery option
 		}
 		// now fill in parameters
 		try {
@@ -523,6 +527,7 @@ public void deleteTripleAR(
 
 		} catch (SQLException e1) {
 			logger.debug("SQLException caught " + e1.getErrorCode(), e1);
+                        throw new JenaException("Exception during database access", e1);    // Rethrow in case there is a recovery option
 		}
 
 		try {
@@ -541,7 +546,7 @@ public void deleteTripleAR(
 					"SQLException caught during insert"
 						+ e1.getErrorCode(),
 						e1);
-                throw new JenaException( e1 );
+                          throw new JenaException("Exception during database access", e1 );
 			}
 		}
 	}
@@ -790,6 +795,7 @@ public void deleteTripleAR(
 			} catch (Exception e) {
 				notFound = true;
 				logger.debug( "find encountered exception: args=" + args + " err: ",  e);
+                                throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 			}
 
 		if ( notFound ) result.close();
@@ -810,6 +816,7 @@ public void deleteTripleAR(
 				  ps.executeUpdate();
 				 } catch (SQLException e) {
 					logger.error("Problem removing statements from table: ", e);
+                                        throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 				 }
 		}
 }
