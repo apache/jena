@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.14 2003-06-23 15:54:27 der Exp $
+ * $Id: TransitiveReasoner.java,v 1.15 2003-08-21 22:14:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * in any query. Any of tbox or data graph are allowed to be null.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-06-23 15:54:27 $
+ * @version $Revision: 1.15 $ on $Date: 2003-08-21 22:14:45 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -87,6 +87,16 @@ public class TransitiveReasoner implements Reasoner {
      */
     public Model getCapabilities() {
         return TransitiveReasonerFactory.theInstance().getCapabilities();
+    }
+    
+    /**
+     * Add a configuration description for this reasoner into a partial
+     * configuration specification model.
+     * @param configSpec a Model into which the configuration information should be placed
+     * @param base the Resource to which the configuration parameters should be added.
+     */
+    public void addDescription(Model configSpec, Resource base) {
+        // No configuration
     }
 
     /**

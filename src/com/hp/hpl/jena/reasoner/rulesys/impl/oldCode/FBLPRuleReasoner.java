@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBLPRuleReasoner.java,v 1.1 2003-08-21 12:04:45 der Exp $
+ * $Id: FBLPRuleReasoner.java,v 1.2 2003-08-21 22:14:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -29,7 +29,7 @@ import java.util.*;
  * replaced by the upgraded FBRuleReasoner when the LP section is released.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-08-21 12:04:45 $
+ * @version $Revision: 1.2 $ on $Date: 2003-08-21 22:14:45 $
  */
 public class FBLPRuleReasoner implements Reasoner {
     
@@ -102,6 +102,16 @@ public class FBLPRuleReasoner implements Reasoner {
         } else {
             return null;
         }
+    }
+    
+    /**
+     * Add a configuration description for this reasoner into a partial
+     * configuration specification model.
+     * @param configSpec a Model into which the configuration information should be placed
+     * @param base the Resource to which the configuration parameters should be added.
+     */
+    public void addDescription(Model configSpec, Resource base) {
+        // No configuration
     }
 
     /**

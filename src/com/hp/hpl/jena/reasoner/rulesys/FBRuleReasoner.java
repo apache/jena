@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.7 2003-08-21 12:04:45 der Exp $
+ * $Id: FBRuleReasoner.java,v 1.8 2003-08-21 22:14:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-21 12:04:45 $
+ * @version $Revision: 1.8 $ on $Date: 2003-08-21 22:14:45 $
  */
 public class FBRuleReasoner implements Reasoner {
     
@@ -46,6 +46,9 @@ public class FBRuleReasoner implements Reasoner {
     
     /** The cached empty closure, if wanted */
     protected InfGraph preload;  
+    
+    /** The original configuration properties, if any */
+    protected Resource configuration;
      
     /**
      * Constructor. This is the raw version that does not reference a ReasonerFactory
@@ -63,7 +66,24 @@ public class FBRuleReasoner implements Reasoner {
     public FBRuleReasoner(ReasonerFactory factory) {
         this(null, factory);
     }
-    
+   
+    /**
+     * Constructor
+     * @param factory the parent reasoner factory which is consulted to answer capability questions
+     * @param configuration RDF node to configure the rule set and mode, can be null
+     */
+    public FBRuleReasoner(ReasonerFactory factory, Resource configuration) {
+        this(null, factory);
+        this.configuration = configuration;
+        if (configuration != null) {
+            StmtIterator i = configuration.listProperties();
+            while (i.hasNext()) {
+                Statement st = i.nextStatement();
+                doSetParameter(st.getPredicate().getURI(), st.getObject().toString());
+            }
+        }
+    }
+   
     /**
      * Constructor
      * @param rules a list of Rule instances which defines the ruleset to process
@@ -94,6 +114,26 @@ public class FBRuleReasoner implements Reasoner {
             return factory.getCapabilities();
         } else {
             return null;
+        }
+    }
+    
+    /**
+     * Add a configuration description for this reasoner into a partial
+     * configuration specification model.
+     * @param configSpec a Model into which the configuration information should be placed
+     * @param base the Resource to which the configuration parameters should be added.
+     */
+    public void addDescription(Model configSpec, Resource base) {
+        Resource rebase = base;
+        if (base.getModel() != configSpec) {
+            rebase = configSpec.getResource(base.getURI());
+        }
+        if (configuration != null) {
+            StmtIterator i = configuration.listProperties();
+            while (i.hasNext()) {
+                Statement st = i.nextStatement();
+                rebase.addProperty(st.getPredicate(), st.getObject());
+            }
         }
     }
 
@@ -227,7 +267,7 @@ public class FBRuleReasoner implements Reasoner {
     } 
 
     /**
-     * Set a configuration paramter for the reasoner. The supported parameters
+     * Set a configuration parameter for the reasoner. The supported parameters
      * are:
      * <ul>
      * <li>PROPderivationLogging - set to true to enable recording all rule derivations</li>
@@ -237,14 +277,35 @@ public class FBRuleReasoner implements Reasoner {
      * @param parameterUri the uri identifying the parameter to be changed
      * @param value the new value for the parameter, typically this is a wrapped
      * java object like Boolean or Integer.
+     * @throws IllegalParameterException if the parameter is unknown 
      */
     public void setParameter(String parameterUri, Object value) {
+        if (!doSetParameter(parameterUri, value)) {
+            throw new IllegalParameterException("Don't recognize configuration parameter " + parameterUri + " for rule-based reasoner");
+        }
+    }
+
+    /**
+     * Set a configuration parameter for the reasoner. The supported parameters
+     * are:
+     * <ul>
+     * <li>PROPderivationLogging - set to true to enable recording all rule derivations</li>
+     * <li>PROPtraceOn - set to true to enable verbose trace information to be sent to the logger INFO channel</li>
+     * </ul> 
+     * @param parameterUri the uri identifying the parameter to be changed
+     * @param value the new value for the parameter, typically this is a wrapped
+     * java object like Boolean or Integer.
+     * @return false if the parameter was not known
+     */
+    protected boolean doSetParameter(String parameterUri, Object value) {
         if (parameterUri.equals(ReasonerVocabulary.PROPderivationLogging.getURI())) {
             recordDerivations = Util.convertBooleanPredicateArg(parameterUri, value);
+            return true;
         } else if (parameterUri.equals(ReasonerVocabulary.PROPtraceOn.getURI())) {
             traceOn =  Util.convertBooleanPredicateArg(parameterUri, value);
+            return true;
         } else {
-            throw new IllegalParameterException("Don't recognize configuration parameter " + parameterUri + " for rule-based reasoner");
+            return false;
         }
     }
 

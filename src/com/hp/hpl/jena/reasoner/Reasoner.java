@@ -5,13 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Reasoner.java,v 1.10 2003-05-27 15:48:52 der Exp $
+ * $Id: Reasoner.java,v 1.11 2003-08-21 22:14:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.rdf.model.Model;
-import com.hp.hpl.jena.rdf.model.Property;
+import com.hp.hpl.jena.rdf.model.*;
 
 /**
  * The minimal interface to which all reasoners (or reasoner adaptors) conform. 
@@ -21,7 +20,7 @@ import com.hp.hpl.jena.rdf.model.Property;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2003-05-27 15:48:52 $
+ * @version $Revision: 1.11 $ on $Date: 2003-08-21 22:14:45 $
  */
 public interface Reasoner {
     
@@ -116,6 +115,14 @@ public interface Reasoner {
      * no useful capabilities registered.
      */
     public Model getCapabilities();
+    
+    /**
+     * Add a configuration description for this reasoner into a partial
+     * configuration specification model.
+     * @param configSpec a Model into which the configuration information should be placed
+     * @param base the Resource to which the configuration parameters should be added.
+     */
+    public void addDescription(Model configSpec, Resource base);
 
     /**
      * Determine whether the given property is recognized and treated specially

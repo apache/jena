@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BasicForwardRuleReasoner.java,v 1.8 2003-06-08 17:49:17 der Exp $
+ * $Id: BasicForwardRuleReasoner.java,v 1.9 2003-08-21 22:14:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 import com.hp.hpl.jena.rdf.model.*;
@@ -18,7 +18,7 @@ import java.util.*;
  * according to a set of rules. This trivial version does not support
  * separate schema processing. The actual work is done in the inference
  * graph implementation.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.8 $ on $Date: 2003-06-08 17:49:17 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.9 $ on $Date: 2003-08-21 22:14:45 $ */
 public class BasicForwardRuleReasoner implements Reasoner {
     
     /** The parent reasoner factory which is consulted to answer capability questions */
@@ -77,6 +77,16 @@ public class BasicForwardRuleReasoner implements Reasoner {
         } else {
             return null;
         }
+    }
+    
+    /**
+     * Add a configuration description for this reasoner into a partial
+     * configuration specification model.
+     * @param configSpec a Model into which the configuration information should be placed
+     * @param base the Resource to which the configuration parameters should be added.
+     */
+    public void addDescription(Model configSpec, Resource base) {
+        // No configuration
     }
 
     /**
