@@ -5,12 +5,15 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasonerFactory.java,v 1.5 2003-08-27 13:09:40 andy_seaborne Exp $
+ * $Id: GenericRuleReasonerFactory.java,v 1.6 2004-07-30 15:16:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
+import java.util.*;
+
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.BaseRuleReasonerFactory;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 
 /**
@@ -19,9 +22,10 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * calls to the created reasoner or though parameters in the configuration Model.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-08-27 13:09:40 $
+ * @version $Revision: 1.6 $ on $Date: 2004-07-30 15:16:02 $
  */
-public class GenericRuleReasonerFactory implements ReasonerFactory {
+public class GenericRuleReasonerFactory extends BaseRuleReasonerFactory 
+    implements RuleReasonerFactory {
     
     /** Single global instance of this factory */
     private static ReasonerFactory theInstance = new GenericRuleReasonerFactory();
@@ -45,8 +49,8 @@ public class GenericRuleReasonerFactory implements ReasonerFactory {
      * passed the reasoner, encoded as RDF properties of a base configuration resource,
      * can be null in no custom configuration is required.
      */
-    public Reasoner create(Resource configuration) {
-        return new GenericRuleReasoner(this, configuration);
+    public Reasoner create( Resource configuration ) {
+        return new GenericRuleReasoner( this, configuration ) .addRules( rules ); 
     }
    
     /**

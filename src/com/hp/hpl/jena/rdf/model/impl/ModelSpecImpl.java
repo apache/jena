@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.31 2004-07-28 15:33:39 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.32 2004-07-30 15:16:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -316,6 +316,8 @@ public abstract class ModelSpecImpl implements ModelSpec
         while (rulesets.hasNext()) load( rf, rulesets.nextStatement().getResource() );
         return rf;
         }
+    
+   
 
     /**
      * @param rf

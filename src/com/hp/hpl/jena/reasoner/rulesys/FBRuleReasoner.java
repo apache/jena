@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.11 2003-12-08 10:48:26 andy_seaborne Exp $
+ * $Id: FBRuleReasoner.java,v 1.12 2004-07-30 15:16:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-12-08 10:48:26 $
+ * @version $Revision: 1.12 $ on $Date: 2004-07-30 15:16:02 $
  */
 public class FBRuleReasoner implements Reasoner {
     
@@ -29,7 +29,7 @@ public class FBRuleReasoner implements Reasoner {
     protected ReasonerFactory factory;
 
     /** The rules to be used by this instance of the forward engine */
-    protected List rules;
+    protected List rules = new ArrayList();
     
     /** A precomputed set of schema deductions */
     protected Graph schemaGraph;
@@ -56,6 +56,7 @@ public class FBRuleReasoner implements Reasoner {
      * @param rules a list of Rule instances which defines the ruleset to process
      */
     public FBRuleReasoner(List rules) {
+        if (rules == null) throw new NullPointerException( "null rules" );
         this.rules = rules;
     }
     
@@ -64,7 +65,7 @@ public class FBRuleReasoner implements Reasoner {
      * @param factory the parent reasoner factory which is consulted to answer capability questions
      */
     public FBRuleReasoner(ReasonerFactory factory) {
-        this(null, factory);
+        this( new ArrayList(), factory);
     }
    
     /**
@@ -73,7 +74,7 @@ public class FBRuleReasoner implements Reasoner {
      * @param configuration RDF node to configure the rule set and mode, can be null
      */
     public FBRuleReasoner(ReasonerFactory factory, Resource configuration) {
-        this(null, factory);
+        this( new ArrayList(), factory);
         this.configuration = configuration;
         if (configuration != null) {
             StmtIterator i = configuration.listProperties();
@@ -102,6 +103,19 @@ public class FBRuleReasoner implements Reasoner {
         this(rules, factory);
         this.schemaGraph = schemaGraph;
     }
+
+    /**
+         Add the given rules to the current set and answer this Reasoner. Provided 
+         so that the Factory can deal out reasoners with specified rulesets. 
+         There may well be a better way to arrange this.
+         TODO review & revise
+    */
+    public FBRuleReasoner addRules(List rules) {
+        List combined = new ArrayList( this.rules );
+        combined.addAll( rules );
+        setRules( combined );
+        return this;
+        }
 
     /**
      * Return a description of the capabilities of this reasoner encoded in
@@ -201,7 +215,7 @@ public class FBRuleReasoner implements Reasoner {
     }
     
     /**
-     * Return the this of Rules used by this reasoner
+     * Return the list of Rules used by this reasoner
      * @return a List of Rule objects
      */
     public List getRules() {

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestUtil.java,v 1.12 2003-12-12 23:40:10 ian_dickinson Exp $
+ * $Id: TestUtil.java,v 1.13 2004-07-30 15:16:03 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-12-12 23:40:10 $
+ * @version $Revision: 1.13 $ on $Date: 2004-07-30 15:16:03 $
  */
 public class TestUtil {
     
@@ -52,6 +52,8 @@ public class TestUtil {
         int anonFound = 0;
         
         for (int i = 0; i < vals.length; i++) found[i] = false;
+        
+        
         while (it.hasNext()) {
             Object n = it.next();
             boolean gotit = false;
@@ -77,9 +79,11 @@ public class TestUtil {
         // check that no expected values were unfound
         for (int i = 0; i < vals.length; i++) {
             if (!found[i]) {
+
+                for (int j = 0; j < vals.length; j += 1) System.err.println( "#" + j + ": " + vals[j] );
                 logger.debug( testCase.getName() + " failed to find expected iterator value: " + vals[i]);
             }
-            TestCase.assertTrue(testCase.getName() + " failed to find expected iterator value", found[i]);
+            TestCase.assertTrue(testCase.getName() + " failed to find expected iterator value: " + vals[i], found[i]);
         }
         
         // check we got the right no. of anons

@@ -1,17 +1,19 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.6 2004-07-30 14:07:28 andy_seaborne Exp $
+  $Id: TestModelSpecRevised.java,v 1.7 2004-07-30 15:16:02 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
 import java.net.URL;
+import java.util.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.HashUtils;
 
 import junit.framework.TestSuite;
 
@@ -21,11 +23,67 @@ import junit.framework.TestSuite;
  */
 public class TestModelSpecRevised extends ModelTestBase
     {
+
+    
     public TestModelSpecRevised( String name )
         { super( name ); }
     
     public static TestSuite suite()
         { return new TestSuite( TestModelSpecRevised.class ); }
+    
+    public void testFactoryWrapper()
+        {
+        List L = new ArrayList( Rule.parseRules( "[name: (?s owl:foo ?p) -> (?s ?p ?a)]" ) );
+        MockFactory mock = new MockFactory();
+        WrappedFactory wrap = new WrappedFactory( mock );
+        assertEquals( mock.reasoner, wrap.create( null ) );
+        assertEquals( mock.model, wrap.getCapabilities() );
+        assertEquals( mock.getURI(), wrap.getURI() );
+        wrap.setRules( L );
+        assertEquals( L, ((FBRuleReasoner) wrap.create( null )).getRules() );
+        }
+    
+    public class WrappedFactory implements RuleReasonerFactory
+       {
+       protected ReasonerFactory base;
+       protected List rules = new ArrayList();
+       
+       public WrappedFactory( ReasonerFactory base )
+           { this.base = base; }
+       
+       public Reasoner create(Resource configuration)
+           { Reasoner result = base.create( configuration ); 
+           if (result instanceof FBRuleReasoner) ((FBRuleReasoner) result).setRules( rules );
+           return result; }
+
+       public Model getCapabilities()
+           { return base.getCapabilities();  }
+
+       public String getURI()
+           { return base.getURI();  }
+       
+       public void setRules( List rules )
+           { this.rules = rules; }
+       }
+   
+    protected static class MockFactory implements ReasonerFactory
+        {
+        public final Model model = ModelFactory.createDefaultModel();
+        public final Reasoner reasoner = new GenericRuleReasoner( new ArrayList() );
+        
+        protected void add( String what )
+            {}
+        
+        public Reasoner create( Resource configuration )
+            { add( "create" ); return reasoner; }
+
+        public Model getCapabilities()
+            { add( "getCapabilities" ); return model; }
+
+        public String getURI()
+            { add( "getURI" ); return "eg:someURI"; }
+        
+        }
     
     /*
      * 
@@ -83,7 +141,18 @@ public class TestModelSpecRevised extends ModelTestBase
         ModelSpecImpl.getReasonerFactory( A, rs );
         }
     
-    protected void testGetReasoner(String uri, Class wantClass)
+    public void testRulesetURLLoads()
+        {
+        String uri = GenericRuleReasonerFactory.URI;
+        URL url = TestModelSpecRevised.class.getResource( "/testing/modelspecs/empty.rules" );
+        Model rs = modelWithStatements( "_a jms:reasoner " + uri + "; _a jms:ruleSetURL " + url );
+        Resource A = resource( "_a" );
+        ReasonerFactory rf = ModelSpecImpl.getReasonerFactory( A, rs );
+        Set rules = HashUtils.createSet( ((FBRuleReasoner) rf.create( null )).getRules() );
+        // assertEquals( null, rules );
+        }
+    
+    protected void testGetReasoner( String uri, Class wantClass )
         {
         Model rs = modelWithStatements( "_a jms:reasoner " + uri );
         Resource A = resource( "_a" );
@@ -92,7 +161,6 @@ public class TestModelSpecRevised extends ModelTestBase
         assertEquals( wantClass, r.getClass() );
         }
 
-    
     protected void assertContains( String x, String y )
         {
         if (y == null) fail( "<null> does not contain anything, especially '" + x + "'" );

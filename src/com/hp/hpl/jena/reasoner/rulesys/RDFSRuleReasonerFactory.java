@@ -5,12 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSRuleReasonerFactory.java,v 1.8 2003-08-27 13:11:15 andy_seaborne Exp $
+ * $Id: RDFSRuleReasonerFactory.java,v 1.9 2004-07-30 15:16:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
-
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rulesys.impl.BaseRuleReasonerFactory;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -19,9 +19,10 @@ import com.hp.hpl.jena.vocabulary.*;
  * with TGC support.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-08-27 13:11:15 $
+ * @version $Revision: 1.9 $ on $Date: 2004-07-30 15:16:02 $
  */
-public class RDFSRuleReasonerFactory implements ReasonerFactory {
+public class RDFSRuleReasonerFactory extends BaseRuleReasonerFactory
+    implements RuleReasonerFactory {
     
     /** Single global instance of this factory */
     private static ReasonerFactory theInstance = new RDFSRuleReasonerFactory();
@@ -44,9 +45,11 @@ public class RDFSRuleReasonerFactory implements ReasonerFactory {
      * @param configuration a set of arbitrary configuration information for the reasoner
      */
     public Reasoner create(Resource configuration) {
-        return new RDFSRuleReasoner(this, configuration);
+        RDFSRuleReasoner result = new RDFSRuleReasoner(this, configuration);
+        result.addRules( rules );
+        return result;
     }
-   
+    
     /**
      * Return a description of the capabilities of this reasoner encoded in
      * RDF. This method is normally called by the ReasonerRegistry which caches

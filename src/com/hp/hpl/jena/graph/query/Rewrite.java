@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Rewrite.java,v 1.2 2004-07-21 13:45:12 chris-dollin Exp $
+  $Id: Rewrite.java,v 1.3 2004-07-30 15:15:41 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -73,7 +73,7 @@ public class Rewrite
     
     public static boolean notSpecial( String pattern )
         {
-        return pattern.matches( "[A-Za-z0-9-_ ]*" );
+        return pattern.matches( "[A-Za-z0-9-_:/ ]*" );
         }
 
     public static boolean isContains( String pattern )

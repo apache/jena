@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.14 2004-07-28 07:44:57 chris-dollin Exp $
+  $Id: TestModelMakerImpl.java,v 1.15 2004-07-30 15:16:02 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -127,8 +127,8 @@ public class TestModelMakerImpl extends ModelTestBase
 
     public void testModelSource()
         {
-        assertTrue( isExtensionOf( ModelMaker.class, ModelSource.class ) );
-        assertTrue( isExtensionOf( ModelSpec.class, ModelSource.class ) );
+        assertTrue( hasAsParent( ModelMaker.class, ModelSource.class ) );
+        assertTrue( hasAsParent( ModelSpec.class, ModelSource.class ) );
         ModelSource s = new ModelSourceImpl();
         assertNotNull( s.openModel( "henry" ) );
         assertNull( s.getExistingModel( "splendid" ) );
@@ -148,14 +148,6 @@ public class TestModelMakerImpl extends ModelTestBase
         public Model getExistingModel(String name)
             { return null; }
     	}
-    
-    public boolean isExtensionOf( Class subClass, Class superClass )
-        {
-        if (subClass == superClass) return true;
-        Class [] is = subClass.getInterfaces();
-        for (int i = 0; i < is.length; i += 1) if (isExtensionOf( is[i], superClass )) return true;
-        return false;
-        }
 
     private void checkHistory( List expected )
         { assertEquals( expected, history() ); }

@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMicroReasonerFactory.java,v 1.1 2004-03-22 17:10:12 der Exp $
+ * $Id: OWLMicroReasonerFactory.java,v 1.2 2004-07-30 15:16:02 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.Util;
+import com.hp.hpl.jena.reasoner.rulesys.impl.BaseRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasoner;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -30,9 +31,10 @@ import com.hp.hpl.jena.vocabulary.*;
  * should not be relied on at this point.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2004-03-22 17:10:12 $
+ * @version $Revision: 1.2 $ on $Date: 2004-07-30 15:16:02 $
  */
-public class OWLMicroReasonerFactory implements ReasonerFactory {
+public class OWLMicroReasonerFactory extends BaseRuleReasonerFactory 
+    implements RuleReasonerFactory {
     
     /** Single global instance of this factory */
     private static ReasonerFactory theInstance = new OWLMicroReasonerFactory();
@@ -67,7 +69,7 @@ public class OWLMicroReasonerFactory implements ReasonerFactory {
                 reasoner.setTraceOn(doTrace.booleanValue());
             }
         }
-        return reasoner;
+        return reasoner.addRules( rules );
     }
    
     /**
