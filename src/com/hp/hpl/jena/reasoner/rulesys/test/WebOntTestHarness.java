@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WebOntTestHarness.java,v 1.7 2003-09-18 08:08:51 der Exp $
+ * $Id: WebOntTestHarness.java,v 1.8 2003-09-18 15:45:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * core WG tests as part of the routine unit tests.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-09-18 08:08:51 $
+ * @version $Revision: 1.8 $ on $Date: 2003-09-18 15:45:13 $
  */
 public class WebOntTestHarness {
 
@@ -113,7 +113,7 @@ public class WebOntTestHarness {
 
     /** Load all of the known manifest files into a single model */
     public static Model loadAllTestDefinitions() {
-        System.out.print("Loading "); System.out.flush();
+        System.out.print("Loading manifests "); System.out.flush();
         Model testDefs = ModelFactory.createDefaultModel();
         int count = 0;
         for (int idir = 0; idir < TEST_DIRS.length; idir++) {
@@ -151,18 +151,22 @@ public class WebOntTestHarness {
     public static void main(String[] args) {
         WebOntTestHarness harness = new WebOntTestHarness();
         harness.runTests();
+//        harness.runTest("http://www.w3.org/2002/03owlt/Nothing/Manifest002#test");
     }
     
     /**
      * Run all relevant tests.
      */
     public void runTests() {
+        System.out.println("Testing " + (approvedOnly ? "only APPROVED" : "APPROVED and PROPOSED") );
         System.out.println("Positive entailment: ");
         runTests(findTestsOfType(OWLTest.PositiveEntailmentTest));
         System.out.println("\nNegative entailment: ");
         runTests(findTestsOfType(OWLTest.NegativeEntailmentTest));
         System.out.println("\nTrue tests: ");
         runTests(findTestsOfType(OWLTest.TrueTest));
+        System.out.println("\nOWL for OWL tests: ");
+        runTests(findTestsOfType(OWLTest.OWLforOWLTest));
         System.out.println("\nPassed " + passCount + " out of " + testCount);
     }
     
@@ -175,6 +179,14 @@ public class WebOntTestHarness {
         }
     }
     
+    /**
+     * Run a single test of any sort, performing any appropriate logging
+     * and error reporting.
+     */
+    public void runTest(String test) {
+        runTest(testDefinitions.getResource(test));
+    }
+     
     /**
      * Run a single test of any sort, performing any appropriate logging
      * and error reporting.
@@ -204,6 +216,7 @@ public class WebOntTestHarness {
     public boolean doRunTest(Resource test) throws IOException {
         if (test.hasProperty(RDF.type, OWLTest.PositiveEntailmentTest) 
         ||  test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest)
+        ||  test.hasProperty(RDF.type, OWLTest.OWLforOWLTest)
         ||  test.hasProperty(RDF.type, OWLTest.TrueTest) ) {
             // Entailment tests
             Model premises = getDoc(test, RDFTest.premiseDocument);
@@ -300,13 +313,32 @@ public class WebOntTestHarness {
                 }
             }
         }
-        // Comphend any intersectionOf lists
+        // Comprehend any intersectionOf lists. Introduce anon class which has the form
+        // of the intersection expression.
+        // Rewrite queries of the form (X intersectionOf Y) to the form
+        //   (X equivalentClass ?CC) (?CC intersectionOf Y)
         StmtIterator ii = conclusions.listStatements(null, OWL.intersectionOf, (RDFNode)null);
-        while (ii.hasNext()) {
-            Statement is = ii.nextStatement();
+        List intersections = new ArrayList();
+        while (ii.hasNext()) { 
+            intersections.add(ii.next());
+        }
+        for (Iterator i = intersections.iterator(); i.hasNext(); ) {
+            Statement is = (Statement)i.next();
+            // Declare in the premises that such an intersection exists
             Resource comp = premises.createResource()
                    .addProperty(RDF.type, OWL.Class)
                    .addProperty(OWL.intersectionOf, mapList(premises, (Resource)is.getObject(), comprehension));
+            // Rewrite the conclusions to be a test for equivalence between the class being
+            // queried and the comprehended interesection
+            conclusions.remove(is);
+            conclusions.add(is.getSubject(), OWL.equivalentClass, comp);
+        }
+        // Comprehend any oneOf lists
+        StmtIterator io = conclusions.listStatements(null, OWL.oneOf, (RDFNode)null);
+        while (io.hasNext()) {
+            Statement s = io.nextStatement();
+            Resource comp = premises.createResource()
+                        .addProperty(OWL.oneOf, s.getObject());
         }
     }
 
@@ -321,7 +353,9 @@ public class WebOntTestHarness {
             Resource head = (Resource) list.getRequiredProperty(RDF.first).getObject();
             Resource rest = (Resource) list.getRequiredProperty(RDF.rest).getObject();
             Resource mapElt = target.createResource();
-            mapElt.addProperty(RDF.first, map.get(head));
+            Resource mapHead = (Resource) map.get(head);
+            if (mapHead == null) mapHead = head;
+            mapElt.addProperty(RDF.first, mapHead);
             mapElt.addProperty(RDF.rest, mapList(target, rest, map));
             return mapElt;
         }

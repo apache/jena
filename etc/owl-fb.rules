@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.25 2003-09-18 08:09:44 der Exp $
+# $Id: owl-fb.rules,v 1.26 2003-09-18 15:45:47 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -119,19 +119,28 @@
 -> (rdf:first rdf:type owl:FunctionalProperty).
 -> (rdf:rest rdf:type owl:FunctionalProperty).
 
--> (rdfs:domain owl:SymmetricProperty owl:ObjectProperty).
--> (rdfs:domain owl:TransitiveProperty owl:ObjectProperty).
--> (rdfs:domain owl:InverseFunctionalProperty owl:ObjectProperty).
+-> (owl:SymmetricProperty rdfs:domain owl:ObjectProperty).
+-> (owl:TransitiveProperty rdfs:domain owl:ObjectProperty).
+-> (owl:InverseFunctionalProperty rdfs:domain owl:ObjectProperty).
 
--> (rdfs:range owl:ObjectProperty owl:Thing).
--> (rdfs:domain owl:ObjectProperty owl:Thing).
--> (rdfs:domain owl:DatatypeProperty owl:Thing).
+#-> (owl:ObjectProperty rdfs:range owl:Thing).
+#-> (owl:ObjectProperty rdfs:domain owl:Thing).
+#-> (owl:DatatypeProperty rdfs:domain owl:Thing).
+#-> (owl:DatatypeProperty rdfs:domain rdfs:Literal).
+
+-> (owl:oneOf rdfs:domain owl:Class).
 
 -> (owl:Class rdfs:subClassOf rdfs:Class).
 -> (owl:Restriction rdfs:subClassOf owl:Class).
 
 -> (owl:Thing rdf:type owl:Class).
 -> (owl:Nothing rdf:type owl:Class).
+
+-> (owl:OntologyProperty rdfs:domain owl:Ontology).
+-> (owl:OntologyProperty rdfs:range owl:Ontology).
+-> (owl:imports rdf:type owl:OntologyProperty).
+-> (owl:imports rdfs:domain owl:Ontology).
+-> (owl:imports rdfs:range  owl:Ontology).
 
 # These might need to be pre-expanded in the initial rule set
 #-> (owl:equivalentProperty rdf:type owl:SymmetricProperty).
@@ -324,6 +333,8 @@
            ->  (?C owl:equivalentClass owl:Nothing) ]
            
 [nothing3: (?C rdfs:subClassOf owl:Nothing) ->  (?C owl:equivalentClass owl:Nothing) ]
+
+[nothing4: (?C owl:oneOf rdf:nil) -> (?C owl:equivalentClass owl:Nothing) ]
            
 #------------------------------------------------------------------
 # Disjointness
