@@ -1,14 +1,16 @@
 package com.hp.hpl.jena.ontology.tidy;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.enhanced.*;
-import java.util.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdql.*;
 import com.hp.hpl.jena.vocabulary.*;
+
+import java.util.*;
 
 /**
  * This class implements the OWL Syntax Checker from the OWL Test Cases WD.
@@ -167,7 +169,7 @@ public class Checker extends AbsChecker {
 		this(false);
 	}
 	public Checker(boolean lite) {
-		this(lite, new DefaultGraphFactory());
+		this(lite, new SimpleGraphFactory());
 	}
 	public void add(Graph g) {
 		// Add every triple

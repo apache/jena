@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-16 21:09:30 $
- *               by   $Author: jeremy_carroll $
+ * Last modified on   $Date: 2003-05-03 09:24:27 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -30,12 +30,10 @@ import org.apache.log4j.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.ontology.impl.*;
 import com.hp.hpl.jena.ontology.impl.OntologyGraph;
-
-
 
 /**
  * <p>
@@ -46,7 +44,7 @@ import com.hp.hpl.jena.ontology.impl.OntologyGraph;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.8 2003-04-16 21:09:30 jeremy_carroll Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.9 2003-05-03 09:24:27 chris-dollin Exp $
  */
 public class OntDocumentManager
 {
@@ -397,7 +395,7 @@ public class OntDocumentManager
     public GraphFactory getDefaultGraphFactory() {
         if (m_graphFactory == null) {
             // construct the default graph factory
-            m_graphFactory = new DefaultGraphFactory();
+            m_graphFactory = new SimpleGraphFactory();
         }
 
         return m_graphFactory;

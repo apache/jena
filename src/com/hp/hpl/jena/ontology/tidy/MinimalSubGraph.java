@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: MinimalSubGraph.java,v 1.3 2003-04-19 03:37:11 jeremy_carroll Exp $
+  $Id: MinimalSubGraph.java,v 1.4 2003-05-03 09:24:28 chris-dollin Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.ontology.impl.*;
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.impl.*;
 import java.util.*;
 
 /**
@@ -27,7 +26,7 @@ class MinimalSubGraph extends AbsChecker {
 	 * @param lite
 	 */
 	MinimalSubGraph(boolean lite, Triple problem, Checker parent) {
-		super(lite, new DefaultGraphFactory());
+		super(lite, new SimpleGraphFactory());
 		this.parent = parent;
 		if (!add(problem, false)) {
 			// Break superclass invariant - only method that can be called is

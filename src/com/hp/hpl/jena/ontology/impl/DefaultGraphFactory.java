@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DefaultGraphFactory.java,v 1.2 2003-05-02 15:30:37 chris-dollin Exp $
+  $Id: DefaultGraphFactory.java,v 1.3 2003-05-03 09:24:28 chris-dollin Exp $
 */
 package com.hp.hpl.jena.ontology.impl;
 
@@ -14,6 +14,8 @@ import com.hp.hpl.jena.mem.GraphMem;
  * I pulled this out of the OntDocumentManager file (method
  * getDefaultGraphFactory, in order to reuse it.
  * @author <a href="mailto:Jeremy.Carroll@hp.com">Jeremy Carroll</a>
+ * 
+ * @deprecated Subsumed by SimpleGraphFactory
  *
  */
 
