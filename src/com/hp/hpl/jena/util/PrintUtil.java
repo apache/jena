@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PrintUtil.java,v 1.12 2004-03-18 10:10:54 chris-dollin Exp $
+ * $Id: PrintUtil.java,v 1.13 2004-03-18 11:24:37 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -28,15 +28,9 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * specialised tables.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2004-03-18 10:10:54 $
+ * @version $Revision: 1.13 $ on $Date: 2004-03-18 11:24:37 $
  */
 public class PrintUtil {
-
-    /** The global, static, prefix map */
-    protected static Map prefixToNS = new HashMap();
-    
-    /** The inverse prefix map */
-    protected static Map nsToPrefix = new HashMap();
     
     protected static PrefixMapping prefixMapping = PrefixMapping.Factory.create();
     
@@ -68,8 +62,6 @@ public class PrintUtil {
      */
     public static void registerPrefix(String prefix, String namespace) {
         prefixMapping.setNsPrefix( prefix, namespace );
-        prefixToNS.put(prefix, namespace);
-        nsToPrefix.put(namespace, prefix);
     }
     
     /**
@@ -153,15 +145,7 @@ public class PrintUtil {
      * expand the prefix, otherwise return the original URI
      */
     public static String expandQname(String uri) {
-        String s1 = prefixMapping.expandPrefix( uri );
-//        int split = uri.indexOf(':');
-//        String nsPrefix = uri.substring(0, split);
-//        String localname = uri.substring(split+1);
-//        String ns = (String)prefixToNS.get(nsPrefix);
-//        String s2 = ns != null ? ns + localname : uri;
-//        if (!s1.equals( s2 ))
-//            System.err.println( ">> s1= " + s1 + " but s2=" + s2 );
-        return s1;
+        return prefixMapping.expandPrefix( uri );
     }
     
     /**
