@@ -1,13 +1,16 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelFactory.java,v 1.11 2003-08-21 09:26:58 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.12 2003-08-21 11:08:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 
 import junit.framework.*;
 
@@ -33,7 +36,7 @@ public class TestModelFactory extends ModelTestBase
         m.close();
         }    
         
-    public void testCreateSpec()
+    public void testCreatePlainSpec()
         {
         Resource root = ResourceFactory.createResource();
         Resource maker = ResourceFactory.createResource();
@@ -42,7 +45,27 @@ public class TestModelFactory extends ModelTestBase
             .add( maker, RDF.type, JMS.MemMakerClass )
             .add( maker, JMS.reificationMode, JMS.rsMinimal );
         ModelSpec spec = ModelFactory.createSpec( desc ); 
+        assertIsoModels( desc, spec.getDescription() );
+        assertTrue( spec instanceof PlainModelSpec );
+        }
         
+    public void testCreateOntSpec()
+        {
+        Resource root = ResourceFactory.createResource();
+        Resource maker = ResourceFactory.createResource();
+        Resource reasoner = ResourceFactory.createResource();
+        OntDocumentManager docManager = new OntDocumentManager();
+        Resource reasonerURI = ResourceFactory.createResource( DAMLMicroReasonerFactory.URI );
+        Model desc = ModelFactory.createDefaultModel()
+            .add( root, JMS.importMaker, maker )
+            .add( maker, RDF.type, JMS.MemMakerClass )
+            .add( maker, JMS.reificationMode, JMS.rsMinimal )
+            .add( root, JMS.ontLanguage, ProfileRegistry.DAML_LANG )
+            .add( root, JMS.docManager, ModelSpecImpl.createValue( docManager ) )
+            .add( root, JMS.reasonsWith, reasoner )
+            .add( reasoner, JMS.reasoner, reasonerURI );
+        ModelSpec spec = ModelFactory.createSpec( desc ); 
+        assertTrue( spec instanceof OntModelSpec );           
         assertIsoModels( desc, spec.getDescription() );
         }
     }

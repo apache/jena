@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-21 09:26:58 $
+ * Last modified on   $Date: 2003-08-21 11:09:17 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -42,7 +42,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.17 2003-08-21 09:26:58 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.18 2003-08-21 11:09:17 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -362,7 +362,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     */
     public static String getLanguage( Model description, Resource root ) {
         Statement langStatement = description.getRequiredProperty( root, JMS.ontLanguage );
-        return langStatement.getResource().getURI();
+        return langStatement.getString(); // .getURI();
     }
     
     /**
