@@ -35,6 +35,7 @@ import org.apache.log4j.*;
  *     --vocab URL | File   Specify a separate vocabulary (may also be in the data)
  *     --xml                Data source is XML (default)
  *     --ntriple            Data source is n-triple
+ *     --n3                 Data source is N3
  *     --data URL | File    Data source (can also be part of query)
  *     --time               Print some time information
  *     --test [file]        Run the test suite
@@ -45,7 +46,7 @@ import org.apache.log4j.*;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.16 2003-08-27 13:04:04 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.17 2003-10-24 11:04:48 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -155,7 +156,7 @@ public class rdfquery
                 continue ;
             }
 
-            if ( arg.equalsIgnoreCase("--format") )
+            if ( arg.equalsIgnoreCase("--format") || arg.equalsIgnoreCase("--fmt"))
             {
                 argi ++ ;
                 if ( argi == argv.length )
