@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.14 2003-08-08 09:25:43 der Exp $
+ * $Id: LPInterpreter.java,v 1.15 2003-08-08 16:12:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2003-08-08 09:25:43 $
+ * @version $Revision: 1.15 $ on $Date: 2003-08-08 16:12:53 $
  */
 public class LPInterpreter {
 
@@ -60,9 +60,6 @@ public class LPInterpreter {
     /** The execution context description to be passed to builtins */
     protected RuleContext context;
         
-    /** The tabled generator that this interpreter is currently blocked on, if any */
-    protected Generator blockedOn;
-    
     /** log4j logger*/
     static Logger logger = Logger.getLogger(LPInterpreter.class);
 
@@ -129,16 +126,8 @@ public class LPInterpreter {
 
     /**
      * Return the next result from this engine.
-     * @param choice the stored choice point frame which the run should restart
-     * @return either a StateFlag or  a result Triple
-     */
-    public synchronized Object next(FrameObject choice) {
-        cpFrame = choice;
-        return next();
-    }
-
-    /**
-     * Return the next result from this engine.
+     * @param context the generator choice point or top level iterator which 
+     * is requesting this result and might have preserved state to restore
      * @return either a StateFlag or  a result Triple
      */
     public synchronized Object next() {
@@ -152,15 +141,11 @@ public class LPInterpreter {
             return t;
         }
     }
-
-    /**
-     * Return the generator that this interpreter is currently blocked on, otherwise null
-     * if it is not blocked.
-     */
-    public Generator getBlockingGenerator() {
-        return blockedOn;
-    }
     
+    /**
+     * Preserve the current interpreter state in the given 
+     * @return
+     */
     /**
      * Return the engine which owns this interpreter.
      */
@@ -263,8 +248,10 @@ public class LPInterpreter {
                     continue main;
                 } else if (state == StateFlag.SUSPEND) {
                     // Require other generators to cycle before resuming this one
-                    blockedOn = ccp.generator;
-                    return state;
+                    preserveState(ccp);
+                    ccp.notifyBlocked();        // TODO: is this the right call here
+                    cpFrame = cpFrame.getLink();
+                    continue main;
                 }
 
                 pc = ccp.cpc;
@@ -513,6 +500,37 @@ public class LPInterpreter {
         ccp.linkTo(cpFrame);
         ccp.setContinuation(pc, ac);
         cpFrame = ccp;
+    }
+    
+    /**
+     * Preserve the current interpter state in the consumer choice point at the top
+     * of the choice point tree.
+     */
+    public void preserveState(ConsumerChoicePointFrame ccp) {
+        System.arraycopy(argVars, 0, ccp.argVars, 0, argVars.length);
+        int trailLen = trail.size();
+        if (trailLen > ccp.trailLength) {
+            ccp.trailValues = new Node[trailLen];
+            ccp.trailVars = new Node_RuleVariable[trailLen];
+        }
+        ccp.trailLength = trailLen;
+        for (int i = 0; i < trailLen; i++) {
+            Node_RuleVariable var = (Node_RuleVariable) trail.get(i);
+            ccp.trailVars[i] = var;
+            ccp.trailValues[i] = var.getRawBoundValue();
+        }
+    }
+    
+    /**
+     * Restore the interpter state according to the given consumer choice point.
+     */
+    public void restoreState(ConsumerChoicePointFrame ccp) {
+        cpFrame = ccp;
+        System.arraycopy(ccp.argVars, 0, argVars, 0, argVars.length);
+        trail.clear();
+        for (int i = 0; i < ccp.trailLength; i++) {
+            bind(ccp.trailVars[i], ccp.trailValues[i]);
+        }
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.3 2003-08-07 17:02:30 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.4 2003-08-08 16:12:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-07 17:02:30 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-08 16:12:53 $
  */
 public class LPBRuleEngine {
     
@@ -244,21 +244,23 @@ public class LPBRuleEngine {
     }
     
     /**
-     * Register that a generator is now ready to run.
+     * Register that a generator or specific generator state (Consumer choice point)
+     * is now ready to run.
      */
-    public void schedule(Generator gen) {
-        agenda.add(gen);
+    public void schedule(LPAgendaEntry state) {
+        agenda.add(state);
     }
     
     /**
      * Run the scheduled generators until the given generator is ready to run
      * then run that generator until it generates some results or closes.
      */
-    public synchronized void pump(Generator gen) {
-        while(!gen.isReady) {
+    public synchronized void pump(LPAgendaEntry gen) {
+        while(!gen.isReady()) {
             if (agenda.isEmpty()) return;
-            Generator g = (Generator)agenda.removeFirst();
-            g.pump();
+            // TODO: Consider scanning agenda for entries with max # dependents
+            LPAgendaEntry next = (LPAgendaEntry) agenda.removeFirst();
+            next.pump();
         }
         gen.pump();
     }

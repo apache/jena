@@ -5,33 +5,35 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Generator.java,v 1.3 2003-08-07 21:06:20 der Exp $
+ * $Id: Generator.java,v 1.4 2003-08-08 16:12:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
 import java.util.*;
 
-import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
+import com.hp.hpl.jena.reasoner.ReasonerException;
+//import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
 
 /**
  * A generator represents a set of memoized results for a single 
  * tabled subgoal. The generator may be complete (in which case it just
  * contains the complete cached set of results for a goal), ready (not complete
  * but likely to product more results if called) or blocked (not complete and
- * awaiing results from a dependent generator).
+ * awaiting results from a dependent generator).
+ * <p>
+ * Each generator may have multiple associated consumer choice points 
+ * representing different choices in satisfying the generator's goal.
+ * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-08-07 21:06:20 $
+ * @version $Revision: 1.4 $ on $Date: 2003-08-08 16:12:53 $
  */
-public class Generator {
+public class Generator implements LPAgendaEntry {
 
     /** The intepreter instance which generates the results for this goal, 
      *  null if the generator is complete */
     protected LPInterpreter interpreter;
-    
-//    /** The choice point frame at which the interpreter should restart */
-//    protected FrameObject choicePoint;
-    
+        
     /** The ordered set of results available for the goal */
     protected ArrayList results = new ArrayList();
     
@@ -42,11 +44,14 @@ public class Generator {
     /** set to true if the dependent generator has new results ready for us */
     protected boolean isReady = true;
     
-    /** The generator, if any, which this generator is currently awaiting results from */
-    protected Generator dependsOn = null;
+    /** set to true once the interpter has first been run (and so has at least one blocked CCP by now) */
+    protected boolean hasStarted = false;
     
-    /** The list of generators which are awaint results from us */
+    /** The list of consumer choice points which are awaiting results from us */
     protected List dependents = new ArrayList();
+    
+    /** The list of active consumer choice points for this generator */
+    protected List choicePoints = new ArrayList();
     
     /**
      * Constructor.
@@ -67,38 +72,39 @@ public class Generator {
             interpreter = null;
             resultSet = null;
             isReady = false;
-            if (dependsOn != null) {
-                dependsOn.removeDependent(this);
+            if ( ! choicePoints.isEmpty()) {
+                throw new ReasonerException("Internal error in LP implementation: closing generator with dangling ccps");
             }
-            dependsOn = null;
-            // Propagate completion now
+            choicePoints = null;
             for (Iterator i = dependents.iterator(); i.hasNext(); ) {
-                Generator dep = (Generator)i.next();
-                dep.setComplete();
+                ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame) i.next();
+                ccp.generator.choicePoints.remove(ccp);
             }
             dependents = null;
         }
     }
-    
-//    /**
-//     * Return the interpeter choice point state at which this generator should resume.
-//     */
-//    public void setChoicePoint(FrameObject choice) {
-//        choicePoint = choice;
-//    }
-    
+        
     /**
-     * Signal that the generator that we are blocked on has new results.
+     * Signal dependents that we have new results.
      */
-    public void setReady() {
-        if (!isReady) {
-            if (dependsOn != null) {
-                dependsOn.removeDependent(this);
-                dependsOn = null;
-            }
-            isReady = true;
-            interpreter.getEngine().schedule(this);
-        }
+    public void notifyResults() {
+        // TODO: Fix
+//        LPBRuleEngine engine = interpreter.getEngine();
+//        for (Iterator i = dependents.iterator(); i.hasNext(); ) {
+//            ConsumerChoicePointFrame dep = (ConsumerChoicePointFrame)i.next();
+//            engine.schedule(dep);
+//            dep.blockedOn = null;
+//            dep.generator.isReady = true;
+//        }
+//        dependents.clear();
+    }
+
+    /**
+     * Notify that the interpreter has now blocked, awaiting more data
+     * for a generator via the given choice point.
+     */
+    public void notifyBlockedOn(ConsumerChoicePointFrame ccp) {
+        choicePoints.add(ccp);
     }
     
     /**
@@ -119,14 +125,14 @@ public class Generator {
     /**
      * Remove the given generator from the list of dependents of this one.
      */
-    protected void removeDependent(Generator dep) {
+    protected void removeDependent(ConsumerChoicePointFrame dep) {
         dependents.remove(dep);
     }
     
     /**
      * Add the given generator to the list of dependents of this one.
      */
-    protected void addDependent(Generator dep) {
+    protected void addDependent(ConsumerChoicePointFrame dep) {
         dependents.add(dep);
     }
     
@@ -134,78 +140,70 @@ public class Generator {
      * Cycle this generator until it either completes or blocks.
      */
     public synchronized void pump() {
-        if (!isReady()) return;
-        int priorNresults = results.size();
-        boolean finished = false;
-        List notifyList = dependents;
-        while (!finished) {
-            Object result = interpreter.next();
-            if (result == StateFlag.FAIL) {
-                setComplete();
-                finished = true;
-            } else if (result == StateFlag.SUSPEND) {
-                blockon(interpreter.getBlockingGenerator());
-                if (isIndirectlyComplete()) {
-                    setComplete();
-                }
-                finished = true;
-            } else {
-                // Simple triple result
-                if (resultSet.add(result)) {
-                    results.add(result);
-                }
-            }
-        }
-        if (results.size() > priorNresults) {
-            propagateResultState(notifyList);
-        }
-    }
-    
-    /**
-     * Record that this generator is blocked on the given dependent.
-     */
-    protected void blockon(Generator dep) {
-        dependsOn = dep;
-        dep.addDependent(this);
-        isReady = false;
-    }
-    
-    /**
-     * Called when this generator has more results available which might unblock
-     * some dependents.
-     */
-    protected void propagateResultState(List notifyList) {
-        for (Iterator i = notifyList.iterator(); i.hasNext(); ) {
-            ((Generator)i.next()).setReady();
-        }
+        // TODO: Replace completely, it is currently in a partially rewritten state
+//        if (hasStarted) return;     // Once started we schedule individual CCPs
+//        hasStarted = true;
+//        int priorNresults = results.size();
+//        while (true) {
+//            Object result = interpreter.next(this);
+//            if (result == StateFlag.FAIL) {
+//                if (results.size() > priorNresults) notifyResults();
+//                setComplete();
+//                return;
+//            } else if (result == StateFlag.SUSPEND) {
+//                
+//                blockon(interpreter.getBlockingGenerator());
+//                if (isIndirectlyComplete()) {
+//                    setComplete();
+//                }
+//                finished = true;
+//            } else {
+//                // Simple triple result
+//                if (resultSet.add(result)) {
+//                    results.add(result);
+//                }
+//            }
+//        }
+//        if (results.size() > priorNresults) {
+//            propagateResultState(notifyList);
+//        }
     }
     
     /**
      * Check for deadlocked states where none of the generators we are (indirectly)
      * dependent on can run.
      */
-    protected boolean isIndirectlyComplete() {
+    protected boolean checkForCompletions() {
         HashSet visited = new HashSet();
         visited.add(this);
-        return doIsIndirectlyComplete(visited);
+        return runCompletionCheck(visited);
     }
     
     /**
      * Check for deadlocked states where none of the generators we are (indirectly)
      * dependent on can run.
      */
-    protected boolean doIsIndirectlyComplete(Set visited) {
-        if (isReady()) {
-            return false;
-        } else if (visited.add(this)) {
-            if (dependsOn == null) {
-                return true;
-            } else {
-                return dependsOn.doIsIndirectlyComplete(visited);
-            }
-        } else {
-            return true;
-        }
+    protected boolean runCompletionCheck(Set visited) {
+        // TODO: rewrite
+        return false;
+//        if (isReady()) {
+//            return false;
+//        } else if (visited.add(this)) {
+//            for (Iterator i = choicePoints.iterator(); i.hasNext(); ) {
+//                ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame)i.next();
+//                if (ccp.blockedOn == null) {
+//                    return false;
+//                } else if ( ! ccp.blockedOn.runCompletionCheck(visited)) {
+//                    return false;
+//                }
+//            }
+//            // Gets here if all descendents are mutually blocked
+//            // Mark as complete now, though this might be moved to a second pass over the visited set 
+//            setComplete();
+//            return true;
+//        } else {
+//            return true;
+//        }
     }
     
 }

@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ConsumerChoicePointFrame.java,v 1.2 2003-08-07 21:06:20 der Exp $
+ * $Id: ConsumerChoicePointFrame.java,v 1.3 2003-08-08 16:12:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
-import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
 
 /**
@@ -23,15 +24,27 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.StateFlag;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-08-07 21:06:20 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-08 16:12:53 $
  */
-public class ConsumerChoicePointFrame extends GenericTripleMatchFrame {
+public class ConsumerChoicePointFrame extends GenericTripleMatchFrame implements LPAgendaEntry {
         
     /** The generator whose tabled results we are selecting over */
     protected Generator generator;
     
     /** The index in the generator's result set that we have reached so far. */
     protected int resultIndex;
+    
+    /** The preserved argument registers for the pickled interpreter */
+    protected Node[] argVars = new Node[RuleClauseCode.MAX_ARGUMENT_VARS];
+
+    /** The preserved trail variables for the picked interpreter */
+    protected Node_RuleVariable[] trailVars;
+
+    /** The preserved trail bound values for the picked interpreter */
+    protected Node[] trailValues;
+    
+    /** The length of the preserved trail */
+    protected int trailLength;
     
     /**
      * Constructor.
@@ -50,7 +63,6 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame {
     public void init(LPInterpreter interpreter) {
         super.init(interpreter);
         generator = interpreter.getEngine().generatorFor(goal);
-//        generator.setChoicePoint(this);
         resultIndex = 0;
     }
     
@@ -71,8 +83,35 @@ public class ConsumerChoicePointFrame extends GenericTripleMatchFrame {
         if (generator.isComplete()) {
             return StateFlag.FAIL;
         } else {
+            // TODO: pickle interpeter state here??
+            
             return StateFlag.SUSPEND;
         }
+    }
+    
+    /**
+     * Called to preserve the interpreter state
+     */
+    /**
+     * Return true if this choice point could usefully be restarted.
+     */
+    public boolean isReady() {
+        return generator.isReady();
+    }
+    
+    /**
+     * Reactive this choice point to generate new results.
+     */
+    public void pump() {
+        // TODO: some code would be nice ...
+    }
+
+    /**
+     * Notify that the interpreter has now blocked, awaiting more data
+     * for a generator via the given choice point.
+     */
+    public void notifyBlocked() {
+        // TODO: implement
     }
     
 }

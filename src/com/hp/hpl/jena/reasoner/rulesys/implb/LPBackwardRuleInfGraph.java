@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBackwardRuleInfGraph.java,v 1.2 2003-07-25 12:16:46 der Exp $
+ * $Id: LPBackwardRuleInfGraph.java,v 1.3 2003-08-08 16:12:53 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * rule engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-07-25 12:16:46 $
+ * @version $Revision: 1.3 $ on $Date: 2003-08-08 16:12:53 $
  */
 public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -141,7 +141,6 @@ public class LPBackwardRuleInfGraph extends BaseInfGraph implements BackwardRule
     public void reset() {
         engine.checkSafeToUpdate();
         engine.reset();
-        // TODO: reset cache, once we have one
     }
 
     /**
