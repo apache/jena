@@ -18,7 +18,7 @@ import java.util.* ;
  *  Tries to make N3 data look readable - works better on regular data.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterPP.java,v 1.6 2003-06-19 16:12:03 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterPP.java,v 1.7 2003-08-15 11:24:02 andy_seaborne Exp $
  */
 
 
@@ -30,7 +30,7 @@ public class N3JenaWriterPP extends N3JenaWriterCommon
 	// written to extract information that is going to be specially formatted
 	// (RDF lists, small anon nodes) and to calculate the prefixes that will be used.
 
-    static final private boolean doObjectListsAsLists = true ;
+    static final private boolean doObjectListsAsLists = getBooleanValue("objectLists", true) ;
     
 	// Data structures used in controlling the formatting
 

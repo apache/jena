@@ -5,6 +5,8 @@
 
 package com.hp.hpl.jena.n3;
 
+import org.apache.log4j.*; 
+
 import com.hp.hpl.jena.util.iterator.* ;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.JenaException;
@@ -18,12 +20,12 @@ import java.io.* ;
 /** Common framework for implementing N3 writers.
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriterCommon.java,v 1.9 2003-08-07 11:22:33 andy_seaborne Exp $
+ * @version 	$Id: N3JenaWriterCommon.java,v 1.10 2003-08-15 11:24:02 andy_seaborne Exp $
  */
 
 public class N3JenaWriterCommon implements RDFWriter
 {
-    //static Logger logger = Logger.getLogger(N3JenaWriterCommon.class.getName()) ;
+    static Logger logger = Logger.getLogger(N3JenaWriterCommon.class.getName()) ;
     
 	// N3 writing proceeds in 2 stages.
     // First, it analysis the model to be written to extract information
@@ -42,7 +44,7 @@ public class N3JenaWriterCommon implements RDFWriter
 	static final String NS_W3_log = "http://www.w3.org/2000/10/swap/log#" ;
 
 	Map prefixMap 	   	= new HashMap() ;	// Prefixes to actually use
-	Map	bNodesMap       = null ;		// BNodes seen.
+	Map	bNodesMap       = null ;		    // BNodes seen.
     int bNodeCounter    = 0 ;
 
     // Specific properties that have a short form.
@@ -59,33 +61,33 @@ public class N3JenaWriterCommon implements RDFWriter
     String baseURIrefHash = null ;
 
     // Min spacing of items    
-    int minGap = 1 ;
-    final String minGapStr = pad(minGap) ;
+    static int minGap = getIntValue("minGap", 1) ;
+    static final String minGapStr = pad(minGap) ;
 
     // Gap from subject to property
-	int indentProperty = 6 ;
+	static int indentProperty = getIntValue("indentProperty", 6) ;
     
     // Width of property before wrapping.
     // This is not necessarily a control of total width
     // e.g. the pretty writer may be writing properties inside indented one ref bNodes 
-    int widePropertyLen = 20 ;
+    static int widePropertyLen = getIntValue("widePropertyLen", 20) ;
     
     // Column for property when an object follows a property on the same line
-    int propertyCol = 8 ;
+    static int propertyCol = getIntValue("propertyColumn", 8) ;
     
     // Max width of property to align to.
     // Property may be longer and still go on same line but the columnization is broken. 
     // Allow for min gap.
     // Require propertyWidth < propertyCol (strict less than)
-    int propertyWidth = propertyCol-minGap ;
+    static int propertyWidth = propertyCol-minGap ;
 
     //  Gap from property to object when object on a new line.
-    int indentObject = propertyCol ;
+    static int indentObject = propertyCol ;
     
     // If a subject is shorter than this, the first property may go on same line.
-    int subjectCol = indentProperty ; 
+    static int subjectColumn = getIntValue("subjectColumn", indentProperty) ; 
     // Require shortSubject < subjectCol (strict less than)
-    int shortSubject = indentProperty-minGap;
+    static int shortSubject = subjectColumn-minGap;
 
     // ----------------------------------------------------
     // Jena RDFWriter interface
@@ -295,10 +297,11 @@ public class N3JenaWriterCommon implements RDFWriter
         // May be very short : if so, stay on this line.
         
         // Currently at end of subject.
-        // NB shortSubject is (indentProperty-minGap) so there is a gap.
-        if (subjStr.length() <= shortSubject )
+        // NB shortSubject is (subjectColumn-minGap) so there is a gap.
+
+        if (subjStr.length() < shortSubject )
         {
-            out.print(pad(subjectCol - subjStr.length()) );
+            out.print(pad(subjectColumn - subjStr.length()) );
         }
         else
             // Does not fit this line.
@@ -592,7 +595,7 @@ public class N3JenaWriterCommon implements RDFWriter
 	}
 
 
-	protected String pad(int cols)
+	protected static String pad(int cols)
 	{
 		StringBuffer sb = new StringBuffer() ;
 		for ( int i = 0 ; i < cols ; i++ )
@@ -667,6 +670,50 @@ public class N3JenaWriterCommon implements RDFWriter
 		return list.iterator() ;
 	}
     
+    // Convenience operations for accessing system properties.
+    
+    static protected String getStringValue(String prop, String defaultValue)
+    {
+        prop = N3JenaWriter.propBase+prop ;
+        String p = System.getProperty(prop) ;
+        if ( p == null )
+            return defaultValue ;
+        return p ;
+    }
+     
+    static protected boolean getBooleanValue(String prop, boolean defaultValue)
+    {
+        prop = N3JenaWriter.propBase+prop ;
+        String p = System.getProperty(prop) ;
+        if ( p == null )
+            return defaultValue ;
+            
+        if ( p.equalsIgnoreCase("true") )
+            return true ;
+        
+        if ( p.equals("1") )
+            return true ;
+            
+        return false ;
+    }        
+
+    static protected int getIntValue(String prop, int defaultValue)
+    {
+        prop = N3JenaWriter.propBase+prop ;
+        String p = System.getProperty(prop) ;
+        if ( p == null )
+            return defaultValue ;
+        try {
+            return Integer.parseInt(p) ;
+        } catch (NumberFormatException ex)
+        {
+            logger.warn("Format error for property: "+prop) ;
+            return defaultValue ;
+        }
+    }
+    
+
+
 }
 
 /*

@@ -28,14 +28,18 @@ import com.hp.hpl.jena.rdf.model.*;
  *  </p>
  *
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaWriter.java,v 1.21 2003-06-17 14:39:31 chris-dollin Exp $
+ * @version 	$Id: N3JenaWriter.java,v 1.22 2003-08-15 11:24:02 andy_seaborne Exp $
  */
 
 
 
 public class N3JenaWriter implements RDFWriter
 {
+    //static Logger logger = Logger.getLogger(N3JenaWriter.class) ;
     static public boolean DEBUG = false ;
+    
+    // Note: properties are URIs, not java convention package/class names.
+    static protected final String propBase = "http://jena.hpl.hp.com/n3/properties/" ;
     
     /** Compatibility.
      * @deprecated Set <code>com.hp.hpl.jena.n3.N3JenaWriter.writer</code> to the name of the writer instead.
@@ -44,7 +48,7 @@ public class N3JenaWriter implements RDFWriter
     static public final String propWriteSimple = "com.hp.hpl.jena.n3.N3JenaWriter.writeSimple" ;
     
     /** System property name that sets the default N3 writer name */   
-    static public final String propWriterName = "com.hp.hpl.jena.n3.N3JenaWriter.writer" ;
+    static public final String propWriterName = propBase+"writer" ;
 
     /**
      * General name for the N3 writer.  Will make a decision on exactly which
@@ -161,6 +165,7 @@ public class N3JenaWriter implements RDFWriter
     {
         return writer.setErrorHandler(errHandler) ;
     }
+   
 }
 
 /*
