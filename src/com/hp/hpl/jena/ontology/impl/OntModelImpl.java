@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-09 16:05:34 $
+ * Last modified on   $Date: 2003-05-12 17:03:08 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.15 2003-05-09 16:05:34 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.16 2003-05-12 17:03:08 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -566,6 +566,101 @@ public class OntModelImpl
         return p;
     }
     
+    
+    /**
+     * <p>Answer a resource representing a transitive property</p>
+     * @param uri The uri for the property. May not be null.
+     * @return An TransitiveProperty resource
+     * @see #createTransitiveProperty( String, boolean )
+     */
+    public TransitiveProperty createTransitiveProperty( String uri ) {
+        return createTransitiveProperty( uri, false );
+    }
+    
+    
+    /**
+     * <p>Answer a resource representing a transitive property, which is optionally
+     * also functional. <strong>Note:</strong> although it is permitted in OWL full
+     * to have functional transitive properties, it makes the language undecideable.
+     * Functional transitive properties are not permitted in OWL Lite or OWL DL.</p>
+     * @param uri The uri for the property. May not be null.
+     * @param functional If true, the property is also functional
+     * @return An TransitiveProperty resource, optionally also functional.
+     */
+    public TransitiveProperty createTransitiveProperty( String uri, boolean functional ) {
+        checkProfileEntry( getProfile().TRANSITIVE_PROPERTY(), "TRANSITIVE_PROPERTY" );
+        TransitiveProperty p = (TransitiveProperty) createOntResource( TransitiveProperty.class, getProfile().TRANSITIVE_PROPERTY(), uri );
+
+        if (functional) {
+            checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
+            p.addProperty( RDF.type, getProfile().FUNCTIONAL_PROPERTY() );
+        }
+        
+        return p;
+    }
+
+    
+    /**
+     * <p>Answer a resource representing a symmetric property</p>
+     * @param uri The uri for the property. May not be null.
+     * @return An SymmetricProperty resource
+     * @see #createSymmetricProperty( String, boolean )
+     */
+    public SymmetricProperty createSymmetricProperty( String uri ) {
+        return createSymmetricProperty( uri, false );  
+    }
+    
+    
+    /**
+     * <p>Answer a resource representing a symmetric property, which is optionally
+     * also functional.</p>
+     * @param uri The uri for the property. May not be null.
+     * @param functional If true, the property is also functional
+     * @return An SymmetricProperty resource, optionally also functional.
+     */
+    public SymmetricProperty createSymmetricProperty( String uri, boolean functional ) {
+        checkProfileEntry( getProfile().SYMMETRIC_PROPERTY(), "SYMMETRIC_PROPERTY" );
+        SymmetricProperty p = (SymmetricProperty) createOntResource( SymmetricProperty.class, getProfile().SYMMETRIC_PROPERTY(), uri );
+
+        if (functional) {
+            checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
+            p.addProperty( RDF.type, getProfile().FUNCTIONAL_PROPERTY() );
+        }
+        
+        return p;
+    }
+
+    
+    /**
+     * <p>Answer a resource representing an inverse functional property</p>
+     * @param uri The uri for the property. May not be null.
+     * @return An InverseFunctionalProperty resource
+     * @see #createInverseFunctionalProperty( String, boolean )
+     */
+    public InverseFunctionalProperty createInverseFunctionalProperty( String uri ) {
+        return createInverseFunctionalProperty( uri, false );
+    }
+    
+    
+    /**
+     * <p>Answer a resource representing an inverse functional property, which is optionally
+     * also functional.</p>
+     * @param uri The uri for the property. May not be null.
+     * @param functional If true, the property is also functional
+     * @return An InverseFunctionalProperty resource, optionally also functional.
+     */
+    public InverseFunctionalProperty createInverseFunctionalProperty( String uri, boolean functional ) {
+        checkProfileEntry( getProfile().INVERSE_FUNCTIONAL_PROPERTY(), "INVERSE_FUNCTIONAL_PROPERTY" );
+        InverseFunctionalProperty p = (InverseFunctionalProperty) createOntResource( InverseFunctionalProperty.class, getProfile().INVERSE_FUNCTIONAL_PROPERTY(), uri );
+
+        if (functional) {
+            checkProfileEntry( getProfile().FUNCTIONAL_PROPERTY(), "FUNCTIONAL_PROPERTY" );
+            p.addProperty( RDF.type, getProfile().FUNCTIONAL_PROPERTY() );
+        }
+        
+        return p;
+    }
+    
    
     /**
      * <p>
@@ -671,7 +766,75 @@ public class OntModelImpl
         return (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
     }
     
+
+    /**
+     * <p>Answer a resource representing the class that is the complement of the given argument class</p>
+     * @param uri The URI of the new complement class, or null for an anonymous class description.
+     * @param cls Resource denoting the class that the new class is a complement of
+     * @return A complement class
+     */
+    public ComplementClass createComplementClass( String uri, Resource cls ) {
+        checkProfileEntry( getProfile().CLASS(), "CLASS" );
+        OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
+        
+        checkProfileEntry( getProfile().COMMENT(), "COMPLEMENT_OF" );
+        c.addProperty( getProfile().COMPLEMENT_OF(), cls );
+        
+        return (ComplementClass) c.as( ComplementClass.class );
+    }
+    
    
+    /**
+     * <p>Answer a resource representing the class that is the enumeration of the given list of individuals</p>
+     * @param uri The URI of the new enumeration class, or null for an anonymous class description.
+     * @param members A list of resources denoting the individuals in the enumeration
+     * @return An enumeration class
+     */
+    public EnumeratedClass createEnumeratedClass( String uri, OntList members ) {
+        checkProfileEntry( getProfile().CLASS(), "CLASS" );
+        OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
+        
+        checkProfileEntry( getProfile().ONE_OF(), "ONE_OF" );
+        c.addProperty( getProfile().ONE_OF(), members );
+        
+        return (EnumeratedClass) c.as( EnumeratedClass.class );
+    }
+    
+   
+    /**
+     * <p>Answer a resource representing the class that is the union of the given list of class desctiptions</p>
+     * @param uri The URI of the new union class, or null for an anonymous class description.
+     * @param members A list of resources denoting the classes that comprise the union
+     * @return A union class description
+     */
+    public UnionClass createUnionClass( String uri, OntList members ) {
+        checkProfileEntry( getProfile().CLASS(), "CLASS" );
+        OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
+        
+        checkProfileEntry( getProfile().UNION_OF(), "UNION_OF" );
+        c.addProperty( getProfile().UNION_OF(), members );
+        
+        return (UnionClass) c.as( UnionClass.class );
+    }
+    
+   
+    /**
+     * <p>Answer a resource representing the class that is the intersection of the given list of class descriptions.</p>
+     * @param uri The URI of the new intersection class, or null for an anonymous class description.
+     * @param members A list of resources denoting the classes that comprise the intersection
+     * @return An intersection class description
+     */
+    public IntersectionClass createIntersectionClass( String uri, OntList members ) {
+        checkProfileEntry( getProfile().CLASS(), "CLASS" );
+        OntClass c = (OntClass) createOntResource( OntClass.class, getProfile().CLASS(), uri );
+        
+        checkProfileEntry( getProfile().INTERSECTION_OF(), "INTERSECTION_OF" );
+        c.addProperty( getProfile().INTERSECTION_OF(), members );
+        
+        return (IntersectionClass) c.as( IntersectionClass.class );
+    }
+
+
     /**
      * <p>
      * Answer a resource that represents an anonymous property restriction in this model. A new
