@@ -2,7 +2,7 @@
 # OWL rule set v0.2
 # This rule set is design to implement owl(f)lite using the hybrid
 # rule system (mixture of forward and backward chaining).
-# $Id: owl-fb.rules,v 1.10 2003-06-30 15:07:49 der Exp $
+# $Id: owl-fb.rules,v 1.11 2003-07-01 08:34:52 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -74,6 +74,7 @@
 #------------------------------------------------------------------
 # RDFS iff extensions needed for OWL
 #------------------------------------------------------------------
+
 [rdfs2a: (?x rdfs:domain ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:domain ?z)]
 [rdfs3a: (?x rdfs:range  ?y), (?y rdfs:subClassOf ?z) -> (?x rdfs:range  ?z)]
 
@@ -83,7 +84,6 @@
 
 [rdfs12b: (rdfs:subClassOf rdfs:subPropertyOf ?z), (?z rdfs:range ?y) -> (rdfs:Class rdfs:subClassOf ?y)]
 [rdfs12b: (rdfs:subPropertyOf rdfs:subPropertyOf ?z), (?z rdfs:range ?y) -> (rdf:Property rdfs:subClassOf ?y)]
-
 
 #------------------------------------------------------------------
 # OWL axioms
@@ -275,6 +275,9 @@
 # Exploding the pairwise assertions is simply done procedurally here.
 # This is better handled by a dedicated equality reasoner any.
 [distinct2: (?w owl:distinctMembers ?L) -> assertDisjointPairs(?L) ]
+
+# Example version of validation rule, more TBD
+[validation1: (?X rdf:type owl:Nothing) <- (?X owl:differentFrom ?Y), (?X owl:sameIndividualAs ?Y)]
 
 #------------------------------------------------------------------
 # Class equality
