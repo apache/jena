@@ -8,12 +8,13 @@ package com.hp.hpl.jena.n3;
 import com.hp.hpl.jena.rdf.model.*;
 import java.net.* ;
 import java.io.* ;
+import com.hp.hpl.jena.shared.*;
 
 // To do: buffereing version that does the whole file before adding statements (error catcher)
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3JenaReader.java,v 1.6 2003-04-16 20:23:36 jeremy_carroll Exp $
+ * @version 	$Id: N3JenaReader.java,v 1.7 2003-05-21 15:28:42 chris-dollin Exp $
  */
 
 
@@ -39,12 +40,12 @@ public class N3JenaReader implements RDFReader
         	String encoding = conn.getContentEncoding();
         	if ( encoding == null )
                read(model,new InputStreamReader(conn.getInputStream()), url, url);
-        	else 
+        	else
                read(model,new InputStreamReader(conn.getInputStream(),encoding), url, url);
         }
-        catch (RDFException e)
+        catch (JenaException e)
         {
-            if ( errorHandler == null ) 
+            if ( errorHandler == null )
                 throw e;
             errorHandler.error(e) ;
         }
@@ -65,9 +66,9 @@ public class N3JenaReader implements RDFReader
 			N3Parser p = new N3Parser(r, h) ;
 			p.parse() ;
         }
-        catch (RDFException e)
+        catch (JenaException e)
         {
-            if ( errorHandler == null ) 
+            if ( errorHandler == null )
                 throw e;
             errorHandler.error(e) ;
         }
@@ -92,9 +93,9 @@ public class N3JenaReader implements RDFReader
 			N3Parser p = new N3Parser(in, h) ;
 			p.parse() ;
 		}
-        catch (RDFException e)
+        catch (JenaException e)
         {
-            if ( errorHandler == null ) 
+            if ( errorHandler == null )
                 throw e;
             errorHandler.error(e) ;
         }

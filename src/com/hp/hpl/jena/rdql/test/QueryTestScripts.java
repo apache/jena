@@ -20,12 +20,12 @@ import com.hp.hpl.jena.rdql.* ;
 
 import com.hp.hpl.jena.vocabulary.* ;
 
-/** Test scripts for RDQL - loads, executes and checks (with JUnit) a collection of 
+/** Test scripts for RDQL - loads, executes and checks (with JUnit) a collection of
  *  queries.  New tests added as new featues appera and bugs are reported by
  *  adding new script files.  This class need not change.
- * 
+ *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.7 2003-03-19 17:17:39 andy_seaborne Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.8 2003-05-21 15:33:18 chris-dollin Exp $
  */
 
 
@@ -35,7 +35,7 @@ public class QueryTestScripts extends TestSuite
 
     static final public String defaultControlFilename = "rdql-tests.n3" ;
     static final public String defaultTestDirectory = "testing/RDQL" ;
-    
+
     public String basename = null ;
     static public boolean printDetails = false ;
     static public boolean displayTime = false ;
@@ -47,10 +47,10 @@ public class QueryTestScripts extends TestSuite
 
     // Make runnable from JUnit
     public static TestSuite suite() { return suite(testSetName, null) ; }
-    
+
     public static TestSuite suite(String name, Model m)
     {
-        
+
         return suite(name, m, defaultTestDirectory, defaultControlFilename) ;
     }
 
@@ -58,7 +58,7 @@ public class QueryTestScripts extends TestSuite
     {
         return new QueryTestScripts(name, m, _testDirectory, _controlFilename) ;
     }
-    
+
 
     private QueryTestScripts(String name,
                              Model m,
@@ -68,12 +68,12 @@ public class QueryTestScripts extends TestSuite
         super(name) ;
         testDirectory = _testDirectory ;
         controlFilename = _controlFilename ;
-        
+
         String testsFile = (testDirectory==null)?controlFilename:(testDirectory+"/"+controlFilename) ;
         addTests(m, testsFile) ;
 
     }
-        
+
 
     // Alternative invokation for command line use.
     // Assumes it is in the tests directory
@@ -82,7 +82,7 @@ public class QueryTestScripts extends TestSuite
         displayTime = _displayTime ;
         printDetails = _printOutput || _displayTime ;
         init() ;
-        
+
         TestSuite suite = suite("RDQL-Scripts", null, null, testsFilename) ;
         junit.textui.TestRunner.run(suite) ;
         /*
@@ -250,9 +250,9 @@ public class QueryTestScripts extends TestSuite
                 QueryResultsRewindable results = new QueryResultsMem(resultsActual) ;
                 resultsActual.close() ;
                 resultsActual = null ;
-                
+
                 boolean testingResults = ( resultsFile != null && !resultsFile.equals("") ) ;
-                
+
                 if ( printDetails )
                 {
                     QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
@@ -289,14 +289,14 @@ public class QueryTestScripts extends TestSuite
                         pw.println("=======================================") ;
                         pw.println("Failure: "+queryFile) ;
                         pw.println("Got: ----------------------------------") ;
-                        qr1.rewind() ;   
+                        qr1.rewind() ;
                         qr1.list(pw) ;
                         qr1.rewind() ;
                         pw.println("---------------------------------------") ;
                         qr1.toModel().write(pw, "N3") ;
                         pw.flush() ;
                         qr1.close() ;
-                        
+
                         pw.println("Expected: -----------------------------") ;
                         qr2.rewind() ;
                         qr2.list(pw) ;
@@ -321,7 +321,7 @@ public class QueryTestScripts extends TestSuite
                 throw qEx ;
             }
             catch (IOException ioEx){ pw.println("IOException: "+ioEx) ; ioEx.printStackTrace(pw) ; pw.flush() ; }
-            //catch (RDFException rdfEx) { pw.println("RDFException: "+rdfEx) ; rdfEx.printStackTrace(pw) ; pw.flush() ; }
+            //catch (JenaException rdfEx) { pw.println("RDFException: "+rdfEx) ; rdfEx.printStackTrace(pw) ; pw.flush() ; }
             catch (Exception ex)
             {
                 pw.println("Exception: "+ex) ;
@@ -334,7 +334,7 @@ public class QueryTestScripts extends TestSuite
                 if ( model == null && query.getSource() != null )
                     query.getSource().close() ;
                 pw.flush() ;
-                
+
 
             }
         }

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLOntologyImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:24 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-21 15:33:15 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -54,6 +54,7 @@ import com.hp.hpl.jena.ontology.daml.LiteralAccessor;
 
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ConcatenatedNodeIterator;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
 import com.hp.hpl.jena.vocabulary.DAML_OIL_2000_12;
@@ -65,7 +66,7 @@ import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
  * Encapsulates the properties known for a given source ontology.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLOntologyImpl.java,v 1.1 2003-03-12 17:16:24 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLOntologyImpl.java,v 1.2 2003-05-21 15:33:15 chris-dollin Exp $
  */
 public class DAMLOntologyImpl
     extends DAMLCommonImpl
@@ -168,7 +169,7 @@ public class DAMLOntologyImpl
                getModel().read( uri );
             }
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception while adding imports property: " + e, e );
         }
     }
@@ -196,4 +197,3 @@ public class DAMLOntologyImpl
 
 
 }
-

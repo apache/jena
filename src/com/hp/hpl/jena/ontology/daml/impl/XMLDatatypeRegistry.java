@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            7 Sept 2001
  * Filename           $RCSfile: XMLDatatypeRegistry.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:09 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-21 15:33:15 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -56,6 +56,7 @@ import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 
@@ -69,7 +70,7 @@ import com.hp.hpl.jena.util.Log;
  * mappings can be added by the user.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: XMLDatatypeRegistry.java,v 1.1 2003-03-12 17:16:09 ian_dickinson Exp $
+ * @version CVS info: $Id: XMLDatatypeRegistry.java,v 1.2 2003-05-21 15:33:15 chris-dollin Exp $
  */
 public class XMLDatatypeRegistry
 {
@@ -179,7 +180,7 @@ public class XMLDatatypeRegistry
                                         return deserialize( val );
                                     }
                                 }
-                                catch (RDFException e) {
+                                catch (JenaException e) {
                                     Log.severe( "RDF exception while converting datatype instance: " + e, e );
                                 }
 
@@ -191,7 +192,7 @@ public class XMLDatatypeRegistry
                                 try {
                                     return model.createLiteral( ((Integer) value).intValue() );
                                 }
-                                catch (RDFException e) {
+                                catch (JenaException e) {
                                     Log.severe( "RDF exception while converting datatype instance: " + e, e );
                                     return null;
                                 }
@@ -214,7 +215,7 @@ public class XMLDatatypeRegistry
                                         return deserialize( val );
                                     }
                                 }
-                                catch (RDFException e) {
+                                catch (JenaException e) {
                                     Log.severe( "RDF exception while converting datatype instance: " + e, e );
                                 }
 
@@ -226,7 +227,7 @@ public class XMLDatatypeRegistry
                                 try {
                                     return model.createLiteral( (String) value );
                                 }
-                                catch (RDFException e) {
+                                catch (JenaException e) {
                                     Log.severe( "RDF exception while converting datatype instance: " + e, e );
                                     return null;
                                 }
@@ -249,7 +250,7 @@ public class XMLDatatypeRegistry
                                         return deserialize( val );
                                     }
                                 }
-                                catch (RDFException e) {
+                                catch (JenaException e) {
                                     Log.severe( "RDF exception while converting datatype instance: " + e, e );
                                 }
 
@@ -261,7 +262,7 @@ public class XMLDatatypeRegistry
                                 try {
                                     return model.createLiteral( ((Float) value).floatValue() );
                                 }
-                                catch (RDFException e) {
+                                catch (JenaException e) {
                                     Log.severe( "RDF exception while converting datatype instance: " + e, e );
                                     return null;
                                 }
@@ -284,7 +285,7 @@ public class XMLDatatypeRegistry
                                         return deserialize( val );
                                     }
                                 }
-                                catch (RDFException e) {
+                                catch (JenaException e) {
                                     Log.severe( "RDF exception while converting datatype instance: " + e, e );
                                 }
 
@@ -296,7 +297,7 @@ public class XMLDatatypeRegistry
                                 try {
                                     return model.createLiteral( ((Long) value).longValue() );
                                 }
-                                catch (RDFException e) {
+                                catch (JenaException e) {
                                     Log.severe( "RDF exception while converting datatype instance: " + e, e );
                                     return null;
                                 }

@@ -12,7 +12,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
- 
+
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -42,6 +42,7 @@ import com.hp.hpl.jena.mem.*;
 import java.util.*;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.vocabulary.*;
+import com.hp.hpl.jena.shared.*;
 
 import org.xml.sax.*;
 /**
@@ -109,7 +110,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             output = new PropertyImpl(testNS, "outputDocument");
             warning = new PropertyImpl(testNS, "warning");
             errorCodes = new PropertyImpl(jjcNS, "error");
-        } catch (RDFException e) {
+        } catch (JenaException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
@@ -178,7 +179,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 && !((LazyInputStream) in).connect())
                 return null;
             m = loadRDF(in, null, base + file);
-        } catch (RDFException e) {
+        } catch (JenaException e) {
             //	System.out.println(e.getMessage());
             throw new RuntimeException(e.getMessage());
         } catch (Exception e) {
@@ -190,7 +191,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         }
         return m;
     }
-    /** Creates new WGTestSuite 
+    /** Creates new WGTestSuite
         This is a private snapshot of the RDF Test Cases Working Draft's
         data.
      */
@@ -358,7 +359,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                     }
                 }
                 onError(level, eCode);
-            } 
+            }
             /*else if (e instanceof SAXParseException) {
                 onError(level, ARPErrorNumbers.WARN_BAD_XML);
             } */

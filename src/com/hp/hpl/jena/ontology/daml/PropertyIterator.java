@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            11 Sept 2001
  * Filename           $RCSfile: PropertyIterator.java,v $
- * Revision           $Revision: 1.6 $
+ * Revision           $Revision: 1.7 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-04-10 11:01:25 $
+ * Last modified on   $Date: 2003-05-21 15:32:08 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -53,6 +53,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.RDFException;
 import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
@@ -86,7 +87,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: PropertyIterator.java,v 1.6 2003-04-10 11:01:25 chris-dollin Exp $
+ * @version CVS info: $Id: PropertyIterator.java,v 1.7 2003-05-21 15:32:08 chris-dollin Exp $
  * @since Jena 1.3.0 (was previously in package com.hp.hpl.jena.ontology.daml.impl).
  */
 public class PropertyIterator
@@ -432,7 +433,7 @@ public class PropertyIterator
                      enqueue( (RDFNode) i.next() ));
             }
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception while traversing graph: " + e, e );
         }
     }
@@ -651,4 +652,3 @@ public class PropertyIterator
     //==============================================================================
 
 }
-

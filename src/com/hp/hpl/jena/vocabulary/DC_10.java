@@ -10,56 +10,57 @@ import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.shared.*;
 
 /** Dublin Core version 1.0 vocabulary.
  */
 
 public class DC_10 {
-    
+
     protected static final String uri =
         "http://purl.org/dc/elements/1.0/";
-    
+
 /** returns the URI for this schema
  * @return the URI for this schema
- */    
+ */
     public static String getURI()
     {
         return uri;
     }
-    
+
 
            static final String   ncontributor = "contributor";
-    public static       Property contributor;  
+    public static       Property contributor;
            static final String   ncoverage = "coverage";
     public static       Property coverage;
            static final String   ncreator = "creator";
-    public static       Property creator;  
+    public static       Property creator;
            static final String   ndate = "date";
     public static       Property date;
            static final String   ndescription = "description";
-    public static       Property description;  
+    public static       Property description;
            static final String   nformat = "format";
-    public static       Property format; 
+    public static       Property format;
            static final String   nidentifier = "identifier";
-    public static       Property identifier; 
+    public static       Property identifier;
            static final String   nlanguage = "language";
     public static       Property language;
            static final String   npublisher = "publisher";
-    public static       Property publisher;  
+    public static       Property publisher;
            static final String   nrelation = "relation";
-    public static       Property relation; 
+    public static       Property relation;
            static final String   nrights = "rights";
     public static       Property rights;
            static final String   nsource = "source";
     public static       Property source;
            static final String   nsubject = "subject";
-    public static       Property subject; 
+    public static       Property subject;
            static final String   ntitle = "title";
     public static       Property title;
            static final String ntype = "type";
-    public static       Property type;   
+    public static       Property type;
 
-    
+
     static {
         try {
             contributor   = new PropertyImpl(uri, ncontributor);
@@ -77,7 +78,7 @@ public class DC_10 {
             subject       = new PropertyImpl(uri, nsubject);
             title         = new PropertyImpl(uri, ntitle);
             type          = new PropertyImpl(uri, ntype);
-        } catch (RDFException e) {
+        } catch (JenaException e) {
             ErrorHelper.logInternalError("RDF", 1, e);
         }
     }
@@ -87,7 +88,7 @@ public class DC_10 {
 
 
 /*
- *  (c) Copyright Hewlett-Packard Company 2000-2003 
+ *  (c) Copyright Hewlett-Packard Company 2000-2003
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -112,4 +113,3 @@ public class DC_10 {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-

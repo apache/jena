@@ -10,12 +10,13 @@ import java.io.* ;
 
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.vocabulary.* ;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.util.*;
 
 /**
  * @author      Andy Seaborne
- * @version     $Id: QueryResultsMem.java,v 1.6 2003-04-28 14:24:23 andy_seaborne Exp $
+ * @version     $Id: QueryResultsMem.java,v 1.7 2003-05-21 15:33:17 chris-dollin Exp $
  */
 
 
@@ -29,17 +30,17 @@ public class QueryResultsMem implements QueryResultsRewindable
     Iterator iterator = null ;
 
     /** Create an in-memory result set from another one
-     * 
+     *
      * @param imrs2     The other QueryResultsMem object
      */
-    
+
     public QueryResultsMem(QueryResultsMem imrs2)
     {
         this(imrs2, false) ;
     }
-    
+
     /** Create an in-memory result set from another one
-     * 
+     *
      * @param imrs2     The other QueryResultsMem object
      * @param takeCopy  Should we copy the rows?
      */
@@ -90,9 +91,9 @@ public class QueryResultsMem implements QueryResultsRewindable
 
     /** Prcoess a result set encoded in RDF according to
      * <code>http://jena.hpl.hp.com/2003/03/result-set#</code>
-     * 
+     *
      * @param model
-     */ 
+     */
     public QueryResultsMem(Model model)
     {
         buildFromDumpFormat(model);
@@ -100,9 +101,9 @@ public class QueryResultsMem implements QueryResultsRewindable
 
     /** Read in a result set encoded in RDF according to
      * <code>http://jena.hpl.hp.com/2003/03/result-set#</code>
-     * 
+     *
      * @param model
-     */ 
+     */
 
     public QueryResultsMem(String urlStr)
         throws java.io.FileNotFoundException
@@ -110,9 +111,9 @@ public class QueryResultsMem implements QueryResultsRewindable
         Model m = ModelLoader.loadModel(urlStr) ;
         buildFromDumpFormat(m);
     }
-    
-    
-   // -------- QueryResults interface ------------------------------ 
+
+
+   // -------- QueryResults interface ------------------------------
    /**
      *  @throws UnsupportedOperationException Always thrown.
      */
@@ -131,17 +132,17 @@ public class QueryResultsMem implements QueryResultsRewindable
     /** Moves onto the next result possibility.
      *  The returned object should be of class ResultBinding
      */
-    
+
     public Object next() { rowNumber++ ; return iterator.next() ; }
 
     /** Close the results set.
      *  Should be called on all QueryResults objects
      */
-    
-    public void close() 
+
+    public void close()
     {
         // Free early - may be large
-        rows = null ; 
+        rows = null ;
         iterator = null ;
         varNames = null ;
         return ;
@@ -154,11 +155,11 @@ public class QueryResultsMem implements QueryResultsRewindable
     /** Return the "row" number for the current iterator item
      */
     public int getRowNumber() { return rowNumber ; }
-    
+
     /** Return the number of rows
      */
     public int size() { return rows.size() ; }
-    
+
     /** Get the variable names for the projection
      */
     public List getResultVars() { return varNames ; }
@@ -171,8 +172,8 @@ public class QueryResultsMem implements QueryResultsRewindable
      */
 
     public List getAll() { return rows ; }
-    
-    // -------- End QueryResults interface ------------------------------ 
+
+    // -------- End QueryResults interface ------------------------------
 
     // Convert from RDF model to in-memory result set
 
@@ -184,7 +185,7 @@ public class QueryResultsMem implements QueryResultsRewindable
         {
             Statement s = sIter.nextStatement() ;
             Resource root = s.getSubject() ;
-            
+
             // Variables
             StmtIterator rVarsIter = root.listProperties(ResultSet.resultVariable) ;
             for ( ; rVarsIter.hasNext() ; )
@@ -201,7 +202,7 @@ public class QueryResultsMem implements QueryResultsRewindable
                 // foreach row
                 ResultBinding rb = new ResultBinding() ;
                 count++ ;
-                
+
                 Resource soln = solnIter.nextStatement().getResource() ;
                 StmtIterator bindingIter = soln.listProperties(ResultSet.binding) ;
                 for ( ; bindingIter.hasNext() ; )
@@ -213,32 +214,32 @@ public class QueryResultsMem implements QueryResultsRewindable
                     //if ( val.equals(ResultSet.undefined))
                     //    continue ;
                     // The QueryResultFormatter code equates null (not found) with
-                    // rs:undefined.  When Jena JUnit testing, it does not matter if the 
+                    // rs:undefined.  When Jena JUnit testing, it does not matter if the
                     // recorded result has the term absent or explicitly undefined.
-                     
+
                     rb.add(var, val) ;
                 }
                 bindingIter.close() ;
                 rows.add(rb) ;
             }
             solnIter.close() ;
-            
+
             if ( root.hasProperty(ResultSet.size))
             {
                 try {
                     int size = root.getProperty(ResultSet.size).getInt() ;
                     if ( size != count )
                         System.err.println("Warning: Declared size = "+size+" : Count = "+count) ;
-                } catch (RDFException rdfEx) {}
+                } catch (JenaException rdfEx) {}
             }
             sIter.close() ;
         }
-        
+
         reset() ;
     }
 
     /** Are two result sets the same (isomorphic)?
-     * 
+     *
      * @param irs1
      * @param irs2
      * @return boolean
@@ -253,27 +254,27 @@ public class QueryResultsMem implements QueryResultsRewindable
 
         QueryResultsFormatter fmt2 = new QueryResultsFormatter(irs2) ;
         Model model2 = fmt2.toModel() ;
-        
+
         return model1.isIsomorphicWith(model2) ;
     }
-    
+
     /** Encode the result set as RDF.
      * @return Model       Model contains the results
      */
 
-    
+
     public Model toModel()
     {
         Model m = ModelFactory.createDefaultModel() ;
         asRDF(m) ;
         return m ;
     }
-    
+
     /** Encode the result set as RDF in the model provided.
-      *  
+      *
       * @param model     The place where to put the RDF.
       * @return Resource The resource for the result set.
-      */ 
+      */
 
     public Resource asRDF(Model model)
     {
@@ -282,7 +283,7 @@ public class QueryResultsMem implements QueryResultsRewindable
         fmt.close() ;
         return r ;
     }
-    
+
     /** Print out the result set in dump format.  Easeier to read than computed N3
      */
 

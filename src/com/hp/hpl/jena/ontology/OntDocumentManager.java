@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.15 $
+ * Revision           $Revision: 1.16 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-05-16 13:13:01 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-21 15:30:44 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -33,7 +33,7 @@ import org.apache.log4j.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.ModelLoader;
 import com.hp.hpl.jena.vocabulary.RDF;
-
+import com.hp.hpl.jena.shared.*;
 
 
 /**
@@ -45,7 +45,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.15 2003-05-16 13:13:01 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.16 2003-05-21 15:30:44 chris-dollin Exp $
  */
 public class OntDocumentManager
 {
@@ -376,15 +376,15 @@ public class OntDocumentManager
         // cached already?
         if (m_modelMap.containsKey( uri )) {
             return (Model) m_modelMap.get( uri );
-        } 
-        
+        }
+
         // ensure consistency of document managers (to allow access to cached documents)
         OntModelSpec _spec = spec;
         if (_spec.getDocumentManager() != this) {
             _spec = new OntModelSpec( spec );
             _spec.setDocumentManager( this );
-        } 
-        
+        }
+
         OntModel m = ModelFactory.createOntologyModel( spec, null );
         read( m, uri, true );
 
@@ -470,7 +470,7 @@ public class OntDocumentManager
     public void loadImports( OntModel model ) {
         if (m_processImports) {
             List readQueue = new ArrayList();
-            
+
             // add the imported statements from the given model to the processing queue
             queueImports( model, readQueue, model.getProfile() );
 
@@ -501,20 +501,20 @@ public class OntDocumentManager
         else {
             // we have to do the query manually
             StmtIterator i = model.listStatements( null, profile.IMPORTS(), (RDFNode) null );
-            
+
             while (i.hasNext()) {
                 // read the next import statement
                 Resource imp = i.nextStatement().getResource();
-                
+
                 // add to the queue
-                readQueue.add( imp.getURI() );                 
+                readQueue.add( imp.getURI() );
             }
-            
+
             i.close();
         }
-    } 
-        
-        
+    }
+
+
     /**
      * <p>
      * Initialise the mappings for uri's and prefixes by loading metadata
@@ -588,19 +588,19 @@ public class OntDocumentManager
                 try {
                     s = root.getProperty( ALT_URL );
                     addAltEntry( publicURI, s.getResource().getURI() );
-                } catch (RDFException ignore) {}
+                } catch (JenaException ignore) {}
 
                 // there may be a standard prefix for this ontology
                 try {
                     s = root.getProperty( PREFIX );
                     addPrefixMapping( publicURI, s.getString() );
-                } catch (RDFException ignore) {}
+                } catch (JenaException ignore) {}
 
                 // there may be a language specified for this ontology
                 try {
                     s = root.getProperty( LANGUAGE );
                     addLanguageEntry( publicURI, s.getResource().getURI() );
-                } catch (RDFException ignore) {}
+                } catch (JenaException ignore) {}
             }
             else {
                 m_log.warn( "Ontology specification node lists no public URI - node ignored");
@@ -633,18 +633,18 @@ public class OntDocumentManager
             // note that we do this to ensure we recursively load imports
             ModelMaker maker = model.getSpecification().getModelMaker();
             boolean loaded = maker.hasModel( importURI );
-            
+
             in = maker.openModel( importURI );
-            
+
             // if the graph was already in existence, we don't need to read the contents (we assume)!
             if (!loaded) {
-                read( in, importURI, true ); 
-            } 
+                read( in, importURI, true );
+            }
         }
 
         // queue the imports from the input model on the end of the read queue
         queueImports( in, readQueue, model.getProfile() );
-        
+
         // add to the imports union graph, but don't do the rebind yet
         model.addSubModel( in, false );
     }
@@ -664,15 +664,15 @@ public class OntDocumentManager
         // map to the cache URI if defined
         String resolvableURI = doAltURLMapping( uri );
         String file = resolvableURI.startsWith( "file:" ) ? resolvableURI.substring( 5 ) : resolvableURI;
-        
+
         // try to load the URI
         try {
             // try to use the extension of the url to guess what syntax to use (.n3 => "N3", etc)
             String lang = ModelLoader.guessLang( uri );
-            
+
             // see if we can find the file as a system resource
             InputStream is = ClassLoader.getSystemResourceAsStream( file );
-            
+
             if (is == null) {
                 // we can't get this URI as a system resource, so just try to read it in the normal way
                 model.read( resolvableURI, lang );
@@ -691,7 +691,7 @@ public class OntDocumentManager
             addModel( uri, model );
             return true;
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             if (warn) {
                 Logger.getLogger( OntDocumentManager.class )
                       .warn( "RDFException while reading model from " + resolvableURI + ", with message: " + e.getMessage(), e );

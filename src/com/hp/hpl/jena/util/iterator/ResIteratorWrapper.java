@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            13 Sept 2001
  * Filename           $RCSfile: ResIteratorWrapper.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-04-10 10:11:01 $
+ * Last modified on   $Date: 2003-05-21 15:33:22 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -48,6 +48,7 @@ package com.hp.hpl.jena.util.iterator;
 
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.shared.*;
 
 import java.util.NoSuchElementException;
 import java.util.Iterator;
@@ -57,12 +58,12 @@ import java.util.Iterator;
 
 /**
  * OBSOLETE, since ResIterators are now subclasses of Iterator.
- * 
+ *
  * A wrapper for ResIterator that turns it into a standard Java iterator.  Clumsy name,
  * and anyway the need for it may go away in a future version of Jena.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: ResIteratorWrapper.java,v 1.3 2003-04-10 10:11:01 chris-dollin Exp $
+ * @version CVS info: $Id: ResIteratorWrapper.java,v 1.4 2003-05-21 15:33:22 chris-dollin Exp $
  * @deprecated
  */
 public class ResIteratorWrapper
@@ -110,7 +111,7 @@ public class ResIteratorWrapper
         try {
             return m_nIterator.hasNext();
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             throw new RuntimeException( "RDFException while accessing ResIterator: " + e );
         }
     }
@@ -128,7 +129,7 @@ public class ResIteratorWrapper
         try {
             return m_nIterator.nextResource();
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             throw new RuntimeException( "RDFException while accessing ResIterator: " + e );
         }
     }

@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLListImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:16 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-21 15:33:14 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -56,6 +56,7 @@ import com.hp.hpl.jena.ontology.daml.DAMLCommon;
 
 import com.hp.hpl.jena.vocabulary.DAML_OIL;
 import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
+import com.hp.hpl.jena.shared.*;
 
 import java.util.Iterator;
 
@@ -72,7 +73,7 @@ import java.util.Iterator;
  * in the current list interpretation.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLListImpl.java,v 1.1 2003-03-12 17:16:16 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLListImpl.java,v 1.2 2003-05-21 15:33:14 chris-dollin Exp $
  */
 public class DAMLListImpl
     extends DAMLCommonImpl
@@ -286,7 +287,7 @@ public class DAMLListImpl
                    (!hasProperty( getVocabulary().first() )  &&
                     !hasProperty( getVocabulary().rest()  ));
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception " + e, e );
             throw new RuntimeException( "RDF Exception " + e );
         }

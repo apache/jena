@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: RDF.java,v 1.2 2003-04-01 17:19:59 jeremy_carroll Exp $
+ *  $Id: RDF.java,v 1.3 2003-05-21 15:33:23 chris-dollin Exp $
  */
 
 
@@ -16,35 +16,36 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.shared.*;
 
 /**
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-04-01 17:19:59 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-05-21 15:33:23 $'
  */
 public class RDF{
-    
-    
+
+
     protected static final String uri =
         "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
-    
+
 /** returns the URI for this schema
  * @return the URI for this schema
- */    
+ */
     public static String getURI()
     {
         return uri;
     }
-    
+
     public static       Property li(int i) throws RDFException {
     	// System.err.println( "constructing RDF.li(" + i + ")" );
         return new PropertyImpl(uri, "_"+Integer.toString(i));}
-    
-    
+
+
            static final String   nAlt = "Alt";
-    public static       Resource Alt = null;    
+    public static       Resource Alt = null;
            static final String   nBag = "Bag";
-    public static       Resource Bag = null;    
+    public static       Resource Bag = null;
            static final String   nProperty = "Property";
     public static       Resource Property;
            static final String   nSeq = "Seq";
@@ -55,25 +56,25 @@ public class RDF{
     public static       Resource List = null;
            static final String   nnil = "nil";
     public static       Resource nil = null;
-    
+
 
            static final String   nfirst = "first";
     public static       Property first;
            static final String   nrest = "rest";
     public static       Property rest;
            static final String   nsubject = "subject";
-    public static       Property subject; 
+    public static       Property subject;
            static final String   npredicate = "predicate";
     public static       Property predicate;
            static final String   nobject = "object";
-    public static       Property object; 
+    public static       Property object;
            static final String ntype = "type";
     public static       Property type;
            static final String   nvalue = "value";
     public static       Property value;
-   
 
-    
+
+
     static {
         try {
             Alt         = new ResourceImpl(uri+nAlt);
@@ -91,11 +92,11 @@ public class RDF{
             object      = new PropertyImpl(uri, nobject);
             value       = new PropertyImpl(uri, nvalue);
 
-        } catch (RDFException e) {
+        } catch (JenaException e) {
             ErrorHelper.logInternalError("RDF", 1, e);
         }
     }
-    
+
 }
 
 /*

@@ -11,12 +11,13 @@ import jena.cmdline.*;
 import java.util.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.n3.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: n3.java,v 1.3 2003-01-31 10:59:19 andy_seaborne Exp $
+ * @version 	$Id: n3.java,v 1.4 2003-05-21 15:33:25 chris-dollin Exp $
  */
 public class n3
 {
@@ -44,7 +45,7 @@ public class n3
 		
 		String usageMessage = n3.class.getName()+
                                 " [-rdf] [-base URI] [filename]" ;
-        
+
     	CommandLine cmd = new CommandLine() ;
     	cmd.setUsage(usageMessage) ;
     	cmd.setOutput(System.err) ;
@@ -82,7 +83,7 @@ public class n3
     	if ( cmd.contains(helpDecl) )
     	{
     		System.out.println(usageMessage) ;
-    		System.out.println("Default action: parse an N3 file") ;    
+    		System.out.println("Default action: parse an N3 file") ;
     		System.out.println("    --rdf           Read into an RDF and print") ;
     		System.out.println("    --rdf-n3        Read into an RDF and print in N3") ;
     		System.out.println("    --rdf-xml       Read into an RDF and print in XML") ;
@@ -133,7 +134,7 @@ public class n3
             outputLang = cmd.getArg(rdfRDFFormat).getValue() ;
             printN3 = false ;
         }
-        
+
     	if ( cmd.contains(debugDecl) )
     	{
     		debug = true ;
@@ -160,7 +161,7 @@ public class n3
 
 		if ( cmd.items().size() == 0 )
 		{
-			if ( baseName == null ) 
+			if ( baseName == null )
 				baseName = "stdin:/" ;
 			doOneFile(System.in, System.out, baseName, baseName) ;
 			System.exit(0) ;
@@ -180,7 +181,7 @@ public class n3
 				System.err.println("File not found: "+filename) ;
 				System.exit(2) ;
 			}
-			if ( baseName == null ) 
+			if ( baseName == null )
 			{
 				File f = new File(filename) ;
 				baseName = "file:///"+f.getAbsolutePath() ;
@@ -252,10 +253,10 @@ public class n3
                 if ( n3Ex == null && ex!= null && ex instanceof N3Exception )
                     n3Ex = (N3Exception)ex ;
                 else
-                    if (ex != null && ex instanceof RDFException) 
+                    if (ex != null && ex instanceof RDFException)
                         rdfEx = (RDFException)ex ;
             }
-            
+
             if ( n3Ex != null )
                 System.err.println(n3Ex.getMessage()) ;
             else

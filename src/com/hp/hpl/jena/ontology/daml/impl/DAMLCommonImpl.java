@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            5 Jan 2001
  * Filename           $RCSfile: DAMLCommonImpl.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-04-22 19:22:34 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-21 15:33:14 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -67,7 +67,7 @@ import com.hp.hpl.jena.ontology.daml.DAMLObjectProperty;
 import com.hp.hpl.jena.vocabulary.DAMLVocabulary;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-
+import com.hp.hpl.jena.shared.*;
 
 /**
  * Abstract super-class for all DAML resources (including properties).  Defines shared
@@ -76,7 +76,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  * properties, such as comment, label, and equivalentTo.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLCommonImpl.java,v 1.3 2003-04-22 19:22:34 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLCommonImpl.java,v 1.4 2003-05-21 15:33:14 chris-dollin Exp $
  */
 public abstract class DAMLCommonImpl
     extends ResourceImpl
@@ -199,7 +199,7 @@ public abstract class DAMLCommonImpl
                 try {
                     addProperty( RDF.type, rdfClass );
                 }
-                catch (RDFException e) {
+                catch (JenaException e) {
                     Log.severe( "RDF exception " + e, e );
                     throw new RuntimeException( "RDF Exception " + e );
                 }
@@ -317,7 +317,7 @@ public abstract class DAMLCommonImpl
         try {
             return getProperty( property ).getObject();
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception while getting property " + property + " value was: " + e, e );
             throw new RuntimeException( "RDF error when getting values for property " + property + ": " + e );
         }
@@ -396,7 +396,7 @@ public abstract class DAMLCommonImpl
             // now set the new value
             addProperty( prop, value );
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception while replacing value of DAML property: " + e, e );
             throw new RuntimeException( "RDF exception while replacing value of DAML property: " + e );
         }
@@ -421,7 +421,7 @@ public abstract class DAMLCommonImpl
 
             return count;
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "Exception while listing values: " + e, e );
             throw new RuntimeException( "RDF failure while listing values: " + e );
         }
@@ -564,7 +564,7 @@ public abstract class DAMLCommonImpl
             // now remove this object from the DAML indexes
             ((DAMLModelImpl) getModel()).unindex( this );
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception while removing object from model: " + e, e );
         }
     }
@@ -694,7 +694,7 @@ public abstract class DAMLCommonImpl
                         j.nextStatement().remove();
                     }
                 }
-                catch (RDFException e) {
+                catch (JenaException e) {
                     Log.severe( "Possible RDF error when zapping from model: " + e, e );
                 }
             }
@@ -718,7 +718,7 @@ public abstract class DAMLCommonImpl
                 }
             }
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "Possible RDF error when zapping from model: " + e, e );
         }
     }
@@ -744,7 +744,7 @@ public abstract class DAMLCommonImpl
                 Statement inv = dProperty.getProperty( dProperty.getVocabulary().inverseOf() );
                 return (Property) inv.getObject();
             }
-            catch (RDFException e) {
+            catch (JenaException e) {
                 // can ignore - just means not present
             }
         }

@@ -5,7 +5,7 @@
 
 /** Class used by original, Jena1, external query engine
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.8 2003-03-19 17:16:51 andy_seaborne Exp $
+ * @version  $Id: TriplePattern.java,v 1.9 2003-05-21 15:33:17 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -15,11 +15,12 @@ import java.util.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
 import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.shared.*;
 
 /*public*/ class TriplePattern
 {
     static final boolean DEBUG = false ;
-    
+
     boolean initialized = false ;
 
     Slot subjectSlot ;
@@ -30,7 +31,7 @@ import com.hp.hpl.jena.rdf.model.RDFException;
 
     Slot objectSlot ;
     RDFNode fixed_o ;
-    
+
     QueryEngineExt queryEngine = null ;
 
     public TriplePattern(Slot s, Slot p, Slot o)
@@ -133,7 +134,7 @@ import com.hp.hpl.jena.rdf.model.RDFException;
 					throw new RDQL_InternalErrorException("TriplePattern.asStatment: variable bound to: "+tmp.getClass().getName()) ;
 			}
 			return subject.getModel().createStatement(subject, predicate, object) ;
-		} catch (RDFException rdfEx)
+		} catch (JenaException rdfEx)
 		{
 			QSys.unhandledException(rdfEx, "TriplePattern", "asStatment") ;
 		}
@@ -195,14 +196,14 @@ import com.hp.hpl.jena.rdf.model.RDFException;
 
             else if ( objectSlot.isResource() )
                 fixed_o = objectSlot.getResource() ;
-                
+
             else if ( objectSlot.isLiteral() )
                 fixed_o = objectSlot.getLiteral() ;
-                
+
             // --------
 
             initialized = true ;
-        } catch (RDFException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern", "init") ; }
+        } catch (JenaException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern", "init") ; }
     }
 
 
@@ -213,7 +214,7 @@ import com.hp.hpl.jena.rdf.model.RDFException;
     public Iterator match(QueryEngineExt qe, Model m, ResultBinding env)
     {
         queryEngine = qe ;
-        
+
         if ( ! initialized )
             init(m) ;
 
@@ -333,13 +334,13 @@ import com.hp.hpl.jena.rdf.model.RDFException;
                             tmp = tmp+"^^<"+((Literal)o).getDatatypeURI()+">" ;
                         System.err.println(tmp) ;
                     }                }
-            } 
+            }
             // ----
-                
+
             return new BindingIterator(m, s, p, o, env) ;
         }
         catch (EvalFailureException evalEx) { return null ; }
-        catch (RDFException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern", "match") ; }
+        catch (JenaException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern", "match") ; }
         return null ;
     }
 
@@ -364,7 +365,7 @@ import com.hp.hpl.jena.rdf.model.RDFException;
                 //Selector selector = new SimpleSelector(s, p, o) ;
                 //sIter = m.listStatements(selector) ;
                 sIter = m.listStatements(s, p, o) ;
-            } catch (RDFException rdfEx)
+            } catch (JenaException rdfEx)
             {
                 QSys.unhandledException(rdfEx, "TriplePattern.BindingIterator(RDFException)", "BindingIterator") ;
             }
@@ -386,13 +387,13 @@ import com.hp.hpl.jena.rdf.model.RDFException;
                     try {
                         sIter.close() ;
                     }
-                    catch (RDFException rdfEx) { QSys.unhandledException(rdfEx, "BindingIterator", "hasNext") ; }
-                    
+                    catch (JenaException rdfEx) { QSys.unhandledException(rdfEx, "BindingIterator", "hasNext") ; }
+
                     sIter = null ;
                     return false ;
                 }
             }
-                
+
             if ( finished )
                 return false ;
 
@@ -402,12 +403,12 @@ import com.hp.hpl.jena.rdf.model.RDFException;
                 String tmp = (current!=null)?((ResultBinding)current).toString():"<<null>>" ;
                 Query.logger.debug("("+Thread.currentThread().getName()+") BindingIterator.next: "+tmp) ;
             }
-                
+
             return current != null ;
 
             //try {
             //    return sIter.hasNext() ;
-            //} catch (RDFException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern.BindingIterator", "hasNext") ; }
+            //} catch (JenaException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern.BindingIterator", "hasNext") ; }
         }
 
         public Object next()
@@ -515,7 +516,7 @@ import com.hp.hpl.jena.rdf.model.RDFException;
                         System.err.println("Binding:") ;
                         if ( sName == null && pName == null && oName == null )
                             System.err.println("    No bindings") ;
-                        
+
                         if ( sName != null )
                             System.err.println("    "+sName+" <- "+subject) ;
                         if ( pName != null )
@@ -542,13 +543,13 @@ import com.hp.hpl.jena.rdf.model.RDFException;
 
                     if ( binding.size() == 0 )
                         throw new RDQL_InternalErrorException("TriplePattern.BindingIterator: Environemnt is still empty") ;
-                        
+
                     binding.addTriple(stmt) ;
-                    
+
                     return binding ;
                 }
             }
-            catch (RDFException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern.BindingIterator(RDFException)", "next") ; }
+            catch (JenaException rdfEx) { QSys.unhandledException(rdfEx, "TriplePattern.BindingIterator(RDFException)", "next") ; }
             catch (Throwable t) { QSys.unhandledException(t, "TriplePattern.BindingIterator(Throwable)", "next") ; }
             return null ;
         }
@@ -592,7 +593,7 @@ import com.hp.hpl.jena.rdf.model.RDFException;
             if ( uri == null || uri.equals("") )
                 return null ;
             return m.createProperty(uri) ;
-        } catch (RDFException rdfEx)
+        } catch (JenaException rdfEx)
         {
             // Can't create property
             return null ;

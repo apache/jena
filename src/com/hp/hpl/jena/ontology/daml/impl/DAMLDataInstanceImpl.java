@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            17 Sept 2001
  * Filename           $RCSfile: DAMLDataInstanceImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:26 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-21 15:33:14 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -62,6 +62,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import java.util.Iterator;
+import com.hp.hpl.jena.shared.*;
 
 
 
@@ -70,7 +71,7 @@ import java.util.Iterator;
  * an instance of a DAML Class; Class and Datatype are disjoint).
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.1 2003-03-12 17:16:26 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLDataInstanceImpl.java,v 1.2 2003-05-21 15:33:14 chris-dollin Exp $
  */
 public class DAMLDataInstanceImpl
     extends DAMLCommonImpl
@@ -211,7 +212,7 @@ public class DAMLDataInstanceImpl
         try {
             return getTranslator().deserialize( getProperty( RDF.value ).getObject() );
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception while setting value of data instance: " + e, e );
             return null;
         }

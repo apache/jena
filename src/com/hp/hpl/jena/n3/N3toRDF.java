@@ -8,6 +8,7 @@ package com.hp.hpl.jena.n3;
 import antlr.collections.AST ;
 import java.util.* ;
 import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -15,7 +16,7 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.8 2003-05-02 08:22:31 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.9 2003-05-21 15:28:42 chris-dollin Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -42,7 +43,7 @@ public class N3toRDF implements N3ParserEventHandler
 	public N3toRDF(Model m, String _base)
 	{
 		model = m ; base = _base ;
-		if ( VERBOSE ) 
+		if ( VERBOSE )
 			System.out.println("N3toRDF: "+base) ;
 	}
 		
@@ -69,7 +70,7 @@ public class N3toRDF implements N3ParserEventHandler
 	{
 		if ( directive.getType() == N3Parser.AT_PREFIX )
 		{
-			// @prefix now 
+			// @prefix now
 			if ( args[0].getType() != N3Parser.QNAME )
 			{
 				error("Line "+line+": N3toRDF: Prefix directive does not start with a prefix! "+args[0].getText()+ "["+N3Parser.getTokenNames()[args[0].getType()]+"]") ;
@@ -95,9 +96,9 @@ public class N3toRDF implements N3ParserEventHandler
 
 			if ( VERBOSE )
 				System.out.println(prefix+" => "+uriref) ;
-            
+
             model.setNsPrefix(prefix, uriref) ;
-            
+
 			return ;
 		}
 		
@@ -120,15 +121,15 @@ public class N3toRDF implements N3ParserEventHandler
 			// property: remove sugaring and then must be a URIref
 			// object: can be a literal or a URIref or a bNode name
 			// context must be zero (no formulae)
-            
+
             // Lists: The parser creates list elements as sequnces of triples:
             //       anon  keyword_A list:List
             //       anon  list:first  ....
             //       anon  list:rest   resource
             // Where "resource" is nil for the last element of the list (generated first).
-             
+
             // The properties are inm a unique namespace to distinguish them
-            // from lists encoded explicitly, not with the () syntax. 
+            // from lists encoded explicitly, not with the () syntax.
 
 			int pType = prop.getType();
 			String propStr = prop.getText();
@@ -183,12 +184,12 @@ public class N3toRDF implements N3ParserEventHandler
 								" at this point!") ;
 			}
 
-            // Didn't find an existing one above so make it ...            
+            // Didn't find an existing one above so make it ...
             if ( pNode == null )
                 pNode = model.createProperty(propStr) ;
             else
                 propStr = pNode.getURI() ;
-            
+
 			RDFNode sNode = createNode(line, subj);
             // Must be a resource
 			if ( sNode instanceof Literal )
@@ -201,7 +202,7 @@ public class N3toRDF implements N3ParserEventHandler
 				System.out.println("Statement: "+stmt) ;
 			model.add(stmt) ;
 		}
-		catch (RDFException rdfEx)
+		catch (JenaException rdfEx)
 		{
 			error("Line "+line+": RDFException: " + rdfEx);
 		}
@@ -221,8 +222,8 @@ public class N3toRDF implements N3ParserEventHandler
                 AST a1 = thing.getNextSibling() ;
                 AST a2 = (a1==null?null:a1.getNextSibling()) ;
                 AST datatype = null ;
-                AST lang = null ; 
-                
+                AST lang = null ;
+
                 if ( a2 != null )
                 {
                     if ( a2.getType() == N3Parser.DATATYPE )
@@ -239,7 +240,7 @@ public class N3toRDF implements N3ParserEventHandler
                         lang = a1 ;
                 }
 
-                // Chop leading '@'                
+                // Chop leading '@'
                 String langTag = (lang!=null)?lang.getText().substring(1):null ;
                 String typeURI = null ;
                 if (datatype != null)
@@ -264,7 +265,7 @@ public class N3toRDF implements N3ParserEventHandler
                             }
                             // Fall through
                             typeURI = typeURI2 ;
-                            
+
                         case N3Parser.URIREF :
                             typeURI = expandHereURIRef(typeURI);
                             break ;
@@ -275,7 +276,7 @@ public class N3toRDF implements N3ParserEventHandler
                     }
                 }
                 return model.createTypedLiteral(text, langTag, typeURI) ;
-                
+
 			case N3Parser.QNAME :
 				// Is it a labelled bNode?
                 // Check if _ has been defined.
@@ -299,7 +300,7 @@ public class N3toRDF implements N3ParserEventHandler
             // Normal URIref - may be <> or <#>
             case N3Parser.URIREF :
                 return model.createResource(expandHereURIRef(text)) ;
-            
+
             // Lists
             case N3Parser.TK_LIST_NIL:
                 return RDF.nil ;
@@ -310,11 +311,11 @@ public class N3toRDF implements N3ParserEventHandler
 				if ( ! bNodeMap.containsKey(text) )
 					bNodeMap.put(text, model.createResource()) ;
 				return (Resource)bNodeMap.get(text) ;
-                
+
             case N3Parser.UVAR:
                 error("Line "+line+": N3toRDF: Can't map variables to RDF: "+text) ;
                 break ;
-                
+
 			default:
 				error("Line "+line+": N3toRDF: Can't map to a resource or literal: "+AntlrUtils.ast(thing)) ;
                 break ;

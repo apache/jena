@@ -1,5 +1,5 @@
 /*
- *  (c) Copyright Hewlett-Packard Company 2000 
+ *  (c) Copyright Hewlett-Packard Company 2000
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,63 +38,64 @@ import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.shared.*;
 
 /**
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.2 $' Date='$Date: 2003-01-30 10:25:18 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.3 $' Date='$Date: 2003-05-21 15:33:23 $'
  */
 public class RSS extends Object {
-    
+
     // next free error code = 2
-    
+
     protected static final String uri = "http://purl.org/rss/1.0/";
-    
+
 /** returns the URI for this schema
  * @return the URI for this schema
- */    
+ */
     public static String getURI()
     {
         return uri;
-    }    
-    
+    }
+
            static final String   nchannel = "channel";
-    public static       Resource channel = null;       
+    public static       Resource channel = null;
            static final String   nitem = "item";
     public static       Resource item = null;
-          
+
            static final String   ndescription = "description";
-    public static       Property description = null;     
+    public static       Property description = null;
            static final String   nimage = "image";
-    public static       Property image = null;          
+    public static       Property image = null;
            static final String   nitems = "items";
-    public static       Property items = null;     
+    public static       Property items = null;
            static final String   nlink = "link";
-    public static       Property link = null;        
-           static final String   nname = "name";     
+    public static       Property link = null;
+           static final String   nname = "name";
     public static       Property name = null;
            static final String   ntextinput = "textinput";
-    public static       Property textinput = null;    
+    public static       Property textinput = null;
            static final String   ntitle = "title";
-    public static       Property title = null;   
+    public static       Property title = null;
            static final String   nurl = "url";
     public static       Property url = null;
-    
-        
+
+
     static {
         try {
             channel     = new ResourceImpl(uri+nchannel);
             item        = new ResourceImpl(uri+nitem);
-            
+
             description = new PropertyImpl(uri, ndescription);
-            image       = new PropertyImpl(uri, nimage);       
+            image       = new PropertyImpl(uri, nimage);
             items       = new PropertyImpl(uri, nitems);
             link        = new PropertyImpl(uri, nlink);
             name        = new PropertyImpl(uri, nname);
             textinput   = new PropertyImpl(uri, ntextinput);
             title       = new PropertyImpl(uri, ntitle);
             url         = new PropertyImpl(uri, nurl);
-        } catch (RDFException e) {
+        } catch (JenaException e) {
             ErrorHelper.logInternalError("RSS", 1, e);
         }
     }

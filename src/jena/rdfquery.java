@@ -13,6 +13,8 @@ import com.hp.hpl.jena.util.* ;
 import com.hp.hpl.jena.rdql.* ;
 import com.hp.hpl.jena.rdql.test.* ;
 import com.hp.hpl.jena.rdf.model.* ;
+import com.hp.hpl.jena.shared.*;
+
 import com.hp.hpl.jena.vocabulary.ResultSet ;
 
 //import com.hp.hpl.jena.mem.ModelMem ;
@@ -27,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.ResultSet ;
  *  Usage: [--xml|--ntriple] [--data URL] [queryString | --query file]") ;
  *     --query file         Read one query from a file
  *     --rdfs               Use an RDFS reasoner around the data
- *     --reasoner URI       Set the reasoner URI explicitly.   
+ *     --reasoner URI       Set the reasoner URI explicitly.
  *     --vocab URL | File   Specify a separate vocabulary (may also be in the data)
  *     --xml                Data source is XML (default)
  *     --ntriple            Data source is n-triple
@@ -41,7 +43,7 @@ import com.hp.hpl.jena.vocabulary.ResultSet ;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.7 2003-03-19 17:21:29 andy_seaborne Exp $
+ * @version $Id: rdfquery.java,v 1.8 2003-05-21 15:33:26 chris-dollin Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -63,12 +65,12 @@ public class rdfquery
     static public int outputFormat = FMT_TEXT ;
     static String dbUser = "" ;
     static String dbPassword = "" ;
-    
+
     //static final String defaultReasonerURI =  "http://www.hpl.hp.com/semweb/2003/RDFSReasoner1" ;
     //static String reasonerURI = defaultReasonerURI ;
     static String vocabularyURI = null ;
     static Model vocabulary = null ;
-    
+
     static boolean applyRDFS = false ;
 
     public static void main (String [] argv)
@@ -141,7 +143,7 @@ public class rdfquery
                 messageLevel -- ;
                 continue ;
             }
-            
+
             if ( arg.equalsIgnoreCase("--verbose") || arg.equalsIgnoreCase("--v") )
             {
                 messageLevel ++ ;
@@ -188,16 +190,16 @@ public class rdfquery
                     System.exit(1) ;
                 }
                 vocabularyURI = argv[argi] ;
-                continue ; 
+                continue ;
             }
 
-            
+
             if ( arg.equalsIgnoreCase("--rdfs"))
             {
                 applyRDFS = true ;
                 continue ;
             }
-            
+
             if ( arg.equalsIgnoreCase("--time") )
             {
                 displayTime = true ;
@@ -298,7 +300,7 @@ public class rdfquery
 
         if ( messageLevel >= 3 )
             dumpModel = true ;
-        
+
         if ( debug )
         {
             Log.getInstance().setLevel(Log.DEBUG);
@@ -335,7 +337,7 @@ public class rdfquery
     {
         // This should load all the built in tests.
         // It does not load the external test scripts.
-        
+
         TestSuite ts = new TestSuite("RDQL") ;
         ts.addTest(TestExpressions.suite()) ;
         //ts.addTest(QueryTestScripts.suite()) ;
@@ -389,7 +391,7 @@ public class rdfquery
             query.setSource(ModelLoader.loadModel(dataURL, language, dbUser, dbPassword)) ;
             Model m = query.getSource() ;
             // ------------
-            
+
             if ( applyRDFS )
             {
                 Model model = null ;
@@ -423,7 +425,7 @@ public class rdfquery
                 w.write(model, pw, "http://unset/") ;
                 pw.println("# Model --------------------------------------------------------------------------------") ;
                 pw.flush() ;
-            } catch (RDFException refEx) { Log.severe("rdfquery: Failed to write model") ; System.exit(1) ; }
+            } catch (JenaException refEx) { Log.severe("rdfquery: Failed to write model") ; System.exit(1) ; }
         }
         QueryResults results = qe.exec() ;
         QueryResultsFormatter fmt = new QueryResultsFormatter(results) ;
@@ -433,24 +435,24 @@ public class rdfquery
         else
         {
             if ( doBlank ) System.out.println() ;
-            
+
             if ( outputFormat == FMT_DUMP )
             {
                 Model m = fmt.toModel() ;
-                RDFWriter rdfw = m.getWriter("N3") ; 
+                RDFWriter rdfw = m.getWriter("N3") ;
                 rdfw.setNsPrefix("rs", ResultSet.getURI()) ;
-                rdfw.write(m, System.out, null) ; 
+                rdfw.write(m, System.out, null) ;
             }
             else
             {
-            
+
                 PrintWriter pw = new PrintWriter(System.out) ;
                 switch(outputFormat)
                 {
                     case FMT_TEXT:   fmt.printAll(pw) ; break ;
                     case FMT_HTML:   fmt.printHTML(pw) ; break ;
                     case FMT_TUPLES: fmt.dump(pw, true) ; break ;
-                    default: break ; 
+                    default: break ;
                 }
                 pw.flush() ;
             }
@@ -481,7 +483,7 @@ public class rdfquery
             System.out.println("Query total:     "+formatlong(totalTime)         +" ms") ;
             doBlank = true ;
         }
-        
+
         if ( query.getSource() != null )
             query.getSource().close() ;
         /*
@@ -509,7 +511,7 @@ public class rdfquery
         System.out.println("Usage: [--rdfs] [--data URL] [queryString | --query file]") ;
         System.out.println("   --query file         Read one query from a file") ;
         System.out.println("   --rdfs               Use an RDFS reasoner around the data") ;
-        //System.out.println("   --reasoner URI       Set the reasoner URI explicitly.") ;   
+        //System.out.println("   --reasoner URI       Set the reasoner URI explicitly.") ;
         System.out.println("   --vocab URL | File   Specify a separate vocabulary (may also be in the data)") ;
         System.out.println("   --xml                Data source is XML (default)") ;
         System.out.println("   --ntriple            Data source is n-triple") ;

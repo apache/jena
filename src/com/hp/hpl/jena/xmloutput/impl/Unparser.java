@@ -2,7 +2,7 @@
  *  (c)     Copyright Hewlett-Packard Company 2000, 2001, 2002
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.9 2003-05-20 13:50:20 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.10 2003-05-21 15:33:24 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -97,12 +97,13 @@ import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.rdf.arp.*;
 import org.apache.xerces.util.XMLChar;
+import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
 import java.io.*;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2003-05-20 13:50:20 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.10 $' Date='$Date: 2003-05-21 15:33:24 $'
 
  */
 class Unparser {
@@ -1593,7 +1594,7 @@ class Unparser {
 		// Subjects that are not objects of anything.
 		Iterator nonObjects = new FilterIterator(new Filter() {
 			public boolean accept(Object o) {
-				return (!objectTable.containsKey(o)) 
+				return (!objectTable.containsKey(o))
                   && (!wantReification((Resource)o));
 			}
 		}, modelListSubjects());

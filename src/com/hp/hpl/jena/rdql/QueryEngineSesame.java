@@ -11,6 +11,7 @@ import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.shared.*;
 
 import EDU.oswego.cs.dl.util.concurrent.*;
 
@@ -25,9 +26,9 @@ import EDU.oswego.cs.dl.util.concurrent.*;
 /** QueryExecution implemenetation that issues a query to a
  *  <a href="http://sesame.aidministrator.nl/">Sesame</a> repository
  *  and presents the Jena interface to queries.
- * 
+ *
  * @author		Andy Seaborne
- * @version 	$Id: QueryEngineSesame.java,v 1.6 2003-03-28 18:11:13 andy_seaborne Exp $
+ * @version 	$Id: QueryEngineSesame.java,v 1.7 2003-05-21 15:33:17 chris-dollin Exp $
  */
 
 
@@ -41,8 +42,8 @@ public class QueryEngineSesame implements QueryExecution
  			System.setProperty("org.xml.sax.driver", "org.apache.xerces.parsers.SAXParser") ;
     }
 
-    
-    
+
+
     Object endOfPipeMarker = new Object() ;
 	
 	nl.aidministrator.rdf.client.SesameClient sesameClient = null;
@@ -98,7 +99,7 @@ public class QueryEngineSesame implements QueryExecution
 		{
 			// Either:
 			// 1 - There are no variables in the query
-			// 2 - The query had "SELECT *" and did not find the variables in the query 
+			// 2 - The query had "SELECT *" and did not find the variables in the query
 			//     during parsing.
 			//throw new RuntimeException("No variables in query") ;
 			return null;
@@ -220,7 +221,7 @@ public class QueryEngineSesame implements QueryExecution
 
 		public void endTuple()
 		{
-            
+
 			// Create the matching statements
             // Now done in ResultBinding.
 //			for ( Iterator iter = query.getTriplePatterns().iterator() ; iter.hasNext() ; )
@@ -312,7 +313,7 @@ public class QueryEngineSesame implements QueryExecution
 				
 				//currentRow.addTriple()
 			}
-			catch (RDFException rdfEx)
+			catch (JenaException rdfEx)
 			{
 				QSys.unhandledException(rdfEx, "QueryResultsBuilder", "tupleValue") ;
 				return ;

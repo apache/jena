@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            13 Sept 2001
  * Filename           $RCSfile: NodeIteratorWrapper.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-02-01 14:35:31 $
- *               by   $Author: bwm $
+ * Last modified on   $Date: 2003-05-21 15:33:22 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -48,6 +48,7 @@ package com.hp.hpl.jena.util.iterator;
 
 import com.hp.hpl.jena.rdf.model.NodeIterator;
 import com.hp.hpl.jena.rdf.model.RDFException;
+import com.hp.hpl.jena.shared.*;
 
 import java.util.NoSuchElementException;
 import java.util.Iterator;
@@ -60,7 +61,7 @@ import java.util.Iterator;
  * and anyway the need for it may go away in a future version of Jena.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: NodeIteratorWrapper.java,v 1.2 2003-02-01 14:35:31 bwm Exp $
+ * @version CVS info: $Id: NodeIteratorWrapper.java,v 1.3 2003-05-21 15:33:22 chris-dollin Exp $
  */
 public class NodeIteratorWrapper
     implements Iterator
@@ -107,7 +108,7 @@ public class NodeIteratorWrapper
         try {
             return m_nIterator.hasNext();
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             throw new RuntimeException( "RDFException while accessing NodeIterator: " + e );
         }
     }
@@ -125,7 +126,7 @@ public class NodeIteratorWrapper
         try {
             return m_nIterator.nextNode();
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             throw new RuntimeException( "RDFException while accessing NodeIterator: " + e );
         }
     }

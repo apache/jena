@@ -12,21 +12,23 @@ import org.apache.log4j.*;
 
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
+import com.hp.hpl.jena.shared.*;
+
 //import com.hp.hpl.jena.bdb.* ;
 //import com.hp.hpl.jena.rdb.* ;
 
 /** A set of static convenience methods for getting models
  *  The loader will guess the language/type of the model using
  *  {@link #guessLang(String) guessLang}
- * 
+ *
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.4 2003-03-06 09:49:50 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.5 2003-05-21 15:33:21 chris-dollin Exp $
  */
 
 public class ModelLoader
 {
     static Logger logger = Logger.getLogger(ModelLoader.class.getName()) ;
-    
+
     public static final String langXML         = "RDF/XML" ;
     public static final String langXMLAbbrev   = "RDF/XML-ABBREV" ;
     public static final String langNTriple     = "N-TRIPLE" ;
@@ -41,14 +43,14 @@ public class ModelLoader
     public static boolean useARP = true ;
 
     /** Load a model
-     * 
+     *
      * @param urlStr    The URL or file name of the model
      */
 
-    public static Model loadModel(String urlStr) { return loadModel(urlStr, null) ; } 
+    public static Model loadModel(String urlStr) { return loadModel(urlStr, null) ; }
 
 	/** Load a model or attached a persistent store.
-	 * 
+	 *
 	 * @param urlStr	The URL or file name of the model
 	 * @param lang		The language of the data - if null, the system guesses
 	 */
@@ -59,7 +61,7 @@ public class ModelLoader
     }
 
 	/** Load a model or attached a persistent store.
-	 * 
+	 *
 	 * @param urlStr		The URL or file name of the model
 	 * @param lang			The language of the data - if null, the system guesses
 	 * @param dbUser		Database user name (for RDB/JDBC)
@@ -80,7 +82,7 @@ public class ModelLoader
         	// @@ temporarily not supported        	
             Log.severe("Failed to open Berkeley database", "ModelLoader", "loadModel") ;
             System.exit(1) ;
-/*            
+/*
             // URL had better be a file!
             if ( basename != null )
                 urlStr = basename+File.separator+urlStr ;
@@ -95,7 +97,7 @@ public class ModelLoader
             try {
                 Model model = new ModelBdb(new StoreBdbF(dirBDB, urlStr)) ;
                 return model ;
-            } catch (RDFException rdfEx)
+            } catch (JenaException rdfEx)
             {
                 Log.severe("Failed to open Berkeley database", "ModelLoader", "loadModel", rdfEx) ;
                 System.exit(1) ;
@@ -112,7 +114,7 @@ public class ModelLoader
             // @@ temporarily disabled
             Log.severe("Failed to open SQL database", "ModelLoader", "loadModel") ;
             System.exit(1) ;
-          /*  
+          /*
             // No way to specify user and password.
             try {
           	
@@ -124,7 +126,7 @@ public class ModelLoader
                     model = ModelRDB.create(dbcon, "Generic", "Postgresql");
                 }
                 return model ;
-            } catch (RDFException rdfEx)
+            } catch (JenaException rdfEx)
             {
                 Log.severe("Failed to open SQL database", "ModelLoader", "loadModel", rdfEx) ;
                 System.exit(1) ;
@@ -136,16 +138,16 @@ public class ModelLoader
 
 		// Language is N3, RDF/XML or N-TRIPLE
         Model m = new ModelMem() ;
-        
+
         m.setReaderClassName(langXML, com.hp.hpl.jena.rdf.arp.JenaReader.class.getName());
         m.setReaderClassName(langXMLAbbrev, com.hp.hpl.jena.rdf.arp.JenaReader.class.getName());
-        
+
         // Default.
         //m.setReaderClassName(langNTriple, com.hp.hpl.jena.rdf.arp.NTriple.class.getName()) ;
 
         try {
             loadModel(m, urlStr, lang) ;
-        } catch (RDFException rdfEx)
+        } catch (JenaException rdfEx)
         {
             Log.warning("Error loading data source", "ModelLoader", "loadModel", rdfEx);
             return null ;
@@ -202,26 +204,26 @@ public class ModelLoader
         if ( rdfReader instanceof com.hp.hpl.jena.rdf.arp.JenaReader )
             rdfReader.setProperty("error-mode", "lax") ;
         rdfReader.read(model, dataReader, base) ;
-        
+
         try { dataReader.close() ; }
         catch (IOException ioEx)
         { logger.warn("IOException closing reader", ioEx) ; }
-        
+
         return model ;
     }
-    
+
     private static FileReader tryFile( String baseName, String fileName ) throws FileNotFoundException
         {
         try { return new FileReader( fileName ); }
-        catch (FileNotFoundException e) 
+        catch (FileNotFoundException e)
             {
-            // System.err.println( "| could not read " + fileName + "; trying " + new File( baseName, fileName ) ); 
+            // System.err.println( "| could not read " + fileName + "; trying " + new File( baseName, fileName ) );
             try { return new FileReader( new File( baseName, fileName ) ); }
             catch (FileNotFoundException e2)
                 {
                 // System.err.println( "| that didn't work either, alas" );
                 throw e2;
-                } 
+                }
             }
         }
 
@@ -232,16 +234,16 @@ public class ModelLoader
 	 * <li> If the URI end .nt, it is assumed to be N-Triples</li>
 	 * <li> If the URI end .bdbd, it is assumed to be BerkleyDB model</li>
 	 * </ul>
-	 */ 
+	 */
 
 
     public static String guessLang(String urlStr)
     {
         String lang = null ;
-        
+
         if ( urlStr.startsWith("jdbc:") || urlStr.startsWith("JDBC:") )
             return langSQL ;
-        
+
         String ext = getFilenameExt(urlStr) ;
 
         if ( ext != null && ext.length() > 0 )
@@ -266,7 +268,7 @@ public class ModelLoader
 	/** Sets the directory used in
 	 * resolving URIs that are raw file names (no file:)
 	 * This is a global change when the ModelLoader is used.
-	 */ 
+	 */
 
     public static void setFileBase(String _basename) { basename = _basename ; } ;
 

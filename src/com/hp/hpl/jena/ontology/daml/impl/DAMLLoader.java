@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            10 Jan 2001
  * Filename           $RCSfile: DAMLLoader.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-04-14 15:10:45 $
+ * Last modified on   $Date: 2003-05-21 15:33:14 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -69,6 +69,7 @@ import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.rdf.model.impl.Util;
 
@@ -85,7 +86,7 @@ import com.hp.hpl.jena.mem.ModelMem;
  * of imports on or off overall, or by using
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLLoader.java,v 1.2 2003-04-14 15:10:45 chris-dollin Exp $
+ * @version CVS info: $Id: DAMLLoader.java,v 1.3 2003-05-21 15:33:14 chris-dollin Exp $
  */
 public class DAMLLoader
 {
@@ -300,7 +301,7 @@ public class DAMLLoader
 			// finally add the statements to the main model, and build the DAML wrapper objects
 			processRDFStatements( sourceModel );
 		}
-		catch (RDFException e) {
+		catch (JenaException e) {
 			Log.severe( "Error occurred in reading RDF source: " + e, e );
 			setStatus( STATUS_SYNTAX_ERROR );
 		}
@@ -328,7 +329,7 @@ public class DAMLLoader
             // finally add the statements to the main model, and build the DAML wrapper objects
             processRDFStatements( sourceModel );
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "Error occurred in reading RDF source: " + e, e );
             setStatus( STATUS_SYNTAX_ERROR );
         }
@@ -668,7 +669,7 @@ public class DAMLLoader
                                     mapDAMLNode( sRDF.getObject() ) );
             }
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception while processing DAML statements: " + e, e );
             setStatus( STATUS_MISC_ERROR );
         }
@@ -734,7 +735,7 @@ public class DAMLLoader
                 }
             }
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception while processing DAML statements: " + e, e );
             setStatus( STATUS_MISC_ERROR );
         }
@@ -890,7 +891,7 @@ public class DAMLLoader
                 }
             }
         }
-        catch (RDFException ignore) {}
+        catch (JenaException ignore) {}
 
         // then try aliases to rdf:type, such as daml:type
         for (Iterator i = DAMLHierarchy.getInstance().getEquivalentValues( RDF.type );  i.hasNext();  ) {
@@ -904,7 +905,7 @@ public class DAMLLoader
                     }
                 }
             }
-            catch (RDFException ignore) {}
+            catch (JenaException ignore) {}
         }
 
         // heuristically, we discard any types that are super-types of others in the set

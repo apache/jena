@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClassImpl.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:28 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-05-21 15:33:14 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright Hewlett-Packard Company 2001
  * All rights reserved.
@@ -62,14 +62,14 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.util.Log;
 import com.hp.hpl.jena.util.iterator.ConcatenatedIterator;
 
-
+import com.hp.hpl.jena.shared.*;
 
 /**
  * Java representation of a DAML ontology Class. Note that the ontology classes are
  * not the same as Java classes: think of classifications rather than active data structures.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClassImpl.java,v 1.1 2003-03-12 17:16:28 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLClassImpl.java,v 1.2 2003-05-21 15:33:14 chris-dollin Exp $
  */
 public class DAMLClassImpl
     extends DAMLCommonImpl
@@ -280,7 +280,7 @@ public class DAMLClassImpl
         try {
             return hasProperty( getVocabulary().oneOf() );
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception " + e, e );
             throw new RuntimeException( "RDF Exception " + e );
         }
@@ -329,7 +329,7 @@ public class DAMLClassImpl
         try {
             return hasProperty( getVocabulary().intersectionOf() );
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception " + e, e );
             throw new RuntimeException( "RDF Exception " + e );
         }
@@ -349,7 +349,7 @@ public class DAMLClassImpl
         try {
             return hasProperty( getVocabulary().unionOf() );
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception " + e, e );
             throw new RuntimeException( "RDF Exception " + e );
         }
@@ -369,7 +369,7 @@ public class DAMLClassImpl
         try {
             return hasProperty( getVocabulary().disjointUnionOf() );
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception " + e, e );
             throw new RuntimeException( "RDF Exception " + e );
         }
@@ -389,7 +389,7 @@ public class DAMLClassImpl
         try {
             return hasProperty( getVocabulary().complementOf() );
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             Log.severe( "RDF exception " + e, e );
             throw new RuntimeException( "RDF Exception " + e );
         }

@@ -12,7 +12,7 @@
  *    documentation and/or other materials provided with the distribution.
  * 3. The name of the author may not be used to endorse or promote products
  *    derived from this software without specific prior written permission.
- 
+
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
  * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -23,9 +23,9 @@
  * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- 
- * * $Id: JenaReader.java,v 1.6 2003-05-05 10:31:00 chris-dollin Exp $
- 
+
+ * * $Id: JenaReader.java,v 1.7 2003-05-21 15:33:16 chris-dollin Exp $
+
    AUTHOR:  Jeremy J. Carroll
  */
 /*
@@ -106,21 +106,21 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                     model,
                     new InputStreamReader(conn.getInputStream(), encoding),
                     url);
-        } catch (RDFException e) {
+        } catch (JenaException e) {
             throw e;
         } catch (IOException e) {
             throw new RDFException( e);
         }
         updateModel();
     }
-    
+
     /**
         update the model by informing it of all the namespace declarations that
         we have seen.
     */
     private void updateModel()
         { ModelCom.addNamespaces( model, arpf.getPrefixes( new HashMap() ) ); }
-        
+
 
     /** Converts an ARP literal into a Jena Literal.
      * @param lit The ARP literal.
@@ -222,7 +222,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                             convert(subj),
                             convertPred(pred),
                             convert(obj));
-                    } catch (RDFException e) {
+                    } catch (JenaException e) {
                         errorHandler.error(e);
                     }
                 }
@@ -235,7 +235,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
                             convert(subj),
                             convertPred(pred),
                             convert(lit));
-                    } catch (RDFException e) {
+                    } catch (JenaException e) {
                         errorHandler.error(e);
                     }
                 }
@@ -276,7 +276,7 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
 
     RDFErrorHandler errorHandler = new RDFDefaultErrorHandler();
 
-    /** 
+    /**
        Change the error handler.
      *<p>
      * Note that errors of class {@link ParseException}
