@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.9 2004-11-01 14:20:28 chris-dollin Exp $
+  $Id: NiceIterator.java,v 1.10 2005-01-19 15:26:32 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -127,6 +127,17 @@ public class NiceIterator implements ExtendedIterator
     */
     public static void close( Iterator it )
         { if (it instanceof ClosableIterator) ((ClosableIterator) it).close(); }
+   
+    static final private NiceIterator emptyInstance = new NiceIterator();
+    
+    /**
+     * An iterator over no elements.
+     * @return A class singleton which doesn't iterate.
+     */
+    static public ExtendedIterator emptyIterator() {
+        return emptyInstance;
+    }
+  
     }
 
 /*
