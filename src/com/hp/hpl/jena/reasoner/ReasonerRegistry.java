@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.22 2003-09-09 14:41:08 chris-dollin Exp $
+ * $Id: ReasonerRegistry.java,v 1.23 2003-12-08 09:28:52 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.DAMLMicroReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.OWLFBRuleReasonerFactory;
@@ -32,7 +33,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-09-09 14:41:08 $
+ * @version $Revision: 1.23 $ on $Date: 2003-12-08 09:28:52 $
  */
 public class ReasonerRegistry {
 
@@ -56,6 +57,7 @@ public class ReasonerRegistry {
         register(OWLFBRuleReasonerFactory.theInstance());
         register(GenericRuleReasonerFactory.theInstance());
         register(DAMLMicroReasonerFactory.theInstance());
+        register(DIGReasonerFactory.theInstance());
     }
     
     /**
