@@ -12,7 +12,18 @@
 [ mf:name "query-dump" ; mf:action [ qt:query <file:query-dump> ; qt:data <file:model4.nt> ] ]
 [ mf:name "query-dump" ; mf:action [ qt:query <file:query-dump> ; qt:data <file:model5.nt> ] ]
 [ mf:name "query-dump" ; mf:action [ qt:query <file:query-dump> ; qt:data <file:model6.nt> ] ]
-[ mf:name "query-dump" ; mf:action [ qt:query <file:query-dump> ; qt:data <file:model7.nt> ] ]
+[ mf:name "query-dump" ; mf:action [ qt:query <file:query-dump> ; qt:data <file:model8.n3> ] ]
+[ mf:name "query-dump" ; mf:action [ qt:query <file:query-dump> ; qt:data <file:model9.n3> ] ]
+[ mf:name "query-dump" ; mf:action [ qt:query <file:query-dump> ; qt:data <file:modelA.nt> ] ]
+
+# Syntax
+
+[ mf:name "test-S-01" ; mf:action <file:test-S-01> ; mf:result <file:result-S-01.n3> ]
+[ mf:name "test-S-02" ; mf:action <file:test-S-02> ; mf:result <file:result-S-02.n3> ]
+[ mf:name "test-S-03" ; mf:action <file:test-S-03> ; mf:result <file:result-S-03.n3> ]
+
+# 
+
 [ mf:name "test-0-01" ; mf:action <file:test-0-01> ; mf:result <file:result-0-01.n3> ]
 [ mf:name "test-0-02" ; mf:action <file:test-0-02> ; mf:result <file:result-0-02.n3> ]
 [ mf:name "test-0-03" ; mf:action <file:test-0-03> ; mf:result <file:result-0-03.n3> ]

@@ -93,6 +93,13 @@ public class Q_TextLiteral extends ParsedLiteral {
           if ( ch2 == 't' ) ch2 = '\t' ;
           if ( ch2 == 'r' ) ch2 = '\r' ;
           if ( ch2 == 'b' ) ch2 = '\b' ;
+          // Unicode \ u XXXX 
+//          if ( ch2 == 'u' )
+//          {
+//             
+//          }
+          
+          
           // Other escapes are just the literal character (e.g. ' ")
           s = s.substring(0,i)+ch2+s.substring(i+2) ;
           // s got shorter so i now points to char after escape and i+1

@@ -96,13 +96,6 @@ TOKEN :
   < #DECIMAL_LITERAL: <DIGITS> >
 |
   < #HEX_LITERAL: "0" ["x","X"] (["0"-"9","a"-"f","A"-"F"])+ >
-/****
-    No Octal supported
-        If you put this back, it now clashes with DECIMAL_LITERAL
-    because of leading zeros allowed in a decimal literal.
-|
-  < #OCTAL_LITERAL: "0" (["0"-"7"])* >
-****/
 |
   < FLOATING_POINT_LITERAL:
         (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)? (["f","F","d","D"])?
@@ -194,15 +187,40 @@ TOKEN :
   < DIGITS: (["0"-"9"])+ >
 }
 
-// Identifier
+// Notes:
+// XML 1.1              http://www.w3.org/TR/xml11/
+// XML Namespces 1.1    http://www.w3.org/TR/xml-names11/
+//     Prefix ':' LocalPart
+//     Prefix is an NCName
+//     LocalPart is an NCName
+// 
+//     // An XML Name, minus the ":"
+//     NCName    ::=    NCNameStartChar NCNameChar*
+//     NCNameChar         ::=    NameChar - ':' 
+//     NCNameStartChar    ::=    NameStartChar - ':' 
+
+//     NameChar and NameSartChar defined in XML 1.1
+//     NameStartChar := ":" | [A-Z] | "_" | [a-z] |
+//                      [#xC0-#x2FF] | [#x370-#x37D] | [#x37F-#x1FFF] |
+//                      [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF] |
+//                      [#x3001-#xD7FF] | [#xF900-#xEFFFF]
+//     NameChar      := NameStartChar | "-" | "." | [0-9] | #xB7 |
+//                         [#x0300-#x036F] | [#x203F-#x2040]
 
 TOKEN:
 {
-  <IDENTIFIER: (<LETTER>|<DIGIT>|"_"|"$"|".")+ >
-|
-  < LETTER: (["a"-"z"] | ["A"-"Z"])>
-|
-  < DIGIT:  ["0"-"9"]>
+<NCName: (["A"-"Z"] | "_" | ["a"-"z"]| 
+          ["\u00C0"-"\u02FF"] | ["\u200C"-"\u200D"] |
+          ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
+          ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFF"])
+
+	(["A"-"Z"] | "_" | ["a"-"z"]| 
+         ["\u00C0"-"\u02FF"] | ["\u200C"-"\u200D"] |
+         ["\u2070"-"\u218F"] | ["\u2C00"-"\u2FEF"] |
+         ["\u3001"-"\uD7FF"] | ["\uF900"-"\uFFFF"] |
+         "-" | "." | ["0"-"9"] | "\u00B7" |
+ 	 ["\u0300"-"\u036F"] | ["\u203F"-"\u2040"] )* >
+
 }
 
 /* SEPARATORS */
@@ -782,11 +800,15 @@ void URI() #void :
 }
 
 void QName() :
-{ }
+{ Token t1, t2 ; }
 {
-  // Needs tuning
-  Identifier() ":" Identifier()
-}  
+    //<Prefix> ":" (<LocalPart>) { jjtThis.set(token.image) ; }
+    Identifier() 
+    { t1 = token ; }
+    ":" (LOOKAHEAD(2) Identifier())?
+    { t2 = token ;
+      jjtThis.set(t1.image+":"+t2.image) ; }
+}
 
 
 void QuotedURI() :
@@ -809,26 +831,14 @@ void QuotedURI() :
 
 
 
-// void Identifier() :
-// { Token tt = null ;
-//   int state = 0 ;
-// }
-// {
-//   {
-//     state = token_source.curLexState ;
-//     token_source.SwitchTo(READ_IDENTIFIER) ; 
-//   }
-//   tt = <IDENTIFIER>
-//   { 
-//     jjtThis.set(tt.image) ;
-//     token_source.SwitchTo(state) ;
-//   }
-// }
+// Need to generalise this to include leading digits
+// That is, the second part of an NCName expressions
 
 void Identifier() :
 {}
 {
-  ( <IDENTIFIER> 
+   ( //<IDENTIFIER> 
+    <NCName>
     // And all keywords
     | <SELECT> | <SOURCE> | <FROM> | <WHERE>
     | <SUCHTHAT> | <PREFIXES> | <FOR>
