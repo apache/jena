@@ -13,7 +13,7 @@ import com.hp.hpl.jena.rdf.model.impl.ErrorHelper;
  * Vocabulary for Database properties.
  * 
  * @author csayers
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class DB {
 
@@ -45,6 +45,14 @@ public class DB {
 	public static Property graphType;
 		   static String nGraphLSet = "GraphLSet";
 	public static Property graphLSet;
+		   static String nGraphPrefix = "GraphPrefix";
+	public static Property graphPrefix;
+    
+    // Prefix properties
+		   static String nPrefixValue = "PrefixValue";
+ 	public static Property prefixValue;
+   		   static String nPrefixURI = "PrefixURI";
+	public static Property prefixURI;
     
 	// LSet properties
 		   static String nLSetType = "LSetType";
@@ -71,7 +79,11 @@ public class DB {
             maxLiteral = ResourceFactory.createProperty(uri + nMaxLiteral);
             
             graphType = ResourceFactory.createProperty(uri + nGraphType);
-            graphLSet = ResourceFactory.createProperty(uri + nGraphLSet);
+			graphLSet = ResourceFactory.createProperty(uri + nGraphLSet);
+			graphPrefix = ResourceFactory.createProperty(uri + nGraphPrefix);
+            
+			prefixValue = ResourceFactory.createProperty(uri + nPrefixValue);
+			prefixURI = ResourceFactory.createProperty(uri + nPrefixURI);
             
 			lSetType = ResourceFactory.createProperty(uri + nLSetType);
 			lSetPSet = ResourceFactory.createProperty(uri + nLSetPSet);
