@@ -92,9 +92,9 @@ abstract class AbsChecker {
 				}
 				success =
 					success
-						&& o.setCategories(SubCategorize.object(key, o0), true)
-						&& p.setCategories(SubCategorize.prop(key, p0), true)
-						&& s.setCategories(SubCategorize.subject(key, s0), true);
+						&& o.setCategories(SubCategorize.object(key), true)
+						&& p.setCategories(SubCategorize.prop(key), true)
+						&& s.setCategories(SubCategorize.subject(key), true);
 			}
 			s1 = s.getCategories();
 			p1 = p.getCategories();

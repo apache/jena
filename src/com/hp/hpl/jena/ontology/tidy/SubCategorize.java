@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SubCategorize.java,v 1.12 2003-11-22 14:29:06 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.13 2003-11-22 18:07:40 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -60,7 +60,7 @@ class SubCategorize {
 	 *  Amount to shift.
 	 *  16 bits for s,p,o and 15bits for action.
 	 */
-	static private final int W = 16;
+	static final int W = 16;
 	static private final int M = (1 << W) - 1;
 	static private boolean COMPARATIVE(int prop) {
 		return prop == Grammar.rdfssubClassOf
@@ -319,7 +319,7 @@ class SubCategorize {
 	 * @param subj The old subcategory for the subject.
 	 * @return The new subcategory for the subject.
 	 */
-	static int subject(long refinement, int subj) {
+	static int subject(long refinement) {
 		return (int) (refinement >> (2 * W)) & M;
 	}
 	/**
@@ -328,7 +328,7 @@ class SubCategorize {
 	 * @param prop The old subcategory for the property.
 	 * @return The new subcategory for the property.
 	 */
-	static int prop(long refinement, int prop) {
+	static int prop(long refinement) {
 		return (int) (refinement >> (1 * W)) & M;
 	}
 	/**
@@ -337,7 +337,7 @@ class SubCategorize {
 	 * @param obj The old subcategory for the object.
 	 * @return The new subcategory for the object.
 	 */
-	static int object(long refinement, int obj) {
+	static int object(long refinement) {
 		return (int) (refinement >> (0 * W)) & M;
 	}
 	/**

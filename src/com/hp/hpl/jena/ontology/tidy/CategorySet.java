@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: CategorySet.java,v 1.11 2003-11-15 15:51:09 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.12 2003-11-22 18:07:40 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -147,7 +147,7 @@ class CategorySet implements Comparable {
 	
 	
 	static private final SortedSet sorted = new TreeSet();
-	static private final Vector unsorted = new Vector();
+	static final Vector unsorted = new Vector();
 	/**
 	 * 
 	 * @param k A sorted array of integers, each reflecting a category.
