@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.31 $
+ * Revision           $Revision: 1.32 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-21 15:12:50 $
+ * Last modified on   $Date: 2003-06-22 19:16:18 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.31 2003-06-21 15:12:50 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.32 2003-06-22 19:16:18 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -507,6 +507,24 @@ public class OntModelImpl
      */
     public Individual createIndividual( String uri, Resource cls ) {
         return (Individual) createOntResource( Individual.class, cls, uri );
+    }
+    
+   
+    /**
+     * <p>
+     * Answer a resource representing an generic property in this model.  Effectively
+     * this method is an alias for {@link #createProperty( String )}, except that
+     * the return type is {@link OntProperty}, which allow more convenient access to
+     * a property's position in the property hierarchy, domain, range, etc.
+     * </p>
+     * 
+     * @param uri The uri for the property. May not be null.
+     * @return An OntProperty resource.
+     */
+    public OntProperty createOntProperty( String uri ) {
+        Property p = createProperty( uri );
+        p.addProperty( RDF.type, getProfile().PROPERTY() );
+        return (OntProperty) p.as( OntProperty.class );
     }
     
    
@@ -1142,15 +1160,17 @@ public class OntModelImpl
         List imports = new ArrayList();
         
         // list the ontology nodes
-        for (StmtIterator i = listStatements( null, RDF.type, getProfile().ONTOLOGY() );  i.hasNext(); ) {
-            Resource ontology = i.nextStatement().getSubject();
-            
-            for (StmtIterator j = ontology.listProperties( getProfile().IMPORTS() ); j.hasNext();  ) {
-                // add the imported URI to the list
-                imports.add( j.nextStatement().getResource().getURI() );
+        if (getProfile().ONTOLOGY() != null  &&  getProfile().IMPORTS() != null) {
+            for (StmtIterator i = listStatements( null, RDF.type, getProfile().ONTOLOGY() );  i.hasNext(); ) {
+                Resource ontology = i.nextStatement().getSubject();
+                
+                for (StmtIterator j = ontology.listProperties( getProfile().IMPORTS() ); j.hasNext();  ) {
+                    // add the imported URI to the list
+                    imports.add( j.nextStatement().getResource().getURI() );
+                }
             }
         }
-        
+                
         return imports;
     }
     
