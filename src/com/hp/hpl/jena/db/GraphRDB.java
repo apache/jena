@@ -47,7 +47,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -328,8 +328,8 @@ public class GraphRDB extends GraphBase implements Graph {
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
 			if( sg instanceof SpecializedGraphReifier && 
-				m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
-				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS)
+				(m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
+				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS))
 				continue; // don't let the reifier graphs see partial reifications
 			result += sg.tripleCount();
 		}
@@ -347,8 +347,8 @@ public class GraphRDB extends GraphBase implements Graph {
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
 			if( sg instanceof SpecializedGraphReifier && 
-				m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
-				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS)
+				(m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
+				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS))
 				continue; // don't let the reifier graphs see partial reifications
 			boolean result = sg.contains( t, complete);
 			if( result == true || complete.isDone() == true )
@@ -377,8 +377,8 @@ public class GraphRDB extends GraphBase implements Graph {
 		while( it.hasNext() ) {
 			SpecializedGraph sg = (SpecializedGraph) it.next();
 			if( sg instanceof SpecializedGraphReifier && 
-				m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
-				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS)
+				(m_reificationBehaviour == OPTIMIZE_AND_HIDE_ONLY_FULL_REIFICATIONS ||
+				m_reificationBehaviour == OPTIMIZE_AND_HIDE_FULL_AND_PARTIAL_REIFICATIONS))
 				continue; // don't let the reifier graphs see partial reifications
 			ExtendedIterator partialResult = sg.find( m, complete);
 			result = result.andThen(partialResult);
