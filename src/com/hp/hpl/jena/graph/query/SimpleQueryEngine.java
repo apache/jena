@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryEngine.java,v 1.2 2003-10-07 06:27:02 chris-dollin Exp $
+  $Id: SimpleQueryEngine.java,v 1.3 2003-10-14 15:45:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -36,8 +36,7 @@ public class SimpleQueryEngine
         Mapping map = new Mapping( nodes );
         ArrayList stages = new ArrayList();        
         addStages( stages, args, map );
-        if (constraint != Expression.TRUE) 
-            stages.add( new ConstraintStage( map, constraint ) );
+        if (constraint.isComplex()) stages.add( new ConstraintStage( map, constraint ) );
         outStages.addAll( stages );
         variableCount = map.size();
         return filter( connectStages( stages, variableCount ) );

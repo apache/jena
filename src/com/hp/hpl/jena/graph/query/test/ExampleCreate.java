@@ -1,13 +1,15 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExampleCreate.java,v 1.5 2003-10-10 15:05:18 chris-dollin Exp $
+  $Id: ExampleCreate.java,v 1.6 2003-10-14 15:45:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+
+import java.util.*;
 
 /**
     Test code for creating some expressions.
@@ -65,9 +67,20 @@ public class ExampleCreate
         {
         protected BaseExampleExpression L;
         protected BaseExampleExpression R;
+        protected List args;
         
         public Dyadic( Node L, Node R )
             { this.L = asExpression( L ); this.R = asExpression( R ); }
+        
+        public boolean isApply() 
+            { return true; }
+        
+        public List getArgs()
+            {
+            if (args == null) 
+                { args = new ArrayList(); args.add( L ); args.add( R ); }
+            return args;
+            }
 
         public BaseExampleExpression asExpression( final Node x )
             {
@@ -79,6 +92,12 @@ public class ExampleCreate
                     else return false;    
                     }
                     
+                public boolean isVariable()
+                    { return x.isVariable(); }
+                
+                public String getName()
+                    { return x.getName(); }
+                
                 public Object eval( VariableValues vv )
                     {
                     if (x.isVariable()) return vv.get( x.getName() );
@@ -97,6 +116,9 @@ public class ExampleCreate
         {
         return new Dyadic( x, y ) 
             {
+            public String toString()
+                { return "{" + x + " NE " + y + "}"; }
+            
             public boolean evalBool( VariableValues vv )
                 { return !L.eval( vv ).equals( R.eval( vv ) ); }
                 

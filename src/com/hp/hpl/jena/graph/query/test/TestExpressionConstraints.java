@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestExpressionConstraints.java,v 1.7 2003-10-10 15:05:18 chris-dollin Exp $
+  $Id: TestExpressionConstraints.java,v 1.8 2003-10-14 15:45:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -85,7 +85,7 @@ public class TestExpressionConstraints extends GraphTestBase
         {        
         Graph g = graphWith( "x R y; a P a" );
         Query q = new Query()
-            .addMatch( Z, ANY, ANY )
+            // .addMatch( Z, ANY, ANY )
             .addMatch( X, ANY, Y )
             .addConstraint( notEqual( X, Y ) )
             ;

@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.10 2003-10-13 15:09:14 chris-dollin Exp $
+  $Id: Expression.java,v 1.11 2003-10-14 15:45:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
+
+import java.util.List;
 
 /**
 	Expression - the interface for expressions that is expected by Query for constraints.
@@ -17,6 +19,11 @@ public interface Expression
     
     public Valuator prepare( VariableIndexes vi );
     
+    public boolean isVariable();
+    public String getName();
+    public boolean isApply();
+    public List getArgs();
+    
     public static class EE implements Expression, Valuator
         {
         private boolean value;
@@ -24,6 +31,11 @@ public interface Expression
         public Valuator prepare( VariableIndexes vi ) { return this; }   
         public boolean evalBool( VariableValues vv ) { return value; }
         public boolean evalBool( IndexValues vv ) { return value; }
+        
+        public boolean isVariable() { return false; }
+        public boolean isApply() { return false; }
+        public String getName() { return null; }
+        public List getArgs() { return null; }
         }
         
     public static Expression TRUE = new EE( true );

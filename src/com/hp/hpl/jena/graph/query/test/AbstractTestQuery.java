@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.19 2003-10-09 14:07:43 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.20 2003-10-14 15:45:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -559,7 +559,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
     public void testQueryConstraintUnbound()
         {
         Query q = new Query()
-            .addConstraint( notEqual( X, Y ) )
+            .addConstraint( notEqual( X, Z ) )
             .addMatch( X, Query.ANY, X )
             ;
         Graph g = getGraphWith( "x R x; x R y" );
@@ -592,6 +592,7 @@ public abstract class AbstractTestQuery extends GraphTestBase
         {
         Graph g = dataGraph();
         Map answer = getAnswer( g, TripleSorter.dontSort );
+        // TODO remove: System.err.println( ">> " + answer );
         assertEquals( 1, answer.size() );
         assertEquals( new Integer(1), answer.get( Arrays.asList( nodes( "a d" ) ) ) );
     /* */

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExpressionSet.java,v 1.6 2003-10-13 15:04:22 chris-dollin Exp $
+  $Id: ExpressionSet.java,v 1.7 2003-10-14 15:45:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -38,6 +38,10 @@ public class ExpressionSet
         expressions.add( e );
         return this;    
         }
+    
+    public boolean isComplex()
+        { return !expressions.isEmpty(); }
+    
     /**
         Evaluate this expression set, delivering true iff no member of the set evaluates
         to false.
@@ -68,6 +72,12 @@ public class ExpressionSet
         while (it.hasNext()) result.add( ((Expression) it.next()).prepare( vi ) );
         return result;    
         }
+    
+    public Iterator iterator()
+        { return expressions.iterator(); }
+    
+    public String toString()
+        { return expressions.toString(); }
     }
 
 /*
