@@ -75,13 +75,13 @@ public class ExhaustiveErrorTest extends TestCase implements Constants {
     }    
 
     private void allCases(int s, int p, int o, int starts[], int startp[], int starto[]) {
-        
+        MonotonicErrorAnalyzer m = new MonotonicErrorAnalyzer();
         for (int i = 0; i < starts.length; i++)
             for (int j = 0; j < startp.length; j++)
                 for (int k = 0; k < starto.length; k++) {
                     predTestCount++;
                     allTestCount++;
-                    MonotonicErrorAnalyzer.getErrorCode(s, p, o, starts[i], startp[j],
+                    m.getErrorCode(s, p, o, starts[i], startp[j],
                             starto[k]);
                 }
     }

@@ -162,6 +162,7 @@ class DebugCategorySetNames extends CategorySetNames {
                 + (a.length > 2 ? ((String) a[2]).length() : 0);
     }
 
+    // TODO use this code in test case ..
     static boolean anyUsedNames() {
         boolean rslt = false;
         if (CategorySetNames.DEBUG_NAMES)

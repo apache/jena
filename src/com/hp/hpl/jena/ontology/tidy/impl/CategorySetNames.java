@@ -16,6 +16,28 @@ import com.hp.hpl.jena.shared.BrokenException;
  *  
  */
 class CategorySetNames {
+    
+    static int userIDorBlankNode[] =
+        new int[1+CategorySet.getSet(Grammar.userID).length
+                + CategorySet.getSet(Grammar.blank).length];
+    static {
+        userIDorBlankNode[0] = Grammar.dataAnnotationPropID;
+        System.arraycopy(
+                CategorySet.getSet(Grammar.userID),
+                0,
+                userIDorBlankNode,
+                1,
+                CategorySet.getSet(Grammar.userID).length);
+        System.arraycopy(
+                CategorySet.getSet(Grammar.blank),
+                0,
+                userIDorBlankNode,
+                1+CategorySet.getSet(Grammar.userID).length,
+                CategorySet.getSet(Grammar.blank).length);
+       Arrays.sort(userIDorBlankNode);
+
+        
+    }
     // TODO update comment
 	/**
 	 * The order of this array encodes a declarative preference: - the most
@@ -396,6 +418,8 @@ class CategorySetNames {
 					"a list of class expressions or a list of named individuals" },
 			{ CategorySet.getSet(Grammar.userID), "a user ID",
 					"much too general, often, except when needed" },
+            { userIDorBlankNode, "a user ID or blank node",
+					"much too general, often, except when needed" },
 
 			{
 					new int[] { Grammar.dlInteger, Grammar.liteInteger,
@@ -486,13 +510,13 @@ class CategorySetNames {
         }
         if (rslt != NOT_CLASSIFIED)
             return rslt;
-        throw new BrokenException("Logic error.");
+        throw new BrokenException("Logic error: unnamed: in: "+CategorySet.catString(in)+" out: "+CategorySet.catString(out));
 
     }
 
-    static void symmetricNames(int wantedThisTriple[], int givenOtherTriples[]) {
-        nameCatSet(wantedThisTriple, givenOtherTriples);
-        nameCatSet(givenOtherTriples, wantedThisTriple);
+    static void symmetricNames(WantedGiven w,int wantedThisTriple[], int givenOtherTriples[]) {
+        w.setWanted(nameCatSet(wantedThisTriple, givenOtherTriples));
+        w.setGiven(nameCatSet(givenOtherTriples, wantedThisTriple));
     }
 
 }
