@@ -28,7 +28,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
@@ -78,8 +78,11 @@ public class DBPropGraph extends DBProp {
 	}
 
 	public void addPrefix( DBPropPrefix prefix ) {
-		// First check it doesn't already exist
+		// First drop existing uses of prefix or URI
 		DBPropPrefix existing = getPrefix( prefix.getValue());
+		if( existing != null)
+			removePrefix( existing);
+		existing = getURI( prefix.getURI());
 		if( existing != null)
 			removePrefix( existing);
 		putPropNode( graphPrefix, prefix.getNode() );
@@ -141,6 +144,16 @@ public class DBPropGraph extends DBProp {
 		while( prefixes.hasNext() ) {
 			DBPropPrefix prefix = (DBPropPrefix)prefixes.next();
 			if( prefix.getValue().compareTo(value)==0) 
+				return prefix;
+		}
+		return null;
+	}
+	
+	public DBPropPrefix getURI( String uri ) {
+		ExtendedIterator prefixes = getAllPrefixes();
+		while( prefixes.hasNext() ) {
+			DBPropPrefix prefix = (DBPropPrefix)prefixes.next();
+			if( prefix.getURI().compareTo(uri)==0) 
 				return prefix;
 		}
 		return null;
