@@ -20,7 +20,7 @@ import com.hp.hpl.jena.mem.* ;
  *  {@link #guessLang(String) guessLang}
  * 
  * @author Andy Seaborne
- * @version $Id: ModelLoader.java,v 1.3 2003-02-11 13:18:18 andy_seaborne Exp $
+ * @version $Id: ModelLoader.java,v 1.4 2003-03-06 09:49:50 andy_seaborne Exp $
  */
 
 public class ModelLoader
@@ -39,6 +39,13 @@ public class ModelLoader
     public static String defaultLanguage = langXML ;
     public static String basename = null ;
     public static boolean useARP = true ;
+
+    /** Load a model
+     * 
+     * @param urlStr    The URL or file name of the model
+     */
+
+    public static Model loadModel(String urlStr) { return loadModel(urlStr, null) ; } 
 
 	/** Load a model or attached a persistent store.
 	 * 
