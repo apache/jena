@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-30 19:18:54 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-31 08:36:31 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -31,7 +31,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 
 import org.apache.oro.text.regex.*;
-import org.apache.xml.utils.XMLChar;
+import org.apache.xerces.util.XMLChar;
 
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.20 2003-07-30 19:18:54 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.21 2003-07-31 08:36:31 chris-dollin Exp $
  */
 public class schemagen {
     // Constants

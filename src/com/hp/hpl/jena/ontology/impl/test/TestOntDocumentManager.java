@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-31 08:28:47 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-07-31 08:36:17 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.7 2003-07-31 08:28:47 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.8 2003-07-31 08:36:17 chris-dollin Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -120,7 +120,7 @@ public class TestOntDocumentManager
     
     public void testManualAssociation() {
         OntDocumentManager mgr = new OntDocumentManager( null );
-        
+ 
         mgr.addPrefixMapping( "http://www.w3.org/2002/07/owl#", "owl" );
         assertEquals( "prefix for owl not correct", "owl", mgr.getPrefixForURI( "http://www.w3.org/2002/07/owl#" ));
         assertEquals( "URI for owl not correct", "http://www.w3.org/2002/07/owl#", mgr.getURIForPrefix( "owl" ));

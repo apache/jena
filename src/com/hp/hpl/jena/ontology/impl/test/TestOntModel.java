@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-29 09:50:43 $
+ * Last modified on   $Date: 2003-07-31 08:36:18 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -28,6 +28,7 @@ import java.io.*;
 
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.test.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import junit.framework.*;
@@ -41,10 +42,10 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.5 2003-07-29 09:50:43 chris-dollin Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.6 2003-07-31 08:36:18 chris-dollin Exp $
  */
 public class TestOntModel 
-    extends TestCase
+    extends ModelTestBase
 {
     // Constants
     //////////////////////////////////
@@ -136,6 +137,19 @@ public class TestOntModel
         om.setNsPrefix( "bill", "http://bill.and.ben/flowerpot#" );
         om.setNsPrefix( "grue", "ftp://grue.and.bleen/2000#" );
         assertEquals( om.getNsPrefixMap(), om.getBaseModel().getNsPrefixMap() );    
+        }
+        
+    public void testWritesPrefixes()
+        {
+        OntModel om = ModelFactory.createOntologyModel();
+        om.setNsPrefix( "spoo", "http://spoo.spoo.com/spoo#" );
+        om.add( statement( om, "ping http://spoo.spoo.com/spoo#pang pilly" ) );
+        om.add( statement( om, "gg http://www.daml.org/2001/03/daml+oil#hh ii" ) );
+        StringWriter sw = new StringWriter(); 
+        om.write( sw );    
+        String s = sw.getBuffer().toString();
+        assertTrue( s.indexOf( "xmlns:spoo=\"http://spoo.spoo.com/spoo#\"" ) > 0 );
+        assertTrue( s.indexOf( "xmlns:daml=\"http://www.daml.org/2001/03/daml+oil#\"" ) > 0 );      
         }
         
     /** Test writing the base model to an output stream */
