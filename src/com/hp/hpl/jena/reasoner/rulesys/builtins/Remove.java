@@ -5,22 +5,21 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Remove.java,v 1.3 2003-05-29 16:47:11 der Exp $
+ * $Id: Remove.java,v 1.4 2003-06-10 22:25:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
  * Remove the body clause given by index arguments from the database.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-29 16:47:11 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-10 22:25:01 $
  */
-public class Remove implements Builtin {
+public class Remove extends BaseBuiltin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
@@ -28,21 +27,7 @@ public class Remove implements Builtin {
      */
     public String getName() {
         return "remove";
-    }
-
-    /**
-     * This method is invoked when the builtin is called in a rule body.
-     * @param args the array of argument values for the builtin, this is an array 
-     * of Nodes, some of which may be Node_RuleVariables.
-     * @param context an execution context giving access to other relevant data
-     * @return return true if the buildin predicate is deemed to have succeeded in
-     * the current environment
-     */
-    public boolean bodyCall(Node[] args, RuleContext context) {
-        // Can't be used in the body
-        throw new BuiltinException(this, context, "can't do remove in rule bodies");
-    }
-    
+    }    
     
     /**
      * This method is invoked when the builtin is called in a rule head.
@@ -59,10 +44,8 @@ public class Remove implements Builtin {
                 int clauseIndex = Util.getIntValue(clauseN);
                 Object clause = context.getRule().getBodyElement(clauseIndex);
                 if (clause instanceof TriplePattern) {
-                    Triple t = FRuleEngine.instantiate(
-                                        (TriplePattern)clause, 
-                                        ((BFRuleContext)context).getEnvStack() );
-                    context.getGraph().delete(t);
+                    Triple t = context.getEnv().instantiate((TriplePattern)clause);
+                    context.remove(t);
                 } else {
                     throw new BuiltinException(this, context, "illegal triple to remove non-triple clause");
                 }

@@ -5,16 +5,18 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestRETE.java,v 1.2 2003-06-10 17:14:54 der Exp $
+ * $Id: TestRETE.java,v 1.3 2003-06-10 22:26:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
+import com.hp.hpl.jena.reasoner.test.TestUtil;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -22,7 +24,7 @@ import junit.framework.TestSuite;
 /**
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-10 17:14:54 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-10 22:26:38 $
  */
 public class TestRETE  extends TestCase {
      
@@ -37,6 +39,13 @@ public class TestRETE  extends TestCase {
     Node c = Node.createURI("c");
     Node d = Node.createURI("d");
     Node e = Node.createURI("e");
+    Node r = Node.createURI("r");
+    Node s = Node.createURI("s");
+    Node n1 = Node.createURI("n1");
+    Node n2 = Node.createURI("n2");
+    Node n3 = Node.createURI("n3");
+    Node n4 = Node.createURI("n4");
+    Node res = Node.createURI("res");
          
     /**
      * Boilerplate for junit
@@ -136,54 +145,85 @@ public class TestRETE  extends TestCase {
             this.isAdd = isAdd;
         }
     }
-
+      
     /**
-     * Test the join nodes.
+     * Minimal rule tester to check basic pattern match.
      */
-    public void testJoins() {
-        doTestJoin( "(a p ?x), (?x p c) -> (?x q ?x).", 
+    public void testRuleMatcher() {
+        doRuleTest( "[r1: (?a p ?b), (?b q ?c) -> (?a, q, ?c)]" +
+                       "[r2: (?a p ?b), (?b p ?c) -> (?a, p, ?c)]" +
+                       "[r3: (?a p ?a), (n1 p ?c), (n1, p, ?a) -> (?a, p, ?c)]" +
+                       "[r4: (n4 ?p ?a) -> (n4, ?a, ?p)]",
+                    new Triple[] {
+                        new Triple(n1, p, n2),
+                        new Triple(n2, p, n3),
+                        new Triple(n2, q, n3),
+                        new Triple(n4, p, n4) },
+                    new Triple[] {
+                        new Triple(n1, p, n2),
+                        new Triple(n2, p, n3),
+                        new Triple(n2, q, n3),
+                        new Triple(n4, p, n4),
+                        new Triple(n1, p, n3),
+                        new Triple(n1, q, n3),
+                        new Triple(n4, n4, p),
+                    });
+                    
+        doRuleTest( "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
+                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
+                        "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]" +
+                        "[axiom1: -> (n1 p n3)]",
+                     new Triple[] {},
                      new Triple[] {
-                         new Triple(a, p, b), 
-                         new Triple(b, p, c)},
-                     new Node[] {b} );
-        doTestJoin( "(a p ?x), (?x p c) -> (?x q ?x).", 
+                         new Triple(n1, p, n3),
+                         new Triple(n2, p, n3)
+                     });
+        
+        doRuleTest( "[testRule1: (n1 p ?a) -> (n2, p, ?a)]" +
+                        "[testRule2: (n1 q ?a) -> (n2, q, ?a)]" +
+                        "[testRule3: (n2 p ?a), (n2 q ?a) -> (res p ?a)]" +
+                        "[axiom1: -> (n1 p n3)]",
                      new Triple[] {
-                         new Triple(a, p, b), 
-                         new Triple(a, p, c), 
-                         new Triple(a, p, d), 
-                         new Triple(b, p, c)},
-                     new Node[] {b} );
-        doTestJoin( "(a p ?x) -> (?x q ?x).", 
+                         new Triple(n1, q, n4),
+                         new Triple(n1, q, n3)
+                     },
                      new Triple[] {
-                         new Triple(a, p, b), 
-                         new Triple(b, p, c)},
-                     new Node[] {b} );
-        doTestJoin( "(a p ?x), (?x p ?y), (?x q ?y) -> (?x r ?y).", 
+                         new Triple(n1, p, n3),
+                         new Triple(n2, p, n3),
+                         new Triple(n1, q, n4),
+                         new Triple(n2, q, n4),
+                         new Triple(n1, q, n3),
+                         new Triple(n2, q, n3),
+                         new Triple(res, p, n3)
+                     });
+        doRuleTest( "[rule1: (?x p ?y), (?x q ?y) -> remove('0')]",
                      new Triple[] {
-                         new Triple(a, p, b), 
-                         new Triple(b, p, c), 
-                         new Triple(b, q, c)}, 
-                     new Node[] {b, c} );
+                         new Triple(n1, p, Util.makeIntNode(1)),
+                         new Triple(n1, p, Util.makeIntNode(2)),
+                         new Triple(n1, q, Util.makeIntNode(2))
+                     },
+                     new Triple[] {
+                         new Triple(n1, p, Util.makeIntNode(1)),
+                         new Triple(n1, q, Util.makeIntNode(2))
+                     });
     }
 
     /**
-     * Helper for testing clause joins.
+     * Perform a rule test on the raw RETE engine. This requires some fiddling
+     * with dummy parent graphs.
      */
-    private void doTestJoin(String ruleSource, Triple[] test, Node[] expected) {
-        Rule rule = Rule.parseRule(ruleSource);
-        RETETestNode tnode = new RETETestNode();
-        RETEEngine engine = new RETEEngine(null);
-        engine.compileRule(rule).setContinuation(tnode);
-        for (int i = 0; i < test.length; i++) {
-            engine.testTripleInsert(test[i]);
+    private void doRuleTest(String rules, Triple[] adds, Triple[] expected) {
+        List ruleList = Rule.parseRules(rules);
+        BasicForwardRuleInfGraph infgraph = new BasicForwardRuleInfGraph(null, new ArrayList(), null, new GraphMem());
+//        infgraph.setTraceOn(true);
+        RETEEngine engine = new RETEEngine(infgraph, ruleList);
+        infgraph.prepare();
+        engine.init(true);
+        for (int i = 0; i < adds.length; i++) {
+            engine.addTriple(adds[i], true);
         }
-        if (expected == null) {
-            assertTrue(tnode.firings == 0);
-        } else {
-            assertTrue(tnode.firings > 0);
-            assertTrue(tnode.isAdd);
-            assertEquals(new BindingVector(expected), tnode.env);
-        }
+        engine.runAll();
+        TestUtil.assertIteratorValues(this, infgraph.find(null, null, null), expected);
     }
 }
 

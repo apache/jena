@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingEnvironment.java,v 1.3 2003-05-13 21:34:43 der Exp $
+ * $Id: BindingEnvironment.java,v 1.4 2003-06-10 22:26:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.TriplePattern;
 
 /**
  * Interface through which the current bound values of variables
@@ -18,7 +19,7 @@ import com.hp.hpl.jena.graph.*;
  * by most builtins the specific implementations offer richer functionality.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-05-13 21:34:43 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-10 22:26:35 $
  */
 public interface BindingEnvironment {
         
@@ -37,7 +38,16 @@ public interface BindingEnvironment {
      * @return false if the binding fails
      */
     public boolean bind(Node var, Node value);
-        
+    
+    /**
+      * Instantiate a triple pattern against the current environment.
+      * This version handles unbound varibles by turning them into bNodes.
+      * @param clause the triple pattern to match
+      * @param env the current binding environment
+      * @return a new, instantiated triple
+      */
+     public Triple instantiate(TriplePattern pattern);
+         
 }
 
 /*

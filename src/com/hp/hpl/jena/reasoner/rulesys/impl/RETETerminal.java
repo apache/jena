@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETETerminal.java,v 1.3 2003-06-10 17:10:38 der Exp $
+ * $Id: RETETerminal.java,v 1.4 2003-06-10 22:26:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -20,15 +20,12 @@ import org.apache.log4j.Logger;
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-10 17:10:38 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-10 22:26:36 $
  */
 public class RETETerminal implements RETESinkNode {
 
     /** Context containing the specific rule and parent graph */
     protected RETERuleContext context;
-    
-    /** The parent rule engine through which the deductions and recursive network can be reached */
-    protected RETEEngine engine;
     
     /** log4j logger */
     protected static Logger logger = Logger.getLogger(FRuleEngine.class);
@@ -40,9 +37,17 @@ public class RETETerminal implements RETESinkNode {
      * @param graph the wider encompasing infGraph needed to for the RuleContext
      */
     public RETETerminal(Rule rule, RETEEngine engine, ForwardRuleInfGraphI graph) {
-        context = new RETERuleContext(graph);
+        context = new RETERuleContext(graph, engine);
         context.rule = rule;
-        this.engine = engine;
+    }
+    
+    /**
+     * Change the engine/graph to which this terminal should deliver its results.
+     */
+    public void setContext(RETEEngine engine, ForwardRuleInfGraphI graph) {
+        Rule rule = context.getRule();
+        context = new RETERuleContext(graph, engine);
+        context.setRule(rule);
     }
     
     /** 
@@ -59,10 +64,17 @@ public class RETETerminal implements RETESinkNode {
             Object clause = rule.getBodyElement(i);
             if (clause instanceof Functor) {
                 // Fire a built in
-                // TODO: Add check for side effects before running in remove mode
-                if (!((Functor)clause).evalAsBodyClause(context)) {
-                    // Failed guard so just discard and return
-                    return;
+                if (isAdd) {
+                    if (!((Functor)clause).evalAsBodyClause(context)) {
+                        // Failed guard so just discard and return
+                        return;
+                    }
+                } else {
+                    // Don't re-run side-effectful clause on a re-run
+                    if (!((Functor)clause).safeEvalAsBodyClause(context)) {
+                        // Failed guard so just discard and return
+                        return;
+                    }
                 }
             }
         }
@@ -72,6 +84,8 @@ public class RETETerminal implements RETESinkNode {
         if (infGraph.shouldTrace()) {
             logger.info("Fired rule: " + rule.toShortString());
         }
+        RETEEngine engine = context.getEngine();
+        engine.incRuleCount();
         List matchList = null;
         if (infGraph.shouldLogDerivations()) {
             // Create derivation record
@@ -103,7 +117,7 @@ public class RETETerminal implements RETESinkNode {
                         engine.deleteTriple(t, true);
                     }
                 }
-            } else if (hClause instanceof Functor) {
+            } else if (hClause instanceof Functor && isAdd) {
                 Functor f = (Functor)hClause;
                 Builtin imp = f.getImplementor();
                 if (imp != null) {
@@ -111,7 +125,7 @@ public class RETETerminal implements RETESinkNode {
                 } else {
                     throw new ReasonerException("Invoking undefined Functor " + f.getName() +" in " + rule.toShortString());
                 }
-            } else if (hClause instanceof Rule) {
+            } else if (hClause instanceof Rule && isAdd) {
                 Rule r = (Rule)hClause;
                 if (r.isBackward()) {
                     infGraph.addBRule(r.instantiate(env));

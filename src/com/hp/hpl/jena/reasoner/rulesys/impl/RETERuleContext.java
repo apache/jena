@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETERuleContext.java,v 1.2 2003-06-09 21:00:45 der Exp $
+ * $Id: RETERuleContext.java,v 1.3 2003-06-10 22:26:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.*;
  * The RuleContext is used to supply context information to the builtin operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-09 21:00:45 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-10 22:26:38 $
  */
 public class RETERuleContext implements RuleContext {
     
@@ -32,12 +32,16 @@ public class RETERuleContext implements RuleContext {
     /** The enclosing inference graph. */
     protected ForwardRuleInfGraphI graph;
     
+    /** The RETE engine associated with the inference graph */
+    protected RETEEngine engine;
+    
     /**
      * Constructor.
      * @param graph the inference graph which owns this context.
      */
-    public RETERuleContext(ForwardRuleInfGraphI graph) {
+    public RETERuleContext(ForwardRuleInfGraphI graph, RETEEngine engine) {
         this.graph = graph;
+        this.engine = engine;
     }
     
     /**
@@ -54,6 +58,13 @@ public class RETERuleContext implements RuleContext {
      */
     public InfGraph getGraph() {
         return graph;
+    }
+    
+    /**
+     * Returns the RETE engine associated with this context.
+     */
+    public RETEEngine getEngine() {
+        return engine;
     }
 
     /**
@@ -115,6 +126,14 @@ public class RETERuleContext implements RuleContext {
      */
     public void silentAdd(Triple t) {
         ((SilentAddI)graph).silentAdd(t);
+    }
+
+    /**
+     * Remove a triple from the deduction graph (and the original graph if relevant).
+     */
+    public void remove(Triple t) {
+        graph.delete(t);
+        engine.deleteTriple(t, true);
     }
 
 }

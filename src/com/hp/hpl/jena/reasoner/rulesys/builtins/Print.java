@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Print.java,v 1.1 2003-05-05 15:15:58 der Exp $
+ * $Id: Print.java,v 1.2 2003-06-10 22:25:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -17,9 +17,9 @@ import com.hp.hpl.jena.graph.*;
  * Print its argument list as a side effect
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:58 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-10 22:25:00 $
  */
-public class Print implements Builtin {
+public class Print extends BaseBuiltin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 

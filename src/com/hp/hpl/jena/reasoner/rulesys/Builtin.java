@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Builtin.java,v 1.2 2003-04-28 20:17:57 der Exp $
+ * $Id: Builtin.java,v 1.3 2003-06-10 22:26:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * be user extended.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-04-28 20:17:57 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-10 22:26:34 $
  */
 public interface Builtin {
 
@@ -54,6 +54,12 @@ public interface Builtin {
      * @param context an execution context giving access to other relevant data
      */
     public void headAction(Node[] args, RuleContext context);
+    
+    /**
+     * Returns false if this builtin has side effects when run in a body clause,
+     * other than the binding of environment variables.
+     */
+    public boolean isSafe();
 }
 
 /*

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: NotEqual.java,v 1.1 2003-05-05 15:15:58 der Exp $
+ * $Id: NotEqual.java,v 1.2 2003-06-10 22:25:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,9 +16,9 @@ import com.hp.hpl.jena.graph.*;
  * Check that the two args are different. This uses a structural equality test.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-05 15:15:58 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-10 22:25:01 $
  */
-public class NotEqual implements Builtin {
+public class NotEqual extends BaseBuiltin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
@@ -43,19 +43,6 @@ public class NotEqual implements Builtin {
         return !(args[0].equals(args[1]));
     }
     
-    
-    /**
-     * This method is invoked when the builtin is called in a rule head.
-     * Such a use is only valid in a forward rule.
-     * @param args the array of argument values for the builtin, this is an array 
-     * of Nodes.
-     * @param context an execution context giving access to other relevant data
-     * @param rule the invoking rule
-     */
-    public void headAction(Node[] args, RuleContext context) {
-        // Can't be used in the head
-        throw new BuiltinException(this, context, "can't do " + getName() + " in rule heads");
-    }
 }
 
 /*

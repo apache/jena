@@ -1,80 +1,63 @@
 /******************************************************************
- * File:        RuleContext.java
+ * File:        BaseBuiltin.java
  * Created by:  Dave Reynolds
- * Created on:  28-Apr-03
+ * Created on:  10-Jun-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleContext.java,v 1.5 2003-06-10 22:26:34 der Exp $
+ * $Id: BaseBuiltin.java,v 1.1 2003-06-10 22:25:00 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys;
+package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
-import com.hp.hpl.jena.reasoner.InfGraph;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.graph.*;
 
 /**
- * Interface used to convey context information from a rule engine
- * to the stack of procedural builtins. This gives access
- * to the triggering rule, the variable bindings and the set of
- * currently known triples. 
+ * Dummy implementation of the Builtin interface that specific
+ * implementations can inherit from.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-10 22:26:34 $
+ * @version $Revision: 1.1 $ on $Date: 2003-06-10 22:25:00 $
  */
-public interface RuleContext {
-    /**
-     * Returns the current variable binding environment for the current rule.
-     * @return BindingEnvironment
-     */
-    public BindingEnvironment getEnv();
+public abstract class BaseBuiltin implements Builtin {
 
     /**
-     * Returns the parent inference graph.
-     * @return InfGraph
+     * This method is invoked when the builtin is called in a rule body.
+     * @param args the array of argument values for the builtin, this is an array 
+     * of Nodes, some of which may be Node_RuleVariables.
+     * @param context an execution context giving access to other relevant data
+     * @return return true if the buildin predicate is deemed to have succeeded in
+     * the current environment
      */
-    public InfGraph getGraph();
+    public boolean bodyCall(Node[] args, RuleContext context) {
+        throw new BuiltinException(this, context, "builtin " + getName() + " not usable in rule bodies");
+    }
+    
     
     /**
-     * Returns the rule.
-     * @return Rule
+     * This method is invoked when the builtin is called in a rule head.
+     * Such a use is only valid in a forward rule.
+     * @param args the array of argument values for the builtin, this is an array 
+     * of Nodes.
+     * @param context an execution context giving access to other relevant data
+     * @param rule the invoking rule
      */
-    public Rule getRule();
+    public void headAction(Node[] args, RuleContext context) {
+        throw new BuiltinException(this, context, "builtin " + getName() + " not usable in rule heads");
+    }
+    
+    /**
+     * Returns false if this builtin has side effects when run in a body clause,
+     * other than the binding of environment variables.
+     */
+    public boolean isSafe() {
+        // Default is safe!
+        return true;
+    }
+    
 
-    /**
-     * Sets the rule.
-     * @param rule The rule to set
-     */
-    public void setRule(Rule rule);
-    
-    /**
-     * Return true if the triple is already in either the graph or the stack.
-     * I.e. it has already been deduced.
-     */
-    public boolean contains(Triple t);
-    
-    /**
-     * Return true if the triple pattern is already in either the graph or the stack.
-     * I.e. it has already been deduced.
-     */
-    public boolean contains(Node s, Node p, Node o);
-    
-    /**
-     * In some formulations the context includes deductions that are not yet
-     * visible to the underlying graph but need to be checked for.
-     */
-    public ClosableIterator find(Node s, Node p, Node o);
-    
-    /**
-     * Assert a new triple in the deduction graph, bypassing any processing machinery.
-     */
-    public void silentAdd(Triple t);
-
-    /**
-     * Remove a triple from the deduction graph (and the original graph if relevant).
-     */
-    public void remove(Triple t);
 }
+
 
 
 /*

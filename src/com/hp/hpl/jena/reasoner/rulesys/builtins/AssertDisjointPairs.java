@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: AssertDisjointPairs.java,v 1.2 2003-05-13 21:36:08 der Exp $
+ * $Id: AssertDisjointPairs.java,v 1.3 2003-06-10 22:25:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -19,9 +19,9 @@ import java.util.*;
  * Assert the n^2 differtFrom pairs from a distinctMembers list
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-13 21:36:08 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-10 22:25:00 $
  */
-public class AssertDisjointPairs implements Builtin {
+public class AssertDisjointPairs extends BaseBuiltin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
@@ -29,19 +29,6 @@ public class AssertDisjointPairs implements Builtin {
      */
     public String getName() {
         return "assertDisjointPairs";
-    }
-
-    /**
-     * This method is invoked when the builtin is called in a rule body.
-     * @param args the array of argument values for the builtin, this is an array 
-     * of Nodes, some of which may be Node_RuleVariables.
-     * @param context an execution context giving access to other relevant data
-     * @return return true if the buildin predicate is deemed to have succeeded in
-     * the current environment
-     */
-    public boolean bodyCall(Node[] args, RuleContext context) {
-        // Can't be used in the body
-        throw new BuiltinException(this, context, "can't do " + getName() + " in rule bodies");
     }
     
     
@@ -67,6 +54,7 @@ public class AssertDisjointPairs implements Builtin {
             }
         }
     }
+    
 }
 
 /*

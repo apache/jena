@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Functor.java,v 1.7 2003-06-02 09:03:50 der Exp $
+ * $Id: Functor.java,v 1.8 2003-06-10 22:26:34 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-02 09:03:50 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-10 22:26:34 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -125,6 +125,23 @@ public class Functor implements ClauseEntry {
             return false;
         }
         return implementor.bodyCall(getBoundArgs(context.getEnv()), context);
+    }
+    
+    /**
+     * Execute the given built in as a body clause, only if it is side-effect-free.
+     * @param context an execution context giving access to other relevant data
+     * @return true if the functor has an implementation and that implementation returns true when evaluated
+     */
+    public boolean safeEvalAsBodyClause(RuleContext context) {
+        if (implementor == null) {
+            logger.warn("Invoking undefined functor " + getName() + " in " + context.getRule().toShortString());
+            return false;
+        }
+        if (implementor.isSafe()) {
+            return implementor.bodyCall(getBoundArgs(context.getEnv()), context);
+        } else {
+            return false;
+        }
     }
     
     /**

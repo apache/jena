@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingStack.java,v 1.2 2003-05-28 11:13:55 chris-dollin Exp $
+ * $Id: BindingStack.java,v 1.3 2003-06-10 22:26:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
+import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.reasoner.rulesys.BindingEnvironment;
 import com.hp.hpl.jena.reasoner.rulesys.Functor;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
@@ -21,7 +22,7 @@ import java.util.*;
  * Provides a trail of possible variable bindings for a forward rule.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-05-28 11:13:55 $
+ * @version $Revision: 1.3 $ on $Date: 2003-06-10 22:26:37 $
  */
 public class BindingStack implements BindingEnvironment {
     
@@ -194,6 +195,23 @@ public class BindingStack implements BindingEnvironment {
      */
     public void bindNoCheck(Node_RuleVariable var, Node value) {
         environment[var.getIndex()] = value;
+    }
+    
+    /**
+     * Instantiate a triple pattern against the current environment.
+     * This version handles unbound varibles by turning them into bNodes.
+     * @param clause the triple pattern to match
+     * @param env the current binding environment
+     * @return a new, instantiated triple
+     */
+    public Triple instantiate(TriplePattern pattern) {
+        Node s = getGroundVersion(pattern.getSubject());
+        if (s.isVariable()) s = Node.createAnon();
+        Node p = getGroundVersion(pattern.getPredicate());
+        if (p.isVariable()) p = Node.createAnon();
+        Node o = getGroundVersion(pattern.getObject());
+        if (o.isVariable()) o = Node.createAnon();
+        return new Triple(s, p, o);
     }
     
 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: NotLiteral.java,v 1.1 2003-05-15 17:01:57 der Exp $
+ * $Id: NotLiteral.java,v 1.2 2003-06-10 22:25:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -16,9 +16,9 @@ import com.hp.hpl.jena.graph.*;
  * Tests the single argument to make sure it is a literal.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-05-15 17:01:57 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-10 22:25:01 $
  */
-public class NotLiteral implements Builtin {
+public class NotLiteral extends BaseBuiltin {
 
     /**
      * Return a name for this builtin, normally this will be the name of the 
@@ -43,19 +43,6 @@ public class NotLiteral implements Builtin {
         return !args[0].isLiteral();
     }
     
-    
-    /**
-     * This method is invoked when the builtin is called in a rule head.
-     * Such a use is only valid in a forward rule.
-     * @param args the array of argument values for the builtin, this is an array 
-     * of Nodes.
-     * @param context an execution context giving access to other relevant data
-     * @param rule the invoking rule
-     */
-    public void headAction(Node[] args, RuleContext context) {
-        // Can't be used in the head
-        throw new BuiltinException(this, context, "can't do " + getName() +" in rule heads");
-    }
 }
 
 
