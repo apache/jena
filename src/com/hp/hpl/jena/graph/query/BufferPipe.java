@@ -1,13 +1,15 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BufferPipe.java,v 1.3 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: BufferPipe.java,v 1.4 2003-08-29 08:37:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import EDU.oswego.cs.dl.util.concurrent.*;
 import com.hp.hpl.jena.shared.*;
+
+import java.util.*;
 
 /**
     This class is a pipe between query threads, implemented as a bounded buffer.
@@ -61,7 +63,10 @@ public class BufferPipe implements Pipe
         }
         
     public Domain get()
-        { hasNext(); try { return (Domain) pending; } finally { pending = null; } }
+        {
+        if (hasNext() == false) throw new NoSuchElementException(); 
+        try { return (Domain) pending; } finally { pending = null; } 
+        }
 
     /**
         Exception to throw if a <code>take</code> throws an exception.

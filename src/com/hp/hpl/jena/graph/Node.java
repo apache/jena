@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.21 2003-08-27 13:01:00 andy_seaborne Exp $
+  $Id: Node.java,v 1.22 2003-08-29 08:37:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -37,11 +37,7 @@ public abstract class Node {
         constructor.
     */       
     public static final Node ANY = new Node_ANY();
-    
-	/**
-		The canonical instance of Node_NULL.
-	*/       
-	public static final Node NULL = new Node_NULL();
+
 
         
     static final String RDFprefix = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
@@ -163,7 +159,7 @@ public abstract class Node {
     	@return the value returned by the applied method
      */
     public abstract Object visitWith( NodeVisitor v );
-        
+     
     /**
         Answer true iff this node is concrete, ie not variable, ie URI, blank, or literal.
     */                     
@@ -215,6 +211,13 @@ public abstract class Node {
         
     static final NodeMaker makeVariable = new NodeMaker()
         { Node construct( Object x ) { return new Node_Variable( x ); } };
+        
+    /**
+        The canonical NULL. It appears here so that revised definitions [eg as a bnode]
+        that require the cache-and-maker system will work; the NodeMaker constants
+        should be non-null at this point.
+    */       
+    public static final Node NULL = new Node_NULL(); 
     
     /**
         if the cache of recent nodes is "too big", empty it. Then put this latest
@@ -308,7 +311,8 @@ public abstract class Node {
         and compressing URIs using the prefix mapping supplied.
     */
     public String toString( PrefixMapping pm, boolean quoting )
-        { return label.toString(); }
+        { return label.toString(); }    
+        
 }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Pipe.java,v 1.3 2003-08-27 13:00:59 andy_seaborne Exp $
+  $Id: Pipe.java,v 1.4 2003-08-29 08:37:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -20,7 +20,7 @@ public interface Pipe
     public boolean hasNext();
     
     /**
-        Answer the next element if there is one, otherwise throw an exception.
+        Answer the next element if there is one, otherwise throw a NoSuchElementException.
      */
     public Domain get();
     

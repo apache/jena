@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.11 2003-08-27 13:00:58 andy_seaborne Exp $
+  $Id: AbstractTestQuery.java,v 1.12 2003-08-29 08:37:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -87,6 +87,20 @@ public abstract class AbstractTestQuery extends GraphTestBase
     public void testChainedTreeQuery()
         {
         testTreeQuery( "a pings b; b pings c; c pings d", "a pings b; b pings c", "a pings b; b pings c" );
+        }
+        
+    public void testEmptyIterator()
+        {
+        Graph empty = getGraph();
+        Query q = new Query().addMatch( X, Y, Z );
+        BindingQueryPlan bqp = empty.queryHandler().prepareBindings( q, new Node[]{X} );
+        try
+            {
+            bqp.executeBindings().next();
+            fail( "there are no bindings; next() should fail" );    
+            }    
+        catch (NoSuchElementException e)
+            { pass(); }
         }
         
     public void testBinding1( )
