@@ -15,6 +15,7 @@ Post Jena 2.1 bug fix list
       o Fixed bug in TransitiveReasoner reported by wangxiao
       o Changed delete for RETE reasoner to be non-incremental to work around
         bug without demanding full reference counting
+      o Added experimental OWLMini and OWLMicro reasoners
       
       
 Jena 2.1 - Main changes from Jena 2.0
