@@ -1,48 +1,34 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphEventManager.java,v 1.4 2003-07-09 13:10:27 chris-dollin Exp $
+  $Id: ModelListenerAdapter.java,v 1.1 2003-07-09 13:10:57 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.rdf.model.impl;
 
-/**
-    The component of a graph responsible for managing events and listeners.
- 	@author kers
-*/
-public interface GraphEventManager
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.rdf.model.*;
+
+public class ModelListenerAdapter implements GraphListener
     {
-    /**
-        Attached <code>listener</code> to this manager; notification events
-        sent to the manager are sent to all registered listeners. A listener may
-        be registered multiple times, in which case it's called multiple times per
-        event.
-        
-        @param listener a listener to be fed events
-        @return this manager, for cascading
-    */
-    GraphEventManager register( GraphListener listener );
-    
-    /**
-        If <code>listener</code> is attached to this manager, detach it, otherwise
-        do nothing. Only a single registration is removed.
-        
-        @param listener the listener to be detached from the graph
-        @return this manager, for cascading
-    */
-    GraphEventManager unregister( GraphListener listener );
-    
-    /**
-        Notify all attached listeners that the triple <code>t</code> has been added,
-        by calling their <code>notifyAdd(Triple)</code> methods.
-    */
-    void notifyAdd( Triple t );
-    
-    /**
-        Notify all attached listeners that the triple <code>t</code> has been removed,
-        by calling their <code>notifyDelete(Triple)</code> methods.
-    */
-    void notifyDelete( Triple t );
+    protected ModelCom m;
+    protected ModelChangedListener L;
+
+    ModelListenerAdapter( ModelCom m, ModelChangedListener L )
+        { this.m = m; this.L = L; }
+
+    public void notifyAdd( Triple t )
+        { L.addedStatement( m.asStatement( t ) ); }
+
+    public void notifyDelete( Triple t )
+        { L.removedStatement( m.asStatement( t ) ); }
+
+    public boolean equals( Object other )
+        { 
+        return other instanceof ModelListenerAdapter 
+            && L.equals( ((ModelListenerAdapter) other).L )
+            ; 
+        }
     }
 
 /*

@@ -1,48 +1,56 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphEventManager.java,v 1.4 2003-07-09 13:10:27 chris-dollin Exp $
+  $Id: SimpleEventManager.java,v 1.1 2003-07-09 13:10:56 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph;
+package com.hp.hpl.jena.graph.impl;
+
+import java.util.*;
+
+import com.hp.hpl.jena.graph.*;
 
 /**
-    The component of a graph responsible for managing events and listeners.
- 	@author kers
+    Simple implementation of GraphEventManager for GraphBase to use.
+    The listeners are held as an [Array]List.
+    
+    @author hedgehog
 */
-public interface GraphEventManager
+
+public class SimpleEventManager implements GraphEventManager
     {
-    /**
-        Attached <code>listener</code> to this manager; notification events
-        sent to the manager are sent to all registered listeners. A listener may
-        be registered multiple times, in which case it's called multiple times per
-        event.
+    protected Graph graph;
+    protected List  listeners;
+    
+    SimpleEventManager( Graph graph ) 
+        { 
+        this.graph = graph;
+        this.listeners = new ArrayList(); 
+        }
+    
+    public GraphEventManager register( GraphListener listener ) 
+        { 
+        listeners.add( listener );
+        return this; 
+        }
         
-        @param listener a listener to be fed events
-        @return this manager, for cascading
-    */
-    GraphEventManager register( GraphListener listener );
+    public GraphEventManager unregister( GraphListener listener ) 
+        { 
+        listeners.remove( listener ); 
+        return this;
+        }
     
-    /**
-        If <code>listener</code> is attached to this manager, detach it, otherwise
-        do nothing. Only a single registration is removed.
-        
-        @param listener the listener to be detached from the graph
-        @return this manager, for cascading
-    */
-    GraphEventManager unregister( GraphListener listener );
+    public void notifyAdd( Triple t ) 
+        {
+        for (int i = 0; i < listeners.size(); i += 1) 
+            ((GraphListener) listeners.get(i)).notifyAdd( t ); 
+        }
     
-    /**
-        Notify all attached listeners that the triple <code>t</code> has been added,
-        by calling their <code>notifyAdd(Triple)</code> methods.
-    */
-    void notifyAdd( Triple t );
-    
-    /**
-        Notify all attached listeners that the triple <code>t</code> has been removed,
-        by calling their <code>notifyDelete(Triple)</code> methods.
-    */
-    void notifyDelete( Triple t );
+    public void notifyDelete( Triple t ) 
+        { 
+        for (int i = 0; i < listeners.size(); i += 1) 
+            ((GraphListener) listeners.get(i)).notifyDelete( t ); 
+        }
     }
 
 /*

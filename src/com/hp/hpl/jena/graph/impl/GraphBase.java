@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphBase.java,v 1.7 2003-07-09 10:15:54 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.8 2003-07-09 13:10:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -19,10 +19,11 @@ import java.util.*;
     GraphBase is an implementation of Graph that provides some convenient
     base functionality for Graph implementations.
 <p>
-    Subtypes of GraphBase must provide add(Triple), delete(Triple), 
-    find(TripleMatch,TripleAction), and size(). GraphBase provides
-    default implementations of the other methods, including the other
-    finds (on top of that one), a simple-minded prepare, and contains.
+    Subtypes of GraphBase must provide performAdd(Triple), performDelete(Triple), 
+    find(TripleMatch,TripleAction), and size(). GraphBase provides default 
+    implementations of the other methods, including the other finds (on top of that one), 
+    a simple-minded prepare, and contains. GraphBase also handles the event-listening
+    and registration interfaces.
 <p>    
 	@author kers
 */
@@ -48,50 +49,32 @@ public abstract class GraphBase implements Graph {
 	public QueryHandler queryHandler() 
         { return new SimpleQueryHandler(this); }
     
+    /**
+        The event manager that this Graph uses to, well, manage events; allocated on
+        demand.
+    */
     protected GraphEventManager gem;
     
+    /**
+        Answer the event manager for this graph; allocated a new one if required.
+        @return the graph's event manager.
+    */
     public GraphEventManager getEventManager()
         { 
-        if (gem == null) gem = new SimpleManager( this ); 
+        if (gem == null) gem = new SimpleEventManager( this ); 
         return gem;
         }
         
-    static class SimpleManager implements GraphEventManager
-        {
-        protected Graph graph;
-        protected List  listeners;
-        
-        SimpleManager( Graph graph ) 
-            { 
-            this.graph = graph;
-            this.listeners = new ArrayList(); 
-            }
-        
-        public GraphEventManager register( GraphListener listener ) 
-            { 
-            listeners.add( listener );
-            return this; 
-            }
-            
-        public void unregister( GraphListener listener ) 
-            { listeners.remove( listener ); }
-        
-        public void notifyAdd( Triple t ) 
-            {
-            for (int i = 0; i < listeners.size(); i += 1) 
-                ((GraphListener) listeners.get(i)).notifyAdd( t ); 
-            }
-        
-        public void notifyDelete( Triple t ) 
-            { 
-            for (int i = 0; i < listeners.size(); i += 1) 
-                ((GraphListener) listeners.get(i)).notifyDelete( t ); 
-            }
-        }
-        
+    /**
+        Tell the event manager that the triple <code>t</code> has been added to the graph.
+    */
     public void notifyAdd( Triple t )
         { getEventManager().notifyAdd( t ); }
         
+    /**
+        Tell the event manager that the triple <code>t</code> has been deleted from the
+        graph.
+    */
     public void notifyDelete( Triple t )
         { getEventManager().notifyDelete( t ); }
         
@@ -110,8 +93,8 @@ public abstract class GraphBase implements Graph {
         { return pm; }
 
 	/**
-	 * @see com.hp.hpl.jena.graph.Graph#add(Triple)
-	 */
+	   Add a triple, and notify the event manager. 
+	*/
 	public void add( Triple t ) 
         {
         performAdd( t );

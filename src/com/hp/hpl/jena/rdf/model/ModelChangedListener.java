@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelChangedListener.java,v 1.2 2003-07-08 14:36:01 chris-dollin Exp $
+  $Id: ModelChangedListener.java,v 1.3 2003-07-09 13:10:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -12,7 +12,16 @@ package com.hp.hpl.jena.rdf.model;
 */
 public interface ModelChangedListener
     {
+    /**
+        Method to call when a single statement has been added to the attached model.
+        @param s the statement that has been presented for addition.
+    */
     void addedStatement( Statement s );
+    
+    /**
+        Method to call when a single statement has been removed from the attached model.
+        @param s the statement that has been presented for removal.
+    */
     void removedStatement( Statement s );
     }
 

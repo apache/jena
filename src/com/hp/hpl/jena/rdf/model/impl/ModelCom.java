@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.58 $' Date='$Date: 2003-07-09 10:15:54 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.59 $' Date='$Date: 2003-07-09 13:10:57 $'
  */
 
 public class ModelCom 
@@ -283,7 +283,6 @@ implements Model, ModelI, PrefixMapping, ModelLock
     
     public Model remove(Statement s)  {
         graph.delete(s.asTriple());
-        listenersRemove( s );
         return this;
     }
     
@@ -971,7 +970,6 @@ implements Model, ModelI, PrefixMapping, ModelLock
     */
     public Model add(Statement s)  {
         add( s.getSubject(), s.getPredicate(), s.getObject() );
-        listenersAdd( s );
         return this;
     }
     
@@ -1276,7 +1274,12 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return result;
     }
 	
-    private Statement asStatement( Triple t )
+    /**
+        Answer a Statement in this Model whcih encodes the given Triple.
+        @param t a triple to wrap as a statement
+        @return a statement wrapping the triple and in this model
+    */
+    public Statement asStatement( Triple t )
         { return StatementImpl.toStatement( t, this ); }
         
 	private Iterator asStatements( final Iterator it ) {
@@ -1425,49 +1428,38 @@ implements Model, ModelI, PrefixMapping, ModelLock
         this.getModelLock().leaveCriticalSection() ;
     }
         
-    protected List listeners = new ArrayList();
-        
-    protected void listenersAdd( Statement s )
-        {
-        for (int i = 0; i < listeners.size(); i += 1)
-            ((ModelChangedListener) listeners.get(i)).addedStatement( s );
-        }
-        
-    protected void listenersRemove( Statement s )
-        {
-        for (int i = 0; i < listeners.size(); i += 1)
-            ((ModelChangedListener) listeners.get(i)).removedStatement( s );
-        }
-        
+    /**
+        Register the listener with this model by registering its GraphListener
+        adaption with the underlying Graph.
+       
+        @param a ModelChangedListener to register for model events
+        @return this model, for cascading 
+    */
     public Model register( ModelChangedListener listener )
         {
         getGraph().getEventManager().register( adapt( listener ) );
         return this;
         }
         
-    public void unregister( ModelChangedListener listener )
+    /**
+        Unregister the listener from this model by unregistering its GraphListener
+        adaption from the underlying Graph.
+        @param  a ModelChangedListener to unregister from model events
+        @return this model, for cascading 
+    */
+    public Model unregister( ModelChangedListener listener )
         {
         getGraph().getEventManager().unregister( adapt( listener ) );
+        return this;
         }
         
-    static class Adapter implements GraphListener
-        {
-        protected ModelCom m;
-        protected ModelChangedListener L;
-        
-        Adapter( ModelCom m, ModelChangedListener L )
-            { this.m = m; this.L = L; }
-            
-        public void notifyAdd( Triple t )
-            { L.addedStatement( m.asStatement( t ) ); }
-            
-        public void notifyDelete( Triple t )
-            { L.removedStatement( m.asStatement( t ) ); }
-            
-        public boolean equals( Object other )
-            { return other instanceof Adapter && L.equals( ((Adapter) other).L ); }
-        }
-        
+    /**
+        Answer a GraphListener that, when fed graph-level update events,
+        fires the corresponding model-level event handlers in <code>L</code>.
+        @see ModelListenerAdapter
+        @param L a model listener to be wrapped as a graph listener
+        @return a graph listener wrapping L
+    */
     public GraphListener adapt( final ModelChangedListener L )
-        { return new Adapter( this, L ); }
+        { return new ModelListenerAdapter( this, L ); }
 }

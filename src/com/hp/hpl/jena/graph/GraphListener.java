@@ -1,22 +1,30 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphListener.java,v 1.3 2003-07-09 09:34:28 chris-dollin Exp $
+  $Id: GraphListener.java,v 1.4 2003-07-09 13:10:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 /**
+    Interface for listening to graph-level update events.
     @author Jeremy Carroll, extensions by kers
 */
 public interface GraphListener 
     {
+    /**
+        Method called when a single triple has been added to the graph.
+    */
     void notifyAdd( Triple t );
+    
+    /**
+        Method called when a single triple has been deleted from the graph.
+    */
     void notifyDelete( Triple t );
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

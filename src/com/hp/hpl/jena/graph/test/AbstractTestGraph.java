@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.11 2003-07-09 10:15:54 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.12 2003-07-09 13:10:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -226,8 +226,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
             { history.clear(); }
             
         public boolean has( Object [] things )
-            { return history.equals( Arrays.asList( things ) ); }
-            
+            { return history.equals( Arrays.asList( things ) ); }           
         }
         
     public void testEventRegister()

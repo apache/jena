@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Model.java,v 1.28 2003-07-08 13:15:55 chris-dollin Exp $
+  $Id: Model.java,v 1.29 2003-07-09 13:10:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -53,7 +53,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.28 $Date: 2003/07/08 09:15:43 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.29 $Date: 2003/07/08 13:15:55 $'
  */
 public interface Model 
     extends ModelCon, RDFReaderF, RDFWriterF, PrefixMapping, ModelLock
@@ -858,6 +858,9 @@ public interface Model
         Register a listener for model-changed events on this model. The methods on
         the listener will be called when API add/remove calls on the model succeed
         [in whole or in part]. 
+    <p>
+        The same listener may be registered many times; if so, it's methods will
+        be called as many times as it's registered for each event.
         
         @see ModelChangedListener
         @return this model, for cascading
@@ -865,9 +868,14 @@ public interface Model
     public Model register( ModelChangedListener listener );
     
     /**
-        Unregister a listener from model-changed events on this model.
+        Unregister a listener from model-changed events on this model. The
+        listener is dtached from the model. The model is returned to permit
+        cascading. If the listener is not attached to the model, then nothing happens.
+        
+        @see ModelChangedListener
+        @return this model, for cascading
     */
-    public void unregister( ModelChangedListener listener );
+    public Model unregister( ModelChangedListener listener );
     
 }
 
@@ -896,5 +904,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.28 2003-07-08 13:15:55 chris-dollin Exp $
+ * $Id: Model.java,v 1.29 2003-07-09 13:10:56 chris-dollin Exp $
  */
