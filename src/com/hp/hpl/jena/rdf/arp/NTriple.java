@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: NTriple.java,v 1.4 2003-08-27 13:05:52 andy_seaborne Exp $
+ * * $Id: NTriple.java,v 1.5 2003-09-03 15:50:53 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -87,6 +87,7 @@ import org.xml.sax.*;
  */
 public class NTriple implements ARPErrorNumbers {
 
+    private static StringBuffer line = new StringBuffer();
 	private static ARP arp;
 	private static String xmlBase = null;
     private static boolean numbers = false;
@@ -134,8 +135,8 @@ public class NTriple implements ARPErrorNumbers {
         if (numbers) {
             Locator locator = arp.getLocator();
             if ( locator != null)
-          System.out.println("# "+locator.getSystemId()+":"+locator.getLineNumber()+"("+
-          locator.getColumnNumber()+")");
+          print("# "+locator.getSystemId()+":"+locator.getLineNumber()+"("+
+          locator.getColumnNumber()+")\n");
         }
     }
 
@@ -331,7 +332,9 @@ public class NTriple implements ARPErrorNumbers {
             resource(subj);
 			resource(pred);
 			resource(obj);
-			System.out.println(".");
+			line.append('.');
+			System.out.println(line);
+			line.setLength(0);
 		}
 		public void statement(AResource subj, AResource pred, ALiteral lit) {
 			String lang = lit.getLang();
@@ -348,48 +351,56 @@ public class NTriple implements ARPErrorNumbers {
 			resource(subj);
 			resource(pred);
 			literal(lit);
-			System.out.println(".");
+			line.append('.');
+			System.out.println(line);
+			line.setLength(0);
 		}
 	}
+	static private void print(String s) {
+		line.append(s);
+	}
 	static private void resource(AResource r) {
-		if (r.isAnonymous())
-			System.out.print("_:j" + r.getAnonymousID() + " ");
-		else {
-			System.out.print("<");
+		if (r.isAnonymous()) {
+			print("_:j");
+			print( r.getAnonymousID() );
+			print(" ");
+		} else {
+			print("<");
 			escapeURI(r.getURI());
-			System.out.print("> ");
+			print("> ");
 		}
 	}
 	static private void escape(String s) {
-		char ar[] = s.toCharArray();
-		for (int i = 0; i < ar.length; i++) {
-			switch (ar[i]) {
+		int lg = s.length();
+		for (int i = 0; i < lg; i++) {
+			char ch = s.charAt(i);
+			switch (ch) {
 				case '\\' :
-					System.out.print("\\\\");
+					print("\\\\");
 					break;
 				case '"' :
-					System.out.print("\\\"");
+					print("\\\"");
 					break;
 				case '\n' :
-					System.out.print("\\n");
+					print("\\n");
 					break;
 				case '\r' :
-					System.out.print("\\r");
+					print("\\r");
 					break;
 				case '\t' :
-					System.out.print("\\t");
+					print("\\t");
 					break;
 				default :
-					if (ar[i] >= 32 && ar[i] <= 126)
-						System.out.print(ar[i]);
+					if (ch >= 32 && ch <= 126)
+						line.append(ch);
 					else {
-						System.out.print("\\u");
-						String hexstr = Integer.toHexString(ar[i]).toUpperCase();
+						print("\\u");
+						String hexstr = Integer.toHexString(ch).toUpperCase();
 						int pad = 4 - hexstr.length();
 
 						for (; pad > 0; pad--)
-							System.out.print("0");
-						System.out.print(hexstr);
+							print("0");
+						print(hexstr);
 					}
 			}
 		}
@@ -405,38 +416,41 @@ public class NTriple implements ARPErrorNumbers {
 		       
 	}
 	static private void escapeURI(String s) {
-		char ar[] = s.toCharArray();
-		for (int i = 0; i < ar.length; i++) {
-			if (ar[i]<okURIChars.length && okURIChars[ar[i]]) {
-						System.out.print(ar[i]);
+		int lg = s.length();
+		for (int i = 0; i < lg; i++) {
+			char ch = s.charAt(i);
+			if (ch<okURIChars.length && okURIChars[ch]) {
+						line.append(ch);
 			} else {
-						System.out.print("\\u");
-						String hexstr = Integer.toHexString(ar[i]).toUpperCase();
+						print("\\u");
+						String hexstr = Integer.toHexString(ch).toUpperCase();
 						int pad = 4 - hexstr.length();
 
 						for (; pad > 0; pad--)
-							System.out.print("0");
-						System.out.print(hexstr);
+							print("0");
+						print(hexstr);
 			}
 		}
 	}
 	static private void literal(ALiteral l) {
 		//if (l.isWellFormedXML())
 		//	System.out.print("xml");
-		System.out.print("\"");
+		line.append('"');
 		escape(l.toString());
-		System.out.print("\"");
+		line.append('"');
 		String lang = l.getLang();
-		if (lang != null && !lang.equals(""))
-			System.out.print("@" + lang);
+		if (lang != null && !lang.equals("")) {
+			line.append('@');
+			print(lang);
+		}
         String dt = l.getDatatypeURI();
         if ( dt != null && !dt.equals("")) {
-            System.out.print("^^<");
+            print("^^<");
             escapeURI(dt);
-            System.out.print(">");
+            line.append('>');
         }
            
-		System.out.print(" ");
+		line.append(' ');
 	}
 
 }
