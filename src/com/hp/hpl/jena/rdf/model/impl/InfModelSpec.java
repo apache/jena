@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.7 2004-08-05 15:04:02 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.8 2004-08-06 08:01:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -9,12 +9,10 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.reasoner.rulesys.Rule;
-import com.hp.hpl.jena.reasoner.rulesys.RuleReasonerFactory;
+import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.WrappedRuleReasonerFactory;
-import com.hp.hpl.jena.shared.NoReasonerSuppliedException;
-import com.hp.hpl.jena.shared.NoSuchReasonerException;
-import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -69,7 +67,6 @@ public class InfModelSpec extends ModelSpecImpl
      */
     protected Model createModel( Graph base )
         {
-        String URI = reasonerResource.getURI();
         Reasoner reasoner = factory.create( null ); 
         return new InfModelImpl( reasoner.bind( base ) );     
         }
@@ -115,7 +112,7 @@ public class InfModelSpec extends ModelSpecImpl
         String rrs = rr.getURI();
         ReasonerFactory rf = ReasonerRegistry.theRegistry().getFactory( rrs );
         if (rf == null) throw new NoSuchReasonerException( rrs );
-        return loadFactoryRulesets( rf, rs, R );
+        return loadFactory( rf, rs, R );
         }
 
     /**
@@ -124,22 +121,42 @@ public class InfModelSpec extends ModelSpecImpl
         and it is wrapped up in a WrappedRuleReasonerFactory which is loaded with all the specified
         rules.
     */
-    private static ReasonerFactory loadFactoryRulesets( ReasonerFactory rf, Model rs, Resource R )
+    private static ReasonerFactory loadFactory( ReasonerFactory rf, Model rs, Resource R )
         {
-        StmtIterator rulesets = rs.listStatements( R, JMS.ruleSetURL, (RDFNode) null );
-        StmtIterator others = rs.listStatements( R, JMS.ruleSet, (RDFNode) null );
-        if (rulesets.hasNext() || others.hasNext())
-            {
-            WrappedRuleReasonerFactory f = new WrappedRuleReasonerFactory( (RuleReasonerFactory) rf );
-            while (rulesets.hasNext()) load( f, rulesets.nextStatement().getResource() );
-            while (others.hasNext()) loadNamedRulesets( f, others.nextStatement().getResource() );
-            return f;
-            }
-        else
-            return rf;
+        WrappedRuleReasonerFactory f = new WrappedRuleReasonerFactory( rf );
+    	loadSchemas( rs, R, f );
+        loadRulesets( rs, R, f );
+        return f;
         }
 
     /**
+        load the factory <code>f</code> with all the rulesets given by the jms:ruleSet and 
+        jms:ruleSetURL properties of <code>R</code> in the model <code>rs</code>.
+	*/
+	private static void loadRulesets( Model rs, Resource R, WrappedRuleReasonerFactory f )
+		{
+		StmtIterator rulesets = rs.listStatements( R, JMS.ruleSetURL, (RDFNode) null );
+		StmtIterator others = rs.listStatements( R, JMS.ruleSet, (RDFNode) null );
+		while (rulesets.hasNext()) load( f, rulesets.nextStatement().getResource() );
+		while (others.hasNext()) loadNamedRulesets( f, others.nextStatement().getResource() );
+		}
+
+	/**
+	 	load the factory <code>f</code> with the schemas given by the jms:schemaURL
+	 	properties of <code>R</code> in <code>rs</code>.
+	*/
+	private static void loadSchemas( Model rs, Resource R, WrappedRuleReasonerFactory f )
+		{
+		StmtIterator schemas = rs.listStatements( R, JMS.schemaURL, (RDFNode) null );
+		while (schemas.hasNext())
+			{
+			Statement s = schemas.nextStatement();
+			Resource sc = s.getResource();
+			f.bindSchema( FileUtils.loadModel( sc.getURI() ).getGraph() );
+			}
+		}
+
+	/**
         load into the factory <code>f</code> any rules described by the jms:hasRule and
         jms:ruleSetURL properties of <code>ruleSet</code>.
     */
@@ -177,8 +194,6 @@ public class InfModelSpec extends ModelSpecImpl
     */
     protected static void load( RuleReasonerFactory rf, Resource u )
         { rf.addRules( Rule.rulesFromURL( u.getURI() ) ); }
-
-
     }
 
 

@@ -1,18 +1,20 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.16 2004-08-05 15:04:03 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.17 2004-08-06 08:02:31 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
 import java.util.*;
 
 import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.TestSuite;
@@ -129,6 +131,85 @@ public class TestModelSpecRevised extends ModelTestBase
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
         }
+    
+    public void testSchema()
+    	{
+    	ReasonerRegistry.theRegistry().register( "fake:factory", new FakeFactory() );
+    	Resource root = resource(), reasoner = resource(), res = resource( "fake:factory" );
+    	Resource maker = resource(), rules = resource();
+    	Model desc = ModelFactory.createDefaultModel()
+	        .add( root, JMS.reasonsWith, reasoner )
+	        .add( reasoner, JMS.reasoner, res )
+	        .add( root, JMS.maker, maker )
+	        .add( maker, RDF.type, JMS.MemMakerSpec )
+	        .add( maker, JMS.reificationMode, JMS.rsMinimal )
+	        .add( reasoner, JMS.schemaURL, resource( file( "schema.n3" ) ) )
+	        .add( reasoner, JMS.schemaURL, resource( file( "schema2.n3" ) ) )
+			;
+		ModelSpec spec = ModelFactory.createSpec( desc );
+		Model m = spec.createModel();
+		Model schema = FileUtils.loadModel( file( "schema.n3" ) );
+		Model schema2 = FileUtils.loadModel( file( "schema2.n3" ) );
+		schema.add( schema2 );
+		getSchema( m, schema.getGraph() );
+    	}
+    
+	private void getSchema( Model m, Graph schema )
+		{
+		((FakeReasoner) ((InfGraph) m.getGraph()).getReasoner()).validate( schema );
+		}
+
+	protected static class FakeReasoner implements Reasoner
+		{
+    	public Graph bound = new GraphMem();
+    	
+    	public void validate( Graph desired )
+    		{ assertTrue( "bound graph is not correct", desired.isIsomorphicWith( bound ) ); }
+    	
+		public Reasoner bindSchema( Graph tbox ) throws ReasonerException
+			{ bound.getBulkUpdateHandler().add( tbox ); return this; }
+
+		public Reasoner bindSchema( Model tbox ) throws ReasonerException
+			{ return bindSchema( tbox.getGraph() ); }
+
+		public InfGraph bind( Graph data ) throws ReasonerException
+			{ return new BasicForwardRuleInfGraph( this, new ArrayList(), new GraphMem(), new GraphMem() ); }
+
+		public void setDerivationLogging( boolean logOn )
+			{ throw new JenaException( "fakes don't do this" ); }
+
+		public void setParameter( Property parameterUri, Object value )
+			{ throw new JenaException( "fakes don't do this" ); }
+		
+		public Model getCapabilities()
+			{ throw new JenaException( "fakes don't do this" ); }
+
+		public void addDescription( Model configSpec, Resource base )
+			{ throw new JenaException( "fakes don't do this" ); }
+
+		public boolean supportsProperty( Property property )
+			{ throw new JenaException( "fakes don't do this" ); }
+
+		}
+    
+    protected static class FakeFactory implements ReasonerFactory
+		{
+		public Reasoner create( Resource configuration )
+			{ return new FakeReasoner();
+			}
+
+		public Model getCapabilities()
+			{
+			// TODO Auto-generated method stub
+			return null;
+			}
+
+		public String getURI()
+			{
+			// TODO Auto-generated method stub
+			return null;
+			}
+		}
     
     public void testCreateReasoningModel()
         {

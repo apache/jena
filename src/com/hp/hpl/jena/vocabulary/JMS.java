@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.22 2004-08-04 14:54:03 chris-dollin Exp $
+  $Id: JMS.java,v 1.23 2004-08-06 08:02:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -69,6 +69,11 @@ public class JMS
          The property of a reasoner spec that specifies in-line rule-sets.
     */
     public static final Property ruleSet = property( "ruleSet" );
+    
+    /**
+     	The property of a reasoner spec that specifies a schema to load
+    */
+    public static final Property schemaURL = property( "schemaURL" );
     
     /**
          The property of a RuleSet that specifies a rule.
