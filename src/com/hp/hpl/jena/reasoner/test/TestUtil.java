@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestUtil.java,v 1.11 2003-12-12 16:40:21 der Exp $
+ * $Id: TestUtil.java,v 1.12 2003-12-12 23:40:10 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2003-12-12 16:40:21 $
+ * @version $Revision: 1.12 $ on $Date: 2003-12-12 23:40:10 $
  */
 public class TestUtil {
     
@@ -54,7 +54,6 @@ public class TestUtil {
         for (int i = 0; i < vals.length; i++) found[i] = false;
         while (it.hasNext()) {
             Object n = it.next();
-            // System.err.println( "Iterator " + n );
             boolean gotit = false;
             
             // do bNodes separately
