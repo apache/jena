@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: RDFException.java,v 1.2 2003-04-01 14:32:37 jeremy_carroll Exp $
+ * $Id: RDFException.java,v 1.3 2003-04-02 13:22:58 chris-dollin Exp $
  *
  * Created on 26 July 2000, 07:00
  */
@@ -35,7 +35,7 @@ import java.lang.Integer;
 
 /** Generic RDF Exception class.
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.2 $ $Date: 2003-04-01 14:32:37 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.3 $ $Date: 2003-04-02 13:22:58 $
  */
 public class RDFException extends RuntimeException {
     
@@ -236,8 +236,12 @@ public class RDFException extends RuntimeException {
         return errorCode;
     }
     
+    /**
+        changed by Chris, because "use this if we haven't one" caused
+        a recursive failure of test cases that exported DoesNotReifyException.
+    */
     public Throwable getCause() {
-        return nestedException!=null?nestedException:this;
+        return nestedException ; // was: !=null?nestedException:this;
     }
     public Exception getNestedException() {
         
