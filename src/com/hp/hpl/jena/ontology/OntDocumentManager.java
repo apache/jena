@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-25 10:35:46 $
+ * Last modified on   $Date: 2003-04-03 16:45:36 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -29,6 +29,8 @@ import java.util.*;
 import org.apache.log4j.*;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.reasoner.rdfsReasoner1.RDFSReasonerFactory;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.MultiUnion;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -45,7 +47,7 @@ import com.hp.hpl.jena.mem.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.3 2003-03-25 10:35:46 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.4 2003-04-03 16:45:36 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -129,6 +131,8 @@ public class OntDocumentManager
     /** The factory we're using to create graphs in the union */
     protected GraphFactory m_graphFactory = null;
     
+    /** Flag to turn on use of inferencing graph for ont document graphs */
+    protected boolean m_useInference = false;
     
     
     // Constructors
@@ -376,11 +380,14 @@ public class OntDocumentManager
      * </p>
      * 
      * @param uri Identifies the model to load.
+     * @param lang URI denoting the language of the ontology to be loaded
      * @return An ontology model containing the statements from the ontology document.
      */
-    public Model getOntology( String uri ) {
-        // TODO
-        return null;
+    public Model getOntology( String uri, String lang ) {
+        OntModel m = ModelFactory.createOntologyModel( lang, null, this );
+        m.read( uri );
+        
+        return m;
     }
     
     
@@ -397,8 +404,18 @@ public class OntDocumentManager
         if (m_graphFactory == null) {
             // construct the default graph factory
             m_graphFactory = new GraphFactory() {
-                                 // default is to create a new in-memory graph
-                                 public Graph getGraph() { return new GraphMem(); }
+                                 // default is to create a new in-memory graph with rdfs reasoning turned on
+                                 public Graph getGraph() {
+                                     Graph graph = new GraphMem(); 
+                                     
+                                     if (m_useInference) {
+                                         // TODO: we will want a better way of doing this in J2P3
+                                         Reasoner reasoner = RDFSReasonerFactory.theInstance().create( null );
+                                         graph = reasoner.bind( graph );
+                                     }
+                                     
+                                     return graph; 
+                                 }
                              };
         }
         
