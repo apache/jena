@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-13 20:45:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -48,7 +48,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.20 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.21 2003-06-13 20:45:58 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1117,7 +1117,13 @@ public class OntResourceImpl
     /** Answer the object of a statement with the given property, .as() the given class */
     protected Object objectAs( Property p, String name, Class asClass ) {
         checkProfile( p, name );
-        return getProperty( p ).getObject().as( asClass );
+        try {
+            return getProperty( p ).getObject().as( asClass );
+        }
+        catch (RDFException e) {
+            // subject does not have that property exception - TODO implement a more specific check here
+            return null;
+        }
     }
 
     

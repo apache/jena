@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-Jun-2003
  * Filename           $RCSfile: TestDAMLClass.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:29 $
+ * Last modified on   $Date: 2003-06-13 20:45:52 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.DAML_OIL;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLClass.java,v 1.1 2003-06-13 19:09:29 ian_dickinson Exp $
+ * @version CVS $Id: TestDAMLClass.java,v 1.2 2003-06-13 20:45:52 ian_dickinson Exp $
  */
 public class TestDAMLClass 
     extends DAMLTestBase
@@ -195,6 +195,68 @@ public class TestDAMLClass
                     iteratorTest( A.getSubClasses(), new Object[] {B,C} );
                     iteratorTest( A.getSubClasses( false ), new Object[] {B} );
                     iteratorTest( A.getSubClasses( true ), new Object[] {B,C} );
+                }
+            },
+            new OntTestCase( "DAMLClass.getSuperClasses" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLClass B = m.createDAMLClass( NS + "B" );
+                    DAMLClass C = m.createDAMLClass( NS + "C" );
+                   
+                    A.prop_subClassOf().add( B );
+                    B.prop_subClassOf().add( C );
+                    
+                    assertEquals( "subClassOf A", B, A.getSuperClass() );
+                    
+                    // no inference
+                    iteratorTest( A.getSuperClasses(), new Object[] {B} );
+                    iteratorTest( A.getSuperClasses( false ), new Object[] {B} );
+                    iteratorTest( A.getSuperClasses( true ), new Object[] {B} );
+                    
+                    A.prop_subClassOf().add( C );   // could be inferred
+                    
+                    iteratorTest( A.getSuperClasses(), new Object[] {B,C} );
+                    iteratorTest( A.getSuperClasses( false ), new Object[] {B} );
+                    iteratorTest( A.getSuperClasses( true ), new Object[] {B,C} );
+                }
+            },
+            new OntTestCase( "DAMLClass.getSameClasses" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLClass B = m.createDAMLClass( NS + "B" );
+                    DAMLClass C = m.createDAMLClass( NS + "C" );
+                   
+                    A.prop_sameClassAs().add( B );
+                    B.prop_sameClassAs().add( C );
+                    
+                    // no inference
+                    iteratorTest( A.getSameClasses(), new Object[] {B} );
+                    
+                    A.prop_sameClassAs().add( C );   // could be inferred
+                    
+                    iteratorTest( A.getSameClasses(), new Object[] {B,C} );
+                }
+            },
+            new OntTestCase( "DAMLClass.getInstances" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLInstance a = m.createDAMLInstance( A, NS + "a" );
+                    DAMLInstance b = m.createDAMLInstance( A, NS + "b" );
+                    DAMLInstance c = m.createDAMLInstance( A, NS + "c" );
+                   
+                    iteratorTest( A.getInstances(), new Object[] {a,b,c} );
+                }
+            },
+            new OntTestCase( "DAMLClass.getDefinedProperties" ) {
+                public void doTest( DAMLModel m ) throws Exception {
+                    DAMLClass A = m.createDAMLClass( NS + "A" );
+                    DAMLObjectProperty p = m.createDAMLObjectProperty( NS + "p" );
+                    DAMLObjectProperty q = m.createDAMLObjectProperty( NS + "q" );
+                    DAMLObjectProperty r = m.createDAMLObjectProperty( NS + "r" );
+
+                    // TODO once daml property has been migrated          
+                             
+                    iteratorTest( A.getDefinedProperties(), new Object[] {} );
                 }
             },
         };

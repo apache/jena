@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLInstanceImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-13 20:45:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright Hewlett-Packard Company 2001
@@ -61,7 +61,7 @@ import java.util.Iterator;
  * Java representation of a DAML Instance.
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian_Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLInstanceImpl.java,v 1.2 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLInstanceImpl.java,v 1.3 2003-06-13 20:45:58 ian_dickinson Exp $
  */
 public class DAMLInstanceImpl
     extends DAMLCommonImpl
@@ -82,7 +82,7 @@ public class DAMLInstanceImpl
     public static Implementation factory = new Implementation() {
         public EnhNode wrap( Node n, EnhGraph eg ) { 
             if (canWrap( n, eg )) {
-                return new DAMLClassImpl( n, eg );
+                return new DAMLInstanceImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLDatatype" );

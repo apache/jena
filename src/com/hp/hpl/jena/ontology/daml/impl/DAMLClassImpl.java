@@ -6,10 +6,10 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClassImpl.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2003-06-13 19:09:28 $
+ * Last modified on   $Date: 2003-06-13 20:45:58 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001-2003, Hewlett-Packard Company, all rights reserved. 
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClassImpl.java,v 1.4 2003-06-13 19:09:28 ian_dickinson Exp $
+ * @version CVS info: $Id: DAMLClassImpl.java,v 1.5 2003-06-13 20:45:58 ian_dickinson Exp $
  */
 public class DAMLClassImpl
     extends OntClassImpl
@@ -399,7 +399,7 @@ public class DAMLClassImpl
      * @return an iterator over this class's super-classes.
      */
     public Iterator getSuperClasses( boolean closed ) {
-        return ((ExtendedIterator) super.listSuperClasses( !closed )).mapWith( new AsMapper( DAMLClass.class ) );
+        return WrappedIterator.create( super.listSuperClasses( !closed ) ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
 
@@ -416,7 +416,7 @@ public class DAMLClassImpl
      * @return an iterator ranging over every equivalent DAML classes
      */
     public Iterator getSameClasses() {
-        return ((ExtendedIterator) super.listEquivalentClasses()).mapWith( new AsMapper( DAMLClass.class ) );
+        return WrappedIterator.create( super.listEquivalentClasses() ).mapWith( new AsMapper( DAMLClass.class ) );
     }
 
 
@@ -467,7 +467,7 @@ public class DAMLClassImpl
      * @see com.hp.hpl.jena.ontology.daml.DAMLCommon#getRDFTypes
      */
     public Iterator getInstances() {
-        return ((ExtendedIterator) listInstances()).mapWith( new AsMapper( DAMLInstance.class ) );
+        return WrappedIterator.create( listInstances() ).mapWith( new AsMapper( DAMLInstance.class ) );
     }
 
 
@@ -501,7 +501,7 @@ public class DAMLClassImpl
      * @return An iteration of the properties that have this class as domain
      */
     public Iterator getDefinedProperties( boolean closed ) {
-        return ((ExtendedIterator) listDeclaredProperties( closed )).mapWith( new AsMapper( DAMLProperty.class ) );
+        return WrappedIterator.create( listDeclaredProperties( closed ) ).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 
 
