@@ -1,7 +1,7 @@
 /*
- * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
+ * (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: QueryTestScripts.java,v 1.17 2003-12-04 12:07:38 andy_seaborne Exp $
+ * $Id: QueryTestScripts.java,v 1.18 2004-05-06 14:38:48 andy_seaborne Exp $
  */
 
 
@@ -28,7 +28,7 @@ import org.apache.commons.logging.LogFactory;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.17 2003-12-04 12:07:38 andy_seaborne Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.18 2004-05-06 14:38:48 andy_seaborne Exp $
  */
 
 
@@ -243,9 +243,14 @@ public class QueryTestScripts extends TestSuite
                 {
                     // Model supplied
                     emptyModel(model) ;
-                    String data = convertFilename(dataFile, directory) ;
+                    String data = null ;
+                    if ( dataFile != null && ! dataFile.equals("") )
+                        data = dataFile ;
                     if ( data == null )
                         data = query.getSourceURL() ;
+                    data = convertFilename(data, directory) ;
+                    if ( data == null )
+                        System.err.println("No data for : "+this.queryFile) ;
 
                     long startLoadTime = System.currentTimeMillis();
                     query.setSource(ModelLoader.loadModel(model, data, null)) ;
@@ -350,7 +355,7 @@ public class QueryTestScripts extends TestSuite
         }
     }
 
-    private static void emptyModel(Model model)
+    public static void emptyModel(Model model)
     {
         if ( model == null )
             return ;
@@ -362,7 +367,7 @@ public class QueryTestScripts extends TestSuite
             }
             sIter.close() ;
         } catch ( JenaException rdfEx)
-        { logger.error( "Failed to empty model (com.hp.hpl.jena.rdf.query.Test.QueryTest.emptyModel)", rdfEx) ; }
+        { logger.error( "Failed to empty model", rdfEx) ; }
     }
 
     static String convertFilename(String filename, String directory)
@@ -399,7 +404,7 @@ public class QueryTestScripts extends TestSuite
 }
 
 /*
- *  (c) Copyright 2001, 2002, 2003, 2001, 2002, 2003 Hewlett-Packard Development Company, LP
+ *  (c) Copyright 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
