@@ -52,7 +52,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.36 $' Date='$Date: 2003-05-21 14:50:19 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.37 $' Date='$Date: 2003-05-22 09:42:58 $'
  */
 
 public class ModelCom 
@@ -478,7 +478,7 @@ implements Model, ModelI, PrefixMapping, ModelLock
     }
     
     public Resource createResource( AnonId id )
-        { return new ResourceImpl( id ); }
+        { return new ResourceImpl( id, this ); }
         
     public Resource createResource(String uri, ResourceF f) throws RDFException {
        return f.createResource( createResource( uri ) );
@@ -1070,8 +1070,8 @@ implements Model, ModelI, PrefixMapping, ModelLock
             iter = graph.find(s.asTripleMatch(this));
         } else {
             iter = graph.find(new StandardTripleMatch(null,null,null){
-            	public boolean triple(Triple t) {
-            		return selector.test(IteratorFactory.asStatement(t,ModelCom.this));
+            	public boolean triple( Triple t ) {
+            		return selector.test( asStatement( t ) );
             	}
             });
         }
@@ -1118,14 +1118,11 @@ implements Model, ModelI, PrefixMapping, ModelLock
     }
     
     /**
-        create a Statement from the given r, p, and o. We go round the houses
-        (converting to Nodes, makeing a Triple, and invoking asStatement) so
-        that the resulting Statement's components are all in the correct model.
+        create a Statement from the given r, p, and o.
     */
     public Statement createStatement(Resource r, Property p, RDFNode o)
     throws RDFException {
-        return IteratorFactory.asStatement(
-        new Triple(r.asNode(), p.asNode(), o.asNode()), this);
+        return new StatementImpl( r, p, o, this ); 
     }
     
     public Bag createBag(String uri) throws RDFException {
@@ -1188,11 +1185,14 @@ implements Model, ModelI, PrefixMapping, ModelLock
         return result;
     }
 	
+    private Statement asStatement( Triple t )
+        { return StatementImpl.toStatement( t, this ); }
+        
 	private Iterator asStatements( final Iterator it ) {
 		final ModelCom self = this;
 		return new Iterator() {
 			public boolean hasNext() { return it.hasNext(); }
-			public Object next() { return IteratorFactory.asStatement( (Triple) it.next(), self ); }
+			public Object next() { return asStatement( (Triple) it.next() ); } 
 			public void remove() { it.remove(); }
 		};
 	}

@@ -39,7 +39,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Statement.
  *
  * @author  bwm
- * @version  $Name: not supported by cvs2svn $ $Revision: 1.12 $ $Date: 2003-05-20 15:15:06 $
+ * @version  $Name: not supported by cvs2svn $ $Revision: 1.13 $ $Date: 2003-05-22 09:42:58 $
  */
 public class StatementImpl  implements Statement {
     
@@ -63,9 +63,23 @@ public class StatementImpl  implements Statement {
                          Model model) throws RDFException {
         this.model = model;
         this.subject = (Resource) subject.inModel( model ); 
+        if (this.subject.getModel() != model) throw new RuntimeException( "BOTHER "  + subject );
         this.predicate = (Property) predicate.inModel( model ); 
         this.object = object.inModel( model ); 
     }    
+    
+    /**
+        create a Statement from the triple _t_ in the enhanced graph _eg_.
+        The Statement has subject, predicate, and object corresponding to
+        those of _t_.
+    */
+    public static Statement toStatement( Triple t, EnhGraph eg )
+        {
+        Resource s = new ResourceImpl( t.getSubject(), eg );
+        Property p = new PropertyImpl( t.getPredicate(), eg );
+        RDFNode o = createObject( t.getObject(), eg );
+        return new StatementImpl( s, p, o, (Model) eg );
+        }
     
     public Resource getSubject() {
         return subject;
@@ -348,19 +362,6 @@ public class StatementImpl  implements Statement {
         
     public RSIterator listReifiedStatements()
         { return mustHaveModel().listReifiedStatements( this ); }
-
-    /**
-        create a Statement from the triple _t_ in the enhanced graph _eg_.
-        The Statement has subject, predicate, and object corresponding to
-        those of _t_.
-    */
-    public static Statement toStatement( Triple t, EnhGraph eg )
-        {
-        Resource s = new ResourceImpl( t.getSubject(), eg );
-        Property p = new PropertyImpl( t.getPredicate(), eg );
-        RDFNode o = createObject( t.getObject(), eg );
-        return new StatementImpl( s, p, o, (Model) eg );
-        }
 
     /**
         create an RDF node which might be a literal, or not.

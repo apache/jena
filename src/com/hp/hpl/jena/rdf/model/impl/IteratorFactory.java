@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: IteratorFactory.java,v 1.5 2003-04-08 22:12:00 ian_dickinson Exp $
+  $Id: IteratorFactory.java,v 1.6 2003-05-22 09:42:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -34,23 +34,12 @@ public final class IteratorFactory {
 		else
 		  return asResource(n,m);
 	}
-	/*
-	public Resource anonResource( Model m )
-		{
-		return (Resource) asRDFNode( Node.makeAnon( new AnonId() ), m );
-		}
-		*/
 		
 	/**
 	 * 
 	 */
 	static public Statement asStatement(Triple t, ModelCom m) {
-		return new StatementImpl(
-		asResource(t.getSubject(),m),
-		asProperty(t.getPredicate(),m),
-		asRDFNode(t.getObject(),m),
-		m
-		);
+        return StatementImpl.toStatement( t, m );
 	}
 
 	/**
