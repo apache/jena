@@ -15,11 +15,13 @@ architecture together with rule-based reasoners for RDFS and OWL.
 
 Database:
 
-PostgreSQL and Oracle are now supported for persistent models. Note
-that the database layout has changed from preview 3. Preview 3
-and earlier Jena databases cannot be accessed by Jena2-beta. It
-will be necessary to dump and rebuild them. No further changes to
-the database layout are anticipated for the final Jena2 release.
+PostgreSQL and Oracle are now supported for persistent models, although
+there are known bugs with the treatment of blobs (large objects) using Oracle 
+on Linux, so large objects (e.g., huge literals) are not supported with that
+configuratoin (Oracle/Linux). Note that the database layout has changed 
+from preview 3. Preview 3 and earlier Jena databases cannot be accessed 
+by Jena2-beta. It will be necessary to dump and rebuild them. No further 
+changes to the database layout are anticipated for the final Jena2 release.
 Remaining work includes: BerkeleyDB support, ability to set
 configuration options, namespace compression for URIs, query fastpath,
 tuning (e.g., bulk update, caching) and property tables (time permitting).
