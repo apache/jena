@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-20 09:45:41 $
+ * Last modified on   $Date: 2003-08-20 11:38:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -44,7 +44,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.10 2003-08-20 09:45:41 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.11 2003-08-20 11:38:44 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -146,6 +146,17 @@ public class TestBugReports
         OntProperty property = ontModel.createObjectProperty("http://www.aldi.de#property");
         /*MinCardinalityRestriction testClass = */ontModel.createMinCardinalityRestriction( null, property, 42);
         
+    }
+    
+    /** Bug report from Holger Knublauch on Aug 19th, 2003.  Document manager alt mechanism breaks relative name translation */
+    public void test_hk_04() {
+        OntModel m = ModelFactory.createOntologyModel();
+        m.getDocumentManager().addAltEntry( "http://jena.hpl.hp.com/testing/ontology/relativenames", 
+                                            "file:testing/ontology/relativenames.rdf");
+        
+        m.read( "http://jena.hpl.hp.com/testing/ontology/relativenames" );
+        assertTrue( "#A should be a class", m.getResource( "http://jena.hpl.hp.com/testing/ontology/relativenames#A" ).canAs( OntClass.class ) );
+        assertFalse( "file: #A should not be a class", m.getResource( "file:testing/ontology/relativenames.rdf#A" ).canAs( OntClass.class ) );
     }
     
     /**

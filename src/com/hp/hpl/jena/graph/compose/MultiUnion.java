@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-17 09:09:22 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2003-08-20 11:38:44 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.7 2003-07-17 09:09:22 chris-dollin Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.8 2003-08-20 11:38:44 ian_dickinson Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -186,6 +186,21 @@ public class MultiUnion
         }
     }
 
+
+    /**
+     * <p>
+     * Add the given graph to this union.  If it is already a member of the union, don't
+     * add it a second time.
+     * </p>
+     * 
+     * @param graph A sub-graph to add to this union
+     */        
+    public void addGraph( Graph graph ) { 
+        if (!m_subGraphs.contains( graph )) {
+            m_subGraphs.add( graph );
+        }
+    }
+    
 
     // Internal implementation methods
     //////////////////////////////////

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.24 $
+ * Revision           $Revision: 1.25 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-07-31 08:28:39 $
+ * Last modified on   $Date: 2003-08-20 11:38:44 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.24 2003-07-31 08:28:39 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.25 2003-08-20 11:38:44 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -754,11 +754,14 @@ public class OntDocumentManager
                 }
             }
     
-            // queue the imports from the input model on the end of the read queue
-            queueImports( in, readQueue, model.getProfile() );
-    
-            // add to the imports union graph, but don't do the rebind yet
-            model.addSubModel( in, false );
+            // we trap the case of importing ourself (which may happen via an indirect imports chain)
+            if (in != model) {
+                // queue the imports from the input model on the end of the read queue
+                queueImports( in, readQueue, model.getProfile() );
+        
+                // add to the imports union graph, but don't do the rebind yet
+                model.addSubModel( in, false );
+            }
         }
     }
 
