@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Concurrency in Jena</title>
+  <link href="../styles/doc.css" rel="stylesheet" type="text/css">
+  
+<style>
+.box { margin-left : 5% ;
+       margin-right : 7% ;
+       border: 1px solid ;
+       background-color: #F0F0F0; 
+       padding: 10;
+       page-break-inside: avoid 
+       }
+  </style>
+</head>
+
+<body>
+
+<h1>Conncurrent access to Models</h1>
+
+<p>Applications need to be aware of the concurrency issues in access Jena 
+models.&nbsp; API operations are not thread safe by default.&nbsp; Thread safety 
+would simple ensure that the model datastructures remained intact but would not 
+give an application consistent access to the RDF graph.&nbsp; It would also 
+limit the throughput of multithreaded applications on multiprocessor machines 
+where true concurrenecy can lead to a reduction in response time.</p>
+
+<p>For example,</p>
+
+<p>There are two main cases:</p>
+
+<ul>
+  <li>Multi-threads in the same JVM.</li>
+  <li>Multiple applications accessing the same persistent model (typically, a 
+  database).</li>
+</ul>
+
+<p>Transactions are provided by database-backed models: see the
+<a href="DB/index.html">database documentation</a> and the
+<a href="javadoc/com/hp/hpl/jena/rdf/model/Model.html#supportsTransactions()">Model interface to 
+transactions</a></p>
+
+<h2>ModelLocks</h2>
+<p>ModelLocks provide critical section support for managing the interactions of 
+multiple threads in the same JVM.&nbsp; Jena provides 
+multiple-reader/single-writer concurrency support (MRSW).</p>
+<p>The pattern general is:</p>
+
+<pre class="box">Model model = . . . ;
+model.enterCriticalSection(ModelLock.READ) ;  // or ModelLock.WRITE
+try {
+    ... perform actions on the model ...
+    ... obey contract - no update ioperations if a read lock
+} finally {
+    model.leaveCriticalSection() ;
+}</pre>
+<p>Applications are expected to obey the lock contract, that is, they must not 
+do update operations if they have a read lock as there can be other application 
+threads reading the model concurrently.</p>
+
+</body>
+</html>
