@@ -10,9 +10,19 @@ Post Jena 2.1 change list
       o Fixed XSDDouble isValidValue test to check for Double
       o Fixed XSDbase64Binary, XSDhexBinary returning strings instead of byte[]
 
-  Model
-      o added new API operation removeAll() which removes "all" statements
+  Model & Graph removeAll(), remove(S, P, O)
+      o added new API operation Model::removeAll() which removes "all" statements
         from a model [currently there are issues about inference models]
+      o added removeAll() to Graph BulkUpdateHandler
+      o added Model::remove(S, P, O) which removes all statements matching
+        (S, P, O) with nulls as wildcards
+      o added BulkUpdateHandler.remove(S,P,O) removing triples matching
+        (S, P, O), Node.ANY as wildcard
+      o BulkUpdateHandler generates events for these
+
+  Event handling
+      o added new graph.GraphEvents as holder of event constants with one
+        such, .removeAll, issued by BulkUpdateHandler for removeAll()
 
   Reasoners
       o Fixed ommission in handling of someValuesFrom applied to an rdfs:Datatype.
