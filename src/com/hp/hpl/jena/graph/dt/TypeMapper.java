@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TypeMapper.java,v 1.1.1.1 2002-12-19 19:13:40 bwm Exp $
+ * $Id: TypeMapper.java,v 1.2 2003-02-10 10:00:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.dt;
 
@@ -18,7 +18,7 @@ import java.util.Iterator;
  * that is used to represent them.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:40 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:00:24 $
  */
 public class TypeMapper {
 
@@ -62,14 +62,14 @@ public class TypeMapper {
 // Methods
 
     /**
-     * Method getTypeByName.
+     * Method getSafeTypeByName.
      * 
      * @param uri the URI of the desired datatype
      * @return Datatype the datatype definition
      * registered at uri, if there is no such registered type it
      * returns the default datatype implementation.
      */
-    public RDFDatatype getTypeByName(String uri) {
+    public RDFDatatype getSafeTypeByName(String uri) {
         RDFDatatype dtype = (RDFDatatype) uriToDT.get(uri);
         if (dtype == null) {
             // @TODO add log message
@@ -78,6 +78,17 @@ public class TypeMapper {
             registerDatatype(dtype);
         }
         return dtype;
+    }
+    
+    /**
+     * Lookup a known datatype. Differs from getSafeTypeByName in
+     * that it will return null if the datatype is not registered.
+     * 
+     * @param uri the URI of the desired datatype
+     * @return Datatype the datatype definition of null if not known.
+     */
+    public RDFDatatype getTypeByName(String uri) {
+        return (RDFDatatype) uriToDT.get(uri);
     }
     
     /**

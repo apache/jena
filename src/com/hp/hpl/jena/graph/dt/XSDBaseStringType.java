@@ -1,48 +1,62 @@
 /******************************************************************
- * File:        XSDDateTimeType.java
+ * File:        XSDBaseStringType.java
  * Created by:  Dave Reynolds
- * Created on:  16-Dec-2002
+ * Created on:  09-Feb-03
  * 
- * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+ * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDateTimeType.java,v 1.2 2003-02-10 10:00:22 der Exp $
+ * $Id: Graph.java,v 1.8 2002/11/29 23:21:13 jjc Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.dt;
 
 import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
- * The XSD date/time type, the only job of this extra layer is to
- * wrap the return value in a more convenient accessor type. 
+ * Base implementation for all string datatypes derinved from
+ * xsd:string. The only purpose of this place holder is
+ * to support the isValidLiteral tests across string types.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:00:22 $
+ * @version $Revision$ on $Date: 2000/06/22 16:03:33 $
  */
-public class XSDDateTimeType extends XSDDatatype {
+public class XSDBaseStringType extends XSDDatatype {
 
     /**
-     * Constructor
+     * Constructor. 
+     * @param typeName the name of the XSD type to be instantiated, this is 
+     * used to lookup a type definition from the Xerces schema factory.
      */
-    public XSDDateTimeType(String typename) {
-        super(typename);
-    }
-
-    /**
-     * Parse a lexical form of this datatype to a value
-     * @return a Duration value
-     * @throws DatatypeFormatException if the lexical form is not legal
-     */
-    public Object parse(String lexicalForm) throws DatatypeFormatException {
-        return new XSDDateTime(super.parse(lexicalForm), typeDeclaration);
+    public XSDBaseStringType(String typeName) {
+        super(typeName);
     }
     
     /**
-     * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
+     * Constructor. 
+     * @param typeName the name of the XSD type to be instantiated, this is 
+     * used to lookup a type definition from the Xerces schema factory.
+     * @param javaClass the java class for which this xsd type is to be
+     * treated as the cannonical representation
      */
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-       return value1.getValue().equals(value2.getValue());
+    public XSDBaseStringType(String typeName, Class javaClass) {
+        super(typeName, javaClass);
+    }
+
+    
+    /**
+     * Test whether the given LiteralLabel is a valid instance
+     * of this datatype. This takes into accound typing information
+     * as well as lexical form - for example an xsd:string is
+     * never considered valid as an xsd:integer (even if it is
+     * lexically legal like "1").
+     */
+    public boolean isValidLiteral(LiteralLabel lit) {
+        RDFDatatype dt = lit.getDatatype();
+        if (dt == null || this.equals(dt)) return true;
+        if (dt instanceof XSDBaseStringType) {
+            return isValid(lit.toString());
+        } else {
+            return false;
+        }
     }
 }
 

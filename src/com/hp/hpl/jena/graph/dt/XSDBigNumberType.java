@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDBigNumberType.java,v 1.2 2003-01-31 10:25:57 der Exp $
+ * $Id: XSDBigNumberType.java,v 1.3 2003-02-10 10:00:26 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.dt;
 
@@ -22,9 +22,9 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * and default to a Long when possible.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-01-31 10:25:57 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-10 10:00:26 $
  */
-public class XSDBigNumberType extends XSDDatatype {
+public class XSDBigNumberType extends XSDBaseNumericType {
     
     static final DecimalDV decimalDV = new DecimalDV();
     

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDShortType.java,v 1.1.1.1 2002-12-19 19:13:50 bwm Exp $
+ * $Id: XSDShortType.java,v 1.2 2003-02-10 10:00:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.dt;
 
@@ -15,9 +15,9 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * Datatype template used to define XSD int types
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:50 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:00:28 $
  */
-public class XSDShortType extends XSDDatatype {
+public class XSDShortType extends XSDBaseNumericType {
 
     /**
      * Constructor. 

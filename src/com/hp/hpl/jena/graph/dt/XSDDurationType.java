@@ -5,9 +5,11 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDurationType.java,v 1.1.1.1 2002-12-19 19:13:47 bwm Exp $
+ * $Id: XSDDurationType.java,v 1.2 2003-02-10 10:00:24 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.dt;
+
+import com.hp.hpl.jena.graph.LiteralLabel;
 
 /**
  * The XSD duration type, the only job of this extra layer is to
@@ -16,7 +18,7 @@ package com.hp.hpl.jena.graph.dt;
  * since that causes allergic reactions in some we use brute force.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:47 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:00:24 $
  */
 public class XSDDurationType extends XSDDatatype {
     
@@ -34,6 +36,15 @@ public class XSDDurationType extends XSDDatatype {
      */
     public Object parse(String lexicalForm) throws DatatypeFormatException {
         return new XSDDuration(super.parse(lexicalForm), typeDeclaration);
+    }
+    
+    /**
+     * Compares two instances of values of the given datatype.
+     * This ignores lang tags and just uses the java.lang.Number 
+     * equality.
+     */
+    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
+       return value1.getValue().equals(value2.getValue());
     }
 }
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDatatype.java,v 1.2 2003-01-31 08:52:05 der Exp $
+ * $Id: XSDDatatype.java,v 1.3 2003-02-10 10:00:24 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.graph.dt;
@@ -36,7 +36,7 @@ import org.apache.xerces.xni.grammars.XSGrammar;
  * XSD implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-01-31 08:52:05 $
+ * @version $Revision: 1.3 $ on $Date: 2003-02-10 10:00:24 $
  */
 public class XSDDatatype extends BaseDatatype {
 
@@ -98,49 +98,49 @@ public class XSDDatatype extends BaseDatatype {
     public static final XSDDatatype XSDboolean = new XSDDatatype("boolean", Boolean.class);
     
     /** Datatype representing xsd:string */
-    public static final XSDDatatype XSDstring = new XSDDatatype("string", String.class);
+    public static final XSDDatatype XSDstring = new XSDBaseStringType("string", String.class);
     
     /** Datatype representing xsd:normalizedString */
-    public static final XSDDatatype XSDnormalizedString = new XSDDatatype("normalizedString", String.class);
+    public static final XSDDatatype XSDnormalizedString = new XSDBaseStringType("normalizedString", String.class);
     
     /** Datatype representing xsd:anyURI */
     public static final XSDDatatype XSDanyURI = new XSDDatatype("anyURI");
     
     /** Datatype representing xsd:token */
-    public static final XSDDatatype XSDtoken = new XSDDatatype("token");
+    public static final XSDDatatype XSDtoken = new XSDBaseStringType("token");
 
     /** Datatype representing xsd:Name */
-    public static final XSDDatatype XSDName = new XSDDatatype("Name");
+    public static final XSDDatatype XSDName = new XSDBaseStringType("Name");
 
     /** Datatype representing xsd:QName */
     public static final XSDDatatype XSDQName = new XSDDatatype("QName");
 
     /** Datatype representing xsd:language */
-    public static final XSDDatatype XSDlanguage = new XSDDatatype("language");
+    public static final XSDDatatype XSDlanguage = new XSDBaseStringType("language");
 
     /** Datatype representing xsd:NMTOKEN */
-    public static final XSDDatatype XSDNMTOKEN = new XSDDatatype("NMTOKEN");
+    public static final XSDDatatype XSDNMTOKEN = new XSDBaseStringType("NMTOKEN");
 
     /** Datatype representing xsd:ENTITIES */
-    public static final XSDDatatype XSDENTITIES = new XSDDatatype("ENTITIES");
+    public static final XSDDatatype XSDENTITIES = new XSDBaseStringType("ENTITIES");
 
     /** Datatype representing xsd:NMTOKENS */
-    public static final XSDDatatype XSDNMTOKENS = new XSDDatatype("NMTOKENS");
+    public static final XSDDatatype XSDNMTOKENS = new XSDBaseStringType("NMTOKENS");
 
     /** Datatype representing xsd:ENTITY */
-    public static final XSDDatatype XSDENTITY = new XSDDatatype("ENTITY");
+    public static final XSDDatatype XSDENTITY = new XSDBaseStringType("ENTITY");
 
     /** Datatype representing xsd:ID */
-    public static final XSDDatatype XSDID = new XSDDatatype("ID");
+    public static final XSDDatatype XSDID = new XSDBaseStringType("ID");
 
     /** Datatype representing xsd:NCName */
-    public static final XSDDatatype XSDNCName = new XSDDatatype("NCName");
+    public static final XSDDatatype XSDNCName = new XSDBaseStringType("NCName");
 
     /** Datatype representing xsd:IDREF */
     public static final XSDDatatype XSDIDREF = new XSDDatatype("IDREF");
 
     /** Datatype representing xsd:IDREFS */
-    public static final XSDDatatype XSDIDREFS = new XSDDatatype("IDREFS");
+    public static final XSDDatatype XSDIDREFS = new XSDBaseStringType("IDREFS");
 
     /** Datatype representing xsd:NOTATION */
     public static final XSDDatatype XSDNOTATION = new XSDDatatype("NOTATION");

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseDatatype.java,v 1.1.1.1 2002-12-19 19:13:38 bwm Exp $
+ * $Id: BaseDatatype.java,v 1.2 2003-02-10 10:00:20 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.graph.dt;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.LiteralLabel;
  * can inherit.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1.1.1 $ on $Date: 2002-12-19 19:13:38 $
+ * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:00:20 $
  */
 public class BaseDatatype implements RDFDatatype {
     
@@ -68,6 +68,18 @@ public class BaseDatatype implements RDFDatatype {
         }
     }    
     
+    /**
+     * Test whether the given LiteralLabel is a valid instance
+     * of this datatype. This takes into accound typing information
+     * as well as lexical form - for example an xsd:string is
+     * never considered valid as an xsd:integer (even if it is
+     * lexically legal like "1").
+     */
+    public boolean isValidLiteral(LiteralLabel lit) {
+        // default is than only literals with the same type are valid
+        return equals(lit.getDatatype());
+    }
+     
     /**
      * Test whether the given object is a legal value form
      * of this datatype.

@@ -5,14 +5,16 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.8 2003-02-03 16:51:31 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.9 2003-02-10 10:01:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.graph.LiteralLabel;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.dt.*;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.ModelMem;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.SelectorImpl;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -25,7 +27,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-02-03 16:51:31 $
+ * @version $Revision: 1.9 $ on $Date: 2003-02-10 10:01:14 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -248,6 +250,19 @@ public class TestTypedLiterals extends TestCase {
     }
     
     /**
+     * Some selected equality tests which caused problems in WG tests
+     */
+    public void testMiscEquality() {
+        Literal l1 = m.createTypedLiteral("10", "", "http://www.w3.org/2001/XMLSchema#integer");
+        Literal l2 = m.createTypedLiteral("010", "en", "http://www.w3.org/2001/XMLSchema#integer");
+        Literal l3 = m.createTypedLiteral("010", "", "http://www.w3.org/2001/XMLSchema#integer");
+        Literal l4 = m.createTypedLiteral("010", "fr", "http://www.w3.org/2001/XMLSchema#integer");
+        assertSame("Int lex form", l1, l3);
+        assertSame("Ignore language in integer", l1, l2);
+        assertSame("Ignore language in integer", l1, l4);
+    }
+    
+    /**
      * Test user defined data types using the DAML+OIL standard example.
      * N.B. The file on daml.org is not legal (wrong namespace for XMLSchema, missed
      * qualifiers  onsome restriction base types) so we actually load a locally cached
@@ -266,18 +281,18 @@ public class TestTypedLiterals extends TestCase {
             uri + "#clothingsize"   });
         
         // Check the string restriction
-        RDFDatatype heightType = tm.getTypeByName(uri + "#XSDEnumerationHeight");
+        RDFDatatype heightType = tm.getSafeTypeByName(uri + "#XSDEnumerationHeight");
         checkLegalLiteral("short", heightType, String.class, "short");
         checkLegalLiteral("tall", heightType, String.class, "tall");
         checkIllegalLiteral("shortish", heightType);
 
         // Check the numeric restriction
-        RDFDatatype over12Type = tm.getTypeByName(uri + "#over12");
+        RDFDatatype over12Type = tm.getSafeTypeByName(uri + "#over12");
         checkLegalLiteral("15", over12Type, Integer.class, new Integer(15));
         checkIllegalLiteral("12", over12Type);
         
         // Check the union type
-        RDFDatatype clothingsize = tm.getTypeByName(uri + "#clothingsize");
+        RDFDatatype clothingsize = tm.getSafeTypeByName(uri + "#clothingsize");
         checkLegalLiteral("42", clothingsize, Integer.class, new Integer(42));
         checkLegalLiteral("short", clothingsize, String.class, "short");
         
@@ -414,7 +429,85 @@ public class TestTypedLiterals extends TestCase {
         } catch (IllegalDateTimeFieldException e) {}
         
     }
+      
+    /**
+     * Test query applied to graphs containing typed values
+     */
+    public void testTypedQueries() {
+        Model model = new ModelMem();
+        Property p = model.createProperty("urn:x-eg/p");
+        Literal l1 = model.createTypedLiteral("10", "fr", "http://www.w3.org/2001/XMLSchema#integer");
+        Literal l2 = model.createTypedLiteral("010", "en", "http://www.w3.org/2001/XMLSchema#integer");
+        assertSame("sameas test", l1, l2);
+        Resource a = model.createResource("urn:x-eg/a");
+        a.addProperty(p, l1);
+        assertTrue(model.getGraph().find(null, p.asNode(), l1.asNode()).hasNext());
+        assertTrue(model.getGraph().find(null, p.asNode(), l2.asNode()).hasNext());
+        assertTrue(model.getGraph().find(a.asNode(), p.asNode(), l2.asNode()).hasNext());
+        Query q = new Query();
+        q.addMatch(a.asNode(), p.asNode(), l2.asNode());
+        Iterator qi = model.getGraph().queryHandler().prepareBindings(q, new Node[] {}).executeBindings();
+        assertTrue(qi.hasNext());
+        // Similar tests at Model API level
+        Selector s1 = new SelectorImpl(a, p, l2);
+        assertTrue(model.listStatements(s1).hasNext());
+    }
+    
+    /**
+     * Test the isValidLiteral machinery
+     */
+    public void testIsValidLiteral() {
+        Literal l = m.createTypedLiteral("1000", "", XSDDatatype.XSDinteger);
+        LiteralLabel ll = l.asNode().getLiteral();
+        assertTrue(XSDDatatype.XSDlong.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDint.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDshort.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDunsignedInt.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDunsignedLong.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDunsignedShort.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDpositiveInteger.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDdecimal.isValidLiteral(ll));
+        assertTrue( ! XSDDatatype.XSDstring.isValidLiteral(ll));
+        assertTrue( ! XSDDatatype.XSDbyte.isValidLiteral(ll));
+        assertTrue( ! XSDDatatype.XSDnegativeInteger.isValidLiteral(ll));
         
+        l = m.createTypedLiteral("-2", "", XSDDatatype.XSDinteger);
+        ll = l.asNode().getLiteral();
+        assertTrue(XSDDatatype.XSDlong.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDint.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDshort.isValidLiteral(ll));
+        assertTrue(! XSDDatatype.XSDunsignedInt.isValidLiteral(ll));
+        assertTrue(! XSDDatatype.XSDunsignedLong.isValidLiteral(ll));
+        assertTrue(! XSDDatatype.XSDunsignedShort.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDdecimal.isValidLiteral(ll));
+        assertTrue(! XSDDatatype.XSDpositiveInteger.isValidLiteral(ll));
+        assertTrue( ! XSDDatatype.XSDstring.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDbyte.isValidLiteral(ll));
+        assertTrue(XSDDatatype.XSDnegativeInteger.isValidLiteral(ll));
+
+        l = m.createTypedLiteral("4.5", "", XSDDatatype.XSDfloat);
+        ll = l.asNode().getLiteral();
+        assertTrue(! XSDDatatype.XSDdouble.isValidLiteral(ll));
+        assertTrue(! XSDDatatype.XSDdecimal.isValidLiteral(ll));
+         
+        Literal l2 = m.createTypedLiteral("foo", "", XSDDatatype.XSDstring);
+        assertTrue(XSDDatatype.XSDstring.isValidLiteral(l2.asNode().getLiteral()));
+        assertTrue(XSDDatatype.XSDnormalizedString.isValidLiteral(l2.asNode().getLiteral()));
+        assertTrue( ! XSDDatatype.XSDint.isValidLiteral(l2.asNode().getLiteral()));
+        
+        l = m.createTypedLiteral("foo bar");
+        ll = l.asNode().getLiteral();
+        assertTrue(XSDDatatype.XSDstring.isValidLiteral(ll));
+        assertTrue(! XSDDatatype.XSDint.isValidLiteral(ll));
+       
+        l = m.createTypedLiteral("12");
+        ll = l.asNode().getLiteral();
+        assertTrue(XSDDatatype.XSDstring.isValidLiteral(ll));
+        assertTrue(! XSDDatatype.XSDint.isValidLiteral(ll));
+       
+    }
+    
+      
     /**
      * Test that two objects are not semantically the same
      */
