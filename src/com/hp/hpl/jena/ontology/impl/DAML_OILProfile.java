@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILProfile.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-05-13 13:10:09 $
+ * Last modified on   $Date: 2004-08-12 10:59:02 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILProfile.java,v 1.22 2004-05-13 13:10:09 ian_dickinson Exp $
+ * @version CVS $Id: DAML_OILProfile.java,v 1.23 2004-08-12 10:59:02 ian_dickinson Exp $
  */
 public class DAML_OILProfile
     extends AbstractProfile
@@ -322,7 +322,10 @@ public class DAML_OILProfile
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Class.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() ) || 
-                                                       g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() );
+                                                       g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
+                                                       n.equals( DAML_OIL.Thing.asNode() ) ||
+                                                       n.equals( DAML_OIL.Nothing.asNode() )
+                                                       ;
                                             }
                                         }
         },
