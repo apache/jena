@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestTransactions.java,v 1.3 2003-05-04 17:36:56 hkuno Exp $
+  $Id: TestTransactions.java,v 1.4 2003-05-05 21:15:45 csayers Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -17,15 +17,12 @@ package com.hp.hpl.jena.db.test;
  * localhost with a database name of "test" and allow use
  * by a user named "test" with an empty password.
  * 
- * (Based in part on earlier Jena tests by bwm, kers, et al.)
- * 
- * @author csayers
+ * @author hkuno
 */
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import com.hp.hpl.jena.db.DBConnection;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.ModelRDB;
 import com.hp.hpl.jena.db.impl.DriverRDB;
@@ -54,9 +51,7 @@ public class TestTransactions extends TestCase
 	
     protected void setUp() throws java.lang.Exception {
     	
-        Class.forName(TestPackage.M_DBDRIVER_CLASS);
-		conn = new DBConnection(TestPackage.M_DB_URL, TestPackage.M_DB_USER, TestPackage.M_DB_PASSWD, TestPackage.M_DB);
-		conn.cleanDB(); // start with a fresh slate.
+		conn = TestConnection.makeAndCleanTestConnection();
 		dbProperties = conn.getDatabaseProperties();
 		model = ModelRDB.createModel(conn); 
 		m_driver = new Driver_MySQL();
