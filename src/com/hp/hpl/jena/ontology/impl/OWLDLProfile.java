@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLDLProfile.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-02 20:33:28 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-04-16 07:03:19 $
+ *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -20,6 +20,7 @@
 // Package
 ///////////////
 package com.hp.hpl.jena.ontology.impl;
+import com.hp.hpl.jena.rdf.model.*;
 
 
 // Imports
@@ -34,7 +35,7 @@ package com.hp.hpl.jena.ontology.impl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLDLProfile.java,v 1.3 2003-04-02 20:33:28 ian_dickinson Exp $
+ * @version CVS $Id: OWLDLProfile.java,v 1.4 2003-04-16 07:03:19 jeremy_carroll Exp $
  */
 public class OWLDLProfile
     extends OWLProfile
@@ -57,6 +58,7 @@ public class OWLDLProfile
 
     // External signature methods
     //////////////////////////////////
+	public Property SAME_AS() {                     return null; }
 
 
     // Internal implementation methods
