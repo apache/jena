@@ -13,7 +13,7 @@
     <meta name="keywords" content="" />
     <link href="../styles/doc.css" rel="stylesheet" type="text/css" />
     <!--
-      CVS: $Id: index.html,v 1.12 2004-02-05 17:58:08 andy_seaborne Exp $
+      CVS: $Id: index.html,v 1.13 2004-09-26 20:41:39 ian_dickinson Exp $
      (c) Copyright 2003, 2004, Hewlett-Packard Development Company LP
     -->
   </head>
@@ -1130,7 +1130,7 @@ public InverseFunctionalProperty convertToInverseFunctionalProperty();
         </td>
         <td width="285">
           <div align="left">
-            The property has exactly<i>n</i> values, for some positive integer n.
+            The property has exactly <i>n</i> values, for some positive integer n.
           </div>
         </td>
       </tr>
@@ -1160,10 +1160,14 @@ public InverseFunctionalProperty convertToInverseFunctionalProperty();
       </tr>
     </table>
     <p>
-      Note that in DAML+OIL terminology, an all values from restriction is a <i>toClass</i> restriction, while a some values from restriction is a <i>hasClass</i> restriction. Note also that, at present, the Jena ontology API does not directly support DAML's qualified cardinality restrictions (i.e. <code>cardinalityQ</code>, <code>minCardinalityQ</code> and <code>maxCardinalityQ</code>). This feature is likely to be supported in a future version of Jena.
-    </p>
+      Note that in DAML+OIL terminology, an all values from restriction is a <i>toClass</i> restriction, while a some values from restriction is a <i>hasClass</i> restriction. 
+      Note also that, at present, the Jena ontology API has only limited support for DAML's qualified cardinality restrictions (i.e. <code>cardinalityQ</code>, <code>minCardinalityQ</code> and <code>maxCardinalityQ</code>). 
+      Qualified cardinality restrictions are encapsulated in the interfaces <code>CardinalityQRestriction</code>, 
+      <code>MinCardinalityQRestriction</code> and <code>CardinalityQRestriction</code>. <code>OntModel</code> also provides methods for creating
+      and accessing qualified cardinality restrictions.  Since they are not part of the language definition, qualified cardinality
+      restrictions are not supported in OWL ontologies.</p>
     <p>
-      Jena provides a number of ways of creating restrictions, or retrieving them from a model. Firstly a general restriction may be retrieved from the model by its URI, or a new restriction created by nominating the property that the property applies to. For example:
+      Jena provides a number of ways of creating restrictions, or retrieving them from a model. Firstly, a general restriction may be retrieved from the model by its URI, or a new restriction created by nominating the property that the property applies to. For example:
     </p>
     <pre>
 // restriction with a given URI
@@ -1189,6 +1193,17 @@ ObjectProperty p = m.createObjectProperty( Ns + "p" );
 
 // use a null URI to create an anonymous restriction
 AllValuesFromRestriction rst = m.createAllValuesFromRestriction( null, p, c );
+    </pre>
+    <p>
+      Assuming that the above code fragment was using a model <code>m</code> that was created
+      with the OWL language profile, it creates a instance of an OWL restriction that would have
+      the following definition in RDF/XML:
+    </p>
+    <pre>
+&lt;owl:Restriction&gt;
+  &lt;owl:onProperty rdf:resource="#p"/&gt;
+  &lt;owl:allValuesFrom rdf:resource="#C"/&gt;
+&lt;/owl:Restriction&gt;
     </pre>
     <p>
       Once we have a particular restriction object, there are methods following the standard add, get, set and test pattern to access the components of the declaration. For example, in the camera ontology, we find this definition of a class describing Large-Format cameras:
