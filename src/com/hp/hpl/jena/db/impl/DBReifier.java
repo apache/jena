@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBReifier.java,v 1.8 2003-07-21 14:26:18 chris-dollin Exp $
+  $Id: DBReifier.java,v 1.9 2003-07-21 14:44:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -17,7 +17,6 @@ import com.hp.hpl.jena.db.*;
 import java.util.List;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -110,7 +109,7 @@ public class DBReifier implements Reifier
         from SimpleReifier.
     */
     public ExtendedIterator allNodes( Triple t )
-        { return allNodes() .filterKeep( SimpleReifier.matching( this, t ) ); }
+        { return m_reifier.findReifiedNodes( t, newComplete() ); }
         
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Reifier#remove(com.hp.hpl.jena.graph.Node, com.hp.hpl.jena.graph.Triple)
