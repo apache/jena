@@ -2,7 +2,7 @@
  * (c) Copyright 2003, 2004, Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: Tutorial11.java,v 1.4 2004-01-09 17:16:30 andy_seaborne Exp $
+ * $Id: Tutorial11.java,v 1.5 2004-01-09 17:29:05 andy_seaborne Exp $
  */
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -13,7 +13,7 @@ import java.io.PrintWriter;
 /** Tutorial 11 - more on literals
  *
  * @author  bwm - updated by kers/Daniel
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2004-01-09 17:16:30 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.5 $' Date='$Date: 2004-01-09 17:29:05 $'
  */
 public class Tutorial11 extends Object {
     
@@ -27,8 +27,7 @@ public class Tutorial11 extends Object {
       // add the property
       r.addProperty(RDFS.label, model.createLiteral("chat", "en"))
        .addProperty(RDFS.label, model.createLiteral("chat", "fr"))
-       .addProperty(RDFS.label, model.createLiteral("<em>chat</em>", "em",
-                                                                     true));
+       .addProperty(RDFS.label, model.createLiteral("<em>chat</em>", true));
       
       // write out the graph
       model.write(new PrintWriter(System.out));
