@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestFBRules.java,v 1.5 2003-06-02 22:20:39 der Exp $
+ * $Id: TestFBRules.java,v 1.6 2003-06-03 21:19:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -26,13 +26,19 @@ import junit.framework.TestSuite;
 import java.io.IOException;
 import java.util.*;
 
+import org.apache.log4j.Logger;
+
 /**
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-02 22:20:39 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-03 21:19:59 $
  */
 public class TestFBRules extends TestCase {
+    
+    /** log4j logger */
+    protected static Logger logger = Logger.getLogger(TestFBRules.class);
+    
     // Useful constants
     Node p = Node.createURI("p");
     Node q = Node.createURI("q");
@@ -69,7 +75,7 @@ public class TestFBRules extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestFBRules.class ); 
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestFBRules( "temp" ));
+//        suite.addTest(new TestFBRules( "testDuplicatesEC4" ));
 //        return suite;
     }  
 
@@ -517,7 +523,17 @@ public class TestFBRules extends TestCase {
 //            System.out.println(" - " + PrintUtil.print(t));
             count++;
         }
+//        listFBGraph("direct databind case", (FBRuleInfGraph)infgraph);
+        assertTrue(count == 7);
         
+        infgraph = reasoner.bindSchema(data).bind(new GraphMem());
+        count = 0;
+        for (Iterator i = infgraph.find(null, rbPrototypeProp, null); i.hasNext(); ) {
+            Object t = i.next();
+//            System.out.println(" - " + PrintUtil.print(t));
+            count++;
+        }
+//        listFBGraph("bindSchema case", (FBRuleInfGraph)infgraph);
         assertTrue(count == 7);
     }
     
@@ -538,6 +554,27 @@ public class TestFBRules extends TestCase {
         infgraph2.prepare();
         t2 = System.currentTimeMillis();
         System.out.println("Prepare on empty graph = " + (t2-t1) +"ms");
+    }
+    
+    /**
+     * Helper function to list a graph out to logger.info
+     */
+    public void listGraph(Graph g) {
+        for (Iterator i = g.find(null,null,null); i.hasNext();) {
+            logger.info(PrintUtil.print(i.next()));
+        }
+        logger.info("  --------  ");
+    }
+    
+    /**
+     * Helper function to list the interesting parts of an FBInfGraph.
+     */
+    public void listFBGraph(String message, FBRuleInfGraph graph) {
+        logger.info(message);
+        logger.info("Raw graph data");
+        listGraph(graph.getRawGraph());
+        logger.info("Static deductions");
+        listGraph(graph.getDeductionsGraph());
     }
     
 }
