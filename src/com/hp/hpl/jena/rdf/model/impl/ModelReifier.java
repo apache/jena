@@ -1,15 +1,17 @@
 /*
 	(c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
 	[see end of file]
-	$Id: ModelReifier.java,v 1.14 2004-09-10 09:47:56 chris-dollin Exp $
+	$Id: ModelReifier.java,v 1.15 2004-11-03 19:54:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.*;
+import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
@@ -52,10 +54,25 @@ public class ModelReifier
     public static Model withHiddenStatements( Model m )
         { 
         Graph mGraph = m.getGraph();
-        Graph hiddenTriples = mGraph.getReifier().getHiddenTriples();
+        Graph hiddenTriples = hiddenTriples( mGraph );
         return new ModelCom( new DisjointUnion( mGraph, hiddenTriples ) );
         }
     
+    /**
+    	@param mGraph
+    	@return
+    */
+    protected static Graph hiddenTriples( Graph mGraph )
+        {
+        final Reifier r = mGraph.getReifier();
+        if (false) return mGraph.getReifier().getHiddenTriples();
+        return new GraphBase()
+            {
+            public ExtendedIterator graphBaseFind( TripleMatch m ) 
+                { return r.find( m, true ); }
+            };
+        }
+
     /**
         Answer a model that consists of the hidden reification statements of this model.
         @return a new model containing the hidden statements of this model

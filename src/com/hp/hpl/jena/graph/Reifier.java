@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Reifier.java,v 1.25 2004-11-02 15:55:57 chris-dollin Exp $
+  $Id: Reifier.java,v 1.26 2004-11-03 19:54:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -33,6 +33,13 @@ public interface Reifier extends GetTriple
          (ie all if Standard, none otherwise) that match m.
     */
     ExtendedIterator find( TripleMatch m );
+    
+    /**
+         Answer an iterator over the reification triples of this Reifier, or an empty 
+         iterator - if showHidden is false, only the exposed triples, otherwise only
+         the concealed ones.
+    */
+    ExtendedIterator find( TripleMatch m, boolean showHidden );
     
     /**
          Answer the number of reification quadlets held in this reifier.
