@@ -3,8 +3,14 @@
 # This variant is used in the case where the subclass and subproperty
 # lattices have been precomputed by a transitive graph closure cache.
 # and only includes the minimum useful core rules with no axioms.
-# $Id: rdfs-fb-tgc-simple.rules,v 1.1 2003-06-26 08:11:28 der Exp $
+# $Id: rdfs-fb-tgc-simple.rules,v 1.2 2003-08-21 12:01:02 der Exp $
 #------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# Tabling directives
+#------------------------------------------------------------------
+
+-> tableAll().
 
 #------------------------------------------------------------------
 # RDFS Closure rules

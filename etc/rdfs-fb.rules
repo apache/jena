@@ -2,8 +2,14 @@
 # RDFS rule set v0.1.
 # This is a direct implementation of the RDFS closure rules using
 # the hybrid f/b rule system.
-# $Id: rdfs-fb.rules,v 1.3 2003-06-13 08:54:23 der Exp $
+# $Id: rdfs-fb.rules,v 1.4 2003-08-21 12:01:02 der Exp $
 #------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# Tabling directives
+#------------------------------------------------------------------
+
+-> tableAll().
 
 #------------------------------------------------------------------
 # RDFS Axioms

@@ -1,8 +1,14 @@
 #------------------------------------------------------------------
 # Mico ruleset for DAML. This is just the core RDFS rules plus
 # the extensional rules for domain/range, plus some DAML axioms.
-# $Id: daml-micro.rules,v 1.2 2003-07-24 15:29:17 ian_dickinson Exp $
+# $Id: daml-micro.rules,v 1.3 2003-08-21 12:01:02 der Exp $
 #------------------------------------------------------------------
+
+#------------------------------------------------------------------
+# Tabling directives
+#------------------------------------------------------------------
+
+-> tableAll().
 
 #------------------------------------------------------------------
 # RDFS Closure rules
