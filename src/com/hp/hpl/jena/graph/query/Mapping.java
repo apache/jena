@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Mapping.java,v 1.2 2003-03-14 13:37:44 chris-dollin Exp $
+  $Id: Mapping.java,v 1.3 2003-07-03 16:41:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -51,6 +51,13 @@ public class Mapping
 		return result;
 		}
 		
+    /**
+        Answer the number of names currently held in the map
+        @return the number of names in the map
+    */
+    public int size()
+        { return map.size(); }
+        
     /**
         @param the node _v_ to look up
         @return true iff this mapping maps _v_ to an index

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Stage.java,v 1.2 2003-01-09 15:27:58 chris-dollin Exp $
+  $Id: Stage.java,v 1.3 2003-07-03 16:41:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -21,8 +21,8 @@ public abstract class Stage
 	protected Stage previous;
     
 	/** construct a new initial stage for the pipeline */    
-	public static Stage initial()
-		{ return new InitialStage(); }
+	public static Stage initial( int count )
+		{ return new InitialStage( count ); }
         
     /** connect this stage to its supplier; return this for chaining. */
 	public Stage connectFrom( Stage s )

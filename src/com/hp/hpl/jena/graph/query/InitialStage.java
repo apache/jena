@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: InitialStage.java,v 1.2 2003-01-09 15:28:00 chris-dollin Exp $
+  $Id: InitialStage.java,v 1.3 2003-07-03 16:41:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -13,12 +13,20 @@ import com.hp.hpl.jena.graph.*;
 */
 public class InitialStage extends Stage
     {
-    public InitialStage()
-        { }
+    /**
+        The value passed in is the computed width of the result array(s); this
+        is ued to allocate the seeding node array.
         
+     	@param count the width of the result binding array
+     */
+    public InitialStage( int count )
+        { this.count = count; }
+        
+    private int count = -1;
+    
     public Pipe deliver( Pipe result )
         {
-        result.put( new Domain( new Node[10]  ) );
+        result.put( new Domain( new Node[count]  ) );
         result.close();
         return result;
         }

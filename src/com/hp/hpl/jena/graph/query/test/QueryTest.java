@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.9 2003-06-20 12:27:40 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.10 2003-07-03 16:42:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -463,6 +463,33 @@ public class QueryTest extends GraphTestBase
         for (int i = 0; i < desired.size(); i += 1) q.addMatch( (Triple) desired.get(i) );
         q.executeBindings( g, nodes( "" ) );
         return Arrays.asList( tripleses[0] );
+        }
+        
+    /**
+        test that we can correctly deduce the variable count for some queries.
+     */
+    public void testVariableCount()
+        {
+        assertCount( 0, "" );
+        assertCount( 0, "x R y" );
+        assertCount( 1, "?x R y" );
+        assertCount( 1, "?x R ?x" );
+        assertCount( 2, "?x R ?y" );
+        assertCount( 3, "?x ?R ?y" );
+        assertCount( 6, "?x ?R ?y; ?a ?S ?c" );
+        assertCount( 18, "?a ?b ?c; ?d ?e ?f; ?g ?h ?i; ?j ?k ?l; ?m ?n ?o; ?p ?q ?r" );
+        }
+    
+    public void assertCount( int expected, String query )
+        {
+        Graph g = graphWith( "" );
+        Query q = new Query();
+        Triple [] triples = tripleArray( query );
+        for (int i = 0; i < triples.length; i += 1) q.addMatch( triples[i] );
+        q.executeBindings( g, new Node [] {} );
+        assertEquals( expected, q.getVariableCount() );
+        q.executeBindings( g, nodes( "?notPresentInQuery" ) );
+        assertEquals( expected + 1, q.getVariableCount() );
         }
     }
 
