@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Expression.java,v 1.14 2003-10-16 09:45:08 chris-dollin Exp $
+  $Id: Expression.java,v 1.15 2003-12-02 16:17:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -226,7 +226,8 @@ public interface Expression
         private boolean value;
         public BoolConstant( boolean value ) { this.value = value; }
         public boolean isLiteral() { return true; }
-        public Object getValue() { return Boolean.valueOf( value ); }
+        // TODO when moving to Jave 1.4 can use Boolean.valueOf( value )
+        public Object getValue() { return value ? Boolean.TRUE : Boolean.FALSE; }
         public Valuator prepare( VariableIndexes vi ) { return this; }   
         public boolean evalBool( VariableValues vv ) { return value; }
         public boolean evalBool( IndexValues vv ) { return value; }
