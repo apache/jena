@@ -70,6 +70,22 @@ An extra version of <i>listStatements</i> taking separate subject, predicate,
 and object arguments is available. This avoids the user having to create a
 <i>SimpleSelector</i> in many cases.
 
+<h1>rdfNode.inModel(Model)</h1>
+
+The <i>RDFNode</i> method <i>inModel(Model m)</i> constructs a version of the
+<i>RDFNode</i> that is "in" the model <i>m</i> and returns that node.
+If the <i>RDFNode</i> is a <i>Literal</i>, or already in <i>m</i>, then
+it is returned unchanged.
+
+<h1>rdfNode.as(Class)</h1>
+
+This method converts an <i>RDFNode</i> of one kind to another, if possible,
+throwing an exception if it cannot. The <i>Class</i> argument is the class
+of the interface that is being converted to.
+
+The boolean method <i>canAs(Class)</i> returns true iff it's possible
+to convert this resource to one of the given class.
+
 <h1>createResource(AnonId)</h1>
 
 An extra <i>createResource</i> method is availble that creates a blank
@@ -77,7 +93,10 @@ An extra <i>createResource</i> method is availble that creates a blank
 
 <h1>ModelFactory</h1>
 
-[To Be Done]
+<i>ModelMem</i> is obsolete. For a few-frills memory-based model, use
+<i>ModelFactory.createDefaultModel()</i> instead.
+
+[To Be Continued]
 
 <h1>reification</h1>
 
