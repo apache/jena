@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.24 2003-09-17 15:48:35 der Exp $
+# $Id: owl-fb.rules,v 1.25 2003-09-18 08:09:44 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -464,6 +464,24 @@
 								[ (?x ?P ?V) <- (?x rdf:type ?C) ]
 								[ (?x rdf:type ?C) <- (?x ?P ?V) ]
 								]
+
+[hasValueProp: (?P rdf:type owl:FunctionalProperty) (?Q rdf:type owl:FunctionalProperty) 
+               (?P rdfs:domain ?D) (?Q rdfs:domain ?D)
+               (?D owl:equivalentClass hasValue(?P, ?V))
+               (?D owl:equivalentClass hasValue(?Q, ?V))
+               -> (?P owl:equivalentProperty ?Q)]
+               
+
+#------------------------------------------------------------------
+# Restricted support for oneOf, even though that is beyond OWL/lite
+#------------------------------------------------------------------
+
+[oneOfFP: (?P rdfs:range ?C) (?C owl:oneOf ?l) (?l rdf:first ?x) (?l rdf:rest rdf:nil)
+				-> (?P rdf:type owl:FunctionalProperty) ]
+				
+[oneOfIFP: (?P rdfs:domain ?C) (?C owl:oneOf ?l) (?l rdf:first ?x) (?l rdf:rest rdf:nil)
+				-> (?P rdf:type owl:InverseFunctionalProperty) ]
+				
 #------------------------------------------------------------------
 # Declaration of main XSD datatypes
 #------------------------------------------------------------------
