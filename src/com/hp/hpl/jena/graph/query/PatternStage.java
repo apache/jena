@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PatternStage.java,v 1.3 2003-06-11 15:01:43 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.4 2003-07-17 14:56:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -31,17 +31,17 @@ public class PatternStage extends Stage
         {
         return PatternStageCompiler.compile( compiler, map, source );
         }
-                 
+        
     private static final PatternCompiler compiler = new PatternStageCompiler();
         
     protected void run( Pipe source, Pipe sink )
     	{
-        while (source.hasNext())
+        while (stillOpen && source.hasNext())
             {
             Domain current = source.get();
             Domain useme = current.extend();           
             ClosableIterator it = graph.find( compiled[0].asTripleMatch( current ) );
-            while (it.hasNext())
+            while (stillOpen && it.hasNext())
                 {
                 Triple t = (Triple) it.next();
                 if (compiled[0].matches( useme, t ))

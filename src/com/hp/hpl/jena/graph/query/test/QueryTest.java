@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: QueryTest.java,v 1.11 2003-07-08 13:15:34 chris-dollin Exp $
+  $Id: QueryTest.java,v 1.12 2003-07-17 14:56:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -497,6 +497,19 @@ public class QueryTest extends GraphTestBase
     public void testQueryConstraintNull()
         {
         Query q = new Query();
+        }
+        
+    public void testCloseQuery()
+        {
+        Graph g = graphWith( "x R y; a P b; i L j; d X f; h S g; no more heroes" );
+        for (int n = 0; n < 1000; n += 1) graphAdd( g, "ping pong X" + n );
+        Query q = new Query().addMatch( Query.S, Query.P, Query.O );
+        List stages = new ArrayList();
+        ExtendedIterator it = q.executeBindings( g, stages, new Node [] {Query.P} );
+        /* eat one answer to poke pipe */ it.next();
+        for (int i = 0; i < stages.size(); i += 1) assertFalse( ((Stage) stages.get(i)).isClosed() );
+        it.close();
+        for (int i = 0; i < stages.size(); i += 1) assertTrue( ((Stage) stages.get(i)).isClosed() );
         }
     }
 

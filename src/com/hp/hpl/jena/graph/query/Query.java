@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Query.java,v 1.8 2003-07-03 16:41:28 chris-dollin Exp $
+  $Id: Query.java,v 1.9 2003-07-17 14:56:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -75,21 +75,29 @@ public class Query
     public ExtendedIterator executeBindings( Graph g, Node [] results )
         { return executeBindings( args().put( anon, g ), results ); }
                 
+    public ExtendedIterator executeBindings( Graph g, List stages, Node [] results )
+        { return executeBindings( stages, args().put( anon, g ), results ); }
+    
+    public ExtendedIterator executeBindings( ArgMap args, Node [] nodes )
+        { return executeBindings( new ArrayList(), args, nodes ); }
+        
     /**
         the standard "default" implementation of executeBindings.
     */
-    public ExtendedIterator executeBindings( ArgMap args, Node [] nodes )
+    public ExtendedIterator executeBindings( List outStages, ArgMap args, Node [] nodes )
         {
-        Pipe result = new BufferPipe();
         Mapping map = new Mapping();
         ArrayList stages = new ArrayList();
         addStages( stages, args, map );
-        stages.add( new ConstraintStage( map, constraintGraph ) );
+        if (constraintGraph.size() > 0) 
+            stages.add( new ConstraintStage( map, constraintGraph ) );
+        outStages.addAll( stages );
         final int [] indexes = findIndexes( map, nodes );
         variableCount = map.size();
-        return filter( indexes, connectStages( stages, variableCount ).deliver( result ) );
+        Stage allStages = connectStages( stages, variableCount );
+        return filter( indexes, allStages );
         }
-
+        
     private int [] findIndexes( Mapping map, Node [] nodes )
         {
         int [] result = new int [nodes.length];
@@ -103,12 +111,20 @@ public class Query
         return map.indexOf( node );
         }
         
-    private ExtendedIterator filter( final int [] indexes, final Pipe complete )
+    private ExtendedIterator filter( final int [] indexes, final Stage allStages )
         {
+        final Pipe complete = allStages.deliver( new BufferPipe() );
         return new NiceIterator()
             {
+            public void close() { allStages.close(); clearPipe(); }
             public Object next() { return filter( indexes, complete.get() ); }
             public boolean hasNext() { return complete.hasNext(); }
+            private void clearPipe()
+                { 
+                int count = 0; 
+                while (hasNext()) { count += 1; next(); }
+                System.err.println( ">> pulled " + count + " values" );
+                }
             };
         }
         
