@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifier.java,v 1.20 2004-11-04 15:05:38 chris-dollin Exp $
+  $Id: AbstractTestReifier.java,v 1.21 2004-11-18 11:46:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -415,6 +415,16 @@ public abstract class AbstractTestReifier extends GraphTestBase
         Graph g = getGraph();
         Reifier r = g.getReifier();
         assertEquals( 0, r.size() );
+        }
+    
+    public void testEmpty()
+        {
+        Graph g = getGraph( Standard );
+        assertTrue( g.isEmpty() );
+        graphAdd( g, "x rdf:type rdf:Statement" ); assertFalse( g.isEmpty() );
+        graphAdd( g, "x rdf:subject Deconstruction" ); assertFalse( g.isEmpty() );
+        graphAdd( g, "x rdf:predicate rdfs:subTypeOf" ); assertFalse( g.isEmpty() );
+        graphAdd( g, "x rdf:object LiteraryCriticism" ); assertFalse( g.isEmpty() );
         }
     
     public void testReifierEmptyFind()

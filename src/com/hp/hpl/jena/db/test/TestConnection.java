@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestConnection.java,v 1.18 2004-11-04 21:56:24 wkw Exp $
+  $Id: TestConnection.java,v 1.19 2004-11-18 11:45:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -575,7 +575,7 @@ public class TestConnection extends TestCase {
     
 	syncOnCount s;
 
-    public void testConcurrentThread() {
+    public void SUPPRESSEDtestConcurrentThread() {
 		class thread1 extends Thread {
 			syncOnCount s;
 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.3 2004-11-02 14:10:09 chris-dollin Exp $
+  $Id: SmallGraphMem.java,v 1.4 2004-11-18 11:46:51 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -53,12 +53,6 @@ public class SmallGraphMem extends GraphMemBase
     
     protected void destroy()
         { triples = null; }
-    
-    public boolean isEmpty()
-        {
-        checkOpen();
-        return triples.isEmpty();
-        }
     
     public BulkUpdateHandler getBulkUpdateHandler()
         {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.34 2004-11-04 15:05:37 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.35 2004-11-18 11:46:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -170,9 +170,10 @@ public abstract class GraphBase implements GraphWithPerform
         { return find( Triple.createMatch( s, p, o ) ); }
 
     /**
-		Answer <code>true</code> iff <code>t</code> is in the graph as reveal by 
+		Answer <code>true</code> iff <code>t</code> is in the graph as revealed by 
         <code>find(t)</code> being non-empty. <code>t</code> may contain ANY
-        wildcards. Sub-classes may over-ride for efficiency.
+        wildcards. Sub-classes may over-ride reifierContains and graphBaseContains
+        for efficiency.
 	*/
 	public final boolean contains( Triple t ) 
         { checkOpen();
