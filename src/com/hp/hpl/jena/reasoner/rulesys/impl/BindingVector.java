@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BindingVector.java,v 1.16 2003-06-10 22:26:37 der Exp $
+ * $Id: BindingVector.java,v 1.17 2003-06-13 16:31:43 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -13,6 +13,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
+import com.hp.hpl.jena.util.PrintUtil;
 
 import java.util.*;
 
@@ -24,7 +25,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2003-06-10 22:26:37 $
+ * @version $Revision: 1.17 $ on $Date: 2003-06-13 16:31:43 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -200,7 +201,7 @@ public class BindingVector implements BindingEnvironment {
             if (environment[i] == null) {
                 buffer.append("-");
             } else {
-                buffer.append(environment[i].toString());
+                buffer.append(PrintUtil.print(environment[i]));
             }
             buffer.append(" ");
         }

@@ -5,12 +5,13 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.17 2003-06-04 08:09:50 der Exp $
+ * $Id: BRuleEngine.java,v 1.18 2003-06-13 16:31:44 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.*;
+import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.graph.*;
 
 import org.apache.log4j.Logger;
@@ -28,7 +29,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-06-04 08:09:50 $
+ * @version $Revision: 1.18 $ on $Date: 2003-06-13 16:31:44 $
  */
 public class BRuleEngine {
     
@@ -310,9 +311,9 @@ public class BRuleEngine {
                     // (if empty then an exception is thrown and caught later)
                     current = nextAgendaItem();
                     numResults = 0;
-                }
-                if (traceOn) {
-                    logger.debug("Processing " + current);
+                    if (traceOn) {
+                        logger.debug("Waken:   " + current);
+                    }
                 }
                 Object result = current.next();
                 if (result == StateFlag.FAIL) {
@@ -327,7 +328,7 @@ public class BRuleEngine {
                 } else if (result == StateFlag.SUSPEND) {
                     // Can do no more with this goal
                     if (traceOn) {
-                        logger.debug("Suspend " + current);
+                        logger.debug("Suspend: " + current);
                     }
                     GoalResults waitingFor = current.goalState.results;
                     waitingFor.addDependent(current);
@@ -383,7 +384,7 @@ public class BRuleEngine {
                     GoalResults resultDest = current.ruleInstance.generator;
                     Triple finalResult = current.getResult(env);
                     if (traceOn) {
-                        logger.debug("Result:" + finalResult + " <- " + current +", newenv=" + env);
+                        logger.debug("Result:  " + PrintUtil.print(finalResult) + " <- " + current +", newenv=" + env);
                     }
                     boolean newresult = resultDest.addResult(finalResult);
                     if (delayedRSClose != null) {

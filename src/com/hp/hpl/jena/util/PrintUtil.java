@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: PrintUtil.java,v 1.3 2003-06-08 17:50:41 der Exp $
+ * $Id: PrintUtil.java,v 1.4 2003-06-13 16:31:47 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * prefix map which is preloaded with known prefixes.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-06-08 17:50:41 $
+ * @version $Revision: 1.4 $ on $Date: 2003-06-13 16:31:47 $
  */
 public class PrintUtil {
 
@@ -32,9 +32,6 @@ public class PrintUtil {
     
     /** The inverse prefix map */
     protected static Map nsToPrefix = new HashMap();
-    
-//    /** Flag to indicate initialization is complete */
-//    protected static boolean initialized = false;
     
     /** Default built in eg namespace used in testing */
     public static final String egNS = "urn:x-hp:eg/";
@@ -47,20 +44,18 @@ public class PrintUtil {
      * Load built in prefixes.
      */
     public static void init() {
-//        if (! initialized) {
-            registerPrefix("rdf", RDF.getURI());
-            registerPrefix("rdfs", RDFS.getURI());
-            registerPrefix("owl", OWL.NAMESPACE);
-            registerPrefix("daml", DAML_OIL.NAMESPACE_DAML.getURI());
-            registerPrefix("jr", ReasonerVocabulary.getJenaReasonerNS());
-            registerPrefix("rb", ReasonerVocabulary.getRBNamespace());
-            registerPrefix("eg", egNS);
-//            initialized = true;
-//        }
+        registerPrefix("rdf", RDF.getURI());
+        registerPrefix("rdfs", RDFS.getURI());
+        registerPrefix("owl", OWL.NAMESPACE);
+        registerPrefix("daml", DAML_OIL.NAMESPACE_DAML.getURI());
+        registerPrefix("jr", ReasonerVocabulary.getJenaReasonerNS());
+        registerPrefix("rb", ReasonerVocabulary.getRBNamespace());
+        registerPrefix("eg", egNS);
     }
     
     /**
-     * Register a new prefix/namespace mapping
+     * Register a new prefix/namespace mapping which will be used to shorten
+     * the print strings for resources in known namespaces.
      */
     public static void registerPrefix(String prefix, String namespace) {
         prefixToNS.put(prefix, namespace);
@@ -71,7 +66,6 @@ public class PrintUtil {
      * Return a simplified print string for a Node. 
      */
     public static String print(Node node) {
-//        if (!initialized) init();
         if (node instanceof Node_URI) {
             String uri = node.getURI();
             int split = uri.lastIndexOf('#');
@@ -106,7 +100,6 @@ public class PrintUtil {
      * Return a simplified print string for an RDFNode. 
      */
     public static String print(RDFNode node) {
-//        if (!initialized) init();
         return print(node.asNode());
     }
     
@@ -114,7 +107,6 @@ public class PrintUtil {
      * Return a simplified print string for a Triple
      */
     public static String print(Triple triple) {
-//        if (!initialized) init();
         return "(" + print(triple.getSubject()) + " " +
                       print(triple.getPredicate()) + " " +
                       print(triple.getObject()) + ")";
@@ -124,7 +116,6 @@ public class PrintUtil {
      * Return a simplified print string for a TriplePattern
      */
     public static String print(TriplePattern triple) {
-//        if (!initialized) init();
         return "(" + print(triple.getSubject()) + " " +
                       print(triple.getPredicate()) + " " +
                       print(triple.getObject()) + ")";
@@ -134,7 +125,6 @@ public class PrintUtil {
      * Return a simplified print string for a statment
      */
     public static String print(Statement stmt) {
-//        if (!initialized) init();
         return print(stmt.asTriple());
     }
     
@@ -163,7 +153,6 @@ public class PrintUtil {
      * expand the prefix, otherwise return the original URI
      */
     public static String expandQname(String uri) {
-//        if (!initialized) init();
         int split = uri.indexOf(':');
         String nsPrefix = uri.substring(0, split);
         String localname = uri.substring(split+1);

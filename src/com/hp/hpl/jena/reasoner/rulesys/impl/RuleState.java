@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleState.java,v 1.17 2003-05-21 17:01:47 der Exp $
+ * $Id: RuleState.java,v 1.18 2003-06-13 16:31:44 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-05-21 17:01:47 $
+ * @version $Revision: 1.18 $ on $Date: 2003-06-13 16:31:44 $
  */
 public class RuleState {
 
@@ -294,7 +294,7 @@ public class RuleState {
         return "RuleState " 
                 + ruleInstance.rule.toShortString()
                 + "("+ (clauseIndex-1) +")"
-                + ", env=" + env 
+//                + ", env=" + env 
                 + ", gs=" + goalState;
     }
     
