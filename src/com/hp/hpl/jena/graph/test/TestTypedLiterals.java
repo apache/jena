@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.20 2003-06-19 16:44:35 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.21 2003-06-19 17:14:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -30,7 +30,7 @@ import java.io.*;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-06-19 16:44:35 $
+ * @version $Revision: 1.21 $ on $Date: 2003-06-19 17:14:09 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -555,6 +555,7 @@ public class TestTypedLiterals extends TestCase {
      * Test a user error report concerning date/time literals
      */
     public void testDateTimeBug() {
+        // Bug in serialization
         String XSDDateURI = XSD.date.getURI(); 
         TypeMapper typeMapper=TypeMapper.getInstance(); 
         RDFDatatype dt = typeMapper.getSafeTypeByName(XSDDateURI); 
@@ -563,8 +564,18 @@ public class TestTypedLiterals extends TestCase {
         Object value2 = dt.parse(obj.toString());
         assertEquals(obj, value2);
         
+        // Check alternativ form doesn't provoke exceptions
         RDFDatatype dateType = XSDDatatype.XSDdate;
         Literal l = m.createTypedLiteral("2003-05-21", "", dateType);
+        
+        // Check alt time times
+        checkSerialization("2003-05-21", XSDDatatype.XSDdate);
+        checkSerialization("2003-05-21T12:56:10Z", XSDDatatype.XSDdateTime);
+        checkSerialization("2003-05", XSDDatatype.XSDgYearMonth);
+        checkSerialization("2003", XSDDatatype.XSDgYear);
+        checkSerialization("--05", XSDDatatype.XSDgMonth);
+        checkSerialization("--05-12", XSDDatatype.XSDgMonthDay);
+        checkSerialization("---12", XSDDatatype.XSDgDay);
     }
       
     /**
@@ -610,6 +621,14 @@ public class TestTypedLiterals extends TestCase {
         assertEquals(l.getValue().getClass(), jtype);
         assertEquals(l.getValue(), value);
         assertEquals(l.getDatatype(), dtype);
+    }
+    
+    /**
+     * Chek the serialization of the parse of a value.
+     */
+    public void checkSerialization(String lex, RDFDatatype dtype) {
+        Literal l = m.createTypedLiteral(lex, "", dtype);
+        assertEquals(l.getValue().toString(), lex);
     }
     
     /** Helper function test an iterator against a list of objects - order dependent */

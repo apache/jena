@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.5 2003-06-19 16:45:02 der Exp $
+ * $Id: XSDDateTime.java,v 1.6 2003-06-19 17:14:03 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -19,7 +19,7 @@ import java.util.*;
  * <p>TODO: revist and consider have separate types for each.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-06-19 16:45:02 $
+ * @version $Revision: 1.6 $ on $Date: 2003-06-19 17:14:03 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -174,7 +174,7 @@ public class XSDDateTime extends AbstractDateTime {
                 buff.append("-");
             }
             if ((mask & DAY_MASK) != 0) {
-                buff.append("-");
+                if (mask != DAY_MASK) buff.append("-");
                 if (data[DAY] <= 9) buff.append("0");
                 buff.append(data[DAY]);
             }
