@@ -5,13 +5,14 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerRegistry.java,v 1.24 2004-03-22 17:10:12 der Exp $
+ * $Id: ReasonerRegistry.java,v 1.25 2004-05-06 11:21:44 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.reasoner.dig.DIGReasoner;
 import com.hp.hpl.jena.reasoner.dig.DIGReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.DAMLMicroReasonerFactory;
 import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasonerFactory;
@@ -35,7 +36,7 @@ import java.util.*;
  * to register it in this registry.  </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2004-03-22 17:10:12 $
+ * @version $Revision: 1.25 $ on $Date: 2004-05-06 11:21:44 $
  */
 public class ReasonerRegistry {
 
@@ -244,6 +245,50 @@ public class ReasonerRegistry {
         return theOWLMiniReasoner;
     }
     
+    /**
+     * <p>Create a DIG reasoner for the specified language for the OWL
+     * language, with default settings (including the default URL for the
+     * DIG reasoner), and no axioms specified. </p>
+     * @return A new DIG reasoner
+     */
+    public static DIGReasoner getDIGReasoner() {
+        return getDIGReasoner( OWL.NAMESPACE, null );
+    }
+    
+    /**
+     * <p>Create a DIG reasoner for the specified language 
+     * ({@linkplain DAML_OIL#NAMESPACE_DAML DAML} or
+     * {@linkplain OWL#NAMESPACE OWL}), without type axioms.</p>
+     * @param lang The ontology language, OWL or DAML, as a resource
+     * @param config Optional configuration root resource, or null
+     * @return A new DIG reasoner
+     */
+    public static DIGReasoner getDIGReasoner( Resource lang, Resource config ) {
+        return getDIGReasoner( lang, false, config );
+    }
+
+    /**
+     * <p>Create a DIG reasoner for the specified language 
+     * ({@linkplain DAML_OIL#NAMESPACE_DAML DAML} or
+     * {@linkplain OWL#NAMESPACE OWL}), optionally with axioms that specify
+     * e.g. the types of OWL objects etc.</p>
+     * @param lang The ontology language, OWL or DAML, as a resource
+     * @param withAxioms If true, include the type axioms for the language
+     * @param config Optional configuration root resource, or null
+     * @return A new DIG reasoner
+     */
+    public static DIGReasoner getDIGReasoner( Resource lang, boolean withAxioms, Resource config ) {
+        if (!lang.equals( DAML_OIL.NAMESPACE_DAML ) && !lang.equals( OWL.NAMESPACE )) {
+            throw new ReasonerException( "Cannot create DIG reasoner for unknown language: " + lang );
+        }
+        
+        boolean owl = lang.equals( OWL.NAMESPACE );
+        String axioms = withAxioms ? 
+                          (owl ? DIGReasonerFactory.DEFAULT_OWL_AXIOMS : DIGReasonerFactory.DEFAULT_DAML_AXIOMS) :
+                          null;
+        
+        return DIGReasonerFactory.theInstance().create( lang, axioms, config );
+    }
 }
 
 /*
