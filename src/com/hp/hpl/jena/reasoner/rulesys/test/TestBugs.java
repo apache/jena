@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.7 2003-08-27 13:11:16 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.8 2003-09-10 16:33:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import junit.framework.TestSuite;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-08-27 13:11:16 $
+ * @version $Revision: 1.8 $ on $Date: 2003-09-10 16:33:02 $
  */
 public class TestBugs extends TestCase {
 
@@ -231,6 +231,29 @@ public class TestBugs extends TestCase {
         assertTrue("hasValue equiv deduction", test.contains(A, OWL.equivalentClass, B));
     }
 
+    /**
+     * Test reported problem with OWL property axioms.
+     */
+    public void testOWLPropertyAxioms() {
+        Model data = ModelFactory.createDefaultModel();
+        Resource fp = data.createResource("urn:x-hp:eg/fp");
+        Resource ifp = data.createResource("urn:x-hp:eg/ifp");
+        Resource tp = data.createResource("urn:x-hp:eg/tp");
+        Resource sp = data.createResource("urn:x-hp:eg/sp");
+        data.add(fp, RDF.type, OWL.FunctionalProperty);
+        data.add(ifp, RDF.type, OWL.InverseFunctionalProperty);
+        data.add(tp, RDF.type, OWL.TransitiveProperty);
+        data.add(sp, RDF.type, OWL.SymmetricProperty);
+        InfModel infmodel = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), data);
+        assertTrue("property class axioms", infmodel.contains(fp, RDF.type, RDF.Property));
+        assertTrue("property class axioms", infmodel.contains(ifp, RDF.type, RDF.Property));
+        assertTrue("property class axioms", infmodel.contains(tp, RDF.type, RDF.Property));
+        assertTrue("property class axioms", infmodel.contains(sp, RDF.type, RDF.Property));
+        assertTrue("property class axioms", infmodel.contains(ifp, RDF.type, OWL.ObjectProperty));
+        assertTrue("property class axioms", infmodel.contains(tp, RDF.type,  OWL.ObjectProperty));
+        assertTrue("property class axioms", infmodel.contains(sp, RDF.type,  OWL.ObjectProperty));
+    }
+    
     // debug assistant
     private void tempList(Model m, Resource s, Property p, RDFNode o) {
         System.out.println("Listing of " + PrintUtil.print(s) + " " + PrintUtil.print(p) + " " + PrintUtil.print(o));
