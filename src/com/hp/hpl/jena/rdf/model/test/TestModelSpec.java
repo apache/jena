@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelSpec.java,v 1.13 2003-08-25 11:54:24 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.14 2003-08-25 14:09:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -27,17 +27,46 @@ public class TestModelSpec extends ModelTestBase
     public static TestSuite suite()
         { return new TestSuite( TestModelSpec.class ); }
         
+    protected Model aModel = ModelFactory.createDefaultModel();
+        
+    protected Resource resource( String URI )
+        { return aModel.createResource( URI ); }
+        
+    public void testNotFindMaker()
+        {
+        Resource type = resource( "jms:xyz" );
+        assertSame( null, ModelMakerCreatorRegistry.findCreator( type ) );    
+        }
+        
+    public void testFindMakerChoice()
+        {
+        Resource type1 = resource( "jms:type1" ), type2 = resource( "jms:type2" );
+        ModelMakerCreator mmc1 = new ModelMakerCreator() 
+            { public ModelMaker create( Model desc, Resource root ) { return null; } };
+        ModelMakerCreator mmc2 = new ModelMakerCreator() 
+            { public ModelMaker create( Model desc, Resource root ) { return null; } };
+        ModelMakerCreatorRegistry.register( type1, mmc1 );
+        ModelMakerCreatorRegistry.register( type2, mmc2 );
+        assertSame( mmc1, ModelMakerCreatorRegistry.findCreator( type1 ) );
+        assertSame( mmc2, ModelMakerCreatorRegistry.findCreator( type2 ) );
+        }
+        
+    public void testFindStandardMakers()
+        {
+        assertNotNull( ModelMakerCreatorRegistry.findCreator( JMS.FileMakerSpec ) );   
+        assertNotNull( ModelMakerCreatorRegistry.findCreator( JMS.MemMakerSpec ) );   
+        assertNotNull( ModelMakerCreatorRegistry.findCreator( JMS.RDBMakerSpec ) );    
+        }
+        
     public void testNotFindCreator()
         {
-        Model aModel = ModelFactory.createDefaultModel();
-        Resource type = resource( aModel, "jms:SomeType" );    
+        Resource type = resource( "jms:SomeType" );    
         assertSame( null, ModelSpecCreatorRegistry.findCreator( type ) );    
         }
         
     public void testFindCreator()
         {
-        Model aModel = ModelFactory.createDefaultModel();
-        Resource type = resource( aModel, "jms:SomeType" );    
+        Resource type = resource( "jms:SomeType" );    
         ModelSpecCreator c = new ModelSpecCreator() 
             { public ModelSpec create( Model m ) { return null; } };
         ModelSpecCreatorRegistry.register( type, c );
@@ -46,9 +75,8 @@ public class TestModelSpec extends ModelTestBase
         
     public void testFindCreatorChoice()
         {
-        Model aModel = ModelFactory.createDefaultModel();
-        Resource type1 = resource( aModel, "jms:SomeType1" );    
-        Resource type2 = resource( aModel, "jms:SomeType2" );    
+        Resource type1 = resource( "jms:SomeType1" );    
+        Resource type2 = resource( "jms:SomeType2" );    
         ModelSpecCreator c1 = new ModelSpecCreator()
             { public ModelSpec create( Model m ) { return null; } };
         ModelSpecCreator c2 = new ModelSpecCreator() 
