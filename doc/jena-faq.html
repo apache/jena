@@ -1,11 +1,11 @@
 <html>
-<!-- $Id: jena-faq.html,v 1.15 2004-02-06 11:06:24 ian_dickinson Exp $ -->
+<!-- $Id: jena-faq.html,v 1.16 2004-02-09 11:37:52 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, 2004, Hewlett-Packard Development Company LP -->
 <head>
   <title>Jena - FAQ</title>
   <meta name="author" content="The Jena Team" />
-  <meta name="description" content="Frequently asked questions about the Jena 2 semantic web toolkit" />
-  <meta name="keywords" content="Jena, Jena2, FAQ, Java, semantic web, RDF, OWL" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
 
 
   <link rel="stylesheet" type="text/css" href="styles/site.css" />
@@ -63,7 +63,7 @@ Jena 2 &ndash; Frequently Asked Questions
 <h2>Index</h2>
 <h3>General</h3>
 <ul>
-  <li><a href="#general-0">Why do I get a <code>java.lang.NoClassDefFoundError</code> when I run a Jena application?</a></li>
+  <li><a href="#general-0">Why do I get a ClassNotFoundException when I run Jena?</a></li>
 </ul>
 <h3>RDF model API</h3>
 <ul>
@@ -79,11 +79,11 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h3>Ontology API</h3>
 <ul>
-            <li><a href="#ontology-0">Why doesn't listClasses() (listProperties()/listIndividuals(), 
-              etc.) work?</a></li>
-            <li><a href="#ontology-1">Why doesn't the ontology API handle <code>sub-class</code> 
-              (or <code>sub-property</code>, <code>domain</code>, <code>range</code>, 
-              etc.) relationships in a DAML model?</a></li>
+  <li><a href="#ontology-0">Why doesn't listClasses() (listProperties()/listIndividuals(),
+    etc) work?</a></li>
+  <li><a href="#ontology-1">Why doesn't the ontlogy API handle <code>sub-class</code>
+	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc)
+  	relationships in a DAML model?</a></li>
   <li><a href="#ontology-2">Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
   <code>ConversionException</code> on SymmetricProperty (or other property types)?</a></li>
 </ul>
@@ -111,10 +111,10 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h2>Answers</h2>
 <h3>General</h3>
-<p id="general-0"><strong>Q: Why do I get a <code>java.lang.NoClassDefFoundError</code> when I run a Jena application?</strong><br>
-  <strong>A:</strong> This means that one or more of the libraries that Jena depends on is not
-  on your classpath. Typically, all of the libraries (.jar files) in <code>$JENA/lib</code>,
-  where <code>$JENA</code> refers to the directory in which you installed Jena, should be on
+<p id="general-0"><strong>Q: Why do I get a ClassNotFoundException when I run Jena?</strong><br>
+  A: This means that one or more of the libraries that Jena depends on is not
+  on your classpath. Typically, all of the librarys (.jar files) in $JENA/lib,
+  where $JENA refers to the directory in which you installed Jena, should be on
   your classpath. Consult the documentation for your JDK for details on setting
   the classpath for your system. There are also a number of on-line tutorials for setting 
   the Java classpath. Consult Google or see 
@@ -150,11 +150,9 @@ Jena 2 &ndash; Frequently Asked Questions
 
 <h3>Reasoner and inference models</h3>
   <p id="reasoner-0"><strong>Q. I want to develop my own rules, how do I get started?</strong><br />
-            A: The GenericRuleReasoner is the place to start. You can create instances 
-            of this reasoner by supplying either an explicit set of Rule objects 
-            or a configuration description (as a Jena Model) that points to a 
-            local rule file. See the inference documentation for more details: 
-            <br />
+    A: The GenericRuleReasoner is the place to start. You can create instances of this reasoner by
+    supplying either an explict set of Rule objects or a configuration description (as a Jena Model)
+    that points to a local rule file. See the inference documentation for more details: <br />
     <a href="inference/index.html#rules">inference/index.html#rules</a>
   </p>
 
@@ -186,13 +184,12 @@ Jena 2 &ndash; Frequently Asked Questions
   </p>
   
   <p id="reasoner-2"><strong>Q. The domain and range inferences look wrong, is that a bug?</strong><br />
-            A: The way rdfs range and domain declarations work is completely alien 
-            to anyone who thinks of RDFS and OWL as being a bit like a type system 
-            for a programming language, especially an object oriented language. 
-            Whilst there may be bugs in the inference rule sets the most common 
-            explanation for surprising results, when listing inferred domains 
-            and ranges, is this mismatch in expectations. 
-          <p> Suppose we have three classes <code>eg:Man</code> is an <code>rdfs:subClassOf</code> 
+      A: The way rdfs range and domain declarations work is completely alien to 
+      anyone who thinks of RDFS and OWL as being a bit like a type system for 
+      a programming language, especially an object oriented language. Whilst there 
+      may be bugs in the inference rule sets the most common explanation for supprising 
+      results, when listing inferred domains and ranges, is this mismatch in expectations. 
+    <p> Suppose we have three classes <code>eg:Man</code> is an <code>rdfs:subClassOf</code> 
       <code>eg:Person</code> is an <code>rdfs:subClassOf</code> <code>eg:Animal</code>. 
       Suppose we a property <code>eg:personalName</code> which is declared to 
       have <code>rdfs:domain</code> <code>eg:Person</code>. Now the question is 
@@ -205,60 +202,55 @@ Jena 2 &ndash; Frequently Asked Questions
       - if you somehow knew that all things to which <code>eg:personalName</code> 
       applied were also <code>Foo</code>'s you cannot conclude that <code>&lt;eg:personalName 
       rdfs:domain Foo&gt;.</code></p>
-          <p>However, RDFS permits systems to strengthen the meaning of domain and range 
-            to be extensional, so that valid domain and range deductions can be 
-            made. OWL makes use of this option. So in OWL, then in our example 
-            we can also deduce that <code>&lt;eg:personalName rdfs:domain eg:Animal&gt;</code>. 
-            If you are used to object oriented programming this may look wrong. 
-            It is tempting, but incorrect, to think of rdfs:domain as meaning 
-            <i>this is the class of objects to which this property can be applied. 
-            </i>With that mindset you might expect to find that <code>&lt;eg:personalName 
-            rdfs:domain eg:Man&gt;</code>, after all every <code>eg:Man</code> 
-            is an <code>eg:Person</code> so it is always &quot;legal&quot; to 
-            apply <code>eg:personalName</code> to an <code>eg:Man</code>. That 
-            is true, it is legal, any <code>eg:Man</code> is allowed to have a 
-            a <code>eg:personalName</code> but <code>rdfs:domain</code> does not 
-            describe what is legal. The statement <code>&lt;P rdfs:domain C&gt;</code> 
-            just means <i>all things to which P is applied can be inferred to 
-            have class C</i>. You can see that if we tried to infer <code>&lt;eg:personalName 
-            rdfs:domain eg:Man&gt;</code> then we would start concluding that 
-            anything with a name was a man which is not right - every Man can 
-            have a name but non-Man Persons are also allowed to have names in 
-            this example.</p>
+    <p>However, RDFS permits systems to strengthen the meaning of domain and range 
+      to be extensional, so that valid domain and range deductions can be made. 
+      OWL makes use of this option. So in OWL, then in our example we can also 
+      deduce that <code>&lt;eg:personalName rdfs:domain eg:Animal&gt;</code>. 
+      If you are used to object oriented programming this may look wrong. It is 
+      tempting, but incorrect, to think of rdfs:domain as meaning <i>this is the 
+      class of objects to which this property can be applied. </i>With that mind-set 
+      you might expect to find that <code>&lt;eg:personalName rdfs:domain eg:Man&gt;</code>, 
+      after all every <code>eg:Man</code> is an <code>eg:Person</code> so it is 
+      always &quot;legal&quot; to apply <code>eg:personalName</code> to an <code>eg:Man</code>. 
+      That is true, it is legal, any <code>eg:Man</code> is allowed to have a 
+      a <code>eg:personalName</code> but <code>rdfs:domain</code> does not describe 
+      what is legal. The statement <code>&lt;P rdfs:domain C&gt;</code> just means 
+      <i>all things to which P is applied can be inferred to have class C</i>. 
+      You can see that if we tried to infer <code>&lt;eg:personalName rdfs:domain 
+      eg:Man&gt;</code> then we would start concluding that anything with a name 
+      was a man which is not right - every Man can have a name but non-Man Persons 
+      are also allowed to have names in this example.</p>
      
   <p id="reasoner-3"><strong>Q: Why do I get a warning: <i>Creating OWL rule reasoner working over another OWL rule reasoner</i></strong><br />
-            A: If you create an inference graph explicitly from an OWL reasoner 
-            or implicitly (by using OntModelSpec.OWL_*_RULE) then it is best if 
-            the argument models (data and schema) are plain models. It is easy 
-            to accidentally misuse the API and create an inference model working 
-            over the results of another inference model. This is a redundancy 
-            which significantly affects performance to no useful effect. To help 
-            detect this situation we have added a warning message. The best way 
-            to stop the message is to change your model construction code so that 
-            only the final InfModel/OntModel is specified to use OWL inference. 
-            If this is not appropriate for some reason you can disable the check 
-            and warning messages using the global flag <code>com.hp.hpl.jena.shared.impl.JenaParameters.enableOWLRuleOverOWLRuleWarnings.</code></p>
+      A: If you create an infernce graph explicitly from an OWL reasoner or implicitly
+      (by using OntModelSpec.OWL_*_RULE) then it is best if the argument models
+      (data and schema) are plain models. It is easy to accidently misuse the API and
+      create an inference model working over the results of another inference model.
+	  This is a redunancy which significantly affects performance to no useful effect.
+	  To help detect this situation we have added a warning message. The best way
+	  to stop the message is to change your model construction code so that only the
+	  final InfModel/OntModel is specified to use OWL inference. If this is not
+	  appropriate for some reason you can disable the check and warning messages 
+	  using the global flag <code>com.hp.hpl.jena.shared.impl.JenaParameters.enableOWLRuleOverOWLRuleWarnings.</code></p>
       
       
     <h3>Ontology API</h3>
-          <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> 
-            (or <code>listProperties()</code>/<code>listIndividuals()</code>, 
-            etc.) work?</strong><br />
-            <strong>A:</strong> It does work. Extensive unit tests are used to 
-            check the correctness of Jena, and are included in the downloaded 
-            source code for your reference. If <code>listClasses()</code>, or 
-            a similar method, is not producing the answers you expect, or no answers 
-            at all, you should first check that your model is correctly defined. 
-            Print a copy of your model as a debug step, to see if the URI's match 
-            up (e.g., if you are expecting resource x to be an individual of class 
-            Y, check that the rdf:type of x is the same as the URI of the class 
-            declaration for Y). A common problem is that relative URI's change 
-            depending where you read the model from. Try adding an <code>xml:base</code> 
-            declaration to the document to ensure that URI's are correctly specified.</p>
+<p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
+  etc) work?</strong><br />
+  <strong>A:</strong> It does work. Extensive unit tests are used to check the correctness of Jena,
+  and are included in the downloaded source code for your reference. If <code>listClasses()</code>,
+  or a similar method, is not producing the answers you expect, or no answers
+  at all, you should first check that your model is correctly defined. Print a
+  copy of your model as a debug step, to see if the URI's match up (e.g, if you
+  are expecting resource x to be an individual of class Y, check that the rdf:type
+  of x is the same as the URI of the class declaration for Y). A common problem
+  is that relative URI's change depending where you read the model from. Try adding
+  an <code>xml:base</code> declaration to the document to ensure that URI's are
+  correctly specified.</p>
 
-          <p id="ontology-1"><strong>Q: Why doesn't the ontology API handle <code>sub-class</code> 
-            (or <code>sub-property</code>, <code>domain</code>, <code>range</code>, 
-            etc.) relationships in a DAML model?</strong><br />
+<p id="ontology-1"><strong>Q: Why doesn't the ontlogy API handle <code>sub-class</code>
+	(or <code>sub-property</code>, <code>domain</code>, <code>range</code>, etc)
+  	relationships in a DAML model?</strong><br />
   	<strong>A:</strong> These relationships are handled correctly, but the results you see are dependent on the
   	model configuration.  The DAML specification includes a number of aliases for RDFS constructs to
   	copy them into the DAML+OIL namespace. This means that, for a DAML processor, <code>daml:subClassOf</code>
@@ -273,27 +265,25 @@ Jena 2 &ndash; Frequently Asked Questions
   	<code>OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM_RULE_INF, null );</code>
 	</p>
 
-          <p id="ontology-2"> <strong>Q: Why does <code>As(&nbsp;OntProperty.class&nbsp;)</code> 
-            fail with <code>ConversionException</code> on SymmetricProperty (or 
-            other property types)?</strong><br />
-            <strong>A:</strong> This is a slightly tricky issue. Internally, <code>As()</code> 
-            calls the <em>supports</em> check, which tests whether the node that 
-            is being converted is a common flavour of property. Strictly, the 
-            only necessary test should be '<code>has rdf:type rdf:Property</code>', 
-            because that is entailed by all of the other property types. However, 
-            that requires the user to use a model with a reasoner, and some don't 
-            want to (for good reasons, e.g. building an editor). The other position 
-            is to test for all the possible variants of property: object property, 
-            datatype property, annotation, ontology, transitive, functional, inverse 
-            functional, etc. The problem with this is that it duplicates the work 
-            of the reasoner, and my expectation was that most people would be 
-            running with a reasoner. Thus my code would be duplicating the functionality 
-            of the reasoner, which is bad design. The compromise solution was 
-            to make the supports check test for the common (top level) property 
-            types. Users who aren't using the reasoner, can either test explicitly 
-            for the other property types they expect to encounter (e.g. SymmetricProperty), 
-            or can turn off the supports check by setting <a href="javadoc/com/hp/hpl/jena/ontology/OntModel.html#strictMode()">strict 
-            mode</a> to false on the model. </p>
+<p id="ontology-2">
+  <strong>Q: Why does <code>.as(&nbsp;OntProperty.class&nbsp;)</code> fail with
+  <code>ConversionException</code> on SymmetricProperty (or other property types)?</strong><br />
+  <strong>A:</strong> This is a slightly tricky issue.  Internally, <code>.as()</code> calls the <em>supports</em> check,
+  which tests whether the node that is being converted is a common flavour of property.
+  Strictly, the only necessary test should be '<code>has rdf:type rdf:Property</code>',
+  because that is entailed by all of the other property types.  However, that requires
+  the user to use a model with a reasoner, and some don't want to (for good reasons, e.g. building an editor).
+  The other position is to test for all the possible variants of property: object property,
+  datatype property, annotation, ontology, transitive, funcitonal, inverse functional, etc etc.
+  The problem with this is that it duplicates the work of the reasoner, and my expectation was that
+  most people would be running with a reasoner.  Thus my code would be duplicating the functionality
+  of the reasoner, which is bad design. The compromise solution was to make the supports check test
+  for the common (top level) property types.  Users who aren't using the reasoner,
+  can either test explicitly for the other property types they expect to encounter (e.g. SymmetricProperty),
+  or can turn off the supports check by setting
+  <a href="javadoc/com/hp/hpl/jena/ontology/OntModel.html#strictMode()">strict mode</a> to false on the model.
+
+</p>
 
 <h3>Database and persistence</h3>
 <p id="db-0"><strong>Q: Why do I get an exception when trying to create a new persistent model?</strong><br>
@@ -310,16 +300,15 @@ that this is what you want to do. </p>
 
   <p id="db-1"><strong>Q: Why do I run out of memory when trying to list statements in a persistent
   model?</strong><br>
-            A: Jena2 uses the JDBC interface for accessing databases. The JDBC 
-            specification has no cursors. Consequently, when a query is processed 
-            by JDBC, the entire result set is returned from the database at once 
-            and the application program then iterates over the in-memory result 
-            set. If the result set is large, as is often the case when listing 
-            all statements of a large model, it may exceed the heap size of the 
-            Java virtual machine. If you suspect this is happening, you might 
-            try to increase the heap size of the Java virtual machine (<code>-vmargs 
-            -Xmx500M</code> for a 500 MB heap size). If this does not help, there 
-            is no other workaround and the program should be recoded.</p>
+  A: Jena2 uses the JDBC interface for accessing databases. The JDBC
+  specification has no cursors. Consequently, when a query is processed by JDBC,
+  the entire result set is returned from the database at once and the application program then iterates
+  over the in-memory result set. If the result set is large, as is often the case
+  when listing all statements of a large model, it may exceed the heap size of
+  the Java virtual machine. If you suspect this is happening, you might try to
+  increase the heap size of the Java virtual machine (<code>-vmargs
+  -Xmx500M</code> for a 500 MB heap size). If this does not help, there is no
+  other work-around and the program should be recoded.</p>
   
 <p id="db-2"><strong>Q: Has Jena2 persistence been ported to other database engines and platforms
   besides those officially supported?</strong><br>
@@ -340,16 +329,15 @@ Erik Barke</a> for more information.</p>
 
 <p id="db-3"><strong>Q: Is there a limit on 
 the number of models in a database?</strong><br>
-            <strong>A:</strong> The limit depends on the Jena database (schema) 
-            configuration and the database engine (MySQL, PostgreSQL, Oracle, 
-            etc.). Recall that a Jena model may either be stored separately in 
-            its own database tables (the default) or, alternatively, in tables 
-            that are shared with other models (see <i> StoreWithModel</i> in the 
-            <a href="DB/options.html">options</a> for persistent models). Also, 
-            a Jena model is identified internally by a 32 bit integer. Consequently 
-            the maximum number of models is limited either by the maximum number 
-            of tables allowed in a database (which depends on the database engine) 
-            or by the maximum value of a 32 bit integer, i.e., 2G.</p>
+  <strong>A:</strong> The limit depends on the Jena database (schema) configuration and the 
+database engine (MySQL, PostgreSQL, Oracle, etc). Recall that a Jena model may 
+either be stored separately in its own database tables (the default) or, 
+alternatively, in tables that are shared with other models (see <i>
+StoreWithModel</i> in the <a href="DB/options.html">options</a> for 
+persistent models). Also, a Jena model is identified internally by a 32 bit 
+integer. Consequently the maximum number of models is limited either by the 
+maximum number of tables allowed in a database (which depends on the database 
+engine) or by the maximum value of a 32 bit integer, i.e., 2G.</p>
 
 <h3>XML serialisation (reading and writing)</h3>
 <p id="xml-0"><strong>Q: Why are some of my statement objects serialised as XML elements, and some as XML attributes?</strong><br />
@@ -372,14 +360,13 @@ the number of models in a database?</strong><br>
 
 <p id="misc-0">
   <strong>Q: What versions of library jars does Jena require?</strong><br />
-            <strong>A:</strong> Jena makes use of several third party Java libraries. 
-            Copies of each of these is included in the $JENA/lib area of the distribution 
-            and we recommend including all of these jars in your classpath. In 
-            some circumstances applications already make use of specific versions 
-            of these libraries (e.g. Xerces) and need to check if the version 
-            they are using is compatible with those shipped by Jena. The current 
-            library versions used by Jena are: 
-          <ul>
+  <strong>A:</strong> Jena makes use of several third party java libraries. Copies of
+  each of these is included in the $JENA/lib area of the distribution and we recommend
+  including all of these jars in your classpath. In some circumstances applications 
+  already make use of specific versions of these libraries (e.g. Xerces) and need to 
+  check if the version they are using is compatible with those shipped by Jena. The current
+  library versions used by Jena are:
+  <ul>
   <li><strong>Xerces</strong> - 2.6.1 (not compatible with Xerces prior to 2.6.0)</li>
   <li><strong>log4j</strong> - 1.2.7</li>
   <li><strong>junit</strong> - ?</li>
@@ -389,7 +376,7 @@ the number of models in a database?</strong><br>
   <li><strong>jakarta-commons-logging</strong> - 1.0.3</li>
   <li><strong>concurrent</strong> - 1.3.2</li>
   </ul> 
-<p></p>
+</p>
 
 <p>&nbsp;</p>
 
