@@ -16,7 +16,7 @@ import com.hp.hpl.jena.util.*;
 
 /**
  * @author      Andy Seaborne
- * @version     $Id: QueryResultsMem.java,v 1.10 2003-08-27 12:25:58 andy_seaborne Exp $
+ * @version     $Id: QueryResultsMem.java,v 1.11 2004-01-20 14:27:43 andy_seaborne Exp $
  */
 
 
@@ -228,7 +228,7 @@ public class QueryResultsMem implements QueryResultsRewindable
             {
                 try {
                     int size = root.getRequiredProperty(ResultSet.size).getInt() ;
-                    if ( size != count )
+                    if ( size < count )
                         System.err.println("Warning: Declared size = "+size+" : Count = "+count) ;
                 } catch (JenaException rdfEx) {}
             }

@@ -8,6 +8,7 @@ package com.hp.hpl.jena.rdql;
 import java.util.* ;
 import java.io.* ;
 
+import org.apache.commons.logging.*;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.vocabulary.* ;
 
@@ -25,11 +26,13 @@ import com.hp.hpl.jena.vocabulary.* ;
  *  Don't keep QueryResultsFormatter's around unnecessarily!
  * 
  * @author   Andy Seaborne
- * @version  $Id: QueryResultsFormatter.java,v 1.12 2003-09-28 19:07:39 andy_seaborne Exp $
+ * @version  $Id: QueryResultsFormatter.java,v 1.13 2004-01-20 14:27:43 andy_seaborne Exp $
  */
 
 public class QueryResultsFormatter
 {
+    static Log log = LogFactory.getLog(QueryResultsFormatter.class); 
+    
     QueryResults queryResults ;
     QueryResultsMem all = null ;
     int numRows = -2 ;
@@ -142,7 +145,7 @@ public class QueryResultsFormatter
                     n = ResultSet.undefined ;
                 else if ( ! (tmp instanceof RDFNode) )
                 {
-                    System.err.println("Class wrong: "+tmp.getClass().getName()) ;
+                    log.warn("Class wrong: "+tmp.getClass().getName()) ;
                     continue ;
                 }
                 else
@@ -153,6 +156,7 @@ public class QueryResultsFormatter
                 thisSolution.addProperty(ResultSet.binding, thisBinding) ;
             }
         }
+        queryResults.close() ;
         results.addProperty(ResultSet.size, count) ;
         return results ;
     }
