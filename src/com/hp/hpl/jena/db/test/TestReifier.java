@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestReifier.java,v 1.4 2003-05-08 21:33:11 csayers Exp $
+  $Id: TestReifier.java,v 1.5 2003-05-10 15:56:39 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -39,7 +39,7 @@ public class TestReifier extends GraphTestBase {
 			theConnection.cleanDB();
 			theGraphs.clear();
 			theConnection.close();
-		} catch (Exception e) { throw new RuntimeException(e);}
+		} catch (Exception e) { throw new RuntimeException(e.toString());}
 	}
 
 	public Graph getGraph() {
