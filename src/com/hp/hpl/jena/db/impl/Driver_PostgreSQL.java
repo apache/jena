@@ -36,15 +36,14 @@ public class Driver_PostgreSQL extends DriverRDB {
 		DATABASE_TYPE = "PostgreSQL";
 		DRIVER_NAME = "org.postgresql.Driver";
 		
-		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		ID_SQL_TYPE = "INTEGER";
-		INSERT_BY_PROCEDURE = false;
-		INDEX_KEY_LENGTH = 250;
-		LONG_OBJECT_LENGTH = 250;
-		HAS_XACTS = true;
+		URI_COMPRESS = false;
+		INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 250;
+		LONG_OBJECT_LENGTH_MAX = LONG_OBJECT_LENGTH = 250;
+		TABLE_NAME_LENGTH_MAX = 63;
+		IS_XACT_DB = true;
 		PRE_ALLOCATE_ID = true;
 		SKIP_DUPLICATE_CHECK = false;
-		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		SQL_FILE = "etc/postgresql.sql";
 		QUOTE_CHAR = '\'';
 		
@@ -79,7 +78,7 @@ public class Driver_PostgreSQL extends DriverRDB {
 		int dbid = 0;
 		try {
 			dbid = getInsertID(GRAPH_TABLE);
-			PreparedStatement ps = m_sql.getPreparedSQLStatement("insertGraph");
+			PreparedStatement ps = m_sql.getPreparedSQLStatement("insertGraph",GRAPH_TABLE);
 			ps.setInt(1,dbid);
 			ps.setString(2,graphName);
 			ps.executeUpdate();
@@ -96,7 +95,7 @@ public class Driver_PostgreSQL extends DriverRDB {
 	public void graphIdDealloc ( int graphId ) {
 		DBIDInt result = null;
 		try {
-			PreparedStatement ps = m_sql.getPreparedSQLStatement("deleteGraph");
+			PreparedStatement ps = m_sql.getPreparedSQLStatement("deleteGraph",GRAPH_TABLE);
 			ps.setInt(1,graphId);
 			ps.executeUpdate();
 		} catch (SQLException e) {
@@ -124,6 +123,8 @@ public class Driver_PostgreSQL extends DriverRDB {
 	/**
 	 * Return the parameters for table creation.
 	 * 1) column type for subj, prop, obj.
+	 * 2) column type for head.
+	 * 3) table and index name prefix.
 	 * @param param array to hold table creation parameters. 
 	 */
 	protected void getTblParams ( String [] param ) {
@@ -143,6 +144,7 @@ public class Driver_PostgreSQL extends DriverRDB {
 		headColType = "VARCHAR(" + INDEX_KEY_LENGTH + ")";
 		STRINGS_TRIMMED = false;
 		param[1] = headColType;
+		param[2] = TABLE_NAME_PREFIX;
 	}
 
 	
@@ -152,7 +154,7 @@ public class Driver_PostgreSQL extends DriverRDB {
 	 * Return the parameters for database initialization.
 	 */
 	protected String[] getDbInitTablesParams() {
-		String [] res = new String[2];
+		String [] res = new String[3];
 		
 		getTblParams (res);
 		EOS_LEN = EOS.length();
@@ -169,12 +171,12 @@ public class Driver_PostgreSQL extends DriverRDB {
 	*/	
 
 	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
-		String [] parms = new String[2];
+		String [] parms = new String[3];
 		String [] res = new String[2];
 				
 		getTblParams (parms);
 		int tblCnt = getTableCount(graphId);
-		String tblName = TABLE_BASE_NAME + 
+		String tblName = TABLE_NAME_PREFIX + 
 					"g" + Integer.toString(graphId) +
 					"t" + Integer.toString(tblCnt) +
 					(isReif ? "_reif" : "_stmt");	

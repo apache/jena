@@ -7,7 +7,6 @@
 
 package com.hp.hpl.jena.db.impl;
 
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -36,16 +35,14 @@ public class Driver_MySQL extends DriverRDB {
 		DATABASE_TYPE = "MySQL";
 		DRIVER_NAME = "com.mysql.jdbc.Driver";
 		
-		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		ID_SQL_TYPE = "INTEGER";
-		INSERT_BY_PROCEDURE = false;
-		INDEX_KEY_LENGTH = 250;
-		LONG_OBJECT_LENGTH = 250;
-		// LONG_OBJECT_LENGTH = 100;
-		HAS_XACTS = true;
+		URI_COMPRESS = false;
+		INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 250;
+		LONG_OBJECT_LENGTH_MAX = LONG_OBJECT_LENGTH = 250;
+		TABLE_NAME_LENGTH_MAX = 64;
+		IS_XACT_DB = true;
 		PRE_ALLOCATE_ID = false;
 		SKIP_DUPLICATE_CHECK = false;
-		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		SQL_FILE = "etc/mysql.sql";
 		DB_NAMES_TO_UPPER = false;
 		
@@ -79,7 +76,7 @@ public class Driver_MySQL extends DriverRDB {
 		DBIDInt result = null;
 		int dbid = 0;
 		try {
-			PreparedStatement ps = m_sql.getPreparedSQLStatement("insertGraph");
+			PreparedStatement ps = m_sql.getPreparedSQLStatement("insertGraph",GRAPH_TABLE);
 			ps.setString(1,graphName);
 			ps.executeUpdate();
 			dbid = getInsertID(GRAPH_TABLE);
@@ -96,7 +93,7 @@ public class Driver_MySQL extends DriverRDB {
 	public void graphIdDealloc ( int graphId ) {
 		DBIDInt result = null;
 		try {
-			PreparedStatement ps = m_sql.getPreparedSQLStatement("deleteGraph");
+			PreparedStatement ps = m_sql.getPreparedSQLStatement("deleteGraph",GRAPH_TABLE);
 			ps.setInt(1,graphId);
 			ps.executeUpdate();
 		} catch (SQLException e) {
@@ -128,6 +125,7 @@ public class Driver_MySQL extends DriverRDB {
 	 * 3) index key length for subj, pred, obj.
 	 * 4) column type for head.
 	 * 5) index key length for head.
+	 * 6) table and index name prefix.
 	 * @param param array to hold table creation parameters. 
 	 */
 	protected void getTblParams ( String [] param ) {
@@ -143,8 +141,8 @@ public class Driver_MySQL extends DriverRDB {
 		if ( INDEX_KEY_LENGTH > 250 )
 			throw new RDFRDBException("Key length specified (" + INDEX_KEY_LENGTH +
 					") exceeds MySQL maximum key length of 250.");
-		tblImpl = HAS_XACTS ? "INNODB" : "MyISAM";
-		if ( HAS_XACTS ) {
+		tblImpl = IS_XACT_DB ? "INNODB" : "MyISAM";
+		if ( IS_XACT_DB ) {
 			if ( LONG_OBJECT_LENGTH > 250 )
 				throw new RDFRDBException("Long object length specified (" + LONG_OBJECT_LENGTH +
 						") exceeds MySQL maximum VARCHAR length of 250.");
@@ -158,7 +156,7 @@ public class Driver_MySQL extends DriverRDB {
 			STRINGS_TRIMMED = false;
 			EOS = "";
 		}
-		if ( HAS_XACTS ) {
+		if ( IS_XACT_DB ) {
 			if ( INDEX_KEY_LENGTH > 250 )
 				throw new RDFRDBException("Index key length specified (" + INDEX_KEY_LENGTH +
 						") exceeds MySQL maximum VARCHAR length of 250.");
@@ -174,6 +172,7 @@ public class Driver_MySQL extends DriverRDB {
 		param[2] = spoKeyLen;
 		param[3] = headColType;
 		param[4] = headKeyLen;
+		param[5] = TABLE_NAME_PREFIX;
 	}
 
 	
@@ -183,10 +182,10 @@ public class Driver_MySQL extends DriverRDB {
 	 * Return the parameters for database initialization.
 	 */
 	protected String[] getDbInitTablesParams() {
-		String [] res = new String[5];
+		String [] res = new String[6];
 		
 		getTblParams (res);
-		if ( HAS_XACTS ) {
+		if ( IS_XACT_DB ) {
 			STRINGS_TRIMMED = true;
 			EOS = ":";
 		} else {
@@ -208,12 +207,12 @@ public class Driver_MySQL extends DriverRDB {
 	*/	
 
 	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
-		String [] parms = new String[5];
+		String [] parms = new String[6];
 		String [] res = new String[4];
 				
 		getTblParams (parms);
 		int tblCnt = getTableCount(graphId);
-		String tblName = TABLE_BASE_NAME + 
+		String tblName = TABLE_NAME_PREFIX + 
 					"g" + Integer.toString(graphId) +
 					"t" + Integer.toString(tblCnt) +
 					(isReif ? "_reif" : "_stmt");	
@@ -224,11 +223,6 @@ public class Driver_MySQL extends DriverRDB {
 		res[3] = parms[2];
 		return res;
 	}
-	
-	// for debugging
-	public void setMaxLiteral ( int n ) { LONG_OBJECT_LENGTH = n; }
-	public int getMaxLiteral ( ) { return LONG_OBJECT_LENGTH; }
-
 }
 
 /*

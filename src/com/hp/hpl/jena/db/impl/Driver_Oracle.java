@@ -63,15 +63,14 @@ import oracle.sql.BLOB;
 		DATABASE_TYPE = "Oracle";
 		DRIVER_NAME = "oracle.jdbc.driver.OracleDriver";
 		
-		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		ID_SQL_TYPE = "INTEGER";
-		INSERT_BY_PROCEDURE = false;
-		INDEX_KEY_LENGTH = 4000;
-		LONG_OBJECT_LENGTH = 250;
-		HAS_XACTS = true;
+		URI_COMPRESS = false;
+		INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 4000;
+		LONG_OBJECT_LENGTH_MAX = LONG_OBJECT_LENGTH = 250;
+		TABLE_NAME_LENGTH_MAX = 30;  // just a guess; need to verify it.
+		IS_XACT_DB = true;
 		PRE_ALLOCATE_ID = true;
 		SKIP_DUPLICATE_CHECK = false;
-		EMPTY_LITERAL_MARKER = "EmptyLiteral";
 		SQL_FILE = "etc/oracle.sql";
 		
 		m_psetClassName = myPackageName + ".PSet_TripleStore_RDB";
@@ -111,7 +110,7 @@ import oracle.sql.BLOB;
 		try {
 			String op = "insertGraph";
 			dbid = getInsertID(GRAPH_TABLE);
-			PreparedStatement ps = m_sql.getPreparedSQLStatement(op);
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(op,GRAPH_TABLE);
 			ps.setInt(1,dbid);
 			ps.setString(2,graphName);
 			ps.executeUpdate();
@@ -130,7 +129,7 @@ import oracle.sql.BLOB;
 		DBIDInt result = null;
 		try {
 			String op = "deleteGraph";
-			PreparedStatement ps = m_sql.getPreparedSQLStatement(op);
+			PreparedStatement ps = m_sql.getPreparedSQLStatement(op,GRAPH_TABLE);
 			ps.setInt(1,graphId);
 			ps.executeUpdate();
 			m_sql.returnPreparedSQLStatement(ps,op);
@@ -161,6 +160,8 @@ import oracle.sql.BLOB;
 	/**
 	 * Return the parameters for table creation.
 	 * 1) column type for subj, prop, obj.
+	 * 2) column type for head.
+	 * 3) table and index name prefix.
 	 * @param param array to hold table creation parameters. 
 	 */
 	protected void getTblParams ( String [] param ) {
@@ -181,7 +182,9 @@ import oracle.sql.BLOB;
 		// length of head column in literal tables 
 		String headColType = "VARCHAR2(" + INDEX_KEY_LENGTH + ")";
 		param[1] = headColType;
+		param[2] = TABLE_NAME_PREFIX;
 	}
+	
 	/**
 	* 
 	* Return the parameters for table creation.
@@ -192,12 +195,12 @@ import oracle.sql.BLOB;
 	*/	
 
 	protected String[] getCreateTableParams( int graphId, boolean isReif ) {
-		String [] parms = new String[2];
+		String [] parms = new String[3];
 		String [] res = new String[2];
 				
 		getTblParams (parms);
 		int tblCnt = getTableCount(graphId);
-		String tblName = TABLE_BASE_NAME + 
+		String tblName = TABLE_NAME_PREFIX + 
 					"g" + Integer.toString(graphId) +
 					"t" + Integer.toString(tblCnt) +
 					(isReif ? "_reif" : "_stmt");	
@@ -211,7 +214,7 @@ import oracle.sql.BLOB;
 	 * Return the parameters for database initialization.
 	 */
 	protected String[] getDbInitTablesParams() {
-		String [] res = new String[2];
+		String [] res = new String[3];
 		
 		getTblParams (res);
 		EOS_LEN = EOS.length();
