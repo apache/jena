@@ -9,6 +9,7 @@
 #        where nn is DBLongObjectLen (requires that nn <= 250)
 #     else TINYBLOB if DBLongObjectLen <= 250; else MEDIUMBLOB
 # b - column type for head
+# c - table and index name prefix, defaults to jena_
 #
 # Note that the tables JENA_LONG_LIT, JENA_LONG_URI, JENA_PREFIX
 # all have the same structure. These are used to store long objects.
@@ -17,48 +18,43 @@
 # This is not urgent - left for future work.
 #
 initDBtables
-#DROP TABLE jena_sys_stmt;;
-CREATE TABLE jena_sys_stmt (
+CREATE TABLE ${c}sys_stmt (
  Subj       ${a} NOT NULL,
  Prop       ${a} NOT NULL,
  Obj        ${a} NOT NULL,
  GraphID    INTEGER
 ) ;;
-#DROP TABLE jena_long_lit;;
-CREATE TABLE jena_long_lit (
+CREATE TABLE ${c}long_lit (
  ID      	INTEGER NOT NULL PRIMARY KEY,
  Head    	${b} NOT NULL,
  ChkSum		INTEGER,
  Tail    	BLOB
 );;
-CREATE SEQUENCE jena_long_lit_ID_seq;;
-#DROP TABLE jena_long_uri;;
-CREATE TABLE jena_long_uri (
+CREATE SEQUENCE ${c}long_lit_ID_seq;;
+CREATE TABLE ${c}long_uri (
  ID      	INTEGER NOT NULL PRIMARY KEY,
  Head    	${b} NOT NULL,
  ChkSum 	INTEGER,
  Tail    	BLOB
 ) ;;
-CREATE SEQUENCE jena_long_uri_ID_seq;;
-#DROP TABLE jena_prefix;;
-CREATE TABLE jena_prefix (
+CREATE SEQUENCE ${c}long_uri_ID_seq;;
+CREATE TABLE ${c}prefix (
  ID      	INTEGER NOT NULL PRIMARY KEY,
  Head    	${b} NOT NULL,
  ChkSum		INTEGER,
  Tail    	BLOB
 ) ;;
-CREATE SEQUENCE jena_prefix_ID_seq;;
-#DROP TABLE jena_graph;;
-CREATE TABLE jena_graph (
+CREATE SEQUENCE ${c}prefix_ID_seq;;
+CREATE TABLE ${c}graph (
  ID      INTEGER NOT NULL PRIMARY KEY,
  Name    VARCHAR2(4000)
 );;
-CREATE SEQUENCE jena_graph_ID_seq;;
-CREATE UNIQUE INDEX JENA_IXLIT ON JENA_LONG_LIT(Head,ChkSum);;
-CREATE UNIQUE index jENA_IXURI ON JENA_LONG_URI(Head,ChkSum);;
-CREATE UNIQUE INDEX JENA_IXBND ON JENA_PREFIX(Head,ChkSum);;
-CREATE INDEX JENA_IXSP ON JENA_SYS_STMT(Subj, Prop);;
-CREATE INDEX JENA_IXO ON JENA_SYS_STMT(Obj);;
+CREATE SEQUENCE ${c}graph_ID_seq;;
+CREATE UNIQUE INDEX {c}xlit ON ${c}long_lit(Head,ChkSum);;
+CREATE UNIQUE index {c}xuri ON ${c}long_urI(Head,ChkSum);;
+CREATE UNIQUE INDEX {c}xbnd ON ${c}prefix(Head,ChkSum);;
+CREATE INDEX {c}xsp ON ${c}sys_stmt(Subj, Prop);;
+CREATE INDEX {c}xo ON ${c}sys_stmt(Obj);;
 
 #-------------------------------------------------------------------
 # Create a blank statement table - and indexes
@@ -66,9 +62,6 @@ CREATE INDEX JENA_IXO ON JENA_SYS_STMT(Obj);;
 # Parameters:
 # a - table name
 # b - column type for subj, prop, obj (see param a in InitDBtables)
-# c - table implementation type (see param b in InitDBtables)
-# d - index key length (see param c in InitDBtables)
-#
 createStatementTable
 CREATE TABLE ${a} (
  Subj       ${b} NOT NULL,
@@ -76,8 +69,8 @@ CREATE TABLE ${a} (
  Obj        ${b} NOT NULL,
  GraphID    INTEGER
 );;
-CREATE INDEX ${a}_IXSP ON ${a}(Subj, Prop);;
-CREATE INDEX ${a}_IXO ON ${a}(Obj);;
+CREATE INDEX ${a}xsp ON ${a}(Subj, Prop);;
+CREATE INDEX ${a}xo ON ${a}(Obj);;
 
 #-------------------------------------------------------------------
 # Create a blank reified statement table - and indexes
@@ -85,8 +78,6 @@ CREATE INDEX ${a}_IXO ON ${a}(Obj);;
 # Parameters:
 # a - table name
 # b - column type for subj, prop, obj (see param a in InitDBtables)
-# c - table implementation type (see param b in InitDBtables)
-# d - index key length (see param c in InitDBtables)
 createReifStatementTable
 CREATE TABLE ${a} (
  Subj       ${b},
@@ -97,8 +88,8 @@ CREATE TABLE ${a} (
  HasType    CHAR(1) NOT NULL
 );;
 CREATE UNIQUE INDEX ${a}_IXSTMT ON ${a}(Stmt, HasType);;
-CREATE INDEX ${a}_IXSP ON ${a}(Subj, Prop);;
-CREATE INDEX ${a}_IXO ON ${a}(Obj);;
+CREATE INDEX ${a}XSP ON ${a}(Subj, Prop);;
+CREATE INDEX ${a}XO ON ${a}(Obj);;
 
 #-------------------------------------------------------------------
 # Initialize a blank database - create any generators needed
@@ -119,12 +110,12 @@ DELETE FROM ${a} WHERE (GraphID = ?)
 #-------------------------------------------------------------------
 # Store the name of a new graph and create a unique identifier for it.
 insertGraph
-INSERT INTO jena_graph (ID, Name) VALUES (?, ?)
+INSERT INTO ${a} (ID, Name) VALUES (?, ?)
 
 #-------------------------------------------------------------------
 # Remove the name of a graph.
 deleteGraph
-Update jena_graph SET NAME=null where ID = ?
+Update ${a} SET NAME=null where ID = ?
 
 #-------------------------------------------------------------------
 # Delete a triple

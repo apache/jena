@@ -17,6 +17,7 @@
 #        where nn is DBIndexKeyLen (requires that nn <= 250)
 #     else TINYBLOB if DBIndexKeyLen <= 250; else MEDIUMBLOB
 # e - head key length, set to DBIndexKeyLen, default 250
+# f - jena table and index name prefix, defaults to "jena_"
 #
 # Note that the tables jena_long_lit, jena_long_uri, jena_prefix
 # all have the same structure. These are used to store long objects.
@@ -25,44 +26,44 @@
 # This is not urgent - left for future work.
 #
 initDBtables
-DROP TABLE IF EXISTS jena_sys_stmt;;
-CREATE TABLE jena_sys_stmt (
+DROP TABLE IF EXISTS ${f}sys_stmt;;
+CREATE TABLE ${f}sys_stmt (
  Subj       ${a} NOT NULL,
  Prop       ${a} NOT NULL,
  Obj        ${a} NOT NULL,
  GraphID    INTEGER
 ) Type = ${b};;
-DROP TABLE IF EXISTS jena_long_lit;;
-CREATE TABLE jena_long_lit (
+DROP TABLE IF EXISTS ${f}long_lit;;
+CREATE TABLE ${f}long_lit (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    	${d} NOT NULL,
  ChkSum		BIGINT,
  Tail    	MEDIUMBLOB
 ) Type = ${b};;
-DROP TABLE IF EXISTS jena_long_uri;;
-CREATE TABLE jena_long_uri (
+DROP TABLE IF EXISTS ${f}long_uri;;
+CREATE TABLE ${f}long_uri (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    	${d} NOT NULL,
  ChkSum 	BIGINT,
  Tail    	MEDIUMBLOB
 ) Type = ${b};;
-DROP TABLE IF EXISTS jena_prefix;;
-CREATE TABLE jena_prefix (
+DROP TABLE IF EXISTS ${f}prefix;;
+CREATE TABLE ${f}prefix (
  ID      	INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Head    	${d} NOT NULL,
  ChkSum		BIGINT,
  Tail    	MEDIUMBLOB
 ) Type = ${b};;
-DROP TABLE IF EXISTS jena_graph;;
-CREATE TABLE jena_graph (
+DROP TABLE IF EXISTS ${f}graph;;
+CREATE TABLE ${f}graph (
  ID      INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
  Name    TINYBLOB
 ) Type = ${b};;
-CREATE UNIQUE INDEX JENA_IXLIT ON jena_long_lit(Head(${e}),ChkSum);;
-CREATE UNIQUE INDEX JENA_IXURI ON jena_long_uri(Head(${e}),ChkSum);;
-CREATE UNIQUE INDEX JENA_IXBND ON jena_prefix(Head(${e}),ChkSum);;
-CREATE INDEX JENA_IXSP ON jena_sys_stmt(Subj(${c}), Prop(${c}));;
-CREATE INDEX JENA_IXO ON jena_sys_stmt(Obj(${c}));;
+CREATE UNIQUE INDEX ${f}XLIT ON ${f}long_lit(Head(${e}),ChkSum);;
+CREATE UNIQUE INDEX ${f}XURI ON ${f}long_uri(Head(${e}),ChkSum);;
+CREATE UNIQUE INDEX ${f}XBND ON ${f}prefix(Head(${e}),ChkSum);;
+CREATE INDEX ${f}XSP ON ${f}sys_stmt(Subj(${c}), Prop(${c}));;
+CREATE INDEX ${f}XO ON ${f}sys_stmt(Obj(${c}));;
 
 #-------------------------------------------------------------------
 # Create a blank statement table - and indexes
@@ -80,8 +81,8 @@ CREATE TABLE ${a} (
  Obj        ${b} NOT NULL,
  GraphID    INTEGER
 ) TYPE = ${c};;
-CREATE INDEX ${a}_IXSP ON ${a}(Subj(${d}), Prop(${d}));;
-CREATE INDEX ${a}_IXO ON ${a}(Obj(${d}));;
+CREATE INDEX ${a}XSP ON ${a}(Subj(${d}), Prop(${d}));;
+CREATE INDEX ${a}XO ON ${a}(Obj(${d}));;
 
 #-------------------------------------------------------------------
 # Create a blank reified statement table - and indexes
@@ -100,9 +101,9 @@ CREATE TABLE ${a} (
  Stmt       ${b} NOT NULL,
  HasType    CHAR(1) NOT NULL
 ) TYPE  = ${c};;
-CREATE UNIQUE INDEX ${a}_IXSTMT ON ${a}(Stmt(${d}), HasType);;
-CREATE INDEX ${a}_IXSP ON ${a}(Subj(${d}), Prop(${d}));;
-CREATE INDEX ${a}_IXO ON ${a}(Obj(${d}));;
+CREATE UNIQUE INDEX ${a}XSTMT ON ${a}(Stmt(${d}), HasType);;
+CREATE INDEX ${a}XSP ON ${a}(Subj(${d}), Prop(${d}));;
+CREATE INDEX ${a}XO ON ${a}(Obj(${d}));;
 
 #-------------------------------------------------------------------
 # Initialize a blank database - create any generators needed
@@ -123,12 +124,12 @@ DELETE FROM ${a} WHERE (GraphID = ?)
 #-------------------------------------------------------------------
 # Store the name of a new graph and create a unique identifier for it.
 insertGraph
-INSERT INTO jena_graph (Name) VALUES (?)
+INSERT INTO ${a} (Name) VALUES (?)
 
 #-------------------------------------------------------------------
 # Remove the name of a graph.
 deleteGraph
-Update jena_graph SET NAME=null where ID = ?
+Update ${a} SET NAME=null where ID = ?
 
 #-------------------------------------------------------------------
 # Delete a triple

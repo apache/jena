@@ -8,6 +8,7 @@
 #     VARCHAR(nn)
 # b - column type for head of long objects
 #     VARCHAR(nn)
+# c - table and index name prefix
 #
 # Note that the tables JENA_LONG_LIT, JENA_LONG_URI, JENA_PREFIX
 # all have the same structure. These are used to store long objects.
@@ -16,39 +17,39 @@
 # This is not urgent - left for future work.
 #
 initDBtables
-CREATE TABLE JENA_SYS_STMT (
+CREATE TABLE ${c}SYS_STMT (
  Subj       ${a} NOT NULL,
  Prop       ${a} NOT NULL,
  Obj        ${a} NOT NULL,
  GraphID    INTEGER
 ) ;;
-CREATE TABLE JENA_LONG_LIT (
+CREATE TABLE ${c}LONG_LIT (
  ID      	SERIAL PRIMARY KEY,
  Head    	${b} NOT NULL,
  ChkSum		BIGINT,
  Tail    	TEXT
 ) ;;
-CREATE TABLE JENA_LONG_URI (
+CREATE TABLE ${c}LONG_URI (
  ID      	SERIAL PRIMARY KEY,
  Head    	${b} NOT NULL,
  ChkSum 	BIGINT,
  Tail    	TEXT
 ) ;;
-CREATE TABLE JENA_PREFIX (
+CREATE TABLE ${c}PREFIX (
  ID      	SERIAL PRIMARY KEY,
  Head    	${b} NOT NULL,
  ChkSum		BIGINT,
  Tail    	TEXT
 ) ;;
-CREATE TABLE JENA_GRAPH (
+CREATE TABLE ${c}GRAPH (
  ID      SERIAL PRIMARY KEY,
  Name    VARCHAR(1024)
 ) ;;
-CREATE UNIQUE INDEX JENA_IXLIT ON JENA_LONG_LIT(Head,ChkSum);;
-CREATE UNIQUE INDEX JENA_IXURI ON JENA_LONG_URI(Head,ChkSum);;
-CREATE UNIQUE INDEX JENA_IXBND ON JENA_PREFIX(Head,ChkSum);;
-CREATE INDEX JENA_IXSP ON JENA_SYS_STMT(Subj, Prop);;
-CREATE INDEX JENA_IXO ON JENA_SYS_STMT(Obj);;
+CREATE UNIQUE INDEX ${c}IXLIT ON ${c}LONG_LIT(Head,ChkSum);;
+CREATE UNIQUE INDEX ${c}IXURI ON ${c}LONG_URI(Head,ChkSum);;
+CREATE UNIQUE INDEX ${c}IXBND ON ${c}PREFIX(Head,ChkSum);;
+CREATE INDEX ${c}IXSP ON ${c}SYS_STMT(Subj, Prop);;
+CREATE INDEX ${c}IXO ON ${c}SYS_STMT(Obj);;
 
 #-------------------------------------------------------------------
 # Create a blank statement table - and indexes
@@ -106,12 +107,12 @@ DELETE FROM ${a} WHERE (GraphID = ?)
 #-------------------------------------------------------------------
 # Store the name of a new graph and create a unique identifier for it.
 insertGraph
-INSERT INTO JENA_GRAPH (ID, Name) VALUES (?,?)
+INSERT INTO ${a} (ID, Name) VALUES (?,?)
 
 #-------------------------------------------------------------------
 # Remove the name of a graph.
 deleteGraph
-Update JENA_GRAPH SET NAME=null where ID = ?
+Update ${a} SET NAME=null where ID = ?
 
 #-------------------------------------------------------------------
 # Delete a triple
