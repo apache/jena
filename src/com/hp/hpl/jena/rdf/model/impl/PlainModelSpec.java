@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PlainModelSpec.java,v 1.4 2003-08-27 13:05:53 andy_seaborne Exp $
+  $Id: PlainModelSpec.java,v 1.5 2003-09-11 12:47:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -33,7 +33,15 @@ public class PlainModelSpec extends ModelSpecImpl implements ModelSpec
     */
     public PlainModelSpec( Model description )
         { super( description ); }
+        
+    public PlainModelSpec( Resource root, Model description )
+        { super( getMaker( root, description ), description ); }
 
+    private static Resource getMaker( Resource root, Model desc )
+        {
+        return desc.listStatements( root, JMS.maker, (RDFNode) null ).nextStatement().getResource();
+        }
+        
     /**
         Answer a Model that satisfies the description that this ModelSpec was constructed
         with.

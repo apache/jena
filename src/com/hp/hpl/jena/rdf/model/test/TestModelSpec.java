@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.20 2003-09-11 09:29:28 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.21 2003-09-11 12:47:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
+
+import java.util.NoSuchElementException;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.vocabulary.*;
@@ -74,8 +76,7 @@ public class TestModelSpec extends ModelTestBase
         {
         Resource type = resource( "jms:SomeType" );    
         ModelSpecCreator c = new ModelSpecCreator() 
-            { public ModelSpec create( Model m ) { return null; }
-            public ModelSpec create( Resource root, Model m ) { return null; } };
+            { public ModelSpec create( Resource root, Model m ) { return null; } };
         ModelSpecCreatorRegistry.register( type, c );
         assertSame( c, ModelSpecCreatorRegistry.findCreator( type ) );    
         }
@@ -85,11 +86,9 @@ public class TestModelSpec extends ModelTestBase
         Resource type1 = resource( "jms:SomeType1" );    
         Resource type2 = resource( "jms:SomeType2" );    
         ModelSpecCreator c1 = new ModelSpecCreator()
-            { public ModelSpec create( Model m ) { return null; }
-             public ModelSpec create( Resource root, Model m ) { return null; }  };
+             { public ModelSpec create( Resource root, Model m ) { return null; }  };
         ModelSpecCreator c2 = new ModelSpecCreator() 
-            { public ModelSpec create( Model m ) { return null; }
-             public ModelSpec create( Resource root, Model m ) { return null; }  };
+             { public ModelSpec create( Resource root, Model m ) { return null; }  };
         ModelSpecCreatorRegistry.register( type1, c1 );
         ModelSpecCreatorRegistry.register( type2, c2 );
         assertSame( c1, ModelSpecCreatorRegistry.findCreator( type1 ) );   
@@ -127,12 +126,20 @@ public class TestModelSpec extends ModelTestBase
                                   
     public void testCreateByName()
         {
-//        Resource plain = ResourceFactory.createResource();
-//        Resource inf = ResourceFactory.createResource();
-//        String URI = DAMLMicroReasonerFactory.URI;
-//        Model desc = createPlainModelDesc( plain ).add( createInfModelDesc( inf, URI ) );
-//        ModelSpec ms = ModelSpecImpl.create( plain, desc );  
-//        assertTrue( ms.createModel().getGraph() instanceof GraphMem );  
+        Resource plain = ResourceFactory.createResource();
+        Model desc = createPlainModelDesc( plain );
+        ModelSpec ms = ModelSpecImpl.create( plain, desc );  
+        assertTrue( ms.createModel().getGraph() instanceof GraphMem );  
+        }
+        
+    public void testCreateByNameChoice()
+        {
+        Resource plain = ResourceFactory.createResource();
+        Resource inf = ResourceFactory.createResource();
+        String URI = DAMLMicroReasonerFactory.URI;
+        Model desc = createPlainModelDesc( plain ).add( createInfModelDesc( inf, URI ) );
+        ModelSpec ms = ModelSpecImpl.create( plain, desc );  
+        assertTrue( ms.createModel().getGraph() instanceof GraphMem );  
         }
                           
     public void testOntModeSpecIsaModelSpec()
@@ -206,7 +213,6 @@ public class TestModelSpec extends ModelTestBase
         spec.add( me, JMS.importMaker, m );
         spec.add( modelMaker );
         OntDocumentManager odm = oms.getDocumentManager();
-        // Literal dm = spec.createTypedLiteral( odm, "jms:types/DocumentManager" );
         Resource dm = ModelSpecImpl.createValue( odm );
         spec.add( me, JMS.docManager, dm );
     /* */
@@ -220,12 +226,10 @@ public class TestModelSpec extends ModelTestBase
     public void testCreateFailingMaker()
         {
         try
-            {
-            ModelSpecImpl.createMaker( modelWithStatements( "" ) );
-            fail( "oops" );
-            }   
-        catch (Exception e)
-            {} 
+            { ModelSpecImpl.createMaker( modelWithStatements( "" ) );
+            fail( "should generate BadDescriptionException" ); }   
+        catch (BadDescriptionException e)
+            { pass(); } 
         }
         
     public void testCreateMemModelMaker()

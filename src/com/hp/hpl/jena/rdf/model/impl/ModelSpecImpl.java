@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.19 2003-09-11 09:29:12 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.20 2003-09-11 12:47:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -78,33 +78,38 @@ public abstract class ModelSpecImpl implements ModelSpec
     public abstract Property getMakerProperty();
     
     /**
-        Answer a new ModelSpec created according to the supplied RDF description.
-        The description should have a single resource of type JMS.ModelSpec.
-        The most specific subclass of JMS.ModelSpec that that resource has is
-        use to find the register ModelSpecCreator, and that Creator is then run to
-        get a genuine ModelSepc result.
-        
+        @see createByRoot
         @param desc a model containing a JMS description
         @return a ModelSpec fitting that description
     */
     public static ModelSpec create( Model desc )
-        {
-        Model d = withSchema( desc );
-        Resource r = findRootByType( d, JMS.ModelSpec );
-        Resource type = findSpecificType( d, r, JMS.ModelSpec );
-        ModelSpecCreator sc = ModelSpecCreatorRegistry.findCreator( type );
-        if (sc == null) throw new BadDescriptionException( "neither ont nor inf nor mem", desc );
-        return sc.create( desc );
-        }
+        { Model d = withSchema( desc );
+        return createByRoot( findRootByType( d, JMS.ModelSpec ), d ); }
         
-//    public static ModelSpec create( Resource root, Model desc )
-//        {
-//        Model d = withSchema( desc );
-//        Resource type = findSpecificType( d, root, JMS.ModelSpec );
-//        ModelSpecCreator sc = ModelSpecCreatorRegistry.findCreator( type );
-//        if (sc == null) throw new BadDescriptionException( "neither ont nor inf nor mem", desc );
-//        return sc.create( root, desc );    
-//        }
+    /**
+        @see createByRoot
+        @param root theJMS:ModelSpec resource that roots the description
+        @param desc a model containing a JMS description
+        @return a ModelSpec fitting that description
+    */        
+    public static ModelSpec create( Resource root, Model desc )
+        { return createByRoot( root, withSchema( desc ) ); }
+        
+    /**
+        Answer a new ModelSpec created from the description handing of the root resource.
+        The description model must be RDFS-complete.
+        
+     	@param root theJMS:ModelSpec resource that roots the description
+     	@param fullDesc an RDFS-complete model containing a JMS description
+     	@return the ModelSpec fitting that description
+     */
+    public static ModelSpec createByRoot( Resource root, Model fullDesc )
+        {
+        Resource type = findSpecificType( fullDesc, root, JMS.ModelSpec );
+        ModelSpecCreator sc = ModelSpecCreatorRegistry.findCreator( type );
+        if (sc == null) throw new BadDescriptionException( "neither ont nor inf nor mem", fullDesc );
+        return sc.create( root, fullDesc );    
+        }
 
     /**
         Answer the "most specific" type of root in desc which is an instance of type.
@@ -114,7 +119,7 @@ public abstract class ModelSpecImpl implements ModelSpec
     	@param root the subject whos type is to be found
     	@param type the base type for the search
     	@return T such that (root type T) and if (root type T') then (T' subclassof T)
-     */
+    */
     static Resource findSpecificType( Model desc, Resource root, Resource type )
         {
         StmtIterator it = desc.listStatements( root, RDF.type, (RDFNode) null );
@@ -152,7 +157,7 @@ public abstract class ModelSpecImpl implements ModelSpec
     /**
         Answer a version of the given model with RDFS completion of the JMS
         schema applied. 
-     */
+    */
     public static Model withSchema( Model m )
         { return ModelFactory.createRDFSModel( JMS.schema, m ); }
 
@@ -203,32 +208,23 @@ public abstract class ModelSpecImpl implements ModelSpec
     /**
         Answer a ModelMaker that conforms to the supplied description. The Maker
         is found from the ModelMakerCreatorRegistry by looking up the most 
-        specifiy type of the unique object with type JMS.MakerSpec.
+        specific type of the unique object with type JMS.MakerSpec.
         
         @param d the model containing the description
         @return a ModelMaker fitting that description
     */
-    public static ModelMaker createMaker( Model d )
-        {
-        Model description = withSchema( d );
-        Resource root = findRootByType( description, JMS.MakerSpec );
-        Resource type = findSpecificType( description, root, JMS.MakerSpec );
-        ModelMakerCreator mmc = ModelMakerCreatorRegistry.findCreator( type );
-        if (mmc == null) throw new RuntimeException( "no maker type" );  
-        return mmc.create( description, root ); 
-        }
+    public static ModelMaker createMaker( Model description )
+        { Model d = withSchema( description );
+        return createMakerByRoot( findRootByType( d, JMS.MakerSpec ), d ); }
         
     public static ModelMaker createMaker( Resource root, Model d )
-        {
-        Model description = withSchema( d );
-        // Resource root = findRootByType( description, JMS.MakerSpec );
-        Resource type = findSpecificType( description, root, JMS.MakerSpec );
-        System.err.println( ">> type " + type );
-        d.write( System.err, "N-TRIPLE" );
+        { return createMakerByRoot( root, withSchema( d ) ); }
+        
+    public static ModelMaker createMakerByRoot( Resource root, Model fullDesc )
+        { Resource type = findSpecificType( fullDesc, root, JMS.MakerSpec );
         ModelMakerCreator mmc = ModelMakerCreatorRegistry.findCreator( type );
         if (mmc == null) throw new RuntimeException( "no maker type" );  
-        return mmc.create( description, root ); 
-        }
+        return mmc.create( fullDesc, root ); }
 
     }
 
