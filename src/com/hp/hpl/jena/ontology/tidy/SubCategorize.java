@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SubCategorize.java,v 1.1 2003-04-15 11:25:32 jeremy_carroll Exp $
+  $Id: SubCategorize.java,v 1.2 2003-04-17 13:11:58 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -213,7 +213,7 @@ class SubCategorize {
 					if (okp[j] || SPECIALSYM(p[j]))
 						for (k = 0; k < o.length; k++)
 							if (oko[k] || SPECIALSYM(o[k])) {
-								if (pseudotriple(s[i], p[j], o[i])) {
+								if (pseudotriple(s[i], p[j], o[k])) {
 									oks[i] = okp[j] = oko[k] = true;
 								}
 							}

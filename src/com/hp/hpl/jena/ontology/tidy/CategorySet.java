@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: CategorySet.java,v 1.6 2003-04-17 12:22:07 jeremy_carroll Exp $
+  $Id: CategorySet.java,v 1.7 2003-04-17 13:12:00 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 
@@ -168,7 +168,7 @@ class CategorySet implements Comparable {
 		if ( !tail.isEmpty() ) {
 			CategorySet close = (CategorySet) tail.first();
 			if (close.equals(cs)) {
-				System.err.println("Close enough.");
+			//	System.err.println("Close enough.");
 				return close.id;
 			}
 		}

@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SyntaxProblem.java,v 1.1 2003-04-16 14:53:25 jeremy_carroll Exp $
+  $Id: SyntaxProblem.java,v 1.2 2003-04-17 13:11:59 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.*;
 import java.util.*;
 import java.io.*;
 
@@ -83,8 +84,8 @@ public class SyntaxProblem {
 	   		addToMe.add((Triple)it.next());
 	   	}
 	   }
-	
-	private RDFWriter wtr;
+	static private RDFWriter defaultWriter = new NTripleWriter();
+	private RDFWriter wtr = defaultWriter;
 	/**
 	 * Sets the writer used for creation of the 
 	 * {@link #longDescription()}.

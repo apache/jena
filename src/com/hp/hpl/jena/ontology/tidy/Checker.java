@@ -206,9 +206,10 @@ public class Checker extends AbsChecker {
 	static public void main(String argv[]) {
 		OntDocumentManager dm = new OntDocumentManager();
 		dm.setProcessImports(true);
-		OntModel m = ModelFactory.createOntologyModel(OWL.NAMESPACE, null, dm);
+		//OntModel m = ModelFactory.createOntologyModel(OWL.NAMESPACE, null, dm);
+		Model m = ModelFactory.createDefaultModel();
 		m.read(argv[0]);
-
+        m.write(System.out);
 		// m.getDocumentManager();
 		GraphFactory gf = dm.getDefaultGraphFactory();
 		Checker chk = new Checker(argv.length==2 && argv[1].equalsIgnoreCase("Lite"), gf);
@@ -227,12 +228,11 @@ public class Checker extends AbsChecker {
 			}
 		}
 
-		if (subLang.equals("Full")) {
 			Iterator it = chk.getProblems();
 			while (it.hasNext()) {
 				SyntaxProblem sp = (SyntaxProblem) it.next();
+				System.err.println(sp.longDescription());
 			}
-		}
 
 	}
 

@@ -9,8 +9,10 @@ import com.hp.hpl.jena.graph.*;
  *
  */
 class Vocab {
-    static final String NameSpace = "http://jena.hpl.hp.com/schemas/tidy#";
+	static final String NameSpace = "http://jena.hpl.hp.com/schemas/tidy#";
     static final Node category = Node.createURI(NameSpace+"category");
     static final Node objectOfTriple = Node.createURI(NameSpace+"objectOfTriple");
+	static final Node firstPart = Node.createURI(NameSpace+"firstPart");
+	static final Node secondPart = Node.createURI(NameSpace+"secondPart");
     
 }

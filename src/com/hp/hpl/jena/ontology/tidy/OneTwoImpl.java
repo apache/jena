@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: OneTwoImpl.java,v 1.3 2003-04-17 11:45:11 jeremy_carroll Exp $
+  $Id: OneTwoImpl.java,v 1.4 2003-04-17 13:12:00 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.ontology.tidy;
 import com.hp.hpl.jena.graph.*;
@@ -59,11 +59,15 @@ class OneTwoImpl extends CGeneral {
 	public void addObjectTriple(Triple t) {
 		check(2, t);
 	}
-
+    static private Node gProp[] = {
+    	Vocab.firstPart,
+    	Vocab.secondPart,
+    	Vocab.objectOfTriple
+    };
 	private Triple get(int i) {
 		if (seen[i] == null) {
 			Graph G = getGraph().asGraph();
-			ClosableIterator it = G.find(asNode(), Vocab.objectOfTriple, null);
+			ClosableIterator it = G.find(asNode(), gProp[i], null);
 			if (it.hasNext())
 				seen[i] =
 					G.getReifier().getTriple(((Triple) it.next()).getObject());

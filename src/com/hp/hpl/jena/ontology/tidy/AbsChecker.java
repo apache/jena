@@ -6,7 +6,7 @@ import com.hp.hpl.jena.enhanced.Personality;
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.util.iterator.ClosableIterator;
+import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 
 abstract class AbsChecker extends EnhGraph {
@@ -118,7 +118,7 @@ abstract class AbsChecker extends EnhGraph {
 
 	private boolean rec(Node s, Node p, Node o) {
 		boolean rslt = true;
-		ClosableIterator it = hasBeenChecked.find(s, p, o);
+		ClosableIterator it = new EarlyBindingIterator(hasBeenChecked.find(s, p, o));
 		while (rslt && it.hasNext())
 			rslt = add((Triple) it.next(), false);
 

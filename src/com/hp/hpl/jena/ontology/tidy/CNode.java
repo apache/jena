@@ -134,13 +134,13 @@ abstract class CNode extends EnhNode implements CNodeI {
 		setIntAttribute(property, old + diff);
 	}
 	public One asOne() {
-		return (One) as(One.class);
+		return (One) viewAs(One.class);
 	}
 	public Two asTwo() {
-		return (Two) as(Two.class);
+		return (Two) viewAs(Two.class);
 	}
 	public Blank asBlank() {
-		return (Blank) as(Blank.class);
+		return (Blank) viewAs(Blank.class);
 	}
 
 }
