@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelEvents.java,v 1.5 2003-07-09 14:06:45 chris-dollin Exp $
+  $Id: TestModelEvents.java,v 1.6 2003-07-10 10:56:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -39,7 +39,13 @@ public class TestModelEvents extends ModelTestBase
         public void addedStatement( Statement s )
             { history.add( "add" ); history.add( s ); }
             
-        public void removedStatement( Statement s )
+        public void addedStatements( Statement [] statements )
+            { history.add( "add[]" ); history.add( Arrays.asList( statements ) ); }
+            
+        public void removedStatements( Statement [] statements )
+            { history.add( "remove[]" ); history.add( Arrays.asList( statements ) ); }
+        
+       public void removedStatement( Statement s )
             { history.add( "remove" ); history.add( s ); }
             
         boolean has( Object [] things ) 
@@ -111,6 +117,21 @@ public class TestModelEvents extends ModelTestBase
         SL.assertHas( new Object[] { "add", statement( model, "S P O") } );
         }
 
+    public void testAddStatementArray()
+        {
+        model.register( SL );
+        Statement [] s = statements( model, "a P b; c Q d" );
+        model.add( s );
+        SL.assertHas( new Object[] {"add[]", Arrays.asList( s )} );
+        }
+        
+    public void testDeleteStatementArray()
+        {
+        model.register( SL );
+        Statement [] s = statements( model, "a P b; c Q d" );
+        model.remove( s );
+        SL.assertHas( new Object[] {"remove[]", Arrays.asList( s )} );            
+        }
     }
 
 

@@ -54,7 +54,7 @@ import java.util.*;
  *
  * @author bwm
  * hacked by Jeremy, tweaked by Chris (May 2002 - October 2002)
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.59 $' Date='$Date: 2003-07-09 13:10:57 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.60 $' Date='$Date: 2003-07-10 10:56:42 $'
  */
 
 public class ModelCom 
@@ -1281,6 +1281,13 @@ implements Model, ModelI, PrefixMapping, ModelLock
     */
     public Statement asStatement( Triple t )
         { return StatementImpl.toStatement( t, this ); }
+        
+    public Statement [] asStatements( Triple [] triples )
+        {
+        Statement [] result = new Statement [triples.length];
+        for (int i = 0; i < triples.length; i += 1) result[i] = asStatement( triples[i] );
+        return result;    
+        }
         
 	private Iterator asStatements( final Iterator it ) {
 		return new Iterator() {
