@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.19 2003-07-11 13:34:20 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.20 2003-07-15 11:01:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -174,6 +174,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
     /* */
         bu.add( tripleArray );
         testContains( g, tripleArray );
+        testOmits( g, tripleList );
     /* */
         bu.add( tripleList );
         testContains( g, tripleList );
@@ -211,7 +212,51 @@ public abstract class AbstractTestGraph extends GraphTestBase
         bu.delete( tripleList );
         assertEquals( "graph has original size", initialSize, g.size() );
         }
-                    
+        
+    public static void assertIsomorphic( Graph expected, Graph got )
+        {
+        if (!expected.isIsomorphicWith( got ))
+            fail( "wanted " + expected + " but got " + got );
+        }
+        
+    public void testBulkAddWithReification()
+        {        
+        testBulkAddWithReification( true );
+        }
+        
+    public void testBulkAddWithReification( boolean withReifications )
+        {
+        Graph g = getGraph();
+        BulkUpdateHandler bu = g.getBulkUpdateHandler();
+        Graph items = graphWith( "pigs might fly; dead can dance" );
+        Reifier gr = g.getReifier(), ir = items.getReifier();
+        ir.reifyAs( Node.create( "x" ), Triple.create( "S P O" ) );
+        ir.reifyAs( Node.create( "y" ), Triple.create( "X Y Z" ) );
+        bu.add( items );
+        assertIsomorphic( ir.getHiddenTriples(), gr.getHiddenTriples() );
+        }
+
+    public void testBulkRemoveWithReification()
+        {        
+        testBulkUpdateRemoveWithReification( true );
+        }
+        
+    public void testBulkUpdateRemoveWithReification( boolean withReifications )
+        {
+        Graph g = getGraph();
+        BulkUpdateHandler bu = g.getBulkUpdateHandler();
+        Graph items = graphWith( "pigs might fly; dead can dance" );
+        Reifier gr = g.getReifier(), ir = items.getReifier();
+        ir.reifyAs( Node.create( "x" ), Triple.create( "S P O" ) );
+        ir.reifyAs( Node.create( "y" ), Triple.create( "X Y Z" ) );
+        gr.reifyAs( Node.create( "x" ), Triple.create( "S P O" ) );
+        gr.reifyAs( Node.create( "a" ), Triple.create( "A B C" ) );
+        bu.delete( items );
+        Graph answer = graphWith( "" );
+        answer.getReifier().reifyAs( Node.create( "a" ), Triple.create( "A B C" ) );
+        assertIsomorphic( answer.getReifier().getHiddenTriples(), gr.getHiddenTriples() );
+        }
+                                        
     public void testHasCapabilities()
         {
         Graph g = getGraph();
