@@ -22,6 +22,15 @@ Post 2.2beta change list
       o Added new modelName property to the vocabulary and schema, ready
         to properly support named models as well as model makers.
 
+  PrefixMappings
+      o the requirement that adding `(prefix, uri)` to a prefix mapping remove
+        any existing prefix for `uri` has been removed. Calls that run the
+        mapping backward (eg qNameFor()) will get a correct answer, not
+        necessarily the same one each time; if possible, it will be the 
+        "most recently bound" prefix. (The "not possible" cases are those
+        where a prefix has been removed and the inverse mapping has been
+        regenerated.)
+
 Post Jena 2.1 change list [up to 2.2beta]
 
   RDF API
