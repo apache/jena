@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryTestBase.java,v 1.2 2004-07-22 11:31:27 chris-dollin Exp $
+  $Id: QueryTestBase.java,v 1.3 2004-07-27 08:06:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -10,8 +10,6 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.graph.query.Expression.Fixed;
-import com.hp.hpl.jena.graph.query.Expression.Variable;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
 import com.hp.hpl.jena.util.iterator.Map1;
 

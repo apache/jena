@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.27 2004-06-21 15:00:14 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.28 2004-07-27 08:07:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -92,6 +92,14 @@ public abstract class ModelSpecImpl implements ModelSpec
     */
     public static ModelSpec create( Resource desc )
         { return create( readModel( desc ) ); }
+    
+    /*
+     	Answer a Model, as per the specification of ModelSource; if the name
+     	is useful, use it, otherwise don't bother. Default implementation is
+     	to return a fresh model.
+    */
+    public Model openModel( String URI )
+        { return ModelFactory.createDefaultModel(); }
         
     /**
         Answer a ModelSpec created from the RDF model to be found using the URI of

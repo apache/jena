@@ -56,6 +56,12 @@ public class TestModelSpecMore extends ModelTestBase
         fos.close();
 	    return "file://" + name;
         }
+    
+    public void testOpenModel()
+        {
+        Model s = modelWithStatements( "_root jms:maker jms:MemMaker" );
+        assertTrue( ModelFactory.createSpec( s ).openModel( "nosuch" ) instanceof Model );
+        }
     }
 
 /*
