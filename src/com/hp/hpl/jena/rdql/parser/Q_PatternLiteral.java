@@ -83,6 +83,9 @@ public class Q_PatternLiteral extends ExprNode implements Expr
         return pString ;
     }
     
+    public String getPatternString()  { return patternString ; }
+    public String getModifiers()      { return modifiers ; }
+    
     // -----------
     // graph.query.Expression
 
