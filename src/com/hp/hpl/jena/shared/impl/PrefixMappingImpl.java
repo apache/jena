@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.4 2003-04-29 15:37:19 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.5 2003-05-01 15:39:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -12,6 +12,11 @@ import java.util.*;
 import org.apache.xerces.util.XMLChar;
 
 /**
+    An implementation of PrefixMapping. The mappings are stored in a hash
+    map, with the reverse lookup done with a linear search. This may need
+    improving but could get complicated. The test for a legal prefix is left to
+    xerces's XMLChar.isValidNCName() predicate.
+        
  	@author kers
 */
 public class PrefixMappingImpl implements PrefixMapping
@@ -27,9 +32,24 @@ public class PrefixMappingImpl implements PrefixMapping
         map.put( prefix, uri ); 
         }
  
+    /**
+        Add the bindings of other to our own. The prefixes are unchecked,
+        on the assumption that the other mapping will only allow legal prefixes
+        itself.
+        
+        @param other the PrefixMapping whose bindings we are to add to this.
+    */
     public void setNsPrefixes( PrefixMapping other )
         { map.putAll( other.getNsPrefixMap() ); }
         
+    /**
+        Add the bindings in the map to our own. This will fail with a ClassCastException
+        if any key or value is not a String; we make no guarantees about order or
+        completeness if this happens. It will fail with an IllegalPrefixException if
+        any prefix is illegal; similar provisos apply.
+        
+         @param other the Map whose bindings we are to add to this.
+    */
     public void setNsPrefixes( Map other )
         {
         Iterator it = other.entrySet().iterator();
@@ -41,7 +61,7 @@ public class PrefixMappingImpl implements PrefixMapping
         }
          
     /**
-        Checks that a prefix is "legal". This code is probably wrong.
+        Checks that a prefix is "legal" - it must be a valid XML NCName.
     */
     private void checkLegal( String prefix )
         {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestModelFactory.java,v 1.3 2003-04-15 21:14:37 jeremy_carroll Exp $
+  $Id: TestModelFactory.java,v 1.4 2003-05-01 15:39:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -9,6 +9,21 @@ package com.hp.hpl.jena.rdf.model.test;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.*;
 import junit.framework.*;
+
+/**
+    Tests the ModelFactory code. Very skeletal at the moment. It's really
+    testing that the methods actually exists, but it doesn't check much in
+    the way of behaviour.
+    
+    <p>For example, how hard do we want to test that the result of
+    createPersistentGraph is persistent? By inspection, the ModelFactory
+    simply wraps a persistent graph. If the graph really is persistent (and
+    that gets tested by the graph Factory tests), then it's just a question of
+    does ModelCom really reflect model API calls into the Graph as required?
+    And this should get tested elsewhere.
+    
+    @author kers
+*/
 
 public class TestModelFactory extends GraphTestBase
     {
@@ -21,11 +36,24 @@ public class TestModelFactory extends GraphTestBase
     public void testCreateDefaultModel()
         {
         Model m = ModelFactory.createDefaultModel();
+        m.close();
         }    
+        
+    public void testCreatePersistentModel()
+        {
+//        Model m = ModelFactory.createPersistentModel( "spoo" );
+//        m.close();    
+        }      
+        
+    public void testOpenPersistentModel()
+        {
+//        Model m = ModelFactory.openPersistentModel( "notSpoo" );
+//        m.close();
+        }
     }
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

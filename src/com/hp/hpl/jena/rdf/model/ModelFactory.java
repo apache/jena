@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelFactory.java,v 1.7 2003-04-15 21:13:31 jeremy_carroll Exp $
+  $Id: ModelFactory.java,v 1.8 2003-05-01 15:38:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -28,6 +28,27 @@ public class ModelFactory
     public static Model createDefaultModel()
         { return new ModelCom( GraphBase.withReification( new GraphMem() ), BuiltinPersonalities.model );}
 
+    /**
+        Answer a new persistent model as described by <code>name</code>.
+        The named model must not already exist.
+        
+        @return a fresh, empty persistent model.
+        @exception [perhaps] AlreadyExistsException a model with that name already exists.
+    */
+    
+    public static Model createPersistentModel( String name )
+        { return new ModelCom( Factory.createPersistentGraph( name ) ); }
+        
+    /**
+        Answer a persistent model with the given <code>name</code>. The
+        named model must already exist.
+        
+        @return a model mapping to the persisted name
+        @exception [perhaps] NoSuchModelException if it doesn't exist
+    */
+    public static Model openPersistentModel( String name )
+        { return new ModelCom( Factory.openPersistentGraph( name ) ); }
+        
     /**
         construct a new memory-based model that does not capture reification triples
         (but still handles reifyAs() and .as(ReifiedStatement).

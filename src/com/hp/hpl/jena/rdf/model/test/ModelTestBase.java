@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: ModelTestBase.java,v 1.3 2003-04-23 13:07:51 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.4 2003-05-01 15:39:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -78,7 +78,7 @@ public class ModelTestBase extends JenaTestBase
         { return modelAdd( ModelFactory.createDefaultModel(), facts ); }
          
      /**
-        test that two modes are isomorphic and fail if they are not.
+        test that two models are isomorphic and fail if they are not.
         
         @param title a String appearing at the beginning of the failure message
         @param wanted the model value that is expected
