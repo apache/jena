@@ -53,7 +53,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.6 $ on $Date: 2003-05-03 02:04:59 $
+* @version $Revision: 1.7 $ on $Date: 2003-05-03 06:15:18 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -679,6 +679,26 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 *
 	 **/
   public void deleteTriple(Triple t, IDBID graphID) {
+  	deleteTriple(t, graphID, false, new HashSet());
+  }
+  	
+	/**
+	 *
+	 * Attempt to remove a statement from an Asserted_Statement table,
+	 * if it is present.  Return without error if the statement is not
+	 * present.
+	 *
+	 * @param subj_uri is the URI of the subject
+	 * @param pred_uri is the URI of the predicate (property)
+	 * @param obj_node is the URI of the object (can be URI or literal)
+	 * @param graphID is the ID of the graph
+	 * @param complete is true if this handler is capable of adding this triple.
+	 *
+	 **/
+  public void deleteTriple(Triple t, 
+  					IDBID graphID,
+  					boolean isBatch, 
+  					HashSet batchedPreparedStatements) {
 	String objURI;
 	Object obj_val;
 	   
@@ -701,7 +721,12 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	      ps.setString(3,objURI);
 	      ps.setString(4,gid);
 	
-	      ps.executeUpdate();
+		if (isBatch) {
+			  ps.addBatch();
+			  batchedPreparedStatements.add(ps);
+		  } else {
+			ps.executeUpdate();
+		  }
 	 } catch(SQLException e1) {
 		Log.debug("SQLException caught " + e1);
 	 }
@@ -726,7 +751,12 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		ps.setString(3, lval);
 		ps.setString(4,gid);
 	
-		ps.executeUpdate();
+		if (isBatch) {
+			  ps.addBatch();
+			  batchedPreparedStatements.add(ps);
+		  } else {
+			ps.executeUpdate();
+		  }
 	   } catch(SQLException e1) {
 		Log.debug("SQLException caught " + e1);
 	   }
@@ -747,7 +777,12 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		ps.setString(3,lid.getID().toString());
 		ps.setString(4,gid);
 	
-		ps.executeUpdate();
+		if (isBatch) {
+			  ps.addBatch();
+			  batchedPreparedStatements.add(ps);
+		  } else {
+			ps.executeUpdate();
+		  }
 	   } catch(SQLException e1) {
 	  	Log.debug("SQLException caught " + e1);
 	   }
@@ -920,6 +955,68 @@ public  class PSet_TripleStore_RDB implements IPSet {
 				while (it.hasNext()) {
 					t = (Triple) it.next(); 
 					storeTriple(t, my_GID, true, batchedPreparedStatements);	
+				}
+				
+				it = batchedPreparedStatements.iterator();
+				
+				while (it.hasNext()) {
+					PreparedStatement p = (PreparedStatement)it.next();
+					p.executeBatch();
+				}
+				m_sql.getConnection().setAutoCommit(true);
+				batchedPreparedStatements = new HashSet();
+				ArrayList c = new ArrayList(triples);
+				triples.removeAll(c);						
+		} catch(BatchUpdateException b) {
+					System.err.println("SQLException: " + b.getMessage());
+					System.err.println("SQLState: " + b.getSQLState());
+					System.err.println("Message: " + b.getMessage());
+					System.err.println("Vendor: " + b.getErrorCode());
+					System.err.print("Update counts: ");
+					int [] updateCounts = b.getUpdateCounts();
+					for (int i = 0; i < updateCounts.length; i++) {
+						System.err.print(updateCounts[i] + " ");
+					}
+				} catch(SQLException ex) {
+					System.err.println("SQLException: " + ex.getMessage());
+					System.err.println("SQLState: " + ex.getSQLState());
+					System.err.println("Message: " + ex.getMessage());
+					System.err.println("Vendor: " + ex.getErrorCode());
+				}
+		}
+
+	/** 
+	 * Attempt to remove a list of triples from the specialized graph.
+	 * 
+	 * As each triple is successfully deleted it is removed from the List.
+	 * If complete is true then the entire List was added and the List will 
+	 * be empty upon return.  if complete is false, then at least one triple 
+	 * remains in the List.
+	 * 
+	 * If a triple can't be stored for any reason other than incompatability
+	 * (for example, a lack of disk space) then the implemenation should throw
+	 * a runtime exception.
+	 * 
+	 * @param triples List of triples to be added.  This is modified by the call.
+	 * @param my_GID  ID of the graph.
+	 */
+		public void deleteTripleList(List triples, IDBID my_GID) {
+			// for relational dbs, there are two styles for bulk inserts.
+			// JDBC 2.0 supports batched updates.
+			// MySQL also supports a multiple-row insert.
+			// For now, we support only jdbc 2.0 batched updates
+			/** Set of PreparedStatements that need executeBatch() **/
+			HashSet batchedPreparedStatements = new HashSet();
+			Triple t;
+			String cmd;
+			try {
+				 Connection con = m_sql.getConnection();
+				 con.setAutoCommit(false);
+				Iterator it = triples.iterator();
+				
+				while (it.hasNext()) {
+					t = (Triple) it.next(); 
+					deleteTriple(t, my_GID, true, batchedPreparedStatements);	
 				}
 				
 				it = batchedPreparedStatements.iterator();
