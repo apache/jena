@@ -23,11 +23,12 @@ import com.hp.hpl.jena.shared.JenaException;
 * the same as SimpleCache.
 *
 * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.1 $ on $Date: 2003-08-25 02:14:02 $
+* @version $Revision: 1.2 $ on $Date: 2003-08-26 17:38:30 $
 */
 
 public class LRUCache implements ICache {
 	
+	/* don't use until jena moves to jre 1.4
 	public class myLinkedHashMap extends LinkedHashMap {
 		
 		int threshold;
@@ -40,35 +41,86 @@ public class LRUCache implements ICache {
 		protected boolean removeEldestEntry ( Map.Entry eldest ) {
 			return size() > threshold;
 		}
-	}
-	
-	protected int maxCount;
-	
+	 }
 	protected myLinkedHashMap cache;
-
+	
     public LRUCache(int max) {
     	maxCount = max;
 		cache = new myLinkedHashMap(max);
     }
     
+	*/
+	
+	protected HashMap cache;
+	protected IDBID Keys[];
+	protected Random rand;
+
+	public LRUCache(int max) {
+		rand = new Random();
+		resize(max);
+		maxCount = max;
+		cache = new HashMap(max);
+		Keys = new IDBID[max];
+		count = 0;
+	}
+	
+	protected void resize ( int max ) {
+		maxCount = max;
+		cache = new HashMap(max);
+		Keys = new IDBID[max];
+		count = 0;
+	}
+
+	protected int maxCount;
+	protected int count;
+
 	public Object get(IDBID id) {
 		return cache.get(id);
 	}
 
+	public void put(IDBID id, Object val) {
+		synchronized (this) {
+			int curSize = cache.size();
+			cache.put(id, val);
+			if (cache.size() > curSize) {
+				int ix = count++;
+				if (count > maxCount) {
+					// pick an entry at random and remove it.
+					// not exactly LRU
+					ix = rand.nextInt(maxCount);
+					if (cache.remove(Keys[ix]) == null)
+						throw new JenaException("LRUCache corrupted");
+					count--;
+					Keys[ix] = id;
+					if (cache.size() > maxCount)
+						throw new JenaException("LRUCache exceeds threshold");
+				}
+				Keys[ix] = id;
+			}
+		}
+	}
+
+	/* save for java 1.4
     public void put(IDBID id, Object val) {
         cache.put(id, val);
         if ( cache.size() > maxCount ) {
 			throw new JenaException("LRUCache exceeds threshold");
 		}
     }
+    */
     
     public void clear() {
     	cache.clear();
     }
     
+	/*
 	public void setLimit(int max) {
 		maxCount = max;
 		cache = new myLinkedHashMap(max);
+	}
+	*/
+	public void setLimit(int max) {
+		resize(max);
 	}
 
 	public int getLimit() {
