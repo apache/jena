@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.18 2003-08-19 20:10:01 der Exp $
+ * $Id: BaseInfGraph.java,v 1.19 2003-08-22 16:04:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -19,7 +19,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2003-08-19 20:10:01 $
+ * @version $Revision: 1.19 $ on $Date: 2003-08-22 16:04:40 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -259,6 +259,25 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     public int size() {
         checkOpen();
         return fdata.getGraph().size();
+    }
+    
+    /**
+        Answer true iff this graph is empty. [Used to be in QueryHandler, but moved in
+        here because it's a more primitive operation.]
+    */
+    public boolean isEmpty() {
+        return fdata.getGraph().isEmpty();
+    }
+    
+    /** 
+     * Free all resources, any further use of this Graph is an error.
+     */
+    public void close() {
+        if (!closed) {
+            fdata.getGraph().close();
+            fdata = null;
+            super.close();
+        }
     }
         
     /**

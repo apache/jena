@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.32 2003-08-22 14:48:25 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.33 2003-08-22 16:04:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2003-08-22 14:48:25 $
+ * @version $Revision: 1.33 $ on $Date: 2003-08-22 16:04:32 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -575,6 +575,18 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         // revert of a more brute force version. 
         graph.rebind(premises);
         return graph;
+    }
+    
+    /** 
+     * Free all resources, any further use of this Graph is an error.
+     */
+    public void close() {
+        if (!closed) {
+            bEngine.halt();        
+            bEngine = null;
+            transitiveEngine = null;
+            super.close();
+        }
     }
 
 //  =======================================================================
