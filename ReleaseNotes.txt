@@ -1,15 +1,30 @@
 ReleaseNotes
 ============
 
-Jena j2p1  (February 2003)
+Jena2-pre2 (April 2003)
 
-
-This is the first release of Jena 2.
+Second preview release of Jena2.
 
 It is a preview release, not intended for serious development.  Developers
 are encouraged to try it out and send feedback to jena-dev@yahoogroups.com.
 
-It has less functionality than previous Jena releases (1.6.1) and more.
-For more information see readme.html
+This release does not support persistence of RDF data whther relational
+databases or BerlekleyDB databases.
 
 For guidance on porting code from Jena 1, see docs/migrating1-2.html
+
+In this release:
+
+RDQL:
++ support for datatypes and language tags on literals based on the 
+  N-Triples syntax.  e.g. "123"^^xsd:integer
++ all commas in queries are optional
++ qnames do not need to be quoted by <>
++ Standard namespace built-in: rdf:, rdfs:, owl:, xsd:  An application
+  may override these with explicit declarations.
++ Uses the SPI-level query mechansism - this is preparation for 
+  improved performance with relational databases.
+
+N3:
++ support for datatypes and language tags on literals based on
+  the N-Triples syntax.  e.g. "123"^^xsd:integer
