@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.45 2004-06-28 14:43:20 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.46 2004-06-29 08:46:32 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -408,8 +408,8 @@ public abstract class AbstractTestGraph extends GraphTestBase
         GraphEventManager gem = g.getEventManager();
         gem.register( L1 ).register( L2 );
         g.add( SPO );
-        assertTrue( L2.has( new Object[] {"add", SPO} ) );
-        assertTrue( L1.has( new Object[] {"add", SPO} ) );
+        L2.assertHas( new Object[] {"add", SPO} );
+        L1.assertHas( new Object[] {"add", SPO} );
         }
         
     public void testUnregisterWorks()
@@ -418,7 +418,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         GraphEventManager gem = g.getEventManager();
         gem.register( L ).unregister( L );
         g.add( SPO );
-        assertTrue( L.has( new Object[] {} ) );
+        L.assertHas( new Object[] {} );
         }
         
     public void testRegisterTwice()
@@ -426,7 +426,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph g = getAndRegister( L );
         g.getEventManager().register( L );
         g.add( SPO );
-        assertTrue( L.has( new Object[] {"add", SPO, "add", SPO} ) );
+        L.assertHas( new Object[] {"add", SPO, "add", SPO} );
         }
         
     public void testUnregisterOnce()
@@ -434,7 +434,7 @@ public abstract class AbstractTestGraph extends GraphTestBase
         Graph g = getAndRegister( L );
         g.getEventManager().register( L ).unregister( L );
         g.delete( SPO );
-        assertTrue( L.has( new Object[] {"delete", SPO} ) );
+        L.assertHas( new Object[] {"delete", SPO} );
         }
         
     public void testBulkAddArray()
@@ -519,8 +519,17 @@ public abstract class AbstractTestGraph extends GraphTestBase
         L.assertHas( new Object[] { "someEvent", g, GraphEvents.removeAll } );        
         }
     
+    public void testRemoveSomeEvent()
+        {
+        Graph g = getAndRegister( L );
+        Node S = node( "S" ), P = node( "?P" ), O = node( "??" );
+        g.getBulkUpdateHandler().remove( S, P, O );
+        Object event = GraphEvents.remove( S, P, O );
+        L.assertHas( new Object[] { "someEvent", g, event } );        
+        }
+    
     /**
-     * Test nodes can be found in all triple positions.
+     * Test that nodes can be found in all triple positions.
      * However, testing for literals in subject positions is suppressed
      * at present to avoid problems with InfGraphs which try to prevent
      * such constructs leaking out to the RDF layer.

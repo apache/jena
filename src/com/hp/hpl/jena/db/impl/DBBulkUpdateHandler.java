@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.15 2004-06-28 14:43:03 chris-dollin Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.16 2004-06-29 08:45:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.db.*;
     handling for bulk updates.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.15 $
+ 	@version $Revision: 1.16 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -158,7 +158,8 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         manager.notifyEvent( graph, GraphEvents.removeAll ); }
     
     public void remove( Node s, Node p, Node o )
-        { SimpleBulkUpdateHandler.removeAll( graph, s, p, o ); }
+        { SimpleBulkUpdateHandler.removeAll( graph, s, p, o ); 
+        manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) ); }
 }
 
 

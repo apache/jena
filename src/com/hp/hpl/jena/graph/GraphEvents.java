@@ -1,15 +1,36 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphEvents.java,v 1.1 2004-06-28 14:43:15 chris-dollin Exp $
+  $Id: GraphEvents.java,v 1.2 2004-06-29 08:46:31 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph;
 
-
+/**
+    GraphEvents is the base class for Jena general graph events. Each graph event
+    has a title and some content.
+    
+    @author kers
+ */
 public class GraphEvents
-{
-public static final String removeAll = "removeAll";
-}
+	{
+	public static final GraphEvents removeAll = new GraphEvents( "removeAll", "" );
+	
+    private String title;
+    private Object content;
+    
+    public GraphEvents( String title, Object content )
+        { this.title = title;
+        this.content = content; }
+    
+    public boolean equals( Object o )
+        { return o instanceof GraphEvents && same( (GraphEvents) o ); }
+    
+    public boolean same( GraphEvents o )
+        { return title.equals( o.title ) && content.equals( o.content ); }
+   
+	public static Object remove( Node s, Node p, Node o )
+	    { return new GraphEvents( "remove", Triple.create( s, p, o ) ); }
+	}
 
 /*
 (c) Copyright 2004, Hewlett-Packard Development Company, LP

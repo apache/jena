@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedBulkUpdateHandler.java,v 1.1 2004-06-28 14:43:17 chris-dollin Exp $
+  $Id: WrappedBulkUpdateHandler.java,v 1.2 2004-06-29 08:46:31 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -11,7 +11,9 @@ import com.hp.hpl.jena.graph.*;
 
 /**
  	WrappedBulkUpdateHandler - a base class for wrapped bulk update handlers
- 	(needed so WrappedGraph works properly with events)
+ 	(needed so WrappedGraph works properly with events). Each operation is
+ 	passed on to the base handler, and then this graph's event manager is
+ 	notified.
  	 
  	@author kers
 */
@@ -100,6 +102,7 @@ public class WrappedBulkUpdateHandler
     public void remove( Node s, Node p, Node o )
         {
         base.remove( s, p, o );
+        manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) );
         }
 
     }

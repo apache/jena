@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.18 2004-06-28 14:43:17 chris-dollin Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.19 2004-06-29 08:46:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -138,10 +138,11 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
     
     public void removeAll()
         { removeAll( graph ); 
-        manager.notifyEvent( graph, "removeAll" ); }
+        manager.notifyEvent( graph, GraphEvents.removeAll ); }
     
     public void remove( Node s, Node p, Node o )
-        { removeAll( graph, s, p, o ); }
+        { removeAll( graph, s, p, o ); 
+        manager.notifyEvent( graph, GraphEvents.remove( s, p, o ) ); }
     
     public static void removeAll( Graph g, Node s, Node p, Node o )
         {
