@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.5 2003-04-15 21:25:26 jeremy_carroll Exp $
+ * $Id: ReasonerTester.java,v 1.6 2003-04-17 15:24:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -43,7 +43,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-04-15 21:25:26 $
+ * @version $Revision: 1.6 $ on $Date: 2003-04-17 15:24:30 $
  */
 public class ReasonerTester {
 
@@ -232,7 +232,7 @@ public class ReasonerTester {
         Graph correctG = loadTestFile(test, resultP);
         boolean correct = correctG.isIsomorphicWith(resultG);
         // Used in debugging the tests ...
-        /*
+        // /*
         if (!correct) {
             System.out.println("Missing triples:");
             for (Iterator i = correctG.find(null, null, null); i.hasNext(); ) {
@@ -249,7 +249,7 @@ public class ReasonerTester {
                 }
             }
         }
-        */
+        // */
         // ... end of debugging hack
         if (testcase != null) {
             testcase.assertTrue(description, correct);

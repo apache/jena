@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSInfGraph.java,v 1.5 2003-04-15 21:23:27 jeremy_carroll Exp $
+ * $Id: RDFSInfGraph.java,v 1.6 2003-04-17 15:24:17 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -35,7 +35,7 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-04-15 21:23:27 $
+ * @version $Revision: 1.6 $ on $Date: 2003-04-17 15:24:17 $
  */
 public class RDFSInfGraph extends BaseInfGraph {
 
@@ -103,6 +103,18 @@ public class RDFSInfGraph extends BaseInfGraph {
         BaseFRule.parseTriple("rdf:Statement rdf:type rdfs:Class"),
         BaseFRule.parseTriple("rdf:nil rdf:type rdf:List"),
         BaseFRule.parseTriple("rdf:XMLLiteral rdf:type rdfs:Datatype"),
+
+        BaseFRule.parseTriple("rdf:Alt rdf:type rdfs:Class"),
+        BaseFRule.parseTriple("rdf:Seq rdf:type rdfs:Class"),
+        BaseFRule.parseTriple("rdf:Bag rdf:type rdfs:Class"),
+        BaseFRule.parseTriple("rdf:XMLLiteral rdf:type rdfs:Class"),
+        BaseFRule.parseTriple("rdfs:Container rdf:type rdfs:Class"),
+        BaseFRule.parseTriple("rdfs:ContainerMembershipProperty rdf:type rdfs:Class"),
+        
+        BaseFRule.parseTriple("rdfs:isDefinedBy rdf:type rdf:Property"),
+        BaseFRule.parseTriple("rdfs:seeAlso rdf:type rdf:Property"),
+        BaseFRule.parseTriple("rdfs:comment rdf:type rdf:Property"),
+        BaseFRule.parseTriple("rdfs:label rdf:type rdf:Property"),
 
         BaseFRule.parseTriple("rdf:subject rdf:type rdf:Property"),
         BaseFRule.parseTriple("rdf:predicate rdf:type rdf:Property"),

@@ -1,0 +1,23 @@
+<html>
+	<head>
+		<title>Package documentation for com.hp.hpl.jena.reasoner.rulesys</title>
+	</head>
+	<body>
+		<p>
+			Provides a selection of simple rule engines for Jena inference models.
+			Currently this includes a simple forward chaining engine (BasicForwardRuleReasoner).
+			This is currently a pure interpreter (no RETE network) with an extensible set
+			of Builtin actions (see Builtin).
+	    </p><p>
+	        We include two example reasoners built using this rule engine. The first is
+	        an alternative RDFS implementation (RDFSRuleReasonerFactory) which implements the
+	        full RDFS rule set forward style.
+	    </p><p>
+	        The second is an implementation of the OWL-lite subset of OWL-full (OWLRuleReasonerFactory).
+	        This omits some of the RDFS entailments (everything is a Resource, every Class is a
+	        subclass of Resource) because those conclusions are general not that useful and
+	        lead to rather a lot of pointless deductions in forward chaining mode.
+
+		</p>
+	</body>
+</html>
