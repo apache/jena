@@ -18,7 +18,7 @@ Post Jena 2.1 change list
   Database
       o Fixed user-reported problem where removeNsPrefix() wasn't persistent
       o handles some constraints internally
-      o A minor change to the DBPrefixMappingImpl has improved the speed
+      o A minor change to ModelCom has improved the speed 
         with which DB models with several prefixes are opened.
 
   GraphBase and Reification SPI
