@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBBulkUpdateHandler.java,v 1.6 2003-07-10 14:08:26 chris-dollin Exp $
+  $Id: DBBulkUpdateHandler.java,v 1.7 2003-07-11 10:15:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -13,10 +13,11 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.db.*;
 
 /**
-    An implementation of the bulk update interface.
+    An implementation of the bulk update interface. Updated by kers to permit event
+    handling for bulk updates.
     
  	@author csayers based on SimpleBulkUpdateHandler by kers
- 	@version $Revision: 1.6 $
+ 	@version $Revision: 1.7 $
 */
 
 public class DBBulkUpdateHandler implements BulkUpdateHandler {
@@ -50,7 +51,27 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
         if (notify) manager.notifyAdd( triples );
 	}
 
-	public void add(Iterator it) {
+    /**
+        Add the [elements of the] iterator to the graph. Complications arise because
+        we wish to avoid duplicating the iterator if there are no listeners; otherwise
+        we have to read the entire iterator into a list and use add(List) with notification
+        turned off.
+     	@see com.hp.hpl.jena.graph.BulkUpdateHandler#add(java.util.Iterator)
+     */
+	public void add(Iterator it) 
+        { 
+        if (manager.listening())
+            {
+            List L = GraphUtil.iteratorToList( it );
+            add( L, false );
+            manager.notifyAddIterator( L );    
+            }
+        else
+            addIterator( it ); 
+        }
+    
+    protected void addIterator( Iterator it )
+    {
 		ArrayList list = new ArrayList(CHUNK_SIZE);
 		while (it.hasNext()) {
 			while (it.hasNext() && list.size() < CHUNK_SIZE) {
@@ -85,8 +106,27 @@ public class DBBulkUpdateHandler implements BulkUpdateHandler {
 		graph.delete( triples );
         if (notify) manager.notifyDelete( triples );
 	}
-
-	public void delete(Iterator it) {
+    
+    /**
+        Delete the [elements of the] iterator from the graph. Complications arise 
+        because we wish to avoid duplicating the iterator if there are no listeners; 
+        otherwise we have to read the entire iterator into a list and use delete(List) 
+        with notification turned off.
+        @see com.hp.hpl.jena.graph.BulkUpdateHandler#add(java.util.Iterator)
+     */
+    public void delete(Iterator it) 
+        { 
+        if (manager.listening())
+            {
+            List L = GraphUtil.iteratorToList( it );
+            delete( L, false );
+            manager.notifyDeleteIterator( L );    
+            }
+        else
+            deleteIterator( it ); 
+        }
+    
+	protected void deleteIterator(Iterator it) {
 		ArrayList list = new ArrayList(CHUNK_SIZE);
 		while (it.hasNext()) {
 			while (it.hasNext() && list.size() < CHUNK_SIZE) {

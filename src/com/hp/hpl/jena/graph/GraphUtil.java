@@ -1,25 +1,59 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphUtil.java,v 1.1 2003-06-06 09:14:50 chris-dollin Exp $
+  $Id: GraphUtil.java,v 1.2 2003-07-11 10:16:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.*;
+import java.util.*;
 
 /**
  	@author kers
 */
 public class GraphUtil
     {
-
+    /**
+        Only static methods here - the class cannot be instantiated.
+    */
     private GraphUtil()
         {}
 
+    /**
+        Answer an iterator covering all the triples in the specified graph.
+    	@param g the graph from which to extract triples
+    	@return an iterator over all the graph's triples
+    */
     public static ExtendedIterator findAll( Graph g )
         { return g.find( Node.ANY, Node.ANY, Node.ANY ); }
 
+    /**
+        Answer the elements of the given iterator as a set. The iterator is consumed
+        by the operation. (Hence, if it is closable, it will be closed.)
+        @param i the iterator to convert
+        @return A set of the members of i
+    */
+    public static Set iteratorToSet( Iterator i )
+        {
+        Set result = new HashSet();
+        while (i.hasNext()) result.add( i.next() );
+        return result;
+        }
+        
+    /**
+        Answer the elements of the given iterator as a list, in the order that they
+        arrived from the iterator. The iterator is consumed by this operation.
+    	@param it the iterator to convert
+    	@return a list of the elements of <code>it</code>, in order
+     */
+    public static List iteratorToList( Iterator it )
+        {
+        List result = new ArrayList();
+        while (it.hasNext()) result.add( it.next() );
+        return result;
+        }
+                
     }
 
 

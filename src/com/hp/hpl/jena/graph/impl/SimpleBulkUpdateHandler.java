@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleBulkUpdateHandler.java,v 1.4 2003-07-10 12:53:33 chris-dollin Exp $
+  $Id: SimpleBulkUpdateHandler.java,v 1.5 2003-07-11 10:16:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -36,13 +36,30 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
         
     public void add( List triples )
+        { add( triples, true ); }
+        
+    protected void add( List triples, boolean notify )
         {
         for (int i = 0; i < triples.size(); i += 1) graph.performAdd( (Triple) triples.get(i) ); 
-        manager.notifyAdd( triples );
+        if (notify) manager.notifyAdd( triples );
         }
         
+    /**
+        Add all the elements of the iterator to the graph. Trickery to arrange that if
+        the graph has no listeners, the iterator is not duplicated. Not sure how to
+        test this yet.
+    */
     public void add( Iterator it )
-        { while (it.hasNext()) graph.add( (Triple) it.next() ); }
+        { 
+        if (manager.listening())
+            {
+            List s = GraphUtil.iteratorToList( it );
+            add( s, false );
+            manager.notifyAddIterator( s );
+            }
+        else
+            while (it.hasNext()) graph.performAdd( (Triple) it.next() ); 
+        }
         
     public void add( Graph g )
         { add( GraphUtil.findAll( g ) );  }
@@ -54,13 +71,25 @@ public class SimpleBulkUpdateHandler implements BulkUpdateHandler
         }
     
     public void delete( List triples )
+        { delete( triples, true ); }
+        
+    protected void delete( List triples, boolean notify )
         { 
         for (int i = 0; i < triples.size(); i += 1) graph.performDelete( (Triple) triples.get(i) );
-        manager.notifyDelete( triples );
+        if (notify) manager.notifyDelete( triples );
         }
     
     public void delete( Iterator it )
-        {  while (it.hasNext()) graph.delete( (Triple) it.next() ); }
+        {  
+        if (manager.listening())
+            {
+            List L = GraphUtil.iteratorToList( it );
+            delete( L, false );
+            manager.notifyDeleteIterator( L );
+            }
+        else
+            while (it.hasNext()) graph.performDelete( (Triple) it.next() );    
+         }
     
     public void delete( Graph g )
         { delete( GraphUtil.findAll( g ) ); }

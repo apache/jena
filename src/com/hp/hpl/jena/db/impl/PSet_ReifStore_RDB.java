@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.10 $ on $Date: 2003-07-10 18:40:00 $
+* @version $Revision: 1.11 $ on $Date: 2003-07-11 10:15:53 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -273,6 +273,9 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		public Object map1(Object o) {
 			// TODO Auto-generated method stub
 			List l = (List) o;
+            // TODO we have a BUG here somewhere, hence the message.
+            if (l.get(0) instanceof String) {} else 
+                throw new JenaException( "String required: " + l.get(0).getClass() + " " + l.get(0) );
 			Node n = m_driver.RDBStringToNode((String) l.get(0));
 			return n;
 		}

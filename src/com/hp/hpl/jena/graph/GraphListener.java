@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphListener.java,v 1.6 2003-07-10 12:53:33 chris-dollin Exp $
+  $Id: GraphListener.java,v 1.7 2003-07-11 10:16:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -30,6 +30,11 @@ public interface GraphListener
     void notifyAdd( List triples );
     
     /**
+        Method called when an iterator [of triples] has been added to the graph
+    */
+    void notifyAdd( Iterator it );
+    
+    /**
         Method called when a single triple has been deleted from the graph.
     */
     void notifyDelete( Triple t );
@@ -43,6 +48,11 @@ public interface GraphListener
         Method called when an array of triples has been deleted from the graph.
     */
     void notifyDelete( Triple [] triples );
+    
+    /**
+        Method called when an iterator [of triples] has been deleted from the graph.
+    */
+    void notifyDelete( Iterator it );
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Union.java,v 1.1 2003-02-21 15:45:00 chris-dollin Exp $
+  $Id: Union.java,v 1.2 2003-07-11 10:16:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -23,10 +23,10 @@ public class Union extends Dyadic implements Graph
 	public Union( Graph L, Graph R )
 		{ super( L, R ); }
 		
-	public void add( Triple t )
+	public void performAdd( Triple t )
 		{ L.add( t ); }
 
-	public void delete( Triple t )
+	public void performDelete( Triple t )
 		{
 		L.delete( t );
 		R.delete( t );

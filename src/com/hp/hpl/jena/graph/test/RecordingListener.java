@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: RecordingListener.java,v 1.2 2003-07-10 12:53:33 chris-dollin Exp $
+  $Id: RecordingListener.java,v 1.3 2003-07-11 10:16:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -28,6 +28,9 @@ class RecordingListener implements GraphListener
     public void notifyAdd( List triples )
         { record( "addList", triples ); }
         
+    public void notifyAdd( Iterator it )
+        { record( "addIterator", GraphTestBase.iteratorToList( it ) ); }
+        
     public void notifyDelete( Triple t )
         { record( "delete", t ); }
         
@@ -36,6 +39,9 @@ class RecordingListener implements GraphListener
         
     public void notifyDelete( List triples )
         { record( "deleteList", triples ); }
+        
+    public void notifyDelete( Iterator it )
+        { record( "deleteIterator", GraphTestBase.iteratorToList( it ) ); }
         
     protected void record( String tag, Object info )
         { history.add( tag ); history.add( info ); }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: SimpleEventManager.java,v 1.3 2003-07-10 12:53:33 chris-dollin Exp $
+  $Id: SimpleEventManager.java,v 1.4 2003-07-11 10:16:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -40,6 +40,9 @@ public class SimpleEventManager implements GraphEventManager
         return this;
         }
     
+    public boolean listening()
+        { return listeners.size() > 0; }
+        
     public void notifyAdd( Triple t ) 
         {
         for (int i = 0; i < listeners.size(); i += 1) 
@@ -56,6 +59,12 @@ public class SimpleEventManager implements GraphEventManager
         {
         for (int i = 0; i < listeners.size(); i += 1) 
             ((GraphListener) listeners.get(i)).notifyAdd( L);      
+        }
+        
+    public void notifyAddIterator( List it )
+        {
+        for (int i = 0; i < listeners.size(); i += 1) 
+            ((GraphListener) listeners.get(i)).notifyAdd( it.iterator() ); 
         }
         
     public void notifyDelete( Triple t ) 
@@ -76,6 +85,11 @@ public class SimpleEventManager implements GraphEventManager
             ((GraphListener) listeners.get(i)).notifyDelete( L);      
         }
         
+    public void notifyDeleteIterator( List L )
+        {
+        for (int i = 0; i < listeners.size(); i += 1) 
+            ((GraphListener) listeners.get(i)).notifyDelete( L.iterator() ); 
+        }
     
     }
 

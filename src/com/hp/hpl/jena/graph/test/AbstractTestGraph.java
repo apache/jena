@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.17 2003-07-10 12:53:33 chris-dollin Exp $
+  $Id: AbstractTestGraph.java,v 1.18 2003-07-11 10:16:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -357,6 +357,25 @@ public abstract class AbstractTestGraph extends GraphTestBase
         g.getBulkUpdateHandler().delete( elems );
         L.assertHas( new Object[] {"deleteList", elems} );
         }
+        
+    public void testBulkAddIterator()
+        {
+        Graph g = getAndRegister( L );
+        Triple [] triples = tripleArray( "I wrote this; you read that; I wrote this" );
+        g.getBulkUpdateHandler().add( asIterator( triples ) );
+        L.assertHas( new Object[] {"addIterator", Arrays.asList( triples )} );
+        }
+        
+    public void testBulkDeleteIterator()
+        {
+        Graph g = getAndRegister( L );
+        Triple [] triples = tripleArray( "I wrote this; you read that; I wrote this" );
+        g.getBulkUpdateHandler().delete( asIterator( triples ) );
+        L.assertHas( new Object[] {"deleteIterator", Arrays.asList( triples )} );
+        }
+        
+    public Iterator asIterator( Triple [] triples )
+        { return Arrays.asList( triples ).iterator(); }
     
     public void testContainsNode()
         {
