@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestUtil.java,v 1.3 2003-04-15 21:27:15 jeremy_carroll Exp $
+ * $Id: TestUtil.java,v 1.4 2003-04-22 14:17:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -16,7 +16,7 @@ import java.util.Iterator;
  * Collection of utilities to assist with unit testing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-15 21:27:15 $
+ * @version $Revision: 1.4 $ on $Date: 2003-04-22 14:17:56 $
  */
 public class TestUtil {
 
@@ -33,11 +33,37 @@ public class TestUtil {
                     found[i] = true;
                 }
             }
-            testCase.assertTrue(gotit);
+            TestCase.assertTrue(gotit);
         }
         for (int i = 0; i < vals.length; i++) {
-            testCase.assertTrue(found[i]);
+            TestCase.assertTrue(found[i]);
         }
+    }
+    
+
+    /**
+     * Replace all blocks of white space by a single space character, just
+     * used for creating test cases.
+     * 
+     * @param src the original string
+     * @return normalized version of src
+     */
+    public static String normalizeWhiteSpace(String src) {
+        StringBuffer result = new StringBuffer(src.length());
+        boolean inWhitespaceBlock = false;
+        for (int i = 0; i < src.length(); i++) {
+            char c = src.charAt(i);
+            if (Character.isWhitespace(c)) {
+                if (!inWhitespaceBlock) {
+                    result.append(" ");
+                    inWhitespaceBlock = true;
+                }
+            } else {
+                inWhitespaceBlock = false;
+                result.append(c);
+            }
+        }
+        return result.toString();
     }
     
 }
