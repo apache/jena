@@ -5,13 +5,15 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: InfGraph.java,v 1.2 2003-02-10 10:13:25 der Exp $
+ * $Id: InfGraph.java,v 1.3 2003-04-14 16:05:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import java.util.Iterator;
 
 /**
  * Extends the Graph interface to give additional means to query an inferred
@@ -25,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  * form more complex queries.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-02-10 10:13:25 $
+ * @version $Revision: 1.3 $ on $Date: 2003-04-14 16:05:49 $
  */
 public interface InfGraph extends Graph {
 
@@ -80,6 +82,20 @@ public interface InfGraph extends Graph {
      * object nodes refer.
      */
     public ExtendedIterator find(Node subject, Node property, Node object, Graph param);
+    
+    /**
+     * Switch on/off drivation logging
+     */
+    public void setDerivationLogging(boolean logOn);
+   
+    /**
+     * Return the derivation of the given triple (which is the result of
+     * some previous find operation).
+     * Not all reasoneers will support derivations.
+     * @return an iterator over Derivation records or null if there is no derivation information
+     * available for this triple.
+     */
+    public Iterator getDerivation(Triple triple);
     
 }
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.6 2003-04-14 15:44:30 der Exp $
+ * $Id: RDFSReasoner.java,v 1.7 2003-04-14 16:08:44 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-04-14 15:44:30 $
+ * @version $Revision: 1.7 $ on $Date: 2003-04-14 16:08:44 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
@@ -123,6 +123,18 @@ public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
         return new RDFSInfGraph(tbox, data, subPropertyCache, 
                                                     subClassCache, this);
     }   
+    
+    /**
+     * Switch on/off drivation logging.
+     * If set to true then the InfGraph created from the bind operation will start
+     * life with recording of derivations switched on. This is currently only of relevance
+     * to rule-based reasoners.
+     * <p>
+     * Default - false.
+     */
+    public void setDerivationLogging(boolean logOn) {
+        // Irrelevant to this reasoner
+    }
     
 }
 

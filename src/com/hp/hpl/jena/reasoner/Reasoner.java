@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: Reasoner.java,v 1.4 2003-03-30 20:53:27 der Exp $
+ * $Id: Reasoner.java,v 1.5 2003-04-14 16:05:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.Graph;
  * the reasoner has been bound to a set of RDF data.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2003-03-30 20:53:27 $
+ * @version $Revision: 1.5 $ on $Date: 2003-04-14 16:05:49 $
  */
 public interface Reasoner {
     
@@ -60,6 +60,17 @@ public interface Reasoner {
      * constraints imposed by this reasoner.
      */
     public InfGraph bind(Graph data) throws ReasonerException;
+
+    
+    /**
+     * Switch on/off drivation logging.
+     * If set to true then the InfGraph created from the bind operation will start
+     * life with recording of derivations switched on. This is currently only of relevance
+     * to rule-based reasoners.
+     * <p>
+     * Default - false.
+     */
+    public void setDerivationLogging(boolean logOn);
 
 }
 

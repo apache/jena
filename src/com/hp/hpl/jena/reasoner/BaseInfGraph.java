@@ -5,18 +5,19 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.3 2003-04-11 09:57:55 der Exp $
+ * $Id: BaseInfGraph.java,v 1.4 2003-04-14 16:05:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import java.util.Iterator;
 
 /**
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-04-11 09:57:55 $
+ * @version $Revision: 1.4 $ on $Date: 2003-04-14 16:05:49 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -25,6 +26,9 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     
     /** The graph of raw data which is being reasoned over */
     protected FGraph fdata;
+
+    /** Flag, if set to true then derivations are recorded */
+    protected boolean recordDerivations;
 
     /**
      * Constructor
@@ -155,6 +159,25 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     public Reifier getReifier() {
         return null;
     }
+    
+    /**
+     * Switch on/off drivation logging
+     */
+    public void setDerivationLogging(boolean logOn) {
+        recordDerivations = logOn;
+    }
+   
+    /**
+     * Return the derivation of the given triple (which is the result of
+     * some previous find operation).
+     * Not all reasoneers will support derivations.
+     * @return an iterator over Derivation records or null if there is no derivation information
+     * available for this triple.
+     */
+    public Iterator getDerivation(Triple triple) {
+        return null;
+    }
+
 
 }
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveReasoner.java,v 1.3 2003-02-10 10:05:48 der Exp $
+ * $Id: TransitiveReasoner.java,v 1.4 2003-04-14 16:07:42 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -32,7 +32,7 @@ import java.util.HashSet;
  * of RDFS processing.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-02-10 10:05:48 $
+ * @version $Revision: 1.4 $ on $Date: 2003-04-14 16:07:42 $
  */
 public class TransitiveReasoner implements Reasoner {
 
@@ -235,6 +235,18 @@ public class TransitiveReasoner implements Reasoner {
     public InfGraph bind(Graph data) throws ReasonerException {
         return new TransitiveInfGraph(data, this);
     }   
+   
+    /**
+     * Switch on/off drivation logging.
+     * If set to true then the InfGraph created from the bind operation will start
+     * life with recording of derivations switched on. This is currently only of relevance
+     * to rule-based reasoners.
+     * <p>
+     * Default - false.
+     */
+    public void setDerivationLogging(boolean logOn) {
+        // Irrelevant to this reasoner
+    }
     
 }
 
