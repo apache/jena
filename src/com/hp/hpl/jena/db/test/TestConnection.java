@@ -1,7 +1,7 @@
 /*
-  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, 2003, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestConnection.java,v 1.1 2003-04-25 02:57:39 wkw Exp $
+  $Id: TestConnection.java,v 1.2 2003-04-28 15:19:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -22,9 +22,9 @@ package com.hp.hpl.jena.db.test;
 
 import com.hp.hpl.jena.db.*;
 
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import junit.framework.*;
 
+import com.hp.hpl.jena.util.*;
 
 public class TestConnection extends TestCase {    
         
@@ -60,25 +60,46 @@ public class TestConnection extends TestCase {
 		*/
 	}
     
+    private static void loadClass()
+        {
+        try { Class.forName("com.mysql.jdbc.Driver"); }
+        catch (Exception e) { throw new JenaException( e ); }
+        }
+        
+    public static IDBConnection makeTestConnection() 
+        {
+        loadClass();
+        return new DBConnection
+            (
+            TestPackage.MYSQL_URL, 
+            TestPackage.MYSQL_USER, 
+            TestPackage.MYSQL_PASSWD, 
+            TestPackage.MYDB
+            );
+        }
+        
+    public static IDBConnection makeAndCleanTestConnection()
+        {
+        IDBConnection result = makeTestConnection();
+        try { result.cleanDB(); }
+        catch (Exception e) { throw new JenaException( e ); }        
+        return result;
+        }
+        
     public void testDBConnect() throws java.lang.Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
+		IDBConnection conn = makeTestConnection();
     	conn.close();
     }
     
     public void testConstructDefaultModel() throws java.lang.Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
-		conn.cleanDB();
+		IDBConnection conn = makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
 		m.remove();
     	conn.close();
     }
     
     public void testConstructAndOpenDefaultModel() throws java.lang.Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
-		conn.cleanDB();
+        IDBConnection conn = makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn);
 		m.close();
 		ModelRDB m2 = ModelRDB.open(conn);
@@ -87,18 +108,14 @@ public class TestConnection extends TestCase {
     }
         
     public void testConstructNamedModel() throws java.lang.Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
-		conn.cleanDB();
+        IDBConnection conn = makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn, "myName");
 		m.remove();
     	conn.close();
     }
         
     public void testConstructAndOpenNamedModel() throws java.lang.Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
-		conn.cleanDB();
+        IDBConnection conn = makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn, "myName");
 		m.close();
 		ModelRDB m2 = ModelRDB.open(conn, "myName");
@@ -107,18 +124,14 @@ public class TestConnection extends TestCase {
     }
         
     public void testConstructParamaterizedModel() throws java.lang.Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
-		conn.cleanDB();
+        IDBConnection conn = makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn, ModelRDB.getDefaultModelProperties(conn));
 		m.remove();
     	conn.close();
     }
         
     public void testConstructAndOpenParamaterizedModel() throws java.lang.Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
-		conn.cleanDB();
+        IDBConnection conn = makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn, ModelRDB.getDefaultModelProperties(conn));
 		m.close();
 		ModelRDB m2 = ModelRDB.open(conn);
@@ -127,18 +140,14 @@ public class TestConnection extends TestCase {
     }
         
 	public void testConstructNamedParamaterizedModel() throws java.lang.Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
-		conn.cleanDB();
+        IDBConnection conn = makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn, "myName", ModelRDB.getDefaultModelProperties(conn));
 		m.remove();
     	conn.close();
     }
         
 	public void testConstructAndOpenNamedParamaterizedModel() throws java.lang.Exception {
-        Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
-		conn.cleanDB();
+        IDBConnection conn = makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn, "myName", ModelRDB.getDefaultModelProperties(conn));
 		m.close();
 		ModelRDB m2 = ModelRDB.open(conn, "myName");
@@ -147,8 +156,7 @@ public class TestConnection extends TestCase {
     }
     
 	public void testOpenNamedNonExistentModel() throws java.lang.Exception {
-		Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
+        IDBConnection conn = makeTestConnection();
 		try {
 			ModelRDB m2 = ModelRDB.open(conn, "myName");
 			m2.remove();
@@ -160,8 +168,7 @@ public class TestConnection extends TestCase {
 	}
 
 	public void testOpenUnnamedNonExistentModel() throws java.lang.Exception {
-		Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
+        IDBConnection conn = makeTestConnection();
 		try {
 			conn.cleanDB();
 			ModelRDB m2 = ModelRDB.open(conn);
@@ -174,9 +181,7 @@ public class TestConnection extends TestCase {
 	}
 
 	public void testCreateExistingModel() throws java.lang.Exception {
-		Class.forName("com.mysql.jdbc.Driver");
-		IDBConnection conn = new DBConnection(TestPackage.MYSQL_URL, TestPackage.MYSQL_USER, TestPackage.MYSQL_PASSWD, TestPackage.MYDB);
-		conn.cleanDB();
+        IDBConnection conn = makeAndCleanTestConnection();
 		ModelRDB m = ModelRDB.createModel(conn, "myName", ModelRDB.getDefaultModelProperties(conn));
 		try {
 			ModelRDB m2 = ModelRDB.createModel(conn, "myName", ModelRDB.getDefaultModelProperties(conn));
@@ -192,7 +197,7 @@ public class TestConnection extends TestCase {
     	
 
 /*
-    (c) Copyright Hewlett-Packard Company 2002
+    (c) Copyright Hewlett-Packard Company 2002, 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestPackage.java,v 1.5 2003-04-24 10:45:46 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.6 2003-04-28 15:21:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -30,7 +30,7 @@ public class TestPackage extends TestSuite {
         addTest( "TestGraphQuery", QueryTest.suite() );
         addTest( "TestFactory", TestFactory.suite() );
         addTest( "TestCapabilities", TestCapabilities.suite() );
-        }
+        addTest( "TestGraphPrefixMapping", TestGraphPrefixMapping.suite() );       }
 
     private void addTest(String name, TestSuite tc) {
         tc.setName(name);

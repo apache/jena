@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: GraphTestBase.java,v 1.9 2003-04-23 09:43:40 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.10 2003-04-28 15:21:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -74,7 +74,7 @@ public class GraphTestBase extends JenaTestBase
         return result;
         }
         
-    public static void testNodeHelp()
+    public void testNodeHelp()
         {
         assertTrue( "node() making URIs", node( "hello" ).isURI() );
         assertTrue( "node() making literals", node( "123" ).isLiteral() );

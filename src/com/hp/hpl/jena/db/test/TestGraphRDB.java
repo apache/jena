@@ -1,39 +1,53 @@
 /*
-  (c) Copyright 2002, 2003 Hewlett-Packard Company, all rights reserved.
+  (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestGraph.java,v 1.9 2003-04-28 15:21:39 chris-dollin Exp $
+  $Id: TestGraphRDB.java,v 1.1 2003-04-28 15:19:41 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.graph.test;
+package com.hp.hpl.jena.db.test;
 
-/**
-    @author kers
-<br>
-    even more extended testcase code
-*/
-
-import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
-
-import java.util.*;
+import com.hp.hpl.jena.graph.test.AbstractTestGraph;
+import com.hp.hpl.jena.db.*;
+import com.hp.hpl.jena.util.*;
 
 import junit.framework.*;
 
-public class TestGraph extends AbstractTestGraph
-    { 
-	public TestGraph( String name )
-		{ super( name ); }
+/**
+ 	@author kers
+*/
+public class TestGraphRDB extends AbstractTestGraph
+    {
+    public TestGraphRDB(String name)
+        { super(name); }
 
     public static TestSuite suite()
-        { return new TestSuite( TestGraph.class ); }
+        { return new TestSuite( TestGraphRDB.class ); }
+
+    private Graph theGraph;
+    private IDBConnection theConnection;
+    
+    public void setUp()
+        {
+        theConnection = TestConnection.makeAndCleanTestConnection();
+        theGraph = ModelRDB.createModel( theConnection ).getGraph();
+        }
+        
+    public void tearDown()
+        { 
+        theGraph.close();
+        try { theConnection.close(); }
+        catch (Exception e) { throw new JenaException( e ); }
+        }
         
     public Graph getGraph()
-        { return new GraphMem(); }
+        { return theGraph; }
+
     }
 
+
 /*
-    (c) Copyright Hewlett-Packard Company 2002, 2003
+    (c) Copyright Hewlett-Packard Company 2003
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without

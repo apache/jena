@@ -4,6 +4,8 @@
  */
  
  package com.hp.hpl.jena.util;
+ 
+ import java.io.*;
 
 /**
  * This should be a superclass of most exceptions
@@ -62,6 +64,18 @@ public class JenaException extends RuntimeException {
         initCause(cause);
 	}
     /* */
+    
+    public void printStackTrace( PrintStream s )
+        {
+        cause.printStackTrace( s );
+        super.printStackTrace( s );
+        }
+        
+    public void printStackTrace( PrintWriter w )
+        {
+        cause.printStackTrace( w );
+        super.printStackTrace( w );
+        }
 
 }
 /*
