@@ -1,15 +1,13 @@
 /*
  (c) Copyright 2003-2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: MonotonicErrorAnalyzer.java,v 1.5 2005-01-03 09:08:16 jeremy_carroll Exp $
+ $Id: MonotonicErrorAnalyzer.java,v 1.6 2005-01-03 11:50:42 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.ontology.tidy.impl;
 
 import java.util.*;
 import java.lang.reflect.*;
 import com.hp.hpl.jena.shared.BrokenException;
-
-
 
 /**
  * 
@@ -21,22 +19,34 @@ import com.hp.hpl.jena.shared.BrokenException;
  */
 class MonotonicErrorAnalyzer implements Constants {
 	final static private int BLANK_PROP = 130;
-	final static private int LITERAL_PROP = 131;
-	final static private int LITERAL_SUBJ = 132;
-	final static private int BADID_USE = 133;
-	final static private int BUILTIN_NON_PRED = 134;
-	final static private int BUILTIN_NON_SUBJ = 135;
-	final static private int TYPE_NEEDS_ID = 180;
-	final static private int TYPE_NEEDS_BLANK = 181;
-	final static private int TYPE_OF_CLASS_ONLY_ID = 182;
-	final static private int TYPE_OF_PROPERTY_ONLY_ID = 183;
-	final static private int TYPE_FOR_BUILTIN = 184;
-	final static private int DIFFERENT_CATS = 200;
-	final static private int DC_DOM_RANGE = 223; // 224, 225, 227, 228
-	final static private int ST_DOMAIN_RANGE = 250; // 251, 252, 253
-	
-	final static private int GENERIC = 10;
 
+	final static private int LITERAL_PROP = 131;
+
+	final static private int LITERAL_SUBJ = 132;
+
+	final static private int BADID_USE = 133;
+
+	final static private int BUILTIN_NON_PRED = 134;
+
+	final static private int BUILTIN_NON_SUBJ = 135;
+
+	final static private int TYPE_NEEDS_ID = 180;
+
+	final static private int TYPE_NEEDS_BLANK = 181;
+
+	final static private int TYPE_OF_CLASS_ONLY_ID = 182;
+
+	final static private int TYPE_OF_PROPERTY_ONLY_ID = 183;
+
+	final static private int TYPE_FOR_BUILTIN = 184;
+
+	final static private int DIFFERENT_CATS = 200;
+
+	final static private int DC_DOM_RANGE = 223; // 224, 225, 227, 228
+
+	final static private int ST_DOMAIN_RANGE = 250; // 251, 252, 253
+
+	final static private int NOT_CLASSIFIED = -1;
 
 	static private LookupTable look = (LookupTable) LookupTable.get();
 
@@ -108,62 +118,61 @@ class MonotonicErrorAnalyzer implements Constants {
 		int key = look.qrefine(sx, px, ox);
 		if (key == Failure) {
 			return singleTripleError(sx, px, ox);
-		} 
-			int misses = 0;
-			int sz = look.subject(sx, key);
-			int pz = look.prop(px, key);
-			int oz = look.object(ox, key);
-			int rslt = GENERIC;
-			int mType = 0;
-			if (look.meet(sz, s) == Failure) {
-				misses |= 1;
-				int r = catMiss(sz, s);
-				if (r != GENERIC) {
-					rslt = r;
-					mType++;
-				} else {
-					mType += 10;
-				}
+		}
+		int misses = 0;
+		int sz = look.subject(sx, key);
+		int pz = look.prop(px, key);
+		int oz = look.object(ox, key);
+		int rslt = NOT_CLASSIFIED;
+		int mType = 0;
+		if (look.meet(sz, s) == Failure) {
+			misses |= 1;
+			int r = catMiss(sz, s);
+			if (r != NOT_CLASSIFIED) {
+				rslt = r;
+				mType++;
+			} else {
+				mType += 10;
 			}
-			if (look.meet(pz, p) == Failure) {
-				misses |= 2;
-				int r = catMiss(pz, p);
-				if (r != GENERIC) {
-					rslt = r;
-					mType++;
-				} else {
-					mType += 10;
-				}
+		}
+		if (look.meet(pz, p) == Failure) {
+			misses |= 2;
+			int r = catMiss(pz, p);
+			if (r != NOT_CLASSIFIED) {
+				rslt = r;
+				mType++;
+			} else {
+				mType += 10;
 			}
-			if (look.meet(oz, o) == Failure) {
-				misses |= 4;
-				int r = catMiss(oz, o);
-				if (r != GENERIC) {
-					rslt = r;
-					mType++;
-				} else {
-					mType += 10;
-				}
+		}
+		if (look.meet(oz, o) == Failure) {
+			misses |= 4;
+			int r = catMiss(oz, o);
+			if (r != NOT_CLASSIFIED) {
+				rslt = r;
+				mType++;
+			} else {
+				mType += 10;
 			}
-			miss[misses]++;
-			mTypes[mType]++;
-			if (misses == 0) {
-				return difficultCase(s, p, o, sz, pz, oz);
-			}
-			return rslt;
-		
-	}
+		}
+		miss[misses]++;
+		mTypes[mType]++;
+		if (misses == 0) {
+			return difficultCase(s, p, o, sz, pz, oz);
+		}
+		return rslt;
 
+	}
 
 	static private int diffPreds[] = new int[SZ];
 
 	static private int difficultCase(int s, int p, int o, int sz, int pz, int oz) {
-		int rslt = GENERIC;
+		int rslt = NOT_CLASSIFIED;
 
 		int given[] = { s, p, o };
 		int general[] = { sz, pz, oz };
-		int givenName[] = { -1, -1, -1 };
-		int wantedName[] = { -1, -1, -1 };
+		int givenName[] = { NOT_CLASSIFIED, NOT_CLASSIFIED, NOT_CLASSIFIED };
+		int wantedName[] = { NOT_CLASSIFIED, NOT_CLASSIFIED, NOT_CLASSIFIED };
 
 		int key[] = { look.qrefine(sz, p, o), look.qrefine(s, pz, o),
 				look.qrefine(s, p, oz), };
@@ -175,7 +184,7 @@ class MonotonicErrorAnalyzer implements Constants {
 			if (key[i] == Failure)
 				failures |= (1 << i);
 			else {
-				int n = -1;
+				int n = NOT_CLASSIFIED;
 				switch (i) {
 				case 0:
 					n = look.subject(general[i], key[i]);
@@ -192,7 +201,8 @@ class MonotonicErrorAnalyzer implements Constants {
 					System.err.println("Intersect!");
 				givenName[i] = nameCatSet(cats[i], nc);
 				wantedName[i] = nameCatSet(cats[i], nc);
-				if (givenName[i] == -1 || wantedName[i] == -1)
+				if (givenName[i] == NOT_CLASSIFIED
+						|| wantedName[i] == NOT_CLASSIFIED)
 					bad = true;
 			}
 		}
@@ -201,18 +211,39 @@ class MonotonicErrorAnalyzer implements Constants {
 		if (failures != 7 && !bad)
 			return DC_DOM_RANGE + failures;
 
-
 		throw new BrokenException("Unreachable code");
 	}
+
 	static private boolean isLiteral(int o) {
 		return o == Grammar.literal || o == Grammar.liteInteger
 				|| o == Grammar.dlInteger || o == Grammar.userTypedLiteral;
 	}
 
-
 	static private int empty[] = {};
-
+/**
+ * The order of this array encodes a declarative preference:
+ *   - the most precise description that fits is preferred
+ *   - the shortest describing string is preferred
+ * (some strings are short but awkward, in these cases
+ *  a second string is given, whose length is also counted)
+ * 
+ * Exceptions to this declarative preference are:
+ * prefer { objectPropID, transPropID }
+ * over { objectPropID }
+ * 
+ * and
+ * prefer { objectPropID, transPropID }
+ * over { transPropID }
+ * 
+ * To verify the behaviour set
+ *  DEBUG_NAMES to true and run main()
+ * (fairly slow: ten, fifteen minutes)
+ * 
+ */
 	static private Object names[][] = {
+// use "a blank node" where more precision is not needed.
+			{ CategorySet.getSet(Grammar.blank), "a blank node",
+			"ok"},
 			{ new int[] { Grammar.owlAllDifferent }, "owl:AllDifferent" },
 			{ new int[] { Grammar.owlAnnotationProperty },
 					"owl:AnnotationProperty" },
@@ -264,17 +295,38 @@ class MonotonicErrorAnalyzer implements Constants {
 			{ new int[] { Grammar.rdfssubClassOf }, "rdfs:subClassOf" },
 			{ new int[] { Grammar.rdfssubPropertyOf }, "rdfs:subPropertyOf" },
 			{ new int[] { Grammar.dataRangeID }, "rdfs:Literal" },
+			{ new int[] { Grammar.unnamedDataRange }, "a datarange" },
 
 			{ new int[] { Grammar.unnamedIndividual, Grammar.individualID },
 					"an individual" },
 			{ new int[] { Grammar.unnamedOntology, Grammar.ontologyID },
 					"an ontology" },
-			{ new int[] { Grammar.unnamedIndividual }, "an unnamed individual" },
-			{ new int[] { Grammar.unnamedOntology }, "an unnamed ontology" },
+//			{ new int[] { Grammar.unnamedIndividual }, "an unnamed individual" },
+//			{ new int[] { Grammar.unnamedOntology }, "an unnamed ontology" },
 			{ new int[] { Grammar.unnamedIndividual, Grammar.unnamedOntology },
 					"an unnamed individual or unnamed ontology" },
 			{ new int[] { Grammar.allDifferent },
 					"a blank node in an owl:AllDifferent construction" },
+			{ new int[] { Grammar.annotationPropID }, "an annotation property" },
+			{ new int[] { Grammar.classID }, "a named class" },
+			{ new int[] { Grammar.dataPropID }, "a datatype property" },
+			{ new int[] { Grammar.datatypeID }, "a datatype" },
+			{ new int[] { Grammar.individualID }, "a named individual" },
+			{ new int[] { Grammar.objectPropID, Grammar.transitivePropID },
+					"an object property" },
+			{ new int[] { Grammar.transitivePropID },
+					"a transitive object property" },
+			{ new int[] { Grammar.objectPropID },
+					"a non-transitive object property" },
+
+			{ new int[] { Grammar.ontologyID }, "a named ontology" },
+			{ new int[] { Grammar.ontologyPropertyID }, "an ontology property" },
+
+			{ new int[] { Grammar.classID, Grammar.individualID },
+					"a named class or a named individual" },
+
+			{ new int[] { Grammar.classID, Grammar.datatypeID },
+					"a named class or a datatype identifier" },
 			{
 					new int[] { Grammar.description5disjointWith,
 							Grammar.description5equivalentClass,
@@ -349,7 +401,7 @@ class MonotonicErrorAnalyzer implements Constants {
 							Grammar.restriction8equivalentClass,
 							Grammar.restriction8object,
 							Grammar.restriction8subClassOf },
-					"a class expression" },
+					"a class expression", "fairly complex notion -----------"},
 			{
 					new int[] { Grammar.description5disjointWith,
 							Grammar.description5equivalentClass,
@@ -387,15 +439,6 @@ class MonotonicErrorAnalyzer implements Constants {
 							Grammar.restriction8subClassOf },
 					"a restriction on an object property" },
 
-			{ new int[] { Grammar.unnamedDataRange }, "a datarange" },
-			{
-					new int[] { Grammar.description5disjointWith,
-							Grammar.unnamedDataRange,
-							Grammar.description5equivalentClass,
-							Grammar.description5object,
-
-							Grammar.description5subClassOf },
-					"a description or datarange" },
 			{
 					new int[] { Grammar.restriction7disjointWith,
 							Grammar.restriction7equivalentClass,
@@ -506,46 +549,41 @@ class MonotonicErrorAnalyzer implements Constants {
 							Grammar.restriction8subClassOf,
 							Grammar.unnamedDataRange, Grammar.classID,
 							Grammar.dataRangeID, Grammar.datatypeID },
-					"a generalized class or datatype expression" },
+					"a generalized class or datatype expression", "complex notion, quite" },
 
-			{ new int[] { Grammar.annotationPropID }, "an annotation property" },
-			{ new int[] { Grammar.classID }, "a named class" },
-			{ new int[] { Grammar.dataPropID }, "a datatype property" },
-			{ new int[] { Grammar.datatypeID }, "a datatype" },
-			{ new int[] { Grammar.individualID }, "a named individual" },
-			{ new int[] { Grammar.objectPropID, Grammar.transitivePropID },
-					"an object property" },
-			{ new int[] { Grammar.transitivePropID },
-					"a transitive object property" },
-			{ new int[] { Grammar.transitivePropID },
-					"a non-transitive object property" },
-
-			{ new int[] { Grammar.ontologyID }, "a named ontology" },
-			{ new int[] { Grammar.ontologyPropertyID }, "an ontology property" },
-
-			{ new int[] { Grammar.classID, Grammar.individualID },
-					"a named class or a named individual" },
 			{ new int[] { Grammar.listOfDescription },
 					"a list of class expressions", },
 			{ new int[] { Grammar.listOfIndividualID },
 					"a list of named individuals" },
-			{ new int[] { Grammar.classID, Grammar.datatypeID },
-					"a named class or a datatype identifier" },
+			{ new int[] { Grammar.listOfDataLiteral }, "a list of literals" },
 			{
 					new int[] { Grammar.listOfDataLiteral,
 							Grammar.listOfIndividualID },
 					"a list of literals or a list of named individuals" },
+
+			{
+					new int[] { Grammar.transitivePropID, Grammar.objectPropID,
+							Grammar.dataPropID },
+					"an object or datatype property" },
 			{
 					new int[] { Grammar.annotationPropID, Grammar.objectPropID,
 							Grammar.transitivePropID },
 					"an annotation property or an object property" },
+			{
+					new int[] { Grammar.annotationPropID,
+							Grammar.dataAnnotationPropID,
+							Grammar.ontologyPropertyID },
+					"an annotation or ontology property" },
+
+			{ new int[] { Grammar.annotationPropID, Grammar.dataPropID },
+					"a datatype property or an annotation property" },
 			{
 					new int[] { Grammar.annotationPropID, Grammar.dataPropID,
 							Grammar.objectPropID,
 
 							Grammar.ontologyPropertyID,
 							Grammar.transitivePropID },
-					"a property of some sort" },
+					"a property of some sort", "fairly horrid ---------" },
 
 			{
 					new int[] { Grammar.annotationPropID, Grammar.objectPropID,
@@ -557,28 +595,14 @@ class MonotonicErrorAnalyzer implements Constants {
 					new int[] { Grammar.annotationPropID, Grammar.objectPropID,
 							Grammar.dataPropID, Grammar.transitivePropID },
 					"an annotation property, a datatype property or an object property" },
-			{ new int[] { Grammar.annotationPropID, Grammar.dataPropID },
-					"a datatype property or an annotation property" },
-			{ new int[] { Grammar.objectPropID },
-					"a non-transitive object property" },
 			{ new int[] { Grammar.dataPropID, Grammar.objectPropID },
 					"a datatype property or a non-transitive object property" },
 			{
 					new int[] { Grammar.listOfDescription,
 							Grammar.listOfIndividualID },
 					"a list of class expressions or a list of named individuals" },
-			{ new int[] { Grammar.listOfDataLiteral }, "a list of literals" },
-			{ CategorySet.getSet(Grammar.userID), "a user ID", },
-
-			{
-					new int[] { Grammar.transitivePropID, Grammar.objectPropID,
-							Grammar.dataPropID },
-					"an object or datatype property" },
-			{
-					new int[] { Grammar.annotationPropID,
-							Grammar.dataAnnotationPropID,
-							Grammar.ontologyPropertyID },
-					"an anotation or ontology property" },
+			{ CategorySet.getSet(Grammar.userID), "a user ID", 
+						"much too general, often, except when needed"},
 
 			{
 					new int[] { Grammar.dlInteger, Grammar.liteInteger,
@@ -595,18 +619,48 @@ class MonotonicErrorAnalyzer implements Constants {
 							Grammar.liteInteger, Grammar.literal,
 							Grammar.userTypedLiteral },
 					"a literal or a named individual", },
-					{ new int[]{ Grammar.classID , Grammar.description5disjointWith , Grammar.description5equivalentClass , Grammar.description5object , Grammar.description5subClassOf , Grammar.unnamedDataRange },
-						// TODO check error message with this one
-						"a named class or a class expression or a datarange" },
-					{ new int[]{ Grammar.classID , Grammar.dlInteger , Grammar.individualID , Grammar.liteInteger , Grammar.literal , Grammar.userTypedLiteral , Grammar.description5object , Grammar.restriction6object , Grammar.restriction7object , Grammar.restriction8object }, 
-							"a possible member of a list (a class expression, a literal, or a named individual" },
-					
-					{ new int[]
-						{ Grammar.classID , Grammar.description5object , Grammar.restriction6object , Grammar.restriction7object , Grammar.restriction8object , Grammar.owlAllDifferent , Grammar.owlAnnotationProperty , Grammar.owlClass , Grammar.owlDataRange , Grammar.owlDatatypeProperty , Grammar.owlDeprecatedClass , Grammar.owlDeprecatedProperty , Grammar.owlFunctionalProperty , Grammar.owlInverseFunctionalProperty , Grammar.owlObjectProperty , Grammar.owlOntology , Grammar.owlOntologyProperty , Grammar.owlRestriction , Grammar.owlSymmetricProperty , Grammar.owlTransitiveProperty , Grammar.rdfList , Grammar.rdfProperty , Grammar.rdfsClass , Grammar.rdfsDatatype },
-		// TODO check error messages with this one in
-						"a legal object of rdf:type" 
-					},
-			{ CategorySet.getSet(Grammar.blank), "a blank node", },
+			{
+					new int[] { Grammar.classID,
+							Grammar.description5disjointWith,
+							Grammar.description5equivalentClass,
+							Grammar.description5object,
+							Grammar.description5subClassOf,
+							Grammar.unnamedDataRange },
+					// TODO check error message with this one
+					"a named class or a class description or a datarange", "prefer not to use"},
+			{
+					new int[] { Grammar.classID, Grammar.dlInteger,
+							Grammar.individualID, Grammar.liteInteger,
+							Grammar.literal, Grammar.userTypedLiteral,
+							Grammar.description5object,
+							Grammar.restriction6object,
+							Grammar.restriction7object,
+							Grammar.restriction8object },
+					"a possible member of a list (a class expression, a literal, or a named individual)",
+					"really do not want to use this unless needed -------------------------------------"},
+
+			{
+					new int[] { Grammar.classID, Grammar.description5object,
+							Grammar.restriction6object,
+							Grammar.restriction7object,
+							Grammar.restriction8object,
+							Grammar.owlAllDifferent,
+							Grammar.owlAnnotationProperty, Grammar.owlClass,
+							Grammar.owlDataRange, Grammar.owlDatatypeProperty,
+							Grammar.owlDeprecatedClass,
+							Grammar.owlDeprecatedProperty,
+							Grammar.owlFunctionalProperty,
+							Grammar.owlInverseFunctionalProperty,
+							Grammar.owlObjectProperty, Grammar.owlOntology,
+							Grammar.owlOntologyProperty,
+							Grammar.owlRestriction,
+							Grammar.owlSymmetricProperty,
+							Grammar.owlTransitiveProperty, Grammar.rdfList,
+							Grammar.rdfProperty, Grammar.rdfsClass,
+							Grammar.rdfsDatatype },
+					// TODO check error messages with this one in
+					"a legal object of rdf:type",
+					"what a horrid description ------------------------------------------------------------------------------- horrid horrid" },
 
 	};
 
@@ -615,33 +669,152 @@ class MonotonicErrorAnalyzer implements Constants {
 			Arrays.sort((int[]) names[i][0]);
 		}
 	};
+	
+	static boolean usedName[] = new boolean[names.length];
+
+	static private int descLength(int nm) {
+		Object a[] = names[nm];
+		return ((String) a[1]).length()
+				+ (a.length > 2 ? ((String) a[2]).length() : 0);
+	}
+
+	static private int nameInfo[][] = new int[names.length][names.length];
 
 	static private Vector doneNames = new Vector();
 
+	static private boolean DEBUG_NAMES = true;
+
+	static private String okNames[][] = {
+	//		{ "an individual", "an unnamed individual"},
+	//		{ "an ontology", "an unnamed ontology"},
+			{ "a class description", "a class description participating in an owl:disjointWith construct"},
+			{ "a class description", "a class description participating in an owl:equivalentClass construct"},
+			{ "a class description", "a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
+			{ "a class description", "a datarange or a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
+			{ "a class description", "a class description participating in an rdfs:subClassOf construct"},
+			{ "a non-empty list", "a list of literals"},
+			{ "a non-empty list", "a list of literals or a list of named individuals"},
+			{ "a non-empty list", "a list of class expressions"},
+			{ "a non-empty list", "a list of class expressions or a list of named individuals"},
+			{ "a non-empty list", "a list of named individuals"},
+			{ "a property restriction", "a restriction on a datatype property"},
+			{ "a property restriction", "a restriction on a datatype property or on a non-transitive object property"},
+			{ "a property restriction", "a restriction participating in an owl:disjointWith construct"},
+			{ "a property restriction", "a description or a restriction participating in an owl:disjointWith construct"},
+			{ "a property restriction", "a restriction participating in an owl:equivalentClass construct"},
+			{ "a property restriction", "a description or a restriction participating in an owl:equivalentClass construct"},
+			{ "a property restriction", "a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
+			{ "a property restriction", "a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
+			{ "a property restriction", "a datarange or a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
+			{ "a property restriction", "a possible member of a list (a class expression, a literal, or a named individual)"},
+			{ "a property restriction", "a restriction participating in an rdfs:subClassOf construct"},
+			{ "a property restriction", "a description or a restriction participating in an rdfs:subClassOf construct"},
+			{ "a property restriction", "a restriction on an object property"},
+			{ "a property restriction", "a restriction on a non-transitive object property"},
+			{ "a property restriction", "a restriction on a transitive object property"},
+			{ "a class description or a property restriction", "a description or a restriction participating in an owl:disjointWith construct"},
+			{ "a class description or a property restriction", "a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
+			{ "a class description or a property restriction", "a datarange or a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
+			{ "a class description or a property restriction", "a possible member of a list (a class expression, a literal, or a named individual)"},
+			{ "a class description or a property restriction or a datarange", "a datarange or a description or a restriction participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
+			{ "a class description or a property restriction", "a description or a restriction participating in an rdfs:subClassOf construct"},
+			{ "a class description or a property restriction", "a description or a restriction participating in an owl:equivalentClass construct"},
+			{ "a class description or a datarange", "a datarange or a class description participating as the object of a triple other than rdfs:subClassOf, owl:equivalentClass or owl:disjointWith"},
+			{ "a property of some sort", "an annotation property, an object property or an ontology property"},
+			{ "a property of some sort", "an annotation property, a datatype property or an object property"},
+			{ "an object property", "a non-transitive object property"},
+			{ "an ontology", "a named ontology"},
+			{ "an object property", "a transitive object property"},
+			{ "an object or datatype property", "a datatype property or a non-transitive object property"},
+			{ "an individual", "a named individual"},
+			{ "a literal", "a non-negative integer"},
+			{ "a literal", "a literal other than a non-negative integer"},
+			{ "a class expression", "a named class or a class description or a datarange"},
+			{ "a class expression", "a possible member of a list (a class expression, a literal, or a named individual)"},
+			{ "a blank node", "a blank node in an owl:AllDifferent construction"},
+			{ "a blank node", "a property restriction"},
+			{ "a blank node", "a class description or a property restriction"},
+			{ "a blank node", "a class expression"},
+			{ "a blank node", "a class description or a property restriction or a datarange"},
+			{ "a blank node", "a generalized class or datatype expression"},
+			{ "a restriction on an object property", "a restriction on a non-transitive object property"},
+			{ "a restriction on an object property", "a restriction on a transitive object property"},
+			{ "a blank node", "a restriction on a datatype property or on a non-transitive object property"},
+			{ "a generalized class or datatype expression", "a named class or a class description or a datarange"},
+			{ "a blank node", "a non-empty list"},
+			{ "a blank node", "a possibly empty list"},
+
+
+	};
+	static void showNameInfo(boolean shorter,int not, int pref) {
+		String prefix = shorter?"!!":"//";
+		if (!shorter) {
+			String p = (String)names[pref][1];
+			String o = (String)names[not][1];
+			
+			for (int i=0; i<okNames.length;i++) {
+				if (p.equals(okNames[i][0])&&o.equals(okNames[i][1]))
+					return;
+			}
+			System.err.println("{ \""+names[pref][1]+"\", \""+  names[not][1] +"\"},");
+		}
+		System.err.println(prefix+"Preferred: \"" + names[pref][1] + "\"");
+		System.err.println(prefix+"Over: \"" + names[not][1] + "\"");
+		System.err.println(prefix+"Array lengths: " + ((int[]) names[pref][0]).length
+				+ " vs " + ((int[]) names[not][0]).length + "    Desc length: "
+				+ descLength(pref) + " vs " + descLength(not));
+
+	}
+
 	static private int nameCatSet(int in[], int out[]) {
+		int rslt = NOT_CLASSIFIED;
 		if (out == null)
 			out = empty;
 
 		for (int i = 0; i < names.length; i++) {
 			int cats[] = (int[]) names[i][0];
 			if (Q.subset(in, cats) && !Q.intersect(cats, out)) {
-				return i;
+				if (rslt == NOT_CLASSIFIED)
+					usedName[i] = true;
+				if (!DEBUG_NAMES)
+					return i;
+				if (rslt == NOT_CLASSIFIED)
+					rslt = i;
+				else {
+					boolean moreSpecific = ((int[]) names[i][0]).length < ((int[]) names[rslt][0]).length;
+
+					if (((int[]) names[i][0]).length == ((int[]) names[rslt][0]).length
+							&& Q.subset((int[]) names[i][0],
+									(int[]) names[rslt][0])
+							&& Q.subset((int[]) names[rslt][0],
+									(int[]) names[i][0])) {
+						System.err.println("Duplicates!!!!");
+						showNameInfo(true,i, rslt);
+					}
+					boolean shorter = descLength(i) < descLength(rslt);
+					int old = nameInfo[i][rslt];
+					nameInfo[i][rslt] |= 1 + (moreSpecific ? 2 : 0)
+							+ (shorter ? 4 : 0);
+					if ((old == 0 || old ==1)&&(moreSpecific||shorter))
+						showNameInfo(shorter,i, rslt);
+				}
 			}
 		}
-		Iterator it = doneNames.iterator();
-		while (it.hasNext()) {
-			int a[][] = (int[][]) it.next();
-			if (Q.subset(in, a[0]) && Q.subset(a[0], in) && Q.subset(out, a[1])
-					&& Q.subset(a[1], out))
-				return -1;
-		}
-		System.err.println(doneNames.size() + " nameCatSet("
-				+ CategorySet.catString(in) + "," + CategorySet.catString(out));
-		doneNames.add(new int[][] { in, out });
+		if (rslt != NOT_CLASSIFIED)
+			return rslt;
 
-		return -1;
+		throw new BrokenException("Logic error.");
+		/*
+		 * Iterator it = doneNames.iterator(); while (it.hasNext()) { int a[][] =
+		 * (int[][]) it.next(); if (Q.subset(in, a[0]) && Q.subset(a[0], in) &&
+		 * Q.subset(out, a[1]) && Q.subset(a[1], out)) return NOT_CLASSIFIED; }
+		 * System.err.println(doneNames.size() + " nameCatSet(" +
+		 * CategorySet.catString(in) + "," + CategorySet.catString(out));
+		 * doneNames.add(new int[][] { in, out });
+		 * 
+		 * return NOT_CLASSIFIED;
+		 */
 	}
-
 
 	static private int dbgCnt = 0;
 
@@ -654,7 +827,6 @@ class MonotonicErrorAnalyzer implements Constants {
 		if (d != 0)
 			System.out.println(x + "(b)" + CategorySet.catString(d));
 	}
-
 
 	static private int singleTripleError(int sx, int px, int ox) {
 		if (isBlank[px])
@@ -676,7 +848,7 @@ class MonotonicErrorAnalyzer implements Constants {
 		!look.canBeProp(px)) {
 			return BUILTIN_NON_PRED;
 		}
-		
+
 		if (px < SZ) {
 			int bad = 0;
 			int sxx[] = nonPseudoCats(sx);
@@ -750,7 +922,7 @@ class MonotonicErrorAnalyzer implements Constants {
 
 			}
 		}
-	    throw new BrokenException("Unreachable code.");		
+		throw new BrokenException("Unreachable code.");
 	}
 
 	static private boolean maybeBuiltinID(int sx) {
@@ -788,13 +960,12 @@ class MonotonicErrorAnalyzer implements Constants {
 		}
 		if (i == 0)
 			return cats;
-		
-			int rslt[] = new int[cats.length - i];
-			System.arraycopy(cats, i, rslt, 0, rslt.length);
-			return rslt;
-		
+
+		int rslt[] = new int[cats.length - i];
+		System.arraycopy(cats, i, rslt, 0, rslt.length);
+		return rslt;
+
 	}
-	
 
 	static private int catMiss(int oz, int o) {
 		if (isBlank[oz] != isBlank[o])
@@ -805,14 +976,12 @@ class MonotonicErrorAnalyzer implements Constants {
 		int given = nameCatSet(a, b);
 		int wanted = nameCatSet(b, a);
 
-		if (given != -1 && wanted != -1 && given != wanted)
+		if (given != NOT_CLASSIFIED && wanted != NOT_CLASSIFIED
+				&& given != wanted)
 			return DIFFERENT_CATS;
 		throw new BrokenException("Logic Error");
 	}
 
-	
-	
-	
 	static private int bad = 0;
 
 	// The number of errors of each type.
@@ -891,7 +1060,7 @@ class MonotonicErrorAnalyzer implements Constants {
 
 					}
 
-					// TODO meet stuff
+					// TODO meet stuff - probably dead this task
 				}
 			}
 
@@ -905,7 +1074,26 @@ class MonotonicErrorAnalyzer implements Constants {
 			if (diffPreds[i] != 0)
 				System.out.println(CategorySet.catString(i) + " "
 						+ diffPreds[i]);
-		System.out.println("TODO: " + eCnt[GENERIC]);
+		for (int i = 0; i < names.length; i++)
+			for (int j = 0; j < names.length; j++) {
+				switch (nameInfo[i][j]) {
+				case 0:
+				case 7:
+				case 1:
+					break;
+				case 3:
+				case 5:
+					//showNameInfo(i, j);
+					break;
+				case 2:
+				case 4:
+				case 6:
+					throw new BrokenException("Logic error");
+				}
+			}
+		for (int i=0; i<usedName.length;i++)
+			if (!usedName[i])
+				System.err.println("Unused: \""+names[i][1]+"\"");
 	}
 
 	static private String fieldName[] = { "subj", "pred", "obj ", "S1  ",
@@ -944,7 +1132,7 @@ class MonotonicErrorAnalyzer implements Constants {
 				if (examples) {
 					if (fldsByN[i] != null)
 						System.out.println(fldsByN[i].getName());
-					for (int j = 0; j < 3 && j < a[i]; j++) {
+					for (int j = 0; j < 0 && j < a[i]; j++) {
 						System.out.println("Ex: " + j);
 						for (int k = 0; k < 6; k++)
 							System.out
