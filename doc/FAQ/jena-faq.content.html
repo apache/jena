@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.4 2003-09-08 12:52:51 ian_dickinson Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.5 2003-09-12 08:31:16 der Exp $ -->
 <!-- (c) Copyright 2003, Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -34,7 +34,7 @@ Jena 2 &ndash; Frequently Asked Questions
 </ul>
 <h3>RDF model API</h3>
 <ul>
-  <li>no entries yet</li>
+      <li><a href="#api-0">Why does the localname part of my URI look wrong?</a></li>
 </ul>
 <h3>Reasoner and inference models</h3>
 <ul>
@@ -73,8 +73,21 @@ Jena 2 &ndash; Frequently Asked Questions
   your classpath. Consult the documentation for your JDK for details on setting
   the classpath for your system.</p>
 <h3>RDF model API</h3>
-<p>no entries yet</p>
-<h3>Reasoner and inference models</h3>
+    <p id="api-0"><strong>Q. Why does the localname part of my URI look wrong?</strong><br>
+      In Jena it is possible to retrieve the localname part of a Resource or Property 
+      URI. Sometimes developers create Resources with a full URI reference but 
+      find that the result of a getLocalName call is not quite what they expected. 
+      This is usually because the URI is ill-formed or cannot be correctly split 
+      in the way you expected. The only reason for separating namespace and local 
+      name is to support the XML serialization in which qnames are used for properties 
+      and classes. Thus the main requirement of the split is that the localname 
+      component must be a legal XML NCName. This means it must start with a letter 
+      or _ character and can only contain limited punctuation. In particular, 
+      they can't contain spaces, but then spaces are not legal in URI references 
+      anyway. In general, it is best to not use the localname split to encode 
+      any information, you should only be concerned with it if you are coding 
+      a parser or writer.</p>
+    <h3>Reasoner and inference models</h3>
 <p>no entries yet</p>
 <h3>Ontology API</h3>
 <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
