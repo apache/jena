@@ -25,7 +25,12 @@ public class DBPattern  {
 	Element S;
 	Element P;
 	Element O;
-	boolean isStaged; // 
+	int Scost, Pcost, Ocost;
+	boolean isStaged;
+	boolean isConnected;  // pattern can be joined to previously staged pattern for this query.
+	boolean isSingleSource;  // pattern has just one data source (specialized graph)
+	boolean isStmt;  // pattern is over only asserted statement tables (no reified)
+	boolean isReif;  // pattern is over only reified statement tables (no asserted)
 	List source; // specialized graphs with triples for this pattern
 	char subsumed;
 	
@@ -33,9 +38,15 @@ public class DBPattern  {
 		index = i;
 		source = new ArrayList();
 		isStaged = false;
+		isConnected = false;
+		isSingleSource = false;
+		isStmt = isReif = false;
 		S = nodeToElement(pattern.getSubject(), varMap);
 		P = nodeToElement(pattern.getPredicate(), varMap);
-		O = nodeToElement(pattern.getObject(), varMap);		
+		O = nodeToElement(pattern.getObject(), varMap);
+		Scost = elementCost(S);
+		Pcost = elementCost(P);
+		Ocost = elementCost(O);
 	}
 	
 	/**
@@ -58,62 +69,76 @@ public class DBPattern  {
 
 	
 	public void sourceAdd ( SpecializedGraph sg, char sub ) {
-		if ( source.isEmpty() )
+		if ( source.isEmpty() ) {
 			subsumed = sub;
-		else if ( subsumed != sub )
-			throw new RDFRDBException("Specialized graphs incorrectly subsume pattern");			
+			isSingleSource = true;
+			if ( sg instanceof SpecializedGraphReifier_RDB ) isReif = true;
+			else isStmt = true;
+		} else {
+			if ( subsumed != sub )
+				throw new RDFRDBException("Specialized graphs incorrectly subsume pattern");			
+			isSingleSource = false;
+			if ( sg instanceof SpecializedGraphReifier_RDB ) isStmt = false;
+			else isReif = false;
+		}
 		source.add(sg);
 	}
 	
 	public boolean hasSource() { return !source.isEmpty(); }
-	public boolean isSingleSource() { return source.size() == 1; }
+	public boolean isSingleSource() { return isSingleSource; }
 	public SpecializedGraph singleSource() { return (SpecializedGraph) source.get(0); }
 
-	protected void getFree(List freeVar) {
+	protected void getVars ( List varList, Mapping varMap ) {
 		if (freeVarCnt > 0) {
 			if (S instanceof Free)
-				addFree(freeVar, (Free) S);
+				addVar(varList, (Free) S, varMap);
 			if (P instanceof Free)
-				addFree(freeVar, (Free) P);
+				addVar(varList, (Free) P, varMap);
 			if (O instanceof Free)
-				addFree(freeVar, (Free) O);
+				addVar(varList, (Free) O, varMap);
 		}
 	}
 	
-	private int findFree ( List freeVar, Node_Variable var ) {
+	private int findVar ( List varList, Node_Variable var ) {
 		int i;
-		for ( i=0; i<freeVar.size(); i++ ) {
-			if ( var.equals((Node_Variable) freeVar.get(i)) )
+		for ( i=0; i<varList.size(); i++ ) {
+			Node_Variable v = ((VarIndex) varList.get(i)).var;
+			if ( var.equals(v) )
 				return i;
 		}
 		return -1;		
 	}
 
-	private boolean isFree ( List freeVar, Node_Variable var ) {
-		return findFree(freeVar,var) >= 0;		
-	}
-	
-	private void addFree ( List freeVar, Free var ) {
-		int i = findFree(freeVar,var.var());
+	private void addVar ( List varList, Free var, Mapping varMap ) {
+		int i = findVar(varList,var.var());
 		if ( i < 0 ) {
-			i = freeVar.size();
-			freeVar.add(var.var());
+			i = varList.size();
+			VarIndex vx;
+			if ( var.isArg() ) {
+				vx = new VarIndex (var.var(), var.getMapping(), i);
+			} else {
+				vx = new VarIndex (var.var(), i);
+			}
+			varList.add(vx);
 		}
-		var.bind(i);
+		var.setListing(i);
 	}
 	
-	private boolean joinCheck ( List freeVar ) {
-		if ( !(P instanceof Fixed) ) return false;
-		if ( S instanceof Free ) return isFree(freeVar, ((Free)S).var());
-		if ( O instanceof Free ) return isFree(freeVar, ((Free)O).var());
-		return false;
-	}
-
-	public boolean joinsWith ( DBPattern jsrc, List resVar ) {
-		if ( P instanceof Fixed ) {
-			if ( jsrc.isSingleSource() && source.contains(jsrc.source.get(0)) )
-				// jsrc has same source. look for a join variables
-				return jsrc.joinCheck(resVar);
+	public boolean joinsWith ( DBPattern jsrc, List varList, boolean onlyStmt, boolean onlyReif ) {
+		// currently, we can only join over the same table.
+		// and, in general, we can't join if the pattern has a predicate variable.
+		// but, if we are only querying asserted stmts and the pattern is
+		// over asserted stmts, we can do the join.
+		if ( jsrc.isSingleSource() && source.contains(jsrc.source.get(0)) && 
+			( !(P instanceof Free) || (onlyStmt && isStmt) ) ) {
+			// jsrc has same source. look for a join variables
+			if ( (S instanceof Free) && (findVar(varList,((Free)S).var()) >= 0) )
+					return true;
+			if ( (O instanceof Free) && (findVar(varList,((Free)O).var()) >= 0) )
+					return true;
+			if ( onlyStmt && isStmt && (P instanceof Free) &&
+					(findVar(varList,((Free)P).var()) >= 0) )
+						return true;
 		}
 		return false;
 	}
@@ -130,7 +155,7 @@ public class DBPattern  {
 			costCur = costCalc();
 		} else if ( freeVarCnt > 0 ) {
 			// only recompute cost if there's a chance it changed.
-			if ( rebind(varMap) ) {
+			if ( anyBound(varMap) ) {
 				costCur = costCalc();
 			}
 		}
@@ -144,55 +169,64 @@ public class DBPattern  {
 	private boolean costInit = true;
 	private int freeVarCnt = 0;
 	
-	protected boolean rebind( Mapping map ) {
-		boolean anyBound = false;
-		if ((S instanceof Free)&& map.hasBound(((Free)S).var())) {
-				S = new Bound (map.indexOf(((Free)S).var()));
-				anyBound = true;
-				freeVarCnt--;
-		}
-		if ((P instanceof Free)&& map.hasBound(((Free)P).var())) {
-				S = new Bound (map.indexOf(((Free)P).var()));
-				anyBound = true;
-				freeVarCnt--;
-		}
-		if ((O instanceof Free)&& map.hasBound(((Free)O).var())) {
-				S = new Bound (map.indexOf(((Free)O).var()));
-				anyBound = true;
-				freeVarCnt--;
-		}
-		return anyBound;
+	protected boolean isArgCheck ( Free v, Mapping map ) {
+		int ix;
+		ix = map.lookUp(v.var());
+		if ( ix >= 0 ) {
+			v.setIsArg(ix);
+			isConnected = true;
+			freeVarCnt--;
+			return true;
+		} else
+			return false;
+	}
+
+	protected boolean anyBound(Mapping map) {	
+		boolean res = false;
+		if ( S instanceof Free ) 
+			if ( isArgCheck((Free)S,map) ) {
+				Scost = elementCost(S);
+				res = true;
+			} 
+		if ( P instanceof Free ) 
+			if ( isArgCheck((Free)P,map) ) {
+				Pcost = elementCost(P);
+				res = true;
+			} 
+		if ( O instanceof Free ) 
+			if ( isArgCheck((Free)O,map) ) {
+				Ocost = elementCost(O);
+				res = true;
+			} 
+		return res;
 	}
 	
-	
+	private int fixedCost = 0;
 	private int boundCost = 0;
-	private int unboundCost = 1;
+	private int unboundCost = 4;
 	private int unboundPredFactor = 4;
 
-	private int elementCost(Element x) {
-		if ( (x instanceof Fixed) || (x instanceof Bound) )
+	private int elementCost ( Element x ) {
+		if ( x instanceof Fixed ) 
+			return fixedCost;
+		else if ( x instanceof Bound )
+			return boundCost;
+		else if ( (x instanceof Free) && ((Free)x).isArg() )
 			return boundCost;
 		else
 			return unboundCost;
-
 	}
 
 	/*
 	 * compute the "estimated cost" to evaluate the pattern. in fact,
 	 * it is just a relative ranking that favors patterns with bound
 	 * nodes (FIXED or bound variables) over unbound nodes (unbound
-	 * variables and ANY). also, patterns with FIXED predicates that
-	 * are ranked lower (lower cost) than patterns with variable or
-	 * ANY predicates (because fastpath currently does not support
-	 * such patterns).
+	 * variables and ANY).
 	 * @return int The estimated cost in the range [costmin,costMax).
 	 */
 	 
 	private int costCalc() {
-		int c = elementCost(S);
-		c += ((elementCost(P) * unboundPredFactor));
-		c += elementCost(O);
-		return c;
+		return Scost+Pcost+Ocost;
 	}
 
 }

@@ -1,12 +1,11 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBQueryStage.java,v 1.2 2003-08-12 02:38:32 wkw Exp $
+  $Id: DBQueryStage.java,v 1.3 2003-08-19 02:28:14 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
-import java.io.PrintStream;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -16,11 +15,9 @@ import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.BufferPipe;
 import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.Mapping;
 import com.hp.hpl.jena.graph.query.Pipe;
 import com.hp.hpl.jena.graph.query.Stage;
 import com.hp.hpl.jena.shared.JenaException;
-import com.hp.hpl.jena.util.iterator.*;
 
 /**
     @author hedgehog
@@ -32,22 +29,20 @@ public class DBQueryStage extends Stage
     protected DBQuery compiled;
             
 	public DBQueryStage( GraphRDB graph, SpecializedGraph sg, 
-					List resVar, List dbPat, Mapping varMap,
-					boolean qryFullReif )
+					List varList, List dbPat )
 		{
 		this.graph = graph;
-		this.compiled = compile (sg, resVar, dbPat, varMap, qryFullReif);
+		this.compiled = compile (sg, varList, dbPat);
 		}
 
-	protected DBQuery compile( SpecializedGraph sg, List resVar, List dbPat,
-    	Mapping varMap, boolean qryFullReif )
-        { return compile( compiler, sg, resVar, dbPat, varMap, qryFullReif ); }
+	protected DBQuery compile( SpecializedGraph sg, List varList, List dbPat )
+        { return compile( compiler, sg, varList, dbPat ); }
         
     protected DBQuery compile( DBQueryStageCompiler compiler, SpecializedGraph sg,
-    			List resVar, List dbPat, Mapping varMap, boolean qryFullReif )
+    			List varList, List dbPat )
         {
-        return DBQueryStageCompiler.compile( compiler, sg, resVar, dbPat, varMap,
-				qryFullReif );
+        return DBQueryStageCompiler.compile( compiler, (DBQueryHandler) graph.queryHandler(),
+        			sg, varList, dbPat );
         }
                  
     private static final DBQueryStageCompiler compiler = new DBQueryStageCompiler();
@@ -59,11 +54,10 @@ public class DBQueryStage extends Stage
 		IDBConnection conn = compiled.driver.getConnection();
 		while (source.hasNext()) {
 			current = source.get();
-			useme = current.copy();
 			try {
 				ps = conn.getConnection().prepareStatement(compiled.stmt);
+				setArgs(current, ps);
 // System.out.println(compiled.stmt);
-				setArgs(useme, ps);
 			} catch (Exception e) {
 				throw new JenaException("Query prepare failed: " + e);
 			}
@@ -74,21 +68,23 @@ public class DBQueryStage extends Stage
 				ResultSet rs = ps.getResultSet();
 				it.reset(rs, ps, null, null);
 				while (it.hasNext()) {
+					useme = current.copy();
 					List row = (List) it.next();
-					for(int i=0;i<row.size();i++) {
-						DBQuery.Var v = compiled.getBinding(i);
-						int j = v.map_ix;
+					for(int i=0;i<compiled.resList.length;i++) {
+						int j = compiled.resList[i];
 						String o = (String) row.get(i);
 						Node n = compiled.driver.RDBStringToNode(o);
 						useme.setElement(j,n);
 					}
 					sink.put(useme);
 				}
+				it.close();
+				ps.close();
 			} catch (Exception e) {
 				throw new JenaException("Query execute failed: " + e);
 			}
-			sink.close();
 		}
+		sink.close();
 	}
     	
     protected void setArgs ( Domain args, PreparedStatement ps ) {
@@ -100,8 +96,8 @@ public class DBQueryStage extends Stage
     			ix = ((Integer)compiled.argIndex.get(i)).intValue();
     			arg = (Node) args.get(ix);
     			if ( arg == null ) throw new JenaException("Null query argument");
-    			val = arg.toString();
-    			ps.setString(i, val);	
+    			val = compiled.driver.nodeToRDBString(arg,false);
+    			ps.setString(i+1, val);	
     		}
 		} catch (Exception e) {
 			throw new JenaException("Bad query argument: " + e);

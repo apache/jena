@@ -1,18 +1,13 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBQuery.java,v 1.1 2003-08-11 02:41:52 wkw Exp $
+  $Id: DBQuery.java,v 1.2 2003-08-19 02:27:50 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.hp.hpl.jena.db.GraphRDB;
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.Mapping;
-import com.hp.hpl.jena.shared.JenaException;
 
 /**
 	@author hedgehog
@@ -26,12 +21,15 @@ public class DBQuery
 	int varCnt;         // number of variables in query
 	int aliasCnt;        // number of tables aliases (scans) in from clause
 	String stmt;        // query string
-	Var[] binding;  // list of DBQueryVar
+	VarIndex[] binding;  // list of VarIndex
+	int[] resList;		// indexes of result columns in mapping
 	int graphId;        // id of graph to query
 	String table;   // name of table to query
 	IPSet pset;		// pset to be queried
 	IRDBDriver driver;  // driver for store
-	boolean queryFullReifStmt; // if true, ignore partially reified statements
+	boolean qryOnlyStmt; // if true, ignore reified statements
+	boolean qryOnlyReif; // if true, ignore asserted statements
+	boolean qryFullReif; // if true, ignore partially reified statements
 	DriverRDB.GenSQLAnd ga;
 
 	boolean isMultiModel;   // true if graph is multi-model
@@ -40,8 +38,8 @@ public class DBQuery
 	boolean isReifier;      // true if query is over a reifier specialized graph
 
 	
-	public DBQuery ( SpecializedGraph sg, List resVar, Mapping mapVar,
-		boolean qryFullReif ) {
+	public DBQuery ( SpecializedGraph sg, List varList,
+		boolean queryOnlyStmt,  boolean queryOnlyReif, boolean queryFullReif ) {
 		pset = sg.getPSet();
 		argCnt = 0;
 		argType = "";
@@ -56,49 +54,21 @@ public class DBQuery
 		isReifier = sg instanceof SpecializedGraphReifier;
 		driver = pset.driver();
 		ga = new IRDBDriver.GenSQLAnd();
-		queryFullReifStmt = qryFullReif;
+		qryOnlyStmt = queryOnlyStmt;
+		qryOnlyReif = queryOnlyReif;
+		qryFullReif = queryFullReif;
 		// add result variables to mapping
-		binding = new Var[resVar.size()];
-		for ( varCnt=0; varCnt<resVar.size(); varCnt++ ) {
-			Node_Variable v = (Node_Variable) resVar.get(varCnt);
-			if ( mapVar.hasBound(v) )
-				throw new JenaException("Free variable is bound");
-			int mix = mapVar.newIndex(v);
-			binding[varCnt] = new Var(v,varCnt,mix);
+		binding = new VarIndex[varList.size()];
+		for ( varCnt=0; varCnt<varList.size(); varCnt++ ) {
+			binding[varCnt] = (VarIndex) varList.get(varCnt);
 		}
 
 	}
 	
-	public class Var {
-		Node_Variable	var;        // variable
-		boolean			isBound;    // true if variable is bound to column
-		int				map_ix;     // index into varmap
-		int				bind_ix;	// index into binding
-		int				alias;      // table alias
-		char			column;     // column id
-		
-		public Var ( Node v, int bix, int mix ) {
-			var = (Node_Variable) v; isBound = false; bind_ix = bix; map_ix = mix;
-		}
-	}
-	
-	public boolean isBound ( int i ) {
-		return binding[i].isBound;
-	}
-
-	public Var getBinding ( int i ) {
+	public VarIndex getBinding ( int i ) {
 		return binding[i];
 	}
-	
-	public void bindVar ( Var b, int alias, char c ) {
-		if ( b.isBound )
-			throw new JenaException("Variable bound twice");
-		b.isBound = true;
-		b.alias = alias;
-		b.column = c;
-		return;
-	}
-	
+		
 	public void newAlias() {
 		aliasCnt++;
 	}

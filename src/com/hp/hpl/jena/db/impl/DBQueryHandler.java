@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBQueryHandler.java,v 1.2 2003-08-12 02:39:10 wkw Exp $
+  $Id: DBQueryHandler.java,v 1.3 2003-08-19 02:28:03 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -13,34 +13,33 @@ package com.hp.hpl.jena.db.impl;
 */
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.BindingQueryPlan;
-import com.hp.hpl.jena.graph.query.Bound;
-import com.hp.hpl.jena.graph.query.Element;
-import com.hp.hpl.jena.graph.query.Fixed;
 import com.hp.hpl.jena.graph.query.Mapping;
-import com.hp.hpl.jena.graph.query.PatternStage;
 import com.hp.hpl.jena.graph.query.Pipe;
-import com.hp.hpl.jena.graph.query.Query;
 import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
-import com.hp.hpl.jena.graph.query.SimpleQueryPlan;
 import com.hp.hpl.jena.graph.query.Stage;
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.util.iterator.*;
+import com.hp.hpl.jena.shared.JenaException;
 
 import java.util.*;
 
 public class DBQueryHandler extends SimpleQueryHandler {
 	/** the Graph this handler is working for */
 	private GraphRDB graph;
-	boolean queryFullReifStmt;  // if true, ignore partially reified statements
-								// this is a join optimization for reification.
+	boolean queryOnlyStmt;  // if true, query only asserted stmt (ignore reification)
+	boolean queryOnlyReif;  // if true, query only reified stmt (ignore asserted)
+	boolean queryFullReif;  // if true, ignore partially reified statements
 
 	/** make an instance, remember the graph */
-	public DBQueryHandler(GraphRDB graph) {
+	public DBQueryHandler ( GraphRDB graph ) {
 		super(graph);
 		this.graph = graph;
-		queryFullReifStmt = false;
+		if ( graph.reificationBehavior() == GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING ) {
+			queryFullReif = queryOnlyReif = queryOnlyStmt = false;
+		} else {
+			queryFullReif = queryOnlyReif = false;
+			queryOnlyStmt = true;
+		}
 	}
 
 	public Stage patternStage(
@@ -57,83 +56,112 @@ public class DBQueryHandler extends SimpleQueryHandler {
 		Triple pat;
 		int patternsToDo = ptn.length;
 		DBPattern src;
-
-		for (i = 0; i < ptn.length; i++) {
-			pat = ptn[i];
-			src = new DBPattern (i, pat, varMap);
-			pat = ptn[i];
-			Iterator it = graph.getSpecializedGraphs();
-			while (it.hasNext()) {
-				SpecializedGraph sg = (SpecializedGraph) it.next();
-				char sub = sg.subsumes(pat);
-				if ( sub == SpecializedGraph.noTriplesForPattern )
-					continue;
-				src.sourceAdd(sg, sub);
-				if ( sub == SpecializedGraph.allTriplesForPattern ) {
-					break;
-				}
-			}
-			if ( !src.hasSource() )
-				throw new RDFRDBException(
-					"Pattern is not bound by any specialized graph: " + pat);
-			source[i] = src;
-		}
-
-		int minCost;
-		int cost;
-		DBPattern minSrc, unstagedSrc = null;
-		while (patternsToDo > 0) {
-			// rank the patterns by cost
-			minCost = DBPattern.costMax;
-			minSrc = null;
+		int reifBehavior = graph.reificationBehavior();
+		
+		if (patternsToDo == 1) {
+			// fastpath fastpath; assumes it's faster to do a find for single pattern queries
+			stages[stageCnt++] =
+				super.patternStage( varMap, constraints, new Triple[] { ptn[0] });
+		} else {
 			for (i = 0; i < ptn.length; i++) {
-				src = source[i];
-				if (src.isStaged)
-					continue;
 				pat = ptn[i];
-				cost = src.cost(varMap);
-				if (cost < minCost) {
-					minCost = cost;
-					minSrc = src;
-				} else
-					unstagedSrc = src;
-			}
-
-			// if disconnected query; take a pattern at random and create a new stage
-			src = (minSrc == null) ? unstagedSrc : minSrc;
-			src.isStaged = true;
-			patternsToDo--;
-
-			// now we have a pattern for the next stage.
-			// fastpath is only supported for patterns over one table.
-			boolean doQuery = src.isSingleSource();
-			if (doQuery) {
-				// see if other patterns can join with it.
-				List resVar = new ArrayList(); // list of Node_Variable
-				List qryPat = new ArrayList(); // list of DBPattern
-				qryPat.add(src);
-				src.getFree(resVar);
-				for ( i=0; i<ptn.length; i++ ) {
-					if ( source[i].isStaged ) continue;
-					if ( src.joinsWith(source[i],resVar) ) {
-						qryPat.add(source[i]);
-						patternsToDo--;
-						source[i].getFree(resVar);
-						source[i].isStaged = true;
+				src = new DBPattern(i, pat, varMap);
+				pat = ptn[i];
+				Iterator it = graph.getSpecializedGraphs();
+				while (it.hasNext()) {
+					SpecializedGraph sg = (SpecializedGraph) it.next();
+					char sub = sg.subsumes(pat,reifBehavior);
+					if (sub == SpecializedGraph.noTriplesForPattern)
+						continue;
+					src.sourceAdd(sg, sub);
+					if (sub == SpecializedGraph.allTriplesForPattern) {
+						break;
 					}
 				}
-				if ( qryPat.size() > 1 )	
-					stages[stageCnt] =
-						new DBQueryStage(graph, src.singleSource(), resVar, qryPat,
-							varMap, queryFullReifStmt);
-				else
-					stages[stageCnt] = super.patternStage( varMap, constraints,
-											new Triple[] { ptn[src.index] });		
-			} else {
-				stages[stageCnt] = super.patternStage( varMap, constraints,
-										new Triple[] { ptn[src.index] });		
+				if (!src.hasSource())
+					throw new RDFRDBException(
+						"Pattern is not bound by any specialized graph: "
+							+ pat);
+				source[i] = src;
 			}
-			stageCnt++;
+
+			int minCost, minConnCost;
+			int cost;
+			DBPattern minSrc, unstagedSrc = null;
+			boolean isConnected = false;
+			// find the minimum cost ... but always choose a connected
+			// pattern over a disconnected pattern (to avoid cross-products)
+			while (patternsToDo > 0) {
+				// rank the patterns by cost
+				minCost = minConnCost = DBPattern.costMax;
+				isConnected = false;
+				minSrc = null;
+				for (i = 0; i < ptn.length; i++) {
+					src = source[i];
+					if (src.isStaged)
+						continue;
+					pat = ptn[i];
+					cost = src.cost(varMap);
+					if (isConnected || src.isConnected) {
+						if (src.isConnected && (cost < minConnCost)) {
+							minSrc = src;
+							minConnCost = cost;
+							isConnected = true;
+						}
+					} else if (cost < minCost) {
+						minCost = cost;
+						minSrc = src;
+					} else
+						unstagedSrc = src;
+				}
+
+				// if disconnected query; take a pattern at random and create a new stage
+				src = (minSrc == null) ? unstagedSrc : minSrc;
+				src.isStaged = true;
+				patternsToDo--;
+
+				// now we have a pattern for the next stage.
+				// fastpath is only supported for patterns over one table.
+				boolean doQuery = src.isSingleSource();
+				if (doQuery) {
+					// see if other patterns can join with it.
+					List varList = new ArrayList(); // list of VarIndex
+					List qryPat = new ArrayList(); // list of DBPattern
+					qryPat.add(src);
+					src.getVars(varList, varMap);
+					boolean didJoin = false;
+					do {
+						didJoin = false;
+						for (i = 0; i < ptn.length; i++) {
+							if (source[i].isStaged)
+								continue;
+							if (source[i].joinsWith(src,varList,queryOnlyStmt,queryOnlyReif)) {
+								qryPat.add(source[i]);
+								patternsToDo--;
+								source[i].getVars(varList, varMap);
+								source[i].isStaged = true;
+								didJoin = true;
+							}
+						}
+					} while ( didJoin && (patternsToDo > 0));
+					if (qryPat.size() > 1) {
+						// add result vars of query to varmap
+						for(i=0;i<varList.size();i++) {
+							VarIndex vx = (VarIndex) varList.get(i);
+							if ( vx.isArgVar == false )
+								vx.bindToVarMap(varMap);						
+						}
+						stages[stageCnt] =
+							new DBQueryStage(graph,src.singleSource(),varList,qryPat);
+					} else
+						stages[stageCnt] =
+							super.patternStage(varMap,constraints, new Triple[]{ptn[src.index]});
+				} else {
+					stages[stageCnt] =
+						super.patternStage(varMap,constraints,new Triple[]{ptn[src.index]});
+				}
+				stageCnt++;
+			}
 		}
 		numStages = new Integer(stageCnt);
 
@@ -151,7 +179,40 @@ public class DBQueryHandler extends SimpleQueryHandler {
 		};
 	}
 	
-        
+	// getters/setters for query handler options
+
+	public void setQueryOnlyAsserted ( boolean opt ) {
+		if ( (opt == true) && (queryOnlyReif==true) )
+			throw new JenaException("QueryOnlyAsserted and QueryOnlyReif cannot both be true");
+		queryOnlyStmt = opt;
+	}
+
+	public boolean getQueryOnlyAsserted() {
+		return queryOnlyStmt;
+	}
+
+	public void setQueryOnlyReified ( boolean opt ) {
+		if ( graph.reificationBehavior() != GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING )
+			throw new JenaException("Reified statements cannot be queried for this model's reification style");
+		if ( (opt == true) && (queryOnlyReif==true) )
+			throw new JenaException("QueryOnlyAsserted and QueryOnlyReif cannot both be true");
+		queryOnlyReif = true;
+		throw new JenaException("QueryOnlyReified is not yet supported");
+	}
+
+	public boolean getQueryOnlyReified() {
+		return queryOnlyReif;
+	}
+
+	public void setQueryFullReified ( boolean opt ) {
+		if ( graph.reificationBehavior() != GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING )
+			throw new JenaException("Reified statements cannot be queried for this model's reification style");
+		queryFullReif = true;
+	}
+
+	public boolean getQueryFullReified() {
+		return queryFullReif;
+	}
 
 }
 
