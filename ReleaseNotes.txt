@@ -6,6 +6,7 @@ Post Jena 2.1 bug fix list
   RDF API
       o Fixed bug in typed literals support which caused isValidLiteral tests 
         to fail on user defined types derived indirectly from simple types.
+      o Fixed bug in conversion of Calendar to XSDDateTime
   Reasoners
       o Fixed ommission in handling of someValuesFrom applied to an rdfs:Datatype.
       o Fixed bug in hide() table not being carried across from prebuilt 
