@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: PrefixMapping.java,v 1.8 2003-06-19 13:56:39 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.9 2003-06-19 15:51:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
 
 import java.util.*;
 import com.hp.hpl.jena.shared.impl.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 /**
     Methods for recording namepsace prefix mappings and applying and
@@ -95,6 +96,14 @@ public interface PrefixMapping
     String usePrefix( String uri );
     
     /**
+        Lock the PrefixMapping so that changes can no longer be made to it.
+        Primarily intended to lock Standard against mutation.
+        
+         @return this mapping, locked against changes 
+    */
+    PrefixMapping lock();
+    
+    /**
         Exception to throw when the prefix argument to setNsPrefix is
         illegal for some reason.
     */
@@ -104,12 +113,32 @@ public interface PrefixMapping
         }
         
     /**
+        Exception to throw when trying to update a locked PrefixMapping.
+    */
+    public static class JenaLockedException extends JenaException
+        {
+        public JenaLockedException( PrefixMapping pm ) { super( pm.toString() ); }
+        }
+        
+    /**
         Factory class to create an unspecified kind of PrefixMapping.
     */
     public static class Factory
-        { public static PrefixMapping create() { return new PrefixMappingImpl(); } }
-    }
+        { public static PrefixMapping create() { return new PrefixMappingImpl(); } }     
 
+    /**
+        A PrefixMapping that contains the "standard" prefixes we know about,
+        viz rdf, rdfs, dc, rss, vcard, and owl.
+    */
+    public static final PrefixMapping Standard = PrefixMapping.Factory.create()
+        .setNsPrefix( "rdfs", RDFS.getURI() )
+        .setNsPrefix( "rdf", RDF.getURI() )
+        .setNsPrefix( "dc", DC.getURI() )
+        .setNsPrefix( "rss", RSS.getURI() )
+        .setNsPrefix( "vcard", VCARD.getURI() )
+        .setNsPrefix( "owl", OWL.NAMESPACE )
+        ;   
+    }
 
 /*
     (c) Copyright Hewlett-Packard Company 2003

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: TestNode.java,v 1.18 2003-06-19 13:56:39 chris-dollin Exp $
+  $Id: TestNode.java,v 1.19 2003-06-19 15:51:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.datatypes.*;
+import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 import junit.framework.*;
@@ -282,6 +283,19 @@ public class TestNode extends GraphTestBase
         String uri = "http://www.electric-hedgehog.net/";
         testCreateURI( uri );
         testCreateURI( "rdf:trinket", "http://www.w3.org/1999/02/22-rdf-syntax-ns#trinket" );
+        testCreateURI( "rdfs:device", "http://www.w3.org/2000/01/rdf-schema#device" );
+        testCreateURI( "dc:creator", DC.getURI() + "creator" );
+        testCreateURI( "rss:something", RSS.getURI() + "something" );
+        testCreateURI( "vcard:TITLE", VCARD.getURI() + "TITLE" );
+        testCreateURI( "owl:wol", OWL.NAMESPACE + "wol" );
+        }
+        
+    public void testCreateURIOtherMap()
+        {
+        String myNS = "eh:foo/bar#", suffix = "something";
+        PrefixMapping mine = PrefixMapping.Factory.create().setNsPrefix( "mine", myNS );
+        Node n = Node.create( mine, "mine:" + suffix );
+        assertEquals( myNS + suffix, Node.create( mine, "mine:" + suffix ).getURI() );
         }
         
     private void testCreateURI( String inOut )

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: Node.java,v 1.14 2003-06-11 15:01:40 chris-dollin Exp $
+  $Id: Node.java,v 1.15 2003-06-19 15:51:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -51,12 +51,22 @@ public abstract class Node {
         <li> _XXX :: a bnode with an AnonId built from _XXX
         <li> ?VVV :: a variable with name VVV
         <li> &PPP :: to be done
-        <li> name:stuff :: the URI; name may be expanded 
+        <li> name:stuff :: the URI; name may be expanded using the Standard map
         </ul>
         @param x the string describing the node
         @return a node of the appropriate type with the appropriate label
     */
     public static Node create( String x )
+        { return create( PrefixMapping.Standard, x ); }
+        
+    /**
+        As for create(String), but the PrefixMapping used to translate URI strings
+        is an additional argument.
+        @param pm the PrefixMapping for translating pre:X strings
+        @param x the string encoding the node to create
+        @return a node with the appropriate type and label
+    */
+    public static Node create( PrefixMapping pm, String x )
         {
         if (x.equals( "" ))
             throw new JenaException( "GraphTestBase::node does not accept an empty string as argument" );
@@ -76,11 +86,13 @@ public abstract class Node {
         int colon = x.indexOf( ':' );
         if (colon < 0)
             return Node.createURI( "eh:" + x );
-        String prefix = x.substring( 0, colon );
-        if (prefix.equals( "rdf") )
-            return Node.createURI( RDFprefix + x.substring( colon + 1 ) );
-        return Node.createURI( x );
+        // String prefix = x.substring( 0, colon );
+        return Node.createURI( pm.expandPrefix( x ) );
+//        if (prefix.equals( "rdf") )
+//            return Node.createURI( RDFprefix + x.substring( colon + 1 ) );
+//        return Node.createURI( x );
         }
+        
         
     /** make a blank node with the specified label */
     public static Node createAnon( AnonId id )

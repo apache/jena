@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: DBPrefixMappingImpl.java,v 1.3 2003-06-19 12:58:47 chris-dollin Exp $
+  $Id: DBPrefixMappingImpl.java,v 1.4 2003-06-19 15:51:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -19,7 +19,7 @@ import java.util.*;
  * 
  *
  	@author csayers
- 	@version $Revision: 1.3 $
+ 	@version $Revision: 1.4 $
 */
 public class DBPrefixMappingImpl extends PrefixMappingImpl {
 
@@ -82,6 +82,7 @@ public class DBPrefixMappingImpl extends PrefixMappingImpl {
 	 * @see com.hp.hpl.jena.shared.PrefixMapping#setNsPrefixes(java.util.Map)
 	 */
 	public PrefixMapping setNsPrefixes(Map other) {
+        checkUnlocked();
 		Iterator it = other.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry e = (Map.Entry) it.next();

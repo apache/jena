@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Company, all rights reserved.
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.7 2003-06-19 12:58:47 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.8 2003-06-19 15:51:01 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -252,6 +252,21 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertSame( A, A.setNsPrefix( "crisp", crispURI ) );
         assertSame( A, A.setNsPrefixes( A ) );
         assertSame( A, A.setNsPrefixes( new HashMap() ) );
+        }
+        
+    public void testLock()
+        {
+        PrefixMapping A = getMapping();
+        assertSame( A, A.lock() );
+    /* */    
+        try { A.setNsPrefix( "crisp", crispURI ); fail( "mapping should be frozen" ); }
+        catch (PrefixMapping.JenaLockedException e) { /* correct */ }
+    /* */    
+        try { A.setNsPrefixes( A ); fail( "mapping should be frozen" ); }
+        catch (PrefixMapping.JenaLockedException e) { /* correct */ }
+    /* */
+        try { A.setNsPrefixes( new HashMap() ); fail( "mapping should be frozen" ); }
+        catch (PrefixMapping.JenaLockedException e) { /* correct */ }
         }
     }
 
