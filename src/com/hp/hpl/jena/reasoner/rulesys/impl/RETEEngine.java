@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEEngine.java,v 1.17 2003-12-08 10:48:26 andy_seaborne Exp $
+ * $Id: RETEEngine.java,v 1.18 2004-03-14 18:59:38 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-12-08 10:48:26 $
+ * @version $Revision: 1.18 $ on $Date: 2004-03-14 18:59:38 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -304,7 +304,8 @@ public class RETEEngine implements FRuleEngineI {
         if (deduction) {
             infGraph.getDeductionsGraph().delete(triple);
             Graph raw = infGraph.getRawGraph();
-            raw.delete(triple);
+            // deduction retractions should not remove asserted facts, so commented out next line
+            // raw.delete(triple);
             if (raw.contains(triple)) {
                 // Built in a graph which can't delete this triple
                 // so block further processing of this delete to avoid loops

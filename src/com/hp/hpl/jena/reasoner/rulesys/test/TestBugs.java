@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.21 2004-03-02 17:17:56 der Exp $
+ * $Id: TestBugs.java,v 1.22 2004-03-14 18:58:08 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2004-03-02 17:17:56 $
+ * @version $Revision: 1.22 $ on $Date: 2004-03-14 18:58:08 $
  */
 public class TestBugs extends TestCase {
 
@@ -51,7 +51,7 @@ public class TestBugs extends TestCase {
     public static TestSuite suite() {
         return new TestSuite( TestBugs.class );
 //        TestSuite suite = new TestSuite();
-//        suite.addTest(new TestBugs( "testSomeDatatype" ));
+//        suite.addTest(new TestBugs( "testRETEInc" ));
 //        return suite;
     }  
 
@@ -400,6 +400,51 @@ public class TestBugs extends TestCase {
         inf.remove(sy);
         TestUtil.assertIteratorLength(inf.listStatements(y, null, (RDFNode)null), 0);
     }
+    
+    /**
+     * RETE incremental processing bug.
+     */
+    public void testRETEInc() {
+       String rule = "(?x ?p ?y) -> (?p rdf:type rdf:Property) .";
+       Reasoner r = new GenericRuleReasoner(Rule.parseRules(rule));
+       InfModel m = ModelFactory.createInfModel(r, ModelFactory.createDefaultModel());
+
+       Resource source = m.createResource("urn:alfie:testResource");
+       Property prop   = m.createProperty("urn:alfie:testProperty");
+       Statement s1=m.createStatement(source, prop, "value1");
+       Statement s2=m.createStatement(source, prop, "value2");
+
+       m.add(s1);
+       assertIsProperty(m, prop);
+       m.add(s2);
+       m.remove(s1);
+       assertIsProperty(m, prop);
+    }
+    
+    /**
+     * RETE incremental processing bug.
+     */
+    public void testRETEDec() {
+       String rule = "(?x ?p ?y) -> (?p rdf:type rdf:Property) .";
+       Reasoner r = new GenericRuleReasoner(Rule.parseRules(rule));
+       InfModel m = ModelFactory.createInfModel(r, ModelFactory.createDefaultModel());
+
+       Resource source = m.createResource("urn:alfie:testResource");
+       Property prop   = m.createProperty("urn:alfie:testProperty");
+       Statement s1=m.createStatement(source, prop, "value1");
+       Statement s2=m.createStatement(source, prop, "value2");
+
+       m.add(prop, RDF.type, RDF.Property);
+       m.add(s1);
+       m.prepare();
+       m.remove(s1);
+       assertIsProperty(m, prop);
+    }
+
+    private void assertIsProperty(Model m, Property prop) {
+        assertTrue(m.contains(prop, RDF.type, RDF.Property));
+    }
+       
     
     /**
      * Bug that exposed prototypes of owl:Thing despite hiding being switched on.

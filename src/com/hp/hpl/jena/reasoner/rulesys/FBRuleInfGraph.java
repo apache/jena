@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.43 2004-03-02 11:57:15 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.44 2004-03-14 18:59:40 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.43 $ on $Date: 2004-03-02 11:57:15 $
+ * @version $Revision: 1.44 $ on $Date: 2004-03-14 18:59:40 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
     
@@ -589,9 +589,15 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 isPrepared = false;
             }
         } 
+        // Full incremental remove processing requires reference counting
+        // of all deductions. It's not clear the cost of maintaining the
+        // reference counts is worth it so the current implementation
+        // forces a recompute if any external deletes are performed.
         if (isPrepared) {
-            getDeductionsGraph().delete(t);
-            if (removeIsFromBase) engine.delete(t);
+            bEngine.deleteAllRules();
+            isPrepared = false;
+            // Re-enable the code below when/if ref counting is added and remove above
+            // if (removeIsFromBase) engine.delete(t);
         }
         bEngine.reset();
     }
