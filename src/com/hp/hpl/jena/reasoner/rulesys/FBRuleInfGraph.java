@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.15 2003-06-17 17:14:11 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.16 2003-06-18 08:00:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-06-17 17:14:11 $
+ * @version $Revision: 1.16 $ on $Date: 2003-06-18 08:00:12 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -51,6 +51,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     protected BRuleEngine bEngine;
     
     /** The original rule set as supplied */
+    protected List rawRules;
+    
+    /** The rule list after possible extension by preprocessing hooks */
     protected List rules;
     
     /** Static switch from Basic to RETE implementation of the forward component */
@@ -64,6 +67,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     
     /** Optional precomputed cache of the subProperty graph */
     protected TransitiveGraphCache subPropertyCache;
+    
+    /** Optional list of preprocessing hooks  to be run in sequence during preparation time */
+    protected List preprocessorHooks;
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(FBRuleInfGraph.class);
@@ -89,7 +95,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public FBRuleInfGraph(Reasoner reasoner, List rules, Graph schema) {
         super(reasoner, rules, schema);
-        this.rules = rules;
+        this.rawRules = rules;
         bEngine = new BRuleEngine(this);
     }
 
@@ -102,7 +108,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public FBRuleInfGraph(Reasoner reasoner, List rules, Graph schema, Graph data) {
         super(reasoner, rules, schema, data);
-        this.rules = rules;        
+        this.rawRules = rules;        
         bEngine = new BRuleEngine(this);
     }
 
@@ -188,7 +194,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * infgraphs support this.
      */
     public void addBRule(Rule brule) {
-        // logger.debug("Adding rule " + brule);
+//        logger.debug("Adding rule " + brule);
         bEngine.addRule(brule);
         bEngine.reset();
     }
@@ -198,7 +204,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      * infgraphs support this.
      */
     public void deleteBRule(Rule brule) {
-        // TODO: Implement
+//        logger.debug("Deleting rule " + brule);
+        bEngine.deleteRule(brule);
+        bEngine.reset();
     }
     
     /**
@@ -207,7 +215,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void addBRules(List rules) {
         for (Iterator i = rules.iterator(); i.hasNext(); ) {
             Rule rule = (Rule)i.next();
-            logger.debug("Adding rule " + rule);
+//            logger.debug("Adding rule " + rule);
             bEngine.addRule(rule);
         }
         bEngine.reset();
@@ -256,6 +264,35 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 //  Core inf graph methods
     
     /**
+     * Add a new rule to the rule set. This should only be used by implementations
+     * of RuleProprocessHook (which are called during rule system preparation phase).
+     * If called at other times the rule won't be correctly transferred into the
+     * underlying engines.
+     */
+    public void addRuleDuringPrepare(Rule rule) {
+        if (rules == rawRules) {
+            // Ensure the original is preserved in case we need to do a restart
+            if (rawRules instanceof ArrayList) {
+                rules = (ArrayList) ((ArrayList)rawRules).clone();
+            } else {
+                rules = new ArrayList(rawRules);
+            }
+        }
+        rules.add(rule);
+    }
+    
+    /**
+     * Add a new preprocessing hook defining an operation that
+     * should be run when the preparation phase is underway.
+     */
+    public void addPreprocessingHook(RulePreprocessHook hook) {
+        if (preprocessorHooks == null) {
+            preprocessorHooks = new ArrayList();
+        }
+        preprocessorHooks.add(hook);
+    }
+    
+    /**
      * Perform any initial processing and caching. This call is optional. Most
      * engines either have negligable set up work or will perform an implicit
      * "prepare" if necessary. The call is provided for those occasions where
@@ -266,6 +303,9 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void prepare() {
         if (!isPrepared) {
             isPrepared = true;
+            
+            // Restore the original pre-hookProcess rules
+            rules = rawRules;
             
             // Is there any data to bind in yet?
             Graph data = null;
@@ -323,7 +363,15 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 //                dataFind = FinderUtil.cascade(subClassCache, subPropertyCache, dataFind);
                 dataFind = FinderUtil.cascade(dataFind, subClassCache, subPropertyCache);
             }
-
+            
+            // Call any optional preprocessing hook
+            if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
+                for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
+                    RulePreprocessHook hook = (RulePreprocessHook)i.next();
+                    hook.run(this, dataFind);
+                }
+            }
+            
             boolean rulesLoaded = false;
             if (schemaGraph != null) {
                 Graph rawPreload = ((InfGraph)schemaGraph).getRawGraph();
@@ -461,6 +509,56 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
     public void reset() {
         bEngine.reset();
         isPrepared = false;
+    }
+
+    /**
+     * Add one triple to the data graph, run any rules triggered by
+     * the new data item, recursively adding any generated triples.
+     */
+    public synchronized void add(Triple t) {
+        fdata.getGraph().add(t);
+        if (useTGCCaching) {
+            Node predicate = t.getPredicate();
+            if (predicate.equals(TransitiveReasoner.subClassOf)) {
+                subClassCache.addRelation(t.getSubject(), t.getObject());
+                isPrepared = false;
+            } else if (predicate.equals(TransitiveReasoner.subPropertyOf)) {
+                subPropertyCache.addRelation(t.getSubject(), t.getObject());
+                isPrepared = false;
+            }
+        }
+        if (isPrepared) {
+            engine.add(t);
+        }
+        bEngine.reset();
+    }
+
+    /** 
+     * Removes the triple t (if possible) from the set belonging to this graph. 
+     */   
+    public void delete(Triple t) {
+        fdata.getGraph().delete(t);
+        if (useTGCCaching) {
+            Node predicate = t.getPredicate();
+            if (predicate.equals(TransitiveReasoner.subClassOf)) {
+                subClassCache.removeRelation(t.getSubject(), t.getObject());
+                if (isPrepared) {
+                    bEngine.deleteAllRules();
+                }
+                isPrepared = false;
+            } else if (predicate.equals(TransitiveReasoner.subPropertyOf)) {
+                subPropertyCache.removeRelation(t.getSubject(), t.getObject());
+                if (isPrepared) {
+                    bEngine.deleteAllRules();
+                }
+                isPrepared = false;
+            }
+        }
+        if (isPrepared) {
+            getDeductionsGraph().delete(t);
+            engine.delete(t);
+        }
+        bEngine.reset();
     }
 
 //  =======================================================================

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.6 2003-06-17 15:51:16 der Exp $
+ * $Id: GenericRuleReasoner.java,v 1.7 2003-06-18 08:00:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2003-06-17 15:51:16 $
+ * @version $Revision: 1.7 $ on $Date: 2003-06-18 08:00:12 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -195,6 +195,9 @@ public class GenericRuleReasoner extends FBRuleReasoner {
             
         } else if (parameterUri.equals(ReasonerVocabulary.PROPenableOWLTranslation.getURI())) {
             enableOWLTranslation =  Util.convertBooleanPredicateArg(parameterUri, value);
+            
+        } else if (parameterUri.equals(ReasonerVocabulary.PROPenableTGCCaching.getURI())) {
+            enableTGCCaching =  Util.convertBooleanPredicateArg(parameterUri, value);
             
         } else if (parameterUri.equals(ReasonerVocabulary.PROPruleMode.getURI())) {
             if (value.equals(FORWARD.name)) {

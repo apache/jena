@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RuleStore.java,v 1.7 2003-06-02 09:04:33 der Exp $
+ * $Id: RuleStore.java,v 1.8 2003-06-18 08:00:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import com.hp.hpl.jena.util.OneToManyMap;
  * </p> 
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2003-06-02 09:04:33 $
+ * @version $Revision: 1.8 $ on $Date: 2003-06-18 08:00:11 $
  */
 public class RuleStore {
 
@@ -60,36 +60,65 @@ public class RuleStore {
      * Add a single rule to the store. 
      */
     public void addRule(Rule rule) {
+        addRemoveRule(rule, true);
+    }
+    
+    /**
+     * Remove a single rule from the store
+     */
+    public void deleteRule(Rule rule) {
+        addRemoveRule(rule, false);
+    }
+    
+    /**
+     * Add a single/remove a compound rule from the store.
+     * @param rule the rule, may have multiple heads
+     * @param isAdd true to add, false to remove 
+     */
+    private void addRemoveRule(Rule rule, boolean isAdd) {
         if (rule.headLength() != 1) {
             for (int j = 0; j < rule.headLength(); j++) {
                 Rule newRule = new Rule(rule.getName(), 
                                     new Object[] {rule.getHeadElement(j)}, 
                                     rule.getBody() );
                 newRule.setNumVars(rule.getNumVars());
-                doAddRule(newRule);
+                doAddRemoveRule(newRule, isAdd);
             }
                 
         } else {
-            doAddRule(rule);
+            doAddRemoveRule(rule, isAdd);
         }
     }
     
     /**
-     * Add a single rule to the store. It assumes the rule
-     * has a single head element.
+     * Add/remove a single rule from the store. 
+     * @param rule the rule, single headed only
+     * @param isAdd true to add, false to remove 
      */
-    private void doAddRule(Rule rule) {
-        if (ruleIndex.contains(rule)) return;
-        ruleIndex.add(rule);
+    private void doAddRemoveRule(Rule rule, boolean isAdd) {
+        if (isAdd && ruleIndex.contains(rule)) return;
+        if (isAdd) {
+            ruleIndex.add(rule);
+        } else {
+            ruleIndex.remove(rule);
+        }
         if (allRules != null) allRules.add(rule);
         Object headClause = rule.getHeadElement(0);
         if (headClause instanceof TriplePattern) {
             TriplePattern headpattern = (TriplePattern)headClause;
             Node predicate = headpattern.getPredicate();
             if (predicate.isVariable()) {
-                goalMap.put(Node.ANY, rule);
+                if (isAdd) {
+                    goalMap.put(Node.ANY, rule);
+                } else {
+                    goalMap.remove(Node.ANY, rule);
+                }
             } else {
-                goalMap.put(predicate, rule);
+                if (isAdd) {
+                    goalMap.put(predicate, rule);
+                } else {
+                    goalMap.remove(predicate, rule);
+                }
             }
         }
     }
@@ -114,6 +143,15 @@ public class RuleStore {
      */
     public List getAllRules() {
         return allRules;
+    }
+    
+    /**
+     * Delete all the rules.
+     */
+    public void deleteAllRules() {
+        allRules.clear();
+        goalMap.clear();
+        ruleIndex.clear();
     }
     
     /**

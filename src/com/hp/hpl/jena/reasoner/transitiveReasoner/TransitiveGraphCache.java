@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveGraphCache.java,v 1.8 2003-06-17 15:51:17 der Exp $
+ * $Id: TransitiveGraphCache.java,v 1.9 2003-06-18 08:00:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -37,7 +37,7 @@ import java.util.*;
  * <p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2003-06-17 15:51:17 $
+ * @version $Revision: 1.9 $ on $Date: 2003-06-18 08:00:11 $
  */
 public class TransitiveGraphCache implements Finder {
 
@@ -149,7 +149,7 @@ public class TransitiveGraphCache implements Finder {
         
         if (p.isVariable() || p.equals(directPredicate) || p.equals(closedPredicate)) {
             boolean closed = !p.equals(directPredicate);
-            Node pred = p.isVariable() ? closedPredicate : p;
+            Node pred = closedPredicate; // p.isVariable() ? closedPredicate : p;
             if (s.isVariable()) {
                 if (o.isVariable()) {
                     // list all the graph contents

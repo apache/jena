@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BRuleEngine.java,v 1.19 2003-06-16 08:21:31 der Exp $
+ * $Id: BRuleEngine.java,v 1.20 2003-06-18 08:00:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -29,7 +29,7 @@ import java.util.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2003-06-16 08:21:31 $
+ * @version $Revision: 1.20 $ on $Date: 2003-06-18 08:00:11 $
  */
 public class BRuleEngine {
     
@@ -112,12 +112,28 @@ public class BRuleEngine {
     }
     
     /**
+     * Remove a single rule from the store.
+     * N.B. This will invalidate current partial results and the engine
+     * should be reset() before future queries. 
+     */
+    public void deleteRule(Rule rule) {
+        ruleStore.deleteRule(rule);
+    }
+    
+    /**
      * Return an ordered list of all registered rules.
      */
     public List getAllRules() {
         return ruleStore.getAllRules();
     }
-        
+    
+    /**
+     * Delete all the rules.
+     */
+    public void deleteAllRules() {
+        ruleStore.deleteAllRules();     
+    }
+    
     /**
      * Stop the current work. This is called if the top level results iterator has
      * either finished or the calling application has had enough. We leave any completed 

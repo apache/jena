@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.1 2003-06-08 17:49:51 der Exp $
+ * $Id: TestGenericRules.java,v 1.2 2003-06-18 08:00:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 import com.hp.hpl.jena.graph.*;
 
@@ -32,7 +33,7 @@ import org.apache.log4j.Logger;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2003-06-08 17:49:51 $
+ * @version $Revision: 1.2 $ on $Date: 2003-06-18 08:00:12 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -49,7 +50,11 @@ public class TestGenericRules extends TestCase {
     Node b = Node.createURI("b");
     Node c = Node.createURI("c");
     Node d = Node.createURI("d");
+    Node C1 = Node.createURI("C1");
+    Node C2 = Node.createURI("C2");
+    Node C3 = Node.createURI("C3");
     Node ty = RDF.type.getNode();
+    Node sC = RDFS.subClassOf.getNode();
 
     List ruleList = Rule.parseRules("[r1: (?a p ?b), (?b p ?c) -> (?a p ?c)]" +
                                     "[r2: (?a q ?b) -> (?a p ?c)]");
@@ -70,6 +75,9 @@ public class TestGenericRules extends TestCase {
      */
     public static TestSuite suite() {
         return new TestSuite( TestGenericRules.class ); 
+//        TestSuite suite = new TestSuite();
+//        suite.addTest(new TestGenericRules( "testAddRemove" ));
+//        return suite;
     }  
     
      
@@ -182,6 +190,73 @@ public class TestGenericRules extends TestCase {
         assertTrue(! di.hasNext());
     }
 
+    /**
+     * Test add/remove support
+     */
+    public void testAddRemove() {
+        doTestAddRemove(false);
+        doTestAddRemove(true);
+    }
+    
+    /**
+     * Internals of add/remove test.
+     * @param useTGC set to true to use transitive caching
+     */
+    public void doTestAddRemove(boolean useTGC) {
+        Graph data = new GraphMem();
+        data.add(new Triple(a, p, C1));
+        data.add(new Triple(C1, sC, C2));
+        data.add(new Triple(C2, sC, C3));
+        List rules = Rule.parseRules(
+        "[r1: (?x p ?c) -> (?x rdf:type ?c)] " +
+        "[rdfs9:  (?x rdfs:subClassOf ?y) -> [ (?a rdf:type ?y) <- (?a rdf:type ?x)] ]"
+                          );
+        if (!useTGC) {
+            rules.add(Rule.parseRule("[rdfs8:  (?a rdfs:subClassOf ?b), (?b rdfs:subClassOf ?c) -> (?a rdfs:subClassOf ?c)] "));        
+        }
+        GenericRuleReasoner reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(null);
+        reasoner.setRules(rules);
+//        reasoner.setTraceOn(true);
+        reasoner.setMode(GenericRuleReasoner.HYBRID);
+        reasoner.setTransitiveClosureCaching(useTGC);
+        
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(a, ty, null), new Object[] {
+                  new Triple(a, ty, C1),
+                  new Triple(a, ty, C2),
+                  new Triple(a, ty, C3)
+              } );
+              
+        logger.debug("Checkpoint 1");
+        infgraph.delete(new Triple(C1, sC, C2));
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(a, ty, null), new Object[] {
+                  new Triple(a, ty, C1)
+              } );
+         
+        logger.debug("Checkpoint 2");
+        infgraph.add(new Triple(C1, sC, C3));
+        infgraph.add(new Triple(b, p, C2));
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(a, ty, null), new Object[] {
+                  new Triple(a, ty, C1),
+                  new Triple(a, ty, C3)
+              } );
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(b, ty, null), new Object[] {
+                  new Triple(b, ty, C2),
+                  new Triple(b, ty, C3)
+              } );
+         
+        TestUtil.assertIteratorValues(this, 
+              data.find(null, null, null), new Object[] {
+                  new Triple(a, p, C1),
+                  new Triple(b, p, C2),
+                  new Triple(C2, sC, C3),
+                  new Triple(C1, sC, C3)
+              } );
+    }
 }
 
 

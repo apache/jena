@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RETEEngine.java,v 1.9 2003-06-17 17:14:12 der Exp $
+ * $Id: RETEEngine.java,v 1.10 2003-06-18 08:00:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-17 17:14:12 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-18 08:00:11 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -347,7 +347,7 @@ public class RETEEngine implements FRuleEngineI {
                 isAdd = true;
             }
             if (infGraph.shouldTrace()) {
-                logger.debug("Inserting triple: " + PrintUtil.print(next));
+                logger.debug((isAdd ? "Inserting" : "Deleting") + " triple: " + PrintUtil.print(next));
             }
             Iterator i1 = clauseIndex.getAll(next.getPredicate());
             Iterator i2 = clauseIndex.getAll(Node.ANY);

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.9 2003-06-17 15:51:17 der Exp $
+ * $Id: TransitiveInfGraph.java,v 1.10 2003-06-18 08:00:11 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -29,7 +29,7 @@ import java.util.HashSet;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2003-06-17 15:51:17 $
+ * @version $Revision: 1.10 $ on $Date: 2003-06-18 08:00:11 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -180,7 +180,7 @@ public class TransitiveInfGraph extends BaseInfGraph {
     
     /** 
      * Removes the triple t (if possible) from the set belonging to this graph.
-     * TODO: This will not work on subClass/subPropertOf yet. 
+     * TODO: This will not work on subPropertyOf subClass/subPropertyOf yet. 
      */   
     public void delete(Triple t) {
         if (isPrepared) {
