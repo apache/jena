@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:04:46 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-08 15:45:15 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.10 2003-08-27 13:04:46 andy_seaborne Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.11 2004-01-08 15:45:15 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -119,13 +119,55 @@ public class TestOntDocumentManager
         assertTrue( "Should be no specification loaded", !mgr.listDocuments().hasNext() );
         
         // make sure we don't fail on null
-        mgr = new OntDocumentManager( null );
+        mgr = new OntDocumentManager( (String) null );
         assertTrue( "Should be no specification loaded", !mgr.listDocuments().hasNext() );
         
     }
     
+    public void testReset() {
+        OntDocumentManager mgr = new OntDocumentManager( (String) null );
+        
+        assertTrue( mgr.getProcessImports() );
+        mgr.setProcessImports( false );
+        assertFalse( mgr.getProcessImports() );
+        mgr.reset();
+        assertTrue( mgr.getProcessImports() );
+        
+        assertEquals( OntDocumentManager.DEFAULT_METADATA_PATH, mgr.getMetadataSearchPath() );
+        mgr.setMetadataSearchPath( "file:foo.xml", true );
+        assertEquals( "file:foo.xml", mgr.getMetadataSearchPath() );
+        mgr.reset();
+        assertEquals( OntDocumentManager.DEFAULT_METADATA_PATH, mgr.getMetadataSearchPath() );
+
+        assertTrue( mgr.getCacheModels() );
+        mgr.setCacheModels(false );
+        assertFalse( mgr.getCacheModels() );
+        mgr.reset();
+        assertTrue( mgr.getCacheModels() );
+        
+        assertTrue( mgr.useDeclaredPrefixes() );
+        mgr.setUseDeclaredPrefixes( false );
+        assertFalse( mgr.useDeclaredPrefixes() );
+        mgr.reset();
+        assertTrue( mgr.useDeclaredPrefixes() );
+    }
+    
+    public void testConfigure() {
+        // create a simple policy
+        Model m = ModelFactory.createDefaultModel();
+        Resource policy = m.createResource();
+        m.add( policy, RDF.type, OntDocManagerVocab.DocumentManagerPolicy );
+        m.add( policy, OntDocManagerVocab.cacheModels, false );
+        
+        OntDocumentManager mgr = new OntDocumentManager( (String) null );
+        assertTrue( mgr.getCacheModels() );
+        mgr.configure( m );
+        assertFalse( "Docmgr configure() should have updated cache models flag", mgr.getCacheModels() );
+    }
+    
+    
     public void testManualAssociation() {
-        OntDocumentManager mgr = new OntDocumentManager( null );
+        OntDocumentManager mgr = new OntDocumentManager( (String) null );
  
         mgr.addPrefixMapping( "http://www.w3.org/2002/07/owl#", "owl" );
         assertEquals( "prefix for owl not correct", "owl", mgr.getPrefixForURI( "http://www.w3.org/2002/07/owl#" ));
