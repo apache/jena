@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TestReasoners.java,v 1.20 2003-06-23 15:49:41 der Exp $
+ * $Id: TestReasoners.java,v 1.21 2003-06-24 15:47:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -27,7 +27,7 @@ import java.io.IOException;
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2003-06-23 15:49:41 $
+ * @version $Revision: 1.21 $ on $Date: 2003-06-24 15:47:04 $
  */
 public class TestReasoners extends TestCase {
     
@@ -273,7 +273,6 @@ public class TestReasoners extends TestCase {
     /**
      * Test the ModelFactory interface
      */
-    // /*
     public void testModelFactoryRDFS() {
         Model data = ModelFactory.createDefaultModel();
         Property p = data.createProperty("urn:x-hp:ex/p");
@@ -290,7 +289,50 @@ public class TestReasoners extends TestCase {
         });
         
     }
-    // */
+
+    /**
+     * Run test on findWithPremies for Transitive reasoner.
+     */
+    public void testTransitiveFindWithPremises() {
+        doTestFindWithPremises(TransitiveReasonerFactory.theInstance());
+    }
+
+    /**
+     * Run test on findWithPremies for RDFS reasoner.
+     */
+    public void testRDFSFindWithPremises() {
+        doTestFindWithPremises(RDFSRuleReasonerFactory.theInstance());
+    }
+    
+    /**
+     * Test a reasoner's ability to implement find with premises.
+     * Assumes the reasoner can at least implement RDFS subClassOf.
+     */
+    public void doTestFindWithPremises(ReasonerFactory rf) {
+        Node c1 = Node.createURI("C1");
+        Node c2 = Node.createURI("C2");
+        Node c3 = Node.createURI("C3");
+        Node sC = RDFS.subClassOf.asNode();
+        Graph data = new GraphMem();
+        data.add( new Triple(c2, sC, c3));
+        Graph premise = new GraphMem();
+        premise.add( new Triple(c1, sC, c2));
+        Reasoner reasoner = rf.create(null);
+        InfGraph infgraph = reasoner.bind(data);
+        TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
+            new Object[] {
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null, premise),
+            new Object[] {
+                new Triple(c1, sC, c2),
+                new Triple(c1, sC, c3),
+                new Triple(c1, sC, c1)
+            });
+        TestUtil.assertIteratorValues(this, infgraph.find(c1, sC, null),
+            new Object[] {
+            });
+        
+    }
         
 }
 

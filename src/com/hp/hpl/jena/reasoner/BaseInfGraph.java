@@ -5,11 +5,12 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.15 2003-06-11 12:49:43 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.16 2003-06-24 15:46:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.util.iterator.*;
 import java.util.Iterator;
@@ -18,7 +19,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2003-06-11 12:49:43 $
+ * @version $Revision: 1.16 $ on $Date: 2003-06-24 15:46:59 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -160,7 +161,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
      * object nodes refer.
      */
     public ExtendedIterator find(Node subject, Node property, Node object, Graph param) {
-        return find(subject, property, object);
+        return cloneWithPremises(param).find(subject, property, object);
     }
     
     /** 
@@ -282,6 +283,21 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
         fdata.getGraph().delete(t);
     }
 
+    /**
+     * Return the schema graph, if any, bound into this inference graph.
+     */
+    public abstract Graph getSchemaGraph();
+    
+    /**
+     * Return a new inference graph which is a clone of the current graph
+     * together with an additional set of data premises. The default
+     * implementation loses ALL partial deductions so far. Some subclasses
+     * may be able to a more efficient job.
+     */
+    public InfGraph cloneWithPremises(Graph premises) {
+        return getReasoner().bindSchema(getSchemaGraph()).bind(new Union(getRawGraph(), premises));
+    }
+    
 }
 
 /*

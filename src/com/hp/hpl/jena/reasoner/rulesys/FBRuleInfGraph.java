@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.21 2003-06-23 16:28:07 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.22 2003-06-24 15:47:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -14,6 +14,7 @@ import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
+
 import java.util.*;
 
 //import com.hp.hpl.jena.util.PrintUtil;
@@ -35,7 +36,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2003-06-23 16:28:07 $
+ * @version $Revision: 1.22 $ on $Date: 2003-06-24 15:47:04 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -533,6 +534,27 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             engine.delete(t);
         }
         bEngine.reset();
+    }
+    
+    /**
+     * Return a new inference graph which is a clone of the current graph
+     * together with an additional set of data premises. Attempts to the replace
+     * the default brute force implementation by one that can reuse some of the
+     * existing deductions.
+     */
+    public InfGraph cloneWithPremises(Graph premises) {
+        prepare();
+        FBRuleInfGraph graph = new FBRuleInfGraph(getReasoner(), rawRules, this);
+        if (useTGCCaching) graph.setUseTGCCache();
+        graph.setDerivationLogging(recordDerivations);
+        graph.setTraceOn(traceOn);
+        // Implementation note:  whilst current tests pass its not clear that 
+        // the nested passing of FBRuleInfGraph's will correctly handle all
+        // cases of indirectly bound schema data. If we do uncover a problem here
+        // then either include the raw schema in a Union with the premises or
+        // revert of a more brute force version. 
+        graph.rebind(premises);
+        return graph;
     }
 
 //  =======================================================================

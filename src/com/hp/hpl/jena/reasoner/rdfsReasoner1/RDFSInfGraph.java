@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: RDFSInfGraph.java,v 1.13 2003-06-23 15:49:36 der Exp $
+ * $Id: RDFSInfGraph.java,v 1.14 2003-06-24 15:47:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -36,7 +36,7 @@ import java.util.*;
  * have to be cloned and separated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2003-06-23 15:49:36 $
+ * @version $Revision: 1.14 $ on $Date: 2003-06-24 15:47:04 $
  */
 public class RDFSInfGraph extends BaseInfGraph {
 
@@ -149,10 +149,7 @@ public class RDFSInfGraph extends BaseInfGraph {
 
     /**
      * Constructor
-     * @param tbox the vocabularly data being reasoned over
      * @param data the raw data graph being bound to the reasoner
-     * @param sPropertyCache a cache of subPropertyOf relations from the box
-     * @param sClassCache a cache of subClassOf relations from the tbox
      * @param reasoner the RDFSReasoner which spawned this InfGraph
      */
     public RDFSInfGraph( RDFSReasoner reasoner, Graph data) {
@@ -197,6 +194,18 @@ public class RDFSInfGraph extends BaseInfGraph {
 
 //=======================================================================
 // methods
+
+   /**
+    * Return the schema graph, if any, bound into this inference graph.
+    */
+   public Graph getSchemaGraph() {
+       if (tbox == null) return null;
+       if (tbox instanceof FGraph) {
+           return ((FGraph)tbox).getGraph();
+       } else {
+           throw new ReasonerException("RDFS1 reasoner got into an illegal state");
+       }
+   }
     
    /**
     * Perform any initial processing and caching. This call is optional. Most

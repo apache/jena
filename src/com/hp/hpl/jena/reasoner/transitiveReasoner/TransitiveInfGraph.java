@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: TransitiveInfGraph.java,v 1.12 2003-06-23 15:49:41 der Exp $
+ * $Id: TransitiveInfGraph.java,v 1.13 2003-06-24 15:47:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.transitiveReasoner;
 
@@ -27,7 +27,7 @@ import com.hp.hpl.jena.util.iterator.UniqueExtendedIterator;
  * are regenerated.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-06-23 15:49:41 $
+ * @version $Revision: 1.13 $ on $Date: 2003-06-24 15:47:04 $
  */
 public class TransitiveInfGraph extends BaseInfGraph {
 
@@ -36,6 +36,9 @@ public class TransitiveInfGraph extends BaseInfGraph {
     
     /** The graph registered as the schema, if any */
     protected Finder tbox = null;
+    
+    /** The combined data and schema finder */
+    protected Finder dataFind;
     
     /**
      * Constructor. Called by the TransitiveReasoner when it
@@ -63,10 +66,22 @@ public class TransitiveInfGraph extends BaseInfGraph {
                                                  ((TransitiveReasoner)reasoner).getSubPropertyCache());
 
         // But need to check if the data graph defines schema data as well
-        tbox = transitiveEngine.insert(tbox, fdata);
+        dataFind = transitiveEngine.insert(tbox, fdata);
         transitiveEngine.setCaching(true, true);
         
         isPrepared = true;
+    }
+
+    /**
+     * Return the schema graph, if any, bound into this inference graph.
+     */
+    public Graph getSchemaGraph() {
+        if (tbox == null) return null;
+        if (tbox instanceof FGraph) {
+            return ((FGraph)tbox).getGraph();
+        } else {
+            throw new ReasonerException("Transitive reasoner got into an illegal state");
+        }
     }
     
     /**
