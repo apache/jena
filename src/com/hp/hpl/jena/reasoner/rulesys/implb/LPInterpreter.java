@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.17 2003-08-11 16:25:39 der Exp $
+ * $Id: LPInterpreter.java,v 1.18 2003-08-11 16:55:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2003-08-11 16:25:39 $
+ * @version $Revision: 1.18 $ on $Date: 2003-08-11 16:55:31 $
  */
 public class LPInterpreter {
 
@@ -63,8 +63,8 @@ public class LPInterpreter {
     /** The execution context description to be passed to builtins */
     protected RuleContext context;
         
-    /** Experimental: cache of last looked up triple to avoid store turn over in top level results */
-//    protected Triple lastTriple;
+    /** Trick to allow the very top level triple lookup to return results with reduced store turnover */
+    protected TopLevelTripleMatchFrame topTMFrame;
     
     /** log4j logger*/
     static Logger logger = Logger.getLogger(LPInterpreter.class);
@@ -104,10 +104,11 @@ public class LPInterpreter {
             cpFrame = newChoiceFrame;
         }
         
-        TripleMatchFrame tmFrame = new TripleMatchFrame(this);
-        tmFrame.linkTo(cpFrame);
-        tmFrame.setContinuation(0, 0);
-        cpFrame = tmFrame;
+//        TripleMatchFrame tmFrame = new TripleMatchFrame(this);
+        topTMFrame = new TopLevelTripleMatchFrame(this, goal);
+        topTMFrame.linkTo(cpFrame);
+        topTMFrame.setContinuation(0, 0);
+        cpFrame = topTMFrame;
     }
 
     //  =======================================================================
@@ -151,10 +152,10 @@ public class LPInterpreter {
         StateFlag answer = run();
         if (answer == StateFlag.FAIL || answer == StateFlag.SUSPEND) {
             return answer;
+        } else if (answer == StateFlag.SATISFIED) {
+            return topTMFrame.lastMatch;
         } else {
-            // TODO: avoid store turn over here in case where answer has been returned by a TripleMatch
             Triple t = new Triple(deref(pVars[0]), deref(pVars[1]), deref(pVars[2]));
-//            logger.debug("ANS " + t);
             return t;
         }
     }
@@ -245,6 +246,19 @@ public class LPInterpreter {
                 ac = tmFrame.cac;
 
                 // then fall through to the execution context in which the the match was called
+                
+            } else if (cpFrame instanceof TopLevelTripleMatchFrame) {
+                TopLevelTripleMatchFrame tmFrame = (TopLevelTripleMatchFrame)cpFrame;
+                
+                // Find the next choice result directly
+                if (!tmFrame.nextMatch(this)) {
+                    // No more matches
+                    cpFrame = cpFrame.getLink();
+                    continue main;
+                } else {
+                    // Match but this is the top level so return the triple directly
+                    return StateFlag.SATISFIED;
+                }
                 
             } else if (cpFrame instanceof ConsumerChoicePointFrame) {
                 ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame)cpFrame;
