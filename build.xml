@@ -43,10 +43,18 @@
     <!-- Sub-system specific -->
     <property name="rdql.root" value="src/com/hp/hpl/jena/rdql"/>
 
+    <!-- vocabulary generation -->
+    <property name="vocab.dir"       value="src/com/hp/hpl/jena/vocabulary" />
+    <property name="vocab.src"       value="rdf/" />
+	<property name="vocab.tool"      value="jena.schemagen" />
+	<property name="vocab.template"  value="vocabularies/jenavocab.rdf" />
 
     <path id="classpath">
       <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
- <!--     <dirset dir="${classes.dir}" includes="*"/> -->
+    </path>
+
+    <path id="classpath.tools">
+      <fileset dir="${lib.dir}" includes="*.jar"/>
     </path>
 
     <!-- keyword substitutions -->
@@ -445,5 +453,44 @@
             <fileset dir="${dist.dir}"/>
         </delete>
     </target>
+
+<!-- Using schemagen to produce vocabularies -->
+
+	<target name="vocabs" depends="ont-events, owl-vocab" />
+	
+	<target name="check.ont-events">
+		<uptodate property="ont-events.build.notreq" 
+		          srcFile="${vocab.src}ont-events.owl" 
+		          targetFile="${vocab.dir}/OntEventsVocab.java" />
+  	</target>
+
+	<target name="ont-events" depends="check.ont-events" unless="ont-events.build.notreq">
+		<java classname="${vocab.tool}" classpathref="classpath.tools" fork="yes">
+			<arg value="-i" />
+			<arg value="file:${vocab.dir}/ont-event.rdf" />
+			<arg value="-c" />
+			<arg value="${vocab.template}" />
+			<arg value="-n" />
+			<arg value="OntEvents" />
+			<arg value="--ontology" />
+		</java>
+	</target>
+
+	<target name="check.owl-vocab">
+		<uptodate property="owl-vocab.build.notreq" 
+		          srcFile="${vocab.src}owl.owl" 
+		          targetFile="${vocab.dir}/OWL2.java" />
+  	</target>
+
+	<target name="owl-vocab" depends="check.owl-vocab" unless="owl-vocab.build.notreq">
+		<java classname="${vocab.tool}" classpathref="classpath.tools" fork="yes">
+			<arg value="-i" />
+			<arg value="file:${vocab.dir}/owl.owl" />
+			<arg value="-c" />
+			<arg value="${vocab.template}" />
+			<arg value="-n" />
+			<arg value="OWL" />
+		</java>
+	</target>
 
 </project>
