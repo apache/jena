@@ -40,7 +40,7 @@ public class JenaException extends RuntimeException {
 	 * @param cause
 	 * */
 	public JenaException( Throwable cause )
-		{ this( "", cause ); }
+		{ this( "rethrew: " + cause.getMessage(), cause ); }
     
     public JenaException( String message, Throwable cause )
         { super( message ); this.cause = cause; }
