@@ -11,7 +11,7 @@ import junit.framework.* ;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.11 $
+ * @version 	$Revision: 1.12 $
  */
 public class TestPackage extends TestSuite
 {
@@ -51,10 +51,6 @@ public class TestPackage extends TestSuite
 		addTest( "TestTransactions", TestTransactions.suite() );
 		addTest( "TestReifier", TestReifier.suite() );
 		addTest( "TestReifierCompareToMem", TestReifierCompareToMem.suite());
-
-		// TODO remove the dmoz test for now - it fails because of invalid
-		// characters in the Resource URIs in the DMOZ file.
-		// addTest( "TestCompareDMOZ", TestCompareDMOZ.suite() );
         }
 
     private void addTest(String name, TestSuite tc) {
