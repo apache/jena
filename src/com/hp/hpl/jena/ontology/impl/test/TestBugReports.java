@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-20 09:41:44 $
+ * Last modified on   $Date: 2003-08-20 09:45:41 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -44,7 +44,7 @@ import junit.framework.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestBugReports.java,v 1.9 2003-08-20 09:41:44 ian_dickinson Exp $
+ * @version CVS $Id: TestBugReports.java,v 1.10 2003-08-20 09:45:41 ian_dickinson Exp $
  */
 public class TestBugReports 
     extends TestCase
@@ -144,7 +144,7 @@ public class TestBugReports
         spec.setReasoner(null);
         OntModel ontModel = ModelFactory.createOntologyModel(spec, null);
         OntProperty property = ontModel.createObjectProperty("http://www.aldi.de#property");
-        MinCardinalityRestriction testClass = ontModel.createMinCardinalityRestriction( null, property, 42);
+        /*MinCardinalityRestriction testClass = */ontModel.createMinCardinalityRestriction( null, property, 42);
         
     }
     
