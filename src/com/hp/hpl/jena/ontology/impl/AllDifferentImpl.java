@@ -5,12 +5,12 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            25-Mar-2003
- * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            01-Apr-2003
+ * Filename           $RCSfile: AllDifferentImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-04-01 16:06:12 $
+ * Last modified on   $Date: 2003-04-01 16:06:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
@@ -27,30 +27,37 @@ package com.hp.hpl.jena.ontology.impl;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.*;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+import com.hp.hpl.jena.ontology.path.PathSet;
 
 
 /**
  * <p>
- * Abstract base class to provide shared implementation for implementations of ontology
- * resources.
+ * Implementation of the abstraction of axioms that denote the single name assumption.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.2 2003-04-01 16:06:12 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferentImpl.java,v 1.1 2003-04-01 16:06:11 ian_dickinson Exp $
  */
-public abstract class OntResourceImpl
-    extends ResourceImpl
-    implements OntResource 
+public class AllDifferentImpl
+    extends OntResourceImpl
+    implements AllDifferent 
 {
     // Constants
     //////////////////////////////////
 
     // Static variables
     //////////////////////////////////
+
+    /**
+     * A factory for generating AllDifferent facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { return new AllDifferentImpl( n, eg ); }
+    };
+
 
     // Instance variables
     //////////////////////////////////
@@ -60,15 +67,16 @@ public abstract class OntResourceImpl
 
     /**
      * <p>
-     * Construct an ontology resource represented by the given node in the given graph.
+     * Construct an all different axiom represented by the given node in the given graph.
      * </p>
      * 
-     * @param n The node that represents the resource
-     * @param g The enh graph that contains n
+     * @param n The node that represents the axiom
+     * @param g The enhanced graph that contains n
      */
-    public OntResourceImpl( Node n, EnhGraph g ) {
+    public AllDifferentImpl( Node n, EnhGraph g ) {
         super( n, g );
     }
+
 
 
     // External signature methods
@@ -76,64 +84,16 @@ public abstract class OntResourceImpl
 
     /**
      * <p>
-     * Answer the ontology language profile that governs the ontology model to which
-     * this ontology resource is attached.  
-     * </p>
-     * 
-     * @return The language profile for this ontology resource
-     */
-    public Profile getProfile() {
-        return ((OntModel) getModel()).getProfile();
-    }
-
-
-    /**
-     * <p>
      * Answer an {@link PathSet accessor} for the 
-     * <code>sameAs</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * <b>Note:</b> that any ontology resource can be declared to be the same as another. However,
-     * in the case of OWL, doing so for class or property resources necessarily implies that
-     * OWL Full is being used, since in OWL DL and Lite classes and properties cannot be used
-     * as instances.
-     * </p>
-     * 
-     * @return An abstract accessor for identity between individuals
-     */
-    public PathSet p_sameAs() {
-        return asPathSet( getProfile().SAME_AS() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>sameIndidualAs</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * A synonym for {@link #p_sameAs sameAs}.
-     * </p>
-     * 
-     * @return An abstract accessor for identity between individuals
-     */
-    public PathSet p_sameIndividualAs() {
-        return asPathSet( getProfile().SAME_INDIVIDUAL_AS() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>differentFrom</code>
-     * property of any instance. The accessor
+     * <code>distinctMembers</code>
+     * property of an AllDifferent axiom. The accessor
      * can be used to perform a variety of operations, including getting and setting the value.
      * </p>
      * 
-     * @return An abstract accessor for asserting non-identity between individuals
+     * @return An abstract accessor for the distinct individuals in an AllDifferent axioms
      */
-    public PathSet p_differentFrom() {
-        return asPathSet( getProfile().DIFFERENT_FROM() );
+    public PathSet p_distinctMembers() {
+        return asPathSet( getProfile().DISTINCT_MEMBERS() );
     }
 
 
@@ -141,18 +101,6 @@ public abstract class OntResourceImpl
     // Internal implementation methods
     //////////////////////////////////
 
-
-    protected PathSet asPathSet( Property p ) {
-        if (p == null) {
-            // TODO ideally should name the property to be helpful here
-            throw new OntologyException( "This property is not defined in the current language profile" );
-        }
-        else {
-            return new PathSet( this, PathFactory.unit( p ) );
-        }
-    }
-    
-    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
@@ -188,4 +136,11 @@ public abstract class OntResourceImpl
     THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
+/* TODO delete me
+public class AllDifferentImpl{
+
+}
+
 */

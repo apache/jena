@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-27 16:28:15 $
+ * Last modified on   $Date: 2003-04-01 16:06:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -24,6 +24,7 @@ package com.hp.hpl.jena.ontology;
 
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.path.PathSet;
 import com.hp.hpl.jena.rdf.model.*;
 
 
@@ -36,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.2 2003-03-27 16:28:15 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.3 2003-04-01 16:06:06 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -58,6 +59,51 @@ public interface OntResource
      * @return The language profile for this ontology resource
      */
     public Profile getProfile();
+    
+    
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>sameAs</code>
+     * property of any instance. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * <b>Note:</b> that any ontology resource can be declared to be the same as another. However,
+     * in the case of OWL, doing so for class or property resources necessarily implies that
+     * OWL Full is being used, since in OWL DL and Lite classes and properties cannot be used
+     * as instances.
+     * </p>
+     * 
+     * @return An abstract accessor for identity between individuals
+     */
+    public PathSet p_sameAs();
+
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>sameIndidualAs</code>
+     * property of any instance. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * A synonym for {@link #p_sameAs sameAs}.
+     * </p>
+     * 
+     * @return An abstract accessor for identity between individuals
+     */
+    public PathSet p_sameIndividualAs();
+
+
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>differentFrom</code>
+     * property of any instance. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for asserting non-identity between individuals
+     */
+    public PathSet p_differentFrom();
+
 }
 
 

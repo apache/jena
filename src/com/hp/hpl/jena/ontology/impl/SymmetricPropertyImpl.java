@@ -5,9 +5,9 @@
  * Author email       Ian.Dickinson@hp.com
  * Package            Jena 2
  * Web                http://sourceforge.net/projects/jena/
- * Created            25-Mar-2003
- * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.2 $
+ * Created            01-Apr-2003
+ * Filename           $RCSfile: SymmetricPropertyImpl.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
  * Last modified on   $Date: 2003-04-01 16:06:12 $
@@ -22,35 +22,43 @@
 package com.hp.hpl.jena.ontology.impl;
 
 
+
 // Imports
 ///////////////
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
-import com.hp.hpl.jena.ontology.path.*;
-import com.hp.hpl.jena.rdf.model.Property;
-import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
+
 
 
 /**
  * <p>
- * Abstract base class to provide shared implementation for implementations of ontology
- * resources.
+ * Implementation of the symmetric property abstraction
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.2 2003-04-01 16:06:12 ian_dickinson Exp $
+ * @version CVS $Id: SymmetricPropertyImpl.java,v 1.1 2003-04-01 16:06:12 ian_dickinson Exp $
  */
-public abstract class OntResourceImpl
-    extends ResourceImpl
-    implements OntResource 
+public class SymmetricPropertyImpl
+    extends ObjectPropertyImpl
+    implements SymmetricProperty 
 {
     // Constants
     //////////////////////////////////
 
     // Static variables
     //////////////////////////////////
+
+    /**
+     * A factory for generating SymmetricProperty facets from nodes in enhanced graphs.
+     * Note: should not be invoked directly by user code: use 
+     * {@link com.hp.hpl.jena.rdf.model.RDFNode#as() as()} instead.
+     */
+    public static Implementation factory = new Implementation() {
+        public EnhNode wrap( Node n, EnhGraph eg ) { return new SymmetricPropertyImpl( n, eg ); }
+    };
+
 
     // Instance variables
     //////////////////////////////////
@@ -60,13 +68,13 @@ public abstract class OntResourceImpl
 
     /**
      * <p>
-     * Construct an ontology resource represented by the given node in the given graph.
+     * Construct a symmetric property node represented by the given node in the given graph.
      * </p>
      * 
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
-    public OntResourceImpl( Node n, EnhGraph g ) {
+    public SymmetricPropertyImpl( Node n, EnhGraph g ) {
         super( n, g );
     }
 
@@ -74,85 +82,9 @@ public abstract class OntResourceImpl
     // External signature methods
     //////////////////////////////////
 
-    /**
-     * <p>
-     * Answer the ontology language profile that governs the ontology model to which
-     * this ontology resource is attached.  
-     * </p>
-     * 
-     * @return The language profile for this ontology resource
-     */
-    public Profile getProfile() {
-        return ((OntModel) getModel()).getProfile();
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>sameAs</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * <b>Note:</b> that any ontology resource can be declared to be the same as another. However,
-     * in the case of OWL, doing so for class or property resources necessarily implies that
-     * OWL Full is being used, since in OWL DL and Lite classes and properties cannot be used
-     * as instances.
-     * </p>
-     * 
-     * @return An abstract accessor for identity between individuals
-     */
-    public PathSet p_sameAs() {
-        return asPathSet( getProfile().SAME_AS() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>sameIndidualAs</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * A synonym for {@link #p_sameAs sameAs}.
-     * </p>
-     * 
-     * @return An abstract accessor for identity between individuals
-     */
-    public PathSet p_sameIndividualAs() {
-        return asPathSet( getProfile().SAME_INDIVIDUAL_AS() );
-    }
-
-
-    /**
-     * <p>
-     * Answer an {@link PathSet accessor} for the 
-     * <code>differentFrom</code>
-     * property of any instance. The accessor
-     * can be used to perform a variety of operations, including getting and setting the value.
-     * </p>
-     * 
-     * @return An abstract accessor for asserting non-identity between individuals
-     */
-    public PathSet p_differentFrom() {
-        return asPathSet( getProfile().DIFFERENT_FROM() );
-    }
-
-
-
     // Internal implementation methods
     //////////////////////////////////
 
-
-    protected PathSet asPathSet( Property p ) {
-        if (p == null) {
-            // TODO ideally should name the property to be helpful here
-            throw new OntologyException( "This property is not defined in the current language profile" );
-        }
-        else {
-            return new PathSet( this, PathFactory.unit( p ) );
-        }
-    }
-    
-    
     //==============================================================================
     // Inner class definitions
     //==============================================================================
@@ -189,3 +121,4 @@ public abstract class OntResourceImpl
     (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
     THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
+

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: Individual.java,v $
- * Revision           $Revision: 1.1 $
+ * Revision           $Revision: 1.2 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-02-13 22:48:46 $
+ * Last modified on   $Date: 2003-04-01 16:06:06 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. (see
@@ -20,6 +20,7 @@
 // Package
 ///////////////
 package com.hp.hpl.jena.ontology;
+
 
 
 // Imports
@@ -37,7 +38,7 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: Individual.java,v 1.1 2003-02-13 22:48:46 ian_dickinson Exp $
+ * @version CVS $Id: Individual.java,v 1.2 2003-04-01 16:06:06 ian_dickinson Exp $
  */
 public interface Individual
     extends OntResource

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: AllDifferent.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-03-12 17:16:38 $
+ * Last modified on   $Date: 2003-04-01 16:06:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved. 
@@ -22,8 +22,10 @@
 package com.hp.hpl.jena.ontology;
 
 
+
 // Imports
 ///////////////
+import com.hp.hpl.jena.ontology.path.PathSet;
 
 
 /**
@@ -40,7 +42,7 @@ package com.hp.hpl.jena.ontology;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: AllDifferent.java,v 1.2 2003-03-12 17:16:38 ian_dickinson Exp $
+ * @version CVS $Id: AllDifferent.java,v 1.3 2003-04-01 16:06:07 ian_dickinson Exp $
  */
 public interface AllDifferent
     extends Axiom
@@ -52,7 +54,20 @@ public interface AllDifferent
     // External signature methods
     //////////////////////////////////
 
+    /**
+     * <p>
+     * Answer an {@link PathSet accessor} for the 
+     * <code>distinctMembers</code>
+     * property of an AllDifferent axiom. The accessor
+     * can be used to perform a variety of operations, including getting and setting the value.
+     * </p>
+     * 
+     * @return An abstract accessor for the distinct individuals in an AllDifferent axioms
+     */
+    public PathSet p_distinctMembers();
 
+
+    
 }
 
 
