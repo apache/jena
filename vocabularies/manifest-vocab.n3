@@ -1,0 +1,56 @@
+@prefix rdfs:   <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dc:     <http://purl.org/dc/elements/1.1/> .
+@prefix :       <http://jena.hpl.hp.com/2003/03/test-manifest#> .
+
+<>  rdfs:comment     "Manifest vocabulary for test cases" ;
+    dc:creator       "Andy Seaborne" ;
+    dc:subject       "" ;
+    dc:publisher     "Hewlett-Packard Laboratories" ;
+    dc:title         "Test case manifest vocabulary" ;
+    dc:description   "" ;
+    dc:date          "2003-03" ;
+    dc:format        "RDF" ;
+    dc:identifier    : ; #:-)
+    .
+
+## ---- Class declarations ----
+
+:Manifest a rdfs:Class ;
+    rdfs:comment "The class of manifests" .
+
+:ManifestEntry a rdfs:Class ;
+    rdfs:comment "One entry in a list of entries" .
+
+## ---- Property declarations ----
+
+
+:entries a rdf:Property ;
+    rdfs:comment "Connects the manifest resource to a list of entries" ;
+    rdfs:domain	 :Manifest ;
+    rdfs:range   rdf:List ;
+    .	
+
+# One entry
+
+:name a rdf:Property ;
+    rdfs:comment "Optional name of this entry" ;
+    rdfs:domain	 :ManifestEntry ;
+    rdfs:range   rdfs:Literal ;
+    .	
+    
+:action a rdf:Property ;
+    rdfs:comment "The input to the test" ;
+    rdfs:domain	 :ManifestEntry ;
+    # rdfs:range   ?? ;
+    .	
+
+:input = :action .
+
+:result a rdf:Property ;
+    rdfs:comment "Connects the manifest resource to a list of entries" ;
+    rdfs:domain	 :ManifestEntry ;
+    # rdfs:range   ?? ;
+    .	
+
+:output = :result .
