@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.3 2003-02-11 15:17:03 chris-dollin Exp $
+ * $Id: WGReasonerTester.java,v 1.4 2003-02-14 14:27:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -40,7 +40,7 @@ import java.util.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2003-02-11 15:17:03 $
+ * @version $Revision: 1.4 $ on $Date: 2003-02-14 14:27:33 $
  */
 public class WGReasonerTester {
 
@@ -76,6 +76,12 @@ public class WGReasonerTester {
     
     /** The predicate defining the conclusion from the test */
     public static final Property conclusionDocumentP;
+    
+    /** List of tests block because they are only intended for non-dt aware processors */
+    public static final String[] blockedTests = {
+        BASE_URI + "datatypes/Manifest.rdf#language-important-for-non-dt-entailment-1",
+        BASE_URI + "datatypes/Manifest.rdf#language-important-for-non-dt-entailment-2"
+    };
     
     // Static initializer for the predicates
     static {
@@ -157,13 +163,11 @@ public class WGReasonerTester {
         ResIterator tests = testManifest.listSubjectsWithProperty(RDF.type, PositiveEntailmentTest);
         while (tests.hasNext()) {
             String test = tests.next().toString();
-            System.out.println(test);
             if (!runTest(test, reasonerF, testcase, configuration)) return false;
         }
         tests = testManifest.listSubjectsWithProperty(RDF.type, NegativeEntailmentTest);
         while (tests.hasNext()) {
             String test = tests.next().toString();
-            System.out.println(test);
             if (!runTest(test, reasonerF, testcase, configuration)) return false;
         }
         return true;
@@ -191,6 +195,11 @@ public class WGReasonerTester {
         String description = test.getProperty(descriptionP).getObject().toString();
         String status = test.getProperty(statusP).getObject().toString();
         logger.debug("WG test " + test.getURI() + " - " + status);
+        
+        // Skip the test designed for only non-datatype aware processors
+        for (int i = 0; i < blockedTests.length; i++) {
+            if (test.getURI().equals(blockedTests[i])) return true;
+        }
                 
         // Load up the premise documents
         Model premises = new ModelMem();
