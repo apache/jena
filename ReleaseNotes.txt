@@ -94,6 +94,8 @@ Post Jena 2.1 change list
       o the standard Jena readers generate startRead and finishRead events
       o all the Graph events now come with their source Graph attached as an
         argument to the event method.
+      o added test case and fixed resulting issues to ensure that .remove()
+        on the iterator from find() generated a notifyDeleteTriple event.
 
   Reasoners
       o Fixed bug 927644, mishandling of cycles in transitive reasoner
