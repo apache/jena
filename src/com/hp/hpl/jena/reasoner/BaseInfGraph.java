@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseInfGraph.java,v 1.35 2004-11-01 16:38:28 chris-dollin Exp $
+ * $Id: BaseInfGraph.java,v 1.36 2004-11-02 14:10:09 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -20,7 +20,7 @@ import java.util.Iterator;
  * A base level implementation of the InfGraph interface.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.35 $ on $Date: 2004-11-01 16:38:28 $
+ * @version $Revision: 1.36 $ on $Date: 2004-11-02 14:10:09 $
  */
 public abstract class BaseInfGraph extends GraphBase implements InfGraph {
 
@@ -337,7 +337,7 @@ public abstract class BaseInfGraph extends GraphBase implements InfGraph {
     /**
      * Return the number of triples in the just the base graph
      */
-    public int size() {
+    public int graphBaseSize() {
         checkOpen();
         return fdata.getGraph().size();
     }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-11-01 16:38:26 $
+ * Last modified on   $Date: 2004-11-02 14:10:07 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.14 2004-11-01 16:38:26 chris-dollin Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.15 2004-11-02 14:10:07 chris-dollin Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -150,7 +150,7 @@ public class MultiUnion
      * @param t A triple
      * @return True if any of the graphs in the union contain t
      */
-    public boolean contains( Triple t ) {
+    public boolean graphBaseContains( Triple t ) {
         for (Iterator i = m_subGraphs.iterator();  i.hasNext();  ) {
             if (((Graph) i.next()).contains( t )) {
                 return true;

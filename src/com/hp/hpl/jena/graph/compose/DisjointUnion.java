@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: DisjointUnion.java,v 1.3 2004-11-01 16:38:26 chris-dollin Exp $
+  $Id: DisjointUnion.java,v 1.4 2004-11-02 14:10:07 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.compose;
 
@@ -26,7 +26,7 @@ public class DisjointUnion extends Dyadic
     public ExtendedIterator graphBaseFind( TripleMatch m )
         { return L.find( m ) .andThen( R.find( m ) ); }
     
-    public boolean contains( Triple t )
+    public boolean graphBaseContains( Triple t )
         { return L.contains( t ) || R.contains( t ); }
     
     public void performDelete( Triple t )

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.2 2004-11-01 16:38:27 chris-dollin Exp $
+  $Id: SmallGraphMem.java,v 1.3 2004-11-02 14:10:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -40,22 +40,16 @@ public class SmallGraphMem extends GraphMemBase
     public void performDelete( Triple t )
         { if (!getReifier().handledRemove( t )) triples.remove( t ); }
     
-    public int size()  
-        {
-        checkOpen();
-        return triples.size();
-        }
+    public int graphBaseSize()  
+        { return triples.size(); }
 
     /**
         Answer true iff t matches some triple in the graph. If t is concrete, we
         can use a simple membership test; otherwise we resort to the generic
         method using find.
     */
-    public boolean contains( Triple t ) 
-        {
-        checkOpen();
-        return t.isConcrete() ? triples.contains( t ) : containsByFind( t ); 
-        }
+    public boolean graphBaseContains( Triple t ) 
+        { return t.isConcrete() ? triples.contains( t ) : containsByFind( t ); }
     
     protected void destroy()
         { triples = null; }

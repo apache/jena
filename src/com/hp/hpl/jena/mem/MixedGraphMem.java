@@ -1,7 +1,7 @@
 /*
   (c) Copyright Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.4 2004-11-01 16:38:27 chris-dollin Exp $
+  $Id: MixedGraphMem.java,v 1.5 2004-11-02 14:10:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -191,22 +191,16 @@ public class MixedGraphMem extends GraphMemBase implements Graph
     public void performDelete( Triple t )
         { if (!getReifier().handledRemove( t )) thing.remove( t ); }
     
-    public int size()  
-        {
-        checkOpen();
-        return thing.size();
-        }
+    public int graphBaseSize()  
+        { return thing.size(); }
 
     /**
         Answer true iff t matches some triple in the graph. If t is concrete, we
         can use a simple membership test; otherwise we resort to the generic
         method using find.
     */
-    public boolean contains( Triple t ) 
-        {
-        checkOpen();
-        return t.isConcrete() ? thing.contains( t ) : containsByFind( t ); 
-        }
+    public boolean graphBaseContains( Triple t ) 
+        { return t.isConcrete() ? thing.contains( t ) : containsByFind( t ); }
     
     protected void destroy()
         { thing = null; }

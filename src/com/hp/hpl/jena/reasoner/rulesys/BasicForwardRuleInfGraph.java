@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.37 2004-11-01 16:38:28 chris-dollin Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.38 2004-11-02 14:10:09 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.37 $ on $Date: 2004-11-01 16:38:28 $
+ * @version $Revision: 1.38 $ on $Date: 2004-11-02 14:10:09 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -277,7 +277,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     /**
      * Return the number of triples in the inferred graph
      */
-    public int size() {
+    public int graphBaseSize() {
         checkOpen();
         if (!isPrepared) {
             prepare();

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Delta.java,v 1.7 2004-11-01 16:38:25 chris-dollin Exp $
+  $Id: Delta.java,v 1.8 2004-11-02 14:10:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -75,7 +75,7 @@ public class Delta extends Dyadic implements Graph
 		base.close();
 		}
 
-	public int size()
+	public int graphBaseSize()
 		{ return base.size() + L.size() - R.size(); }
 	}
 

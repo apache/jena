@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.45 2004-11-01 16:38:27 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.46 2004-11-02 14:10:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -11,8 +11,6 @@ import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
-
-import java.util.*;
 
 /**
     A memory-backed graph with S/P/O indexes. 
@@ -44,11 +42,8 @@ public class GraphMem extends GraphMemBase implements Graph
         { if (!getReifier().handledRemove( t )) store.delete( t ); }
 
 
-    public int size()  
-        {
-        checkOpen();
-        return store.size();
-        }
+    public int graphBaseSize()  
+        { return store.size(); }
 
     public boolean isEmpty()
         {
@@ -73,18 +68,15 @@ public class GraphMem extends GraphMemBase implements Graph
          triple-pattern <code>m</code>. Delegated to the store.
      */
     public ExtendedIterator graphBaseFind( TripleMatch m ) 
-        {
-        checkOpen();
-        return store.find( m.asTriple() );
-        }
+        { return store.find( m.asTriple() ); }
 
     /**
          Answer true iff this graph contains <code>t</code>. If <code>t</code>
          happens to be concrete, then we hand responsibility over to the store.
          Otherwise we use the default implementation.
     */
-    public boolean contains( Triple t )
-        { return t.isConcrete() ? store.contains( t ) : super.contains( t ); }
+    public boolean graphBaseContains( Triple t )
+        { return t.isConcrete() ? store.contains( t ) : super.graphBaseContains( t ); }
     
     /**
         Clear this GraphMem, ie remove all its triples (delegated to the store).

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestReifierCompareToMem.java,v 1.5 2003-12-08 10:48:23 andy_seaborne Exp $
+  $Id: TestReifierCompareToMem.java,v 1.6 2004-11-02 14:10:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -104,12 +104,13 @@ public class TestReifierCompareToMem extends TestCase
     	logger.debug("Model");
 		Iterator it = m.listStatements();
 		while( it.hasNext()) { 
-			Statement s = (Statement)it.next();
-			RDFNode object = s.getObject();
-			if( object instanceof Literal )
-				logger.debug(name+": "+s.getSubject()+s.getPredicate()+((Literal)object).getValue()+" "+((Literal)object).getDatatype()+" "+((Literal)object).getLanguage());
-			else
-				logger.debug(name+": "+it.next()); 	
+            logger.debug( name + ": " + it.next() );
+//			Statement s = (Statement)it.next();
+//			RDFNode object = s.getObject();
+//			if( object instanceof Literal )
+//				logger.debug(name+": "+s.getSubject()+s.getPredicate()+((Literal)object).getValue()+" "+((Literal)object).getDatatype()+" "+((Literal)object).getLanguage());
+//			else
+//				logger.debug(name+": "+it.next()); 	
     	}
     }
     

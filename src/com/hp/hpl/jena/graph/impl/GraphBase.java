@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.32 2004-11-01 16:38:26 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.33 2004-11-02 14:10:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -152,8 +152,11 @@ public abstract class GraphBase implements GraphWithPerform
 	*/
 	public final ExtendedIterator find( TripleMatch m )
         { checkOpen(); 
-        return graphBaseFind( m ); }
+        return reifierTriples( m ) .andThen( graphBaseFind( m ) ); }
 
+    protected ExtendedIterator reifierTriples( TripleMatch m )
+        { return getReifier().find( m ); }
+    
 	protected abstract ExtendedIterator graphBaseFind( TripleMatch m );
     
     /**
@@ -171,12 +174,21 @@ public abstract class GraphBase implements GraphWithPerform
         <code>find(t)</code> being non-empty. <code>t</code> may contain ANY
         wildcards. Sub-classes may over-ride for efficiency.
 	*/
-	public boolean contains( Triple t ) {
-        checkOpen();
-		return containsByFind( t );
-	}
+	public final boolean contains( Triple t ) 
+        { checkOpen();
+		return reifierContains( t ) || graphBaseContains( t );	}
+    
+    protected boolean reifierContains( Triple t )
+        { return getReifier().find( t ).hasNext(); }
 
 	/**
+     * @param t
+     * @return
+     */
+    protected boolean graphBaseContains( Triple t )
+        { return containsByFind( t ); }
+
+    /**
          Answer <code>true</code> if this graph contains <code>(s, p, o)</code>;
          this canonical implementation cannot be over-ridden. 
 	*/
@@ -208,12 +220,19 @@ public abstract class GraphBase implements GraphWithPerform
 	/**
 	 * @see com.hp.hpl.jena.graph.Graph#size()
 	 */
-	public int size() {
-        checkOpen();
+	public final int size() 
+        { checkOpen();
+        return graphBaseSize() + reifierSize(); }
+    
+    protected int reifierSize()
+        { return getReifier().size(); }
+
+    protected int graphBaseSize()
+        {
 		ExtendedIterator it = GraphUtil.findAll( this );
-        int result = 0;
-        while (it.hasNext()) { it.next(); result += 1; }
-        return result;    
+        int tripleCount = 0;
+        while (it.hasNext()) { it.next(); tripleCount += 1; }
+        return tripleCount; 
         }
 
     /** 

@@ -1,7 +1,7 @@
 /*
  (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
  [See end of file]
- $Id: ReifierTripleMap.java,v 1.2 2004-09-15 14:03:35 chris-dollin Exp $
+ $Id: ReifierTripleMap.java,v 1.3 2004-11-02 14:10:08 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.graph.impl;
@@ -56,6 +56,10 @@ public interface ReifierTripleMap
          corresponding reification quadlets). 
     */
     public abstract Graph asGraph();
+    
+    public ExtendedIterator find( TripleMatch m );
+    
+    public int size();
 
     /**
          Answer an iterator over all the bound tags in this map.

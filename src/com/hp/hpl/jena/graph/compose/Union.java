@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Union.java,v 1.7 2004-11-01 16:38:26 chris-dollin Exp $
+  $Id: Union.java,v 1.8 2004-11-02 14:10:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -39,7 +39,7 @@ public class Union extends Dyadic implements Graph
 		R.delete( t );
 		}
 
-    public boolean contains( Triple t )
+    public boolean graphBaseContains( Triple t )
         { return L.contains( t ) || R.contains( t ); }
         
     /**

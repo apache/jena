@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.38 2004-09-23 14:37:38 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.39 2004-11-02 14:10:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -61,9 +61,7 @@ public class SimpleReifier implements Reifier
         
     /** return the triple bound to _n_ */
     public Triple getTriple( Node n )        
-        { 
-        return tripleMap.getTriple( n );
-        }
+        { return tripleMap.getTriple( n ); }
         
     /** true iff there is a triple bound to _n_ */
     public boolean hasTriple( Node n )
@@ -136,7 +134,7 @@ public class SimpleReifier implements Reifier
             else     
                 {
                 addFragment( s, fragment );
-                return concealing;
+                return true;
                 }
             }
         else
@@ -181,7 +179,7 @@ public class SimpleReifier implements Reifier
             else     
                 {
                 removeFragment( s, fragment );
-                return concealing;
+                return true;
                 }
             }
         else
@@ -209,7 +207,13 @@ public class SimpleReifier implements Reifier
     public Graph getReificationTriples()
         { if (reificationTriples == null) reificationTriples = new DisjointUnion( tripleMap.asGraph(), fragmentsMap.asGraph() ); 
         return reificationTriples; }
+    
+    public ExtendedIterator find( TripleMatch m )
+        { return concealing ? NullIterator.instance : tripleMap.find( m ).andThen( fragmentsMap.find( m ) ); }
         
+    public int size()
+        { return concealing ? 0 : tripleMap.size() + fragmentsMap.size(); }
+    
     /**
         remove from the parent all of the triples that correspond to a reification
         of t on tag.

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: CompositionBase.java,v $
- * Revision           $Revision: 1.7 $
+ * Revision           $Revision: 1.8 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2004-11-01 14:20:26 $
+ * Last modified on   $Date: 2004-11-02 14:10:07 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, moved kers' code from Dyadic to this class, added commentage
  * @author Chris Dollin (kers)
- * @version CVS $Id: CompositionBase.java,v 1.7 2004-11-01 14:20:26 chris-dollin Exp $
+ * @version CVS $Id: CompositionBase.java,v 1.8 2004-11-02 14:10:07 chris-dollin Exp $
  */
 public abstract class CompositionBase
     extends GraphBase
@@ -53,7 +53,7 @@ public abstract class CompositionBase
      * @return The integer triple count
      * @see com.hp.hpl.jena.graph.Graph#size()
      */
-    public int size()
+    public int graphBaseSize()
         { return countIterator( GraphUtil.findAll( this ) ); }             
       
     /**

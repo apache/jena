@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBReifier.java,v 1.13 2003-09-17 12:14:04 chris-dollin Exp $
+  $Id: DBReifier.java,v 1.14 2004-11-02 14:10:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -71,6 +71,12 @@ public class DBReifier implements Reifier
             m_hiddenTriples = new DBReifierGraph(m_parent, m_hidden_reifiers);
 		return m_hiddenTriples;
 	}
+    
+    public ExtendedIterator find( TripleMatch m )
+        { return getReificationTriples().find( m ); }
+    
+    public int size() 
+        { return getHiddenTriples().size(); }
     
     public Graph getHiddenTriples()
         { return m_style == ReificationStyle.Standard ? Graph.emptyGraph : getReificationTriples(); }

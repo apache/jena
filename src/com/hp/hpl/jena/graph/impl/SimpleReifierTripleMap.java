@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierTripleMap.java,v 1.6 2004-11-01 16:38:26 chris-dollin Exp $
+  $Id: SimpleReifierTripleMap.java,v 1.7 2004-11-02 14:10:08 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -129,6 +129,12 @@ public class SimpleReifierTripleMap implements ReifierTripleMap
         return new GraphBase()
             { public ExtendedIterator graphBaseFind( TripleMatch tm ) { return allTriples( tm ); } };
         }
+    
+    public ExtendedIterator find( TripleMatch m )
+        { return allTriples( m ); }
+    
+    public int size()
+        { return forwardMap.size() * 4; }
     
     /**
          Answer an iterator over all the fragment tags in this map.
