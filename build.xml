@@ -184,7 +184,9 @@
                destdir="${classes.dir}"
                debug="${debug}"
                deprecation="${deprecation}"
-               optimize="${optimize}">
+               optimize="${optimize}"
+	       source="${java.source}"
+	       target="${java.target}">
             <classpath refid="classpath" />
         </javac>
     </target>
