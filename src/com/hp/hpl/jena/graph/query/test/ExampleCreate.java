@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ExampleCreate.java,v 1.3 2003-10-10 09:07:10 chris-dollin Exp $
+  $Id: ExampleCreate.java,v 1.4 2003-10-10 10:36:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -17,43 +17,84 @@ import com.hp.hpl.jena.graph.query.*;
  */
 public class ExampleCreate
     {
+    public static abstract class Dyadic extends BaseExampleExpression
+        {
+        protected Expression L;
+        protected Expression R;
+        
+        public Dyadic( Node L, Node R )
+            { this.L = asExpression( L ); this.R = asExpression( R ); }
+
+        public Object eval( IndexValues iv )
+            { return evalBool( iv ) ? Boolean.TRUE : Boolean.FALSE; }
+            
+        public Object eval( VariableValues iv )
+            { return evalBool( iv ) ? Boolean.TRUE : Boolean.FALSE; }
+                                
+        public Expression prepare( VariableIndexes vi )
+            {
+            L = L.prepare( vi );
+            R = R.prepare( vi );
+            return this;    
+            }    
+            
+        public Expression asExpression( final Node x )
+            {
+            return new Expression()
+                {
+                int xi = -1;
+                
+                public Object eval( IndexValues iv )
+                    { return xi < 0 ? x : iv.get( xi ); }
+                    
+                public Object eval( VariableValues iv )
+                    { return iv.get( x.getName() ); }
+                    
+                public boolean evalBool( VariableValues vv )
+                    {
+                    if (x.isVariable()) return ((Boolean) vv.get( x.getName() )).booleanValue();
+                    else return false;    
+                    }
+                    
+                public Expression prepare( VariableIndexes vi )
+                    { if (x.isVariable()) xi = vi.indexOf( x.getName() ); 
+                    return this; }    
+                    
+                public boolean evalBool( IndexValues iv )
+                    { return ((Boolean) iv.get( xi )).booleanValue(); }
+                };    
+            }
+        }
+        
     public static BaseExampleExpression NE( final Node x, final Node y )
         {
-        return new BaseExampleExpression() 
+        return new Dyadic( x, y ) 
             {
-            public Expression prepare( VariableIndexes vi )
-                { return null; }
-                
             public boolean evalBool( VariableValues vv )
-                { return !eval( x, vv ).equals( eval( y, vv ) ); }
+                { return !L.eval( vv ).equals( R.eval( vv ) ); }
                 
             public boolean evalBool( IndexValues iv )
-                { return !eval( x, iv ).equals( eval( y, iv ) ); }
+                { 
+                    return !L.eval( iv ).equals( R.eval( iv ) ); }
             };    
         }    
     
-    public static BaseExampleExpression EQ( final Node x, final Node y )
+    public static BaseExampleExpression EQ( Node x, Node y )
         {
-        return new BaseExampleExpression() 
+        return new Dyadic( x, y ) 
             {
-            public Expression prepare( VariableIndexes vi )
-                { return null; }
-                
             public boolean evalBool( VariableValues vv )
-                { return eval( x, vv ).equals( eval( y, vv ) ); }
+                { return L.eval( vv ).equals( R.eval( vv ) ); }
                 
             public boolean evalBool( IndexValues iv )
-                { return eval( x, iv ).equals( eval( y, iv ) ); }
+                { return L.eval( iv ).equals( R.eval( iv ) ); }
             };    
         }         
         
-    public static BaseExampleExpression MATCHES( final Node x, final Node y )
+    public static BaseExampleExpression MATCHES( Node x, Node y )
         {
-        return new BaseExampleExpression() 
+        return new Dyadic( x, y ) 
             {
-            public Expression prepare( VariableIndexes vi )
-                { return null; }
-                
             private String asString( Object n )
                 {
                 if (n instanceof Node_Literal) return ((Node) n).getLiteral().getLexicalForm();
@@ -65,10 +106,10 @@ public class ExampleCreate
                 return x.indexOf( y ) > -1; }       
                          
             public boolean evalBool( VariableValues vv )
-                { return matches( eval( x, vv ), eval( y, vv ) ); }
+                { return matches( L.eval( vv ), R.eval( vv ) ); }
                 
             public boolean evalBool( IndexValues vv )
-                { return matches( eval( x, vv ), eval( y, vv ) ); }
+                { return matches( L.eval( vv ), R.eval( vv ) ); }
             };    
         }
     }
