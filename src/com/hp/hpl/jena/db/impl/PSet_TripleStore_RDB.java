@@ -15,6 +15,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -54,7 +55,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.9 $ on $Date: 2003-05-05 17:50:08 $
+* @version $Revision: 1.10 $ on $Date: 2003-05-06 05:07:13 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -439,7 +440,7 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		String ls = (String)(ll.getValue());
 		
 		return (ls.length() < MAX_LITERAL) &&
-			/* ((dtype == null) || dtype.equals("")) && */  /* for now, ignore datatype */
+			/* ((dtype == null) || dtype.equals("")) && */
 			((lang == null)  || lang.equals(""));
 	}
 			
@@ -714,6 +715,23 @@ public  class PSet_TripleStore_RDB implements IPSet {
   	deleteTriple(t, graphID, false, new Hashtable());
   }
   	
+  /**
+   *
+   * Attempt to remove a statement from an Asserted_Statement table,
+   * if it is present.  Return without error if the statement is not
+   * present.
+   *
+   * @param subj_uri is the URI of the subject
+   * @param pred_uri is the URI of the predicate (property)
+   * @param obj_node is the URI of the object (can be URI or literal)
+   * @param graphID is the ID of the graph
+   * @param complete is true if this handler is capable of adding this triple.
+   *
+   **/
+	public void deleteTriple(Triple t, IDBID graphID, boolean isBatch,
+		Hashtable batchedPreparedStatements) {
+			deleteTripleAR(t,graphID,null,isBatch,batchedPreparedStatements);
+		}
 	/**
 	 *
 	 * Attempt to remove a statement from an Asserted_Statement table,
@@ -723,16 +741,19 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * @param subj_uri is the URI of the subject
 	 * @param pred_uri is the URI of the predicate (property)
 	 * @param obj_node is the URI of the object (can be URI or literal)
+	 * @param stmtURI is the URI of the statement if reified, null for asserted
 	 * @param graphID is the ID of the graph
 	 * @param complete is true if this handler is capable of adding this triple.
 	 *
 	 **/
-  public void deleteTriple(Triple t, 
-  					IDBID graphID,
-  					boolean isBatch, 
+  public void deleteTripleAR(Triple t, 
+  					IDBID graphID, 
+					Node_URI reifNode,					 
+					boolean isBatch, 
   					Hashtable batchedPreparedStatements) {
 	String objURI;
 	Object obj_val;
+	boolean isReif = reifNode != null;
 	   
 	String obj_res, obj_lex, obj_lit;
 	String subjURI =  nodeToRDBString(t.getSubject());
@@ -741,24 +762,31 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	String gid = graphID.getID().toString();
    	   
    PreparedStatement ps;
+   String stmtStr;
 
    if ( obj_node.isURI() || obj_node.isBlank() ) {
 	 objURI = nodeToRDBString(obj_node);
 	 try {
-		  ps = m_sql.getPreparedSQLStatement("deleteStatementObjectURI",getASTname());
+		stmtStr = isReif ? "deleteReifStatementObjectURI" : "deleteStatementObjectURI";
+
+		  ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
 	  	  ps.clearParameters();	
 	
 	      ps.setString(1,subjURI);
 	      ps.setString(2,predURI);
 	      ps.setString(3,objURI);
 	      ps.setString(4,gid);
+		  if ( isReif ) {
+		    String stmtURI = nodeToRDBString(reifNode);
+		    ps.setString(5,stmtURI);
+		  }
 	
 		if (isBatch) {
 			  ps.addBatch();
-			  batchedPreparedStatements.put("deleteStatementObjectURI",ps);
+			  batchedPreparedStatements.put(stmtStr,ps);
 		  } else {
 			ps.executeUpdate();
-			m_sql.returnPreparedSQLStatement(ps, "deleteStatementObjectURI");
+			m_sql.returnPreparedSQLStatement(ps, stmtStr);
 		  }
 	 } catch(SQLException e1) {
 		Log.debug("(in delete) SQLException caught " + e1);
@@ -774,7 +802,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	  if (litIsPlain) {
 	  	// object literal can fit in statement table
 		try {
-		ps = m_sql.getPreparedSQLStatement("deleteStatementLiteralVal",getASTname());
+			stmtStr = isReif ? "deleteReifStatementLiteralVal" : "deleteStatementLiteralVal";
+		ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
 		if (ps == null) {
 			Log.severe("prepared statement not found for deleteStatementLiteralVal");
 		}
@@ -783,13 +812,17 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		ps.setString(2,predURI);
 		ps.setString(3, lval);
 		ps.setString(4,gid);
-	
+		if ( isReif ) {
+		  String stmtURI = nodeToRDBString(reifNode);
+		  ps.setString(5,stmtURI);
+		}
+
 		if (isBatch) {
 			  ps.addBatch();
-			  batchedPreparedStatements.put("deleteStatementLiteralVal",ps);
+			  batchedPreparedStatements.put(stmtStr,ps);
 		  } else {
 			ps.executeUpdate();
-			m_sql.returnPreparedSQLStatement(ps, "deleteStatementLiteralVal");
+			m_sql.returnPreparedSQLStatement(ps, stmtStr);
 		  }
 	   } catch(SQLException e1) {
 		Log.debug("(in delete) SQLException caught " + e1);
@@ -803,26 +836,30 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		  return;
 		}
 		try {
-		ps = m_sql.getPreparedSQLStatement("deleteStatementLiteralRef",getASTname());
+		stmtStr = isReif ? "deleteReifStatementLiteralRef" : "deleteStatementLiteralRef";
+		ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
 		ps.clearParameters();	
 	
 		ps.setString(1,subjURI);
 		ps.setString(2,predURI);
 		ps.setString(3,lid.getID().toString());
 		ps.setString(4,gid);
+		if ( isReif ) {
+		  String stmtURI = nodeToRDBString(reifNode);
+		  ps.setString(5,stmtURI);
+		}
 	
 		if (isBatch) {
 			  ps.addBatch();
-			  batchedPreparedStatements.put("deleteStatementLiteralRef",ps);
+			  batchedPreparedStatements.put(stmtStr,ps);
 		  } else {
 			ps.executeUpdate();
-			m_sql.returnPreparedSQLStatement(ps, "deleteStatementLiteralRef");
+			m_sql.returnPreparedSQLStatement(ps, stmtStr);
 		  }
 	   } catch(SQLException e1) {
 	  	Log.debug("(in delete) SQLException caught " + e1);
 	   }
 	  }
-
    }
 }
 
@@ -854,15 +891,38 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		 *
 		 **/
 	  public void storeTriple(Triple t, 
-	  						IDBID graphID, 
+	  						IDBID graphID,
+	  						boolean isBatch, 
+	  						Hashtable batchedPreparedStatements) {
+	  		 storeTripleAR(t,graphID,null,false,isBatch,batchedPreparedStatements);
+	  }
+	  
+		/**
+		 *
+		 * Attempt to store a statement into an Asserted_Statement table.
+		 *
+		 * @param subj_uri is the URI of the subject
+		 * @param pred_uri is the URI of the predicate (property)
+		 * @param obj_node is the URI of the object (can be URI or literal)
+		 * @param stmtURI is the URI of the statement if reified, null for asserted
+		 * @param hasType is true if the hasType flag should be set for a reified stmt 
+		 * @param graphID is the ID of the graph
+		 * @param isBatch is true if this request is part of a batch operation.
+		 *
+		 **/
+	  public void storeTripleAR(Triple t, 
+	  						IDBID graphID,
+	  						Node_URI reifNode,
+	  						boolean hasType, 
 	  						boolean isBatch, 
 	  						Hashtable batchedPreparedStatements) {
 		String objURI;
 		Object obj_val;
+		boolean isReif = reifNode != null;
 		
 		
 		//	if database doesn't perform duplicate check
-		if (!SKIP_DUPLICATE_CHECK) {
+		if (!SKIP_DUPLICATE_CHECK && !isReif) {
 		 // if statement already in table
 		 if (statementTableContains(graphID, t)) {
 			return;
@@ -874,26 +934,36 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		String predURI =  nodeToRDBString(t.getPredicate());
 		Node obj_node = t.getObject();
 		String gid = graphID.getID().toString();
+		String	stmtStr;
 	   	   
 	   PreparedStatement ps;
 	
 	   if ( obj_node.isURI() || obj_node.isBlank() ) {
 		 objURI = nodeToRDBString(obj_node);
-		 try {
-			  ps = m_sql.getPreparedSQLStatement("insertStatementObjectURI",getASTname());
+		 try { 	  	
+			  stmtStr = isReif ? "insertReifStatementObjectURI" : "insertStatementObjectURI";
+			  ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
 		  	  ps.clearParameters();	
 		
 		      ps.setString(1,subjURI);
 		      ps.setString(2,predURI);
 		      ps.setString(3,objURI);
 		      ps.setString(4,gid);
+		      if ( isReif ) {
+				String stmtURI = nodeToRDBString(reifNode);
+		      	ps.setString(5,stmtURI);
+		      	if ( hasType == true)
+		      		ps.setInt(6,1);
+		     	 else
+		      		ps.setNull(6,java.sql.Types.INTEGER);
+		      }
 		
 			if (isBatch) {
 				ps.addBatch();
-				batchedPreparedStatements.put("insertStatementObjectURI", ps);
+				batchedPreparedStatements.put(stmtStr, ps);
 			} else {
 		      ps.executeUpdate();
-			  m_sql.returnPreparedSQLStatement(ps, "insertStatementObjectURI");
+			  m_sql.returnPreparedSQLStatement(ps, stmtStr);
 			}
 		 } catch(SQLException e1) {
 			if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
@@ -911,8 +981,9 @@ public  class PSet_TripleStore_RDB implements IPSet {
 		  if (litIsPlain) {
 		  	// object literal can fit in statement table
 			try {
-			ps = m_sql.getPreparedSQLStatement("insertStatementLiteralVal",getASTname());
-			if (ps == null) {
+				stmtStr = isReif ? "insertReifStatementLiteralVal" : "insertStatementLiteralVal";
+				ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
+				if (ps == null) {
 				Log.severe("prepared statement not found for insertStatementLiteralVal");
 			}
 		
@@ -920,13 +991,21 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			ps.setString(2,predURI);
 			ps.setString(3, lval);
 			ps.setString(4,gid);
-		
+			if ( isReif ) {
+			  String stmtURI = nodeToRDBString(reifNode);
+			  ps.setString(5,stmtURI);
+			  if ( hasType == true)
+				  ps.setInt(6,1);
+			   else
+				  ps.setNull(6,java.sql.Types.INTEGER);
+			}
+
 			if (isBatch) {
 				ps.addBatch();
-				batchedPreparedStatements.put("insertStatementLiteralVal",ps);
+				batchedPreparedStatements.put(stmtStr,ps);
 			} else {
 			  ps.executeUpdate();
-			  m_sql.returnPreparedSQLStatement(ps, "insertStatementLiteralVal");
+			  m_sql.returnPreparedSQLStatement(ps, stmtStr);
 			}
 		   } catch(SQLException e1) {
 			if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
@@ -941,7 +1020,8 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			  lid = addLiteral(litNode);
 			}
 			try {
-			ps = m_sql.getPreparedSQLStatement("insertStatementLiteralRef",getASTname());
+			stmtStr = isReif ? "insertReifStatementLiteralRef" : "insertStatementLiteralRef";
+			ps = m_sql.getPreparedSQLStatement(stmtStr,getASTname());
 			ps.clearParameters();	
 		
 			ps.setString(1,subjURI);
@@ -949,13 +1029,21 @@ public  class PSet_TripleStore_RDB implements IPSet {
 			ps.setString(3, lid.getID().toString());
 			ps.setString(4, litIdx); // TODO should this be here?  Seems redundant to store litIdx?
 			ps.setString(5,gid);
-		
+			if ( isReif ) {
+			  String stmtURI = nodeToRDBString(reifNode);
+			  ps.setString(6,stmtURI);
+			  if ( hasType == true)
+				  ps.setInt(7,1);
+			   else
+				  ps.setNull(7,java.sql.Types.INTEGER);
+			}
+	
 			if (isBatch) {
 				ps.addBatch();
-				batchedPreparedStatements.put("insertStatementLiteralRef",ps);
+				batchedPreparedStatements.put(stmtStr,ps);
 			} else {
 			  ps.executeUpdate();
-			  m_sql.returnPreparedSQLStatement(ps, "insertStatementLiteralRef");
+			  m_sql.returnPreparedSQLStatement(ps, stmtStr);
 			}
 		   } catch(SQLException e1) {
 			if (!((e1.getErrorCode()== 1) && (m_driver.getDatabaseType().equalsIgnoreCase("oracle")))) {
