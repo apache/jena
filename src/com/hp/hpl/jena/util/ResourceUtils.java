@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:07:55 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-14 14:27:54 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.5 2003-08-27 13:07:55 andy_seaborne Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.6 2004-01-14 14:27:54 ian_dickinson Exp $
  */
 public class ResourceUtils {
     // Constants
@@ -174,6 +174,49 @@ public class ResourceUtils {
     }
     
 
+    /**
+     * <p>Answer a model that contains all of the resources reachable from a given 
+     * resource by any property, transitively.  The returned graph is the sub-graph
+     * of the parent graph of root, whose root node is the given root. Cycles are
+     * permitted in the sub-graph.</p>
+     * @param root The root node of the sub-graph to extract
+     * @return A model containing all reachable RDFNodes from root by any property.
+     */
+    public static Model reachableClosure( Resource root ) {
+        Model m = ModelFactory.createDefaultModel();
+        
+        // set of resources we have passed through already (i.e. the occurs check)
+        HashSet seen = new HashSet();
+        
+        // queue of resources we have not yet visited
+        List queue = new LinkedList();
+        queue.add( root );
+        
+        while (!queue.isEmpty()) {
+            Resource r = (Resource) queue.remove( 0 );
+            
+            // check for multiple paths arriving at this queue node
+            if (!seen.contains( r )) {
+                seen.add( r );
+
+                // add the statements to the output model, and queue any new resources 
+                for (StmtIterator i = r.listProperties(); i.hasNext(); ) {
+                    Statement s = i.nextStatement();
+                    
+                    // don't do the occurs check now in case of reflexive statements
+                    m.add( s );
+
+                    if (s.getObject() instanceof Resource) {
+                        queue.add( s.getObject() );
+                    }
+                }
+            }
+        }
+        
+        return m;
+    }
+    
+    
     // Internal implementation methods
     //////////////////////////////////
 

@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            06-Jun-2003
  * Filename           $RCSfile: TestResourceUtils.java,v $
- * Revision           $Revision: 1.3 $
+ * Revision           $Revision: 1.4 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-08-27 13:07:55 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2004-01-14 14:27:44 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -40,7 +40,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResourceUtils.java,v 1.3 2003-08-27 13:07:55 andy_seaborne Exp $
+ * @version CVS $Id: TestResourceUtils.java,v 1.4 2004-01-14 14:27:44 ian_dickinson Exp $
  */
 public class TestResourceUtils 
     extends TestCase
@@ -144,6 +144,30 @@ public class TestResourceUtils
         assertFalse( "Should be no f statements",  m.listStatements( f, null, (RDFNode) null).hasNext() );
         assertTrue( "f1 has p f1", f1.hasProperty( p, f1 ) );
     }
+    
+    public void testReachableGraphClosure() {
+        Model m0 = ModelFactory.createDefaultModel();
+        Resource a = m0.createResource( "a" );
+        Resource b = m0.createResource( "b" );
+        Resource c = m0.createResource( "c" );
+        Resource d = m0.createResource( "d" );
+        Property p = m0.createProperty( "p" );
+        
+        m0.add( a, p, b );
+        m0.add( a, p, c );
+        m0.add( b, p, b );  // unit loop
+        m0.add( b, p, a );  // loop
+        m0.add( d, p, a );  // not reachable from a
+        
+        Model m1 = ModelFactory.createDefaultModel();
+        m1.add( a, p, b );
+        m1.add( a, p, c );
+        m1.add( b, p, b );
+        m1.add( b, p, a );
+        
+        assertTrue( "m1 should be isomorphic with the reachable sub-graph from a", m1.isIsomorphicWith( ResourceUtils.reachableClosure(a)));
+    }
+    
     
     // Internal implementation methods
     //////////////////////////////////
