@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+</head>
+<body>
+This package contains a reasoner which supports transitive-reflexive closure
+of subPropertyOf and subClassOf relations. A single tbox can optionally be
+bound, which is expected to contain schema information but can contain other
+information as well. A single data graph can be bound - whch is allowed to
+contain schema information in which case the work of scanning the tbox is
+lost and has to be redone (because the data might define sub-properties of
+subPropertOf or subClassOf which were missed in the original tbox scan).<br>
+<p>The generated InfGraph will appear to contain the union of the data graph,
+the tbox graph, the reflexive-transitive closure of any subPropertyOf and
+subClassOf relations together with <i>direct</i> versions of these. <br>
+</p>
+<h3>Defects</h3>
+<p>The current implementation is flawed in its handling of multiple data
+bindings - you can't actually reuse the work of tbox binding across different
+data sets. This will be fixed soon.<br>
+<br>
+</p>
+<br>
+</body>
+</html>
