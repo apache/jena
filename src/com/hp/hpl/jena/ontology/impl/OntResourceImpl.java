@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-06-16 13:40:13 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2003-06-17 09:17:45 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002-2003, Hewlett-Packard Company, all rights reserved.
  * (see footer for full conditions)
@@ -27,6 +27,7 @@ package com.hp.hpl.jena.ontology.impl;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.enhanced.*;
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.path.*;
 import com.hp.hpl.jena.rdf.model.*;
@@ -48,7 +49,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.22 2003-06-16 13:40:13 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.23 2003-06-17 09:17:45 chris-dollin Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1120,7 +1121,7 @@ public class OntResourceImpl
         try {
             return getProperty( p ).getObject().as( asClass );
         }
-        catch (RDFException e) {
+        catch (JenaException e) {
             // subject does not have that property exception - TODO implement a more specific check here
             return null;
         }

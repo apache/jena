@@ -5,7 +5,7 @@
 
 /** Class used by original, Jena1, external query engine
  * @author   Andy Seaborne
- * @version  $Id: TriplePattern.java,v 1.10 2003-06-16 11:20:28 chris-dollin Exp $
+ * @version  $Id: TriplePattern.java,v 1.11 2003-06-17 09:18:10 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.rdql;
@@ -104,14 +104,7 @@ import com.hp.hpl.jena.shared.*;
 				if (tmp instanceof Property)
 					predicate = (Property) tmp;
 				else if ( tmp instanceof Resource )
-					try {
-						predicate = subject.getModel().createProperty(((Resource)tmp).getURI()) ;
-					} catch (RDFException rdfEx)
-					{
-						if ( rdfEx.getErrorCode() != RDFException.INVALIDPROPERTYURI )
-							throw rdfEx ;
-                        throw new JenaInvalidPropertyURIException( ((Resource)tmp).getURI() ) ;
-					}
+					predicate = subject.getModel().createProperty(((Resource)tmp).getURI()) ;
 				else if (tmp instanceof Value)
 					// Should not happen
 					throw new RDQL_InternalErrorException("TriplePattern.asStatment: value bound to variable") ;

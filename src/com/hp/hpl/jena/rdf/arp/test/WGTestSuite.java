@@ -77,7 +77,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         return in;
     }
     Model loadRDF(InputStream in, RDFErrorHandler eh, String base)
-        throws IOException, RDFException {
+        throws IOException {
         Model model = new ModelMem();
         JenaReader jr = new JenaReader();
 
@@ -88,7 +88,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         in.close();
         return model;
     }
-    static Model loadNT(InputStream in, String base) throws IOException, RDFException {
+    static Model loadNT(InputStream in, String base) throws IOException {
         Model model = new ModelMem();
         model.read(in, base, "N-TRIPLE");
         in.close();
@@ -127,7 +127,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     {
         behaviours
             .put(new ResourceImpl(testNS + "PositiveParserTest"), new Act() {
-            public void act(Resource r) throws RDFException {
+            public void act(Resource r)  {
                 //		if (r.getProperty(status).getString().equals(approved))
                 //  if (r.getURI().endsWith("rdfms-xmllang/test004"))
                 if (r.hasProperty(warning)) {
@@ -478,10 +478,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                     && errorCnt[2] == 0
                     && errorCnt[1] == 0)
                     save(input);
-            } catch (RDFException re) {
-                //   System.out.println(re.toString());
-                if (re.getErrorCode() == RDFException.NESTEDEXCEPTION
-                    && re.toString().indexOf("SAXException") != -1) {
+            } catch (JenaException re) {
+                if (re.getCause() instanceof SAXException) {
                     // ignore.
                 } else {
                     fail(re.getMessage());
@@ -742,10 +740,9 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                                     && errorCnt[1] == 0)
                                     save(input);
                                     */
-            } catch (RDFException re) {
+            } catch (JenaException re) {
                 //   System.out.println(re.toString());
-                if (re.getErrorCode() == RDFException.NESTEDEXCEPTION
-                    && re.toString().indexOf("SAXException") != -1) {
+                if (re.getCause() instanceof SAXException) {
                     // ignore.
                 } else {
                     fail(re.getMessage());

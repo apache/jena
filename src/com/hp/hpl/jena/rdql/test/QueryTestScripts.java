@@ -16,6 +16,7 @@ import junit.framework.* ;
 import junit.framework.TestSuite ;
 
 import com.hp.hpl.jena.util.* ;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.rdql.* ;
 
 import com.hp.hpl.jena.vocabulary.* ;
@@ -25,7 +26,7 @@ import com.hp.hpl.jena.vocabulary.* ;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.8 2003-05-21 15:33:18 chris-dollin Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.9 2003-06-17 09:18:10 chris-dollin Exp $
  */
 
 
@@ -351,7 +352,7 @@ public class QueryTestScripts extends TestSuite
                 sIter.remove();
             }
             sIter.close() ;
-        } catch ( RDFException rdfEx)
+        } catch ( JenaException rdfEx)
         { Log.severe("Failed to empty model", "com.hp.hpl.jena.rdf.query.Test.QueryTest", "emptyModel", rdfEx) ; }
     }
 

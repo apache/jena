@@ -11,12 +11,13 @@ import jena.cmdline.*;
 import java.util.* ;
 import com.hp.hpl.jena.rdf.model.* ;
 import com.hp.hpl.jena.mem.* ;
+import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.n3.* ;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: n3.java,v 1.5 2003-05-21 16:45:21 chris-dollin Exp $
+ * @version 	$Id: n3.java,v 1.6 2003-06-17 09:18:10 chris-dollin Exp $
  */
 public class n3
 {
@@ -240,28 +241,20 @@ public class n3
 				model.write(writer, outputLang, baseName) ;
 			writer.flush();
 			}
-		} catch (RDFException rdfEx)
+		} catch (JenaException rdfEx)
 		{
-            N3Exception n3Ex = null ;
-            // See if we can find the N3Exception
-            if ( rdfEx instanceof N3Exception )
-                n3Ex = (N3Exception)rdfEx ;
-            else
-            {
-                Exception ex = rdfEx.getNestedException() ;
-                if ( n3Ex == null && ex!= null && ex instanceof N3Exception )
-                    n3Ex = (N3Exception)ex ;
-                else
-                    if (ex != null && ex instanceof RDFException)
-                        rdfEx = (RDFException)ex ;
-            }
-
+            Throwable cause = rdfEx.getCause();
+            N3Exception n3Ex = (N3Exception)
+                (rdfEx instanceof N3Exception ? rdfEx
+                : cause instanceof N3Exception ? cause
+                : null);
             if ( n3Ex != null )
                 System.err.println(n3Ex.getMessage()) ;
             else
             {
-                System.err.println(rdfEx.getMessage()) ;
-                rdfEx.printStackTrace(System.err) ;
+                Throwable th = (cause == null ? rdfEx : cause);
+                System.err.println( th.getMessage() ) ;
+                th.printStackTrace( System.err );
             }
             System.exit(7) ;
 		}
