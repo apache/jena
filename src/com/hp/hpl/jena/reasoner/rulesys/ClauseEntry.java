@@ -5,16 +5,16 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: ClauseEntry.java,v 1.2 2003-06-25 07:57:14 der Exp $
+ * $Id: ClauseEntry.java,v 1.3 2003-07-09 07:59:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
 /**
  *  Common interface for all objects that can go into rules.
- * Strictly these should probably be called terms rather than clauses.
+ * Strictly these should probably be called terms rather than clause entries.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.2 $ on $Date: 2003-06-25 07:57:14 $
+ * @version $Revision: 1.3 $ on $Date: 2003-07-09 07:59:18 $
  */
 public interface ClauseEntry {
     

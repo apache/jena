@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.22 2003-06-24 15:47:04 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.23 2003-07-09 07:59:18 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2003-06-24 15:47:04 $
+ * @version $Revision: 1.23 $ on $Date: 2003-07-09 07:59:18 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -247,6 +247,18 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         if (useTGCCaching) {
             transitiveEngine.add(t);
         }
+    }
+
+    /**
+     * Retrieve or create a bNode representing an inferred property value.
+     * @param instance the base instance node to which the property applies
+     * @param prop the property node whose value is being inferred
+     * @param pclass the (optional, can be null) class for the inferred value.
+     * @return the bNode representing the property value 
+     */
+    public Node getTemp(Node instance, Node prop, Node pclass) {
+        // TODO implement
+        return null;
     }
    
 //  =======================================================================

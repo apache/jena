@@ -1,49 +1,37 @@
 /******************************************************************
- * File:        BackwardRuleInfGraphI.java
+ * File:        TempNodeCache.java
  * Created by:  Dave Reynolds
- * Created on:  28-May-2003
+ * Created on:  09-Jul-2003
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: BackwardRuleInfGraphI.java,v 1.5 2003-07-09 07:59:18 der Exp $
+ * $Id: TempNodeCache.java,v 1.1 2003-07-09 07:59:18 der Exp $
  *****************************************************************/
-package com.hp.hpl.jena.reasoner.rulesys;
+package com.hp.hpl.jena.reasoner.rulesys.impl;
+
+import java.util.*;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.reasoner.InfGraph;
-import com.hp.hpl.jena.reasoner.TriplePattern;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.OneToManyMap;
 
 /**
- * This interface collects together those operations that the backchaining
- * engine needs to invoke in the parent InfGraph. This allows different inf graphs
- * to exploit the same core backchaining engine.
+ * In some rules we need to be able to create temporary property values 
+ * which are inferred from ontology constraints but not present in the ground
+ * data. This structure is used to manage a pool of such temporary nodes.
+ * It is only needed in situations where the data can be added directly
+ * to a deductions graph due to the risk of concurrent access.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2003-07-09 07:59:18 $
+ * @version $Revision: 1.1 $ on $Date: 2003-07-09 07:59:18 $
  */
-public interface BackwardRuleInfGraphI extends SilentAddI, InfGraph {
-            
-    /**
-     * Process a call to a builtin predicate
-     * @param clause the Functor representing the call
-     * @param env the BindingEnvironment for this call
-     * @param rule the rule which is invoking this call
-     * @return true if the predicate succeeds
-     */
-    public boolean processBuiltin(Object clause, Rule rule, BindingEnvironment env);
+public class TempNodeCache {
 
-    /**
-     * Match a pattern just against the stored data (raw data, schema,
-     * axioms) but no backchaining derivation.
-     */
-    public ExtendedIterator findDataMatches(TriplePattern pattern);
-
-    /**
-     * Log a dervivation record against the given triple.
-     */
-    public void logDerivation(Triple t, Object derivation);
+    /** Map from instance+property to value */
+    protected OneToManyMap ipMap = new OneToManyMap();
+    
+    /** Map from temp to RDF class, if any */
+    protected Map classMap = new HashMap(); 
+    
 
     /**
      * Retrieve or create a bNode representing an inferred property value.
@@ -52,9 +40,13 @@ public interface BackwardRuleInfGraphI extends SilentAddI, InfGraph {
      * @param pclass the (optional, can be null) class for the inferred value.
      * @return the bNode representing the property value 
      */
-    public Node getTemp(Node instance, Node prop, Node pclass);
+    public Node getTemp(Node instance, Node prop, Node pclass) {
+        // TODO implement
+        return null;
+    }
     
 }
+
 
 
 /*
