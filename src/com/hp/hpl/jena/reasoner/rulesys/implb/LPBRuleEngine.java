@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, Hewlett-Packard Company, all rights reserved.
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.12 2003-08-17 20:09:17 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.13 2003-08-17 21:02:31 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.implb;
 
@@ -25,7 +25,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2003-08-17 20:09:17 $
+ * @version $Revision: 1.13 $ on $Date: 2003-08-17 21:02:31 $
  */
 public class LPBRuleEngine {
     
@@ -53,7 +53,8 @@ public class LPBRuleEngine {
     
     /** Set of generators waiting to be run */
 //    protected LinkedList agenda = new LinkedList();
-    protected List agenda = new ArrayList();
+//    protected List agenda = new ArrayList();
+    protected Collection agenda = new HashSet();
     
     /** Optional profile of number of time each rule is entered, set to non-null to profile */
     protected HashMap profile;
@@ -273,9 +274,12 @@ public class LPBRuleEngine {
 //                System.out.println("Cycled " + this + ", " + count);
                 return;
             } 
-            int chosen = agenda.size() -1;
-            LPAgendaEntry next = (LPAgendaEntry) agenda.get(chosen);
-            agenda.remove(chosen);
+            Iterator ai = agenda.iterator();
+            LPAgendaEntry next = (LPAgendaEntry) ai.next();
+            ai.remove();
+//            int chosen = agenda.size() - 1;
+//            LPAgendaEntry next = (LPAgendaEntry) agenda.get(chosen);
+//            agenda.remove(chosen);
 //            System.out.println("  pumping entry " + next);
             next.pump();
             count ++;
