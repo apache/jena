@@ -13,7 +13,7 @@ import java.security.AccessController;
  *  Primarily for other parts of the Jena framework. 
  * 
  * @author Andy Seaborne
- * @version $Id: JenaRuntime.java,v 1.1 2004-07-06 13:36:58 andy_seaborne Exp $
+ * @version $Id: JenaRuntime.java,v 1.2 2004-07-06 13:42:36 andy_seaborne Exp $
  */
 
 public class JenaRuntime
@@ -32,8 +32,8 @@ public class JenaRuntime
             features.put(featureNoCharset, "true") ;
     }
     
-    static boolean runUnder(String featureName) { return true ; }
-    static boolean runNotUnder(String featureName) { return true ; }
+    static boolean runUnder(String featureName) { return features.containsKey(featureName) ; }
+    static boolean runNotUnder(String featureName) { return ! features.containsKey(featureName) ; }
     
     
     static final String lineSeparator = getSystemProperty("line.separator", "\n") ; 

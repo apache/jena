@@ -11,14 +11,13 @@ import jena.cmdline.*;
 import java.util.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.JenaRuntime ;
 import com.hp.hpl.jena.util.FileUtils ;
 import com.hp.hpl.jena.n3.* ;
 
 /**
     Read N3 files and print in a variery of formats.
  * @author		Andy Seaborne
- * @version 	$Id: n3.java,v 1.11 2004-07-06 13:36:59 andy_seaborne Exp $
+ * @version 	$Id: n3.java,v 1.12 2004-07-06 13:42:42 andy_seaborne Exp $
  */
 public class n3
 {
@@ -35,14 +34,13 @@ public class n3
     static boolean debug = false ;		// Help!
 	static boolean verbose = false ;
 	
-	static final String NL = JenaRuntime.getLineSeparator();
+	//static final String NL = JenaRuntime.getLineSeparator();
 
 	// Parse a file (no RDF production)
 
 	public static void main(String[] args)
 	{
 		String dir = System.getProperty("user.dir") ;
-		String NL = System.getProperty("line.separator","\n") ;
 		
 		String usageMessage = n3.class.getName()+
                                 " [-rdf] [-base URI] [filename]" ;
@@ -205,7 +203,7 @@ public class n3
 			parseOneFile(reader, writer, baseName, filename) ;
 	}
 	
-	static void rdfOneFile(Reader reader, Writer writer, String baseName, String filename)
+	static void rdfOneFile(Reader reader, PrintWriter writer, String baseName, String filename)
 	{
 		try
 		{
@@ -218,9 +216,9 @@ public class n3
 			{
 				if ( outputLang.equals("N3") )
 				{
-					writer.write("# Jena N3->RDF->"+outputLang+" : " + filename);
-					writer.write(NL) ;
-					writer.write(NL) ;
+					writer.print("# Jena N3->RDF->"+outputLang+" : " + filename);
+					writer.println() ;
+					writer.println() ;
 				}
 				//RDFWriter w = new N3JenaWriter();
 				//w.write(model, writer, baseName);
@@ -243,12 +241,7 @@ public class n3
                 th.printStackTrace( System.err );
             }
             System.exit(7) ;
-		}
-		catch (java.io.IOException ioEx)
-		{
-			ioEx.printStackTrace(System.err) ;
-			System.exit(8) ;
-		}
+        }
 	}
 	
 		
