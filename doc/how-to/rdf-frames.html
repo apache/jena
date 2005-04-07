@@ -19,7 +19,7 @@
 <p>The origins of RDF as a representation language include <em>frame languages</em>,
   in which an object, or frame, was the main unit of structuring data. Frames have
   <em>slots</em>, for example a <code>Person</code> frame might have an <code>age</code>
-  slot, a <height>slot</height> etc.  RDF, however, has taken a step beyond frame
+  slot, a <code>height</code>slot etc.  RDF, however, has taken a step beyond frame
   languages by making <code>rdf:Property</code> a first class value, not an element
   of a frame or resource <em>per se</em>. In RDF, for example, an age property can
   be defined:
@@ -258,7 +258,7 @@
   Iterator i1 = a1.listDeclaredProperties();
 </pre>
 <p>Iterator <code>i1</code> will return <code>p</code> and <code>q</code>, while
-  <code>i0</code> will return only <code>p</code>.
+  <code>i0</code> will return only <code>p</code>.</p>
 
 <h2 id="changes_from_2_1">Summary of changes from Jena 2.2-beta-2 and older</h2>
 <p>For users updating code that uses <code>listDeclaredProperties</code> from
@@ -291,6 +291,6 @@
 
   <hr />
 
-<p><small>CVS $Id: rdf-frames.html,v 1.3 2005-04-07 13:18:34 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: rdf-frames.html,v 1.4 2005-04-07 13:24:16 ian_dickinson Exp $</small></p>
 </body>
 </html>
