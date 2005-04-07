@@ -9,7 +9,7 @@
   <!-- e.g. -beta1, or empty string for stable releases -->
   <property name="version-status"  value="-beta-2"/>
   <property name="version"
-	    value="${version-major}.${version-minor}${version-status}"/>
+        value="${version-major}.${version-minor}${version-status}"/>
 
   <property name="dist.name"       value="${Name}-${version}"/>
   <property name="dist.zip.name"   value="${name}-${version}.zip"/>
@@ -29,6 +29,8 @@
   <property name="dist.root"       value="dist"/>
   <property name="dist.dir"        value="${dist.root}/${dist.name}"/>
   <property name="lib.dir"         value="lib"/>
+
+  <property name="tools.bin"       value="tools-bin/"/>
 
   <property name="doc.dir"         value="doc"/>
   <property name="vocab.dir"       value="vocabularies"/>
@@ -76,7 +78,7 @@
   <target name="jar"  depends="main" description="Build jena.jar"/>
 
   <target name="release" depends="init,package"
-	  description="Create Jena release"/>
+      description="Create Jena release"/>
 
   <!-- Section: Grammars, Compilation and JAR -->
 
@@ -92,13 +94,13 @@
   <!--
   <target name="rdql-grammar">
     <jjtree target="${rdql.root}/parser/rdql.jjt"
-	    outputdirectory="${rdql.root}/parser"
-	    javacchome="${javacchome}"
-	    buildnodefiles="false"/>
+        outputdirectory="${rdql.root}/parser"
+        javacchome="${javacchome}"
+        buildnodefiles="false"/>
 
     <javacc target="${rdql.root}/parser/rdql.jj"
-	    outputdirectory="${rdql.root}/parser"
-	    javacchome="${javacchome}"/>
+        outputdirectory="${rdql.root}/parser"
+        javacchome="${javacchome}"/>
   </target>
   -->
 
@@ -119,46 +121,46 @@
     </tstamp>
     <copy todir="${src.dir}">
       <fileset dir="${orig-src.dir}"
-	       includes="*"/>
+           includes="*"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/*"/>
+           includes="com/hp/hpl/jena/*"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/enhanced/**"/>
+           includes="com/hp/hpl/jena/enhanced/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/graph/**"/>
+           includes="com/hp/hpl/jena/graph/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/db/**"/>
+           includes="com/hp/hpl/jena/db/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/datatypes/**"/>
+           includes="com/hp/hpl/jena/datatypes/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/mem/**"/>
+           includes="com/hp/hpl/jena/mem/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/n3/**"/>
+           includes="com/hp/hpl/jena/n3/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/ontology/**"/>
+           includes="com/hp/hpl/jena/ontology/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/rdf/**"/>
+           includes="com/hp/hpl/jena/rdf/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/rdql/**"/>
+           includes="com/hp/hpl/jena/rdql/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/reasoner/**"/>
+           includes="com/hp/hpl/jena/reasoner/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/regression/**"/>
+           includes="com/hp/hpl/jena/regression/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/shared/**"/>
+           includes="com/hp/hpl/jena/shared/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/test/**"/>
+           includes="com/hp/hpl/jena/test/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/util/**"/>
+           includes="com/hp/hpl/jena/util/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/vocabulary/**"/>
+           includes="com/hp/hpl/jena/vocabulary/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="com/hp/hpl/jena/xmloutput/**"/>
+           includes="com/hp/hpl/jena/xmloutput/**"/>
       <fileset dir="${orig-src.dir}"
-	       includes="jena/**"/>
+           includes="jena/**"/>
       <filterset>
-	<filterset refid="filters.shared" />
-	<filter token="build-time"    value="${BUILD_TIME}" />
+    <filterset refid="filters.shared" />
+    <filter token="build-time"    value="${BUILD_TIME}" />
       </filterset>
     </copy>
 
@@ -168,13 +170,13 @@
 
   <target name="compile-jena" depends="pre-compile">
     <javac srcdir="${src.dir}"
-	   destdir="${classes.dir}"
-	   debug="${java.debug}"
-	   debuglevel="${java.debuglevel}"
-	   deprecation="${java.deprecation}"
-	   optimize="${java.optimize}"
-	   source="${java.source}"
-	   target="${java.target}">
+       destdir="${classes.dir}"
+       debug="${java.debug}"
+       debuglevel="${java.debuglevel}"
+       deprecation="${java.deprecation}"
+       optimize="${java.optimize}"
+       source="${java.source}"
+       target="${java.target}">
       <classpath refid="classpath" />
     </javac>
     <copy todir="${classes.dir}" file="${src.dir}/log4j.properties"/>
@@ -182,12 +184,12 @@
 
   <target name="compile-apps" depends="pre-compile">
     <javac srcdir="${src.dir}/jena"
-	   destdir="${classes.dir}"
-	   debug="${debug}"
-	   deprecation="${deprecation}"
-	   optimize="${optimize}"
-	   source="${java.source}"
-	   target="${java.target}">
+       destdir="${classes.dir}"
+       debug="${debug}"
+       deprecation="${deprecation}"
+       optimize="${optimize}"
+       source="${java.source}"
+       target="${java.target}">
       <classpath refid="classpath" />
     </javac>
   </target>
@@ -196,7 +198,7 @@
 
   <target name="make-jar" depends="compile,copy-etc">
     <jar jarfile="${lib.dir}/${jarfile}"
-	 basedir="${classes.dir}">
+     basedir="${classes.dir}">
     </jar>
   </target>
 
@@ -273,38 +275,38 @@
       <package name="jena"/>
 
       <group title="API - Application Programming Interface">
-	<package name="com.hp.hpl.jena.db"/>
-	<package name="com.hp.hpl.jena.rdf.model"/>
-	<package name="com.hp.hpl.jena.rdf.listeners"/>
-	<package name="com.hp.hpl.jena.rdf.arp"/>
-	<package name="com.hp.hpl.jena.rdf.arp.lang"/>
-	<package name="com.hp.hpl.jena.datatypes"/>
-	<package name="com.hp.hpl.jena.datatypes.xsd"/>
-	<package name="com.hp.hpl.jena.rdql"/>
-	<package name="com.hp.hpl.jena.shared"/>
-	<package name="com.hp.hpl.jena.vocabulary"/>
-	<package name="com.hp.hpl.jena.xmloutput"/>
-	<package name="com.hp.hpl.jena.ontology"/>
-	<package name="com.hp.hpl.jena.ontology.daml"/>
-	<package name="com.hp.hpl.jena.ontology.tidy"/>
-	<package name="com.hp.hpl.jena.reasoner"/>
-	<package name="com.hp.hpl.jena.reasoner.rulesys"/>
-	<package name="com.hp.hpl.jena.reasoner.rulesys.builtins"/>
-	<package name="com.hp.hpl.jena.reasoner.dig"/>
+    <package name="com.hp.hpl.jena.db"/>
+    <package name="com.hp.hpl.jena.rdf.model"/>
+    <package name="com.hp.hpl.jena.rdf.listeners"/>
+    <package name="com.hp.hpl.jena.rdf.arp"/>
+    <package name="com.hp.hpl.jena.rdf.arp.lang"/>
+    <package name="com.hp.hpl.jena.datatypes"/>
+    <package name="com.hp.hpl.jena.datatypes.xsd"/>
+    <package name="com.hp.hpl.jena.rdql"/>
+    <package name="com.hp.hpl.jena.shared"/>
+    <package name="com.hp.hpl.jena.vocabulary"/>
+    <package name="com.hp.hpl.jena.xmloutput"/>
+    <package name="com.hp.hpl.jena.ontology"/>
+    <package name="com.hp.hpl.jena.ontology.daml"/>
+    <package name="com.hp.hpl.jena.ontology.tidy"/>
+    <package name="com.hp.hpl.jena.reasoner"/>
+    <package name="com.hp.hpl.jena.reasoner.rulesys"/>
+    <package name="com.hp.hpl.jena.reasoner.rulesys.builtins"/>
+    <package name="com.hp.hpl.jena.reasoner.dig"/>
       </group>
 
       <group title="SPI - System Programming Interface">
-	<package name="com.hp.hpl.jena.enhanced"/>
-	<package name="com.hp.hpl.jena.graph"/>
-	<package name="com.hp.hpl.jena.graph.compose"/>
-	<package name="com.hp.hpl.jena.graph.query"/>
-	<package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
-	<package name="com.hp.hpl.jena.util"/>
-	<package name="com.hp.hpl.jena.util.iterator"/>
+    <package name="com.hp.hpl.jena.enhanced"/>
+    <package name="com.hp.hpl.jena.graph"/>
+    <package name="com.hp.hpl.jena.graph.compose"/>
+    <package name="com.hp.hpl.jena.graph.query"/>
+    <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
+    <package name="com.hp.hpl.jena.util"/>
+    <package name="com.hp.hpl.jena.util.iterator"/>
       </group>
 
       <group title="Command line tools">
-	<package name="jena" />
+    <package name="jena" />
       </group>
     </javadoc>
   </target>
@@ -335,7 +337,7 @@
   <!-- Section: Create distribution area -->
 
   <target name="package"
-	  depends="bin,javadoc,distribution-init,copy,zip"/>
+      depends="bin,javadoc,distribution-init,copy,zip"/>
 
   <target name="distribution-init">
     <mkdir dir="${dist.dir}"/>
@@ -351,8 +353,8 @@
     <!-- Source : We could zip this up -->
     <copy todir="${dist.dir}/${orig-src.dir}">
       <fileset dir="${src.dir}"
-	       includes="**"
-	       excludes="org/**"/>
+           includes="**"
+           excludes="org/**"/>
     </copy>
 
     <!-- Misc files -->
@@ -367,10 +369,10 @@
     <copy todir="${dist.dir}" file="readme.html"/>
 
     <!-- RDQL support files : scripts to build the Java
-	 <copy todir="${dist.dir}" file="doExprNodes"/>
-	 <copy todir="${dist.dir}">
-	 <fileset dir="." includes="Expr*.java"/>
-	 </copy>
+     <copy todir="${dist.dir}" file="doExprNodes"/>
+     <copy todir="${dist.dir}">
+     <fileset dir="." includes="Expr*.java"/>
+     </copy>
     -->
 
     <!-- Dependences -->
@@ -385,15 +387,15 @@
     <!-- Javadoc is part of the documentation directory -->
     <copy todir="${dist.dir}/${doc.dir}">
       <fileset dir="${doc.dir}">
-	<include name="**"/>
-	<exclude name="**/*.content.html"/>
-	<exclude name="template.html"/>
-	<!-- Scripts -->
-	<exclude name="produce"/>
-	<exclude name="merge"/>
-	<exclude name="linkcheck"/>
-	<exclude name="release"/>
-	<exclude name="readme-site.txt"/>
+    <include name="**"/>
+    <exclude name="**/*.content.html"/>
+    <exclude name="template.html"/>
+    <!-- Scripts -->
+    <exclude name="produce"/>
+    <exclude name="merge"/>
+    <exclude name="linkcheck"/>
+    <exclude name="release"/>
+    <exclude name="readme-site.txt"/>
       </fileset>
     </copy>
 
@@ -412,8 +414,8 @@
     <!-- Exclude any zips of the RDQL test scripts -->
     <copy todir="${dist.dir}/${test.dir}">
       <fileset dir="${test.dir}"
-	       includes="**"
-	       excludes="${test.dir}/RDQL/rdql-tests-jena*.zip"/>
+           includes="**"
+           excludes="${test.dir}/RDQL/rdql-tests-jena*.zip"/>
     </copy>
 
     <copy todir="${dist.dir}/${tools.dir}">
@@ -441,8 +443,8 @@
       obviously you need to get the path right.
     -->
     <exec dir="${dist.root}"
-	  output="zip.log"
-	  executable="C:\\Program Files\\WinZip\\wzzip.exe"  >
+      output="zip.log"
+      executable="C:\\Program Files\\WinZip\\wzzip.exe"  >
       <!-- ${dist.name}.zip is the name of the output -->
       <!-- ${dist.name} is the directory to zip -->
       <arg line="-r -P ${dist.name}.zip ${dist.name}"/>
@@ -460,7 +462,7 @@
     <echo>install test</echo>
     <junit fork="yes" printsummary="yes">
       <classpath>
-	<fileset dir="${lib.dir}" includes="*.jar"/>
+    <fileset dir="${lib.dir}" includes="*.jar"/>
       </classpath>
       <test name="com.hp.hpl.jena.test.TestPackage"/>
     </junit>
@@ -471,8 +473,8 @@
     <echo>developer test</echo>
     <junit fork="yes" printsummary="yes">
       <classpath>
-	<fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-	<pathelement location="${classes.dir}"/>
+    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+    <pathelement location="${classes.dir}"/>
       </classpath>
       <test name="com.hp.hpl.jena.test.TestPackage"/>
     </junit>
@@ -491,8 +493,8 @@
 
   <target name="check.ont-events">
     <uptodate property="ont-events.build.notreq"
-	      srcFile="${vocab.dir}/ont-event.rdf"
-	      targetFile="${vocab.java}/OntEventsVocab.java" />
+          srcFile="${vocab.dir}/ont-event.rdf"
+          targetFile="${vocab.java}/OntEventsVocab.java" />
   </target>
 
   <target name="ont-events" depends="check.ont-events" unless="ont-events.build.notreq">
@@ -509,8 +511,8 @@
 
   <target name="check.owl-vocab">
     <uptodate property="owl-vocab.build.notreq"
-	      srcFile="${vocab.dir}/owl.owl"
-	      targetFile="${vocab.java}/OWL.java" />
+          srcFile="${vocab.dir}/owl.owl"
+          targetFile="${vocab.java}/OWL.java" />
   </target>
 
   <target name="owl-vocab" depends="check.owl-vocab" unless="owl-vocab.build.notreq">
@@ -526,8 +528,8 @@
 
   <target name="check.ontdoc-vocab">
     <uptodate property="ontdoc-vocab.build.notreq"
-	      srcFile="${vocab.dir}/ont-manager.rdf"
-	      targetFile="${vocab.java}/OntDocManagerVocab.java" />
+          srcFile="${vocab.dir}/ont-manager.rdf"
+          targetFile="${vocab.java}/OntDocManagerVocab.java" />
   </target>
 
   <target name="ontdoc-vocab" depends="check.ontdoc-vocab" unless="ontdoc-vocab.build.notreq">
@@ -538,6 +540,50 @@
       <arg value="${vocab.template}" />
       <arg value="-n" />
       <arg value="OntDocManagerVocab" />
+    </java>
+  </target>
+
+  <target name="pre-tools-compile" >
+    <!-- Ensure a clean compile -->
+    <delete dir="${tools.bin}"/>
+    <mkdir dir="${tools.bin}"/>
+  </target>
+
+  <target name="tools-compile" depends="pre-tools-compile">
+      <javac srcdir="internal-tools/src"
+         destdir="${tools.bin}"
+         debug="${debug}"
+         deprecation="${deprecation}"
+         optimize="${optimize}"
+         source="${java.source}"
+         target="${java.target}">
+        <classpath>
+		    <path refid="classpath"/>
+		    <pathelement path="${classes.dir}"/>
+		</classpath>
+      </javac>
+  </target>
+
+<target name="contrib" depends="tools-compile">
+    <java classname="com.hp.hpl.jena.internal.tools.RDFtoTable">
+      <arg value="doc/contrib/contributions-table.n3"/>
+      <arg value="doc/contrib/contributions.n3"/>
+      <redirector output="doc/contrib/table.tmp"/>
+      <classpath>
+        <pathelement path="${tools.bin}"/>
+		<pathelement path="${classes.dir}"/>
+		<path refid="classpath"/>
+      </classpath>
+    </java>
+    <java classname="com.hp.hpl.jena.internal.tools.InsertFile">
+      <arg value="doc/contrib/contrib-template.html"/>
+      <arg value="doc/contrib/table.tmp"/>
+      <redirector output="doc/contrib/contributions.html"/>
+      <classpath>
+        <pathelement path="${tools.bin}"/>
+		<pathelement path="${classes.dir}"/>
+		<path refid="classpath"/>
+      </classpath>
     </java>
   </target>
 
