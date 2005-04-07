@@ -27,9 +27,9 @@ then
 for f in $FILES
 do
   html="${f%$MARK}".html
-  merge $f > $html
+  perl merge $f > $html
   done
 
 # One special:
 
-merge FAQ/jena-faq.content.html > jena-faq.html
+perl merge FAQ/jena-faq.content.html > jena-faq.html
