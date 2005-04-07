@@ -564,7 +564,7 @@
       </javac>
   </target>
 
-<target name="contrib" depends="tools-compile">
+<target name="contrib">
     <java classname="com.hp.hpl.jena.internal.tools.RDFtoTable">
       <arg value="doc/contrib/contributions-table.n3"/>
       <arg value="doc/contrib/contributions.n3"/>
