@@ -97,7 +97,7 @@
 <!--p>An alternative characterisation of the properties of a class, as defined in
   this HOWTO, is that they comprise the properties that characterise all
   members of the class. </p-->
-<h2 id="expr">Class expressions and property hierarchies</h2>
+<h2 id="classExpr">Sub-classes, and more complex class expressions</h2>
 <p>Given these basic principles, now consider the following RDF fragment:</p>
 
 <pre>
@@ -111,44 +111,56 @@
     &lt;rdfs:subClassOf rdf:resource=&quot;#Animal&quot;&gt;
   &lt;/rdfs:Class&gt;
 
-  &lt;rdf:Property rdf:ID=&quot;bodyHair&quot;&gt;
-    &lt;rdfs:domain rdf:resource=&quot;Mammal&quot; /&gt;
+  &lt;rdf:Property rdf:ID=&quot;hasSkeleton&quot;&gt;
+    &lt;rdfs:domain rdf:resource=&quot;Animal&quot; /&gt;
   &lt;/rdf:Property&gt;
 </pre>
 
-<p>Is <code>bodyHair</code> one of the properties of <code>Animal</code>? Yes, because
-  any resource of <code>rdf:type Animal</code> can have a <code>fur</code> property
+<p>Is <code>hasSkeleton</code> one of the properties of <code>Animal</code>? Yes, because
+  any resource of <code>rdf:type Animal</code> can have a <code>hasSkeleton</code> property
   (with value either true or false) without adding type information. Similarly,
   any resource that is a <code>Mammal</code> also has <code>rdf:type Animal</code>
-  (by the sub-class relation), so <code>fur</code> is a property of <code>Mammal</code>.
-  However, <code>fur</code> is <em>not</em> a property of <code>LivingThing</code>,
+  (by the sub-class relation), so <code>hasSkeleton</code> is a property of <code>Mammal</code>.
+  However, <code>hasSkeleton</code> is <em>not</em> a property of <code>LivingThing</code>,
   since we don't automatically know that a living thing is an animal - it may
-  be a plant. Stating that a given <code>LivingThing</code> has a <code>fur</code>
+  be a plant. Stating that a given <code>LivingThing</code> has a <code>hasSkeleton</code>
   property, even if the value is false, would entail the additional
   <code>rdf:type</code> statement that the <code>LivingThing</code> is also
   an <code>Animal</code>.</p>
 
 <p>For more complex class expressions in the domain, we look to see what simple
   domain constraints are entailed. For example, a domain constraint
-  <code>A&nbsp;&cap;&nbsp;B</code> for property <code>p</code>
+  <code>A&nbsp;&cap;&nbsp;B</code> (i.e. &quot;A intersection B&quot;) 
+  for property <code>p</code>
   entails that both <code>p&nbsp;rdfs:domain&nbsp;A</code> and <code>p&nbsp;rdfs:domain&nbsp;B</code>
-  are true. So, the properties of <code>A</code> and of <code>B</code>
-  will include <code>p</code>. However, if the domain of <code>p</code> is
-  <code>A&nbsp;&cup;&nbsp;B</code>, then neither <code>A</code> nor <code>B</code>
-  will have <code>p</code> as a property, since that expression does
-  not entail a simple domain relationship between either class and <code>p</code>.</p>
+  are true. However, the properties of neither <code>A</code> nor <code>B</code>
+  will include <code>p</code>. To see this, suppose we have a resource
+  <code>x</code> that we already know is of type <code>A</code>, and a statement
+  <code>x&nbsp;p&nbsp;y</code>. This entails <code>x&nbsp;rdf:type&nbsp;A</code>
+  which we already know, but also <code>x&nbsp;rdf:type&nbsp;B</code>. So 
+  information is added, even if we know that <code>x</code> is an instance <code>A</code>,
+  so <code>p</code> is not a property of <code>A</code>. The symmetrical argument
+  holds for <code>p</code> not being a property of <code>B</code>.
+</p><p>
+  However, if the domain of <code>p</code> is
+  <code>A&nbsp;&cup;&nbsp;B</code> (i.e. &quot;A union B&quot;), 
+  then both <code>A</code> and <code>B</code>
+  will have <code>p</code> as a property, since an occurrence of, say
+  <code>x&nbsp;p&nbsp;y</code> does not allow us to conclude that either
+  <code>x&nbsp;rdf:type&nbsp;A</code> or <code>x&nbsp;rdf:type&nbsp;B</code>.</p>
 
-<p>Similarly, since sub-properties inherit the domain constraints of their parent
+<h2 id="propHier">Property hierarchies</h2>
+<p>Since sub-properties inherit the domain constraints of their parent
   property, the properties of a class will include the closure over the sub-property
   hierarchy. Extending the previous example, the properties of <code>Animal</code>
-  and <code>Mammal</code> include both <code>bodyHair</code> and <code>longHair</code>:</p>
+  and <code>Mammal</code> include both <code>hasSkeleton</code> and <code>hasEndoSkeleton</code>:</p>
 <pre>
-  &lt;rdf:Property rdf:ID=&quot;bodyHair&quot;&gt;
-    &lt;rdfs:domain rdf:resource=&quot;Mammal&quot; /&gt;
+  &lt;rdf:Property rdf:ID=&quot;hasSkeleton&quot;&gt;
+    &lt;rdfs:domain rdf:resource=&quot;Animal&quot; /&gt;
   &lt;/rdf:Property&gt;
 
-  &lt;rdf:Property rdf:ID=&quot;longHair&quot;&gt;
-    &lt;rdfs:subPropertyOf rdf:resource=&quot;#bodyHair&quot; /&gt;
+  &lt;rdf:Property rdf:ID=&quot;hasEndoSkeleton&quot;&gt;
+    &lt;rdfs:subPropertyOf rdf:resource=&quot;#hasSkeleton&quot; /&gt;
   &lt;/rdf:Property&gt;
 </pre>
 
@@ -157,7 +169,15 @@
   deductions are present in any given RDF model depends on the power and completeness
   of the reasoner bound to that model.</p>
 
-<h2>Properties of a class and restriction properties</h2>
+<h2 id="globalProps">Global properties</h2>
+<p>Under the principled definition that we propose here, properties which do not
+  express a domain value are <em>global</em>, in the sense that they can apply
+  to any resource. They do not, by definition, entail any new type information
+  about the individuals they are applied to. Put another way, the domain of a
+  property, if unspecified, is either <code>rdfs:Resource</code> or <code>owl:Thing</code>,
+  depending on the ontology language. These are simply the types that all resources
+  have by default. Therefore, every class has all of the global properties as one 
+  of the properties of the class.</p>
 <p>A commonly used idiom in some OWL ontologies is to use <em>Restrictions</em>
   to create an association between a class and the properties of instances
   of that class. For example, the following fragment shows that all instances
@@ -175,15 +195,19 @@
 </pre>
 
 <p>This approach shows the intent of the ontology designer that <code>Person</code>
-  instances have <code>familyName</code> properties. However, we do not regard it as one of
-  the <em>properties of</em> <code>Person</code>, using the definition above. No type
-  information is imparted about individuals that have a <code>familyName</code>.
-  The Jena utility methods for listing the properties of a class (see below) will
-  therefore not return properties associated with a class via a restriction
-  <code>onProperty</code>. <strong>Note that this is a change from versions of
-    Jena prior to release 2.2</strong>. From Jena 2.2 onwards, Jena provides a
-  separate mechanism for listing the properties associated with a class by way
-  of the restrictions that are the super-classes of the class.
+  instances have <code>familyName</code> properties. 
+  We do regard <code>familyName</code> as one of
+  the <em>properties of</em> <code>Person</code>, but only because of the 
+  global properties principle. Unless a domain constraint is also specified for
+  <code>familyName</code>, it will appear as one of the properties of classes
+  other than <code>Person</code>.
+  <strong>Note that this is a behaviour change from versions of
+    Jena prior to release 2.2</strong>. Prior to this release, Jena used a 
+    heuristic method to attempt to associate restriction properties with the 
+    classes sub-classing that restriction. Since there were problems with
+    precisely defining the heuristic, and ensuring correct behaviour (especially
+    with inference models), we have dropped the use of this heuristic from Jena 
+    2.2 onwards.
   </p>
 
 <h2 id="java_api">The Java API</h2>
@@ -193,30 +217,23 @@
   properties:</p>
 <pre>
   OntClass.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#listDeclaredProperties()">listDeclaredProperties</a>();
-  OntClass.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#listDeclaredProperties(boolean)">listDeclaredProperties</a>( boolean all );
+  OntClass.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#listDeclaredProperties(boolean)">listDeclaredProperties</a>( boolean direct );
   OntProperty.<a href="../javadoc/com/hp/hpl/jena/ontology/OntProperty.html#listDeclaringClasses()">listDeclaringClasses</a>();
-  OntProperty.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#listDeclaringClasses(boolean)">listDeclaringClasses</a>( boolean all );
-</pre>
-<p>In addtion, the properties associated with a class by way of a restriction are available
-  through the following API call:</p>
-
-<pre>
-  OntClass.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#listRestrictionProperties()">listRestrictionProperties</a>();
-  OntClass.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#listRestrictionProperties(boolean)">listRestrictionProperties</a>( boolean all );
+  OntProperty.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#listDeclaringClasses(boolean)">listDeclaringClasses</a>( boolean direct );
 </pre>
 
 <p>All of the above API methods return a Jena
-  <a href="../javadoc/com/hp/hpl/jena/util/ExtendedIterator.html"><code>ExtendedIterator</code></a>. One
-  benefit of <code>ExtendedIterator</code>s is that they support concatentation. In particular, to
-  get a behaviour similar to <code>listDeclaredProperties</code> in Jena 2.1 and earlier, which
-  includes restriction properties among the results, users can do the following:</p>
+  <a href="../javadoc/com/hp/hpl/jena/util/ExtendedIterator.html"><code>ExtendedIterator</code></a>. </p>
 
-<pre>
-  OntClass c = ... ;   <em>// c is the class we are interested in</em>
-  Iterator likeJena21 = c.listDeclaredProperties()
-                         .andThen( c.listRestrictionProperties() );
-</pre>
-
+<p><strong>Note a change from the Jena 2.1 interface:</strong> the 
+  optional Boolean parameter on <code>listDeclaredProperties</code> has
+  changed name from <code>all</code> (Jena 2.1 and earlier) to 
+  <code>direct</code> (Jena 2.2 and later). The meaning of the parameter
+  has also changed: <code>all</code> was intended to simulate some reasoning
+  steps in the absence of a reasoner, whereas <code>direct</code> is used
+  to restrict the associations to only the local associations. See
+  more on <a href="../ontology/index.html#direct_relationships">direct associations</a>.</p>
+  
 <p>A further difference from Jena 2.1 is that the models that are constructed without
   reasoners perform only very limited simulation of the inference closure of the
   model. Users
@@ -247,11 +264,16 @@
 <p>For users updating code that uses <code>listDeclaredProperties</code> from
   versions of Jena prior to 2.2-final, the following changes should be noted:</p>
 <ul>
-  <li>Separation of restriction properties<br />
-    <code>listDeclaredProperties</code> no longer returns properties associated
+  <li>Global properties<br />
+    <code>listDeclaredProperties</code> will treat properties with no specified
+    domain as global, and regard them as properties of all classes. The use
+    of the <code>direct</code> flag can hide global properties from non-root
+    classes.</li>
+  <li>Restriction properties<br />
+    <code>listDeclaredProperties</code> no longer heuristically
+    returns properties associated
       with a class via the <code>owl:onProperty</code> predicate of a restriction.
-      A separate method, <code>listRestrictionProperties</code> is provided as
-      as alternative.</li>
+      </li>
   <li>Limited simulated inference<br />
     The old version of <code>listDeclaredProperties</code> attempted to simulate
     the entailed associations between classes and properties. Users are now advised
@@ -269,6 +291,6 @@
 
   <hr />
 
-<p><small>CVS $Id: rdf-frames.html,v 1.2 2005-04-04 17:18:30 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: rdf-frames.html,v 1.3 2005-04-07 13:18:34 ian_dickinson Exp $</small></p>
 </body>
 </html>
