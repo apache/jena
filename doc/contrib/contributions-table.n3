@@ -2,7 +2,7 @@
 # configuration file for RDFtoTable which describes the table
 # to create from the contributions RDF data.
 #
-# $Id: contributions-table.n3,v 1.1 2005-04-05 13:16:02 chris-dollin Exp $
+# $Id: contributions-table.n3,v 1.2 2005-04-07 13:53:57 chris-dollin Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -12,7 +12,7 @@
 @prefix ct:     <http://jena.hplb.hpl.hp.com/contrib#> .
 
 ct:contributions
-    tt:columns ( ct:Name ct:Description ct:Creator ct:Link ) .
+    tt:columns ( ct:Name ct:Description ct:Licence ct:Creator ct:Link ) .
 
 ct:Name tt:displays ([tt:property dc:name]) ; rdfs:label "name" .
 
@@ -20,8 +20,10 @@ ct:Description tt:displays ([tt:property dc:description]) ; rdfs:label "descript
 
 ct:Creator tt:displays ([tt:property dc:creator]) ; rdfs:label "creator" .
 
+ct:Licence tt:displays ([tt:property ct:licence]); rdfs:label "licence" .
+
 ct:Link tt:displays
     ([tt:literal "<a href='"] [tt:property ct:link] [tt:literal "'>"]
-     [tt:property ct:link] [tt:literal '</a>'])
+     [tt:property ct:linkTitle] [tt:literal '</a>'])
     ; rdfs:label "for download see"
     .
