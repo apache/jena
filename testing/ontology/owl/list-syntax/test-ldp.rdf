@@ -40,4 +40,7 @@
   <rdfs:subPropertyOf rdf:resource="#qA" />
 </owl:ObjectProperty>
 
+<owl:ObjectProperty rdf:ID="global">
+</owl:ObjectProperty>
+
 </rdf:RDF>
