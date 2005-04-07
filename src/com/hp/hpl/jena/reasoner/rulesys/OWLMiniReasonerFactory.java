@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMiniReasonerFactory.java,v 1.4 2005-02-21 12:17:02 andy_seaborne Exp $
+ * $Id: OWLMiniReasonerFactory.java,v 1.5 2005-04-07 16:45:35 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </UL>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:17:02 $
+ * @version $Revision: 1.5 $ on $Date: 2005-04-07 16:45:35 $
  */
 public class OWLMiniReasonerFactory implements ReasonerFactory {
     
@@ -86,6 +86,12 @@ public class OWLMiniReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerVocabulary.supportsP, TransitiveReasoner.directSubPropertyOf)
                 // TODO - add OWL elements supported
                 .addProperty(ReasonerVocabulary.supportsP, ReasonerVocabulary.individualAsThingP )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.ObjectProperty )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.DatatypeProperty)
+                .addProperty(ReasonerVocabulary.supportsP, OWL.FunctionalProperty )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.SymmetricProperty )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.TransitiveProperty )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.InverseFunctionalProperty )
                 .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;
