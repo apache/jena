@@ -1,0 +1,5 @@
+This directory contains sources for internal tools used
+in constructing the Jena release, specifically for constructing
+the contrib pages. They themselves don't form part of the
+Jena release and they may change or evaporate at any time
+without notice. 
