@@ -31,7 +31,7 @@ class RDFParser implements ARPErrorNumbers, RDFParserConstants {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: RDFParser.java,v 1.17 2004-12-23 15:26:51 jeremy_carroll Exp $
+ * * $Id: RDFParser.java,v 1.18 2005-04-08 13:12:12 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -1183,6 +1183,7 @@ Notice the action within the kleene star.
   final public ARPString string(XMLContext ctxt) throws ParseException {
                                          Vector pieces = new Vector();
                                          Token tok = null;
+                                         boolean checkComposingChar[] = new boolean[]{true};
     label_26:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -1196,7 +1197,7 @@ Notice the action within the kleene star.
         jj_la1[42] = jj_gen;
         break label_26;
       }
-      tok = string1(pieces);
+      tok = string1(pieces,checkComposingChar);
     }
                                          ARPString rslt =
                                                 new ARPString(pieces,ctxt.getLang());
@@ -1205,21 +1206,25 @@ Notice the action within the kleene star.
     throw new Error("Missing return statement in function");
   }
 
-  final public Token string1(Vector rslts) throws ParseException {
+  final public Token string1(Vector rslts, boolean checkComposingChar[]) throws ParseException {
                                          Token rslt;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case CD_STRING:
       rslt = jj_consume_token(CD_STRING);
-                                         X.checkComposingChar(rslt);
+                                         if (checkComposingChar[0])
+                                             X.checkComposingChar(rslt);
+                                         checkComposingChar[0] = false;
                                          rslts.add(rslt);
                                          {if (true) return rslt;}
       break;
     case COMMENT:
       rslt = jj_consume_token(COMMENT);
+                                         checkComposingChar[0] = true;
                                          {if (true) return rslt;}
       break;
     case PROCESSING_INSTRUCTION:
       rslt = pi(true);
+                                         checkComposingChar[0] = true;
                                          {if (true) return rslt;}
       break;
     case X_SAX_EX:
@@ -1992,57 +1997,88 @@ Notice the action within the kleene star.
 
   final private boolean jj_2_1(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_1(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(0, xla); }
+    boolean retval = !jj_3_1();
+    jj_save(0, xla);
+    return retval;
   }
 
   final private boolean jj_2_2(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_2(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(1, xla); }
+    boolean retval = !jj_3_2();
+    jj_save(1, xla);
+    return retval;
   }
 
   final private boolean jj_2_3(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_3(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(2, xla); }
+    boolean retval = !jj_3_3();
+    jj_save(2, xla);
+    return retval;
   }
 
   final private boolean jj_2_4(int xla) {
     jj_la = xla; jj_lastpos = jj_scanpos = token;
-    try { return !jj_3_4(); }
-    catch(LookaheadSuccess ls) { return true; }
-    finally { jj_save(3, xla); }
-  }
-
-  final private boolean jj_3_2() {
-    if (jj_scan_token(A_PARSETYPE)) return true;
-    if (jj_scan_token(AV_DAMLCOLLECTION)) return true;
-    return false;
+    boolean retval = !jj_3_4();
+    jj_save(3, xla);
+    return retval;
   }
 
   final private boolean jj_3_3() {
     if (jj_scan_token(A_PARSETYPE)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     if (jj_scan_token(AV_COLLECTION)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
+  final private boolean jj_3R_49() {
+    if (jj_scan_token(X_SAX_EX)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
+  final private boolean jj_3_1() {
+    if (jj_scan_token(A_PARSETYPE)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    if (jj_scan_token(AV_LITERAL)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
+  final private boolean jj_3R_48() {
+    if (jj_scan_token(PROCESSING_INSTRUCTION)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
 
   final private boolean jj_3R_45() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(1)) {
+    if (jj_3R_46()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(3)) {
+    if (jj_3R_47()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(2)) {
+    if (jj_3R_48()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(4)) return true;
-    }
-    }
-    }
+    if (jj_3R_49()) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    } else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    } else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    } else if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
+  final private boolean jj_3R_46() {
+    if (jj_scan_token(CD_STRING)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    return false;
+  }
+
+  final private boolean jj_3_2() {
+    if (jj_scan_token(A_PARSETYPE)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
+    if (jj_scan_token(AV_DAMLCOLLECTION)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
 
@@ -2051,14 +2087,16 @@ Notice the action within the kleene star.
     while (true) {
       xsp = jj_scanpos;
       if (jj_3R_45()) { jj_scanpos = xsp; break; }
+      if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     }
     if (jj_scan_token(E_END)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
 
-  final private boolean jj_3_1() {
-    if (jj_scan_token(A_PARSETYPE)) return true;
-    if (jj_scan_token(AV_LITERAL)) return true;
+  final private boolean jj_3R_47() {
+    if (jj_scan_token(COMMENT)) return true;
+    if (jj_la == 0 && jj_scanpos == jj_lastpos) return false;
     return false;
   }
 
@@ -2071,13 +2109,7 @@ Notice the action within the kleene star.
   private boolean jj_semLA;
   private int jj_gen;
   final private int[] jj_la1 = new int[77];
-  static private int[] jj_la1_0;
-  static {
-      jj_la1_0();
-   }
-   private static void jj_la1_0() {
-      jj_la1_0 = new int[] {0x380a0,0x1e,0x1e,0x2000001e,0x2000001e,0x1e,0x1e,0xc,0xc,0x38080,0x700,0x7000,0x38000,0x38080,0x700,0x20000000,0x20000000,0x20000000,0x20000000,0x20000000,0x7000,0x20000000,0x38000,0x100,0x20000000,0x20000000,0x20000000,0x1847400,0x20000000,0x38000,0x7000,0x7000,0x847400,0x38080,0x700,0x7000,0x38000,0x38000,0x3809e,0x20000000,0x20000000,0x800400,0x1e,0x1e,0x24000000,0x24000000,0x20000000,0x8000000,0x20000000,0x10000000,0x20000000,0x2000000,0x380a0,0x20000000,0x1847700,0x380be,0x20000000,0x24000000,0x24000000,0x20000000,0x8000000,0x20000000,0x10000000,0x380be,0x38080,0x380a0,0x1b847700,0x1847700,0x580800,0x20000000,0x4000000,0x1b847700,0x380be,0x20000000,0x20000000,0x380be,0x380be,};
-   }
+  final private int[] jj_la1_0 = {0x380a0,0x1e,0x1e,0x2000001e,0x2000001e,0x1e,0x1e,0xc,0xc,0x38080,0x700,0x7000,0x38000,0x38080,0x700,0x20000000,0x20000000,0x20000000,0x20000000,0x20000000,0x7000,0x20000000,0x38000,0x100,0x20000000,0x20000000,0x20000000,0x1847400,0x20000000,0x38000,0x7000,0x7000,0x847400,0x38080,0x700,0x7000,0x38000,0x38000,0x3809e,0x20000000,0x20000000,0x800400,0x1e,0x1e,0x24000000,0x24000000,0x20000000,0x8000000,0x20000000,0x10000000,0x20000000,0x2000000,0x380a0,0x20000000,0x1847700,0x380be,0x20000000,0x24000000,0x24000000,0x20000000,0x8000000,0x20000000,0x10000000,0x380be,0x38080,0x380a0,0x1b847700,0x1847700,0x580800,0x20000000,0x4000000,0x1b847700,0x380be,0x20000000,0x20000000,0x380be,0x380be,};
   final private JJCalls[] jj_2_rtns = new JJCalls[4];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
@@ -2125,8 +2157,6 @@ Notice the action within the kleene star.
     throw generateParseException();
   }
 
-  static private final class LookaheadSuccess extends java.lang.Error { }
-  final private LookaheadSuccess jj_ls = new LookaheadSuccess();
   final private boolean jj_scan_token(int kind) {
     if (jj_scanpos == jj_lastpos) {
       jj_la--;
@@ -2143,9 +2173,7 @@ Notice the action within the kleene star.
       while (tok != null && tok != jj_scanpos) { i++; tok = tok.next; }
       if (tok != null) jj_add_error_token(kind, i);
     }
-    if (jj_scanpos.kind != kind) return true;
-    if (jj_la == 0 && jj_scanpos == jj_lastpos) throw jj_ls;
-    return false;
+    return (jj_scanpos.kind != kind);
   }
 
   final public Token getNextToken() {
@@ -2188,8 +2216,8 @@ Notice the action within the kleene star.
         jj_expentry[i] = jj_lasttokens[i];
       }
       boolean exists = false;
-      for (java.util.Enumeration e = jj_expentries.elements(); e.hasMoreElements();) {
-        int[] oldentry = (int[])(e.nextElement());
+      for (java.util.Enumeration enum = jj_expentries.elements(); enum.hasMoreElements();) {
+        int[] oldentry = (int[])(enum.nextElement());
         if (oldentry.length == jj_expentry.length) {
           exists = true;
           for (int i = 0; i < jj_expentry.length; i++) {
@@ -2206,7 +2234,7 @@ Notice the action within the kleene star.
     }
   }
 
-  public ParseException generateParseException() {
+  final public ParseException generateParseException() {
     jj_expentries.removeAllElements();
     boolean[] la1tokens = new boolean[30];
     for (int i = 0; i < 30; i++) {

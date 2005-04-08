@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.18 2005-02-21 12:09:15 andy_seaborne Exp $
+ * * $Id: ParserSupport.java,v 1.19 2005-04-08 13:12:12 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -167,7 +167,8 @@ class ParserSupport
 				WARN_STRING_COMPOSING_CHAR,
 				t.location,
 				"String is not legal in XML 1.1; starts with composing char: "
-					+ ((StrToken) t).value);
+					+ ((StrToken) t).value
+					+ " (" + (int)((StrToken)t).value.charAt(0)+ ")");
 	}
 	void checkNormalFormC(Token t, ARPString str) throws ParseException {
 		if (!CharacterModel.isNormalFormC(str.toString()))

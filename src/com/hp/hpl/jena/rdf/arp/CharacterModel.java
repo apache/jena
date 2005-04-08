@@ -22,7 +22,14 @@ public class CharacterModel {
 	 * @param str The string to be tested.
 	 */
 	static public boolean isNormalFormC(String str) {
+	    try {
 	   return SWITCH_OFF || Normalizer.  isNormalized(str,Normalizer.NFC,0);
+	    }
+	    catch (ArrayIndexOutOfBoundsException e) {
+	        // false below means "NFC" see javadoc for compose().
+	        String normalized = Normalizer.compose(str,false);
+	        return normalized.equals(str);
+	    }
 	}
 	
 	/* Does this string start with a composing character as defined

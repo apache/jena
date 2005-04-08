@@ -43,7 +43,7 @@ class RDFParser implements ARPErrorNumbers {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: rdf.jj,v 1.16 2004-12-23 15:26:51 jeremy_carroll Exp $
+ * * $Id: rdf.jj,v 1.17 2005-04-08 13:12:12 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -710,23 +710,30 @@ Notice the action within the kleene star.
 */
 
 ARPString string(XMLContext ctxt)    : { Vector pieces = new Vector(); 
-                                         Token tok = null;  
+                                         Token tok = null; 
+                                         boolean checkComposingChar[] = new boolean[]{true}; 
                                        }
-{  ( tok=string1(pieces) ) *           { ARPString rslt = 
+{  ( tok=string1(pieces,checkComposingChar) ) *           
+                                       { ARPString rslt = 
                                                 new ARPString(pieces,ctxt.getLang());
                                          X.checkNormalFormC(tok,rslt);
                                          return rslt; }
 }
 
-Token string1(Vector rslts)          : { Token rslt; }
-{ rslt = <CD_STRING>                   { X.checkComposingChar(rslt);
+Token string1(Vector rslts, boolean checkComposingChar[])        
+                                     : { Token rslt; }
+{ rslt = <CD_STRING>                   { if (checkComposingChar[0])
+                                             X.checkComposingChar(rslt);
+                                         checkComposingChar[0] = false;
                                          rslts.add(rslt);
                                          return rslt;
                                        }
 | 
-  rslt = <COMMENT>                     { return rslt; }
+  rslt = <COMMENT>                     { checkComposingChar[0] = true;
+                                         return rslt; }
 | 
-  rslt = pi(true)                      { return rslt; }   
+  rslt = pi(true)                      { checkComposingChar[0] = true;
+                                         return rslt; }   
 | // OR
   rslt = saxEx()                       { return rslt; }                                          
 }

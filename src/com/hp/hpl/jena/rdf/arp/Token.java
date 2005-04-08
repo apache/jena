@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Token.java,v 1.7 2005-03-31 16:12:26 jeremy_carroll Exp $
+ * * $Id: Token.java,v 1.8 2005-04-08 13:12:12 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -108,8 +108,10 @@ public class Token implements RDFParserConstants, Cloneable {
 		if (COUNT && !isDead) {
 			isDead = true;
 			dead++;
-			countMap.put(getClass(), new Integer(((Integer) countMap
-					.get(getClass())).intValue() - 1));
+			Integer oldCnt = (Integer) countMap
+					.get(getClass());
+			if (oldCnt != null)
+            countMap.put(getClass(), new Integer(oldCnt.intValue() - 1));
 		}
 	}
 
