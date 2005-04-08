@@ -25,7 +25,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Token.java,v 1.8 2005-04-08 13:12:12 jeremy_carroll Exp $
+ * * $Id: Token.java,v 1.9 2005-04-08 13:29:29 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -60,20 +60,20 @@ public class Token implements RDFParserConstants, Cloneable {
 	 * After DBGSIZE tokens a small debugging message, and hightide computations
 	 * are done.
 	 */
-	static private int DBGSIZE = 500;
+	static private int DBGSIZE = 3000;
 
 	/**
 	 * After BIGSIZE tokens a detailed debugging message is produced.
 	 * Must be integer multiple of {@link #DBGSIZE}.
 	 **/
-	static private int BIGSIZE = 100000;
+	static private int BIGSIZE = 99000;
 
 	/**
 	 * exit when {@link #BIGSIZE} tokens have been processed.
 	 */
 	static private boolean GIVEUP = true;
 
-	static private int SLEEPTIME = 15;
+	static private int SLEEPTIME = 0;
 	/**
 	 * The maximum number of tokens ever alive. Call
 	 * {@link #reinitHighTide} before testing. Only
