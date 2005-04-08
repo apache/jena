@@ -30,8 +30,4 @@
    <rdf:Property rdf:about="&rdfs;isDefinedBy" />
    <rdf:Property rdf:about="&rdfs;comment" />
 
-
-<rdf:Property rdf:about="urn:x-hp-jena:rubrik/xsdRange" />
-<rdf:Property rdf:about="urn:x-hp-jena:rubrik/xsdBase" />
-
 </rdf:RDF>

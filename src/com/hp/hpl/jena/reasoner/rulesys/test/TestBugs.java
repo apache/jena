@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.31 2005-02-21 12:18:11 andy_seaborne Exp $
+ * $Id: TestBugs.java,v 1.32 2005-04-08 14:20:48 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.31 $ on $Date: 2005-02-21 12:18:11 $
+ * @version $Revision: 1.32 $ on $Date: 2005-04-08 14:20:48 $
  */
 public class TestBugs extends TestCase {
 
@@ -354,6 +354,29 @@ public class TestBugs extends TestCase {
         TestUtil.assertIteratorValues(this, res, new Statement[] {
             m.createStatement(i, RDF.type, c)
         });
+    }
+    
+    /**
+     * Also want to have hidden rb:xsdRange
+     */
+    public void testHideXSDRange() {
+        OntModelSpec[] specs = new OntModelSpec[] {
+                OntModelSpec.OWL_MEM_RULE_INF,
+                OntModelSpec.OWL_MEM_RDFS_INF,
+                OntModelSpec.OWL_MEM_MINI_RULE_INF,
+                OntModelSpec.OWL_MEM_MICRO_RULE_INF
+        };
+        for (int os = 0; os < specs.length; os++) {
+            OntModelSpec spec = specs[os];
+            OntModel m = ModelFactory.createOntologyModel(spec, null);
+            Iterator i = m.listOntProperties();
+            while (i.hasNext()) {
+                Resource r = (Resource)i.next();
+                if (r.getURI() != null && r.getURI().startsWith(ReasonerVocabulary.RBNamespace)) {
+                    assertTrue("Rubrik internal property leaked out: " + r + "(" + os + ")", false);
+                }
+            }
+        }
     }
     
     /**

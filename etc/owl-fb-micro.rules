@@ -277,6 +277,10 @@
 
 #-> (xsd:integer rdfs:subClassOf xsd:decimal).
 
+-> hide(rb:xsdBase).
+-> hide(rb:xsdRange).
+-> hide(rb:prototype).
+
 -> (xsd:byte rb:xsdBase xsd:decimal).
 -> (xsd:short rb:xsdBase xsd:decimal).
 -> (xsd:int rb:xsdBase xsd:decimal).

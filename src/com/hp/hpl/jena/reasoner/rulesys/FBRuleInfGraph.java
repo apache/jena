@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.51 2005-03-23 13:58:14 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.52 2005-04-08 14:20:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.51 $ on $Date: 2005-03-23 13:58:14 $
+ * @version $Revision: 1.52 $ on $Date: 2005-04-08 14:20:49 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
     
@@ -801,7 +801,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         if (((Triple)t).getSubject().isLiteral()) return true;
         
         if (JenaParameters.enableFilteringOfHiddenInfNodes && hiddenNodes != null) {
-            if (hiddenNodes.contains(t.getSubject()) || hiddenNodes.contains(t.getObject())) {
+            if (hiddenNodes.contains(t.getSubject()) || hiddenNodes.contains(t.getObject()) || hiddenNodes.contains(t.getPredicate())) {
                 return true;
             }
         }

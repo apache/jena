@@ -138,13 +138,15 @@ Post Jena 2.1 change list [up to 2.2beta]
         on the iterator from find() generated a notifyDeleteTriple event.
 
   Reasoners
+      o Suppressed internal properties (rb:xsdRange etc) from leaking out of infmodel
+      o Fix space leak in backward chainer
       o Added subProperty inheritance of domain/range values
       o Fixed validation of owl Functional properties to handle literals
-      o Changed validation report of instantiatable classes to be warnings rather 
-        than errors, all of name "Inconsistent class"
+      o Changed validation report of un-instantiatable classes to be warnings rather 
+        than errors, report name is "Inconsistent class"
       o During validation the culprit resource is now made available via the error 
         report's getExtension method
-      o Fixed bug in backward reasoner which caused it to ovccasionally miss 
+      o Fixed bug in backward reasoner which caused it to occasionally miss 
         some results in non-deterministic ways
       o Fixed performance problem with listing all triples in a transitive reasoner
       o Fixed bug 927644, mishandling of cycles in transitive reasoner
@@ -156,9 +158,6 @@ Post Jena 2.1 change list [up to 2.2beta]
       o Changed delete for RETE reasoner to be non-incremental to work around
         bug without demanding full reference counting
       o Added experimental OWLMini and OWLMicro reasoners
-        N.B. These remain experimental at 2.2beta. By 2.2 final the split 
-        between these should be clarified, support for unionOf rationalized 
-        and documentation updated.
 
       o [kers] Added WrappedReasonerFactory class and RuleReasoner interface.
         Some tweaking to "implements" clauses. Refactored out some setRules

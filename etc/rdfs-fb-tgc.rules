@@ -2,7 +2,7 @@
 # RDFS rule set v0.1.
 # This variant is used in the case where the subclass and subproperty
 # lattices have been precomputed by a transitive graph closure cache.
-# $Id: rdfs-fb-tgc.rules,v 1.7 2003-11-08 17:55:01 der Exp $
+# $Id: rdfs-fb-tgc.rules,v 1.8 2005-04-08 14:20:22 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -118,6 +118,10 @@
 -> (xsd:gMonthDay rdf:type rdfs:Datatype).
 
 #-> (xsd:integer rdfs:subClassOf xsd:decimal).
+
+-> hide(rb:xsdBase).
+-> hide(rb:xsdRange).
+-> hide(rb:prototype).
 
 -> (xsd:byte rb:xsdBase xsd:decimal).
 -> (xsd:short rb:xsdBase xsd:decimal).

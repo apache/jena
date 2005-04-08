@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: Hide.java,v 1.3 2005-02-21 12:17:24 andy_seaborne Exp $
+ * $Id: Hide.java,v 1.4 2005-04-08 14:20:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * result iterators.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2005-02-21 12:17:24 $
+ * @version $Revision: 1.4 $ on $Date: 2005-04-08 14:20:49 $
  */
 public class Hide extends BaseBuiltin {
 
@@ -49,14 +49,14 @@ public class Hide extends BaseBuiltin {
     /**
      * This method is invoked when the builtin is called in a rule head.
      * Such a use is only valid in a forward rule.
-     * Exected args are the instance to be annotated, the property to use and the type
-     * of the resulting bNode.
      * @param args the array of argument values for the builtin, this is an array 
      * of Nodes.
+     * @param length the length of the argument list, may be less than the length of the args array
+     * for some rule engines
      * @param context an execution context giving access to other relevant data
      */
-    public void headAction(Node[] args, RuleContext context) {
-        doHide(args, args.length, context);
+     public void headAction(Node[] args, int length, RuleContext context) {
+        doHide(args, length, context);
     }
 
     /**

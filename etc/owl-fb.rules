@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.52 2005-02-20 14:30:52 der Exp $
+# $Id: owl-fb.rules,v 1.53 2005-04-08 14:20:31 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -609,6 +609,10 @@
 -> (xsd:gMonthDay rdf:type rdfs:Datatype).
 
 -> (xsd:integer rdfs:subClassOf xsd:decimal).
+
+-> hide(rb:xsdBase).
+-> hide(rb:xsdRange).
+-> hide(rb:prototype).
 
 -> (xsd:byte rb:xsdBase xsd:decimal).
 -> (xsd:short rb:xsdBase xsd:decimal).

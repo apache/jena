@@ -115,12 +115,10 @@
    <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#hexBinary" />
    <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#long" />
    <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#gMonthDay" />
-   <rdfs:Resource rdf:about="urn:x-hp-jena:rubrik/xsdRange" />
    <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#negativeInteger" />
    <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#unsignedInt" />
    <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#short" />
    <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#time" />
-   <rdfs:Resource rdf:about="urn:x-hp-jena:rubrik/xsdBase" />
    <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#dateTime" />
    <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#unsignedShort" />
    <rdfs:Resource rdf:about="http://www.w3.org/2001/XMLSchema#double" />
@@ -172,9 +170,6 @@
    <rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#unsignedByte" />
    <rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#float" />
    <rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#date" />
-
-<rdf:Property rdf:about="urn:x-hp-jena:rubrik/xsdRange" />
-<rdf:Property rdf:about="urn:x-hp-jena:rubrik/xsdBase" />
 
    <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#duration" />
    <rdfs:Class rdf:about="http://www.w3.org/2001/XMLSchema#positiveInteger" />
