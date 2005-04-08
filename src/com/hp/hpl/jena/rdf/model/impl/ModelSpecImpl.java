@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.47 2005-04-08 10:05:54 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.48 2005-04-08 12:40:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -185,7 +185,7 @@ public abstract class ModelSpecImpl implements ModelSpec
     */
     public static ModelMaker createMaker( Model description )
         { Model d = ModelSpecFactory.withSchema( description );
-        return createMakerByRoot( findRootByType( d, JMS.MakerSpec ), d ); }
+        return createMakerByRoot( ModelSpecFactory.findRootByType( d, JMS.MakerSpec ), d ); }
         
     public static ModelMaker createMaker( Resource root, Model d )
         { return createMakerByRoot( root, ModelSpecFactory.withSchema( d ) ); }
