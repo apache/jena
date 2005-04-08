@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.102 2005-02-21 12:14:33 andy_seaborne Exp $
+    $Id: ModelCom.java,v 1.103 2005-04-08 13:51:54 der Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -607,6 +607,10 @@ public class ModelCom
      * @param value the literal value to encapsulate
      */
     public Literal createTypedLiteral(Object value) {
+        // Catch special case of a Calendar which we want to act as if it were an XSDDateTime
+        if (value instanceof Calendar) {
+            return createTypedLiteral((Calendar)value);
+        }
         LiteralLabel ll = new LiteralLabel(value);
         return new LiteralImpl(Node.createLiteral(ll), this);
     }

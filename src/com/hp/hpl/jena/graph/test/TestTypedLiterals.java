@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.41 2005-02-21 11:52:48 andy_seaborne Exp $
+ * $Id: TestTypedLiterals.java,v 1.42 2005-04-08 13:51:30 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -35,7 +35,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.41 $ on $Date: 2005-02-21 11:52:48 $
+ * @version $Revision: 1.42 $ on $Date: 2005-04-08 13:51:30 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -288,6 +288,46 @@ public class TestTypedLiterals extends TestCase {
         l3 = m.createTypedLiteral("1", XSDDatatype.XSDnonNegativeInteger);
         
         assertSameValueAs("numeric comparisons", l1, l3);
+    }
+    
+    /**
+     * Check that creating a typed literal from an object traps the interesting 
+     * special cases of String and Calendar.
+     */
+    public void testOverloads() {
+        // First case string overloads an explicit type
+        boolean old = JenaParameters.enableEagerLiteralValidation;
+        try {
+            JenaParameters.enableEagerLiteralValidation = true;
+            
+            // String overloading cases
+            boolean test1 = false;
+            try {
+                Literal l1 = m.createTypedLiteral("foo", "http://www.w3.org/2001/XMLSchema#integer");
+            } catch (DatatypeFormatException e1 ) {
+                test1 = true;
+            }
+            assertTrue("detected illegal string, direct", test1);
+            
+            boolean test2 = false;
+            try {
+                Object foo = "foo";
+                Literal l1 = m.createTypedLiteral(foo, "http://www.w3.org/2001/XMLSchema#integer");
+            } catch (DatatypeFormatException e2 ) {
+                test2 = true;
+            }
+            assertTrue("detected illegal string, overloaded", test2);
+            
+            // Overloading of calendar convenience functions
+            Calendar testCal = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+            testCal.set(1999, 4, 30, 15, 9, 32);
+            testCal.set(Calendar.MILLISECOND, 0);   // ms field can be undefined on Linux
+            Literal lc = m.createTypedLiteral((Object)testCal);
+            assertEquals("calendar overloading test", m.createTypedLiteral("1999-05-30T15:09:32Z", XSDDatatype.XSDdateTime), lc );
+            
+        } finally {
+            JenaParameters.enableEagerLiteralValidation = old;
+        }
     }
     
     /**
