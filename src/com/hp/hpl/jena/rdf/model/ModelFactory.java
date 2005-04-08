@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.41 2005-02-21 12:14:08 andy_seaborne Exp $
+  $Id: ModelFactory.java,v 1.42 2005-04-08 10:02:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -79,7 +79,7 @@ public class ModelFactory extends ModelFactoryBase
         description. The root of the description is the unique resource of type ModelSpec.
     */
     public static ModelSpec createSpec( Model desc )
-        { return ModelSpecImpl.create( desc ); }
+        { return ModelSpecFactory.createSpec( desc ); }
         
     /**
         Answer a ModelSpec which can create models to the specifcations in the RDF

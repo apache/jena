@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.46 2005-02-21 12:14:35 andy_seaborne Exp $
+  $Id: ModelSpecImpl.java,v 1.47 2005-04-08 10:05:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -87,19 +87,8 @@ public abstract class ModelSpecImpl implements ModelSpec
         @return a sub-property of JMS.maker
     */
     public abstract Property getMakerProperty();
-    
+   
     /**
-        Answer a ModelSpec created from the RDF model to be found using the URI of
-        the (non-bnode) Resource.
-        
-        see com.hp.hpl.jena.rdf.model.impl.createByRoot
-     	@param desc the resource who's URI names the model to read
-     	@return a ModelSpec as described by the resource
-    */
-    public static ModelSpec create( Resource desc )
-        { return create( readModel( desc ) ); }
-    
-    /*
      	Answer a Model, as per the specification of ModelSource; if the name
      	is useful, use it, otherwise don't bother. Default implementation is
      	to return a fresh model.
@@ -114,27 +103,6 @@ public abstract class ModelSpecImpl implements ModelSpec
     public Model openModelIfPresent( String URI )
         { return null; }
         
-    /**
-        Answer a ModelSpec created from the RDF model to be found using the URI of
-        the (non-bnode) Resource and starting from the given root.
-        
-        see com.hp.hpl.jena.rdf.model.impl.createByRoot
-        @param root the root of the description within the model
-        @param desc the resource who's URI names the model to read
-        @return a ModelSpec as described by the resource
-    */        
-    public static ModelSpec create( Resource root, Resource desc )
-        { return ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( readModel( desc ) ), root ); }
-        
-    /**
-        see com.hp.hpl.jena.rdf.model.impl.createByRoot
-        @param desc a model containing a JMS description
-        @return a ModelSpec fitting that description
-    */
-    public static ModelSpec create( Model desc )
-        { Model d = ModelSpecFactory.withSchema( desc );
-        return ModelSpecFactory.createSpec( d, findRootByType( d, JMS.ModelSpec ) ); }
-        
     public static Resource getMaker( Resource root, Model desc )
         {
         StmtIterator it = desc.listStatements( root, JMS.maker, (RDFNode) null );
@@ -148,18 +116,6 @@ public abstract class ModelSpecImpl implements ModelSpec
             // throw new BadDescriptionException( "no jms:maker for " + root, desc );
             }
         }
-        
-    /**
-        Answer the "most specific" type of root in desc which is an instance of type.
-        We assume a single inheritance thread starting with that type. 
-        
-    	@param desc the model the search is conducted in
-    	@param root the subject whos type is to be found
-    	@param type the base type for the search
-    	@return T such that (root type T) and if (root type T') then (T' subclassof T)
-    */
-    static Resource findSpecificType( Model desc, Resource root, Resource type )
-        { return ModelSpecFactory.findSpecificType( (Resource) root.inModel( desc ), type ); }
         
     /**
         Answer the ModelMaker that this ModelSpec uses.
@@ -235,7 +191,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         { return createMakerByRoot( root, ModelSpecFactory.withSchema( d ) ); }
         
     public static ModelMaker createMakerByRoot( Resource root, Model fullDesc )
-        { Resource type = findSpecificType( fullDesc, root, JMS.MakerSpec );
+        { Resource type = ModelSpecFactory.findSpecificType( (Resource) root.inModel( fullDesc ), JMS.MakerSpec );
         ModelMakerCreator mmc = ModelMakerCreatorRegistry.findCreator( type );
         if (mmc == null) throw new RuntimeException( "no maker type" );  
         return mmc.create( fullDesc, root ); }
