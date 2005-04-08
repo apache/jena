@@ -3,6 +3,14 @@ Release Notes
 
 Post 2.2beta change list
 
+  ARP
+      o Fixed XMLLiteral bug relevant to OWL-S
+      o Added workaround for ICU bug.
+        The workaround may slow processing of Tamil and other langauges 
+        which use Unicode composing characters. If you are processing
+        large volumes of Tamil using a patched version of icu4j may be 
+        faster. Ask on jena-dev for more information.
+
   FileGraph and ModelMakerImpl
       o ModelMakerImpl now implements [the obsolescent] createModelOver
         using maker.openModel( ... ) rather than .createModel( ... ). This
