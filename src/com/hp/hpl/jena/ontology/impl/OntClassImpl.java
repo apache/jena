@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.46 $
+ * Revision           $Revision: 1.47 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-07 16:47:39 $
+ * Last modified on   $Date: 2005-04-08 17:38:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -36,17 +36,15 @@ import com.hp.hpl.jena.vocabulary.*;
 
 import java.util.*;
 
-import org.apache.commons.logging.LogFactory;
-
 
 /**
  * <p>
- * Implementation for the ontology abstraction representing ontology classes.
+ * Implementation of the ontology abstraction representing ontology classes.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.46 2005-04-07 16:47:39 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.47 2005-04-08 17:38:50 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -59,12 +57,12 @@ public class OntClassImpl
     private static final String[] IGNORE_NAMESPACES = new String[] {
             OWL.NS,
             DAMLVocabulary.NAMESPACE_DAML_2001_03_URI,
-            RDF.getURI(), 
-            RDFS.getURI(), 
+            RDF.getURI(),
+            RDFS.getURI(),
             ReasonerVocabulary.RBNamespace
     };
-    
-    
+
+
     // Static variables
     //////////////////////////////////
 
@@ -608,92 +606,9 @@ public class OntClassImpl
             }
         }
 
-        // if we are restricting to the direct cases, we remove non-direct members from
-        // the property hierarchy
-        if (direct) {
-            // TODO
-        }
         // return the results, using the ont property facet
         return WrappedIterator.create( cands.iterator() )
                               .mapWith( new AsMapper( OntProperty.class ) );
-
-        /*
-        // decide which model to use, based on whether we want entailments
-        // TODO this is a hack to get around a jena-dev bug report - code to be replaced
-        // during the forthcoming re-write of ldp
-        OntModel mOnt = (OntModel) getModel();
-        Model base = mOnt.getBaseModel();
-        boolean hasInf = (mOnt.getGraph() instanceof InfGraph);
-        // the issue is that for all=false, we only want to ingore entailments, not imports
-        Model m = (all || !hasInf) ? mOnt : base;
-
-        Set supers = new HashSet();
-        Set props= new HashSet();
-
-        // collect all of the super-classes of this class (including self)
-        supers.add( this );
-        if (all) {
-            for (Iterator i = listSuperClasses(); i.hasNext(); ) {
-                 supers.add( i.next() );
-            }
-        }
-
-        // now iterate over the super-classes (all) or just myself (not all)
-        for (Iterator i = supers.iterator(); i.hasNext(); ) {
-            Resource supClass = (Resource) i.next();
-
-            // is this super-class a restriction?
-            if (getProfile().RESTRICTION() != null && (supClass.canAs( Restriction.class ) ||
-                                                       supClass.hasProperty( getProfile().ON_PROPERTY() ) )) {
-                // look up the property that this restriction applies to
-                Restriction r = (Restriction) supClass.as( Restriction.class );
-                Property p = r.getOnProperty();
-
-                if (p == null) {
-                    // A restriction that is not on a property - bad
-                    String id = r.getURI();
-                    if (id == null) {
-                        id = "[anon restriction with anonID " + r.getId().toString() + "]";
-                    }
-                    LogFactory.getLog( getClass() ).warn( "Found restriction " + id + " with no onProperty declaration" );
-                }
-                else if (!props.contains( p )) {
-                    // rule out properties with a cardinality of zero
-                    if (!(r.hasProperty( getProfile().MAX_CARDINALITY(), 0 ) ||
-                          r.hasProperty( getProfile().CARDINALITY(), 0))) {
-                        // p is a property that can apply to this restriction
-                        collectProperty( p, props, mOnt );//props.add( p );
-                    }
-                }
-            }
-            else {
-                // for other classes, we check the domain constraints
-                for (StmtIterator j = m.listStatements( null, getProfile().DOMAIN(), supClass ); j.hasNext(); ) {
-                    Resource prop = j.nextStatement().getSubject();
-
-                    if (!props.contains( prop )) {
-                        // we need to check that the conjunction of the domains is in the super-classes
-                        StmtIterator k = null;
-                        boolean domainOK = true;
-
-                        for (k = m.listStatements( prop, getProfile().DOMAIN(), (RDFNode) null ); domainOK && k.hasNext(); ) {
-                            domainOK = supers.contains( k.nextStatement().getObject() );
-                        }
-
-                        if (domainOK) {
-                            collectProperty( (Property) prop.as( Property.class ), props, mOnt );//props.add( prop );
-                        }
-
-                        // we must ensure that the iterator is closed, since we may not have reached the end
-                        k.close();
-                    }
-                }
-            }
-        }
-
-        // map each answer value to the appropriate ehnanced node
-        return WrappedIterator.create( props.iterator() ).mapWith( new AsMapper( OntProperty.class ) );
-        */
     }
 
 
@@ -729,6 +644,40 @@ public class OntClassImpl
      */
     public Individual createIndividual( String uri ) {
         return ((OntModel) getModel()).createIndividual( uri, this );
+    }
+
+
+    /**
+     * <p>Answer true if this class is one of the roots of the class hierarchy.
+     * This will be true if either (i) this class has <code>owl:Thing</code>
+     * (or <code>daml:Thing</code>) as a direct super-class, or (ii) it has
+     * no declared super-classes (including anonymous class expressions).</p>
+     * @return True if this class is the root of the class hierarchy in the
+     * model it is attached to
+     */
+    public boolean isHierarchyRoot() {
+        // the only super-classes of a root class are the various aliases
+        // of Top, or itself
+        ExtendedIterator i = null;
+        try {
+            i = listSuperClasses( true );
+
+            while (i.hasNext()) {
+                Resource sup = (Resource) i.next();
+                if (!(sup.equals( getProfile().THING() ) ||
+                      sup.equals( RDFS.Resource ) ||
+                      sup.equals( this )))
+                {
+                    // a super that indicates this is not a root class
+                    return false;
+                }
+            }
+        }
+        finally {
+            i.close();
+        }
+
+        return true;
     }
 
 
@@ -940,23 +889,45 @@ public class OntClassImpl
                 return false;
             }
         }
-        
+
+        // check for global props, that have no specific domain constraint
+        boolean isGlobal = true;
+
+        // flag for detecting the direct case
+        boolean seenDirect = false;
+
         for (StmtIterator i = getModel().listStatements( p, getProfile().DOMAIN(), (RDFNode) null ); i.hasNext();  ) {
             Resource domain = i.nextStatement().getResource();
-            
+
             // there are some well-known values we ignore
-            if (domain.equals( OWL.Thing ) || domain.equals( RDFS.Resource )) {
-                continue;
-            }
-            
-            if (!(domain.equals( this ) ||
-                 (!direct && hasSuperClass( domain )))) {
-                // there is a class in the domain of p that is not a super-class of this class
-                return false;
+            if (!(domain.equals( getProfile().THING() ) || domain.equals( RDFS.Resource ))) {
+                // not a generic domain
+                isGlobal = false;
+
+                if (domain.equals( this )) {
+                    // if this class is actually in the domain (as opposed to one of this class's
+                    // super-classes), then we've detected the direct property case
+                    seenDirect = true;
+                }
+                else if (!canProveSuperClass( domain )) {
+                    // there is a class in the domain of p that is not a super-class of this class
+                    return false;
+                }
             }
         }
-        return true;
+
+        if (direct) {
+            // if we're looking for direct props, we must either have seen the direct case
+            // or it's a global prop and this is a root class
+            return seenDirect || (isGlobal && isHierarchyRoot());
+        }
+        else {
+            // not direct, we must either found a global or a super-class prop
+            // otherwise the 'return false' above would have kicked in
+            return true;
+        }
     }
+
 
     /**
      * <p>Answer an iterator over all of the properties in this model
@@ -965,9 +936,9 @@ public class OntClassImpl
     protected ExtendedIterator listAllProperties() {
         OntModel mOnt = (OntModel) getModel();
         Profile prof = mOnt.getProfile();
-        
-        ExtendedIterator pi = mOnt.listStatements( null, RDF.type, RDF.Property );
-        
+
+        ExtendedIterator pi = mOnt.listStatements( null, RDF.type, getProfile().PROPERTY() );
+
         // check reasoner capabilities - major performance improvement for inf models
         if (mOnt.getReasoner() != null) {
             Model caps = mOnt.getReasoner().getReasonerCapabilities();
@@ -979,7 +950,7 @@ public class OntClassImpl
                 return pi;
             }
         }
-        
+
         // otherwise, we manually check the other property types
         if (prof.OBJECT_PROPERTY() != null) {
             pi = pi.andThen( mOnt.listStatements( null, RDF.type, prof.OBJECT_PROPERTY() ) );
@@ -999,11 +970,59 @@ public class OntClassImpl
         if (prof.TRANSITIVE_PROPERTY() != null) {
             pi = pi.andThen( mOnt.listStatements( null, RDF.type, prof.TRANSITIVE_PROPERTY() ) );
         }
-        
+        if (prof.ANNOTATION_PROPERTY() != null) {
+            pi = pi.andThen( mOnt.listStatements( null, RDF.type, prof.ANNOTATION_PROPERTY() ) );
+        }
+
         return pi;
     }
-    
-    
+
+    /**
+     * <p>Answer true if we can demonstrate that this class has the given super-class.
+     * If this model has a reasoner, this is equivalent to asking if the sub-class
+     * relation holds. Otherwise, we simulate basic reasoning by searching upwards
+     * through the class hierarchy.</p>
+     * @param sup A super-class to test for
+     * @return True if we can show that sup is a super-class of thsi class
+     */
+    protected boolean canProveSuperClass( Resource sup ) {
+        OntModel om = (OntModel) getModel();
+        if (om.getReasoner() != null) {
+            if (om.getReasoner()
+                  .getReasonerCapabilities().contains( null, ReasonerVocabulary.supportsP, RDFS.subClassOf ))
+            {
+                // this reasoner does transitive closure on sub-classes, so we just ask
+                return hasSuperClass( sup );
+            }
+        }
+
+        // otherwise, we have to search upwards through the class hierarchy
+        Set seen = new HashSet();
+        List queue = new ArrayList();
+        queue.add( this );
+
+        while (!queue.isEmpty()) {
+            OntClass c = (OntClass) queue.remove( 0 );
+            if (!seen.contains( c )) {
+                seen.add( c );
+
+                if (c.equals( sup )) {
+                    // found the super class
+                    return true;
+                }
+                else {
+                    // queue the supers
+                    for (Iterator i = c.listSuperClasses(); i.hasNext(); ) {
+                        queue.add( i.next() );
+                    }
+                }
+            }
+        }
+
+        // to get here, we didn't find the class we were looking for
+        return false;
+    }
+
     //==============================================================================
     // Inner class definitions
     //==============================================================================

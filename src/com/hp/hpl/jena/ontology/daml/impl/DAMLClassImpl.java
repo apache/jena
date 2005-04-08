@@ -6,11 +6,11 @@
  * Package            Jena
  * Created            4 Jan 2001
  * Filename           $RCSfile: DAMLClassImpl.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     Preview-release $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:05:06 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-04-08 17:38:52 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import com.hp.hpl.jena.util.iterator.*;
  * not the same as Java classes: think of classifications rather than active data structures.</p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS info: $Id: DAMLClassImpl.java,v 1.14 2005-02-21 12:05:06 andy_seaborne Exp $
+ * @version CVS info: $Id: DAMLClassImpl.java,v 1.15 2005-04-08 17:38:52 ian_dickinson Exp $
  */
 public class DAMLClassImpl
     extends OntClassImpl
@@ -57,19 +57,19 @@ public class DAMLClassImpl
 
     /**
      * A factory for generating DAMLClass facets from nodes in enhanced graphs.
-     * Note: should not be invoked directly by user code: use 
+     * Note: should not be invoked directly by user code: use
      * {@link com.hp.hpl.jena.rdf.model.RDFNode#as as()} instead.
      */
     public static Implementation factory = new Implementation() {
-        public EnhNode wrap( Node n, EnhGraph eg ) { 
+        public EnhNode wrap( Node n, EnhGraph eg ) {
             if (canWrap( n, eg )) {
                 return new DAMLClassImpl( n, eg );
             }
             else {
                 throw new ConversionException( "Cannot convert node " + n.toString() + " to DAMLClass" );
-            } 
+            }
         }
-            
+
         public boolean canWrap( Node node, EnhGraph eg ) {
             // node will support being an DAMLClass facet if it has rdf:type owl:Class or equivalent
             Profile profile = (eg instanceof OntModel) ? ((OntModel) eg).getProfile() : null;
@@ -107,11 +107,11 @@ public class DAMLClassImpl
 
     /** DAML common delegate */
     protected DAMLCommon m_common = null;
-    
+
     /** Vocabulary - this is really obsoleted by the profile mechanism */
     protected DAMLVocabulary m_vocabulary = VocabularyManager.getDefaultVocabulary();
-    
-    
+
+
     // Constructors
     //////////////////////////////////
 
@@ -119,7 +119,7 @@ public class DAMLClassImpl
      * <p>
      * Construct a DAML class represented by the given node in the given graph.
      * </p>
-     * 
+     *
      * @param n The node that represents the resource
      * @param g The enh graph that contains n
      */
@@ -143,7 +143,7 @@ public class DAMLClassImpl
     public LiteralAccessor prop_comment()                        { return m_common.prop_comment(); }
     public PropertyAccessor prop_equivalentTo()                  { return m_common.prop_equivalentTo(); }
     public PropertyAccessor prop_type()                          { return m_common.prop_type(); }
-    
+
     /**
      * <p>Answer an iterator over all of the DAML objects that are equivalent to this
      * class, which will be the union of <code>daml:equivalentTo</code> and
@@ -176,7 +176,7 @@ public class DAMLClassImpl
         s.add( this );
         for (Iterator i = getEquivalentValues();  i.hasNext();  s.add( i.next() ) );
         s.remove( this );
-        
+
         return WrappedIterator.create( s.iterator() );
     }
 
@@ -395,7 +395,7 @@ public class DAMLClassImpl
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>
-     * 
+     *
      * @param closed If true, return all available values; otherwise, return
      * only local (direct) sub-classes. See note for details.
      * @return An iterator over this class's sub-classes.
@@ -430,7 +430,7 @@ public class DAMLClassImpl
      * <code>closed</code> is now re-interpreted to mean the inverse of <code>
      * direct</code>, see {@link OntClass#listSubClasses(boolean)} for more details.
      * </p>
-     * 
+     *
      * @param closed If true, return all available values; otherwise, return
      * only local (direct) super-classes. See note for details.
      * @return an iterator over this class's super-classes.
@@ -488,7 +488,7 @@ public class DAMLClassImpl
      * instances of this class: i&#046;e&#046; the properties that have this class,
      * or optionally one of its super-classes, as domain.</p>
      * <p><strong>Note:</strong> In a change to the Jena 1 DAML API, whether
-     * this iterator includes the defined properties for <em>inferred</em> 
+     * this iterator includes the defined properties for <em>inferred</em>
      * super-classes is determined
      * not by a flag at the API level, but by the construction of the DAML
      * model itself.  See {@link ModelFactory} for details. The boolean parameter
@@ -501,7 +501,7 @@ public class DAMLClassImpl
      * @return An iteration of the properties that have this class as domain
      */
     public ExtendedIterator getDefinedProperties( boolean closed ) {
-        return WrappedIterator.create( listDeclaredProperties( closed ) ).mapWith( new AsMapper( DAMLProperty.class ) );
+        return WrappedIterator.create( listDeclaredProperties( !closed ) ).mapWith( new AsMapper( DAMLProperty.class ) );
     }
 
 

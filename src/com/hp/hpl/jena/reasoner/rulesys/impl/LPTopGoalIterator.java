@@ -2,10 +2,10 @@
  * File:        LPTopGoalIterator.java
  * Created by:  Dave Reynolds
  * Created on:  21-Jul-2003
- * 
+ *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.6 2005-03-23 14:04:24 der Exp $
+ * $Id: LPTopGoalIterator.java,v 1.7 2005-04-08 17:38:51 ian_dickinson Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -15,36 +15,38 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
 import java.util.*;
 
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Wraps up the results an LP rule engine instance into a conventional
- * iterator. Ensures that the engine is closed and detached from the 
+ * iterator. Ensures that the engine is closed and detached from the
  * inference graph if the iterator hits the end of the result set.
- * 
+ *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2005-03-23 14:04:24 $
+ * @version $Revision: 1.7 $ on $Date: 2005-04-08 17:38:51 $
  */
 public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
     Object lookAhead;
-    
+
     /** The parent backward chaining engine */
     LPInterpreter interpreter;
-    
+
     /** The set of choice points that the top level interpter is waiting for */
     protected Set choicePoints = new HashSet();
-    
+
     /** The choice point most recently notified as ready to run. */
     protected ConsumerChoicePointFrame nextToRun;
-    
+
     /** set to true if we should be able to usefully run */
     protected boolean isReady = true;
-    
+
     /** set to true if at least one branch has block so an active readiness check is required */
     protected boolean checkReadyNeeded = false;
 
     /** True if the iteration has started */
     boolean started = false;
-    
+
     /**
      * Constructor. Wraps a top level goal state as an iterator
      */
@@ -53,14 +55,18 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
 //        engine.setState(this);
         engine.setTopInterpreter(this);
     }
-        
+
     /**
      * Find the next result in the goal state and put it in the
      * lookahead buffer.
      */
     private void moveForward() {
         synchronized (interpreter.getEngine()) {
+            // LogFactory.getLog( getClass() ).debug( "Entering moveForward sync block on " + interpreter.getEngine() );
+
             started = true;
+            // LogFactory.getLog( getClass() ).debug( "interpreter = " + interpreter );
+
             lookAhead = interpreter.next();
             if (lookAhead == StateFlag.FAIL) {
                 if (choicePoints.isEmpty()) {
@@ -79,6 +85,8 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
                     }
                 }
             }
+            // LogFactory.getLog( getClass() ).debug( "Leaving moveForward sync block " );
+
         }
     }
 
@@ -88,16 +96,16 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
         choicePoints.add(ccp);
         checkReadyNeeded = true;
     }
-    
-    /** 
+
+    /**
      * Notify this context that the given choice point has terminated
-     * and can be remove from the wait list. 
+     * and can be remove from the wait list.
      */
     public void notifyFinished(ConsumerChoicePointFrame ccp) {
         choicePoints.remove(ccp);
         checkReadyNeeded = true;
     }
-    
+
     /**
      * Directly set that this generator is ready (because the generating
      * for one of its generatingCPs has produced new results).
@@ -107,7 +115,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
         isReady = true;
         checkReadyNeeded = false;
     }
-    
+
     /**
      * Return true if the iterator is ready to be scheduled (i.e. it is not
      * known to be complete and not known to be waiting for a dependent generator).
@@ -119,10 +127,10 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
                 ConsumerChoicePointFrame ccp = (ConsumerChoicePointFrame)i.next();
                 if ( ccp.isReady() ) {
                     if (nextToRun == null) {
-                        nextToRun = ccp; 
+                        nextToRun = ccp;
                     }
                     isReady =  true;
-                    break; 
+                    break;
                 }
             }
             checkReadyNeeded = false;
@@ -131,17 +139,20 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
             return isReady;
         }
     }
-        
+
     /**
      * @see com.hp.hpl.jena.util.iterator.ClosableIterator#close()
      */
     public void close() {
         if (interpreter != null) {
             synchronized (interpreter.getEngine()) {
+                // LogFactory.getLog( getClass() ).debug( "Entering close sync block on " + interpreter.getEngine() );
+
                 // Check for any dangling generators which are complete
                 interpreter.getEngine().checkForCompletions();
                 // Close this top goal
                 lookAhead = null;
+                //LogFactory.getLog( getClass() ).debug( "Nulling and closing LPTopGoalIterator " + interpreter );
                 interpreter.close();
                 // was TEMP experiment: interpreter.getEngine().detach(interpreter);
                 interpreter = null;
@@ -149,6 +160,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
                 checkReadyNeeded = false;
                 nextToRun = null;
 //                choicePoints = null;  // disabled to prevent async close causing problems
+                //LogFactory.getLog( getClass() ).debug( "Leaving close sync block " );
             }
         }
     }

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-Jun-2003
  * Filename           $RCSfile: TestDAMLClass.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-04 17:05:47 $
+ * Last modified on   $Date: 2005-04-08 17:37:11 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -41,9 +41,9 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestDAMLClass.java,v 1.13 2005-04-04 17:05:47 ian_dickinson Exp $
+ * @version CVS $Id: TestDAMLClass.java,v 1.14 2005-04-08 17:37:11 ian_dickinson Exp $
  */
-public class TestDAMLClass 
+public class TestDAMLClass
     extends DAMLTestBase
 {
     // Constants
@@ -57,16 +57,16 @@ public class TestDAMLClass
 
     // Constructors
     //////////////////////////////////
-    
+
     static public TestSuite suite() {
         return new TestDAMLClass( "TestDAMLClass" );
     }
-    
+
     public TestDAMLClass( String name ) {
         super( name );
     }
-    
-    
+
+
     // External signature methods
     //////////////////////////////////
 
@@ -77,23 +77,23 @@ public class TestDAMLClass
                     DAMLClass A = m.createDAMLClass( NS + "A" );
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
-                    
+
                     assertEquals( "prop_subClassOf property", RDFS.subClassOf, A.prop_subClassOf().getProperty() );
-                    
+
                     assertEquals( "sub-class cardinality", 2, A.prop_subClassOf().count() );
                     A.prop_subClassOf().add( B );
                     iteratorTest( A.prop_subClassOf().getAll(), new Object[] {A,B,DAML_OIL.Thing} );
                     assertEquals( "sub-class cardinality", 3, A.prop_subClassOf().count() );
                     A.prop_subClassOf().add( C );
                     assertEquals( "sub-class cardinality", 4, A.prop_subClassOf().count() );
-                    
+
                     iteratorTest( A.prop_subClassOf().getAll(), new Object[] {A,B,C,DAML_OIL.Thing} );
-                    
+
                     A.prop_subClassOf().remove( C );
                     assertEquals( "sub-class cardinality", 3, A.prop_subClassOf().count() );
-                    
+
                     iteratorTest( A.prop_subClassOf().getAll(), new Object[] {A,B,DAML_OIL.Thing} );
-                    
+
                     assertTrue( "hasValue", A.prop_subClassOf().hasValue( B ) );
                     assertTrue( "hasValue", !A.prop_subClassOf().hasValue( C ) );
                 }
@@ -103,22 +103,22 @@ public class TestDAMLClass
                     DAMLClass A = m.createDAMLClass( NS + "A" );
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
-                   
+
                     assertEquals( "prop_disjointwith property", DAML_OIL.disjointWith, A.prop_disjointWith().getProperty() );
-                    
+
                     assertEquals( "disjointWith cardinality", 0, A.prop_disjointWith().count() );
                     A.prop_disjointWith().add( B );
                     assertEquals( "disjointwith cardinality", 1, A.prop_disjointWith().count() );
                     A.prop_disjointWith().add( C );
                     assertEquals( "disjointWith cardinality", 2, A.prop_disjointWith().count() );
-                    
+
                     iteratorTest( A.prop_disjointWith().getAll(), new Object[] {B,C} );
-                    
+
                     A.prop_disjointWith().remove( C );
                     assertEquals( "disjointwith cardinality", 1, A.prop_disjointWith().count() );
-                    
+
                     iteratorTest( A.prop_disjointWith().getAll(), new Object[] {B} );
-                    
+
                     assertTrue( "hasValue", A.prop_disjointWith().hasValue( B ) );
                     assertTrue( "hasValue", !A.prop_disjointWith().hasValue( C ) );
                 }
@@ -128,22 +128,22 @@ public class TestDAMLClass
                     DAMLClass A = m.createDAMLClass( NS + "A" );
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
-                   
+
                     assertEquals( "prop_sameClassAs property", DAML_OIL.sameClassAs, A.prop_sameClassAs().getProperty() );
-                    
+
                     assertEquals( "sameClassAs cardinality", 0, A.prop_sameClassAs().count() );
                     A.prop_sameClassAs().add( B );
                     assertEquals( "sameClassAs cardinality", 1, A.prop_sameClassAs().count() );
                     A.prop_sameClassAs().add( C );
                     assertEquals( "sameClassAs cardinality", 2, A.prop_sameClassAs().count() );
-                    
+
                     iteratorTest( A.prop_sameClassAs().getAll(), new Object[] {B,C} );
-                    
+
                     A.prop_sameClassAs().remove( C );
                     assertEquals( "sameClassAs cardinality", 1, A.prop_sameClassAs().count() );
-                    
+
                     iteratorTest( A.prop_sameClassAs().getAll(), new Object[] {B} );
-                    
+
                     assertTrue( "hasValue", A.prop_sameClassAs().hasValue( B ) );
                     assertTrue( "hasValue", !A.prop_sameClassAs().hasValue( C ) );
                 }
@@ -153,22 +153,22 @@ public class TestDAMLClass
                     DAMLClass A = m.createDAMLClass( NS + "A" );
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
-                   
+
                     assertEquals( "prop_complementOf property", DAML_OIL.complementOf, A.prop_complementOf().getProperty() );
-                    
+
                     assertEquals( "complementOf cardinality", 0, A.prop_complementOf().count() );
                     A.prop_complementOf().add( B );
                     assertEquals( "complementOf cardinality", 1, A.prop_complementOf().count() );
                     A.prop_complementOf().add( C );
                     assertEquals( "complementOf cardinality", 2, A.prop_complementOf().count() );
-                    
+
                     iteratorTest( A.prop_complementOf().getAll(), new Object[] {B,C} );
-                    
+
                     A.prop_complementOf().remove( C );
                     assertEquals( "complementOf cardinality", 1, A.prop_complementOf().count() );
-                    
+
                     iteratorTest( A.prop_complementOf().getAll(), new Object[] {B} );
-                    
+
                     assertTrue( "hasValue", A.prop_complementOf().hasValue( B ) );
                     assertTrue( "hasValue", !A.prop_complementOf().hasValue( C ) );
                 }
@@ -178,12 +178,12 @@ public class TestDAMLClass
                     DAMLClass A = m.createDAMLClass( NS + "A" );
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
-                   
+
                     C.prop_subClassOf().add( B );
                     B.prop_subClassOf().add( A );
-                    
+
                     assertEquals( "subClassOf A", B, A.getSubClass() );
-                    
+
                     iteratorTest( A.getSubClasses(), new Object[] {B,C} );
                     iteratorTest( A.getSubClasses( false ), new Object[] {B} );
                     iteratorTest( A.getSubClasses( true ), new Object[] {B,C} );
@@ -194,10 +194,10 @@ public class TestDAMLClass
                     DAMLClass A = m.createDAMLClass( NS + "A" );
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
-                   
+
                     A.prop_subClassOf().add( B );
                     B.prop_subClassOf().add( C );
-                    
+
                     iteratorTest( A.getSuperClasses(), new Object[] {B,C,DAML_OIL.Thing} );
                     iteratorTest( A.getSuperClasses( false ), new Object[] {B} );
                     iteratorTest( A.getSuperClasses( true ), new Object[] {B,C,DAML_OIL.Thing} );
@@ -208,15 +208,15 @@ public class TestDAMLClass
                     DAMLClass A = m.createDAMLClass( NS + "A" );
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
-                   
+
                     A.prop_sameClassAs().add( B );
                     B.prop_sameClassAs().add( C );
-                    
+
                     // no inference
                     iteratorTest( A.getSameClasses(), new Object[] {B} );
-                    
+
                     A.prop_sameClassAs().add( C );   // could be inferred
-                    
+
                     iteratorTest( A.getSameClasses(), new Object[] {B,C} );
                 }
             },
@@ -226,7 +226,7 @@ public class TestDAMLClass
                     DAMLInstance a = m.createDAMLInstance( A, NS + "a" );
                     DAMLInstance b = m.createDAMLInstance( A, NS + "b" );
                     DAMLInstance c = m.createDAMLInstance( A, NS + "c" );
-                   
+
                     iteratorTest( A.getInstances(), new Object[] {a,b,c} );
                 }
             },
@@ -236,18 +236,18 @@ public class TestDAMLClass
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
                     DAMLClass D = m.createDAMLClass( NS + "D" );
-                   
+
                     assertEquals( "prop_disjointUnionOf property", DAML_OIL.disjointUnionOf, A.prop_disjointUnionOf().getProperty() );
-                    
+
                     assertEquals( "disjointUnionOf cardinality", 0, A.prop_disjointUnionOf().count() );
                     A.prop_disjointUnionOf().add( m.createDAMLList( new RDFNode[] {B,C} ) );
-                    
+
                     assertEquals( "disjointUnionOf cardinality", 1, A.prop_disjointUnionOf().count() );
-                    
+
                     iteratorTest( A.prop_disjointUnionOf().getList().getAll(), new Object[] {B,C} );
                     A.prop_disjointUnionOf().getList().add( D );
                     iteratorTest( A.prop_disjointUnionOf().getList().getAll(), new Object[] {B,C,D} );
-                    
+
                     assertTrue( "contains", A.prop_disjointUnionOf().getList().contains( D ) );
                     assertTrue( "contains", A.prop_disjointUnionOf().getList().contains( B ) );
                     assertTrue( "contains", A.prop_disjointUnionOf().getList().contains( C ) );
@@ -259,18 +259,18 @@ public class TestDAMLClass
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
                     DAMLClass D = m.createDAMLClass( NS + "D" );
-                   
+
                     assertEquals( "prop_unionOf property", DAML_OIL.unionOf, A.prop_unionOf().getProperty() );
-                    
+
                     assertEquals( "unionOf cardinality", 0, A.prop_unionOf().count() );
                     A.prop_unionOf().add( m.createDAMLList( new RDFNode[] {B,C} ) );
-                    
+
                     assertEquals( "unionOf cardinality", 1, A.prop_unionOf().count() );
-                    
+
                     iteratorTest( A.prop_unionOf().getList().getAll(), new Object[] {B,C} );
                     A.prop_unionOf().getList().add( D );
                     iteratorTest( A.prop_unionOf().getList().getAll(), new Object[] {B,C,D} );
-                    
+
                     assertTrue( "contains", A.prop_unionOf().getList().contains( D ) );
                     assertTrue( "contains", A.prop_unionOf().getList().contains( B ) );
                     assertTrue( "contains", A.prop_unionOf().getList().contains( C ) );
@@ -282,18 +282,18 @@ public class TestDAMLClass
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
                     DAMLClass D = m.createDAMLClass( NS + "D" );
-                   
+
                     assertEquals( "prop_intersectionOf property", DAML_OIL.intersectionOf, A.prop_intersectionOf().getProperty() );
-                    
+
                     assertEquals( "intersectionOf cardinality", 0, A.prop_intersectionOf().count() );
                     A.prop_intersectionOf().add( m.createDAMLList( new RDFNode[] {B,C} ) );
-                    
+
                     assertEquals( "intersectionOf cardinality", 1, A.prop_intersectionOf().count() );
-                    
+
                     iteratorTest( A.prop_intersectionOf().getList().getAll(), new Object[] {B,C} );
                     A.prop_intersectionOf().getList().add( D );
                     iteratorTest( A.prop_intersectionOf().getList().getAll(), new Object[] {B,C,D} );
-                    
+
                     assertTrue( "contains", A.prop_intersectionOf().getList().contains( D ) );
                     assertTrue( "contains", A.prop_intersectionOf().getList().contains( B ) );
                     assertTrue( "contains", A.prop_intersectionOf().getList().contains( C ) );
@@ -305,31 +305,30 @@ public class TestDAMLClass
                     DAMLClass B = m.createDAMLClass( NS + "B" );
                     DAMLClass C = m.createDAMLClass( NS + "C" );
                     DAMLClass D = m.createDAMLClass( NS + "D" );
-                   
+
                     assertEquals( "prop_oneOf property", DAML_OIL.oneOf, A.prop_oneOf().getProperty() );
-                    
+
                     assertEquals( "oneOf cardinality", 0, A.prop_oneOf().count() );
                     A.prop_oneOf().add( m.createDAMLList( new RDFNode[] {B,C} ) );
-                    
+
                     assertEquals( "oneOf cardinality", 1, A.prop_oneOf().count() );
-                    
+
                     iteratorTest( A.prop_oneOf().getList().getAll(), new Object[] {B,C} );
                     A.prop_oneOf().getList().add( D );
                     iteratorTest( A.prop_oneOf().getList().getAll(), new Object[] {B,C,D} );
-                    
+
                     assertTrue( "contains", A.prop_oneOf().getList().contains( D ) );
                     assertTrue( "contains", A.prop_oneOf().getList().contains( B ) );
                     assertTrue( "contains", A.prop_oneOf().getList().contains( C ) );
                 }
             },
-            /* TODO re-enable
             new OntTestCase( "DAMLClass.getDefinedProperties" ) {
                 public void doTest( DAMLModel m ) throws Exception {
                     DAMLClass A = m.createDAMLClass( NS + "A" );
                     DAMLClass B = m.createDAMLClass( NS + "B" );
-                    
+
                     B.prop_subClassOf().add( A );
-                    
+
                     DAMLObjectProperty p = m.createDAMLObjectProperty( NS + "p" );
                     DAMLObjectProperty q = m.createDAMLObjectProperty( NS + "q" );
                     DAMLObjectProperty r = m.createDAMLObjectProperty( NS + "r" );
@@ -337,23 +336,23 @@ public class TestDAMLClass
                     p.prop_domain().add( B );
                     q.prop_domain().add( B );
                     r.prop_domain().add( A );
-                    
+
                     iteratorTest( A.getDefinedProperties(), new Object[] {r} );
                     iteratorTest( B.getDefinedProperties(), new Object[] {p,q,r} );   // note no inference
                 }
-            },*/
+            },
             new OntTestCase( "DAMLRestriction.prop_onProperty" ) {
                 public void doTest( DAMLModel m ) throws Exception {
                     DAMLRestriction A = m.createDAMLRestriction( NS + "A" );
                     DAMLObjectProperty p = m.createDAMLObjectProperty( NS + "p" );
-                   
+
                     assertEquals( "prop_onProperty property", DAML_OIL.onProperty, A.prop_onProperty().getProperty() );
-                    
+
                     assertEquals( "onProperty cardinality", 0, A.prop_onProperty().count() );
                     A.prop_onProperty().add( p );
-                    
+
                     assertEquals( "onProperty cardinality", 1, A.prop_onProperty().count() );
-                    
+
                     iteratorTest( A.prop_onProperty().getAll(), new Object[] {p} );
                 }
             },
@@ -361,14 +360,14 @@ public class TestDAMLClass
                 public void doTest( DAMLModel m ) throws Exception {
                     DAMLRestriction A = m.createDAMLRestriction( NS + "A" );
                     DAMLClass B = m.createDAMLClass( NS + "B" );
-                   
+
                     assertEquals( "prop_toClass property", DAML_OIL.toClass, A.prop_toClass().getProperty() );
-                    
+
                     assertEquals( "toClass cardinality", 0, A.prop_toClass().count() );
                     A.prop_toClass().add( B );
-                    
+
                     assertEquals( "toClass cardinality", 1, A.prop_toClass().count() );
-                    
+
                     iteratorTest( A.prop_toClass().getAll(), new Object[] {B} );
                 }
             },
@@ -376,28 +375,28 @@ public class TestDAMLClass
                 public void doTest( DAMLModel m ) throws Exception {
                     DAMLRestriction A = m.createDAMLRestriction( NS + "A" );
                     DAMLClass B = m.createDAMLClass( NS + "B" );
-                   
+
                     assertEquals( "prop_hasClass property", DAML_OIL.hasClass, A.prop_hasClass().getProperty() );
-                    
+
                     assertEquals( "hasClass cardinality", 0, A.prop_hasClass().count() );
                     A.prop_hasClass().add( B );
-                    
+
                     assertEquals( "hasClass cardinality", 1, A.prop_hasClass().count() );
-                    
+
                     iteratorTest( A.prop_hasClass().getAll(), new Object[] {B} );
                 }
             },
             new OntTestCase( "DAMLRestriction.prop_cardinality" ) {
                 public void doTest( DAMLModel m ) throws Exception {
                     DAMLRestriction A = m.createDAMLRestriction( NS + "A" );
-                   
+
                     assertEquals( "prop_cardinality property", DAML_OIL.cardinality, A.prop_cardinality().getProperty() );
-                    
+
                     assertEquals( "cardinality cardinality", 0, A.prop_cardinality().count() );
                     A.prop_cardinality().addInt( 1 );
-                    
+
                     assertEquals( "cardinality cardinality", 1, A.prop_cardinality().count() );
-                    
+
                     assertEquals( "cardinality", 1, A.prop_cardinality().getInt() );
                 }
             },

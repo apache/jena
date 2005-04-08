@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntClass.java,v $
- * Revision           $Revision: 1.23 $
+ * Revision           $Revision: 1.24 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-04 21:21:58 $
+ * Last modified on   $Date: 2005-04-08 17:38:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClass.java,v 1.23 2005-04-04 21:21:58 ian_dickinson Exp $
+ * @version CVS $Id: OntClass.java,v 1.24 2005-04-08 17:38:51 ian_dickinson Exp $
  */
 public interface OntClass
     extends OntResource
@@ -416,6 +416,17 @@ public interface OntClass
      * @return A new named individual that is an instance of this class
      */
     public Individual createIndividual( String uri );
+
+
+    /**
+     * <p>Answer true if this class is one of the roots of the class hierarchy.
+     * This will be true if either (i) this class has <code>owl:Thing</code>
+     * (or <code>daml:Thing</code>) as a direct super-class, or (ii) it has
+     * no declared super-classes (including anonymous class expressions).</p>
+     * @return True if this class is the root of the class hierarchy in the
+     * model it is attached to
+     */
+    public boolean isHierarchyRoot();
 
 
     // access to facets
