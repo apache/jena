@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugOWL.java,v 1.28 2005-02-21 12:18:07 andy_seaborne Exp $
+ * $Id: DebugOWL.java,v 1.29 2005-04-08 16:36:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2005-02-21 12:18:07 $
+ * @version $Revision: 1.29 $ on $Date: 2005-04-08 16:36:04 $
  */
 public class DebugOWL {
 
@@ -97,7 +97,7 @@ public class DebugOWL {
             GenericRuleReasoner grr = (GenericRuleReasoner)reasoner;
             grr.setMode(GenericRuleReasoner.HYBRID);
             try {
-                grr.setRules(Rule.parseRules(Util.loadResourceFile("etc/expt.rules")));
+                grr.setRules(Rule.parseRules(Util.loadRuleParserFromResourceFile("etc/expt.rules")));
             } catch (WrappedIOException e) {
                 System.out.println("Failed to open rules file: " + e.getCause() );
                 System.exit(1);
@@ -132,7 +132,7 @@ public class DebugOWL {
             
             case RDFSLPExpt:
                 try {
-                    List rules = Rule.parseRules(Util.loadResourceFile("etc/expt.rules"));
+                    List rules = Rule.parseRules(Util.loadRuleParserFromResourceFile("etc/expt.rules"));
                     reasoner = new FBRuleReasoner(rules);
                 } catch (WrappedIOException e) {
                     System.out.println("Failed to open rules file: " + e.getCause());

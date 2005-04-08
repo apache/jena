@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.27 2005-02-21 12:17:05 andy_seaborne Exp $
+ * $Id: Rule.java,v 1.28 2005-04-08 16:37:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -60,7 +60,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.27 $ on $Date: 2005-02-21 12:17:05 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.28 $ on $Date: 2005-04-08 16:37:51 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -412,8 +412,7 @@ public class Rule implements ClauseEntry {
     public static List rulesFromURL( String uri ) {
         try {
             BufferedReader br = FileUtils.readerFromURL( uri );
-            String ruleString = Rule.rulesStringFromReader( br );
-            return parseRules( ruleString );
+            return parseRules( Rule.rulesParserFromReader( br ) );
         }
         catch (WrappedIOException e)
             { throw new RulesetNotFoundException( uri ); }
@@ -423,6 +422,7 @@ public class Rule implements ClauseEntry {
     Answer a String which is the concatenation (with newline glue) of all the
     non-comment lines readable from <code>src</code>. A comment line is
     one starting "#" or "//".
+    @deprecated Use rulesParserFromReader
     */
     public static String rulesStringFromReader( BufferedReader src ) {
        try {
@@ -438,17 +438,95 @@ public class Rule implements ClauseEntry {
        catch (IOException e) 
            { throw new WrappedIOException( e ); }
    }
+    
+    /**
+    Answer a String which is the concatenation (with newline glue) of all the
+    non-comment lines readable from <code>src</code>. A comment line is
+    one starting "#" or "//".
+    */
+    public static Parser rulesParserFromReader( BufferedReader src ) {
+       try {
+           StringBuffer result = new StringBuffer();
+           String line;
+           Map prefixes = new HashMap();
+           List preloadedRules = new ArrayList();
+           while ((line = src.readLine()) != null) {
+               if (line.startsWith("#")) continue;     // Skip comment lines
+               line = line.trim();
+               if (line.startsWith("//")) continue;    // Skip comment lines
+               if (line.startsWith("prefix") || line.startsWith("@prefix")) {         
+                   // Prefix definition line
+                   // This is a hack not a real solution, the prefixes are global
+                   try {
+                       StringTokenizer tokens = new StringTokenizer(line, " \t");
+                       tokens.nextToken();     // Skip prefix command
+                       String prefix = tokens.nextToken();
+                       if (prefix.endsWith(":")) prefix = prefix.substring(0, prefix.length() - 1);
+                       String url = tokens.nextToken();
+                       // Strip optional <..>
+                       if (url.startsWith("<")) url = url.substring(1);
+                       if (url.endsWith(">")) url = url.substring(0, url.length() - 1);
+                       if (url.endsWith(">.")) url = url.substring(0, url.length() - 2);
+                       prefixes.put(prefix, url);
+                   } catch (NoSuchElementException e) {
+                       throw new JenaException("Illegal prefix definition in rule file: " + line);
+                   }
+               } else if (line.startsWith("@include")) {
+                   // Include referenced rule file, either URL or local special case
+                   try {
+                       StringTokenizer tokens = new StringTokenizer(line, " \t");
+                       tokens.nextToken();     // Skip prefix command
+                       String url = tokens.nextToken();
+                       // Strip optional <..>
+                       if (url.startsWith("<")) url = url.substring(1);
+                       if (url.endsWith(">")) url = url.substring(0, url.length() - 1);
+                       if (url.endsWith(">.")) url = url.substring(0, url.length() - 2);
+
+                       // Check for predefined cases
+                       if (url.equalsIgnoreCase("rdfs")) {
+                           preloadedRules.addAll( RDFSFBRuleReasoner.loadRules() );
+                           
+                       } else if (url.equalsIgnoreCase("owl")) {
+                           preloadedRules.addAll( OWLFBRuleReasoner.loadRules() ) ;
+                           
+                       } else if (url.equalsIgnoreCase("owlmicro")) {
+                           preloadedRules.addAll( OWLMicroReasoner.loadRules() ) ;
+                           
+                       } else if (url.equalsIgnoreCase("owlmini")) {
+                           preloadedRules.addAll( OWLMiniReasoner.loadRules() ) ;
+                           
+                       } else {
+                           // Just try loading as a URL
+                           preloadedRules.addAll( rulesFromURL(url) );
+                       }
+                   } catch (NoSuchElementException e) {
+                       throw new JenaException("Illegal prefix definition in rule file: " + line);
+                   }
+
+               } else {
+                   result.append(line);
+                   result.append("\n");
+               }
+           }
+           Parser parser = new Parser(result.toString());
+           parser.registerPrefixMap(prefixes);
+           parser.addRulesPreload(preloadedRules);
+           return parser;
+       }
+       catch (IOException e) 
+           { throw new WrappedIOException( e ); }
+   }
 
 
     /**
-     * Parse a string as a list a rules.
+     * Run a pre-bound rule parser to extract it's rules
      * @return a list of rules
      * @throws ParserException if there is a problem
      */
-    public static List parseRules(String source) throws ParserException {
-        Parser parser = new Parser(source);
+    public static List parseRules(Parser parser) throws ParserException {
         boolean finished = false;
         List ruleset = new ArrayList();
+        ruleset.addAll(parser.getRulesPreload());
         while (!finished) {
             try {
                 parser.peekToken();
@@ -460,6 +538,15 @@ public class Rule implements ClauseEntry {
             ruleset.add(rule);
         }
         return ruleset;
+    }
+
+    /**
+     * Parse a string as a list a rules.
+     * @return a list of rules
+     * @throws ParserException if there is a problem
+     */
+    public static List parseRules(String source) throws ParserException {
+        return parseRules(new Parser(source));
     }
     
 
@@ -488,6 +575,12 @@ public class Rule implements ClauseEntry {
         /** Variable table */
         private Map varMap;
         
+        /** Local prefix map */
+        private PrefixMapping prefixMapping = PrefixMapping.Factory.create();
+        
+        /** Pre-included rules */
+        private List preloadedRules = new ArrayList();
+        
         /**
          * Constructor
          * @param source the string to be parsed
@@ -495,6 +588,34 @@ public class Rule implements ClauseEntry {
         Parser(String source) {
             stream = new Tokenizer(source, "()[], \t\n\r", "'", true);
             lookahead = null;
+        }
+        
+        /**
+         * Register a new namespace prefix with the parser
+         */
+        void registerPrefix(String prefix, String namespace ) {
+            prefixMapping.setNsPrefix(prefix, namespace);
+        }
+        
+        /**
+         * Register a set of prefix to namespace mappings with the parser
+         */
+        void registerPrefixMap(Map map) {
+            prefixMapping.setNsPrefixes(map);
+        }
+        
+        /**
+         * Add a new set of preloaded rules.
+         */
+        void addRulesPreload(List rules) {
+            preloadedRules.addAll(rules);
+        }
+        
+        /**
+         * Return the complete set of preloaded rules;
+         */
+        List getRulesPreload() {
+            return preloadedRules;
         }
         
         /**
@@ -595,7 +716,8 @@ public class Rule implements ClauseEntry {
 ////                return Node_RuleVariable.ANY;
 //                return Node_RuleVariable.WILD;
             } else if (token.indexOf(':') != -1) {
-                String exp = PrintUtil.expandQname(token);
+                String exp = prefixMapping.expandPrefix(token); // Local map first
+                exp = PrintUtil.expandQname(exp);  // Retain global map for backward compatibility
                 if (exp == token) {
                     // No expansion was possible
                     String prefix = token.substring(0, token.indexOf(':'));

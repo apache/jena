@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.30 2005-02-21 12:18:08 andy_seaborne Exp $
+ * $Id: TestBackchainer.java,v 1.31 2005-04-08 16:36:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import junit.framework.TestSuite;
  * LP engine, though the bulk of such tests are really done by TestBasicLP.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $ on $Date: 2005-02-21 12:18:08 $
+ * @version $Revision: 1.31 $ on $Date: 2005-04-08 16:36:04 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -892,7 +892,7 @@ public class TestBackchainer extends TestCase {
         Node r = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#r");
         Node C1 = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#C1");
         data.add(new Triple(a, p, b));
-        List rules = Rule.parseRules(Util.loadResourceFile("testing/reasoners/bugs/rdfs-error1.brules"));
+        List rules = Rule.parseRules(Util.loadRuleParserFromResourceFile("testing/reasoners/bugs/rdfs-error1.brules"));
         Reasoner reasoner =  createReasoner(rules);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 

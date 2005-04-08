@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleReasoner.java,v 1.18 2005-02-21 12:16:59 andy_seaborne Exp $
+ * $Id: FBRuleReasoner.java,v 1.19 2005-04-08 16:37:51 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of forward rules to generate and instantiate backward rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2005-02-21 12:16:59 $
+ * @version $Revision: 1.19 $ on $Date: 2005-04-08 16:37:51 $
  */
 public class FBRuleReasoner implements RuleReasoner {
     
@@ -239,7 +239,7 @@ public class FBRuleReasoner implements RuleReasoner {
     */
     public static List loadRules( String fileName ) {
         try 
-            { return Rule.parseRules(Util.loadResourceFile( fileName ) ); }
+            { return Rule.parseRules(Util.loadRuleParserFromResourceFile( fileName ) ); }
         catch (WrappedIOException e) 
             { throw new ReasonerException("Can't load rules file: " + fileName, e.getCause() ); }
     }

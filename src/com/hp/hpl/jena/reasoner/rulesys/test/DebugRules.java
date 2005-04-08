@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugRules.java,v 1.5 2005-02-21 12:18:08 andy_seaborne Exp $
+ * $Id: DebugRules.java,v 1.6 2005-04-08 16:36:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -21,7 +21,7 @@ import java.io.*;
 /** * Using during debuging of the rule systems.
  * Runs a named set of rules (can contain axioms and rules) and
  * lists all the resulting entailments.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.5 $ on $Date: 2005-02-21 12:18:08 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.6 $ on $Date: 2005-04-08 16:36:04 $ */
 public class DebugRules {
 
     /** The name of the rule set to load */
@@ -32,7 +32,7 @@ public class DebugRules {
     
     /** Constructor - loads the rules */
     public DebugRules(String rulefileName) throws IOException {
-        ruleset = Rule.parseRules(Util.loadResourceFile(rulefileName));
+        ruleset = Rule.parseRules(Util.loadRuleParserFromResourceFile(rulefileName));
     }
     
     /** Run a single test */
