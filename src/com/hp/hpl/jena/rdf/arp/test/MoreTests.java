@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.24 2005-04-08 13:18:31 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.25 2005-04-08 13:28:58 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -130,7 +130,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 			Model m = createMemModel();
 			RDFReader rdr = m.getReader();
 			FileInputStream r = new FileInputStream(
-					"testing/arp/i18n/icubug2.rdf");
+					"testing/arp/i18n/icubugtwo.rdf");
 			rdr.setErrorHandler(this);
 			expected = new int[] { WARN_STRING_NOT_NORMAL_FORM_C };
 			rdr.read(m, r, "http://example.org/");
@@ -344,7 +344,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 			NTriple.main(new String[] { "-t", file });
 			//System.err.println("["+Token.highTide+"]");
 			assertTrue("Too many tokens used: "+ Token.highTide,
-					Token.highTide<200);
+					Token.highTide<2000);
 		} finally {
 			Token.COUNT = false;
 			Token.COUNTTEST = false;
