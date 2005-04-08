@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.23 2005-04-03 22:29:47 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.24 2005-04-08 13:18:31 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -37,7 +37,8 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		suite.addTest(TestScope.suite());
 		suite.addTest(ExceptionTests.suite());
 	
-		//suite.addTest(new MoreTests("testIcu"));
+		suite.addTest(new MoreTests("testIcu"));
+		suite.addTest(new MoreTests("testIcu2"));
 		suite.addTest(new MoreTests("testEncodingMismatch1"));
 		suite.addTest(new MoreTests("testEncodingMismatch2"));
 		suite.addTest(new MoreTests("testNullBaseParamOK"));
@@ -105,17 +106,38 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 
 	public void testIcu() throws IOException {
 //	  "\u0b87\u0ba8\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
-	    Normalizer.  isNormalized(
-	            "\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
-	            ,Normalizer.NFC,0);
+//	    Normalizer.  isNormalized(
+//	            "\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
+//	            ,Normalizer.NFC,0);
 	    
 		Model m = createMemModel();
 		RDFReader rdr = m.getReader();
 		FileInputStream r = new FileInputStream(
 				"testing/arp/i18n/icubug.rdf");
+	    rdr.setErrorHandler(this);
+		expected = new int[] { WARN_STRING_COMPOSING_CHAR  };
 		rdr.read(m, r, "http://example.org/");
+		r.close();
+		checkExpected();
 	
 	}
+	public void testIcu2() throws IOException {
+//		  "\u0b87\u0ba8\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
+//		    Normalizer.  isNormalized(
+//		            "\u0bcd\u0ba4\u0bbf\u0baf\u0bbe"
+//		            ,Normalizer.NFC,0);
+		    
+			Model m = createMemModel();
+			RDFReader rdr = m.getReader();
+			FileInputStream r = new FileInputStream(
+					"testing/arp/i18n/icubug2.rdf");
+			rdr.setErrorHandler(this);
+			expected = new int[] { WARN_STRING_NOT_NORMAL_FORM_C };
+			rdr.read(m, r, "http://example.org/");
+			r.close();
+			checkExpected();
+		
+		}
 	static class ToStringStatementHandler implements StatementHandler {
 		String obj;
 
