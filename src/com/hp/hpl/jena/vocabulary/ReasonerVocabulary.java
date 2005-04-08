@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerVocabulary.java,v 1.19 2005-02-21 12:21:35 andy_seaborne Exp $
+ * $Id: ReasonerVocabulary.java,v 1.20 2005-04-08 08:12:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.vocabulary;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasoner;
  * builtin reasoners.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.19 $ on $Date: 2005-02-21 12:21:35 $
+ * @version $Revision: 1.20 $ on $Date: 2005-04-08 08:12:56 $
  */
 public class ReasonerVocabulary {
     
@@ -48,6 +48,9 @@ public class ReasonerVocabulary {
 
     /** The property that represents the direct/minimal version of the subPropertyOf relationship */
     public static Property directSubPropertyOf; 
+
+    /** The property that represents the direct/minimal version of the rdf:type relationship */
+    public static Property directRDFType; 
 
     /** A faux property used in reasoner capabilty models to denote reasoners that infer that individuals have rdf:type owl:Thing (or daml:Thing) */
     public static Property individualAsThingP;
@@ -147,6 +150,7 @@ public class ReasonerVocabulary {
             configurationP = ResourceFactory.createProperty(JenaReasonerNS, "configurationProperty");
             directSubClassOf = ResourceFactory.createProperty(ReasonerRegistry.makeDirect(RDFS.subClassOf.getNode()).getURI());
             directSubPropertyOf = ResourceFactory.createProperty(ReasonerRegistry.makeDirect(RDFS.subPropertyOf.getNode()).getURI());
+            directRDFType = ResourceFactory.createProperty(ReasonerRegistry.makeDirect(RDF.type.getNode()).getURI());
             individualAsThingP = ResourceFactory.createProperty(JenaReasonerNS, "individualAsThing");
             PROPderivationLogging  = ResourceFactory.createProperty(PropURI+"#", "derivationLogging");
             PROPtraceOn = ResourceFactory.createProperty(PropURI+"#", "traceOn");
