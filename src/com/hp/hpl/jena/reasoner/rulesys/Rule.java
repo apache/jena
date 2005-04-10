@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.28 2005-04-08 16:37:51 der Exp $
+ * $Id: Rule.java,v 1.29 2005-04-10 11:32:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -60,7 +60,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.28 $ on $Date: 2005-04-08 16:37:51 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.29 $ on $Date: 2005-04-10 11:32:13 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -440,9 +440,10 @@ public class Rule implements ClauseEntry {
    }
     
     /**
-    Answer a String which is the concatenation (with newline glue) of all the
-    non-comment lines readable from <code>src</code>. A comment line is
-    one starting "#" or "//".
+     * Processes the source reader stripping off comment lines and noting prefix
+     * definitions (@prefix) and rule inclusion commands (@include).
+     * Returns a parser which is bound to the stripped source text with 
+     * associated prefix and rule inclusion definitions.
     */
     public static Parser rulesParserFromReader( BufferedReader src ) {
        try {
@@ -454,53 +455,34 @@ public class Rule implements ClauseEntry {
                if (line.startsWith("#")) continue;     // Skip comment lines
                line = line.trim();
                if (line.startsWith("//")) continue;    // Skip comment lines
-               if (line.startsWith("prefix") || line.startsWith("@prefix")) {         
-                   // Prefix definition line
-                   // This is a hack not a real solution, the prefixes are global
-                   try {
-                       StringTokenizer tokens = new StringTokenizer(line, " \t");
-                       tokens.nextToken();     // Skip prefix command
-                       String prefix = tokens.nextToken();
-                       if (prefix.endsWith(":")) prefix = prefix.substring(0, prefix.length() - 1);
-                       String url = tokens.nextToken();
-                       // Strip optional <..>
-                       if (url.startsWith("<")) url = url.substring(1);
-                       if (url.endsWith(">")) url = url.substring(0, url.length() - 1);
-                       if (url.endsWith(">.")) url = url.substring(0, url.length() - 2);
-                       prefixes.put(prefix, url);
-                   } catch (NoSuchElementException e) {
-                       throw new JenaException("Illegal prefix definition in rule file: " + line);
-                   }
+               if (line.startsWith("@prefix")) {
+                   line = line.substring("@prefix".length());
+                   String prefix = nextArg(line);
+                   String rest = nextAfterArg(line);
+                   if (prefix.endsWith(":")) prefix = prefix.substring(0, prefix.length() - 1);
+                   String url = extractURI(rest);
+                   prefixes.put(prefix, url);
+
                } else if (line.startsWith("@include")) {
                    // Include referenced rule file, either URL or local special case
-                   try {
-                       StringTokenizer tokens = new StringTokenizer(line, " \t");
-                       tokens.nextToken();     // Skip prefix command
-                       String url = tokens.nextToken();
-                       // Strip optional <..>
-                       if (url.startsWith("<")) url = url.substring(1);
-                       if (url.endsWith(">")) url = url.substring(0, url.length() - 1);
-                       if (url.endsWith(">.")) url = url.substring(0, url.length() - 2);
-
-                       // Check for predefined cases
-                       if (url.equalsIgnoreCase("rdfs")) {
-                           preloadedRules.addAll( RDFSFBRuleReasoner.loadRules() );
-                           
-                       } else if (url.equalsIgnoreCase("owl")) {
-                           preloadedRules.addAll( OWLFBRuleReasoner.loadRules() ) ;
-                           
-                       } else if (url.equalsIgnoreCase("owlmicro")) {
-                           preloadedRules.addAll( OWLMicroReasoner.loadRules() ) ;
-                           
-                       } else if (url.equalsIgnoreCase("owlmini")) {
-                           preloadedRules.addAll( OWLMiniReasoner.loadRules() ) ;
-                           
-                       } else {
-                           // Just try loading as a URL
-                           preloadedRules.addAll( rulesFromURL(url) );
-                       }
-                   } catch (NoSuchElementException e) {
-                       throw new JenaException("Illegal prefix definition in rule file: " + line);
+                   line = line.substring("@include".length());
+                   String url = extractURI(line);
+                   // Check for predefined cases
+                   if (url.equalsIgnoreCase("rdfs")) {
+                       preloadedRules.addAll( RDFSFBRuleReasoner.loadRules() );
+                       
+                   } else if (url.equalsIgnoreCase("owl")) {
+                       preloadedRules.addAll( OWLFBRuleReasoner.loadRules() ) ;
+                       
+                   } else if (url.equalsIgnoreCase("owlmicro")) {
+                       preloadedRules.addAll( OWLMicroReasoner.loadRules() ) ;
+                       
+                   } else if (url.equalsIgnoreCase("owlmini")) {
+                       preloadedRules.addAll( OWLMiniReasoner.loadRules() ) ;
+                       
+                   } else {
+                       // Just try loading as a URL
+                       preloadedRules.addAll( rulesFromURL(url) );
                    }
 
                } else {
@@ -517,7 +499,64 @@ public class Rule implements ClauseEntry {
            { throw new WrappedIOException( e ); }
    }
 
+    /** 
+     * Helper function find a URI argument in the current string,
+     * optionally surrounded by matching <>.
+     */
+    private static String extractURI(String lineSoFar) {
+        String token = lineSoFar.trim();
+        if (token.startsWith("<")) {
+            int split = token.indexOf('>');
+            token = token.substring(1, split);
+        }
+        return token;
+    }
 
+    /** 
+     * Helper function to return the next whitespace delimited argument
+     * from the string
+     */
+    private static String nextArg(String token) {
+        int start = nextSplit(0, false, token);
+        int stop = nextSplit(start, true, token);
+        return token.substring(start, stop);
+    }
+    
+    /** 
+     * Helper function to return the remainder of the line after
+     * stripping off the next whitespace delimited argument
+     * from the string
+     */
+    private static String nextAfterArg(String token) {
+        int start = nextSplit(0, false, token);
+        int stop = nextSplit(start, true, token);
+        int rest = nextSplit(stop, false, token);
+        return token.substring(rest);
+    }
+    
+    /**
+     * Helper function - find index of next whitespace or non white
+     * after the start index. 
+     */
+    private static int nextSplit(int start, boolean white, String line) {
+        int i = start;
+        while (i < line.length()) {
+            boolean isWhite = Character.isWhitespace(line.charAt(i));
+            if ((white & isWhite) || (!white & !isWhite)) {
+                return i;
+            }
+            i++;
+        }
+        return i;
+    }
+
+    public static void main(String[] args) {
+        String test = " <http://myuri/fool>.";
+        String arg = nextArg(test);
+        String rest = nextAfterArg(test);
+        String uri = extractURI(rest);
+        System.out.println("ARG = [" + arg + "], URI = [" + uri + "]");
+    }
     /**
      * Run a pre-bound rule parser to extract it's rules
      * @return a list of rules

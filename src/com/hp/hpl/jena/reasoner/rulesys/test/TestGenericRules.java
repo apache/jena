@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.14 2005-02-21 12:18:11 andy_seaborne Exp $
+ * $Id: TestGenericRules.java,v 1.15 2005-04-10 11:32:25 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2005-02-21 12:18:11 $
+ * @version $Revision: 1.15 $ on $Date: 2005-04-10 11:32:25 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -238,6 +238,32 @@ public class TestGenericRules extends TestCase {
               infgraph.find(null, q, null), new Object[] {
                   new Triple(a, q, Functor.makeFunctorNode("func", new Node[]{b, s}))
               } );
+    }
+    
+    /**
+     * Test the @prefix and @include extensions to the rule parser
+     */
+    public void testExtendedRuleParser() {
+        List rules = Rule.rulesFromURL("file:testing/reasoners/ruleParserTest1.rules");
+        GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
+        reasoner.setTransitiveClosureCaching(true);
+        Model base = ModelFactory.createDefaultModel();
+        InfModel m = ModelFactory.createInfModel(reasoner, base);
+        
+        // Check prefix case
+        String NS1 = "http://jena.hpl.hp.com/newprefix#";
+        String NS2 = "http://jena.hpl.hp.com/newprefix2#";
+        String NS3 = "http://jena.hpl.hp.com/newprefix3#";
+        Resource A = m.getResource(NS1 + "A"); 
+        Resource C = m.getResource(NS1 + "C"); 
+        Property p = m.getProperty(NS2 + "p");
+        Property a = m.getProperty(NS3 + "a");
+        Resource foo = m.getResource(NS1 + "foo");
+        assertTrue("@prefix test", m.contains(A, p, foo));
+        
+        // Check RDFS rule inclusion
+        assertTrue("@include RDFS test", m.contains(A, RDFS.subClassOf, C));
+        assertTrue("@include test", m.contains(a,a,a));
     }
 
     /**

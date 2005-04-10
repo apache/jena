@@ -5,7 +5,7 @@
 
 -> (p1:A p2:p p1:foo).
 
-@include <rdfs>.
+@include <RDFS>.
 
 -> (p1:A rdfs:subClassOf p1:B).
 -> (p1:B rdfs:subClassOf p1:C).

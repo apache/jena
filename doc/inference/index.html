@@ -1233,6 +1233,56 @@ term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)           // triple p
   backward rule and also calls the <code>print</code> procedural primitive. Rule 
   <code>max1</code> illustrates use of numeric literals.<br>
 </p>
+<p>
+Rule files may be loaded and parsed using:
+<pre>
+List rules = Rule.rulesFromURL("file:myfile.rules");
+</pre>
+or
+<pre>
+BufferedReader br = /* open reader */ ;
+List rules = Rule.parseRules( Rule.rulesParserFromReader(br) );
+</pre>
+or
+<pre>
+String ruleSrc = /* list of rules in line */
+List rules = Rule.parseRules( rulesSrc );
+</pre>
+In the first two cases (reading from a URL or a BufferedReader) the rule file is 
+preprocessed by a simple processor which strips comments and supports some additional
+macro commands:
+<dl>
+<dt><code># ...</code></dt>
+<dd>A comment line.</dd>
+<dt><code>// ...</code></dt>
+<dd>A comment line.<br /><br /></dd>
+<dt><code>@prefix pre: &lt;http://domain/url#>.</code></dt>
+<dd>Defines a prefix <code>pre</code> which can be used in the rules.
+The prefix is local to the rule file.<br /><br /></dd>
+<dt><code>@include &lt;urlToRuleFile>.</code></dt>
+<dd>Includes the rules defined in the given file in this file. The included rules 
+will appear before the user defined rules, irrespective of where in the file
+the @include directive appears. A set of special cases is supported to allow
+a rule file to include the predefine rules for RDFS and OWL - in place of a real
+URL for a rule file use one of the keywords
+<code>RDFS</code>
+<code>OWL</code>
+<code>OWLMicro</code>
+<code>OWLMini</code> (case insensitive).
+</dd>
+</dl>
+</p>
+<p>
+So an example complete rule file which includes the RDFS rules and defines
+a single extra rule is:
+<pre>
+# Example rule file
+@prefix pre: &lt;http://jena.hpl.hp.com/prefix#>.
+@include &lt;RDFS>.
+
+[rule1: (?f pre:father ?a) (?u pre:brother ?f) -> (?u pre:uncle ?a)]
+
+</pre>
 <p>[<a href="#rules">Rule index</a>] [<a href="#index">main index</a>]</p>
 <h2> <a name="RULEforward"></a>Forward chaining engine</h2>
 <p>If the rule reasoner is configured to run in forward mode then only the forward 
@@ -1794,7 +1844,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.20 2005-01-24 16:41:04 der Exp $</i>
+  Last modification: $Id: index.html,v 1.21 2005-04-10 11:31:51 der Exp $</i>
 </p>
 </body>
 </html>
