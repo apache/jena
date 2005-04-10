@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.29 2005-04-10 11:32:13 der Exp $
+ * $Id: Rule.java,v 1.30 2005-04-10 14:19:32 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -60,7 +60,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.29 $ on $Date: 2005-04-10 11:32:13 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.30 $ on $Date: 2005-04-10 14:19:32 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -597,7 +597,7 @@ public class Rule implements ClauseEntry {
      * tokenisation with depth 1 lookahead. No sensible error reporting on offer.
      * No embedded spaces supported.
      */
-    static class Parser {
+    public static class Parser {
         
         /** Tokenizer */
         private Tokenizer stream;
@@ -644,6 +644,13 @@ public class Rule implements ClauseEntry {
         }
         
         /**
+         * Return a map of all the discovered prefixes
+         */
+        public Map getPrefixMap() {
+            return prefixMapping.getNsPrefixMap();
+        }
+        
+        /**
          * Add a new set of preloaded rules.
          */
         void addRulesPreload(List rules) {
@@ -653,7 +660,7 @@ public class Rule implements ClauseEntry {
         /**
          * Return the complete set of preloaded rules;
          */
-        List getRulesPreload() {
+        public List getRulesPreload() {
             return preloadedRules;
         }
         
@@ -862,7 +869,7 @@ public class Rule implements ClauseEntry {
         /**
          * Parse a rule, terminated by a "]" or "." character.
          */
-        Rule parseRule() {
+        public Rule parseRule() {
             return doParseRule(false);
         }
         

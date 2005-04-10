@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: RuleMap.java,v 1.6 2005-02-21 11:49:12 andy_seaborne Exp $
+ * $Id: RuleMap.java,v 1.7 2005-04-10 14:21:36 der Exp $
  *****************************************************************/
 package jena;
 
@@ -41,7 +41,7 @@ import java.io.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2005-02-21 11:49:12 $
+ * @version $Revision: 1.7 $ on $Date: 2005-04-10 14:21:36 $
  */
 public class RuleMap {
     
@@ -70,35 +70,10 @@ public class RuleMap {
      * Also notes the prefix definitions for adding to a later inf model.
      */
     public static List loadRules(BufferedReader src, Map prefixes) throws IOException {
-        StringBuffer result = new StringBuffer();
-        String line;
-        while ((line = src.readLine()) != null) {
-            if (line.startsWith("#")) continue;     // Skip comment lines
-            if (line.startsWith("//")) continue;    // Skip comment lines
-            if (line.startsWith("prefix") || line.startsWith("@prefix")) {         
-                // Prefix definition line
-                // This is a hack not a real solution, the prefixes are global
-                try {
-                    StringTokenizer tokens = new StringTokenizer(line, " \t");
-                    tokens.nextToken();     // Skip prefix command
-                    String prefix = tokens.nextToken();
-                    if (prefix.endsWith(":")) prefix = prefix.substring(0, prefix.length() - 1);
-                    String url = tokens.nextToken();
-                    // Strip optional <..>
-                    if (url.startsWith("<")) url = url.substring(1);
-                    if (url.endsWith(">")) url = url.substring(0, url.length() - 1);
-                    PrintUtil.registerPrefix(prefix, url);
-                    prefixes.put(prefix, url);
-                } catch (NoSuchElementException e) {
-                    throw new JenaException("Illegal prefix definition in rule file: " + line);
-                }
-
-            } else {
-                result.append(line);
-                result.append("\n");
-            }
-        }
-        return Rule.parseRules(result.toString());
+        Rule.Parser parser = Rule.rulesParserFromReader(src);
+        List rules = Rule.parseRules(parser);
+        prefixes.putAll(parser.getPrefixMap());
+        return rules;
     }
     
     /**
