@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JMS.java,v 1.30 2005-03-09 20:00:43 chris-dollin Exp $
+  $Id: JMS.java,v 1.31 2005-04-10 10:37:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -49,6 +49,11 @@ public class JMS
         The property of an OntModelSpec that gives the document manager resource.
     */
     public static final Property docManager = property( "docManager" );
+
+    /**
+        The property of an RDBModelSpec that describes the connection 
+    */
+    public static final Property hasConnection = property( "hasConnection" );
     
     /**
         The property of an OntModelSpec that gives the MakerSpec used when 
@@ -233,11 +238,6 @@ public class JMS
             schema = FileManager.get().loadModel( "vocabularies/jena-model-spec.n3" );
         return schema;
         }
-    /**
-        Utility: answer a plain literal string with the given value.
-     */
-    protected static Literal literal( String lex )
-        { return ResourceFactory.createPlainLiteral( lex ); }
         
     /**
         Utility: answer a resource in the jms namespace with the given local name.

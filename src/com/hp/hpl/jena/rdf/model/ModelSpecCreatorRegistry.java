@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreatorRegistry.java,v 1.10 2005-02-21 12:14:20 andy_seaborne Exp $
+  $Id: ModelSpecCreatorRegistry.java,v 1.11 2005-04-10 10:37:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -113,6 +113,7 @@ public class ModelSpecCreatorRegistry
         register( JMS.OntModelSpec, new OntSpecCreator() );  
         register( JMS.PlainModelSpec, new PlainSpecCreator() );   
         
+        register( JMS.ModelSpec, new PlainSpecCreator() );
         register( JMS.DefaultModelSpec, new PlainSpecCreator() );   
         }   
     }

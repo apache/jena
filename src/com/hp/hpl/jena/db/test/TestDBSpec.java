@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDBSpec.java,v 1.5 2005-02-21 12:03:17 andy_seaborne Exp $
+  $Id: TestDBSpec.java,v 1.6 2005-04-10 10:36:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -43,15 +43,19 @@ public class TestDBSpec extends ModelTestBase
     public void testCreateSuccessUser() throws ClassNotFoundException
         {
         Resource me = ResourceFactory.createResource();
+        Resource con = ResourceFactory.createResource();
+        Resource mak = ResourceFactory.createResource();
         String dbType = TestPackage.M_DB;
         String className = TestPackage.M_DBDRIVER_CLASS;
         Model spec = ModelFactory.createDefaultModel()
-            .add( me, RDF.type, JMS.RDBMakerSpec )
-            .add( me, JMS.dbUser, TestPackage.M_DB_USER )
-            .add( me, JMS.dbPassword, TestPackage.M_DB_PASSWD )
-            .add( me, JMS.dbURL, TestPackage.M_DB_URL )
-            .add( me, JMS.dbType, dbType )
-            .add( me, JMS.dbClass, className )
+            .add( me, JMS.maker, mak )
+            .add( mak, RDF.type, JMS.RDBMakerSpec )
+            .add( mak, JMS.hasConnection, con )
+            .add( con, JMS.dbUser, TestPackage.M_DB_USER )
+            .add( con, JMS.dbPassword, TestPackage.M_DB_PASSWD )
+            .add( con, JMS.dbURL, TestPackage.M_DB_URL )
+            .add( con, JMS.dbType, dbType )
+            .add( con, JMS.dbClass, className )
             ;
         ModelMaker maker = ModelSpecImpl.createMaker( spec );
         assertTrue( maker.getGraphMaker() instanceof GraphRDBMaker );
@@ -64,16 +68,18 @@ public class TestDBSpec extends ModelTestBase
         {
         Resource me = ResourceFactory.createResource();
         Resource dbMaker = ResourceFactory.createResource();
+        Resource con = ResourceFactory.createResource();
         String dbType = TestPackage.M_DB;
         String className = TestPackage.M_DBDRIVER_CLASS;
         Model spec = ModelFactory.createDefaultModel()
         	.add( me, JMS.maker, dbMaker )
             .add( dbMaker, RDF.type, JMS.RDBMakerSpec )
-            .add( dbMaker, JMS.dbUser, TestPackage.M_DB_USER )
-            .add( dbMaker, JMS.dbPassword, TestPackage.M_DB_PASSWD )
-            .add( dbMaker, JMS.dbURL, TestPackage.M_DB_URL )
-            .add( dbMaker, JMS.dbType, dbType )
-            .add( dbMaker, JMS.dbClass, className )
+            .add( dbMaker, JMS.hasConnection, con )
+            .add( con, JMS.dbUser, TestPackage.M_DB_USER )
+            .add( con, JMS.dbPassword, TestPackage.M_DB_PASSWD )
+            .add( con, JMS.dbURL, TestPackage.M_DB_URL )
+            .add( con, JMS.dbType, dbType )
+            .add( con, JMS.dbClass, className )
             ;
         ModelSpec s = ModelFactory.createSpec( spec );
         Model d = s.createModel();

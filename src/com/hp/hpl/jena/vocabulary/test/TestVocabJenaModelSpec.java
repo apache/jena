@@ -43,6 +43,7 @@ public class TestVocabJenaModelSpec extends ModelTestBase
         assertEquals( jmsProperty( "schemaURL" ), JMS.schemaURL );
         assertEquals( jmsProperty( "hasRule" ), JMS.hasRule );
         assertEquals( jmsProperty( "policyPath" ), JMS.policyPath );
+        assertEquals( jmsProperty( "hasConnection" ), JMS.hasConnection );
         assertEquals( jmsProperty( "dbUser" ), JMS.dbUser );
         assertEquals( jmsProperty( "dbPassword" ), JMS.dbPassword );
         assertEquals( jmsProperty( "dbURL" ), JMS.dbURL );

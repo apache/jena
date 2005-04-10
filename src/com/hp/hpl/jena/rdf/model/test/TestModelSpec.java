@@ -1,18 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.38 2005-04-08 10:05:55 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.39 2005-04-10 10:37:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
@@ -326,13 +320,6 @@ public class TestModelSpec extends ModelTestBase
             fail( "should generate BadDescriptionException" ); }   
         catch (BadDescriptionException e)
             { pass(); } 
-        }
-        
-    protected static void writeModel( File f, Model m ) throws FileNotFoundException, IOException
-        {
-        FileOutputStream fos = new FileOutputStream( f );
-        m.write( fos );
-        fos.close();    
         }
                 
     public void testCreateMemModelMaker()
