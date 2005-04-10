@@ -16,7 +16,7 @@ import com.hp.hpl.jena.vocabulary.*;
      by ModelSpecCreator objects found in a ModelSpecCreatorRegistry, where they
      are identified by their RDF types as found in the RDF description. 
      ModelSpecFactory finds [if necessary] the root of the description, finds the
-     most specific type of that root which is a subclass of JMS.ModelSpec, and
+     most specific type of that root which is a subclass of JenaModelSpec.ModelSpec, and
      invokes the corresponding creator object.
      
      <p>ModelSpecFactory has no instance methods.
@@ -36,18 +36,18 @@ public class ModelSpecFactory
         no such creator, a <code>BadDescriptionException</code> is thrown.
     */
     protected static ModelSpec create( ModelSpecCreatorRegistry registry, Model m, Resource root )
-        { Resource type = findSpecificType( root, JMS.ModelSpec );
+        { Resource type = findSpecificType( root, JenaModelSpec.ModelSpec );
         ModelSpecCreator sc = registry.getCreator( type );
         if (sc == null) throw new BadDescriptionException( "no model-spec creator found for " + type, m );
         return sc.create( root, m ); }
     
     /**
         As per <code>create(ModelSpecCreatorRegistry,Model,Resource), with the Resource
-        being the unique subject of <code>m</code> which has type <code>JMS.ModelSpec</code>.
+        being the unique subject of <code>m</code> which has type <code>JenaModelSpec.ModelSpec</code>.
     */
     public static ModelSpec createSpec( ModelSpecCreatorRegistry registry, Model m )
         { Model full = withSchema( m ); 
-        return create( registry, full, findRootByType( full, JMS.ModelSpec ) ); }
+        return create( registry, full, findRootByType( full, JenaModelSpec.ModelSpec ) ); }
     
     /**
         As per <code>create(ModelSpecCreatorRegistry,Model,Resource), with the Registry
@@ -60,17 +60,17 @@ public class ModelSpecFactory
     /**
         As per <code>create(ModelSpecCreatorRegistry,Model,Resource), with the Registry
         being the default Registry and the Resource being the unique subject of
-        <code>m</code> with type <code>JMS.ModelSpec</code>.
+        <code>m</code> with type <code>JenaModelSpec.ModelSpec</code>.
     */
     public static ModelSpec createSpec( Model m )
         { Model full = withSchema( m ); 
-        return create( defaultRegistry, full, findRootByType( full, JMS.ModelSpec ) ); }
+        return create( defaultRegistry, full, findRootByType( full, JenaModelSpec.ModelSpec ) ); }
 
     /**
-        Answer a wrapping of <code>m</code> as an RDFS model using the JMS schema.
+        Answer a wrapping of <code>m</code> as an RDFS model using the JenaModelSpec schema.
     */
     public static Model withSchema( Model m )
-        { return ModelFactory.createRDFSModel( JMS.getSchema(), m ); }
+        { return ModelFactory.createRDFSModel( JenaModelSpec.getSchema(), m ); }
 
     /**
         Answer the unique subject of <code>m</code> which has type <code>type</code>.

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericRuleReasoner.java,v 1.22 2005-02-21 12:16:59 andy_seaborne Exp $
+ * $Id: GenericRuleReasoner.java,v 1.23 2005-04-10 12:45:50 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * generic setParameter calls.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2005-02-21 12:16:59 $
+ * @version $Revision: 1.23 $ on $Date: 2005-04-10 12:45:50 $
  */
 public class GenericRuleReasoner extends FBRuleReasoner {
 
@@ -199,18 +199,18 @@ public class GenericRuleReasoner extends FBRuleReasoner {
         
     protected boolean doSetResourceParameter( Property parameter, Resource value )
         {
-        if (parameter.equals( JMS.ruleSetURL )) 
+        if (parameter.equals( JenaModelSpec.ruleSetURL )) 
             {
             addRules( Rule.rulesFromURL( value.getURI() ) );
             }
-        else if (parameter.equals( JMS.ruleSet )) 
+        else if (parameter.equals( JenaModelSpec.ruleSet )) 
             {
-            StmtIterator that = value.listProperties( JMS.ruleSetURL );
+            StmtIterator that = value.listProperties( JenaModelSpec.ruleSetURL );
             while (that.hasNext())
                 {
                 addRules( Rule.rulesFromURL( that.nextStatement().getResource().getURI() ) );
                 }
-            StmtIterator it = value.listProperties( JMS.hasRule );
+            StmtIterator it = value.listProperties( JenaModelSpec.hasRule );
             while (it.hasNext()) 
                 {
                 addRules( Rule.parseRules( it.nextStatement().getString() ) ); 

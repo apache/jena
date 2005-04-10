@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.48 2005-04-08 12:40:29 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.49 2005-04-10 12:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -81,10 +81,10 @@ public abstract class ModelSpecImpl implements ModelSpec
     public abstract Model createModelOver( String name );
     
     /**
-        Answer the JMS subproperty of JMS.maker that describes the relationship 
+        Answer the JenaModelSpec subproperty of JenaModelSpec.maker that describes the relationship 
         between this specification and its ModelMaker.
         
-        @return a sub-property of JMS.maker
+        @return a sub-property of JenaModelSpec.maker
     */
     public abstract Property getMakerProperty();
    
@@ -105,13 +105,13 @@ public abstract class ModelSpecImpl implements ModelSpec
         
     public static Resource getMaker( Resource root, Model desc )
         {
-        StmtIterator it = desc.listStatements( root, JMS.maker, (RDFNode) null );
+        StmtIterator it = desc.listStatements( root, JenaModelSpec.maker, (RDFNode) null );
         if (it.hasNext())
         	return it.nextStatement().getResource();
         else 
             {
             Resource r = desc.createResource();
-            desc.add( root, JMS.maker, r );
+            desc.add( root, JenaModelSpec.maker, r );
             return r;
             // throw new BadDescriptionException( "no jms:maker for " + root, desc );
             }
@@ -133,7 +133,7 @@ public abstract class ModelSpecImpl implements ModelSpec
     public Model addDescription( Model desc, Resource root )
         {
         Resource makerRoot = desc.createResource();
-        desc.add( root, JMS.maker, makerRoot );
+        desc.add( root, JenaModelSpec.maker, makerRoot );
         maker.addDescription( desc, makerRoot );
         return desc;
         }
@@ -178,20 +178,20 @@ public abstract class ModelSpecImpl implements ModelSpec
     /**
         Answer a ModelMaker that conforms to the supplied description. The Maker
         is found from the ModelMakerCreatorRegistry by looking up the most 
-        specific type of the unique object with type JMS.MakerSpec.
+        specific type of the unique object with type JenaModelSpec.MakerSpec.
         
         @param d the model containing the description
         @return a ModelMaker fitting that description
     */
     public static ModelMaker createMaker( Model description )
         { Model d = ModelSpecFactory.withSchema( description );
-        return createMakerByRoot( ModelSpecFactory.findRootByType( d, JMS.MakerSpec ), d ); }
+        return createMakerByRoot( ModelSpecFactory.findRootByType( d, JenaModelSpec.MakerSpec ), d ); }
         
     public static ModelMaker createMaker( Resource root, Model d )
         { return createMakerByRoot( root, ModelSpecFactory.withSchema( d ) ); }
         
     public static ModelMaker createMakerByRoot( Resource root, Model fullDesc )
-        { Resource type = ModelSpecFactory.findSpecificType( (Resource) root.inModel( fullDesc ), JMS.MakerSpec );
+        { Resource type = ModelSpecFactory.findSpecificType( (Resource) root.inModel( fullDesc ), JenaModelSpec.MakerSpec );
         ModelMakerCreator mmc = ModelMakerCreatorRegistry.findCreator( type );
         if (mmc == null) throw new RuntimeException( "no maker type" );  
         return mmc.create( fullDesc, root ); }
@@ -209,7 +209,7 @@ public abstract class ModelSpecImpl implements ModelSpec
 
     protected Model loadFiles(Model m)
         {
-        StmtIterator it = description.listStatements( root, JMS.loadWith, (RDFNode) null );
+        StmtIterator it = description.listStatements( root, JenaModelSpec.loadWith, (RDFNode) null );
         while (it.hasNext()) FileManager.get().readModel( m, it.nextStatement().getResource().getURI() );
         return m;
         }

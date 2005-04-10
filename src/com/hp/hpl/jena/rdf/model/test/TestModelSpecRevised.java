@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.26 2005-04-08 10:05:56 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.27 2005-04-10 12:45:50 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -163,9 +163,9 @@ public class TestModelSpecRevised extends ModelTestBase
         String ruleStringB = "[rdfs9:  (?x rdfs:subClassOf ?y), (?a rdf:type ?x) -> (?a rdf:type ?y)]";
         List rules = append( Rule.parseRules( ruleStringA ), Rule.parseRules( ruleStringB ) );
         Model rs = rSpec( factoryURI )
-            .add( A, JMS.ruleSet, resource( "onward:rules" ) )
-            .add( resource( "onward:rules" ), JMS.hasRule, ruleStringA )
-            .add( resource( "onward:rules" ), JMS.hasRule, ruleStringB );
+            .add( A, JenaModelSpec.ruleSet, resource( "onward:rules" ) )
+            .add( resource( "onward:rules" ), JenaModelSpec.hasRule, ruleStringA )
+            .add( resource( "onward:rules" ), JenaModelSpec.hasRule, ruleStringB );
         ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );
@@ -178,9 +178,9 @@ public class TestModelSpecRevised extends ModelTestBase
         String ruleFileB = file( "extra.rules" );
         List rules = append( Rule.rulesFromURL( ruleFileA ), Rule.rulesFromURL( ruleFileB ) );
         Model rs = rSpec( factoryURI )
-            .add( A, JMS.ruleSet, resource( "onward:rules" ) )
-            .add( resource( "onward:rules" ), JMS.ruleSetURL, resource( ruleFileA ) )
-            .add( resource( "onward:rules" ), JMS.ruleSetURL, resource( ruleFileB ) );
+            .add( A, JenaModelSpec.ruleSet, resource( "onward:rules" ) )
+            .add( resource( "onward:rules" ), JenaModelSpec.ruleSetURL, resource( ruleFileA ) )
+            .add( resource( "onward:rules" ), JenaModelSpec.ruleSetURL, resource( ruleFileB ) );
         ReasonerFactory rf = InfModelSpec.getReasonerFactory( A, rs );
         RuleReasoner gr = (RuleReasoner) rf.create( null );
         assertSameRules( rules, gr.getRules() );

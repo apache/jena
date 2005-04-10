@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileGraphMaker.java,v 1.21 2005-02-21 11:52:10 andy_seaborne Exp $
+  $Id: FileGraphMaker.java,v 1.22 2005-04-10 12:45:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -67,10 +67,10 @@ public class FileGraphMaker extends BaseGraphMaker
 
     /**
         Answer the RDFS class of a FileGraphMaker
-        @return JMS.FileMakerClass [node version]
+        @return JenaModelSpec.FileMakerClass [node version]
     */
     public Node getMakerClass()
-        { return JMS.FileMakerSpec.asNode(); }
+        { return JenaModelSpec.FileMakerSpec.asNode(); }
 
     /**
         Answer the fileBase of all the graphs created by this FileGraphMaker.
@@ -80,7 +80,7 @@ public class FileGraphMaker extends BaseGraphMaker
         { return fileBase; }
         
     protected void augmentDescription( Graph g, Node self )
-        { g.add( Triple.create( self, JMS.fileBase.asNode(), Node.createLiteral( fileBase, "", false ) ) ); }
+        { g.add( Triple.create( self, JenaModelSpec.fileBase.asNode(), Node.createLiteral( fileBase, "", false ) ) ); }
                 
     /**
         Answer a new, anonynous FileGraph. See FileGraph.create().

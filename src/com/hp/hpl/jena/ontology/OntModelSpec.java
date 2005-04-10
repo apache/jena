@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.34 $
+ * Revision           $Revision: 1.35 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:04:33 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-04-10 12:45:48 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.34 2005-02-21 12:04:33 andy_seaborne Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.35 2005-04-10 12:45:48 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -217,23 +217,23 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     }
     
     /**
-        Initialise an OntModelSpec from an RDF description using the JMS vocabulary. See
+        Initialise an OntModelSpec from an RDF description using the JenaModelSpec vocabulary. See
         (insert reference here) for the description of the OntModel used. The root of the
-        description is the unique resource with type JMS:OntMakerClass.
+        description is the unique resource with type JenaModelSpec:OntMakerClass.
         
-        @param description an RDF model using the JMS vocabulary
+        @param description an RDF model using the JenaModelSpec vocabulary
     */
     public OntModelSpec( Model description )  { 
-        this( findRootByType( description, JMS.OntModelSpec ), description );
+        this( findRootByType( description, JenaModelSpec.OntModelSpec ), description );
     }
 
     /**
-        Initialise an OntModelSpec from an RDF description using the JMS vocabulary. See
+        Initialise an OntModelSpec from an RDF description using the JenaModelSpec vocabulary. See
         (insert reference here) for the description of the OntModel used. The root of the
         description is supplied as a parameter (so the description may describe several
         different OntModels).
         
-        @param description an RDF model using the JMS vocabulary
+        @param description an RDF model using the JenaModelSpec vocabulary
         @param root the root of the sub-graph to use for the specification
     */    
     public OntModelSpec( Resource root, Model description )  { 
@@ -437,7 +437,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     /**
     	Answer the ModelMaker to be used to construct models that are used for
         the imports of an OntModel. The ModelMaker is specified by the properties of
-        the resource which is the object of the root's JMS.importMaker property.
+        the resource which is the object of the root's JenaModelSpec.importMaker property.
         If no importMaker is specified, a MemModelMaker is constructed and used.
         
      	@param description the description model for [at least] this OntModel
@@ -445,13 +445,13 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
      	@return a ModelMaker fitting the importMaker description
      */
     public static ModelMaker getImportMaker( Model description, Resource root ) {
-        return getMaker( description, root, JMS.importMaker );
+        return getMaker( description, root, JenaModelSpec.importMaker );
     }   
     
     /**
 		Answer the ModelMaker to be used to construct base models of an
 	    OntModel. The ModelMaker is specified by the properties of
-	    the resource which is the object of the root's JMS.maker property.
+	    the resource which is the object of the root's JenaModelSpec.maker property.
 	    If no maker is specified, a MemModelMaker is constructed and used.
 	    
 	 	@param description the description model for [at least] this OntModel
@@ -459,7 +459,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
 	 	@return a ModelMaker fitting the maker description
 	 */
     public static ModelMaker getBaseMaker( Model description, Resource root ) {
-	        return getMaker( description, root, JMS.maker );
+	        return getMaker( description, root, JenaModelSpec.maker );
 	    }
     
     /**
@@ -482,26 +482,26 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @exception something if the value isn't a URI resource
     */
     public static String getLanguage( Model description, Resource root ) {
-        Statement langStatement = description.getRequiredProperty( root, JMS.ontLanguage );
+        Statement langStatement = description.getRequiredProperty( root, JenaModelSpec.ontLanguage );
         return langStatement.getResource().getURI();
     }
     
     /**
         Answer an OntDocumentManager satisfying the docManager part of this description.
-        Currently restricted to one where the object of JMS.docManager is registered with
+        Currently restricted to one where the object of JenaModelSpec.docManager is registered with
         the value table held in ModelSpecImpl. If there's no such property, or if its bnode
         has no associated value, returns null.
         
          @param description the description of the OntModel
          @param root the root of the description
-         @return the OntDocumentManager of root's JMS.docManager 
+         @return the OntDocumentManager of root's JenaModelSpec.docManager 
     */
     public static OntDocumentManager getDocumentManager( Model description, 
         Resource root ) {
-        Statement docStatement = description.getProperty( root, JMS.docManager );
+        Statement docStatement = description.getProperty( root, JenaModelSpec.docManager );
         if (docStatement == null) return null;
         Resource manager = docStatement.getResource();
-        Statement policy = description.getProperty( manager, JMS.policyPath );
+        Statement policy = description.getProperty( manager, JenaModelSpec.policyPath );
         if (policy == null)
             return (OntDocumentManager) getValue( manager );
         else
@@ -517,7 +517,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @return  a ReasonerFactory with URI given by root's reasonsWith's reasoner.
     */
     public static ReasonerFactory getReasonerFactory( Model description, Resource root ) {
-        Statement factStatement = description.getProperty( root, JMS.reasonsWith );
+        Statement factStatement = description.getProperty( root, JenaModelSpec.reasonsWith );
         if (factStatement == null) return null;
         return InfModelSpec.getReasonerFactory( factStatement.getResource(), description );
     }
@@ -542,10 +542,10 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         Answer the RDFS property used to attach this ModelSpec to its ModelMaker; used
         by the parent classes when constructing the RDF description for this Spec.
         
-        @return JMS.importMaker
+        @return JenaModelSpec.importMaker
     */
     public Property getMakerProperty() {
-        return JMS.importMaker;
+        return JenaModelSpec.importMaker;
     }
         
     /**
@@ -555,12 +555,12 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @param langURI the language URI 
     */
     protected void addLanguageDescription( Model d, Resource me, String langURI ) {
-        d.add( me, JMS.ontLanguage, d.createResource( langURI ) );
+        d.add( me, JenaModelSpec.ontLanguage, d.createResource( langURI ) );
     }
     
     protected void addImportsDescription( Model d, Resource me, ModelMaker m ) {
         Resource importSelf = d.createResource();
-        d.add( me, JMS.importMaker, importSelf );
+        d.add( me, JenaModelSpec.importMaker, importSelf );
         m.addDescription( d, importSelf );
     }
     
@@ -572,7 +572,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     */
     protected  void addManagerDescription( Model d, Resource me, 
         OntDocumentManager man ) {
-        d.add( me, JMS.docManager, createValue( man ) );    
+        d.add( me, JenaModelSpec.docManager, createValue( man ) );    
     }
     
     /**
@@ -583,9 +583,9 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     */        
     protected void addReasonerDescription( Model d, Resource me, ReasonerFactory rf ) {
         Resource reasonerSelf = d.createResource();
-        d.add( me, JMS.reasonsWith, reasonerSelf );
+        d.add( me, JenaModelSpec.reasonsWith, reasonerSelf );
         if (rf != null) {
-            d.add( reasonerSelf, JMS.reasoner, d.createResource( rf.getURI() ) );  
+            d.add( reasonerSelf, JenaModelSpec.reasoner, d.createResource( rf.getURI() ) );  
         }
     }
 

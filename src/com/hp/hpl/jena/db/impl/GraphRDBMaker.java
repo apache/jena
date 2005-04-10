@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.20 2005-02-21 12:02:53 andy_seaborne Exp $
+  $Id: GraphRDBMaker.java,v 1.21 2005-04-10 12:45:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -46,10 +46,10 @@ public class GraphRDBMaker extends BaseGraphMaker
 
     /**
         Answer the RDFS class of this RDB GraphMaker
-        @return JMS.RDBMakerClass [as node]
+        @return JenaModelSpec.RDBMakerClass [as node]
     */
     public Node getMakerClass()
-        { return JMS.RDBMakerSpec.asNode(); }
+        { return JenaModelSpec.RDBMakerSpec.asNode(); }
         
     /**
         Augment the maker description of this maker with RDB-specific properties.

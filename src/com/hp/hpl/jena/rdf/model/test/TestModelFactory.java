@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelFactory.java,v 1.25 2005-02-21 12:15:13 andy_seaborne Exp $
+  $Id: TestModelFactory.java,v 1.26 2005-04-10 12:45:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -85,17 +85,17 @@ public class TestModelFactory extends ModelTestBase
         OntDocumentManager docManager = new OntDocumentManager();
         Resource reasonerURI = ResourceFactory.createResource( DAMLMicroReasonerFactory.URI );
         Model desc = ModelFactory.createDefaultModel()
-        	.add( root, JMS.maker, baseMaker )
-        	.add( root, JMS.importMaker, importsMaker )
-            .add( baseMaker, RDF.type, JMS.FileMakerSpec )
-            .add( baseMaker, JMS.fileBase, "/tmp/example" )
-            .add( baseMaker, JMS.reificationMode, JMS.rsMinimal )
-            .add( importsMaker, RDF.type, JMS.MemMakerSpec )
-            .add( importsMaker, JMS.reificationMode, JMS.rsMinimal )
-            .add( root, JMS.ontLanguage, DAMLLangResource )
-            .add( root, JMS.docManager, ModelSpecImpl.createValue( docManager ) )
-            .add( root, JMS.reasonsWith, reasoner )
-            .add( reasoner, JMS.reasoner, reasonerURI );
+        	.add( root, JenaModelSpec.maker, baseMaker )
+        	.add( root, JenaModelSpec.importMaker, importsMaker )
+            .add( baseMaker, RDF.type, JenaModelSpec.FileMakerSpec )
+            .add( baseMaker, JenaModelSpec.fileBase, "/tmp/example" )
+            .add( baseMaker, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal )
+            .add( importsMaker, RDF.type, JenaModelSpec.MemMakerSpec )
+            .add( importsMaker, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal )
+            .add( root, JenaModelSpec.ontLanguage, DAMLLangResource )
+            .add( root, JenaModelSpec.docManager, ModelSpecImpl.createValue( docManager ) )
+            .add( root, JenaModelSpec.reasonsWith, reasoner )
+            .add( reasoner, JenaModelSpec.reasoner, reasonerURI );
         ModelSpec spec = ModelFactory.createSpec( desc ); 
         assertTrue( spec instanceof OntModelSpec );         
         assertIsoModels( desc, spec.getDescription() );
@@ -106,7 +106,7 @@ public class TestModelFactory extends ModelTestBase
         {
         Resource root = ResourceFactory.createResource();
         Model desc = ModelFactory.createDefaultModel()
-            .add( root, JMS.ontLanguage, DAMLLangResource )
+            .add( root, JenaModelSpec.ontLanguage, DAMLLangResource )
         	;
         OntModelSpec spec = (OntModelSpec) ModelFactory.createSpec( desc );
         OntModel m = ModelFactory.createOntologyModel( spec );

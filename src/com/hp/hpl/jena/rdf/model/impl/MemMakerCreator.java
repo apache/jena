@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MemMakerCreator.java,v 1.4 2005-02-21 12:14:33 andy_seaborne Exp $
+  $Id: MemMakerCreator.java,v 1.5 2005-04-10 12:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -19,7 +19,7 @@ public class MemMakerCreator extends MakerCreator implements ModelMakerCreator
     {
     /**
         Answer the MemModelMaker with the reification style specified as the
-        JMS.reificationMode property of the root, or Standard if none.
+        JenaModelSpec.reificationMode property of the root, or Standard if none.
     */
     public ModelMaker create( Model desc, Resource root ) 
         { return ModelFactory.createMemModelMaker( style( desc, root ) ); }

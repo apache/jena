@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.39 2005-04-10 10:37:26 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.40 2005-04-10 12:45:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -57,9 +57,9 @@ public class TestModelSpec extends ModelTestBase
         
     public void testFindStandardMakers()
         {
-        assertNotNull( ModelMakerCreatorRegistry.findCreator( JMS.FileMakerSpec ) );   
-        assertNotNull( ModelMakerCreatorRegistry.findCreator( JMS.MemMakerSpec ) );   
-        assertNotNull( ModelMakerCreatorRegistry.findCreator( JMS.RDBMakerSpec ) );    
+        assertNotNull( ModelMakerCreatorRegistry.findCreator( JenaModelSpec.FileMakerSpec ) );   
+        assertNotNull( ModelMakerCreatorRegistry.findCreator( JenaModelSpec.MemMakerSpec ) );   
+        assertNotNull( ModelMakerCreatorRegistry.findCreator( JenaModelSpec.RDBMakerSpec ) );    
         }
     
     public void testDefaultMaker()
@@ -120,9 +120,9 @@ public class TestModelSpec extends ModelTestBase
         
     public void testHasStandardCreators()
         {
-        assertNotNull( ModelSpecCreatorRegistry.findCreator( JMS.InfModelSpec ) );  
-        assertNotNull( ModelSpecCreatorRegistry.findCreator( JMS.PlainModelSpec ) );   
-        assertNotNull( ModelSpecCreatorRegistry.findCreator( JMS.OntModelSpec ) );     
+        assertNotNull( ModelSpecCreatorRegistry.findCreator( JenaModelSpec.InfModelSpec ) );  
+        assertNotNull( ModelSpecCreatorRegistry.findCreator( JenaModelSpec.PlainModelSpec ) );   
+        assertNotNull( ModelSpecCreatorRegistry.findCreator( JenaModelSpec.OntModelSpec ) );     
         }
     
     public void testNamedCreatePlain()
@@ -181,9 +181,9 @@ public class TestModelSpec extends ModelTestBase
         OntModelSpec oms = OntModelSpec.DAML_MEM_RULE_INF;
         Model d = oms.getDescription();
     /* */
-        assertTrue( "", d.contains( null, JMS.ontLanguage, TestModelFactory.DAMLLangResource ) );
+        assertTrue( "", d.contains( null, JenaModelSpec.ontLanguage, TestModelFactory.DAMLLangResource ) );
     /* */
-        StmtIterator si = d.listStatements( null, JMS.docManager, (RDFNode) null );
+        StmtIterator si = d.listStatements( null, JenaModelSpec.docManager, (RDFNode) null );
         Resource manager = si.nextStatement().getResource();
         assertSame( oms.getDocumentManager(), ModelSpecImpl.getValue( manager ) );
         }
@@ -192,7 +192,7 @@ public class TestModelSpec extends ModelTestBase
         {
         OntModelSpec oms = OntModelSpec.DAML_MEM_RULE_INF;
         Model d = oms.getDescription();
-        Statement s = d.getRequiredProperty( null, JMS.importMaker );
+        Statement s = d.getRequiredProperty( null, JenaModelSpec.importMaker );
         Model makerSpec = oms.getImportModelMaker().getDescription();
         assertNotNull( s );
         assertIsoModels( makerSpec, subModel( d, s.getObject() ) );
@@ -203,9 +203,9 @@ public class TestModelSpec extends ModelTestBase
         OntModelSpec oms = OntModelSpec.DAML_MEM_RULE_INF;
         Model d = oms.getDescription();
         Resource reasonerURI = d.createResource( oms.getReasonerFactory().getURI() );
-        Statement s = d.getRequiredProperty( null, JMS.reasonsWith );
+        Statement s = d.getRequiredProperty( null, JenaModelSpec.reasonsWith );
         Model reasonerSpec = ModelFactory.createDefaultModel()
-            .add( d.createResource(), JMS.reasoner, reasonerURI );
+            .add( d.createResource(), JenaModelSpec.reasoner, reasonerURI );
         assertIsoModels( reasonerSpec, subModel( d, s.getObject() ) );
         }
 
@@ -224,19 +224,19 @@ public class TestModelSpec extends ModelTestBase
         Resource lang = spec.createResource( oms.getLanguage() );
         Resource me = resource();
         Resource factory = spec.createResource( oms.getReasonerFactory().getURI() );
-        spec.add( me, JMS.ontLanguage, lang );
+        spec.add( me, JenaModelSpec.ontLanguage, lang );
         Resource r = spec.createResource();
-        spec.add( r, JMS.reasoner, factory );
-        spec.add( me, JMS.reasonsWith, r );
+        spec.add( r, JenaModelSpec.reasoner, factory );
+        spec.add( me, JenaModelSpec.reasonsWith, r );
         Resource m = spec.createResource();
         Model modelMaker = ModelFactory.createDefaultModel();
-        modelMaker.add( m, RDF.type, JMS.MemMakerSpec );
-        modelMaker.add( m, JMS.reificationMode, JMS.rsStandard );
-        spec.add( me, JMS.importMaker, m );
+        modelMaker.add( m, RDF.type, JenaModelSpec.MemMakerSpec );
+        modelMaker.add( m, JenaModelSpec.reificationMode, JenaModelSpec.rsStandard );
+        spec.add( me, JenaModelSpec.importMaker, m );
         spec.add( modelMaker );
         OntDocumentManager odm = oms.getDocumentManager();
         Resource dm = ModelSpecImpl.createValue( odm );
-        spec.add( me, JMS.docManager, dm );
+        spec.add( me, JenaModelSpec.docManager, dm );
     /* */
         OntModelSpec ms = new OntModelSpec( spec );
         assertEquals( lang.getURI(), ms.getLanguage() );
@@ -252,13 +252,13 @@ public class TestModelSpec extends ModelTestBase
         Resource lang = spec.createResource( oms.getLanguage() );
         Resource me = resource();
         Resource factory = spec.createResource( oms.getReasonerFactory().getURI() );
-        spec.add( me, JMS.ontLanguage, lang );
+        spec.add( me, JenaModelSpec.ontLanguage, lang );
         Resource r = spec.createResource();
-        spec.add( r, JMS.reasoner, factory );
-        spec.add( me, JMS.reasonsWith, r );
+        spec.add( r, JenaModelSpec.reasoner, factory );
+        spec.add( me, JenaModelSpec.reasonsWith, r );
         OntDocumentManager odm = oms.getDocumentManager();
         Resource dm = ModelSpecImpl.createValue( odm );
-        spec.add( me, JMS.docManager, dm );
+        spec.add( me, JenaModelSpec.docManager, dm );
     /* */
         OntModelSpec ms = new OntModelSpec( spec );
         assertEquals( lang.getURI(), ms.getLanguage() );
@@ -273,15 +273,15 @@ public class TestModelSpec extends ModelTestBase
         Resource lang = spec.createResource( oms.getLanguage() );
         Resource me = resource();
         Resource factory = spec.createResource( oms.getReasonerFactory().getURI() );
-        spec.add( me, JMS.ontLanguage, lang );
+        spec.add( me, JenaModelSpec.ontLanguage, lang );
         Resource r = spec.createResource();
-        spec.add( r, JMS.reasoner, factory );
-        spec.add( me, JMS.reasonsWith, r );
+        spec.add( r, JenaModelSpec.reasoner, factory );
+        spec.add( me, JenaModelSpec.reasonsWith, r );
         Resource m = spec.createResource();
         Model modelMaker = ModelFactory.createDefaultModel();
-        modelMaker.add( m, RDF.type, JMS.MemMakerSpec );
-        modelMaker.add( m, JMS.reificationMode, JMS.rsStandard );
-        spec.add( me, JMS.importMaker, m );
+        modelMaker.add( m, RDF.type, JenaModelSpec.MemMakerSpec );
+        modelMaker.add( m, JenaModelSpec.reificationMode, JenaModelSpec.rsStandard );
+        spec.add( me, JenaModelSpec.importMaker, m );
         spec.add( modelMaker );
     /* */
         OntModelSpec ms = new OntModelSpec( spec );
@@ -296,16 +296,16 @@ public class TestModelSpec extends ModelTestBase
         Model spec = ModelFactory.createDefaultModel();
         Resource lang = spec.createResource( oms.getLanguage() );
         Resource me = resource();
-        spec.add( me, JMS.ontLanguage, lang );
+        spec.add( me, JenaModelSpec.ontLanguage, lang );
         Resource m = spec.createResource();
         Model modelMaker = ModelFactory.createDefaultModel();
-        modelMaker.add( m, RDF.type, JMS.MemMakerSpec );
-        modelMaker.add( m, JMS.reificationMode, JMS.rsStandard );
-        spec.add( me, JMS.importMaker, m );
+        modelMaker.add( m, RDF.type, JenaModelSpec.MemMakerSpec );
+        modelMaker.add( m, JenaModelSpec.reificationMode, JenaModelSpec.rsStandard );
+        spec.add( me, JenaModelSpec.importMaker, m );
         spec.add( modelMaker );
         OntDocumentManager odm = oms.getDocumentManager();
         Resource dm = ModelSpecImpl.createValue( odm );
-        spec.add( me, JMS.docManager, dm );
+        spec.add( me, JenaModelSpec.docManager, dm );
     /* */
         OntModelSpec ms = new OntModelSpec( spec );
         assertEquals( lang.getURI(), ms.getLanguage() );
@@ -324,18 +324,18 @@ public class TestModelSpec extends ModelTestBase
                 
     public void testCreateMemModelMaker()
         {
-        Resource mem = JMS.MemMakerSpec;
-        testCreateModelMaker( JMS.rsStandard, mem, SimpleGraphMaker.class );
-        testCreateModelMaker( JMS.rsMinimal, mem, SimpleGraphMaker.class );
-        testCreateModelMaker( JMS.rsConvenient, mem, SimpleGraphMaker.class );
+        Resource mem = JenaModelSpec.MemMakerSpec;
+        testCreateModelMaker( JenaModelSpec.rsStandard, mem, SimpleGraphMaker.class );
+        testCreateModelMaker( JenaModelSpec.rsMinimal, mem, SimpleGraphMaker.class );
+        testCreateModelMaker( JenaModelSpec.rsConvenient, mem, SimpleGraphMaker.class );
         }
 
     public void testCreateFileModelMaker()
         {
-        Resource file =JMS.FileMakerSpec;
-        testCreateModelMaker( JMS.rsStandard, file, FileGraphMaker.class );
-        testCreateModelMaker( JMS.rsMinimal, file, FileGraphMaker.class );
-        testCreateModelMaker( JMS.rsConvenient, file, FileGraphMaker.class );
+        Resource file =JenaModelSpec.FileMakerSpec;
+        testCreateModelMaker( JenaModelSpec.rsStandard, file, FileGraphMaker.class );
+        testCreateModelMaker( JenaModelSpec.rsMinimal, file, FileGraphMaker.class );
+        testCreateModelMaker( JenaModelSpec.rsConvenient, file, FileGraphMaker.class );
         }
         
     public void testCreateFileModelMakerRooted()
@@ -343,24 +343,24 @@ public class TestModelSpec extends ModelTestBase
         String fileBase = "/somewhere";
         Resource me = resource();
         Model spec = ModelFactory.createDefaultModel()
-            .add( me, RDF.type, JMS.FileMakerSpec )
-            .add( me, JMS.fileBase, fileBase )
+            .add( me, RDF.type, JenaModelSpec.FileMakerSpec )
+            .add( me, JenaModelSpec.fileBase, fileBase )
             ;
         ModelMaker maker = ModelSpecImpl.createMaker( spec );
         FileGraphMaker fgm = (FileGraphMaker) maker.getGraphMaker();
         assertEquals( fileBase, fgm.getFileBase() );
     /* */
         Model desc = ModelFactory.createModelForGraph( fgm.getDescription() );
-        assertTrue( desc.listStatements( null, JMS.fileBase, fileBase ).hasNext() );        
+        assertTrue( desc.listStatements( null, JenaModelSpec.fileBase, fileBase ).hasNext() );        
         }
         
     public void testCreateModelMaker( Resource style, Resource cl, Class required )
         {
         Resource me = resource();
-        ReificationStyle wanted = JMS.findStyle( style );
+        ReificationStyle wanted = JenaModelSpec.findStyle( style );
         Model spec = modelWithStatements( "" )
             .add( me, RDF.type, cl )
-            .add( me, JMS.reificationMode, style );
+            .add( me, JenaModelSpec.reificationMode, style );
         ModelMaker maker = ModelSpecImpl.createMaker( spec );
         assertTrue( required.isInstance( maker.getGraphMaker() ) );
         assertEquals( wanted, maker.getGraphMaker().getReificationStyle() );
@@ -373,8 +373,8 @@ public class TestModelSpec extends ModelTestBase
         PlainModelSpec pms = new PlainModelSpec( me, spec );
         ModelMaker mm = pms.getModelMaker();
         Model desc = mm.getDescription( me );
-        assertTrue( desc.contains( me, RDF.type, JMS.MemMakerSpec ) );
-        assertTrue( desc.listStatements( null, JMS.reificationMode, JMS.rsMinimal ).hasNext() );
+        assertTrue( desc.contains( me, RDF.type, JenaModelSpec.MemMakerSpec ) );
+        assertTrue( desc.listStatements( null, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal ).hasNext() );
         assertTrue( mm.getGraphMaker() instanceof SimpleGraphMaker );
         assertEquals( ReificationStyle.Minimal , mm.getGraphMaker().getReificationStyle() );
         }
@@ -383,12 +383,12 @@ public class TestModelSpec extends ModelTestBase
         {
         Resource me = resource();
         Resource maker = resource();
-        Model spec = createPlainModelDesc( me, maker, JMS.FileMakerSpec ); 
+        Model spec = createPlainModelDesc( me, maker, JenaModelSpec.FileMakerSpec ); 
         PlainModelSpec pms = new PlainModelSpec( me, spec );
         ModelMaker mm = pms.getModelMaker();
         Model desc = mm.getDescription( me );
-        assertTrue( desc.listStatements( null, RDF.type, JMS.FileMakerSpec ).hasNext() );
-        assertTrue( desc.listStatements( null, JMS.reificationMode, JMS.rsMinimal ).hasNext() );
+        assertTrue( desc.listStatements( null, RDF.type, JenaModelSpec.FileMakerSpec ).hasNext() );
+        assertTrue( desc.listStatements( null, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal ).hasNext() );
         assertTrue( mm.getGraphMaker() instanceof FileGraphMaker );
         assertEquals( ReificationStyle.Minimal , mm.getGraphMaker().getReificationStyle() );
         }
@@ -408,14 +408,14 @@ public class TestModelSpec extends ModelTestBase
         { return createPlainModelDesc( root, resource() ); }
         
     public static Model createPlainModelDesc( Resource root, Resource maker )
-        { return createPlainModelDesc( root, maker, JMS.MemMakerSpec ); }
+        { return createPlainModelDesc( root, maker, JenaModelSpec.MemMakerSpec ); }
         
     public static Model createPlainModelDesc( Resource root, Resource maker, Resource spec )
         {
         return ModelFactory.createDefaultModel()
-            .add( root, JMS.maker, maker )
+            .add( root, JenaModelSpec.maker, maker )
             .add( maker, RDF.type, spec )
-            .add( maker, JMS.reificationMode, JMS.rsMinimal );
+            .add( maker, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal );
         }
                                                                 
     public static Model createInfModelDesc( String URI )
@@ -427,11 +427,11 @@ public class TestModelSpec extends ModelTestBase
         Resource reasoner = resource();
         Resource res = resource( URI );
         return ModelFactory.createDefaultModel()
-            .add( root, JMS.reasonsWith, reasoner )
-            .add( reasoner, JMS.reasoner, res )
-            .add( root, JMS.maker, maker )
-            .add( maker, RDF.type, JMS.MemMakerSpec )
-            .add( maker, JMS.reificationMode, JMS.rsMinimal )
+            .add( root, JenaModelSpec.reasonsWith, reasoner )
+            .add( reasoner, JenaModelSpec.reasoner, res )
+            .add( root, JenaModelSpec.maker, maker )
+            .add( maker, RDF.type, JenaModelSpec.MemMakerSpec )
+            .add( maker, JenaModelSpec.reificationMode, JenaModelSpec.rsMinimal )
             ;
         }
     }

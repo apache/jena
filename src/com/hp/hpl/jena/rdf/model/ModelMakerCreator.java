@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerCreator.java,v 1.4 2005-02-21 12:14:10 andy_seaborne Exp $
+  $Id: ModelMakerCreator.java,v 1.5 2005-04-10 12:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
 
 /**
     A ModelMakerCreator creates ModelMakers from their RDF descriptions in the
-    JMS vocabulary.
+    JenaModelSpec vocabulary.
 
  	@author hedgehog
 */

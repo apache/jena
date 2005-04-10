@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.17 2005-04-05 17:39:10 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.18 2005-04-10 12:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.vocabulary.*;
 
 /**
     A ModelSpec for InfModels. The description of an InfModel is the description of a 
-    ModelMaker [for the base graph] plus the JMS.reasonsWith property to give the
+    ModelMaker [for the base graph] plus the JenaModelSpec.reasonsWith property to give the
     Resource who's URI identifies the reasoner to use [as per the ReasonerRegistry].
     
  	@author kers
@@ -33,13 +33,13 @@ public class InfModelSpec extends ModelSpecImpl
     
     /**
         Initialise an InfModelSpec using the ModelMaker specification and the value of
-        the JMS.reasoner property.
+        the JenaModelSpec.reasoner property.
     */
     public InfModelSpec( Resource root, Model description )
         {
         super( root, description );
-        Statement st = description.getRequiredProperty( null, JMS.reasoner );
-        Statement xx = description.listStatements( root, JMS.reasonsWith, (RDFNode) null ).nextStatement();
+        Statement st = description.getRequiredProperty( null, JenaModelSpec.reasoner );
+        Statement xx = description.listStatements( root, JenaModelSpec.reasonsWith, (RDFNode) null ).nextStatement();
         reasonerRoot = st.getSubject();
         Resource yy = xx.getResource();
         reasonerResource = st.getResource();
@@ -77,10 +77,10 @@ public class InfModelSpec extends ModelSpecImpl
     
     /**
         Answer the maker property needed by descriptions.
-        @return JMS.maker
+        @return JenaModelSpec.maker
     */
     public Property getMakerProperty()
-        { return JMS.maker; }
+        { return JenaModelSpec.maker; }
     
     /**
         Add this ModelMaker and Reasoner description to the supplied model under the
@@ -94,14 +94,14 @@ public class InfModelSpec extends ModelSpecImpl
         {
         super.addDescription( desc, self );
         Resource r = reasonerRoot; 
-        desc.add( self, JMS.reasonsWith, r );
-        desc.add( r, JMS.reasoner, reasonerResource );
+        desc.add( self, JenaModelSpec.reasonsWith, r );
+        desc.add( r, JenaModelSpec.reasoner, reasonerResource );
         new ModelExtract( notJMS ) .extractInto( desc, r, description );
         return desc;    
         }
     
     private final static TripleBoundary notJMSTriple = new TripleBoundary()
-        { public boolean stopAt( Triple t ) { return !t.getPredicate().getNameSpace().equals( JMS.baseURI ); }};
+        { public boolean stopAt( Triple t ) { return !t.getPredicate().getNameSpace().equals( JenaModelSpec.baseURI ); }};
     
     private static final StatementBoundary notJMS = new StatementBoundary()
         {
@@ -120,7 +120,7 @@ public class InfModelSpec extends ModelSpecImpl
     */
     public static ReasonerFactory getReasonerFactory( Resource R, Model rs )
         {
-        StmtIterator r = rs.listStatements( R, JMS.reasoner, (RDFNode) null );
+        StmtIterator r = rs.listStatements( R, JenaModelSpec.reasoner, (RDFNode) null );
         if (r.hasNext() == false) throw new NoReasonerSuppliedException();
         Resource rr = r.nextStatement().getResource();
         String rrs = rr.getURI();

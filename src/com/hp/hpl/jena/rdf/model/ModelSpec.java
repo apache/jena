@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpec.java,v 1.13 2005-02-21 12:14:11 andy_seaborne Exp $
+  $Id: ModelSpec.java,v 1.14 2005-04-10 12:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -24,13 +24,13 @@ public interface ModelSpec extends ModelSource
     Model createModelOver( String name );
     
     /**
-        Answer an RDF description of this ModelSpec using the JMS vocabulary. The
+        Answer an RDF description of this ModelSpec using the JenaModelSpec vocabulary. The
         description root will be a freshly-created bnode.
     */
     Model getDescription();
     
     /**
-        Answer an RDF description of this ModelSpec using the JMS vocabulary, with
+        Answer an RDF description of this ModelSpec using the JenaModelSpec vocabulary, with
         the given Resource as root.
         
         @param root the resource to be used for all the top-level properties

@@ -27,92 +27,92 @@ public class TestVocabJenaModelSpec extends ModelTestBase
     
     public void testURI()
         {
-        assertEquals( "http://jena.hpl.hp.com/2003/08/jms#", JMS.getURI() );
-        assertEquals( JMS.baseURI, JMS.getURI() );
+        assertEquals( "http://jena.hpl.hp.com/2003/08/jms#", JenaModelSpec.getURI() );
+        assertEquals( JenaModelSpec.baseURI, JenaModelSpec.getURI() );
         }
     
     public void testProperties()
         {
-        assertEquals( jmsProperty( "loadWith" ), JMS.loadWith );
-        assertEquals( jmsProperty( "ontLanguage" ), JMS.ontLanguage );
-        assertEquals( jmsProperty( "docManager" ), JMS.docManager );
-        assertEquals( jmsProperty( "importMaker" ), JMS.importMaker );
-        assertEquals( jmsProperty( "reasonsWith" ), JMS.reasonsWith );
-        assertEquals( jmsProperty( "ruleSetURL" ), JMS.ruleSetURL );
-        assertEquals( jmsProperty( "ruleSet" ), JMS.ruleSet );
-        assertEquals( jmsProperty( "schemaURL" ), JMS.schemaURL );
-        assertEquals( jmsProperty( "hasRule" ), JMS.hasRule );
-        assertEquals( jmsProperty( "policyPath" ), JMS.policyPath );
-        assertEquals( jmsProperty( "hasConnection" ), JMS.hasConnection );
-        assertEquals( jmsProperty( "dbUser" ), JMS.dbUser );
-        assertEquals( jmsProperty( "dbPassword" ), JMS.dbPassword );
-        assertEquals( jmsProperty( "dbURL" ), JMS.dbURL );
-        assertEquals( jmsProperty( "dbType" ), JMS.dbType );
-        assertEquals( jmsProperty( "dbClass" ), JMS.dbClass );
-        assertEquals( jmsProperty( "maker" ), JMS.maker );
-        assertEquals( jmsProperty( "reificationMode" ), JMS.reificationMode );
-        assertEquals( jmsProperty( "reasoner" ), JMS.reasoner );
-        assertEquals( jmsProperty( "fileBase" ), JMS.fileBase );
-        assertEquals( jmsProperty( "typeCreatedBy" ), JMS.typeCreatedBy );
-        assertEquals( jmsProperty( "modelName" ), JMS.modelName );
+        assertEquals( jmsProperty( "loadWith" ), JenaModelSpec.loadWith );
+        assertEquals( jmsProperty( "ontLanguage" ), JenaModelSpec.ontLanguage );
+        assertEquals( jmsProperty( "docManager" ), JenaModelSpec.docManager );
+        assertEquals( jmsProperty( "importMaker" ), JenaModelSpec.importMaker );
+        assertEquals( jmsProperty( "reasonsWith" ), JenaModelSpec.reasonsWith );
+        assertEquals( jmsProperty( "ruleSetURL" ), JenaModelSpec.ruleSetURL );
+        assertEquals( jmsProperty( "ruleSet" ), JenaModelSpec.ruleSet );
+        assertEquals( jmsProperty( "schemaURL" ), JenaModelSpec.schemaURL );
+        assertEquals( jmsProperty( "hasRule" ), JenaModelSpec.hasRule );
+        assertEquals( jmsProperty( "policyPath" ), JenaModelSpec.policyPath );
+        assertEquals( jmsProperty( "hasConnection" ), JenaModelSpec.hasConnection );
+        assertEquals( jmsProperty( "dbUser" ), JenaModelSpec.dbUser );
+        assertEquals( jmsProperty( "dbPassword" ), JenaModelSpec.dbPassword );
+        assertEquals( jmsProperty( "dbURL" ), JenaModelSpec.dbURL );
+        assertEquals( jmsProperty( "dbType" ), JenaModelSpec.dbType );
+        assertEquals( jmsProperty( "dbClass" ), JenaModelSpec.dbClass );
+        assertEquals( jmsProperty( "maker" ), JenaModelSpec.maker );
+        assertEquals( jmsProperty( "reificationMode" ), JenaModelSpec.reificationMode );
+        assertEquals( jmsProperty( "reasoner" ), JenaModelSpec.reasoner );
+        assertEquals( jmsProperty( "fileBase" ), JenaModelSpec.fileBase );
+        assertEquals( jmsProperty( "typeCreatedBy" ), JenaModelSpec.typeCreatedBy );
+        assertEquals( jmsProperty( "modelName" ), JenaModelSpec.modelName );
         }
     
     public void testResource()
         {
-        assertEquals( jmsResource( "MakerSpec" ), JMS.MakerSpec );
-        assertEquals( jmsResource( "FileMakerSpec" ), JMS.FileMakerSpec );
-        assertEquals( jmsResource( "MemMakerSpec" ), JMS.MemMakerSpec );
-        assertEquals( jmsResource( "RDBMakerSpec" ), JMS.RDBMakerSpec );
-        assertEquals( jmsResource( "ModelSpec" ), JMS.ModelSpec );
-        assertEquals( jmsResource( "DefaultModelSpec" ), JMS.DefaultModelSpec );
-        assertEquals( jmsResource( "PlainModelSpec" ), JMS.PlainModelSpec );
-        assertEquals( jmsResource( "InfModelSpec" ), JMS.InfModelSpec );
-        assertEquals( jmsResource( "OntModelSpec" ), JMS.OntModelSpec );
-        assertEquals( jmsResource( "FileModelSpec" ), JMS.FileModelSpec );
-        assertEquals( jmsResource( "rsStandard" ), JMS.rsStandard );
-        assertEquals( jmsResource( "rsMinimal" ), JMS.rsMinimal );
-        assertEquals( jmsResource( "rsConvenient" ), JMS.rsConvenient );
+        assertEquals( jmsResource( "MakerSpec" ), JenaModelSpec.MakerSpec );
+        assertEquals( jmsResource( "FileMakerSpec" ), JenaModelSpec.FileMakerSpec );
+        assertEquals( jmsResource( "MemMakerSpec" ), JenaModelSpec.MemMakerSpec );
+        assertEquals( jmsResource( "RDBMakerSpec" ), JenaModelSpec.RDBMakerSpec );
+        assertEquals( jmsResource( "ModelSpec" ), JenaModelSpec.ModelSpec );
+        assertEquals( jmsResource( "DefaultModelSpec" ), JenaModelSpec.DefaultModelSpec );
+        assertEquals( jmsResource( "PlainModelSpec" ), JenaModelSpec.PlainModelSpec );
+        assertEquals( jmsResource( "InfModelSpec" ), JenaModelSpec.InfModelSpec );
+        assertEquals( jmsResource( "OntModelSpec" ), JenaModelSpec.OntModelSpec );
+        assertEquals( jmsResource( "FileModelSpec" ), JenaModelSpec.FileModelSpec );
+        assertEquals( jmsResource( "rsStandard" ), JenaModelSpec.rsStandard );
+        assertEquals( jmsResource( "rsMinimal" ), JenaModelSpec.rsMinimal );
+        assertEquals( jmsResource( "rsConvenient" ), JenaModelSpec.rsConvenient );
         }
     
     public void testMakerSubclasses()
         {
-        ensure( JMS.MemMakerSpec, RDFS.subClassOf, JMS.MakerSpec );
-        ensure( JMS.FileMakerSpec, RDFS.subClassOf, JMS.MakerSpec );
-        ensure( JMS.RDBMakerSpec, RDFS.subClassOf, JMS.MakerSpec );
+        ensure( JenaModelSpec.MemMakerSpec, RDFS.subClassOf, JenaModelSpec.MakerSpec );
+        ensure( JenaModelSpec.FileMakerSpec, RDFS.subClassOf, JenaModelSpec.MakerSpec );
+        ensure( JenaModelSpec.RDBMakerSpec, RDFS.subClassOf, JenaModelSpec.MakerSpec );
         }
     
     public void testSpecSubclasses()
         {        
-        ensure( JMS.DefaultModelSpec, RDFS.subClassOf, JMS.ModelSpec );
-        ensure( JMS.PlainModelSpec, RDFS.subClassOf, JMS.ModelSpec );
-        ensure( JMS.InfModelSpec, RDFS.subClassOf, JMS.PlainModelSpec );
-        ensure( JMS.FileModelSpec, RDFS.subClassOf, JMS.PlainModelSpec );
-        ensure( JMS.OntModelSpec, RDFS.subClassOf, JMS.InfModelSpec );
+        ensure( JenaModelSpec.DefaultModelSpec, RDFS.subClassOf, JenaModelSpec.ModelSpec );
+        ensure( JenaModelSpec.PlainModelSpec, RDFS.subClassOf, JenaModelSpec.ModelSpec );
+        ensure( JenaModelSpec.InfModelSpec, RDFS.subClassOf, JenaModelSpec.PlainModelSpec );
+        ensure( JenaModelSpec.FileModelSpec, RDFS.subClassOf, JenaModelSpec.PlainModelSpec );
+        ensure( JenaModelSpec.OntModelSpec, RDFS.subClassOf, JenaModelSpec.InfModelSpec );
         }
     
     public void testDomains()
         {        
-        ensure( JMS.reificationMode, RDFS.domain, JMS.MakerSpec );
-        ensure( JMS.maker, RDFS.domain, JMS.PlainModelSpec );
-        ensure( JMS.modelName, RDFS.domain, JMS.ModelSpec );
+        ensure( JenaModelSpec.reificationMode, RDFS.domain, JenaModelSpec.MakerSpec );
+        ensure( JenaModelSpec.maker, RDFS.domain, JenaModelSpec.PlainModelSpec );
+        ensure( JenaModelSpec.modelName, RDFS.domain, JenaModelSpec.ModelSpec );
     //    
-        ensure( JMS.importMaker, RDFS.domain, JMS.OntModelSpec );
-        ensure( JMS.ontLanguage, RDFS.domain, JMS.OntModelSpec );
-        ensure( JMS.reasonsWith, RDFS.domain, JMS.InfModelSpec );
-        ensure( JMS.fileBase, RDFS.domain, JMS.FileMakerSpec );
+        ensure( JenaModelSpec.importMaker, RDFS.domain, JenaModelSpec.OntModelSpec );
+        ensure( JenaModelSpec.ontLanguage, RDFS.domain, JenaModelSpec.OntModelSpec );
+        ensure( JenaModelSpec.reasonsWith, RDFS.domain, JenaModelSpec.InfModelSpec );
+        ensure( JenaModelSpec.fileBase, RDFS.domain, JenaModelSpec.FileMakerSpec );
         }
     
     protected void ensure( Resource S, Property P, RDFNode O )
         {
-        if (!JMS.getSchema().contains( S, P, O ))
+        if (!JenaModelSpec.getSchema().contains( S, P, O ))
             fail( "schema omits (" + nice( S ) + " " + nice( P ) + " " + nice( O ) + ")" );
         }
 
     protected Resource jmsResource( String string )
-        { return resource( JMS.getURI() + string ); }
+        { return resource( JenaModelSpec.getURI() + string ); }
 
     protected Property jmsProperty( String string )
-        { return property( JMS.getURI() + string );}
+        { return property( JenaModelSpec.getURI() + string );}
 
     }
 

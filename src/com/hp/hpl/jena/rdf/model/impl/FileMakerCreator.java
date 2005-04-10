@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: FileMakerCreator.java,v 1.4 2005-02-21 12:14:32 andy_seaborne Exp $
+  $Id: FileMakerCreator.java,v 1.5 2005-04-10 12:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -19,15 +19,15 @@ import com.hp.hpl.jena.vocabulary.*;
 public class FileMakerCreator extends MakerCreator implements ModelMakerCreator
     {
     /**
-        Answer a FileModelMaker with reification style given by the JMS.reificationMode
-        of the root and file base given by the JMS.fileBase of the root. The latter
+        Answer a FileModelMaker with reification style given by the JenaModelSpec.reificationMode
+        of the root and file base given by the JenaModelSpec.fileBase of the root. The latter
         defaults to "/tmp", which probably counts as a bug.
         
         TODO replace /tmp with the non-implementation-specific temporary directory.
      */
     public ModelMaker create( Model desc, Resource root ) 
         { 
-        Statement fb = desc.getProperty( root, JMS.fileBase );
+        Statement fb = desc.getProperty( root, JenaModelSpec.fileBase );
         String fileBase = fb == null ? "/tmp" : fb.getString();
         return ModelFactory.createFileModelMaker( fileBase, style( desc, root ) );
         }

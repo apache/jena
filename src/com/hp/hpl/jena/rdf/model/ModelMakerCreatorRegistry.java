@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerCreatorRegistry.java,v 1.6 2005-02-21 12:14:11 andy_seaborne Exp $
+  $Id: ModelMakerCreatorRegistry.java,v 1.7 2005-04-10 12:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.model.impl.*;
 import java.util.*;
 
 /**
-    A registry of ways of creating ModelMakers, keyed by their JMS type. A
+    A registry of ways of creating ModelMakers, keyed by their JenaModelSpec type. A
     ModelMakerCreator registered by type here will be used by a ModelSpec
     description which needs a ModelMaker and supplies a registered type for
     that maker.
@@ -31,7 +31,7 @@ public class ModelMakerCreatorRegistry
         {}
 
     /**
-        The map from JMS ModelMakerSpecs to the ModelMakerCreator.
+        The map from JenaModelSpec ModelMakerSpecs to the ModelMakerCreator.
     */
     private static Map creators = new HashMap();
     
@@ -39,14 +39,14 @@ public class ModelMakerCreatorRegistry
         Answer the Creator which has been registred with the given type, or null
         if there's no such registered Creator
         
-    	@param type the JMS type of the Creator
+    	@param type the JenaModelSpec type of the Creator
     	@return that Creator, or null
     */
     public static ModelMakerCreator findCreator( Resource type )
         { return (ModelMakerCreator) creators.get( type ); }
         
     /**
-        Register the given ModelMakerCreator under the given JMS type.
+        Register the given ModelMakerCreator under the given JenaModelSpec type.
         
     	@param type the type to register it as
     	@param mmc the Creator to register
@@ -61,16 +61,16 @@ public class ModelMakerCreatorRegistry
     private static final ModelMakerCreator defaultMakerCreator =  new MemMakerCreator();
     
     /**
-        Register the three standard MakerCreators under their JMS Resources.  
+        Register the three standard MakerCreators under their JenaModelSpec Resources.  
         We also recognise a non-specific MakerSpec as meaning a default
         maker type.
     */
     static
         {
-        register( JMS.MakerSpec, defaultMakerCreator );    
-        register( JMS.FileMakerSpec, new FileMakerCreator() );    
-        register( JMS.MemMakerSpec, new MemMakerCreator() );    
-        register( JMS.RDBMakerSpec, new RDBMakerCreator() );    
+        register( JenaModelSpec.MakerSpec, defaultMakerCreator );    
+        register( JenaModelSpec.FileMakerSpec, new FileMakerCreator() );    
+        register( JenaModelSpec.MemMakerSpec, new MemMakerCreator() );    
+        register( JenaModelSpec.RDBMakerSpec, new RDBMakerCreator() );    
         }
     }
 

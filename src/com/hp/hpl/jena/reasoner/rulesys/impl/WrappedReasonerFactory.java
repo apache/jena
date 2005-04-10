@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: WrappedReasonerFactory.java,v 1.5 2005-02-21 12:18:01 andy_seaborne Exp $
+  $Id: WrappedReasonerFactory.java,v 1.6 2005-04-10 12:45:51 chris-dollin Exp $
 */
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.vocabulary.JMS;
+import com.hp.hpl.jena.vocabulary.JenaModelSpec;
 
 /**
     WrappedReasonerFactory - a wrapper round ReasonerFactories that
@@ -40,7 +40,7 @@ public final class WrappedReasonerFactory implements ReasonerFactory
     
     private static Model loadSchemas( Model schema, Resource R )
         {
-        StmtIterator schemas = R.listProperties( JMS.schemaURL );
+        StmtIterator schemas = R.listProperties( JenaModelSpec.schemaURL );
         while (schemas.hasNext())
             {
             Statement s = schemas.nextStatement();

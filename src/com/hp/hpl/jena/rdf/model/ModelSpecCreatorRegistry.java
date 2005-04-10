@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreatorRegistry.java,v 1.11 2005-04-10 10:37:25 chris-dollin Exp $
+  $Id: ModelSpecCreatorRegistry.java,v 1.12 2005-04-10 12:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -73,7 +73,7 @@ public class ModelSpecCreatorRegistry
         try
             {
             Model m = FileManager.get().loadModel( name ); 
-            StmtIterator it = m.listStatements( null, JMS.typeCreatedBy, (RDFNode) null ); 
+            StmtIterator it = m.listStatements( null, JenaModelSpec.typeCreatedBy, (RDFNode) null ); 
             while (it.hasNext()) addFromStatement( it.nextStatement() );
             }
         catch (NotFoundException e)
@@ -109,12 +109,12 @@ public class ModelSpecCreatorRegistry
                         
     static
         {
-        register( JMS.InfModelSpec, new InfSpecCreator() );  
-        register( JMS.OntModelSpec, new OntSpecCreator() );  
-        register( JMS.PlainModelSpec, new PlainSpecCreator() );   
+        register( JenaModelSpec.InfModelSpec, new InfSpecCreator() );  
+        register( JenaModelSpec.OntModelSpec, new OntSpecCreator() );  
+        register( JenaModelSpec.PlainModelSpec, new PlainSpecCreator() );   
         
-        register( JMS.ModelSpec, new PlainSpecCreator() );
-        register( JMS.DefaultModelSpec, new PlainSpecCreator() );   
+        register( JenaModelSpec.ModelSpec, new PlainSpecCreator() );
+        register( JenaModelSpec.DefaultModelSpec, new PlainSpecCreator() );   
         }   
     }
 

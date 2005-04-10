@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PlainModelSpec.java,v 1.11 2005-03-10 14:35:34 chris-dollin Exp $
+  $Id: PlainModelSpec.java,v 1.12 2005-04-10 12:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -29,8 +29,8 @@ public class PlainModelSpec extends ModelSpecImpl implements ModelSpec
         Initialise this Spec with a description that will specify the ModelMaker that this
         Spec is used to construct.
         
-        @param root the resource of rdf:type JMS.maker
-        @param description the RDF who's JMS.maker describes the ModelMaker
+        @param root the resource of rdf:type JenaModelSpec.maker
+        @param description the RDF who's JenaModelSpec.maker describes the ModelMaker
     */
     public PlainModelSpec( Resource root, Model description )
         { super( root, description );
@@ -54,13 +54,13 @@ public class PlainModelSpec extends ModelSpecImpl implements ModelSpec
         { return maker.openModel( name, false ); }
 
     /**
-        Answer the sub-property of JMS.maker that describes how this ModelSpec uses the
+        Answer the sub-property of JenaModelSpec.maker that describes how this ModelSpec uses the
         attached ModelMaker.
         
-        @return JMS.maker
+        @return JenaModelSpec.maker
     */
     public Property getMakerProperty()
-        { return JMS.maker; }
+        { return JenaModelSpec.maker; }
     }
 
 /*

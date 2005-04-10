@@ -30,6 +30,13 @@ Post 2.2beta change list
       o Added new modelName property to the vocabulary and schema, ready
         to properly support named models as well as model makers.
 
+      o The specification for RDB models has changed: it is not the maker,
+        but it's /hasConnection/ value, that has the connection properties.
+        (This allows the connection to be shared, or to be prespecified.)
+
+      o The vocabulary class JMS has been renamed to JenaModelSpec. There
+        is a (deprecated) JMS subclass to allow legacy use of the vocabulary.
+
   PrefixMappings
       o the requirement that adding `(prefix, uri)` to a prefix mapping remove
         any existing prefix for `uri` has been removed. Calls that run the

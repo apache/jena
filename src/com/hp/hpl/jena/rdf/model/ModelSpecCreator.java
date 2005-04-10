@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreator.java,v 1.6 2005-02-21 12:14:11 andy_seaborne Exp $
+  $Id: ModelSpecCreator.java,v 1.7 2005-04-10 12:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -16,7 +16,7 @@ public interface ModelSpecCreator
     {
     /**
         create [or find] a ModelSpec that is appropriate for the description rooted at the
-        given root resource, which must have rdf:type JMS:ModelSpec.
+        given root resource, which must have rdf:type JenaModelSpec:ModelSpec.
         
         @param root the root of the specification
         @param desc a description who's ModelSpec root is to be created
