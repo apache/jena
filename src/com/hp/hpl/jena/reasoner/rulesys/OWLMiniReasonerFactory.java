@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMiniReasonerFactory.java,v 1.5 2005-04-07 16:45:35 ian_dickinson Exp $
+ * $Id: OWLMiniReasonerFactory.java,v 1.6 2005-04-11 11:17:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -25,7 +25,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </UL>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2005-04-07 16:45:35 $
+ * @version $Revision: 1.6 $ on $Date: 2005-04-11 11:17:06 $
  */
 public class OWLMiniReasonerFactory implements ReasonerFactory {
     
@@ -92,6 +92,17 @@ public class OWLMiniReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerVocabulary.supportsP, OWL.SymmetricProperty )
                 .addProperty(ReasonerVocabulary.supportsP, OWL.TransitiveProperty )
                 .addProperty(ReasonerVocabulary.supportsP, OWL.InverseFunctionalProperty )
+
+                .addProperty(ReasonerVocabulary.supportsP, OWL.hasValue )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.intersectionOf )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.unionOf )        // Only partial
+                .addProperty(ReasonerVocabulary.supportsP, OWL.maxCardinality )        // Only partial
+                .addProperty(ReasonerVocabulary.supportsP, OWL.cardinality )           // Only partial
+                .addProperty(ReasonerVocabulary.supportsP, OWL.allValuesFrom )         // Only partial
+                .addProperty(ReasonerVocabulary.supportsP, OWL.sameAs )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.differentFrom )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.disjointWith )
+                
                 .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;

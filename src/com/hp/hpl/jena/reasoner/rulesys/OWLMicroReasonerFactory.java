@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLMicroReasonerFactory.java,v 1.6 2005-04-07 16:45:35 ian_dickinson Exp $
+ * $Id: OWLMicroReasonerFactory.java,v 1.7 2005-04-11 11:17:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * should not be relied on at this point.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2005-04-07 16:45:35 $
+ * @version $Revision: 1.7 $ on $Date: 2005-04-11 11:17:06 $
  */
 public class OWLMicroReasonerFactory implements ReasonerFactory {
     
@@ -96,6 +96,11 @@ public class OWLMicroReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerVocabulary.supportsP, OWL.SymmetricProperty )
                 .addProperty(ReasonerVocabulary.supportsP, OWL.TransitiveProperty )
                 .addProperty(ReasonerVocabulary.supportsP, OWL.InverseFunctionalProperty )
+
+                .addProperty(ReasonerVocabulary.supportsP, OWL.hasValue )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.intersectionOf )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.unionOf )        // Only partial
+                
                 .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;

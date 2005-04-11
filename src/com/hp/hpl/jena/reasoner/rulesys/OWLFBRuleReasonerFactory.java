@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OWLFBRuleReasonerFactory.java,v 1.13 2005-04-07 16:45:35 ian_dickinson Exp $
+ * $Id: OWLFBRuleReasonerFactory.java,v 1.14 2005-04-11 11:17:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -29,7 +29,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * </ul>
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2005-04-07 16:45:35 $
+ * @version $Revision: 1.14 $ on $Date: 2005-04-11 11:17:06 $
  */
 public class OWLFBRuleReasonerFactory implements ReasonerFactory {
     
@@ -95,6 +95,18 @@ public class OWLFBRuleReasonerFactory implements ReasonerFactory {
                 .addProperty(ReasonerVocabulary.supportsP, OWL.TransitiveProperty )
                 .addProperty(ReasonerVocabulary.supportsP, OWL.InverseFunctionalProperty )
 
+                .addProperty(ReasonerVocabulary.supportsP, OWL.hasValue )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.intersectionOf )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.unionOf )        // Only partial
+                .addProperty(ReasonerVocabulary.supportsP, OWL.minCardinality )        // Only partial
+                .addProperty(ReasonerVocabulary.supportsP, OWL.maxCardinality )        // Only partial
+                .addProperty(ReasonerVocabulary.supportsP, OWL.cardinality )           // Only partial
+                .addProperty(ReasonerVocabulary.supportsP, OWL.someValuesFrom)         // Only partial
+                .addProperty(ReasonerVocabulary.supportsP, OWL.allValuesFrom )         // Only partial
+                .addProperty(ReasonerVocabulary.supportsP, OWL.sameAs )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.differentFrom )
+                .addProperty(ReasonerVocabulary.supportsP, OWL.disjointWith )
+                
                 .addProperty(ReasonerVocabulary.versionP, "0.1");
         }
         return capabilities;
