@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.8 2005-03-18 21:34:50 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.9 2005-04-11 17:38:58 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -65,7 +65,7 @@ public class LocationMapper
     public LocationMapper() { }
     
     /** Create a LocationMapper from an existing model
-     * @see com.hp.hpl.jena.vocabulary.LocationMappingVocab;
+     * @see com.hp.hpl.jena.vocabulary.LocationMappingVocab
      */
     public LocationMapper(Model model)
     {
