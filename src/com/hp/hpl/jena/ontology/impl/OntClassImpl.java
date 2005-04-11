@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.47 $
+ * Revision           $Revision: 1.48 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-08 17:38:50 $
+ * Last modified on   $Date: 2005-04-11 16:41:41 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.47 2005-04-08 17:38:50 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.48 2005-04-11 16:41:41 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -601,7 +601,7 @@ public class OntClassImpl
         cands.addAll( candSet );
         for (int j = cands.size() -1; j >= 0; j--) {
             Property cand = (Property) cands.get( j );
-            if (!testDomain( cand, direct )) {
+            if (!hasDeclaredProperty( cand, direct )) {
                 cands.remove( j );
             }
         }
@@ -609,6 +609,20 @@ public class OntClassImpl
         // return the results, using the ont property facet
         return WrappedIterator.create( cands.iterator() )
                               .mapWith( new AsMapper( OntProperty.class ) );
+    }
+
+
+    /**
+     * <p>Answer true if the given property is one of the declared properties
+     * of this class. For details, see {@link #listDeclaredProperties(boolean)}.</p>
+     * @param p A property to test
+     * @param direct If true, only direct associations between classes and properties
+     * are considered
+     * @return True if <code>p</code> is one of the declared properties of
+     * this class
+     */
+    public boolean hasDeclaredProperty( Property p, boolean direct ) {
+        return testDomain( p, direct );
     }
 
 
@@ -656,6 +670,11 @@ public class OntClassImpl
      * model it is attached to
      */
     public boolean isHierarchyRoot() {
+        // sanity check - :Nothing is never a root class
+        if (equals( getProfile().NOTHING() )) {
+            return false;
+        }
+
         // the only super-classes of a root class are the various aliases
         // of Top, or itself
         ExtendedIterator i = null;
