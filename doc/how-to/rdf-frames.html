@@ -130,20 +130,20 @@
 
 <p>For more complex class expressions in the domain, we look to see what simple
   domain constraints are entailed. For example, a domain constraint
-  <code>A&nbsp;&cap;&nbsp;B</code> (i.e. &quot;A intersection B&quot;) 
+  <code>A&nbsp;&cap;&nbsp;B</code> (i.e. &quot;A intersection B&quot;)
   for property <code>p</code>
   entails that both <code>p&nbsp;rdfs:domain&nbsp;A</code> and <code>p&nbsp;rdfs:domain&nbsp;B</code>
   are true. However, the properties of neither <code>A</code> nor <code>B</code>
   will include <code>p</code>. To see this, suppose we have a resource
   <code>x</code> that we already know is of type <code>A</code>, and a statement
   <code>x&nbsp;p&nbsp;y</code>. This entails <code>x&nbsp;rdf:type&nbsp;A</code>
-  which we already know, but also <code>x&nbsp;rdf:type&nbsp;B</code>. So 
+  which we already know, but also <code>x&nbsp;rdf:type&nbsp;B</code>. So
   information is added, even if we know that <code>x</code> is an instance <code>A</code>,
   so <code>p</code> is not a property of <code>A</code>. The symmetrical argument
   holds for <code>p</code> not being a property of <code>B</code>.
 </p><p>
   However, if the domain of <code>p</code> is
-  <code>A&nbsp;&cup;&nbsp;B</code> (i.e. &quot;A union B&quot;), 
+  <code>A&nbsp;&cup;&nbsp;B</code> (i.e. &quot;A union B&quot;),
   then both <code>A</code> and <code>B</code>
   will have <code>p</code> as a property, since an occurrence of, say
   <code>x&nbsp;p&nbsp;y</code> does not allow us to conclude that either
@@ -176,7 +176,7 @@
   about the individuals they are applied to. Put another way, the domain of a
   property, if unspecified, is either <code>rdfs:Resource</code> or <code>owl:Thing</code>,
   depending on the ontology language. These are simply the types that all resources
-  have by default. Therefore, every class has all of the global properties as one 
+  have by default. Therefore, every class has all of the global properties as one
   of the properties of the class.</p>
 <p>A commonly used idiom in some OWL ontologies is to use <em>Restrictions</em>
   to create an association between a class and the properties of instances
@@ -195,18 +195,18 @@
 </pre>
 
 <p>This approach shows the intent of the ontology designer that <code>Person</code>
-  instances have <code>familyName</code> properties. 
+  instances have <code>familyName</code> properties.
   We do regard <code>familyName</code> as one of
-  the <em>properties of</em> <code>Person</code>, but only because of the 
+  the <em>properties of</em> <code>Person</code>, but only because of the
   global properties principle. Unless a domain constraint is also specified for
   <code>familyName</code>, it will appear as one of the properties of classes
   other than <code>Person</code>.
   <strong>Note that this is a behaviour change from versions of
-    Jena prior to release 2.2</strong>. Prior to this release, Jena used a 
-    heuristic method to attempt to associate restriction properties with the 
+    Jena prior to release 2.2</strong>. Prior to this release, Jena used a
+    heuristic method to attempt to associate restriction properties with the
     classes sub-classing that restriction. Since there were problems with
     precisely defining the heuristic, and ensuring correct behaviour (especially
-    with inference models), we have dropped the use of this heuristic from Jena 
+    with inference models), we have dropped the use of this heuristic from Jena
     2.2 onwards.
   </p>
 
@@ -218,6 +218,7 @@
 <pre>
   OntClass.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#listDeclaredProperties()">listDeclaredProperties</a>();
   OntClass.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#listDeclaredProperties(boolean)">listDeclaredProperties</a>( boolean direct );
+  OntClass.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#hasDeclaredProperty(Property,boolean)">hasDeclaredProperty</a>( Property prop, boolean direct );
   OntProperty.<a href="../javadoc/com/hp/hpl/jena/ontology/OntProperty.html#listDeclaringClasses()">listDeclaringClasses</a>();
   OntProperty.<a href="../javadoc/com/hp/hpl/jena/ontology/OntClass.html#listDeclaringClasses(boolean)">listDeclaringClasses</a>( boolean direct );
 </pre>
@@ -225,15 +226,15 @@
 <p>All of the above API methods return a Jena
   <a href="../javadoc/com/hp/hpl/jena/util/ExtendedIterator.html"><code>ExtendedIterator</code></a>. </p>
 
-<p><strong>Note a change from the Jena 2.1 interface:</strong> the 
+<p><strong>Note a change from the Jena 2.1 interface:</strong> the
   optional Boolean parameter on <code>listDeclaredProperties</code> has
-  changed name from <code>all</code> (Jena 2.1 and earlier) to 
+  changed name from <code>all</code> (Jena 2.1 and earlier) to
   <code>direct</code> (Jena 2.2 and later). The meaning of the parameter
   has also changed: <code>all</code> was intended to simulate some reasoning
   steps in the absence of a reasoner, whereas <code>direct</code> is used
   to restrict the associations to only the local associations. See
   more on <a href="../ontology/index.html#direct_relationships">direct associations</a>.</p>
-  
+
 <p>A further difference from Jena 2.1 is that the models that are constructed without
   reasoners perform only very limited simulation of the inference closure of the
   model. Users
@@ -291,6 +292,6 @@
 
   <hr />
 
-<p><small>CVS $Id: rdf-frames.html,v 1.4 2005-04-07 13:24:16 ian_dickinson Exp $</small></p>
+<p><small>CVS $Id: rdf-frames.html,v 1.5 2005-04-11 16:42:23 ian_dickinson Exp $</small></p>
 </body>
 </html>
