@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: DAML_OILLegacyProfile.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.3 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:06:17 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-04-11 16:22:49 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -45,7 +45,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DAML_OILLegacyProfile.java,v 1.2 2005-02-21 12:06:17 andy_seaborne Exp $
+ * @version CVS $Id: DAML_OILLegacyProfile.java,v 1.3 2005-04-11 16:22:49 ian_dickinson Exp $
  */
 public class DAML_OILLegacyProfile
     extends AbstractProfile
@@ -63,7 +63,7 @@ public class DAML_OILLegacyProfile
 
     /** Model to hold the vocabulary resources only */
     private Model m_vocabModel = ModelFactory.createDefaultModel();
-    
+
     // class resources
     private Resource m_class                        = m_vocabModel.createResource( DAML_OIL.Class.getURI()                     );
     private Resource m_restriction                  = m_vocabModel.createResource( DAML_OIL.Restriction.getURI()               );
@@ -82,10 +82,10 @@ public class DAML_OILLegacyProfile
     private Resource m_deprecatedProperty           = null;
     private Resource m_annotationProperty           = null;
     private Resource m_ontologyProperty             = null;
-    private Resource m_list                         = m_vocabModel.createResource( DAML_OIL.List.getURI()                      );                     
+    private Resource m_list                         = m_vocabModel.createResource( DAML_OIL.List.getURI()                      );
     private Resource m_nil                          = m_vocabModel.createResource( DAML_OIL.nil.getURI()                       );
     private Resource m_datarange                    = null;
-    
+
     private Property m_equivalentProperty           = m_vocabModel.createProperty( DAML_OIL.samePropertyAs.getNameSpace(),          DAML_OIL.samePropertyAs.getLocalName() );
     private Property m_equivalentClass              = m_vocabModel.createProperty( DAML_OIL.sameClassAs.getNameSpace(),             DAML_OIL.sameClassAs.getLocalName() );
     private Property m_disjointWith                 = m_vocabModel.createProperty( DAML_OIL.disjointWith.getNameSpace(),            DAML_OIL.disjointWith.getLocalName() );
@@ -132,12 +132,12 @@ public class DAML_OILLegacyProfile
      * <p>
      * Answer the string that is the namespace prefix for this vocabulary
      * </p>
-     * 
+     *
      * @return The namespace prefix <code>http://www.daml.org/2001/03/daml+oil#</code>
      */
     public static String _NAMESPACE() {             return "http://www.daml.org/2001/03/daml+oil#"; }
-    
-    
+
+
     public String   NAMESPACE() {                   return DAML_OILProfile._NAMESPACE(); }
 
     public Resource CLASS() {                       return m_class; }
@@ -160,7 +160,7 @@ public class DAML_OILLegacyProfile
     public Resource LIST() {                        return m_list; }
     public Resource NIL() {                         return m_nil; }
     public Resource DATARANGE() {                   return m_datarange; }
-    
+
     public Property EQUIVALENT_PROPERTY() {         return m_equivalentProperty; }
     public Property EQUIVALENT_CLASS() {            return m_equivalentClass; }
     public Property DISJOINT_WITH() {               return m_disjointWith; }
@@ -194,9 +194,9 @@ public class DAML_OILLegacyProfile
     public Property MAX_CARDINALITY_Q() {           return m_maxCardinalityQ; }
     public Property CARDINALITY_Q() {               return m_cardinalityQ; }
     public Property HAS_CLASS_Q() {                 return m_hasClassQ; }
-    
 
-    // Annotations    
+
+    // Annotations
     public Property VERSION_INFO() {                return m_versionInfo; }
     public Property LABEL() {                       return RDFS.label; }
     public Property COMMENT() {                     return RDFS.comment; }
@@ -219,8 +219,8 @@ public class DAML_OILLegacyProfile
             {DAML_OIL.isDefinedBy,                  RDFS.isDefinedBy},
         };
     }
-    
-    /** There are no first-class axioms in DAML */ 
+
+    /** There are no first-class axioms in DAML */
     public Iterator getAxiomTypes() {
         return Arrays.asList(
             new Resource[] {
@@ -235,7 +235,7 @@ public class DAML_OILLegacyProfile
             }
         ).iterator();
     }
-    
+
     public Iterator getClassDescriptionTypes() {
         return Arrays.asList(
             new Resource[] {
@@ -249,25 +249,25 @@ public class DAML_OILLegacyProfile
 
     /**
      * <p>
-     * Answer true if the given graph supports a view of this node as the given 
+     * Answer true if the given graph supports a view of this node as the given
      * language element, according to the semantic constraints of the profile.
      * If strict checking on the ontology model is turned off, this check is
      * skipped.
      * </p>
-     * 
+     *
      * @param n A node to test
      * @param g The enhanced graph containing <code>n</code>, which is assumed to
      * be an {@link OntModel}.
      * @param type A class indicating the facet that we are testing against.
-     * @return True if strict checking is off, or if <code>n</code> can be 
+     * @return True if strict checking is off, or if <code>n</code> can be
      * viewed according to the facet resource <code>res</code>
      */
     public boolean isSupported( Node n, EnhGraph g, Class type ) {
         if (g instanceof OntModel) {
             OntModel m = (OntModel) g;
-            
+
             if (type == null) {
-                // if the facet resource is null, the facet is not in this profile so 
+                // if the facet resource is null, the facet is not in this profile so
                 // we automatically return false;
                 return false;
             }
@@ -278,8 +278,8 @@ public class DAML_OILLegacyProfile
             else {
                 // lookup the profile check for this resource
                 SupportsCheck check = (SupportsCheck) s_supportsChecks.get( type );
-                
-                return (check == null)  || check.doCheck( n, g );  
+
+                return (check == null)  || check.doCheck( n, g );
             }
         }
         else {
@@ -297,9 +297,9 @@ public class DAML_OILLegacyProfile
     public String getLabel() {
         return "DAML+OIL";
     }
-    
-    
-    
+
+
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -315,20 +315,23 @@ public class DAML_OILLegacyProfile
             return true;
         }
     }
-    
-    
+
+
     // Table of check data
     //////////////////////
-    
+
     private static Object[][] s_supportsCheckTable = new Object[][] {
         // Resource (key),              check method
         {  OntClass.class,              new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Class.asNode() ) ||
-                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() ) || 
+                                                       g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() ) ||
                                                        g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
+                                                       // common cases we should support
                                                        n.equals( DAML_OIL.Thing.asNode() ) ||
-                                                       n.equals( DAML_OIL.Nothing.asNode() )
+                                                       n.equals( DAML_OIL.Nothing.asNode() ) ||
+                                                       g.asGraph().contains( Node.ANY, DAML_OIL.domain.asNode(), n ) ||
+                                                       g.asGraph().contains( Node.ANY, DAML_OIL.range.asNode(), n )
                                                        ;
                                             }
                                         }
@@ -437,8 +440,8 @@ public class DAML_OILLegacyProfile
         {  MaxCardinalityRestriction.class,   new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), DAML_OIL.Restriction.asNode() ) &&
-                                                       containsSome( g, n, DAML_OIL.maxCardinality ) && 
-                                                       containsSome( g, n, DAML_OIL.onProperty ); 
+                                                       containsSome( g, n, DAML_OIL.maxCardinality ) &&
+                                                       containsSome( g, n, DAML_OIL.onProperty );
                                             }
                                         }
         },
@@ -480,17 +483,17 @@ public class DAML_OILLegacyProfile
     };
 
     /* just to avoid having to decorate all the calls above */
-    
+
     public static boolean  containsSome( EnhGraph g, Node n, Property p ) {
         return AbstractProfile.containsSome( g, n, p );
     }
-    
+
     // Static variables
     //////////////////////////////////
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
     protected static HashMap s_supportsChecks = new HashMap();
-    
+
     static {
         // initialise the map of supports checks from a table of static data
         for (int i = 0;  i < s_supportsCheckTable.length;  i++) {

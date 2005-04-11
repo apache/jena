@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22-Jun-2003
  * Filename           $RCSfile: RDFSProfile.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:06:52 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-04-11 16:22:49 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -42,9 +42,9 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: RDFSProfile.java,v 1.9 2005-02-21 12:06:52 andy_seaborne Exp $
+ * @version CVS $Id: RDFSProfile.java,v 1.10 2005-04-11 16:22:49 ian_dickinson Exp $
  */
-public class RDFSProfile 
+public class RDFSProfile
     extends AbstractProfile
 {
     // Constants
@@ -84,7 +84,7 @@ public class RDFSProfile
     public Resource LIST() {                        return RDF.List; }
     public Resource NIL() {                         return RDF.nil; }
     public Resource DATARANGE() {                   return null; }
-    
+
 
     public Property EQUIVALENT_PROPERTY() {         return null; }
     public Property EQUIVALENT_CLASS() {            return null; }
@@ -120,21 +120,21 @@ public class RDFSProfile
     public Property CARDINALITY_Q() {               return null; }
     public Property HAS_CLASS_Q() {                 return null; }
 
-    // Annotations    
+    // Annotations
     public Property VERSION_INFO() {                return null; }
     public Property LABEL() {                       return RDFS.label; }
     public Property COMMENT() {                     return RDFS.comment; }
     public Property SEE_ALSO() {                    return RDFS.seeAlso; }
     public Property IS_DEFINED_BY() {               return RDFS.isDefinedBy; }
-    
-    
+
+
     protected Resource[][] aliasTable() {
         return new Resource[][] {
             {}
         };
     }
-    
-    /** The only first-class axiom type in OWL is AllDifferent */ 
+
+    /** The only first-class axiom type in OWL is AllDifferent */
     public Iterator getAxiomTypes() {
         return Arrays.asList(
             new Resource[] {
@@ -146,14 +146,14 @@ public class RDFSProfile
     public Iterator getAnnotationProperties() {
         return Arrays.asList(
             new Resource[] {
-                RDFS.label, 
+                RDFS.label,
                 RDFS.seeAlso,
                 RDFS.comment,
                 RDFS.isDefinedBy
             }
         ).iterator();
     }
-    
+
     public Iterator getClassDescriptionTypes() {
         return Arrays.asList(
             new Resource[] {
@@ -164,23 +164,23 @@ public class RDFSProfile
 
     /**
      * <p>
-     * Answer true if the given graph supports a view of this node as the given 
+     * Answer true if the given graph supports a view of this node as the given
      * language element, according to the semantic constraints of the profile.
      * If strict checking on the ontology model is turned off, this check is
      * skipped.
      * </p>
-     * 
+     *
      * @param n A node to test
      * @param g The enhanced graph containing <code>n</code>, which is assumed to
      * be an {@link OntModel}.
      * @param type A class indicating the facet that we are testing against.
-     * @return True if strict checking is off, or if <code>n</code> can be 
+     * @return True if strict checking is off, or if <code>n</code> can be
      * viewed according to the facet resource <code>res</code>
      */
     public boolean isSupported( Node n, EnhGraph g, Class type ) {
         if (g instanceof OntModel) {
             OntModel m = (OntModel) g;
-            
+
             if (!m.strictMode()) {
                 // checking turned off
                 return true;
@@ -188,9 +188,9 @@ public class RDFSProfile
             else {
                 // lookup the profile check for this resource
                 SupportsCheck check = (SupportsCheck) s_supportsChecks.get( type );
-                
+
                 // a check must be defined for the test to succeed
-                return (check == null)  || check.doCheck( n, g );  
+                return (check == null)  || check.doCheck( n, g );
             }
         }
         else {
@@ -207,7 +207,7 @@ public class RDFSProfile
     public String getLabel() {
         return "RDFS";
     }
-    
+
     // Internal implementation methods
     //////////////////////////////////
 
@@ -223,17 +223,20 @@ public class RDFSProfile
             return true;
         }
     }
-    
-    
+
+
     // Table of check data
     //////////////////////
-    
+
     private static Object[][] s_supportsCheckTable = new Object[][] {
         // Resource (key),              check method
         {  OntClass.class,              new SupportsCheck() {
                                             public boolean doCheck( Node n, EnhGraph g ) {
                                                 return g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
-                                                       n.equals( RDFS.Resource.asNode() )
+                                                       // These are common cases that we should support
+                                                       n.equals( RDFS.Resource.asNode() ) ||
+                                                       g.asGraph().contains( Node.ANY, RDFS.domain.asNode(), n ) ||
+                                                       g.asGraph().contains( Node.ANY, RDFS.range.asNode(), n )
                                                        ;
                                             }
                                         }
@@ -259,7 +262,7 @@ public class RDFSProfile
 
     /** Map from resource to syntactic/semantic checks that a node can be seen as the given facet */
     protected static HashMap s_supportsChecks = new HashMap();
-    
+
     static {
         // initialise the map of supports checks from a table of static data
         for (int i = 0;  i < s_supportsCheckTable.length;  i++) {

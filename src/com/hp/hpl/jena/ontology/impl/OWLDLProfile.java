@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OWLDLProfile.java,v $
- * Revision           $Revision: 1.14 $
+ * Revision           $Revision: 1.15 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-03-16 18:55:04 $
+ * Last modified on   $Date: 2005-04-11 16:22:50 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OWLDLProfile.java,v 1.14 2005-03-16 18:55:04 ian_dickinson Exp $
+ * @version CVS $Id: OWLDLProfile.java,v 1.15 2005-04-11 16:22:50 ian_dickinson Exp $
  */
 public class OWLDLProfile
     extends OWLProfile
@@ -106,7 +106,13 @@ public class OWLDLProfile
                             OWL.Nothing.asNode().equals( n ) ||
                             g.asGraph().contains( n, RDF.type.asNode(), OWL.Class.asNode() ) ||
                             g.asGraph().contains( n, RDF.type.asNode(), OWL.Restriction.asNode() ) ||
-                            g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() );
+                            g.asGraph().contains( n, RDF.type.asNode(), RDFS.Class.asNode() ) ||
+                            // These are common cases that we should support
+                            n.equals( OWL.Thing.asNode() ) ||
+                            n.equals( OWL.Nothing.asNode() ) ||
+                            g.asGraph().contains( Node.ANY, RDFS.domain.asNode(), n ) ||
+                            g.asGraph().contains( Node.ANY, RDFS.range.asNode(), n )
+                            ;
                 }
             }
             },
