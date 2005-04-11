@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.35 $
+ * Revision           $Revision: 1.36 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-10 12:45:48 $
+ * Last modified on   $Date: 2005-04-11 14:07:35 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.35 2005-04-10 12:45:48 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.36 2005-04-11 14:07:35 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -136,6 +136,8 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     /** The ModelMaker used for creating imported models */
     protected ModelMaker importsMaker;
     
+    /** the name of the base model in the baseModelMaker, if specified */
+    protected String baseModelName;
     
     // Constructors
     //////////////////////////////////
@@ -161,8 +163,24 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
      * @param languageURI the ontology language URI (must not be null)
     */
     public OntModelSpec( ModelMaker baseMaker, ModelMaker importsMaker, OntDocumentManager docMgr, 
+            ReasonerFactory rFactory, String languageURI ) 
+        { this( null, baseMaker, importsMaker, docMgr, rFactory, languageURI ); }
+    
+    
+    /**
+     * Construct a new ontology model specification from the supplied components.
+     * @param baseModelName the name of the model in the baseModelMaker
+     * @param baseMaker the model-maker to use for the base model
+     * @param importsMaker the model-maker to use for imported models
+     * @param docMgr the document manager (null for the default manager)
+     * @param rFactory the reasoner (null for no reasoner)
+     * @param languageURI the ontology language URI (must not be null)
+    */
+    public OntModelSpec( String baseModelName, ModelMaker baseMaker, 
+            ModelMaker importsMaker, OntDocumentManager docMgr, 
             ReasonerFactory rFactory, String languageURI ) {
         super( baseMaker );
+        this.baseModelName = baseModelName;
         this.importsMaker = importsMaker == null ? ModelFactory.createMemModelMaker(): importsMaker;
         setDocumentManager( docMgr );
         setReasonerFactory( rFactory );
@@ -237,13 +255,14 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @param root the root of the sub-graph to use for the specification
     */    
     public OntModelSpec( Resource root, Model description )  { 
-        this( getBaseMaker( description, root ), getImportMaker( description, root ), getDocumentManager( description, root ),
-            getReasonerFactory( description, root ), getLanguage( description, root )  );
+        this( getBaseModelName( description, root ),
+            getBaseMaker( description, root ), 
+            getImportMaker( description, root ), 
+            getDocumentManager( description, root ),
+            getReasonerFactory( description, root ), 
+            getLanguage( description, root )  );
         
     }
-
-    // External signature methods
-    //////////////////////////////////
 
     /**
      * <p>Answer a default specification for the given language URI. This default
@@ -421,7 +440,8 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         @return an OntModel satisfying this specification
     */
     public Model createModel() {
-        return new OntModelImpl( this, maker.createModel() );
+        Model m = baseModelName == null ? maker.createModel() : maker.createModel( baseModelName );
+        return new OntModelImpl( this, m );
     }
     
     /**
@@ -461,6 +481,15 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     public static ModelMaker getBaseMaker( Model description, Resource root ) {
 	        return getMaker( description, root, JenaModelSpec.maker );
 	    }
+
+    /**
+        Answer the value of the jms:modelName property of <code>root</code>,
+        or <code>null</code> id there isn't one.
+    */
+    protected static String getBaseModelName( Model description, Resource root ) {
+        Statement s = description.getProperty( root, JenaModelSpec.modelName );
+        return s == null ? null : s.getString();
+        }
     
     /**
      	Answer a ModelMaker described by the <code>makerProperty</code> of
