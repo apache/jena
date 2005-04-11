@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            21-Jun-2003
  * Filename           $RCSfile: TestOntModel.java,v $
- * Revision           $Revision: 1.18 $
+ * Revision           $Revision: 1.19 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:07:22 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-04-11 13:55:53 $
+ *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -49,7 +49,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntModel.java,v 1.18 2005-02-21 12:07:22 andy_seaborne Exp $
+ * @version CVS $Id: TestOntModel.java,v 1.19 2005-04-11 13:55:53 jeremy_carroll Exp $
  */
 public class TestOntModel 
     extends ModelTestBase
@@ -603,120 +603,6 @@ public class TestOntModel
         OntModel om2 = ModelFactory.createOntologyModel();
         om1.add( om2 );
         }
-        
-    public void testChecker1() {
-        String NS = "http://example.org/test#";
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM, null );
-        m.createClass( NS + "A" );
-        
-        // note, just checking the process not the coverage of the syntax checker
-        List probs = new ArrayList();
-        assertEquals( "Should be owl lite", OWL.LITE_LANG, m.getOWLLanguageLevel( null ));
-        assertEquals( "Should be owl lite", OWL.LITE_LANG, m.getOWLLanguageLevel( probs ));
-        assertTrue( "should be no problems", probs.isEmpty() );
-    }
-    
-    public void testChecker2() {
-        String NS = "http://example.org/test#";
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM, null );
-        m.createClass( NS + "A" );
-        
-        // note, just checking the process not the coverage of the syntax checker
-        List probs = new ArrayList();
-        assertEquals( "Should be owl lite", OWL.LITE_LANG, m.getOWLLanguageLevel( null ));
-        assertEquals( "Should be owl lite", OWL.LITE_LANG, m.getOWLLanguageLevel( probs ));
-        assertTrue( "should be no problems", probs.isEmpty() );
-    }
-    
-    public void testChecker3() {
-        String NS = "http://example.org/test#";
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM, null );
-        
-        // contains non owl-lite class exprs
-        m.read( "file:testing/ontology/owl/ClassExpression/test-boolean.rdf");
-        
-        // note, just checking the process not the coverage of the syntax checker
-        List probs = new ArrayList();
-        //assertEquals( "Should be owl DL", OWL.DL_LANG, m.getOWLLanguageLevel( null ));
-        assertEquals( "Should be owl DL", OWL.DL_LANG, m.getOWLLanguageLevel( probs ));
-        assertTrue( "should be some problems", !probs.isEmpty() );
-    }
-    
-    public void testChecker4() {
-        String NS = "http://example.org/test#";
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM, null );
-        
-        // contains non owl-lite class exprs
-        m.read( "file:testing/ontology/owl/ClassExpression/test-boolean.rdf");
-        
-        // note, just checking the process not the coverage of the syntax checker
-        List probs = new ArrayList();
-        assertEquals( "Should be owl DL", OWL.DL_LANG, m.getOWLLanguageLevel( null ));
-        assertEquals( "Should be owl DL", OWL.DL_LANG, m.getOWLLanguageLevel( probs ));
-        assertTrue( "should be no problems", probs.isEmpty() );
-    }
-    
-    public void testChecker5() {
-        String NS = "http://example.org/test#";
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM, null );
-        
-        OntClass A = m.createClass( NS + "A" );
-        ObjectProperty p = m.createObjectProperty( NS + "p" );
-        Resource B = m.createResource( NS + "B" );
-        m.createAllValuesFromRestriction( null, p, B );
-        
-        // note, just checking the process not the coverage of the syntax checker
-        List probs = new ArrayList();
-        assertEquals( "Should be owl Full", OWL.FULL_LANG, m.getOWLLanguageLevel( null ));
-        assertEquals( "Should be owl Full", OWL.FULL_LANG, m.getOWLLanguageLevel( probs ));
-        assertTrue( "should be problems", !probs.isEmpty() );
-    }
-    
-    public void testChecker6() {
-        String NS = "http://example.org/test#";
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM, null );
-        
-        OntClass A = m.createClass( NS + "A" );
-        ObjectProperty p = m.createObjectProperty( NS + "p" );
-        Resource B = m.createResource( NS + "B" );
-        m.createAllValuesFromRestriction( null, p, B );
-        
-        // note, just checking the process not the coverage of the syntax checker
-        List probs = new ArrayList();
-        assertEquals( "Should be owl Full", OWL.FULL_LANG, m.getOWLLanguageLevel( null ));
-        assertEquals( "Should be owl Full", OWL.FULL_LANG, m.getOWLLanguageLevel( probs ));
-        assertTrue( "should be problems", !probs.isEmpty() );
-    }
-    
-    public void testChecker7() {
-        String NS = "http://example.org/test#";
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
-        
-        OntClass A = m.createClass( NS + "A" );
-        ObjectProperty p = m.createObjectProperty( NS + "p" );
-        Resource B = m.createResource( NS + "B" );
-        m.createAllValuesFromRestriction( null, p, B );
-        
-        // note, just checking the process not the coverage of the syntax checker
-        List probs = new ArrayList();
-        assertEquals( "Should be owl Full", OWL.FULL_LANG, m.getOWLLanguageLevel( null ));
-        assertEquals( "Should be owl Full", OWL.FULL_LANG, m.getOWLLanguageLevel( probs ));
-        assertTrue( "should be problems", !probs.isEmpty() );
-    }
-    
-    public void testChecker8() {
-        boolean ex = false;
-        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM, null );
-        
-        try {
-            m.getOWLLanguageLevel( null );
-        }
-        catch (OntologyException e) {
-            ex = true;
-        }
-        
-        assertTrue( "Should have raised exception to get owl lang level on non-owl model", ex );
-    }
     
     public void testRead() {
         String base0 = "http://example.com/test0"; 

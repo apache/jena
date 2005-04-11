@@ -3,32 +3,47 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.ontology.tidy.impl;
-import com.hp.hpl.jena.graph.*;
-
+package com.hp.hpl.jena.shared;
 
 /**
+ * An Exception indicating that Jena is not working
+ * because it is not correctly configured. For example,
+ * the classpath is not set up correctly for the desired
+ * functionality.
  * @author Jeremy J. Carroll
  *
  */
-abstract public class MultipleTripleProblem extends MonotonicProblem {
-    public MultipleTripleProblem(String msg){
-        super(msg);
+public class ConfigException extends JenaException {
+
+    /**
+     * @param message
+     */
+    public ConfigException(String message) {
+        super(message);
     }
 
-    /** Not part of API */
-    abstract public Node getNode1();
+    /**
+     * 
+     */
+    public ConfigException() {
+        super();
+    }
 
-    /** Not part of API */
-    abstract public Node getNode2();
-    
-    void setGraph(Graph g) {
-        problem = g;
+    /**
+     * @param cause
+     */
+    public ConfigException(Throwable cause) {
+        super("Jena not correctly configured: ",cause);
     }
-    private Graph problem;
-    public Graph getMinimalGraph() {
-        return problem;
+
+    /**
+     * @param message
+     * @param cause
+     */
+    public ConfigException(String message, Throwable cause) {
+        super(message, cause);
     }
+
 }
 
 
