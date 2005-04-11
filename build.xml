@@ -242,7 +242,7 @@
      doctitle="${Name} Framework"
      Public="true"
      Use="true"
-     bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004 Hewlett-Packard Development Company, LP"
+     bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP"
      additionalparam="-breakiterator"
      >
 
@@ -326,7 +326,7 @@
      windowtitle="${Name} Framework"
      doctitle="${Name} Framework"
      overview="${src.dir}/link2readme.html"
-     bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004 Hewlett-Packard. All Rights Reserved."
+     bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard. All Rights Reserved."
      packagenames="com.hp.hpl.*"
      additionalparam="-breakiterator"
      Use="true"
