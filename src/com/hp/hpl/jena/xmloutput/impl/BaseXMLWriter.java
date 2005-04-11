@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.43 2005-04-03 20:35:36 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.44 2005-04-11 11:56:20 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -50,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.43 $' Date='$Date: 2005-04-03 20:35:36 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.44 $' Date='$Date: 2005-04-11 11:56:20 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -87,10 +87,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
     abstract void writeBody
         ( Model mdl, PrintWriter pw, String baseURI, boolean inclXMLBase );
                 
-	static {
-		ARP.initEncoding();
-	}
-    
+	
     private String attributeQuoteChar ="\"";
     
     protected String q(String s) {
@@ -470,12 +467,7 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			String javaEnc = ((OutputStreamWriter) out).getEncoding();
 			// System.err.println(javaEnc);
 			if (!(javaEnc.equals("UTF8") || javaEnc.equals("UTF-16"))) {
-				//		System.out.println(javaEnc);
-				String xEnc = EncodingMap.getJava2IANAMapping(javaEnc);
 				String ianaEnc = Charset.forName(javaEnc).name();
-				if (xEnc != null && !ianaEnc.equalsIgnoreCase(xEnc)) {
-				    logger.warn("xEnc: "+xEnc+ " IanaEnc: "+ ianaEnc );
-				}
 				decl = "<?xml version="+q("1.0")+" encoding=" + q(ianaEnc) + "?>";
 			}
 		}

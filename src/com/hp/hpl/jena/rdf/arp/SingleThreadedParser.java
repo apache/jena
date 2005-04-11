@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UTFDataFormatException;
+import java.nio.charset.Charset;
 
 import org.apache.xerces.parsers.SAXParser;
 import org.apache.xerces.parsers.StandardParserConfiguration;
@@ -163,12 +164,8 @@ class SingleThreadedParser extends XMLHandler {
 			return new XMLInputSource(publicID, systemID, systemID, str, null);
 		} else if (str == null) {
 			if (rdr instanceof InputStreamReader) {
-				String enc = ((InputStreamReader) rdr).getEncoding();
-				readerXMLEncoding = EncodingMap.getJava2IANAMapping(enc);
-				if (readerXMLEncoding == null)
-					readerXMLEncoding = enc;
-				//     System.err.println("readerXMLEncoding = " +
-				// readerXMLEncoding);
+				String javaEnc = ((InputStreamReader) rdr).getEncoding();
+				readerXMLEncoding = Charset.forName(javaEnc).name();
 			}
 			return new XMLInputSource(publicID, systemID, systemID, rdr, null);
 		}
@@ -187,7 +184,7 @@ class SingleThreadedParser extends XMLHandler {
 				return;
 			}
 			xmlEncoding = e;
-			if (readerXMLEncoding != null && !readerXMLEncoding.equals(e)) {
+			if (readerXMLEncoding != null && !readerXMLEncoding.equalsIgnoreCase(e)) {
 				try {
 					this.putWarning(
 						WARN_ENCODING_MISMATCH,
