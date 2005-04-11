@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.7 2005-04-08 17:38:51 ian_dickinson Exp $
+ * $Id: LPTopGoalIterator.java,v 1.8 2005-04-11 11:04:49 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import org.apache.commons.logging.LogFactory;
  * inference graph if the iterator hits the end of the result set.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-04-08 17:38:51 $
+ * @version $Revision: 1.8 $ on $Date: 2005-04-11 11:04:49 $
  */
 public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */
@@ -60,7 +60,10 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
      * Find the next result in the goal state and put it in the
      * lookahead buffer.
      */
-    private void moveForward() {
+    private synchronized void moveForward() {
+        if (interpreter == null || interpreter.getEngine() == null) {
+            throw new ConcurrentModificationException("Call to closed iterator");
+        }
         synchronized (interpreter.getEngine()) {
             // LogFactory.getLog( getClass() ).debug( "Entering moveForward sync block on " + interpreter.getEngine() );
 
@@ -143,7 +146,7 @@ public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext
     /**
      * @see com.hp.hpl.jena.util.iterator.ClosableIterator#close()
      */
-    public void close() {
+    public synchronized void close() {
         if (interpreter != null) {
             synchronized (interpreter.getEngine()) {
                 // LogFactory.getLog( getClass() ).debug( "Entering close sync block on " + interpreter.getEngine() );
