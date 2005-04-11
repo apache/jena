@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPBRuleEngine.java,v 1.8 2005-03-23 14:04:24 der Exp $
+ * $Id: LPBRuleEngine.java,v 1.9 2005-04-11 15:53:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import java.util.*;
  * of the LPInterpreter - one per query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-03-23 14:04:24 $
+ * @version $Revision: 1.9 $ on $Date: 2005-04-11 15:53:10 $
  */
 public class LPBRuleEngine {
     
@@ -53,9 +53,9 @@ public class LPBRuleEngine {
     protected HashMap tabledGoals = new HashMap();
     
     /** Set of generators waiting to be run */
-//    protected LinkedList agenda = new LinkedList();
+    protected LinkedList agenda = new LinkedList();
 //    protected List agenda = new ArrayList();
-    protected Collection agenda = new HashSet();
+//    protected Collection agenda = new HashSet();
     
     /** Optional profile of number of time each rule is entered, set to non-null to profile */
     protected HashMap profile;
@@ -295,12 +295,12 @@ public class LPBRuleEngine {
 //                System.out.println("Cycled " + this + ", " + count);
                 return;
             } 
-            Iterator ai = agenda.iterator();
-            LPAgendaEntry next = (LPAgendaEntry) ai.next();
-            ai.remove();
-//            int chosen = agenda.size() - 1;
-//            LPAgendaEntry next = (LPAgendaEntry) agenda.get(chosen);
-//            agenda.remove(chosen);
+//            Iterator ai = agenda.iterator();
+//            LPAgendaEntry next = (LPAgendaEntry) ai.next();
+//            ai.remove();
+            int chosen = agenda.size() - 1;
+            LPAgendaEntry next = (LPAgendaEntry) agenda.get(chosen);
+            agenda.remove(chosen);
 //            System.out.println("  pumping entry " + next);
             next.pump();
             count ++;
