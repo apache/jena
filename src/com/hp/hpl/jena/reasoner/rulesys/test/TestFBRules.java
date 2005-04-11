@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.38 2005-02-21 12:18:11 andy_seaborne Exp $
+ * $Id: TestFBRules.java,v 1.39 2005-04-11 11:27:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.ClosedException;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
-import com.hp.hpl.jena.util.ModelLoader;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.vocabulary.*;
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.38 $ on $Date: 2005-02-21 12:18:11 $
+ * @version $Revision: 1.39 $ on $Date: 2005-04-11 11:27:04 $
  */
 public class TestFBRules extends TestCase {
     
@@ -852,7 +852,7 @@ public class TestFBRules extends TestCase {
         boolean prior = JenaParameters.enableFilteringOfHiddenInfNodes;
         try {
             JenaParameters.enableFilteringOfHiddenInfNodes = false;
-            Model premisesM = ModelLoader.loadModel("file:testing/wg/equivalentClass/premises004.rdf");
+            Model premisesM = FileManager.get().loadModel("file:testing/wg/equivalentClass/premises004.rdf");
             Graph data = premisesM.getGraph();
             Reasoner reasoner =  new OWLFBRuleReasoner(OWLFBRuleReasonerFactory.theInstance());
             InfGraph infgraph = reasoner.bind(data);

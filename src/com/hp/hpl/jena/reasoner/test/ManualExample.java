@@ -5,14 +5,14 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ManualExample.java,v 1.8 2005-02-21 12:18:15 andy_seaborne Exp $
+ * $Id: ManualExample.java,v 1.9 2005-04-11 11:29:10 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.util.ModelLoader;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
@@ -24,7 +24,7 @@ import java.util.*;
  * Some code samples from the user manual.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-02-21 12:18:15 $
+ * @version $Revision: 1.9 $ on $Date: 2005-04-11 11:29:10 $
  */
 public class ManualExample {
 
@@ -59,7 +59,7 @@ public class ManualExample {
     /** illustrate validation */
     public void test2(String fname) {
         System.out.println("Testing " + fname);
-        Model data = ModelLoader.loadModel(fname);
+        Model data = FileManager.get().loadModel(fname);
         InfModel infmodel = ModelFactory.createRDFSModel(data);
         ValidityReport validity = infmodel.validate();
         if (validity.isValid()) {

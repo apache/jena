@@ -5,13 +5,13 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestOWLConsistency.java,v 1.4 2005-02-21 12:18:12 andy_seaborne Exp $
+ * $Id: TestOWLConsistency.java,v 1.5 2005-04-11 11:27:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
-import com.hp.hpl.jena.util.ModelLoader;
+import com.hp.hpl.jena.util.FileManager;
 
 //import java.util.*;
 
@@ -22,7 +22,7 @@ import junit.framework.TestSuite;
  * Test the preliminary OWL validation rules.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:18:12 $
+ * @version $Revision: 1.5 $ on $Date: 2005-04-11 11:27:04 $
  */
 public class TestOWLConsistency extends TestCase {
      
@@ -56,7 +56,7 @@ public class TestOWLConsistency extends TestCase {
      */
     public Reasoner makeReasoner() {
         if (reasonerCache == null) {
-            Model tbox = ModelLoader.loadModel(testTbox);
+            Model tbox = FileManager.get().loadModel(testTbox);
             reasonerCache = ReasonerRegistry.getOWLReasoner().bindSchema(tbox.getGraph());
         }
         return reasonerCache;
@@ -109,7 +109,7 @@ public class TestOWLConsistency extends TestCase {
      */
     private boolean doTestOn(String dataFile) {
 //        System.out.println("Test: " + dataFile);
-        Model data = ModelLoader.loadModel(dataFile);
+        Model data = FileManager.get().loadModel(dataFile);
         InfModel infmodel = ModelFactory.createInfModel(makeReasoner(), data);
         ValidityReport reportList = infmodel.validate();
         /* Debug only

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.32 2005-04-08 14:20:48 der Exp $
+ * $Id: TestBugs.java,v 1.33 2005-04-11 11:27:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,7 +13,6 @@ import java.io.*;
 
 import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.ontology.daml.DAMLModel;
 import com.hp.hpl.jena.rdf.model.*;
@@ -34,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2005-04-08 14:20:48 $
+ * @version $Revision: 1.33 $ on $Date: 2005-04-11 11:27:04 $
  */
 public class TestBugs extends TestCase {
 
@@ -286,7 +285,7 @@ public class TestBugs extends TestCase {
      * Test looping on recursive someValuesFrom.
      */
     public void hiddenTestOWLLoop() {
-        Model data = ModelLoader.loadModel("file:testing/reasoners/bugs/loop.owl");
+        Model data = FileManager.get().loadModel("file:testing/reasoners/bugs/loop.owl");
         InfModel infmodel = ModelFactory.createInfModel(ReasonerRegistry.getOWLReasoner(), data);
         ((FBRuleInfGraph)infmodel.getGraph()).setTraceOn(true);
         String baseURI = "http://jena.hpl.hp.com/eg#";
@@ -319,7 +318,7 @@ public class TestBugs extends TestCase {
      * Test bug with leaking variables which results in an incorrect "range = Nothing" deduction.
      */
     public void testRangeBug() {
-        Model model = ModelLoader.loadModel("file:testing/reasoners/bugs/rangeBug.owl");
+        Model model = FileManager.get().loadModel("file:testing/reasoners/bugs/rangeBug.owl");
         Model m = ModelFactory.createDefaultModel();
         Reasoner r = ReasonerRegistry.getOWLReasoner();
         InfModel omodel = ModelFactory.createInfModel(r, model);
@@ -334,7 +333,7 @@ public class TestBugs extends TestCase {
      * Test change of RDF specs to allow plain literals w/o lang and XSD string to be the same.
      */
     public void testLiteralBug() {
-        Model model = ModelLoader.loadModel("file:testing/reasoners/bugs/dtValidation.owl");
+        Model model = FileManager.get().loadModel("file:testing/reasoners/bugs/dtValidation.owl");
         Model m = ModelFactory.createDefaultModel();
         Reasoner r = ReasonerRegistry.getOWLReasoner();
         InfModel infmodel = ModelFactory.createInfModel(r, model);
@@ -384,8 +383,8 @@ public class TestBugs extends TestCase {
      */
     public void testBindSchemaValidate() {
         Reasoner reasoner = ReasonerRegistry.getOWLReasoner();
-        Model schema = ModelLoader.loadModel("file:testing/reasoners/bugs/sbug.owl");
-        Model data = ModelLoader.loadModel("file:testing/reasoners/bugs/sbug.rdf");
+        Model schema = FileManager.get().loadModel("file:testing/reasoners/bugs/sbug.owl");
+        Model data = FileManager.get().loadModel("file:testing/reasoners/bugs/sbug.rdf");
         
         // Union version
         InfModel infu = ModelFactory.createInfModel(reasoner, data.union(schema));

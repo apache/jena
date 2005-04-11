@@ -5,7 +5,7 @@
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPTopGoalIterator.java,v 1.8 2005-04-11 11:04:49 der Exp $
+ * $Id: LPTopGoalIterator.java,v 1.9 2005-04-11 11:29:12 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -15,15 +15,13 @@ import com.hp.hpl.jena.util.iterator.ClosableIterator;
 
 import java.util.*;
 
-import org.apache.commons.logging.LogFactory;
-
 /**
  * Wraps up the results an LP rule engine instance into a conventional
  * iterator. Ensures that the engine is closed and detached from the
  * inference graph if the iterator hits the end of the result set.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-04-11 11:04:49 $
+ * @version $Revision: 1.9 $ on $Date: 2005-04-11 11:29:12 $
  */
 public class LPTopGoalIterator implements ClosableIterator, LPInterpreterContext {
     /** The next result to be returned, or null if we have finished */

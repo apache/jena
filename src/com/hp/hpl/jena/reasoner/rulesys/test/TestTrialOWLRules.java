@@ -5,14 +5,14 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTrialOWLRules.java,v 1.10 2005-02-21 12:18:14 andy_seaborne Exp $
+ * $Id: TestTrialOWLRules.java,v 1.11 2005-04-11 11:27:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.util.ModelLoader;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
 
@@ -27,7 +27,7 @@ import java.util.*;
  * included in the master regression test suite.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-02-21 12:18:14 $
+ * @version $Revision: 1.11 $ on $Date: 2005-04-11 11:27:04 $
  */
 public class TestTrialOWLRules extends TestCase {
 
@@ -180,7 +180,7 @@ public class TestTrialOWLRules extends TestCase {
      * for use during debugging.
      */
     public static void main(String[] args) {
-        Model premises = ModelLoader.loadModel("file:testing/wg/someValuesFrom/premises001.rdf");
+        Model premises = FileManager.get().loadModel("file:testing/wg/someValuesFrom/premises001.rdf");
         Reasoner reasoner = GenericRuleReasonerFactory.theInstance().create(configuration);
         InfModel conclusions = ModelFactory.createInfModel(reasoner, premises);
         

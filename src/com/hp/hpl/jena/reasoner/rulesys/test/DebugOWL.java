@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugOWL.java,v 1.29 2005-04-08 16:36:04 der Exp $
+ * $Id: DebugOWL.java,v 1.30 2005-04-11 11:26:59 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.mem.GraphMem;
 //import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.ModelLoader;
+import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.reasoner.*;
@@ -34,7 +34,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2005-04-08 16:36:04 $
+ * @version $Revision: 1.30 $ on $Date: 2005-04-11 11:26:59 $
  */
 public class DebugOWL {
 
@@ -148,7 +148,7 @@ public class DebugOWL {
      * Load a test data set from file.
      */
     public void load(String testFile) {
-        testdata = ModelLoader.loadModel(testFile).getGraph();
+        testdata = FileManager.get().loadModel(testFile).getGraph();
         schema = null;
     }
     
@@ -156,8 +156,8 @@ public class DebugOWL {
      * Load both a schema and an instance data file.
      */
     public void load(String schemaFile, String testFile) {
-        testdata = ModelLoader.loadModel(testFile).getGraph();
-        schema = ModelLoader.loadModel(schemaFile).getGraph();
+        testdata = FileManager.get().loadModel(testFile).getGraph();
+        schema = FileManager.get().loadModel(schemaFile).getGraph();
     }
     
     /**

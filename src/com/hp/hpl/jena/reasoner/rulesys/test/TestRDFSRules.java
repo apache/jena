@@ -5,13 +5,13 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFSRules.java,v 1.20 2005-02-21 12:18:14 andy_seaborne Exp $
+ * $Id: TestRDFSRules.java,v 1.21 2005-04-11 11:27:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.test.*;
-import com.hp.hpl.jena.util.ModelLoader;
+import com.hp.hpl.jena.util.FileManager;
 // import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  * <p> The tests themselves have been replaced by an updated version
  * of the top level TestRDFSReasoners but this file is maintained for now since
  * the top level timing test can sometimes be useful. </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.20 $ on $Date: 2005-02-21 12:18:14 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.21 $ on $Date: 2005-04-11 11:27:04 $ */
 public class TestRDFSRules extends TestCase {   
     /** Base URI for the test names */
     public static final String NAMESPACE = "http://www.hpl.hp.com/semweb/2003/query_tester/";
@@ -133,8 +133,8 @@ public class TestRDFSRules extends TestCase {
      */
     public static void main(String[] args) {
         try {
-            Model tbox = ModelLoader.loadModel("testing/reasoners/rdfs/timing-tbox.rdf");
-            Model data = ModelLoader.loadModel("testing/reasoners/rdfs/timing-data.rdf");
+            Model tbox = FileManager.get().loadModel("testing/reasoners/rdfs/timing-tbox.rdf");
+            Model data = FileManager.get().loadModel("testing/reasoners/rdfs/timing-data.rdf");
             Reasoner rdfsFBRule = RDFSFBRuleReasonerFactory.theInstance().create(null);
             Reasoner rdfs1    = RDFSReasonerFactory.theInstance().create(null);
             Reasoner rdfsFinal    = RDFSRuleReasonerFactory.theInstance().create(null);

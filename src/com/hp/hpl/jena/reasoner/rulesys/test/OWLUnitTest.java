@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLUnitTest.java,v 1.9 2005-02-21 12:18:08 andy_seaborne Exp $
+ * $Id: OWLUnitTest.java,v 1.10 2005-04-11 11:27:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import com.hp.hpl.jena.rdf.model.ResourceF;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
@@ -24,7 +23,7 @@ import java.io.IOException;
  * Version of the OWL unit tests used during development of the mini ruleset.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:18:08 $
+ * @version $Revision: 1.10 $ on $Date: 2005-04-11 11:27:04 $
  */
 public class OWLUnitTest extends TestCase {
     

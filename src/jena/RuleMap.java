@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: RuleMap.java,v 1.7 2005-04-10 14:21:36 der Exp $
+ * $Id: RuleMap.java,v 1.8 2005-04-11 11:29:11 der Exp $
  *****************************************************************/
 package jena;
 
@@ -15,10 +15,8 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.Reasoner;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.builtins.BaseBuiltin;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
-import com.hp.hpl.jena.util.PrintUtil;
 
 import jena.cmdline.*;
 import java.util.*;
@@ -41,7 +39,7 @@ import java.io.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-04-10 14:21:36 $
+ * @version $Revision: 1.8 $ on $Date: 2005-04-11 11:29:11 $
  */
 public class RuleMap {
     
