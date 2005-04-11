@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDBSpec.java,v 1.7 2005-04-10 12:45:47 chris-dollin Exp $
+  $Id: TestDBSpec.java,v 1.8 2005-04-11 15:19:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -53,7 +53,7 @@ public class TestDBSpec extends ModelTestBase
             .add( mak, JenaModelSpec.hasConnection, con )
             .add( con, JenaModelSpec.dbUser, TestPackage.M_DB_USER )
             .add( con, JenaModelSpec.dbPassword, TestPackage.M_DB_PASSWD )
-            .add( con, JenaModelSpec.dbURL, TestPackage.M_DB_URL )
+            .add( con, JenaModelSpec.dbURL, resource( TestPackage.M_DB_URL ) )
             .add( con, JenaModelSpec.dbType, dbType )
             .add( con, JenaModelSpec.dbClass, className )
             ;
@@ -77,7 +77,7 @@ public class TestDBSpec extends ModelTestBase
             .add( dbMaker, JenaModelSpec.hasConnection, con )
             .add( con, JenaModelSpec.dbUser, TestPackage.M_DB_USER )
             .add( con, JenaModelSpec.dbPassword, TestPackage.M_DB_PASSWD )
-            .add( con, JenaModelSpec.dbURL, TestPackage.M_DB_URL )
+            .add( con, JenaModelSpec.dbURL, resource( TestPackage.M_DB_URL ) )
             .add( con, JenaModelSpec.dbType, dbType )
             .add( con, JenaModelSpec.dbClass, className )
             ;

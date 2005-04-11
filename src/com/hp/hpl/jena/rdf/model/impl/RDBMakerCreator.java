@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: RDBMakerCreator.java,v 1.8 2005-04-10 12:45:50 chris-dollin Exp $
+  $Id: RDBMakerCreator.java,v 1.9 2005-04-11 15:21:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -9,7 +9,6 @@ package com.hp.hpl.jena.rdf.model.impl;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -29,7 +28,7 @@ public class RDBMakerCreator implements ModelMakerCreator
     public static IDBConnection createConnection( Model description, Resource root )
         {
         Resource connection = description.listStatements( root, JenaModelSpec.hasConnection, (RDFNode) null ).nextStatement().getResource();
-        String url = getString( description, connection, JenaModelSpec.dbURL );
+        String url = getURL( description, connection, JenaModelSpec.dbURL );
         String user = getString( description, connection, JenaModelSpec.dbUser );
         String password = getString( description, connection , JenaModelSpec.dbPassword );
         String className = getClassName( description, connection );
@@ -42,6 +41,11 @@ public class RDBMakerCreator implements ModelMakerCreator
         {
         Statement cnStatement = description.getProperty( root, JenaModelSpec.dbClass );
         return cnStatement == null ? null : cnStatement.getString();
+        }
+    
+    public static String getURL( Model description, Resource root, Property p )
+        {
+        return description.getRequiredProperty( root, p ).getResource().getURI();
         }
 
     public static String getString( Model description, Resource root, Property p )
