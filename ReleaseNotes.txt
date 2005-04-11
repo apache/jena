@@ -145,6 +145,7 @@ Post Jena 2.1 change list [up to 2.2beta]
         on the iterator from find() generated a notifyDeleteTriple event.
 
   Reasoners
+      o Added support for @prefix and @include to the Rule parser utility
       o Suppressed internal properties (rb:xsdRange etc) from leaking out of infmodel
       o Fix space leak in backward chainer
       o Added subProperty inheritance of domain/range values
