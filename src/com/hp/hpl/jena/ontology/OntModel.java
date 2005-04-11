@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.45 $
+ * Revision           $Revision: 1.46 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:04:30 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-04-11 16:38:44 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -70,7 +70,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.45 2005-02-21 12:04:30 andy_seaborne Exp $
+ * @version CVS $Id: OntModel.java,v 1.46 2005-04-11 16:38:44 ian_dickinson Exp $
  */
 public interface OntModel
     extends InfModel
@@ -93,11 +93,6 @@ public interface OntModel
      * to the value given in the ontology vocabulary associated with this model, see
      * {@link Profile#ONTOLOGY}.
      * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
-     * </p>
      *
      * @return An iterator over ontology resources.
      */
@@ -115,11 +110,6 @@ public interface OntModel
      * <p>
      * Specifically, the resources in this iterator will those whose type corresponds
      * to the value given in the ontology vocabulary associated with this model.
-     * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
      * </p>
      *
      * @return An iterator over property resources.
@@ -139,11 +129,6 @@ public interface OntModel
      * to the value given in the ontology vocabulary associated with this model: see
      * {@link Profile#OBJECT_PROPERTY}.
      * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
-     * </p>
      *
      * @return An iterator over object property resources.
      */
@@ -161,11 +146,6 @@ public interface OntModel
      * Specifically, the resources in this iterator will those whose type corresponds
      * to the value given in the ontology vocabulary associated with this model: see
      * {@link Profile#DATATYPE_PROPERTY}.
-     * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
      * </p>
      *
      * @return An iterator over datatype property resources.
@@ -245,11 +225,6 @@ public interface OntModel
      * the resources with <code>rdf:type</code> corresponding to a class defined
      * in the ontology.
      * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
-     * </p>
      *
      * @return An iterator over individual resources.
      */
@@ -259,20 +234,25 @@ public interface OntModel
     /**
      * <p>
      * Answer an iterator that ranges over all of the various forms of class description resource
-     * in this model.  Class descriptions include {@link #listEnumeratedClasses enumerated}
-     * classes, {@link #listUnionClasses union} classes, {@link #listComplementClasses complement}
-     * classes, {@link #listIntersectionClasses intersection} classes, {@link #listClasses named}
-     * classes and {@link #listRestrictions property restrictions}.
+     * in this model.  Class descriptions include {@linkplain #listEnumeratedClasses enumerated}
+     * classes, {@linkplain #listUnionClasses union} classes, {@linkplain #listComplementClasses complement}
+     * classes, {@linkplain #listIntersectionClasses intersection} classes, {@linkplain #listClasses named}
+     * classes and {@linkplain #listRestrictions property restrictions}.
      * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
-     * </p>
-     *
      * @return An iterator over class description resources.
      */
     public ExtendedIterator listClasses();
+
+
+    /**
+     * <p>Answer an iterator over the classes in this ontology model that represent
+     * the uppermost nodes of the class hierarchy.  Depending on the underlying
+     * reasoner configuration, if any, these will be calculated as the classes
+     * that have Top (i.e. <code>owl:Thing</code> or <code>daml:Thing</code>)
+     * as a direct super-class, or the classes which have no declared super-class.</p>
+     * @return An iterator of the root classes in the local class hierarchy
+     */
+    public ExtendedIterator listHierarchyRootClasses();
 
 
     /**
@@ -280,11 +260,6 @@ public interface OntModel
      * Answer an iterator that ranges over the enumerated class class-descriptions
      * in this model, i&#046;e&#046; the class resources specified to have a property
      * <code>oneOf</code> (or equivalent) and a list of values.
-     * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
      * </p>
      *
      * @return An iterator over enumerated class resources.
@@ -299,11 +274,6 @@ public interface OntModel
      * in this model, i&#046;e&#046; the class resources specified to have a property
      * <code>unionOf</code> (or equivalent) and a list of values.
      * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
-     * </p>
      *
      * @return An iterator over union class resources.
      * @see Profile#UNION_OF
@@ -316,11 +286,6 @@ public interface OntModel
      * Answer an iterator that ranges over the complement class-descriptions
      * in this model, i&#046;e&#046; the class resources specified to have a property
      * <code>complementOf</code> (or equivalent) and a list of values.
-     * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
      * </p>
      *
      * @return An iterator over complement class resources.
@@ -335,11 +300,6 @@ public interface OntModel
      * in this model, i&#046;e&#046; the class resources specified to have a property
      * <code>intersectionOf</code> (or equivalent) and a list of values.
      * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
-     * </p>
      *
      * @return An iterator over complement class resources.
      * @see Profile#INTERSECTION_OF
@@ -353,11 +313,6 @@ public interface OntModel
      * in this model, i&#046;e&#046; resources with <code>rdf:type
      * Class</code> (or equivalent) and a node URI.
      * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
-     * </p>
      *
      * @return An iterator over named class resources.
      */
@@ -369,11 +324,6 @@ public interface OntModel
      * Answer an iterator that ranges over the property restriction class-descriptions
      * in this model, i&#046;e&#046; resources with <code>rdf:type
      * Restriction</code> (or equivalent).
-     * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
      * </p>
      *
      * @return An iterator over restriction class resources.
@@ -388,11 +338,6 @@ public interface OntModel
      * to be annotation properties. Not all supported languages define annotation properties
      * (the category of annotation properties is chiefly an OWL innovation).
      * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
-     * </p>
      *
      * @return An iterator over annotation properties.
      * @see Profile#getAnnotationProperties()
@@ -404,11 +349,6 @@ public interface OntModel
      * <p>
      * Answer an iterator that ranges over the nodes that denote pair-wise disjointness between
      * sets of classes.
-     * </p>
-     * <p>
-     * <strong>Note:</strong> the number of nodes returned by this iterator will vary according to
-     * the completeness of the deductive extension of the underlying graph.  See class
-     * overview for more details.
      * </p>
      *
      * @return An iterator over AllDifferent nodes.
