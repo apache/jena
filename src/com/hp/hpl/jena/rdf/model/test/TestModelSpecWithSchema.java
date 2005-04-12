@@ -50,8 +50,8 @@ public class TestModelSpecWithSchema extends ModelTestBase
     
     public void  testSubclasses()
         {
-        Model m = ModelFactory.createRDFSModel( JenaModelSpec.getSchema() );
-        Model m2 = ModelSpecFactory.withSpecSchema( JenaModelSpec.getSchema() );
+        Model m = JenaModelSpec.getSchema();
+        Model m2 = ModelSpecFactory.withSpecSchema( ((InfModel) JenaModelSpec.getSchema()).getRawModel() );
         Set wanted = iteratorToSet( m.listStatements( null, RDFS.subClassOf, (RDFNode) null ).filterKeep( inJMS ) );
         Set got = iteratorToSet( m2.listStatements( null, RDFS.subClassOf, (RDFNode) null ) );
         if (!wanted.equals( got ))

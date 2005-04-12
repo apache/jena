@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaModelSpec.java,v 1.1 2005-04-10 12:45:53 chris-dollin Exp $
+  $Id: JenaModelSpec.java,v 1.2 2005-04-12 14:14:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -235,7 +235,8 @@ public class JenaModelSpec
     public static Model getSchema()
         {
         if (schema == null) 
-            schema = FileManager.get().loadModel( "vocabularies/jena-model-spec.n3" );
+            schema = ModelFactory.createRDFSModel( FileManager.get().loadModel
+                ( "vocabularies/jena-model-spec.n3" ) );
         return schema;
         }
         

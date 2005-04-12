@@ -6,13 +6,8 @@
 
 package com.hp.hpl.jena.rdf.model.impl;
 
-import java.util.*;
-import java.util.Map;
-
-import com.hp.hpl.jena.graph.test.GraphTestBase;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.vocabulary.*;
 
 /**
@@ -69,15 +64,12 @@ public class ModelSpecFactory
     */
     public static ModelSpec createSpec( Model m )
         { Model full = withSchema( m );  
-//         Map map = CollectionFactory.createHashedMap();
-//         System.err.println( "create spec from: " + GraphTestBase.nice( m.getGraph(), map ) + "\n which fills to " + GraphTestBase.nice( full.getGraph(), map ) );
         return create( defaultRegistry, full, findRootByType( full, JenaModelSpec.ModelSpec ) ); }
 
     /**
         Answer a wrapping of <code>m</code> as an RDFS model using the JenaModelSpec schema.
     */
     public static Model withSchema( Model m )
-        // { return ModelFactory.createRDFSModel( JenaModelSpec.getSchema(), m ); }
         { return withSpecSchema( m ); }
 
     /**
@@ -86,11 +78,7 @@ public class ModelSpecFactory
     */
     public static Resource findRootByType( Model m, Resource type )
         { StmtIterator it = m.listStatements( null, RDF.type, type );
-        if (!it.hasNext()) 
-            {
-            // System.err.println( ">> " + GraphTestBase.nice( m.getGraph(), new HashMap() ) );
-            throw new BadDescriptionNoRootException( m, type );
-            }
+        if (!it.hasNext()) throw new BadDescriptionNoRootException( m, type );
         Resource root = it.nextStatement().getSubject();
         if (it.hasNext()) throw new BadDescriptionMultipleRootsException( m, type );
         return root; }
@@ -116,42 +104,51 @@ public class ModelSpecFactory
     public static Model withSpecSchema( Model m )
         {
         Model result = ModelFactory.createDefaultModel();
-        Model schema = ModelFactory.createRDFSModel( JenaModelSpec.getSchema() );
+        Model schema = JenaModelSpec.getSchema();
         result.add( m );
-        for (StmtIterator it = schema.listStatements( null, RDFS.subClassOf, (RDFNode) null ); it.hasNext();)
+        addJMSSubclassesFrom( result, schema );        
+        addDomainTypes( result, m, schema );
+        addSupertypesFrom( result, schema );
+        addSupertypesFrom( result, m );
+        return result;
+        }
+    
+    protected static final RDFNode nullObject = (RDFNode) null;
+
+    protected static void addDomainTypes( Model result, Model m, Model schema )
+        {
+        for (StmtIterator it = schema.listStatements( null, RDFS.domain, nullObject ); it.hasNext();)
+            {
+            Statement s = it.nextStatement();
+            Property property = (Property) s.getSubject().as( Property.class );
+            for (StmtIterator x = m.listStatements( null, property, nullObject ); x.hasNext();)
+                {
+                Statement t = x.nextStatement();
+                result.add( t.getSubject(), RDF.type, s.getObject() );
+                }
+            }
+        }
+
+    protected static void addJMSSubclassesFrom( Model result, Model schema )
+        {
+        for (StmtIterator it = schema.listStatements( null, RDFS.subClassOf, nullObject ); it.hasNext();)
             { 
             Statement s = it.nextStatement();
             if (s.getSubject().getNameSpace().equals( JenaModelSpec.baseURI ) && s.getResource().getNameSpace().equals( JenaModelSpec.baseURI ))
                 result.add( s ); 
-            }        
-        for (StmtIterator it = schema.listStatements( null, RDFS.domain, (RDFNode) null ); it.hasNext();)
-            {
-            Statement s = it.nextStatement();
-            for (StmtIterator x = m.listStatements( null, (Property) s.getSubject().as( Property.class ), (RDFNode) null ); x.hasNext();)
-                {
-                Statement t = x.nextStatement();
-                result.add( t.getSubject(), RDF.type, s.getObject() );
-                // System.err.println( "++ added " + t.getSubject() + " type " + s.getObject() );
-                for (StmtIterator foo = schema.listStatements( s.getResource(), RDFS.subClassOf, (RDFNode) null ); foo.hasNext();)
-                    {
-                    result.add( t.getSubject(), RDF.type, foo.nextStatement().getObject() );
-                    }
-                }
             }
-        addSupertypes( m, result, schema );
-        addSupertypes( m, result, m );
-        // System.err.println( ">> result: " + GraphTestBase.nice( result.getGraph(), new HashMap() ) );
-        return result;
         }
 
-    protected static void addSupertypes( Model m, Model result, Model schema )
+    protected static void addSupertypesFrom( Model result, Model source )
         {
-        for (StmtIterator it = m.listStatements( null, RDF.type, (RDFNode) null ); it.hasNext();)
+        Model temp = ModelFactory.createDefaultModel();
+        for (StmtIterator it = result.listStatements( null, RDF.type, nullObject ); it.hasNext();)
             {
             Statement s = it.nextStatement();
-            for (StmtIterator bat = schema.listStatements( s.getResource(), RDFS.subClassOf, (RDFNode) null ); bat.hasNext();)
-                result.add( s.getSubject(), RDF.type, bat.nextStatement().getObject() );
+            for (StmtIterator subclasses = source.listStatements( s.getResource(), RDFS.subClassOf, nullObject ); subclasses.hasNext();)
+                temp.add( s.getSubject(), RDF.type, subclasses.nextStatement().getObject() );
             }
+        result.add( temp );
         }
 
     }
