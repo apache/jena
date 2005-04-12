@@ -37,7 +37,6 @@
   <property name="javadoc.dir"     value="doc/javadoc"/>
   <property name="etc.dir"         value="etc"/>
   <property name="test.dir"        value="testing"/>
-  <property name="tools.dir"        value="tools"/>
 
   <property name="jarfile"         value="${name}.jar"/>
   <property name="srczipfile"      value="${name}-src.zip"/>
@@ -257,7 +256,6 @@
       <package name="com.hp.hpl.jena.xmloutput"/>
       <package name="com.hp.hpl.jena.ontology"/>
       <package name="com.hp.hpl.jena.ontology.daml"/>
-      <package name="com.hp.hpl.jena.ontology.tidy"/>
       <package name="com.hp.hpl.jena.enhanced"/>
       <package name="com.hp.hpl.jena.graph"/>
       <package name="com.hp.hpl.jena.graph.compose"/>
@@ -288,7 +286,6 @@
     <package name="com.hp.hpl.jena.xmloutput"/>
     <package name="com.hp.hpl.jena.ontology"/>
     <package name="com.hp.hpl.jena.ontology.daml"/>
-    <package name="com.hp.hpl.jena.ontology.tidy"/>
     <package name="com.hp.hpl.jena.reasoner"/>
     <package name="com.hp.hpl.jena.reasoner.rulesys"/>
     <package name="com.hp.hpl.jena.reasoner.rulesys.builtins"/>
@@ -418,9 +415,6 @@
            excludes="${test.dir}/RDQL/rdql-tests-jena*.zip"/>
     </copy>
 
-    <copy todir="${dist.dir}/${tools.dir}">
-      <fileset dir="${tools.dir}" includes="**"/>
-    </copy>
 
     <!-- Junk that creeps in -->
     <delete>
