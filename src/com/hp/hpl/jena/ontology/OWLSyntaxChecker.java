@@ -46,7 +46,7 @@ public interface OWLSyntaxChecker {
      * <p>
      * The Jena OWL syntax checker will normally list as problems those constructs used in
      * this model that are in OWL Full but not permitted in OWL DL.  The exception to this
-     * is if the {@linkplain #getProfile() language profile} for this model is  
+     * is if the {@linkplain OntModel#getProfile() language profile} for this model is  
      * {@linkplain OWLLiteProfile OWL Lite}, then the syntax checker will
      * test for constructs that lie in OWL-DL or OWL-Full and hence outside in OWL-Lite.
      * </p>
