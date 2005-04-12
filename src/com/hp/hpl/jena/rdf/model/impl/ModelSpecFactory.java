@@ -71,6 +71,7 @@ public class ModelSpecFactory
     */
     public static Model withSchema( Model m )
         { return ModelFactory.createRDFSModel( JenaModelSpec.getSchema(), m ); }
+        // { return withSpecSchema( m ); }
 
     /**
         Answer the unique subject of <code>m</code> which has type <code>type</code>.

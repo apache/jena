@@ -3,11 +3,12 @@
     All rights reserved.
     [See end of file]
 */
-package com.hp.hpl.jena.rdf.model.impl;
+package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 
 import java.util.*;
+
+import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelSpecFactory;
@@ -16,20 +17,15 @@ import com.hp.hpl.jena.vocabulary.*;
 
 
 /**
- @author hedgehog
- */
+    @author hedgehog
+*/
 public class TestModelSpecWithSchema extends ModelTestBase
     {
-    private static final Filter inJMS = new Filter() {
-
-        public boolean accept( Object o )
-            {
-            Statement s = (Statement) o;
-            return s.getSubject().getNameSpace().equals( JenaModelSpec.baseURI ) && s.getResource().getNameSpace().equals( JenaModelSpec.baseURI );
-            }};
-
     public TestModelSpecWithSchema( String name )
         { super( name ); }
+
+    public static TestSuite suite()
+        { return new TestSuite( TestModelSpecWithSchema.class ); }
 
     public void testReificationMode()
         { testDomain( "jms:reificationMode rdfs:domain jms:MakerSpec" ); }
@@ -82,7 +78,16 @@ public class TestModelSpecWithSchema extends ModelTestBase
         { assertIsoModels( m( wanted ), ModelSpecFactory.withSpecSchema( m( toTest ) ) ); }
 
     public Model m( String s )
-        { return modelWithStatements( s ); }
+        { return modelWithStatements( s ); }    
+    
+    protected static final Filter inJMS = new Filter() 
+        {
+        public boolean accept( Object o )
+            {
+            Statement s = (Statement) o;
+            return s.getSubject().getNameSpace().equals( JenaModelSpec.baseURI ) && s.getResource().getNameSpace().equals( JenaModelSpec.baseURI );
+            }
+        };
     }
 
 /*
