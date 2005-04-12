@@ -133,7 +133,11 @@ public class FileUtils
      */
     public static boolean isFile(String name)
     {
-        return name.startsWith("file:") || ! isURI(name) ;
+        if ( name.startsWith("file:") ) return true ;
+        if ( isURI(name) ) return false ;
+        return true ;
+        
+        //return name.startsWith("file:") || ! isURI(name) ;
     }
     
     /** Check whether a name is an absolute URI (has a scheme name)
