@@ -3,6 +3,7 @@ Release Notes
 
 Post 2.2beta change list
 
+
   ARP
       o Fixed XMLLiteral bug relevant to OWL-S
       o Added workaround for ICU bug.
@@ -40,6 +41,11 @@ Post 2.2beta change list
       o OntModelSpec understands the `modelName` property; it gives the name
         of the model (in the baseModelMaker) which is to be used in a 
         ontModelSpec.create() call.
+
+  OWL Syntax Checker
+      o No longer in the Jena download.
+      o A separate contribution.
+      o Can be separately download from the Jena project files page.
 
   PrefixMappings
       o the requirement that adding `(prefix, uri)` to a prefix mapping remove
