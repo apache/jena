@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.15 2005-04-10 11:32:25 der Exp $
+ * $Id: TestGenericRules.java,v 1.16 2005-04-12 16:40:16 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -14,6 +14,7 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
+import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
@@ -34,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2005-04-10 11:32:25 $
+ * @version $Revision: 1.16 $ on $Date: 2005-04-12 16:40:16 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -213,7 +214,25 @@ public class TestGenericRules extends TestCase {
             m2.createStatement(newConfig, ReasonerVocabulary.PROPruleMode, "hybrid"),
             m2.createStatement(newConfig, ReasonerVocabulary.PROPruleSet, "testing/reasoners/genericRuleTest.rules")
             } );
-    }
+        
+        // Mutiple rule file loading
+        m = ModelFactory.createDefaultModel();
+        configuration= m.createResource(GenericRuleReasonerFactory.URI);
+        configuration.addProperty(ReasonerVocabulary.PROPruleMode, "hybrid");
+        configuration.addProperty(ReasonerVocabulary.PROPruleSet, "testing/reasoners/ruleset1.rules");
+        configuration.addProperty(ReasonerVocabulary.PROPruleSet, "testing/reasoners/ruleset2.rules");
+        reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(configuration);
+        
+        infgraph = reasoner.bind(new GraphMem());
+        Node an = Node.createURI(PrintUtil.egNS + "a");
+        Node C = Node.createURI(PrintUtil.egNS + "C");
+        Node D = Node.createURI(PrintUtil.egNS + "D");
+        TestUtil.assertIteratorValues(this, 
+              infgraph.find(null, null, null), new Object[] {
+                new Triple(an, RDF.Nodes.type, C),
+                new Triple(an, RDF.Nodes.type, D),
+              } );
+     }
     
     /**
      * Test control of functor filtering
