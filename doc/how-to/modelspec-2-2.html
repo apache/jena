@@ -18,13 +18,9 @@ pre {
 <body>
 <h1>ModelSpec howto - describing Jena 2.2 models in RDF</h1>
 
-<i>draft for discussion 17th August 2004</i>
-<br><i>version 0.4</i>
-
 <h1>introduction</h1>
 
-This document describes the ModelSpec features for Jena 2.2 (although
-they will be available in CVS before Jena 2.2 is released). They build
+This document describes the ModelSpec features for Jena 2.2. They build
 on the experimental features available in Jena 2.0 and 2.1, but have
 been extended to increase flexibility and uniformity.
 
@@ -33,12 +29,13 @@ using a configuration file, input stream, URL, or other way of getting
 RDF into a Jena process, and for this configuration to be capable of
 specifying anything that the ModelFactory class can construct.
 
-<p>A more formal document is available: the 
+<p>A more formal document will be available: the 
 <a href="modelspec-details-2-2.html">ModelSpec design document</a>. 
 Here we concentrate on how to use ModelSpecs in general.
 
 <p>The ModelSpec descriptions use the Jena Model Specification
-vocabulary, which is available in the vocabulary class <code>JMS</code>
+vocabulary, which is available in the vocabulary class 
+<code>JenaModelSpec</code>
 and which will be referred to using the prefix <code>jms</code>.
 Jena defines this vocabulary namespace as 
 
@@ -57,7 +54,7 @@ and a few major ones, those being:
 <li>the separation out of database connection specifications.
 
 <li>the special type <code>Shared</code> to allow values to be
-    shared by specifications.
+    shared by specifications. [Shared is not implemented.]
 
 </ul>
 
@@ -72,8 +69,7 @@ an RDF description. There are three variants of <code>createSpec</code>:
 <li>createSpec( Resource r , Model m ). This is the core method.
     The ModelSpec is created from the sub-graph of <code>m</code>
 	rooted at <code>r</code>. The resource <code>r</code> identifies
-	the model specification. Model specifications are described in
-	detail in [A LATER SECTION].
+	the model specification. 
 
 <li>createSpec( Model m ). The ModelSpec is created from the sub-graph
     of <code>m</code> rooted at the unique resource with type
@@ -84,15 +80,22 @@ an RDF description. There are three variants of <code>createSpec</code>:
 
 </ul>
 
-All ModelSpecs are interpreted using RDFS inference with respect to the
-JMS schema found at <b>reference</b> and also in the JMS vocabulary
-class <b>full name</b>.
+All ModelSpecs are interpreted using partial RDFS inference with 
+respect to the JMS schema found at 
+<b>vocabularies/jena-mode-spec.n3</b> 
+and also in the vocabulary
+class <b>com.hp.hpl.jena.vocabulary.JenaModelSpec</b>.
+
+<p>By "partial" inference, we mean that the vocabulary is RDFS-complete,
+and that the specification has types inferred from 
+<code>RDFS.domain</code> and <code>RDF.type</code>statements.
+This abbreviated inference avoids some reasoner overheads. 
 
 <h1>using a ModelSpec</h1>
 
-A ModelSpec doesn't describe a single model, but a way of making
+A ModelSpec doesn't describe only a single model, but a way of making
 many models of the same kind. Often these models are named, or built
-on named models. The two important creation methods are:
+on named models. The important creation method is:
 
 <ul>
 <li><code>createModel()</code>: create a new model according to
@@ -100,17 +103,6 @@ on named models. The two important creation methods are:
 	<code>ModelFactory.createModel(ModelSpec)</code>. You may need
 	to cast this model to the appropriate type - in particular,
 	if you're expecting an <code>OntModel</code>.
-	
-	<p class=note>[Should we provide createOntModel and createInfModel as
-	wrappers for these cases?]
-
-<li><code>createModelOver(String name)</code>: most <code>ModelSpec</code>s
-    have an underlying <a href="../javadoc/com/hp/hpl/jena/rdf/model/ModelMaker.html">
-    <code>ModelMaker</code></a>. This method creates a new Model where
-    any underlying Model has the given <code>name</code> in that ModelMaker.
-    For particularly simple <code>ModelSpec</code>s, the result is that
-    Model. The usual case of interest is when the ModelSpec creates
-	models in a database.
 </ul>
 
 Once a ModelSpec has been constructed, the RDF on which it is based
@@ -169,9 +161,6 @@ _:maker jms:reificationStyle jms:rsMinimal .
 This will produce models which have the <i>minimal</i> reification
 style. (For an explanation of the different styles, see <b>THAT DOCUMENT</b>.
 
-<p class=note>This fragment may disappear if we can eliminate reification styles
-completely.])
-
 <h2>PlainModelSpec, file-based</h2>
 
 You can specify a model that is loaded from, and written back
@@ -211,7 +200,7 @@ _:this jms:maker _:maker .
 _:maker jms:reificationMode jms:rsStandard .
 _:maker jms:hasConnection _:conn .
 
-_:conn jms:dbURL "jdbc:mysql://some.database.machine.eg/jenaDB" .
+_:conn jms:dbURL jdbc:mysql://some.database.machine.eg/jenaDB .
 _:conn jms:dbUser "william.blake" .
 _:conn jms:dbPassword "tyger, tyger" .
 _:conn jms:dbType "MySQL" .
@@ -223,18 +212,14 @@ the <code>hasConnection</code>. Several models may share the same
 
 <p>
 The connection URL specifies the database to connect to; the same 
-database can support many different Jena models. The user and password 
+database can support many different Jena models. (Note that this
+is a URI, not a literal.) The user and password 
 are required to (weakly) authenticate the connection. The type is
 required so that the correct database drivers can be loaded. Note
 the (in-)security implications of the database password being stored
 in plain text in the ModelSpec description document - these are
 partly bypassed by using the <code>shared</code> property discussed
 later.
-	
-<p class=note>[Should contact Chris Bizer and ask him about the connections to
-    databases needed for his RDB-to-graph connection.]
-	
-<p class=note>[Leave placeholder for BDB connections?]
 
 <h2>an inference model</h2>
 
@@ -253,7 +238,7 @@ _:reasoner jms:reasoner &lt;http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner&gt;
 
 <p>This is the simplest reasoner specification - just giving the URL of
 the reasoner. Any other properties of the reasoner take on its usual
-defaults (see [THE REASONER DOCUENTATION]). 
+defaults. 
 
 <p>Reasoners may be supplied with a schema or schemas as the "initial 
 base" for their reasoning - for example, an RDFS reasoner may be
@@ -289,13 +274,6 @@ an appropriate notation. Several <code>ruleSetURL</code>s may be
 given; all the rules are loaded into the reasoner in no particular
 order.
 
-<p class=note>[The weasel-wording about "an appropriate notation" is to cover 
-that we only have the one rule-based reasoning engine with the 
-single surface syntax, wheras we ought to conver more options.
-The reasoner should be in charge of parsing the rules. Also we
-have only the one internal Rule class, but it's possible we should 
-allow user-definable classes, or else hide Rule as a detail of
-our implementation.]
 
 <p>Similarly, 
 
@@ -331,13 +309,6 @@ present as often as required. Since both predicates have
 domain <code>RuleSet</code>, the type declaration may be
 omitted.
 
-<p class=note>[If <code>ruleSet</code> is given range <code>RuleSet</code>,
-then the type declaration is always unnecessary. I'm a bit
-worried that this makes it easy to forget or mislabel a ruleset.]
-
-<p class=note>[Again, we weasel about the notation in which the rules are
-expressed. Possibly a <code>jms:ruleLanguage</code> property?]
-
 <h2>ontology models</h2>
 
 An OntModel specification has additional properties for specifying
@@ -358,11 +329,11 @@ reasoner. The OntModels will take their base models from the database.
 The document manager has been given no specific properties, so the
 default document manager will be used.
 
-<p class=note>[More stuff needed for OntModels here]
-
 <h1>shared specifications</h1>
 
-By default, each time a model is constructed using a ModelSpec, new
+[Not implemented in this release.]
+
+<p>By default, each time a model is constructed using a ModelSpec, new
 instances of all the subcomponents of that description are created.
 This is not always a wise choice, especially if those subcomponents
 consume lots of space or take a long time to prepare - eg, a large
