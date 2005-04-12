@@ -56,6 +56,20 @@ Post 2.2beta change list
         where a prefix has been removed and the inverse mapping has been
         regenerated.)
 
+  Ontology API
+      o As part of a move to provide more consistent behaviour, listDeclaredProperties
+        has been completely re-written. The new behaviour, which in some 
+        important respects differs from the old behaviour, is now documented
+        in doc/how-to/rdf-frames.html. There has also been a non
+        backwards-compatible change in the meaning of the Boolean flag
+        passed to listDeclaredProperties.
+      o An OntModel can now list the root classes in the local class hierarchy,
+        see OntModel.listHierarchyRoots()
+        
+  DIG reasoner
+      o Fixed a bug that meant that <top> and <bottom> were not being translated
+        to owl:Thing and owl:Nothing, and hence not appearing in output
+        
 Post Jena 2.1 change list [up to 2.2beta]
 
   RDF API
