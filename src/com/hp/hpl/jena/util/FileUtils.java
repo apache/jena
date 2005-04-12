@@ -133,10 +133,23 @@ public class FileUtils
      */
     public static boolean isFile(String name)
     {
-        if ( name.startsWith("file:") ) return true ;
-        if ( isURI(name) ) return false ;
-        return true ;
+        String scheme = getScheme(name) ;
         
+        if ( scheme == null  )
+            // No URI scheme - treat as filename
+            return true ;
+        
+        if ( scheme.equals("file") )
+            // file: URI scheme
+            return true ;
+            
+        // Windows: "c:" etc
+        if ( scheme.length() == 1 )
+            // file: URI scheme
+            return true ;
+        
+        return false ;
+
         //return name.startsWith("file:") || ! isURI(name) ;
     }
     

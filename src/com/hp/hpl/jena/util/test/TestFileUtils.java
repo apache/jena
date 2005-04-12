@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestFileUtils.java,v 1.3 2005-02-21 12:19:21 andy_seaborne Exp $
+  $Id: TestFileUtils.java,v 1.4 2005-04-12 09:38:08 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -76,8 +76,27 @@ public class TestFileUtils extends TestCase
 	    {
         assertEquals( "spoo", FileUtils.guessLang( "stuff.left/right", "spoo" ) );
         assertEquals( "spoo", FileUtils.guessLang( "stuff.left\\right", "spoo" ) );
-        }  
+        }
+    
+    public void testFilename1()   { isFilename("foo") ; }
+    public void testFilename2()   { isFilename("foo/bar") ; }
+    public void testFilename3()   { isFilename("foo\\bar") ; }
+    public void testFilename4()   { isFilename("\\bar") ; }
+    public void testFilename5()   { isFilename("foo/bar") ; }
+    public void testFilename6()   { isFilename("c:foo") ; }
+    public void testFilename7()   { isFilename("c:\\foo") ; }
+    public void testFilename8()   { isFilename("c:\\foo\\bar") ; }
+    public void testFilename9()   { isFilename("file::foo") ; }
+    public void testFilename10()  { isNotFilename("http://www.hp.com/") ; }
+    public void testFilename11()  { isNotFilename("urn:tag:stuff") ; }
+    
+    void isFilename(String fn)
+    { assertTrue("Should be a file name : "+fn, FileUtils.isFile(fn)) ; }
+    void isNotFilename(String fn)
+    { assertFalse("Shouldn't be a  file name: "+fn, FileUtils.isFile(fn)) ; }
+    
     }
+
 
 /*
     (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
