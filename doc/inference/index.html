@@ -88,8 +88,8 @@
     of <code>rdfs:subPropertyOf</code> and <code>rdfs:subClassOf</code>.</dd>
   <dt>RDFS rule reasoner</dt>
   <dd>Implements a configurable subset of the RDFS entailments.</dd>
-  <dt>OWL FB Reasoner</dt>
-  <dd>A useful but incomplete implementation of the OWL/Lite subset of the OWL/Full 
+  <dt>OWL, OWL Mini, OWL Micro Reasoners</dt>
+  <dd>A set of useful but incomplete implementation of the OWL/Lite subset of the OWL/Full 
     language. </dd>
   <dt>DAML micro reasoner</dt>
   <dd>Used internally to enable the legacy DAML API to provide RDFS scale inferencing 
@@ -126,7 +126,7 @@
   which stores factory instances indexed by URI assigned to the reasoner. </p>
 <p>In addition, there are convenience methods on the <code>ReasonerRegistry</code> 
   for locating a prebuilt instance of each of the main reasoners (<code>getTransitiveReasoner</code>, 
-  <code>getRDFSReasoner</code>, <code>getOWLReasoner</code>, <code>getRDFSSimpleReasoner</code>).</p>
+  <code>getRDFSReasoner</code>, <code>getRDFSSimpleReasoner</code>, <code>getOWLReasoner</code>, <code>getOWLMiniReasoner</code>, <code>getOWLMicroReasoner</code>).</p>
 <p>Note that the factory objects for constructing reasoners are just there to 
   simplify the design and extension of the registry service. Once you have a reasoner 
   instance, the same instance can reused multiple times by binding it to different 
@@ -319,7 +319,20 @@
   but may indicate some issue the application may wish to be aware of. For example, 
   it would be possible to develop a modification to the RDFS reasoner which warned 
   about use of a property on a resource that is not explicitly declared to have 
-  the type of the domain of the property.</p>
+  the type of the domain of the property. </p>
+<p>A particular case of this arises in the case of OWL. In the Description Logic 
+  community a class which cannot have an instance is regarded as &quot;inconsistent&quot;. 
+  That term is used because it generally arises from an error in the ontology. 
+  However, it is not a logical inconsistency - i.e. something giving rise to a 
+  contradiction. Having an instance of such a class is, clearly a logical error. 
+  In the Jena 2.2 release we clarified the semantics of <code>isValid()</code>. 
+  An ontology which is logically consistent but contains empty classes is regarded 
+  as valid (that is <code>isValid()</code> is false only if there is a logical 
+  inconsistency). Class expressions which cannot be instantiated are treated as 
+  warnings rather than errors. To make it easier to test for this case there is 
+  an additional method <code>Report.isClean()</code> which returns true if the 
+  ontology is both valid (logically consistent) and generated no warnings (such 
+  as inconsistent classes).</p>
 <h3><a name="extendedListStatements"></a>Extended list statements</h3>
 <p>The default API supports accessing all entailed information at the level of 
   individual triples. This is surprisingly flexible but there are queries which 
@@ -730,32 +743,33 @@ that is not compatible with 13</i></pre>
   <li><a href="#OWLexamples">OWL example</a></li>
   <li><a href="#OWLnotes">OWL notes and limitations</a></li>
 </ol>
-<p><a name="OWLintro"></a>The second major reasoner supplied with Jena2 is a rule-based 
+<p><a name="OWLintro"></a>The second major set of reasoners supplied with Jena2 is a rule-based 
   implementation of the OWL/lite subset of OWL/full.</p>
-<p>This reasoner is still undergoing development. The current release is more 
-  stable and a little more scalable than those in the Jena2 previews and should 
-  be suitable for early experimental investigations. However, we expect that performance 
-  and scaling issues remain along with possible omissions. We recommend that developers 
-  approach the current implementation with caution. Further performance tuning 
-  and evaluation work is planned.</p>
+<p>The current release includes a default OWL reasoner and two small/faster configurations.
+Each of the configurations is intended to be a sound implementation of a subset of OWL/full semantics
+but none of them is complete (in the technical sense). For complete OWL DL reasoning use 
+an external DL reaoner such as Pellet, Racer or FaCT. The <a href="../how-to/dig-reasoner.html">jena DIG interface</a> makes it
+easy to connect to any reasoner that supports the DIG standard. Performance (especially memory use) of the fuller reasoner
+configuration still leaves something to be desired and will the subject of future work - time permitting.</p>
 <p>See also <a href="#OWLnotes">subsection 5</a> for notes on more specific limitations 
   of the current implementation. </p>
 <h2><a name="OWLcoverage"></a>OWL coverage</h2>
-<p>The Jena OWL reasoner could be described as an instance-based reasoner. That 
-  is, it works by using rules to propagate the if- and only-if- implications of 
+<p>The Jena OWL reasoners could be described as instance-based reasoners. That 
+  is, they work by using rules to propagate the if- and only-if- implications of 
   the OWL constructs on instance data. Reasoning about classes is done indirectly 
   - for each declared class a prototypical instance is created and elaborated. 
   If the prototype for a class A can be deduced as being a member of class B then 
   we conclude that A is a subClassOf B. This approach is in contrast to more sophisticated 
   Description Logic reasoners which work with class expressions and can be less 
-  efficient when handling instance data. </p>
+  efficient when handling instance data but more efficient with complex class expressions
+  and able to provide complete reasoning. </p>
 <p>We thus anticipate that the OWL rule reasoner will be most suited to applications 
   involving primarily instance reasoning with relatively simple, regular ontologies 
   and least suited to applications involving large rich ontologies. A better characterisation 
   of the tradeoffs involved would be useful and will be sought.</p>
-<p>We intend that the OWL reasoner should be a smooth extension of the RDFS reasoner 
+<p>We intend that the OWL reasoners should be smooth extensions of the RDFS reasoner 
   described above. That is all RDFS entailments found by the RDFS reasoner will 
-  also be found by the OWL reasoner and scaling on RDFS schemas should be similar 
+  also be found by the OWL reasoners and scaling on RDFS schemas should be similar 
   (though there are some costs, see later). The instance-based implementation 
   technique is in keeping with this &quot;RDFS plus a bit&quot; approach.</p>
 <p>Another reason for choosing this inference approach is that it makes it possible 
@@ -766,118 +780,183 @@ that is not compatible with 13</i></pre>
   to express in rule-based form and harder to express in standard Description 
   Logics.</p>
 <p>Since RDFS is not a subset of the OWL/Lite or OWL/DL languages the Jena implementation 
-  is an incomplete implementation of OWL/full. It includes rules for each of the 
-  OWL/lite constructs together with the hasValue construct. The constructs supported 
-  are:</p>
+  is an incomplete implementation of OWL/full. We provide three implementations 
+  a default (&quot;full&quot; one), a slightly cut down &quot;mini&quot; and a 
+  rather smaller/faster &quot;micro&quot;. The default OWL rule reasoner (<code>ReasonerRegistry.getOWLReasoner()</code>) 
+  supports the constructs as listed below. The OWLMini reasoner is nearly the 
+  same but omits the forward entailments from minCardinality/someValuesFrom restrictions 
+  - that is it avoids introducing bNodes which avoids some infinite expansions 
+  and enables it to meet the Jena API contract more precisely. The OWLMicro reasoner 
+  just supports RDFS plus the various property axioms, intersectionOf, unionOf 
+  (partial) and hasValue. It omits the cardinality restrictions and equality axioms, 
+  which enables it to achieve much higher performance. </p>
 <table width="90%" border="1" cellspacing="0" cellpadding="0">
   <tr> 
-    <td width="53%"><b>Constructs</b></td>
-    <td width="47%"><b>Notes</b></td>
+    <td width="36%"><b>Constructs</b></td>
+    <td width="16%"><b>Supported by</b></td>
+    <td width="48%"><b>Notes</b></td>
   </tr>
   <tr> 
-    <td width="53%"> 
+    <td width="36%"> 
       <div align="left">rdfs:subClassOf, rdfs:subPropertyOf, rdf:type</div>
     </td>
-    <td width="47%"> 
+    <td width="16%">all</td>
+    <td width="48%"> 
       <div align="left">Normal RDFS semantics supported including meta use (e.g. 
         taking the subPropertyOf subClassOf).</div>
     </td>
   </tr>
   <tr> 
-    <td width="53%"> 
+    <td width="36%"> 
       <div align="left">rdfs:domain, rdfs:range</div>
     </td>
-    <td width="47%"> 
+    <td width="16%">all</td>
+    <td width="48%"> 
       <div align="left">Stronger if-and-only-if semantics supported</div>
     </td>
   </tr>
   <tr> 
-    <td width="53%"> 
-      <div align="left">owl:someValuesFrom, owl:allValuesFrom</div>
-    </td>
-    <td width="47%"> 
-      <div align="left"></div>
-    </td>
-  </tr>
-  <tr> 
-    <td width="53%"> 
-      <div align="left">owl:minCardinality, owl:maxCardinality, owl:cardinality</div>
-    </td>
-    <td width="47%"> 
-      <div align="left">Restricted to cardinalities of 0 or 1, though higher cardinalities 
-        are partially supported in validation for the case of literal-valued properties.</div>
-    </td>
-  </tr>
-  <tr> 
-    <td width="53%"> 
+    <td width="36%"> 
       <div align="left">owl:intersectionOf</div>
     </td>
-    <td width="47%">&nbsp;</td>
+    <td width="16%">all</td>
+    <td width="48%">&nbsp;</td>
   </tr>
   <tr> 
-    <td width="53%"> 
-      <div align="left">owl:equivalentClass, owl:disjointWith</div>
+    <td width="36%"> 
+      <div align="left">owl:unionOf</div>
     </td>
-    <td width="47%"> 
+    <td width="16%">all</td>
+    <td width="48%"> 
+      <div align="left">Partial support. If C=unionOf(A,B) then will infer that 
+        A,B are subclasses of C, and thus that instances of A or B are instances 
+        of C. Does not handle the reverse (that an instance of C must be either 
+        an instance of A or an instance of B).</div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="36%"> 
+      <div align="left">owl:equivalentClass</div>
+    </td>
+    <td width="16%">all</td>
+    <td width="48%"> 
       <div align="left"></div>
     </td>
   </tr>
   <tr> 
-    <td width="53%"> 
+    <td width="36%"> 
+      <div align="left">owl:disjointWith</div>
+    </td>
+    <td width="16%">full, mini</td>
+    <td width="48%"> 
+      <div align="left"></div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="36%"> 
       <div align="left">owl:sameAs, owl:differentFrom, owl:distinctMembers</div>
     </td>
-    <td width="47%"> 
+    <td width="16%">full, mini</td>
+    <td width="48%"> 
       <div align="left">owl:distinctMembers is currently translated into a quadratic 
-        set of owl:differentFrom assertions, more compact representations are 
-        planned for future releases.</div>
+        set of owl:differentFrom assertions.</div>
     </td>
   </tr>
-  <tr>
-    <td width="53%"> 
+  <tr> 
+    <td width="36%"> 
       <div align="left">Owl:Thing</div>
     </td>
-    <td width="47%">&nbsp;</td>
+    <td width="16%">all</td>
+    <td width="48%">&nbsp;</td>
   </tr>
   <tr> 
-    <td width="53%"> 
+    <td width="36%"> 
       <div align="left">owl:equivalentProperty, owl:inverseOf </div>
     </td>
-    <td width="47%"> 
+    <td width="16%">all</td>
+    <td width="48%"> 
       <div align="left"></div>
     </td>
   </tr>
   <tr> 
-    <td width="53%"> 
+    <td width="36%"> 
       <div align="left">owl:FunctionalProperty, owl:InverseFunctionalProperty</div>
     </td>
-    <td width="47%"> 
+    <td width="16%">all</td>
+    <td width="48%"> 
       <div align="left"></div>
     </td>
   </tr>
   <tr> 
-    <td width="53%"> 
+    <td width="36%"> 
       <div align="left">owl:SymmeticProperty, owl:TransitiveProperty</div>
     </td>
-    <td width="47%"> 
+    <td width="16%">all</td>
+    <td width="48%"> 
       <div align="left"></div>
     </td>
   </tr>
   <tr> 
-    <td width="53%"> 
+    <td width="36%"> 
+      <div align="left">owl:someValuesFrom</div>
+    </td>
+    <td width="16%">full, (mini)</td>
+    <td width="48%"> 
+      <div align="left"> 
+        <p>Full supports both directions (existence of a value implies membership 
+          of someValuesFrom restriction, membership of someValuesFrom implies 
+          the existence of a bNode representing the value).<br>
+          Mini omits the latter &quot;bNode introduction&quot; which avoids some 
+          infinite closures.</p>
+      </div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="36%"> 
+      <div align="left">owl:allValuesFrom</div>
+    </td>
+    <td width="16%">full, mini</td>
+    <td width="48%"> 
+      <div align="left">Partial support, forward direction only (member of a allValuesFrom(p, 
+        C) implies that all p values are of type C). Does handle cases where the 
+        reverse direction is trivially true (e.g. by virtue of a global rdfs:range 
+        axiom). </div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="36%"> 
+      <div align="left">owl:minCardinality, owl:maxCardinality, owl:cardinality</div>
+    </td>
+    <td width="16%">full, (mini)</td>
+    <td width="48%"> 
+      <div align="left"> 
+        <p>Restricted to cardinalities of 0 or 1, though higher cardinalities 
+          are partially supported in validation for the case of literal-valued 
+          properties.<br>
+          Mini omits the bNodes introduction in the minCardinality(1) case, see 
+          someValuesFrom above.</p>
+      </div>
+    </td>
+  </tr>
+  <tr> 
+    <td width="36%"> 
       <div align="left">owl:hasValue</div>
     </td>
-    <td width="47%"> 
+    <td width="16%">all</td>
+    <td width="48%"> 
       <div align="left"></div>
     </td>
   </tr>
 </table>
 <p>The critical constructs which go beyond OWL/lite and are not supported in the 
-  Jena OWL reasoner are unionOf, complementOf and oneOf.</p>
+  Jena OWL reasoner are complementOf and oneOf. As noted above the support for 
+  unionOf is partial (due to limitations of the rule based approach) but is useful 
+  for traversing class hierarchies.</p>
 <p>Even within these constructs rule based implementations are limited in the 
   extent to which they can handle equality reasoning - propositions provable by 
   reasoning over concrete and introduced instances are covered but reasoning by 
   cases is not supported.</p>
-<p>Nevertheless, the reasoner passes the normative OWL working group positive 
+<p>Nevertheless, the full reasoner passes the normative OWL working group positive 
   and negative entailment tests for the supported constructs, though some tests 
   need modification for the comprehension axioms (see below).</p>
 <p>The OWL rule set does include incomplete support for validation of datasets 
@@ -1060,27 +1139,18 @@ class B = cardinality(P,1)</pre>
 <h3>Direct/indirect</h3>
 <p>We noted <a href="#directRelations">above</a> that the Jena reasoners support 
   a separation of direct and indirect relations for transitive properties such 
-  as subClassOf. The current implementation of OWL reasoner fails to do this and 
-  the direct forms of the queries will fail.</p>
+  as subClassOf. The current implementation of the full and mini OWL reasoner 
+  fails to do this and the direct forms of the queries will fail. The OWL Micro 
+  reasoner, which is but a small extension of RDFS, does suppor the direct queries.</p>
 <p>This does not affect querying though the Ontology API, which works around this 
   limitation. It only affects direct RDF accesses to the inference model.</p>
-<p>This too will be addressed in future releases.</p>
-<h3>XSD knowledge</h3>
-<p>The underlying Jena models are able to handle XSD and user defined datatypes 
-  and test for semantic equivalence between typed values. This is exploited within 
-  the OWL reasoner for handling concrete instances of typed values - for example 
-  &quot;1&quot;^^xsd:nonNegativeInteger and &quot;1&quot;^^xsd:int are equivalent 
-  in this way. However, the knowledge of subtype relationships between XSD types 
-  is implicit in the Java code and not made explicit to the rule reasoners. As 
-  a consequence the current OWL validation rules will sometimes signal datatype 
-  violations if the exact expected datatype is not used. </p>
-<p>This will be fixed shortly.</p>
 <h3>Performance</h3>
-<p>The OWL reasoner uses the rule engines for all inference and omits some of 
-  the performance tricks employed by the RDFS reasoner (notably the use of the 
-  custom transitive reasoner). Future work will address this. In the meantime 
-  the OWL reasoner is a constant factor of around x3-4 slower on RDFS queries 
-  such as that illustrated in the RDFS performance data.</p>
+<p>The OWL reasoners use the rule engines for all inference. The full and mini 
+  configurations omit some of the performance tricks employed by the RDFS reasoner 
+  (notably the use of the custom transitive reasoner) making those OWL reasoner 
+  configurations slower than the RDFS reasoner on pure RDFS data (typically around 
+  x3-4 slow down). The OWL Micro reasoner is intended to be as close to RDFS performance 
+  while also supporting the core OWL constructs as described earlier.</p>
 <p>Once the owl constructs are used then substantial reasoning can be required. 
   The most expensive aspect of the supported constructs is the equality reasoning 
   implied by use of cardinality restrictions and FunctionalProperties. The current 
@@ -1095,8 +1165,6 @@ class B = cardinality(P,1)</pre>
 <p>One random hint: explicitly importing the owl.owl definitions causes much duplication 
   of rule use and a substantial slow down - the OWL axioms that the reasoner can 
   handle are already built in and don't need to be redeclared.</p>
-<p>To repeat the comment in the introduction, we recommend that developers approach 
-  the current implementation with caution.</p>
 <h3>Incompleteness</h3>
 <p>The rule based approach cannot offer a complete solution for OWL/Lite, let 
   alone the OWL/Full fragment corresponding to the OWL/Lite constructs. In addition 
@@ -1263,7 +1331,7 @@ The prefix is local to the rule file.<br /><br /></dd>
 <dd>Includes the rules defined in the given file in this file. The included rules 
 will appear before the user defined rules, irrespective of where in the file
 the @include directive appears. A set of special cases is supported to allow
-a rule file to include the predefine rules for RDFS and OWL - in place of a real
+a rule file to include the predefined rules for RDFS and OWL - in place of a real
 URL for a rule file use one of the keywords
 <code>RDFS</code>
 <code>OWL</code>
@@ -1271,7 +1339,7 @@ URL for a rule file use one of the keywords
 <code>OWLMini</code> (case insensitive).
 </dd>
 </dl>
-</p>
+<p></p>
 <p>
 So an example complete rule file which includes the RDFS rules and defines
 a single extra rule is:
@@ -1584,13 +1652,17 @@ floating point or XSDDateTime).</div>
     </td>
   </tr>
   <tr> 
-    <td width="41%">sum(?a, ?b, ?c)<br>
-      addOne(?a, ?c)<br>
-      product(?a, ?b, ?c)</td>
+    <td width="41%"> 
+      <p>sum(?a, ?b, ?c)<br>
+        addOne(?a, ?c)<br>
+        difference(?a, ?b, ?c)<br>
+        product(?a, ?b, ?c)</p>
+      </td>
     <td width="59%"> 
-      <div align="left">Sets c to be (a+b), (a+1) or (a*b). Note that these do 
-        not run backwards, if in <code>sum</code> a and c are bound and b is unbound 
-        then the test will fail rather than bind b to (c-a). This could be fixed.</div>
+      <div align="left">Sets c to be (a+b), (a+1) (a-b) or (a*b). Note that these 
+        do not run backwards, if in <code>sum</code> a and c are bound and b is 
+        unbound then the test will fail rather than bind b to (c-a). This could 
+        be fixed.</div>
     </td>
   </tr>
   <tr> 
@@ -1844,7 +1916,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.21 2005-04-10 11:31:51 der Exp $</i>
+  Last modification: $Id: index.html,v 1.22 2005-04-12 15:42:50 der Exp $</i>
 </p>
 </body>
 </html>
