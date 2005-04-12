@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.46 $
+ * Revision           $Revision: 1.47 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-11 16:38:44 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-04-12 14:22:09 $
+ *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -70,7 +70,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.46 2005-04-11 16:38:44 ian_dickinson Exp $
+ * @version CVS $Id: OntModel.java,v 1.47 2005-04-12 14:22:09 jeremy_carroll Exp $
  */
 public interface OntModel
     extends InfModel
@@ -1449,7 +1449,10 @@ public interface OntModel
     /**
      * <p>If this OntModel is presenting an OWL model, answer the minimum OWL language
      * level that the constructs
-     * used in this model lie entirely within.  The three possible return values are
+     * used in this model lie entirely within.  
+     * This method requires that the separately downloadable
+     * owlsyntax.jar is on the classpath. 
+     * The three possible return values are
      * {@link com.hp.hpl.jena.vocabulary.OWL#FULL_LANG FULL_LANG} for OWL-full,
      * {@link com.hp.hpl.jena.vocabulary.OWL#DL_LANG DL_LANG} for OWL-DL or
      * {@link com.hp.hpl.jena.vocabulary.OWL#LITE_LANG LITE_LANG} for OWL-lite.
