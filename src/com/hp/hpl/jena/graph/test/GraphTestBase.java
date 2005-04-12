@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.25 2005-02-21 11:52:37 andy_seaborne Exp $
+  $Id: GraphTestBase.java,v 1.26 2005-04-12 13:33:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -116,7 +116,7 @@ public class GraphTestBase extends JenaTestBase
             }
         }
     
-    protected static String nice( Graph g, Map bnodes )
+    public static String nice( Graph g, Map bnodes )
         {
         StringBuffer b = new StringBuffer( g.size() * 100 );
         ExtendedIterator it = GraphUtil.findAll( g );

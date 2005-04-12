@@ -26,6 +26,9 @@ public class TestModelSpecFactory extends ModelTestBase
     
     public static TestSuite suite()
         { return new TestSuite( TestModelSpecFactory.class ); }
+//        { TestSuite result = new TestSuite();
+//        result.addTest( new TestModelSpecFactory( "testDefaultCreate" ) );
+//        return result; }
     
     public void testFindUniqueRootByType()
         {
@@ -71,13 +74,13 @@ public class TestModelSpecFactory extends ModelTestBase
         assertEquals( T, ModelSpecFactory.findSpecificType( root, T ) );
         }
     
-    public void testFindSpecificTypeWithSubtypes()
-        {
-        Model m = fullModel
-            ( "eh:root rdf:type eh:V; eh:V rdfs:subClassOf eh:U; eh:U rdfs:subClassOf eh:T" );
-        Resource root = m.createResource( "eh:root" );
-        assertEquals( resource( "eh:V" ), ModelSpecFactory.findSpecificType( root, resource( "eh:T") ) );
-        }        
+//    public void testFindSpecificTypeWithSubtypes()
+//        {
+//        Model m = fullModel
+//            ( "eh:root rdf:type eh:V; eh:V rdfs:subClassOf eh:U; eh:U rdfs:subClassOf eh:T" );
+//        Resource root = m.createResource( "eh:root" );
+//        assertEquals( resource( "eh:V" ), ModelSpecFactory.findSpecificType( root, resource( "eh:T") ) );
+//        }        
     
     public void testFactoryReturnsAModelSpec()
         {

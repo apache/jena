@@ -70,8 +70,9 @@ public class TestModelSpecWithSchema extends ModelTestBase
         Resource C = s.getResource();
         Resource X = ResourceFactory.createResource(), Y = ResourceFactory.createResource();
         Model m = ModelFactory.createDefaultModel().add( X, P, Y );
-        Model wanted = ModelFactory.createDefaultModel().add( m ).add( X, RDF.type, C );
-        assertTrue( ModelSpecFactory.withSpecSchema( m ).contains( X, RDF.type, C ) );
+        Model ws = ModelSpecFactory.withSpecSchema( m );
+        for (StmtIterator it = ws.listStatements( C, RDFS.subClassOf, (RDFNode) null ); it.hasNext();)
+            assertTrue( ws.contains( X, RDF.type, it.nextStatement().getObject() ) );
         }
     
     protected void testOK( String wanted, String toTest )
