@@ -101,6 +101,29 @@ public class ModelSpecFactory
             if (desc.contains( candidate, RDFS.subClassOf, type )) type = candidate; }
         return type; }
 
+    public static Model withSpecSchema( Model m )
+        {
+        Model result = ModelFactory.createDefaultModel();
+        Model schema = ModelFactory.createRDFSModel( JenaModelSpec.getSchema() );
+        result.add( m );
+        for (StmtIterator it = schema.listStatements( null, RDFS.domain, (RDFNode) null ); it.hasNext();)
+            {
+            Statement s = it.nextStatement();
+            for (StmtIterator x = m.listStatements( null, (Property) s.getSubject().as( Property.class ), (RDFNode) null ); x.hasNext();)
+                {
+                Statement t = x.nextStatement();
+                result.add( t.getSubject(), RDF.type, s.getObject() );
+                }
+            }
+        for (StmtIterator it = schema.listStatements( null, RDFS.subClassOf, (RDFNode) null ); it.hasNext();)
+            { 
+            Statement s = it.nextStatement();
+            if (s.getSubject().getNameSpace().equals( JenaModelSpec.baseURI ) && s.getResource().getNameSpace().equals( JenaModelSpec.baseURI ))
+                result.add( s ); 
+            }
+        return result;
+        }
+
     }
 
 
