@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            04-Apr-2005
  * Filename           $RCSfile: TestFrameView.java,v $
- * Revision           $Revision: 1.5 $
+ * Revision           $Revision: 1.6 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-11 16:41:42 $
+ * Last modified on   $Date: 2005-04-12 10:57:18 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -38,7 +38,7 @@ import com.hp.hpl.jena.reasoner.test.TestUtil;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestFrameView.java,v 1.5 2005-04-11 16:41:42 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestFrameView.java,v 1.6 2005-04-12 10:57:18 ian_dickinson Exp $)
  */
 public class TestFrameView
     extends TestCase
@@ -109,9 +109,12 @@ public class TestFrameView
     //////////////////////////////////
 
     public void setUp() {
+        OntDocumentManager.getInstance().reset();
+        OntDocumentManager.getInstance().clearCache();
         mNoInf = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
         mNoInf.read( "file:testing/ontology/owl/list-syntax/test-ldp.rdf" );
-        mInf = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF );
+        //mInf = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RULE_INF );
+        mInf = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF);
         mInf.read( "file:testing/ontology/owl/list-syntax/test-ldp.rdf" );
 
         infA = mInf.getOntClass( NS + "A" );
@@ -160,6 +163,22 @@ public class TestFrameView
         noinfPintersect = mNoInf.getObjectProperty( NS + "intersectP" );
     }
 
+    public void tearDown() {
+        /* assistance with monitoring space leak
+        System.gc();
+        System.gc();
+        Runtime r = Runtime.getRuntime();
+        System.out.println( getName() + 
+                            " memory = " + r.freeMemory() + 
+                            ", alloc = " + r.totalMemory() + 
+                            ", % = " + Math.round( 100.0 * (double) r.freeMemory() / (double) r.totalMemory() ));
+        */
+        mInf.close();
+        mInf = null;
+        mNoInf.close();
+        mNoInf = null;
+    }
+    
     // OntClass.listDeclaredProperties() tests ...
 
     public void testLDP_noinfA_nodirect() {
