@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.39 2005-04-11 11:27:04 der Exp $
+ * $Id: TestFBRules.java,v 1.40 2005-04-12 10:59:02 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.39 $ on $Date: 2005-04-11 11:27:04 $
+ * @version $Revision: 1.40 $ on $Date: 2005-04-12 10:59:02 $
  */
 public class TestFBRules extends TestCase {
     
@@ -55,6 +55,7 @@ public class TestFBRules extends TestCase {
     protected Node r = Node.createURI("r");
     protected Node s = Node.createURI("s");
     protected Node t = Node.createURI("t");
+    protected Node u = Node.createURI("u");
     protected Node a = Node.createURI("a");
     protected Node b = Node.createURI("b");
     protected Node c = Node.createURI("c");
@@ -710,6 +711,7 @@ public class TestFBRules extends TestCase {
         rules =  
         "[r1: (?x p ?a), (?x q ?b), sum(?a, ?b, ?c) -> (?x s ?c)]" +
         "[r2: (?x p ?a), (?x q ?b), product(?a, ?b, ?c) -> (?x t ?c)]" +
+        "[r3: (?x p ?a), (?x q ?b), difference(?b, ?a, ?c) -> (?x u ?c)]" +
                        "";
         ruleList = Rule.parseRules(rules);
         data = new GraphMem();
@@ -723,6 +725,7 @@ public class TestFBRules extends TestCase {
                 new Triple(n1, q, Util.makeIntNode(5)),
                 new Triple(n1, s, Util.makeIntNode(8)),
                 new Triple(n1, t, Util.makeIntNode(15)),
+                new Triple(n1, u, Util.makeIntNode(2)),
             });
          
         // Note type checking   
