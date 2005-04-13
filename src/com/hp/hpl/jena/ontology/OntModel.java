@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntModel.java,v $
- * Revision           $Revision: 1.47 $
+ * Revision           $Revision: 1.48 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-12 14:22:09 $
+ * Last modified on   $Date: 2005-04-13 09:45:32 $
  *               by   $Author: jeremy_carroll $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -70,7 +70,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModel.java,v 1.47 2005-04-12 14:22:09 jeremy_carroll Exp $
+ * @version CVS $Id: OntModel.java,v 1.48 2005-04-13 09:45:32 jeremy_carroll Exp $
  */
 public interface OntModel
     extends InfModel
@@ -1462,7 +1462,7 @@ public interface OntModel
      * may change in future, in which case these return values will change apropriately.
      * In addition to the method return value,
      * the given <code>problems</problems> list, if non-null, will be filled with the syntax
-     * problems detected by the {@linkplain com.hp.hpl.jena.ontology.tidy.Checker syntax checker}.
+     * problems detected by the syntax checker.
      * </p>
      * <p>
      * The Jena OWL syntax checker will normally list as problems those constructs used in
