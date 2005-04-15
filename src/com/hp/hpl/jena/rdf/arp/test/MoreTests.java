@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.25 2005-04-08 13:28:58 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.26 2005-04-15 10:46:53 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -50,8 +50,8 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		suite.addTest(new MoreTests("testToString"));
 		
 //for (int i=0; i< 20; i++ ) {
-		suite.addTest(new MoreTests("testTokenGarbage1"));
-		suite.addTest(new MoreTests("testTokenGarbage2"));
+		//suite.addTest(new MoreTests("testTokenGarbage1"));
+		//suite.addTest(new MoreTests("testTokenGarbage2"));
 //		suite.addTest(new MoreTests("testTokenGarbage1"));
 //		suite.addTest(new MoreTests("testTokenGarbage2"));
 //		suite.addTest(new MoreTests("testTokenGarbage1"));
