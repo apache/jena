@@ -1,15 +1,18 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelRDB.java,v 1.2 2005-02-21 12:03:17 andy_seaborne Exp $
+  $Id: TestModelRDB.java,v 1.3 2005-04-15 12:40:54 chris-dollin Exp $
 */
 package com.hp.hpl.jena.db.test;
+
+import java.sql.SQLException;
 
 import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.*;
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
  TestModelRDB
@@ -29,6 +32,10 @@ public class TestModelRDB extends AbstractTestModel
     public void setUp()
         { con = TestConnection.makeAndCleanTestConnection();
         super.setUp(); }
+    
+    public void tearDown() 
+        { try { con.close(); }
+        catch (SQLException e) { throw new JenaException( e ); } }
     
     public Model getModel()
         {

@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDBMaker.java,v 1.8 2005-03-16 14:46:29 chris-dollin Exp $
+  $Id: TestGraphRDBMaker.java,v 1.9 2005-04-15 12:40:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
+
+import java.sql.SQLException;
 
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;
@@ -54,11 +56,13 @@ public class TestGraphRDBMaker extends AbstractTestGraphMaker
         
     /**
         Run the parent teardown, and then remove all the freshly created graphs.
+     * @throws  
     */
     public void tearDown()
         {
         super.tearDown();
         if (current != null) current.removeAll();
+        try { connection.close(); } catch (Exception e) { throw new JenaException( e ); }
         }
     }
 
