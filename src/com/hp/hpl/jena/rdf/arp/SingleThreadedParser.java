@@ -29,7 +29,7 @@ import org.xml.sax.*;
  * @author Jeremy J. Carroll
  *
  */
-class SingleThreadedParser extends XMLHandler {
+public class SingleThreadedParser extends XMLHandler {
 
 	private XMLPullParserConfiguration pullParser;
 	private SAXParser saxParser;
@@ -81,7 +81,7 @@ class SingleThreadedParser extends XMLHandler {
 		 *  
 		 */
 	}
-	static SingleThreadedParser create() {
+	static public SingleThreadedParser create() {
 		StandardParserConfiguration c = new StandardParserConfiguration();
 		MySAXParser msp = new MySAXParser(c);
 		SingleThreadedParser a = new SingleThreadedParser(msp, c);

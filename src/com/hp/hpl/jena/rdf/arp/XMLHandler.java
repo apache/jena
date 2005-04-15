@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.9 2005-04-11 11:54:24 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.10 2005-04-15 15:37:44 chris-dollin Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -101,7 +101,7 @@ abstract class XMLHandler
 	StatementHandler getStatementHandler() {
 		return handlers.getStatementHandler();
 	}
-	ARPHandlers getHandlers() {
+	public ARPHandlers getHandlers() {
 		return handlers;
 	}
 
