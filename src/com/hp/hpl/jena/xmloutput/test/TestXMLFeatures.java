@@ -2,7 +2,7 @@
  *  (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
-  $Id: TestXMLFeatures.java,v 1.40 2005-02-21 12:22:53 andy_seaborne Exp $
+  $Id: TestXMLFeatures.java,v 1.41 2005-04-15 10:34:38 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -16,7 +16,6 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.shared.*;
-//import com.hp.hpl.jena.util.*;
 
 import junit.framework.*;
 
@@ -26,12 +25,10 @@ import org.apache.oro.text.regex.MalformedPatternException;
 import java.util.*;
 
 import java.io.*;
-//import com.hp.hpl.jena.util.TestLogger;
-//import org.apache.log4j.Level;
 
 /**
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.40 $ $Date: 2005-02-21 12:22:53 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.41 $ $Date: 2005-04-15 10:34:38 $
  */
 
 public class TestXMLFeatures extends ModelTestBase {
@@ -1184,5 +1181,5 @@ public class TestXMLFeatures extends ModelTestBase {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: TestXMLFeatures.java,v 1.40 2005-02-21 12:22:53 andy_seaborne Exp $
+ * $Id: TestXMLFeatures.java,v 1.41 2005-04-15 10:34:38 jeremy_carroll Exp $
  */
