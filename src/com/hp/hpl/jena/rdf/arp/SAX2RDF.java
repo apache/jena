@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.10 2005-02-21 12:09:15 andy_seaborne Exp $
+ * * $Id: SAX2RDF.java,v 1.11 2005-04-15 10:43:55 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -182,6 +182,8 @@ implements ARPConfig {
 		rdr.setProperty(
 			"http://xml.org/sax/properties/lexical-handler",
 			sax2rdf);
+		rdr.setFeature(
+		        "http://apache.org/xml/features/allow-java-encodings",true);
 	
 	}
 }
