@@ -52,7 +52,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.48 $ on $Date: 2005-03-17 10:11:14 $
+* @version $Revision: 1.49 $ on $Date: 2005-04-15 11:11:39 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -319,8 +319,7 @@ public abstract class DriverRDB implements IRDBDriver {
 						// database so abort
 						throw new JenaException(
 						"The database appears to be unformatted or corrupted and\n"
-						+ "an attempt to automatically format the database has failed\n"
-						+ " (\"" + e + "\").");
+						+ "an attempt to automatically format the database has failed\n", e);
 					}
 				}
 				unlockDB();
