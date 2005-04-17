@@ -34,7 +34,14 @@ public class TestMacEncodings  extends ModelTestBase
     	{ return new TestSuite( TestMacEncodings.class ); }
     static private boolean InUse = false;
     public void test00InitMacTests() {
-     InUse = Charset.isSupported("MacRoman");
+        try {
+            OutputStream out = new ByteArrayOutputStream();
+            
+            Writer wrtr = new OutputStreamWriter(out,"MacRoman");
+            InUse = true;
+        } catch (Exception e){
+            InUse = false;
+        }
      if (!InUse){
          logger.warn("MacRoman not supported on this Java installation: mac encoding tests suppressed.");
          
