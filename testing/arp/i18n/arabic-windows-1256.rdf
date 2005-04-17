@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="windows-1256" ?>
+<!-- Note: hand-edited by jjc from BBC content, merging RSS 0.91 arabic file subset with RSS 1.0 persian file format. -->
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:cc="http://web.resource.org/cc/" xmlns="http://purl.org/rss/1.0/">
+	<channel rdf:about="http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/default.stm">
+	<title>BBC Arabic News | الصفحة الرئيسية</title>
+	<link>http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/default.stm</link>
+	<description>يتم التحديث كل دقيقة وكل يوم - للاستخدام الشخصي فقط</description>
+	<dc:language>ar</dc:language>
+	<dc:copyright>حقوق النشر والطبع محفوظة لهيئة الإذاعة البريطانية بي بي سي, http://news.bbc.co.uk/1/hi/help/3281849.stm</dc:copyright>
+       		
+</channel>
+	<item
+		rdf:about=
+        "http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/newsid_4447000/4447211.stm">
+        <title>مقتل اربعة أشخاص في اعمال عنف بالعراق</title>
+        <description>مقتل اربعة أشخاص على الأقل وإصابة آخرين في عمليات استهدفت القوات   الأمريكية والعراقية. واعمال عنف في  معتقل بوكا إثر مقتل أحد السجناء.</description>
+        <link>http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/newsid_4447000/4447211.stm</link>
+	
+	
+</item>
+	
+</rdf:RDF>
+

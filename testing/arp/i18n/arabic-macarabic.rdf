@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="MacArabic"?>
+<rdf:RDF
+    xmlns="http://purl.org/rss/1.0/"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:cc="http://web.resource.org/cc/" >
+  <rdf:Description rdf:about="http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/newsid_4447000/4447211.stm">
+    <title>וגÊה ַָׁÙֹ ֳװ־ַױ בך ַÙוַה Ùזב ַָהÙַׁג</title>
+    <link>http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/newsid_4447000/4447211.stm</link>
+    <description>וגÊה ַָׁÙֹ ֳװ־ַױ Ùהי ַהֳגה טֵױַָֹ ֲ־ׁךז בך ÙוהךַÊ ַ׃ÊחֿבÊ ַהגטַÊ   ַהֳוׁךדךֹ טַהÙַׁגךֹ. טַÙוַה Ùזב בך  וÙÊגה ָטדַ ֵֻׁ וגÊה ֳֽֿ ַה׃ּזֱַ.</description>
+    <rdf:type rdf:resource="http://purl.org/rss/1.0/item"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/default.stm">
+    <dc:copyright>ֽגטג ַהזװׁ טַה׳ָÙ וֽבט״ֹ החךֶֹ ַהֵ׀ַÙֹ ַהָׁך׳ַזךֹ ָך ָך ׃ך, http://news.bbc.co.uk/1/hi/help/3281849.stm</dc:copyright>
+    <dc:language>ar</dc:language>
+    <link>http://news.bbc.co.uk/go/click/rss/0.91/public/-/hi/arabic/news/default.stm</link>
+    <title>BBC Arabic News | ַהױבֹֽ ַהֶׁך׃ךֹ</title>
+    <description>ךÊו ַהÊֽֿךֻ דה ֿגךגֹ טדה ךטו - ההַ׃Ê־ַֿו ַהװ־ױך בג׳</description>
+    <rdf:type rdf:resource="http://purl.org/rss/1.0/channel"/>
+  </rdf:Description>
+</rdf:RDF>
