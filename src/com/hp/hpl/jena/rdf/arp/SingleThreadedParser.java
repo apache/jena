@@ -212,8 +212,8 @@ class SingleThreadedParser extends XMLHandler {
                 
                 if (!encodingInfo.isIANA()) {
                     putWarning(
-                            encodingInfo.isInNIO() ? WARN_UNSUPPORTED_ENCODING
-                                    : WARN_NON_IANA_ENCODING, new Location(
+                            encodingInfo.isInNIO() ? WARN_NON_IANA_ENCODING
+                                    : WARN_UNSUPPORTED_ENCODING, new Location(
                                     locator), encodingInfo.warningMessage());
                 } else if (!original.equalsIgnoreCase(e)) {
                     putWarning(

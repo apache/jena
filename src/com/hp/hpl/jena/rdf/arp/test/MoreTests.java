@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.27 2005-04-17 21:01:09 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.28 2005-04-17 21:28:41 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -106,10 +106,10 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		
 		rdr.setErrorHandler(this);
 		expected = new int[] { WARN_UNSUPPORTED_ENCODING, WARN_NON_IANA_ENCODING };
+		expected[System.getProperty("java.version").startsWith("1.4")?1:0]=0;
+//		 Only one of the warnings is expected, which depends on Java version
+		
 		rdr.read(m, r, "http://example.org/");
-		// Only one of the warnings is expected, which depends on Java version
-		if (expected[0]==0)expected[1] = 0;
-		else expected[0]=0;
 		checkExpected();
 	}
 	public void testARPMacArabic() throws IOException {
@@ -120,10 +120,9 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		
 		rdr.setErrorHandler(this);
 		expected = new int[] { WARN_UNSUPPORTED_ENCODING, WARN_NON_IANA_ENCODING };
+		expected[System.getProperty("java.version").startsWith("1.4")?1:0]=0;
+//		 Only one of the warnings is expected, which depends on Java version
 		rdr.read(m, r, "http://example.org/");
-		// Only one of the warnings is expected, which depends on Java version
-		if (expected[0]==0)expected[1] = 0;
-		else expected[0]=0;
 		checkExpected();
 	}
 	
