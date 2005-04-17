@@ -6,18 +6,17 @@
 package com.hp.hpl.jena.xmloutput.test;
 
 
-import java.util.*;
 
 import java.io.*;
-import java.nio.charset.Charset;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import junit.framework.*;
+
+import com.hp.hpl.jena.rdf.arp.test.MoreTests;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.xmloutput.impl.BaseXMLWriter;
 
 /**
  * @author Jeremy J. Carroll
@@ -31,8 +30,27 @@ public class TestMacEncodings  extends ModelTestBase
 		{ super( name ); }
 			
 	public static TestSuite suite()
-    	{ return new TestSuite( TestMacEncodings.class ); }
+    	{ 
+	    TestSuite suite = new TestSuite( TestMacEncodings.class );
+        suite.setName("Encodings (particular MacRoman etc.)");
+
+        try {
+            OutputStream out = new ByteArrayOutputStream();
+            
+            Writer wrtr = new OutputStreamWriter(out,"MacRoman");
+            InUse = true;
+        } catch (Exception e){
+            InUse = false;
+        }
+     if (!InUse){
+         logger.warn("MacRoman not supported on this Java installation: mac encoding tests suppressed.");
+        return suite;   
+     }
+		suite.addTest(new MoreTests("testARPMacRoman"));
+		suite.addTest(new MoreTests("testARPMacArabic"));
+	    return suite; }
     static private boolean InUse = false;
+    /*
     public void test00InitMacTests() {
         try {
             OutputStream out = new ByteArrayOutputStream();
@@ -48,42 +66,27 @@ public class TestMacEncodings  extends ModelTestBase
      }
         
     }
+     */
 
-    public void testMacRoman() throws IOException {
+    public void testXMLWriterMacRoman() throws IOException {
         if (!InUse) return;
-        File f = File.createTempFile("jena", ".rdf");
-    	String fileName = f.getAbsolutePath();
+        TestXMLFeatures.blockLogger();
     	Model m = createMemModel();
-    	m.read(
-    		new FileInputStream("testing/wg/rdfms-syntax-incomplete/test001.rdf"),
-    		"");
-    	FileOutputStream fos = new FileOutputStream(fileName);
+    	OutputStream fos = new ByteArrayOutputStream();
     	Writer w = new OutputStreamWriter(fos,"MacRoman");
     	m.write(w, "RDF/XML");
-    	fos.close();
-    	Model m1 = createMemModel();
-    	m1.read(new FileInputStream(fileName), "");
-    	assertTrue("Use of FileWriter", m.isIsomorphicWith(m1));
-    	f.delete();
+    	assertTrue(TestXMLFeatures.unblockLogger());
     }	
 
 
-    public void testMacArabic() throws IOException {
+    public void testXMLWriteMacArabic() throws IOException {
         if (!InUse) return;
-    	File f = File.createTempFile("jena", ".rdf");
-    	String fileName = f.getAbsolutePath();
+        TestXMLFeatures.blockLogger();
     	Model m = createMemModel();
-    	m.read(
-    		new FileInputStream("testing/arp/i18n/arabic-utf8.rdf"),
-    		"");
-    	FileOutputStream fos = new FileOutputStream(fileName);
-    	Writer w = new OutputStreamWriter(fos,"MacArabic");
+    	OutputStream fos = new ByteArrayOutputStream();
+    	Writer w = new OutputStreamWriter(fos,"MacRoman");
     	m.write(w, "RDF/XML");
-    	fos.close();
-    	Model m1 = createMemModel();
-    	m1.read(new FileInputStream(fileName), "");
-    	assertTrue("Use of FileWriter", m.isIsomorphicWith(m1));
-    	f.delete();
+    	assertTrue(TestXMLFeatures.unblockLogger());
     }	
     
     

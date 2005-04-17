@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.26 2005-04-15 10:46:53 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.27 2005-04-17 21:01:09 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -38,6 +38,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		suite.addTest(ExceptionTests.suite());
 	
 		suite.addTest(new MoreTests("testIcu"));
+		suite.addTest(new MoreTests("testLatin1"));
 		suite.addTest(new MoreTests("testIcu2"));
 		suite.addTest(new MoreTests("testEncodingMismatch1"));
 		suite.addTest(new MoreTests("testEncodingMismatch2"));
@@ -60,7 +61,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		return suite;
 	}
 
-	MoreTests(String s) {
+	public MoreTests(String s) {
 		super(s);
 	}
 
@@ -85,6 +86,47 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		assertEquals("http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine#", m
 				.getNsPrefixURI(""));
 	}
+
+	public void testLatin1() throws IOException {
+		Model m = createMemModel();
+		RDFReader rdr = m.getReader();
+		InputStream r = new FileInputStream(
+				"testing/arp/i18n/latin1.rdf");
+		
+		rdr.setErrorHandler(this);
+		expected = new int[] { WARN_NONCANONICAL_IANA_NAME };
+		rdr.read(m, r, "http://example.org/");
+		checkExpected();
+	}
+	public void testARPMacRoman() throws IOException {
+		Model m = createMemModel();
+		RDFReader rdr = m.getReader();
+		InputStream r = new FileInputStream(
+				"testing/arp/i18n/macroman.rdf");
+		
+		rdr.setErrorHandler(this);
+		expected = new int[] { WARN_UNSUPPORTED_ENCODING, WARN_NON_IANA_ENCODING };
+		rdr.read(m, r, "http://example.org/");
+		// Only one of the warnings is expected, which depends on Java version
+		if (expected[0]==0)expected[1] = 0;
+		else expected[0]=0;
+		checkExpected();
+	}
+	public void testARPMacArabic() throws IOException {
+		Model m = createMemModel();
+		RDFReader rdr = m.getReader();
+		InputStream r = new FileInputStream(
+				"testing/arp/i18n/arabic-macarabic.rdf");
+		
+		rdr.setErrorHandler(this);
+		expected = new int[] { WARN_UNSUPPORTED_ENCODING, WARN_NON_IANA_ENCODING };
+		rdr.read(m, r, "http://example.org/");
+		// Only one of the warnings is expected, which depends on Java version
+		if (expected[0]==0)expected[1] = 0;
+		else expected[0]=0;
+		checkExpected();
+	}
+	
 
 	public void testEncodingMismatch1() throws IOException {
 		Model m = createMemModel();
