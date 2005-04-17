@@ -5,7 +5,7 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import com.hp.hpl.jena.util.CharacterEncoding;
+import com.hp.hpl.jena.util.CharEncoding;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -175,7 +175,7 @@ class SingleThreadedParser extends XMLHandler {
         } else if (str == null) {
             if (rdr instanceof InputStreamReader) {
                 String javaEnc = ((InputStreamReader) rdr).getEncoding();
-                readerXMLEncoding = CharacterEncoding.create(javaEnc).name();
+                readerXMLEncoding = CharEncoding.create(javaEnc).name();
             }
             return new XMLInputSource(publicID, systemID, systemID, rdr, null);
         }
@@ -184,7 +184,7 @@ class SingleThreadedParser extends XMLHandler {
 
     void setEncoding(String original) {
 
-        CharacterEncoding encodingInfo = CharacterEncoding.create(original);
+        CharEncoding encodingInfo = CharEncoding.create(original);
         String e = encodingInfo.name();
         //  System.err.println("xmlEncoding = " + e);
         if (xmlEncoding == null) {

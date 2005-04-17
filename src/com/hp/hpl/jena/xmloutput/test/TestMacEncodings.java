@@ -74,7 +74,7 @@ public class TestMacEncodings  extends ModelTestBase
     	String fileName = f.getAbsolutePath();
     	Model m = createMemModel();
     	m.read(
-    		new FileInputStream("testing/wg/rdfms-syntax-incomplete/test001.rdf"),
+    		new FileInputStream("testing/arp/i18n/arabic-utf8.rdf"),
     		"");
     	FileOutputStream fos = new FileOutputStream(fileName);
     	Writer w = new OutputStreamWriter(fos,"MacArabic");
