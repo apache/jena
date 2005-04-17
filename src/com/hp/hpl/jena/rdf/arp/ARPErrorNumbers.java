@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.16 2005-02-21 12:08:55 andy_seaborne Exp $
+   $Id: ARPErrorNumbers.java,v 1.17 2005-04-17 18:03:09 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -369,6 +369,40 @@ public interface ARPErrorNumbers {
 		* *  (W131).
 		**/
 	   public int WARN_STRING_NOT_NORMAL_FORM_C = 131;
+	   
+	   /**
+	    * The character encoding in the XML declaration is not
+	    * fully supported. In particular, advice about
+	    * the IANA registry entry, if any, is not available.
+	    * This warning is only believed to be applicable to
+	    * Java 1.4. Java 1.5 has more extensive support for
+	    * this information, and so upgrading from Java 1.4 to Java 1.5
+	    * is a plausible response to this warning.
+	    * (W132).
+	    */
+	   public int WARN_UNSUPPORTED_ENCODING = 132;
+
+	   /**
+	    * The character encoding in the XML declaration is not
+	    * registered with IANA. Hence the RDF/XML file
+	    * is not appropriate for use on the Web, but only
+	    * for private interactions, between parties agreeing
+	    * on the character encoding.
+	    * It may not be possible to read this file with superficially
+	    * similar Jena installations, let alone with other RDF systems.
+	    * (W133).
+	    */
+	   public int WARN_NON_IANA_ENCODING = 133;
+
+	   /**
+	    * The encoding in the XML declaration is an alias
+	    * registered with IANA. Better interoperability
+	    * is likely by replacing the encoding declaration
+	    * with the canonical IANA name, provided in the warning
+	    * message.
+	    * (W134).
+	    */
+	   public int WARN_NONCANONICAL_IANA_NAME =134;
     
     /** Should not happen. 
         Please report occurrence to jjc@hpl.hp.com with test case, if possible. 

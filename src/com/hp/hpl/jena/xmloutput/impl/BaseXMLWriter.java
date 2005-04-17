@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.44 2005-04-11 11:56:20 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.45 2005-04-17 18:04:32 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -10,6 +10,7 @@ package com.hp.hpl.jena.xmloutput.impl;
 import com.hp.hpl.jena.xmloutput.RDFXMLWriterI;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.util.CharacterEncoding;
 import com.hp.hpl.jena.util.FileUtils;
 import com.hp.hpl.jena.rdf.model.impl.Util;
 import com.hp.hpl.jena.JenaRuntime ;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.44 $' Date='$Date: 2005-04-11 11:56:20 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.45 $' Date='$Date: 2005-04-17 18:04:32 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	
@@ -467,8 +468,14 @@ abstract public class BaseXMLWriter implements RDFXMLWriterI {
 			String javaEnc = ((OutputStreamWriter) out).getEncoding();
 			// System.err.println(javaEnc);
 			if (!(javaEnc.equals("UTF8") || javaEnc.equals("UTF-16"))) {
-				String ianaEnc = Charset.forName(javaEnc).name();
+			    CharacterEncoding encodingInfo = CharacterEncoding.create(javaEnc);
+		        
+				String ianaEnc = encodingInfo.name();
 				decl = "<?xml version="+q("1.0")+" encoding=" + q(ianaEnc) + "?>";
+				if (!encodingInfo.isIANA())
+			     logger.warn(encodingInfo.warningMessage()+"\n"+
+				            "   It is better to use a FileOutputStream, in place of a FileWriter.");
+				       
 			}
 		}
 		if (decl == null && showXmlDeclaration != null)
