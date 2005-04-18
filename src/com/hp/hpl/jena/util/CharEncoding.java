@@ -6,7 +6,7 @@
 package com.hp.hpl.jena.util;
 
 import java.nio.charset.Charset;
-
+import java.util.*;
 /**
  * 
  * This class provides a number of static methods which interact with
@@ -17,6 +17,23 @@ import java.nio.charset.Charset;
  *  
  */
 abstract public class CharEncoding {
+    static Set macEncodings = new HashSet();
+    static {
+macEncodings.add("MacArabic");
+macEncodings.add("MacCentralEurope");
+macEncodings.add("MacCroatian");
+macEncodings.add("MacCyrillic");
+macEncodings.add("MacDingbat");
+macEncodings.add("MacGreek");
+macEncodings.add("MacHebrew");
+macEncodings.add("MacIceland");
+macEncodings.add("MacRoman");
+macEncodings.add("MacRomania");
+macEncodings.add("MacSymbol");
+macEncodings.add("MacThai");
+macEncodings.add("MacTurkish");
+macEncodings.add("MacUkraine");
+    }
     private String name;
     private CharEncoding(){}
     private CharEncoding(String name) {
@@ -122,6 +139,9 @@ abstract public class CharEncoding {
             String nm = Charset.forName(enc).name();
             if (nm.charAt(1)=='-'
                 && (nm.charAt(0)=='x' || nm.charAt(0)=='X') )
+                return new NonIANAnioEncoding(nm);
+            else if (nm.startsWith("Mac") &&
+               macEncodings.contains(nm) ) 
                 return new NonIANAnioEncoding(nm);
             else
                 return new IANAnioEncoding(nm);
