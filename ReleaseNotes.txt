@@ -15,6 +15,8 @@ Post 2.2beta change list
         which use Unicode composing characters. If you are processing
         large volumes of Tamil using a patched version of icu4j may be 
         faster. Ask on jena-dev for more information.
+      o Improved character encoding support: all character encodings 
+        supported by Java are now supported by Jena.
 
   FileGraph and ModelMakerImpl
       o ModelMakerImpl now implements [the obsolescent] createModelOver
@@ -73,6 +75,10 @@ Post 2.2beta change list
   DIG reasoner
       o Fixed a bug that meant that <top> and <bottom> were not being translated
         to owl:Thing and owl:Nothing, and hence not appearing in output
+  
+  RDF/XML Output
+      o Improved character encoding support: all character encodings 
+        supported by Java are now supported by Jena.
         
 Post Jena 2.1 change list [up to 2.2beta]
 
