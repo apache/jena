@@ -6,7 +6,7 @@
 </head>
 <body>
 
-This version: 0.1<br/> Date: 8 May 2003
+This version: 0.2<br/> Date: 18 April 2005
 
 <h1>HowTo Use MySQL Database System with Jena2</h1>
 
@@ -21,27 +21,29 @@ Jena tables are created using InnoDB tables which provide ACID transaction
 support. Modifications to Jena database models are immediately written to the 
 database. If the application has an open transaction (see <i>model.begin()</i>), 
 the changes are committed (u.e. visible to other Jena applications) when the 
-application does a commit. Otherwise, the changes areimmediately committed to 
+application does a commit. Otherwise, the changes are immediately committed to 
 the database (i.e., each modification is its own transaction). Jena 
 communicates with MySQL through a JDBC driver.</p>
 
 <h2>Download and Installation of MySQL</h2>
 
 <p>MySQL software and the JDBC driver may be downloaded from
-<a href="http://www.mysql.com/downloads/mysql-4.0.html">http://www.mysql.com/downloads/mysql-4.0.html</a>. 
-The JDBC driver is available from the same web site from
-<a href="http://www.mysql.com/downloads/api-jdbc-stable.html">
-http://www.mysql.com/downloads/api-jdbc-stable.html</a>. If these links are not 
+<a href="http://www.mysql.com/downloads/">http://www.mysql.com/downloads/l</a>. 
+The JDBC driver is available from the same Web page (see MySQL Connector/J). If these links are not 
 found, go to the MySQL home page and search for downloads for the latest version 
 of the server and JDBC driver. Jena2 has been tested with the binary 
-distributions of the MySQL server and driver on Windows 2000 and Linux RedHat 
+distributions of the MySQL server and driver on Windows XP and Linux RedHat 
 7.2 as listed below. The download package is approximately 20 MB.</p>
 
 <table id="AutoNumber1" style="BORDER-COLLAPSE: collapse" borderColor="#FFFFFF" cellSpacing="0" cellPadding="0" border="1">
   <tr>
-    <td>&nbsp;&nbsp;&nbsp; <b>Server:</b>&nbsp; MySQL 4.0.12&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td>&nbsp;&nbsp;&nbsp; <b>Server:</b>&nbsp; MySQL 4.1.11&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
-    <td>&nbsp;&nbsp;&nbsp; <b>Driver: </b>&nbsp;mysql-connector-java-3.0.8-stable.jar&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <td>&nbsp;&nbsp;&nbsp; <b>Drivers: </b>&nbsp;mysql-connector-java-3.0.16-bin.jar 
+    and<br>
+    mysql-connector-java-3.2.0-alpha-bin.jar<br>
+    (versions 3.1.x do not work with Jena; see <a href="#JConn3.1.x">note</a> 
+    below)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </td>
   </tr>
 </table>
@@ -50,6 +52,12 @@ distributions of the MySQL server and driver on Windows 2000 and Linux RedHat
 required to properly configure MySQL. See the MySQL documentation for details (<i>Post-Installation 
 Setup and Testing</i> in Chapter 2). The MySQL documentation should be included 
 with the distribution.</p>
+
+<p><a name="JConn3.1.x">Note: </a>Versions 3.1.x of the MySQL Connector/J JDBC 
+driver do not correctly handle Jena long objects (long literals and long URIs). 
+One symptom of the problem is that long objects may have random text appended 
+upon retrieval. The 3.1.x versions of Connector/J should not be used with Jena2 
+applications unless the user is certain long objects are not used. </p>
 
 <h2>Connecting Your Jena Program to MySQL</h2>
 
