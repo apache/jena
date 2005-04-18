@@ -31,7 +31,11 @@ subsystem.
 <li><a href="#ntriple">1.3 N-TRIPLE</a></li>
 <li><a href="#turtle">1.4 TURTLE</a></li>
 </ul>
-<li><a href="#encoding">2. Character Encoding in Java and XML</a></li>
+<li><a href="#encoding">2. Character Encoding Issues</a>
+<ul>
+<li><a href="#supported-encodings">2.1 Encodings Supported in Jena 2.2 and later</a></li>
+</ul>
+</li>
 <li><a href="#reader-writer">3. When to Use Reader and Writer?</a></li>
 <li><a href="#intro-advanced">4. Introduction to Advanced Jena I/O</a></li>
 <li><a href="#input">5. Advanced RDF/XML Input</a>
@@ -316,53 +320,104 @@ N-Triples</a> language. They are not configurable.</p>
 <p>The N3 reader accepts any valid
 <a href="http://www.ilrt.bris.ac.uk/discovery/2004/01/turtle/">Turtle</a>. Note that the N3 and Turtle writers produce internationalized 
 qnames, with the character set from XML Namespaces (except for ':'), not 
-restricted to ASCII as is the definition of N3 and Turtle.</p>The Turtle writer 
-  is the N3 writer configured with: usePropertySymbols=false, 
-  useTripleQuotedStrings=false, useDoubles=false.<h2><a name="encoding">2. Character Encoding in Java and XML</a></h2>
-<p>
-What when wrong with character encoding?
-</p>
-<p>
-The java.io.* classes based around Reader's and Writer's
- are intended to help us avoid
-encoding problems.
-The encoding attribute in the XML declaration
-at the top of an XML document is intended to help us avoid
-encoding problems.
-Unfortunately, these are two different approaches; and Jena1 went with
-the Java conventions, whereas the
-Web scalable conventions are those used by XML.
+restricted to ASCII as is the definition of N3 and Turtle.</p>
 
+<p>
+The Turtle writer 
+  is the N3 writer configured with: usePropertySymbols=false, 
+  useTripleQuotedStrings=false, useDoubles=false.
 </p>
-<p>The Java approach is that the machine on which the Java is
-running has some default encoding. I/O done with FileReader's and
-PrintWriter's etc, then is done using that encoding, unless there
-is a specific user instruction when the Reader or Writer is created.
-It is not possible to change the encoding used by a Reader or Writer
-while it is being used.
+  
+<h2><a name="encoding">2. Character Encoding Issues</a></h2>
+<p>
+The easiest way to not read or understand this section
+is always to use InputStreams and OutputStreams with Jena,
+and to never use Readers and Writers. If you do this, Jena
+will do the right thing, for the vast majority of users.
+If you have legacy code that uses Readers and Writers,
+or you have special needs with respect to encodings, then
+this section may be helpful.
+The last part of this section summarizes the character encodings
+supported by Jena.
 </p>
 <p>
-The XML approach is that XML documents are in UTF-8 or UTF-16
-unless they say otherwise in the first line of the document
-(this first line is sufficiently restricted to make it possible
-to read it without knowing the encoding).
-Hence, an XML reader should start by looking at the first few bytes
-and work out from those whether it is UTF-8 UTF-16 or some
-other encoding as declared in the first line. From then on,
-it uses that encoding.</p>
-<p>The Java approach is designed for ease of use on a single
+Character encoding is the way that characters are mapped to bytes, shorts
+or ints. There are many different character encodings.
+Within Jena, character encodings are important in their relationship
+to Web content, particularly RDF/XML files, which cannot be understood
+without knowing the character encoding, and in relationship to Java,
+which provides support for many character encodings.
+</p>
+<p>The Java approach to encodings is designed for ease of use on a single
 machine, which uses a single encoding; often being a one-byte
 encoding, e.g. for European languages which do not need thousands
 of different characters.</p>
 <p>The XML approach is designed for the Web which uses
 multiple encodings, and some of them requiring thousands
 of characters.</p>
+<p>
+On the Web, XML files, including RDF/XML files, are by default encoded
+in "UTF-8" (Unicode). This is always a good choice for creating content,
+and is the one used by Jena by default. Other encodings can be used,
+but may be less interoperable. Other encodings should be named using the
+canonical name registered at 
+<a href="http://www.iana.org/assignments/character-sets">IANA</a>,
+but other systems have no obligations to support any of these, other than
+UTF-8 and UTF-16.
+</p>
+<p>
+Within Java, encodings appear primarily with the 
+InputStreamReader and OutputStreamWriter classes,
+which convert between bytes and characters using a named encoding,
+and with their subclasses,
+FileReader and
+FileWriter, which convert between bytes in the file
+and characters using the
+default encoding of the platform.
+It is not possible to change the encoding used by a Reader or Writer
+while it is being used.
+The default encoding of the platform depends on a large range
+of factors.
+This default encoding may be useful for communicating with other
+programs on the same platform. Sometimes the default encoding
+is not registered at IANA, and so Jena application developers
+should not use the default encoding for Web content, but use UTF-8.
+</p>
 <p>In Jena1, we had not understood these issues; and went with
 the Java solution. This was the wrong call. We have now
 fixed it. We are sorry that this does cause our users
 work when migrating to Jena2.
 </p>
-
+<h3><a name="supported-encodings">2.1 Encodings Supported in Jena 2.2 and later</a></h3>
+<p>
+On RDF/XML input any encoding supported by Java can be used.
+If this is not a canonical name registered at IANA a warning message
+is produced. Some encodings have better support in Java 1.5 than Java 1.4;
+for such encodings a warning message is produced on Java 1.4, suggesting
+upgrading.
+</p>
+<p>
+On RDF/XML output any encoding supported by Java can be used,
+by constructing an OutputStreamWriter using that encoding,
+and using that for output. If the encoding is not registered
+at IANA then a warning message is produced.
+Some encodings have better support in Java 1.5 than Java 1.4;
+for such encodings a warning message is produced on Java 1.4, suggesting
+upgrading.
+</p>
+<p>
+Java can be configured either with or without a jar of extra encodings
+on the classpath. This jar is charsets.jar and sits in the lib directory
+of the Java Runtime. If this jar is not on your classpath then the range
+of encodings supported is fairly small.
+</p>
+<p>The encodings supported by Java are listed by Sun, for
+<a href="http://java.sun.com/j2se/1.4.2/docs/guide/intl/encoding.doc.html">1.4.2</a>, and 
+<a href="http://java.sun.com/j2se/1.5.0/docs/guide/intl/encoding.doc.html">1.5.0</a>.
+For an encoding that is not in these lists it is possible to write your own
+transcoder as documented in the java.nio.charsets package documentation.
+</p>
+<p>Earlier versions of Jena supported fewer encodings.</p>
 <h2><a name="reader-writer">3. When to Use Reader and Writer?</a></h2>
 <p>
 Infrequently.
