@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.32 2005-04-18 10:59:30 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.33 2005-04-18 16:32:44 andy_seaborne Exp $ -->
 <!-- (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -515,8 +515,9 @@ fragments are equivalent (in RDF terms):</p>
 <p>However, the second is considerably easier for human readers to read, and tends to 
   be the form most people come across when reading OWL or DAML ontologies, for example.  The default
   output format is <code>RDF/XML</code>, the abbreviated format is <code>RDF/XML-ABBREV</code>.
-  To change from the default output style, pass the required output format to 
-  the <a href="javadoc/com/hp/hpl/jena/rdf/model/Model#write()">Model.write()</a> method:
+  To change from the default output style, pass the required output format to the
+  <a href="javadoc/com/hp/hpl/jena/rdf/model/Model.html#write(java.io.OutputStream,%20java.lang.String)">Model.write</a>
+  method:
 </p>
 <pre>  yourModel.write( yourOutputStream, "RDF/XML-ABBREV" );</pre>
 <p>Note that the abbreviated form requires the writer to do much more work (multiple passes are
