@@ -1,6 +1,10 @@
 Release Notes
 =============
 
+NB There is a problem when using MySQL j-connection 3.1.* and MySQL 4.1.*.
+It manifests itself as truncation of long literals.  System not uisng long
+literals should not see any problem.
+
 Post 2.2beta change list
 
 
