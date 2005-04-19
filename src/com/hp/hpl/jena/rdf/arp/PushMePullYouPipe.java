@@ -175,7 +175,7 @@ class PushMePullYouPipe extends TokenPipe {
 	/**
 	 * Exception to throw if a <code>take</code> throws an exception.
 	 */
-	public static class BoundedBufferTakeException extends JenaException {
+	static class BoundedBufferTakeException extends JenaException {
 		BoundedBufferTakeException(Exception e) {
 			super(e);
 		}
@@ -184,7 +184,7 @@ class PushMePullYouPipe extends TokenPipe {
 	/**
 	 * Exception to throw if a <code>put</code> throws an exception.
 	 */
-	public static class BoundedBufferPutException extends JenaException {
+	static class BoundedBufferPutException extends JenaException {
 		BoundedBufferPutException(Exception e) {
 			super(e);
 		}
