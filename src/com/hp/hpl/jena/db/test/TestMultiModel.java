@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestMultiModel.java,v 1.4 2005-02-21 12:03:18 andy_seaborne Exp $
+  $Id: TestMultiModel.java,v 1.5 2005-04-27 21:28:59 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -108,17 +108,28 @@ public class TestMultiModel extends TestCase
 
     
 	private void addRemove(Statement stmt) {
+		long cnt = model.size();
 		addOnModel(model,stmt);
 		addOnModel(dmod1,stmt);
 		addOnModel(dmod2,stmt);
 		addOnModel(nmod1,stmt);
 		addOnModel(nmod2,stmt);
+		assertTrue( model.size() == (cnt+1));
+		assertTrue( dmod1.size() == 1);
+		assertTrue( dmod2.size() == 1);
+		assertTrue( nmod1.size() == 1);
+		assertTrue( nmod2.size() == 1);
 		
 		rmvOnModel(nmod2,stmt);
 		rmvOnModel(nmod1,stmt);
 		rmvOnModel(dmod2,stmt);
 		rmvOnModel(dmod1,stmt);
 		rmvOnModel(model,stmt);
+		assertTrue( model.size() == cnt);
+		assertTrue( dmod1.size() == 0);
+		assertTrue( dmod2.size() == 0);
+		assertTrue( nmod1.size() == 0);
+		assertTrue( nmod2.size() == 0);
 	}
     
     public void testAddRemoveURI() {

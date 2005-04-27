@@ -122,7 +122,7 @@ public abstract class SpecializedGraph_TripleStore extends SpecializedGraphBase 
 	 * @see com.hp.hpl.jena.db.impl.SpecializedGraph#tripleCount()
 	 */
 	public int tripleCount() {
-		return(m_pset.tripleCount());
+		return(m_pset.tripleCount(my_GID));
 	}
 	
 	/* (non-Javadoc)

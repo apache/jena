@@ -21,7 +21,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 * Based on the Jena1 version of IRDBDriver by Dave Reynolds
 * 
 * @author hkuno
-* @version $Revision: 1.11 $
+* @version $Revision: 1.12 $
 */
 
 public interface IPSet {
@@ -127,7 +127,7 @@ public interface IPSet {
 	 * @param tName
 	 * @return int
 	 */
-	public int rowCount(String tName);
+	public int rowCount(int graphId);
 
 	/**
 	 * Remove the statements associated with this PStore
@@ -137,9 +137,10 @@ public interface IPSet {
 	public void removeStatementsFromDB(IDBID graphID);
 
 	/**
+	 * @param graphId TODO
 	 * @return number of triples in AssertedStatement table
 	 */
-	public int tripleCount();
+	public int tripleCount(IDBID graphId);
 
 	/**
 	 * @param tblName

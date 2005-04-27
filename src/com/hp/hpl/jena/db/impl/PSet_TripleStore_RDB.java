@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.51 2005-03-17 10:11:14 chris-dollin Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.52 2005-04-27 21:28:27 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.51 $ on $Date: 2005-03-17 10:11:14 $
+* @version $Revision: 1.52 $ on $Date: 2005-04-27 21:28:27 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -189,13 +189,15 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 * 
 	 * @return int count.
 	 */
-	public int rowCount(String tName) {
+	public int rowCount(int gid) {
+	String tName = getTblName();
 
 	try {
         int result = 0;
-		 String op = "getRowCount";
+		 String op = "getRowCount"; 
 		 PreparedStatement ps = m_sql.getPreparedSQLStatement(op,tName);
-	     ResultSet rs = ps.executeQuery();
+		 ps.setInt(1, gid);
+		 ResultSet rs = ps.executeQuery();
 	     while ( rs.next() ) result = rs.getInt(1); 
          rs.close();
 		m_sql.returnPreparedSQLStatement(ps);
@@ -710,8 +712,9 @@ public void deleteTripleAR(
 	 * 
 	 * @return int count.
 	 */
-	public int tripleCount() {
-		return(rowCount(getTblName()));
+	public int tripleCount(IDBID graphId) {
+		int gid = ((DBIDInt) graphId).getIntID();
+		return(rowCount(gid));
 	}
     
 

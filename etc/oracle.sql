@@ -154,7 +154,7 @@ INSERT INTO ${a} (Subj, Prop, Obj, GraphID) VALUES (?, ?, ?, ?)
 #-------------------------------------------------------------------
 # Return the count of rows in the table
 getRowCount
-SELECT COUNT(*) FROM ${a}
+SELECT COUNT(*) FROM ${a} WHERE (GraphID = ?)
 
 #-------------------------------------------------------------------
 # Insert a long object with no tail
