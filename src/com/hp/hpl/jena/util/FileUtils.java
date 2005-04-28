@@ -8,6 +8,7 @@ package com.hp.hpl.jena.util;
 import java.io.*;
 
 import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.Charset ;
 
 import com.hp.hpl.jena.shared.JenaException;
@@ -121,7 +122,21 @@ public class FileUtils
             return fn.substring("file://localhost".length()) ;
             
         if ( fn.startsWith("file:") )
-            return fn.substring("file:".length()) ;
+            fn = fn.substring("file:".length()) ;
+
+        if ( fn.indexOf("%") > -1 ) 
+        {
+            try {
+                fn = URLDecoder.decode(fn,"UTF-8") ;
+            } catch (Exception ex) {}
+        }
+        
+//        if ( fn.indexOf("%20") > -1 )
+//            fn = fn.replaceAll("%20", " ") ;
+//        
+//        if ( fn.indexOf("%43") > -1 )
+//            fn = fn.replaceAll("%43", "#") ;
+        
         
         return fn ;
     }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestFileUtils.java,v 1.4 2005-04-12 09:38:08 andy_seaborne Exp $
+  $Id: TestFileUtils.java,v 1.5 2005-04-28 12:17:16 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.util.test;
@@ -90,10 +90,33 @@ public class TestFileUtils extends TestCase
     public void testFilename10()  { isNotFilename("http://www.hp.com/") ; }
     public void testFilename11()  { isNotFilename("urn:tag:stuff") ; }
     
+    public void testTranslateFilename1()
+    { checkToFilename("file:Dir/File", "Dir/File") ; }
+    
+    public void testTranslateFilename2()
+    { checkToFilename("c:\\Dir\\File",    "c:\\Dir\\File") ; }
+    
+    public void testTranslateFilename3()
+    { checkToFilename("unknown:File",    null) ; }
+    
+    public void testTranslateFilename4()
+    { checkToFilename("file:Dir/File With Space", "Dir/File With Space") ; }
+
+    public void testTranslateFilename5()
+    { checkToFilename("file:Dir/File%20With Enc%21", "Dir/File With Enc!") ; }
+
+    
     void isFilename(String fn)
     { assertTrue("Should be a file name : "+fn, FileUtils.isFile(fn)) ; }
     void isNotFilename(String fn)
     { assertFalse("Shouldn't be a  file name: "+fn, FileUtils.isFile(fn)) ; }
+    
+    void checkToFilename(String url, String fn)
+    {
+        String t = FileUtils.toFilename(url) ;
+        assertEquals("Wrong: "+t+" != "+fn, t,fn) ;
+    }
+    
     
     }
 
