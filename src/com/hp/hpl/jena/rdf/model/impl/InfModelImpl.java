@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: InfModelImpl.java,v 1.7 2005-02-21 12:14:32 andy_seaborne Exp $
+ * $Id: InfModelImpl.java,v 1.8 2005-05-01 14:39:27 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.rdf.model.impl;
 
@@ -19,7 +19,7 @@ import java.util.Iterator;
  * an InfGraph.
 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-02-21 12:14:32 $
+ * @version $Revision: 1.8 $ on $Date: 2005-05-01 14:39:27 $
  */
 public class InfModelImpl extends ModelCom implements InfModel {
 
@@ -149,9 +149,9 @@ public class InfModelImpl extends ModelCom implements InfModel {
      * engine or null if not.
      */
     public Model getDeductionsModel() {
-        if (deductionsModel == null) {
-            Graph deductionsGraph = getInfGraph().getDeductionsGraph();
-            if (deductionsGraph != null) {
+        Graph deductionsGraph = getInfGraph().getDeductionsGraph();
+        if (deductionsGraph != null) {
+            if (deductionsModel == null || (deductionsModel.getGraph() != deductionsGraph) ) {
                 deductionsModel = new ModelCom(deductionsGraph);
             }
         }

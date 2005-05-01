@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.33 2005-04-11 11:27:04 der Exp $
+ * $Id: TestBugs.java,v 1.34 2005-05-01 14:39:04 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.33 $ on $Date: 2005-04-11 11:27:04 $
+ * @version $Revision: 1.34 $ on $Date: 2005-05-01 14:39:04 $
  */
 public class TestBugs extends TestCase {
 
@@ -280,6 +280,27 @@ public class TestBugs extends TestCase {
         it.close();
         assertTrue(ok);
       }
+    
+    /**
+     * Test bug caused by caching of deductions models.
+     */
+    public void testDeteleBug2() {
+        Model m = ModelFactory.createDefaultModel();
+        String NS = PrintUtil.egNS;
+        Resource r = m.createResource(NS + "r");
+        Resource A = m.createResource(NS + "A");
+        Resource B = m.createResource(NS + "B");
+        Statement s = m.createStatement(r, RDF.type, A);
+        m.add(s);
+        String rules = "(?r rdf:type eg:A) -> (?r rdf:type eg:B).";
+        GenericRuleReasoner grr = new GenericRuleReasoner(Rule.parseRules(rules));
+        InfModel im = ModelFactory.createInfModel(grr, m);
+        assertTrue(im.contains(r, RDF.type, B));
+        assertTrue(im.getDeductionsModel().contains(r, RDF.type, B));
+        im.remove(s);
+        assertFalse(im.contains(r, RDF.type, B));
+        assertFalse(im.getDeductionsModel().contains(r, RDF.type, B));
+    }
     
     /**
      * Test looping on recursive someValuesFrom.
