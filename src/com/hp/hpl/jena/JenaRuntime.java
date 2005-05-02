@@ -13,7 +13,7 @@ import java.security.AccessController;
  *  Primarily for other parts of the Jena framework. 
  * 
  * @author Andy Seaborne
- * @version $Id: JenaRuntime.java,v 1.4 2005-02-21 11:58:52 andy_seaborne Exp $
+ * @version $Id: JenaRuntime.java,v 1.5 2005-05-02 18:31:03 andy_seaborne Exp $
  */
 
 public class JenaRuntime
@@ -26,9 +26,12 @@ public class JenaRuntime
         
     static Map features = new HashMap() ;
     static {
-        if ( System.getProperty(featureNoSecurity) != null )
+        // Note getSystemProperty uses featureNoSecurity but works if it
+        // has not been initialized
+        if ( getSystemProperty(featureNoSecurity) != null )
             setFeature(featureNoSecurity) ;
-        if ( System.getProperty(featureNoCharset) != null )
+        
+        if ( getSystemProperty(featureNoCharset) != null )
             setFeature(featureNoCharset) ;
     }
     
@@ -67,7 +70,6 @@ public class JenaRuntime
             }
         }
     }
-    
 }
 
 /*
