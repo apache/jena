@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.62 $
+ * Revision           $Revision: 1.63 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-11 13:55:54 $
- *               by   $Author: jeremy_carroll $
+ * Last modified on   $Date: 2005-05-03 20:23:01 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -1391,6 +1391,16 @@ public class TestBugReports
 
         // this is the one that fails per David's bug report
         TestUtil.assertIteratorValues( this, cc0.listDeclaredProperties(false), new Object[] {p0} );
+    }
+
+    /**
+     * Bug report by Othmane Nadjemi - DAML individual whose only type is daml:Thing
+     * returns false to isIndividual()
+     */
+    public void test_on_01() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.DAML_MEM );
+        Individual i = m.createIndividual( DAML_OIL.Thing );
+        assertTrue( i.isIndividual() );
     }
 
 
