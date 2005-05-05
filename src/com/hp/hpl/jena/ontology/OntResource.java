@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntResource.java,v $
- * Revision           $Revision: 1.33 $
+ * Revision           $Revision: 1.34 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-11 16:39:55 $
+ * Last modified on   $Date: 2005-05-05 12:32:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResource.java,v 1.33 2005-04-11 16:39:55 ian_dickinson Exp $
+ * @version CVS $Id: OntResource.java,v 1.34 2005-05-05 12:32:22 ian_dickinson Exp $
  */
 public interface OntResource
     extends Resource
@@ -50,6 +50,15 @@ public interface OntResource
     // External signature methods
     //////////////////////////////////
 
+    /**
+     * <p>Answer the model that this resource is attached to, assuming that it
+     * is an {@link OntModel}. If this resource is not attached to any model,
+     * or is (unusally) attached to a model that is not an <code>OntModel</code>,
+     * answer null.</p>
+     * @return The ont model that this resource is attached to, or null.
+     */
+    public OntModel getOntModel();
+    
     /**
      * <p>
      * Answer the ontology language profile that governs the ontology model to which

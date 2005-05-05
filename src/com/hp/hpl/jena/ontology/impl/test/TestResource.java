@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestResource.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-11 16:39:55 $
+ * Last modified on   $Date: 2005-05-05 12:32:22 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.12 2005-04-11 16:39:55 ian_dickinson Exp $
+ * @version CVS $Id: TestResource.java,v 1.13 2005-05-05 12:32:22 ian_dickinson Exp $
  */
 public class TestResource
     extends OntTestBase
@@ -600,6 +600,14 @@ public class TestResource
                     assertFalse( "should not be a lang term", or.isOntLanguageTerm() );
                 }
             },
+            new OntTestCase( "OntResource.getOntModel", true, true, true, true ) {
+                public void ontTest( OntModel m ) throws Exception {
+                    OntResource or = m.createOntResource( "http://foo/bar" );
+                    OntModel m0 = or.getOntModel();
+                    assertEquals( m, m0 );
+                }
+            },
+
         };
     }
 

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.54 $
+ * Revision           $Revision: 1.55 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-05-03 20:22:21 $
+ * Last modified on   $Date: 2005-05-05 12:31:36 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.54 2005-05-03 20:22:21 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.55 2005-05-05 12:31:36 ian_dickinson Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -115,6 +115,18 @@ public class OntResourceImpl
     // External signature methods
     //////////////////////////////////
 
+    /**
+     * <p>Answer the model that this resource is attached to, assuming that it
+     * is an {@link OntModel}. If this resource is not attached to any model,
+     * or is (unusally) attached to a model that is not an <code>OntModel</code>,
+     * answer null.</p>
+     * @return The ont model that this resource is attached to, or null.
+     */
+    public OntModel getOntModel() {
+        Model m = getModel();
+        return (m instanceof OntModel) ? (OntModel) m : null;
+    }
+    
     /**
      * <p>
      * Answer the ontology language profile that governs the ontology model to which
