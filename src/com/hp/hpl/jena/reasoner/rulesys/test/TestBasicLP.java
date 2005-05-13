@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.10 2005-02-21 12:18:09 andy_seaborne Exp $
+ * $Id: TestBasicLP.java,v 1.11 2005-05-13 14:39:45 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-02-21 12:18:09 $
+ * @version $Revision: 1.11 $ on $Date: 2005-05-13 14:39:45 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -1211,16 +1211,22 @@ public class TestBasicLP  extends TestCase {
      * Test the temporary list builtins
      */
     public void testListBuiltins() {
-        String ruleSrc = "[(a r ?n) <- (a p ?l), listLength(?l, ?n)]";
+        String ruleSrc = "[(a r ?n) <- (a p ?l), listLength(?l, ?n)]" +
+        "[(a s ?e) <- (a p ?l), listEntry(?l, 1, ?e)]";
         List rules = Rule.parseRules(ruleSrc);
         Graph data = new GraphMem();
         data.add(new Triple(a, p, Util.makeList(new Node[]{C1,C2,C3},data)));
         InfGraph infgraph =  makeInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
-            infgraph.find(new Triple(a, r, Node.ANY)), 
-            new Triple[] {
-                new Triple(a, r, Util.makeIntNode(3))
-            }); 
+                infgraph.find(new Triple(a, r, Node.ANY)), 
+                new Triple[] {
+                    new Triple(a, r, Util.makeIntNode(3))
+                }); 
+        TestUtil.assertIteratorValues(this, 
+                infgraph.find(new Triple(a, s, Node.ANY)), 
+                new Triple[] {
+                    new Triple(a, s, C2)
+                }); 
 
         rules = Rule.parseRules(
         "[(a s b) <- (a p ?l), (a, q, ?j) listEqual(?l, ?j)]" +
