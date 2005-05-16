@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhNode.java,v 1.10 2005-02-21 12:03:38 andy_seaborne Exp $
+  $Id: EnhNode.java,v 1.11 2005-05-16 11:29:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -100,11 +100,10 @@ public class EnhNode extends Polymorphic implements FrontsNode
         { return true; }
         
     /** 
-     * Answer an enhanced node object that presents <i>this</i> in a way which satisfies type
-     * t.
-     * @param t A type
-     * @return A polymorphic instance that conforms to t.
-     */
+        Answer an new enhanced node object that presents <i>this</i> in a way 
+        which satisfies type <code>t</code>. The new object is linked into this
+        object's sibling ring. 
+    */
     protected Polymorphic convertTo( Class t ) 
         {
         EnhGraph eg = getGraph();

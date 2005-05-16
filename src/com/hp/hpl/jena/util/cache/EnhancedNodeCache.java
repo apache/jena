@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: EnhancedNodeCache.java,v 1.2 2005-02-21 12:19:12 andy_seaborne Exp $
+  $Id: EnhancedNodeCache.java,v 1.3 2005-05-16 11:32:08 chris-dollin Exp $
 */
 package com.hp.hpl.jena.util.cache;
 
@@ -9,9 +9,26 @@ import com.hp.hpl.jena.enhanced.EnhNode;
 import com.hp.hpl.jena.graph.Node;
 
 /**
- EnhancedNodeCache
- @author kers
- */
+     EnhancedNodeCache - the cache to use for enhanced nodes (mapping a Node
+     to one of the enhanced nodes it can represent).
+     
+     <p>The cache methods do not need to be synchronised. Java guarantees that
+     access/update of reference values is atomic. The <code>get</code> method
+     does a single read operation of the cache, and then checks that the
+     returned element matches the key, only returning legal objects; changes
+     to the cache subsequently don't affect the correctness of the result.
+     
+     <p>The <code>put</code> method updates the appropriate cache entry as
+     a one-shot deal. gets on different slots don't matter. Gets on the same
+     slot have either completed (and thus don't care about the change) or
+     are about to happen (and will be equally happy with the old or new
+     value).
+     
+     <p>Synchronisation *is* required when updating the EnhNode sibling ring,
+     but that doesn't happen here.
+     
+     @author kers
+*/
 public class EnhancedNodeCache implements Cache
     {
     protected String name;

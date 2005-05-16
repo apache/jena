@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Polymorphic.java,v 1.7 2005-02-21 12:03:40 andy_seaborne Exp $
+  $Id: Polymorphic.java,v 1.8 2005-05-16 11:29:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -108,14 +108,20 @@ public abstract class Polymorphic {
     public abstract boolean equals( Object o );
     
     /**
-        add another view for this object. <code>other</code> must be freshly constructed.
-        To be called by subclasses when they have constructed a new view
-        for this object.
+        add another view for this object. <code>other</code> must be freshly 
+        constructed. To be called by subclasses when they have constructed a 
+        new view for this object. 
+        
+        <p>The method is synchronised because addView is an update operation
+        that may happen in a read context (because of .as()). Synchronising
+        it ensures that simultaneous updates don't end up leaving the rings
+        in an inconsistent state. (It's not clear whether this would actually
+        lead to any problems; it's hard to write tests to expose these issues.)
         
         This method is public ONLY so that it can be tested.
         TODO find a better way to make it testable.
     */
-    public void addView( Polymorphic other )
+    public synchronized void addView( Polymorphic other )
         {
         if (other.ring == other)
             {

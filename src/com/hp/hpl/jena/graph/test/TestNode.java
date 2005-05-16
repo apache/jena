@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.34 2005-02-21 11:52:47 andy_seaborne Exp $
+  $Id: TestNode.java,v 1.35 2005-05-16 11:32:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -162,7 +162,7 @@ public class TestNode extends GraphTestBase
             assertEquals( "same anon", Node.createAnon( A ), Node.createAnon( A ) );
             assertEquals( "same literal", Node.createLiteral( L ), Node.createLiteral( L ) );
             assertFalse( "distinct URIs", Node.createURI( U ) == Node.createURI( U ) );
-            assertFalse( "distinct blanks", Node.createAnon( A ) == Node.createAnon( A ) );
+            assertFalse( "distinct hyphens", Node.createAnon( A ) == Node.createAnon( A ) );
             assertFalse( "distinct literals", Node.createLiteral( L ) == Node.createLiteral( L ) );
             assertFalse( "distinct vars", Node.createVariable( "aa" ) == Node.createVariable( "aa" ) );
             }
@@ -239,7 +239,7 @@ public class TestNode extends GraphTestBase
         assertEquals( Node_Variable.variable( "xxx" ), Node_Variable.variable( "xxx" ) );
         assertTrue( "remembers URI", Node.createURI( U ) == Node.createURI( U ) );   
         assertTrue( "remembers literal", Node.createLiteral( L ) == Node.createLiteral( L ) );
-        assertTrue( "remembers blanks", Node.createAnon( A ) == Node.createAnon( A ) );
+        assertTrue( "remembers hyphens", Node.createAnon( A ) == Node.createAnon( A ) );
         assertTrue( "remembers variables", Node.createVariable( N ) == Node.createVariable( N ) );
         assertFalse( "is not confused", Node.createVariable( N ) == Node.createURI( N ) );
         }
@@ -427,7 +427,7 @@ public class TestNode extends GraphTestBase
         assertTrue( "node() making URIs", node( "hello" ).isURI() );
         assertTrue( "node() making literals", node( "123" ).isLiteral() );
         assertTrue( "node() making literals", node( "'hello'" ).isLiteral() );
-        assertTrue( "node() making blanks", node( "_x" ).isBlank() );
+        assertTrue( "node() making hyphens", node( "_x" ).isBlank() );
         assertTrue( "node() making variables", node( "?x" ).isVariable() );
         }
         
