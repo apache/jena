@@ -16,7 +16,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author		Andy Seaborne
- * @version 	$Id: N3toRDF.java,v 1.28 2005-02-21 12:04:06 andy_seaborne Exp $
+ * @version 	$Id: N3toRDF.java,v 1.29 2005-05-22 16:33:36 andy_seaborne Exp $
  */
 public class N3toRDF implements N3ParserEventHandler
 {
@@ -436,7 +436,9 @@ public class N3toRDF implements N3ParserEventHandler
             if ( ch == ':' )
                 return true ;
             if ( ( ch >= 'a' && ch <= 'z' ) ||
-                 ( ch >= 'A' && ch <= 'Z' ) )
+                 ( ch >= 'A' && ch <= 'Z' ) ||
+                 ( ch >= '0' && ch <= '9' ) ||
+                 ch == '+' || ch == '-' | ch== '.' ) 
                 continue ;
             return false ;
         }
