@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: OWLUnitTest.java,v 1.10 2005-04-11 11:27:04 der Exp $
+ * $Id: OWLUnitTest.java,v 1.11 2005-05-24 08:09:06 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
  * Version of the OWL unit tests used during development of the mini ruleset.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-04-11 11:27:04 $
+ * @version $Revision: 1.11 $ on $Date: 2005-05-24 08:09:06 $
  */
 public class OWLUnitTest extends TestCase {
     
@@ -142,8 +142,9 @@ public class OWLUnitTest extends TestCase {
         new TestDef("localtests/Manifest004.rdf", FB | MINI), // Requires equality
         new TestDef("localtests/Manifest006.rdf", FB ), // a oneOF case
         
-        // Inheritance of domain/range by subProperties
+        // Inheritance of domain/range by subProperties, inverseof
         new TestDef("localtests/Manifest007.rdf", FB | MICRO | MINI),
+        new TestDef("localtests/Manifest008.rdf", FB | MICRO | MINI),
 
         // Consistency tests
         // clean case

@@ -8,7 +8,7 @@
 # It includes an experimental forward version of the equality reasoning which
 # not yet scalable.
 #
-# $Id: owl-fb.rules,v 1.53 2005-04-08 14:20:31 der Exp $
+# $Id: owl-fb.rules,v 1.54 2005-05-24 08:09:06 der Exp $
 #------------------------------------------------------------------
 
 #------------------------------------------------------------------
@@ -522,6 +522,9 @@
 		
 [inverseOf4: (?P owl:inverseOf ?Q), (?P rdf:type owl:InverseFunctionalProperty) 
 						-> (?Q rdf:type owl:FunctionalProperty) ]
+
+[inverseof5:  (?P owl:inverseOf ?Q) (?P rdfs:range ?C) -> (?Q rdfs:domain ?C)]
+[inverseof6:  (?P owl:inverseOf ?Q) (?P rdfs:domain ?C) -> (?Q rdfs:range ?C)]
 
 # TransitiveProperty
 

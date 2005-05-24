@@ -497,6 +497,9 @@
 [inverseOf4: (?P owl:inverseOf ?Q), (?P rdf:type owl:InverseFunctionalProperty) 
 						-> (?Q rdf:type owl:FunctionalProperty) ]
 
+[inverseof5:  (?P owl:inverseOf ?Q) (?P rdfs:range ?C) -> (?Q rdfs:domain ?C)]
+[inverseof6:  (?P owl:inverseOf ?Q) (?P rdfs:domain ?C) -> (?Q rdfs:range ?C)]
+
 # TransitiveProperty
 
 [transitiveProperty1: (?P rdf:type owl:TransitiveProperty) ->
