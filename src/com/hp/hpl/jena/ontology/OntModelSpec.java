@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            13-May-2003
  * Filename           $RCSfile: OntModelSpec.java,v $
- * Revision           $Revision: 1.36 $
+ * Revision           $Revision: 1.37 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-11 14:07:35 $
+ * Last modified on   $Date: 2005-05-26 10:14:27 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 204, Hewlett-Packard Development Company, LP
@@ -43,7 +43,7 @@ import com.hp.hpl.jena.reasoner.transitiveReasoner.TransitiveReasonerFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelSpec.java,v 1.36 2005-04-11 14:07:35 chris-dollin Exp $
+ * @version CVS $Id: OntModelSpec.java,v 1.37 2005-05-26 10:14:27 chris-dollin Exp $
  */
 public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
     // Constants
@@ -439,7 +439,7 @@ public class OntModelSpec extends ModelSpecImpl implements ModelSpec {
         The base model comes from the underlying ModelMaker.
         @return an OntModel satisfying this specification
     */
-    public Model createModel() {
+    public Model doCreateModel() {
         Model m = baseModelName == null ? maker.createModel() : maker.createModel( baseModelName );
         return new OntModelImpl( this, m );
     }

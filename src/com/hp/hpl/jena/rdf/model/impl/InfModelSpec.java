@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.18 2005-04-10 12:45:49 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.19 2005-05-26 10:15:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
-
-import junit.framework.Assert;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
@@ -52,7 +50,7 @@ public class InfModelSpec extends ModelSpecImpl
         
         @return a new InfModel reasoning over a new base graph.
     */
-    public Model createModel()
+    public Model doCreateModel()
         { return createModel( maker.getGraphMaker().createGraph() ); }
         
     /**

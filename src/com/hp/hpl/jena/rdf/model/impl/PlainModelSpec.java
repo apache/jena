@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PlainModelSpec.java,v 1.12 2005-04-10 12:45:49 chris-dollin Exp $
+  $Id: PlainModelSpec.java,v 1.13 2005-05-26 10:15:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -40,8 +40,8 @@ public class PlainModelSpec extends ModelSpecImpl implements ModelSpec
         Answer a Model that satisfies the description that this ModelSpec was constructed
         with.
     */
-    public Model createModel()
-        { return loadFiles( maker.createModel() ); }
+    public Model doCreateModel()
+        { return maker.createModel(); }
     
     /**
         Answer the Model obtained from the underlying ModelMaker with the given name. 

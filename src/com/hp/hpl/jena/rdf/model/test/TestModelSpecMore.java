@@ -34,6 +34,24 @@ public class TestModelSpecMore extends ModelTestBase
         assertIsoModels( wanted, m );
         }
     
+    public void testLoadOnInfModel() throws Exception
+        {
+        String url = makeModel( "birds fly south" );
+        Model wanted = FileManager.get().loadModel( url );
+        Model spec = modelWithStatements
+            ( "_this jms:maker _maker; _this jms:reasonsWith _reasoner; _this jms:loadWith " + url
+            + "; _reasoner jms:reasoner http://jena.hpl.hp.com/2003/RDFSExptRuleReasoner" );
+        ModelSpec ms = ModelFactory.createSpec( spec );
+        Model m = ModelFactory.createModel( ms );
+        assertSubModelOf( wanted, m );
+        }
+    
+    protected void assertSubModelOf( Model sub, Model entire )
+        {
+        if (sub.difference( entire ).size() > 0)
+            fail( "not a sub-model" );
+        }
+    
     public void testLoadMultiWorks() throws Exception
 	    {
         String url1 = makeModel( "dogs may bark" ), url2 = makeModel( "pigs might fly" );
