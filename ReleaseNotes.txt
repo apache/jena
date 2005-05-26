@@ -1,6 +1,18 @@
 Release Notes
 =============
 
+;;; -- Post 2.2final change list ----------------------------------------
+
+ModelSpecs
+
+    o Fixed a bug: the loadFile property did not work on inference models.
+      The fix ensures that any descendant of ModelSpecImpl implements
+      createModel() using a method doCreateModel() and then loading the
+      specified files. 
+
+;;; -- end post2.2final change list -------------------------------------
+
+
 MySQL
 -----
 There is a problem when using MySQL j-connection 3.1.* and MySQL 4.1.*.
