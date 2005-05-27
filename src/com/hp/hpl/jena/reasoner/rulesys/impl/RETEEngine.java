@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEEngine.java,v 1.21 2005-03-23 14:02:06 der Exp $
+ * $Id: RETEEngine.java,v 1.22 2005-05-27 08:21:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2005-03-23 14:02:06 $
+ * @version $Revision: 1.22 $ on $Date: 2005-05-27 08:21:19 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -264,7 +264,7 @@ public class RETEEngine implements FRuleEngineI {
             
             // Finished compiling a rule - add terminal 
             if (prior != null) {
-                RETETerminal term = new RETETerminal(rule, this, infGraph);
+                RETETerminal term = createTerminal(rule);
                 prior.setContinuation(term);
             }
                     
@@ -273,6 +273,16 @@ public class RETEEngine implements FRuleEngineI {
         if (wildcardRule) predicatesUsed = null;
     }    
 
+    /**
+     * Create a terminal node for the RETE network. Normally this is RETETerminal
+     * but some people have experimented with alternative delete handling by
+     * creating RETETerminal subclasses so this hook simplifies use of that
+     * approach.
+     */
+    protected RETETerminal createTerminal(Rule rule) {
+        return new RETETerminal(rule, this, infGraph);
+    }
+    
 //  =======================================================================
 //  Internal implementation methods
 
