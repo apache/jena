@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETETerminal.java,v 1.12 2005-02-21 12:17:59 andy_seaborne Exp $
+ * $Id: RETETerminal.java,v 1.13 2005-05-27 08:15:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import org.apache.commons.logging.LogFactory;
  * and then, if the token passes, executes the head operations.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2005-02-21 12:17:59 $
+ * @version $Revision: 1.13 $ on $Date: 2005-05-27 08:15:00 $
  */
 public class RETETerminal implements RETESinkNode {
 
@@ -47,7 +47,7 @@ public class RETETerminal implements RETESinkNode {
      * @param engine the parent rule engine through which the deductions and recursive network can be reached.
      * @param graph the wider encompasing infGraph needed to for the RuleContext
      */
-    private RETETerminal(RETERuleContext context) {
+    protected RETETerminal(RETERuleContext context) {
         this.context = context;
     }
     

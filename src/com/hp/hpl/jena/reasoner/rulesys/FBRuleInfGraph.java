@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.53 2005-05-11 14:57:57 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.54 2005-05-27 08:11:35 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.53 $ on $Date: 2005-05-11 14:57:57 $
+ * @version $Revision: 1.54 $ on $Date: 2005-05-27 08:11:35 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
     
@@ -371,7 +371,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
                 Graph oldDeductions = ((FGraph)fdeductions).getGraph();
                 oldDeductions.getBulkUpdateHandler().removeAll();
             } else {
-                fdeductions = new FGraph( new GraphMem() );
+                fdeductions = new FGraph( createDeductionsGraph() );
             }
             dataFind = (data == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
             Finder dataSource = fdata;

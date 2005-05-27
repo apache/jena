@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicForwardRuleInfGraph.java,v 1.41 2005-03-23 13:58:14 der Exp $
+ * $Id: BasicForwardRuleInfGraph.java,v 1.42 2005-05-27 08:11:41 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * can call out to a rule engine and build a real rule engine (e.g. Rete style). </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.41 $ on $Date: 2005-03-23 13:58:14 $
+ * @version $Revision: 1.42 $ on $Date: 2005-05-27 08:11:41 $
  */
 public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRuleInfGraphI {
 
@@ -173,7 +173,7 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
         if (isPrepared) return;
         isPrepared = true;
         // initilize the deductions graph
-        fdeductions = new FGraph( new GraphMem() );
+        fdeductions = new FGraph( createDeductionsGraph() );
         boolean rulesLoaded = false;
         if (schemaGraph != null) {
             rulesLoaded = preloadDeductions(schemaGraph);
@@ -340,6 +340,14 @@ public class BasicForwardRuleInfGraph extends BaseInfGraph implements ForwardRul
     public Graph getDeductionsGraph() {
         prepare();
         return fdeductions.getGraph();
+    }
+   
+    /** 
+     * Create the graph used to hold the deductions. Can be overridden
+     * by subclasses that need special purpose graph implementations here. 
+     */
+    protected Graph createDeductionsGraph() {
+        return new GraphMem();
     }
     
     /**
