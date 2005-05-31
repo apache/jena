@@ -95,6 +95,7 @@ public class TestVocabJenaModelSpec extends ModelTestBase
         ensure( JenaModelSpec.reificationMode, RDFS.domain, JenaModelSpec.MakerSpec );
         ensure( JenaModelSpec.maker, RDFS.domain, JenaModelSpec.PlainModelSpec );
         ensure( JenaModelSpec.modelName, RDFS.domain, JenaModelSpec.ModelSpec );
+        ensure( JenaModelSpec.loadWith, RDFS.domain, JenaModelSpec.ModelSpec );
     //    
         ensure( JenaModelSpec.importMaker, RDFS.domain, JenaModelSpec.OntModelSpec );
         ensure( JenaModelSpec.ontLanguage, RDFS.domain, JenaModelSpec.OntModelSpec );

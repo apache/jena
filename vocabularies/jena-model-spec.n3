@@ -1,6 +1,6 @@
 # (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 # All rights reserved.
-# $Id: jena-model-spec.n3,v 1.5 2005-03-09 20:00:50 chris-dollin Exp $
+# $Id: jena-model-spec.n3,v 1.6 2005-05-31 15:17:50 chris-dollin Exp $
 
 @prefix rdf:        <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:        <http://www.w3.org/2000/01/rdf-schema#> .
@@ -101,6 +101,7 @@ jms:OntModelSpec        rdfs:subClassOf     jms:InfModelSpec .
 jms:FileModelSpec       rdfs:subClassOf     jms:PlainModelSpec .
 
 jms:reificationMode     rdfs:domain         jms:MakerSpec .
+jms:loadWith            rdfs:domain         jms:ModelSpec .
 jms:maker               rdfs:domain         jms:PlainModelSpec .
 jms:importMaker         rdfs:domain         jms:OntModelSpec .
 jms:ontLanguage         rdfs:domain         jms:OntModelSpec .
