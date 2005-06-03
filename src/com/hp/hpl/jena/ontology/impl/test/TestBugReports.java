@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.63 $
+ * Revision           $Revision: 1.64 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-05-03 20:23:01 $
+ * Last modified on   $Date: 2005-06-03 17:44:51 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -1403,7 +1403,42 @@ public class TestBugReports
         assertTrue( i.isIndividual() );
     }
 
-
+    
+    /**
+     * Bug report by kers - maximal lower elements calculation not correct in models
+     * with no reasoner. Manifests as direct sub-class bug.
+     */
+    public void test_kers_01() {
+        OntModel m = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM );
+        OntClass r = m.createClass( NS + "r" );
+        OntClass a = m.createClass( NS + "a" );
+        OntClass b = m.createClass( NS + "b" );
+        OntClass c = m.createClass( NS + "c" );
+        OntClass d = m.createClass( NS + "d" );
+        OntClass e = m.createClass( NS + "e" );
+        OntClass f = m.createClass( NS + "f" );
+        OntClass g = m.createClass( NS + "g" );
+        
+        g.addSuperClass( c );
+        f.addSuperClass( c );
+        e.addSuperClass( b );
+        d.addSuperClass( b );
+        c.addSuperClass( a );
+        b.addSuperClass( a );
+        
+        // simulated closure
+        r.addSubClass( a );
+        r.addSubClass( b );
+        r.addSubClass( c );
+        r.addSubClass( d );
+        r.addSubClass( e );
+        r.addSubClass( f );
+        r.addSubClass( g );
+        
+        TestUtil.assertIteratorValues( this, r.listSubClasses( true ), new Object[] {a} );
+    }
+    
+    
     // Internal implementation methods
     //////////////////////////////////
 

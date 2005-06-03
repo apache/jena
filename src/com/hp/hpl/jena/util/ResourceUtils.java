@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            05-Jun-2003
  * Filename           $RCSfile: ResourceUtils.java,v $
- * Revision           $Revision: 1.12 $
+ * Revision           $Revision: 1.13 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:18:57 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-06-03 17:43:31 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -39,7 +39,7 @@ import com.hp.hpl.jena.rdf.model.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ResourceUtils.java,v 1.12 2005-02-21 12:18:57 andy_seaborne Exp $
+ * @version CVS $Id: ResourceUtils.java,v 1.13 2005-06-03 17:43:31 ian_dickinson Exp $
  */
 public class ResourceUtils {
     // Constants
@@ -96,34 +96,32 @@ public class ResourceUtils {
     public static List maximalLowerElements( Iterator resources, Property rel, boolean inverse ) {
         List in = new ArrayList();
         List out = new ArrayList();
+        List drop = new ArrayList();
         
         while (resources.hasNext()) {
             in.add( resources.next() );
         }
         
         while (! in.isEmpty()) {
-            boolean rCovered = false;
             Resource r = (Resource) in.remove( 0 ); 
-            
-            // check the remaining input list
-            for (Iterator i = in.iterator();  !rCovered && i.hasNext(); ) {
-                Resource next = (Resource) i.next(); 
-                rCovered = inverse ? r.hasProperty( rel, next ) : next.hasProperty( rel, r );
-            }
-            
-            // check the output list
-            for (Iterator i = out.iterator();  !rCovered && i.hasNext(); ) {
-                Resource next = (Resource) i.next(); 
-                rCovered = inverse ? r.hasProperty( rel, next ) : next.hasProperty( rel, r );
-            }
+            boolean rCovered = testResourceCovered( in, rel, inverse, r ) ||
+                               testResourceCovered( out, rel, inverse, r ) ||
+                               testResourceCovered( drop, rel, inverse, r );
             
             // if r is not covered by another resource, we can add it to the output
-            if (!rCovered) {
-                out.add( r );
-            } 
+            (rCovered ? drop : out).add( r );
         }
         
         return out;
+    }
+
+    private static boolean testResourceCovered( List l, Property rel, boolean inverse, Resource r ) {
+        boolean rCovered = false;
+        for (Iterator i = l.iterator();  !rCovered && i.hasNext(); ) {
+            Resource next = (Resource) i.next(); 
+            rCovered = inverse ? r.hasProperty( rel, next ) : next.hasProperty( rel, r );
+        }
+        return rCovered;
     }
 
     
