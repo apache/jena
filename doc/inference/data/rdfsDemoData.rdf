@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE rdf:RDF [
+    <!ENTITY eg   'urn:x-hp:eg/'>
+    <!ENTITY rdf  'http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    <!ENTITY rdfs 'http://www.w3.org/2000/01/rdf-schema#'>
+    <!ENTITY xsd  'http://www.w3.org/2001/XMLSchema#'>
+]>
+
+<rdf:RDF xmlns:rdf="&rdf;" xmlns:rdfs="&rdfs;" xmlns:xsd="&xsd;"
+         xml:base="urn:x-hp:eg/" xmlns="&eg;">
+
+  <Teenager rdf:about="&eg;colin">
+      <mum rdf:resource="&eg;rosy" />
+      <age>13</age>
+<!--      <age rdf:datatype="&xsd;int">13</age>  -->
+  </Teenager>
+
+</rdf:RDF>
