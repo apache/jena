@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelTestBase.java,v 1.33 2005-03-08 15:40:23 chris-dollin Exp $
+  $Id: ModelTestBase.java,v 1.34 2005-06-10 15:16:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -118,6 +118,19 @@ public class ModelTestBase extends GraphTestBase
         StringTokenizer st = new StringTokenizer( items );
         while (st.hasMoreTokens()) rl.add( resource( m, st.nextToken() ) );  
         return (Resource []) rl.toArray( new Resource[rl.size()] );
+        }    
+    
+    /**
+        Answer the set of resources given by the space-separated 
+        <code>items</code> string. Each resource specification is interpreted
+        as per <code>resource</code>.
+    */
+    public static Set resourceSet( String items )
+        {
+        Set result = new HashSet();
+        StringTokenizer st = new StringTokenizer( items );
+        while (st.hasMoreTokens()) result.add( resource( st.nextToken() ) );  
+        return result;
         }
         
     /**

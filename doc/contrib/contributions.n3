@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.4 2005-06-10 09:11:18 chris-dollin Exp $
+# $Id: contributions.n3,v 1.5 2005-06-10 15:14:54 chris-dollin Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -53,7 +53,7 @@
     ; ct:link "http://www.wiwiss.fu-berlin.de/suhl/bizer/ng4j/"
     ; ct:linkTitle "NG4J website"
     ; ct:licence "BSD license"
-    .    
+    .
 
 []
     dc:creator "Chris Bizer"
@@ -62,7 +62,7 @@
     ; ct:link "http://www.wiwiss.fu-berlin.de/suhl/bizer/d2rq/"
     ; ct:linkTitle "D2RQ website"
     ; ct:licence "GNU GPL License"
-    .  
+    .
 
 []
     dc:creator "Reto Bachmann-Gmür / wymiwyg.org"
@@ -82,3 +82,12 @@
      ; ct:licence "as per Jena"
      .
 
+[]
+     dc:creator "Leigh Dodds"
+     ; dc:name "Twinkle"
+     ; dc:description "A GUI interface for working with SPARQL queries"
+     ; ct:link "http://www.ldodds.com/projects/twinkle"
+     ; ct:linkTitle "Twinkle project homepage"
+     ; ct:licence "Public Domain"
+     ; rdfs:seeAlso <http://www.ldodds.com/projects/twinkle/doap.rdf>
+     .

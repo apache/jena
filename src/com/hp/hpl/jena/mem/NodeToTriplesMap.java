@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.16 2005-02-21 12:03:46 andy_seaborne Exp $
+  $Id: NodeToTriplesMap.java,v 1.17 2005-06-10 15:16:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -9,6 +9,7 @@ package com.hp.hpl.jena.mem;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -24,8 +25,8 @@ public abstract class NodeToTriplesMap
     private Map map = CollectionFactory.createHashedMap();
     
     /**
-          The number of triples held in this NTM, maingained incrementally (because
-          it's a pain to compute from scratch).
+          The number of triples held in this NTM, maintained incrementally 
+          (because it's a pain to compute from scratch).
     */
     private int size = 0;
     
@@ -48,20 +49,21 @@ public abstract class NodeToTriplesMap
          be the index node of the triple. Answer <code>true</code> iff the triple
          was not previously in the set, ie, it really truly has been added. 
     */
-    public boolean add( Node o, Triple t ) 
+    public boolean add( Triple t ) 
         {
+        Node o = getIndexNode( t );
         Set s = (Set) map.get( o );
         if (s == null) map.put( o, s = CollectionFactory.createHashedSet() );
         if (s.add( t )) { size += 1; return true; } else return false; 
         }
 
     /**
-         Remove <code>t</code> from this NTM; the node <code>o</code> <i>must</i>
-         be the index node of the triple. Answer <code>true</code> iff the triple
-         was previously in the set, ie, it really truly has been removed. 
+         Remove <code>t</code> from this NTM. Answer <code>true</code> iff the 
+         triple was previously in the set, ie, it really truly has been removed. 
     */
-    public boolean remove( Node o, Triple t ) 
-        {
+    public boolean remove( Triple t )
+        { 
+        Node o = getIndexNode( t );
         Set s = (Set) map.get( o );
         if (s == null)
             return false;
@@ -71,9 +73,8 @@ public abstract class NodeToTriplesMap
             if (result) size -= 1;
             if (s.isEmpty()) map.put( o, null );
             return result;
-        	}
-        }
-
+        	} }
+    
     /**
          Answer an iterator over all the triples in this NTM which have index node
          <code>o</code>.
@@ -134,25 +135,25 @@ public abstract class NodeToTriplesMap
          Answer an iterator over all the triples in this NTM which are accepted by
          <code>pattern</code>.
     */
-    public ExtendedIterator iterator( Triple pattern )
+    public ExtendedIterator iterateAll( Triple pattern )
         {
-        return iterator() .filterKeep ( new TripleMatchFilter( pattern ) );
+        if (pattern.getSubject().isConcrete() 
+           || pattern.getObject().isConcrete() 
+           || pattern.getPredicate().isConcrete())
+            return iterator() .filterKeep ( new TripleMatchFilter( pattern ) );
+        else
+            return iterator();
         }
     
     /**
          Answer an iterator over all the triples in this NTM with index node 
          <code>x</code> and which are accepted by <code>pattern</code>.
     */
-    public ExtendedIterator iterator( Node x, Triple pattern )
+    public ExtendedIterator iterator( Triple pattern )
         {
+        Node x = getIndexNode( pattern );
         return new FilterIterator( new TripleMatchFilter( pattern ), iterator( x ) );
         }
-
-    /**
-         Remove the triple <code>t</code>, returning true iff it was originally present.
-    */
-    public boolean remove( Triple t )
-        { return remove( getIndexNode( t ), t ); }
 
     /**
         Answer true iff this NTM contains the concrete triple <code>t</code>.

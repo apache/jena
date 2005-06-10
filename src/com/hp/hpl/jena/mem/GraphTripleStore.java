@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.7 2005-02-21 12:03:46 andy_seaborne Exp $
+  $Id: GraphTripleStore.java,v 1.8 2005-06-10 15:16:50 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -44,10 +44,10 @@ public class GraphTripleStore implements TripleStore
     */
     public void add( Triple t )
         {
-        if (subjects.add( t.getSubject(), t ))
+        if (subjects.add( t ))
             {
-            predicates.add( t.getPredicate(), t );
-            objects.add( t.getObject(), t ); 
+            predicates.add( t );
+            objects.add( t ); 
             }
         }
     
@@ -56,10 +56,10 @@ public class GraphTripleStore implements TripleStore
     */
     public void delete( Triple t )
         {
-        if (subjects.remove( t.getSubject(), t ))
+        if (subjects.remove( t ))
             {
-            predicates.remove( t.getPredicate(), t );
-            objects.remove( t.getObject(), t ); 
+            predicates.remove( t );
+            objects.remove( t ); 
             }
         }
     
@@ -114,13 +114,13 @@ public class GraphTripleStore implements TripleStore
         Node om = t.getObject();
         Node sm = t.getSubject();
         if (sm.isConcrete())
-            return new StoreTripleIterator( parent, subjects.iterator( sm , t ), predicates, objects );
-        else if (om.isConcrete() && !om.isLiteral())
-            return new StoreTripleIterator( parent, objects.iterator( om, t ), subjects, predicates );
-        else if (pm.isConcrete())
-            return new StoreTripleIterator( parent, predicates.iterator( pm, t ), subjects, objects );
-        else
             return new StoreTripleIterator( parent, subjects.iterator( t ), predicates, objects );
+        else if (om.isConcrete() && !om.isLiteral())
+            return new StoreTripleIterator( parent, objects.iterator( t ), subjects, predicates );
+        else if (pm.isConcrete())
+            return new StoreTripleIterator( parent, predicates.iterator( t ), subjects, objects );
+        else
+            return new StoreTripleIterator( parent, subjects.iterateAll( t ), predicates, objects );
         }
     
     /**

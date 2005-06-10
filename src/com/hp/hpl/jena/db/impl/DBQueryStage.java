@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.9 2005-02-21 12:02:50 andy_seaborne Exp $
+  $Id: DBQueryStage.java,v 1.10 2005-06-10 15:16:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
+import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
@@ -106,8 +107,8 @@ public class DBQueryStage extends Stage
     			val = compiled.driver.nodeToRDBString(arg,false);
     			ps.setString(i+1, val);	
     		}
-		} catch (Exception e) {
-			throw new JenaException("Bad query argument: " + e);
+		} catch (SQLException e) {
+			throw new JenaException( "Bad query argument", e );
 		}
 
     }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.6 2005-02-21 11:52:48 andy_seaborne Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.7 2005-06-10 15:16:49 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -28,13 +28,22 @@ public class TestNodeToTriplesMap extends GraphTestBase
         { return new TestSuite( TestNodeToTriplesMap.class ); }
     
     protected NodeToTriplesMap ntS = new NodeToTriplesMap()
-    	{ public Node getIndexNode( Triple t ) { return t.getSubject(); } };
+    	{ 
+        public Node getIndexNode( Triple t ) { return t.getSubject(); } 
+        public Node getSubindexNode( Triple t ) { return t.getPredicate(); } 
+        };
     	
     protected NodeToTriplesMap ntP = new NodeToTriplesMap()
-    	{ public Node getIndexNode( Triple t ) { return t.getPredicate(); } };
+    	{ 
+        public Node getIndexNode( Triple t ) { return t.getPredicate(); } 
+        public Node getSubindexNode( Triple t ) { return t.getSubject(); } 
+        };
     	
     protected NodeToTriplesMap ntO = new NodeToTriplesMap()
-    	{ public Node getIndexNode( Triple t ) { return t.getObject(); } };
+    	{ 
+        public Node getIndexNode( Triple t ) { return t.getObject(); } 
+        public Node getSubindexNode( Triple t ) { return t.getPredicate(); } 
+        };
 
     protected static final Node x = node( "x" );
     
@@ -54,7 +63,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testAddOne()
         {
-        ntS.add( x, triple( "x P y" ) );
+        ntS.add( triple( "x P y" ) );
         testJustOne( x, ntS );
         }
     
@@ -111,7 +120,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
     public void testRemove()
         {
         addTriples( ntS, "x P b; y P d; y R f" );
-        ntS.remove( y, triple( "y P d" ) );
+        ntS.remove( triple( "y P d" ) );
         assertEquals( 2, ntS.size() );
         assertEquals( tripleSet( "x P b; y R f" ), iteratorToSet( ntS.iterator() ) );
         }
@@ -131,30 +140,28 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testIteratorWIthPatternOnEmpty()
         {
-        assertEquals( tripleSet( "" ), iteratorToSet( ntS.iterator( triple( "a P b" ) ) ) );
+        assertEquals( tripleSet( "" ), iteratorToSet( ntS.iterateAll( triple( "a P b" ) ) ) );
         }
 
     public void testIteratorWIthPatternOnSomething()
         {
         addTriples( ntS, "x P a; y P b; y R c" );
-        assertEquals( tripleSet( "x P a" ), iteratorToSet( ntS.iterator( triple( "x P ??" ) ) ) );
-        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( ntS.iterator( triple( "y ?? ??" ) ) ) );
-        assertEquals( tripleSet( "x P a; y P b" ), iteratorToSet( ntS.iterator( triple( "?? P ??" ) ) ) );
-        assertEquals( tripleSet( "y R c" ), iteratorToSet( ntS.iterator( triple( "?? ?? c" ) ) ) );
+        assertEquals( tripleSet( "x P a" ), iteratorToSet( ntS.iterateAll( triple( "x P ??" ) ) ) );
+        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( ntS.iterateAll( triple( "y ?? ??" ) ) ) );
+        assertEquals( tripleSet( "x P a; y P b" ), iteratorToSet( ntS.iterateAll( triple( "?? P ??" ) ) ) );
+        assertEquals( tripleSet( "y R c" ), iteratorToSet( ntS.iterateAll( triple( "?? ?? c" ) ) ) );
         }
     
     public void testSpecificIteratorWithPatternOnEmpty()
         {
-        assertEquals( tripleSet( "" ), iteratorToSet( ntS.iterator( x, triple( "x P b" ) ) ) );
+        assertEquals( tripleSet( "" ), iteratorToSet( ntS.iterator( triple( "x P b" ) ) ) );
         }
     
     public void testSpecificIteratorWithPatternOnSomething()
         {
         addTriples( ntS, "x P a; y P b; y R c" );
-        assertEquals( tripleSet( "x P a" ), iteratorToSet( ntS.iterator( x, triple( "x P ??" ) ) ) );
-        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( ntS.iterator( y, triple( "y ?? ??" ) ) ) );
-        assertEquals( tripleSet( "x P a" ), iteratorToSet( ntS.iterator( x, triple( "?? P ??" ) ) ) );
-        assertEquals( tripleSet( "y R c" ), iteratorToSet( ntS.iterator( y, triple( "?? ?? c" ) ) ) );
+        assertEquals( tripleSet( "x P a" ), iteratorToSet( ntS.iterator( triple( "x P ??" ) ) ) );
+        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( ntS.iterator( triple( "y ?? ??" ) ) ) );
         }
 
     public void testUnspecificRemoveS()
@@ -180,20 +187,20 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testAddBooleanResult()
         {
-        assertEquals( true, ntS.add( x, triple( "x P y" ) ) );
-        assertEquals( false, ntS.add( x, triple( "x P y" ) ) );
+        assertEquals( true, ntS.add( triple( "x P y" ) ) );
+        assertEquals( false, ntS.add( triple( "x P y" ) ) );
     /* */
-        assertEquals( true, ntS.add( y, triple( "y Q z" ) ) );
-        assertEquals( false, ntS.add( y, triple( "y Q z" ) ) );
+        assertEquals( true, ntS.add( triple( "y Q z" ) ) );
+        assertEquals( false, ntS.add( triple( "y Q z" ) ) );
     /* */
-        assertEquals( true, ntS.add( y, triple( "y R s" ) ) );
-        assertEquals( false, ntS.add( y, triple( "y R s" ) ) );
+        assertEquals( true, ntS.add( triple( "y R s" ) ) );
+        assertEquals( false, ntS.add( triple( "y R s" ) ) );
         }
     
     public void testRemoveBooleanResult()
         {
         assertEquals( false, ntS.remove( triple( "x P y" ) ) );
-        ntS.add( x, triple( "x P y" ) );
+        ntS.add( triple( "x P y" ) );
         assertEquals( false, ntS.remove( triple( "x Q y" ) ) );
         assertEquals( true, ntS.remove( triple( "x P y" ) ) );
         assertEquals( false, ntS.remove( triple( "x P y" ) ) );
@@ -216,7 +223,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
     protected void addTriples( NodeToTriplesMap nt, String facts )
         {
         Triple [] t = tripleArray( facts );
-        for (int i = 0; i < t.length; i += 1) nt.add( nt.getIndexNode( t[i] ), t[i] );
+        for (int i = 0; i < t.length; i += 1) nt.add( t[i] );
         }
     
     protected static Set just( Object x )
