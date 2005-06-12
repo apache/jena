@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEEngine.java,v 1.22 2005-05-27 08:21:19 der Exp $
+ * $Id: RETEEngine.java,v 1.23 2005-06-12 14:59:46 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * an enclosing ForwardInfGraphI which holds the raw data and deductions.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.22 $ on $Date: 2005-05-27 08:21:19 $
+ * @version $Revision: 1.23 $ on $Date: 2005-06-12 14:59:46 $
  */
 public class RETEEngine implements FRuleEngineI {
     
@@ -424,7 +424,8 @@ public class RETEEngine implements FRuleEngineI {
      * Scan the rules for any run actions and run those
      */
     protected void findAndProcessActions() {
-        RuleContext tempContext = new RETERuleContext(infGraph, this);
+        RETERuleContext tempContext = new RETERuleContext(infGraph, this);
+        tempContext.setEnv(new BindingVector());
         for (Iterator i = rules.iterator(); i.hasNext(); ) {
             Rule r = (Rule)i.next();
             if (r.bodyLength() == 0) {
