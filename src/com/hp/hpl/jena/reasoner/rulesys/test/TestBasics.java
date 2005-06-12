@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.25 2005-02-21 12:18:10 andy_seaborne Exp $
+ * $Id: TestBasics.java,v 1.26 2005-06-12 15:00:19 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -28,7 +28,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2005-02-21 12:18:10 $
+ * @version $Revision: 1.26 $ on $Date: 2005-06-12 15:00:19 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -72,7 +72,8 @@ public class TestBasics extends TestCase  {
            "(?a rdf:type ?_) -> (?a rdf:type '42').",
            "(?a rdf:type ?_) -> (?a rdf:type 4.2).",
            "(?a rdf:type ?_) -> (?a rdf:type ' fool that,I(am)').",
-            "[rule1: (?a rdf:type ?_) -> (?a rdf:type a)]"
+            "[rule1: (?a rdf:type ?_) -> (?a rdf:type a)]",
+            "-> print(' ')."
         };
         String[] testResults = new String[] {
             "[ (?a rdf:type ?_) -> (?a rdf:type ?b) ]",
@@ -83,7 +84,8 @@ public class TestBasics extends TestCase  {
             "[ (?a rdf:type ?_) -> (?a rdf:type '42') ]",
             "[ (?a rdf:type ?_) -> (?a rdf:type 4.2^^http://www.w3.org/2001/XMLSchema#float) ]",
             "[ (?a rdf:type ?_) -> (?a rdf:type ' fool that,I(am)') ]",
-            "[ rule1: (?a rdf:type ?_) -> (?a rdf:type a) ]"
+            "[ rule1: (?a rdf:type ?_) -> (?a rdf:type a) ]",
+            "[ -> print(' ') ]"
         };
         
         for (int i = 0; i < testRules.length; i++) {

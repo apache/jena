@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Tokenizer.java,v 1.4 2005-02-21 12:18:58 andy_seaborne Exp $
+ * $Id: Tokenizer.java,v 1.5 2005-06-12 14:57:23 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
  * character strings which can include other separators.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:18:58 $
+ * @version $Revision: 1.5 $ on $Date: 2005-06-12 14:57:23 $
  */
 public class Tokenizer {
     
@@ -96,7 +96,7 @@ public class Tokenizer {
      * Test if there are more tokens which can be returned.
      */
     public boolean hasMoreTokens() {
-        if (lookahead != null) lookahead = getNextToken();
+        if (lookahead == null) lookahead = getNextToken();
         return lookahead != null;
     }
     
@@ -153,6 +153,15 @@ public class Tokenizer {
             return false;
         } else {
             return true;
+        }
+    }
+    
+    public static void main(String[] args) {
+        System.out.println("Starting");
+        Tokenizer tokenizer = new Tokenizer("foo     '' ", "()[], \t\n\r", "'", true);
+        while (tokenizer.hasMoreTokens()) {
+            String t = tokenizer.nextToken();
+            System.out.println("Token: [" +  t + "]");
         }
     }
 } 
