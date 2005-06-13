@@ -1,7 +1,7 @@
 /* Jena web site style sheet */
 
 /* (c) Copyright 2003, Hewlett-Packard Development Company LP */
-/* $Id: site.css,v 1.6 2003-09-09 12:18:16 andy_seaborne Exp $ */
+/* $Id: site.css,v 1.7 2005-06-13 12:31:58 andy_seaborne Exp $ */
 
 
 body {
@@ -61,7 +61,7 @@ body {
 
 ul { list-style-type: disc }
 /* Force this - IE seems to make it same as user font size otherwise */
-li { line-height:14 pt ; }
+li { line-height: 14pt ; }
 
 
 #content p { margin-left: 2ex ; margin-right: 2ex ; 
