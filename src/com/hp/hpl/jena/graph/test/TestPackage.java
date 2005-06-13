@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.20 2005-02-21 11:52:48 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.21 2005-06-13 10:51:58 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -42,7 +42,9 @@ public class TestPackage extends TestSuite {
         addTest( "TestCapabilities", TestCapabilities.suite() );
         addTest( "TestGraphUtils", TestGraphUtils.suite() );
         addTest( "TestGraphPrefixMapping", TestGraphPrefixMapping.suite() );       
-        }
+        addTest( "RDFS-matching", TestGraphMatchWithInference.suite());
+    
+    }
 
     private void addTest(String name, TestSuite tc) {
         tc.setName(name);
