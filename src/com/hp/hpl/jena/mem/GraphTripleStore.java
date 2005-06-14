@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.8 2005-06-10 15:16:50 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.9 2005-06-14 15:18:25 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -28,6 +28,9 @@ public class GraphTripleStore implements TripleStore
     protected NodeToTriplesMap objects = new NodeToTriplesMap()
         { public Node getIndexNode( Triple t ) { return t.getObject(); } };
         
+    public NodeToTriplesMap forTestingOnly_getObjects()
+        { return objects; }
+    
     protected Graph parent;
     
     public GraphTripleStore( Graph parent )

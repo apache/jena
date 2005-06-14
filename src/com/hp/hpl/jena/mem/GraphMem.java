@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.49 2005-02-21 12:03:43 andy_seaborne Exp $
+  $Id: GraphMem.java,v 1.50 2005-06-14 15:18:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -19,6 +19,9 @@ import com.hp.hpl.jena.util.iterator.*;
 public class GraphMem extends GraphMemBase implements Graph 
     {
     protected TripleStore store = new GraphTripleStore( this );
+    
+    public GraphTripleStore forTestingOnly_getStore() 
+        { return (GraphTripleStore) store; }
     
     /**
         Initialises a GraphMem with the Minimal reification style

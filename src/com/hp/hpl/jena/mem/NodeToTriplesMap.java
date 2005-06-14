@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.17 2005-06-10 15:16:50 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.18 2005-06-14 15:18:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -9,7 +9,6 @@ package com.hp.hpl.jena.mem;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -23,6 +22,9 @@ public abstract class NodeToTriplesMap
          The map from nodes to Set(Triple).
     */
     private Map map = CollectionFactory.createHashedMap();
+    
+    public Map forTestingOnly_getMap()
+        { return map; }
     
     /**
           The number of triples held in this NTM, maintained incrementally 
