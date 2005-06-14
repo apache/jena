@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.11 2005-02-21 12:19:16 andy_seaborne Exp $
+  $Id: NiceIterator.java,v 1.12 2005-06-14 15:16:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -78,10 +78,10 @@ public class NiceIterator implements ExtendedIterator
             private boolean walkingA = true;
             
             public boolean hasNext()
-                { return (walkingA = a.hasNext()) || b.hasNext(); }
+                { return (walkingA && (walkingA = a.hasNext())) || b.hasNext(); }
                 
             public Object next()
-                { return (walkingA = a.hasNext()) ? a.next() : b.next(); }
+                { return (walkingA && (walkingA = a.hasNext())) ? a.next() : b.next(); }
                 
             public void close()
                 {

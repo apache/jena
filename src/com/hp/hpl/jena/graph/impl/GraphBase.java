@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphBase.java,v 1.39 2005-03-17 13:51:42 chris-dollin Exp $
+  $Id: GraphBase.java,v 1.40 2005-06-14 15:13:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -230,6 +230,9 @@ public abstract class GraphBase implements GraphWithPerform
     */
     protected abstract ExtendedIterator graphBaseFind( TripleMatch m );
 
+    public ExtendedIterator forTestingOnly_graphBaseFind( TripleMatch tm )
+        { return graphBaseFind( tm ); }
+    
     /**
          
     */
