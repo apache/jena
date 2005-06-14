@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.40 2005-04-12 10:59:02 der Exp $
+ * $Id: TestFBRules.java,v 1.41 2005-06-14 08:27:01 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.40 $ on $Date: 2005-04-12 10:59:02 $
+ * @version $Revision: 1.41 $ on $Date: 2005-06-14 08:27:01 $
  */
 public class TestFBRules extends TestCase {
     
@@ -56,6 +56,7 @@ public class TestFBRules extends TestCase {
     protected Node s = Node.createURI("s");
     protected Node t = Node.createURI("t");
     protected Node u = Node.createURI("u");
+    protected Node v = Node.createURI("v");
     protected Node a = Node.createURI("a");
     protected Node b = Node.createURI("b");
     protected Node c = Node.createURI("c");
@@ -712,6 +713,7 @@ public class TestFBRules extends TestCase {
         "[r1: (?x p ?a), (?x q ?b), sum(?a, ?b, ?c) -> (?x s ?c)]" +
         "[r2: (?x p ?a), (?x q ?b), product(?a, ?b, ?c) -> (?x t ?c)]" +
         "[r3: (?x p ?a), (?x q ?b), difference(?b, ?a, ?c) -> (?x u ?c)]" +
+        "[r4: (?x p ?a), (?x q ?b), quotient(?b, ?a, ?c) -> (?x v ?c)]" +
                        "";
         ruleList = Rule.parseRules(rules);
         data = new GraphMem();
@@ -726,6 +728,7 @@ public class TestFBRules extends TestCase {
                 new Triple(n1, s, Util.makeIntNode(8)),
                 new Triple(n1, t, Util.makeIntNode(15)),
                 new Triple(n1, u, Util.makeIntNode(2)),
+                new Triple(n1, v, Util.makeIntNode(1)),
             });
          
         // Note type checking   
