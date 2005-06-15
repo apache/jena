@@ -1,7 +1,7 @@
 #
 # N3 rendition of contributions data
 #
-# $Id: contributions.n3,v 1.5 2005-06-10 15:14:54 chris-dollin Exp $
+# $Id: contributions.n3,v 1.6 2005-06-15 14:31:01 chris-dollin Exp $
 #
 
 @prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
@@ -91,3 +91,13 @@
      ; ct:licence "Public Domain"
      ; rdfs:seeAlso <http://www.ldodds.com/projects/twinkle/doap.rdf>
      .
+
+[]
+    dc:creator "Ben Szekely and Joe Betz"
+    ; dc:name "Jastor"
+    ; dc:description "Code generator that emits Java Beans from OWL Web Ontologies"
+    ; ct:link <http://jastor.sourceforge.net>
+    ; ct:linkTitle "Jastor website"
+    ; ct:licence "Common Public License"
+    .
+
