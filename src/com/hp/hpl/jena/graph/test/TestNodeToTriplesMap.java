@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.7 2005-06-10 15:16:49 chris-dollin Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.8 2005-06-15 13:34:05 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -31,18 +31,23 @@ public class TestNodeToTriplesMap extends GraphTestBase
     	{ 
         public Node getIndexNode( Triple t ) { return t.getSubject(); } 
         public Node getSubindexNode( Triple t ) { return t.getPredicate(); } 
-        };
+        public boolean useSubjectInFilter(Triple t) { return false; }
+        
+    	};
     	
     protected NodeToTriplesMap ntP = new NodeToTriplesMap()
     	{ 
         public Node getIndexNode( Triple t ) { return t.getPredicate(); } 
         public Node getSubindexNode( Triple t ) { return t.getSubject(); } 
-        };
+        public boolean usePredicateInFilter(Triple t) { return false; }
+        
+    	};
     	
     protected NodeToTriplesMap ntO = new NodeToTriplesMap()
     	{ 
         public Node getIndexNode( Triple t ) { return t.getObject(); } 
         public Node getSubindexNode( Triple t ) { return t.getPredicate(); } 
+        public boolean useObjectInFilter(Triple t) { return false; }
         };
 
     protected static final Node x = node( "x" );

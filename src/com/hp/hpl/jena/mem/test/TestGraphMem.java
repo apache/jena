@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.12 2005-02-21 12:03:59 andy_seaborne Exp $
+  $Id: TestGraphMem.java,v 1.13 2005-06-15 13:34:04 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
+
+import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.SimpleReifier;
@@ -89,6 +91,22 @@ public class TestGraphMem extends AbstractTestGraph
         assertFalse( g.contains( triple( "y R b" ) ) );
         }    
     
+    public void testUnnecessaryMatches() {
+        Node special = new Node_URI("eg:foo") {
+            public boolean matches(Node s) {
+                fail("Matched called superfluously.");
+                return true;
+            }
+        };
+        Graph g = getGraphWith("x p y");
+        g.add(new Triple(special, special, special));
+        exhaust(g.find(special, Node.ANY, Node.ANY));
+        exhaust(g.find(Node.ANY, special, Node.ANY));
+        exhaust(g.find(Node.ANY, Node.ANY, special));
+
+    }
+    
+    private void exhaust(Iterator it){ while (it.hasNext()) it.next(); }
     protected final class GraphMemWithoutFind extends GraphMem
         {
         public ExtendedIterator graphBaseFind( TripleMatch t )

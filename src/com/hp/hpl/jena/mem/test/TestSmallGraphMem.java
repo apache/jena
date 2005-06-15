@@ -1,7 +1,7 @@
 /*
 	(c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
 	[See end of file]
-	$Id: TestSmallGraphMem.java,v 1.4 2005-02-21 12:04:01 andy_seaborne Exp $
+	$Id: TestSmallGraphMem.java,v 1.5 2005-06-15 13:34:04 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -25,6 +25,11 @@ public class TestSmallGraphMem extends TestGraphMem
         
     public Graph getGraph()
         { return new SmallGraphMem(); }
+
+    public void testUnnecessaryMatches() { 
+        /* test not appropriate for subclass */ 
+        }
+    
     }
 
 /*

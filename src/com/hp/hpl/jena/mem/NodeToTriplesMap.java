@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.18 2005-06-14 15:18:25 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.19 2005-06-15 13:33:07 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -9,11 +9,13 @@ package com.hp.hpl.jena.mem;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
 /**
 	NodeToTriplesMap: a map from nodes to sets of triples.
+	Subclasses must override at least one of useXXXInFilter methods.
 	@author kers
 */
 public abstract class NodeToTriplesMap 
@@ -154,7 +156,9 @@ public abstract class NodeToTriplesMap
     public ExtendedIterator iterator( Triple pattern )
         {
         Node x = getIndexNode( pattern );
-        return new FilterIterator( new TripleMatchFilter( pattern ), iterator( x ) );
+        Filter f = buildFilterFromPattern( pattern );
+        return f == null ? WrappedIterator.create(iterator( x )) : new FilterIterator( f, iterator(x)); 
+//        return new FilterIterator( new TripleMatchFilter( pattern ), iterator( x ) );
         }
 
     /**
@@ -165,6 +169,92 @@ public abstract class NodeToTriplesMap
         Set s = (Set) map.get( getIndexNode( t ) );
         return s == null ? false : s.contains( t );
         }
+    
+    boolean useInFilter(Node n) 
+        {
+        return n.isConcrete();
+        }
+    public boolean useSubjectInFilter( Triple t ) 
+        {
+        return useInFilter(t.getSubject());
+        }
+    public boolean useObjectInFilter( Triple t ) 
+    {
+    return useInFilter(t.getObject());
+    }
+    public boolean usePredicateInFilter( Triple t ) 
+    {
+       return useInFilter(t.getPredicate());
+    }
+    
+    Filter buildFilterFromPattern(Triple pattern) {
+        if (useSubjectInFilter(pattern)) {
+            final Node sp = pattern.getSubject();
+            if (usePredicateInFilter(pattern)) {
+                if (useObjectInFilter(pattern)){
+                   throw new BrokenException("logic error");
+                } else {
+                    return new Filter() {
+                        public boolean accept(Object o) {
+                            Triple t = (Triple)o;
+                            return sp.matches(t.getSubject());
+                        }
+                    };
+                }
+            } else {
+                if (useObjectInFilter(pattern)){
+
+                    final Node op = pattern.getObject();
+                    return new Filter() {
+                        public boolean accept(Object o) {
+                            Triple t = (Triple)o;
+                            return sp.matches(t.getSubject())
+                              && op.matches(t.getObject());
+                        }
+                    };                    
+                } else {
+                    return new Filter() {
+                        public boolean accept(Object o) {
+                            return sp.matches(((Triple)o).getSubject());
+                        }
+                    };
+                }
+            }
+        } else {
+        if (usePredicateInFilter(pattern)) {
+            final Node pp = pattern.getPredicate();
+            if (useObjectInFilter(pattern)){
+                final Node op = pattern.getObject();
+                return new Filter() {
+                    public boolean accept(Object o) {
+                        Triple t = (Triple)o;
+                        return pp.matches(t.getPredicate())
+                          && op.matches(t.getObject());
+                    }
+                };
+            } else {
+                return new Filter() {
+                    public boolean accept(Object o) {
+                        Triple t = (Triple)o;
+                        return pp.matches(t.getPredicate());
+                    }
+                };
+            }
+        } else {
+            if (useObjectInFilter(pattern)){
+                final Node op = pattern.getObject();
+                return new Filter() {
+                    public boolean accept(Object o) {
+                        Triple t = (Triple)o;
+                        return op.matches(t.getObject());
+                    }
+                };
+            } else {
+                return null;
+            }
+        }
+    }
+    }
     }
 
 /*

@@ -1,7 +1,7 @@
 /*
   (c) (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestMixedGraphMem.java,v 1.4 2005-05-24 10:02:35 chris-dollin Exp $
+  $Id: TestMixedGraphMem.java,v 1.5 2005-06-15 13:34:04 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -46,6 +46,9 @@ public class TestMixedGraphMem extends TestGraphMem
         assertEquals( nodeList( "s P o s" ), history );
         }
     
+    public void testUnnecessaryMatches() { 
+        /* test not appropriate for subclass */ 
+        }
     public void testRemoveAbsentSuppressesPredicateAndObject()
         {
         final List history = new ArrayList();
