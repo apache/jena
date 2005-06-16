@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: WrappedIterator.java,v 1.9 2005-06-14 15:18:37 chris-dollin Exp $
+  $Id: WrappedIterator.java,v 1.10 2005-06-16 10:42:15 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -20,23 +20,28 @@ import java.util.*;
 public class WrappedIterator extends NiceIterator
     {
     /**
-         set to <code>true</code> if this wrapping doesn't permit the use of .remove().
-         Otherwise the .remove() is delegated to the base iterator.
+         set to <code>true</code> if this wrapping doesn't permit the use of 
+         .remove(). Otherwise the .remove() is delegated to the base iterator.
     */
     protected boolean removeDenied;
     
     /**
-        factory method for creating a wrapper around _it_. We reserve
-        the right to deliver the argument if it's already an extended iterator.
+        Answer an ExtendedIterator returning the elements of <code>it</code>.
+        If <code>it</code> is itself an ExtendedIterator, return that; otherwise
+        wrap <code>it</code>.
     */
     public static ExtendedIterator create( Iterator it )
         { return it instanceof ExtendedIterator ? (ExtendedIterator) it : new WrappedIterator( it, false ); }
     
+    /**
+        Answer an ExtendedIterator wrapped round <code>it</code> which does not
+        permit <code>.remove()</code> even if <code>it</code> does.
+    */
     public static WrappedIterator createNoRemove( Iterator it )
         { return new WrappedIterator( it, true ); }
       
     /** the base iterator that we wrap */  
-    private Iterator base;
+    protected final Iterator base;
     
     public Iterator forTestingOnly_getBase()
         { return base; }
@@ -47,9 +52,9 @@ public class WrappedIterator extends NiceIterator
     
     /**
          Initialise this wrapping with the given base iterator and remove-control.
-     * @param base the base iterator that this tierator wraps
-     * @param removeDenied true if .remove() must throw an exception
-     */
+         @param base the base iterator that this tierator wraps
+         @param removeDenied true if .remove() must throw an exception
+    */
     protected WrappedIterator( Iterator base, boolean removeDenied )
         { this.base = base; 
         this.removeDenied = removeDenied; }
@@ -63,8 +68,8 @@ public class WrappedIterator extends NiceIterator
         { return base.next(); }
         
     /** 
-         if .remove() is allowed, delegate to the abse iterator's .remove; otherwise,
-         throw an UnsupportedOperationException. 
+         if .remove() is allowed, delegate to the base iterator's .remove; 
+         otherwise, throw an UnsupportedOperationException. 
     */
     public void remove()
         {
@@ -77,7 +82,7 @@ public class WrappedIterator extends NiceIterator
         { close( base ); }
 
     /**
-        if _it_ is a Closableiterator, close it. Abstracts away from
+        if <code>it</code> is a Closableiterator, close it. Abstracts away from
         tests [that were] scattered through the code.
     */
     public static void close( Iterator it )

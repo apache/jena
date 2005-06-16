@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.20 2005-06-15 15:18:00 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.21 2005-06-16 10:42:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -86,7 +86,7 @@ public abstract class NodeToTriplesMap
     public Iterator iterator( Node o ) 
         {
         Set s = (Set) map.get( o );
-        return s == null ? NullIterator.instance :  s.iterator();
+        return s == null ? NullIterator.instance : s.iterator();
         }
     
     /**
@@ -247,10 +247,12 @@ public abstract class NodeToTriplesMap
     protected Filter createPfilter( final Node pp )
         {
         return new Filter() {
+            private final Node myPP = pp;
+            
             public boolean accept( Object o )
                 {
                 Triple t = (Triple) o;
-                return pp.matches( t.getPredicate() );
+                return myPP.matches( t.getPredicate() );
                 }
         };
         }
