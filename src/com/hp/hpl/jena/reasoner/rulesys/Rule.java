@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.31 2005-06-12 15:00:18 der Exp $
+ * $Id: Rule.java,v 1.32 2005-06-17 11:11:00 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -60,7 +60,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.31 $ on $Date: 2005-06-12 15:00:18 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.32 $ on $Date: 2005-06-17 11:11:00 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -639,14 +639,14 @@ public class Rule implements ClauseEntry {
         /**
          * Register a new namespace prefix with the parser
          */
-        void registerPrefix(String prefix, String namespace ) {
+        public void registerPrefix(String prefix, String namespace ) {
             prefixMapping.setNsPrefix(prefix, namespace);
         }
         
         /**
          * Register a set of prefix to namespace mappings with the parser
          */
-        void registerPrefixMap(Map map) {
+        public void registerPrefixMap(Map map) {
             prefixMapping.setNsPrefixes(map);
         }
         
