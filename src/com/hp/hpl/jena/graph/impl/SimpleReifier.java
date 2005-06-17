@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.47 2005-06-16 10:42:14 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.48 2005-06-17 09:24:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -201,7 +201,6 @@ public class SimpleReifier implements Reifier
         }        
     
     public ExtendedIterator find( TripleMatch m )
-        // { return NullIterator.instance; } 
         { return tripleMap.find( m ).andThen( fragmentsMap.find( m ) ); }
     
     public ExtendedIterator findExposed( TripleMatch m )

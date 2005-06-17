@@ -1,4 +1,74 @@
 /*
+    (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    [See end of file]
+    $Id: FilterIterator.java,v 1.7 2005-06-17 09:24:30 chris-dollin Exp $
+*/
+
+package com.hp.hpl.jena.util.iterator;
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
+/** 
+     Creates a sub-Iterator by filtering.
+     @author jjc, mods [clarity & speedup] by kers
+ */
+public class FilterIterator extends WrappedIterator
+{
+	final Filter f;
+	Object current;
+    boolean canRemove;
+    boolean hasCurrent;
+
+    /** 
+        Initialises a FilterIterator with its filter and base.
+        @param fl An object is included if it is accepted by this Filter.
+        @param e The base Iterator.
+    */        
+	public FilterIterator( Filter fl, Iterator e ) {
+		super( e );
+		f = fl;
+	}
+
+    /** 
+        Answer true iff there is at least one more acceptable object.
+        [Stores reference into <code>current</code>, sets <code>canRemove</code>
+        false; answer preserved in `hasCurrent`]
+    */        
+	synchronized public boolean hasNext() {
+	    while (!hasCurrent && super.hasNext())
+            hasCurrent = f.accept( current = super.next() );
+        canRemove = false;
+        return hasCurrent;
+	}
+    
+    /** 
+         Remove the current member from the underlying iterator. Legal only
+         after a .next() but before any subsequent .hasNext(), because that
+         may advance the underlying iterator.
+    */        
+    synchronized public void remove() {
+        if (!canRemove ) throw new IllegalStateException
+            ( "FilterIterator does not permit calls to hasNext between calls to next and remove.");
+        super.remove();
+        }
+        
+    /** 
+        Answer the next acceptable object from the base iterator. The redundant
+        test of `hasCurrent` appears to make a detectable speed difference.
+        Crazy.
+    */        
+	synchronized public Object next() {
+		if (hasCurrent || hasNext()) {
+            canRemove = true;
+            hasCurrent = false;
+            return current;
+		}
+		throw new NoSuchElementException();
+	}
+}
+
+/*
  *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *
@@ -24,71 +94,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: FilterIterator.java,v 1.6 2005-02-21 12:19:15 andy_seaborne Exp $
+ * $Id: FilterIterator.java,v 1.7 2005-06-17 09:24:30 chris-dollin Exp $
  *
- */
-package com.hp.hpl.jena.util.iterator;
-
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-/** Creates a sub-Iterator by filtering.
- * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.6 $' Date='$Date: 2005-02-21 12:19:15 $'
- */
-public class FilterIterator extends WrappedIterator
-{
-	Filter f;
-	Object current;
-    boolean dead;
-
-    /** Creates a sub-Iterator.
-    * @param fl An object is included if it is accepted by this Filter.
-    * @param e The parent Iterator.
-    */        
-	public FilterIterator( Filter fl, Iterator e) {
-		super(e);
-		f = fl;
-		current = null;
-        dead = false;
-	}
-
-    /** Are there any more acceptable objects.
-    * @return true if there is another acceptable object.
-    */        
-	synchronized public boolean hasNext() {
-		if (current!=null)
-			return true;
-		while (  super.hasNext() ) {
-			current = super.next();
-			if (f.accept(current))
-				return true;
-		}
-		current = null;
-        dead = true;
-		return false;
-	}
-    
-    /** remove's the member from the underlying <CODE>Iterator</CODE>; 
-    <CODE>hasNext()</CODE> may not be called between calls to 
-    <CODE>next()</CODE> and <CODE>remove()</CODE>.
-    */        
-    synchronized public void remove() {
-        if ( current != null || dead )
-          throw new IllegalStateException(
-          "FilterIterator does not permit calls to hasNext between calls to next and remove.");
-        super.remove();
-        }
-        
-    /** The next acceptable object in the iterator.
-    * @return The next acceptable object.
-    */        
-	synchronized public Object next() {
-		if (hasNext()) {
-			Object r = current;
-			current = null;
-			return r;
-		}
-		throw new NoSuchElementException();
-	}
-}
+*/

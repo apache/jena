@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_URI.java,v 1.12 2005-06-16 10:42:13 chris-dollin Exp $
+  $Id: Node_URI.java,v 1.13 2005-06-17 09:23:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.shared.*;
 	@author kers
 */
 public class Node_URI extends Node_Concrete
-    {
+    {    
     protected Node_URI( Object uri )
         { super( uri ); }
 
@@ -36,8 +36,13 @@ public class Node_URI extends Node_Concrete
         { return pm == null ? (String) label : pm.shortForm( (String) label ); }
         
     public boolean equals( Object other )
-        { return other instanceof Node_URI && label.equals( ((Node_URI) other).label ); }
+        { return 
+            other instanceof Node_URI 
+            && same( (Node_URI) other ); }
 
+    final boolean same( Node_URI other )
+        { return label.equals( other.label ); }
+    
     public String getNameSpace()
         { 
         String s = (String) label;

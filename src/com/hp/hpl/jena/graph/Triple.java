@@ -1,12 +1,14 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.17 2005-02-21 11:51:56 andy_seaborne Exp $
+  $Id: Triple.java,v 1.18 2005-06-17 09:23:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.util.iterator.Filter;
+
 import java.util.*;
 
 /**
