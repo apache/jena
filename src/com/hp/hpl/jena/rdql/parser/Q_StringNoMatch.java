@@ -28,7 +28,7 @@ public class Q_StringNoMatch extends ExprNode implements Expr, ExprBoolean
     
     // Cache the compiled regular expression.
     
-    private String printName = "strMatch" ;
+    private String printName = "strNoMatch" ;
     private String opSymbol = "!~" ;
     Pattern pattern = null ;
     

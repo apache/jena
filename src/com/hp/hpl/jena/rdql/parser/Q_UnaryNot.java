@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdql.*;
 
 public class Q_UnaryNot extends ExprNode implements Expr, ExprBoolean
 {
-    private String printName = "unaryminus";
+    private String printName = "not";
     private String opSymbol  = "!";
     Expr           expr;
 
