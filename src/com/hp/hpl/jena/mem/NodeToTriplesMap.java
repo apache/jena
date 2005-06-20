@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.22 2005-06-17 09:24:30 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.23 2005-06-20 14:46:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -118,7 +118,6 @@ public abstract class NodeToTriplesMap
             public void remove()
                 {
                 current.remove();
-                size -= 1;
                 }
         	};
         }
@@ -131,6 +130,9 @@ public abstract class NodeToTriplesMap
     
     public int size()
         { return size; }
+    
+    public void removedOneViaIterator()
+        { size -= 1; }
     
     public boolean isEmpty()
         { return size == 0; }

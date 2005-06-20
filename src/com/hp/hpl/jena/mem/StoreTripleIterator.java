@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: StoreTripleIterator.java,v 1.3 2005-02-21 12:03:47 andy_seaborne Exp $
+  $Id: StoreTripleIterator.java,v 1.4 2005-06-20 14:46:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -21,13 +21,15 @@ import com.hp.hpl.jena.graph.Graph;
 */
 public class StoreTripleIterator extends TrackingTripleIterator
 	{
+    protected NodeToTriplesMap X;
     protected NodeToTriplesMap A;
     protected NodeToTriplesMap B;
     protected Graph toNotify;
     
-    public StoreTripleIterator( Graph toNotify, Iterator it, NodeToTriplesMap A, NodeToTriplesMap B )
+    public StoreTripleIterator( Graph toNotify, Iterator it, NodeToTriplesMap X, NodeToTriplesMap A, NodeToTriplesMap B )
     	{ 
         super( it ); 
+        this.X = X;
         this.A = A; 
         this.B = B; 
         this.toNotify = toNotify;
@@ -36,6 +38,7 @@ public class StoreTripleIterator extends TrackingTripleIterator
     public void remove()
         {
         super.remove();
+        X.removedOneViaIterator();
         A.remove( current );
         B.remove( current );
         toNotify.getEventManager().notifyDeleteTriple( toNotify, current );

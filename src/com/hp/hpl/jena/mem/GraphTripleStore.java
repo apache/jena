@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.11 2005-06-19 12:02:30 jeremy_carroll Exp $
+  $Id: GraphTripleStore.java,v 1.12 2005-06-20 14:46:01 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -125,13 +125,13 @@ public class GraphTripleStore implements TripleStore
         Node om = t.getObject();
         Node sm = t.getSubject();
         if (sm.isConcrete())
-            return new StoreTripleIterator( parent, subjects.iterator( t ), predicates, objects );
+            return new StoreTripleIterator( parent, subjects.iterator( t ), subjects, predicates, objects );
         else if (om.isConcrete() && !om.isLiteral())
-            return new StoreTripleIterator( parent, objects.iterator( t ), subjects, predicates );
+            return new StoreTripleIterator( parent, objects.iterator( t ), objects, subjects, predicates );
         else if (pm.isConcrete())
-            return new StoreTripleIterator( parent, predicates.iterator( t ), subjects, objects );
+            return new StoreTripleIterator( parent, predicates.iterator( t ), predicates, subjects, objects );
         else
-            return new StoreTripleIterator( parent, subjects.iterateAll( t ), predicates, objects );
+            return new StoreTripleIterator( parent, subjects.iterateAll( t ), subjects, predicates, objects );
         }
     
     /**
