@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.13 2005-06-15 13:34:04 jeremy_carroll Exp $
+  $Id: TestGraphMem.java,v 1.14 2005-06-20 09:37:39 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -11,7 +11,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.SimpleReifier;
 import com.hp.hpl.jena.graph.test.*;
-import com.hp.hpl.jena.mem.GraphMem;
+import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -80,6 +80,18 @@ public class TestGraphMem extends AbstractTestGraph
         g.getBulkUpdateHandler().removeAll();
         assertEquals( 0, g.size() );
         }
+    
+    public void xtestSizeAfterRemove() 
+    {
+        Graph g = getGraphWith("x p y");
+        Iterator it = g.find(triple("x ? ?"));
+        it.next();
+        it.remove();
+        GraphTripleStore store = ((GraphMem)g).forTestingOnly_getStore();
+        assertEquals("objects size",store.forTestingOnly_getObjects().size(),0);
+        assertEquals("subjects size",store.forTestingOnly_getSubjects().size(),0);
+        
+    }
     
     public void testContainsConcreteDoesntUseFind()
         {
