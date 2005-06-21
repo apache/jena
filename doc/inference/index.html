@@ -1281,10 +1281,8 @@ term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)           // triple p
 <p>To keep rules readable qname syntax is supported for URI refs. The set of known 
   prefixes is those registered with the <code><a href="../javadoc/com/hp/hpl/jena/util/PrintUtil.html">PrintUtil</a></code> 
   object. This initially knows about rdf, rdfs, owl, daml, xsd and a test namespace 
-  eg, but more mappings can be registered in java code. No rule syntax for defining 
-  prefixes is available yet. In future revisions we will link the <code>PrintUtil</code> 
-  capabilities more closely to the prefix mapping machinery now available for 
-  Models.</p>
+  eg, but more mappings can be registered in java code. In addition it is possible to
+  define additional prefix mappings in the rule file, see below. </p>
 <p>Here are some example rules which illustrate most of these constructs:</p>
 <pre>[allID: (?C rdf:type owl:Restriction), (?C owl:onProperty ?P), 
      (?C owl:allValuesFrom ?D)  -> (?C owl:equivalentClass all(?P, ?D)) ]
@@ -1916,7 +1914,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.23 2005-04-12 15:48:55 der Exp $</i>
+  Last modification: $Id: index.html,v 1.24 2005-06-21 07:34:41 der Exp $</i>
 </p>
 </body>
 </html>
