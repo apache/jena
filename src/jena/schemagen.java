@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            14-Apr-2003
  * Filename           $RCSfile: schemagen.java,v $
- * Revision           $Revision: 1.40 $
+ * Revision           $Revision: 1.41 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-05 18:44:04 $
+ * Last modified on   $Date: 2005-06-22 09:05:52 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -50,7 +50,7 @@ import com.hp.hpl.jena.shared.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: schemagen.java,v 1.40 2005-04-05 18:44:04 ian_dickinson Exp $
+ * @version CVS $Id: schemagen.java,v 1.41 2005-06-22 09:05:52 ian_dickinson Exp $
  */
 public class schemagen {
     // Constants
@@ -125,7 +125,7 @@ public class schemagen {
     /** Additional decoration for class header (such as implements); use <code>--classdec &lt;classname&gt;</code> on command line; use <code>sgen:classdec</code> in config file */
     protected static final Object OPT_CLASSDEC = new Object();
 
-    /** The namespace URI for the vocabulary; use <code>- &lt;uri&gt;</code> on command line; use <code>sgen:namespace</code> in config file */
+    /** The namespace URI for the vocabulary; use <code>-a &lt;uri&gt;</code> on command line; use <code>sgen:namespace</code> in config file */
     protected static final Object OPT_NAMESPACE = new Object();
 
     /** Additional declarations to add at the top of the class; use <code>--declarations &lt;...&gt;</code> on command line; use <code>sgen:declarations</code> in config file */
@@ -182,6 +182,8 @@ public class schemagen {
     /** Option to generate to force the model to perform inference, off by default. */
     protected static final Object OPT_USE_INF = new Object();
 
+    /** Option to exclude instances of classes in the allowed namespaces, where the individuals themselves are in other namespaces; use <code>--strictIndividuals</code> on command line; use <code>sgen:strictIndividuals</code> in config file */
+    protected static final Object OPT_STRICT_INDIVIDUALS = new Object();
 
 
     // Static variables
@@ -242,6 +244,7 @@ public class schemagen {
         {OPT_HELP,                new OptionDefinition( "--help", null )},
         {OPT_DOS,                 new OptionDefinition( "--dos", "dos" )},
         {OPT_USE_INF,             new OptionDefinition( "--inference", "inference" )},
+        {OPT_STRICT_INDIVIDUALS,  new OptionDefinition( "--strictIndividuals", "strictIndividuals" )},
     };
 
     /** Stack of replacements to apply */
@@ -268,7 +271,7 @@ public class schemagen {
     /** List of allowed namespace URI strings for admissible values */
     protected List m_includeURI = new ArrayList();
 
-    
+
     // Constructors
     //////////////////////////////////
 
@@ -388,7 +391,7 @@ public class schemagen {
                 s = OntModelSpec.OWL_MEM;
             }
         }
-        
+
         m_source = ModelFactory.createOntologyModel( s, null );
         m_source.getDocumentManager().setProcessImports( false );
     }
@@ -438,7 +441,7 @@ public class schemagen {
                 abort( "I/O error while trying to open file for writing: " + outFile, null );
             }
         }
-        
+
         // check for DOS line endings
         if (isTrue( OPT_DOS )) {
             m_nl = "\r\n";
@@ -822,12 +825,12 @@ public class schemagen {
         if (defaultNS == null) {
             defaultNS = m_source.getBaseModel().getNsPrefixURI( "" );
         }
-        
+
         if (defaultNS != null) {
             m_includeURI.add( defaultNS );
             return defaultNS;
         }
-        
+
         // if we are using an ontology model, we can get the namespace URI from the ontology element
         try {
             Resource ont = m_source.getBaseModel()
@@ -836,7 +839,7 @@ public class schemagen {
                                    .getSubject();
 
             String uri = ont.getURI();
-            
+
             // ensure ends with namespace sep char
             char ch = uri.charAt( uri.length() - 1 );
             boolean endsWithNCNameCh = XMLChar.isNCName( ch );
@@ -926,7 +929,7 @@ public class schemagen {
         else {
             props = new Resource[] {RDF.Property};
         }
-        
+
         // now write the properties
         for (int j = 0;  j < props.length; j++) {
             for (StmtIterator i = m_source.listStatements( null, RDF.type, props[j] ); i.hasNext(); ) {
@@ -974,7 +977,7 @@ public class schemagen {
         else if (isTrue( OPT_LANG_RDFS )) {
             cls = RDFS.Class;
         }
-        
+
         for (StmtIterator i = m_source.listStatements( null, RDF.type, cls ); i.hasNext(); ) {
             writeValue( i.nextStatement().getSubject(), template, "Resource", "createResource", "_CLASS" );
         }
@@ -1007,24 +1010,24 @@ public class schemagen {
 
             if (candidate.getObject() instanceof Resource) {
                 Resource candObj = (Resource)candidate.getObject();
-                
+
                 if (!candObj.isAnon()) {
                     String uri = candObj.getURI();
-    
+
                     for (Iterator j = m_includeURI.iterator();  j.hasNext(); ) {
                         if (uri.startsWith( (String) j.next() )) {
                             // the subject has an included type
                             Resource ind = candidate.getSubject();
-    
+
                             // do we have a local class resource
                             String varName = (String) m_resourcesToNames.get( candidate.getObject() );
                             String valType = (varName != null) ? varName : "m_model.createClass( \"" + uri + "\" )";
-    
+
                             // push the individuals type onto the stack
                             addReplacementPattern( "valtype", valType );
                             writeValue( ind, template, "Individual", "createIndividual", "_INSTANCE" );
                             pop( 1 );
-    
+
                             break;
                         }
                     }
@@ -1042,15 +1045,15 @@ public class schemagen {
 
             if (candidate.getObject() instanceof Resource) {
                 Resource candObj = candidate.getResource();
-                
+
                 if (!candObj.isAnon()) {
                     String uri = candObj.getURI();
-                    
+
                     for (Iterator j = m_includeURI.iterator();  j.hasNext(); ) {
                         if (uri.startsWith( (String) j.next() )) {
                             // the subject of the sentence has a type that's on our include list
                             writeValue( candidate.getSubject(), template, "Resource", "createResource", "_INSTANCE" );
-    
+
                             break;
                         }
                     }
@@ -1207,6 +1210,27 @@ public class schemagen {
             if (r.getURI().startsWith( uri )) {
                 // in
                 return false;
+            }
+        }
+
+        // we allow individuals whose class is in the included NS's, unless opt strict-invdividuals is true */
+        if (!isTrue( OPT_STRICT_INDIVIDUALS )) {
+            for (StmtIterator j = r.listProperties( RDF.type ); j.hasNext(); ) {
+                // we search the rdf:types of this resource
+                Resource typeRes = j.nextStatement().getResource();
+
+                if (!typeRes.isAnon()) {
+                    String typeURI = typeRes.getURI();
+
+                    // for any type that is in a permitted NS
+                    for (Iterator i = m_includeURI.iterator(); i.hasNext(); ) {
+                        String uri = (String) i.next();
+                        if (typeURI.startsWith( uri )) {
+                            // in
+                            return false;
+                        }
+                    }
+                }
             }
         }
 

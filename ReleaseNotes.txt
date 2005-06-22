@@ -8,7 +8,12 @@ ModelSpecs
     o Fixed a bug: the loadFile property did not work on inference models.
       The fix ensures that any descendant of ModelSpecImpl implements
       createModel() using a method doCreateModel() and then loading the
-      specified files. 
+      specified files.
+
+Schemagen
+    o Schemagen now by default includes individuals whose class is in one
+      of the target namespaces for the document, even if the individual itself
+      is not. This behaviour can be turned off with option strictIndividuals.
 
 ;;; -- end post2.2final change list -------------------------------------
 
@@ -26,11 +31,11 @@ Post 2.2beta change list
   ARP
       o Fixed XMLLiteral bug relevant to OWL-S
       o Added workaround for ICU bug.
-        The workaround may slow processing of Tamil and other langauges 
+        The workaround may slow processing of Tamil and other langauges
         which use Unicode composing characters. If you are processing
-        large volumes of Tamil using a patched version of icu4j may be 
+        large volumes of Tamil using a patched version of icu4j may be
         faster. Ask on jena-dev for more information.
-      o Improved character encoding support: all character encodings 
+      o Improved character encoding support: all character encodings
         supported by Java are now supported by Jena.
 
   FileGraph and ModelMakerImpl
@@ -47,7 +52,7 @@ Post 2.2beta change list
   InfModelBase (hence, any inference model)
       o Inference models now (weakly) support transactions; they delegate them to
         their base model. Additionally, an abort() will do a rebind().
-  
+
   JMS & ModelSpec
       o Added new modelName property to the vocabulary and schema, ready
         to properly support named models as well as model makers.
@@ -60,7 +65,7 @@ Post 2.2beta change list
         is a (deprecated) JMS subclass to allow legacy use of the vocabulary.
 
       o OntModelSpec understands the `modelName` property; it gives the name
-        of the model (in the baseModelMaker) which is to be used in a 
+        of the model (in the baseModelMaker) which is to be used in a
         ontModelSpec.create() call.
 
   OWL Syntax Checker
@@ -72,29 +77,29 @@ Post 2.2beta change list
       o the requirement that adding `(prefix, uri)` to a prefix mapping remove
         any existing prefix for `uri` has been removed. Calls that run the
         mapping backward (eg qNameFor()) will get a correct answer, not
-        necessarily the same one each time; if possible, it will be the 
+        necessarily the same one each time; if possible, it will be the
         "most recently bound" prefix. (The "not possible" cases are those
         where a prefix has been removed and the inverse mapping has been
         regenerated.)
 
   Ontology API
       o As part of a move to provide more consistent behaviour, listDeclaredProperties
-        has been completely re-written. The new behaviour, which in some 
+        has been completely re-written. The new behaviour, which in some
         important respects differs from the old behaviour, is now documented
         in doc/how-to/rdf-frames.html. There has also been a non
         backwards-compatible change in the meaning of the Boolean flag
         passed to listDeclaredProperties.
       o An OntModel can now list the root classes in the local class hierarchy,
         see OntModel.listHierarchyRoots()
-        
+
   DIG reasoner
       o Fixed a bug that meant that <top> and <bottom> were not being translated
         to owl:Thing and owl:Nothing, and hence not appearing in output
-  
+
   RDF/XML Output
-      o Improved character encoding support: all character encodings 
+      o Improved character encoding support: all character encodings
         supported by Java are now supported by Jena.
-        
+
 Post Jena 2.1 change list [up to 2.2beta]
 
   RDF API
@@ -104,7 +109,7 @@ Post Jena 2.1 change list [up to 2.2beta]
       o Fixed XSDDouble isValidValue test to check for Double
       o Fixed XSDbase64Binary, XSDhexBinary returning strings instead of byte[]
 
-      o GraphExtract operations made available through ModelExtract plus 
+      o GraphExtract operations made available through ModelExtract plus
         StatementBoundary[Base] & StatementTripleBoundary.
 
       o Model has gained read(String url, String baseURI, String lang ).
@@ -112,7 +117,7 @@ Post Jena 2.1 change list [up to 2.2beta]
   Database
       o Fixed user-reported problem where removeNsPrefix() wasn't persistent
       o handles some constraints internally
-      o A minor change to ModelCom has improved the speed 
+      o A minor change to ModelCom has improved the speed
         with which DB models with several prefixes are opened.
 
   GraphBase and Reification SPI
@@ -146,7 +151,7 @@ Post Jena 2.1 change list [up to 2.2beta]
       o added BulkUpdateHandler.remove(S,P,O) removing triples matching
         (S, P, O), Node.ANY as wildcard
       o BulkUpdateHandler generates events for these
-      
+
       o ModelFactory has gained createUnion(Model, Model) which creates a
         dynamic union of the two argument models.
 
@@ -168,7 +173,7 @@ Post Jena 2.1 change list [up to 2.2beta]
 
   Graph Capabilities gains findContractSafe()
       o used to tell prettywriter that its use of find() works, otherwise
-        it falls back to the ordinary writer. 
+        it falls back to the ordinary writer.
 
   Graph Query handling
       o Query now rewrites (some) RDQL pattern matches which are equivalent
@@ -194,18 +199,18 @@ Post Jena 2.1 change list [up to 2.2beta]
         on the iterator from find() generated a notifyDeleteTriple event.
 
   Reasoners
-      o Changed processing of PROPruleSet on GenericRuleReasoners to accept 
+      o Changed processing of PROPruleSet on GenericRuleReasoners to accept
         multiple rulesets and merge them
       o Added support for @prefix and @include to the Rule parser utility
       o Suppressed internal properties (rb:xsdRange etc) from leaking out of infmodel
       o Fix space leak in backward chainer
       o Added subProperty inheritance of domain/range values
       o Fixed validation of owl Functional properties to handle literals
-      o Changed validation report of un-instantiatable classes to be warnings rather 
+      o Changed validation report of un-instantiatable classes to be warnings rather
         than errors, report name is "Inconsistent class"
-      o During validation the culprit resource is now made available via the error 
+      o During validation the culprit resource is now made available via the error
         report's getExtension method
-      o Fixed bug in backward reasoner which caused it to occasionally miss 
+      o Fixed bug in backward reasoner which caused it to occasionally miss
         some results in non-deterministic ways
       o Fixed performance problem with listing all triples in a transitive reasoner
       o Fixed bug 927644, mishandling of cycles in transitive reasoner
@@ -226,7 +231,7 @@ Post Jena 2.1 change list [up to 2.2beta]
   ModelSpecs
       o The modelspec language has been extended. Reasoner specs can now
         specify multiple rulesets by URL or by literal strings. Schemas
-        may also be specified by URL. 
+        may also be specified by URL.
 
       o Internal refactoring has cleaned up the API somewhat, and there
         is, optionally, config information read from
@@ -236,7 +241,7 @@ Post Jena 2.1 change list [up to 2.2beta]
         At the moment, this only allows the Java class that implements
         a given jms:ModelSpec type to be specified.
 
-      o The JMS (Java Model Spec) vocabulary class has had its schema 
+      o The JMS (Java Model Spec) vocabulary class has had its schema
         extracted - it is now loaded from vocabularies/jena-model-spec.n3.
         That vocabulary element is now added to jena.jar (as are some other
         vocabulary elements used by the system).
@@ -260,7 +265,7 @@ Post Jena 2.1 change list [up to 2.2beta]
       o new Node methods getNameSpace, getLocalName, hasURI(String)
       o minor adjustments to Node.create(String) to allow for specifying
         language or type for literals, use of default prefix, and
-        elimination of the nn-NN hack for numeric literals. 
+        elimination of the nn-NN hack for numeric literals.
       o default Node.toString() uses quoting and @/^^ for literals
 
   Triple
@@ -281,7 +286,7 @@ Post Jena 2.1 change list [up to 2.2beta]
       o Fixed bug 985258 - schemagen can now create RDFS vocabularies
       o Fixed bug 940570 - solved a problem with listIndividuals when using
         the default OWL reasoner
-      o Fixed bug 948995 - .as() on owl:InverseFunctionalProperty for 
+      o Fixed bug 948995 - .as() on owl:InverseFunctionalProperty for
         datatype properties failing
       o Various fixes to prevent cycles in the graph confusing listSubClasses,
         listSuperClasses, etc
@@ -289,19 +294,19 @@ Post Jena 2.1 change list [up to 2.2beta]
         reasoner present
       o In response to bug 1065103, DAML models now by default use rdfs:subClassOf,
         rdfs:subPropertyOf, rdfs:range and rdfs:domain in preference to their daml:
-        equivalents.  The old (Jena 2.1) behaviour is available by switching to the 
+        equivalents.  The old (Jena 2.1) behaviour is available by switching to the
         DAML_OILLegacyProfile in the OntModelSpec.  The new version more closely
         matches what typical DAML ontologies do.
       o Added createIndividual() to OntClass
       o Added listDataRanges() to OntModel
-        
+
    DIG reasoner interface
       o Various bug fixes, plus a significant performance fix for listIndividuals()
 
    OWL Syntax Checker
       o Added support for OntDocumentManager
       o Improved command line, supports N3 etc, OntDocumentManager
-      
+
    File Utilities
       o ModelLoader retired by deprecation.
         Use FileManager instead, specifically, FileManager.get() for the
@@ -310,7 +315,7 @@ Post Jena 2.1 change list [up to 2.2beta]
         Read into an existing model with FileManager.get().readModel
       o In schemagen, inference is now *not* used by default on input models; a
         new option --inference has been added to allow inference to be turned on.
-        
+
    Creating sets/maps
       o util.CollectionFactory has static methods for creating hashed Maps
         and hashed Sets. These are used in the internals to allow the
@@ -319,7 +324,7 @@ Post Jena 2.1 change list [up to 2.2beta]
       o This was initially called HashUtils; that class remains, with the
         initial method names, but it is deprecated and will disappear post
         J2.2.
-        
+
    ARP
       o New support for non-Xerces SAX sources.
       o Support for DOM sources (Java 1.4.2 and later).
@@ -327,14 +332,14 @@ Post Jena 2.1 change list [up to 2.2beta]
       o Improved documentation, covering new features, (see doc/ARP)
       o *Removed* StanfordImpl, assuming noone uses it. Please
         complain (jena-dev@yahoogroups.com) if assumption was false.
-         
+
   Utilities
       o new class IteratorCollection with methods iteratorToSet and
         iteratorToList (heavility used in tests and useful in general)
 
   N3
       o Resolve relative URIs if there is a base.
-      	
+
 
 
 
