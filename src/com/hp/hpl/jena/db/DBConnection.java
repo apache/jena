@@ -19,7 +19,7 @@ import com.hp.hpl.jena.util.iterator.*;
 * This is mostly used to simplify the calling pattern for ModelRDB factory methods.
 *
 * @author csayers (based in part on the jena 1 implementation by der).
-* @version $Revision: 1.14 $
+* @version $Revision: 1.15 $
 */
 
 public class DBConnection implements IDBConnection { 
@@ -182,8 +182,7 @@ public class DBConnection implements IDBConnection {
 			m_driver = getDriver();
 		Model resultModel = ModelFactory.createDefaultModel();
 		copySpecializedGraphToModel( m_driver.getSystemSpecializedGraph(true),
-			                         resultModel,
-			                         Triple.createMatch( null, null, null ));
+			                         resultModel, Triple.ANY );
 		return resultModel;
 	}
 	

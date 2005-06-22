@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Domain.java,v 1.8 2005-02-21 11:52:15 andy_seaborne Exp $
+  $Id: Domain.java,v 1.9 2005-06-22 14:48:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -56,7 +56,8 @@ public class Domain extends AbstractList implements IndexValues
 		{
 		StringBuffer b = new StringBuffer( 200 );
         b.append( "<domain" );
-        for (int i = 0; i < value.length; i += 1) b.append( " " + i + ":" + value[i] );
+        for (int i = 0; i < value.length; i += 1) 
+            b.append( " " ).append( i ).append( ":" ).append( value[i] );
         b.append( ">" );
         return b.toString();
 		}

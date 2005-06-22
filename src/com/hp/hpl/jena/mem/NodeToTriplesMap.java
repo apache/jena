@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.23 2005-06-20 14:46:09 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.24 2005-06-22 14:48:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -61,6 +61,12 @@ public abstract class NodeToTriplesMap
         if (s.add( t )) { size += 1; return true; } else return false; 
         }
 
+    protected static final Comparator compareTriples = new Comparator() 
+        {
+        public int compare( Object o1, Object o2 )
+            { return o1.hashCode() - o2.hashCode(); }
+        };
+    
     /**
          Remove <code>t</code> from this NTM. Answer <code>true</code> iff the 
          triple was previously in the set, ie, it really truly has been removed. 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.18 2005-06-17 09:23:40 chris-dollin Exp $
+  $Id: Triple.java,v 1.19 2005-06-22 14:48:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -16,9 +16,10 @@ import java.util.*;
     object field (all nodes) and express the notion that the relationship named
     by the predicate holds between the subject and the object.
     
-    @author Jeremy Carroll
+    @author Jeremy Carroll, kers
  */
-public class Triple implements TripleMatch {
+public class Triple implements TripleMatch 
+    {    
 	private final Node subj, pred, obj;
     
 	public Triple( Node s, Node p, Node o ) 
@@ -47,21 +48,21 @@ public class Triple implements TripleMatch {
     /**
         @return the subject of the triple
     */
-	public Node getSubject() {
+	public final Node getSubject() {
 		return subj;
 	}
     
     /**
         @return the predicate of the triple
     */
-	public Node getPredicate() {
+	public final Node getPredicate() {
 		return pred;
 	}
     
     /**
         @return the object of the triple
     */
-	public Node getObject() {
+	public final Node getObject() {
 		return obj;
 	}
 
@@ -175,8 +176,52 @@ public class Triple implements TripleMatch {
         Node obj = Node.create( pm, st.nextToken() );
         return Triple.create( sub, pred, obj );
         }
-  
+
+    /**
+        A Triple that is wildcarded in all fields. 
+    */
     public static final Triple ANY = Triple.create( Node.ANY, Node.ANY, Node.ANY );
+    
+    /**
+        A Field is a selector from Triples; it allows selectors to be passed
+        around as if they were functions, hooray. 
+    */
+    public static abstract class Field
+        {
+        public abstract Node getField( Triple t );
+        
+        public abstract Filter filterOn( Node n );
+        
+        public static final Field getSubject = new Field() 
+            { 
+            public Node getField( Triple t ) 
+                { return t.subj; }
+            
+            public Filter filterOn( final Node n )
+                { return new Filter() 
+                    { public boolean accept( Object x ) { return n.equals( ((Triple) x).subj ); } }; }
+            };
+            
+        public static final Field getObject = new Field() 
+            { 
+            public Node getField( Triple t ) 
+                { return t.obj; } 
+            
+            public Filter filterOn( final Node n )
+                { return new Filter() 
+                    { public boolean accept( Object x ) { return n.equals( ((Triple) x).obj ); } }; }
+            };
+        
+        public static final Field getPredicate = new Field() 
+            { 
+            public Node getField( Triple t ) 
+                { return t.pred; } 
+            
+            public Filter filterOn( final Node n )
+                { return new Filter() 
+                    { public boolean accept( Object x ) { return n.equals( ((Triple) x).pred ); } }; }
+            };
+        }
     }
 
 /*

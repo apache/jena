@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InitialStage.java,v 1.10 2005-02-21 11:52:15 andy_seaborne Exp $
+  $Id: InitialStage.java,v 1.11 2005-06-22 14:48:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -23,7 +23,7 @@ public class InitialStage extends Stage
     public InitialStage( int count )
         { this.count = count; }
         
-    private int count = -1;
+    final int count;
     
     public void close()
         { markClosed(); }
