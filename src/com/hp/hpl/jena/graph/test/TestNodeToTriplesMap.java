@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.8 2005-06-15 13:34:05 jeremy_carroll Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.9 2005-06-23 09:35:40 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Triple.*;
 import com.hp.hpl.jena.mem.NodeToTriplesMap;
 
 import junit.framework.TestSuite;
@@ -27,7 +28,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
     public static TestSuite suite()
         { return new TestSuite( TestNodeToTriplesMap.class ); }
     
-    protected NodeToTriplesMap ntS = new NodeToTriplesMap()
+    protected NodeToTriplesMap ntS = new NodeToTriplesMap( Field.getSubject )
     	{ 
         public Node getIndexNode( Triple t ) { return t.getSubject(); } 
         public Node getSubindexNode( Triple t ) { return t.getPredicate(); } 
@@ -35,7 +36,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
         
     	};
     	
-    protected NodeToTriplesMap ntP = new NodeToTriplesMap()
+    protected NodeToTriplesMap ntP = new NodeToTriplesMap( Field.getPredicate )
     	{ 
         public Node getIndexNode( Triple t ) { return t.getPredicate(); } 
         public Node getSubindexNode( Triple t ) { return t.getSubject(); } 
@@ -43,7 +44,7 @@ public class TestNodeToTriplesMap extends GraphTestBase
         
     	};
     	
-    protected NodeToTriplesMap ntO = new NodeToTriplesMap()
+    protected NodeToTriplesMap ntO = new NodeToTriplesMap( Field.getObject )
     	{ 
         public Node getIndexNode( Triple t ) { return t.getObject(); } 
         public Node getSubindexNode( Triple t ) { return t.getPredicate(); } 

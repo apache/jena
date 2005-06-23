@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.24 2005-06-22 14:48:33 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.25 2005-06-23 09:36:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -24,6 +24,9 @@ public abstract class NodeToTriplesMap
          The map from nodes to Set(Triple).
     */
     private Map map = CollectionFactory.createHashedMap();
+    
+    public NodeToTriplesMap( Triple.Field index )
+        {}
     
     public Map forTestingOnly_getMap()
         { return map; }
