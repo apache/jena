@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.26 2005-06-23 15:13:07 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.27 2005-06-23 18:11:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -46,13 +46,13 @@ public abstract class NodeToTriplesMap
     public Iterator domain()
         { return map.keySet().iterator(); }
     
-    /**
-         Subclasses must over-ride to return the node at the index position in the
-         triple <code>t</code>; should be equivalent to one of getSubject(),
-         getPredicate(), or getObject().
-    */
-    public final Node getIndexNode( Triple t )
-        { return indexField.getField( t ); }
+//    /**
+//         Subclasses must over-ride to return the node at the index position in the
+//         triple <code>t</code>; should be equivalent to one of getSubject(),
+//         getPredicate(), or getObject().
+//    */
+//    public final Node getIndexNode( Triple t )
+//        { return indexField.getField( t ); }
     
     /**
          Add <code>t</code> to this NTM; the node <code>o</code> <i>must</i>
@@ -61,7 +61,7 @@ public abstract class NodeToTriplesMap
     */
     public boolean add( Triple t ) 
         {
-        Node o = getIndexNode( t );
+        Node o = indexField.getField( t );
         Set s = (Set) map.get( o );
         if (s == null) map.put( o, s = CollectionFactory.createHashedSet() );
         if (s.add( t )) { size += 1; return true; } else return false; 
@@ -79,7 +79,7 @@ public abstract class NodeToTriplesMap
     */
     public boolean remove( Triple t )
         { 
-        Node o = getIndexNode( t );
+        Node o = indexField.getField( t );
         Set s = (Set) map.get( o );
         if (s == null)
             return false;
@@ -169,7 +169,7 @@ public abstract class NodeToTriplesMap
     */
     public ExtendedIterator iterator( Triple pattern )
         {
-        Node x = getIndexNode( pattern );
+        Node x = indexField.getField( pattern );
         Filter f = buildFilterFromPattern( pattern );
         Iterator triples = iterator( x );
         return f == null ? WrappedIterator.create( triples ) : new FilterIterator( f, triples ); 
@@ -182,7 +182,7 @@ public abstract class NodeToTriplesMap
     */
     public boolean contains( Triple t )
         { 
-        Set s = (Set) map.get( getIndexNode( t ) );
+        Set s = (Set) map.get( indexField.getField( t ) );
         return s == null ? false : s.contains( t );
         }
     
