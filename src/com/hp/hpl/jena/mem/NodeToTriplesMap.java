@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.25 2005-06-23 09:36:49 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.26 2005-06-23 15:13:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -25,8 +25,10 @@ public abstract class NodeToTriplesMap
     */
     private Map map = CollectionFactory.createHashedMap();
     
-    public NodeToTriplesMap( Triple.Field index )
-        {}
+    protected final Triple.Field indexField;
+    
+    public NodeToTriplesMap( Triple.Field indexField )
+        { this.indexField = indexField; }
     
     public Map forTestingOnly_getMap()
         { return map; }
@@ -49,7 +51,8 @@ public abstract class NodeToTriplesMap
          triple <code>t</code>; should be equivalent to one of getSubject(),
          getPredicate(), or getObject().
     */
-    public abstract Node getIndexNode( Triple t );
+    public final Node getIndexNode( Triple t )
+        { return indexField.getField( t ); }
     
     /**
          Add <code>t</code> to this NTM; the node <code>o</code> <i>must</i>
