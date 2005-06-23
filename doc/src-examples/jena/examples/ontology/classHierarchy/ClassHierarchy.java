@@ -7,16 +7,19 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: ClassHierarchy.java,v $
- * Revision           $Revision: 1.2 $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2003-09-02 14:48:50 $
+ * Last modified on   $Date: 2005-06-23 22:53:35 $
  *               by   $Author: ian_dickinson $
  *
+ * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+ * (see footer for full conditions)
  *****************************************************************************/
 
 // Package
 ///////////////
+package jena.examples.ontology.classHierarchy;
 
 
 // Imports
@@ -24,6 +27,7 @@
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.PrefixMapping;
+import com.hp.hpl.jena.util.iterator.Filter;
 
 import java.io.PrintStream;
 import java.util.*;
@@ -38,7 +42,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: ClassHierarchy.java,v 1.2 2003-09-02 14:48:50 ian_dickinson Exp $
+ * @version CVS $Id: ClassHierarchy.java,v 1.1 2005-06-23 22:53:35 ian_dickinson Exp $
  */
 public class ClassHierarchy {
     // Constants
@@ -53,7 +57,7 @@ public class ClassHierarchy {
     protected OntModel m_model;
     private Map m_anonIDs = new HashMap();
     private int m_anonCount = 0;
-    
+
 
 
     // Constructors
@@ -64,7 +68,14 @@ public class ClassHierarchy {
 
     /** Show the sub-class hierarchy encoded by the given model */
     public void showHierarchy( PrintStream out, OntModel m ) {
-        for (Iterator i = rootClasses( m );  i.hasNext();  ) {
+        // create an iterator over the root classes that are not anonymous class expressions
+        Iterator i = m.listHierarchyRootClasses()
+                      .filterDrop( new Filter() {
+                                    public boolean accept( Object o ) {
+                                        return ((Resource) o).isAnon();
+                                    }} );
+
+        while (i.hasNext()) {
             showClass( out, (OntClass) i.next(), new ArrayList(), 0 );
         }
     }
@@ -101,7 +112,7 @@ public class ClassHierarchy {
      */
     public void renderClassDescription( PrintStream out, OntClass c, int depth ) {
         indent( out, depth );
-        
+
         if (c.isRestriction()) {
             renderRestriction( out, (Restriction) c.as( Restriction.class ) );
         }
@@ -130,16 +141,16 @@ public class ClassHierarchy {
         else {
             renderAnonymous( out, r, "restriction" );
         }
-        
+
         out.print( " on property " );
         renderURI( out, r.getModel(), r.getOnProperty().getURI() );
     }
-    
+
     /** Render a URI */
     protected void renderURI( PrintStream out, PrefixMapping prefixes, String uri ) {
-        out.print( prefixes.usePrefix( uri ) );
+        out.print( prefixes.shortForm( uri ) );
     }
-    
+
     /** Render an anonymous class or restriction */
     protected void renderAnonymous( PrintStream out, Resource anon, String name ) {
         String anonID = (String) m_anonIDs.get( anon.getId() );
@@ -147,13 +158,13 @@ public class ClassHierarchy {
             anonID = "a-" + m_anonCount++;
             m_anonIDs.put( anon.getId(), anonID );
         }
-        
+
         out.print( "Anonymous ");
         out.print( name );
         out.print( " with ID " );
         out.print( anonID );
     }
-    
+
     /** Generate the indentation */
     protected void indent( PrintStream out, int depth ) {
         for (int i = 0;  i < depth; i++) {
@@ -161,40 +172,41 @@ public class ClassHierarchy {
         }
     }
 
-    /**
-     * Answer an iterator over the classes we will use as the roots of the depicted
-     * hierarchy.  We use named classes that either have Thing as a direct super-class,
-     * or which have no declared super-classes.  The first condition is helpful if
-     * using a reasoner, the second otherwise.
-     * @param m A model
-     * @return An iterator over the named class hierarchy roots in m
-     */
-    protected Iterator rootClasses( OntModel m ) {
-        List roots = new ArrayList();
-        
-        for (Iterator i = m.listClasses();  i.hasNext(); ) {
-            OntClass c = (OntClass) i.next();
-            
-            // too confusing to list all the restrictions as root classes 
-            if (c.isAnon()) {
-                continue;
-            }
-            
-            if (c.hasSuperClass( m.getProfile().THING(), true ) ) {
-                // this class is directly descended from Thing
-                roots.add( c );
-            }
-            else if (c.getCardinality( m.getProfile().SUB_CLASS_OF() ) == 0 ) {
-                // this class has no super-classes (can occur if we're not using the reasoner)
-                roots.add( c );
-            }
-        }
-        
-        return roots.iterator();
-    }
 
     //==============================================================================
     // Inner class definitions
     //==============================================================================
 
 }
+
+
+/*
+    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions
+    are met:
+
+    1. Redistributions of source code must retain the above copyright
+       notice, this list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+
+    3. The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+    IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+    OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+    IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+    INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+    NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+    DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+    THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+    THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+
