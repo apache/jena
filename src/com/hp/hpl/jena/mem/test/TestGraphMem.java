@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.15 2005-06-20 14:46:10 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.16 2005-06-24 11:27:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -43,7 +43,7 @@ public class TestGraphMem extends AbstractTestGraph
         {
         Graph g = getGraphWith( "x R y; x S z" );
         ExtendedIterator it = g.find( Node.ANY, Node.ANY, Node.ANY );
-        it.next(); it.remove(); it.next(); it.remove();
+        it.removeNext(); it.removeNext();
         assertFalse( g.find( node( "x" ), Node.ANY, Node.ANY ).hasNext() );
         assertFalse( g.find( Node.ANY, node( "R" ), Node.ANY ).hasNext() );
         assertFalse( g.find( Node.ANY, Node.ANY, node( "y" ) ).hasNext() );
@@ -53,7 +53,7 @@ public class TestGraphMem extends AbstractTestGraph
         {
         Graph g = getGraphWith( "x brokenSubject y" );
         ExtendedIterator it = g.find( node( "x" ), Node.ANY, Node.ANY );
-        it.next(); it.remove();
+        it.removeNext();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
         }
         
@@ -61,7 +61,7 @@ public class TestGraphMem extends AbstractTestGraph
         {
         Graph g = getGraphWith( "x brokenPredicate y" );
         ExtendedIterator it = g.find( Node.ANY, node( "brokenPredicate"), Node.ANY );
-        it.next(); it.remove();
+        it.removeNext();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
         }
         
@@ -69,7 +69,7 @@ public class TestGraphMem extends AbstractTestGraph
         {
         Graph g = getGraphWith( "x brokenObject y" );
         ExtendedIterator it = g.find( Node.ANY, Node.ANY, node( "y" ) );
-        it.next(); it.remove();
+        it.removeNext();
         assertFalse( g.find( Node.ANY, Node.ANY, Node.ANY ).hasNext() );
         }
     
@@ -84,9 +84,8 @@ public class TestGraphMem extends AbstractTestGraph
     public void testSizeAfterRemove() 
         {
         Graph g = getGraphWith( "x p y" );
-        Iterator it = g.find( triple( "x ?? ??" ) );
-        it.next();
-        it.remove();
+        ExtendedIterator it = g.find( triple( "x ?? ??" ) );
+        it.removeNext();
         assertEquals( 0, g.size() );        
         }
     
@@ -100,22 +99,26 @@ public class TestGraphMem extends AbstractTestGraph
         assertFalse( g.contains( triple( "y R b" ) ) );
         }    
     
-    public void testUnnecessaryMatches() {
-        Node special = new Node_URI("eg:foo") {
-            public boolean matches(Node s) {
-                fail("Matched called superfluously.");
+    public void testUnnecessaryMatches() 
+        {
+        Node special = new Node_URI( "eg:foo" ) 
+            {
+            public boolean matches( Node s ) 
+                {
+                fail( "Matched called superfluously." );
                 return true;
-            }
-        };
-        Graph g = getGraphWith("x p y");
-        g.add(new Triple(special, special, special));
-        exhaust(g.find(special, Node.ANY, Node.ANY));
-        exhaust(g.find(Node.ANY, special, Node.ANY));
-        exhaust(g.find(Node.ANY, Node.ANY, special));
-
+                }
+            };
+        Graph g = getGraphWith( "x p y" );
+        g.add( new Triple( special, special, special ) );
+        exhaust( g.find( special, Node.ANY, Node.ANY ) );
+        exhaust( g.find( Node.ANY, special, Node.ANY ) );
+        exhaust( g.find( Node.ANY, Node.ANY, special ) );
     }
     
-    private void exhaust(Iterator it){ while (it.hasNext()) it.next(); }
+    protected void exhaust( Iterator it )
+        { while (it.hasNext()) it.next(); }
+    
     protected final class GraphMemWithoutFind extends GraphMem
         {
         public ExtendedIterator graphBaseFind( TripleMatch t )

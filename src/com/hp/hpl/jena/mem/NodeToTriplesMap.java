@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.27 2005-06-23 18:11:50 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.28 2005-06-24 11:27:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -9,7 +9,7 @@ package com.hp.hpl.jena.mem;
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.graph.Triple.*;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -18,17 +18,19 @@ import com.hp.hpl.jena.util.iterator.*;
 	Subclasses must override at least one of useXXXInFilter methods.
 	@author kers
 */
-public abstract class NodeToTriplesMap 
+public class NodeToTriplesMap 
     {
     /**
          The map from nodes to Set(Triple).
     */
-    private Map map = CollectionFactory.createHashedMap();
+    protected Map map = CollectionFactory.createHashedMap();
     
-    protected final Triple.Field indexField;
+    protected final Field indexField;
+    protected final Field f2;
+    protected final Field f3;
     
-    public NodeToTriplesMap( Triple.Field indexField )
-        { this.indexField = indexField; }
+    public NodeToTriplesMap( Field indexField, Field f2, Field f3 )
+        { this.indexField = indexField; this.f2 = f2; this.f3 = f3; }
     
     public Map forTestingOnly_getMap()
         { return map; }
@@ -45,14 +47,9 @@ public abstract class NodeToTriplesMap
     */
     public Iterator domain()
         { return map.keySet().iterator(); }
-    
-//    /**
-//         Subclasses must over-ride to return the node at the index position in the
-//         triple <code>t</code>; should be equivalent to one of getSubject(),
-//         getPredicate(), or getObject().
-//    */
-//    public final Node getIndexNode( Triple t )
-//        { return indexField.getField( t ); }
+
+    protected final Node getIndexField( Triple t )
+        { return indexField.getField( t ); }
     
     /**
          Add <code>t</code> to this NTM; the node <code>o</code> <i>must</i>
@@ -61,7 +58,7 @@ public abstract class NodeToTriplesMap
     */
     public boolean add( Triple t ) 
         {
-        Node o = indexField.getField( t );
+        Node o = getIndexField( t );
         Set s = (Set) map.get( o );
         if (s == null) map.put( o, s = CollectionFactory.createHashedSet() );
         if (s.add( t )) { size += 1; return true; } else return false; 
@@ -79,7 +76,7 @@ public abstract class NodeToTriplesMap
     */
     public boolean remove( Triple t )
         { 
-        Node o = indexField.getField( t );
+        Node o = getIndexField( t );
         Set s = (Set) map.get( o );
         if (s == null)
             return false;
@@ -148,6 +145,15 @@ public abstract class NodeToTriplesMap
     
     public boolean isEmpty()
         { return size == 0; }
+    
+    /**
+         Answer true iff this NTM contains the concrete triple <code>t</code>.
+    */
+    public boolean contains( Triple t )
+        { 
+        Set s = (Set) map.get( getIndexField( t ) );
+        return s == null ? false : s.contains( t );
+        }
 
     /**
          Answer an iterator over all the triples in this NTM which are accepted by
@@ -164,146 +170,51 @@ public abstract class NodeToTriplesMap
         }
     
     /**
-         Answer an iterator over all the triples in this NTM with index node 
-         <code>x</code> and which are accepted by <code>pattern</code>.
+         Answer an iterator over all the triples in this NTM which match
+         <code>pattern</code>. The index field of this NTM is guaranteed
+         concrete in the pattern.
     */
     public ExtendedIterator iterator( Triple pattern )
         {
-        Node x = indexField.getField( pattern );
-        Filter f = buildFilterFromPattern( pattern );
-        Iterator triples = iterator( x );
-        return f == null ? WrappedIterator.create( triples ) : new FilterIterator( f, triples ); 
-//        return new FilterIterator( new TripleMatchFilter( pattern ), iterator( x ) );
-//        return new FilterIterator( pattern, iterator( x ) );
-        }
-
-    /**
-        Answer true iff this NTM contains the concrete triple <code>t</code>.
-    */
-    public boolean contains( Triple t )
-        { 
-        Set s = (Set) map.get( indexField.getField( t ) );
-        return s == null ? false : s.contains( t );
-        }
-    
-    boolean useInFilter(Node n) 
-        {
-        return n.isConcrete();
-        }
-    
-    public boolean useSubjectInFilter( Triple t ) 
-        {
-        return useInFilter(t.getSubject());
-        }
-    
-    public boolean useObjectInFilter( Triple t )
-        {
-        return useInFilter( t.getObject() );
-        }
-
-    public boolean usePredicateInFilter( Triple t )
-        {
-        return useInFilter( t.getPredicate() );
-        }
-
-    protected Filter buildFilterFromPattern( Triple pattern )
-        {
-        Node sp = pattern.getSubject();
-        Node op = pattern.getObject();
-        Node pp = pattern.getPredicate();
-        if (useSubjectInFilter( pattern ))
-            {
-            return 
-                usePredicateInFilter( pattern ) ? brokenOrUnimplemented( pattern )
-                : useObjectInFilter( pattern ) ? createSOfilter( sp, op )
-                : createSfilter( sp )
-                ;
-            }
+        Node o = getIndexField( pattern );
+        Set s = (Set) map.get( o );
+        if (s == null)
+            return NullIterator.instance;
         else
             {
-            if (usePredicateInFilter( pattern ))
-                {
-                return useObjectInFilter( pattern )
-                    ? createPOfilter( pp, op )
-                    : createPfilter( pp )
-                    ;
-                }
-            else
-                return useObjectInFilter( pattern )
-                    ? createOfilter( op )
-                    : null
-                    ;
+            Iterator triples = s.iterator();            
+            Filter f = buildFilterFromPattern( pattern );
+            return f == null ? WrappedIterator.create( triples ) : new FilterIterator( f, triples );             
             }
         }
 
-    protected Filter brokenOrUnimplemented( Triple pattern )
+    protected Filter buildFilterFromPattern( final Triple pattern )
         {
-        if (useObjectInFilter( pattern ))
+        boolean c2 = f2.getField( pattern ).isConcrete();
+        boolean c3 = f3.getField( pattern ).isConcrete();
+        if (c2 && c3)
             {
-            throw new BrokenException( "logic error" );
+            return new Filter()
+                {
+                Filter fl2 = f2.filterOn( f2.getField( pattern ) );
+                Filter fl3 = f3.filterOn( f3.getField( pattern ) );
+                
+                public boolean accept( Object o )
+                    { return fl2.accept( o ) && fl3.accept( o ); }            
+                };
             }
-        else if (true)
+        else if (c2)
             {
-            throw new BrokenException( "unimplemented" );
+            return f2.filterOn( f2.getField( pattern ) );
             }
-        return null;
+        else if (c3)
+            {
+            return f3.filterOn( f3.getField( pattern ) );
+            }
+        else
+            return null;
         }
-
-    protected Filter createOfilter( final Node op )
-        {
-        return new Filter() {
-            public boolean accept( Object o )
-                {
-                Triple t = (Triple) o;
-                return op.matches( t.getObject() );
-                }
-        };
-        }
-
-    protected Filter createPfilter( final Node pp )
-        {
-        return new Filter() {            
-            public boolean accept( Object o )
-                {
-                Triple t = (Triple) o;
-                return pp.matches( t.getPredicate() );
-                }
-        };
-        }
-
-    protected Filter createPOfilter( final Node pp, final Node op )
-        {
-        return new Filter() {
-            public boolean accept( Object o )
-                {
-                Triple t = (Triple) o;
-                return pp.matches( t.getPredicate() )
-                        && op.matches( t.getObject() );
-                }
-        };
-        }
-
-    protected Filter createSfilter( final Node sp )
-        {
-        return new Filter() {
-            public boolean accept( Object o )
-                {
-                return sp.matches( ((Triple) o).getSubject() );
-                }
-        };
-        }
-
-    protected Filter createSOfilter( final Node sp, final Node op )
-        {
-        return new Filter() {
-            public boolean accept( Object o )
-                {
-                Triple t = (Triple) o;
-                return sp.matches( t.getSubject() )
-                        && op.matches( t.getObject() );
-                }
-        };
-        }
+    
     }
 
 /*

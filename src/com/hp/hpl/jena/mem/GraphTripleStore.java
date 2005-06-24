@@ -1,15 +1,14 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.14 2005-06-23 15:13:07 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.15 2005-06-24 11:27:33 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.*;
 import com.hp.hpl.jena.graph.impl.TripleStore;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.util.iterator.WrappedIterator;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
     GraphTripleStore - the underlying triple-indexed triple store for GraphMem et al,
@@ -20,25 +19,20 @@ import com.hp.hpl.jena.util.iterator.WrappedIterator;
  */
 public class GraphTripleStore implements TripleStore
     {
-    protected NodeToTriplesMap subjects = new NodeToTriplesMap( Field.getSubject )
-        { // public Node getIndexNode( Triple t ) { return t.getSubject(); }  
-          public boolean useSubjectInFilter(Triple p) { return false; }
-        };
+    protected NodeToTriplesMap subjects = new NodeToTriplesMap
+        ( Field.getSubject, Field.getPredicate, Field.getObject );
         
-    protected NodeToTriplesMap predicates = new NodeToTriplesMap( Field.getPredicate )
-        { // public Node getIndexNode( Triple t ) { return t.getPredicate(); } 
-        public boolean usePredicateInFilter(Triple p) { return false; }
-         };
+    protected NodeToTriplesMap predicates = new NodeToTriplesMap
+        ( Field.getPredicate, Field.getObject, Field.getSubject );
         
-    protected NodeToTriplesMap objects = new NodeToTriplesMap( Field.getObject )
-        { // public Node getIndexNode( Triple t ) { return t.getObject(); } 
-        public boolean useObjectInFilter(Triple p) { return false; }
-        };
+    protected NodeToTriplesMap objects = new NodeToTriplesMap
+        ( Field.getObject, Field.getSubject, Field.getPredicate );
         
     public NodeToTriplesMap forTestingOnly_getObjects()
         { return objects; }
+    
     public NodeToTriplesMap forTestingOnly_getSubjects()
-    { return subjects; }
+        { return subjects; }
    
     protected Graph parent;
     
@@ -125,6 +119,7 @@ public class GraphTripleStore implements TripleStore
         Node pm = t.getPredicate();
         Node om = t.getObject();
         Node sm = t.getSubject();
+            
         if (sm.isConcrete())
             return new StoreTripleIterator( parent, subjects.iterator( t ), subjects, predicates, objects );
         else if (om.isConcrete() && !om.isLiteral())
