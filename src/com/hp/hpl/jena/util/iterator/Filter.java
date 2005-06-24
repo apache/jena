@@ -1,27 +1,31 @@
 /*
  * (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Filter.java,v 1.4 2005-02-21 12:19:15 andy_seaborne Exp $
+ * $Id: Filter.java,v 1.5 2005-06-24 13:26:49 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.util.iterator;
 
-/** A boolean function for filtering.
- * @author jjc
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.4 $' Date='$Date: 2005-02-21 12:19:15 $'
- */
+import java.util.Iterator;
+
+/** 
+    boolean functions wrapped to be used in filtering iterators.
+    
+    @author jjc, kers
+*/
 public interface Filter
-{
-/** The object is wanted.
- * @param o The object to accept or reject.
- * @return true if the object is wanted.
- */    
-	public boolean accept(Object o);
+    {
+    /**
+        Answer true iff the object <code>o</code> is acceptable. This method
+        may also throw an exception if the argument is of a wrong type; it
+        is not required to return <code>false</code> in such a case.
+    */
+	public boolean accept( Object o );
+    
+    // public ExtendedIterator filter( Iterator it );
     
     /** 
-        a filter that accepts anything.
-        (useful when a general method wants a Filter, but we'll
-        take anything).
+        A Filter that accepts everything it's offered.
     */
     public static final Filter any = new Filter()
         { public final boolean accept( Object o ) { return true; } };
@@ -54,6 +58,6 @@ public interface Filter
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Filter.java,v 1.4 2005-02-21 12:19:15 andy_seaborne Exp $
+ * $Id: Filter.java,v 1.5 2005-06-24 13:26:49 chris-dollin Exp $
  *
  */

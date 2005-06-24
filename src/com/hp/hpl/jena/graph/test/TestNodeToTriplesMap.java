@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.11 2005-06-24 11:27:32 chris-dollin Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.12 2005-06-24 13:26:48 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -28,25 +28,11 @@ public class TestNodeToTriplesMap extends GraphTestBase
     public static TestSuite suite()
         { return new TestSuite( TestNodeToTriplesMap.class ); }
     
-    protected NodeToTriplesMap ntS = new NodeToTriplesMap( Field.getSubject, Field.getPredicate, Field.getObject )
-    	{ 
-        public Node getSubindexNode( Triple t ) { return t.getPredicate(); } 
-        public boolean useSubjectInFilter(Triple t) { return false; }
-        
-    	};
+    protected NodeToTriplesMap ntS = new NodeToTriplesMap( Field.getSubject, Field.getPredicate, Field.getObject );
     	
-    protected NodeToTriplesMap ntP = new NodeToTriplesMap( Field.getPredicate, Field.getObject, Field.getSubject )
-    	{ 
-        public Node getSubindexNode( Triple t ) { return t.getSubject(); } 
-        public boolean usePredicateInFilter(Triple t) { return false; }
-        
-    	};
+    protected NodeToTriplesMap ntP = new NodeToTriplesMap( Field.getPredicate, Field.getObject, Field.getSubject );
     	
-    protected NodeToTriplesMap ntO = new NodeToTriplesMap( Field.getObject, Field.getPredicate, Field.getSubject )
-    	{ 
-        public Node getSubindexNode( Triple t ) { return t.getPredicate(); } 
-        public boolean useObjectInFilter(Triple t) { return false; }
-        };
+    protected NodeToTriplesMap ntO = new NodeToTriplesMap( Field.getObject, Field.getPredicate, Field.getSubject );
 
     protected static final Node x = node( "x" );
     
