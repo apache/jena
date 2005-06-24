@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Model.java,v 1.59 2005-02-21 12:14:05 andy_seaborne Exp $
+  $Id: Model.java,v 1.60 2005-06-24 08:11:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -61,7 +61,7 @@ import java.util.*;
  * </pre></code>
  *
  * @author bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.59 $Date: 2004/12/06 13:50:11 $'
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.60 $Date: 2005/02/21 12:14:05 $'
  */
 public interface Model 
     extends ModelCon, ModelGraphInterface, 
@@ -99,13 +99,21 @@ public interface Model
 	ResIterator listSubjects() ;
 
 	/** 
-        List the namespaces used by predicates and types in the model. This method is
-        really intended for use by the RDF/XML writer, which needs to know these
+        (You probably don't want this method; more likely you want the
+        PrefixMapping methods that Model supports.) List the namespaces used 
+        by predicates and types in the model. This method is really intended 
+        for use by the RDF/XML writer, which needs to know these
         namespaces to generate correct and vaguely pretty XML.
     <p>
         The namespaces returned are those of (a) every URI used as a property in the
         model and (b) those of every URI that appears as the object of an rdf:type statement.
+    <p>
+        Note that the notion of "namespace" used here is not that of an XML
+        prefix-namespace, but just of the minimal legal left part of a URI
+        (see Util.splitNamespace for details). If you want the RDF/XML (or
+        N3) namespaces, treat the Model as a PrefixMapping.
 	 
+       @see com.hp.hpl.jena.shared.PrefixMapping
 	   @return an iterator over every predicate and type namespace
 	 */
 	NsIterator listNameSpaces() ;
@@ -975,5 +983,5 @@ public interface Model
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Model.java,v 1.59 2005-02-21 12:14:05 andy_seaborne Exp $
+ * $Id: Model.java,v 1.60 2005-06-24 08:11:44 chris-dollin Exp $
  */
