@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestReasoners.java,v 1.27 2005-02-21 12:18:17 andy_seaborne Exp $
+ * $Id: TestReasoners.java,v 1.28 2005-06-26 20:07:09 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -17,17 +17,20 @@ import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.ontology.*;
+import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.util.IteratorCollection;
 import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.27 $ on $Date: 2005-02-21 12:18:17 $
+ * @version $Revision: 1.28 $ on $Date: 2005-06-26 20:07:09 $
  */
 public class TestReasoners extends TestCase {
     
@@ -270,6 +273,18 @@ public class TestReasoners extends TestCase {
             } );
     }
  
+    /**
+     * Cycle bug in transitive reasoner
+     */
+    public void testTransitiveCycleBug() {
+        Model m = FileManager.get().loadModel( "file:testing/reasoners/bugs/unbroken.n3" );
+        OntModel om = ModelFactory.createOntologyModel( OntModelSpec.RDFS_MEM_TRANS_INF, m );
+        OntClass rootClass = om.getOntClass( RDFS.Resource.getURI() );
+        Resource c = m.getResource("c");
+        Set direct = IteratorCollection.iteratorToSet( rootClass.listSubClasses( true ));
+        assertFalse( direct.contains( c ) );
+        
+    }
     /**
      * Test the ModelFactory interface
      */
