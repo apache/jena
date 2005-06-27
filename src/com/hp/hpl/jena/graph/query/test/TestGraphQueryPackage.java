@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphQueryPackage.java,v 1.12 2005-02-21 11:52:33 andy_seaborne Exp $
+  $Id: TestGraphQueryPackage.java,v 1.13 2005-06-27 15:00:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -14,7 +14,7 @@ import junit.framework.*;
 /**
  	@author kers
 */
-public class TestGraphQueryPackage
+public class TestGraphQueryPackage extends TestCase
     {
     public TestGraphQueryPackage()
         {}
