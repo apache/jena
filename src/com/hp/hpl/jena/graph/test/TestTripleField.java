@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestTripleField.java,v 1.1 2005-06-22 14:48:32 chris-dollin Exp $
+ 	$Id: TestTripleField.java,v 1.2 2005-06-27 14:21:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -10,6 +10,7 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.*;
+import com.hp.hpl.jena.util.iterator.Filter;
 
 /**
     @author kers
@@ -60,6 +61,19 @@ public class TestTripleField extends GraphTestBase
         {
         assertTrue( Field.getPredicate.filterOn( node( "P" ) ).accept( triple( "a P b" ) ) );
         assertFalse( Field.getPredicate.filterOn( node( "Q" ) ).accept( triple( "a P b" ) ) );
+        }
+    
+    public void testFilterByTriple()
+        {
+        assertTrue( Field.getSubject.filterOn( triple( "s P o" ) ).accept( triple( "s Q p" ) ) );
+        assertFalse( Field.getSubject.filterOn( triple( "s P o" ) ).accept( triple( "x Q p" ) ) );
+        }
+    
+    public void testWildcardFilterIsAny()
+        {
+        assertSame( Filter.any, Field.getSubject.filterOn( triple( "?x R s" ) ) );
+        assertSame( Filter.any, Field.getObject.filterOn( triple( "x R ?s" ) ) );
+        assertSame( Filter.any, Field.getPredicate.filterOn( triple( "x ?R s" ) ) );
         }
     }
 
