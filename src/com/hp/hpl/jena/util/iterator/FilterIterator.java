@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: FilterIterator.java,v 1.7 2005-06-17 09:24:30 chris-dollin Exp $
+    $Id: FilterIterator.java,v 1.8 2005-06-27 13:58:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -10,46 +10,58 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /** 
-     Creates a sub-Iterator by filtering.
+     Creates a sub-Iterator by filtering. This class should not be used
+     directly any more; the subclasses FilterKeepIterator and FilterDropIterator
+     should be used instead. 
      @author jjc, mods [clarity & speedup] by kers
  */
 public class FilterIterator extends WrappedIterator
-{
-	final Filter f;
-	Object current;
-    boolean canRemove;
-    boolean hasCurrent;
+    {
+	protected final Filter f;
+	protected Object current;
+    protected boolean canRemove;
+    protected boolean hasCurrent;
 
     /** 
         Initialises a FilterIterator with its filter and base.
         @param fl An object is included if it is accepted by this Filter.
         @param e The base Iterator.
     */        
-	public FilterIterator( Filter fl, Iterator e ) {
+	public FilterIterator( Filter fl, Iterator e ) 
+        {
 		super( e );
 		f = fl;
-	}
+        }
 
     /** 
         Answer true iff there is at least one more acceptable object.
         [Stores reference into <code>current</code>, sets <code>canRemove</code>
         false; answer preserved in `hasCurrent`]
     */        
-	synchronized public boolean hasNext() {
+	synchronized public boolean hasNext() 
+        {
 	    while (!hasCurrent && super.hasNext())
-            hasCurrent = f.accept( current = super.next() );
+            hasCurrent = accept( current = super.next() );
         canRemove = false;
         return hasCurrent;
-	}
+        }
+
+    /**
+        Overridden in Drop/Keep as appropriate. Answer true if the object is
+        to be kept in the output, false if it is to be dropped.
+    */
+    protected boolean accept( Object x )
+        { return f.accept( x ); }
     
     /** 
          Remove the current member from the underlying iterator. Legal only
          after a .next() but before any subsequent .hasNext(), because that
          may advance the underlying iterator.
     */        
-    synchronized public void remove() {
+    synchronized public void remove() 
+        {
         if (!canRemove ) throw new IllegalStateException
-            ( "FilterIterator does not permit calls to hasNext between calls to next and remove.");
+            ( "FilterIterators do not permit calls to hasNext between calls to next and remove." );
         super.remove();
         }
         
@@ -58,15 +70,17 @@ public class FilterIterator extends WrappedIterator
         test of `hasCurrent` appears to make a detectable speed difference.
         Crazy.
     */        
-	synchronized public Object next() {
-		if (hasCurrent || hasNext()) {
+	synchronized public Object next() 
+        {
+		if (hasCurrent || hasNext()) 
+            {
             canRemove = true;
             hasCurrent = false;
             return current;
-		}
+            }
 		throw new NoSuchElementException();
-	}
-}
+        }
+    }
 
 /*
  *  (c) Copyright 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -94,6 +108,6 @@ public class FilterIterator extends WrappedIterator
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: FilterIterator.java,v 1.7 2005-06-17 09:24:30 chris-dollin Exp $
+ * $Id: FilterIterator.java,v 1.8 2005-06-27 13:58:19 chris-dollin Exp $
  *
 */

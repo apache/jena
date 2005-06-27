@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.12 2005-06-14 15:16:31 chris-dollin Exp $
+  $Id: NiceIterator.java,v 1.13 2005-06-27 13:58:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -104,16 +104,13 @@ public class NiceIterator implements ExtendedIterator
         make a new iterator, which is our elements that pass the filter
     */
     public ExtendedIterator filterKeep( Filter f )
-        { return new FilterIterator( f, this ); }
+        { return new FilterKeepIterator( f, this ); }
 
     /**
-        make a new iterator, which is our elements that pass the filter
+        make a new iterator, which is our elements that do not pass the filter
     */        
     public ExtendedIterator filterDrop( final Filter f )
-        { 
-        Filter notF = new Filter() { public boolean accept( Object x ) { return !f.accept( x ); } };
-        return new FilterIterator( notF, this ); 
-        }
+        { return new FilterDropIterator( f, this ); }
    
     /**
         make a new iterator which is the elementwise _map1_ of the base iterator.
@@ -134,9 +131,8 @@ public class NiceIterator implements ExtendedIterator
      * An iterator over no elements.
      * @return A class singleton which doesn't iterate.
      */
-    static public ExtendedIterator emptyIterator() {
-        return emptyInstance;
-    }
+    static public ExtendedIterator emptyIterator() 
+        { return emptyInstance; }
   
     }
 
