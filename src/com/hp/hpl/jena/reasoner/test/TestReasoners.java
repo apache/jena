@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestReasoners.java,v 1.28 2005-06-26 20:07:09 der Exp $
+ * $Id: TestReasoners.java,v 1.29 2005-06-27 07:56:36 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -24,13 +24,16 @@ import com.hp.hpl.jena.vocabulary.*;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 /**
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2005-06-26 20:07:09 $
+ * @version $Revision: 1.29 $ on $Date: 2005-06-27 07:56:36 $
  */
 public class TestReasoners extends TestCase {
     
@@ -239,7 +242,45 @@ public class TestReasoners extends TestCase {
             new Object[] {
             });
     }
- 
+    
+    /**
+     * Check a complex graph's transitive reduction. 
+     */
+    public void testTransitiveReduction() {
+        Model test = FileManager.get().loadModel("testing/reasoners/bugs/subpropertyModel.n3");
+        Property dp = test.getProperty(TransitiveReasoner.directSubPropertyOf.getURI());
+        doTestTransitiveReduction(test, dp);
+    }
+    
+    /**
+     * Test that a transitive reduction is complete.
+     * Assumes test graph has no cycles (other than the trivial
+     * identity ones). 
+     */
+    public void doTestTransitiveReduction(Model model, Property dp) {
+        InfModel im = ModelFactory.createInfModel(ReasonerRegistry.getTransitiveReasoner(), model);
+        
+        for (ResIterator i = im.listSubjects(); i.hasNext();) {
+            Resource base = i.nextResource();
+            
+            List directLinks = new ArrayList();
+            for (Iterator j = im.listObjectsOfProperty(base, dp); j.hasNext(); ) {
+                directLinks.add(j.next());
+            }
+
+            for (int n = 0; n < directLinks.size(); n++) {
+                Resource d1 = (Resource)directLinks.get(n);
+                for (int m = n+1; m < directLinks.size(); m++) {
+                    Resource d2 = (Resource)directLinks.get(m);
+                    
+                    if (im.contains(d1, dp, d2) && ! base.equals(d1) && !base.equals(d2)) {
+                        assertTrue("Triangle discovered in transitive reduction", false);
+                    }
+                }
+            }
+        }
+    }
+    
     /**
      * Test rebind operation for the RDFS1 reasoner
      */

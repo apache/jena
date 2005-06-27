@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTransitiveGraphCache.java,v 1.13 2005-06-26 20:07:09 der Exp $
+ * $Id: TestTransitiveGraphCache.java,v 1.14 2005-06-27 07:56:36 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.test;
@@ -23,7 +23,7 @@ import junit.framework.TestSuite;
  * off the main unit test paths.
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 
 public class TestTransitiveGraphCache extends TestCase {
@@ -300,7 +300,27 @@ public class TestTransitiveGraphCache extends TestCase {
     
     /**
      * Test a a case where an earlier version had a bug due to removing
-     * a link which was required rather than redundant. The links just
+     * a link which was required rather than redundant.
+     */
+    public void testBug1() {
+        TransitiveGraphCache cache = new TransitiveGraphCache(directP, closedP);
+        cache.addRelation(new Triple(a, closedP, b));  
+        cache.addRelation(new Triple(c, closedP, a));        
+        cache.addRelation(new Triple(c, closedP, b));
+        cache.addRelation(new Triple(a, closedP, c));     
+        TestUtil.assertIteratorValues(this, 
+            cache.find(new TriplePattern(a, directP, null)),
+            new Object[] {
+                new Triple(a, closedP, a),
+                new Triple(a, closedP, b),
+                new Triple(a, closedP, c),
+            });
+           
+    }
+    
+    /**
+     * Test a case where the transitive reduction appears to 
+     * be incomplete. The links just
      * form a linear chain, with all closed links provided. But inserted
      * in a particular order.
      */
@@ -316,14 +336,6 @@ public class TestTransitiveGraphCache extends TestCase {
                 new Triple(a, closedP, b)
             });
            
-    }
-    
-    /**
-     * Test a case where the transitive reduction appears to 
-     * be incomplete.
-     */
-    public void testBug1() {
-        
     }
         
     /**
