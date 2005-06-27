@@ -15,6 +15,17 @@ Schemagen
       of the target namespaces for the document, even if the individual itself
       is not. This behaviour can be turned off with option strictIndividuals.
 
+Typed literals:
+    o Fixed bug in unparsing of xsd:time values.
+    o Added normalization step so that creating a typed literal from
+      an XSDDateTime will use narrow types (e.g. xsd:date) when appropriate.
+
+Reasoners:
+    o Fixed bug in TransitiveGraphCache which had resulted in some
+      transitive reductions being incompletely reduced (i.e. some
+      indirect property instances were being incorrectly reported as
+      being direct).
+      
 ;;; -- end post2.2final change list -------------------------------------
 
 
