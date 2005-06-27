@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseDatatype.java,v 1.9 2005-02-21 12:01:50 andy_seaborne Exp $
+ * $Id: BaseDatatype.java,v 1.10 2005-06-27 20:16:05 der Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * can inherit.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:01:50 $
+ * @version $Revision: 1.10 $ on $Date: 2005-06-27 20:16:05 $
  */
 public class BaseDatatype implements RDFDatatype {
     
@@ -125,6 +125,18 @@ public class BaseDatatype implements RDFDatatype {
      */
     public Object extendedTypeDefinition() {
         return null;
+    }
+    
+    /**
+     * Return a minimal datatype for this object. Used to handle
+     * cases where a single java object can represent multiple
+     * specific types and where we want narrow the type used.
+     * For example, a BigDecimal may narrow to a simple xsd:int. 
+     * Currently only used to narrow gener XSDDateTime objects
+     * to the minimal XSD date/time type.
+     */
+    public RDFDatatype getNarrowedDatatype(Object value) {
+        return this; // default is no narrowing
     }
     
     /**
