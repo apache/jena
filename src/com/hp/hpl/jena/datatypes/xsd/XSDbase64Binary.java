@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
  * [See end of file]
- * $Id: XSDbase64Binary.java,v 1.3 2005-02-21 12:02:16 andy_seaborne Exp $
+ * $Id: XSDbase64Binary.java,v 1.4 2005-06-27 16:12:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -20,7 +20,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * This only needs to implement the unparsing.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2005-02-21 12:02:16 $
+ * @version $Revision: 1.4 $ on $Date: 2005-06-27 16:12:21 $
  */
 public class XSDbase64Binary extends XSDDatatype {
     
@@ -47,7 +47,8 @@ public class XSDbase64Binary extends XSDDatatype {
      */
     public String unparse(Object value) {
         if (value instanceof byte[]) {
-            return Base64.encode((byte[])value);
+            String enc = Base64.encode((byte[])value);
+            return enc.substring(0, enc.length() -1);   // strip terminal LF which Base64 adds, why it does that I don't know
         } else {
             throw new DatatypeFormatException("base64 asked encode an unwrapped byte array");
         }

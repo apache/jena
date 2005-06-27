@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.42 2005-04-08 13:51:30 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.43 2005-06-27 16:16:56 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -35,7 +35,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.42 $ on $Date: 2005-04-08 13:51:30 $
+ * @version $Revision: 1.43 $ on $Date: 2005-06-27 16:16:56 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -720,11 +720,11 @@ public class TestTypedLiterals extends TestCase {
      */
     public void testBinary() {
         // Check byte[] maps onto a binary type
-        byte[] data = new byte[]{12,42,99};
+        byte[] data = new byte[]{12, 42, 99};
         Literal l = m.createTypedLiteral(data);
         LiteralLabel ll = l.asNode().getLiteral();
         assertEquals("binary test 1", ll.getDatatype(), XSDDatatype.XSDbase64Binary);
-        assertEquals("binary test 2", Base64.encode(data), ll.getLexicalForm());
+        assertEquals("binary test 2", "DCpj", ll.getLexicalForm());
         
         // Check round tripping from value
         LiteralLabel l2 = m.createTypedLiteral(ll.getLexicalForm(), XSDDatatype.XSDbase64Binary).asNode().getLiteral();
@@ -763,6 +763,10 @@ public class TestTypedLiterals extends TestCase {
         Literal la = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
         Literal lb = m.createTypedLiteral("GpM7", XSDDatatype.XSDbase64Binary);
         assertTrue("equality test", la.sameValueAs(lb));
+        
+        data = new byte[] {15, (byte)0xB7};
+        l = m.createTypedLiteral(data, XSDDatatype.XSDhexBinary);
+        assertEquals("hexBinary encoding", "0FB7", l.getLexicalForm());
     }
     
     /**
@@ -881,6 +885,28 @@ public class TestTypedLiterals extends TestCase {
         assertSameValueAs("lexical form does not affect value", l3, l2);
         assertTrue("lexical form affects equality", ! l1.equals(l2));
         assertTrue("lexical form affects equality",   l1.equals(l3));
+    }
+    
+    /**
+     * Test parse/unparse pairing for problem datatypes
+     */
+    public void testRoundTrip() {
+        doTestRoundTrip("13:20:00.000", XSDDatatype.XSDtime, false);
+        doTestRoundTrip("GpM7", XSDDatatype.XSDbase64Binary, true);
+        doTestRoundTrip("0FB7", XSDDatatype.XSDhexBinary, true);
+    }
+    
+    /**
+     * Check parse/unparse loop.
+     */
+    public void doTestRoundTrip(String lex, RDFDatatype dt, boolean testeq) {
+        LiteralLabel ll = new LiteralLabel(lex, "", dt);
+        String lex2 = dt.unparse(ll.getValue());
+        if (testeq) {
+            assertEquals(lex, lex2);
+        }
+        LiteralLabel ll2 = new LiteralLabel(lex2, "", dt);
+        assertTrue( ll2.isWellFormed() );
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.17 2005-02-21 12:02:16 andy_seaborne Exp $
+ * $Id: XSDDateTime.java,v 1.18 2005-06-27 16:12:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2005-02-21 12:02:16 $
+ * @version $Revision: 1.18 $ on $Date: 2005-06-27 16:12:20 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -211,6 +211,16 @@ public class XSDDateTime extends AbstractDateTime {
         }
         if ((mask & TIME_MASK) != 0 ) {
             buff.append("T");
+            buff.append(timeLexicalForm());
+        }
+        return buff.toString();
+    }
+    
+    /**
+     * Return the lexical form of the time component.
+     */
+    public String timeLexicalForm() {
+        StringBuffer buff = new StringBuffer();
             if(data[h]<10) buff.append("0");
             buff.append(data[h]);
             
@@ -227,7 +237,6 @@ public class XSDDateTime extends AbstractDateTime {
                 buff.append(data[ms]);
             }
             buff.append("Z");
-        }
         return buff.toString();
     }
     

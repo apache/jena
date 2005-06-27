@@ -6,7 +6,7 @@
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [See end of file]
- * $Id: XSDTimeType.java,v 1.3 2005-02-21 12:02:26 andy_seaborne Exp $
+ * $Id: XSDTimeType.java,v 1.4 2005-06-27 16:16:39 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.datatypes.xsd.XSDDateTime;
  * base XSDAbstractDateTimeType class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.3 $ on $Date: 2005-02-21 12:02:26 $
+ * @version $Revision: 1.4 $ on $Date: 2005-06-27 16:16:39 $
  */
 public class XSDTimeType extends XSDAbstractDateTimeType {
 
@@ -51,6 +51,19 @@ public class XSDTimeType extends XSDAbstractDateTimeType {
         }
 
         return new XSDDateTime(date, TIME_MASK);
+    }
+    
+    /**
+     * Convert a value of this datatype out
+     * to lexical form.
+     */
+    public String unparse(Object value) {
+        if (value instanceof XSDDateTime) {
+            return((XSDDateTime)value).timeLexicalForm();
+        } else {
+            // Don't think we should ever get here
+            return value.toString();
+        }
     }
     
 }
