@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDateTime.java,v 1.18 2005-06-27 16:12:20 der Exp $
+ * $Id: XSDDateTime.java,v 1.19 2005-06-27 20:21:07 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd;
 
@@ -18,7 +18,7 @@ import java.util.*;
  * checks whether a given field is legal in the current circumstances.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2005-06-27 16:12:20 $
+ * @version $Revision: 1.19 $ on $Date: 2005-06-27 20:21:07 $
  */
 public class XSDDateTime extends AbstractDateTime {
     /** Mask to indicate whether year is present */
@@ -64,6 +64,31 @@ public class XSDDateTime extends AbstractDateTime {
     public XSDDateTime(Calendar date) {
         super(convertCalendar(date));
         this.mask = FULL_MASK;
+    }
+    
+    /**
+     * Return the most specific xsd type which can represent
+     * this date/time
+     */
+    public XSDDatatype getNarrowedDatatype() {
+        switch (mask) {
+        case TIME_MASK:
+            return XSDDatatype.XSDtime;
+        case MONTH_MASK:
+            return XSDDatatype.XSDgMonth;
+        case DAY_MASK:
+            return XSDDatatype.XSDgDay;
+        case YEAR_MASK:
+            return XSDDatatype.XSDgYear;
+        case MONTH_MASK | DAY_MASK:
+            return XSDDatatype.XSDgMonthDay;
+        case MONTH_MASK | YEAR_MASK:
+            return XSDDatatype.XSDgYearMonth;
+        case MONTH_MASK | YEAR_MASK | DAY_MASK:
+            return XSDDatatype.XSDdate;
+        default:
+            return XSDDatatype.XSDdateTime;
+        }
     }
     
     /**

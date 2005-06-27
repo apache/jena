@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.16 2005-04-08 13:49:50 der Exp $
+  $Id: LiteralLabel.java,v 1.17 2005-06-27 20:26:45 der Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -41,7 +41,7 @@ final public class LiteralLabel {
 	 * The type of the literal. A null type indicates a classic "plain" literal.
 	 * The type of a literal is fixed when it is created.
 	 */
-	final private RDFDatatype dtype;
+	private RDFDatatype dtype;
 
 	/**
 	 * The xml:lang tag. For xsd literals this is ignored and not part of
@@ -81,6 +81,7 @@ final public class LiteralLabel {
 		} else {
 			setValue(lex);
 		}
+        normalize();
 	}
 
 	/**
@@ -114,6 +115,7 @@ final public class LiteralLabel {
         } else {
 		    this.value = value;
         }
+        normalize();
 	}
 
 	/**
@@ -185,6 +187,17 @@ final public class LiteralLabel {
 			}
 		}
 	}
+    
+    /**
+     * Normalize the literal. In the future this may normalize
+     * the lexical value. At present this is used to 
+     * reduce datatypes to a minimal enclosing form when desired.
+     */
+    protected void normalize() {
+        if (dtype != null && value != null) {
+            dtype = dtype.getNarrowedDatatype(value);
+        }
+    }
 
 	//=======================================================================
 	// Methods
