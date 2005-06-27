@@ -1,0 +1,405 @@
+@prefix ovcore:  <http://openview.hp.com/xmlns/core#> .
+@prefix svcd:    <http://openview.hp.com/xmlns/svcd#> .
+@prefix n:       <urn:x-propNum> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix amx:     <http://openview.hp.com/xmlns/amx#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix :        <#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+
+n:76  rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Web_App/uddi" .
+
+n:98  rdfs:subPropertyOf n:43 , n:21 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/MdbEJB" .
+
+n:26  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:29 , n:84 , n:20 , n:41 , n:73 , n:34 , n:45 , n:28 , n:40 , n:31 , n:27 , n:71 , n:46 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App/admin/action" .
+
+n:75  rdfs:subPropertyOf n:43 , n:82 , n:28 , n:13 , n:56 , n:2 , n:42 , n:21 , n:1 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/PhysicianEJB" .
+
+n:97  rdfs:subPropertyOf n:43 , n:8 , n:121 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/StartupEAR/Web_App/webapp_used_for__browser_pop_up_only" .
+
+n:29  rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR" .
+
+n:117
+      rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Web_App/uddiexplorer" .
+
+n:95  rdfs:subPropertyOf n:91 , n:59 , n:45 , n:58 , n:27 , n:81 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/PhysicianEAR/Web_App/physician/action" .
+
+n:94  rdfs:subPropertyOf n:45 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:123" .
+
+n:55  rdfs:subPropertyOf n:52 , n:43 , n:48 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/PhysicianEAR/EJB/PhysicianSessionEJB/PhysicianSessionEJB" .
+
+n:111
+      rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Web_App/wl_management_internal2" .
+
+n:74  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:98 , n:22 , n:2 , n:1 , n:8 , n:15 , n:23 , n:4 , n:39 , n:28 , n:13 , n:56 , n:42 , n:21 , n:17 , n:6 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/MdbEJB/XMLUploadEJB" .
+
+n:116
+      rdfs:subPropertyOf n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:123" .
+
+n:34  rdfs:subPropertyOf n:25 , n:41 , n:45 , n:28 , n:2 , n:1 , n:27 , n:83 , n:29 , n:71 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/RecordEJB" .
+
+n:39  rdfs:subPropertyOf n:43 , n:82 , n:28 , n:13 , n:2 , n:56 , n:21 , n:8 , n:1 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/PrescriptionEJB" .
+
+n:28  amx:scFrom "urn:x-svcd://rw-ora9.rose.hp.com" .
+
+n:17  rdfs:subPropertyOf n:43 , n:82 , n:23 , n:39 , n:28 , n:13 , n:56 , n:2 , n:21 , n:8 , n:1 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/RecordEJB" .
+
+n:6   rdfs:subPropertyOf n:43 , n:82 , n:28 , n:13 , n:56 , n:2 , n:21 , n:42 , n:8 , n:1 , n:15 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/UserEJB" .
+
+n:3   rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:29 , n:84 , n:20 , n:41 , n:73 , n:34 , n:45 , n:28 , n:40 , n:31 , n:27 , n:71 , n:46 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App/admin/AdminLog4jInit" .
+
+n:49  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:84 , n:29 , n:20 , n:45 , n:28 , n:31 , n:27 , n:71 , n:46 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/SessionEJB/PatientSessionEJB" .
+
+n:92  rdfs:subPropertyOf n:45 , n:93 , n:27 , n:29 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App///action" .
+
+n:77  rdfs:subPropertyOf n:25 , n:45 , n:28 , n:2 , n:27 , n:1 , n:83 , n:29 , n:71 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/PrescriptionEJB" .
+
+n:16  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:22 , n:2 , n:1 , n:8 , n:15 , n:23 , n:4 , n:28 , n:67 , n:39 , n:13 , n:56 , n:64 , n:42 , n:21 , n:17 , n:6 , n:32 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App/patient/action" .
+
+n:110
+      rdfs:subPropertyOf n:45 , n:27 , n:89 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/StartupEAR/Web_App/webapp_used_for__browser_pop_up_only" .
+
+n:93  rdfs:subPropertyOf n:45 , n:27 , n:29 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App//" .
+
+n:36  rdfs:subPropertyOf n:20 , n:25 , n:45 , n:28 , n:2 , n:1 , n:27 , n:31 , n:83 , n:29 , n:71 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/UserEJB" .
+
+n:107
+      rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Web_App/wl_management_internal1" .
+
+n:8   amx:scFrom "urn:x-svcd://15.8.159.52" .
+
+n:84  rdfs:subPropertyOf n:25 , n:45 , n:28 , n:2 , n:1 , n:27 , n:83 , n:29 , n:71 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/GroupEJB" .
+
+n:106
+      rdfs:subPropertyOf n:43 , n:21 , n:8 , n:9 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App///requestEncodingFilter" .
+
+n:85  rdfs:subPropertyOf n:43 , n:27 , n:86 ;
+      amx:scFrom "urn:x-svcd://15.8.158.224:80" .
+
+n:18  rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/BEA_Domain/medrec" .
+
+n:68  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:22 , n:2 , n:1 , n:8 , n:15 , n:23 , n:4 , n:28 , n:39 , n:13 , n:56 , n:42 , n:21 , n:17 , n:24 , n:6 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App/admin/action" .
+
+n:23  rdfs:subPropertyOf n:43 , n:82 , n:28 , n:13 , n:2 , n:56 , n:21 , n:1 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/VitalSignsEJB" .
+
+n:4   rdfs:subPropertyOf n:43 , n:82 , n:28 , n:13 , n:2 , n:56 , n:21 , n:1 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/GroupEJB" .
+
+n:45  amx:scFrom "urn:x-svcd://15.8.159.53" .
+
+n:105
+      rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Web_App/console" .
+
+n:40  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:84 , n:29 , n:20 , n:41 , n:73 , n:45 , n:34 , n:28 , n:27 , n:31 , n:71 , n:46 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App/admin" .
+
+n:69  rdfs:subPropertyOf n:43 , n:11 , n:21 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/SessionEJB/MailSessionEJB" .
+
+n:38  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:22 , n:2 , n:8 , n:1 , n:15 , n:23 , n:4 , n:39 , n:28 , n:67 , n:13 , n:56 , n:64 , n:21 , n:42 , n:17 , n:6 , n:32 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App/patient/requestEncodingFilter" .
+
+n:108
+      rdfs:subPropertyOf n:45 , n:27 , n:29 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/WebServicesEJB" .
+
+n:32  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:2 , n:8 , n:1 , n:23 , n:28 , n:39 , n:13 , n:56 , n:21 , n:17 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/SessionEJB/RecordSessionEJB" .
+
+n:35  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:29 , n:84 , n:20 , n:41 , n:73 , n:80 , n:34 , n:45 , n:28 , n:27 , n:31 , n:71 , n:46 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/MdbEJB/XMLUploadEJB" .
+
+n:43  rdfs:subPropertyOf n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001" .
+
+n:82  rdfs:subPropertyOf n:43 , n:28 , n:2 , n:1 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/JDBC_Connection_Pool/MedRecPool-Oracle" .
+
+n:54  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:84 , n:29 , n:20 , n:41 , n:73 , n:45 , n:51 , n:34 , n:28 , n:27 , n:31 , n:53 , n:71 , n:46 , n:49 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App/patient/action" .
+
+n:48  rdfs:subPropertyOf n:52 , n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/PhysicianEAR/EJB/PhysicianSessionEJB" .
+
+n:83  rdfs:subPropertyOf n:45 , n:27 , n:29 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB" .
+
+n:19  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:84 , n:29 , n:20 , n:41 , n:73 , n:51 , n:34 , n:45 , n:28 , n:27 , n:31 , n:53 , n:71 , n:46 , n:49 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App/patient/requestEncodingFilter" .
+
+n:50  rdfs:subPropertyOf n:91 , n:59 , n:58 , n:45 , n:27 , n:81 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/PhysicianEAR/Web_App/physician/PhysLog4jInit" .
+
+n:64  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:22 , n:2 , n:8 , n:1 , n:15 , n:23 , n:4 , n:28 , n:39 , n:67 , n:13 , n:56 , n:42 , n:21 , n:17 , n:6 , n:32 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App/patient" .
+
+n:42  rdfs:subPropertyOf n:43 , n:82 , n:28 , n:13 , n:2 , n:56 , n:21 , n:8 , n:1 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/AddressEJB" .
+
+n:27  rdfs:subPropertyOf n:45 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001" .
+
+n:60  rdfs:subPropertyOf n:43 , n:97 , n:8 , n:121 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/StartupEAR/Web_App/webapp_used_for__browser_pop_up_only/StartBrowser" .
+
+n:53  rdfs:subPropertyOf n:25 , n:2 , n:1 , n:83 , n:29 , n:41 , n:34 , n:45 , n:28 , n:27 , n:71 , n:46 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/SessionEJB/RecordSessionEJB" .
+
+n:65  rdfs:subPropertyOf n:43 , n:52 , n:7 , n:48 , n:8 , n:55 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/PhysicianEAR/Web_App/physician/PhysLog4jInit" .
+
+n:66  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:84 , n:29 , n:20 , n:41 , n:73 , n:45 , n:34 , n:28 , n:40 , n:31 , n:27 , n:71 , n:46 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App/admin/requestEncodingFilter" .
+
+n:37  rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/JDBC_Connection_Pool/MedRecPool-PointBase" .
+
+n:7   rdfs:subPropertyOf n:52 , n:43 , n:48 , n:8 , n:55 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/PhysicianEAR/Web_App/physician" .
+
+n:22  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:2 , n:8 , n:1 , n:15 , n:23 , n:4 , n:39 , n:28 , n:13 , n:56 , n:42 , n:21 , n:17 , n:6 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/SessionEJB/AdminSessionEJB" .
+
+n:5   rdfs:subPropertyOf n:43 , n:82 , n:11 , n:22 , n:2 , n:1 , n:8 , n:15 , n:23 , n:4 , n:28 , n:39 , n:13 , n:56 , n:42 , n:21 , n:17 , n:24 , n:6 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App/admin/AdminLog4jInit" .
+
+n:15  rdfs:subPropertyOf n:43 , n:82 , n:28 , n:13 , n:2 , n:56 , n:42 , n:21 , n:8 , n:1 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/PatientEJB" .
+
+n:79  rdfs:subPropertyOf n:80 , n:45 , n:27 , n:29 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/MdbEJB/MailBean" .
+
+n:52  rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/PhysicianEAR" .
+
+n:51  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:29 , n:84 , n:20 , n:41 , n:73 , n:34 , n:45 , n:28 , n:31 , n:27 , n:53 , n:71 , n:49 , n:46 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App/patient" .
+
+n:78  rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/JDBC_Connection_Pool/MedRecPool-PointBase" .
+
+n:123
+      rdfs:subPropertyOf n:45 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:23" .
+
+n:11  rdfs:subPropertyOf n:43 , n:21 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/SessionEJB" .
+
+n:120
+      rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Web_App/uddi" .
+
+n:70  rdfs:subPropertyOf n:45 , n:27 , n:29 , n:46 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/SessionEJB/MailSessionEJB" .
+
+n:121
+      rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/StartupEAR" .
+
+n:104
+      rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Web_App/console" .
+
+n:109
+      rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/BEA_Domain/medrec" .
+
+n:80  rdfs:subPropertyOf n:45 , n:27 , n:29 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/MdbEJB" .
+
+n:101
+      rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Web_App/wl_management_internal2" .
+
+n:9   rdfs:subPropertyOf n:43 , n:21 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App//" .
+
+n:71  rdfs:subPropertyOf n:25 , n:45 , n:28 , n:2 , n:27 , n:1 ;
+      amx:scFrom "11cbec9:104b05516ed:-8000" .
+
+n:14  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:22 , n:2 , n:8 , n:1 , n:15 , n:63 , n:23 , n:4 , n:28 , n:39 , n:67 , n:13 , n:56 , n:42 , n:21 , n:17 , n:6 , n:32 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/WebServicesEJB/MedRecWebServicesEJB" .
+
+n:113
+      rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Web_App/uddiexplorer" .
+
+n:88  rdfs:subPropertyOf n:110 , n:45 , n:27 , n:89 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/StartupEAR/Web_App/webapp_used_for__browser_pop_up_only/StartBrowser" .
+
+n:25  rdfs:subPropertyOf n:45 , n:28 , n:2 , n:27 , n:1 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/JDBC_Connection_Pool/MedRecPool-Oracle" .
+
+n:89  rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/StartupEAR" .
+
+n:115
+      rdfs:subPropertyOf n:45 , n:27 , n:29 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/WebService/WebServicesWAR" .
+
+n:63  rdfs:subPropertyOf n:43 , n:21 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/WebServicesEJB" .
+
+n:90  rdfs:subPropertyOf n:43 , n:21 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/WebService/WebServicesWAR" .
+
+n:61  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:84 , n:29 , n:20 , n:41 , n:73 , n:45 , n:34 , n:51 , n:28 , n:27 , n:31 , n:53 , n:71 , n:46 , n:49 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App/patient/Log4jInit" .
+
+n:62  rdfs:subPropertyOf n:43 , n:98 , n:21 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/MdbEJB/MailBean" .
+
+n:67  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:2 , n:1 , n:8 , n:15 , n:4 , n:28 , n:13 , n:56 , n:21 , n:42 , n:6 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/SessionEJB/PatientSessionEJB" .
+
+n:24  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:22 , n:2 , n:1 , n:8 , n:15 , n:23 , n:4 , n:39 , n:28 , n:13 , n:56 , n:42 , n:21 , n:17 , n:6 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App/admin" .
+
+n:81  rdfs:subPropertyOf n:91 , n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/PhysicianEAR/EJB/PhysicianSessionEJB" .
+
+n:33  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:84 , n:29 , n:20 , n:41 , n:73 , n:45 , n:34 , n:28 , n:31 , n:27 , n:53 , n:71 , n:108 , n:46 , n:49 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/WebServicesEJB/MedRecWebServicesEJB" .
+
+n:87  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:98 , n:2 , n:1 , n:8 , n:15 , n:4 , n:28 , n:67 , n:13 , n:56 , n:42 , n:21 , n:6 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/MdbEJB/RegistrationBean" .
+
+n:2   rdfs:subPropertyOf n:28 ;
+      amx:scFrom "urn:x-svcd://rw-ora9.rose.hp.com:1521" .
+
+n:125
+      rdfs:subPropertyOf n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:23" .
+
+n:1   rdfs:subPropertyOf n:28 , n:2 ;
+      amx:scFrom "urn:x-svcd://rw-ora9.rose.hp.com:1521:rw" .
+
+n:12  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:22 , n:2 , n:1 , n:8 , n:15 , n:23 , n:4 , n:67 , n:39 , n:28 , n:13 , n:56 , n:64 , n:21 , n:42 , n:17 , n:6 , n:32 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App/patient/Log4jInit" .
+
+n:91  rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/PhysicianEAR" .
+
+n:20  rdfs:subPropertyOf n:25 , n:45 , n:28 , n:2 , n:27 , n:1 , n:83 , n:29 , n:71 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/AddressEJB" .
+
+n:96  rdfs:subPropertyOf n:43 , n:52 , n:7 , n:48 , n:8 , n:55 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/PhysicianEAR/Web_App/physician/action" .
+
+n:41  rdfs:subPropertyOf n:25 , n:45 , n:28 , n:2 , n:27 , n:1 , n:83 , n:29 , n:71 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/VitalSignsEJB" .
+
+n:72  rdfs:subPropertyOf n:20 , n:25 , n:45 , n:28 , n:2 , n:27 , n:1 , n:83 , n:29 , n:71 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/PhysicianEJB" .
+
+n:56  rdfs:subPropertyOf n:43 , n:82 , n:28 , n:2 , n:8 , n:1 ;
+      amx:scFrom "11cbec9:104b05516ed:-7ff6" .
+
+n:122
+      rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/JDBC_Connection_Pool/MedRecXAPool-PointBase" .
+
+n:21  rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR" .
+
+n:31  rdfs:subPropertyOf n:20 , n:25 , n:45 , n:28 , n:2 , n:1 , n:27 , n:83 , n:29 , n:71 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB/PatientEJB" .
+
+n:118
+      rdfs:subPropertyOf n:45 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:110" .
+
+n:99  rdfs:subPropertyOf n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:135" .
+
+n:102
+      rdfs:subPropertyOf n:45 , n:27 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/JDBC_Connection_Pool/MedRecXAPool-PointBase" .
+
+n:44  rdfs:subPropertyOf n:45 , n:93 , n:27 , n:29 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/Web_App///requestEncodingFilter" .
+
+n:59  rdfs:subPropertyOf n:91 , n:45 , n:27 , n:81 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/PhysicianEAR/EJB/PhysicianSessionEJB/PhysicianSessionEJB" .
+
+n:58  rdfs:subPropertyOf n:91 , n:59 , n:45 , n:27 , n:81 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/PhysicianEAR/Web_App/physician" .
+
+n:124
+      rdfs:subPropertyOf n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:22" .
+
+n:103
+      rdfs:subPropertyOf n:43 , n:21 , n:8 , n:9 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App///action" .
+
+n:47  rdfs:subPropertyOf n:52 , n:43 , n:7 , n:48 , n:8 , n:55 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/PhysicianEAR/Web_App/physician/requestEncodingFilter" .
+
+n:114
+      rdfs:subPropertyOf n:45 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:135" .
+
+n:100
+      rdfs:subPropertyOf n:43 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Web_App/wl_management_internal1" .
+
+n:86  amx:scFrom "urn:x-svcd://15.8.158.224" .
+
+n:30  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:84 , n:29 , n:20 , n:80 , n:45 , n:28 , n:31 , n:27 , n:71 , n:46 , n:49 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/MdbEJB/RegistrationBean" .
+
+n:73  rdfs:subPropertyOf n:25 , n:36 , n:2 , n:1 , n:83 , n:29 , n:84 , n:20 , n:41 , n:45 , n:34 , n:28 , n:27 , n:31 , n:71 , n:46 , n:77 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/SessionEJB/AdminSessionEJB" .
+
+n:13  rdfs:subPropertyOf n:43 , n:21 , n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/EJB/EntityEJB" .
+
+n:112
+      rdfs:subPropertyOf n:45 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:22" .
+
+n:57  rdfs:subPropertyOf n:91 , n:59 , n:45 , n:58 , n:27 , n:81 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/PhysicianEAR/Web_App/physician/requestEncodingFilter" .
+
+n:10  rdfs:subPropertyOf n:43 , n:82 , n:11 , n:22 , n:2 , n:1 , n:8 , n:15 , n:23 , n:4 , n:39 , n:28 , n:13 , n:56 , n:42 , n:21 , n:17 , n:24 , n:6 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:7001/Enterprise_App/MedRecEAR/Web_App/admin/requestEncodingFilter" .
+
+n:46  rdfs:subPropertyOf n:45 , n:27 , n:29 ;
+      amx:scFrom "urn:x-svcd://15.8.159.53:7001/Enterprise_App/MedRecEAR/EJB/SessionEJB" .
+
+n:119
+      rdfs:subPropertyOf n:8 ;
+      amx:scFrom "urn:x-svcd://15.8.159.52:110" .
