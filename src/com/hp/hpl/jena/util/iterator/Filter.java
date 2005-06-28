@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Filter.java,v 1.5 2005-06-24 13:26:49 chris-dollin Exp $
+ * $Id: Filter.java,v 1.6 2005-06-28 13:54:44 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.util.iterator;
@@ -13,24 +13,39 @@ import java.util.Iterator;
     
     @author jjc, kers
 */
-public interface Filter
+public abstract class Filter
     {
     /**
         Answer true iff the object <code>o</code> is acceptable. This method
         may also throw an exception if the argument is of a wrong type; it
         is not required to return <code>false</code> in such a case.
     */
-	public boolean accept( Object o );
+	public abstract boolean accept( Object o );
     
-    // public ExtendedIterator filter( Iterator it );
+    public ExtendedIterator filterKeep( Iterator it )
+        { return new FilterKeepIterator( this, it ); }
+    
+    public Filter and( final Filter other )
+        { return new Filter()
+            { public boolean accept( Object x ) 
+                { return Filter.this.accept( x ) && other.accept( x ); } 
+            };
+        }
     
     /** 
         A Filter that accepts everything it's offered.
     */
     public static final Filter any = new Filter()
-        { public final boolean accept( Object o ) { return true; } };
+        { 
+        public final boolean accept( Object o ) { return true; } 
         
-}
+        public Filter and( Filter other ) { return other; }
+        
+        public ExtendedIterator filterKeep( Iterator it )
+            { return WrappedIterator.create( it ); }
+        };
+        
+    }
 
 /*
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -58,6 +73,6 @@ public interface Filter
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Filter.java,v 1.5 2005-06-24 13:26:49 chris-dollin Exp $
+ * $Id: Filter.java,v 1.6 2005-06-28 13:54:44 chris-dollin Exp $
  *
  */

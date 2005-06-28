@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.50 2005-06-14 15:18:24 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.51 2005-06-28 13:54:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
@@ -18,7 +17,7 @@ import com.hp.hpl.jena.util.iterator.*;
 */
 public class GraphMem extends GraphMemBase implements Graph 
     {
-    protected TripleStore store = new GraphTripleStore( this );
+    protected GraphTripleStore store = new GraphTripleStore( this );
     
     public GraphTripleStore forTestingOnly_getStore() 
         { return (GraphTripleStore) store; }
@@ -65,7 +64,7 @@ public class GraphMem extends GraphMemBase implements Graph
      */
     public ExtendedIterator graphBaseFind( TripleMatch m ) 
         { return store.find( m.asTriple() ); }
-
+    
     /**
          Answer true iff this graph contains <code>t</code>. If <code>t</code>
          happens to be concrete, then we hand responsibility over to the store.

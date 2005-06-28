@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.55 $
+ * Revision           $Revision: 1.56 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-05-05 12:31:36 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-06-28 13:54:41 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.55 2005-05-05 12:31:36 ian_dickinson Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.56 2005-06-28 13:54:41 chris-dollin Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1607,7 +1607,7 @@ public class OntResourceImpl
 
     /** Filter for matching language tags on literals */
     protected class LangTagFilter
-        implements Filter
+        extends Filter
     {
         protected String m_lang;
         public LangTagFilter( String lang ) { m_lang = lang; }
@@ -1627,7 +1627,7 @@ public class OntResourceImpl
 
     /** Filter for accepting only the given value, based on .equals() */
     protected class SingleEqualityFilter
-        implements Filter
+        extends Filter
     {
         private Object m_obj;
         public SingleEqualityFilter( Object x ) { m_obj = x; }

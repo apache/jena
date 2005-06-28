@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.28 2005-06-24 11:27:33 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.29 2005-06-28 13:54:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -63,12 +63,6 @@ public class NodeToTriplesMap
         if (s == null) map.put( o, s = CollectionFactory.createHashedSet() );
         if (s.add( t )) { size += 1; return true; } else return false; 
         }
-
-    protected static final Comparator compareTriples = new Comparator() 
-        {
-        public int compare( Object o1, Object o2 )
-            { return o1.hashCode() - o2.hashCode(); }
-        };
     
     /**
          Remove <code>t</code> from this NTM. Answer <code>true</code> iff the 
@@ -86,7 +80,8 @@ public class NodeToTriplesMap
             if (result) size -= 1;
             if (s.isEmpty()) map.put( o, null );
             return result;
-        	} }
+        	} 
+        }
     
     /**
          Answer an iterator over all the triples in this NTM which have index node
@@ -96,39 +91,6 @@ public class NodeToTriplesMap
         {
         Set s = (Set) map.get( o );
         return s == null ? NullIterator.instance : s.iterator();
-        }
-    
-    /**
-         Answer an iterator over all the triples in this NTM.
-    */
-    public ExtendedIterator iterator()
-        {
-        final Iterator nodes = domain();
-        return new NiceIterator()
-        	{
-            private Iterator current = NullIterator.instance;
-            
-            public Object next()
-                {
-                if (hasNext() == false) noElements( "NodeToTriples iterator" );
-                return current.next();
-                }
-            
-            public boolean hasNext()
-                {
-                while (true)
-                    {
-                    if (current.hasNext()) return true;
-                    if (nodes.hasNext() == false) return false;
-                    current = iterator( (Node) nodes.next() );
-                    }
-                }
-            
-            public void remove()
-                {
-                current.remove();
-                }
-        	};
         }
     
     /**
@@ -154,20 +116,6 @@ public class NodeToTriplesMap
         Set s = (Set) map.get( getIndexField( t ) );
         return s == null ? false : s.contains( t );
         }
-
-    /**
-         Answer an iterator over all the triples in this NTM which are accepted by
-         <code>pattern</code>.
-    */
-    public ExtendedIterator iterateAll( Triple pattern )
-        {
-        if (pattern.getSubject().isConcrete() 
-           || pattern.getObject().isConcrete() 
-           || pattern.getPredicate().isConcrete())
-            return iterator() .filterKeep ( new TripleMatchFilter( pattern ) );
-        else
-            return iterator();
-        }
     
     /**
          Answer an iterator over all the triples in this NTM which match
@@ -178,43 +126,61 @@ public class NodeToTriplesMap
         {
         Node o = getIndexField( pattern );
         Set s = (Set) map.get( o );
-        if (s == null)
-            return NullIterator.instance;
-        else
-            {
-            Iterator triples = s.iterator();            
-            Filter f = buildFilterFromPattern( pattern );
-            return f == null ? WrappedIterator.create( triples ) : new FilterIterator( f, triples );             
-            }
-        }
-
-    protected Filter buildFilterFromPattern( final Triple pattern )
+        return s == null
+            ? NullIterator.instance
+            : f2.filterOn( pattern ).and( f3.filterOn( pattern ) )
+                .filterKeep( s.iterator() )
+            ;
+        }    
+    
+    /**
+         Answer an iterator over all the triples in this NTM which are 
+         accepted by <code>pattern</code>.
+    */
+    public ExtendedIterator iterateAll( Triple pattern )
         {
-        boolean c2 = f2.getField( pattern ).isConcrete();
-        boolean c3 = f3.getField( pattern ).isConcrete();
-        if (c2 && c3)
-            {
-            return new Filter()
-                {
-                Filter fl2 = f2.filterOn( f2.getField( pattern ) );
-                Filter fl3 = f3.filterOn( f3.getField( pattern ) );
-                
-                public boolean accept( Object o )
-                    { return fl2.accept( o ) && fl3.accept( o ); }            
-                };
-            }
-        else if (c2)
-            {
-            return f2.filterOn( f2.getField( pattern ) );
-            }
-        else if (c3)
-            {
-            return f3.filterOn( f3.getField( pattern ) );
-            }
-        else
-            return null;
+        return
+            indexField.filterOn( pattern )
+            .and( f2.filterOn( pattern ) )
+            .and( f3.filterOn( pattern ) )
+            .filterKeep( iterator() )
+            ;
         }
     
+    /**
+        Answer an iterator over all the triples in this NTM.
+    */
+    public ExtendedIterator iterator()
+       {
+       final Iterator nodes = domain();
+       return new NiceIterator()
+           {
+           private Iterator current = NullIterator.instance;
+           
+           public Object next()
+               {
+               if (hasNext() == false) noElements( "NodeToTriples iterator" );
+               return current.next();
+               }
+           
+           public boolean hasNext()
+               {
+               while (true)
+                   {
+                   if (current.hasNext()) return true;
+                   if (nodes.hasNext() == false) return false;
+                   current = iterator( (Node) nodes.next() );
+                   }
+               }
+           
+           public void remove()
+               {
+               current.remove();
+               }
+           };
+   }
+
+
     }
 
 /*

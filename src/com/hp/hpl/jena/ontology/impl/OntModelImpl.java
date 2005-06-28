@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.82 $
+ * Revision           $Revision: 1.83 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-11 16:37:41 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-06-28 13:54:41 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.82 2005-04-11 16:37:41 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.83 2005-06-28 13:54:41 chris-dollin Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2884,7 +2884,7 @@ public class OntModelImpl
     }
 
     /** Filter that accepts nodes that can be mapped to the given facet */
-    protected class SubjectNodeCanAs implements Filter
+    protected class SubjectNodeCanAs extends Filter
     {
         protected Class m_asKey;
         protected SubjectNodeCanAs( Class asKey ) { m_asKey = asKey; }

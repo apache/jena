@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.24 2005-02-21 11:52:15 andy_seaborne Exp $
+  $Id: PatternStage.java,v 1.25 2005-06-28 13:54:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -128,12 +128,22 @@ public class PatternStage extends Stage
             {
             Pattern p = compiled[index];
             ValuatorSet guard = guards[index];
-            ClosableIterator it = graph.find( p.asTripleMatch( current ) );
+            Iterator it = find( graph, p.asTripleMatch( current ).asTriple() );
             while (stillOpen && it.hasNext())
                 if (p.match( current, (Triple) it.next()) && guard.evalBool( current )) 
                     nest( sink, current, index + 1 );
-            it.close();
+            NiceIterator.close( it );
             }
+        }
+
+    /**
+        Subclasses over-ride if they have a specialised implementation.
+        WARNING: WIP - this interface is unstable. Do not use it without
+        consulting Chris or Jeremy.
+    */
+    protected Iterator find( Graph g, Triple t )
+        {
+        return g.find( t );
         }
     }
 

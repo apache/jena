@@ -1,9 +1,11 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.15 2005-06-24 11:27:33 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.16 2005-06-28 13:54:40 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
+
+import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.*;
@@ -139,7 +141,6 @@ public class GraphTripleStore implements TripleStore
         predicates.clear();
         objects.clear();
         }
-    
     }
 
 /*

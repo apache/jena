@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.54 2005-05-27 08:11:35 der Exp $
+ * $Id: FBRuleInfGraph.java,v 1.55 2005-06-28 13:54:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -38,9 +38,9 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.54 $ on $Date: 2005-05-27 08:11:35 $
+ * @version $Revision: 1.55 $ on $Date: 2005-06-28 13:54:43 $
  */
-public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI, Filter {
+public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
     /** Single context for the reasoner, used when passing information to builtins */
     protected BBRuleContext context;
@@ -529,7 +529,10 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
         }
         if (filterFunctors) {
 //            return result.filterDrop(Functor.acceptFilter);
-            return result.filterDrop(this);
+            return result.filterDrop( new Filter() {
+
+                public boolean accept( Object o )
+                    { return FBRuleInfGraph.this.accept( o ); }} );
         } else {
             return result;
         }
