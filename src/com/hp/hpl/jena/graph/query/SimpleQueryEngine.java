@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleQueryEngine.java,v 1.6 2005-02-21 11:52:25 andy_seaborne Exp $
+  $Id: SimpleQueryEngine.java,v 1.7 2005-06-28 13:59:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -69,7 +69,7 @@ public class SimpleQueryEngine
     public static Cons cons( Triple pattern, Object cons )
         { return new Cons( pattern, (Cons) cons ); }
         
-    private static class Cons
+    public static class Cons
         {
         Triple head;
         Cons tail;
