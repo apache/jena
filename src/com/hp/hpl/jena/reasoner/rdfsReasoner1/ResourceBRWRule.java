@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ResourceBRWRule.java,v 1.9 2005-02-21 12:16:51 andy_seaborne Exp $
+ * $Id: ResourceBRWRule.java,v 1.10 2005-06-28 15:38:25 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -21,21 +21,21 @@ import java.util.*;
  * of "anything mentioned in any triple is a Resource".
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:16:51 $
+ * @version $Revision: 1.10 $ on $Date: 2005-06-28 15:38:25 $
  */
 public class ResourceBRWRule extends BRWRule {
     
     /** node form of rdf:type */
-    private static Node TYPE = RDF.type.getNode();
+    private static Node TYPE = RDF.Nodes.type;
     
     /** node form of rdfs:Resource */
-    private static Node RESOURCE = RDFS.Resource.getNode();
+    private static Node RESOURCE = RDFS.Nodes.Resource;
 
     /**
      * Constructor
      */
     public ResourceBRWRule() {
-        super(new TriplePattern(null, RDF.type.getNode(), RDFS.Resource.getNode()),   
+        super(new TriplePattern(null, TYPE, RESOURCE ),   
                new TriplePattern(null, null, null));
     }
     

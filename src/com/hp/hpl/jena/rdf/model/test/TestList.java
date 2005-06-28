@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            24 Jan 2003
  * Filename           $RCSfile: TestList.java,v $
- * Revision           $Revision: 1.10 $
+ * Revision           $Revision: 1.11 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:15:01 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-06-28 15:38:22 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -51,7 +51,7 @@ import com.hp.hpl.jena.vocabulary.*;
  * 
  * @author Ian Dickinson, HP Labs 
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestList.java,v 1.10 2005-02-21 12:15:01 andy_seaborne Exp $
+ * @version CVS $Id: TestList.java,v 1.11 2005-06-28 15:38:22 chris-dollin Exp $
  */
 public class TestList
     extends TestCase
@@ -869,7 +869,7 @@ public class TestList
             cell1.addProperty( RDF.first, b );
             cell1.addProperty( RDF.rest, RDF.nil );
             
-            UserList ul = new UserListImpl( cell0.getNode(), (EnhGraph) m );
+            UserList ul = new UserListImpl( cell0.asNode(), (EnhGraph) m );
             
             assertEquals( "User list length ", 2, ul.size() );
             assertEquals( "head of user list ", a, ul.getHead() );

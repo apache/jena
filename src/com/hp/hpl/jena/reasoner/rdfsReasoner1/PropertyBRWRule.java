@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PropertyBRWRule.java,v 1.10 2005-02-21 12:16:36 andy_seaborne Exp $
+ * $Id: PropertyBRWRule.java,v 1.11 2005-06-28 15:38:23 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * of "anything mentioned in predicated position is a Property".
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-02-21 12:16:36 $
+ * @version $Revision: 1.11 $ on $Date: 2005-06-28 15:38:23 $
  */
 public class PropertyBRWRule extends BRWRule {
 
@@ -29,7 +29,7 @@ public class PropertyBRWRule extends BRWRule {
      * Constructor
      */
     public PropertyBRWRule() {
-        super(new TriplePattern(Node.createVariable("p"), RDF.type.getNode(), RDF.Property.getNode()),   
+        super(new TriplePattern(Node.createVariable("p"), RDF.type.asNode(), RDF.Property.asNode()),   
                new TriplePattern(null, Node.createVariable("s"), null));
     }
     
@@ -84,7 +84,7 @@ public class PropertyBRWRule extends BRWRule {
         protected Object nextIfNew() {
             Node prop = (Node)super.next();
             if (seen.add(prop)) {
-                return new Triple(prop, RDF.type.getNode(), RDF.Property.getNode());
+                return new Triple(prop, RDF.type.asNode(), RDF.Property.asNode());
             } else {
                 return null;
             }

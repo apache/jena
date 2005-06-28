@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            28-Apr-2003
  * Filename           $RCSfile: UnionClassImpl.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:06:55 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-06-28 15:32:58 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -37,7 +37,7 @@ import com.hp.hpl.jena.rdf.model.Property;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: UnionClassImpl.java,v 1.8 2005-02-21 12:06:55 andy_seaborne Exp $
+ * @version CVS $Id: UnionClassImpl.java,v 1.9 2005-06-28 15:32:58 chris-dollin Exp $
  */
 public class UnionClassImpl 
     extends BooleanClassDescriptionImpl
@@ -72,7 +72,7 @@ public class UnionClassImpl
             return (profile != null)  &&  
                    profile.isSupported( node, eg, OntClass.class )  &&
                    union != null && 
-                   eg.asGraph().contains( node, union.getNode(), Node.ANY );
+                   eg.asGraph().contains( node, union.asNode(), Node.ANY );
         }
     };
 

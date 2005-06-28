@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.41 2005-06-14 08:27:01 der Exp $
+ * $Id: TestFBRules.java,v 1.42 2005-06-28 15:38:42 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.41 $ on $Date: 2005-06-14 08:27:01 $
+ * @version $Revision: 1.42 $ on $Date: 2005-06-28 15:38:42 $
  */
 public class TestFBRules extends TestCase {
     
@@ -64,9 +64,9 @@ public class TestFBRules extends TestCase {
     protected Node C1 = Node.createURI("C1");
     protected Node C2 = Node.createURI("C2");
     protected Node C3 = Node.createURI("C3");
-    protected Node sP = RDFS.subPropertyOf.getNode();
-    protected Node sC = RDFS.subClassOf.getNode();
-    protected Node ty = RDF.type.getNode();
+    protected Node sP = RDFS.Nodes.subPropertyOf;
+    protected Node sC = RDFS.Nodes.subClassOf;
+    protected Node ty = RDF.Nodes.type;
      
     /**
      * Boilerplate for junit

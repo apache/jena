@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSReasoner.java,v 1.20 2005-02-21 12:16:50 andy_seaborne Exp $
+ * $Id: RDFSReasoner.java,v 1.21 2005-06-28 15:38:25 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rdfsReasoner1;
 
@@ -35,23 +35,17 @@ import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
  * need that might match (*, type, Resource) or (*, type, Property)!</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2005-02-21 12:16:50 $
+ * @version $Revision: 1.21 $ on $Date: 2005-06-28 15:38:25 $
  */
 public class RDFSReasoner extends TransitiveReasoner implements Reasoner {
     /** The domain property */
-    public static Node domainP;
+    public static final Node domainP = RDFS.Nodes.domain;
     
     /** The range property */
-    public static Node rangeP;
+    public static final Node rangeP = RDFS.Nodes.range;
     
     /** Note if the reasoner is configured to scan for member properties */
     protected boolean scanProperties = true;
-    
-    // Static initializer
-    static {
-        domainP = RDFS.domain.getNode();
-        rangeP = RDFS.range.getNode();
-    }
     
     /** Constructor */
     public RDFSReasoner() {

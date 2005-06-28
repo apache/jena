@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestRDFNodes.java,v 1.5 2005-02-21 12:15:17 andy_seaborne Exp $
+  $Id: TestRDFNodes.java,v 1.6 2005-06-28 15:38:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -101,6 +101,13 @@ public class TestRDFNodes extends ModelTestBase
     /* */
         assertEquals( r1, r1.inModel( m2 ) );
         assertEquals( r2, r2.inModel( m2 ) );
+        }
+    
+    public void testGetNode()
+        {
+        Model m = modelWithStatements( "" );
+        RDFNode a = m.createResource( "eh:/foo" );
+        // assertEquals( "", a.getNode() );
         }
     }
 

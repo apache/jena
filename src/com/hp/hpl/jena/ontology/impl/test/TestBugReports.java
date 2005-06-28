@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.64 $
+ * Revision           $Revision: 1.65 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-03 17:44:51 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-06-28 15:37:07 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -157,7 +157,7 @@ public class TestBugReports
 
 
     /**
-     * Bug report by Mariano Rico Almod�var [Mariano.Rico@uam.es] on June 16th.
+     * Bug report by Mariano Rico Almod???var [Mariano.Rico@uam.es] on June 16th.
      * Said to raise exception.
      */
     public void test_mra_01() {
@@ -319,7 +319,7 @@ public class TestBugReports
         Graph oldSubGraph = (Graph) oldOntModel.getSubGraphs().iterator().next();
         final int oldTripleCount = getTripleCount(oldSubGraph);
         OntClass ontClass = oldOntModel.getOntClass(BASE + "normalizerBug.owl#SuperClass");
-        oldSubGraph.add(new Triple(ontClass.getNode(), RDF.type.getNode(), OWL.DeprecatedClass.getNode()));
+        oldSubGraph.add(new Triple(ontClass.asNode(), RDF.type.asNode(), OWL.DeprecatedClass.asNode()));
         assertEquals(oldTripleCount + 1, getTripleCount(oldSubGraph));
 
         // TODO this workaround to be removed
@@ -654,7 +654,7 @@ public class TestBugReports
         OntModel m = ModelFactory.createOntologyModel(OntModelSpec.RDFS_MEM_TRANS_INF, null);
         Resource a = m.createResource("http://example.org#A");
         Resource b = m.createResource("http://example.org#B");
-        OntClass A = new OntClassImpl(a.getNode(), (EnhGraph) m) {
+        OntClass A = new OntClassImpl(a.asNode(), (EnhGraph) m) {
             protected boolean hasSuperClassDirect(Resource cls) {
                 throw new RuntimeException("did not find direct reasoner");
             }

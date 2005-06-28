@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RDFSCMPPreprocessHook.java,v 1.5 2005-02-21 12:17:57 andy_seaborne Exp $
+ * $Id: RDFSCMPPreprocessHook.java,v 1.6 2005-06-28 15:38:25 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * of container membership properties and adds those to the deductions set.  
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.5 $ on $Date: 2005-02-21 12:17:57 $
+ * @version $Revision: 1.6 $ on $Date: 2005-06-28 15:38:25 $
  */
 public class RDFSCMPPreprocessHook implements RulePreprocessHook {
 
@@ -45,13 +45,13 @@ public class RDFSCMPPreprocessHook implements RulePreprocessHook {
         while (it.hasNext()) {
             Triple triple = (Triple)it.next();
             Node prop = triple.getPredicate();
-            if (prop.equals(RDF.type.getNode()) && prop.equals(RDF.Property.getNode()) ) {
+            if (prop.equals(RDF.Nodes.type) && prop.equals(RDF.Nodes.Property) ) {
                 prop = triple.getSubject();
             }
             if (properties.add(prop)) {
                 if (prop.getURI().startsWith(memberPrefix)) {
                     // A container property
-                    inserts.add(new Triple(prop, RDF.type.getNode(), RDFS.ContainerMembershipProperty.getNode()));
+                    inserts.add(new Triple(prop, RDF.Nodes.type, RDFS.Nodes.ContainerMembershipProperty));
                 }
             }
         }

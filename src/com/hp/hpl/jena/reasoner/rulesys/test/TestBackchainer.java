@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.31 2005-04-08 16:36:04 der Exp $
+ * $Id: TestBackchainer.java,v 1.32 2005-06-28 15:38:26 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import junit.framework.TestSuite;
  * LP engine, though the bulk of such tests are really done by TestBasicLP.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.31 $ on $Date: 2005-04-08 16:36:04 $
+ * @version $Revision: 1.32 $ on $Date: 2005-06-28 15:38:26 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -51,9 +51,9 @@ public class TestBackchainer extends TestCase {
     protected Node C1 = Node.createURI("C1");
     protected Node C2 = Node.createURI("C2");
     protected Node C3 = Node.createURI("C3");
-    protected Node sP = RDFS.subPropertyOf.getNode();
-    protected Node sC = RDFS.subClassOf.getNode();
-    protected Node ty = RDF.type.getNode();
+    protected Node sP = RDFS.Nodes.subPropertyOf;
+    protected Node sC = RDFS.Nodes.subClassOf;
+    protected Node ty = RDF.Nodes.type;
     
     String testRules1 = 
         "(?x ?q ?y) <- (?p rdfs:subPropertyOf ?q)(?x ?p ?y). " + 

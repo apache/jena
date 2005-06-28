@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            25-Mar-2003
  * Filename           $RCSfile: OntResourceImpl.java,v $
- * Revision           $Revision: 1.56 $
+ * Revision           $Revision: 1.57 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-28 13:54:41 $
+ * Last modified on   $Date: 2005-06-28 15:32:57 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntResourceImpl.java,v 1.56 2005-06-28 13:54:41 chris-dollin Exp $
+ * @version CVS $Id: OntResourceImpl.java,v 1.57 2005-06-28 15:32:57 chris-dollin Exp $
  */
 public class OntResourceImpl
     extends ResourceImpl
@@ -1418,7 +1418,7 @@ public class OntResourceImpl
 
         // check for requesting direct versions of these properties
         if (direct) {
-            sc = getModel().getProperty( ReasonerRegistry.makeDirect( sc.getNode() ).getURI() );
+            sc = getModel().getProperty( ReasonerRegistry.makeDirect( sc.asNode() ).getURI() );
         }
 
         // determine the subject and object pairs for the list statements calls

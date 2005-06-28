@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBugs.java,v 1.34 2005-05-01 14:39:04 der Exp $
+ * $Id: TestBugs.java,v 1.35 2005-06-28 15:38:42 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -33,7 +33,7 @@ import java.util.*;
  * Unit tests for reported bugs in the rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.34 $ on $Date: 2005-05-01 14:39:04 $
+ * @version $Revision: 1.35 $ on $Date: 2005-06-28 15:38:42 $
  */
 public class TestBugs extends TestCase {
 
@@ -132,7 +132,7 @@ public class TestBugs extends TestCase {
         ResIterator rIter = m.listSubjects();
         while (rIter.hasNext()) { 
             Resource res = rIter.nextResource();
-            if (res.getNode().isLiteral()) {
+            if (res.asNode().isLiteral()) {
                 assertTrue("Error in resource " + res, false);
             }
         }

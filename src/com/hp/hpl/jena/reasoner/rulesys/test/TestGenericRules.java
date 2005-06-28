@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.16 2005-04-12 16:40:16 der Exp $
+ * $Id: TestGenericRules.java,v 1.17 2005-06-28 15:38:42 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2005-04-12 16:40:16 $
+ * @version $Revision: 1.17 $ on $Date: 2005-06-28 15:38:42 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -54,8 +54,8 @@ public class TestGenericRules extends TestCase {
     Node C1 = Node.createURI("C1");
     Node C2 = Node.createURI("C2");
     Node C3 = Node.createURI("C3");
-    Node ty = RDF.type.getNode();
-    Node sC = RDFS.subClassOf.getNode();
+    Node ty = RDF.Nodes.type;
+    Node sC = RDFS.Nodes.subClassOf;
 
     List ruleList = Rule.parseRules("[r1: (?a p ?b), (?b p ?c) -> (?a p ?c)]" +
                                     "[r2: (?a q ?b) -> (?a p ?c)]" +

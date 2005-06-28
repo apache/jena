@@ -18,7 +18,7 @@ import com.hp.hpl.jena.vocabulary.XSD;
 
 /**
  * @author   Andy Seaborne
- * @version  $Id: QueryPrintUtils.java,v 1.7 2005-02-21 12:15:24 andy_seaborne Exp $
+ * @version  $Id: QueryPrintUtils.java,v 1.8 2005-06-28 15:38:23 chris-dollin Exp $
  */
 
 public class QueryPrintUtils
@@ -185,7 +185,7 @@ public class QueryPrintUtils
     
     public static String stringForResource(Resource r)
     {
-        return stringForNode(r.getNode(), r.getModel()) ;
+        return stringForNode(r.asNode(), r.getModel()) ;
 //        if ( r.isAnon() )
 //        {
 //            AnonId a = r.getId() ;

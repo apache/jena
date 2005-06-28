@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.83 $
+ * Revision           $Revision: 1.84 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-28 13:54:41 $
+ * Last modified on   $Date: 2005-06-28 15:32:55 $
  *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.83 2005-06-28 13:54:41 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.84 2005-06-28 15:32:55 chris-dollin Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2753,7 +2753,7 @@ public class OntModelImpl
      * @return ExtendedIterator over subjects of p.
      */
     protected ExtendedIterator findByDefiningProperty( Property p ) {
-        return getGraph().find( null, p.getNode(), null );
+        return getGraph().find( null, p.asNode(), null );
     }
 
 

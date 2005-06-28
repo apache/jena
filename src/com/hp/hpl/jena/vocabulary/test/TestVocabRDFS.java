@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestVocabRDFS.java,v 1.5 2005-02-21 12:22:20 andy_seaborne Exp $
+  $Id: TestVocabRDFS.java,v 1.6 2005-06-28 15:38:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary.test;
@@ -46,23 +46,23 @@ public class TestVocabRDFS extends ModelTestBase
 
 	public void testNodes()
 		{
-        assertEquals( RDFS.Class.getNode(), RDFS.Nodes.Class );
-        assertEquals( RDFS.Datatype.getNode(), RDFS.Nodes.Datatype );
-        assertEquals( RDFS.ConstraintProperty.getNode(), RDFS.Nodes.ConstraintProperty );
-        assertEquals( RDFS.Container.getNode(), RDFS.Nodes.Container );
-        assertEquals( RDFS.ContainerMembershipProperty.getNode(), RDFS.Nodes.ContainerMembershipProperty );
-        assertEquals( RDFS.ConstraintProperty.getNode(), RDFS.Nodes.ConstraintProperty );
-        assertEquals( RDFS.Literal.getNode(), RDFS.Nodes.Literal );
-        assertEquals( RDFS.Resource.getNode(), RDFS.Nodes.Resource );
-        assertEquals( RDFS.comment.getNode(), RDFS.Nodes.comment );
-        assertEquals( RDFS.domain.getNode(), RDFS.Nodes.domain );
-        assertEquals( RDFS.label.getNode(), RDFS.Nodes.label );
-        assertEquals( RDFS.isDefinedBy.getNode(), RDFS.Nodes.isDefinedBy );
-        assertEquals( RDFS.range.getNode(), RDFS.Nodes.range );
-        assertEquals( RDFS.seeAlso.getNode(), RDFS.Nodes.seeAlso );
-        assertEquals( RDFS.subClassOf.getNode(), RDFS.Nodes.subClassOf );
-        assertEquals( RDFS.subPropertyOf.getNode(), RDFS.Nodes.subPropertyOf );
-        assertEquals( RDFS.member.getNode(), RDFS.Nodes.member );
+        assertEquals( RDFS.Class.asNode(), RDFS.Nodes.Class );
+        assertEquals( RDFS.Datatype.asNode(), RDFS.Nodes.Datatype );
+        assertEquals( RDFS.ConstraintProperty.asNode(), RDFS.Nodes.ConstraintProperty );
+        assertEquals( RDFS.Container.asNode(), RDFS.Nodes.Container );
+        assertEquals( RDFS.ContainerMembershipProperty.asNode(), RDFS.Nodes.ContainerMembershipProperty );
+        assertEquals( RDFS.ConstraintProperty.asNode(), RDFS.Nodes.ConstraintProperty );
+        assertEquals( RDFS.Literal.asNode(), RDFS.Nodes.Literal );
+        assertEquals( RDFS.Resource.asNode(), RDFS.Nodes.Resource );
+        assertEquals( RDFS.comment.asNode(), RDFS.Nodes.comment );
+        assertEquals( RDFS.domain.asNode(), RDFS.Nodes.domain );
+        assertEquals( RDFS.label.asNode(), RDFS.Nodes.label );
+        assertEquals( RDFS.isDefinedBy.asNode(), RDFS.Nodes.isDefinedBy );
+        assertEquals( RDFS.range.asNode(), RDFS.Nodes.range );
+        assertEquals( RDFS.seeAlso.asNode(), RDFS.Nodes.seeAlso );
+        assertEquals( RDFS.subClassOf.asNode(), RDFS.Nodes.subClassOf );
+        assertEquals( RDFS.subPropertyOf.asNode(), RDFS.Nodes.subPropertyOf );
+        assertEquals( RDFS.member.asNode(), RDFS.Nodes.member );
 		}
     }
 

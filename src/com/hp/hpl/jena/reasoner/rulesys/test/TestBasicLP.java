@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.11 2005-05-13 14:39:45 der Exp $
+ * $Id: TestBasicLP.java,v 1.12 2005-06-28 15:38:41 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -30,7 +30,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.11 $ on $Date: 2005-05-13 14:39:45 $
+ * @version $Revision: 1.12 $ on $Date: 2005-06-28 15:38:41 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -53,9 +53,9 @@ public class TestBasicLP  extends TestCase {
     Node D1 = Node.createURI("D1");
     Node D2 = Node.createURI("D2");
     Node D3 = Node.createURI("D3");
-    Node sP = RDFS.subPropertyOf.getNode();
-    Node sC = RDFS.subClassOf.getNode();
-    Node ty = RDF.type.getNode();
+    Node sP = RDFS.Nodes.subPropertyOf;
+    Node sC = RDFS.Nodes.subClassOf;
+    Node ty = RDF.Nodes.type;
 
     /**
      * Boilerplate for junit
