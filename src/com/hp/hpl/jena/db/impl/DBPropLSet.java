@@ -25,13 +25,13 @@ import com.hp.hpl.jena.vocabulary.DB;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class DBPropLSet extends DBProp {
 
-	public static Node_URI lSetName = (Node_URI)DB.lSetName.getNode();
-	public static Node_URI lSetType = (Node_URI)DB.lSetType.getNode();
-	public static Node_URI lSetPSet = (Node_URI)DB.lSetPSet.getNode();
+	public static Node_URI lSetName = (Node_URI)DB.lSetName.asNode();
+	public static Node_URI lSetType = (Node_URI)DB.lSetType.asNode();
+	public static Node_URI lSetPSet = (Node_URI)DB.lSetPSet.asNode();
 	
 	public DBPropLSet( SpecializedGraph g, String name, String type) {
 		super( g);

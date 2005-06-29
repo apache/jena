@@ -26,18 +26,18 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * @since Jena 2.0
  */
 public class DBPropGraph extends DBProp {
 
-	public static Node_URI graphName = (Node_URI)DB.graphName.getNode();
-	public static Node_URI graphType = (Node_URI)DB.graphType.getNode();
-	public static Node_URI graphLSet = (Node_URI)DB.graphLSet.getNode();
-	public static Node_URI graphPrefix = (Node_URI)DB.graphPrefix.getNode();
-	public static Node_URI graphId = (Node_URI)DB.graphId.getNode();
-	public static Node_URI stmtTable = (Node_URI)DB.stmtTable.getNode();
-	public static Node_URI reifTable = (Node_URI)DB.reifTable.getNode();
+	public static Node_URI graphName = (Node_URI)DB.graphName.asNode();
+	public static Node_URI graphType = (Node_URI)DB.graphType.asNode();
+	public static Node_URI graphLSet = (Node_URI)DB.graphLSet.asNode();
+	public static Node_URI graphPrefix = (Node_URI)DB.graphPrefix.asNode();
+	public static Node_URI graphId = (Node_URI)DB.graphId.asNode();
+	public static Node_URI stmtTable = (Node_URI)DB.stmtTable.asNode();
+	public static Node_URI reifTable = (Node_URI)DB.reifTable.asNode();
 
 
 	

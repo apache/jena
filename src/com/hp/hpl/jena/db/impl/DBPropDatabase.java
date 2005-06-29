@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -35,17 +35,17 @@ public class DBPropDatabase extends DBProp {
 	 * @since Jena 2.0
 	 */
 
-	public static final Node_URI dbEngineType = (Node_URI)DB.engineType.getNode();
-	public static final Node_URI dbLayoutVersion = (Node_URI)DB.layoutVersion.getNode();
-	public static final Node_URI dbDriverVersion = (Node_URI)DB.driverVersion.getNode();
-	public static final Node_URI dbFormatDate = (Node_URI)DB.formatDate.getNode();
-	public static final Node_URI dbGraph = (Node_URI)DB.graph.getNode();
-	public static final Node_URI dbLongObjectLength = (Node_URI)DB.longObjectLength.getNode();
-	public static final Node_URI dbIndexKeyLength = (Node_URI)DB.indexKeyLength.getNode();
-	public static final Node_URI dbIsTransactionDb = (Node_URI)DB.isTransactionDb.getNode();
-	public static final Node_URI dbDoCompressURI = (Node_URI)DB.doCompressURI.getNode();
-	public static final Node_URI dbCompressURILength = (Node_URI)DB.compressURILength.getNode();
-	public static final Node_URI dbTableNamePrefix = (Node_URI)DB.tableNamePrefix.getNode();
+	public static final Node_URI dbEngineType = (Node_URI)DB.engineType.asNode();
+	public static final Node_URI dbLayoutVersion = (Node_URI)DB.layoutVersion.asNode();
+	public static final Node_URI dbDriverVersion = (Node_URI)DB.driverVersion.asNode();
+	public static final Node_URI dbFormatDate = (Node_URI)DB.formatDate.asNode();
+	public static final Node_URI dbGraph = (Node_URI)DB.graph.asNode();
+	public static final Node_URI dbLongObjectLength = (Node_URI)DB.longObjectLength.asNode();
+	public static final Node_URI dbIndexKeyLength = (Node_URI)DB.indexKeyLength.asNode();
+	public static final Node_URI dbIsTransactionDb = (Node_URI)DB.isTransactionDb.asNode();
+	public static final Node_URI dbDoCompressURI = (Node_URI)DB.doCompressURI.asNode();
+	public static final Node_URI dbCompressURILength = (Node_URI)DB.compressURILength.asNode();
+	public static final Node_URI dbTableNamePrefix = (Node_URI)DB.tableNamePrefix.asNode();
 	
 	public static final String dbSystemGraphName = "SystemGraph";
 	

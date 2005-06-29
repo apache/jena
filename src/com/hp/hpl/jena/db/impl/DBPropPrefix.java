@@ -25,12 +25,12 @@ import com.hp.hpl.jena.vocabulary.DB;
  * @since Jena 2.0
  * 
  * @author csayers
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class DBPropPrefix extends DBProp {
 
-	public static Node_URI prefixValue = (Node_URI)DB.prefixValue.getNode();
-	public static Node_URI prefixURI = (Node_URI)DB.prefixURI.getNode();
+	public static Node_URI prefixValue = (Node_URI)DB.prefixValue.asNode();
+	public static Node_URI prefixURI = (Node_URI)DB.prefixURI.asNode();
 	
 	public DBPropPrefix( SpecializedGraph g, String value, String uri) {
 		super( g, Node.createAnon());

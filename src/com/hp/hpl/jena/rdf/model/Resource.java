@@ -56,7 +56,7 @@ import com.hp.hpl.jena.graph.Node;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2005-06-29 09:47:23 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.17 $' Date='$Date: 2005-06-29 13:29:37 $'
  */
 public interface Resource extends RDFNode {
       
@@ -73,14 +73,15 @@ public interface Resource extends RDFNode {
     public AnonId getId();
 
     /**
-     every Resource overlays a Node; fetch that Node. 
-     */
+        Answer the underlying [SPI] Node of this Resource.
+        @deprecated: use asNode(). 
+    */
     public Node getNode();
 
     /**
-     Answer true iff this Resource is a URI resource with the given URI; otherwise
-     answer false. Using this is preferred to using getURI() and .equals().
-     */
+        Answer true iff this Resource is a URI resource with the given URI.
+        Using this is preferred to using getURI() and .equals().
+    */
     public boolean hasURI( String uri );
 
     /** Return the URI of the resource, or null if it's a bnode.
