@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.33 2005-06-29 09:47:24 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.34 2005-06-29 14:38:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.33 $' Date='$Date: 2005-06-29 09:47:24 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.34 $' Date='$Date: 2005-06-29 14:38:41 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -105,7 +105,7 @@ public class ResourceImpl extends EnhNode implements Resource {
         }
     
     private static Node fresh( String uri )
-        { return uri == null ? Node.createAnon( new AnonId() ) : Node.createURI( uri ); }
+        { return uri == null ? Node.createAnon() : Node.createURI( uri ); }
 
     public Node getNode() 
         { return asNode(); }

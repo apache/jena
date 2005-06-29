@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestTriple.java,v 1.18 2005-03-14 16:01:47 chris-dollin Exp $
+  $Id: TestTriple.java,v 1.19 2005-06-29 14:38:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -35,7 +35,7 @@ public class TestTriple extends GraphTestBase
             Node.cache(false);
             
             // create some nodes to test
-            AnonId id = new AnonId();
+            AnonId id = AnonId.create();
             LiteralLabel L2 = new LiteralLabel(id.toString(), "", false);
             String U2 = id.toString();
             String N2 = id.toString();

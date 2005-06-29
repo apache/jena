@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.35 2005-05-16 11:32:08 chris-dollin Exp $
+  $Id: TestNode.java,v 1.36 2005-06-29 14:38:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -34,7 +34,7 @@ public class TestNode extends GraphTestBase
     private static final String U = "http://some.domain.name/magic/spells.incant";
     private static final String N = "Alice";
     private static final LiteralLabel L = new LiteralLabel( "ashes are burning", "en", false );
-    private static final AnonId A = new AnonId();
+    private static final AnonId A = AnonId.create();
 
     public void testBlanks()
         {
@@ -95,7 +95,7 @@ public class TestNode extends GraphTestBase
         try
             {
             Node.cache( false );           
-            AnonId id = new AnonId();
+            AnonId id = AnonId.create();
             LiteralLabel L2 = new LiteralLabel( id.toString(), "", false );
             String U2 = id.toString();
             String N2 = id.toString();
@@ -176,7 +176,7 @@ public class TestNode extends GraphTestBase
     */
     public void testLabels()
         {
-        AnonId id = new AnonId();
+        AnonId id = AnonId.create();
         assertEquals( "get URI value", U, Node.createURI( U ).getURI() );
         assertEquals( "get blank value", id, Node.createAnon( id ).getBlankNodeId() );
         assertEquals( "get literal value", L, Node.createLiteral( L ).getLiteral() );
