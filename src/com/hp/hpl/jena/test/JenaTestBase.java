@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.15 2005-02-21 12:18:53 andy_seaborne Exp $
+  $Id: JenaTestBase.java,v 1.16 2005-06-29 16:33:22 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -11,6 +11,7 @@ import junit.framework.*;
 import java.util.*;
 
 import com.hp.hpl.jena.util.CollectionFactory;
+import com.hp.hpl.jena.util.iterator.*;
 
 /**
     A basis for Jena test cases which provides assertFalse and assertDiffer.
@@ -49,6 +50,23 @@ public class JenaTestBase extends TestCase
     */
     public static Set listToSet( List L )
         { return CollectionFactory.createHashedSet( L ); }
+
+    /**
+        Answer a List of the substrings of <code>s</code> separated by spaces.
+    */
+    protected List listOfStrings( String s )
+        {
+        List result = new ArrayList();
+        StringTokenizer st = new StringTokenizer( s );
+        while (st.hasMoreTokens()) result.add( st.nextToken() );
+        return result;
+        }
+    
+    /**
+        Answer an iterator over the space-separated substrings of <code>s</code>.
+    */
+    protected ExtendedIterator iteratorOfStrings( String s )
+        { return WrappedIterator.create( listOfStrings( s ).iterator() ); }
     
     /**
         Do nothing; a way of notating that a test has succeeded, useful in the body of a

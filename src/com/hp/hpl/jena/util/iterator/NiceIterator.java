@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: NiceIterator.java,v 1.13 2005-06-27 13:58:20 chris-dollin Exp $
+  $Id: NiceIterator.java,v 1.14 2005-06-29 16:33:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator;
@@ -73,27 +73,39 @@ public class NiceIterator implements ExtendedIterator
     
     public static ExtendedIterator andThen( final Iterator a, final Iterator b )
         {
+        final List L = new ArrayList( 2 );
+        L.add( b );
         return new NiceIterator()
             {
-            private boolean walkingA = true;
+            private int index = 0;
+            
+            private Iterator current = a;
             
             public boolean hasNext()
-                { return (walkingA && (walkingA = a.hasNext())) || b.hasNext(); }
+                { 
+                while (current.hasNext() == false && index < L.size())
+                    current = (Iterator) L.get( index++ );
+                return current.hasNext();
+                }
                 
             public Object next()
-                { return (walkingA && (walkingA = a.hasNext())) ? a.next() : b.next(); }
+                { return hasNext() ? current.next() : noElements( "concatenation" ); }
                 
             public void close()
                 {
-                close( a );
-                close( b );
+                close( current );
+                for (int i = index; i < L.size(); i += 1) close( (Iterator) L.get(i) );
                 }
                 
             public void remove()
-                { (walkingA ? a : b).remove(); }
+                { current.remove(); }
+            
+            public ExtendedIterator andThen( ClosableIterator other )
+                { L.add( other ); 
+                return this; }
             };
         }
-        
+    
     /**
         make a new iterator, which is us then the other chap.
     */   

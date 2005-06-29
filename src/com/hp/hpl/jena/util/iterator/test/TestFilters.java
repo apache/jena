@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFilters.java,v 1.2 2005-06-28 13:54:44 chris-dollin Exp $
+ 	$Id: TestFilters.java,v 1.3 2005-06-29 16:33:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.util.iterator.test;
@@ -45,18 +45,18 @@ public class TestFilters extends ModelTestBase
     
     public void testFilteringThings()
         {
-        ExtendedIterator it = stringIterator( "gab geb bag big lava hall end" );
+        ExtendedIterator it = iteratorOfStrings( "gab geb bag big lava hall end" );
         Filter f = new Filter() 
             {
             public boolean accept( Object o )
                 { return ((String) o).charAt( 1 ) == 'a'; }
             };
-        assertEquals( strings( "gab bag lava hall" ), iteratorToList( f.filterKeep( it ) ) );
+        assertEquals( listOfStrings( "gab bag lava hall" ), iteratorToList( f.filterKeep( it ) ) );
         }
     
     public void testAnyFilterSimple()
         {
-        ExtendedIterator it = stringIterator( "" );
+        ExtendedIterator it = iteratorOfStrings( "" );
         assertSame( it, Filter.any.filterKeep( it ) );
         }
 
@@ -92,31 +92,20 @@ public class TestFilters extends ModelTestBase
     
     public void testFilterDropIterator()
         {
-        Iterator i = stringIterator( "there's an a in some animals" );
+        Iterator i = iteratorOfStrings( "there's an a in some animals" );
         Iterator it = new FilterDropIterator( containsA, i );
-        assertEquals( strings( "there's in some" ), iteratorToList( it ) );
+        assertEquals( listOfStrings( "there's in some" ), iteratorToList( it ) );
         }
     
     public void testFilterKeepIterator()
         {
-        Iterator i = stringIterator( "there's an a in some animals" );
+        Iterator i = iteratorOfStrings( "there's an a in some animals" );
         Iterator it = new FilterKeepIterator( containsA, i );
-        assertEquals( strings( "an a animals" ), iteratorToList( it ) );
+        assertEquals( listOfStrings( "an a animals" ), iteratorToList( it ) );
         }
     
     protected boolean contains( Object o, char ch )
         { return o.toString().indexOf( ch ) > -1; }
-    
-    protected List strings( String s )
-        {
-        List result = new ArrayList();
-        StringTokenizer st = new StringTokenizer( s );
-        while (st.hasMoreTokens()) result.add( st.nextToken() );
-        return result;
-        }
-    
-    protected ExtendedIterator stringIterator( String s )
-        { return WrappedIterator.create( strings( s ).iterator() ); }
     }
 
 
