@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhNode.java,v 1.11 2005-05-16 11:29:39 chris-dollin Exp $
+  $Id: EnhNode.java,v 1.12 2005-06-29 09:46:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -50,6 +50,27 @@ public class EnhNode extends Polymorphic implements FrontsNode
      */
     public EnhGraph getGraph() {
         return enhGraph;
+    }
+    
+    /**
+        An enhanced node is Anon[ymous] iff its underlying node is Blank.
+    */
+    public final boolean isAnon() {
+        return node.isBlank();
+    }
+    
+    /**
+        An enhanced node is Literal iff its underlying node is too.
+    */
+    public final boolean isLiteral() {
+        return node.isLiteral();
+    }
+ 
+    /**
+        An enhanced node is a URI resource iff its underlying node is too.
+    */
+    public final boolean isURIResource() {
+        return node.isURI();
     }
     
     /**

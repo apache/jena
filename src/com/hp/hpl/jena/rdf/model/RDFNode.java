@@ -32,22 +32,41 @@
 package com.hp.hpl.jena.rdf.model;
 
 import com.hp.hpl.jena.graph.FrontsNode;
-/** An RDF Resource or an RDF Literal.
- *
- * <p><CODE>RDFNode</CODE> represents the methods which RDF Resources and RDF
- * Literals have in common.</p>
- * <p>Chris added the _as_ method to allow RDFNodes to participate in polymorphic
- * conversions.
- * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.9 $' Date='$Date: 2005-02-21 12:14:22 $'
- */
+
+/** 
+     An RDF Resource or an RDF Literal.
+
+    <p><CODE>RDFNode</CODE> represents the methods which RDF Resources and RDF
+    Literals have in common.</p>
+    <p>Chris added the _as_ method to allow RDFNodes to participate in polymorphic
+    conversions.
+    @author bwm
+*/
 public interface RDFNode extends FrontsNode
-{
-    /** Return a String representation of the node.  The form of the string depends
-     * on the type of the node.
-     * @return a String representation of this object.
-     */
+    {
+    /** 
+        Return a String representation of the node.  The form of the string 
+        depends on the type of the node.
+    */
     public String toString();
+    
+    /** 
+        Answer true iff this RDFNode is an anonynous resource. Useful for
+        one-off tests: see also visitWith() for making literal/anon/URI choices.
+    */
+    public boolean isAnon();
+    
+    /** 
+        Answer true iff this RDFNode is a literal resource. Useful for
+        one-off tests: see also visitWith() for making literal/anon/URI choices.
+    */
+    public boolean isLiteral();
+    
+    /** 
+        Answer true iff this RDFNode is an anonynous resource. Useful for
+        one-off tests: see also visitWith() for making literal/anon/URI choices.
+    */
+    public boolean isURIResource();
     
     /**
         RDFNodes can be converted to different implementation types. Convert
@@ -80,4 +99,4 @@ public interface RDFNode extends FrontsNode
         @return the result returned by the selected method
     */
     public Object visitWith( RDFVisitor rv );
-}
+    }

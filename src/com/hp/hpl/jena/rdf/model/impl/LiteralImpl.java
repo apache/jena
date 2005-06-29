@@ -42,7 +42,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.18 $' Date='$Date: 2005-02-21 12:14:32 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.19 $' Date='$Date: 2005-06-29 09:47:24 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
   
@@ -147,11 +147,6 @@ public class LiteralImpl extends EnhNode implements Literal {
      *Model implementors should use Literal instructors which include the Model.
      */                  
     public LiteralImpl(Object o)  {this( o.toString());}
-    
-    
-    public boolean isLiteral() {
-    	return true;
-    }
     
     public String toString() {
         return asNode().toString( PrefixMapping.Standard, false );

@@ -56,7 +56,7 @@ import com.hp.hpl.jena.graph.Node;
  *    the extra behaviour.  Factory objects are used to construct such
  *    enhanced resources.</p>
  * @author bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2005-06-28 15:38:20 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.16 $' Date='$Date: 2005-06-29 09:47:23 $'
  */
 public interface Resource extends RDFNode {
       
@@ -119,11 +119,6 @@ public interface Resource extends RDFNode {
      * @return true if and only if both objects are equal
      */
     public boolean equals( Object o );
-
-    /** Determine whether this resource is anonymous.
-     * @return Return true if and only if this resource is anonymous.
-     */
-    public boolean isAnon();
 
     /** Get a property value of this resource.
      *

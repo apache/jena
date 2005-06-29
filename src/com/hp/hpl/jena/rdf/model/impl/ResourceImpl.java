@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ResourceImpl.java,v 1.32 2005-06-28 15:38:21 chris-dollin Exp $
+  $Id: ResourceImpl.java,v 1.33 2005-06-29 09:47:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -14,7 +14,7 @@ import com.hp.hpl.jena.graph.*;
 /** An implementation of Resource.
  *
  * @author  bwm
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.32 $' Date='$Date: 2005-06-28 15:38:21 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.33 $' Date='$Date: 2005-06-29 09:47:24 $'
  */
 
 public class ResourceImpl extends EnhNode implements Resource {
@@ -125,18 +125,12 @@ public class ResourceImpl extends EnhNode implements Resource {
         return isAnon() ? null : node.getLocalName(); 
     }
 
-    public boolean hasURI( String uri ) {
-        return node.hasURI( uri );
-    }
+    public boolean hasURI( String uri ) 
+        { return node.hasURI( uri ); }
     
-    public String toString() {
-    	return asNode().toString();
-    }
-
-    public boolean isAnon() {
-        return asNode().isBlank();
-    }
-
+    public String toString() 
+        { return asNode().toString(); }
+    
 	protected ModelCom mustHaveModel()
 		{
         ModelCom model = getModelCom();

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestRDFNodes.java,v 1.6 2005-06-28 15:38:22 chris-dollin Exp $
+  $Id: TestRDFNodes.java,v 1.7 2005-06-29 09:47:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -103,11 +103,31 @@ public class TestRDFNodes extends ModelTestBase
         assertEquals( r2, r2.inModel( m2 ) );
         }
     
-    public void testGetNode()
+    public void testIsAnon()
         {
         Model m = modelWithStatements( "" );
-        RDFNode a = m.createResource( "eh:/foo" );
-        // assertEquals( "", a.getNode() );
+        assertEquals( false, m.createResource( "eh:/foo" ).isAnon() );
+        assertEquals( true, m.createResource().isAnon() );
+        assertEquals( false, m.createLiteral( 17 ).isAnon() );
+        assertEquals( false, m.createTypedLiteral( "hello" ).isAnon() );
+        }  
+    
+    public void testIsLiteral()
+        {
+        Model m = modelWithStatements( "" );
+        assertEquals( false, m.createResource( "eh:/foo" ).isLiteral() );
+        assertEquals( false, m.createResource().isLiteral() );
+        assertEquals( true, m.createLiteral( 17 ).isLiteral() );
+        assertEquals( true, m.createTypedLiteral( "hello" ).isLiteral() );
+        }
+    
+    public void testIsURIResource()
+        {
+        Model m = modelWithStatements( "" );
+        assertEquals( true, m.createResource( "eh:/foo" ).isURIResource() );
+        assertEquals( false, m.createResource().isURIResource() );
+        assertEquals( false, m.createLiteral( 17 ).isURIResource() );
+        assertEquals( false, m.createTypedLiteral( "hello" ).isURIResource() );
         }
     }
 

@@ -58,13 +58,9 @@ import com.hp.hpl.jena.datatypes.RDFDatatype;
  * the lexical form back into the appropriate object type.</p>
  * 
  * @author bwm and der
- * @version $Name: not supported by cvs2svn $ $Revision: 1.10 $ $Date: 2005-02-21 12:14:03 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.11 $ $Date: 2005-06-29 09:47:23 $
  */
 public interface Literal extends RDFNode {
-        
-    /** Answer true.
-     */
-    public boolean isLiteral();
     
     /**
      * Return the value of the literal. In the case of plain literals
