@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.20 $
+ * Revision           $Revision: 1.21 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-03-16 18:52:27 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-06-29 07:29:05 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -49,7 +49,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.20 2005-03-16 18:52:27 ian_dickinson Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.21 2005-06-29 07:29:05 chris-dollin Exp $
  */
 public class DIGAdapter
 {
@@ -544,7 +544,7 @@ public class DIGAdapter
         // ensure we have a resource from the source data model
         Resource cls = (res.getModel() != sourceData) ? sourceData.getResource( res.getURI() ) : res;
 
-        if (!cls.isAnon() || m_conceptNames.contains( getNodeID( cls.getNode() ))) {
+        if (!cls.isAnon() || m_conceptNames.contains( getNodeID( cls.asNode() ))) {
             // a named class, or an already known bNode
             translateClassIdentifier( elem, cls );
         }
