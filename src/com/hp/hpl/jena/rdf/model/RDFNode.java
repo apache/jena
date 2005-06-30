@@ -69,6 +69,13 @@ public interface RDFNode extends FrontsNode
     public boolean isURIResource();
     
     /**
+        Answer true iff this RDFNode is a URI resource or an anonynous
+        resource (ie is not a literal). Useful for one-off tests: see also 
+        visitWith() for making literal/anon/URI choices.
+    */
+    public boolean isResource();
+    
+    /**
         RDFNodes can be converted to different implementation types. Convert
         this RDFNode to a type supporting the <code>view</code>interface. The 
         resulting RDFNode should be an instance of <code>view</code> and should 

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: EnhNode.java,v 1.12 2005-06-29 09:46:55 chris-dollin Exp $
+  $Id: EnhNode.java,v 1.13 2005-06-30 08:37:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.enhanced;
@@ -71,6 +71,13 @@ public class EnhNode extends Polymorphic implements FrontsNode
     */
     public final boolean isURIResource() {
         return node.isURI();
+    }
+    
+    /**
+        An enhanced node is a resource if it's node is a URI node or a blank node.
+    */
+    public final boolean isResource() {
+        return node.isURI() || node.isBlank();
     }
     
     /**

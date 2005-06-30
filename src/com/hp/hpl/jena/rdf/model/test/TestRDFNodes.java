@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestRDFNodes.java,v 1.7 2005-06-29 09:47:24 chris-dollin Exp $
+  $Id: TestRDFNodes.java,v 1.8 2005-06-30 08:39:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -128,6 +128,15 @@ public class TestRDFNodes extends ModelTestBase
         assertEquals( false, m.createResource().isURIResource() );
         assertEquals( false, m.createLiteral( 17 ).isURIResource() );
         assertEquals( false, m.createTypedLiteral( "hello" ).isURIResource() );
+        }
+    
+    public void testIsResource()
+        {
+        Model m = modelWithStatements( "" );
+        assertEquals( true, m.createResource( "eh:/foo" ).isResource() );
+        assertEquals( true, m.createResource().isResource() );
+        assertEquals( false, m.createLiteral( 17 ).isResource() );
+        assertEquals( false, m.createTypedLiteral( "hello" ).isResource() );
         }
     }
 
