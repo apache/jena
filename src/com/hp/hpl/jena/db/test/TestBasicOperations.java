@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.13 2005-02-21 12:03:15 andy_seaborne Exp $
+  $Id: TestBasicOperations.java,v 1.14 2005-07-01 21:55:17 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -22,9 +22,12 @@ package com.hp.hpl.jena.db.test;
  * @author csayers
 */
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.IRDBDriver;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -82,6 +85,32 @@ public class TestBasicOperations extends TestCase {
 		assertTrue(model.contains(stmt));
 		model.remove(stmt);
 		assertTrue(!model.contains(stmt));
+	}
+	
+	private Statement crAssertedStmt(String subj, String pred, String obj) {
+		Resource s = model.createResource(subj);
+		Property p = model.createProperty(pred);
+		Resource o = model.createResource(obj);
+		return crAssertedStmt(s, p, o);
+	}
+	
+	private Statement crAssertedStmt(Resource s, Property p, RDFNode o) {
+		Statement stmt = model.createStatement(s, p, o);
+		model.add(stmt);
+		return stmt;
+	}
+	
+	private Resource crReifiedStmt(String node, Statement stmt) {
+		Resource n = model.createResource(node);
+		Resource s = stmt.getSubject();
+		Property p = stmt.getPredicate();
+		RDFNode o = stmt.getObject();
+		
+		crAssertedStmt(n,RDF.subject,s);
+		crAssertedStmt(n,RDF.predicate,p);
+		crAssertedStmt(n,RDF.object,o);
+		crAssertedStmt(n,RDF.type,RDF.Statement);
+		return n;
 	}
 	
 	public void testAddRemoveURI() {
@@ -410,6 +439,107 @@ public class TestBasicOperations extends TestCase {
 		} catch (Exception e) {
 			assertTrue(false); // should not get here
 		}
+	}
+	
+	private int countIter( Iterator it ) {
+		int i = 0;
+		while( it.hasNext()) {
+			Statement s = (Statement) it.next();
+			i++;
+		}
+		return i;
+	}
+
+	private int countAll()
+	{
+		Iterator it = model.listStatements();
+		return countIter(it);
+	}
+
+	private int countSubj(Resource s)
+	{
+		Iterator it = model.listStatements(s,(Property)null,(RDFNode)null);
+		return countIter(it);
+	}
+
+	private int countObj(RDFNode o)
+	{
+		Iterator it = model.listStatements((Resource)null,(Property)null,o);
+		return countIter(it);
+	}
+
+	private int countPred(Property o)
+	{
+		Iterator it = model.listStatements((Resource)null,(Property)o,(RDFNode)null);
+		return countIter(it);
+	}
+
+	public void testQueryOnlyOption() {
+		GraphRDB g = new GraphRDB( conn, null, null, 
+				GraphRDB.OPTIMIZE_ALL_REIFICATIONS_AND_HIDE_NOTHING, false);
+		model = new ModelRDB(g);
+
+		Statement a1 = crAssertedStmt("s1","p1","o1");
+		Statement a2 = crAssertedStmt("s2","p2","s1");
+		Resource r1 = crReifiedStmt("r1",a1);
+		Resource r2 = crReifiedStmt("r2",a2);
+		
+		// should find 10 statements total
+		int cnt;
+		Resource s1 = a1.getSubject();
+		Property p1 = a1.getPredicate();
+		RDFNode o1 = a1.getObject();
+		
+		cnt = countAll();
+		assertTrue(cnt==10);
+		cnt = countSubj(s1);
+		assertTrue(cnt==1);
+		cnt = countObj(o1);
+		assertTrue(cnt==2);
+		cnt = countObj(s1);
+		assertTrue(cnt==3);
+		cnt = countPred(p1);
+		assertTrue(cnt==1);
+		cnt = countPred(RDF.predicate);
+		assertTrue(cnt==2);
+		cnt = countSubj(r2);
+		assertTrue(cnt==4);
+		
+		model.setQueryOnlyAsserted(true);
+		cnt = countAll();
+		assertTrue(cnt==2);
+		cnt = countSubj(s1);
+		assertTrue(cnt==1);
+		cnt = countObj(o1);
+		assertTrue(cnt==1);
+		cnt = countObj(s1);
+		assertTrue(cnt==1);
+		cnt = countPred(p1);
+		assertTrue(cnt==1);
+		cnt = countPred(RDF.predicate);
+		assertTrue(cnt==0);
+		cnt = countSubj(r2);
+		assertTrue(cnt==0);
+
+		model.setQueryOnlyReified(true);
+		cnt = countAll();
+		assertTrue(cnt==8);
+		cnt = countSubj(s1);
+		assertTrue(cnt==0);
+		cnt = countObj(o1);
+		assertTrue(cnt==1);
+		cnt = countObj(s1);
+		assertTrue(cnt==2);
+		cnt = countPred(p1);
+		assertTrue(cnt==0);
+		cnt = countPred(RDF.predicate);
+		assertTrue(cnt==2);
+		cnt = countSubj(r2);
+		assertTrue(cnt==4);
+
+		model.setQueryOnlyReified(false);
+		cnt = countAll();
+		assertTrue(cnt==10);
 	}
 
 }
