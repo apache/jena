@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -61,6 +61,8 @@ public class GraphRDB extends GraphBase implements Graph {
 	protected DBPrefixMappingImpl m_prefixMapping = null;
 	protected List m_specializedGraphs = null;
 	protected List m_specializedGraphReifiers = null;
+	protected List m_specializedGraphAsserted = null;
+	protected List m_specializedGraphsAll = null;
 	protected Reifier m_reifier = null;
 
 	protected int m_reificationBehaviour = 0;
@@ -205,7 +207,7 @@ public class GraphRDB extends GraphBase implements Graph {
 				throw new AlreadyExistsException( graphID );
 			if( requestedProperties != null )
 				throw new RDFRDBException("Error: attempt to change a graph's properties after it has been used.");			
-			m_specializedGraphs = m_driver.recreateSpecializedGraphs( m_properties );	
+			m_specializedGraphsAll = m_driver.recreateSpecializedGraphs( m_properties );	
 		}
 		else {	
 			if( !isNew )
@@ -218,7 +220,7 @@ public class GraphRDB extends GraphBase implements Graph {
 			DBPropDatabase dbprop = new DBPropDatabase( m_driver.getSystemSpecializedGraph(true));
 			dbprop.addGraph(m_properties);
 			*/
-			m_specializedGraphs = m_driver.createSpecializedGraphs( graphID, requestedProperties );
+			m_specializedGraphsAll = m_driver.createSpecializedGraphs( graphID, requestedProperties );
 			m_properties = DBPropGraph.findPropGraphByName( sysGraph, graphID );
 			if ( m_properties == null )
 				throw new RDFRDBException("Graph properties not found after creating graph.");
@@ -228,12 +230,16 @@ public class GraphRDB extends GraphBase implements Graph {
 		// (we'll need this later to support getReifier)
 		
 		m_specializedGraphReifiers = new ArrayList();
-		Iterator it = m_specializedGraphs.iterator();
+		m_specializedGraphAsserted = new ArrayList();
+		Iterator it = m_specializedGraphsAll.iterator();
 		while( it.hasNext() ) {
 			Object o = it.next();
 			if( o instanceof SpecializedGraphReifier )
 				m_specializedGraphReifiers.add(o);
+			else 
+				m_specializedGraphAsserted.add(o);
 		}
+		m_specializedGraphs = m_specializedGraphsAll;
 	}
 	
 	/** 
@@ -519,7 +525,7 @@ public class GraphRDB extends GraphBase implements Graph {
 		return m_specializedGraphs.iterator();
 	}
 
-	private QueryHandler q = null;
+	private DBQueryHandler q = null;
    
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.graph.Graph#queryHandler()
@@ -529,6 +535,12 @@ public class GraphRDB extends GraphBase implements Graph {
 		if (q == null) q = new DBQueryHandler( this);
 		return q;
 		}
+
+	public DBQueryHandler DBqueryHandler()
+	{
+	if (q == null) queryHandler();
+	return q;
+	}
 
 	/**
 	* Get the value of DoDuplicateCheck
@@ -553,6 +565,90 @@ public class GraphRDB extends GraphBase implements Graph {
 			}
 		}
 	}
+
+	/**
+	 * Set the value of DoFastpath.
+	 * @param val boolean
+	 */
+	public void setDoFastpath ( boolean val ) {
+		DBqueryHandler().setDoFastpath(val);
+	}
+	
+	/**
+	 * Get the value of DoFastpath.
+	 * @return boolean
+	 */
+	public boolean getDoFastpath () {
+		return DBqueryHandler().getDoFastpath();
+	}
+
+	/**
+	 * Set the value of QueryOnlyAsserted.
+	 * @param opt boolean
+	 */
+	public void setQueryOnlyAsserted ( boolean opt ) {
+		if ( opt ) {
+			m_specializedGraphs = m_specializedGraphAsserted;
+			DBqueryHandler().setQueryOnlyReified(false);
+		} else
+			m_specializedGraphs = m_specializedGraphsAll;
+		DBqueryHandler().setQueryOnlyAsserted(opt);
+	}
+
+	/**
+	 * Get the value of QueryOnlyAsserted.
+	 * @return boolean
+	 */
+	public boolean getQueryOnlyAsserted() {
+		return DBqueryHandler().getQueryOnlyAsserted();
+	}
+
+	/**
+	 * Set the value of QueryOnlyReified.
+	 * @param opt boolean
+	 */
+	public void setQueryOnlyReified ( boolean opt ) {
+		if ( opt ) {
+			m_specializedGraphs = m_specializedGraphReifiers;
+			DBqueryHandler().setQueryOnlyAsserted(false);
+		} else {
+			m_specializedGraphs = m_specializedGraphsAll;
+		}
+		DBqueryHandler().setQueryOnlyReified(opt);
+	}
+
+	/**
+	 * Get the value of QueryOnlyReified.
+	 * @return boolean
+	 */
+	public boolean getQueryOnlyReified() {
+		return DBqueryHandler().getQueryOnlyReified();
+	}
+
+	/**
+	 * Set the value of QueryFullReified.
+	 * @param opt boolean
+	 */
+	public void setQueryFullReified ( boolean opt ) {
+		DBqueryHandler().setQueryFullReified(opt);
+	}
+
+	/**
+	 * Get the value of QueryFullReified.
+	 * @return boolean
+	 */
+	public boolean getQueryFullReified() {
+		return DBqueryHandler().getQueryFullReified();
+	}
+	
+	/**
+	 * Set the value of DoImplicitJoin.
+	 * @param val boolean
+	 */
+	public void setDoImplicitJoin ( boolean val ) {
+		DBqueryHandler().setDoImplicitJoin(val);
+	}
+
 
 }
 

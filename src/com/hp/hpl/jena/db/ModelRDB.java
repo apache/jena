@@ -34,7 +34,7 @@ import com.hp.hpl.jena.graph.*;
  * </code>
  * 
  * @author csayers (based on ModelMem written by bwm and the Jena 1 version of Model RDB by der.)
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class ModelRDB extends ModelCom implements Model {    
     
@@ -367,7 +367,7 @@ public class ModelRDB extends ModelCom implements Model {
 	 * @param val boolean
 	 */
 	public void setDoFastpath ( boolean val ) {
-		((DBQueryHandler)m_graphRDB.queryHandler()).setDoFastpath(val);
+		m_graphRDB.setDoFastpath(val);
 	}
 	
 	/**
@@ -375,7 +375,7 @@ public class ModelRDB extends ModelCom implements Model {
 	 * @return boolean
 	 */
 	public boolean getDoFastpath () {
-		return ((DBQueryHandler)m_graphRDB.queryHandler()).getDoFastpath();
+		return m_graphRDB.getDoFastpath();
 	}
 
 	/**
@@ -383,7 +383,7 @@ public class ModelRDB extends ModelCom implements Model {
 	 * @param opt boolean
 	 */
 	public void setQueryOnlyAsserted ( boolean opt ) {
-		((DBQueryHandler)m_graphRDB.queryHandler()).setQueryOnlyAsserted(opt);
+		m_graphRDB.setQueryOnlyAsserted(opt);
 	}
 
 	/**
@@ -391,7 +391,7 @@ public class ModelRDB extends ModelCom implements Model {
 	 * @return boolean
 	 */
 	public boolean getQueryOnlyAsserted() {
-		return ((DBQueryHandler)m_graphRDB.queryHandler()).getQueryOnlyAsserted();
+		return m_graphRDB.getQueryOnlyAsserted();
 	}
 
 	/**
@@ -399,7 +399,7 @@ public class ModelRDB extends ModelCom implements Model {
 	 * @param opt boolean
 	 */
 	public void setQueryOnlyReified ( boolean opt ) {
-		((DBQueryHandler)m_graphRDB.queryHandler()).setQueryOnlyReified(opt);
+		m_graphRDB.setQueryOnlyReified(opt);
 	}
 
 	/**
@@ -407,7 +407,7 @@ public class ModelRDB extends ModelCom implements Model {
 	 * @return boolean
 	 */
 	public boolean getQueryOnlyReified() {
-		return ((DBQueryHandler)m_graphRDB.queryHandler()).getQueryOnlyReified();
+		return m_graphRDB.getQueryOnlyReified();
 	}
 
 	/**
@@ -415,7 +415,7 @@ public class ModelRDB extends ModelCom implements Model {
 	 * @param opt boolean
 	 */
 	public void setQueryFullReified ( boolean opt ) {
-		((DBQueryHandler)m_graphRDB.queryHandler()).setQueryFullReified(opt);
+		m_graphRDB.setQueryFullReified(opt);
 	}
 
 	/**
@@ -423,7 +423,7 @@ public class ModelRDB extends ModelCom implements Model {
 	 * @return boolean
 	 */
 	public boolean getQueryFullReified() {
-		return ((DBQueryHandler)m_graphRDB.queryHandler()).getQueryFullReified();
+		return m_graphRDB.getQueryFullReified();
 	}
 	
 	/**
@@ -431,7 +431,7 @@ public class ModelRDB extends ModelCom implements Model {
 	 * @param val boolean
 	 */
 	public void setDoImplicitJoin ( boolean val ) {
-		((DBQueryHandler)m_graphRDB.queryHandler()).setDoImplicitJoin(val);
+		m_graphRDB.setDoImplicitJoin(val);
 	}
 
 	
