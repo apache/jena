@@ -6,9 +6,7 @@
 </head>
 <body>
 
-This version: 0.2<br/> Date: 28 Aug 2003
-
-<h1>RDQL Fastpath Query Processing</h1>
+This version: 0.3<br/> Date: 1 July 2005<h1>RDQL Fastpath Query Processing</h1>
 
 <h2>Fastpath Overview</h2>
 
@@ -133,8 +131,8 @@ variables by reducing the number of stages. The RDB Query Handler supports a met
 declare that Fastpath should ignore reified statements in queries. Similarly, if 
 a model contains only reified statements or the user only wishes to query 
 reified statements, then <font face="Courier New" size="2">setQueryOnlyReified(true)</font>, 
-may be called. However, currently, this latter call has no effect. A future release 
-will support joins across predicate variable for reified statements.</p>
+may be called. However, a current limitation of Fastpath is that if 
+QueryOnlyReified is true then QueryFullReified must also be true.</p>
 
 <p>If a model contains only fully reified statements or the user is only 
 interested in querying fully reified statements (i.e., partially reified 
@@ -205,8 +203,8 @@ effect as specifying <font face="Courier New" size="2">setQueryOnlyAsserted(true
   uncomment line 60 of <font face="Courier New" size="2">
   jena.db.impl.DBStage.java</font>. In the future, we hope to add an API for 
   accessing information about the generated SQL, including the statement string.</dd>
-  <dd><b>Query Constraints.</b> Currently RDQL constraints are not processed 
-  within the database engine. In the future, constraints will be processed in 
+  <dd><b>Query Constraints.</b> Currently only RDQL string matching constraints are  processed 
+  within the database engine. In the future, more constraints may be processed in 
   the database engine.</dd>
   <dt>&nbsp;</dt>
   <dt>&nbsp;</dt>

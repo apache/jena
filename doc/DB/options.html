@@ -17,7 +17,7 @@
 
 
 
-<h3>28 August, 2003</h3>
+<h3>1 July, 2005</h3>
 
 
 
@@ -285,14 +285,16 @@
     <td width="166" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">QueryOnlyAsserted</td>
     <td width="71" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">boolean</td>
     <td width="69" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">false</td>
-    <td width="479" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">If true, Fastpath only queries asserted statement 
+    <td width="479" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">If true, 
+    query only asserted statement 
     tables.</td>
   </tr>
   <tr>
     <td width="166" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">QueryOnlyReified</td>
     <td width="71" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">boolean</td>
     <td width="69" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">false</td>
-    <td width="479" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">If true, Fastpath only queries reified statement 
+    <td width="479" valign="top" style="text-indent: 5; margin-left: 0; text-align:left">If true,  query 
+    only reified statement 
     tables.</td>
   </tr>
   <tr>
@@ -319,6 +321,26 @@
     it should be enabled but it may be useful to disable it for experiments or 
     debugging. For details on Fastpath processing and explanations of the 
     three query options in this table, see the <a href="fastpath.html">Fastpath</a> 
+    notes.</dd>
+    <dt>QueryOnlyAsserted</dt>
+    <dd>When true, querying will only be done on asserted statement tables; the 
+    reified tables are ignored. For applications that use only asserted 
+    statements this may provide a performance improvement for certain types of 
+    queries (specifically, those with unknown predicates), especially if the 
+    database is remote from the application. Note that this option only applies 
+    to Fastpath queries for Jena2.2 and prior versions. In the current (CVS) 
+    version of Jena, this option applies to all queries, e.g., ListStatements.</dd>
+    <dt>QueryOnlyReified</dt>
+    <dd>When true, querying will only be done on reified statement tables; the 
+    asserted statement tables are ignored. For applications that use only 
+    reified statements this may provide a performance improvement for certain 
+    types of queries (specifically, those with unknown predicates), especially 
+    if the database is remote from the application. Note that this option only 
+    applies to Fastpath queries for Jena2.2 and prior versions. In the current 
+    (CVS) version of Jena, this option applies to all queries, e.g., 
+    ListStatements.</dd>
+    <dt>QueryFullReified</dt>
+    <dd>See the <a href="fastpath.html">Fastpath</a> 
     notes.</dd>
     <dt>DoDuplicateCheck</dt>
     <dd>When a statement is added to a persistent model, Jena first checks if 
