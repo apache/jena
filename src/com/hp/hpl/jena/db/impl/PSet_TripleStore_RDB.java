@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.52 2005-04-27 21:28:27 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.53 2005-07-01 21:51:36 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
+import java.sql.BatchUpdateException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.52 $ on $Date: 2005-04-27 21:28:27 $
+* @version $Revision: 1.53 $ on $Date: 2005-07-01 21:51:36 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -191,22 +192,29 @@ public  class PSet_TripleStore_RDB implements IPSet {
 	 */
 	public int rowCount(int gid) {
 	String tName = getTblName();
+	int result = 0;
+	ResultSet rs=null;
 
 	try {
-        int result = 0;
 		 String op = "getRowCount"; 
 		 PreparedStatement ps = m_sql.getPreparedSQLStatement(op,tName);
 		 ps.setInt(1, gid);
-		 ResultSet rs = ps.executeQuery();
+		 rs = ps.executeQuery();
 	     while ( rs.next() ) result = rs.getInt(1); 
-         rs.close();
 		m_sql.returnPreparedSQLStatement(ps);
-        return result;
 	} catch (SQLException e) {
 	   logger.debug("tried to count rows in " + tName);
 	   logger.debug("Caught exception: ", e);
            throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
+	} finally {
+		if (rs != null)
+				try {
+					rs.close();
+				} catch (SQLException e1) {
+					throw new RDFRDBException("Failed to get last inserted ID: " + e1);
+				}
 	}
+	return result;
 	}
 
 	//=======================================================================
@@ -570,41 +578,46 @@ public void deleteTripleAR(
 		// MySQL also supports a multiple-row insert.
 		// For now, we support only jdbc 2.0 batched updates
 		/** Set of PreparedStatements that need executeBatch() * */
-//		Hashtable batchedPreparedStatements = new Hashtable();
 		Triple t;
 		String cmd;
 		boolean autoState = false;
 		DriverRDB drvr = (DriverRDB) m_driver;
-//		try {
-			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
+		Iterator it = triples.iterator();
+		Hashtable batchedPreparedStatements = null;
 
-			Iterator it = triples.iterator();
-
+		if ( SKIP_DUPLICATE_CHECK == false ) {
+//		if ( false ) {
 			while (it.hasNext()) {
 				t = (Triple) it.next();
-				// storeTriple(t, my_GID, true, batchedPreparedStatements);
 				storeTriple(t, my_GID, false, null);
 			}
-/*
+		} else 
+		try {
+			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
+			batchedPreparedStatements = new Hashtable();
+			while (it.hasNext()) {
+				t = (Triple) it.next();
+				storeTriple(t, my_GID, true, batchedPreparedStatements);
+			}
+
 			Enumeration enum = batchedPreparedStatements.keys();
 			while (enum.hasMoreElements()) {
 				String op = (String) enum.nextElement();
 				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
 						.get(op);
 				p.executeBatch();
+				batchedPreparedStatements.remove(op);
 				m_sql.returnPreparedSQLStatement(p);
 			}
-*/
-			if (autoState)
+			if (autoState) {
 				drvr.xactOp(DriverRDB.xactCommit);
-
-//			batchedPreparedStatements = new Hashtable();
-			ArrayList c = new ArrayList(triples);
-			triples.removeAll(c);
+				drvr.xactOp(DriverRDB.xactAutoOn);
+			}
+			batchedPreparedStatements = null; 
 		
 		// WARNING: caught exceptions should drop through to return.
 		// if not, be sure to reset autocommit before exiting.
-/*
+
 		} catch (BatchUpdateException b) {
 			System.err.println("SQLException: " + b.getMessage());
 			System.err.println("SQLState: " + b.getSQLState());
@@ -615,15 +628,27 @@ public void deleteTripleAR(
 			for (int i = 0; i < updateCounts.length; i++) {
 				System.err.print(updateCounts[i] + " ");
 			}
+			if (autoState) drvr.xactOp(DriverRDB.xactAutoOn);
 		} catch (SQLException ex) {
 			System.err.println("SQLException: " + ex.getMessage());
 			System.err.println("SQLState: " + ex.getSQLState());
 			System.err.println("Message: " + ex.getMessage());
 			System.err.println("Vendor: " + ex.getErrorCode());
+			if (autoState) drvr.xactOp(DriverRDB.xactAutoOn);
+		} finally {
+			if ( batchedPreparedStatements != null ) {
+			Enumeration enum = batchedPreparedStatements.keys();
+			while (enum.hasMoreElements()) {
+				String op = (String) enum.nextElement();
+				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
+						.get(op);
+				batchedPreparedStatements.remove(op);
+				m_sql.returnPreparedSQLStatement(p);
+			}
+			}
 		}
-*/
-		if (autoState)
-			drvr.xactOp(DriverRDB.xactAutoOn);
+		ArrayList c = new ArrayList(triples);
+		triples.removeAll(c);
 	}
 
 	/**
@@ -650,42 +675,47 @@ public void deleteTripleAR(
 		// For now, we support only jdbc 2.0 batched updates
 
 		/** Set of PreparedStatements that need executeBatch() * */
-//		Hashtable batchedPreparedStatements = new Hashtable();
+		Hashtable batchedPreparedStatements = null;
 		Triple t;
 		String cmd;
 		boolean autoState = false;
 		DriverRDB drvr = (DriverRDB) m_driver;
-//		try {
-			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
-			Iterator it = triples.iterator();
+		Iterator it = triples.iterator();
+		
+		if ( SKIP_DUPLICATE_CHECK == false ) {
+//		if ( false ) {
 
 			while (it.hasNext()) {
 				t = (Triple) it.next();
-				// deleteTriple(t, my_GID, true, batchedPreparedStatements);
 				deleteTriple(t, my_GID, false, null);
 			}
+		} else 
+		try {
+			autoState = drvr.xactOp(DriverRDB.xactAutoOff);
+			batchedPreparedStatements = new Hashtable();
+			while (it.hasNext()) {
+				t = (Triple) it.next();
+				deleteTriple(t, my_GID, true, batchedPreparedStatements);
+			}
 
-/*
 			Enumeration enum = batchedPreparedStatements.keys();
 			while (enum.hasMoreElements()) {
 				String op = (String) enum.nextElement();
 				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
 						.get(op);
 				p.executeBatch();
-				//	m_sql.returnPreparedSQLStatement(p,op);
+				batchedPreparedStatements.remove(op);
+				m_sql.returnPreparedSQLStatement(p);
 			}
-*/
-
-			if (autoState)
+			if (autoState) {
 				drvr.xactOp(DriverRDB.xactCommit);
-
-			// batchedPreparedStatements = new Hashtable();
-			ArrayList c = new ArrayList(triples);
-			triples.removeAll(c);
+				drvr.xactOp(DriverRDB.xactAutoOn);
+			}
+			batchedPreparedStatements = null;
 			
 		// WARNING: caught exceptions should drop through to return.
 		// if not, be sure to reset autocommit before exiting.
-/*
+
 	} catch (BatchUpdateException b) {
 			System.err.println("SQLException: " + b.getMessage());
 			System.err.println("SQLState: " + b.getSQLState());
@@ -696,15 +726,28 @@ public void deleteTripleAR(
 			for (int i = 0; i < updateCounts.length; i++) {
 				System.err.print(updateCounts[i] + " ");
 			}
+			if (autoState) drvr.xactOp(DriverRDB.xactAutoOn);
 		} catch (SQLException ex) {
 			System.err.println("SQLException: " + ex.getMessage());
 			System.err.println("SQLState: " + ex.getSQLState());
 			System.err.println("Message: " + ex.getMessage());
 			System.err.println("Vendor: " + ex.getErrorCode());
+			if (autoState) drvr.xactOp(DriverRDB.xactAutoOn);
 		}
-*/
-		if (autoState)
-			drvr.xactOp(DriverRDB.xactAutoOn);
+		finally {
+			if ( batchedPreparedStatements != null ) {
+				Enumeration enum = batchedPreparedStatements.keys();
+				while (enum.hasMoreElements()) {
+					String op = (String) enum.nextElement();
+					PreparedStatement p = (PreparedStatement) batchedPreparedStatements
+							.get(op);
+					batchedPreparedStatements.remove(op);
+					m_sql.returnPreparedSQLStatement(p);
+				}
+			}
+		}
+		ArrayList c = new ArrayList(triples);
+		triples.removeAll(c);
 	}
 
 	/**
@@ -832,6 +875,7 @@ if ( hack != 0 ) {
 	
 				  ps.setString(1,gid);
 				  ps.executeUpdate();
+				  m_sql.returnPreparedSQLStatement(ps);
 				 } catch (SQLException e) {
 					logger.error("Problem removing statements from table: ", e);
                                         throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option

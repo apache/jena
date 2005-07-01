@@ -52,7 +52,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.49 $ on $Date: 2005-04-15 11:11:39 $
+* @version $Revision: 1.50 $ on $Date: 2005-07-01 21:51:49 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -855,16 +855,16 @@ public abstract class DriverRDB implements IRDBDriver {
 		boolean[] found = new boolean[SYSTEM_TABLE_CNT];
 		int i = 0;
 		for (i = 0; i < SYSTEM_TABLE_CNT; i++) found[i] = false;
+		ResultSet alltables = null;
 		try {
 			// check that all required system tables exist
-			ResultSet alltables = getAllTables();
+			alltables = getAllTables();
 			while (alltables.next()) {
 				String tblName = alltables.getString("TABLE_NAME");
 				for (i = 0; i < SYSTEM_TABLE_CNT; i++)
 					if (SYSTEM_TABLE_NAME[i].equals(tblName))
 						found[i] = true;
 			}
-			alltables.close();
 			for (i = 0; i < SYSTEM_TABLE_CNT; i++) {
 				if (!found[i]) {
 					// mutex table is not required
@@ -876,8 +876,15 @@ public abstract class DriverRDB implements IRDBDriver {
 		} catch (Exception e1) {
 			// An exception might be an unformatted or corrupt
 			// db or a connection problem.
-			throw new RDFRDBException(
-				"Exception while checking db format - " + e1);
+			throw new RDFRDBException("Exception while checking db format - " + e1);
+		}finally {
+			try {
+				if(alltables!=null) {
+					alltables.close();
+				}
+			}catch(SQLException e) {
+				throw new RDFRDBException("Exception while checking db format - " + e);
+			}
 		}
 		return result;
 	}
@@ -1005,14 +1012,14 @@ public abstract class DriverRDB implements IRDBDriver {
 			throw new RDFRDBException(
 			"Exception when checking for database lock - \n"
 			+ e);
-		}		
+		}
+		ResultSet alltables=null;
 		try {
-			ResultSet alltables = getAllTables();
+			alltables = getAllTables();
 			List tablesPresent = new ArrayList(10);
 			while (alltables.next()) {
 				tablesPresent.add(alltables.getString("TABLE_NAME"));
 			}
-			alltables.close();
 			Iterator it = tablesPresent.iterator();
 			while (it.hasNext()) {
 				String tblName = (String) it.next();
@@ -1028,6 +1035,16 @@ public abstract class DriverRDB implements IRDBDriver {
 					+ "(" + e1 + ").\n"
 					+ "Database may be corrupted. Try cleanDB() again.");
 		}
+		finally {
+			try {
+				if(alltables!=null) {
+					alltables.close();
+				}
+				}catch(SQLException e) {
+					throw new RDFRDBException("Exception while checking db format - " + e);
+				}
+			}
+
 		m_sysProperties = null;
 		if ( prefixCache != null ) prefixCache.clear();
 		prefixCache = null;
@@ -1071,18 +1088,26 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public boolean sequenceExists(String seqName) {
 		Object[] args = {seqName};
+		ResultSet rs = null;
 		boolean result = false;
+		PreparedStatement ps=null;
 		try {
 			String op = "SelectSequenceName";
-			PreparedStatement ps = m_sql.getPreparedSQLStatement(op);
+			ps = m_sql.getPreparedSQLStatement(op);
 			ps.setString(1,seqName);
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			result = rs.next();
-            rs.close();
-			m_sql.returnPreparedSQLStatement(ps);
 		} catch (Exception e) {
-		  logger.error("Unable to select sequence " + seqName,  e);
-			}
+			logger.error("Unable to select sequence " + seqName, e);
+		} finally {
+			if (rs != null)
+				try {
+					rs.close();
+				} catch (SQLException e1) {
+					throw new RDFRDBException("Failed to get last inserted ID: " + e1);
+				}
+			if(ps!=null)m_sql.returnPreparedSQLStatement(ps);
+		}
 		return result;
 	}
 
@@ -1093,16 +1118,26 @@ public abstract class DriverRDB implements IRDBDriver {
 	public List getSequences() {
 		List results =  new ArrayList(10);
 		Object[] args = {};
+		ResultSet rs = null;
+		PreparedStatement ps = null;
 		try {
 			String opname = "SelectJenaSequences";
-			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, TABLE_NAME_PREFIX);
-		    ResultSet rs = ps.executeQuery();
+			ps = m_sql.getPreparedSQLStatement(opname, TABLE_NAME_PREFIX);
+		    rs = ps.executeQuery();
 		    while (rs.next()) results.add( rs.getString(1) );
 		    rs.close();
-		    m_sql.returnPreparedSQLStatement(ps);
+		    // m_sql.returnPreparedSQLStatement(ps);
 		} catch (Exception e) {
-		  logger.error("Unable to select Jena sequences: ", e);
-		 }
+			logger.error("Unable to select Jena sequences: ", e);
+		} finally {
+			if(rs != null)
+                try {
+                    rs.close();
+                } catch (SQLException e1) {
+                	throw new RDFRDBException("Failed to get last inserted ID: " + e1);
+                }
+           if(ps!=null)m_sql.returnPreparedSQLStatement(ps);
+		}
 		return results;
 	}
 	
@@ -1152,13 +1187,16 @@ public abstract class DriverRDB implements IRDBDriver {
 	 */
 	public void deleteTable( String tableName ) {
 		
-		String opname = "dropTable"; 
+		String opname = "dropTable";
+		PreparedStatement ps = null;
 		try {         			
-			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, tableName);
+			ps = m_sql.getPreparedSQLStatement(opname, tableName);
 			ps.executeUpdate();
 			return;
 		} catch (Exception e1) {
 			throw new RDFRDBException("Failed to delete table ", e1);
+		}finally {
+			if(ps!=null)m_sql.returnPreparedSQLStatement(ps);
 		}
 	}
 
@@ -1242,8 +1280,16 @@ public abstract class DriverRDB implements IRDBDriver {
 	private void xactBegin() throws RDFRDBException {
 		try {
 			Connection c = m_sql.getConnection();
-			c.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-			c.setAutoCommit(false);
+			try {
+				if (c.getTransactionIsolation() != Connection.TRANSACTION_READ_COMMITTED) {
+					c.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
+				}
+				if (c.getAutoCommit()) {
+					c.setAutoCommit(false);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			// Starting a transaction could require us to lose any
 			// cached prepared statements
 			// for some jdbc drivers, currently I think all the drivers
@@ -1270,7 +1316,11 @@ public abstract class DriverRDB implements IRDBDriver {
 		try {
 			Connection c = m_sql.getConnection();
 			c.commit();
-			c.setAutoCommit(true);
+			try {
+				c.setAutoCommit(true);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			// not sure why read_uncommitted is set, below. commented
 			// out by kw.
 			// c.setTransactionIsolation(Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -1911,16 +1961,18 @@ public abstract class DriverRDB implements IRDBDriver {
 	}
 			
 	public DBIDInt getLongObjectID(RDBLongObject lobj, String table, boolean add) throws RDFRDBException {
+		ResultSet rs = null;
+		PreparedStatement ps = null;
 		try {
 			String opName = "getLongObjectID";
 			if ( lobj.tail.length() > 0 ) 
 				opName += "withChkSum";
-			PreparedStatement ps = m_sql.getPreparedSQLStatement(opName, table); 
+			ps = m_sql.getPreparedSQLStatement(opName, table); 
 			ps.setString(1,lobj.head);
 			if ( lobj.tail.length() > 0 ) 
 				ps.setLong(2, lobj.hash);
 			
-			ResultSet rs = ps.executeQuery();
+			rs = ps.executeQuery();
 			DBIDInt result = null;
 			if (rs.next()) {
 				result = wrapDBID(rs.getObject(1));
@@ -1928,12 +1980,19 @@ public abstract class DriverRDB implements IRDBDriver {
 				if ( add )
 					result = addRDBLongObject(lobj, table);
 			}
-            rs.close();
-		    m_sql.returnPreparedSQLStatement(ps);
+
 			return result;
 		} catch (SQLException e1) {
 			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
 			throw new RDFRDBException("Failed to find literal", e1);
+		}finally {
+			if(rs != null)
+                try {
+                    rs.close();
+                } catch (SQLException e1) {
+                	throw new RDFRDBException("Failed to get last inserted ID: " + e1);
+                }
+             if(ps!=null)m_sql.returnPreparedSQLStatement(ps);
 		}
 	}
  
@@ -1943,10 +2002,11 @@ public abstract class DriverRDB implements IRDBDriver {
 	 * @return the db index of the added literal 
 	 */
 	public DBIDInt addRDBLongObject(RDBLongObject lobj, String table) throws RDFRDBException {
+		PreparedStatement ps = null;
 		try {
 			int argi = 1;
 			String opname = "insertLongObject";           			
-			PreparedStatement ps = m_sql.getPreparedSQLStatement(opname, table);
+			ps = m_sql.getPreparedSQLStatement(opname, table);
 			int dbid = 0; // init only needed to satisy java compiler
 			if ( PRE_ALLOCATE_ID ) {
 				dbid = getInsertID(table);
@@ -1991,6 +2051,8 @@ public abstract class DriverRDB implements IRDBDriver {
 			/* DEBUG */ System.out.println("Problem on long object (l=" + lobj.head + ") " + e1 );
 			// System.out.println("ID is: " + id);
 			throw new RDFRDBException("Failed to add long object ", e1);
+		} finally {
+			if(ps!=null)m_sql.returnPreparedSQLStatement(ps);
 		}
 	}
 	
@@ -2065,21 +2127,29 @@ public abstract class DriverRDB implements IRDBDriver {
 	
 	protected RDBLongObject IDtoLongObject ( int dbid, String table ) {
 		RDBLongObject	res = null;
+		ResultSet rs=null;
+		PreparedStatement ps = null;
 		try {
 			String opName = "getLongObject";
-			PreparedStatement ps = m_sql.getPreparedSQLStatement(opName, table); 
-			ps.setInt(1,dbid);
-			ResultSet rs = ps.executeQuery();
+			ps = m_sql.getPreparedSQLStatement(opName, table);
+			ps.setInt(1, dbid);
+			rs = ps.executeQuery();
 			if (rs.next()) {
                 res = new RDBLongObject();
 				res.head = rs.getString(1);
 				res.tail = rs.getString(2);			
 			}
-            rs.close();
-			m_sql.returnPreparedSQLStatement(ps);
 		} catch (SQLException e1) {
 			// /* DEBUG */ System.out.println("Literal truncation (" + l.toString().length() + ") " + l.toString().substring(0, 150));
 			throw new RDFRDBException("Failed to find literal", e1);
+		}finally {
+			if(rs != null)
+                try {
+                    rs.close();
+                } catch (SQLException e1) {
+                	throw new RDFRDBException("Failed to get last inserted ID: " + e1);
+                }
+             if(ps!=null)m_sql.returnPreparedSQLStatement(ps);
 		}		
 		return res;
 	}
@@ -2350,6 +2420,7 @@ public abstract class DriverRDB implements IRDBDriver {
 
 	
 	protected int getTableCount(int graphId) {
+		ResultSet alltables = null;
 		try {
 			DatabaseMetaData dbmd = m_dbcon.getConnection().getMetaData();
 			String[] tableTypes = { "TABLE" };
@@ -2357,15 +2428,20 @@ public abstract class DriverRDB implements IRDBDriver {
 			String tblPattern =
 				TABLE_NAME_PREFIX + "g" + Integer.toString(graphId) + "%";
 			tblPattern = stringToDBname(tblPattern);
-			ResultSet alltables =
-				dbmd.getTables(null, null, tblPattern, tableTypes);
+			alltables = dbmd.getTables(null, null, tblPattern, tableTypes);
 			while (alltables.next()) {
 				res += 1;
 			}
-			alltables.close();
 			return res;
 		} catch (SQLException e1) {
 			throw new RDFRDBException("Internal SQL error in driver - " + e1);
+		} finally {
+			if(alltables != null)
+                try {
+                	alltables.close();
+                } catch (SQLException e1) {
+                	throw new RDFRDBException("Failed to get last inserted ID: " + e1);
+                }
 		}
 	}
 	

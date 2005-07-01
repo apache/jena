@@ -40,7 +40,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.23 $ on $Date: 2005-02-21 12:03:06 $
+* @version $Revision: 1.24 $ on $Date: 2005-07-01 21:51:49 $
 */
 
 public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
@@ -133,7 +133,6 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		String astName = getTblName();
 		String gid = graphID.getID().toString();
 		ResultSetReifIterator result = new ResultSetReifIterator(this, true, graphID);
-
 		PreparedStatement ps = null;
 
 		String stmtStr = "*findReif ";
@@ -142,6 +141,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		boolean gotObj = false;
 		boolean objIsStmt = false;
 		char reifProp = ' ';
+		String objNode = null;
 		boolean done = false;
 		int argc = 1;
 		
@@ -184,7 +184,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			if ( gotObj ) {
 				// no arguments in case match is <-,rdf:type,rdf:Statement>
 				if ( !(gotPred && objIsStmt) ) {
-					String objNode = m_driver.nodeToRDBString(obj, false);
+					objNode = m_driver.nodeToRDBString(obj, false);
 					ps.setString(argc++,objNode);
 					if ( gotPred == false ) {
 						// if no predicate, object value could be in subj, pred or obj column
@@ -200,11 +200,18 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
                         throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
 		}
 
-		if ( done )
+		if ( done ) {
 			result.close();
-		else {
+		} else {
+			if ( gotPred ) {
+				result.close();
+				result = new ResultSetReifIterator(this, reifProp, graphID);
+			} else if ( gotObj ) {
+				result.close();
+				result = new ResultSetReifIterator(this, obj, graphID);
+			}
 			try {
-			m_sql.executeSQL(ps, stmtStr, result);
+				m_sql.executeSQL(ps, stmtStr, result);
 			} catch (Exception e) {
 				logger.debug( "find encountered exception ", e);
                                 throw new JenaException("Exception during database access", e);    // Rethrow in case there is a recovery option
@@ -225,7 +232,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 		String stmtStr = null;
 		int argc = 1;
 		PreparedStatement ps = null;
-		ResultSetIterator result = new ResultSetIterator();
+		ResultSetIterator result = new ResultSetNodeIterator();
 		boolean notFound = false;
 
 		stmtStr = "selectReifNode";
@@ -278,10 +285,14 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			// TODO Auto-generated method stub
 			List l = (List) o;
             // TODO we have a BUG here somewhere, hence the message.
-            if (l.get(0) instanceof String) {} else 
+            String s = null;
+            Object n = l.get(0);
+            if ( (n instanceof String) || (n instanceof Byte) )
+            		s = (String) n;
+			else 
                 throw new JenaException( "String required: " + l.get(0).getClass() + " " + l.get(0) );
-			Node n = m_driver.RDBStringToNode((String) l.get(0));
-			return n;
+			Node r = m_driver.RDBStringToNode(s);
+			return r;
 		}
 		
 	}
@@ -293,7 +304,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 	public ExtendedIterator findReifNodes(Node stmtURI, IDBID graphID) {
 		String astName = getTblName();
 		String gid = graphID.getID().toString();
-		ResultSetIterator result = new ResultSetIterator();
+		ResultSetIterator result = new ResultSetNodeIterator();
 		int argc = 1;
 		PreparedStatement ps = null;
 		boolean notFound = false;
@@ -370,6 +381,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			} 
 				
 			try {
+			try {
 				ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
 				ps.clearParameters();
 				if ( fragMask.hasSubj() || fragMask.hasPred() || fragMask.hasObj() ) {
@@ -403,7 +415,9 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
  			 } catch (SQLException e1) {
 				 logger.error("SQLException caught during reification update" + e1.getErrorCode(), e1);
                 throw new JenaException("Exception during database access", e1);    // Rethrow in case there is a recovery option
-}
+ 			}} finally {
+ 			 	if(ps!=null)m_sql.returnPreparedSQLStatement(ps);
+ 			}
 		}
 
 	public void nullifyFrag(Node stmtURI, StmtMask fragMask, IDBID my_GID) {
@@ -513,6 +527,7 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 			String uriStr = m_driver.nodeToRDBString(stmtURI,false);
 							
 			try {
+			try {
 				ps = m_sql.getPreparedSQLStatement(stmtStr, getTblName());
 				ps.clearParameters();
 				
@@ -532,6 +547,8 @@ public class PSet_ReifStore_RDB extends PSet_TripleStore_RDB {
 				ps.executeUpdate();
 			} catch (Exception e) {
 				logger.debug("deleteFrag encountered exception ", e);
+			}}finally { 
+				if(ps!=null)m_sql.returnPreparedSQLStatement(ps);
 			}
 		return;
 	}

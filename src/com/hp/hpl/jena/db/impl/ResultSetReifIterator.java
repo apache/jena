@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 * Version of ResultSetIterator that extracts database rows as Triples from a reified statement table.
 *
 * @author hkuno.  Based on ResultSetResource Iterator, by Dave Reynolds, HPLabs, Bristol <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
-* @version $Revision: 1.8 $ on $Date: 2005-02-21 12:03:10 $
+* @version $Revision: 1.9 $ on $Date: 2005-07-01 21:51:49 $
 */
 public class ResultSetReifIterator extends ResultSetIterator {
 
@@ -51,6 +51,18 @@ public class ResultSetReifIterator extends ResultSetIterator {
 	 *  otherwise, reified statements are returned. */
 	protected boolean m_getTriples;
 	
+	/** a triple match over a reified table might return one property.
+	 *  m_propCol identifies the column number of the property to return.
+	 */
+	protected int m_propCol;
+	
+	/** a triple match over a reified table might specify an object value
+	 *  to match but no property. so, return all columns (properties)
+	 *  that match the specified object value.
+	 */
+	protected Node m_matchObj;
+	
+	
 	/** total number of fragments to generate for this row (ranges 1-4) */
 	protected int m_fragCount;
 	
@@ -68,6 +80,27 @@ public class ResultSetReifIterator extends ResultSetIterator {
 		m_pset = p;
 		setGraphID(graphID);
 		m_getTriples = getTriples;
+		m_matchObj = null;
+		m_propCol = 0;
+	}
+
+	public ResultSetReifIterator(IPSet p, char getProp, IDBID graphID) {
+		m_pset = p;
+		setGraphID(graphID);
+		m_getTriples = true;
+		m_matchObj = null;
+		if ( getProp == 'S' ) m_propCol = 1;
+		else if ( getProp == 'P' ) m_propCol = 2;
+		else if ( getProp == 'O' ) m_propCol = 3;
+		else if ( getProp == 'T' ) m_propCol = 4;
+	}
+
+	public ResultSetReifIterator(IPSet p, Node getObj, IDBID graphID) {
+		m_pset = p;
+		setGraphID(graphID);
+		m_getTriples = true;
+		m_matchObj = getObj;
+		m_propCol = 0;
 	}
 
 	/**
@@ -113,27 +146,39 @@ public class ResultSetReifIterator extends ResultSetIterator {
 		m_stmtURI = m_pset.driver().RDBStringToNode(rs.getString(4));
 		m_hasType = rs.getString(5).equals("T");
 		
-		m_fragRem = m_hasType ? 1 : 0;
+		m_fragRem = 0;
+		if ( m_hasType )
+			if ( (m_matchObj==null) || m_matchObj.equals(RDF.Nodes.Statement) )
+				m_fragRem++;
+			
 		if ( subj == null ) {
 			m_subjNode = Node.NULL;
 		} else {
 			m_subjNode = m_pset.driver().RDBStringToNode(subj);
-			m_fragRem++;
+			if ( (m_matchObj==null) || m_matchObj.equals(m_subjNode) )
+				m_fragRem++;
 		}
 		if ( pred == null ) {
 			m_predNode = Node.NULL;
 		} else {
 			m_predNode = m_pset.driver().RDBStringToNode(pred);
-			m_fragRem++;
+			if ( (m_matchObj==null) || m_matchObj.equals(m_predNode) )
+				m_fragRem++;
 		}
 		if ( obj == null ) {
 			m_objNode = Node.NULL;
 		} else {
 			m_objNode = m_pset.driver().RDBStringToNode(obj);
-			m_fragRem++;
-		}		
-		m_nextFrag = 0;
-		m_fragCount = m_fragRem;
+			if ( (m_matchObj==null) || m_matchObj.equals(m_objNode) )
+				m_fragRem++;
+		}
+		if ( m_propCol > 0 ) {
+			m_nextFrag = m_propCol;
+			m_fragCount = m_fragRem = 1;
+		} else {
+			m_nextFrag = 0;
+			m_fragCount = m_fragRem;
+		}
 	}
 	
 		/**
@@ -144,31 +189,35 @@ public class ResultSetReifIterator extends ResultSetIterator {
 			
 			if ( m_getTriples == true ) {
 				if ( m_nextFrag == 0) {
-					if ( !m_subjNode.equals(Node.NULL) ) {
-						t = Triple.create(m_stmtURI,RDF.Nodes.subject,m_subjNode);
-						m_fragRem--;
+					if ( !m_subjNode.equals(Node.NULL) &&
+						((m_matchObj==null) || m_matchObj.equals(m_subjNode)) ) {
+							t = Triple.create(m_stmtURI,RDF.Nodes.subject,m_subjNode);
+							m_fragRem--;
 					} else
 						m_nextFrag++;
 				}
 				if ( m_nextFrag == 1) {
-					if ( !m_predNode.equals(Node.NULL) ) {
-						t = Triple.create(m_stmtURI,RDF.Nodes.predicate,m_predNode);
-						m_fragRem--;
+					if ( !m_predNode.equals(Node.NULL) &&
+						((m_matchObj==null) || m_matchObj.equals(m_predNode)) ) {
+							t = Triple.create(m_stmtURI,RDF.Nodes.predicate,m_predNode);
+							m_fragRem--;
 					} else
 						m_nextFrag++;
 				}
 				if ( m_nextFrag == 2) {
-					if ( !m_objNode.equals(Node.NULL) ) {
-						t = Triple.create(m_stmtURI,RDF.Nodes.object,m_objNode);
-						m_fragRem--;
+					if ( !m_objNode.equals(Node.NULL) &&
+						((m_matchObj==null) || m_matchObj.equals(m_objNode)) ) {
+							t = Triple.create(m_stmtURI,RDF.Nodes.object,m_objNode);
+							m_fragRem--;
 					} else
 						m_nextFrag++;
 				}
 				if ( m_nextFrag >= 3) {
-					if ( m_hasType ) {
-						t = Triple.create(m_stmtURI,RDF.Nodes.type,RDF.Nodes.Statement);
-						m_fragRem--;
-					} else
+					if ( m_hasType &&
+						((m_matchObj==null) || m_matchObj.equals(RDF.Nodes.Statement)) ) {
+							t = Triple.create(m_stmtURI,RDF.Nodes.type,RDF.Nodes.Statement);
+							m_fragRem--;							
+						} else
 						throw new JenaException("Reified triple not found");
 				}
 				m_nextFrag++;

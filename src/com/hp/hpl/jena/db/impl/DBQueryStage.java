@@ -1,18 +1,19 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: DBQueryStage.java,v 1.10 2005-06-10 15:16:49 chris-dollin Exp $
+  $Id: DBQueryStage.java,v 1.11 2005-07-01 21:51:49 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
 
-import java.sql.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
+import com.hp.hpl.jena.db.RDFRDBException;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.BufferPipe;
 import com.hp.hpl.jena.graph.query.Domain;
@@ -54,45 +55,61 @@ public class DBQueryStage extends Stage
 		Domain current;
 		Domain useme;
 		IDBConnection conn;
-		if ( !compiled.isEmpty ) try {
-			conn = compiled.driver.getConnection();
-			ps = conn.getConnection().prepareStatement(compiled.stmt);
-		 } catch (Exception e) {
-			 throw new JenaException("Query prepare failed: " + e);
-		 }
 
-		if ( ps != null) while (source.hasNext()) {
-			current = source.get();
-			setArgs(current, ps);
-// System.out.println(compiled.stmt);
-
-			try {
-				ResultSetIterator it = new ResultSetIterator();
-				ps.execute();
-				ResultSet rs = ps.getResultSet();
-				it.reset(rs, ps, null, null);
-				while (it.hasNext()) {
-					useme = current.copy();
-					List row = (List) it.next();
-					for(int i=0;i<compiled.resList.length;i++) {
-						int j = compiled.resList[i];
-						String o = (String) row.get(i);
-						Node n = compiled.driver.RDBStringToNode(o);
-						useme.setElement(j,n);
+		ResultSet rs =null;
+		
+		try {
+			if ( !compiled.isEmpty ) try {
+				conn = compiled.driver.getConnection();
+				ps = conn.getConnection().prepareStatement(compiled.stmt);
+			 } catch (Exception e) {
+				 throw new JenaException("Query prepare failed: " + e);
+			 }
+	
+			if ( ps != null) while (source.hasNext()) {
+				current = source.get();
+				setArgs(current, ps);
+	// System.out.println(compiled.stmt);
+				ResultSetIterator it = null;
+				try {
+					it = new ResultSetIterator();
+					ps.execute();
+					rs= ps.getResultSet();
+					it.reset(rs, ps, null, null);
+					while (it.hasNext()) {
+						useme = current.copy();
+						List row = (List) it.next();
+						for(int i=0;i<compiled.resList.length;i++) {
+							int j = compiled.resList[i];
+							String o = (String) row.get(i);
+							Node n = compiled.driver.RDBStringToNode(o);
+							useme.setElement(j,n);
+						}
+						sink.put(useme);
 					}
-					sink.put(useme);
+				} catch (Exception e) {
+					throw new JenaException("Query execute failed: " + e);
+				} finally {
+					if (it != null) it.close();
 				}
-				it.close();
+			}
+		}finally {
+			if (rs != null)
+				try {
+					rs.close();
+				} catch (SQLException e1) {
+					throw new RDFRDBException("Failed to get last inserted ID: " + e1);
+				}
+				if ( ps != null ) try {
+					ps.close();
 			} catch (Exception e) {
-				throw new JenaException("Query execute failed: " + e);
+				throw new JenaException("Close on prepared stmt failed: " + e);
+			}
+			if ( sink != null) {
+				sink.close();
+
 			}
 		}
-		if ( ps != null ) try {
-			ps.close();
-		} catch (Exception e) {
-			throw new JenaException("Close on repared stmt failed: " + e);
-		}
-		sink.close();
 	}
     	
     protected void setArgs ( Domain args, PreparedStatement ps ) {

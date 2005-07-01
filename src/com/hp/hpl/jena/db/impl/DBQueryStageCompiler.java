@@ -37,6 +37,8 @@ public final class DBQueryStageCompiler
         DBQuery query = new DBQuery(sg,varList,qh.queryOnlyStmt,
         		qh.queryOnlyReif,qh.queryFullReif);
         int j;
+        if ( qh.getQueryOnlyReified() && !qh.getQueryFullReified() )
+        	throw new JenaException("Fastpath currently requires QueryFullReified to be true if QueryOnlyReified is also true");
         if ( !query.isEmpty ) {
         	for (int i = 0; i < dbPat.size(); i += 1) {
 				compilePattern (compiler, query, (DBPattern) dbPat.get(i));
@@ -58,7 +60,7 @@ public final class DBQueryStageCompiler
 			Element subj = dbpat.S;
 			Element obj = dbpat.O;
 			Element pred = dbpat.P;
-			String qual = null;
+			String qual = "";
 			int alias = query.aliasCnt;
 
 			if ( query.isReifier ) {
