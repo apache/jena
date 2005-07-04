@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestRDFNodes.java,v 1.8 2005-06-30 08:39:47 chris-dollin Exp $
+  $Id: TestRDFNodes.java,v 1.9 2005-07-04 13:18:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -27,7 +27,7 @@ public class TestRDFNodes extends ModelTestBase
         
     public void testRDFVisitor()
         {
-        final List strings = new ArrayList();
+        final List history = new ArrayList();
         Model m = ModelFactory.createDefaultModel();
         final RDFNode S = m.createResource();
         final RDFNode P = m.createProperty( "eh:PP" );
@@ -37,21 +37,21 @@ public class TestRDFNodes extends ModelTestBase
             {
             public Object visitBlank( Resource R, AnonId id )
                 { 
-                strings.add( "blank" ); 
+                history.add( "blank" ); 
                 assertTrue( "must visit correct node", R == S );
                 assertEquals( "must have correct field", R.getId(), id );
                 return "blank result"; 
                 }
             public Object visitURI( Resource R, String uri )
                 { 
-                strings.add( "uri" ); 
+                history.add( "uri" ); 
                 assertTrue( "must visit correct node", R == P );
                 assertEquals( "must have correct field", R.getURI(), uri );
                 return "uri result"; 
                 }
             public Object visitLiteral( Literal L )
                 { 
-                strings.add( "literal" );
+                history.add( "literal" );
                 assertTrue( "must visit correct node", L == O ); 
                 return "literal result"; 
                 }
@@ -60,10 +60,7 @@ public class TestRDFNodes extends ModelTestBase
         assertEquals( "blank result", S.visitWith( rv ) );
         assertEquals( "uri result", P.visitWith( rv ) );
         assertEquals( "literal result", O.visitWith( rv ) );
-    /* */
-        assertEquals( strings.get(0), "blank" );
-        assertEquals( strings.get(1), "uri" );
-        assertEquals( strings.get(2), "literal" );
+        assertEquals( listOfStrings( "blank uri literal" ), history );
         }
         
     public void testRemoveAllRemoves()

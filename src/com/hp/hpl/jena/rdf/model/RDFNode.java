@@ -34,19 +34,18 @@ package com.hp.hpl.jena.rdf.model;
 import com.hp.hpl.jena.graph.FrontsNode;
 
 /** 
-     An RDF Resource or an RDF Literal.
+    Interface covering RDF resources and literals. Allows probing whether a
+    node is a literal/[blank, URI]resource, moving nodes from model to model,
+    and viewing them as different Java types using the .as() polymorphism.
 
-    <p><CODE>RDFNode</CODE> represents the methods which RDF Resources and RDF
-    Literals have in common.</p>
-    <p>Chris added the _as_ method to allow RDFNodes to participate in polymorphic
-    conversions.
-    @author bwm
+    @author bwm, kers
 */
 public interface RDFNode extends FrontsNode
     {
     /** 
-        Return a String representation of the node.  The form of the string 
-        depends on the type of the node.
+        Answer a String representation of the node.  The form of the string 
+        depends on the type of the node and is intended for human consumption,
+        not machine analysis.
     */
     public String toString();
     
@@ -86,12 +85,14 @@ public interface RDFNode extends FrontsNode
     public RDFNode as( Class view );
     
     /**
-        return true iff this RDFNode can be viewed as a _view_.
+        Answer true iff this RDFNode can be viewed as an instance of
+        <code>view</code>.
     */
     public boolean canAs( Class view );
     
     /**
-        returns a .equals() version of this node, except that its in the model m.
+        Answer a .equals() version of this node, except that it's in the model 
+        <code>m</code>.
         
         @param m a model to move the node to
         @return this, if it's already in m (or no model), a copy in m otherwise

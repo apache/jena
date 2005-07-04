@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.104 2005-06-29 14:38:40 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.105 2005-07-04 13:18:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -40,8 +40,8 @@ public class ModelCom
     implements Model, PrefixMapping, ModelLock
 {
 
-      private RDFReaderF readerFactory = new RDFReaderFImpl();
-      private RDFWriterF writerFactory = new RDFWriterFImpl();
+      private static final RDFReaderF readerFactory = new RDFReaderFImpl();
+      private static final RDFWriterF writerFactory = new RDFWriterFImpl();
       private ModelLock modelLock = null ;
       
     /**

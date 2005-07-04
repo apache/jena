@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Filter.java,v 1.6 2005-06-28 13:54:44 chris-dollin Exp $
+ * $Id: Filter.java,v 1.7 2005-07-04 13:18:04 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.util.iterator;
@@ -26,7 +26,7 @@ public abstract class Filter
         { return new FilterKeepIterator( this, it ); }
     
     public Filter and( final Filter other )
-        { return new Filter()
+        { return other == any ? this : new Filter()
             { public boolean accept( Object x ) 
                 { return Filter.this.accept( x ) && other.accept( x ); } 
             };
@@ -73,6 +73,6 @@ public abstract class Filter
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Filter.java,v 1.6 2005-06-28 13:54:44 chris-dollin Exp $
+ * $Id: Filter.java,v 1.7 2005-07-04 13:18:04 chris-dollin Exp $
  *
  */
