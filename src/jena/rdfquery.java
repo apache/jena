@@ -47,7 +47,7 @@ import org.apache.commons.logging.LogFactory;
  * </pre>
  *
  * @author  Andy Seaborne
- * @version $Id: rdfquery.java,v 1.24 2005-04-06 08:38:28 chris-dollin Exp $
+ * @version $Id: rdfquery.java,v 1.25 2005-07-04 12:31:02 andy_seaborne Exp $
  */
 
 // To do: formalise the use of variables and separate out the command line processor
@@ -380,7 +380,7 @@ public class rdfquery
         /*
         // Fake the TestRunner : don't want all the dots.
         TestResult r = new TestResult() ;
-        for ( Enumeration enum = suite.tests() ; enum.hasMoreElements() ; )
+        for ( Enumeration en = suite.tests() ; enum.hasMoreElements() ; )
         {
             Test t = (Test)enum.nextElement() ;
             t.run(r) ;
