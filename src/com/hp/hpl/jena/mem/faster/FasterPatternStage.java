@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.1 2005-07-04 14:44:17 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.2 2005-07-04 15:03:57 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -121,7 +121,10 @@ public class FasterPatternStage extends Stage
             {
             Pattern p = compiled[index];
             ValuatorSet guard = guards[index];
-            Iterator it = find( p.asTripleMatch( current ).asTriple() );
+            Triple t = p.asTripleMatch( current ).asTriple();
+            Iterator it = find( t.getSubject(), t.getPredicate(), t.getObject() );
+//            Iterator it = find
+//                ( p.S.asNodeMatch( current ), p.P.asNodeMatch( current ), p.O.asNodeMatch( current ) );
             while (stillOpen && it.hasNext())
                 if (p.match( current, (Triple) it.next()) && guard.evalBool( current )) 
                     nest( sink, current, index + 1 );
@@ -134,9 +137,9 @@ public class FasterPatternStage extends Stage
         WARNING: WIP - this interface is unstable. Do not use it without
         consulting Chris or Jeremy.
     */
-    protected Iterator find( Triple t )
+    protected Iterator find( Node S, Node P, Node O )
         {
-        return graph.findFaster( t.getSubject(), t.getPredicate(), t.getObject() );
+        return graph.findFaster( S, P, O );
         }
     
     }

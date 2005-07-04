@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Pattern.java,v 1.11 2005-06-28 13:54:39 chris-dollin Exp $
+  $Id: Pattern.java,v 1.12 2005-07-04 15:00:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -16,9 +16,9 @@ import com.hp.hpl.jena.graph.*;
 
 public class Pattern 
 	{
-	protected final Element S;
-	protected final Element P;
-	protected final Element O;
+	public final Element S;
+	public final Element P;
+	public final Element O;
 	
 	public Pattern( Element S, Element P, Element O )
 		{

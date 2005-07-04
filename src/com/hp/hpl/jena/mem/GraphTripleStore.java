@@ -1,11 +1,9 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.16 2005-06-28 13:54:40 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.17 2005-07-04 15:03:30 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
-
-import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.*;
