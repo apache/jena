@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PSet_TripleStore_RDB.java,v 1.53 2005-07-01 21:51:36 wkw Exp $
+  $Id: PSet_TripleStore_RDB.java,v 1.54 2005-07-04 12:29:18 andy_seaborne Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -39,7 +39,7 @@ import org.apache.commons.logging.LogFactory;
 * Based on Driver* classes by Dave Reynolds.
 *
 * @author <a href="mailto:harumi.kuno@hp.com">Harumi Kuno</a>
-* @version $Revision: 1.53 $ on $Date: 2005-07-01 21:51:36 $
+* @version $Revision: 1.54 $ on $Date: 2005-07-04 12:29:18 $
 */
 
 public  class PSet_TripleStore_RDB implements IPSet {
@@ -600,9 +600,9 @@ public void deleteTripleAR(
 				storeTriple(t, my_GID, true, batchedPreparedStatements);
 			}
 
-			Enumeration enum = batchedPreparedStatements.keys();
-			while (enum.hasMoreElements()) {
-				String op = (String) enum.nextElement();
+			Enumeration en = batchedPreparedStatements.keys();
+			while (en.hasMoreElements()) {
+				String op = (String) en.nextElement();
 				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
 						.get(op);
 				p.executeBatch();
@@ -637,9 +637,9 @@ public void deleteTripleAR(
 			if (autoState) drvr.xactOp(DriverRDB.xactAutoOn);
 		} finally {
 			if ( batchedPreparedStatements != null ) {
-			Enumeration enum = batchedPreparedStatements.keys();
-			while (enum.hasMoreElements()) {
-				String op = (String) enum.nextElement();
+			Enumeration en = batchedPreparedStatements.keys();
+			while (en.hasMoreElements()) {
+				String op = (String) en.nextElement();
 				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
 						.get(op);
 				batchedPreparedStatements.remove(op);
@@ -698,9 +698,9 @@ public void deleteTripleAR(
 				deleteTriple(t, my_GID, true, batchedPreparedStatements);
 			}
 
-			Enumeration enum = batchedPreparedStatements.keys();
-			while (enum.hasMoreElements()) {
-				String op = (String) enum.nextElement();
+			Enumeration en = batchedPreparedStatements.keys();
+			while (en.hasMoreElements()) {
+				String op = (String) en.nextElement();
 				PreparedStatement p = (PreparedStatement) batchedPreparedStatements
 						.get(op);
 				p.executeBatch();
@@ -736,9 +736,9 @@ public void deleteTripleAR(
 		}
 		finally {
 			if ( batchedPreparedStatements != null ) {
-				Enumeration enum = batchedPreparedStatements.keys();
-				while (enum.hasMoreElements()) {
-					String op = (String) enum.nextElement();
+				Enumeration en = batchedPreparedStatements.keys();
+				while (en.hasMoreElements()) {
+					String op = (String) en.nextElement();
 					PreparedStatement p = (PreparedStatement) batchedPreparedStatements
 							.get(op);
 					batchedPreparedStatements.remove(op);
