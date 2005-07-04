@@ -1,16 +1,16 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.2 2005-07-04 14:22:50 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.3 2005-07-04 14:44:17 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
 
+import java.util.Iterator;
+
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.TripleMatch;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.mem.GraphMemBase;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -22,10 +22,7 @@ public class GraphMemFaster extends GraphMemBase
     public GraphMemFaster( ReificationStyle style )
         { super( style ); }
 
-    protected GraphTripleStore store = new GraphTripleStore( this );
-    
-    public GraphTripleStore forTestingOnly_getStore() 
-        { return (GraphTripleStore) store; }
+    protected FasterTripleStore store = new FasterTripleStore( this );
 
     protected void destroy()
         { store.close(); }
@@ -57,6 +54,9 @@ public class GraphMemFaster extends GraphMemBase
      */
     public ExtendedIterator graphBaseFind( TripleMatch m ) 
         { return store.find( m.asTriple() ); }
+    
+    public Iterator findFaster( Node S, Node P, Node O )
+        { return store.findFaster( S, P, O ); }
     
     /**
          Answer true iff this graph contains <code>t</code>. If <code>t</code>
