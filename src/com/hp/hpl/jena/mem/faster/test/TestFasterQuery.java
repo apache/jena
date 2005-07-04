@@ -1,23 +1,28 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFasterMemPackage.java,v 1.2 2005-07-04 14:25:30 chris-dollin Exp $
+ 	$Id: TestFasterQuery.java,v 1.1 2005-07-04 14:25:30 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
 
+import junit.framework.TestSuite;
 
-import junit.framework.*;
+import com.hp.hpl.jena.graph.Graph;
+import com.hp.hpl.jena.graph.query.test.AbstractTestQuery;
+import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 
-public class TestFasterMemPackage extends TestCase
+public class TestFasterQuery extends AbstractTestQuery
     {
+    public TestFasterQuery( String name )
+        { super( name ); }
+
     public static TestSuite suite()
-        { 
-        TestSuite result = new TestSuite();
-        result.addTest( TestFasterGraphMem.suite() );
-        result.addTest( TestFasterQuery.suite() );
-        return result;
-        }
+        { return new TestSuite( TestFasterQuery.class ); }
+    
+    public Graph getGraph()
+        { return new GraphMemFaster(); }
+
     }
 
 

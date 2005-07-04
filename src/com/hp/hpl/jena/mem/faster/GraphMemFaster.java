@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.1 2005-07-04 13:51:45 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.2 2005-07-04 14:22:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -40,7 +40,7 @@ public class GraphMemFaster extends GraphMemBase
         { return store.size(); }
     
     public QueryHandler queryHandler()
-        {
+        { 
         if (queryHandler == null) queryHandler = new GraphMemFasterQueryHandler( this );
         return queryHandler;
         }
