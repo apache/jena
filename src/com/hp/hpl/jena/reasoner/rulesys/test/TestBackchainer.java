@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBackchainer.java,v 1.32 2005-06-28 15:38:26 chris-dollin Exp $
+ * $Id: TestBackchainer.java,v 1.33 2005-07-05 11:21:42 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
@@ -34,7 +33,7 @@ import junit.framework.TestSuite;
  * LP engine, though the bulk of such tests are really done by TestBasicLP.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.32 $ on $Date: 2005-06-28 15:38:26 $
+ * @version $Revision: 1.33 $ on $Date: 2005-07-05 11:21:42 $
  */
 public class TestBackchainer extends TestCase {
 
@@ -221,11 +220,11 @@ public class TestBackchainer extends TestCase {
      * the raw data successfully.
      */
     public void testListData() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         for (int i = 0; i < dataElts.length; i++) {
             data.add(dataElts[i]);
         }
-        Graph schema = new GraphMem();
+        Graph schema = Factory.createGraphMem();
         schema.add(new Triple(c, p, c));
         
         // Case of schema and data but no rule axioms
@@ -269,7 +268,7 @@ public class TestBackchainer extends TestCase {
      */
     public void testBaseRules1() {    
         List rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(b, p, c));
         data.add(new Triple(b, p, d));
@@ -292,7 +291,7 @@ public class TestBackchainer extends TestCase {
                 "[r2: (?a r ?b) <- (?a q ?b)]" +
                 "[r3: (?a r ?b) <- (?a s ?c), (?c s ?b)]"
         );        
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(b, q, c));
         data.add(new Triple(a, s, b));
@@ -318,7 +317,7 @@ public class TestBackchainer extends TestCase {
                 "[r3: (?a r ?b) <- (?a t ?c), (?c t ?b)]" +
                 "[r4: (?a t ?b) <- (?a s ?b)]"
         );        
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(b, q, c));
         data.add(new Triple(a, s, b));
@@ -340,7 +339,7 @@ public class TestBackchainer extends TestCase {
     public void testBaseRules3() {    
         List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
         Reasoner reasoner =  createReasoner(rules);
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(p, sP, q) );
         data.add(new Triple(q, sP, r) );
         data.add(new Triple(p, sP, s) );
@@ -365,7 +364,7 @@ public class TestBackchainer extends TestCase {
     public void testBaseRules3b() {    
         List rules = Rule.parseRules("[rule: (?a rdfs:subPropertyOf ?c) <- (?a rdfs:subPropertyOf ?b),(?b rdfs:subPropertyOf ?c)]");        
         Reasoner reasoner =  createReasoner(rules);
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(p, sP, q) );
         data.add(new Triple(q, sP, r) );
         data.add(new Triple(r, sP, t) );
@@ -390,7 +389,7 @@ public class TestBackchainer extends TestCase {
      * Test basic rule operations - simple AND/OR with tabling.
      */
     public void testBaseRules4() {    
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, r, b));
         data.add(new Triple(b, r, c));
         data.add(new Triple(b, r, b));
@@ -414,7 +413,7 @@ public class TestBackchainer extends TestCase {
      * Test basic rule operations - simple AND/OR with tabling.
      */
     public void testBaseRulesXSB1() {    
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(p, c, q));
         data.add(new Triple(q, c, r));
         data.add(new Triple(p, d, q));
@@ -439,7 +438,7 @@ public class TestBackchainer extends TestCase {
      * Test basic functor usage.
      */
     public void testFunctors1() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(a, q, c));
         List rules = Rule.parseRules(
@@ -459,7 +458,7 @@ public class TestBackchainer extends TestCase {
      * Test basic functor usage.
      */
     public void testFunctors2() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(a, q, c));
         data.add(new Triple(a, t, d));
@@ -483,7 +482,7 @@ public class TestBackchainer extends TestCase {
      * Test basic functor usage.
      */
     public void testFunctors3() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, s, b));
         data.add(new Triple(a, t, c));
         List rules = Rule.parseRules(
@@ -504,7 +503,7 @@ public class TestBackchainer extends TestCase {
      * Test basic builtin usage.
      */
     public void testBuiltin1() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         List rules = Rule.parseRules(
             "[a1: -> (a p 2) ]" +
             "[a2: -> (a q 3) ]" +
@@ -523,7 +522,7 @@ public class TestBackchainer extends TestCase {
      * Test basic builtin usage.
      */
     public void testBuiltin2() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(a, q, c));
         List rules = Rule.parseRules(
@@ -548,7 +547,7 @@ public class TestBackchainer extends TestCase {
      * Test basic builtin usage.
      */
     public void testBuiltin3() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         List rules = Rule.parseRules(
             "[r1: (a p b ) <- unbound(?x) ]"
         );
@@ -565,7 +564,7 @@ public class TestBackchainer extends TestCase {
      * Test basic ground head patterns.
      */
     public void testGroundHead() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, r, b));
         List rules = Rule.parseRules(
             "[r1: (a p b ) <- (a r b) ]"
@@ -605,7 +604,7 @@ public class TestBackchainer extends TestCase {
      */
     public void testRebind() {
         List rules = Rule.parseRules("[r1: (?a r ?c) <- (?a p ?b),(?b p ?c)]");        
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         data.add(new Triple(b, p, c));
         data.add(new Triple(b, p, d));
@@ -617,7 +616,7 @@ public class TestBackchainer extends TestCase {
                 new Triple(a, r, c),
                 new Triple(a, r, d)
             } );
-        Graph ndata = new GraphMem();
+        Graph ndata = Factory.createGraphMem();
         ndata.add(new Triple(a, p, d));
         ndata.add(new Triple(d, p, b));
         infgraph.rebind(ndata);
@@ -633,7 +632,7 @@ public class TestBackchainer extends TestCase {
      * Test troublesome rdfs rules
      */
     public void testRDFSProblemsb() {    
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(C1, sC, C2));
         data.add(new Triple(C2, sC, C3));
         data.add(new Triple(C1, ty, RDFS.Class.asNode()));
@@ -661,7 +660,7 @@ public class TestBackchainer extends TestCase {
      * Test troublesome rdfs rules
      */
     public void testRDFSProblems() {    
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(p, sP, q));
         data.add(new Triple(q, sP, r));
         data.add(new Triple(C1, sC, C2));
@@ -693,7 +692,7 @@ public class TestBackchainer extends TestCase {
      * Test complex rule head unification
      */
     public void testHeadUnify() {    
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(c, q, d));
         List rules = Rule.parseRules(
             "[r1: (c r ?x) <- (?x p f(?x b))]" +
@@ -717,7 +716,7 @@ public class TestBackchainer extends TestCase {
                   new Triple(c, r, a)
               } );
             
-        data = new GraphMem();
+        data = Factory.createGraphMem();
         data.add(new Triple(a, q, a));
         data.add(new Triple(a, q, b));
         data.add(new Triple(a, q, c));
@@ -752,7 +751,7 @@ public class TestBackchainer extends TestCase {
      * Test restriction example
      */
     public void testRestriction1() {    
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, ty, r));
         data.add(new Triple(a, p, b));
         data.add(new Triple(r, sC, C1));
@@ -780,7 +779,7 @@ public class TestBackchainer extends TestCase {
      * is a problem. 
      */
     public void testRestriction2() {    
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, ty, OWL.Thing.asNode()));
         data.add(new Triple(p, ty, OWL.FunctionalProperty.asNode()));
         data.add(new Triple(c, OWL.equivalentClass.asNode(), C1));
@@ -824,7 +823,7 @@ public class TestBackchainer extends TestCase {
      * Test restriction example
      */
     public void testRestriction3() {    
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, ty, r));
         data.add(new Triple(r, sC, C1));
         data.add(new Triple(C1, ty, OWL.Restriction.asNode()));
@@ -851,7 +850,7 @@ public class TestBackchainer extends TestCase {
      * Test close and halt operation.
      */
     public void testClose() {    
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(p, sP, q));
         data.add(new Triple(q, sP, r));
         data.add(new Triple(C1, sC, C2));
@@ -887,7 +886,7 @@ public class TestBackchainer extends TestCase {
      * Test problematic rdfs case
      */
     public void testBug1() throws IOException {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         Node p = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#p");
         Node r = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#r");
         Node C1 = Node.createURI("http://www.hpl.hp.com/semweb/2003/eg#C1");

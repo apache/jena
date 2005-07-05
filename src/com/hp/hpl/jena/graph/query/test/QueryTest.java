@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: QueryTest.java,v 1.24 2005-02-21 11:52:31 andy_seaborne Exp $
+  $Id: QueryTest.java,v 1.25 2005-07-05 11:21:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -32,7 +32,7 @@ public class QueryTest extends TestCase
         {
         public TestQueryGraphMem( String name ) { super( name ); }
         
-        public Graph getGraph() { return new GraphMem(); }       
+        public Graph getGraph() { return Factory.createGraphMem(); }       
         }
     
     public static class TestQuerySmallGraphMem extends AbstractTestQuery

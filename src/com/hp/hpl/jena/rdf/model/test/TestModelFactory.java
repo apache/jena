@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelFactory.java,v 1.26 2005-04-10 12:45:50 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.27 2005-07-05 11:21:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -73,7 +73,7 @@ public class TestModelFactory extends ModelTestBase
         ModelSpec spec = ModelFactory.createSpec( desc ); 
         assertIsoModels( desc, spec.getDescription() );
         assertTrue( spec instanceof PlainModelSpec );
-        assertTrue( spec.createModel().getGraph() instanceof GraphMem );
+        assertTrue( spec.createModel().getGraph() instanceof GraphMemBase );
         }
         
     public void testCreateOntSpec()

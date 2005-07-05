@@ -5,15 +5,15 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BasicBackwardRuleInfGraph.java,v 1.6 2005-02-21 12:18:03 andy_seaborne Exp $
+ * $Id: BasicBackwardRuleInfGraph.java,v 1.7 2005-07-05 11:21:42 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
+
 import java.util.*;
 
 import com.hp.hpl.jena.util.OneToManyMap;
@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  * backward chaining interpreter.
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2005-02-21 12:18:03 $
+ * @version $Revision: 1.7 $ on $Date: 2005-07-05 11:21:42 $
  */
 public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardRuleInfGraphI {
 
@@ -115,7 +115,7 @@ public class BasicBackwardRuleInfGraph extends BaseInfGraph implements BackwardR
      */
     public void prepare() {
         if (!isPrepared) {
-            fdeductions = new FGraph( new GraphMem() );
+            fdeductions = new FGraph( Factory.createGraphMem() );
             extractAxioms();
             dataFind = fdata;
             if (fdeductions != null) {

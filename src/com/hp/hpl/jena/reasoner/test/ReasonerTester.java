@@ -5,14 +5,13 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: ReasonerTester.java,v 1.26 2005-02-21 12:18:15 andy_seaborne Exp $
+ * $Id: ReasonerTester.java,v 1.27 2005-07-05 11:21:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -45,7 +44,7 @@ import java.io.*;
  * form "var:x".</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.26 $ on $Date: 2005-02-21 12:18:15 $
+ * @version $Revision: 1.27 $ on $Date: 2005-07-05 11:21:43 $
  */
 public class ReasonerTester {
 
@@ -142,7 +141,7 @@ public class ReasonerTester {
             boolean cache = predicate.equals(tboxP) || predicate.equals(dataP);
             return loadFile(fileName, cache).getGraph();
         } else {
-            return new GraphMem();
+            return Factory.createGraphMem();
         }
     }
     
@@ -257,7 +256,7 @@ public class ReasonerTester {
         
         // Run each query triple and accumulate the results
         Graph queryG = loadTestFile(test, queryP);
-        Graph resultG = new GraphMem();
+        Graph resultG = Factory.createGraphMem();
 
         Iterator queries = queryG.find(null, null, null);
         while (queries.hasNext()) {

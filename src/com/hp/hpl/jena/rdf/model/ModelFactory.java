@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.43 2005-06-22 09:42:49 ian_dickinson Exp $
+  $Id: ModelFactory.java,v 1.44 2005-07-05 11:21:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -117,7 +117,7 @@ public class ModelFactory extends ModelFactoryBase
         Answer a new memory-based model with the given reification style
     */
     public static Model createDefaultModel( ReificationStyle style )
-        { return new ModelCom( new GraphMem( style ) ); }
+        { return new ModelCom( Factory.createGraphMem( style ) ); }
 
     /**
         Answer a read-only Model with all the statements of this Model and any

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.2 2005-07-04 15:03:57 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.3 2005-07-05 11:21:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -138,10 +138,7 @@ public class FasterPatternStage extends Stage
         consulting Chris or Jeremy.
     */
     protected Iterator find( Node S, Node P, Node O )
-        {
-        return graph.findFaster( S, P, O );
-        }
-    
+        { return graph.findFaster( S, P, O ); }
     }
 
 

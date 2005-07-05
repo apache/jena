@@ -1,14 +1,13 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.27 2005-04-10 12:45:50 chris-dollin Exp $
+  $Id: TestModelSpecRevised.java,v 1.28 2005-07-05 11:21:40 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
@@ -59,7 +58,7 @@ public class TestModelSpecRevised extends ModelTestBase
      */
     private static Model modelWithStatements( String facts, Object[] objects )
         {
-        Graph g = new GraphMem();
+        Graph g = Factory.createGraphMem();
         StringTokenizer semis = new StringTokenizer( facts, ";" );
         while (semis.hasMoreTokens()) 
             g.add( replace( triple( PrefixMapping.Extended, semis.nextToken() ), objects ) );
@@ -221,7 +220,7 @@ public class TestModelSpecRevised extends ModelTestBase
 
 	protected static class FakeReasoner implements Reasoner
 		{
-    	public Graph bound = new GraphMem();
+    	public Graph bound = Factory.createGraphMem();
     	
     	public void validate( Graph desired )
     		{ assertTrue( "bound graph is not correct", desired.isIsomorphicWith( bound ) ); }
@@ -233,7 +232,7 @@ public class TestModelSpecRevised extends ModelTestBase
 			{ return bindSchema( tbox.getGraph() ); }
 
 		public InfGraph bind( Graph data ) throws ReasonerException
-			{ return new BasicForwardRuleInfGraph( this, new ArrayList(), new GraphMem(), new GraphMem() ); }
+			{ return new BasicForwardRuleInfGraph( this, new ArrayList(), Factory.createGraphMem(), Factory.createGraphMem() ); }
 
 		public void setDerivationLogging( boolean logOn )
 			{ throw new JenaException( "fakes don't do this" ); }

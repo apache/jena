@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: OrigFBRuleInfGraph.java,v 1.6 2005-02-21 12:18:05 andy_seaborne Exp $
+ * $Id: OrigFBRuleInfGraph.java,v 1.7 2005-07-05 11:21:42 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
@@ -38,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.6 $ on $Date: 2005-02-21 12:18:05 $
+ * @version $Revision: 1.7 $ on $Date: 2005-07-05 11:21:42 $
  */
 public class OrigFBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -321,7 +320,7 @@ public class OrigFBRuleInfGraph  extends BasicForwardRuleInfGraph implements Bac
             if (fdata != null) data = fdata.getGraph();
             
             // initilize the deductions graph
-            fdeductions = new FGraph( new GraphMem() );
+            fdeductions = new FGraph( Factory.createGraphMem() );
             dataFind = (data == null) ? fdeductions :  FinderUtil.cascade(fdeductions, fdata);
             
             // Initialize the optional TGC caches
@@ -366,7 +365,7 @@ public class OrigFBRuleInfGraph  extends BasicForwardRuleInfGraph implements Bac
             // Call any optional preprocessing hook
             Finder dataSource = fdata;
             if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
-                Graph inserts = new GraphMem();
+                Graph inserts = Factory.createGraphMem();
                 for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
                     RulePreprocessHook hook = (RulePreprocessHook)i.next();
                     // The signature is wrong to do this having moved this code into the attic

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMem.java,v 1.16 2005-06-24 11:27:33 chris-dollin Exp $
+  $Id: TestGraphMem.java,v 1.17 2005-07-05 11:21:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.test;
@@ -29,7 +29,7 @@ public class TestGraphMem extends AbstractTestGraph
         { return new TestSuite( TestGraphMem.class ); }
         
     public Graph getGraph()
-        { return new GraphMem(); }
+        { return Factory.createGraphMem(); }
         
     public void testClosesReifier()
         {

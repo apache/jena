@@ -5,13 +5,12 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestRDFS9.java,v 1.4 2005-02-21 12:18:13 andy_seaborne Exp $
+ * $Id: TestRDFS9.java,v 1.5 2005-07-05 11:21:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Union;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.vocabulary.*;
@@ -26,7 +25,7 @@ import junit.framework.TestSuite;
  * of modified versions of rule rdfs9.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:18:13 $
+ * @version $Revision: 1.5 $ on $Date: 2005-07-05 11:21:43 $
  */
 public class TestRDFS9 extends TestCase {
     
@@ -62,13 +61,13 @@ public class TestRDFS9 extends TestCase {
         Node sC = RDFS.subClassOf.asNode();
         Node ty = RDF.type.asNode();
         
-        Graph tdata = new GraphMem();
+        Graph tdata = Factory.createGraphMem();
         tdata.add(new Triple(C1, sC, C2));
         tdata.add(new Triple(C2, sC, C3));
         tdata.add(new Triple(p, RDFS.subPropertyOf.asNode(), q));
         tdata.add(new Triple(q, RDFS.subPropertyOf.asNode(), r));
         tdata.add(new Triple(r, RDFS.domain.asNode(), D));
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         InfGraph igraph = ReasonerRegistry.getRDFSReasoner().bind(new Union(tdata, data));
         TestUtil.assertIteratorValues(this, igraph.find(a, ty, null),

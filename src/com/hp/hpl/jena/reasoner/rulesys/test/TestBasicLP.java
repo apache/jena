@@ -5,14 +5,13 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasicLP.java,v 1.12 2005-06-28 15:38:41 chris-dollin Exp $
+ * $Id: TestBasicLP.java,v 1.13 2005-07-05 11:21:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
@@ -30,7 +29,7 @@ import junit.framework.TestSuite;
  * To be moved to a test directory once the code is working.
  * </p>
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.12 $ on $Date: 2005-06-28 15:38:41 $
+ * @version $Revision: 1.13 $ on $Date: 2005-07-05 11:21:43 $
  */
 public class TestBasicLP  extends TestCase {
     
@@ -431,7 +430,7 @@ public class TestBasicLP  extends TestCase {
             "[r1: (?x r C1) <- (?x p b)]" +
             "[r1: (?x r C2) <- (?x p b)]" +
             "[r2: (?x r C3) <- (?x r C3) (?x p b)]");
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, b));
         InfGraph infgraph =  makeInfGraph(rules, data);
         ExtendedIterator i = infgraph.find(Node.ANY, r, Node.ANY);
@@ -1056,7 +1055,7 @@ public class TestBasicLP  extends TestCase {
                     new Triple(C2, sC, C3),
                     new Triple(a, ty, C1)
                 };
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         for (int i = 0; i < triples.length; i++) {
             data.add(triples[i]);
         }
@@ -1112,7 +1111,7 @@ public class TestBasicLP  extends TestCase {
                        "[testRule2: (C2, q, ?a) <- (C1 q ?a)]" +
                        "[testRule3: (a p ?a)  <- (C2 p ?a), (C2 q ?a)]";
         List ruleList = Rule.parseRules(rules);
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(C1, p, C3));
         data.add(new Triple(C1, q, C4));
         data.add(new Triple(C1, q, C3));
@@ -1214,7 +1213,7 @@ public class TestBasicLP  extends TestCase {
         String ruleSrc = "[(a r ?n) <- (a p ?l), listLength(?l, ?n)]" +
         "[(a s ?e) <- (a p ?l), listEntry(?l, 1, ?e)]";
         List rules = Rule.parseRules(ruleSrc);
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, Util.makeList(new Node[]{C1,C2,C3},data)));
         InfGraph infgraph =  makeInfGraph(rules, data);
         TestUtil.assertIteratorValues(this, 
@@ -1234,7 +1233,7 @@ public class TestBasicLP  extends TestCase {
         "[(a s d) <- (a p ?l), (a, r, ?j) listEqual(?l, ?j)]" +
         "[(a s e) <- (a p ?l), (a, r, ?j) listNotEqual(?l, ?j)]"
             );
-        data = new GraphMem();
+        data = Factory.createGraphMem();
         data.add(new Triple(a, p, 
             Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
         data.add(new Triple(a, q, 
@@ -1253,7 +1252,7 @@ public class TestBasicLP  extends TestCase {
         "[(b r ?j) <- (a p ?l), (a, q, ?j) listContains(?l, ?j)]" +
         "[(b s ?j) <- (a p ?l), (a, q, ?j) listNotContains(?l, ?j)]"
             );
-        data = new GraphMem();
+        data = Factory.createGraphMem();
         data.add(new Triple(a, p, 
             Util.makeList( new Node[]{C1, Util.makeIntNode(3), C3}, data) ));
         data.add(new Triple(a, q, C1));
@@ -1278,7 +1277,7 @@ public class TestBasicLP  extends TestCase {
      */
     private void doTest(String ruleSrc, Triple[] triples, TripleMatch query, Object[] results) {
         List rules = Rule.parseRules(ruleSrc);
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         for (int i = 0; i < triples.length; i++) {
             data.add(triples[i]);
         }
@@ -1296,7 +1295,7 @@ public class TestBasicLP  extends TestCase {
      */
     private void doTest(String ruleSrc, Node[] tabled, Triple[] triples, TripleMatch query, Object[] results) {
         List rules = Rule.parseRules(ruleSrc);
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         for (int i = 0; i < triples.length; i++) {
             data.add(triples[i]);
         }

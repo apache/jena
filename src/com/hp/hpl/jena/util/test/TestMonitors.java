@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestMonitors.java,v 1.1 2005-05-16 07:49:33 der Exp $
+ * $Id: TestMonitors.java,v 1.2 2005-07-05 11:21:43 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.util.test;
@@ -16,7 +16,6 @@ import com.hp.hpl.jena.util.MonitorGraph;
 import com.hp.hpl.jena.util.MonitorModel;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.test.RecordingListener;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.RecordingModelListener;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
@@ -28,7 +27,7 @@ import junit.framework.TestSuite;
  * Tests for MonitorGraph implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 public class TestMonitors extends TestCase {
@@ -63,7 +62,7 @@ public class TestMonitors extends TestCase {
      * Basic graph level test, no monitoring
      */
     public void testBasics() {
-        Graph base = new GraphMem();
+        Graph base = Factory.createGraphMem();
         MonitorGraph monitor = new MonitorGraph(base);
         
         // base data
@@ -96,7 +95,7 @@ public class TestMonitors extends TestCase {
      * Monitoring test.
      */
     public void testListener() {
-        Graph base = new GraphMem();
+        Graph base = Factory.createGraphMem();
         MonitorGraph monitor = new MonitorGraph(base);
         RecordingListener listener = new RecordingListener();
         monitor.getEventManager().register(listener);

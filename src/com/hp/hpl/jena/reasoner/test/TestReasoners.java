@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestReasoners.java,v 1.29 2005-06-27 07:56:36 der Exp $
+ * $Id: TestReasoners.java,v 1.30 2005-07-05 11:21:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -15,7 +15,6 @@ import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.IteratorCollection;
@@ -33,7 +32,7 @@ import java.util.Set;
  * Unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2005-06-27 07:56:36 $
+ * @version $Revision: 1.30 $ on $Date: 2005-07-05 11:21:43 $
  */
 public class TestReasoners extends TestCase {
     
@@ -65,7 +64,7 @@ public class TestReasoners extends TestCase {
      * Test rebind operation for the transitive reasoner
      */
     public void testTransitiveRebind() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         Node C1 = Node.createURI("C1");
         Node C2 = Node.createURI("C2");
         Node C3 = Node.createURI("C3");
@@ -83,7 +82,7 @@ public class TestReasoners extends TestCase {
                 new Triple(C1, RDFS.subClassOf.asNode(), C2),
                 new Triple(C1, RDFS.subClassOf.asNode(), C3)
             } );
-        Graph data2 = new GraphMem();
+        Graph data2 = Factory.createGraphMem();
         data2.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
         data2.add( new Triple(C2, RDFS.subClassOf.asNode(), C4) );
         infgraph.rebind(data2);
@@ -131,7 +130,7 @@ public class TestReasoners extends TestCase {
      * Test delete operation for Transtive reasoner.
      */
     public void testTransitiveRemove() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         Node a = Node.createURI("a");
         Node b = Node.createURI("b");
         Node c = Node.createURI("c");
@@ -210,7 +209,7 @@ public class TestReasoners extends TestCase {
      * Test metalevel add/remove subproperty operations for a reasoner.
      */
     public void doTestMetaLevel(ReasonerFactory rf) {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         Node c1 = Node.createURI("C1");
         Node c2 = Node.createURI("C2");
         Node c3 = Node.createURI("C3");
@@ -285,7 +284,7 @@ public class TestReasoners extends TestCase {
      * Test rebind operation for the RDFS1 reasoner
      */
     public void testRDFSRebind() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         Node C1 = Node.createURI("C1");
         Node C2 = Node.createURI("C2");
         Node C3 = Node.createURI("C3");
@@ -301,7 +300,7 @@ public class TestReasoners extends TestCase {
                 new Triple(C1, RDFS.subClassOf.asNode(), C2),
                 new Triple(C1, RDFS.subClassOf.asNode(), C3)
             } );
-        Graph data2 = new GraphMem();
+        Graph data2 = Factory.createGraphMem();
         data2.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
         data2.add( new Triple(C2, RDFS.subClassOf.asNode(), C4) );
         infgraph.rebind(data2);
@@ -369,9 +368,9 @@ public class TestReasoners extends TestCase {
         Node c2 = Node.createURI("C2");
         Node c3 = Node.createURI("C3");
         Node sC = RDFS.subClassOf.asNode();
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add( new Triple(c2, sC, c3));
-        Graph premise = new GraphMem();
+        Graph premise = Factory.createGraphMem();
         premise.add( new Triple(c1, sC, c2));
         Reasoner reasoner = rf.create(null);
         InfGraph infgraph = reasoner.bind(data);

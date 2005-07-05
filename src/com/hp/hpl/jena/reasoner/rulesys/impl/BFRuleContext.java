@@ -5,16 +5,16 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BFRuleContext.java,v 1.13 2005-02-21 12:17:38 andy_seaborne Exp $
+ * $Id: BFRuleContext.java,v 1.14 2005-07-05 11:21:41 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.util.iterator.ClosableIterator;
 import com.hp.hpl.jena.graph.*;
+
 import java.util.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,7 +25,7 @@ import org.apache.commons.logging.LogFactory;
  * methods specific to the functioning of that engine.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2005-02-21 12:17:38 $
+ * @version $Revision: 1.14 $ on $Date: 2005-07-05 11:21:41 $
  */
 public class BFRuleContext implements RuleContext {
     /** The binding environment which represents the state of the current rule execution. */
@@ -60,7 +60,7 @@ public class BFRuleContext implements RuleContext {
         env = new BindingStack();
         stack = new ArrayList();
         pending = new ArrayList();
-        pendingCache = new GraphMem();
+        pendingCache = Factory.createGraphMem();
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.59 2005-06-20 14:45:58 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.60 2005-07-05 11:21:37 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -10,7 +10,6 @@ import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
@@ -33,7 +32,7 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
     */
     // public abstract Graph getGraph();
     
-    public Graph getGraph() { return new GraphMem(); }
+    public Graph getGraph() { return Factory.createGraphMem(); }
     
     public Graph getGraphWith( String facts )
         {

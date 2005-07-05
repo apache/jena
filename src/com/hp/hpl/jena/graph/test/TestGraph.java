@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraph.java,v 1.26 2005-02-21 11:52:46 andy_seaborne Exp $
+  $Id: TestGraph.java,v 1.27 2005-07-05 11:21:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -54,7 +54,7 @@ public class TestGraph extends GraphTestBase
     */
     public void testWrappedSame()
         {
-        Graph m = new GraphMem();
+        Graph m = Factory.createGraphMem();
         Graph w = new WrappedGraph( m );
         graphAdd( m, "a trumps b; c eats d" );
         assertIsomorphic( m, w );
@@ -69,18 +69,14 @@ public class TestGraph extends GraphTestBase
     public static class WrappedGraphMem extends WrappedGraph
         {
         public WrappedGraphMem( ReificationStyle style ) 
-            { super( new GraphMem( style ) ); }  
+            { super( Factory.createGraphMem( style ) ); }  
         }    
     
     public void testListSubjectsDoesntUseFind()
         {
         final boolean [] called = {false};
         
-        Graph g = new GraphMem()
-            {
-            public ExtendedIterator graphBaseFind( TripleMatch m )
-                { called[0] = true; return super.find( m ); }
-            };
+        Graph g = Factory.createGraphMem();
         
         ExtendedIterator subjects = g.queryHandler().subjectsFor( null, null );
         Set s = CollectionFactory.createHashedSet();
@@ -92,11 +88,7 @@ public class TestGraph extends GraphTestBase
         {
         final boolean [] called = {false};
         
-        Graph g = new GraphMem()
-            {
-            public ExtendedIterator graphBaseFind( TripleMatch m )
-                { called[0] = true; return super.find( m ); }
-            };
+        Graph g = Factory.createGraphMem();
         
         ExtendedIterator predicates = g.queryHandler().predicatesFor( null, null );
         Set s = CollectionFactory.createHashedSet();
@@ -108,11 +100,7 @@ public class TestGraph extends GraphTestBase
         {
         final boolean [] called = {false};
         
-        Graph g = new GraphMem()
-            {
-            public ExtendedIterator graphBaseFind( TripleMatch m )
-                { called[0] = true; return super.find( m ); }
-            };
+        Graph g = Factory.createGraphMem();
         
         ExtendedIterator subjects = g.queryHandler().objectsFor( null, null );
         Set s = CollectionFactory.createHashedSet();

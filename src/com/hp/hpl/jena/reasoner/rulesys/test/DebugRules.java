@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugRules.java,v 1.6 2005-04-08 16:36:04 der Exp $
+ * $Id: DebugRules.java,v 1.7 2005-07-05 11:21:42 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
 import com.hp.hpl.jena.reasoner.rulesys.*;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.PrintUtil;
@@ -21,7 +20,7 @@ import java.io.*;
 /** * Using during debuging of the rule systems.
  * Runs a named set of rules (can contain axioms and rules) and
  * lists all the resulting entailments.
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.6 $ on $Date: 2005-04-08 16:36:04 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.7 $ on $Date: 2005-07-05 11:21:42 $ */
 public class DebugRules {
 
     /** The name of the rule set to load */
@@ -39,7 +38,7 @@ public class DebugRules {
     public void run() {
         
         BasicForwardRuleReasoner reasoner = new BasicForwardRuleReasoner(ruleset);
-        InfGraph result = reasoner.bind(new GraphMem());
+        InfGraph result = reasoner.bind(Factory.createGraphMem());
         System.out.println("Final graph state");
         for (Iterator i = result.find(null, null, null); i.hasNext(); ) {
             System.out.println(PrintUtil.print((Triple)i.next()));

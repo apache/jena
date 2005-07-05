@@ -1,15 +1,14 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.11 2005-02-21 11:51:56 andy_seaborne Exp $
+  $Id: Factory.java,v 1.12 2005-07-05 11:21:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 import com.hp.hpl.jena.shared.*;
-import com.hp.hpl.jena.db.*;
-import com.hp.hpl.jena.db.impl.*;
 
 /**
     A factory class for creating Graphs [like ModelFactory, but for Graph;
@@ -20,6 +19,9 @@ import com.hp.hpl.jena.db.impl.*;
 
 public class Factory
     {
+    private Factory()
+        { super(); }
+
     /**
         Answer a memory-based Graph with the Standard reification style.
     */
@@ -30,17 +32,13 @@ public class Factory
         Answer a memory-based Graph with the given reification style.
     */
     public static Graph createDefaultGraph( ReificationStyle style )
-        { return new GraphMem( style ); }
-        
-    /**
-        This is unused. Why is it here?
-        TODO answer this question ...
-    */
-    public static GraphMaker createRDBGraphFactory( IDBConnection c )
-        { return new GraphRDBMaker( c, ReificationStyle.Minimal ); }
+        { return Factory.createGraphMem( style ); }
               
-    private Factory()
-        { super(); }
+    public static Graph createGraphMem()
+        { return new GraphMem(); }
+
+    public static Graph createGraphMem( ReificationStyle style )
+        { return new GraphMem( style ); }
     }
 
 

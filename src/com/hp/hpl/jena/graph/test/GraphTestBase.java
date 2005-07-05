@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.27 2005-05-24 10:00:40 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.28 2005-07-05 11:21:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -97,7 +97,7 @@ public class GraphTestBase extends JenaTestBase
         
     public static Graph newGraph()
         {
-        Graph result = new GraphMem();
+        Graph result = Factory.createGraphMem();
         result.getPrefixMapping().setNsPrefixes( PrefixMapping.Extended );
         return result;
         }

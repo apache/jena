@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleGraphMaker.java,v 1.13 2005-04-10 12:45:48 chris-dollin Exp $
+  $Id: SimpleGraphMaker.java,v 1.14 2005-07-05 11:21:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -55,17 +55,17 @@ public class SimpleGraphMaker extends BaseGraphMaker
     private Map graphs = new HashMap();
     
     public Graph create()
-        { return new GraphMem(); }
+        { return Factory.createGraphMem(); }
     
     /**
         Create a graph and record it with the given name in the local map.
      */
     public Graph createGraph( String name, boolean strict )
         {
-        GraphMem already = (GraphMem) graphs.get( name );
+        GraphMemBase already = (GraphMemBase) graphs.get( name );
         if (already == null)
             {
-            Graph result = new GraphMem( style );
+            Graph result = Factory.createGraphMem( style );
             graphs.put( name, result );
             return result;            
             }
@@ -80,7 +80,7 @@ public class SimpleGraphMaker extends BaseGraphMaker
      */
     public Graph openGraph( String name, boolean strict )
         {
-        GraphMem already = (GraphMem) graphs.get( name );
+        GraphMemBase already = (GraphMemBase) graphs.get( name );
         if (already == null) 
             if (strict) throw new DoesNotExistException( name );
             else return createGraph( name, true );

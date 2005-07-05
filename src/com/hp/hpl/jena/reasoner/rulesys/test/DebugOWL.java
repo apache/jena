@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: DebugOWL.java,v 1.30 2005-04-11 11:26:59 der Exp $
+ * $Id: DebugOWL.java,v 1.31 2005-07-05 11:21:42 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -13,7 +13,6 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.compose.Union;
-import com.hp.hpl.jena.mem.GraphMem;
 //import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.PrintUtil;
@@ -34,7 +33,7 @@ import java.util.*;
  * this code is a debugging tools rather than a tester.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $ on $Date: 2005-04-11 11:26:59 $
+ * @version $Revision: 1.31 $ on $Date: 2005-07-05 11:21:42 $
  */
 public class DebugOWL {
 
@@ -87,7 +86,7 @@ public class DebugOWL {
      * Construct an empty test harness.
      */
     public DebugOWL(int config) {
-        testdata = new GraphMem();
+        testdata = Factory.createGraphMem();
         schema = null;
         
         switch(config) {
@@ -183,7 +182,7 @@ public class DebugOWL {
                         + (withProps ? " with properties" : ""));
         
         // Create the tree
-        testdata = new GraphMem();
+        testdata = Factory.createGraphMem();
         // First level
         int conceptPtr = 0;
         int levelStart = 0;

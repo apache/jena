@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.55 2005-06-28 13:54:43 chris-dollin Exp $
+ * $Id: FBRuleInfGraph.java,v 1.56 2005-07-05 11:21:41 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.ResourceFactory;
 import com.hp.hpl.jena.reasoner.rulesys.impl.*;
@@ -38,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.55 $ on $Date: 2005-06-28 13:54:43 $
+ * @version $Revision: 1.56 $ on $Date: 2005-07-05 11:21:41 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -423,7 +422,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
 
             // Call any optional preprocessing hook
             if (preprocessorHooks != null && preprocessorHooks.size() > 0) {
-                Graph inserts = new GraphMem();
+                Graph inserts = Factory.createGraphMem();
                 for (Iterator i = preprocessorHooks.iterator(); i.hasNext(); ) {
                     RulePreprocessHook hook = (RulePreprocessHook)i.next();
                     hook.run(this, dataFind, inserts);

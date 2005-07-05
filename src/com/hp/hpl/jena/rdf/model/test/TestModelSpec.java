@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelSpec.java,v 1.41 2005-04-11 14:11:36 chris-dollin Exp $
+  $Id: TestModelSpec.java,v 1.42 2005-07-05 11:21:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -69,7 +69,7 @@ public class TestModelSpec extends ModelTestBase
         Model spec = modelWithStatements( "_x jms:maker _y; _y jms:reificationMode jms:rsMinimal" );
         ModelSpec ms = ModelFactory.createSpec( spec );
         Model m = ModelFactory.createModel( ms ) ;
-        assertTrue( m.getGraph() instanceof GraphMem );
+        assertTrue( m.getGraph() instanceof GraphMemBase );
         }
     
     public void testAbsentDefaultMaker()
@@ -77,7 +77,7 @@ public class TestModelSpec extends ModelTestBase
         Model spec = modelWithStatements( "_x rdf:type jms:DefaultModelSpec" );
         ModelSpec ms = ModelFactory.createSpec( spec );
         Model m = ModelFactory.createModel( ms ) ;
-        assertTrue( m.getGraph() instanceof GraphMem );
+        assertTrue( m.getGraph() instanceof GraphMemBase );
         }
         
 //    /** a spec with no maker should throw an exception 
@@ -131,7 +131,7 @@ public class TestModelSpec extends ModelTestBase
         {
         ModelSpec ms = ModelSpecFactory.createSpec( createPlainModelDesc() );    
         Model m = ms.createModelOver( "aName" );
-        assertTrue( m.getGraph() instanceof GraphMem );
+        assertTrue( m.getGraph() instanceof GraphMemBase );
         }   
 
     public void testNamedCreateInf()
@@ -154,7 +154,7 @@ public class TestModelSpec extends ModelTestBase
         Resource plain = resource();
         Model desc = createPlainModelDesc( plain );
         ModelSpec ms = ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( desc ), plain );  
-        assertTrue( ms.createModel().getGraph() instanceof GraphMem );  
+        assertTrue( ms.createModel().getGraph() instanceof GraphMemBase );  
         }
         
     public void testCreateByNameChoice()
@@ -164,7 +164,7 @@ public class TestModelSpec extends ModelTestBase
         String URI = DAMLMicroReasonerFactory.URI;
         Model desc = createPlainModelDesc( plain ).add( createInfModelDesc( inf, URI ) );
         ModelSpec ms = ModelSpecFactory.createSpec( ModelSpecFactory.withSchema( desc ), plain );  
-        assertTrue( ms.createModel().getGraph() instanceof GraphMem );  
+        assertTrue( ms.createModel().getGraph() instanceof GraphMemBase );  
         }
                           
     public void testOntModeSpecIsaModelSpec()

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.14 2005-02-21 12:03:42 andy_seaborne Exp $
+  $Id: TestPackage.java,v 1.15 2005-07-05 11:21:33 chris-dollin Exp $
 */
 /*
  * EnhancedTestSuite.java
@@ -128,7 +128,7 @@ public class TestPackage extends GraphTestBase  {
      *  The methods tested are as and supports.
      */
     private static void basic(String title, Personality p) {
-        Graph g = new GraphMem();
+        Graph g = Factory.createGraphMem();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
         graphAdd( g, "x R y;" );
@@ -224,7 +224,7 @@ public class TestPackage extends GraphTestBase  {
 	}
 	
     private  void follow(String title, Personality p) {
-        Graph g = new GraphMem();
+        Graph g = Factory.createGraphMem();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
         graphAdd( g, "a b c;" );
@@ -279,7 +279,7 @@ public class TestPackage extends GraphTestBase  {
         assertTrue("Model cache test",nodes[0].asProperty().anObject()==nodes[2]);
     }
     private  void cache(String title, Personality p) {
-        Graph g = new GraphMem();
+        Graph g = Factory.createGraphMem();
         TestModel model =  new TestModelImpl(g,p);
         // create some data
         graphAdd( g, "a b a;" );
@@ -330,7 +330,7 @@ public class TestPackage extends GraphTestBase  {
     	// bitOfBoth is a surprising personality ...
     	// we can have two different java objects implementing the same interface.
     	
-		Graph g = new GraphMem();
+		Graph g = Factory.createGraphMem();
 		TestModel model =  new TestModelImpl(g,bitOfBoth);
 		// create some data
 		graphAdd( g, "a a a;" );
@@ -374,7 +374,7 @@ public class TestPackage extends GraphTestBase  {
     
     public void testSimple()
         {
-        Graph g = new GraphMem();
+        Graph g = Factory.createGraphMem();
         Personality ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
         EnhGraph eg = new EnhGraph( g, ours ); 
         Node n = Node.createURI( "spoo:bar" );
@@ -396,7 +396,7 @@ public class TestPackage extends GraphTestBase  {
     
     public void testAlreadyLinkedViewException()
         {
-         Graph g = new GraphMem();
+         Graph g = Factory.createGraphMem();
          Personality ours = BuiltinPersonalities.model.copy().add( Example.class, Example.factory );
          EnhGraph eg = new EnhGraph( g, ours ); 
          Node n = Node.create( "spoo:bar" );
@@ -418,7 +418,7 @@ public class TestPackage extends GraphTestBase  {
     */
     public void testNullPointerTrap()
         {
-        EnhGraph eg = new EnhGraph( new GraphMem(), BuiltinPersonalities.model );
+        EnhGraph eg = new EnhGraph( Factory.createGraphMem(), BuiltinPersonalities.model );
         Node n = Node.create( "eh:something" );
         EnhNode en = new EnhNode( n, eg );
         try 

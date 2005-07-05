@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.24 2005-02-21 12:18:17 andy_seaborne Exp $
+ * $Id: WGReasonerTester.java,v 1.25 2005-07-05 11:21:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.rdf.model.impl.PropertyImpl;
 import com.hp.hpl.jena.rdf.model.impl.ResourceImpl;
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.rdf.arp.test.ARPTests;
@@ -44,7 +43,7 @@ import java.net.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2005-02-21 12:18:17 $
+ * @version $Revision: 1.25 $ on $Date: 2005-07-05 11:21:43 $
  */
 public class WGReasonerTester {
 
@@ -185,7 +184,7 @@ public class WGReasonerTester {
             String fileName = test.getRequiredProperty(predicate).getObject().toString();
             return loadFile(fileName).getGraph();
         } else {
-            return new GraphMem();
+            return Factory.createGraphMem();
         }
     }
     

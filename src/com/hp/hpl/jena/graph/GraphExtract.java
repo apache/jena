@@ -1,7 +1,7 @@
 /*
       (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
       [See end of file]
-      $Id: GraphExtract.java,v 1.5 2005-02-21 11:51:56 andy_seaborne Exp $
+      $Id: GraphExtract.java,v 1.6 2005-07-05 11:21:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -9,7 +9,6 @@ package com.hp.hpl.jena.graph;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.util.CollectionFactory;
 
 /**
@@ -32,7 +31,7 @@ public class GraphExtract
          TripleBoundary passed to the constructor.
     */
     public Graph extract( Node node, Graph graph )
-        { return extractInto( new GraphMem(), node, graph ); }
+        { return extractInto( Factory.createGraphMem(), node, graph ); }
     
     /**
          Answer the graph <code>toUpdate</code> augmented with the sub-graph of

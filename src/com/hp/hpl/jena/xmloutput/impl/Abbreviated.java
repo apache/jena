@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Abbreviated.java,v 1.14 2005-02-21 12:22:28 andy_seaborne Exp $
+ *  $Id: Abbreviated.java,v 1.15 2005-07-05 11:21:44 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -24,7 +24,7 @@ import java.io.*;
    <code>"prettyTypes"</code>. See setProperty for information.
    @see com.hp.hpl.jena.rdf.model.RDFWriterF#getWriter
  * @author jjc
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.14 $' Date='$Date: 2005-02-21 12:22:28 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.15 $' Date='$Date: 2005-07-05 11:21:44 $'
  */
 public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
@@ -145,7 +145,7 @@ public class Abbreviated extends BaseXMLWriter implements RDFErrorHandler {
 
 	static public void main(String args[]) throws Exception {
 		System.out.println("Test code for bug 77");
-		Model m = new com.hp.hpl.jena.mem.ModelMem();
+		Model m = ModelFactory.createDefaultModel();
 		m.read(
 			new FileInputStream("modules/rdf/regression/arp/bug51_0.rdf"),
 			"http://example.org/file");

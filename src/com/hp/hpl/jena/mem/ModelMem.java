@@ -1,18 +1,19 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMem.java,v 1.7 2005-02-21 12:03:46 andy_seaborne Exp $
+  $Id: ModelMem.java,v 1.8 2005-07-05 11:21:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
-import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.enhanced.*;
+import com.hp.hpl.jena.enhanced.BuiltinPersonalities;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.impl.ModelCom;
 
 /** 
     OBSOLETE. Use the code in ModelFactory.
     @author bwm (original), jjc + kers (for Jena 2)
+    @deprecated Use the code in ModelFactory
 */
 
 public class ModelMem extends ModelCom implements Model
@@ -21,7 +22,7 @@ public class ModelMem extends ModelCom implements Model
         make a memory-based model
     */
     public ModelMem() 
-        { super( new GraphMem(), BuiltinPersonalities.model ); }
+        { super( com.hp.hpl.jena.graph.Factory.createGraphMem(), BuiltinPersonalities.model ); }
     }
 
 /*

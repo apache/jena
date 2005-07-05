@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleTreeQueryPlan.java,v 1.9 2005-02-21 11:52:25 andy_seaborne Exp $
+  $Id: SimpleTreeQueryPlan.java,v 1.10 2005-07-05 11:21:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -10,6 +10,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.mem.*;
+
 import java.util.*;
 
 /**
@@ -28,7 +29,7 @@ public class SimpleTreeQueryPlan implements TreeQueryPlan
 		
 	public Graph executeTree() 
 		{ 
-		Graph result = new GraphMem();
+		Graph result = Factory.createGraphMem();
 		Set roots = getRoots( pattern );
 		for (Iterator it = roots.iterator(); it.hasNext(); handleRoot( result, (Node) it.next(), CollectionFactory.createHashedSet())) {}
 		return result;

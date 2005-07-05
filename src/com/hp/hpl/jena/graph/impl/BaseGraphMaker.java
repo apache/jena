@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BaseGraphMaker.java,v 1.13 2005-04-10 12:45:47 chris-dollin Exp $
+  $Id: BaseGraphMaker.java,v 1.14 2005-07-05 11:21:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -79,7 +79,7 @@ public abstract class BaseGraphMaker implements GraphMaker
         
     public Graph getDescription( Node root )
         {
-        Graph result = new GraphMem();
+        Graph result = Factory.createGraphMem();
         addDescription( result, root );
         return result;     
         }

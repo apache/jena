@@ -5,11 +5,10 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.17 2005-06-28 15:38:42 chris-dollin Exp $
+ * $Id: TestGenericRules.java,v 1.18 2005-07-05 11:21:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
-import com.hp.hpl.jena.mem.GraphMem;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
@@ -35,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.17 $ on $Date: 2005-06-28 15:38:42 $
+ * @version $Revision: 1.18 $ on $Date: 2005-07-05 11:21:43 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -87,7 +86,7 @@ public class TestGenericRules extends TestCase {
      * Minimal rule tester to check basic pattern match, forward style.
      */
     public void testForward() {
-        Graph test = new GraphMem();
+        Graph test = Factory.createGraphMem();
         test.add(new Triple(a, p, b));
         test.add(new Triple(b, p, c));
         
@@ -100,7 +99,7 @@ public class TestGenericRules extends TestCase {
         TestUtil.assertIteratorValues(this, infgraph.find(null, p, null), ans);
         
         // Check schema bind version
-        infgraph = reasoner.bindSchema(test).bind(new GraphMem());
+        infgraph = reasoner.bindSchema(test).bind(Factory.createGraphMem());
         TestUtil.assertIteratorValues(this, infgraph.find(null, p, null), ans);
     }
      
@@ -108,7 +107,7 @@ public class TestGenericRules extends TestCase {
      * Minimal rule tester to check basic pattern match, backward style.
      */
     public void testBackward() {
-        Graph test = new GraphMem();
+        Graph test = Factory.createGraphMem();
         test.add(new Triple(a, p, b));
         test.add(new Triple(b, p, c));
         
@@ -121,7 +120,7 @@ public class TestGenericRules extends TestCase {
         TestUtil.assertIteratorValues(this, infgraph.find(null, p, null), ans);
         
         // Check schema bind version
-        infgraph = reasoner.bindSchema(test).bind(new GraphMem());
+        infgraph = reasoner.bindSchema(test).bind(Factory.createGraphMem());
         TestUtil.assertIteratorValues(this, infgraph.find(null, p, null), ans);
     }
     
@@ -129,7 +128,7 @@ public class TestGenericRules extends TestCase {
      * Test example hybrid rule.
      */
     public void testHybrid() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, r, b));
         data.add(new Triple(p, ty, s));
         List rules = Rule.parseRules(
@@ -168,7 +167,7 @@ public class TestGenericRules extends TestCase {
      * Test example parameter setting
      */
     public void testParameters() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, r, b));
         data.add(new Triple(p, ty, s));
 
@@ -223,7 +222,7 @@ public class TestGenericRules extends TestCase {
         configuration.addProperty(ReasonerVocabulary.PROPruleSet, "testing/reasoners/ruleset2.rules");
         reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(configuration);
         
-        infgraph = reasoner.bind(new GraphMem());
+        infgraph = reasoner.bind(Factory.createGraphMem());
         Node an = Node.createURI(PrintUtil.egNS + "a");
         Node C = Node.createURI(PrintUtil.egNS + "C");
         Node D = Node.createURI(PrintUtil.egNS + "D");
@@ -238,7 +237,7 @@ public class TestGenericRules extends TestCase {
      * Test control of functor filtering
      */
     public void testHybridFunctorFilter() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, r, b));
         data.add(new Triple(a, p, s));
         List rules = Rule.parseRules( "[r0: (?x r ?y) (?x p ?z) -> (?x q func(?y, ?z)) ]" );        
@@ -298,7 +297,7 @@ public class TestGenericRules extends TestCase {
      * @param useTGC set to true to use transitive caching
      */
     public void doTestAddRemove(boolean useTGC) {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, C1));
         data.add(new Triple(C1, sC, C2));
         data.add(new Triple(C2, sC, C3));
@@ -358,7 +357,7 @@ public class TestGenericRules extends TestCase {
      * Resolve a bug using remove in rules themselves.
      */
     public void testAddRemove2() {
-        Graph data = new GraphMem();
+        Graph data = Factory.createGraphMem();
         data.add(new Triple(a, p, Util.makeIntNode(0)));
         List rules = Rule.parseRules(
         "(?x p ?v) noValue(a r 1) -> (?x p inc(1, a)) (?x r 1).\n" +

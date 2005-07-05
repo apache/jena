@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCaseBasic.java,v 1.7 2005-02-21 11:52:05 andy_seaborne Exp $
+  $Id: TestCaseBasic.java,v 1.8 2005-07-05 11:21:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose.test;
@@ -19,7 +19,7 @@ import com.hp.hpl.jena.shared.*;
 /**
  *
  * @author  bwm
- * @version $Name: not supported by cvs2svn $ $Revision: 1.7 $ $Date: 2005-02-21 11:52:05 $
+ * @version $Name: not supported by cvs2svn $ $Revision: 1.8 $ $Date: 2005-07-05 11:21:35 $
  */
 public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic 
 	{
@@ -33,7 +33,7 @@ public class TestCaseBasic extends com.hp.hpl.jena.regression.TestCaseBasic
     
     private Graph newGraph( Constructor cons )
     	{
-    	try { return (Graph) cons.newInstance( new Object [] { new GraphMem(), new GraphMem() } ); }
+    	try { return (Graph) cons.newInstance( new Object [] { Factory.createGraphMem(), Factory.createGraphMem() } ); }
     	catch (Exception e) { throw new JenaException( "newGraph failed:", e ); }
     	}
     	

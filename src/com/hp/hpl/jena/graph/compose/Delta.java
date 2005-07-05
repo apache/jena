@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Delta.java,v 1.9 2005-02-21 11:52:03 andy_seaborne Exp $
+  $Id: Delta.java,v 1.10 2005-07-05 11:21:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -26,7 +26,7 @@ public class Delta extends Dyadic implements Graph
 	
 	public Delta( Graph base )
 		{
-		super( new GraphMem(), new GraphMem() );
+		super( Factory.createGraphMem(), Factory.createGraphMem() );
 		this.base = base;
 		}
 		
