@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Bound.java,v 1.8 2005-02-21 11:52:15 andy_seaborne Exp $
+  $Id: Bound.java,v 1.9 2005-07-05 15:15:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -27,7 +27,7 @@ public class Bound extends Element
         <code>Node::sameValueAs()</code>.
     */  
     public boolean match( Domain d, Node x )
-        { return x.sameValueAs(d.get( index ) ); }
+        { return x.sameValueAs( d.get( index ) ); }
      
     public Node asNodeMatch( Domain d ) 
         { return (Node) d.get( index ); }

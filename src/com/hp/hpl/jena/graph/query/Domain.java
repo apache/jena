@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Domain.java,v 1.9 2005-06-22 14:48:31 chris-dollin Exp $
+  $Id: Domain.java,v 1.10 2005-07-05 15:15:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -31,19 +31,23 @@ public class Domain extends AbstractList implements IndexValues
         Initialise a Domain with a copy of a Node value array.
     */
 	public Domain( Node [] value ) 
-        { 
+        {
         Node [] result = new Node[value.length];
         for (int i = 0; i < value.length; i += 1) result[i] = value[i];
         this.value = result;
         }
     
     /**
+        Initialise this Domain with <code>size</code> null slots.
     */
-    public Domain( int size ) { this( new Node[size] ); }
+    public Domain( int size ) 
+        { this.value = new Node[size]; }
 	
 	public int size() { return value.length; }
-	public Object get( int i ) { return value[i]; }	  
-	public void setElement( int i, Node x ) { value[i] = x; }
+	
+    public Object get( int i ) { return value[i]; }	  
+	
+    public void setElement( int i, Node x ) { value[i] = x; }
 	
 	public Domain copy() { return new Domain( this.value ); }
         

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.12 2005-07-05 11:21:34 chris-dollin Exp $
+  $Id: Factory.java,v 1.13 2005-07-05 15:14:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -11,8 +11,7 @@ import com.hp.hpl.jena.mem.faster.GraphMemFaster;
 import com.hp.hpl.jena.shared.*;
 
 /**
-    A factory class for creating Graphs [like ModelFactory, but for Graph;
-    the name GraphFactory already being taken.]
+    A factory class for creating Graphs.
     
     @author kers
 */
@@ -22,6 +21,7 @@ public class Factory
     private Factory()
         { super(); }
 
+    private static final boolean faster = false;
     /**
         Answer a memory-based Graph with the Standard reification style.
     */
@@ -35,10 +35,10 @@ public class Factory
         { return Factory.createGraphMem( style ); }
               
     public static Graph createGraphMem()
-        { return new GraphMem(); }
+        { return faster ? (Graph) new GraphMemFaster() : new GraphMem(); }
 
     public static Graph createGraphMem( ReificationStyle style )
-        { return new GraphMem( style ); }
+        { return faster ? (Graph) new GraphMemFaster( style ) : new GraphMem( style ); }
     }
 
 
