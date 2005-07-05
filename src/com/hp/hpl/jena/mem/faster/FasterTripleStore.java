@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.1 2005-07-04 14:44:17 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.2 2005-07-05 12:44:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,24 +10,23 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class FasterTripleStore
     {
-    protected NodeToTriplesMap subjects = new NodeToTriplesMap
+    protected NodeToTriplesMapFaster subjects = new NodeToTriplesMapFaster
         ( Field.getSubject, Field.getPredicate, Field.getObject );
     
-    protected NodeToTriplesMap predicates = new NodeToTriplesMap
+    protected NodeToTriplesMapFaster predicates = new NodeToTriplesMapFaster
         ( Field.getPredicate, Field.getObject, Field.getSubject );
         
-    protected NodeToTriplesMap objects = new NodeToTriplesMap
+    protected NodeToTriplesMapFaster objects = new NodeToTriplesMapFaster
         ( Field.getObject, Field.getSubject, Field.getPredicate );
         
-    public NodeToTriplesMap forTestingOnly_getObjects()
+    public NodeToTriplesMapFaster forTestingOnly_getObjects()
         { return objects; }
     
-    public NodeToTriplesMap forTestingOnly_getSubjects()
+    public NodeToTriplesMapFaster forTestingOnly_getSubjects()
         { return subjects; }
     
     protected Graph parent;
@@ -117,26 +116,25 @@ public class FasterTripleStore
         Node sm = t.getSubject();
             
         if (sm.isConcrete())
-            return new StoreTripleIterator( parent, subjects.iterator( t ), subjects, predicates, objects );
+            return new StoreTripleIteratorFaster( parent, subjects.iterator( sm, pm, om ), subjects, predicates, objects );
         else if (om.isConcrete() && !om.isLiteral())
-            return new StoreTripleIterator( parent, objects.iterator( t ), objects, subjects, predicates );
+            return new StoreTripleIteratorFaster( parent, objects.iterator( om, sm, pm ), objects, subjects, predicates );
         else if (pm.isConcrete())
-            return new StoreTripleIterator( parent, predicates.iterator( t ), predicates, subjects, objects );
+            return new StoreTripleIteratorFaster( parent, predicates.iterator( pm, om, sm ), predicates, subjects, objects );
         else
-            return new StoreTripleIterator( parent, subjects.iterateAll( t ), subjects, predicates, objects );
+            return new StoreTripleIteratorFaster( parent, subjects.iterateAll( sm, pm, om ), subjects, predicates, objects );
         }
 
     public Iterator findFaster( Node S, Node P, Node O )
-        {
-        Triple t = new Triple( S, P, O );    
+        {    
         if (S.isConcrete())
-            return subjects.iterator( t );
+            return subjects.iterator( S, P, O );
         else if (O.isConcrete() && !O.isLiteral())
-            return objects.iterator( t );
+            return objects.iterator( O, S, P );
         else if (P.isConcrete())
-            return predicates.iterator( t );
+            return predicates.iterator( P, O, S );
         else
-            return subjects.iterateAll( t );
+            return subjects.iterateAll( S, P, O );
         }
     
     /**
