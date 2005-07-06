@@ -30,7 +30,7 @@ import com.hp.hpl.jena.graph.Node;
 * Based in part on the Jena 1.0 implementation by der.
 * 
 * @author csayers
-* @version $Revision: 1.21 $
+* @version $Revision: 1.22 $
 */
 
 public interface IRDBDriver {
@@ -434,6 +434,12 @@ public interface IRDBDriver {
 	}
 	
 	/**
+	 * Get the maximum possible value of LongObjectLength
+	 * @return int
+	 */
+	public int getLongObjectLengthMax();
+
+	/**
 	 * Get the value of LongObjectLength
 	 * @return int
 	 */
@@ -445,6 +451,12 @@ public interface IRDBDriver {
 	* @param int
 	*/
 	public void setLongObjectLength(int len);
+
+	/**
+	 * Get the maximum possible value of IndexKeyLength
+	 * @return int
+	 */
+	public int getIndexKeyLengthMax();
 
 	/**
 	 * Get the value of IndexKeyLength

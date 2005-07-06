@@ -68,8 +68,8 @@ import oracle.jdbc.OracleDatabaseMetaData;
 		
 		ID_SQL_TYPE = "INTEGER";
 		URI_COMPRESS = false;
-		INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 4000;
-		LONG_OBJECT_LENGTH_MAX = LONG_OBJECT_LENGTH = 250;
+		LONG_OBJECT_LENGTH_MAX = INDEX_KEY_LENGTH_MAX = INDEX_KEY_LENGTH = 2000;
+		LONG_OBJECT_LENGTH = 250;
 		TABLE_NAME_LENGTH_MAX =	30;
 		/* 30 is a guesstimate. setConnection should be called
 		 * immediately to get the correct value. */
