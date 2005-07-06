@@ -1,19 +1,16 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.4 2005-07-05 15:15:37 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.5 2005-07-06 15:35:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
 
 import java.util.*;
 
-import junit.framework.Assert;
-
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.CollectionFactory;
-import com.hp.hpl.jena.util.iterator.NiceIterator;
 
 public class FasterPatternStage extends Stage
     {
@@ -95,8 +92,69 @@ public class FasterPatternStage extends Stage
         { return compile( compiler, map, triples ); }
         
     protected Pattern [] compile( PatternCompiler pc, Mapping map, Triple [] source )
-        { return PatternStageCompiler.compile( pc, map, source ); }
+        { return optimise( PatternStageCompiler.compile( pc, map, source ) ); }
         
+    protected Pattern [] optimise( Pattern [] patterns )
+        {
+        Pattern [] result = new Pattern[patterns.length];
+        for (int i = 0; i < patterns.length; i += 1) 
+            result[i] = optimise( patterns[i] );
+        return result;
+        }
+    
+    protected Pattern optimise( Pattern p )
+        {
+        int bits =
+            (p.S instanceof Fixed ? 4 : 0)
+            | (p.P instanceof Fixed ? 2 : 0)
+            | (p.O instanceof Fixed ? 1 : 0)
+            ;
+        switch (bits)
+            {
+            case 0:
+                return p;
+
+            case 2:
+                return new Pattern( p.S, p.P, p.O ) 
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { 
+                        return S.match( d, t.getSubject() ) 
+                        && O.match( d, t.getObject() ); }
+                    };
+
+            case 3:                
+                return new Pattern( p.S, p.P, p.O ) 
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { return S.match( d, t.getSubject() ); }
+                    };
+
+            case 7:
+                return new Pattern( p.S, p.P, p.O ) 
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { return true; }
+                    };
+                    
+            case 1:  
+                return new Pattern( p.S, p.P, p.O ) 
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { 
+                        return S.match( d, t.getSubject() ) 
+                        && P.match( d, t.getPredicate() ); 
+                        }
+                    };
+                    
+            case 4:
+            case 5:
+            case 6:
+                System.err.println( ">> didn't specialise: " + p );
+            }
+        return p; 
+        }
+    
     private static final PatternCompiler compiler = new PatternStageCompiler();
         
     private static int count = 0;
@@ -133,7 +191,6 @@ public class FasterPatternStage extends Stage
             while (stillOpen && it.hasNext())
                 if (p.match( current, (Triple) it.next()) && guard.evalBool( current )) 
                     nest( sink, current, index + 1 );
-            NiceIterator.close( it );
             }
         }
     }

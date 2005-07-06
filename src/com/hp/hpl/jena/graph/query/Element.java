@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Element.java,v 1.7 2005-02-21 11:52:15 andy_seaborne Exp $
+  $Id: Element.java,v 1.8 2005-07-06 15:32:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
 
 public abstract class Element 
 	{
-	protected int index;
+	protected final int index;
 	
     /**
         Answer this Element's index in the Domains it is compiled for.
