@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
-<!-- $Id: jena-faq.content.html,v 1.33 2005-04-18 16:32:44 andy_seaborne Exp $ -->
+<!-- $Id: jena-faq.content.html,v 1.34 2005-07-07 15:18:14 der Exp $ -->
 <!-- (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company L.P.  All rights reserved -->
 <head>
   <title>Jena - FAQ</title>
@@ -49,6 +49,8 @@ Jena 2 &ndash; Frequently Asked Questions
   <li><a href="#reasoner-5">What causes the error 
     &quot;<code>java.lang.UnsupportedOperationException: this is not a URI node</code>&quot; 
     in the DIG reasoner?</a></li>
+  <li><a href="#reasoner-6">I want to use my own custom rules to extend an existing RDFS or OWL
+Schema, what do I do?</a></li>
 </ul>
 <h3>Ontology API</h3>
 <ul>
@@ -302,6 +304,42 @@ Jena 2 &ndash; Frequently Asked Questions
     release, if there is one, or get the sources from CVS and 
     <a href="#general-3">build a new copy of <code>jena.jar</code></a>.)
   </p>
+  
+  <p id="reasoner-6"><strong>Q: I want to use my own custom rules to extend an existing RDFS or OWL
+Schema, what do I do? </strong>
+    <br />
+    <strong>A:</strong>
+The easiest way to do this is to define your rule set. You can use the
+<code>@include</code> directive at the top of your rules to include the RDFS (or OWL) rules
+first. Then create a <a href="http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/reasoner/rulesys/GenericRuleReasoner.html">GenericRuleReasoner</a> 
+which you can use to build an InfModel such as an
+<a href="http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/ontology/OntModel.html">OntModel</a> (by attaching the 
+reasoner to your <a href="http://jena.sourceforge.net/javadoc/com/hp/hpl/jena/ontology/OntModelSpec.html">OntModelSpec</a>).
+See <a href="http://jena.sourceforge.net/inference/index.html#RULEconfiguration">GenericRuleReasoner
+configuration</a> for an example of how to parse custom rules.
+</p>
+
+<p>
+Some important guidelines:
+<ul>
+<li>if you're using OWL rules: <code>setOWLTranslation(true)</code> on the reasoner</li>
+<li>if you're using RDFS or OWLMicro: <code>setTransitiveClosureCaching(true)</code></li>
+<li>make your own rules backwards unless you know what you are doing</li>
+</ul>
+</p>
+
+<p>
+You may only use backward rules in this configuration because the RDFS and OWL rules use a mix of forward and backward chaining and the rule system architecture is a pure dataflow - the forward rules don't call the backward rules. Thus any forward rules will only see those parts of
+the RDFS/OWL inferences which are computed forwards. Rather than
+have to be familar with those details it is easiest to simply write your
+own rules as backward ones.
+</p>
+
+<p>
+An alternative is to use a layered architecture - build your
+generic rule InfModel on top of a separate RDFS/OWL InfModel. That has
+higher overhead but then your own rules are unrestricted.
+</p>
   
     <h3>Ontology API</h3>
 <p id="ontology-0"><strong>Q: Why doesn't <code>listClasses()</code> (or <code>listProperties()</code>/<code>listIndividuals()</code>,
