@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.7 2005-07-07 08:41:53 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.8 2005-07-07 13:19:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -15,23 +15,23 @@ import com.hp.hpl.jena.util.CollectionFactory;
 public class FasterPatternStage extends Stage
     {
     protected GraphMemFaster graph;
-    protected SuperPattern [] compiled;
+    protected Pattern [] compiled;
     protected ValuatorSet [] guards;
     protected Set [] boundVariables;
     
-    protected class SuperPattern extends Pattern
-        {
-        public SuperPattern( Element S, Element P, Element O )
-            { super( S, P, O );  }
-        
-        public Iterator find( Domain current )
-            {
-            Node Sn = nullToAny( S.asNodeMatch( current ) );
-            Node Pn = nullToAny( P.asNodeMatch( current ) );
-            Node On = nullToAny( O.asNodeMatch( current ) );
-            return graph.findFaster( Sn, Pn, On );
-            }
-        }
+//    protected class SuperPattern extends Pattern
+//        {
+//        public SuperPattern( Element S, Element P, Element O )
+//            { super( S, P, O );  }
+//        
+//        public Iterator find( Domain current )
+//            {
+//            Node Sn = nullToAny( S.asNodeMatch( current ) );
+//            Node Pn = nullToAny( P.asNodeMatch( current ) );
+//            Node On = nullToAny( O.asNodeMatch( current ) );
+//            return graph.findFaster( Sn, Pn, On );
+//            }
+//        }
     
     public FasterPatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
         {
@@ -109,23 +109,23 @@ public class FasterPatternStage extends Stage
     protected Pattern [] compile( PatternCompiler pc, Mapping map, Triple [] source )
         { return PatternStageCompiler.compile( pc, map, source ); }
         
-    protected SuperPattern [] optimise( Pattern [] patterns, ValuatorSet [] guards )
+    protected Pattern [] optimise( Pattern [] patterns, ValuatorSet [] guards )
         {
-        SuperPattern [] result = new SuperPattern[patterns.length];
+        Pattern [] result = new Pattern[patterns.length];
         for (int i = 0; i < patterns.length; i += 1) 
             {
             final ValuatorSet s = guards[i];
             Pattern p = optimise( patterns[i] );
-            if (s.nonTrivial())
+            if (s.isNonTrivial())
                 {
-                result[i] = new SuperPattern( p.S, p.P, p.O )
+                result[i] = new Pattern( p.S, p.P, p.O )
                     {
                     public boolean match( Domain d, Triple t )
                         { return super.match( d, t ) && s.evalBool( d ); }
                     };
                 }
             else
-                result[i] = new SuperPattern( p.S, p.P, p.O );
+                result[i] = p; // new Pattern( p.S, p.P, p.O );
             }
         return result;
         }
@@ -188,8 +188,21 @@ public class FasterPatternStage extends Stage
                     };
                     
             case 3:
+                return new Pattern( p.S, p.P, p.O )
+                    {
+                    public boolean match( Domain d, Triple t )
+                        {
+                        return P.match( d, t.getPredicate() )
+                        && O.match( d, t.getObject() );
+                        }
+                    };
+                    
             case 2:
-                System.err.println( ">> didn't specialise: " + bits + " => " + p );
+                return new Pattern( p.S, p.P, p.O )
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { return P.match( d, t.getPredicate() ); }
+                    };
             }
         return p; 
         }
@@ -221,8 +234,11 @@ public class FasterPatternStage extends Stage
             sink.put( current.copy() );
         else
             {
-            SuperPattern p = compiled[index];
-            Iterator it = p.find( current );
+            Pattern p = compiled[index];
+            Node Sn = nullToAny( p.S.asNodeMatch( current ) );
+            Node Pn = nullToAny( p.P.asNodeMatch( current ) );
+            Node On = nullToAny( p.O.asNodeMatch( current ) );
+            Iterator it = graph.findFaster( Sn, Pn, On );
             while (stillOpen && it.hasNext())
                 if (p.match( current, (Triple) it.next() )) nest( sink, current, index + 1 );
             }
