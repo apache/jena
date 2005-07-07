@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.8 2005-07-07 13:19:44 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.9 2005-07-07 15:57:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,28 +10,34 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.util.CollectionFactory;
 
 public class FasterPatternStage extends Stage
     {
     protected GraphMemFaster graph;
-    protected Pattern [] compiled;
+    protected MatcherAndFinder [] compiled;
     protected ValuatorSet [] guards;
     protected Set [] boundVariables;
     
-//    protected class SuperPattern extends Pattern
-//        {
-//        public SuperPattern( Element S, Element P, Element O )
-//            { super( S, P, O );  }
-//        
-//        public Iterator find( Domain current )
-//            {
-//            Node Sn = nullToAny( S.asNodeMatch( current ) );
-//            Node Pn = nullToAny( P.asNodeMatch( current ) );
-//            Node On = nullToAny( O.asNodeMatch( current ) );
-//            return graph.findFaster( Sn, Pn, On );
-//            }
-//        }
+    protected abstract static class Matcher
+        {
+        public abstract boolean match( Domain d, Triple t );
+        }
+
+    protected abstract static class Finder
+        {   
+        public abstract Iterator find( Domain d );
+        }
+    
+    protected static class MatcherAndFinder
+        {
+        final Matcher m;
+        final Finder f;
+        
+        MatcherAndFinder( Matcher m, Finder f )
+            { this.m = m; this.f = f; }
+        }
     
     public FasterPatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
         {
@@ -109,25 +115,117 @@ public class FasterPatternStage extends Stage
     protected Pattern [] compile( PatternCompiler pc, Mapping map, Triple [] source )
         { return PatternStageCompiler.compile( pc, map, source ); }
         
-    protected Pattern [] optimise( Pattern [] patterns, ValuatorSet [] guards )
+    protected MatcherAndFinder [] optimise( Pattern [] patterns, ValuatorSet [] guards )
         {
-        Pattern [] result = new Pattern[patterns.length];
+        MatcherAndFinder [] result = new MatcherAndFinder[patterns.length];
         for (int i = 0; i < patterns.length; i += 1) 
             {
             final ValuatorSet s = guards[i];
-            Pattern p = optimise( patterns[i] );
+            final Matcher m = optimise( patterns[i] );
+            final Finder f = finder( patterns[i] );
             if (s.isNonTrivial())
-                {
-                result[i] = new Pattern( p.S, p.P, p.O )
+                {                    
+                Matcher m2 = new Matcher()
                     {
                     public boolean match( Domain d, Triple t )
-                        { return super.match( d, t ) && s.evalBool( d ); }
+                        { return m.match( d, t ) && s.evalBool( d ); }
                     };
+                result[i] = new MatcherAndFinder( m2, f );
                 }
             else
-                result[i] = p; // new Pattern( p.S, p.P, p.O );
+                {
+                result[i] = new MatcherAndFinder( m, f );
+                }
             }
         return result;
+        }
+    
+    protected Finder finder( final Pattern p )
+        {
+        final Element S = p.S, P = p.P, O = p.O; 
+        int bits = 
+            (S instanceof Fixed ? 100 : S instanceof Bound ? 200 : 300)
+            + (P instanceof Fixed ? 10 : P instanceof Bound ? 20 : 30)
+            + (O instanceof Fixed ? 1 : O instanceof Bound ? 2 : 3);
+        switch (bits)
+            {
+            case 111:
+            case 113:
+            case 131:
+            case 133:            
+            case 311:                       
+            case 333:
+            case 331:
+            case 313:
+                {
+                final Node 
+                    A = S.asNodeMatch( null ), 
+                    B = P.asNodeMatch( null ),
+                    C = O.asNodeMatch( null );
+                return new Finder()
+                    {
+                    public Iterator find( Domain current )
+                        { return graph.findFaster( A, B, C ); } 
+                    };
+                }
+
+            case 211:
+            case 213:
+            case 231:
+            case 233:
+                {
+                final Node 
+                    B = P.asNodeMatch( null ),
+                    C = O.asNodeMatch( null );
+                return new Finder()
+                    {
+                    public Iterator find( Domain current )
+                        { return graph.findFaster( S.asNodeMatch( current ), B, C ); } 
+                    };
+                }
+
+            case 121:
+            case 123:
+            case 321:
+            case 323:
+                {
+                final Node 
+                    A = S.asNodeMatch( null ), 
+                    C = O.asNodeMatch( null );
+                return new Finder()
+                    {
+                    public Iterator find( Domain current )
+                        { return graph.findFaster( A, P.asNodeMatch( current ), C ); } 
+                    };
+                }
+
+                
+            case 122:
+            case 112:
+            case 132:
+            
+            case 212:
+            case 221:
+            case 222:
+            case 223:
+            case 232:
+            
+            case 312:
+            case 322:
+            case 332:
+                System.err.println( ">> unoptimised finder for " + bits + " " + p );
+                return new Finder()
+                    {
+                    public Iterator find( Domain current )
+                        {
+                        Node Sn = nullToAny( p.S.asNodeMatch( current ) );
+                        Node Pn = nullToAny( p.P.asNodeMatch( current ) );
+                        Node On = nullToAny( p.O.asNodeMatch( current ) );
+                        return graph.findFaster( Sn, Pn, On );
+                        }
+                    };
+            }
+        throw new BrokenException( "impossible combination " + bits + " in finder()" );
         }
     
     protected boolean sameVariable( Element x, Element Y )
@@ -135,27 +233,32 @@ public class FasterPatternStage extends Stage
         return x.getIndex() == Y.getIndex();
         }
     
-    protected Pattern optimise( Pattern p )
+    protected Matcher optimise( final Pattern p )
         {
+        final Element S = p.S, P = p.P, O = p.O; 
         int bits =
-            (p.S instanceof Bind ? 4 : 0)
-            | (p.P instanceof Bind || (p.P instanceof Bound && sameVariable( p.S, p.P )) ? 2 : 0)
-            | (p.O instanceof Bind || (p.O instanceof Bound && (sameVariable( p.S, p.O ) || sameVariable( p.P, p.O ))) ? 1 : 0)
+            (S instanceof Bind ? 4 : 0)
+            | (P instanceof Bind || (P instanceof Bound && sameVariable( S, P )) ? 2 : 0)
+            | (O instanceof Bind || (O instanceof Bound && (sameVariable( S, O ) || sameVariable( P, O ))) ? 1 : 0)
             ;
         switch (bits)
             {
             case 7:
-                return p;
+                return new Matcher()
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { return p.match( d, t ); }
+                    };
 
             case 1:
-                return new Pattern( p.S, p.P, p.O )
+                return new Matcher()
                     {
                     public boolean match( Domain d, Triple t )
                         { return O.match( d, t.getObject() ); }
                     };
                 
             case 5:
-                return new Pattern( p.S, p.P, p.O ) 
+                return new Matcher() 
                     {
                     public boolean match( Domain d, Triple t )
                         { 
@@ -164,21 +267,21 @@ public class FasterPatternStage extends Stage
                     };
 
             case 4:                
-                return new Pattern( p.S, p.P, p.O ) 
+                return new Matcher() 
                     {
                     public boolean match( Domain d, Triple t )
                         { return S.match( d, t.getSubject() ); }
                     };
 
             case 0:
-                return new Pattern( p.S, p.P, p.O ) 
+                return new Matcher() 
                     {
                     public boolean match( Domain d, Triple t )
                         { return true; }
                     };
                     
             case 6:  
-                return new Pattern( p.S, p.P, p.O ) 
+                return new Matcher() 
                     {
                     public boolean match( Domain d, Triple t )
                         { 
@@ -188,7 +291,7 @@ public class FasterPatternStage extends Stage
                     };
                     
             case 3:
-                return new Pattern( p.S, p.P, p.O )
+                return new Matcher()
                     {
                     public boolean match( Domain d, Triple t )
                         {
@@ -198,13 +301,13 @@ public class FasterPatternStage extends Stage
                     };
                     
             case 2:
-                return new Pattern( p.S, p.P, p.O )
+                return new Matcher()
                     {
                     public boolean match( Domain d, Triple t )
                         { return P.match( d, t.getPredicate() ); }
                     };
             }
-        return p; 
+        throw new BrokenException( "uncatered-for case in optimisation" );
         }
     
     private static final PatternCompiler compiler = new PatternStageCompiler();
@@ -234,13 +337,14 @@ public class FasterPatternStage extends Stage
             sink.put( current.copy() );
         else
             {
-            Pattern p = compiled[index];
-            Node Sn = nullToAny( p.S.asNodeMatch( current ) );
-            Node Pn = nullToAny( p.P.asNodeMatch( current ) );
-            Node On = nullToAny( p.O.asNodeMatch( current ) );
-            Iterator it = graph.findFaster( Sn, Pn, On );
+            MatcherAndFinder p = compiled[index];
+//            Node Sn = nullToAny( p.S.asNodeMatch( current ) );
+//            Node Pn = nullToAny( p.P.asNodeMatch( current ) );
+//            Node On = nullToAny( p.O.asNodeMatch( current ) );
+//            Iterator it = graph.findFaster( Sn, Pn, On );
+            Iterator it = p.f.find( current );
             while (stillOpen && it.hasNext())
-                if (p.match( current, (Triple) it.next() )) nest( sink, current, index + 1 );
+                if (p.m.match( current, (Triple) it.next() )) nest( sink, current, index + 1 );
             }
         }
     }

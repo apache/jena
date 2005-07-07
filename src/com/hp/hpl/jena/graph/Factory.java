@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.14 2005-07-07 13:15:46 chris-dollin Exp $
+  $Id: Factory.java,v 1.15 2005-07-07 15:54:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -21,7 +21,7 @@ public class Factory
     private Factory()
         { super(); }
 
-    private static final boolean faster = true;
+    private static final boolean faster = false;
     /**
         Answer a memory-based Graph with the Standard reification style.
     */
