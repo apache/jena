@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.6 2005-07-07 06:58:06 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.7 2005-07-07 08:41:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -15,17 +15,31 @@ import com.hp.hpl.jena.util.CollectionFactory;
 public class FasterPatternStage extends Stage
     {
     protected GraphMemFaster graph;
-    protected Pattern [] compiled;
+    protected SuperPattern [] compiled;
     protected ValuatorSet [] guards;
     protected Set [] boundVariables;
+    
+    protected class SuperPattern extends Pattern
+        {
+        public SuperPattern( Element S, Element P, Element O )
+            { super( S, P, O );  }
+        
+        public Iterator find( Domain current )
+            {
+            Node Sn = nullToAny( S.asNodeMatch( current ) );
+            Node Pn = nullToAny( P.asNodeMatch( current ) );
+            Node On = nullToAny( O.asNodeMatch( current ) );
+            return graph.findFaster( Sn, Pn, On );
+            }
+        }
     
     public FasterPatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
         {
         this.graph = (GraphMemFaster) graph;
-        this.compiled = compile( map, triples );
         this.boundVariables = makeBoundVariables( triples );
+        Pattern [] unoptimised = compile( map, triples );
         this.guards = makeGuards( map, constraints, triples.length );
-        this.compiled = optimise( this.compiled, this.guards );
+        this.compiled = optimise( unoptimised, this.guards );
         }
                 
     /**
@@ -95,23 +109,23 @@ public class FasterPatternStage extends Stage
     protected Pattern [] compile( PatternCompiler pc, Mapping map, Triple [] source )
         { return PatternStageCompiler.compile( pc, map, source ); }
         
-    protected Pattern [] optimise( Pattern [] patterns, ValuatorSet [] guards )
+    protected SuperPattern [] optimise( Pattern [] patterns, ValuatorSet [] guards )
         {
-        Pattern [] result = new Pattern[patterns.length];
+        SuperPattern [] result = new SuperPattern[patterns.length];
         for (int i = 0; i < patterns.length; i += 1) 
             {
             final ValuatorSet s = guards[i];
             Pattern p = optimise( patterns[i] );
             if (s.nonTrivial())
                 {
-                result[i] = new Pattern( p.S, p.P, p.O )
+                result[i] = new SuperPattern( p.S, p.P, p.O )
                     {
                     public boolean match( Domain d, Triple t )
                         { return super.match( d, t ) && s.evalBool( d ); }
                     };
                 }
             else
-                result[i] = p;
+                result[i] = new SuperPattern( p.S, p.P, p.O );
             }
         return result;
         }
@@ -207,12 +221,8 @@ public class FasterPatternStage extends Stage
             sink.put( current.copy() );
         else
             {
-            Pattern p = compiled[index];
-            ValuatorSet guard = guards[index];
-            Node S = nullToAny( p.S.asNodeMatch( current ) );
-            Node P = nullToAny( p.P.asNodeMatch( current ) );
-            Node O = nullToAny( p.O.asNodeMatch( current ) );
-            Iterator it = graph.findFaster( S, P, O );
+            SuperPattern p = compiled[index];
+            Iterator it = p.find( current );
             while (stillOpen && it.hasNext())
                 if (p.match( current, (Triple) it.next() )) nest( sink, current, index + 1 );
             }
