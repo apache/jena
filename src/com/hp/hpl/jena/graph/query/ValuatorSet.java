@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: ValuatorSet.java,v 1.5 2005-02-21 11:52:26 andy_seaborne Exp $
+  $Id: ValuatorSet.java,v 1.6 2005-07-07 06:55:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -22,6 +22,8 @@ public class ValuatorSet
     public ValuatorSet() 
         {}
     
+    public boolean nonTrivial()
+        { return valuators.size() > 0; }
     /**
          Answer this ValuatorSet after adding the Valuator <code>e</code> to it.
     */

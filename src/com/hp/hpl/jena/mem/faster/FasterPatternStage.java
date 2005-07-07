@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.5 2005-07-06 15:35:31 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.6 2005-07-07 06:58:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -25,6 +25,7 @@ public class FasterPatternStage extends Stage
         this.compiled = compile( map, triples );
         this.boundVariables = makeBoundVariables( triples );
         this.guards = makeGuards( map, constraints, triples.length );
+        this.compiled = optimise( this.compiled, this.guards );
         }
                 
     /**
@@ -92,29 +93,54 @@ public class FasterPatternStage extends Stage
         { return compile( compiler, map, triples ); }
         
     protected Pattern [] compile( PatternCompiler pc, Mapping map, Triple [] source )
-        { return optimise( PatternStageCompiler.compile( pc, map, source ) ); }
+        { return PatternStageCompiler.compile( pc, map, source ); }
         
-    protected Pattern [] optimise( Pattern [] patterns )
+    protected Pattern [] optimise( Pattern [] patterns, ValuatorSet [] guards )
         {
         Pattern [] result = new Pattern[patterns.length];
         for (int i = 0; i < patterns.length; i += 1) 
-            result[i] = optimise( patterns[i] );
+            {
+            final ValuatorSet s = guards[i];
+            Pattern p = optimise( patterns[i] );
+            if (s.nonTrivial())
+                {
+                result[i] = new Pattern( p.S, p.P, p.O )
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { return super.match( d, t ) && s.evalBool( d ); }
+                    };
+                }
+            else
+                result[i] = p;
+            }
         return result;
+        }
+    
+    protected boolean sameVariable( Element x, Element Y )
+        {
+        return x.getIndex() == Y.getIndex();
         }
     
     protected Pattern optimise( Pattern p )
         {
         int bits =
-            (p.S instanceof Fixed ? 4 : 0)
-            | (p.P instanceof Fixed ? 2 : 0)
-            | (p.O instanceof Fixed ? 1 : 0)
+            (p.S instanceof Bind ? 4 : 0)
+            | (p.P instanceof Bind || (p.P instanceof Bound && sameVariable( p.S, p.P )) ? 2 : 0)
+            | (p.O instanceof Bind || (p.O instanceof Bound && (sameVariable( p.S, p.O ) || sameVariable( p.P, p.O ))) ? 1 : 0)
             ;
         switch (bits)
             {
-            case 0:
+            case 7:
                 return p;
 
-            case 2:
+            case 1:
+                return new Pattern( p.S, p.P, p.O )
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { return O.match( d, t.getObject() ); }
+                    };
+                
+            case 5:
                 return new Pattern( p.S, p.P, p.O ) 
                     {
                     public boolean match( Domain d, Triple t )
@@ -123,21 +149,21 @@ public class FasterPatternStage extends Stage
                         && O.match( d, t.getObject() ); }
                     };
 
-            case 3:                
+            case 4:                
                 return new Pattern( p.S, p.P, p.O ) 
                     {
                     public boolean match( Domain d, Triple t )
                         { return S.match( d, t.getSubject() ); }
                     };
 
-            case 7:
+            case 0:
                 return new Pattern( p.S, p.P, p.O ) 
                     {
                     public boolean match( Domain d, Triple t )
                         { return true; }
                     };
                     
-            case 1:  
+            case 6:  
                 return new Pattern( p.S, p.P, p.O ) 
                     {
                     public boolean match( Domain d, Triple t )
@@ -147,10 +173,9 @@ public class FasterPatternStage extends Stage
                         }
                     };
                     
-            case 4:
-            case 5:
-            case 6:
-                System.err.println( ">> didn't specialise: " + p );
+            case 3:
+            case 2:
+                System.err.println( ">> didn't specialise: " + bits + " => " + p );
             }
         return p; 
         }
@@ -189,8 +214,7 @@ public class FasterPatternStage extends Stage
             Node O = nullToAny( p.O.asNodeMatch( current ) );
             Iterator it = graph.findFaster( S, P, O );
             while (stillOpen && it.hasNext())
-                if (p.match( current, (Triple) it.next()) && guard.evalBool( current )) 
-                    nest( sink, current, index + 1 );
+                if (p.match( current, (Triple) it.next() )) nest( sink, current, index + 1 );
             }
         }
     }
