@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.11 2005-07-08 15:29:47 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.12 2005-07-08 15:41:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,7 +10,6 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.CollectionFactory;
 
 public class FasterPatternStage extends Stage
@@ -43,53 +42,11 @@ public class FasterPatternStage extends Stage
         {
         this.graph = (GraphMemFaster) graph;
         this.boundVariables = makeBoundVariables( triples );
-        ProcessedTriple [] s = allocateBindings( map, triples );
+        ProcessedTriple [] s = ProcessedTriple.allocateBindings( map, triples );
         this.guards = makeGuards( map, constraints, triples.length );
         this.compiled = matcherAndFinder( s, this.guards );
         }
                 
-    protected ProcessedTriple [] allocateBindings( Mapping map, Triple[] triples )
-        {
-        ProcessedTriple [] result = new ProcessedTriple[triples.length];
-        for (int i = 0; i < triples.length; i += 1)
-            result[i] = allocateBindings( map, triples[i] );
-        return result;
-        }
-
-    protected ProcessedTriple allocateBindings( Mapping map, Triple triple )
-        {
-        Set local = new HashSet();
-        return new ProcessedTriple
-            (
-            allocateBindings( map, local, triple.getSubject() ),
-            allocateBindings( map, local, triple.getPredicate() ),
-            allocateBindings( map, local, triple.getObject() )
-            );
-        }
-    
-    protected ProcessedNode allocateBindings( Mapping map, Set local, Node X )
-        {
-        if (X.equals( Node.ANY ))
-            return new ProcessedNode.Any();
-        if (X.isVariable())
-            {
-            if (map.hasBound( X ))
-                {
-                if (local.contains( X ))
-                    return new ProcessedNode.JBound( X, map.indexOf( X ) );
-                else
-                    return new ProcessedNode.Bound( X, map.indexOf( X ) );
-                }
-            else
-                {
-                local.add( X );
-                return new ProcessedNode.Bind( X, map.newIndex( X ) );
-                }
-            }
-        return 
-            new ProcessedNode.Fixed( X );
-        }
-
     /**
         Answer an array of sets exactly as long as the argument array of Triples.
         The i'th element of the answer is the set of all variables that have been 

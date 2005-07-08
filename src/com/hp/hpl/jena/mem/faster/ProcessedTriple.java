@@ -1,13 +1,15 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.1 2005-07-08 15:29:47 chris-dollin Exp $
+ 	$Id: ProcessedTriple.java,v 1.2 2005-07-08 15:41:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
 
+import java.util.*;
+
 import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.Domain;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.faster.FasterPatternStage.Matcher;
 import com.hp.hpl.jena.shared.BrokenException;
 
@@ -29,6 +31,25 @@ public class ProcessedTriple
     
     public String toString()
         { return "<pt " + S.toString() + " " + P.toString() + " " + O.toString() + ">"; }
+
+    public static ProcessedTriple [] allocateBindings( Mapping map, Triple[] triples )
+        {
+        ProcessedTriple [] result = new ProcessedTriple[triples.length];
+        for (int i = 0; i < triples.length; i += 1)
+            result[i] = allocateBindings( map, triples[i] );
+        return result;
+        }
+
+    public static ProcessedTriple allocateBindings( Mapping map, Triple triple )
+        {
+        Set local = new HashSet();
+        return new ProcessedTriple
+            (
+            ProcessedNode.allocateBindings( map, local, triple.getSubject() ),
+            ProcessedNode.allocateBindings( map, local, triple.getPredicate() ),
+            ProcessedNode.allocateBindings( map, local, triple.getObject() )
+            );
+        }
     
     protected Matcher makeMatcher( FasterPatternStage stage )
         {
@@ -109,6 +130,7 @@ public class ProcessedTriple
             }
         throw new BrokenException( "uncatered-for case in optimisation" );
         }
+
     }
 
 /*

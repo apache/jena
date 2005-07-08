@@ -1,13 +1,15 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedNode.java,v 1.1 2005-07-08 15:29:47 chris-dollin Exp $
+ 	$Id: ProcessedNode.java,v 1.2 2005-07-08 15:41:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
 
+import java.util.Set;
+
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.query.Domain;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
 
 /**
@@ -41,6 +43,29 @@ public class ProcessedNode
     public String toString()
         { return node.toString() + "[" + index + "]"; }
     
+    public static ProcessedNode allocateBindings( Mapping map, Set local, Node X )
+        {
+        if (X.equals( Node.ANY ))
+            return new Any();
+        if (X.isVariable())
+            {
+            if (map.hasBound( X ))
+                {
+                if (local.contains( X ))
+                    return new JBound( X, map.indexOf( X ) );
+                else
+                    return new Bound( X, map.indexOf( X ) );
+                }
+            else
+                {
+                local.add( X );
+                return new Bind( X, map.newIndex( X ) );
+                }
+            }
+        return 
+            new Fixed( X );
+        }
+
     public static class Fixed extends ProcessedNode
         {
         public Fixed( Node node ) 
