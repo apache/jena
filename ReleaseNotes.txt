@@ -3,6 +3,65 @@ Release Notes
 
 ;;; -- Post 2.2final change list ----------------------------------------
 
+RDFNode/Resource/Literal
+
+    o The method Resource::getNode() has been deprecated in favour of
+      RDFNode::asNode().
+
+    o The method Resource::isAnon() has been moved up into RDFNode.
+
+    o The (pointless) method Literal::isLiteral() has been moved up
+      into RDFNode() (where it is pointful).
+
+    o RDFNode has acquired `boolean isURIResource()` and `boolean
+      isResource()`.
+
+    o This allows all three what-kind-of-node tests to be applied to
+      an RDFNode. Note that heavy use of these methods is a likely
+      design smell - visitWith() may be a better solution to the
+      classification problem.
+ 
+GraphMem/GraphTripleStore/NodeToTriplesMap
+
+    o Performance analysis suggests that a chunk of the time in find() was
+      taken up with redundant comparisions when filtering the intermediate
+      iterator with the triple pattern. [EG: the hashmap index field is
+      always right; the ANY nodes are never relevant.] So, after a go or
+      two around the houses, this was optimised to only test the non-wild
+      remaining fields, using the new Triple.Field operations plus the new
+      Filter operations.
+
+Triple
+
+    o S/P/O fields made final (dunno why they weren't already).
+
+    o Added Field class, which gives three constants (getSubject, getObject,
+      Predicate) which have a getField(Triple) method to extract that field.
+      Fields also have filterOn() methods to create filters over nodes and
+      fields of triples; filtering over ANY nodes delivers Filter.any, which
+      composes cheaply.
+
+Filters & Iterators
+
+    o Removed a performance infelicity in the default andThen implementation
+      (it kept calling the left-hand hasNext even when it had been exhausted).
+
+    o Added FilterDropiterator so that filterDrop doesn't need to create a
+      new negated Filter and suffer an extra indirection layer; added
+      filterKeepIterator for symmetry.
+
+    o Filter is now a class, not an interface, to make it easier to add
+      new operations to it (otherwise the API changes would be grossly
+      visible to all users). 
+
+    o Filter has new methods: .and(Filter), producing a Filter that passes
+      only elements that pass both filters, and .filterKeep(Iterator), 
+      which filters the iterator in the same way as ExtendedIterator's
+      filterKeep operation does.
+
+    o Filter.any has fast implementations for these operations, allowing
+      it to be used as a fairly cheap identity element.
+
 ModelSpecs
 
     o Fixed a bug: the loadFile property did not work on inference models.
@@ -11,12 +70,14 @@ ModelSpecs
       specified files.
 
 Schemagen
+
     o Schemagen now by default includes individuals whose class is in one
       of the target namespaces for the document, even if the individual itself
       is not. This behaviour can be turned off with option strictIndividuals.
 
 Typed literals:
     o Fixed bug in unparsing of xsd:time values.
+
     o Added normalization step so that creating a typed literal from
       an XSDDateTime will use narrow types (e.g. xsd:date) when appropriate.
 
