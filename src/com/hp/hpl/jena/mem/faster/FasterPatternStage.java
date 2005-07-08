@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.10 2005-07-08 14:34:12 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.11 2005-07-08 15:29:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -48,41 +48,6 @@ public class FasterPatternStage extends Stage
         this.compiled = matcherAndFinder( s, this.guards );
         }
                 
-    protected static class ProcessedTriple
-        {
-        public final ProcessedNode S;
-        public final ProcessedNode P;
-        public final ProcessedNode O;
-        
-        public ProcessedTriple( ProcessedNode S, ProcessedNode P, ProcessedNode O ) 
-            { this.S = S; this.P = P; this.O = O; }
-        }   
-    
-    protected static class ProcessedNode
-        {
-        public static int FIXED = 0;
-        public static int ANY = 1;
-        public static int BIND = 2;
-        public static int BOUND = 3;
-        public static int JBOUND = 4;
-    
-        public final int type;
-        public final Node node;
-        public final int index;
-        
-        public ProcessedNode( Node node, int type )
-            { this( node, type, -1 ); }
-        
-        public ProcessedNode( Node node, int type, int index )
-            { this.node = node; this.type = type; this.index = index; }
-        
-        public boolean match( Domain d, Node X )
-            { throw new JenaException( "ARGH" ); }
-        
-        public Node finder( Domain d )
-            { return Node.ANY; }
-        }
-    
     protected ProcessedTriple [] allocateBindings( Mapping map, Triple[] triples )
         {
         ProcessedTriple [] result = new ProcessedTriple[triples.length];
@@ -105,43 +70,24 @@ public class FasterPatternStage extends Stage
     protected ProcessedNode allocateBindings( Mapping map, Set local, Node X )
         {
         if (X.equals( Node.ANY ))
-            return new ProcessedNode( X, ProcessedNode.ANY );
+            return new ProcessedNode.Any();
         if (X.isVariable())
             {
             if (map.hasBound( X ))
                 {
                 if (local.contains( X ))
-                    return new ProcessedNode( X, ProcessedNode.JBOUND, map.indexOf( X ) )
-                        {
-                        public boolean match( Domain d, Node X )
-                            { return X.matches( d.getElement( index ) ); }
-                        };
+                    return new ProcessedNode.JBound( X, map.indexOf( X ) );
                 else
-                    return new ProcessedNode( X, ProcessedNode.BOUND, map.indexOf( X ) )
-                        {
-                        public Node finder( Domain d )
-                            { return d.getElement( index ); }
-                        };
+                    return new ProcessedNode.Bound( X, map.indexOf( X ) );
                 }
             else
                 {
                 local.add( X );
-                return new ProcessedNode( X, ProcessedNode.BIND, map.newIndex( X ) )
-                    {
-                    public boolean match( Domain d, Node X )
-                        {
-                        d.setElement( index, X );
-                        return true;
-                        }
-                    };
+                return new ProcessedNode.Bind( X, map.newIndex( X ) );
                 }
             }
         return 
-            new ProcessedNode( X, ProcessedNode.FIXED )
-                {
-                public Node finder( Domain d )
-                    { return node; }
-                };
+            new ProcessedNode.Fixed( X );
         }
 
     /**
@@ -211,7 +157,7 @@ public class FasterPatternStage extends Stage
         for (int i = 0; i < patterns.length; i += 1) 
             {
             final ValuatorSet s = guards[i];
-            final Matcher m = makeMatcher( patterns[i] );
+            final Matcher m = patterns[i].makeMatcher( this );
             final Finder f = finder( patterns[i] );
             if (s.isNonTrivial())
                 {                    
@@ -233,6 +179,7 @@ public class FasterPatternStage extends Stage
     protected Finder finder( final ProcessedTriple p )
         {
         final ProcessedNode S = p.S, P = p.P, O = p.O; 
+        // System.err.println( ">> unoptimised finder " + p );
         return new Finder()
             {
             public Iterator find( Domain current )
@@ -338,85 +285,6 @@ public class FasterPatternStage extends Stage
         return x.index == y.index;
         }
     
-    protected Matcher makeMatcher( final ProcessedTriple p )
-        {
-        final ProcessedNode S = p.S, P = p.P, O = p.O; 
-        int bits =
-            (S.type == ProcessedNode.BIND ? 4 : 0)
-            | ((P.type == ProcessedNode.BIND || P.type == ProcessedNode.JBOUND) ? 2 : 0)
-            | ((O.type == ProcessedNode.BIND || O.type == ProcessedNode.JBOUND) ? 1 : 0)
-            ;
-        switch (bits)
-            {
-            case 7:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return S.match( d, t.getSubject() )
-                            && P.match( d, t.getPredicate() )
-                            && O.match( d, t.getObject() ); }
-                    };
-
-            case 1:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return O.match( d, t.getObject() ); }
-                    };
-                
-            case 5:
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { 
-                        return S.match( d, t.getSubject() ) 
-                        && O.match( d, t.getObject() ); }
-                    };
-
-            case 4:                
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return S.match( d, t.getSubject() ); }
-                    };
-
-            case 0:
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return true; }
-                    };
-                    
-            case 6:  
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { 
-                        return S.match( d, t.getSubject() ) 
-                        && P.match( d, t.getPredicate() ); 
-                        }
-                    };
-                    
-            case 3:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        {
-                        return P.match( d, t.getPredicate() )
-                        && O.match( d, t.getObject() );
-                        }
-                    };
-                    
-            case 2:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return P.match( d, t.getPredicate() ); }
-                    };
-            }
-        throw new BrokenException( "uncatered-for case in optimisation" );
-        }
-           
     private static int count = 0;
     
     public synchronized Pipe deliver( final Pipe result )
