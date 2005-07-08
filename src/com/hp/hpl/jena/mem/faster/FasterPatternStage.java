@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.9 2005-07-07 15:57:49 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.10 2005-07-08 14:34:12 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,7 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.CollectionFactory;
 
 public class FasterPatternStage extends Stage
@@ -43,11 +43,107 @@ public class FasterPatternStage extends Stage
         {
         this.graph = (GraphMemFaster) graph;
         this.boundVariables = makeBoundVariables( triples );
-        Pattern [] unoptimised = compile( map, triples );
+        ProcessedTriple [] s = allocateBindings( map, triples );
         this.guards = makeGuards( map, constraints, triples.length );
-        this.compiled = optimise( unoptimised, this.guards );
+        this.compiled = matcherAndFinder( s, this.guards );
         }
                 
+    protected static class ProcessedTriple
+        {
+        public final ProcessedNode S;
+        public final ProcessedNode P;
+        public final ProcessedNode O;
+        
+        public ProcessedTriple( ProcessedNode S, ProcessedNode P, ProcessedNode O ) 
+            { this.S = S; this.P = P; this.O = O; }
+        }   
+    
+    protected static class ProcessedNode
+        {
+        public static int FIXED = 0;
+        public static int ANY = 1;
+        public static int BIND = 2;
+        public static int BOUND = 3;
+        public static int JBOUND = 4;
+    
+        public final int type;
+        public final Node node;
+        public final int index;
+        
+        public ProcessedNode( Node node, int type )
+            { this( node, type, -1 ); }
+        
+        public ProcessedNode( Node node, int type, int index )
+            { this.node = node; this.type = type; this.index = index; }
+        
+        public boolean match( Domain d, Node X )
+            { throw new JenaException( "ARGH" ); }
+        
+        public Node finder( Domain d )
+            { return Node.ANY; }
+        }
+    
+    protected ProcessedTriple [] allocateBindings( Mapping map, Triple[] triples )
+        {
+        ProcessedTriple [] result = new ProcessedTriple[triples.length];
+        for (int i = 0; i < triples.length; i += 1)
+            result[i] = allocateBindings( map, triples[i] );
+        return result;
+        }
+
+    protected ProcessedTriple allocateBindings( Mapping map, Triple triple )
+        {
+        Set local = new HashSet();
+        return new ProcessedTriple
+            (
+            allocateBindings( map, local, triple.getSubject() ),
+            allocateBindings( map, local, triple.getPredicate() ),
+            allocateBindings( map, local, triple.getObject() )
+            );
+        }
+    
+    protected ProcessedNode allocateBindings( Mapping map, Set local, Node X )
+        {
+        if (X.equals( Node.ANY ))
+            return new ProcessedNode( X, ProcessedNode.ANY );
+        if (X.isVariable())
+            {
+            if (map.hasBound( X ))
+                {
+                if (local.contains( X ))
+                    return new ProcessedNode( X, ProcessedNode.JBOUND, map.indexOf( X ) )
+                        {
+                        public boolean match( Domain d, Node X )
+                            { return X.matches( d.getElement( index ) ); }
+                        };
+                else
+                    return new ProcessedNode( X, ProcessedNode.BOUND, map.indexOf( X ) )
+                        {
+                        public Node finder( Domain d )
+                            { return d.getElement( index ); }
+                        };
+                }
+            else
+                {
+                local.add( X );
+                return new ProcessedNode( X, ProcessedNode.BIND, map.newIndex( X ) )
+                    {
+                    public boolean match( Domain d, Node X )
+                        {
+                        d.setElement( index, X );
+                        return true;
+                        }
+                    };
+                }
+            }
+        return 
+            new ProcessedNode( X, ProcessedNode.FIXED )
+                {
+                public Node finder( Domain d )
+                    { return node; }
+                };
+        }
+
     /**
         Answer an array of sets exactly as long as the argument array of Triples.
         The i'th element of the answer is the set of all variables that have been 
@@ -108,20 +204,14 @@ public class FasterPatternStage extends Stage
     */
     protected boolean canEval( Expression e, int index )
         { return Expression.Util.containsAllVariablesOf( boundVariables[index], e ); }
-    
-    protected Pattern [] compile( Mapping map, Triple [] triples )
-        { return compile( compiler, map, triples ); }
         
-    protected Pattern [] compile( PatternCompiler pc, Mapping map, Triple [] source )
-        { return PatternStageCompiler.compile( pc, map, source ); }
-        
-    protected MatcherAndFinder [] optimise( Pattern [] patterns, ValuatorSet [] guards )
+    protected MatcherAndFinder [] matcherAndFinder( ProcessedTriple [] patterns, ValuatorSet [] guards )
         {
         MatcherAndFinder [] result = new MatcherAndFinder[patterns.length];
         for (int i = 0; i < patterns.length; i += 1) 
             {
             final ValuatorSet s = guards[i];
-            final Matcher m = optimise( patterns[i] );
+            final Matcher m = makeMatcher( patterns[i] );
             final Finder f = finder( patterns[i] );
             if (s.isNonTrivial())
                 {                    
@@ -140,106 +230,121 @@ public class FasterPatternStage extends Stage
         return result;
         }
     
-    protected Finder finder( final Pattern p )
+    protected Finder finder( final ProcessedTriple p )
         {
-        final Element S = p.S, P = p.P, O = p.O; 
-        int bits = 
-            (S instanceof Fixed ? 100 : S instanceof Bound ? 200 : 300)
-            + (P instanceof Fixed ? 10 : P instanceof Bound ? 20 : 30)
-            + (O instanceof Fixed ? 1 : O instanceof Bound ? 2 : 3);
-        switch (bits)
+        final ProcessedNode S = p.S, P = p.P, O = p.O; 
+        return new Finder()
             {
-            case 111:
-            case 113:
-            case 131:
-            case 133:            
-            case 311:                       
-            case 333:
-            case 331:
-            case 313:
+            public Iterator find( Domain current )
                 {
-                final Node 
-                    A = S.asNodeMatch( null ), 
-                    B = P.asNodeMatch( null ),
-                    C = O.asNodeMatch( null );
-                return new Finder()
-                    {
-                    public Iterator find( Domain current )
-                        { return graph.findFaster( A, B, C ); } 
-                    };
+                return graph.findFaster
+                    ( S.finder( current ), P.finder( current ), O.finder( current )  );
                 }
-
-            case 211:
-            case 213:
-            case 231:
-            case 233:
-                {
-                final Node 
-                    B = P.asNodeMatch( null ),
-                    C = O.asNodeMatch( null );
-                return new Finder()
-                    {
-                    public Iterator find( Domain current )
-                        { return graph.findFaster( S.asNodeMatch( current ), B, C ); } 
-                    };
-                }
-
-            case 121:
-            case 123:
-            case 321:
-            case 323:
-                {
-                final Node 
-                    A = S.asNodeMatch( null ), 
-                    C = O.asNodeMatch( null );
-                return new Finder()
-                    {
-                    public Iterator find( Domain current )
-                        { return graph.findFaster( A, P.asNodeMatch( current ), C ); } 
-                    };
-                }
-
-                
-            case 122:
-            case 112:
-            case 132:
-            
-            case 212:
-            case 221:
-            case 222:
-            case 223:
-            case 232:
-            
-            case 312:
-            case 322:
-            case 332:
-                System.err.println( ">> unoptimised finder for " + bits + " " + p );
-                return new Finder()
-                    {
-                    public Iterator find( Domain current )
-                        {
-                        Node Sn = nullToAny( p.S.asNodeMatch( current ) );
-                        Node Pn = nullToAny( p.P.asNodeMatch( current ) );
-                        Node On = nullToAny( p.O.asNodeMatch( current ) );
-                        return graph.findFaster( Sn, Pn, On );
-                        }
-                    };
-            }
-        throw new BrokenException( "impossible combination " + bits + " in finder()" );
+            };
+//        switch (bits)
+//            {
+//            case 111:
+//            case 113:
+//            case 131:
+//            case 133:            
+//            case 311:                       
+//            case 333:
+//            case 331:
+//            case 313:
+//                {
+//                final Node 
+//                    A = S.asNodeMatch( null ), 
+//                    B = P.asNodeMatch( null ),
+//                    C = O.asNodeMatch( null );
+//                return new Finder()
+//                    {
+//                    public Iterator find( Domain current )
+//                        { return graph.findFaster( A, B, C ); } 
+//                    };
+//                }
+//
+//            case 211:
+//            case 213:
+//            case 231:
+//            case 233:
+//                {
+//                final Node B = P.asNodeMatch( null ), C = O.asNodeMatch( null );
+//                return new Finder()
+//                    {
+//                    public Iterator find( Domain current )
+//                        { return graph.findFaster( S.asNodeMatch( current ), B, C ); } 
+//                    };
+//                }
+//
+//            case 121:
+//            case 123:
+//            case 321:
+//            case 323:
+//                {
+//                final Node A = S.asNodeMatch( null ), C = O.asNodeMatch( null );
+//                return new Finder()
+//                    {
+//                    public Iterator find( Domain current )
+//                        { return graph.findFaster( A, P.asNodeMatch( current ), C ); } 
+//                    };
+//                }
+//
+//            case 112:
+//            case 312:
+//            case 132:
+//            case 332:
+//                {
+//                final Node A = S.asNodeMatch( null ), B = P.asNodeMatch( null );
+//                return new Finder()
+//                    {
+//                    public Iterator find( Domain current )
+//                        { return graph.findFaster( A, B, O.asNodeMatch( current ) ); } 
+//                    };
+//                }
+//
+//            case 122:
+//                {
+//                final Node A = S.asNodeMatch( null );
+//                return new Finder()
+//                    {
+//                    public Iterator find( Domain current )
+//                        { return graph.findFaster( A, P.asNodeMatch( current ), O.asNodeMatch( current ) ); } 
+//                    };
+//                }
+//            case 322:
+//            
+//            case 212:
+//            case 221:
+//            case 222:
+//            case 223:
+//            case 232:
+//                System.err.println( ">> unoptimised finder for " + bits + " " + p );
+//                return new Finder()
+//                    {
+//                    public Iterator find( Domain current )
+//                        {
+//                        Node Sn = nullToAny( p.S.asNodeMatch( current ) );
+//                        Node Pn = nullToAny( p.P.asNodeMatch( current ) );
+//                        Node On = nullToAny( p.O.asNodeMatch( current ) );
+//                        return graph.findFaster( Sn, Pn, On );
+//                        }
+//                    };
+//            }
+//        throw new BrokenException( "impossible combination " + bits + " in finder()" );
         }
     
-    protected boolean sameVariable( Element x, Element Y )
+    protected boolean sameVariable( ProcessedNode x, ProcessedNode y )
         {
-        return x.getIndex() == Y.getIndex();
+        return x.index == y.index;
         }
     
-    protected Matcher optimise( final Pattern p )
+    protected Matcher makeMatcher( final ProcessedTriple p )
         {
-        final Element S = p.S, P = p.P, O = p.O; 
+        final ProcessedNode S = p.S, P = p.P, O = p.O; 
         int bits =
-            (S instanceof Bind ? 4 : 0)
-            | (P instanceof Bind || (P instanceof Bound && sameVariable( S, P )) ? 2 : 0)
-            | (O instanceof Bind || (O instanceof Bound && (sameVariable( S, O ) || sameVariable( P, O ))) ? 1 : 0)
+            (S.type == ProcessedNode.BIND ? 4 : 0)
+            | ((P.type == ProcessedNode.BIND || P.type == ProcessedNode.JBOUND) ? 2 : 0)
+            | ((O.type == ProcessedNode.BIND || O.type == ProcessedNode.JBOUND) ? 1 : 0)
             ;
         switch (bits)
             {
@@ -247,7 +352,9 @@ public class FasterPatternStage extends Stage
                 return new Matcher()
                     {
                     public boolean match( Domain d, Triple t )
-                        { return p.match( d, t ); }
+                        { return S.match( d, t.getSubject() )
+                            && P.match( d, t.getPredicate() )
+                            && O.match( d, t.getObject() ); }
                     };
 
             case 1:
@@ -309,42 +416,68 @@ public class FasterPatternStage extends Stage
             }
         throw new BrokenException( "uncatered-for case in optimisation" );
         }
-    
-    private static final PatternCompiler compiler = new PatternStageCompiler();
-        
+           
     private static int count = 0;
     
     public synchronized Pipe deliver( final Pipe result )
         {
         final Pipe stream = previous.deliver( new BufferPipe() );
-        new Thread( "PatternStage-" + ++count ) { public void run() { FasterPatternStage.this.run( stream, result ); } } .start();
+        final StageElement r = makeStageElement( result, 0 );
+        new Thread( "PatternStage-" + ++count ) 
+            { public void run() { FasterPatternStage.this.run( stream, result, r ); } } 
+            .start();
         return result;
         }
         
-    protected void run( Pipe source, Pipe sink )
+    protected void run( Pipe source, Pipe sink, StageElement s )
         {
-        try { while (stillOpen && source.hasNext()) nest( sink, source.get(), 0 ); }
+        try { while (stillOpen && source.hasNext()) s.run( source.get() ); } 
         catch (Exception e) { sink.close( e ); return; }
         sink.close();
         }        
-
-    private static Node nullToAny( Node n )
-        { return n == null ? Node.ANY : n; }  
     
-    protected void nest( Pipe sink, Domain current, int index )
-        { 
+    protected StageElement makeStageElement( Pipe sink, int index )
+        {
         if (index == compiled.length)
-            sink.put( current.copy() );
+            return new Put( sink );
         else
             {
             MatcherAndFinder p = compiled[index];
-//            Node Sn = nullToAny( p.S.asNodeMatch( current ) );
-//            Node Pn = nullToAny( p.P.asNodeMatch( current ) );
-//            Node On = nullToAny( p.O.asNodeMatch( current ) );
-//            Iterator it = graph.findFaster( Sn, Pn, On );
-            Iterator it = p.f.find( current );
+            return new Nest( p.m, p.f, makeStageElement( sink, index + 1 ) );
+            }
+        }
+    
+    protected static abstract class StageElement
+        {
+        public abstract void run( Domain current );
+        }
+    
+    protected static final class Put extends StageElement
+        {
+        protected final Pipe sink;
+        
+        public Put( Pipe sink )
+            { this.sink = sink; }
+        
+        public final void run( Domain current )
+            { sink.put( current.copy() ); }
+        }
+    
+    protected final class Nest extends StageElement
+        {
+        protected final Matcher matcher;
+        protected final Finder finder;
+        protected final StageElement nest;
+        
+        public Nest( Matcher matcher, Finder finder, StageElement nest )
+            { this.matcher = matcher; this.finder = finder; this.nest = nest; }
+        
+        public final void run( Domain current )
+            {
+            Iterator it = finder.find( current );
             while (stillOpen && it.hasNext())
-                if (p.m.match( current, (Triple) it.next() )) nest( sink, current, index + 1 );
+                if (matcher.match( current, (Triple) it.next() )) 
+                    nest.run( current );
             }
         }
     }

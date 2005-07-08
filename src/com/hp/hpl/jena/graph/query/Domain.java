@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Domain.java,v 1.10 2005-07-05 15:15:37 chris-dollin Exp $
+  $Id: Domain.java,v 1.11 2005-07-08 14:30:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -20,12 +20,12 @@ import java.util.*;
 */
 
 
-public class Domain extends AbstractList implements IndexValues
+public final class Domain extends AbstractList implements IndexValues
 	{
     /**
         The array holding the bound values. 
     */
-	private Node [] value;
+	private final Node [] value;
 	
     /**
         Initialise a Domain with a copy of a Node value array.
@@ -46,9 +46,11 @@ public class Domain extends AbstractList implements IndexValues
 	public int size() { return value.length; }
 	
     public Object get( int i ) { return value[i]; }	  
-	
+    
     public void setElement( int i, Node x ) { value[i] = x; }
 	
+    public Node getElement( int i ) { return value[i]; }
+    
 	public Domain copy() { return new Domain( this.value ); }
         
     public boolean equals( Object x )
