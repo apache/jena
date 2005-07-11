@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.2 2005-07-11 14:07:47 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.3 2005-07-11 14:44:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,7 +10,6 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
-import com.hp.hpl.jena.mem.faster.FasterPatternStage.PreindexedFind;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -130,11 +129,11 @@ public class NodeToTriplesMapFaster
     
     protected static final Set emptySet = new HashSet();
     
-    public PreindexedFind findFasterFixedS( final Node node )
+    public ProcessedTriple.PreindexedFind findFasterFixedS( final Node node )
         {
         Set ss = (Set) map.get( node );
         final Set s = ss == null ? emptySet : ss; 
-        return new PreindexedFind()
+        return new ProcessedTriple.PreindexedFind()
             {
             public Iterator find( Node X, Node Y )
                 { 
@@ -147,11 +146,11 @@ public class NodeToTriplesMapFaster
             };
         }
     
-    public PreindexedFind findFasterFixedO( Node node )
+    public ProcessedTriple.PreindexedFind findFasterFixedO( Node node )
         {
         Set ss = (Set) map.get( node );
         final Set s = ss == null ? emptySet : ss; 
-        return new PreindexedFind()
+        return new ProcessedTriple.PreindexedFind()
             {
             public Iterator find( Node X, Node Y )
                 { 

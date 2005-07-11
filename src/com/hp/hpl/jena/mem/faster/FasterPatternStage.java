@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.13 2005-07-11 14:07:46 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.14 2005-07-11 14:44:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -15,9 +15,9 @@ import com.hp.hpl.jena.util.CollectionFactory;
 public class FasterPatternStage extends Stage
     {
     protected GraphMemFaster graph;
-    protected MatcherAndFinder [] compiled;
     protected ValuatorSet [] guards;
     protected Set [] boundVariables;
+    protected ProcessedTriple [] processed;
     
     protected abstract static class Matcher
         {
@@ -35,22 +35,12 @@ public class FasterPatternStage extends Stage
         public abstract Iterator find( Domain d );
         }
     
-    protected static class MatcherAndFinder
-        {
-        final Matcher m;
-        final Finder f;
-        
-        MatcherAndFinder( Matcher m, Finder f )
-            { this.m = m; this.f = f; }
-        }
-    
     public FasterPatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
         {
         this.graph = (GraphMemFaster) graph;
         this.boundVariables = makeBoundVariables( triples );
-        ProcessedTriple [] s = ProcessedTriple.allocateBindings( map, triples );
+        this.processed = ProcessedTriple.allocateBindings( map, triples );
         this.guards = makeGuards( map, constraints, triples.length );
-        this.compiled = matcherAndFinder( s, this.guards );
         }
                 
     /**
@@ -113,41 +103,6 @@ public class FasterPatternStage extends Stage
     */
     protected boolean canEval( Expression e, int index )
         { return Expression.Util.containsAllVariablesOf( boundVariables[index], e ); }
-        
-    protected MatcherAndFinder [] matcherAndFinder( ProcessedTriple [] patterns, ValuatorSet [] guards )
-        {
-        MatcherAndFinder [] result = new MatcherAndFinder[patterns.length];
-        for (int i = 0; i < patterns.length; i += 1) 
-            {
-            final ValuatorSet s = guards[i];
-            final Matcher m = patterns[i].makeMatcher( this );
-            final Finder f = patterns[i].finder( graph );
-            if (s.isNonTrivial())
-                {                    
-                Matcher m2 = new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return m.match( d, t ) && s.evalBool( d ); }
-                    };
-                result[i] = new MatcherAndFinder( m2, f );
-                }
-            else
-                {
-                result[i] = new MatcherAndFinder( m, f );
-                }
-            }
-        return result;
-        }
-    
-    public static abstract class PreindexedFind
-        {
-        public abstract Iterator find( Node X, Node Y );
-        }    
-    
-    public static abstract class HalfindexedFind
-        {
-        public abstract Iterator find( Node X, Node Y, Node Z );
-        }
     
     private static int count = 0;
     
@@ -170,12 +125,18 @@ public class FasterPatternStage extends Stage
     
     protected StageElement makeStageElement( Pipe sink, int index )
         {
-        if (index == compiled.length)
+        if (index == processed.length)
             return new Put( sink );
         else
             {
-            MatcherAndFinder p = compiled[index];
-            return new Nest( p.m, p.f, makeStageElement( sink, index + 1 ) );
+            Matcher m = processed[index].makeMatcher( this );
+            Finder f = processed[index].finder( graph );
+            ValuatorSet s = guards[index];
+            StageElement next = makeStageElement( sink, index + 1 );
+            if (s.isNonTrivial())
+                return new GuardedNest( m, f, s, next );
+            else
+                return new Nest( m, f, next );
             }
         }
     
@@ -195,21 +156,43 @@ public class FasterPatternStage extends Stage
             { sink.put( current.copy() ); }
         }
     
-    protected final class Nest extends StageElement
+    protected abstract class NestShared extends StageElement
         {
         protected final Matcher matcher;
         protected final Finder finder;
-        protected final StageElement nest;
+        protected final StageElement next;
         
-        public Nest( Matcher matcher, Finder finder, StageElement nest )
-            { this.matcher = matcher; this.finder = finder; this.nest = nest; }
+        public NestShared( Matcher matcher, Finder finder, StageElement next )
+            { this.matcher = matcher; this.finder = finder; this.next = next; }
+        }
+    
+    protected final class Nest extends NestShared
+        {
+        public Nest( Matcher matcher, Finder finder, StageElement next )
+            { super( matcher, finder, next ); }
         
         public final void run( Domain current )
             {
             Iterator it = finder.find( current );
             while (stillOpen && it.hasNext())
                 if (matcher.match( current, (Triple) it.next() )) 
-                    nest.run( current );
+                    next.run( current );
+            }
+        }  
+    
+    protected final class GuardedNest extends NestShared
+        {
+        protected final ValuatorSet s;
+        
+        public GuardedNest( Matcher matcher, Finder finder, ValuatorSet s, StageElement next )
+            { super( matcher, finder, next ); this.s = s; }
+        
+        public final void run( Domain current )
+            {
+            Iterator it = finder.find( current );
+            while (stillOpen && it.hasNext())
+                if (matcher.match( current, (Triple) it.next() ) && s.evalBool( current )) 
+                    next.run( current );
             }
         }
     }

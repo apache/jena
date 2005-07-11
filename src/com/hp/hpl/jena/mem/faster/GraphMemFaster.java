@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.4 2005-07-11 14:07:47 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.5 2005-07-11 14:44:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -59,10 +59,10 @@ public class GraphMemFaster extends GraphMemBase
     public Iterator findFaster( Node S, Node P, Node O )
         { return store.findFaster( S, P, O ); }
     
-    public PreindexedFind findFasterFixedS( final Node node )
+    public ProcessedTriple.PreindexedFind findFasterFixedS( final Node node )
         { return store.findFasterFixedS( node ); }
     
-    public PreindexedFind findFasterFixedO( Node node )
+    public ProcessedTriple.PreindexedFind findFasterFixedO( Node node )
         { return store.findFasterFixedO( node ); }
     
     /**
@@ -79,10 +79,10 @@ public class GraphMemFaster extends GraphMemBase
     public void clear()
         { store.clear(); }
 
-    public HalfindexedFind findFasterBoundS()
+    public ProcessedTriple.HalfindexedFind findFasterBoundS()
         { return store.findFasterBoundS(); }
 
-    public HalfindexedFind findFasterBoundO()
+    public ProcessedTriple.HalfindexedFind findFasterBoundO()
         { return store.findFasterBoundO(); }
 
     
