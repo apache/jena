@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.14 2005-07-11 14:44:14 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.15 2005-07-11 15:48:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -109,7 +109,7 @@ public class FasterPatternStage extends Stage
     public synchronized Pipe deliver( final Pipe result )
         {
         final Pipe stream = previous.deliver( new BufferPipe() );
-        final StageElement r = makeStageElement( result, 0 );
+        final StageElement r = makeStageElementChain( result, 0 );
         new Thread( "PatternStage-" + ++count ) 
             { public void run() { FasterPatternStage.this.run( stream, result, r ); } } 
             .start();
@@ -123,20 +123,17 @@ public class FasterPatternStage extends Stage
         sink.close();
         }        
     
-    protected StageElement makeStageElement( Pipe sink, int index )
+    protected StageElement makeStageElementChain( Pipe sink, int index )
         {
         if (index == processed.length)
-            return new Put( sink );
+            return new PutBindings( sink );
         else
             {
             Matcher m = processed[index].makeMatcher( this );
             Finder f = processed[index].finder( graph );
             ValuatorSet s = guards[index];
-            StageElement next = makeStageElement( sink, index + 1 );
-            if (s.isNonTrivial())
-                return new GuardedNest( m, f, s, next );
-            else
-                return new Nest( m, f, next );
+            StageElement next = makeStageElementChain( sink, index + 1 );
+            return new FindTriples( m, f, s.isNonTrivial() ? new RunValuatorSet( s, next ) : next );
             }
         }
     
@@ -145,31 +142,25 @@ public class FasterPatternStage extends Stage
         public abstract void run( Domain current );
         }
     
-    protected static final class Put extends StageElement
+    protected static final class PutBindings extends StageElement
         {
         protected final Pipe sink;
         
-        public Put( Pipe sink )
+        public PutBindings( Pipe sink )
             { this.sink = sink; }
         
         public final void run( Domain current )
             { sink.put( current.copy() ); }
         }
     
-    protected abstract class NestShared extends StageElement
+    protected final class FindTriples extends StageElement
         {
         protected final Matcher matcher;
         protected final Finder finder;
         protected final StageElement next;
         
-        public NestShared( Matcher matcher, Finder finder, StageElement next )
+        public FindTriples( Matcher matcher, Finder finder, StageElement next )
             { this.matcher = matcher; this.finder = finder; this.next = next; }
-        }
-    
-    protected final class Nest extends NestShared
-        {
-        public Nest( Matcher matcher, Finder finder, StageElement next )
-            { super( matcher, finder, next ); }
         
         public final void run( Domain current )
             {
@@ -180,20 +171,16 @@ public class FasterPatternStage extends Stage
             }
         }  
     
-    protected final class GuardedNest extends NestShared
+    protected final class RunValuatorSet extends StageElement
         {
         protected final ValuatorSet s;
+        protected final StageElement next;
         
-        public GuardedNest( Matcher matcher, Finder finder, ValuatorSet s, StageElement next )
-            { super( matcher, finder, next ); this.s = s; }
+        public RunValuatorSet( ValuatorSet s, StageElement next )
+            { this.s = s; this.next = next; }
         
         public final void run( Domain current )
-            {
-            Iterator it = finder.find( current );
-            while (stillOpen && it.hasNext())
-                if (matcher.match( current, (Triple) it.next() ) && s.evalBool( current )) 
-                    next.run( current );
-            }
+            { if (s.evalBool( current )) next.run( current ); }
         }
     }
 

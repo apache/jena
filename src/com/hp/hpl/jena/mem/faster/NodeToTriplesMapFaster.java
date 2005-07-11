@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.3 2005-07-11 14:44:14 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.4 2005-07-11 15:48:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -54,9 +54,18 @@ public class NodeToTriplesMapFaster
     public boolean add( Triple t ) 
        {
        Node o = getIndexField( t );
-       Set s = (Set) map.get( o );
-       if (s == null) map.put( o, s = CollectionFactory.createHashedSet() );
-       if (s.add( t )) { size += 1; return true; } else return false; 
+       Collection s = (Collection) map.get( o );
+       if (s == null) map.put( o, s = new ArrayList() );
+       if (s.contains( t ))
+           return false;
+       else
+           {
+           if (s.size() == 9)
+               map.put( o, s = CollectionFactory.createHashedSet( s ) );
+           s.add( t );
+           size += 1; 
+           return true; 
+           } 
        }
     
     /**
@@ -66,15 +75,15 @@ public class NodeToTriplesMapFaster
     public boolean remove( Triple t )
        { 
        Node o = getIndexField( t );
-       Set s = (Set) map.get( o );
-       if (s == null)
+       Collection s = (Collection) map.get( o );
+       if (s == null || !s.contains( t ))
            return false;
        else
            {
-           boolean result = s.remove( t );
-           if (result) size -= 1;
-           if (s.isEmpty()) map.put( o, null );
-           return result;
+           s.remove( t );
+           size -= 1;
+           if (size == 0) map.put( o, null );
+           return true;
         } 
        }
     
@@ -84,7 +93,7 @@ public class NodeToTriplesMapFaster
     */
     public Iterator iterator( Node o ) 
        {
-       Set s = (Set) map.get( o );
+       Collection s = (Collection) map.get( o );
        return s == null ? NullIterator.instance : s.iterator();
        }
     
@@ -108,7 +117,7 @@ public class NodeToTriplesMapFaster
     */
     public boolean contains( Triple t )
        { 
-       Set s = (Set) map.get( getIndexField( t ) );
+       Collection s = (Collection) map.get( getIndexField( t ) );
        return s == null ? false : s.contains( t );
        }
     
@@ -119,7 +128,7 @@ public class NodeToTriplesMapFaster
     */
     public ExtendedIterator iterator( Node index, Node n2, Node n3 )
        {
-       Set s = (Set) map.get( index );
+       Collection s = (Collection) map.get( index );
        return s == null
            ? NullIterator.instance
            : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
@@ -131,8 +140,8 @@ public class NodeToTriplesMapFaster
     
     public ProcessedTriple.PreindexedFind findFasterFixedS( final Node node )
         {
-        Set ss = (Set) map.get( node );
-        final Set s = ss == null ? emptySet : ss; 
+        Collection ss = (Collection) map.get( node );
+        final Collection s = ss == null ? emptySet : ss; 
         return new ProcessedTriple.PreindexedFind()
             {
             public Iterator find( Node X, Node Y )
@@ -148,8 +157,8 @@ public class NodeToTriplesMapFaster
     
     public ProcessedTriple.PreindexedFind findFasterFixedO( Node node )
         {
-        Set ss = (Set) map.get( node );
-        final Set s = ss == null ? emptySet : ss; 
+        Collection ss = (Collection) map.get( node );
+        final Collection s = ss == null ? emptySet : ss; 
         return new ProcessedTriple.PreindexedFind()
             {
             public Iterator find( Node X, Node Y )
