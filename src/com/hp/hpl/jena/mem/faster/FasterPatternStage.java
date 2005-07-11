@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.12 2005-07-08 15:41:34 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.13 2005-07-11 14:07:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -22,6 +22,12 @@ public class FasterPatternStage extends Stage
     protected abstract static class Matcher
         {
         public abstract boolean match( Domain d, Triple t );
+        
+        public static final Matcher always = new Matcher() 
+            {
+            public boolean match( Domain d, Triple t )
+                { return true; }
+            };
         }
 
     protected abstract static class Finder
@@ -115,7 +121,7 @@ public class FasterPatternStage extends Stage
             {
             final ValuatorSet s = guards[i];
             final Matcher m = patterns[i].makeMatcher( this );
-            final Finder f = finder( patterns[i] );
+            final Finder f = patterns[i].finder( graph );
             if (s.isNonTrivial())
                 {                    
                 Matcher m2 = new Matcher()
@@ -133,113 +139,14 @@ public class FasterPatternStage extends Stage
         return result;
         }
     
-    protected Finder finder( final ProcessedTriple p )
+    public static abstract class PreindexedFind
         {
-        final ProcessedNode S = p.S, P = p.P, O = p.O; 
-        // System.err.println( ">> unoptimised finder " + p );
-        return new Finder()
-            {
-            public Iterator find( Domain current )
-                {
-                return graph.findFaster
-                    ( S.finder( current ), P.finder( current ), O.finder( current )  );
-                }
-            };
-//        switch (bits)
-//            {
-//            case 111:
-//            case 113:
-//            case 131:
-//            case 133:            
-//            case 311:                       
-//            case 333:
-//            case 331:
-//            case 313:
-//                {
-//                final Node 
-//                    A = S.asNodeMatch( null ), 
-//                    B = P.asNodeMatch( null ),
-//                    C = O.asNodeMatch( null );
-//                return new Finder()
-//                    {
-//                    public Iterator find( Domain current )
-//                        { return graph.findFaster( A, B, C ); } 
-//                    };
-//                }
-//
-//            case 211:
-//            case 213:
-//            case 231:
-//            case 233:
-//                {
-//                final Node B = P.asNodeMatch( null ), C = O.asNodeMatch( null );
-//                return new Finder()
-//                    {
-//                    public Iterator find( Domain current )
-//                        { return graph.findFaster( S.asNodeMatch( current ), B, C ); } 
-//                    };
-//                }
-//
-//            case 121:
-//            case 123:
-//            case 321:
-//            case 323:
-//                {
-//                final Node A = S.asNodeMatch( null ), C = O.asNodeMatch( null );
-//                return new Finder()
-//                    {
-//                    public Iterator find( Domain current )
-//                        { return graph.findFaster( A, P.asNodeMatch( current ), C ); } 
-//                    };
-//                }
-//
-//            case 112:
-//            case 312:
-//            case 132:
-//            case 332:
-//                {
-//                final Node A = S.asNodeMatch( null ), B = P.asNodeMatch( null );
-//                return new Finder()
-//                    {
-//                    public Iterator find( Domain current )
-//                        { return graph.findFaster( A, B, O.asNodeMatch( current ) ); } 
-//                    };
-//                }
-//
-//            case 122:
-//                {
-//                final Node A = S.asNodeMatch( null );
-//                return new Finder()
-//                    {
-//                    public Iterator find( Domain current )
-//                        { return graph.findFaster( A, P.asNodeMatch( current ), O.asNodeMatch( current ) ); } 
-//                    };
-//                }
-//            case 322:
-//            
-//            case 212:
-//            case 221:
-//            case 222:
-//            case 223:
-//            case 232:
-//                System.err.println( ">> unoptimised finder for " + bits + " " + p );
-//                return new Finder()
-//                    {
-//                    public Iterator find( Domain current )
-//                        {
-//                        Node Sn = nullToAny( p.S.asNodeMatch( current ) );
-//                        Node Pn = nullToAny( p.P.asNodeMatch( current ) );
-//                        Node On = nullToAny( p.O.asNodeMatch( current ) );
-//                        return graph.findFaster( Sn, Pn, On );
-//                        }
-//                    };
-//            }
-//        throw new BrokenException( "impossible combination " + bits + " in finder()" );
-        }
+        public abstract Iterator find( Node X, Node Y );
+        }    
     
-    protected boolean sameVariable( ProcessedNode x, ProcessedNode y )
+    public static abstract class HalfindexedFind
         {
-        return x.index == y.index;
+        public abstract Iterator find( Node X, Node Y, Node Z );
         }
     
     private static int count = 0;

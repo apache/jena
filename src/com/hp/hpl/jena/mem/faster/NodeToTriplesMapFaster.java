@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.1 2005-07-05 12:44:24 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.2 2005-07-11 14:07:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
+import com.hp.hpl.jena.mem.faster.FasterPatternStage.PreindexedFind;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -127,6 +128,42 @@ public class NodeToTriplesMapFaster
            ;
        }    
     
+    protected static final Set emptySet = new HashSet();
+    
+    public PreindexedFind findFasterFixedS( final Node node )
+        {
+        Set ss = (Set) map.get( node );
+        final Set s = ss == null ? emptySet : ss; 
+        return new PreindexedFind()
+            {
+            public Iterator find( Node X, Node Y )
+                { 
+                return 
+                    NodeToTriplesMapFaster.this.f2.filterOn( X )
+                    .and( NodeToTriplesMapFaster.this.f3.filterOn( Y ) )
+                    .filterKeep( s.iterator() )
+                    ; 
+                }                   
+            };
+        }
+    
+    public PreindexedFind findFasterFixedO( Node node )
+        {
+        Set ss = (Set) map.get( node );
+        final Set s = ss == null ? emptySet : ss; 
+        return new PreindexedFind()
+            {
+            public Iterator find( Node X, Node Y )
+                { 
+                return 
+                    NodeToTriplesMapFaster.this.f2.filterOn( X )
+                    .and( NodeToTriplesMapFaster.this.f3.filterOn( Y ) )
+                    .filterKeep( s.iterator() )
+                    ; 
+                }                   
+            };
+        }
+    
     /**
         Answer an iterator over all the triples in this NTM which are 
         accepted by <code>pattern</code>.
@@ -173,6 +210,7 @@ public class NodeToTriplesMapFaster
               }
           };
       }
+
     }
 
 

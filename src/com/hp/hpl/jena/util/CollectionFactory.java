@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: CollectionFactory.java,v 1.3 2005-07-05 15:15:37 chris-dollin Exp $
+  $Id: CollectionFactory.java,v 1.4 2005-07-11 14:07:54 chris-dollin Exp $
 */
 package com.hp.hpl.jena.util;
 
@@ -18,20 +18,23 @@ public class CollectionFactory
     /**
          Answer a new Map which uses hashing for lookup.
     */
-    public static Map createHashedMap() { return new HashMap(); }
+    public static Map createHashedMap() 
+        { return new HashMap(); }
     
     /**
          Answer a new Map which uses hashing for lookup and has initial size
          <code>size</code>.
     */
-    public static Map createHashedMap( int size ) { return new HashMap( size ); }
+    public static Map createHashedMap( int size ) 
+        { return new HashMap( size ); }
     
     /**
          Answer a new Map which uses hashing for lookup and is initialised to be
          a copy of <code>toCopy</code>.
     */
-    public static Map createHashedMap( Map toCopy ) { return new HashMap( toCopy ); }
-        
+    public static Map createHashedMap( Map toCopy ) 
+        { return new HashMap( toCopy ); }
+    
     /**
          Answer a new Set which uses haashing for lookup.
     */

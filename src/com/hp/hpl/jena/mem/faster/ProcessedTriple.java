@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.2 2005-07-08 15:41:34 chris-dollin Exp $
+ 	$Id: ProcessedTriple.java,v 1.3 2005-07-11 14:07:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,7 +10,9 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.faster.FasterPatternStage.Matcher;
+import com.hp.hpl.jena.mem.faster.FasterPatternStage.*;
+import com.hp.hpl.jena.mem.faster.ProcessedNode.Bound;
+import com.hp.hpl.jena.mem.faster.ProcessedNode.Fixed;
 import com.hp.hpl.jena.shared.BrokenException;
 
 /**
@@ -121,14 +123,81 @@ public class ProcessedTriple
                     };
     
             case NOMATCH:
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return true; }
-                    };
+                return Matcher.always;
                     
             }
         throw new BrokenException( "uncatered-for case in optimisation" );
+        }
+
+    protected Finder finder( GraphMemFaster graph )
+        {
+        if (S instanceof Fixed) return finderFixedS( graph, S, P, O );
+        if (O instanceof Fixed) return finderFixedO( graph, S, P, O );
+        if (S instanceof Bound) return finderBoundS( graph, S, P, O );
+        if (O instanceof Bound) return finderBoundO( graph, S, P, O );
+        // System.err.println( ">> unoptimised finder " + this );
+        return finderGeneral( graph, S, P, O );
+        }
+
+    protected FasterPatternStage.Finder finderFixedS( final GraphMemFaster graph, final ProcessedNode S, final ProcessedNode P, final ProcessedNode O )
+        {
+        final FasterPatternStage.PreindexedFind f = graph.findFasterFixedS( S.node );
+        return new FasterPatternStage.Finder()
+            {
+            public Iterator find( Domain current )
+                {
+                return f.find( P.finder( current ), O.finder( current ) );
+                }
+            };
+        }
+
+    protected FasterPatternStage.Finder finderFixedO( final GraphMemFaster graph, final ProcessedNode S, final ProcessedNode P, final ProcessedNode O )
+        {
+        final FasterPatternStage.PreindexedFind f = graph.findFasterFixedO( O.node );
+        return new FasterPatternStage.Finder()
+            {
+            public Iterator find( Domain current )
+                {
+                return f.find( S.finder( current ), P.finder( current ) );
+                }
+            };
+        }
+
+    protected FasterPatternStage.Finder finderBoundS( final GraphMemFaster graph, final ProcessedNode S, final ProcessedNode P, final ProcessedNode O )
+        {            
+        final FasterPatternStage.HalfindexedFind f = graph.findFasterBoundS();
+        return new FasterPatternStage.Finder()
+            {
+            public Iterator find( Domain current )
+                {
+                return f.find( S.finder( current ), P.finder( current ), O.finder( current ) );
+                }
+            };
+        }
+
+    protected FasterPatternStage.Finder finderBoundO( final GraphMemFaster graph, final ProcessedNode S, final ProcessedNode P, final ProcessedNode O )
+        {
+        final FasterPatternStage.HalfindexedFind f = graph.findFasterBoundO();
+        return new FasterPatternStage.Finder()
+            {
+            public Iterator find( Domain current )
+                {
+                return f.find( S.finder( current ), P.finder( current ), O.finder( current ) );
+                }
+            };
+        }
+
+    protected FasterPatternStage.Finder finderGeneral
+        ( final GraphMemFaster graph, final ProcessedNode S, final ProcessedNode P, final ProcessedNode O )
+        {
+        return new FasterPatternStage.Finder()
+            {
+            public Iterator find( Domain current )
+                {
+                return graph.findFaster
+                    ( S.finder( current ), P.finder( current ), O.finder( current )  );
+                }
+            };
         }
 
     }

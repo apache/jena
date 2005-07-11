@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.2 2005-07-05 12:44:24 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.3 2005-07-11 14:07:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
+import com.hp.hpl.jena.mem.faster.FasterPatternStage.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class FasterTripleStore
@@ -62,6 +63,16 @@ public class FasterTripleStore
             predicates.remove( t );
             objects.remove( t ); 
             }
+        }
+    
+    /**
+         Clear this store, ie remove all triples from it.
+    */
+    public void clear()
+        {
+        subjects.clear();
+        predicates.clear();
+        objects.clear();
         }
     
     /**
@@ -137,14 +148,29 @@ public class FasterTripleStore
             return subjects.iterateAll( S, P, O );
         }
     
-    /**
-         Clear this store, ie remove all triples from it.
-    */
-    public void clear()
-        {
-        subjects.clear();
-        predicates.clear();
-        objects.clear();
+    public PreindexedFind findFasterFixedS( Node node )
+        { return subjects.findFasterFixedS( node ); }
+
+
+    public PreindexedFind findFasterFixedO( Node node )
+        { return objects.findFasterFixedO( node ); }
+
+    public HalfindexedFind findFasterBoundS()
+        { 
+        return new HalfindexedFind()
+            {
+            public Iterator find( Node X, Node Y, Node Z )
+                { return subjects.iterator( X, Y, Z ); }
+            };
+        }
+
+    public HalfindexedFind findFasterBoundO()
+        {       
+        return new HalfindexedFind()
+            {
+            public Iterator find( Node S, Node P, Node O )
+                { return objects.iterator( O, S, P ); }
+            };
         }
 
     }

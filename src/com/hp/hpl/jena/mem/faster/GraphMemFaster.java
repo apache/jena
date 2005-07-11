@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.3 2005-07-04 14:44:17 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.4 2005-07-11 14:07:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -11,6 +11,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.mem.*;
+import com.hp.hpl.jena.mem.faster.FasterPatternStage.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -58,6 +59,12 @@ public class GraphMemFaster extends GraphMemBase
     public Iterator findFaster( Node S, Node P, Node O )
         { return store.findFaster( S, P, O ); }
     
+    public PreindexedFind findFasterFixedS( final Node node )
+        { return store.findFasterFixedS( node ); }
+    
+    public PreindexedFind findFasterFixedO( Node node )
+        { return store.findFasterFixedO( node ); }
+    
     /**
          Answer true iff this graph contains <code>t</code>. If <code>t</code>
          happens to be concrete, then we hand responsibility over to the store.
@@ -71,6 +78,13 @@ public class GraphMemFaster extends GraphMemBase
     */
     public void clear()
         { store.clear(); }
+
+    public HalfindexedFind findFasterBoundS()
+        { return store.findFasterBoundS(); }
+
+    public HalfindexedFind findFasterBoundO()
+        { return store.findFasterBoundO(); }
+
     
     }
 

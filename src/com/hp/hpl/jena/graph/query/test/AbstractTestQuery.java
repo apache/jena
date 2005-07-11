@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.35 2005-02-21 11:52:31 andy_seaborne Exp $
+  $Id: AbstractTestQuery.java,v 1.36 2005-07-11 14:04:04 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -293,7 +293,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Q.addMatch( X, reads, Y );
         Q.addMatch( Y, inGenre, Z );
         List bindings = ebList( g, Q, new Node [] {X, Z} ); 
-        assertTrue( "testTwoPatterns: one binding", bindings.size() == 1 );
+        assertEquals( "testTwoPatterns: one binding", 1, bindings.size() );
         Domain  d = (Domain) bindings.get( 0 );
         // System.out.println( "* width = " + d.width() );
         assertTrue( "testTwoPatterns: width 2", d.size() >= 2 );
