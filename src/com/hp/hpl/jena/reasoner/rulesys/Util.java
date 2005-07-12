@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Util.java,v 1.24 2005-04-08 16:37:51 der Exp $
+ * $Id: Util.java,v 1.25 2005-07-12 15:57:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -30,7 +30,7 @@ import java.util.*;
  * A small random collection of utility functions used by the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2005-04-08 16:37:51 $
+ * @version $Revision: 1.25 $ on $Date: 2005-07-12 15:57:43 $
  */
 public class Util {
 
@@ -38,19 +38,14 @@ public class Util {
      * Check whether a Node is a numeric (integer) value
      */
     public static boolean isNumeric(Node n) {
-        if (n.isLiteral()) {
-            Object o = n.getLiteral().getValue();
-            return (o instanceof Number);
-        } else {
-            return false;
-        }
+        return n.isLiteral() && n.getLiteralValue() instanceof Number;
     }
     
     /**
      * Return the integer value of a literal node
      */
     public static int getIntValue(Node n) {
-        return ((Number)n.getLiteral().getValue()).intValue();
+        return ((Number)n.getLiteralValue()).intValue();
     }
    
     /**
@@ -58,12 +53,12 @@ public class Util {
      * @param n1 the first numeric valued literal node
      * @param n2 the second numeric valued literal node
      * @return -1 if n1 is less than n2, 0 if n1 equals n2 and +1 if n1 greater than n2
-     * @throws ClassCastException if either not is not numeric
+     * @throws ClassCastException if either node is not numeric
      */
     public static int compareNumbers(Node n1, Node n2) {
         if (n1.isLiteral() && n2.isLiteral()) {
-            Object v1 = n1.getLiteral().getValue();
-            Object v2 = n2.getLiteral().getValue();
+            Object v1 = n1.getLiteralValue();
+            Object v2 = n2.getLiteralValue();
             if (v1 instanceof Number && v2 instanceof Number) {
                 if (v1 instanceof Float || v1 instanceof Double 
                         || v1 instanceof Float || v2 instanceof Double) {
@@ -85,7 +80,7 @@ public class Util {
      */
     public static boolean isInstant(Node n) {
         if (n.isLiteral()) {
-            Object o = n.getLiteral().getValue();
+            Object o = n.getLiteralValue();
             return (o instanceof XSDDateTime);
         } else {
             return false;
@@ -101,8 +96,8 @@ public class Util {
      */
     public static int compareInstants(Node n1, Node n2) {
         if (n1.isLiteral() && n2.isLiteral()) {
-            Object v1 = n1.getLiteral().getValue();
-            Object v2 = n2.getLiteral().getValue();
+            Object v1 = n1.getLiteralValue();
+            Object v2 = n2.getLiteralValue();
             if (v1 instanceof XSDDateTime && v2 instanceof XSDDateTime) {
                 XSDDateTime a = (XSDDateTime) v1;
                 XSDDateTime b = (XSDDateTime) v2;

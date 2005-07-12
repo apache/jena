@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: LPInterpreter.java,v 1.9 2005-02-21 12:17:55 andy_seaborne Exp $
+ * $Id: LPInterpreter.java,v 1.10 2005-07-12 15:57:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import org.apache.commons.logging.LogFactory;
  * parallel query.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:17:55 $
+ * @version $Revision: 1.10 $ on $Date: 2005-07-12 15:57:43 $
  */
 public class LPInterpreter {
 
@@ -447,7 +447,7 @@ public class LPInterpreter {
                             Node o = argVars[2];
                             if (o instanceof Node_RuleVariable) o = ((Node_RuleVariable)o).deref();
                             if (Functor.isFunctor(o)) {
-                                Functor funcArg = (Functor)o.getLiteral().getValue();
+                                Functor funcArg = (Functor)o.getLiteralValue();
                                 if (funcArg.getName().equals(func.getName())) {
                                     if (funcArg.getArgLength() == func.getArgLength()) {
                                         Node[] fargs = funcArg.getArgs();
@@ -754,7 +754,7 @@ public class LPInterpreter {
                 throw new ReasonerException("Internal error in LP reasoner: variable in triple result");
             }
             if (Functor.isFunctor(dnode)) {
-                Functor f = (Functor) dnode.getLiteral().getValue();
+                Functor f = (Functor) dnode.getLiteralValue();
                 Node[] fargs = f.getArgs();
                 boolean needCopy = false;
                 for (int i = 0; i < fargs.length; i++) {

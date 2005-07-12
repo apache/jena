@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BindingStack.java,v 1.7 2005-02-21 12:17:39 andy_seaborne Exp $
+ * $Id: BindingStack.java,v 1.8 2005-07-12 15:57:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -21,7 +21,7 @@ import java.util.*;
  * Provides a trail of possible variable bindings for a forward rule.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-02-21 12:17:39 $
+ * @version $Revision: 1.8 $ on $Date: 2005-07-12 15:57:43 $
  */
 public class BindingStack implements BindingEnvironment {
     
@@ -122,7 +122,7 @@ public class BindingStack implements BindingEnvironment {
         } else if (node instanceof Node_ANY) {
             return null;
         } else if (Functor.isFunctor(node)) {
-            Functor functor = (Functor)node.getLiteral().getValue();
+            Functor functor = (Functor)node.getLiteralValue();
             if (functor.isGround()) return node;
             Node[] args = functor.getArgs();
             ArrayList boundargs = new ArrayList(args.length);

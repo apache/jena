@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TriplePattern.java,v 1.24 2005-02-21 12:16:17 andy_seaborne Exp $
+ * $Id: TriplePattern.java,v 1.25 2005-07-12 15:57:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner;
 
@@ -33,7 +33,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  * but that is final for some strange reason.</p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.24 $ on $Date: 2005-02-21 12:16:17 $
+ * @version $Revision: 1.25 $ on $Date: 2005-07-12 15:57:43 $
  */
 public class TriplePattern implements ClauseEntry {
 
@@ -137,8 +137,8 @@ public class TriplePattern implements ClauseEntry {
         if (object.isVariable() || pattern.object.isVariable()) return true;
         // Left with checking compatibility of ground literals
         if (Functor.isFunctor(object) && Functor.isFunctor(pattern.object)) {
-            Functor functor = (Functor)object.getLiteral().getValue();
-            Functor pFunctor = (Functor)pattern.object.getLiteral().getValue();
+            Functor functor = (Functor)object.getLiteralValue();
+            Functor pFunctor = (Functor)pattern.object.getLiteralValue();
             return (functor.getName().equals(pFunctor.getName()) 
                             && functor.getArgs().length == pFunctor.getArgs().length);
         } else {
@@ -156,8 +156,8 @@ public class TriplePattern implements ClauseEntry {
         if ( ! variantOf(subject, pattern.subject, vmap) ) return false;
         if ( ! variantOf(predicate, pattern.predicate, vmap) ) return false;
         if (Functor.isFunctor(object) && Functor.isFunctor(pattern.object)) {
-            Functor functor = (Functor)object.getLiteral().getValue();
-            Functor pFunctor = (Functor)pattern.object.getLiteral().getValue();
+            Functor functor = (Functor)object.getLiteralValue();
+            Functor pFunctor = (Functor)pattern.object.getLiteralValue();
             if ( ! functor.getName().equals(pFunctor.getName()) ) return false;
             Node[] args = functor.getArgs();
             Node[] pargs = pFunctor.getArgs();
@@ -202,7 +202,7 @@ public class TriplePattern implements ClauseEntry {
         if (subject.isLiteral() || predicate.isLiteral()) return false;
         if (Functor.isFunctor(subject)) return false;
         if (Functor.isFunctor(object)) {
-            Node[] args = ((Functor)object.getLiteral().getValue()).getArgs();
+            Node[] args = ((Functor)object.getLiteralValue()).getArgs();
             for (int i = 0; i < args.length; i++) {
                 if (Functor.isFunctor(args[i])) return false;  
             }
@@ -227,7 +227,7 @@ public class TriplePattern implements ClauseEntry {
     public boolean isGround() {
         if (subject.isVariable() || predicate.isVariable() || object.isVariable()) return false;
         if (Functor.isFunctor(object)) {
-            return ((Functor)object.getLiteral().getValue()).isGround();
+            return ((Functor)object.getLiteralValue()).isGround();
         }
         return true;
     }

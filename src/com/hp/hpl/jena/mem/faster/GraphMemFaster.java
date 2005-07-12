@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.5 2005-07-11 14:44:14 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.6 2005-07-12 15:57:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -11,7 +11,6 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.QueryHandler;
 import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.mem.faster.FasterPatternStage.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
@@ -84,8 +83,6 @@ public class GraphMemFaster extends GraphMemBase
 
     public ProcessedTriple.HalfindexedFind findFasterBoundO()
         { return store.findFasterBoundO(); }
-
-    
     }
 
 

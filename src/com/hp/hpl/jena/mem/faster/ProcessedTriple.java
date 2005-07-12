@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.4 2005-07-11 14:44:14 chris-dollin Exp $
+ 	$Id: ProcessedTriple.java,v 1.5 2005-07-12 15:57:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -53,7 +53,7 @@ public class ProcessedTriple
             );
         }
     
-    protected Matcher makeMatcher( FasterPatternStage stage )
+    protected Matcher makeMatcher()
         {
         final int SMATCH = 4, PMATCH = 2, OMATCH = 1, NOMATCH = 0;
         int bits = 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.32 2005-06-17 11:11:00 der Exp $
+ * $Id: Rule.java,v 1.33 2005-07-12 15:57:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -60,7 +60,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.32 $ on $Date: 2005-06-17 11:11:00 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.33 $ on $Date: 2005-07-12 15:57:43 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -234,7 +234,7 @@ public class Rule implements ClauseEntry {
         if (obj instanceof Node_RuleVariable) {
             max = maxVarIndex(obj, max);
         } else if (Functor.isFunctor(obj)) {
-            max = findVars((Functor)obj.getLiteral().getValue(), max);
+            max = findVars((Functor)obj.getLiteralValue(), max);
         }
         return max;
     }
@@ -339,7 +339,7 @@ public class Rule implements ClauseEntry {
             }
             return c;
         } else if (Functor.isFunctor(n)) {
-            Functor f = (Functor)n.getLiteral().getValue();
+            Functor f = (Functor)n.getLiteralValue();
             return Functor.makeFunctorNode(cloneFunctor(f, vmap, env));
         } else {
             return n;

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.17 2005-06-27 20:26:45 der Exp $
+  $Id: LiteralLabel.java,v 1.18 2005-07-12 15:57:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -249,6 +249,16 @@ final public class LiteralLabel {
 				(dtype == null ? value.toString() : dtype.unparse(value));
 		return lexicalForm;
 	}
+    
+    /**
+        Answer the object value to use as the indexing value of this literal.
+        The lexical form is correct for plain strings and xsd strings; needs
+        updating.
+        
+        TODO fill in the details.
+    */
+    public Object getIndexingValue()
+        { return getLexicalForm(); }
 
 	/** An RFC 3066 lang tag or "".
 	 *  These are case insensitive,

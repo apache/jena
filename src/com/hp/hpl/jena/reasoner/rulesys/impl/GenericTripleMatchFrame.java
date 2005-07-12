@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: GenericTripleMatchFrame.java,v 1.4 2005-02-21 12:17:40 andy_seaborne Exp $
+ * $Id: GenericTripleMatchFrame.java,v 1.5 2005-07-12 15:57:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Node_RuleVariable;
  * </p>
  *  
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:17:40 $
+ * @version $Revision: 1.5 $ on $Date: 2005-07-12 15:57:43 $
  */
 public class GenericTripleMatchFrame extends GenericChoiceFrame {
     
@@ -78,7 +78,7 @@ public class GenericTripleMatchFrame extends GenericChoiceFrame {
     public boolean functorMatch(Triple t, LPInterpreter interpreter) {
         Node o = t.getObject();
         if (!Functor.isFunctor(o)) return false;
-        Functor f = (Functor)o.getLiteral().getValue();
+        Functor f = (Functor)o.getLiteralValue();
         if ( ! f.getName().equals(objectFunctor.getName())) return false;
         if ( f.getArgLength() != objectFunctor.getArgLength()) return false;
         Node[] fargs = f.getArgs();
@@ -103,7 +103,7 @@ public class GenericTripleMatchFrame extends GenericChoiceFrame {
         Node o = LPInterpreter.deref(interpreter.argVars[2]);
         objectVar =    (o instanceof Node_RuleVariable) ? (Node_RuleVariable) o : null;
         if (Functor.isFunctor(o)) {
-            objectFunctor = (Functor)o.getLiteral().getValue();
+            objectFunctor = (Functor)o.getLiteralValue();
             goal = new TriplePattern(s, p, null);
         } else {
             objectFunctor = null;

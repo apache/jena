@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.36 2005-06-29 14:38:37 chris-dollin Exp $
+  $Id: TestNode.java,v 1.37 2005-07-12 15:57:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -547,6 +547,43 @@ public class TestNode extends GraphTestBase
         assertEquals( "\"eccentric\"@en_UK", english.toString() );
         assertEquals( "10^^http://www.w3.org/2001/XMLSchema#int", typed.toString( false ) );
         }
+    
+    public void testGetIndexingValueURI()
+        {
+        Node u = Node.create( "eh:/telephone" );
+        assertSame( u, u.getIndexingValue() );
+        }
+    
+    public void testGetIndexingValueBlank()
+        {
+        Node b = Node.create( "_television" );
+        assertSame( b, b.getIndexingValue() );
+        }
+    
+    public void testGetIndexingValuePlainString()
+        {
+        Node s = Node.create( "'literally'" );
+        assertEquals( s.getLiteral().getIndexingValue(), s.getIndexingValue() );
+        }
+    
+    public void testGetIndexingValueLanguagedString()
+        {
+        Node s = Node.create( "'chat'fr" );
+        assertEquals( s.getLiteral().getIndexingValue(), s.getIndexingValue() );
+        }
+    
+    public void testGetIndexingValueXSDString()
+        {
+        Node s = Node.create( "'string'xsd:string" );
+        assertEquals( s.getLiteral().getIndexingValue(), s.getIndexingValue() );
+        }
+    
+    // TODO should have more of these
+    public void  testGetLiteralValuePlainString()
+        {
+        Node s = Node.create( "'aString'" );
+        assertSame( s.getLiteral().getValue(), s.getLiteralValue() );
+        }
         
     public void testConcrete()
         {
@@ -597,7 +634,7 @@ public class TestNode extends GraphTestBase
         for (int i = 0; i < someNodes.length; i += 1) testHasURI( someNodes[i] );
         }
 
-	private void testHasURI( String uri ) 
+	protected void testHasURI( String uri ) 
         {
 		Node n = Node.create( uri );
 		assertTrue( uri, !n.isURI() || n.hasURI( uri ) );

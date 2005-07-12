@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.46 2005-06-29 14:33:29 chris-dollin Exp $
+  $Id: Node.java,v 1.47 2005-07-12 15:55:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -233,6 +233,21 @@ public abstract class Node {
     /** get the literal value of a literal node, otherwise die horribly */
     public LiteralLabel getLiteral()
         { throw new UnsupportedOperationException( this + " is not a literal node" ); }
+
+    /**
+        Answer the value of this nodes literal value, if it is a literal;
+        otherwise die horribly. 
+    */
+    public final Object getLiteralValue()
+        { return getLiteral().getValue(); }
+    
+    /**
+        Answer the object which is the index value for this Node. The default
+        is this Node itself; overridden in Node_Literal for literal indexing
+        purposes. Only concrete nodes should use this method.
+    */
+    public Object getIndexingValue()
+        { return this; }
     
     /** get the URI of this node if it has one, else die horribly */
     public String getURI()

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.15 2005-07-11 15:48:58 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.16 2005-07-12 15:57:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -129,7 +129,7 @@ public class FasterPatternStage extends Stage
             return new PutBindings( sink );
         else
             {
-            Matcher m = processed[index].makeMatcher( this );
+            Matcher m = processed[index].makeMatcher();
             Finder f = processed[index].finder( graph );
             ValuatorSet s = guards[index];
             StageElement next = makeStageElementChain( sink, index + 1 );

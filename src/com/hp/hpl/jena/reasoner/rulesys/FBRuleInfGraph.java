@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.56 2005-07-05 11:21:41 chris-dollin Exp $
+ * $Id: FBRuleInfGraph.java,v 1.57 2005-07-12 15:57:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.56 $ on $Date: 2005-07-05 11:21:41 $
+ * @version $Revision: 1.57 $ on $Date: 2005-07-12 15:57:43 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -682,7 +682,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             Node rNode = t.getObject();
             boolean foundReport = false;
             if (rNode.isLiteral()) {
-                Object rVal = rNode.getLiteral().getValue();
+                Object rVal = rNode.getLiteralValue();
                 if (rVal instanceof Functor) {
                     Functor rFunc = (Functor)rVal;
                     foundReport = true;

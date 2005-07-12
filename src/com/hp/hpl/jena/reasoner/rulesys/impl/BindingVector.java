@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BindingVector.java,v 1.21 2005-02-21 12:17:39 andy_seaborne Exp $
+ * $Id: BindingVector.java,v 1.22 2005-07-12 15:57:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -24,7 +24,7 @@ import java.util.*;
  * use of reference chains.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.21 $ on $Date: 2005-02-21 12:17:39 $
+ * @version $Revision: 1.22 $ on $Date: 2005-07-12 15:57:43 $
  */
 public class BindingVector implements BindingEnvironment {
     
@@ -78,7 +78,7 @@ public class BindingVector implements BindingEnvironment {
         } else if (node instanceof Node_ANY) {
             return null;
         } else if (Functor.isFunctor(node)) {
-            Functor functor = (Functor)node.getLiteral().getValue();
+            Functor functor = (Functor)node.getLiteralValue();
             if (functor.isGround()) return node;
             Node[] args = functor.getArgs();
             ArrayList boundargs = new ArrayList(args.length);
@@ -245,9 +245,9 @@ public class BindingVector implements BindingEnvironment {
         Node gObj = goal.getObject();
         Node hObj = head.getObject();
         if (Functor.isFunctor(gObj)) {
-            Functor gFunctor = (Functor)gObj.getLiteral().getValue();
+            Functor gFunctor = (Functor)gObj.getLiteralValue();
             if (Functor.isFunctor(hObj)) {
-                Functor hFunctor = (Functor)hObj.getLiteral().getValue();
+                Functor hFunctor = (Functor)hObj.getLiteralValue();
                 if ( ! gFunctor.getName().equals(hFunctor.getName()) ) {
                     return null;
                 }

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleClauseCode.java,v 1.8 2005-02-21 12:17:59 andy_seaborne Exp $
+ * $Id: RuleClauseCode.java,v 1.9 2005-07-12 15:57:43 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * represented as a list of RuleClauseCode objects.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.8 $ on $Date: 2005-02-21 12:17:59 $
+ * @version $Revision: 1.9 $ on $Date: 2005-07-12 15:57:43 $
  */
 public class RuleClauseCode {
     
@@ -468,7 +468,7 @@ public class RuleClauseCode {
                     code[p++] = (byte)argi;
                 }
             } else if (Functor.isFunctor(node)) {
-                Functor f = (Functor)node.getLiteral().getValue();
+                Functor f = (Functor)node.getLiteralValue();
                 code[p++] = GET_FUNCTOR;
                 args.add(f);
                 Node[] fargs = f.getArgs();
@@ -558,7 +558,7 @@ public class RuleClauseCode {
                     code[p++] = (byte)argi;
                 }
             } else if (Functor.isFunctor(node)) {
-                Functor f = (Functor)node.getLiteral().getValue();
+                Functor f = (Functor)node.getLiteralValue();
                 Node[] fargs = f.getArgs();
                 for (int i = 0; i < fargs.length; i++) {
                     emitBodyPut(fargs[i], i+3, deref);
@@ -735,7 +735,7 @@ public class RuleClauseCode {
                 Node obj = goal.getObject();
                 if (Functor.isFunctor(obj)) {
                     result.add(obj);
-                    result.addAll(termVars((Functor)obj.getLiteral().getValue()));
+                    result.addAll(termVars((Functor)obj.getLiteralValue()));
                 } else {
                     result.add(obj);
                 }
