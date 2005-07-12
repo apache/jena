@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.84 $
+ * Revision           $Revision: 1.85 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-28 15:32:55 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2005-07-12 15:14:05 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.84 2005-06-28 15:32:55 chris-dollin Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.85 2005-07-12 15:14:05 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2182,10 +2182,15 @@ public class OntModelImpl
 
     /**
      * <p>
-     * Add the given model as one of the sub-models of this ontology union.   Will
-     * cause the associated infererence engine (if any) to update, so this may be
-     * an expensive operation in some cases.
+     * Add the given model as one of the sub-models of the enclosed ontology union model.
+     * <strong>Note</strong> that if <code>model</code> is a composite model (i.e. an
+     * {@link OntModel} or {@link InfModel}), the model and all of its submodels will
+     * be added to the union of sub-models of this model. If this is <strong>not</strong> required,
+     * callers should explicitly add only the base model:
      * </p>
+     * <pre>
+     * parent.addSubModel( child.getBaseModel() );
+     * </pre>
      *
      * @param model A sub-model to add
      */
@@ -2197,13 +2202,27 @@ public class OntModelImpl
     /**
      * <p>
      * Add the given model as one of the sub-models of the enclosed ontology union model.
+     * <strong>Note</strong> that if <code>model</code> is a composite model (i.e. an
+     * {@link OntModel} or {@link InfModel}), the model and all of its submodels will
+     * be added to the union of sub-models of this model. If this is <strong>not</strong> required,
+     * callers should explicitly add only the base model:
      * </p>
+     * <pre>
+     * parent.addSubModel( child.getBaseModel(), true );
+     * </pre>
      *
      * @param model A sub-model to add
      * @param rebind If true, rebind any associated inferencing engine to the new data (which
      * may be an expensive operation)
      */
     public void addSubModel( Model model, boolean rebind ) {
+        Graph subG = model.getGraph();
+
+        if (subG instanceof MultiUnion) {
+            // we need to get the base graph when adding a ontmodel
+            subG = ((MultiUnion) subG).getBaseGraph();
+        }
+
         getUnionGraph().addGraph( model.getGraph() );
         if (rebind) {
             rebind();
@@ -2237,13 +2256,15 @@ public class OntModelImpl
      */
     public void removeSubModel( Model model, boolean rebind ) {
         Graph subG = model.getGraph();
+        getUnionGraph().removeGraph( subG );
 
+        // note that it may be the base graph of the given model that was added
+        // originally
         if (subG instanceof MultiUnion) {
             // we need to get the base graph when removing a ontmodel
-            subG = ((MultiUnion) subG).getBaseGraph();
+            getUnionGraph().removeGraph( ((MultiUnion) subG).getBaseGraph() );
         }
 
-        getUnionGraph().removeGraph( subG );
         if (rebind) {
             rebind();
         }

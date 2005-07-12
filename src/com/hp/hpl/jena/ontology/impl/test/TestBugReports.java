@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.65 $
+ * Revision           $Revision: 1.66 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-28 15:37:07 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2005-07-12 15:13:21 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -1403,7 +1403,7 @@ public class TestBugReports
         assertTrue( i.isIndividual() );
     }
 
-    
+
     /**
      * Bug report by kers - maximal lower elements calculation not correct in models
      * with no reasoner. Manifests as direct sub-class bug.
@@ -1418,14 +1418,14 @@ public class TestBugReports
         OntClass e = m.createClass( NS + "e" );
         OntClass f = m.createClass( NS + "f" );
         OntClass g = m.createClass( NS + "g" );
-        
+
         g.addSuperClass( c );
         f.addSuperClass( c );
         e.addSuperClass( b );
         d.addSuperClass( b );
         c.addSuperClass( a );
         b.addSuperClass( a );
-        
+
         // simulated closure
         r.addSubClass( a );
         r.addSubClass( b );
@@ -1434,11 +1434,31 @@ public class TestBugReports
         r.addSubClass( e );
         r.addSubClass( f );
         r.addSubClass( g );
-        
+
         TestUtil.assertIteratorValues( this, r.listSubClasses( true ), new Object[] {a} );
     }
-    
-    
+
+    /**
+     * Bug report by Andrew Moreton - addSubModel/removeSubmodel not working from
+     * Jena 2.1 to Jena 2.2
+     *
+     */
+    public void test_am_01() {
+        OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        OntModel m1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+
+        OntClass c = m1.createClass( NS + "c" );
+
+        assertFalse( m0.containsResource( c ) );
+
+        m0.addSubModel( m1 );
+        assertTrue( m0.containsResource( c ) );
+
+        m0.removeSubModel( m1 );
+        assertFalse( m0.containsResource( c ) );
+    }
+
+
     // Internal implementation methods
     //////////////////////////////////
 
