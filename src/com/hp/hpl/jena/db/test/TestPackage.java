@@ -15,23 +15,24 @@ import com.hp.hpl.jena.rdf.model.*;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.33 $
+ * @version 	$Revision: 1.34 $
  */
 public class TestPackage extends TestSuite
 {
 	
 	/*
 	 * this testPackage requires the parameters for a
-	 * database connection to be defined. one method
-	 * is to explicitly define the parameters for
-	 * mysql, oracle, postgresql as shown here below.
-	 * 
-	 * an alternative is to use the "guess" methods
-	 * in ModelFactoryBase to get the parameters from
+	 * database connection to be defined. use the "guess" 
+     * method in ModelFactoryBase to get the parameters from
 	 * a configuration file (see test-db.sh, test.bat,
 	 * test.sh). if the guess methods do not work for
-	 * you, comment them out and use/modify the manual
-	 * settings for your database engine, below.
+	 * you, /contact Chris so we can work out why/ and in
+     * the meantime /temporarily/ hack the code using the
+     * examples below.
+     * 
+     * Using the guess* methods allows the same codebase to be
+     * tested against different databases without having to
+     * fiddle around by hand.
 	 */
  
 	/*/ oracle settings
@@ -43,11 +44,11 @@ public class TestPackage extends TestSuite
 	// */
 	
 	// */ mysql settings
-	static String M_DB_URL = "jdbc:mysql://localhost/test";
-	static String M_DB_USER = "test";
-	static String M_DB_PASSWD = "";
-	static String M_DB = "MySQL";
-	static String M_DBDRIVER_CLASS = "com.mysql.jdbc.Driver";
+//	static String M_DB_URL = "jdbc:mysql://localhost/test";
+//	static String M_DB_USER = "test";
+//	static String M_DB_PASSWD = "test";
+//	static String M_DB = "MySQL";
+//	static String M_DBDRIVER_CLASS = "com.mysql.jdbc.Driver";
 	// */
 		
 	/*/ postgresql settings
@@ -58,13 +59,18 @@ public class TestPackage extends TestSuite
 	static String M_DBDRIVER_CLASS = "org.postgresql.Driver";
 	// */
         
-	/*/
+	
+    /*
+        Command-line controlled settings (using -Dfoo=bar options, see
+        ModelFactoryBase.guess* methods). Note that the -D options can
+        be set from inside Eclipse, and presumably other IDEs as well.      
+    */
 	static String M_DB_URL = ModelFactoryBase.guessDBURL();
     static String M_DB_USER = ModelFactoryBase.guessDBUser();
     static String M_DB_PASSWD = ModelFactoryBase.guessDBPassword();
     static String M_DB = ModelFactoryBase.guessDBType();
     static String M_DBDRIVER_CLASS = ModelFactoryBase.guessDBDriver();  
-    // */      
+          
 
     static public TestSuite suite() {
         return new TestPackage();
