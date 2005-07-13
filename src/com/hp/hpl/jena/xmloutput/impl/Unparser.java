@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.35 2005-07-13 13:51:37 chris-dollin Exp $
+ *  $Id: Unparser.java,v 1.36 2005-07-13 15:33:51 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.35 $' Date='$Date: 2005-07-13 13:51:37 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.36 $' Date='$Date: 2005-07-13 15:33:51 $'
 
  */
 class Unparser {
@@ -1344,7 +1344,8 @@ class Unparser {
 			// as a string, then we avoid the attribute rule 6.10 which is
 			// ambiguous with 6.11.
 			RDFNode n = s.getObject();
-			return (n instanceof Resource) && !((Resource) n).isAnon();
+			// return (n instanceof Resource) && !((Resource) n).isAnon();
+            return n.isURIResource();
 		}
 
 		if (s.getObject() instanceof Literal) {

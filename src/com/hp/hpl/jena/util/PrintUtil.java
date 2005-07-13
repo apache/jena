@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PrintUtil.java,v 1.16 2005-07-13 10:06:31 chris-dollin Exp $
+ * $Id: PrintUtil.java,v 1.17 2005-07-13 15:33:51 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -14,7 +14,6 @@ import java.io.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.shared.PrefixMapping;
@@ -28,7 +27,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * specialised tables.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.16 $ on $Date: 2005-07-13 10:06:31 $
+ * @version $Revision: 1.17 $ on $Date: 2005-07-13 15:33:51 $
  */
 public class PrintUtil {
     
@@ -71,7 +70,6 @@ public class PrintUtil {
         if (node instanceof Node_URI) {
             return node.toString( prefixMapping );
         } else if (node instanceof Node_Literal) {
-            LiteralLabel ll = node.getLiteral();
             String lf = node.getLiteralLexicalForm();
             return node.getLiteralDatatype() == null ? "'" + lf + "'" : lf + "^^" + node.getLiteralDatatypeURI();
         } else if (node instanceof Node_ANY) {

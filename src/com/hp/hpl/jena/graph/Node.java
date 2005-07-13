@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.49 2005-07-13 13:51:35 chris-dollin Exp $
+  $Id: Node.java,v 1.50 2005-07-13 15:33:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -71,7 +71,7 @@ public abstract class Node {
         if (first == '\'' || first == '\"')
             return Node.createLiteral( newString( pm, first, x ) );
         if (Character.isDigit( first )) 
-            return Node.createLiteral( new LiteralLabel( x, "", XSDDatatype.XSDinteger ) );
+            return Node.createLiteral( x, "", XSDDatatype.XSDinteger );
         if (first == '_')
             return Node.createAnon( new AnonId( x ) );
         if (x.equals( "??" ))
@@ -97,7 +97,7 @@ public abstract class Node {
         int colon = langOrType.indexOf( ':' );
         return colon < 0 
             ? new LiteralLabel( content, langOrType, false )
-            : new LiteralLabel( content, "", getType( pm.expandPrefix( langOrType ) ) )
+            : LiteralLabel.createLiteralLabel( content, "", getType( pm.expandPrefix( langOrType ) ) )
             ;
         }
     
@@ -153,6 +153,7 @@ public abstract class Node {
     /** make a URI node with the specified URIref string */
     public static Node createURI( String uri )
         { return create( makeURI, uri ); }
+    
     /** make a variable node with a given name */
     public static Node createVariable( String name )
         { return create( makeVariable, Node_Variable.variable( name ) ); }
@@ -184,7 +185,7 @@ public abstract class Node {
      */
     public static Node createLiteral( String lex, String lang, RDFDatatype dtype ) 
         throws DatatypeFormatException 
-        { return createLiteral( new LiteralLabel( lex, lang, dtype ) ); }
+        { return createLiteral( LiteralLabel.createLiteralLabel( lex, lang, dtype ) ); }
     
     public static Node createUncachedLiteral( Object value, String lang, RDFDatatype dtype ) 
         throws DatatypeFormatException 

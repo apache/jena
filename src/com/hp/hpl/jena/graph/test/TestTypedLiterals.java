@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.45 2005-07-13 13:51:36 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.46 2005-07-13 15:33:50 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -35,7 +35,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.45 $ on $Date: 2005-07-13 13:51:36 $
+ * @version $Revision: 1.46 $ on $Date: 2005-07-13 15:33:50 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -907,12 +907,12 @@ public class TestTypedLiterals extends TestCase {
      * Check parse/unparse loop.
      */
     public void doTestRoundTrip(String lex, RDFDatatype dt, boolean testeq) {
-        LiteralLabel ll = new LiteralLabel(lex, "", dt);
+        LiteralLabel ll = LiteralLabel.createLiteralLabel( lex, "", dt );
         String lex2 = dt.unparse(ll.getValue());
         if (testeq) {
             assertEquals(lex, lex2);
         }
-        LiteralLabel ll2 = new LiteralLabel(lex2, "", dt);
+        LiteralLabel ll2 = LiteralLabel.createLiteralLabel( lex2, "", dt );
         assertTrue( ll2.isWellFormed() );
     }
     

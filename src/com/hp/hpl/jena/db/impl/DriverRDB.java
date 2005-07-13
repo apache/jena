@@ -10,9 +10,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.zip.CRC32;
 import java.lang.Thread;
 
@@ -21,12 +19,7 @@ import com.hp.hpl.jena.datatypes.TypeMapper;
 import com.hp.hpl.jena.db.GraphRDB;
 import com.hp.hpl.jena.db.IDBConnection;
 import com.hp.hpl.jena.db.RDFRDBException;
-import com.hp.hpl.jena.graph.Graph;
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Node_Literal;
-import com.hp.hpl.jena.graph.Node_URI;
-import com.hp.hpl.jena.graph.Node_Variable;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.ExpressionFunctionURIs; 
 
 import com.hp.hpl.jena.rdf.model.AnonId;
@@ -52,7 +45,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.52 $ on $Date: 2005-07-13 10:06:25 $
+* @version $Revision: 1.53 $ on $Date: 2005-07-13 15:33:49 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -1600,7 +1593,6 @@ public abstract class DriverRDB implements IRDBDriver {
 		} else if ( node.isLiteral() ){
 			// TODO: may need to encode literal value when datatype is not a string.
 			Node_Literal litNode = (Node_Literal) node;
-			// LiteralLabel ll = litNode.getLiteral();
 			String lval = litNode.getLiteralLexicalForm();
 			String lang = litNode.getLiteralLanguage();
 			String dtype = litNode.getLiteralDatatypeURI();
@@ -1689,47 +1681,7 @@ public abstract class DriverRDB implements IRDBDriver {
 			res = Node.createURI(prefix + qname);
 			
 		} else if ( nodeType.equals(RDBCodeLiteral) ) {
-			ParseInt pi = new ParseInt(pos);
-			String litString = null;
-			if ( valType.equals(RDBCodeRef) ) {
-				RDBStringParseInt(RDBString,pi,true);
-				if ( pi.val != null )
-					litString = IDtoLiteral(pi.val.intValue());
-				if ( litString == null )
-					throw new RDFRDBException("Bad Literal Reference: " + RDBString);
-			} else
-				litString = RDBString.substring(pos,len-EOS_LEN);
-			len = litString.length();
-			String lang;
-			String dtype;
-			int langLen = 0;
-			int dtypeLen = 0;
-			LiteralLabel llabel;
-			pi.pos = 0;
-			RDBStringParseInt(litString, pi, false);
-			if ( pi.val == null ) langLen = 0; 
-			else langLen = pi.val.intValue(); 
-			pi.pos = pi.pos + 1;
-			RDBStringParseInt(litString, pi, false);	
-			if ( pi.val == null ) dtypeLen = 0;
-			else dtypeLen = pi.val.intValue();
-			pos = pi.pos + 1;	
-			if ( (pos + langLen + dtypeLen) > len )
-					throw new RDFRDBException("Malformed Literal: " + litString);	
-			lang = litString.substring(pos,pos+langLen);
-			pos = pos + langLen;
-			dtype = litString.substring(pos,pos+dtypeLen);
-			pos = pos + dtypeLen;
-			
-			String val = litString.substring(pos);
-			
-			if ( (dtype == null) || (dtype.equals(""))  ) {
-				llabel = new LiteralLabel(val, lang == null ? "" : lang);
-			} else {
-				RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtype);
-				llabel = new LiteralLabel(val, lang == null ? "" : lang, dt);
-			}	 
-			res = Node.createLiteral(llabel);
+			res = RDBLiteralStringToLiteralNode( RDBString, len, valType, pos );	 
 			
 		} else if ( nodeType.equals(RDBCodeBlank) ) {
 			String bstr = null;
@@ -1753,6 +1705,63 @@ public abstract class DriverRDB implements IRDBDriver {
 			throw new RDFRDBException ("Invalid RDBString Prefix, " + RDBString );	
 		return res;
 	}
+
+    /**
+        Answer a literal Node constructed according to the RDB String.
+        
+     	@param RDBString
+     	@param len
+     	@param valType
+     	@param pos
+     	@return
+    */
+    protected Node RDBLiteralStringToLiteralNode( String RDBString, int len, String valType, int pos )
+        {
+        ParseInt pi = new ParseInt( pos );
+        String litString = null;
+        if ( valType.equals(RDBCodeRef) ) {
+        	RDBStringParseInt(RDBString,pi,true);
+        	if ( pi.val != null )
+        		litString = IDtoLiteral(pi.val.intValue());
+        	if ( litString == null )
+        		throw new RDFRDBException("Bad Literal Reference: " + RDBString);
+        } else
+        	litString = RDBString.substring(pos,len-EOS_LEN);
+        len = litString.length();
+        pi.pos = 0;
+        RDBStringParseInt(litString, pi, false);
+        int langLen = pi.val == null ? 0 : pi.val.intValue(); 
+        pi.pos = pi.pos + 1;
+        RDBStringParseInt(litString, pi, false);	
+        int dtypeLen = pi.val == null ? 0 : pi.val.intValue();
+        pos = pi.pos + 1;	
+        if ( (pos + langLen + dtypeLen) > len )
+        		throw new RDFRDBException("Malformed Literal: " + litString);	
+        String lang = litString.substring( pos, pos + langLen );
+        pos = pos + langLen;
+        String dtype = litString.substring( pos, pos + dtypeLen );        
+        String val = litString.substring( pos + dtypeLen );
+        return createLiteral( val, lang, dtype );
+        }
+
+    /**
+        Answer a Node literal with the indicated lexical form, language,
+        and datatype. If the datatype is the empty string, there is no
+        datatype. If the language is the empty string, there is no language.
+        
+     	@param val
+     	@param lang
+     	@param dtype
+     	@return
+    */
+    protected Node createLiteral( String val, String lang, String dtype ) {
+        if (dtype.equals( "" )) {
+            return Node.createLiteral( val, lang, null );
+        } else {
+        	RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(dtype);
+            return Node.createLiteral( val, lang, dt );
+        }
+    }
 	
 	/** This is cuurently a copy of Util.splitNamespace.  It was
 	 * copied rather than used directly for two reasons. 1) in the
@@ -1887,7 +1896,6 @@ public abstract class DriverRDB implements IRDBDriver {
 		RDBLongObject	res = new RDBLongObject();
 		int				headLen;
 		int				avail;
-		// LiteralLabel 	l = node.getLiteral();
 		String 			lang = node.getLiteralLanguage();
 		String 			dtype = node.getLiteralDatatypeURI();
 		String 			val = node.getLiteralLexicalForm();

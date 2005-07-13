@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.105 2005-07-04 13:18:03 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.106 2005-07-13 15:33:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -558,8 +558,7 @@ public class ModelCom
      */
     public Literal createTypedLiteral(String lex, RDFDatatype dtype) 
                                         throws DatatypeFormatException {
-        LiteralLabel ll = new LiteralLabel(lex, "", dtype);
-        return new LiteralImpl(Node.createLiteral(ll), this);
+        return new LiteralImpl( Node.createLiteral( lex, "", dtype ), this);
     }
     
     /**
@@ -584,7 +583,7 @@ public class ModelCom
      */
     public Literal createTypedLiteral(String lex, String typeURI)  {
         RDFDatatype dt = TypeMapper.getInstance().getSafeTypeByName(typeURI);
-        LiteralLabel ll = new LiteralLabel(lex, "", dt);
+        LiteralLabel ll = LiteralLabel.createLiteralLabel( lex, "", dt );
         return new LiteralImpl( Node.createLiteral(ll), this );
     }
         

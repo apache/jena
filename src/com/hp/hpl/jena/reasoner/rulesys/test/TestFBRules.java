@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.43 2005-07-05 11:21:43 chris-dollin Exp $
+ * $Id: TestFBRules.java,v 1.44 2005-07-13 15:33:51 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -14,7 +14,6 @@ import com.hp.hpl.jena.reasoner.rulesys.*;
 import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.datatypes.xsd.*;
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.LiteralLabel;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.ClosedException;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
@@ -36,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.43 $ on $Date: 2005-07-05 11:21:43 $
+ * @version $Revision: 1.44 $ on $Date: 2005-07-13 15:33:51 $
  */
 public class TestFBRules extends TestCase {
     
@@ -599,7 +598,7 @@ public class TestFBRules extends TestCase {
         data.add(new Triple(n2, p, Functor.makeFunctorNode("f", new Node[] {
                                         a, Util.makeIntNode(0)  })));
         data.add(new Triple(n3, p, Functor.makeFunctorNode("f", new Node[] {
-               a, Node.createLiteral(new LiteralLabel("0", "", XSDDatatype.XSDnonNegativeInteger)) } )));
+               a, Node.createLiteral( "0", "", XSDDatatype.XSDnonNegativeInteger ) } )));
         InfGraph infgraph = createReasoner(ruleList).bind(data);
         
         TestUtil.assertIteratorValues(this, infgraph.find(null, s, null),

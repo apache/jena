@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.19 2005-07-13 13:51:35 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.20 2005-07-13 15:33:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -23,7 +23,12 @@ final public class LiteralLabel {
 	//=======================================================================
 	// Variables
 
-	/** 
+	public static LiteralLabel createLiteralLabel
+        ( String lex, String lang, RDFDatatype dtype ) 
+    throws DatatypeFormatException
+        { return new LiteralLabel( lex, lang, dtype ); }
+
+    /** 
 	 * The lexical form of the literal, may be null if the literal was 
 	 * created programatically and has not yet been serialized 
 	 */
@@ -71,7 +76,7 @@ final public class LiteralLabel {
 	 * @param dtype the type of the literal, null for old style "plain" literals
 	 * @throws DatatypeFormatException if lex is not a legal form of dtype
 	 */
-	public LiteralLabel(String lex, String lang, RDFDatatype dtype)
+	private LiteralLabel(String lex, String lang, RDFDatatype dtype)
 		throws DatatypeFormatException {
         lexicalForm = lex;
 		this.dtype = dtype;
@@ -203,14 +208,14 @@ final public class LiteralLabel {
 	// Methods
 
 	/** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#isXML()
+        Answer true iff this is a well-formed XML literal.
     */
 	public boolean isXML() {
 		return dtype == XMLLiteralType.theXMLLiteralType && this.wellformed;
 	}
     
 	/** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#isWellFormed()
+     	Answer truee iff this is a well-formed literal.
     */
 	public boolean isWellFormed() {
 		return dtype != null && this.wellformed;
@@ -235,7 +240,8 @@ final public class LiteralLabel {
 	}
 
 	/** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#getLexicalForm()
+     	Answer the lexical form of this literal, constructing it on-the-fly
+        (and remembering it) if necessary.
     */
 	public String getLexicalForm() {
 		if (lexicalForm == null)
@@ -245,20 +251,22 @@ final public class LiteralLabel {
 	}
     
     /** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#getIndexingValue()
+     	Answer the value used to index this literal
     */
     public Object getIndexingValue()
         { return getLexicalForm(); }
 
 	/** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#language()
+     	Answer the language associated with this literal (the empty string if
+        there's no language).
     */
 	public String language() {
 		return lang;
 	}
 
 	/** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#getValue()
+     	Answer a suitable instance of a Java class representing this literal's
+        value. May throw an exception if the literal is ill-formed.
     */
 	public Object getValue() throws DatatypeFormatException {
 		if (wellformed) {
@@ -272,14 +280,14 @@ final public class LiteralLabel {
 	}
 
 	/** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#getDatatype()
+     	Answer the datatype of this literal, null if it is untyped.
     */
 	public RDFDatatype getDatatype() {
 		return dtype;
 	}
 
 	/** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#getDatatypeURI()
+     	Answer the datatype URI of this literal, null if it untyped.
     */
 	public String getDatatypeURI() {
 		if (dtype == null)
@@ -288,7 +296,8 @@ final public class LiteralLabel {
 	}
 
 	/** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#equals(java.lang.Object)
+     	Answer true iff this literal is syntactically equal to <code>other</code>.
+        Note: this is <i>not</i> <code>sameValueAs</code>.
     */
 	public boolean equals(Object other) {
             if (other == null || !(other instanceof LiteralLabel)) {
@@ -314,7 +323,8 @@ final public class LiteralLabel {
 	}
 
 	/** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#sameValueAs(com.hp.hpl.jena.graph.impl.LiteralLabel)
+     	Answer true iff this literal represents the same (abstract) value as
+        the other one.
     */
 	public boolean sameValueAs(LiteralLabel other) {
 		if (other == null)
@@ -346,7 +356,8 @@ final public class LiteralLabel {
 	}
 
 	/** 
-     	@see com.hp.hpl.jena.graph.impl.SPOO#hashCode()
+     	Answer the hashcode of this literal, derived from its value if it's
+        well-formed and otherwise its lexical form.
     */
 	public int hashCode() {
 		return (wellformed ? value : getLexicalForm()).hashCode();
