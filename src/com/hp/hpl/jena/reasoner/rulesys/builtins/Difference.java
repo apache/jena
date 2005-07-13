@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Difference.java,v 1.1 2005-04-12 10:55:45 der Exp $
+ * $Id: Difference.java,v 1.2 2005-07-13 10:06:28 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -18,7 +18,7 @@ import com.hp.hpl.jena.graph.*;
  * first and second aguments.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 
 public class Difference extends BaseBuiltin {
@@ -54,8 +54,8 @@ public class Difference extends BaseBuiltin {
         Node n1 = getArg(0, args, context);
         Node n2 = getArg(1, args, context);
         if (n1.isLiteral() && n2.isLiteral()) {
-            Object v1 = n1.getLiteral().getValue();
-            Object v2 = n2.getLiteral().getValue();
+            Object v1 = n1.getLiteralValue();
+            Object v2 = n2.getLiteralValue();
             Node sum = null;
             if (v1 instanceof Number && v2 instanceof Number) {
                 Number nv1 = (Number)v1;

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RETEClauseFilter.java,v 1.9 2005-07-12 15:57:43 chris-dollin Exp $
+ * $Id: RETEClauseFilter.java,v 1.10 2005-07-13 10:06:29 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl;
 
@@ -23,7 +23,7 @@ import java.util.*;
  * and bindings are implemented using a simple byte-coded interpreter.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2005-07-12 15:57:43 $
+ * @version $Revision: 1.10 $ on $Date: 2005-07-13 10:06:29 $
  */
 public class RETEClauseFilter implements RETESourceNode {
     
@@ -200,9 +200,8 @@ public class RETEClauseFilter implements RETESourceNode {
                 // for possible later functor argument accesses
                 n = triple.getObject();
                 if ( !n.isLiteral() ) return;
-                LiteralLabel ll = n.getLiteral();
-                if ( ll.getDatatype() != Functor.FunctorDatatype.theFunctorDatatype) return;
-                lastFunctor = (Functor)ll.getValue();
+                if ( n.getLiteralDatatype() != Functor.FunctorDatatype.theFunctorDatatype) return;
+                lastFunctor = (Functor)n.getLiteralValue();
                 if ( !lastFunctor.getName().equals(args[instructions[pc++]]) ) return;
                 break;
                 

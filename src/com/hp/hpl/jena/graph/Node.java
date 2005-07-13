@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node.java,v 1.47 2005-07-12 15:55:45 chris-dollin Exp $
+  $Id: Node.java,v 1.48 2005-07-13 10:06:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -235,11 +235,23 @@ public abstract class Node {
         { throw new UnsupportedOperationException( this + " is not a literal node" ); }
 
     /**
-        Answer the value of this nodes literal value, if it is a literal;
+        Answer the value of this node's literal value, if it is a literal;
         otherwise die horribly. 
     */
     public final Object getLiteralValue()
         { return getLiteral().getValue(); }
+    
+    public final String getLiteralLexicalForm()
+        { return getLiteral().getLexicalForm(); }
+    
+    public final String getLiteralLanguage()
+        { return getLiteral().language(); }
+    
+    public final String getLiteralDatatypeURI()
+        { return getLiteral().getDatatypeURI(); }
+    
+    public final RDFDatatype getLiteralDatatype()
+        { return getLiteral().getDatatype(); }
     
     /**
         Answer the object which is the index value for this Node. The default

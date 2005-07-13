@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Trail.java,v 1.4 2005-02-21 12:18:06 andy_seaborne Exp $
+ * $Id: Trail.java,v 1.5 2005-07-13 10:06:30 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -20,7 +20,7 @@ import java.util.*;
  * own trail segment which is an instance of this class.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:18:06 $
+ * @version $Revision: 1.5 $ on $Date: 2005-07-13 10:06:30 $
  */
 public class Trail implements BindingEnvironment {
     
@@ -130,7 +130,7 @@ public class Trail implements BindingEnvironment {
             if (Functor.isFunctor(dn1)) {
                 if (Functor.isFunctor(dn2)) {
                     // Unify functors
-                    Functor f1 = (Functor)dn1.getLiteral().getValue();
+                    Functor f1 = (Functor)dn1.getLiteralValue();
                     Functor f2 = (Functor)dn2.getLiteral().getValue();
                     if ( ! f1.getName().equals(f2.getName()) ) return false;
                     Node[] args1 = f1.getArgs();
@@ -171,7 +171,7 @@ public class Trail implements BindingEnvironment {
             node = ((Node_RuleVariable)node).deref();
         }
         if (Functor.isFunctor(node)) {
-            Functor f = (Functor) node.getLiteral().getValue();
+            Functor f = (Functor) node.getLiteralValue();
             Node[] args = f.getArgs();
             Node[] cargs = new Node[args.length];
             for (int i = 0; i < args.length; i++) {

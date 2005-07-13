@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: RuleState.java,v 1.4 2005-02-21 12:18:05 andy_seaborne Exp $
+ * $Id: RuleState.java,v 1.5 2005-07-13 10:06:30 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.impl.oldCode;
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.graph.*;
  * </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.4 $ on $Date: 2005-02-21 12:18:05 $
+ * @version $Revision: 1.5 $ on $Date: 2005-07-13 10:06:30 $
  */
 public class RuleState {
 
@@ -117,7 +117,7 @@ public class RuleState {
         if (functorMatch != null) {
             Node obj = result.getObject();
             if (Functor.isFunctor(obj)) {
-                Functor objValue = (Functor)obj.getLiteral().getValue();
+                Functor objValue = (Functor)obj.getLiteralValue();
                 if (objValue.getName().equals(functorMatch.getName())) {
                     Node[] margs = functorMatch.getArgs();
                     Node[] args = objValue.getArgs();
@@ -166,7 +166,7 @@ public class RuleState {
         predicateBind = (n instanceof Node_RuleVariable) ? ((Node_RuleVariable)n).getIndex() : -1 ;
         n = goal.getObject();
         objectBind = (n instanceof Node_RuleVariable) ? ((Node_RuleVariable)n).getIndex() : -1 ;
-        if (Functor.isFunctor(n)) functorMatch = (Functor)n.getLiteral().getValue();
+        if (Functor.isFunctor(n)) functorMatch = (Functor)n.getLiteralValue();
     }
     
     /**

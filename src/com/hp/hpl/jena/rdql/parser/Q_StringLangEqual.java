@@ -37,8 +37,8 @@ public class Q_StringLangEqual extends ExprNode implements Expr, ExprBoolean
         {
             Node xNode = x.getNode() ;
             Node yNode = y.getNode() ;
-            String nodeLang = xNode.getLiteral().language().toUpperCase();
-            String queryLang = yNode.getLiteral().getLexicalForm().toUpperCase();
+            String nodeLang = xNode.getLiteralLanguage().toUpperCase();
+            String queryLang = yNode.getLiteralLexicalForm().toUpperCase();
             /**
              * Here is the logic to compare language code
              * If the query langauge has -, such as zh-tw, we must do 

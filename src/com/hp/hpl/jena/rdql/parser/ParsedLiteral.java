@@ -148,7 +148,7 @@ public class ParsedLiteral extends ExprNode implements Expr, NodeValue
         valString = null ;
         
         if ( n.isLiteral() )
-            valString = n.getLiteral().getLexicalForm() ;
+            valString = n.getLiteralLexicalForm() ;
         if ( n.isURI() )
         {
             valString = n.getURI() ;
@@ -252,15 +252,14 @@ public class ParsedLiteral extends ExprNode implements Expr, NodeValue
             {
                 StringBuffer sBuff = new StringBuffer() ;
                 
-                LiteralLabel l = valGraphNode.getLiteral() ;
                 sBuff.append('"') ;
-                sBuff.append(l.getLexicalForm()) ;
+                sBuff.append(valGraphNode.getLiteralLexicalForm()) ;
                 sBuff.append('"') ;
 
-                String dt = l.getDatatypeURI() ;
+                String dt = valGraphNode.getLiteralDatatypeURI() ;
                 if ( dt != null ) { sBuff.append("^^") ; sBuff.append(dt) ; }
                 
-                String lang = l.language() ;
+                String lang = valGraphNode.getLiteralLanguage() ;
                 if ( lang != null ) { sBuff.append("@") ; sBuff.append(lang) ; }
             }
 

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2005, Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Quotient.java,v 1.1 2005-06-14 08:26:14 der Exp $
+ * $Id: Quotient.java,v 1.2 2005-07-13 10:06:29 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.reasoner.rulesys.builtins;
@@ -22,7 +22,7 @@ import com.hp.hpl.jena.reasoner.rulesys.Util;
  * an integer.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.1 $ on $Date: 2005-06-14 08:26:14 $
+ * @version $Revision: 1.2 $ on $Date: 2005-07-13 10:06:29 $
  */
 public class Quotient extends BaseBuiltin {
 
@@ -57,8 +57,8 @@ public class Quotient extends BaseBuiltin {
         Node n1 = getArg(0, args, context);
         Node n2 = getArg(1, args, context);
         if (n1.isLiteral() && n2.isLiteral()) {
-            Object v1 = n1.getLiteral().getValue();
-            Object v2 = n2.getLiteral().getValue();
+            Object v1 = n1.getLiteralValue();
+            Object v2 = n2.getLiteralValue();
             Node sum = null;
             if (v1 instanceof Number && v2 instanceof Number) {
                 Number nv1 = (Number)v1;

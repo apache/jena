@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Functor.java,v 1.20 2005-02-27 14:08:53 der Exp $
+ * $Id: Functor.java,v 1.21 2005-07-13 10:06:28 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -28,7 +28,7 @@ import java.util.*;
  * restriction specifications.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.20 $ on $Date: 2005-02-27 14:08:53 $
+ * @version $Revision: 1.21 $ on $Date: 2005-07-13 10:06:28 $
  */
 public class Functor implements ClauseEntry {
     /** Functor's name */
@@ -45,7 +45,7 @@ public class Functor implements ClauseEntry {
                 public boolean accept(Object t) {
                     if (((Triple)t).getSubject().isLiteral()) return true;
                     Node n = ((Triple)t).getObject();
-                    return n.isLiteral() && n.getLiteral().getDatatype() == FunctorDatatype.theFunctorDatatype;
+                    return n.isLiteral() && n.getLiteralDatatype() == FunctorDatatype.theFunctorDatatype;
                 }
             };
     
@@ -210,7 +210,7 @@ public class Functor implements ClauseEntry {
      */
     public static boolean isFunctor(Node n) {
         if (n == null) return false;
-        return n.isLiteral() && n.getLiteral().getDatatype() == FunctorDatatype.theFunctorDatatype;
+        return n.isLiteral() && n.getLiteralDatatype() == FunctorDatatype.theFunctorDatatype;
     }
     
     /**

@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: PrintUtil.java,v 1.15 2005-02-21 12:18:57 andy_seaborne Exp $
+ * $Id: PrintUtil.java,v 1.16 2005-07-13 10:06:31 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.util;
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.shared.PrefixMapping;
  * specialised tables.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.15 $ on $Date: 2005-02-21 12:18:57 $
+ * @version $Revision: 1.16 $ on $Date: 2005-07-13 10:06:31 $
  */
 public class PrintUtil {
     
@@ -72,8 +72,8 @@ public class PrintUtil {
             return node.toString( prefixMapping );
         } else if (node instanceof Node_Literal) {
             LiteralLabel ll = node.getLiteral();
-            String lf = ll.getLexicalForm();
-            return ll.getDatatype() == null ? "'" + lf + "'" : lf + "^^" + ll.getDatatypeURI();
+            String lf = node.getLiteralLexicalForm();
+            return node.getLiteralDatatype() == null ? "'" + lf + "'" : lf + "^^" + node.getLiteralDatatypeURI();
         } else if (node instanceof Node_ANY) {
             return "*";
         }

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.37 2005-07-12 15:57:42 chris-dollin Exp $
+  $Id: TestNode.java,v 1.38 2005-07-13 10:06:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -284,17 +284,17 @@ public class TestNode extends GraphTestBase
     public void testCreatePlainLiteralSIngleQuotes()
         {
         Node n = Node.create( "'xxx'" );
-        assertEquals( "xxx", n.getLiteral().getLexicalForm() );
-        assertEquals( "", n.getLiteral().language() );
-        assertEquals( null, n.getLiteral().getDatatypeURI() );
+        assertEquals( "xxx", n.getLiteralLexicalForm() );
+        assertEquals( "", n.getLiteralLanguage() );
+        assertEquals( null, n.getLiteralDatatypeURI() );
         }
     
     public void testCreatePlainLiteralDoubleQuotes()
         {
         Node n = Node.create( "\"xxx\"" );
-        assertEquals( "xxx", n.getLiteral().getLexicalForm() );
-        assertEquals( "", n.getLiteral().language() );
-        assertEquals( null, n.getLiteral().getDatatypeURI() );
+        assertEquals( "xxx", n.getLiteralLexicalForm() );
+        assertEquals( "", n.getLiteralLanguage() );
+        assertEquals( null, n.getLiteralDatatypeURI() );
         }
     
     public void testCreateLiteralBackslashEscape()
@@ -321,43 +321,55 @@ public class TestNode extends GraphTestBase
     protected void testStringConversion( String wanted, String template )
         {
         Node n = Node.create( template );
-        assertEquals( wanted, n.getLiteral().getLexicalForm() );
-        assertEquals( "", n.getLiteral().language() );
-        assertEquals( null, n.getLiteral().getDatatypeURI() );
+        assertEquals( wanted, n.getLiteralLexicalForm() );
+        assertEquals( "", n.getLiteralLanguage() );
+        assertEquals( null, n.getLiteralDatatypeURI() );
         }
 
     public void testCreateLanguagedLiteralEN()
         {
         Node n = Node.create( "'chat'en-UK" );
-        assertEquals( "chat", n.getLiteral().getLexicalForm() );
-        assertEquals( "en-UK", n.getLiteral().language() );
-        assertEquals( null, n.getLiteral().getDatatypeURI() );
+        assertEquals( "chat", n.getLiteralLexicalForm() );
+        assertEquals( "en-UK", n.getLiteralLanguage() );
+        assertEquals( null, n.getLiteralDatatypeURI() );
         }    
     
     public void testCreateLanguagedLiteralXY()
         {
         Node n = Node.create( "\"chat\"xy-AB" );
-        assertEquals( "chat", n.getLiteral().getLexicalForm() );
-        assertEquals( "xy-AB", n.getLiteral().language() );
-        assertEquals( null, n.getLiteral().getDatatypeURI() );
+        assertEquals( "chat", n.getLiteralLexicalForm() );
+        assertEquals( "xy-AB", n.getLiteralLanguage() );
+        assertEquals( null, n.getLiteralDatatypeURI() );
         }
     
     public void testCreateTypedLiteralInteger()
         {
         Node n = Node.create( "'42'xsd:integer" );
-        assertEquals( "42", n.getLiteral().getLexicalForm() );
-        assertEquals( "", n.getLiteral().language() );
-        assertEquals( expand( "xsd:integer" ), n.getLiteral().getDatatypeURI() );
+        assertEquals( "42", n.getLiteralLexicalForm() );
+        assertEquals( "", n.getLiteralLanguage() );
+        assertEquals( expand( "xsd:integer" ), n.getLiteralDatatypeURI() );
         }
     
     public void testCreateTypedLiteralBoolean()
         {
         Node n = Node.create( "\"true\"xsd:boolean" );
-        assertEquals( "true", n.getLiteral().getLexicalForm() );
-        assertEquals( "", n.getLiteral().language() );
-        assertEquals( expand( "xsd:boolean" ), n.getLiteral().getDatatypeURI() );
+        assertEquals( "true", n.getLiteralLexicalForm() );
+        assertEquals( "", n.getLiteralLanguage() );
+        assertEquals( expand( "xsd:boolean" ), n.getLiteralDatatypeURI() );
         }
         
+    public void testGetPlainLiteralLexicalForm()
+        {
+        Node n = Node.create( "'stuff'" );
+        assertEquals( "stuff", n.getLiteralLexicalForm() );
+        }
+    
+    public void testGetNumericLiteralLexicalForm()
+        {
+        Node n = Node.create( "17" );
+        assertEquals( "17", n.getLiteralLexicalForm() );
+        }
+    
     public void testTypesExpandPrefix()
         {
         testTypeExpandsPrefix( "rdf:spoo" );
@@ -371,7 +383,7 @@ public class TestNode extends GraphTestBase
         {
         Node n = Node.create( "'stuff'" + type );
         String wanted = PrefixMapping.Extended.expandPrefix( type );
-        assertEquals( wanted, n.getLiteral().getDatatypeURI() );
+        assertEquals( wanted, n.getLiteralDatatypeURI() );
         }
 
     public void testCreateURI()
@@ -583,6 +595,11 @@ public class TestNode extends GraphTestBase
         {
         Node s = Node.create( "'aString'" );
         assertSame( s.getLiteral().getValue(), s.getLiteralValue() );
+        }
+    
+    public void testGetLiteralDatatypeNull()
+        {
+        assertEquals( null, Node.create( "'plain'" ).getLiteralDatatype() );
         }
         
     public void testConcrete()
