@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.38 2005-07-13 10:06:26 chris-dollin Exp $
+  $Id: TestNode.java,v 1.39 2005-07-13 13:51:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -601,7 +601,16 @@ public class TestNode extends GraphTestBase
         {
         assertEquals( null, Node.create( "'plain'" ).getLiteralDatatype() );
         }
-        
+    
+    public void testLiteralIsXML()
+        {
+        assertFalse( Node.create( "'notXML'" ).getLiteralIsXML() );
+        assertFalse( Node.create( "17" ).getLiteralIsXML() );
+        assertFalse( Node.create( "'joke'xsd:Joke" ).getLiteralIsXML() );
+        assertTrue( Node.createLiteral( "lit", "lang", true ).getLiteralIsXML() );
+        assertFalse( Node.createLiteral( "lit", "lang", false ).getLiteralIsXML() );
+        }
+   
     public void testConcrete()
         {
         assertTrue( Node.create( "S" ).isConcrete() );

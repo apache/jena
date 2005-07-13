@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: Unparser.java,v 1.34 2005-02-21 12:22:32 andy_seaborne Exp $
+ *  $Id: Unparser.java,v 1.35 2005-07-13 13:51:37 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -104,7 +104,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
 /** An Unparser will output a model in the abbreviated syntax.
- ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.34 $' Date='$Date: 2005-02-21 12:22:32 $'
+ ** @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.35 $' Date='$Date: 2005-07-13 13:51:37 $'
 
  */
 class Unparser {
@@ -396,7 +396,7 @@ class Unparser {
 		RDFNode r) {
 		if (prettyWriter.sParseTypeLiteralPropertyElt)
 			return false;
-		if (!((r instanceof Literal) && ((Literal) r).getWellFormed())) {
+		if (!((r instanceof Literal) && ((Literal) r).isWellFormedXML())) {
 			return false;
 		}
 		// print out.

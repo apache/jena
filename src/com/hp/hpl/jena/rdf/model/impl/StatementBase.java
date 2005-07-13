@@ -1,7 +1,7 @@
 /*
 	 (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 	 [See end of file]
-	 $Id: StatementBase.java,v 1.5 2005-02-21 12:14:54 andy_seaborne Exp $
+	 $Id: StatementBase.java,v 1.6 2005-07-13 13:51:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -190,7 +190,7 @@ public abstract class StatementBase
 
 	public boolean getWellFormed()
 		{
-		return getLiteral().getWellFormed();
+		return getLiteral().isWellFormedXML();
 		}
 
 	/**

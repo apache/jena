@@ -1,11 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Literal.java,v 1.13 2005-07-12 15:55:46 chris-dollin Exp $
+  $Id: Node_Literal.java,v 1.14 2005-07-13 13:51:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
 
+import com.hp.hpl.jena.datatypes.RDFDatatype;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -20,7 +21,25 @@ public class Node_Literal extends Node_Concrete
 
     public LiteralLabel getLiteral()
         { return (LiteralLabel) label; }
-         
+    
+    public final Object getLiteralValue()
+        { return getLiteral().getValue(); }
+    
+    public final String getLiteralLexicalForm()
+        { return getLiteral().getLexicalForm(); }
+    
+    public final String getLiteralLanguage()
+        { return getLiteral().language(); }
+    
+    public final String getLiteralDatatypeURI()
+        { return getLiteral().getDatatypeURI(); }
+    
+    public final RDFDatatype getLiteralDatatype()
+        { return getLiteral().getDatatype(); }
+    
+    public final boolean getLiteralIsXML()
+        { return getLiteral().isXML(); }
+    
     public String toString( PrefixMapping pm, boolean quoting )
         { return ((LiteralLabel) label).toString( quoting ); }
         

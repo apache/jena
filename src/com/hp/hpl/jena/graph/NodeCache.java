@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeCache.java,v 1.2 2005-02-21 11:51:56 andy_seaborne Exp $
+  $Id: NodeCache.java,v 1.3 2005-07-13 13:51:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -22,12 +22,14 @@ public class NodeCache
         The defined size of the cache; 5000 is mostly guesswork. (It didn't *quite*
         fill up when running the tests and had about an 85% hit-rate).
     */
-    private static int SIZE = 5000;
+    protected static final int SIZE = 5000;
     
     /**
         The cache nodes, indexed by their label's reduced hash.
     */
-    private Node [] nodes = new Node [SIZE];
+    protected final Node [] nodes = new Node [SIZE];
+    
+    protected static final boolean counting = false;
     
     /**
         Wipe the cache of all entries.
@@ -60,8 +62,12 @@ public class NodeCache
     public Node get( Object label )
         {
         Node present = nodes[(label.hashCode() & 0x7fffffff) % SIZE]; 
-//        if (present == null || !label.equals( present.label )) misses+= 1; else hits += 1;
-//        if ((misses + hits) %100 == 0) System.err.println( ">> hits: " + hits + ", misses: " + misses + ", occ: " + count() + "/" + SIZE );
+        if (counting)
+            {
+            if (present == null || !label.equals( present.label )) misses += 1; else hits += 1;
+            if ((misses + hits) % 100 == 0) 
+                System.err.println( ">> hits: " + hits + ", misses: " + misses + ", occ: " + count() + "/" + SIZE );
+            }
         return present == null || !label.equals( present.label ) ? null : present;
         }
     

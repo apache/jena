@@ -42,7 +42,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.20 $' Date='$Date: 2005-07-13 10:06:27 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2005-07-13 13:51:36 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
   
@@ -300,7 +300,11 @@ public class LiteralImpl extends EnhNode implements Literal {
     }
     
     public boolean getWellFormed() {
-        return asNode().getLiteral().isXML();
+        return isWellFormedXML();
+    }     
+    
+    public boolean isWellFormedXML() {
+        return asNode().getLiteralIsXML();
     } 
    
     /**

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.18 2005-07-12 15:57:42 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.19 2005-07-13 13:51:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -202,18 +202,16 @@ final public class LiteralLabel {
 	//=======================================================================
 	// Methods
 
-	/**
-	 * Return true if the literal is a well-formed XML literal (for example as
-	 * created via parsetype="literal")
-	 */
+	/** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#isXML()
+    */
 	public boolean isXML() {
 		return dtype == XMLLiteralType.theXMLLiteralType && this.wellformed;
 	}
     
-	/**
-	* Return true if the literal is a typed literal and the
-        * lexicalForm is in the lexical space.
-	*/
+	/** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#isWellFormed()
+    */
 	public boolean isWellFormed() {
 		return dtype != null && this.wellformed;
 	}
@@ -236,13 +234,9 @@ final public class LiteralLabel {
 		return toString(false);
 	}
 
-	/**
-	 *  Returns the string component of the LiteralLabel.
-	 *  Note that different LiteralLabels may have the
-	 *  same string component.
-	 *  A canonical form is returned using the
-	 *  asNTriple() method.
-	 */
+	/** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#getLexicalForm()
+    */
 	public String getLexicalForm() {
 		if (lexicalForm == null)
 			lexicalForm =
@@ -250,32 +244,22 @@ final public class LiteralLabel {
 		return lexicalForm;
 	}
     
-    /**
-        Answer the object value to use as the indexing value of this literal.
-        The lexical form is correct for plain strings and xsd strings; needs
-        updating.
-        
-        TODO fill in the details.
+    /** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#getIndexingValue()
     */
     public Object getIndexingValue()
         { return getLexicalForm(); }
 
-	/** An RFC 3066 lang tag or "".
-	 *  These are case insensitive,
-	 *  mixed case is returned from this method.
-	 *  Where possible the case should be preserved.
-	 *  e.g. "en-US" is usually written in mixed case
-	 *  but is logically equivalent to "en-us" and "EN-US".
-	 */
+	/** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#language()
+    */
 	public String language() {
 		return lang;
 	}
 
-	/**
-	 * Return the value of the literal.
-	 * @throws DatatypeFormatException if the eager validation mode is
-	 * switched off and this literal is ill-formed.
-	 */
+	/** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#getValue()
+    */
 	public Object getValue() throws DatatypeFormatException {
 		if (wellformed) {
 			return value;
@@ -287,30 +271,25 @@ final public class LiteralLabel {
 		}
 	}
 
-	/**
-	 * Return the datatype of the Literal. This returns the java object
-	 * (an instance of {@link RDFDatatype RDFDatatype}) that represents
-	 * the datatype. It returns null for "plain" literals.
-	 */
+	/** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#getDatatype()
+    */
 	public RDFDatatype getDatatype() {
 		return dtype;
 	}
 
-	/**
-	 * Return the uri of the datatype of the Literal. 
-	 * It returns null for "plain" literals.
-	 */
+	/** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#getDatatypeURI()
+    */
 	public String getDatatypeURI() {
 		if (dtype == null)
 			return null;
 		return dtype.getURI();
 	}
 
-	/**
-	 * Structural comparision operator. Takes lang, datatype and value into
-	 * account. This is not the same as RDF semantic equality which is
-	 * dealt with by {@link #sameValueAs}.
-	 */
+	/** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#equals(java.lang.Object)
+    */
 	public boolean equals(Object other) {
             if (other == null || !(other instanceof LiteralLabel)) {
             	return false;
@@ -334,14 +313,9 @@ final public class LiteralLabel {
 //            }
 	}
 
-	/**
-	 * Test that two nodes are semantically equivalent.
-	 * In some cases this may be the sames as equals, in others
-	 * equals is stricter. For example, two xsd:int literals with
-	 * the same value but different language tag are semantically
-	 * equivalent but distinguished by the java equality function
-	 * in order to support round tripping.
-	 */
+	/** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#sameValueAs(com.hp.hpl.jena.graph.impl.LiteralLabel)
+    */
 	public boolean sameValueAs(LiteralLabel other) {
 		if (other == null)
 			return false;
@@ -371,11 +345,9 @@ final public class LiteralLabel {
 		}
 	}
 
-	/**
-	 * Hash operator. Hashes only on lexical space.
-	 * If two instances differ by datatype or significant lang tag then
-	 * that is simply a hash collision, does not invalidate the invariants.
-	 */
+	/** 
+     	@see com.hp.hpl.jena.graph.impl.SPOO#hashCode()
+    */
 	public int hashCode() {
 		return (wellformed ? value : getLexicalForm()).hashCode();
 	}

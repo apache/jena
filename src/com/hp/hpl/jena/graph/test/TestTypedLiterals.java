@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.44 2005-06-27 20:27:01 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.45 2005-07-13 13:51:36 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -35,7 +35,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.44 $ on $Date: 2005-06-27 20:27:01 $
+ * @version $Revision: 1.45 $ on $Date: 2005-07-13 13:51:36 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -96,7 +96,7 @@ public class TestTypedLiterals extends TestCase {
             assertTrue("Allowed int conversion", false);
         } catch (DatatypeFormatException e) {}
         assertEquals("Extract value", l1.getValue(), "foo");
-        assertEquals("Extract xml tag", l1.getWellFormed(), false);
+        assertEquals("Extract xml tag", l1.isWellFormedXML(), false);
         
         JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = false;
         boolean foundException = false;
@@ -139,7 +139,7 @@ public class TestTypedLiterals extends TestCase {
             int i = l1.getInt();
             assertTrue("Allowed int conversion", false);
         } catch (DatatypeFormatException e) {}
-        assertEquals("Extract xml tag", l1.getWellFormed(), false);
+        assertEquals("Extract xml tag", l1.isWellFormedXML(), false);
     }
 
     public void testXMLLiteral() {
@@ -147,11 +147,11 @@ public class TestTypedLiterals extends TestCase {
     	
     	ll = m.createLiteral("<bad",true);
     	
-    	assertTrue("Error checking must be off.",((EnhNode)ll).asNode().getLiteral().isXML());
+    	assertTrue("Error checking must be off.",((EnhNode)ll).asNode().getLiteralIsXML());
 		ll = m.createTypedLiteral("<bad/>",XMLLiteralType.theXMLLiteralType);
-		assertFalse("Error checking must be on.",((EnhNode)ll).asNode().getLiteral().isXML());
+		assertFalse("Error checking must be on.",((EnhNode)ll).asNode().getLiteralIsXML());
 		ll = m.createTypedLiteral("<good></good>",XMLLiteralType.theXMLLiteralType);
-		assertTrue("Well-formed XMLLiteral.",((EnhNode)ll).asNode().getLiteral().isXML());
+		assertTrue("Well-formed XMLLiteral.",((EnhNode)ll).asNode().getLiteralIsXML());
     
     }
 

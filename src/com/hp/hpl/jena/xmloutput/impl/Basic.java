@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
   [See end of file]
-  $Id: Basic.java,v 1.12 2005-03-14 16:01:56 chris-dollin Exp $
+  $Id: Basic.java,v 1.13 2005-07-13 13:51:37 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -17,7 +17,7 @@ import java.io.PrintWriter;
 /** Writes out an XML serialization of a model.
  *
  * @author  bwm
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.12 $' Date='$Date: 2005-03-14 16:01:56 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.13 $' Date='$Date: 2005-07-13 13:51:37 $'
  */
 public class Basic extends BaseXMLWriter {
 
@@ -176,7 +176,7 @@ public class Basic extends BaseXMLWriter {
 		if (!lang.equals("")) {
 			writer.print(" xml:lang=" + q(lang));
 		}
-		if (l.getWellFormed() && !blockLiterals) {
+		if (l.isWellFormedXML() && !blockLiterals) {
 			writer.print(" " + rdfAt("parseType") + "=" + q("Literal")+">");
 			writer.print( form );
 		} else {
