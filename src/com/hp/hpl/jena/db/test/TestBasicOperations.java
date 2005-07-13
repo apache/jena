@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestBasicOperations.java,v 1.15 2005-07-06 20:29:36 wkw Exp $
+  $Id: TestBasicOperations.java,v 1.16 2005-07-13 22:50:13 wkw Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -55,10 +55,12 @@ public class TestBasicOperations extends TestCase {
 	}
 
 	protected void tearDown() throws java.lang.Exception {
-		model.close();
+		if ( model != null ) model.close();
 		model = null;
-		conn.cleanDB();
-		conn.close();
+		if ( conn != null ) {
+			conn.cleanDB();
+			conn.close();
+		}
 		conn = null;
 	}
 
