@@ -3,6 +3,26 @@ Release Notes
 
 ;;; -- Post 2.2final change list ----------------------------------------
 
+Node/Node_Literal/Literal
+
+    o Node has gained the method getIndexingValue(), which is the
+      value to use when indexing this Node for GraphMem lookup (and
+      other such things). Non-literal nodes return themselves. Literal
+      nodes return an appropriate value; the current implementation
+      defers to the getIndexingValue() method of the associated
+      LiteralLabel.
+
+    o Node has gained the method getLiteralValue(), which fails if
+      the node is not a Node_Literal and otherwise returns the 
+      value of the associated literal. This method allows uses of
+      getLiteral().getValue() to be replaced, so that external
+      code need not know about getLiteral() as much.
+
+    o Literal::getWellFormed() has been deprecated; it is replaced
+      by Literal::isWellFormedXML(). There is a missing API method
+      eg isWellFormed() which would apply to any typed literal; 
+      this will arrive in due course.
+
 RDFNode/Resource/Literal
 
     o The method Resource::getNode() has been deprecated in favour of
@@ -45,6 +65,9 @@ Filters & Iterators
 
     o Removed a performance infelicity in the default andThen implementation
       (it kept calling the left-hand hasNext even when it had been exhausted).
+      Later replaced the implementation with one that keeps a list of
+      pending iterators and itself implements .andThen() by extending the
+      pending list.
 
     o Added FilterDropiterator so that filterDrop doesn't need to create a
       new negated Filter and suffer an extra indirection layer; added
