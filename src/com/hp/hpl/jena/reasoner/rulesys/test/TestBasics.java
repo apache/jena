@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.28 2005-07-05 11:21:43 chris-dollin Exp $
+ * $Id: TestBasics.java,v 1.29 2005-07-19 08:37:55 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.28 $ on $Date: 2005-07-05 11:21:43 $
+ * @version $Revision: 1.29 $ on $Date: 2005-07-19 08:37:55 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -92,7 +92,22 @@ public class TestBasics extends TestCase  {
         for (int i = 0; i < testRules.length; i++) {
             Rule r = Rule.parseRule(testRules[i]);
             assertEquals(testResults[i], r.toString());
-        } 
+        }
+        
+        // Test for an illegal rule format
+        String[] testBadRules = new String[] {
+                "(foo(?A) eg:p ?B) <- (?a, eg:p, ?B)." ,
+                "(foo(?A) eg:p ?B) -> (?a, eg:p, ?B)." 
+        };
+        for (int i = 0; i < testBadRules.length; i++) {
+            boolean foundError = false;
+            try {
+                Rule r = Rule.parseRule(testBadRules[i]);
+            } catch (Rule.ParserException e) {
+                foundError = true;
+            }
+            assertTrue("Failed to find illegal rule", foundError);
+        }
     }
 
     /**

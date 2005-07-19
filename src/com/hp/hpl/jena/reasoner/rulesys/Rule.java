@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.33 2005-07-12 15:57:43 chris-dollin Exp $
+ * $Id: Rule.java,v 1.34 2005-07-19 08:34:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -60,7 +60,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.33 $ on $Date: 2005-07-12 15:57:43 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.34 $ on $Date: 2005-07-19 08:34:37 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -864,6 +864,12 @@ public class Rule implements ClauseEntry {
                 List nodes = parseNodeList();
                 if (nodes.size() != 3) {
                     throw new ParserException("Triple with " + nodes.size() + " nodes!", this);
+                }
+                if (Functor.isFunctor((Node)nodes.get(0))) {
+                    throw new ParserException("Functors not allowed in subject position of pattern", this);
+                }
+                if (Functor.isFunctor((Node)nodes.get(1))) {
+                    throw new ParserException("Functors not allowed in predicate position of pattern", this);
                 }
                 return new TriplePattern((Node)nodes.get(0), (Node)nodes.get(1), (Node)nodes.get(2));
             } else if (token.equals("[")) {
