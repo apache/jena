@@ -32,5 +32,14 @@
     <hasMotherBoard rdf:resource="&eg;bigNameSpecialMB" />
     <hasBundle rdf:resource="&eg;binNameSpecialBundle" />
   </Computer>  
+  
+  <Computer rdf:about="&eg;bigName42">
+    <hasMotherBoard rdf:resource="&eg;nForce2" />
+    <hasBundle rdf:resource="&eg;binNameSpecialBundle" />
+  </Computer>  
 
+  <rdf:Description rdf:about="&eg;bigNameSpecialMB">
+    <owl:differentFrom rdf:resource="&eg;nForce2" />
+  </rdf:Description>
+  
 </rdf:RDF>
