@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: Rule.java,v 1.34 2005-07-19 08:34:37 der Exp $
+ * $Id: Rule.java,v 1.35 2005-07-21 08:20:28 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -60,7 +60,7 @@ import org.apache.commons.logging.LogFactory;
  * embedded rule, commas are ignore and can be freely used as separators. Functor names
  * may not end in ':'.
  * </p>
- *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.34 $ on $Date: 2005-07-19 08:34:37 $ */
+ *  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a> * @version $Revision: 1.35 $ on $Date: 2005-07-21 08:20:28 $ */
 public class Rule implements ClauseEntry {
     
 //=======================================================================
@@ -632,7 +632,7 @@ public class Rule implements ClauseEntry {
          * @param source the string to be parsed
          */
         Parser(String source) {
-            stream = new Tokenizer(source, "()[], \t\n\r", "'", true);
+            stream = new Tokenizer(source, "()[], \t\n\r", "'\"", true);
             lookahead = null;
         }
         
@@ -796,7 +796,7 @@ public class Rule implements ClauseEntry {
             } else if (peekToken().equals("(")) {
                 Functor f = new Functor(token, parseNodeList(), BuiltinRegistry.theRegistry);
                 return Functor.makeFunctorNode( f );
-            } else if (token.equals("'")) {
+            } else if (token.equals("'") || token.equals("\"")) {
                 // A plain literal
                 String lit = nextToken();
                 // Skip the trailing quote
