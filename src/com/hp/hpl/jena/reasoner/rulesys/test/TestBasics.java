@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.29 2005-07-19 08:37:55 der Exp $
+ * $Id: TestBasics.java,v 1.30 2005-07-21 08:25:52 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.29 $ on $Date: 2005-07-19 08:37:55 $
+ * @version $Revision: 1.30 $ on $Date: 2005-07-21 08:25:52 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -73,7 +73,8 @@ public class TestBasics extends TestCase  {
            "(?a rdf:type ?_) -> (?a rdf:type ' fool that,I(am)').",
             "[rule1: (?a rdf:type ?_) -> (?a rdf:type a)]",
             "-> print(' ').",
-            "-> print(' literal with embedded \\' characters ')."
+            "-> print(' literal with embedded \\' characters ').",
+            "-> print(\" literal characters \")."
         };
         String[] testResults = new String[] {
             "[ (?a rdf:type ?_) -> (?a rdf:type ?b) ]",
@@ -86,7 +87,8 @@ public class TestBasics extends TestCase  {
             "[ (?a rdf:type ?_) -> (?a rdf:type ' fool that,I(am)') ]",
             "[ rule1: (?a rdf:type ?_) -> (?a rdf:type a) ]",
             "[ -> print(' ') ]",
-            "[ -> print(' literal with embedded \\' characters ') ]"
+            "[ -> print(' literal with embedded \\' characters ') ]",
+            "[ -> print(' literal characters ') ]"
         };
         
         for (int i = 0; i < testRules.length; i++) {
