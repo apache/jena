@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Factory.java,v 1.16 2005-07-11 15:47:26 chris-dollin Exp $
+  $Id: Factory.java,v 1.17 2005-07-22 14:07:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -21,7 +21,7 @@ public class Factory
     private Factory()
         { super(); }
 
-    private static final boolean faster = 
+    private static final boolean faster = true || 
         System.getProperty( "jena.faster", "no" ).equals( "yes" );
 
     /**
