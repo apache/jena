@@ -1,15 +1,13 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.26 2005-07-22 14:13:24 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.27 2005-07-22 21:27:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.Expression;
 import com.hp.hpl.jena.shared.BrokenException;
-import com.hp.hpl.jena.util.CollectionFactory;
 
 import java.util.*;
 
@@ -20,82 +18,18 @@ import java.util.*;
     @author hedgehog
 */
 
-public class PatternStage extends Stage
+public class PatternStage extends PatternStageBase
     {
     protected Graph graph;
     protected Pattern [] compiled;
-    protected ValuatorSet [] guards;
-    protected Set [] boundVariables;
     
     public PatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
         {
         this.graph = graph;
         this.compiled = compile( map, triples );
-        this.boundVariables = makeBoundVariables( triples );
-        this.guards = makeGuards( map, constraints, triples.length );
+        setGuards( map, constraints, triples );
         }
-                
-    /**
-        Answer an array of sets exactly as long as the argument array of Triples.
-        The i'th element of the answer is the set of all variables that have been 
-        matched when the i'th triple has been matched.
-    */
-    protected Set [] makeBoundVariables( Triple [] triples )
-        {
-        int length = triples.length;
-    	Set [] result = new Set[length];
-        Set prev = CollectionFactory.createHashedSet();
-        for (int i = 0; i < length; i += 1) 
-            prev = result[i] = Util.union( prev, Util.variablesOf( triples[i] ) );
-        return result;
-        }
-    
-    /**
-        Answer an array of ExpressionSets exactly as long as the supplied length.
-        The i'th ExpressionSet contains the prepared [against <code>map</code>]
-        expressions that can be evaluated as soon as the i'th triple has been matched.
-        By "can be evaluated as soon as" we mean that all its variables are bound.
-        The original ExpressionSet is updated by removing those elements that can
-        be so evaluated.
-        
-     	@param map the Mapping to prepare Expressions against
-     	@param constraints the set of constraint expressions to plant
-     	@param length the number of evaluation slots available
-     	@return the array of prepared ExpressionSets
-    */
-    protected ValuatorSet [] makeGuards( Mapping map, ExpressionSet constraints, int length )
-        {        
-    	ValuatorSet [] result = new ValuatorSet [length];
-        for (int i = 0; i < length; i += 1) result[i] = new ValuatorSet();
-        Iterator it = constraints.iterator();
-        while (it.hasNext())
-            plantWhereFullyBound( (Expression) it.next(), it, map, result );
-        return result;
-        }
-    
-    /**
-        Find the earliest triple index where this expression can be evaluated, add it
-        to the appropriate expression set, and remove it from the original via the
-        iterator.
-    */
-    protected void plantWhereFullyBound( Expression e, Iterator it, Mapping map, ValuatorSet [] es )
-        {
-        for (int i = 0; i < boundVariables.length; i += 1)
-            if (canEval( e, i )) 
-                { 
-                es[i].add( e.prepare( map ) ); 
-                it.remove(); 
-                return; 
-                }
-        }
-    
-    /**
-        Answer true iff this Expression can be evaluated after the index'th triple
-        has been matched, ie, all the variables of the expression have been bound.
-    */
-    protected boolean canEval( Expression e, int index )
-        { return Expression.Util.containsAllVariablesOf( boundVariables[index], e ); }
-    
+
     protected Pattern [] compile( Mapping map, Triple [] triples )
         { return compile( compiler, map, triples ); }
         
