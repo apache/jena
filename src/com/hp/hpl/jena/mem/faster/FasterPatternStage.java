@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.17 2005-07-22 14:13:26 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.18 2005-07-22 22:08:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,13 +10,10 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.util.CollectionFactory;
 
-public class FasterPatternStage extends Stage
+public class FasterPatternStage extends PatternStageBase
     {
     protected GraphMemFaster graph;
-    protected ValuatorSet [] guards;
-    protected Set [] boundVariables;
     protected ProcessedTriple [] processed;
     
     protected abstract static class Finder
@@ -27,90 +24,9 @@ public class FasterPatternStage extends Stage
     public FasterPatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
         {
         this.graph = (GraphMemFaster) graph;
-        this.boundVariables = makeBoundVariables( triples );
         this.processed = ProcessedTriple.allocateBindings( map, triples );
-        this.guards = makeGuards( map, constraints, triples.length );
+        setGuards( map, constraints, triples );
         }
-                
-    /**
-        Answer an array of sets exactly as long as the argument array of Triples.
-        The i'th element of the answer is the set of all variables that have been 
-        matched when the i'th triple has been matched.
-    */
-    protected Set [] makeBoundVariables( Triple [] triples )
-        {
-        int length = triples.length;
-        Set [] result = new Set[length];
-        Set prev = CollectionFactory.createHashedSet();
-        for (int i = 0; i < length; i += 1) 
-            prev = result[i] = Util.union( prev, Util.variablesOf( triples[i] ) );
-        return result;
-        }
-    
-    /**
-        Answer an array of ExpressionSets exactly as long as the supplied length.
-        The i'th ExpressionSet contains the prepared [against <code>map</code>]
-        expressions that can be evaluated as soon as the i'th triple has been matched.
-        By "can be evaluated as soon as" we mean that all its variables are bound.
-        The original ExpressionSet is updated by removing those elements that can
-        be so evaluated.
-        
-        @param map the Mapping to prepare Expressions against
-        @param constraints the set of constraint expressions to plant
-        @param length the number of evaluation slots available
-        @return the array of prepared ExpressionSets
-    */
-    protected ValuatorSet [] makeGuards( Mapping map, ExpressionSet constraints, int length )
-        {        
-        ValuatorSet [] result = new ValuatorSet [length];
-        for (int i = 0; i < length; i += 1) result[i] = new ValuatorSet();
-        Iterator it = constraints.iterator();
-        while (it.hasNext())
-            plantWhereFullyBound( (Expression) it.next(), it, map, result );
-        return result;
-        }
-    
-    /**
-        Find the earliest triple index where this expression can be evaluated, add it
-        to the appropriate expression set, and remove it from the original via the
-        iterator.
-    */
-    protected void plantWhereFullyBound( Expression e, Iterator it, Mapping map, ValuatorSet [] es )
-        {
-        for (int i = 0; i < boundVariables.length; i += 1)
-            if (canEval( e, i )) 
-                { 
-                es[i].add( e.prepare( map ) ); 
-                it.remove(); 
-                return; 
-                }
-        }
-    
-    /**
-        Answer true iff this Expression can be evaluated after the index'th triple
-        has been matched, ie, all the variables of the expression have been bound.
-    */
-    protected boolean canEval( Expression e, int index )
-        { return Expression.Util.containsAllVariablesOf( boundVariables[index], e ); }
-    
-    private static int count = 0;
-    
-    public synchronized Pipe deliver( final Pipe result )
-        {
-        final Pipe stream = previous.deliver( new BufferPipe() );
-        final StageElement r = makeStageElementChain( result, 0 );
-        new Thread( "PatternStage-" + ++count ) 
-            { public void run() { FasterPatternStage.this.run( stream, result, r ); } } 
-            .start();
-        return result;
-        }
-        
-    protected void run( Pipe source, Pipe sink, StageElement s )
-        {
-        try { while (stillOpen && source.hasNext()) s.run( source.get() ); } 
-        catch (Exception e) { sink.close( e ); return; }
-        sink.close();
-        }        
     
     protected StageElement makeStageElementChain( Pipe sink, int index )
         {
