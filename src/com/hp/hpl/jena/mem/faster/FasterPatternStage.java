@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.16 2005-07-12 15:57:42 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.17 2005-07-22 14:13:26 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -19,17 +19,6 @@ public class FasterPatternStage extends Stage
     protected Set [] boundVariables;
     protected ProcessedTriple [] processed;
     
-    protected abstract static class Matcher
-        {
-        public abstract boolean match( Domain d, Triple t );
-        
-        public static final Matcher always = new Matcher() 
-            {
-            public boolean match( Domain d, Triple t )
-                { return true; }
-            };
-        }
-
     protected abstract static class Finder
         {   
         public abstract Iterator find( Domain d );
@@ -126,31 +115,15 @@ public class FasterPatternStage extends Stage
     protected StageElement makeStageElementChain( Pipe sink, int index )
         {
         if (index == processed.length)
-            return new PutBindings( sink );
+            return new StageElement.PutBindings( sink );
         else
             {
             Matcher m = processed[index].makeMatcher();
             Finder f = processed[index].finder( graph );
             ValuatorSet s = guards[index];
             StageElement next = makeStageElementChain( sink, index + 1 );
-            return new FindTriples( m, f, s.isNonTrivial() ? new RunValuatorSet( s, next ) : next );
+            return new FindTriples( m, f, s.isNonTrivial() ? new StageElement.RunValuatorSet( s, next ) : next );
             }
-        }
-    
-    protected static abstract class StageElement
-        {
-        public abstract void run( Domain current );
-        }
-    
-    protected static final class PutBindings extends StageElement
-        {
-        protected final Pipe sink;
-        
-        public PutBindings( Pipe sink )
-            { this.sink = sink; }
-        
-        public final void run( Domain current )
-            { sink.put( current.copy() ); }
         }
     
     protected final class FindTriples extends StageElement
@@ -170,18 +143,7 @@ public class FasterPatternStage extends Stage
                     next.run( current );
             }
         }  
-    
-    protected final class RunValuatorSet extends StageElement
-        {
-        protected final ValuatorSet s;
-        protected final StageElement next;
-        
-        public RunValuatorSet( ValuatorSet s, StageElement next )
-            { this.s = s; this.next = next; }
-        
-        public final void run( Domain current )
-            { if (s.evalBool( current )) next.run( current ); }
-        }
+
     }
 
 

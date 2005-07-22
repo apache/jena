@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.5 2005-07-12 15:57:42 chris-dollin Exp $
+ 	$Id: ProcessedTriple.java,v 1.6 2005-07-22 14:13:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,7 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.faster.FasterPatternStage.*;
+import com.hp.hpl.jena.mem.faster.FasterPatternStage.Finder;
 import com.hp.hpl.jena.mem.faster.ProcessedNode.Bound;
 import com.hp.hpl.jena.mem.faster.ProcessedNode.Fixed;
 import com.hp.hpl.jena.shared.BrokenException;
