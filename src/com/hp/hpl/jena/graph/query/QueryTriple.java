@@ -1,13 +1,14 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryTriple.java,v 1.2 2005-07-24 19:12:57 chris-dollin Exp $
+    $Id: QueryTriple.java,v 1.3 2005-07-24 21:13:04 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
 import java.util.HashSet;
 
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.shared.BrokenException;
 
 public class QueryTriple
     {
@@ -35,6 +36,82 @@ public class QueryTriple
             ( QueryNode.classify( m, fresh, t.getSubject() ), 
             QueryNode.classify( m, fresh, t.getPredicate() ),
             QueryNode.classify( m, fresh, t.getObject() ) );
+        }
+    
+    public Matcher getMatcher()
+        {
+        final int SMATCH = 4, PMATCH = 2, OMATCH = 1, NOMATCH = 0;
+        int bits = 
+            (S.mustMatch() ? SMATCH : 0) 
+            + (P.mustMatch() ? PMATCH : 0)
+            + (O.mustMatch() ? OMATCH : 0)
+            ;
+        switch (bits)
+            {
+            case SMATCH + PMATCH + OMATCH:
+                return new Matcher()
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { return S.match( d, t.getSubject() )
+                            && P.match( d, t.getPredicate() )
+                            && O.match( d, t.getObject() ); }
+                    };
+                    
+            case SMATCH + OMATCH:
+                return new Matcher() 
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { 
+                        return S.match( d, t.getSubject() ) 
+                        && O.match( d, t.getObject() ); }
+                    };
+                    
+            case SMATCH + PMATCH:  
+                return new Matcher() 
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { 
+                        return S.match( d, t.getSubject() ) 
+                        && P.match( d, t.getPredicate() ); 
+                        }
+                    };
+                    
+            case PMATCH + OMATCH:
+                return new Matcher()
+                    {
+                    public boolean match( Domain d, Triple t )
+                        {
+                        return P.match( d, t.getPredicate() )
+                        && O.match( d, t.getObject() );
+                        }
+                    };
+    
+            case SMATCH:                
+                return new Matcher() 
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { return S.match( d, t.getSubject() ); }
+                    };
+    
+            case PMATCH:
+                return new Matcher()
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { return P.match( d, t.getPredicate() ); }
+                    };
+                    
+            case OMATCH:
+                return new Matcher()
+                    {
+                    public boolean match( Domain d, Triple t )
+                        { return O.match( d, t.getObject() ); }
+                    };
+    
+            case NOMATCH:
+                return Matcher.always;
+                    
+            }
+        throw new BrokenException( "uncatered-for case in optimisation" );
         }
     }
 /*

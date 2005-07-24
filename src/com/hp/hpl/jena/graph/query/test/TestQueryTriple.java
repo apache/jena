@@ -1,18 +1,16 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestQueryTriple.java,v 1.1 2005-07-24 18:58:10 chris-dollin Exp $
+    $Id: TestQueryTriple.java,v 1.2 2005-07-24 21:15:26 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.test;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.Triple;
-import com.hp.hpl.jena.graph.query.Mapping;
-import com.hp.hpl.jena.graph.query.QueryNode;
-import com.hp.hpl.jena.graph.query.QueryTriple;
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.query.*;
+import com.ibm.icu.util.StringTokenizer;
 
 import junit.framework.TestSuite;
 
@@ -123,6 +121,44 @@ public class TestQueryTriple extends QueryTestBase
         assertTrue( q[0].S instanceof QueryNode.Bind );
         assertTrue( q[0].O instanceof QueryNode.JustBound );
         assertTrue( q[1].S instanceof QueryNode.Bound );
+        }
+    
+    protected static final String [][] matchings =
+        {
+            { "s P o", "s P o", "y" },
+            { "s P o", "a Q b", "y" },
+            { "?x P y", "a P y", "y0=a" },
+            { "?x P ?y", "go P og", "y0=go;1=og" },
+            { "?x P ?x", "a P a", "y0=a" },
+            { "?x P ?x", "a P b", "n" }
+        };
+    
+    public void testMatch()
+        {
+        for (int i = 0; i < matchings.length; i += 1)
+            {
+            String [] m = matchings[i];
+            testMatch( triple( m[0] ), triple( m[1] ), m[2].charAt(0) == 'y', m[2].substring(1) );
+            }
+        }
+    
+    protected void testMatch( Triple toClassify, Triple toMatch, boolean result, String bindings )
+        {
+        Mapping map = new Mapping( new Node[0] );
+        QueryTriple t = QueryTriple.classify( map, toClassify );
+        Matcher m = t.getMatcher();
+        Domain d = new Domain( 3 );
+        assertEquals( result, m.match( d, toMatch ) );
+        StringTokenizer st = new StringTokenizer( bindings, ";" );
+        while (st.hasMoreTokens()) testBinding( d, st.nextToken() );
+        }
+
+    protected void testBinding( Domain d, String binding )
+        {
+        int eq = binding.indexOf( '=' );
+        int index = Integer.parseInt( binding.substring( 0, eq ) );
+        Node value = Node.create( binding.substring( eq + 1 ) );
+        assertEquals( value, d.getElement( index ) );
         }
     }
 
