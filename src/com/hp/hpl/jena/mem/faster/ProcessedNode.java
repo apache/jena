@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedNode.java,v 1.2 2005-07-08 15:41:34 chris-dollin Exp $
+ 	$Id: ProcessedNode.java,v 1.3 2005-07-24 09:13:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -22,8 +22,8 @@ import com.hp.hpl.jena.shared.*;
  */
 public class ProcessedNode
     {    
-    public final Node node;
-    public final int index;
+    protected final Node node;
+    protected final int index;
     
     public ProcessedNode( Node node )
         { this( node, -1 ); }
