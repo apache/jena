@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestQueryNode.java,v 1.3 2005-07-24 15:59:17 chris-dollin Exp $
+    $Id: TestQueryNode.java,v 1.4 2005-07-24 18:58:10 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.test;
 
@@ -9,10 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.query.Domain;
-import com.hp.hpl.jena.graph.query.Mapping;
-import com.hp.hpl.jena.graph.query.QueryNode;
-import com.hp.hpl.jena.shared.BrokenException;
+import com.hp.hpl.jena.graph.query.*;
 
 import junit.framework.TestSuite;
 

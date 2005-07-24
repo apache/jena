@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.6 2005-07-22 14:13:27 chris-dollin Exp $
+ 	$Id: ProcessedTriple.java,v 1.7 2005-07-24 18:58:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -11,24 +11,22 @@ import java.util.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.faster.FasterPatternStage.Finder;
-import com.hp.hpl.jena.mem.faster.ProcessedNode.Bound;
-import com.hp.hpl.jena.mem.faster.ProcessedNode.Fixed;
 import com.hp.hpl.jena.shared.BrokenException;
 
 /**
-    A ProcessedTriple is three ProcessedNodes; it knows how to deliver an
-    optimised Matcher which will use only the necessary ProcessedNode.match
+    A ProcessedTriple is three QueryNodes; it knows how to deliver an
+    optimised Matcher which will use only the necessary QueryNode.match
     methods.
     
     @author kers
 */
 public class ProcessedTriple
     {
-    public final ProcessedNode S;
-    public final ProcessedNode P;
-    public final ProcessedNode O;
+    public final QueryNode S;
+    public final QueryNode P;
+    public final QueryNode O;
     
-    public ProcessedTriple( ProcessedNode S, ProcessedNode P, ProcessedNode O ) 
+    public ProcessedTriple( QueryNode S, QueryNode P, QueryNode O ) 
         { this.S = S; this.P = P; this.O = O; }
     
     public String toString()
@@ -47,9 +45,9 @@ public class ProcessedTriple
         Set local = new HashSet();
         return new ProcessedTriple
             (
-            ProcessedNode.allocateBindings( map, local, triple.getSubject() ),
-            ProcessedNode.allocateBindings( map, local, triple.getPredicate() ),
-            ProcessedNode.allocateBindings( map, local, triple.getObject() )
+            QueryNode.classify( map, local, triple.getSubject() ),
+            QueryNode.classify( map, local, triple.getPredicate() ),
+            QueryNode.classify( map, local, triple.getObject() )
             );
         }
     
@@ -141,15 +139,15 @@ public class ProcessedTriple
 
     protected Finder finder( GraphMemFaster graph )
         {
-        if (S instanceof Fixed) return finderFixedS( graph, S, P, O );
-        if (O instanceof Fixed) return finderFixedO( graph, S, P, O );
-        if (S instanceof Bound) return finderBoundS( graph, S, P, O );
-        if (O instanceof Bound) return finderBoundO( graph, S, P, O );
+        if (S instanceof QueryNode.Fixed) return finderFixedS( graph, S, P, O );
+        if (O instanceof QueryNode.Fixed) return finderFixedO( graph, S, P, O );
+        if (S instanceof QueryNode.Bound) return finderBoundS( graph, S, P, O );
+        if (O instanceof QueryNode.Bound) return finderBoundO( graph, S, P, O );
         // System.err.println( ">> unoptimised finder " + this );
         return finderGeneral( graph, S, P, O );
         }
 
-    protected FasterPatternStage.Finder finderFixedS( final GraphMemFaster graph, final ProcessedNode S, final ProcessedNode P, final ProcessedNode O )
+    protected FasterPatternStage.Finder finderFixedS( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
         {
         final ProcessedTriple.PreindexedFind f = graph.findFasterFixedS( S.node );
         return new FasterPatternStage.Finder()
@@ -161,7 +159,7 @@ public class ProcessedTriple
             };
         }
 
-    protected FasterPatternStage.Finder finderFixedO( final GraphMemFaster graph, final ProcessedNode S, final ProcessedNode P, final ProcessedNode O )
+    protected FasterPatternStage.Finder finderFixedO( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
         {
         final ProcessedTriple.PreindexedFind f = graph.findFasterFixedO( O.node );
         return new FasterPatternStage.Finder()
@@ -173,7 +171,7 @@ public class ProcessedTriple
             };
         }
 
-    protected FasterPatternStage.Finder finderBoundS( final GraphMemFaster graph, final ProcessedNode S, final ProcessedNode P, final ProcessedNode O )
+    protected FasterPatternStage.Finder finderBoundS( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
         {            
         final ProcessedTriple.HalfindexedFind f = graph.findFasterBoundS();
         return new FasterPatternStage.Finder()
@@ -185,7 +183,7 @@ public class ProcessedTriple
             };
         }
 
-    protected FasterPatternStage.Finder finderBoundO( final GraphMemFaster graph, final ProcessedNode S, final ProcessedNode P, final ProcessedNode O )
+    protected FasterPatternStage.Finder finderBoundO( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
         {
         final ProcessedTriple.HalfindexedFind f = graph.findFasterBoundO();
         return new FasterPatternStage.Finder()
@@ -198,7 +196,7 @@ public class ProcessedTriple
         }
 
     protected FasterPatternStage.Finder finderGeneral
-        ( final GraphMemFaster graph, final ProcessedNode S, final ProcessedNode P, final ProcessedNode O )
+        ( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
         {
         return new FasterPatternStage.Finder()
             {
