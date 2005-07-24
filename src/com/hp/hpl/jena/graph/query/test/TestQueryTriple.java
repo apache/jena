@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestQueryTriple.java,v 1.2 2005-07-24 21:15:26 chris-dollin Exp $
+    $Id: TestQueryTriple.java,v 1.3 2005-07-24 21:43:12 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.test;
 
@@ -146,7 +146,7 @@ public class TestQueryTriple extends QueryTestBase
         {
         Mapping map = new Mapping( new Node[0] );
         QueryTriple t = QueryTriple.classify( map, toClassify );
-        Matcher m = t.getMatcher();
+        Matcher m = t.createMatcher();
         Domain d = new Domain( 3 );
         assertEquals( result, m.match( d, toMatch ) );
         StringTokenizer st = new StringTokenizer( bindings, ";" );

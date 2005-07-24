@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.28 2005-07-22 22:04:19 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.29 2005-07-24 21:41:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -21,12 +21,12 @@ import java.util.*;
 public class PatternStage extends PatternStageBase
     {
     protected Graph graph;
-    protected Pattern [] compiled;
+    protected QueryTriple [] compiled;
     
     public PatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
         {
         this.graph = graph;
-        this.compiled = compile( map, triples );
+        this.compiled = QueryTriple.classify( map, triples );
         setGuards( map, constraints, triples );
         }
 
@@ -44,7 +44,7 @@ public class PatternStage extends PatternStageBase
             return new StageElement.PutBindings( sink );
         else
             {
-            Pattern p = compiled[index];
+            QueryTriple p = compiled[index];
             ValuatorSet s = guards[index];
             StageElement nextElement = makeStageElementChain( sink, index + 1 );
             StageElement next = s.isNonTrivial() 
@@ -54,100 +54,20 @@ public class PatternStage extends PatternStageBase
             return new FindTriples( p, next );
             }
         }    
-
-    protected boolean mustMatch( Element e )
-        { return e instanceof Bind || e instanceof Bound; }
-    
-    protected Matcher makeMatcher( Pattern p )
-        {
-        final Element S = p.S, P = p.P, O = p.O;
-        final int SMATCH = 4, PMATCH = 2, OMATCH = 1, NOMATCH = 0;
-        int bits = 
-            (mustMatch( S ) ? SMATCH : 0) 
-            + (mustMatch( P ) ? PMATCH : 0)
-            + (mustMatch( O ) ? OMATCH : 0)
-            ;
-        switch (bits)
-            {
-            case SMATCH + PMATCH + OMATCH:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return S.match( d, t.getSubject() )
-                            && P.match( d, t.getPredicate() )
-                            && O.match( d, t.getObject() ); }
-                    };
-                    
-            case SMATCH + OMATCH:
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { 
-                        return S.match( d, t.getSubject() ) 
-                        && O.match( d, t.getObject() ); }
-                    };
-                    
-            case SMATCH + PMATCH:  
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { 
-                        return S.match( d, t.getSubject() ) 
-                        && P.match( d, t.getPredicate() ); 
-                        }
-                    };
-                    
-            case PMATCH + OMATCH:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        {
-                        return P.match( d, t.getPredicate() )
-                        && O.match( d, t.getObject() );
-                        }
-                    };
-    
-            case SMATCH:                
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return S.match( d, t.getSubject() ); }
-                    };
-    
-            case PMATCH:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return P.match( d, t.getPredicate() ); }
-                    };
-                    
-            case OMATCH:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return O.match( d, t.getObject() ); }
-                    };
-    
-            case NOMATCH:
-                return Matcher.always;
-                    
-            }
-        throw new BrokenException( "uncatered-for case in optimisation" );
-        }
     
     protected final class FindTriples extends StageElement
         {
-        protected final Pattern p;
+        protected final QueryTriple p;
         protected final Matcher m;
         protected final StageElement next;
         
-        public FindTriples( Pattern p, StageElement next )
-            { this.p = p; this.next = next; this.m = makeMatcher( p ); }
+        public FindTriples( QueryTriple p, StageElement next )
+            { this.p = p; this.next = next; this.m = p.createMatcher(); }
         
         public final void run( Domain current )
             {
-            Triple findPattern = p.asTripleMatch( current ).asTriple();
-            Iterator it = graph.find( findPattern );
+            Triple toFind = Triple.create( p.S.finder( current ), p.P.finder( current ), p.O.finder( current )  );
+            Iterator it = graph.find( toFind );
             while (stillOpen && it.hasNext())
                 if (m.match( current, (Triple) it.next() )) 
                     next.run( current );
