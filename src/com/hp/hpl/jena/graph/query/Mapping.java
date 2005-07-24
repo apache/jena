@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Mapping.java,v 1.14 2005-02-21 11:52:15 andy_seaborne Exp $
+  $Id: Mapping.java,v 1.15 2005-07-24 15:58:18 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -71,8 +71,8 @@ public class Mapping implements VariableIndexes
 		}
 
     /**
-        allocate an index to the node _v_. _v_ must not already
-        be mapped.
+        allocate an index to the node <code>v</code>. <code>v</code> 
+        must not already be mapped.
         
         @param v the node to be given an index
         @return the value of the allocated index

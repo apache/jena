@@ -3,7 +3,10 @@
  */
 package com.hp.hpl.jena.graph.query;
 
+import java.util.Set;
+
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.shared.BrokenException;
 
 /**
      A QueryNode is a wrapped node that has been processed against
@@ -25,6 +28,12 @@ import com.hp.hpl.jena.graph.Node;
 */
 public class QueryNode
     {
+    public class MustNotMatchException extends BrokenException
+        {
+        public MustNotMatchException( String message )
+            { super( message ); }
+        }
+
     public static final int NO_INDEX = -1;
     
     public final Node node;
@@ -39,30 +48,80 @@ public class QueryNode
     public String toString()
         { return node.toString() + "[" + index + "]"; }
     
+    public Node finder( Domain d )
+        { return Node.ANY; }
+    
+    public boolean mustMatch()
+        { return false; }
+    
+    public boolean match( Domain d, Node x )
+        { throw new MustNotMatchException( "QueryNode " + this + " cannot match" ); }
+    
+    public static QueryNode classify( Mapping map, Set recent, Node n )
+        {
+        if (n.equals( Node.ANY ))
+            return new Any();
+        if (n.isVariable())
+            {
+            if (map.hasBound( n ))
+                {
+                if (recent.contains( n ))
+                    return new JustBound( n, map.indexOf( n ) );
+                else
+                    return new Bound( n, map.indexOf( n ) );
+                }
+            else
+                {
+                recent.add( n );
+                return new Bind( n, map.newIndex( n ) );
+                }
+            }
+        return new Fixed( n );
+        }
+    
     public static class Fixed extends QueryNode
         {
         public Fixed( Node n )
             { super( n ); }
+        
+        public Node finder( Domain d )
+            { return node; }
         }
     
     public static class Bind extends QueryNode
         {
         public Bind( Node n, int index )
             { super( n, index ); }
+        
+        public boolean mustMatch()
+            { return true; }
+        
+        public boolean match( Domain d, Node value )
+            { d.setElement( index, value );
+            return true; }
         }
-    
-    public static class Bound extends QueryNode
-        {
-        public Bound( Node n, int index )
-            { super( n, index ); }
-        }        
     
     public static class JustBound extends QueryNode
         {
         public JustBound( Node n, int index )
-            { super( n, index ); }
+            { super( n, index ); }  
+        
+        public boolean mustMatch()
+            { return true; } 
+        
+        public boolean match( Domain d, Node X )
+            { return X.matches( d.getElement( index ) ); }
         }
-    
+        
+    public static class Bound extends QueryNode
+        {
+        public Bound( Node n, int index )
+            { super( n, index ); }
+        
+        public Node finder( Domain d )
+            { return  d.getElement( index ); }
+        }        
+
     public static class Any extends QueryNode
         {
         public Any()
