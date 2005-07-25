@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.18 2005-07-22 22:08:23 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.19 2005-07-25 14:43:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -16,15 +16,10 @@ public class FasterPatternStage extends PatternStageBase
     protected GraphMemFaster graph;
     protected ProcessedTriple [] processed;
     
-    protected abstract static class Finder
-        {   
-        public abstract Iterator find( Domain d );
-        }
-    
     public FasterPatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
         {
         this.graph = (GraphMemFaster) graph;
-        this.processed = ProcessedTriple.allocateBindings( map, triples );
+        this.processed = ProcessedTriple.classify( map, triples );
         setGuards( map, constraints, triples );
         }
     
@@ -34,7 +29,7 @@ public class FasterPatternStage extends PatternStageBase
             return new StageElement.PutBindings( sink );
         else
             {
-            Matcher m = processed[index].makeMatcher();
+            Matcher m = processed[index].createMatcher();
             Finder f = processed[index].finder( graph );
             ValuatorSet s = guards[index];
             StageElement next = makeStageElementChain( sink, index + 1 );

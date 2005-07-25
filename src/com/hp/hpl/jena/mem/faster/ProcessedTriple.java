@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.8 2005-07-25 11:16:08 chris-dollin Exp $
+ 	$Id: ProcessedTriple.java,v 1.9 2005-07-25 14:43:40 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,8 +10,6 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.faster.FasterPatternStage.Finder;
-import com.hp.hpl.jena.shared.BrokenException;
 
 /**
     A ProcessedTriple is three QueryNodes; it knows how to deliver an
@@ -20,112 +18,23 @@ import com.hp.hpl.jena.shared.BrokenException;
     
     @author kers
 */
-public class ProcessedTriple
-    {
-    public final QueryNode S;
-    public final QueryNode P;
-    public final QueryNode O;
-    
+public class ProcessedTriple extends QueryTriple
+    {    
     public ProcessedTriple( QueryNode S, QueryNode P, QueryNode O ) 
-        { this.S = S; this.P = P; this.O = O; }
-    
-    public String toString()
-        { return "<pt " + S.toString() + " " + P.toString() + " " + O.toString() + ">"; }
+        { super( S, P, O ); }
 
-    public static ProcessedTriple [] allocateBindings( Mapping map, Triple[] triples )
+    static final QueryNodeFactory factory = new QueryNodeFactoryBase()
         {
-        ProcessedTriple [] result = new ProcessedTriple[triples.length];
-        for (int i = 0; i < triples.length; i += 1)
-            result[i] = allocateBindings( map, triples[i] );
-        return result;
-        }
-
-    public static ProcessedTriple allocateBindings( Mapping map, Triple triple )
-        {
-        Set local = new HashSet();
-        QueryNodeFactory f = QueryNode.factory;
-        return new ProcessedTriple
-            (
-            QueryNode.classify( f, map, local, triple.getSubject() ),
-            QueryNode.classify( f, map, local, triple.getPredicate() ),
-            QueryNode.classify( f, map, local, triple.getObject() )
-            );
-        }
+        public QueryTriple createTriple( QueryNode S, QueryNode P, QueryNode O )
+            { return new ProcessedTriple( S, P, O ); }
+        
+        public QueryTriple [] createArray( int size )
+            { return new ProcessedTriple[size]; }
+        };
     
-    protected Matcher makeMatcher()
-        {
-        final int SMATCH = 4, PMATCH = 2, OMATCH = 1, NOMATCH = 0;
-        int bits = 
-            (S.mustMatch() ? SMATCH : 0) 
-            + (P.mustMatch() ? PMATCH : 0)
-            + (O.mustMatch() ? OMATCH : 0)
-            ;
-        switch (bits)
-            {
-            case SMATCH + PMATCH + OMATCH:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return S.match( d, t.getSubject() )
-                            && P.match( d, t.getPredicate() )
-                            && O.match( d, t.getObject() ); }
-                    };
-                    
-            case SMATCH + OMATCH:
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { 
-                        return S.match( d, t.getSubject() ) 
-                        && O.match( d, t.getObject() ); }
-                    };
-                    
-            case SMATCH + PMATCH:  
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { 
-                        return S.match( d, t.getSubject() ) 
-                        && P.match( d, t.getPredicate() ); 
-                        }
-                    };
-                    
-            case PMATCH + OMATCH:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        {
-                        return P.match( d, t.getPredicate() )
-                        && O.match( d, t.getObject() );
-                        }
-                    };
-    
-            case SMATCH:                
-                return new Matcher() 
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return S.match( d, t.getSubject() ); }
-                    };
-    
-            case PMATCH:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return P.match( d, t.getPredicate() ); }
-                    };
-                    
-            case OMATCH:
-                return new Matcher()
-                    {
-                    public boolean match( Domain d, Triple t )
-                        { return O.match( d, t.getObject() ); }
-                    };
-    
-            case NOMATCH:
-                return Matcher.always;
-                    
-            }
-        throw new BrokenException( "uncatered-for case in optimisation" );
+    public static ProcessedTriple [] classify( Mapping map, Triple[] triples )
+        { 
+        return (ProcessedTriple []) QueryTriple.classify( factory, map, triples );
         }
     
     public static abstract class PreindexedFind
@@ -138,7 +47,7 @@ public class ProcessedTriple
         public abstract Iterator find( Node X, Node Y, Node Z );
         }
 
-    protected Finder finder( GraphMemFaster graph )
+    protected FasterPatternStage.Finder finder( GraphMemFaster graph )
         {
         if (S instanceof QueryNode.Fixed) return finderFixedS( graph, S, P, O );
         if (O instanceof QueryNode.Fixed) return finderFixedO( graph, S, P, O );

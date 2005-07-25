@@ -1,28 +1,45 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: QueryNodeFactory.java,v 1.2 2005-07-25 14:39:31 chris-dollin Exp $
+ 	$Id: QueryNodeFactoryBase.java,v 1.1 2005-07-25 14:39:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
 import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.query.QueryNode.*;
+import com.hp.hpl.jena.graph.query.QueryNode.Bind;
+import com.hp.hpl.jena.graph.query.QueryNode.Bound;
+import com.hp.hpl.jena.graph.query.QueryNode.Fixed;
 
-public interface QueryNodeFactory
-    {
-    public QueryNode createAny();
+/**
+    A base-level implementation of the QueryNodeFactory that uses the
+    QueryNode/QueryTriple classes directly.
     
-    public QueryNode createFixed( Node n );
-
-    public QueryNode createBind( Node node, int i );
-
-    public QueryNode createJustBound( Node node, int i );
-
-    public QueryNode createBound( Node node, int i );
-
-    public QueryTriple createTriple( QueryNode s, QueryNode p, QueryNode o );
-
-    public QueryTriple[] createArray( int size );
+    @author kers
+*/
+public class QueryNodeFactoryBase implements QueryNodeFactory
+    {
+    public QueryNode createAny()
+        { return new Any(); }
+    
+    public QueryNode createFixed( Node n )
+        { return new Fixed( n ); }
+    
+    public QueryNode createBind( Node node, int i )
+        { return new Bind( node, i ); }
+    
+    public QueryNode createJustBound( Node node, int i )
+        { return new JustBound( node, i ); }
+    
+    public QueryNode createBound( Node node, int i )
+        { return new Bound( node, i ); }
+    
+    public QueryTriple createTriple( QueryNode S, QueryNode P, QueryNode O )
+        { return new QueryTriple( S, P, O ); }
+    
+    public QueryTriple [] createArray( int size )
+        { return new QueryTriple [size]; }
     }
 
 /*

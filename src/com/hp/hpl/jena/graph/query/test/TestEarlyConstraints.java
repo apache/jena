@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestEarlyConstraints.java,v 1.4 2005-02-21 11:52:33 andy_seaborne Exp $
+  $Id: TestEarlyConstraints.java,v 1.5 2005-07-25 14:43:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -41,6 +41,12 @@ public class TestEarlyConstraints extends QueryTestBase
             {
             public QueryHandler queryHandler()
                 { return new SimpleQueryHandler( this ); }
+            
+            public ExtendedIterator find( Node S, Node P, Node O ) 
+                {
+                if (P.equals( node( "eg:p2" ) )) count[0] += 1;
+                return super.find( S, P, O ); 
+                }
             
             public ExtendedIterator find( TripleMatch tm ) 
                 {

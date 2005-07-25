@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryNode.java,v 1.5 2005-07-25 11:14:47 chris-dollin Exp $
+    $Id: QueryNode.java,v 1.6 2005-07-25 14:39:21 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -82,23 +82,7 @@ public class QueryNode
         return new Fixed( n );
         }
     
-    public static final QueryNodeFactory factory = new QueryNodeFactory()
-        {
-        public QueryNode createAny()
-            { return new Any(); }
-        
-        public QueryNode createFixed( Node n )
-            { return new Fixed( n ); }
-
-        public QueryNode createBind( Node node, int i )
-            { return new Bind( node, i ); }
-
-        public QueryNode createJustBound( Node node, int i )
-            { return new JustBound( node, i ); }
-
-        public QueryNode createBound( Node node, int i )
-            { return new Bound( node, i ); }
-        };
+    public static final QueryNodeFactory factory = new QueryNodeFactoryBase();
 
     public static class Fixed extends QueryNode
         {

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PatternStage.java,v 1.30 2005-07-25 11:14:47 chris-dollin Exp $
+  $Id: PatternStage.java,v 1.31 2005-07-25 14:39:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -39,29 +39,30 @@ public class PatternStage extends PatternStageBase
         else
             {
             QueryTriple p = compiled[index];
+            Matcher m = p.createMatcher();
+            Finder f = p.finder( graph );
             ValuatorSet s = guards[index];
             StageElement nextElement = makeStageElementChain( sink, index + 1 );
             StageElement next = s.isNonTrivial() 
                 ? new StageElement.RunValuatorSet( s, nextElement ) 
                 : nextElement
                 ;
-            return new FindTriples( p, next );
+            return new FindTriples( m, f, next );
             }
         }    
     
     protected final class FindTriples extends StageElement
         {
-        protected final QueryTriple p;
+        protected final Finder f;
         protected final Matcher m;
         protected final StageElement next;
         
-        public FindTriples( QueryTriple p, StageElement next )
-            { this.p = p; this.next = next; this.m = p.createMatcher(); }
+        public FindTriples( Matcher m, Finder f, StageElement next )
+            { this.f = f; this.next = next; this.m = m; }
         
         public final void run( Domain current )
-            {
-            Triple toFind = Triple.create( p.S.finder( current ), p.P.finder( current ), p.O.finder( current )  );
-            Iterator it = graph.find( toFind );
+            { 
+            Iterator it = f.find( current );
             while (stillOpen && it.hasNext())
                 if (m.match( current, (Triple) it.next() )) 
                     next.run( current );

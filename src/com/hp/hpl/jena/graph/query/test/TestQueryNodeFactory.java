@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestQueryNodeFactory.java,v 1.1 2005-07-25 11:16:08 chris-dollin Exp $
+ 	$Id: TestQueryNodeFactory.java,v 1.2 2005-07-25 14:43:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -58,6 +58,23 @@ public class TestQueryNodeFactory extends QueryTestBase
         QueryNode U = qnf.createBound( u, 2 );
         assertTrue( U instanceof QueryNode.Bound );
         assertSame( u, U.node );
+        }
+    
+    public void testTriple()
+        {
+        QueryNode S = qnf.createBound( node( "?x" ), 0 );
+        QueryNode P = qnf.createFixed( node( "P" ) );
+        QueryNode O = qnf.createBind( node( "?y" ), 1 );
+        QueryTriple t = qnf.createTriple( S, P, O );
+        assertSame( t.S, S );
+        assertSame( t.P, P );
+        assertSame( t.O, O );
+        }
+    
+    public void testArray()
+        {
+        QueryTriple [] a = qnf.createArray( 42 );
+        assertEquals( 42, a.length );
         }
 
     }
