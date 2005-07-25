@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryTriple.java,v 1.4 2005-07-24 21:41:56 chris-dollin Exp $
+    $Id: QueryTriple.java,v 1.5 2005-07-25 11:14:47 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -32,20 +32,20 @@ public class QueryTriple
     public String toString()
         { return "<qt " + S.toString() + " " + P.toString() + " " + O.toString() + ">"; }
     
-    public static QueryTriple [] classify( Mapping m, Triple [] t )
+    public static QueryTriple [] classify( QueryNodeFactory f, Mapping m, Triple [] t )
         {
         QueryTriple [] result = new QueryTriple [t.length];
-        for (int i = 0; i < t.length; i += 1) result[i] = classify( m, t[i] );
+        for (int i = 0; i < t.length; i += 1) result[i] = classify( f, m, t[i] );
         return result;
         }
     
-    public static QueryTriple classify( Mapping m, Triple t )
+    public static QueryTriple classify( QueryNodeFactory f, Mapping m, Triple t )
         { 
         HashSet fresh = new HashSet();
         return new QueryTriple
-            ( QueryNode.classify( m, fresh, t.getSubject() ), 
-            QueryNode.classify( m, fresh, t.getPredicate() ),
-            QueryNode.classify( m, fresh, t.getObject() ) );
+            ( QueryNode.classify( f, m, fresh, t.getSubject() ), 
+            QueryNode.classify( f, m, fresh, t.getPredicate() ),
+            QueryNode.classify( f, m, fresh, t.getObject() ) );
         }
     
     public Matcher createMatcher()

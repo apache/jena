@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.7 2005-07-24 18:58:11 chris-dollin Exp $
+ 	$Id: ProcessedTriple.java,v 1.8 2005-07-25 11:16:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -43,11 +43,12 @@ public class ProcessedTriple
     public static ProcessedTriple allocateBindings( Mapping map, Triple triple )
         {
         Set local = new HashSet();
+        QueryNodeFactory f = QueryNode.factory;
         return new ProcessedTriple
             (
-            QueryNode.classify( map, local, triple.getSubject() ),
-            QueryNode.classify( map, local, triple.getPredicate() ),
-            QueryNode.classify( map, local, triple.getObject() )
+            QueryNode.classify( f, map, local, triple.getSubject() ),
+            QueryNode.classify( f, map, local, triple.getPredicate() ),
+            QueryNode.classify( f, map, local, triple.getObject() )
             );
         }
     

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestQueryTriple.java,v 1.3 2005-07-24 21:43:12 chris-dollin Exp $
+    $Id: TestQueryTriple.java,v 1.4 2005-07-25 11:16:08 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.test;
 
@@ -21,6 +21,8 @@ public class TestQueryTriple extends QueryTestBase
 
     public static TestSuite suite()
         { return new TestSuite( TestQueryTriple.class ); }
+
+    public static final QueryNodeFactory F = QueryNode.factory;
     
     public void testQueryTripleSPO()
         { 
@@ -46,7 +48,7 @@ public class TestQueryTriple extends QueryTestBase
         Mapping m = new Mapping( new Node[0] );
         Mapping m2 = new Mapping( new Node[0] );
         Set s = new HashSet();
-        QueryTriple q = QueryTriple.classify( m, t );
+        QueryTriple q = QueryTriple.classify( F, m, t );
         testClassifiedOK( t.getSubject(), m2, s, q.S );
         testClassifiedOK( t.getPredicate(), m2, s, q.P );
         testClassifiedOK( t.getObject(), m2, s, q.O );
@@ -55,13 +57,13 @@ public class TestQueryTriple extends QueryTestBase
     protected void testClassifiedOK( Node node, Mapping m2, Set s, QueryNode q )
         {
         assertSame( node, q.node );
-        assertSame( QueryNode.classify( m2, s, node ).getClass(), q.getClass() );
+        assertSame( QueryNode.classify( F, m2, s, node ).getClass(), q.getClass() );
         }
     
     public void testJustBoundSO()
         {
         Mapping m = new Mapping( new Node[0] );
-        QueryTriple q = QueryTriple.classify( m, triple( "?x ?y ?x" ) );
+        QueryTriple q = QueryTriple.classify( F, m, triple( "?x ?y ?x" ) );
         assertEquals( QueryNode.JustBound.class, q.O.getClass() );
         assertEquals( q.S.index, q.O.index );
         }        
@@ -69,7 +71,7 @@ public class TestQueryTriple extends QueryTestBase
     public void testJustBoundSP()
         {
         Mapping m = new Mapping( new Node[0] );
-        QueryTriple q = QueryTriple.classify( m, triple( "?x ?x ?y" ) );
+        QueryTriple q = QueryTriple.classify( F, m, triple( "?x ?x ?y" ) );
         assertEquals( QueryNode.JustBound.class, q.P.getClass() );
         assertEquals( q.S.index, q.P.index );
         }    
@@ -77,7 +79,7 @@ public class TestQueryTriple extends QueryTestBase
     public void testJustBoundPO()
         {
         Mapping m = new Mapping( new Node[0] );
-        QueryTriple q = QueryTriple.classify( m, triple( "?x ?y ?y" ) );
+        QueryTriple q = QueryTriple.classify( F, m, triple( "?x ?y ?y" ) );
         assertEquals( QueryNode.JustBound.class, q.O.getClass() );
         assertEquals( q.P.index, q.O.index );
         }    
@@ -85,7 +87,7 @@ public class TestQueryTriple extends QueryTestBase
     public void testJustBoundSPO()
         {
         Mapping m = new Mapping( new Node[0] );
-        QueryTriple q = QueryTriple.classify( m, triple( "?x ?x ?x" ) );
+        QueryTriple q = QueryTriple.classify( F, m, triple( "?x ?x ?x" ) );
         assertEquals( QueryNode.JustBound.class, q.P.getClass() );
         assertEquals( QueryNode.JustBound.class, q.O.getClass() );
         assertEquals( q.S.index, q.P.index );
@@ -104,7 +106,7 @@ public class TestQueryTriple extends QueryTestBase
     protected void testSimpleClassifyArray( Triple[] triples )
         {
         Mapping m = new Mapping( new Node[0] );
-        QueryTriple [] q = QueryTriple.classify( m, triples );
+        QueryTriple [] q = QueryTriple.classify( F, m, triples );
         assertEquals( triples.length, q.length );
         for (int i = 0; i < q.length; i += 1) 
             {
@@ -117,7 +119,7 @@ public class TestQueryTriple extends QueryTestBase
     public void testJustBoundConfinement()
         {
         Mapping m = new Mapping( new Node[0] );
-        QueryTriple [] q = QueryTriple.classify( m, tripleArray( "?x P ?x; ?x Q ?x" ) );
+        QueryTriple [] q = QueryTriple.classify( F, m, tripleArray( "?x P ?x; ?x Q ?x" ) );
         assertTrue( q[0].S instanceof QueryNode.Bind );
         assertTrue( q[0].O instanceof QueryNode.JustBound );
         assertTrue( q[1].S instanceof QueryNode.Bound );
@@ -145,7 +147,7 @@ public class TestQueryTriple extends QueryTestBase
     protected void testMatch( Triple toClassify, Triple toMatch, boolean result, String bindings )
         {
         Mapping map = new Mapping( new Node[0] );
-        QueryTriple t = QueryTriple.classify( map, toClassify );
+        QueryTriple t = QueryTriple.classify( F, map, toClassify );
         Matcher m = t.createMatcher();
         Domain d = new Domain( 3 );
         assertEquals( result, m.match( d, toMatch ) );

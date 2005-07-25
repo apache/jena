@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TestQueryNode.java,v 1.4 2005-07-24 18:58:10 chris-dollin Exp $
+    $Id: TestQueryNode.java,v 1.5 2005-07-25 11:16:08 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query.test;
 
@@ -20,6 +20,8 @@ public class TestQueryNode extends QueryTestBase
     
     public static TestSuite suite()
         { return new TestSuite( TestQueryNode.class ); }
+    
+    public static final QueryNodeFactory F = QueryNode.factory;
     
     public void testNoIndex()
         { assertTrue( QueryNode.NO_INDEX < 0 ); }
@@ -88,7 +90,7 @@ public class TestQueryNode extends QueryTestBase
     public void testClassifyFixed()
         {
         Node fixed = Node.create( "someURI" );
-        QueryNode n = QueryNode.classify( null, null, fixed );
+        QueryNode n = QueryNode.classify( F, null, null, fixed );
         assertTrue( n instanceof QueryNode.Fixed );
         assertEquals( QueryNode.NO_INDEX, n.index );
         assertSame( fixed, n.node );
@@ -96,7 +98,7 @@ public class TestQueryNode extends QueryTestBase
     
     public void testClassifyAny()
         {
-        QueryNode n = QueryNode.classify( null, null, Node.ANY );
+        QueryNode n = QueryNode.classify( F, null, null, Node.ANY );
         assertTrue( n instanceof QueryNode.Any );
         assertEquals( QueryNode.NO_INDEX, n.index );
         assertSame( Node.ANY, n.node );
@@ -117,7 +119,7 @@ public class TestQueryNode extends QueryTestBase
 
     protected void testClassifyBind( Node bind, Mapping m, int index )
         {
-        QueryNode n = QueryNode.classify( m, new HashSet(), bind );
+        QueryNode n = QueryNode.classify( F, m, new HashSet(), bind );
         assertTrue( n instanceof QueryNode.Bind );
         assertSame( n.node, bind );
         assertEquals( index, n.index );
@@ -136,7 +138,7 @@ public class TestQueryNode extends QueryTestBase
         Node bound = Node.create( "?bound" );
         Mapping m = getPreloadedMapping( index );
         m.newIndex( bound );
-        QueryNode n = QueryNode.classify( m, new HashSet(), bound );
+        QueryNode n = QueryNode.classify( F, m, new HashSet(), bound );
         assertTrue( n instanceof QueryNode.Bound );
         assertSame( n.node, bound );
         assertEquals( index, n.index );
@@ -157,7 +159,7 @@ public class TestQueryNode extends QueryTestBase
         m.newIndex( recent );
         Set withRecent = new HashSet();
         withRecent.add( recent );
-        QueryNode n = QueryNode.classify( m, withRecent, recent );
+        QueryNode n = QueryNode.classify( F, m, withRecent, recent );
         assertTrue( n instanceof QueryNode.JustBound );
         assertSame( recent, n.node );
         assertEquals( index, n.index );
@@ -168,7 +170,7 @@ public class TestQueryNode extends QueryTestBase
         Node X = Node.create( "?X" );
         Mapping m = getPreloadedMapping( 0 );
         Set s = new HashSet();
-        QueryNode n = QueryNode.classify( m, s, X );
+        QueryNode n = QueryNode.classify( F, m, s, X );
         assertTrue( s.contains( X ) );
         }
     
@@ -177,8 +179,8 @@ public class TestQueryNode extends QueryTestBase
         Node X = Node.create( "?X" ), Y = Node.create( "?Y" );
         Mapping m = getPreloadedMapping( 0 );
         Set s = new HashSet();
-        QueryNode.classify( m, s, X );
-        QueryNode.classify( m, s, Y );
+        QueryNode.classify( F, m, s, X );
+        QueryNode.classify( F, m, s, Y );
         assertTrue( s.contains( X ) );
         assertTrue( s.contains( Y ) );
         }

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryNode.java,v 1.4 2005-07-24 18:56:43 chris-dollin Exp $
+    $Id: QueryNode.java,v 1.5 2005-07-25 11:14:47 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -59,28 +59,47 @@ public class QueryNode
     public boolean match( Domain d, Node x )
         { throw new MustNotMatchException( "QueryNode " + this + " cannot match" ); }
     
-    public static QueryNode classify( Mapping map, Set recent, Node n )
+    public static QueryNode classify
+        ( QueryNodeFactory f, Mapping map, Set recent, Node n )
         {
         if (n.equals( Node.ANY ))
-            return new Any();
+            return f.createAny();
         if (n.isVariable())
             {
             if (map.hasBound( n ))
                 {
                 if (recent.contains( n ))
-                    return new JustBound( n, map.indexOf( n ) );
+                    return f.createJustBound( n, map.indexOf( n ) );
                 else
-                    return new Bound( n, map.indexOf( n ) );
+                    return f.createBound( n, map.indexOf( n ) );
                 }
             else
                 {
                 recent.add( n );
-                return new Bind( n, map.newIndex( n ) );
+                return f.createBind( n, map.newIndex( n ) );
                 }
             }
         return new Fixed( n );
         }
     
+    public static final QueryNodeFactory factory = new QueryNodeFactory()
+        {
+        public QueryNode createAny()
+            { return new Any(); }
+        
+        public QueryNode createFixed( Node n )
+            { return new Fixed( n ); }
+
+        public QueryNode createBind( Node node, int i )
+            { return new Bind( node, i ); }
+
+        public QueryNode createJustBound( Node node, int i )
+            { return new JustBound( node, i ); }
+
+        public QueryNode createBound( Node node, int i )
+            { return new Bound( node, i ); }
+        };
+
     public static class Fixed extends QueryNode
         {
         public Fixed( Node n )
