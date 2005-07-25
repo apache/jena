@@ -1,12 +1,13 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.3 2005-07-25 14:39:21 chris-dollin Exp $
+    $Id: PatternStageBase.java,v 1.4 2005-07-25 23:05:24 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
 import java.util.Iterator;
 
+import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
 
 /**
@@ -18,21 +19,24 @@ import com.hp.hpl.jena.graph.Triple;
 public abstract class PatternStageBase extends Stage
     {
     protected static int count = 0;
-    protected ValuatorSet [] guards;
+    protected final ValuatorSet [] guards;
+    protected final QueryTriple [] classified;
+    protected final Graph graph;
+    protected final QueryNodeFactory factory;
     
     public abstract static class Finder
         {   
         public abstract Iterator find( Domain d );
         }
-    /**
-        Set the <code>guards</code> from the <code>constraints</code>, using the
-        variable-bindings in <code>map</code>, according to where they are fully
-        bound by the bindings in <code>triples</code>. 
-        @see GuardArranger
-    */
-    protected void setGuards( Mapping map, ExpressionSet constraints, Triple[] triples )
-        { this.guards = new GuardArranger( triples ).makeGuards( map, constraints ); }
-
+    
+    public PatternStageBase( QueryNodeFactory factory, Graph graph, Mapping map, ExpressionSet constraints, Triple[] triples )
+        {
+        this.graph = graph;
+        this.factory = factory;
+        this.classified = QueryTriple.classify( factory, map, triples );
+        this.guards = new GuardArranger( triples ).makeGuards( map, constraints );
+        }
+    
     protected void run( Pipe source, Pipe sink, StageElement se )
         {
         try { while (stillOpen && source.hasNext()) se.run( source.get() ); }
@@ -49,8 +53,21 @@ public abstract class PatternStageBase extends Stage
             .start();
         return result;
         }
-    
-    protected abstract StageElement makeStageElementChain( Pipe sink, int index );
+
+    protected StageElement makeStageElementChain(Pipe sink, int index)
+        {
+        if (index == classified.length)
+            return new StageElement.PutBindings( sink );
+        else
+            {
+            Matcher m = classified[index].createMatcher();
+            Finder f = classified[index].finder( graph );
+            ValuatorSet s = guards[index];
+            StageElement next = makeStageElementChain( sink, index + 1 );
+            return new StageElement.FindTriples( this, m, f, s.isNonTrivial() ? new StageElement.RunValuatorSet( s, next ) : next );
+            }
+        }
+
     }
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP

@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Stage.java,v 1.9 2005-02-21 11:52:26 andy_seaborne Exp $
+  $Id: Stage.java,v 1.10 2005-07-25 23:05:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -20,7 +20,7 @@ public abstract class Stage
 	/** the previous stage of the pipeline, once connected */
 	protected Stage previous;
     
-    protected volatile boolean stillOpen = true;
+    public volatile boolean stillOpen = true;
     
 	/** construct a new initial stage for the pipeline */    
 	public static Stage initial( int count )

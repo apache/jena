@@ -1,10 +1,15 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: StageElement.java,v 1.1 2005-07-22 14:13:24 chris-dollin Exp $
+ 	$Id: StageElement.java,v 1.2 2005-07-25 23:05:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
+
+import java.util.Iterator;
+
+import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.graph.query.PatternStageBase.Finder;
 
 /**
     Class used internally by PatternStage to express the notion of "the
@@ -30,6 +35,25 @@ public abstract class StageElement
             { sink.put( current.copy() ); }
         }
     
+    public static final class FindTriples extends StageElement
+        {
+        protected final Matcher matcher;
+        protected final Finder finder;
+        protected final StageElement next;
+        protected final Stage stage;
+        
+        public FindTriples( Stage stage, Matcher matcher, Finder finder, StageElement next )
+            { this.stage = stage;  this.matcher = matcher; this.finder = finder; this.next = next; }
+    
+        public final void run( Domain current )
+            {
+            Iterator it = finder.find( current );
+            while (stage.stillOpen && it.hasNext())
+                if (matcher.match( current, (Triple) it.next() )) 
+                    next.run( current );
+            }
+        }
+    
     /**
         A RunValuatorSet is created with a ValuatorSet and a next StageElement;
         whenever it is run, it evaluates the ValuatorSet and only if that 
@@ -47,6 +71,8 @@ public abstract class StageElement
             { if (s.evalBool( current )) next.run( current ); }
         }
     }
+
+
 
 /*
  * (c) Copyright 2005 Hewlett-Packard Development Company, LP

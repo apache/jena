@@ -1,59 +1,18 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.19 2005-07-25 14:43:40 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.20 2005-07-25 23:07:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
-
-import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 
 public class FasterPatternStage extends PatternStageBase
     {
-    protected GraphMemFaster graph;
-    protected ProcessedTriple [] processed;
-    
     public FasterPatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
-        {
-        this.graph = (GraphMemFaster) graph;
-        this.processed = ProcessedTriple.classify( map, triples );
-        setGuards( map, constraints, triples );
-        }
-    
-    protected StageElement makeStageElementChain( Pipe sink, int index )
-        {
-        if (index == processed.length)
-            return new StageElement.PutBindings( sink );
-        else
-            {
-            Matcher m = processed[index].createMatcher();
-            Finder f = processed[index].finder( graph );
-            ValuatorSet s = guards[index];
-            StageElement next = makeStageElementChain( sink, index + 1 );
-            return new FindTriples( m, f, s.isNonTrivial() ? new StageElement.RunValuatorSet( s, next ) : next );
-            }
-        }
-    
-    protected final class FindTriples extends StageElement
-        {
-        protected final Matcher matcher;
-        protected final Finder finder;
-        protected final StageElement next;
-        
-        public FindTriples( Matcher matcher, Finder finder, StageElement next )
-            { this.matcher = matcher; this.finder = finder; this.next = next; }
-        
-        public final void run( Domain current )
-            {
-            Iterator it = finder.find( current );
-            while (stillOpen && it.hasNext())
-                if (matcher.match( current, (Triple) it.next() )) 
-                    next.run( current );
-            }
-        }  
+        { super( ProcessedTriple.factory, (GraphMemFaster) graph, map, constraints, triples ); }
 
     }
 

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.9 2005-07-25 14:43:40 chris-dollin Exp $
+ 	$Id: ProcessedTriple.java,v 1.10 2005-07-25 23:07:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,6 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.graph.query.PatternStageBase.Finder;
 
 /**
     A ProcessedTriple is three QueryNodes; it knows how to deliver an
@@ -47,8 +48,9 @@ public class ProcessedTriple extends QueryTriple
         public abstract Iterator find( Node X, Node Y, Node Z );
         }
 
-    protected FasterPatternStage.Finder finder( GraphMemFaster graph )
+    public Finder finder( Graph g )
         {
+        GraphMemFaster graph = (GraphMemFaster) g;
         if (S instanceof QueryNode.Fixed) return finderFixedS( graph, S, P, O );
         if (O instanceof QueryNode.Fixed) return finderFixedO( graph, S, P, O );
         if (S instanceof QueryNode.Bound) return finderBoundS( graph, S, P, O );
