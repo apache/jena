@@ -42,7 +42,7 @@ import com.hp.hpl.jena.enhanced.*;
 /** An implementation of Literal.
  *
  * @author  bwm and der
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2005-07-13 13:51:36 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2005-07-25 07:48:03 $'
  */
 public class LiteralImpl extends EnhNode implements Literal {
   
@@ -324,7 +324,8 @@ public class LiteralImpl extends EnhNode implements Literal {
         if (value instanceof Number) {
             return ((Number)value);
         } else {
-            throw new DatatypeFormatException(value.toString() + " is not a Number");
+            String type = value == null ? "null" : value.getClass().toString();
+            throw new DatatypeFormatException(value.toString() + " is not a Number type, it is a " + type);
         }
     }
         
