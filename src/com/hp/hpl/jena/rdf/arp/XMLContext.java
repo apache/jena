@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: XMLContext.java,v 1.4 2005-02-21 12:09:17 andy_seaborne Exp $
+ * * $Id: XMLContext.java,v 1.5 2005-07-25 10:55:19 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -71,7 +71,7 @@ class XMLContext extends Object {
         this.namespaces = namespaces;
     }
     XMLContext withBase(String b)  throws MalformedURIException {
-        return new XMLContext(document,new URI(b),b,lang,namespaces);
+        return new XMLContext(document,new URI(uri,b),b,lang,namespaces);
     }
     XMLContext revertToDocument() {
         return document.withLang(lang);
