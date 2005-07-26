@@ -1688,10 +1688,16 @@ floating point or XSDDateTime).</div>
     </td>
   </tr>
   <tr> 
-    <td width="41%">remove(?n, ...)</td>
+    <td width="41%">remove(n, ...)<br />drop(n, ...)</td>
     <td width="59%"> 
       <div align="left">Remove the statement (triple) which caused the n'th body 
-        term of this (forward-only) rule to match.</div>
+        term of this (forward-only) rule to match. Remove will propagate the
+        change to other consequent rules including the firing rule (which must
+        thus be guarded by some other clauses). Drop will silently remove the
+        triple(s) from the graph but not fire any rules as a consequence.
+        These are clearly non-monotonic operations and, in particular, the
+        behaviour of a rule set in which different rules both drop and create the
+        same triple(s) is undefined.</div>
     </td>
   </tr>
   <tr> 
@@ -1914,7 +1920,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.24 2005-06-21 07:34:41 der Exp $</i>
+  Last modification: $Id: index.html,v 1.25 2005-07-26 16:42:54 der Exp $</i>
 </p>
 </body>
 </html>
