@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.10 2005-07-25 23:07:31 chris-dollin Exp $
+ 	$Id: ProcessedTriple.java,v 1.11 2005-07-26 14:30:21 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,7 +10,7 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.graph.query.PatternStageBase.Finder;
+import com.hp.hpl.jena.graph.query.PatternStageBase.Applyer;
 
 /**
     A ProcessedTriple is three QueryNodes; it knows how to deliver an
@@ -33,11 +33,6 @@ public class ProcessedTriple extends QueryTriple
             { return new ProcessedTriple[size]; }
         };
     
-    public static ProcessedTriple [] classify( Mapping map, Triple[] triples )
-        { 
-        return (ProcessedTriple []) QueryTriple.classify( factory, map, triples );
-        }
-    
     public static abstract class PreindexedFind
         {
         public abstract Iterator find( Node X, Node Y );
@@ -48,7 +43,7 @@ public class ProcessedTriple extends QueryTriple
         public abstract Iterator find( Node X, Node Y, Node Z );
         }
 
-    public Finder finder( Graph g )
+    public Applyer finder( Graph g )
         {
         GraphMemFaster graph = (GraphMemFaster) g;
         if (S instanceof QueryNode.Fixed) return finderFixedS( graph, S, P, O );
@@ -59,10 +54,10 @@ public class ProcessedTriple extends QueryTriple
         return finderGeneral( graph, S, P, O );
         }
 
-    protected FasterPatternStage.Finder finderFixedS( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
+    protected FasterPatternStage.Applyer finderFixedS( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
         {
         final ProcessedTriple.PreindexedFind f = graph.findFasterFixedS( S.node );
-        return new FasterPatternStage.Finder()
+        return new QueryTriple.SimpleApplyer( graph, this )
             {
             public Iterator find( Domain current )
                 {
@@ -71,10 +66,10 @@ public class ProcessedTriple extends QueryTriple
             };
         }
 
-    protected FasterPatternStage.Finder finderFixedO( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
+    protected FasterPatternStage.Applyer finderFixedO( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
         {
         final ProcessedTriple.PreindexedFind f = graph.findFasterFixedO( O.node );
-        return new FasterPatternStage.Finder()
+        return new QueryTriple.SimpleApplyer( graph, this )
             {
             public Iterator find( Domain current )
                 {
@@ -83,10 +78,10 @@ public class ProcessedTriple extends QueryTriple
             };
         }
 
-    protected FasterPatternStage.Finder finderBoundS( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
+    protected FasterPatternStage.Applyer finderBoundS( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
         {            
         final ProcessedTriple.HalfindexedFind f = graph.findFasterBoundS();
-        return new FasterPatternStage.Finder()
+        return new QueryTriple.SimpleApplyer( graph, this )
             {
             public Iterator find( Domain current )
                 {
@@ -95,10 +90,10 @@ public class ProcessedTriple extends QueryTriple
             };
         }
 
-    protected FasterPatternStage.Finder finderBoundO( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
+    protected FasterPatternStage.Applyer finderBoundO( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
         {
         final ProcessedTriple.HalfindexedFind f = graph.findFasterBoundO();
-        return new FasterPatternStage.Finder()
+        return new QueryTriple.SimpleApplyer( graph, this )
             {
             public Iterator find( Domain current )
                 {
@@ -107,10 +102,10 @@ public class ProcessedTriple extends QueryTriple
             };
         }
 
-    protected FasterPatternStage.Finder finderGeneral
+    protected FasterPatternStage.Applyer finderGeneral
         ( final GraphMemFaster graph, final QueryNode S, final QueryNode P, final QueryNode O )
         {
-        return new FasterPatternStage.Finder()
+        return new QueryTriple.SimpleApplyer( graph, this )
             {
             public Iterator find( Domain current )
                 {
