@@ -109,6 +109,8 @@ Reasoners:
       transitive reductions being incompletely reduced (i.e. some
       indirect property instances were being incorrectly reported as
       being direct).
+    o Added "drop" operator as an alternative to "remove" when performing
+      non-mononitic rewrites.
       
 ;;; -- end post2.2final change list -------------------------------------
 
