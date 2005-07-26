@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: StageElement.java,v 1.2 2005-07-25 23:05:24 chris-dollin Exp $
+ 	$Id: StageElement.java,v 1.3 2005-07-26 10:18:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -35,6 +35,11 @@ public abstract class StageElement
             { sink.put( current.copy() ); }
         }
     
+    
+    /**
+        A FindTriples runs match-and-next over all the triples returned
+        by its finder.   
+    */
     public static final class FindTriples extends StageElement
         {
         protected final Matcher matcher;
@@ -53,7 +58,7 @@ public abstract class StageElement
                     next.run( current );
             }
         }
-    
+
     /**
         A RunValuatorSet is created with a ValuatorSet and a next StageElement;
         whenever it is run, it evaluates the ValuatorSet and only if that 

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterPatternStage.java,v 1.20 2005-07-25 23:07:31 chris-dollin Exp $
+ 	$Id: FasterPatternStage.java,v 1.21 2005-07-26 10:21:11 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -13,7 +13,6 @@ public class FasterPatternStage extends PatternStageBase
     {
     public FasterPatternStage( Graph graph, Mapping map, ExpressionSet constraints, Triple [] triples )
         { super( ProcessedTriple.factory, (GraphMemFaster) graph, map, constraints, triples ); }
-
     }
 
 
