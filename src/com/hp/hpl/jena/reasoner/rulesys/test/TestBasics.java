@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.30 2005-07-21 08:25:52 der Exp $
+ * $Id: TestBasics.java,v 1.31 2005-07-26 16:21:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $ on $Date: 2005-07-21 08:25:52 $
+ * @version $Revision: 1.31 $ on $Date: 2005-07-26 16:21:20 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -438,6 +438,27 @@ public class TestBasics extends TestCase  {
         TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
             new Triple[] {
                 new Triple(n1, p, Util.makeIntNode(1)),
+                new Triple(n1, q, Util.makeIntNode(2))
+            });
+        
+    }
+    
+    /**
+     * The the "drop" builtin
+     */
+    public void testDropBuiltin() {
+        String rules =  
+                       "[rule1: (?x p ?y) -> drop(0)]" +
+                       "";
+        List ruleList = Rule.parseRules(rules);
+
+        InfGraph infgraph = new BasicForwardRuleReasoner(ruleList).bind(Factory.createGraphMem());
+        infgraph.add(new Triple(n1, p, Util.makeIntNode(1)));
+        infgraph.add(new Triple(n1, p, Util.makeIntNode(2)));
+        infgraph.add(new Triple(n1, q, Util.makeIntNode(2)));
+        
+        TestUtil.assertIteratorValues(this, infgraph.find(n1, null, null),
+            new Triple[] {
                 new Triple(n1, q, Util.makeIntNode(2))
             });
         
