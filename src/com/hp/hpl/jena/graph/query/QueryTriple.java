@@ -1,14 +1,13 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryTriple.java,v 1.7 2005-07-26 14:26:28 chris-dollin Exp $
+    $Id: QueryTriple.java,v 1.8 2005-07-27 16:15:08 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
 import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.PatternStageBase.Applyer;
 import com.hp.hpl.jena.shared.BrokenException;
 
 /**
@@ -23,28 +22,6 @@ import com.hp.hpl.jena.shared.BrokenException;
 */
 public class QueryTriple
     {
-    protected static class SimpleApplyer extends Applyer
-        {
-        protected final Graph g;
-        protected final QueryNode s;
-        protected final QueryNode p;
-        protected final QueryNode o;
-
-        protected SimpleApplyer( Graph g, QueryTriple qt )
-            { this.g = g; this.o = qt.O; this.p = qt.P; this.s = qt.S; }
-
-        public Iterator find( Domain d )
-            { return g.find( s.finder( d ), p.finder( d ), o.finder( d ) ); }
-
-        public void applyToTriples( Domain d, Matcher m, StageElement next )
-            {
-            Iterator it = find( d );
-            while (it.hasNext())
-                if (m.match( d, (Triple) it.next() )) 
-                     next.run( d );
-            }
-        }
-
     public final QueryNode S;
     public final QueryNode P;
     public final QueryNode O;
@@ -71,7 +48,7 @@ public class QueryTriple
             QueryNode.classify( f, m, fresh, t.getObject() ) );
         }
     
-    public Applyer finder( final Graph g )
+    public Applyer createApplyer( final Graph g )
         { return new SimpleApplyer( g, this ); }
     
     public Matcher createMatcher()
@@ -148,6 +125,28 @@ public class QueryTriple
                     
             }
         throw new BrokenException( "uncatered-for case in optimisation" );
+        }    
+    
+    public static class SimpleApplyer extends Applyer
+        {
+        protected final Graph g;
+        protected final QueryNode s;
+        protected final QueryNode p;
+        protected final QueryNode o;
+
+        protected SimpleApplyer( Graph g, QueryTriple qt )
+            { this.g = g; this.o = qt.O; this.p = qt.P; this.s = qt.S; }
+
+        public Iterator find( Domain d )
+            { return g.find( s.finder( d ), p.finder( d ), o.finder( d ) ); }
+
+        public void applyToTriples( Domain d, Matcher m, StageElement next )
+            {
+            Iterator it = find( d );
+            while (it.hasNext())
+                if (m.match( d, (Triple) it.next() )) 
+                     next.run( d );
+            }
         }
     }
 /*

@@ -1,11 +1,9 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.5 2005-07-26 14:26:28 chris-dollin Exp $
+    $Id: PatternStageBase.java,v 1.6 2005-07-27 16:15:07 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
-
-import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.Triple;
@@ -23,11 +21,6 @@ public abstract class PatternStageBase extends Stage
     protected final QueryTriple [] classified;
     protected final Graph graph;
     protected final QueryNodeFactory factory;
-    
-    public abstract static class Applyer
-        {   
-        public abstract void applyToTriples( Domain d, Matcher m, StageElement next );
-        }
     
     public PatternStageBase( QueryNodeFactory factory, Graph graph, Mapping map, ExpressionSet constraints, Triple[] triples )
         {
@@ -62,7 +55,7 @@ public abstract class PatternStageBase extends Stage
             {
             ValuatorSet s = guards[index];
             Matcher m = classified[index].createMatcher();
-            Applyer f = classified[index].finder( graph );
+            Applyer f = classified[index].createApplyer( graph );
             StageElement next = makeStageElementChain( sink, index + 1 );
             return new StageElement.FindTriples( this, m, f, s.isNonTrivial() ? new StageElement.RunValuatorSet( s, next ) : next );
             }

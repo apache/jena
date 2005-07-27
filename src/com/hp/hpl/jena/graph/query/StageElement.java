@@ -1,12 +1,11 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: StageElement.java,v 1.4 2005-07-26 14:26:28 chris-dollin Exp $
+ 	$Id: StageElement.java,v 1.5 2005-07-27 16:15:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
 
-import com.hp.hpl.jena.graph.query.PatternStageBase.Applyer;
 
 /**
     Class used internally by PatternStage to express the notion of "the
