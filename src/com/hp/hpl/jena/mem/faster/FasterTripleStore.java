@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.4 2005-07-11 14:44:14 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.5 2005-07-27 16:21:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class FasterTripleStore
@@ -134,44 +135,44 @@ public class FasterTripleStore
         else
             return new StoreTripleIteratorFaster( parent, subjects.iterateAll( sm, pm, om ), subjects, predicates, objects );
         }
-
-    public Iterator findFaster( Node S, Node P, Node O )
-        {    
-        if (S.isConcrete())
-            return subjects.iterator( S, P, O );
-        else if (O.isConcrete() && !O.isLiteral())
-            return objects.iterator( O, S, P );
-        else if (P.isConcrete())
-            return predicates.iterator( P, O, S );
-        else
-            return subjects.iterateAll( S, P, O );
-        }
     
-    public ProcessedTriple.PreindexedFind findFasterFixedS( Node node )
-        { return subjects.findFasterFixedS( node ); }
+    public Applyer createApplyer( ProcessedTriple pt )
+        {
+        if (pt.S instanceof QueryNode.Fixed) 
+            return subjects.createFixedSApplyer( pt );
+        if (pt.O instanceof QueryNode.Fixed) 
+            return objects.createFixedOApplyer( pt );
+        if (pt.S instanceof QueryNode.Bound) 
+            return subjects.createBoundSApplyer( pt );
+        if (pt.O instanceof QueryNode.Bound) 
+            return objects.createBoundOApplyer( pt );
+        return varSvarOApplyer( pt );
+        }
 
-
-    public ProcessedTriple.PreindexedFind findFasterFixedO( Node node )
-        { return objects.findFasterFixedO( node ); }
-
-    public ProcessedTriple.HalfindexedFind findFasterBoundS()
+    protected Applyer varSvarOApplyer( final QueryTriple pt )
         { 
-        return new ProcessedTriple.HalfindexedFind()
+        return new Applyer()
             {
-            public Iterator find( Node X, Node Y, Node Z )
-                { return subjects.iterator( X, Y, Z ); }
+            protected final QueryNode p = pt.P;
+        
+            public Iterator find( Domain d )
+                {
+                Node P = p.finder( d );
+                if (P.isConcrete())
+                    return predicates.iterator( P, Node.ANY, Node.ANY );
+                else
+                    return subjects.iterator();
+                }
+    
+            public void applyToTriples( Domain d, Matcher m, StageElement next )
+                {
+                Iterator it = find( d );
+                while (it.hasNext())
+                    if (m.match( d, (Triple) it.next() )) 
+                         next.run( d );
+                }
             };
         }
-
-    public ProcessedTriple.HalfindexedFind findFasterBoundO()
-        {       
-        return new ProcessedTriple.HalfindexedFind()
-            {
-            public Iterator find( Node S, Node P, Node O )
-                { return objects.iterator( O, S, P ); }
-            };
-        }
-
     }
 
 

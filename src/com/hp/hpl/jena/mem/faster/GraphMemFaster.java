@@ -1,15 +1,13 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.6 2005-07-12 15:57:42 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.7 2005-07-27 16:21:46 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
 
-import java.util.Iterator;
-
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.query.QueryHandler;
+import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -54,15 +52,9 @@ public class GraphMemFaster extends GraphMemBase
      */
     public ExtendedIterator graphBaseFind( TripleMatch m ) 
         { return store.find( m.asTriple() ); }
-    
-    public Iterator findFaster( Node S, Node P, Node O )
-        { return store.findFaster( S, P, O ); }
-    
-    public ProcessedTriple.PreindexedFind findFasterFixedS( final Node node )
-        { return store.findFasterFixedS( node ); }
-    
-    public ProcessedTriple.PreindexedFind findFasterFixedO( Node node )
-        { return store.findFasterFixedO( node ); }
+
+    public Applyer createApplyer( ProcessedTriple pt )
+        { return store.createApplyer( pt ); }
     
     /**
          Answer true iff this graph contains <code>t</code>. If <code>t</code>
@@ -77,12 +69,6 @@ public class GraphMemFaster extends GraphMemBase
     */
     public void clear()
         { store.clear(); }
-
-    public ProcessedTriple.HalfindexedFind findFasterBoundS()
-        { return store.findFasterBoundS(); }
-
-    public ProcessedTriple.HalfindexedFind findFasterBoundO()
-        { return store.findFasterBoundO(); }
     }
 
 
