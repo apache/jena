@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedNode.java,v 1.6 2005-07-24 18:58:11 chris-dollin Exp $
+ 	$Id: ProcessedNode.java,v 1.7 2005-07-28 14:03:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -32,6 +32,9 @@ public class ProcessedNode extends QueryNode
         { super( node, index ); }
     
     public boolean match( Domain d, Node X )
+        { throw new BrokenException( "ARGH" ); }
+    
+    public boolean matchOrBind( Domain d, Node X )
         { throw new BrokenException( "ARGH" ); }
     
     public Node finder( Domain d )

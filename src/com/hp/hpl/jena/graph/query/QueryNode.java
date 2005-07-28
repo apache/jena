@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryNode.java,v 1.6 2005-07-25 14:39:21 chris-dollin Exp $
+    $Id: QueryNode.java,v 1.7 2005-07-28 14:00:50 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -28,7 +28,7 @@ import com.hp.hpl.jena.shared.BrokenException;
     
     @author hedgehog
 */
-public class QueryNode
+public abstract class QueryNode
     {
     public class MustNotMatchException extends BrokenException
         {
@@ -59,6 +59,8 @@ public class QueryNode
     public boolean match( Domain d, Node x )
         { throw new MustNotMatchException( "QueryNode " + this + " cannot match" ); }
     
+    public abstract boolean matchOrBind( Domain d, Node x );
+        
     public static QueryNode classify
         ( QueryNodeFactory f, Mapping map, Set recent, Node n )
         {
@@ -91,6 +93,9 @@ public class QueryNode
         
         public Node finder( Domain d )
             { return node; }
+        
+        public boolean matchOrBind( Domain d, Node x )
+            { return node.matches( x ); }
         }
     
     public static class Bind extends QueryNode
@@ -102,6 +107,10 @@ public class QueryNode
             { return true; }
         
         public boolean match( Domain d, Node value )
+            { d.setElement( index, value );
+            return true; }
+        
+        public boolean matchOrBind( Domain d, Node value )
             { d.setElement( index, value );
             return true; }
         }
@@ -116,6 +125,9 @@ public class QueryNode
         
         public boolean match( Domain d, Node X )
             { return X.matches( d.getElement( index ) ); }
+        
+        public boolean matchOrBind( Domain d, Node x )
+            { return x.matches( d.getElement( index ) ); }
         }
         
     public static class Bound extends QueryNode
@@ -124,13 +136,19 @@ public class QueryNode
             { super( n, index ); }
         
         public Node finder( Domain d )
-            { return  d.getElement( index ); }
+            { return d.getElement( index ); }
+        
+        public boolean matchOrBind( Domain d, Node x )
+            { return d.getElement( index ).matches( x ); }
         }        
 
     public static class Any extends QueryNode
         {
         public Any()
             { super( Node.ANY ); }
+        
+        public boolean matchOrBind( Domain d, Node x )
+            { return true; }
         }
     }
 /*

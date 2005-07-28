@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.5 2005-07-27 16:21:47 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.6 2005-07-28 14:03:27 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -63,6 +63,7 @@ public class NodeToTriplesMapFaster
         public abstract void add( Triple t );
         public abstract void remove( Triple t );
         public abstract ExtendedIterator iterator();
+        public abstract void app( Domain d, StageElement next, MatchOrBind s );
         }
     
     protected static class ArrayBunch extends Bunch
@@ -95,7 +96,13 @@ public class NodeToTriplesMapFaster
                     return; }
                 }
             }
-
+        
+        public void app( Domain d, StageElement next, MatchOrBind s )
+            {
+            for (int i = 0; i < size; i += 1)
+                if (s.matches( elements[i] )) next.run( d );
+            }
+        
         public ExtendedIterator iterator()
             {
             return new NiceIterator()
@@ -145,7 +152,14 @@ public class NodeToTriplesMapFaster
             { elements.remove( t ); }
 
         public ExtendedIterator iterator()
-            { return WrappedIterator.create( elements.iterator() ); }
+            { return WrappedIterator.create( elements.iterator() ); }        
+        
+        public void app( Domain d, StageElement next, MatchOrBind s )
+            {
+            Iterator it = iterator();
+            while (it.hasNext())
+                if (s.matches( (Triple) it.next() )) next.run( d );
+            }
         }
     
     /**
@@ -238,6 +252,38 @@ public class NodeToTriplesMapFaster
            ;
        }    
 
+    static abstract class MatchOrBind
+        {
+        public static MatchOrBind createSP( final Domain d, final ProcessedTriple Q )
+            {
+            return new MatchOrBind()
+                {
+                public boolean matches( Triple t )
+                    {
+                    return 
+                        Q.S.matchOrBind( d, t.getSubject() )
+                        && Q.P.matchOrBind( d, t.getPredicate() )
+                        ;
+                    }
+                };
+            }
+        
+        public static MatchOrBind createPO( final Domain d, final ProcessedTriple Q )
+            {
+            return new MatchOrBind()
+                {
+                public boolean matches( Triple t )
+                    {
+                    return 
+                        Q.P.matchOrBind( d, t.getPredicate() )
+                        && Q.O.matchOrBind( d, t.getObject() )
+                        ;
+                    }
+                };
+            }        
+        public abstract boolean matches( Triple t );
+        }
+    
     public Applyer createFixedOApplyer( final ProcessedTriple Q )
         {        
         final Bunch ss = (Bunch) map.get( Q.O.node );
@@ -249,14 +295,8 @@ public class NodeToTriplesMapFaster
                 {
                 public void applyToTriples( Domain d, Matcher m, StageElement next )
                     {
-                    Node sf = Q.S.finder( d ), pf = Q.P.finder( d );
-                    Iterator it = ss.iterator();
-                    while (it.hasNext())
-                        {
-                        Triple t = (Triple) it.next();
-                        if (sf.matches( t.getSubject() ) && pf.matches( t.getPredicate() ))
-                            if (m.match( d, t )) next.run( d );
-                        }
+                    MatchOrBind s = MatchOrBind.createSP( d, Q );
+                    ss.app( d, next, s );
                     }
                 };
             }
@@ -271,14 +311,8 @@ public class NodeToTriplesMapFaster
                 Bunch c = (Bunch) map.get( pt.O.finder( d ) );
                 if (c != null)
                     {
-                    Node sf = pt.S.finder( d ), pf = pt.P.finder( d );
-                    Iterator it = c.iterator();
-                    while (it.hasNext())
-                        {
-                        Triple t = (Triple) it.next();
-                        if (sf.matches( t.getSubject() ) && pf.matches( t.getPredicate() ))
-                            if (m.match( d, t )) next.run( d );
-                        }
+                    MatchOrBind s = MatchOrBind.createSP( d, pt );
+                    c.app( d, next, s );
                     }
                 }
             };
@@ -293,21 +327,14 @@ public class NodeToTriplesMapFaster
                 Bunch c = (Bunch) map.get( pt.S.finder( d ) );
                 if (c != null)
                     {
-                    Node pf = pt.P.finder( d ), of = pt.O.finder( d );
-                    Iterator it = c.iterator();
-                    while (it.hasNext())
-                        {
-                        Triple t = (Triple) it.next();
-                        if (pf.matches( t.getPredicate() ) && of.matches( t.getObject() ))
-                            if (m.match( d, t )) next.run( d );
-                        
-                        }
+                    MatchOrBind s = MatchOrBind.createPO( d, pt );
+                    c.app( d, next, s );
                     }
                 }
             };
         }
-    
-    public Applyer createFixedSApplyer( final QueryTriple Q )
+
+    public Applyer createFixedSApplyer( final ProcessedTriple Q )
         {
         final Bunch ss = (Bunch) map.get( Q.S.node );
         if (ss == null)
@@ -318,14 +345,8 @@ public class NodeToTriplesMapFaster
                 {
                 public void applyToTriples( Domain d, Matcher m, StageElement next )
                     {
-                    Node pf = Q.P.finder( d ), of = Q.O.finder( d );
-                    Iterator it = ss.iterator();
-                    while (it.hasNext())
-                        {
-                        Triple t = (Triple) it.next();
-                        if (pf.matches( t.getPredicate() ) && of.matches( t.getObject() ))
-                            if (m.match( d, t )) next.run( d );
-                        }
+                    MatchOrBind s = MatchOrBind.createPO( d, Q );
+                    ss.app( d, next, s );
                     }
                 };
             }
