@@ -111,6 +111,8 @@ Reasoners:
       being direct).
     o Added "drop" operator as an alternative to "remove" when performing
       non-mononitic rewrites.
+    o Fixed bug in rebind/reset of infgraphs which use TGC and failed to 
+      reset the transitive engine.
       
 ;;; -- end post2.2final change list -------------------------------------
 
