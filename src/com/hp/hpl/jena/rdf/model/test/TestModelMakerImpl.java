@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelMakerImpl.java,v 1.22 2005-03-10 14:35:35 chris-dollin Exp $
+  $Id: TestModelMakerImpl.java,v 1.23 2005-07-29 16:08:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -54,15 +54,15 @@ public class TestModelMakerImpl extends ModelTestBase
         checkHistory( one( "remove(London)" ) );
         }
 
-    public void testCreate()
+    public void testCreateFreshModel()
         {
-        maker.createModel();
+        maker.createFreshModel();
         checkHistory( one( "create()" ) );
         }
 
-    public void testGet()
+    public void testCreateDefaultModel()
         {
-        maker.getModel();
+        maker.createDefaultModel();
         checkHistory( one( "get()" ) );
         }
 

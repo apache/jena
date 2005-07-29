@@ -117,7 +117,7 @@ public class TestModelSpecFactory extends ModelTestBase
         {
         Model m = modelWithStatements( "eh:Root rdf:type jms:PlainModelSpec" );
         ModelSpec s = ModelSpecFactory.createSpec( m );
-        Model x = s.createModel();
+        Model x = s.createFreshModel();
         assertNotNull( x );
         }
     

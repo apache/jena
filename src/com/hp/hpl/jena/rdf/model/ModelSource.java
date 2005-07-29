@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSource.java,v 1.6 2005-02-21 12:14:11 andy_seaborne Exp $
+  $Id: ModelSource.java,v 1.7 2005-07-29 16:08:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -28,18 +28,19 @@ public interface ModelSource
     {
     /**
         Answer this ModelSource's default model. Every ModelSource
-        has a default model. That model need not be created until the
-        first call on getModel. Multiple calls of getModel will
+        has a default model. That model need not exist until the
+        first call on createDefaultModel. Multiple calls of getModel will
         yield the *same* model. This method never returns <code>null</code>.
     */
-    Model getModel();
+    Model createDefaultModel();
     
     /**
         Answer a Model that satisfies this ModelSource's shape. Different
-        calls may return different models, or they may all return the same
-        model. This method never returns <code>null</code>.
+        calls return different models - they are not permitted to return
+        the same model. (Doing this on a database model will create new,
+        pseudo-anonymous, models.) This method never returns <code>null</code>.
     */
-    Model createModel();
+    Model createFreshModel();
     
     /**
      	Answer a model. Different ModelSources may implement this

@@ -21,7 +21,7 @@ import com.hp.hpl.jena.rdf.model.* ;
   *  </p>
   * 
   * @author Andy Seaborne
-  * @version $Id: dbcreate.java,v 1.5 2005-02-21 11:49:11 andy_seaborne Exp $
+  * @version $Id: dbcreate.java,v 1.6 2005-07-29 16:08:08 chris-dollin Exp $
   */ 
  
 public class dbcreate extends DBcmd
@@ -51,15 +51,16 @@ public class dbcreate extends DBcmd
     {
         Model m = null;
 
+        ModelMaker maker = ModelFactory.createModelRDBMaker(getConnection());
         if (super.argModelName == null)
         {
             System.out.println("Create default model");
-            m = ModelFactory.createModelRDBMaker(getConnection()).createModel();  
+            m = maker.createDefaultModel();  
         }  
         else
         {
             System.out.println("Create named model: " + argModelName);
-            m = ModelFactory.createModelRDBMaker(getConnection()).createModel(argModelName);
+            m = maker.createModel(argModelName);
         }
         
     }

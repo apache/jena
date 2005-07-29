@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerImpl.java,v 1.15 2005-02-21 12:14:35 andy_seaborne Exp $
+  $Id: ModelMakerImpl.java,v 1.16 2005-07-29 16:08:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -48,10 +48,10 @@ public class ModelMakerImpl implements ModelMaker
     public Model createModelOver( String name )
         { return createModel( name ); }
         
-    public Model createModel()
+    public Model createFreshModel()
         { return makeModel( maker.createGraph() ); }
         
-    public Model getModel()
+    public Model createDefaultModel()
         { return makeModel( maker.getGraph() ); }
         
     public Model getDescription()

@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.36 $
+ * @version 	$Revision: 1.37 $
  */
 public class TestPackage extends TestSuite
 {
@@ -110,7 +110,7 @@ public class TestPackage extends TestSuite
         public void testModelFactory()
             {
             IDBConnection c = TestConnection.makeAndCleanTestConnection();
-            assertTrue( ModelFactory.createModelRDBMaker( c ).createModel() instanceof ModelRDB );
+            assertTrue( ModelFactory.createModelRDBMaker( c ).createFreshModel() instanceof ModelRDB );
             }
         }
     

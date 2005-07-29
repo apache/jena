@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestDBSpec.java,v 1.8 2005-04-11 15:19:14 chris-dollin Exp $
+  $Id: TestDBSpec.java,v 1.9 2005-07-29 16:08:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
@@ -82,7 +82,7 @@ public class TestDBSpec extends ModelTestBase
             .add( con, JenaModelSpec.dbClass, className )
             ;
         ModelSpec s = ModelFactory.createSpec( spec );
-        Model d = s.createModel();
+        Model d = s.createFreshModel();
         assertTrue( d instanceof ModelRDB );
         }
 	}

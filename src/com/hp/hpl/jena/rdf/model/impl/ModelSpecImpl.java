@@ -1,17 +1,20 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.50 2005-05-26 10:15:55 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.51 2005-07-29 16:08:07 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileManager;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
+
+import junit.framework.Assert;
 
 /**
     An abstract base class for implementations of ModelSpec. It provides the base 
@@ -55,7 +58,7 @@ public abstract class ModelSpecImpl implements ModelSpec
     
     public static final Model emptyModel = ModelFactory.createDefaultModel();
     
-    public static final Model defaultModel = ModelFactory.createDefaultModel();
+    protected Model defaultModel = null;
     
     public static final Resource emptyResource = emptyModel.createResource();
     
@@ -67,7 +70,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         Answer a Model created according to this ModelSpec, with any required
         files loaded into it.
     */
-    public final Model createModel()
+    public final Model createFreshModel()
         { return loadFiles( doCreateModel() ); }
     
     /**
@@ -77,9 +80,15 @@ public abstract class ModelSpecImpl implements ModelSpec
     */
     protected abstract Model doCreateModel();
     
-    public Model getModel() 
-        { return defaultModel; }
+    public Model createDefaultModel() 
+        { if (defaultModel == null) defaultModel = makeDefaultModel();
+        return defaultModel; }
     
+    protected Model makeDefaultModel()
+        {
+        Statement s = root.getProperty( JenaModelSpec.modelName );
+        return s == null ? maker.createFreshModel() : maker.createModel( s.getString() );
+        }
     /**
         Answer a Model created according to this ModelSpec and based on an underlying
         Model with the given name.
@@ -121,7 +130,6 @@ public abstract class ModelSpecImpl implements ModelSpec
             Resource r = desc.createResource();
             desc.add( root, JenaModelSpec.maker, r );
             return r;
-            // throw new BadDescriptionException( "no jms:maker for " + root, desc );
             }
         }
         

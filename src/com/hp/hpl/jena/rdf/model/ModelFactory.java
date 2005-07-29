@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelFactory.java,v 1.44 2005-07-05 11:21:39 chris-dollin Exp $
+  $Id: ModelFactory.java,v 1.45 2005-07-29 16:08:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -11,7 +11,6 @@ import com.hp.hpl.jena.graph.compose.Union;
 import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.shared.*;
@@ -92,7 +91,7 @@ public class ModelFactory extends ModelFactoryBase
         Answer a fresh Model created according to the ModelSpec argument.
     */
     public static Model createModel( ModelSpec desc )
-        { return desc.createModel(); }
+        { return desc.createFreshModel(); }
 
     /**
         Answer a fresh Model created according to the given specification and based on

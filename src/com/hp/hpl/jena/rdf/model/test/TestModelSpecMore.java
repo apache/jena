@@ -8,6 +8,7 @@ package com.hp.hpl.jena.rdf.model.test;
 import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
 import com.hp.hpl.jena.util.* ;
 
 import junit.framework.TestSuite;
@@ -79,6 +80,35 @@ public class TestModelSpecMore extends ModelTestBase
         {
         Model s = modelWithStatements( "_root jms:maker jms:MemMaker" );
         assertTrue( ModelFactory.createSpec( s ).openModel( "nosuch" ) instanceof Model );
+        }
+    
+    public void testModelSpecImpl() 
+        {
+        Model d = modelWithStatements( "_x jms:modelName 'redrose'" );
+        ModelSpecImpl s = new ModelSpecImpl( resource( d, "_x" ), d )
+            {
+            protected Model doCreateModel()
+                {
+                
+                return null;
+                }
+
+            public Model createModelOver( String name )
+                {
+                
+                return null;
+                }
+
+            public Property getMakerProperty()
+                {
+                
+                return null;
+                }
+            };
+        ModelMaker maker = s.getModelMaker();
+        assertFalse( maker.hasModel( "redrose" ) );
+        Model m1 = s.createDefaultModel();
+        assertTrue( maker.hasModel( "redrose" ) );
         }
     }
 

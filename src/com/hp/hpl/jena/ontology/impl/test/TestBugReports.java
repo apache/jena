@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.68 $
+ * Revision           $Revision: 1.69 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-07-29 11:13:52 $
- *               by   $Author: ian_dickinson $
+ * Last modified on   $Date: 2005-07-29 16:08:06 $
+ *               by   $Author: chris-dollin $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -1327,7 +1327,7 @@ public class TestBugReports
         Property rms  = m.getProperty( "http://www.nuin.org/demo/kma#rdfModelSpec");
         Resource conf = root.getProperty(rms).getResource();
         OntModel om = (OntModel) ModelFactory.createSpec(conf,m)
-                                             .createModel();
+                                             .createFreshModel();
 
         OntClass A = om.createClass( "A" );
         OntClass B = om.createClass( "B" );

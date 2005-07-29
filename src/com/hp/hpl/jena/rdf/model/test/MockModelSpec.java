@@ -39,11 +39,11 @@ public class MockModelSpec implements ModelSpec
         return null;
         }
     
-    public Model getModel()
+    public Model createDefaultModel()
         { return null;
         }
     
-    public Model createModel()
+    public Model createFreshModel()
         {        
         return null;
         }

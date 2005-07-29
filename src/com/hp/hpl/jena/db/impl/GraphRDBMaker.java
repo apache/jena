@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.21 2005-04-10 12:45:46 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.22 2005-07-29 16:06:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -15,6 +15,7 @@ import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.vocabulary.*;
 
+import java.rmi.server.UID;
 import java.util.*;
 
 /**
@@ -28,9 +29,8 @@ import java.util.*;
 
 public class GraphRDBMaker extends BaseGraphMaker
     {
-    private IDBConnection c;
-    private int counter = 0;
-    private Set created = CollectionFactory.createHashedSet();
+    protected IDBConnection c;
+    protected Set created = CollectionFactory.createHashedSet();
     int reificationStyle;
     
     /**
@@ -72,14 +72,21 @@ public class GraphRDBMaker extends BaseGraphMaker
     protected Graph defaultGraph = null;
     
     /**
-        Answer an "anonymous", freshly-created graph. We fake this by creating a graph
-        with the name "anon_<digit>+". This may lead to problems later; such a graph
-        may need to be deleted when the connection is closed.
+        Answer an "anonymous", freshly-created graph. We fake this by creating 
+        a graph with the name "anon_"+UID().toString. This may lead to problems 
+        later; eg such a graph may need to be deleted when the connection is 
+        closed.
         
         TODO resolve this issue.
     */
     public Graph createGraph()
-        { return createGraph( "anon_" + counter++ + "", false ); }
+        { return createGraph( freshGraphName(), false ); }
+
+    /**
+        Answer a freshly-synthesised "anonymous" name.
+    */
+    public String freshGraphName()
+        { return "anon_" + new UID().toString(); }
     
     /**
      	Create an RDB graph and remember its name.
