@@ -15,7 +15,7 @@ import com.hp.hpl.jena.rdf.model.*;
  * Based on earlier Jena tests by members of the Jena team.
  * 
  * @author		csayers
- * @version 	$Revision: 1.35 $
+ * @version 	$Revision: 1.36 $
  */
 public class TestPackage extends TestSuite
 {
@@ -80,6 +80,7 @@ public class TestPackage extends TestSuite
     /** Creates new TestPackage */
     private TestPackage() {
         super("GraphRDB");
+        addTest( TestDriverMap.suite() );
 		addTest( "TestConnection", TestConnection.suite() );
         addTest( "TestBasicOperations", TestBasicOperations.suite() );
         addTest( "TestSimpleSelector", TestSimpleSelector.suite() );

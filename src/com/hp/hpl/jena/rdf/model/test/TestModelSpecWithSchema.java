@@ -48,6 +48,9 @@ public class TestModelSpecWithSchema extends ModelTestBase
     public void testFileBase()
         { testDomain( "jms:fileBase rdfs:domain jms:FileMakerSpec" ); }
     
+    public void testHasConnection()
+        { testDomain( "jms:hasConnection rdfs:domain jms:RDBMakerSpec" ); }
+    
     public void  testSubclasses()
         {
         Model m = JenaModelSpec.getSchema();
