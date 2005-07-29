@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestBasics.java,v 1.31 2005-07-26 16:21:20 der Exp $
+ * $Id: TestBasics.java,v 1.32 2005-07-29 10:27:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -27,7 +27,7 @@ import java.io.*;
  * Unit tests for simple infrastructure pieces of the rule systems.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.31 $ on $Date: 2005-07-26 16:21:20 $
+ * @version $Revision: 1.32 $ on $Date: 2005-07-29 10:27:33 $
  */
 public class TestBasics extends TestCase  {
     // Useful constants
@@ -487,7 +487,7 @@ public class TestBasics extends TestCase  {
                 new Triple(n1, q, n3)
             });
     }
-    
+     
     /**
      * Test size bug, used to blow up if size was called before any queries.
      */

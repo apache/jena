@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: FBRuleInfGraph.java,v 1.57 2005-07-12 15:57:43 chris-dollin Exp $
+ * $Id: FBRuleInfGraph.java,v 1.58 2005-07-29 10:28:14 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys;
 
@@ -37,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
  * for future reference).
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.57 $ on $Date: 2005-07-12 15:57:43 $
+ * @version $Revision: 1.58 $ on $Date: 2005-07-29 10:28:14 $
  */
 public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements BackwardRuleInfGraphI {
     
@@ -171,6 +171,13 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
      */
     public void setUseTGCCache() {
         useTGCCaching = true;
+        resetTGCCache();
+    }
+    
+    /**
+     * Rest the transitive graph caches
+     */
+    private void resetTGCCache() {
         if (schemaGraph != null) {
             transitiveEngine = new TransitiveEngine(((FBRuleInfGraph)schemaGraph).transitiveEngine);
         } else {
@@ -377,6 +384,7 @@ public class FBRuleInfGraph  extends BasicForwardRuleInfGraph implements Backwar
             
             // Initialize the optional TGC caches
             if (useTGCCaching) {
+                resetTGCCache();
                 if (schemaGraph != null) {
                     // Check if we can just reuse the copy of the raw 
                     if (

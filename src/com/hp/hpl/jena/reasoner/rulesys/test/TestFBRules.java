@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestFBRules.java,v 1.44 2005-07-13 15:33:51 chris-dollin Exp $
+ * $Id: TestFBRules.java,v 1.45 2005-07-29 10:27:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * Test suite for the hybrid forward/backward rule system.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.44 $ on $Date: 2005-07-13 15:33:51 $
+ * @version $Revision: 1.45 $ on $Date: 2005-07-29 10:27:33 $
  */
 public class TestFBRules extends TestCase {
     
@@ -278,8 +278,28 @@ public class TestFBRules extends TestCase {
                 new Triple(n1, q, n3)
             });
     }
+
     
-   
+    /**
+     * Test that reset does actually clear out all the data.
+     * We use the RDFS configuration because uses both TGC, forward and backward
+     * rules and so is a good check.
+     */
+    public void testRebind2() {
+        String NS = "http://jena.hpl.hp.com/test#";
+        Model base = ModelFactory.createDefaultModel();
+        Resource A = base.createResource(NS + "A");
+        Resource B = base.createResource(NS + "B");
+        Resource I = base.createResource(NS + "i");
+        A.addProperty(RDFS.subClassOf, B);
+        I.addProperty(RDF.type, A);
+        InfModel inf = ModelFactory.createInfModel(ReasonerRegistry.getRDFSReasoner(), base);
+        assertTrue(inf.containsResource(A) && inf.containsResource(I));
+        base.removeAll();
+        inf.rebind();
+        assertFalse(inf.containsResource(A) || inf.containsResource(I));
+    }
+       
     /**
      * Test the close operation.
      */
