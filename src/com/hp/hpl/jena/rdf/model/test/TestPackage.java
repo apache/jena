@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.37 2005-04-12 13:35:45 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.38 2005-07-29 11:18:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -22,6 +22,7 @@ public class TestPackage extends TestSuite {
     /** Creates new TestPackage */
     private TestPackage() {
         super("Model");
+        addTest( TestModelSpecRDB.suite() );
         addTest( "TestModel", TestModelFactory.suite() );
         addTest( "TestModelFactory", TestModelFactory.suite() );
         addTest( "TestSimpleListStatements", TestSimpleListStatements.suite() );
@@ -40,11 +41,14 @@ public class TestPackage extends TestSuite {
         addTest( "TestConcurrency", TestConcurrency.suite() ) ;
         addTest( "TestModelMakerImpl", TestModelMakerImpl.suite() );
         addTest( "TestModelPrefixMapping", TestModelPrefixMapping.suite() );
-        addTest( "TestModelSpec", TestModelSpec.suite() );
-        addTest( "TestModelSpecMore", TestModelSpecMore.suite() );
-        addTest( "TestModelSpecRevised", TestModelSpecRevised.suite() );
+    //
+        addTest( TestModelSpecWithSchema.suite() );
+        addTest( TestModelSpec.suite() );
+        addTest( TestModelSpecMore.suite() );
+        addTest( TestModelSpecsWithRuleSets.suite() );
         addTest( TestModelSpecFactory.suite() );
         addTest( TestModelSource.suite() );
+    //
         addTest( TestContainers.suite() );
         addTest( "TestStandardModels", TestStandardModels.suite() );
         addTest( "TestQuery", TestQuery.suite() );
@@ -56,7 +60,6 @@ public class TestPackage extends TestSuite {
         addTest( TestListSubjectsEtc.suite() );
         addTest( TestModelExtract.suite() );
         addTest( TestModelRead.suite() );
-        addTest( TestModelSpecWithSchema.suite() );
         }
 
     private void addTest(String name, TestSuite tc) {

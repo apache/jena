@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestModelSpecRevised.java,v 1.28 2005-07-05 11:21:40 chris-dollin Exp $
+  $Id: TestModelSpecsWithRuleSets.java,v 1.1 2005-07-29 11:18:50 chris-dollin Exp $
 */
 package com.hp.hpl.jena.rdf.model.test;
 
@@ -22,9 +22,9 @@ import junit.framework.TestSuite;
      TestModelSpecRevised
      @author kers
 */
-public class TestModelSpecRevised extends ModelTestBase
+public class TestModelSpecsWithRuleSets extends ModelTestBase
     {
-    public TestModelSpecRevised( String name )
+    public TestModelSpecsWithRuleSets( String name )
         { super( name ); }
     
     public static TestSuite suite()
@@ -32,7 +32,7 @@ public class TestModelSpecRevised extends ModelTestBase
 //         TestSuite result = new TestSuite();
 //         result.addTest( new TestModelSpecRevised( "testURLRulesets" ) );
 //         return result; 
-         return new TestSuite( TestModelSpecRevised.class ); 
+         return new TestSuite( TestModelSpecsWithRuleSets.class ); 
          }
     
     public static final Resource A = resource( "_a" );

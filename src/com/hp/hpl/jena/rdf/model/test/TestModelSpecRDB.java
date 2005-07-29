@@ -1,61 +1,37 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
- 	All rights reserved.
- 	[See end of file]
+ 	All rights reserved - see end of file.
+ 	$Id: TestModelSpecRDB.java,v 1.1 2005-07-29 11:18:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.ModelSource;
+import com.hp.hpl.jena.db.impl.DriverMap;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.impl.RDBMakerCreator;
 
 import junit.framework.TestSuite;
 
-/**
-     Test cases driving ModelSource
-     @author kers
-*/
-public class TestModelSource extends ModelTestBase
+public class TestModelSpecRDB extends ModelTestBase
     {
-    public TestModelSource( String name )
+    public TestModelSpecRDB( String name )
         { super( name ); }
-
+    
     public static TestSuite suite()
-        { return new TestSuite( TestModelSource.class ); }
-    
-    public ModelSource getModelSource()
-        { return new ModelSourceImpl(); }
-    
-    public void testMethodsExist()
-        { 
-        ModelSource s = getModelSource();
-        s.getModel();
-        s.createModel();
-        s.openModel( "spoo" );
-        s.openModelIfPresent( "flarn" );
-        }    
-    
-    /**
-        Minimal test implementation of ModelSource. There should be more of
-        these.
-    
-        @author hedgehog
-    */
-    public static class ModelSourceImpl implements ModelSource
-        {
-        public Model openModel( String name )
-            { return ModelFactory.createDefaultModel(); }
-    
-        public Model openModelIfPresent(String name)
-            { return null; }
-    
-        Model theDefaultModel = ModelFactory.createDefaultModel();
-        
-        public Model getModel()
-            { return theDefaultModel; }
+        { return new TestSuite( TestModelSpecRDB.class ); }
 
-        public Model createModel()
-            { return getModel(); }
+    public void testExplicitClassName()
+        {
+        Model m = modelWithStatements( "_x jms:dbClass 'some.fake.class'" );
+        String name = RDBMakerCreator.getClassName( m, resource( "_x" ) );
+        assertEquals( "some.fake.class", name );
+        }
+    
+    public void testImpliedClassName()
+        {
+        Model m = modelWithStatements( "_x jms:dbType 'mysql'" );
+        String name = RDBMakerCreator.getClassName( m, resource( "_x" ) );
+        assertEquals( DriverMap.get( "mysql" ), name );
         }
     }
 
