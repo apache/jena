@@ -1266,9 +1266,9 @@ term</i>      :=   (<i>node</i>, <i>node</i>, <i>node</i>)           // triple p
 
 <i>node</i>      :=   <i>uri-ref</i>		               // e.g. http://foo.com/eg
           or   prefix:localname		       // e.g. rdf:type
-          or   ?<i>varname                    </i>// variable<i>
-          or   'a literal' </i>                // either a string or a number<i>
-          or   </i>number                      // e.g. 42 or 25.5</pre>
+          or   ?<i>varname                    </i>// variable
+          or   'a literal'                 // a plain string literal
+          or   number                      // e.g. 42 or 25.5</pre>
 <p>The &quot;,&quot; separators are optional.</p>
 <p>The difference between the forward and backward rule syntax is only relevant 
   for the hybrid execution strategy, see below.</p>
@@ -1920,7 +1920,7 @@ while (i.hasNext()) {
 <hr>
 <p>
   <i>Author: Dave Reynolds<br>
-  Last modification: $Id: index.html,v 1.25 2005-07-26 16:42:54 der Exp $</i>
+  Last modification: $Id: index.html,v 1.26 2005-07-29 08:08:23 der Exp $</i>
 </p>
 </body>
 </html>
