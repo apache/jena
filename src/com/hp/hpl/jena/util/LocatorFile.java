@@ -18,7 +18,7 @@ import org.apache.commons.logging.*;
  *  location mapping (see @link{LocationMapping}) as it applies only to files.
  * 
  * @author Andy Seaborne
- * @version $Id: LocatorFile.java,v 1.5 2005-02-21 12:18:57 andy_seaborne Exp $
+ * @version $Id: LocatorFile.java,v 1.6 2005-07-29 16:11:10 andy_seaborne Exp $
  */
 
 public class LocatorFile implements Locator
@@ -27,7 +27,7 @@ public class LocatorFile implements Locator
     private String altDir = null ;
     private String altDirLogStr = "" ;
     
-    LocatorFile(String dir)
+    public LocatorFile(String dir)
     {
         if ( false )
         {
