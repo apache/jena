@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.67 $
+ * Revision           $Revision: 1.68 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-07-18 09:35:49 $
+ * Last modified on   $Date: 2005-07-29 11:13:52 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -1116,6 +1116,14 @@ public class TestBugReports
         r = (Resource) OWL.Nothing.inModel( m );
         OntClass nothingClass = (OntClass) r.as( OntClass.class );
         assertNotNull( nothingClass );
+
+        OntClass c = m.getOntClass( OWL.Thing.getURI() );
+        assertNotNull( c );
+        assertEquals( c, OWL.Thing );
+
+        c = m.getOntClass( OWL.Nothing.getURI() );
+        assertNotNull( c );
+        assertEquals( c, OWL.Nothing );
     }
 
     /** Test case for SF bug 937810 - NPE from ModelSpec.getDescription() */
@@ -1464,18 +1472,22 @@ public class TestBugReports
      * Variant 2: base = inf, import = no inf
      */
     public void test_am_02() {
-        OntModel m0 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_RDFS_INF );
-        OntModel m1 = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM );
+        OntDocumentManager.getInstance().setProcessImports( false );
+        OntDocumentManager.getInstance().addAltEntry( "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine",
+                                                      "file:testing/ontology/owl/Wine/wine.owl" );
+        OntModel m0 = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+        OntModel m1 = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM);
 
-        OntClass c = m1.createClass( NS + "c" );
+        String namespace = "http://www.w3.org/TR/2003/CR-owl-guide-20030818/wine";
+        String classURI = namespace + "#Wine";
+        m1.read(namespace);
+        OntClass c = m1.getOntClass(classURI);
 
-        assertFalse( m0.containsResource( c ) );
-
-        m0.addSubModel( m1 );
-        assertTrue( m0.containsResource( c ) );
-
-        m0.removeSubModel( m1 );
-        assertFalse( m0.containsResource( c ) );
+        assertFalse(m0.containsResource(c));
+        m0.addSubModel(m1);
+        assertTrue(m0.containsResource(c));
+        m0.removeSubModel(m1);
+        assertFalse(m0.containsResource(c));
     }
 
     /**
