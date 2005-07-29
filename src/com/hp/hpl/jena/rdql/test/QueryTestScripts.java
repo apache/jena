@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2001, 2002, 2003, 2004 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: QueryTestScripts.java,v 1.21 2005-02-21 12:16:07 andy_seaborne Exp $
+ * $Id: QueryTestScripts.java,v 1.22 2005-07-29 16:12:59 andy_seaborne Exp $
  */
 
 
@@ -13,6 +13,8 @@ import java.io.* ;
 import com.hp.hpl.jena.rdql.* ;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.util.Locator;
+import com.hp.hpl.jena.util.LocatorFile;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 
@@ -25,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  *  adding new script files.  This class need not change.
  *
  * @author   Andy Seaborne
- * @version  $Id: QueryTestScripts.java,v 1.21 2005-02-21 12:16:07 andy_seaborne Exp $
+ * @version  $Id: QueryTestScripts.java,v 1.22 2005-07-29 16:12:59 andy_seaborne Exp $
  */
 
 
@@ -33,6 +35,7 @@ public class QueryTestScripts extends TestSuite
 {
     static final String testSetName = "RDQL - Query - Scripts" ;
     static final String directory = "testing/RDQL/" ;
+    static final public String defaultControlFilename = directory+"rdql-tests.n3" ;
     FileManager fm = null ;
     
     public String basename = null ;
@@ -53,8 +56,8 @@ public class QueryTestScripts extends TestSuite
     public QueryTestScripts(String name)
     {
         super(name) ;
-        FileManager fm = new FileManager() ;
-        fm.addLocatorFile(directory) ;
+        //addTests(directory, defaultControlFilename) ;
+        addTests(directory, defaultControlFilename) ;
     }
 
 
@@ -81,9 +84,71 @@ public class QueryTestScripts extends TestSuite
     public void addTest(Model model, String testName, String directory,
                         TestItem item)
     {
-        TestCase test = new RDQLTest(model, testName, fm, item) ;
+        TestCase test = new RDQLTest(model, testName, null, item) ;
         addTest(test) ;
     }
+    
+    private void addTests(String dir, String testsFile)
+    {
+        Locator locator = new LocatorFile(dir) ;
+        
+        PrintWriter out = new PrintWriter(System.out);
+        Model tests = FileManager.get().loadModel(testsFile);
+        
+        TestManifestList manifest = new TestManifestList(tests);
+        
+        TestManifestList.TestIterator iter = manifest.iterator();
+        for (; iter.hasNext();)
+        {
+            TestItem item = iter.nextItem();
+            TestCase test =
+                new RDQLTest(null, item.getName(), locator, item) ;
+            addTest(test);
+        }
+    }            
+//            String queryFile = null;
+//            String dataFile = null;
+//            String resultsFile = null;
+//            
+//            
+//
+//            if (item. .getAction() instanceof Literal)
+//            {
+//                queryFile = ((Literal) item.getAction()).getString();
+//            }
+//            else if (!((Resource) item.getAction()).isAnon())
+//            {
+//                queryFile = ((Resource) item.getAction()).getURI();
+//            }
+//            else
+//            {
+//                // Anon node - more details
+//                Resource r = (Resource) item.getAction();
+//                queryFile = r.getRequiredProperty(TestQuery.query).getResource().getURI();
+//                if (r.hasProperty(TestQuery.data))
+//                    dataFile = r.getRequiredProperty(TestQuery.data).getResource().getURI();
+//            }
+//            
+//            if (item.getResult() != null)
+//            {
+//                if (item.getResult() instanceof Resource)
+//                    resultsFile = ((Resource) item.getResult()).getURI();
+//                else
+//                    resultsFile = ((Literal) item.getResult()).getString();
+//            }
+//            TestCase test =
+//                new RDQLTest(
+//                             model,
+//                             out,
+//                             item.getName(),
+//                             testDirectory,
+//                             queryFile,
+//                             dataFile,
+//                             resultsFile);
+//            addTest(test);
+//        }
+//    }
+
     
     // One test.  State and execution.
     
@@ -95,23 +160,43 @@ public class QueryTestScripts extends TestSuite
         Model model ;
         int testNumber = testCounter++ ;
         TestItem testItem ;
+        Locator locator ;
         FileManager fileManager ;
 
         // If supplied with a model, the test will load that model with data from the source
         // If no model is supplied one is created or attached (e.g. a database)
 
-        RDQLTest(Model m, String testName, FileManager fm, TestItem t)
+        RDQLTest(Model m, String testName, Locator locator , TestItem t)
         {
             super(testName) ;
             model = m ;
-            fileManager = fm ;
+            this.locator  = locator ;
             testItem = t ;
         }
+        
+        protected void setUp()
+        {
+            // The RDQL engine only used the default file manager
+            fileManager = FileManager.get() ;
+            if ( locator != null )
+                FileManager.get().addLocator(locator) ;
+        }
+
+        protected void tearDown()
+        {
+            if ( locator != null )
+                FileManager.get().remove(locator) ;
+            fileManager = null ;
+        }
+        
+
         
         protected void runTest() throws Throwable
         {
             Query query = null ;
+            
             try {
+                
                 if ( printDetails )
                 {
                     if ( testNumber != 1 )
@@ -181,7 +266,7 @@ public class QueryTestScripts extends TestSuite
                         log.warn("Problems loading data for: "+data) ;
                     }
                 }
-
+                
                 QueryExecution qe = new QueryEngine(query) ;
                 qe.init() ;
                 runTestSelect(query, qe, startTime) ;
