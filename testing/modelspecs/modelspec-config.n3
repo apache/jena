@@ -5,5 +5,5 @@
 @prefix rdfs:       <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix jms:        <http://jena.hpl.hp.com/2003/08/jms#> .
 
-<eh:pseudo-modelspec-type> jms:typeCreatedBy "com.hp.hpl.jena.rdf.model.modelspec.test.MockModelSpec" .
+<eh:pseudo-modelspec-type> jms:typeCreatedBy "com.hp.hpl.jena.rdf.model.spec.test.MockModelSpec" .
 

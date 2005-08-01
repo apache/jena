@@ -137,7 +137,7 @@ public class TestModelSpecFactory extends ModelTestBase
     
     public void testCreateCreator()
         {
-        String className = "com.hp.hpl.jena.rdf.model.modelspec.test.MockModelSpec";
+        String className = "com.hp.hpl.jena.rdf.model.spec.test.MockModelSpec";
         ModelSpecCreator c = new ModelSpecCreatorByClassname( className );
         ModelSpec s = c.create( resource( "root" ), modelWithStatements( "" ) );
         assertEquals( className, s.getClass().getName() );
