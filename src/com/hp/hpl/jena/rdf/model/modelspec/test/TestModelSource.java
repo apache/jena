@@ -4,72 +4,67 @@
  	[See end of file]
 */
 
-package com.hp.hpl.jena.rdf.model.test;
+package com.hp.hpl.jena.rdf.model.modelspec.test;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+
+import junit.framework.TestSuite;
 
 /**
-    A fake model-spec (has methods but broken behaviour) for testing
-    purposes (as a ModelSpec produced by referring to its class-name).
-    
-    @author kers
+     Test cases driving ModelSource
+     @author kers
 */
-public class MockModelSpec implements ModelSpec
+public class TestModelSource extends ModelTestBase
     {
-    public MockModelSpec( Resource root, Model spec )
-        {}
-    
-    public Model createModelOver( String name )
-        {
-        return null;
-        }
-    
-    public Model getDescription()
-        {        
-        return null;
-        }
-    
-    public Model getDescription( Resource root )
-        {        
-        return null;
-        }
-    
-    public Model addDescription( Model m, Resource self )
-        {        
-        return null;
-        }
-    
-    public Model createDefaultModel()
-        { return null;
-        }
-    
-    public Model createFreshModel()
-        {        
-        return null;
-        }
-    
-    public Model openModel( String name )
-        {        
-        return null;
-        }
-    
-    public Model openModelIfPresent( String string )
-        {        
-        return null;
-        }
+    public TestModelSource( String name )
+        { super( name ); }
 
-    public Model getModel()
+    public static TestSuite suite()
+        { return new TestSuite( TestModelSource.class ); }
+    
+    public ModelSource getModelSource()
+        { return new ModelSourceImpl(); }
+    
+    public void testMethodsExist()
+        { 
+        ModelSource s = getModelSource();
+        s.createDefaultModel();
+        s.createFreshModel();
+        s.openModel( "spoo" );
+        s.openModelIfPresent( "flarn" );
+        }    
+    
+    /**
+        Minimal test implementation of ModelSource. There should be more of
+        these.
+    
+        @author hedgehog
+    */
+    public static class ModelSourceImpl implements ModelSource
         {
+        public Model openModel( String name )
+            { return ModelFactory.createDefaultModel(); }
+    
+        public Model openModelIfPresent(String name)
+            { return null; }
+    
+        Model theDefaultModel = ModelFactory.createDefaultModel();
         
-        return null;
-        }
+        public Model createDefaultModel()
+            { return theDefaultModel; }
 
-    public Model createModel()
-        {
-        
-        return null;
+        public Model createFreshModel()
+            { return createDefaultModel(); }
+
+        public Model getModel()
+            { return null; }
+
+        public Model createModel()
+            { return null; }
         }
     }
+
 
 /*
  * (c) Copyright 2005 Hewlett-Packard Development Company, LP

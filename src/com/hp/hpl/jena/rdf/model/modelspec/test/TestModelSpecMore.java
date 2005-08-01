@@ -3,12 +3,13 @@
 [See end of file]
 $$
 */
-package com.hp.hpl.jena.rdf.model.test;
+package com.hp.hpl.jena.rdf.model.modelspec.test;
 
 import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelSpecImpl;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.util.* ;
 
 import junit.framework.TestSuite;

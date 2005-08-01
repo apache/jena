@@ -4,13 +4,13 @@
  	[See end of file]
 */
 
-package com.hp.hpl.jena.rdf.model.test;
+package com.hp.hpl.jena.rdf.model.modelspec.test;
 
 import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.rdf.model.impl.ModelSpecFactory;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.shared.*;
 
 
@@ -137,7 +137,7 @@ public class TestModelSpecFactory extends ModelTestBase
     
     public void testCreateCreator()
         {
-        String className = "com.hp.hpl.jena.rdf.model.test.MockModelSpec";
+        String className = "com.hp.hpl.jena.rdf.model.modelspec.test.MockModelSpec";
         ModelSpecCreator c = new ModelSpecCreatorByClassname( className );
         ModelSpec s = c.create( resource( "root" ), modelWithStatements( "" ) );
         assertEquals( className, s.getClass().getName() );

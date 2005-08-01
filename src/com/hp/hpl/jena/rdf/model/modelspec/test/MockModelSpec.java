@@ -1,29 +1,75 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
- 	All rights reserved - see end of file.
- 	$Id: TestModelSpecPackage.java,v 1.2 2005-08-01 10:51:29 chris-dollin Exp $
+ 	All rights reserved.
+ 	[See end of file]
 */
 
 package com.hp.hpl.jena.rdf.model.modelspec.test;
 
-import junit.framework.*;
+import com.hp.hpl.jena.rdf.model.*;
 
-public class TestModelSpecPackage extends TestCase
+/**
+    A fake model-spec (has methods but broken behaviour) for testing
+    purposes (as a ModelSpec produced by referring to its class-name).
+    
+    @author kers
+*/
+public class MockModelSpec implements ModelSpec
     {
-    public static TestSuite suite()
+    public MockModelSpec( Resource root, Model spec )
+        {}
+    
+    public Model createModelOver( String name )
         {
-        TestSuite result = new TestSuite();
-        result.addTest( TestModelSpecRDB.suite() );
-        result.addTest( TestModelSpecWithSchema.suite() );
-        result.addTest( TestModelSpec.suite() );
-        result.addTest( TestModelSpecMore.suite() );
-        result.addTest( TestModelSpecsWithRuleSets.suite() );
-        result.addTest( TestModelSpecFactory.suite() );
-        result.addTest( TestModelSource.suite() );
-        return result;
+        return null;
+        }
+    
+    public Model getDescription()
+        {        
+        return null;
+        }
+    
+    public Model getDescription( Resource root )
+        {        
+        return null;
+        }
+    
+    public Model addDescription( Model m, Resource self )
+        {        
+        return null;
+        }
+    
+    public Model createDefaultModel()
+        { return null;
+        }
+    
+    public Model createFreshModel()
+        {        
+        return null;
+        }
+    
+    public Model openModel( String name )
+        {        
+        return null;
+        }
+    
+    public Model openModelIfPresent( String string )
+        {        
+        return null;
+        }
+
+    public Model getModel()
+        {
+        
+        return null;
+        }
+
+    public Model createModel()
+        {
+        
+        return null;
         }
     }
-
 
 /*
  * (c) Copyright 2005 Hewlett-Packard Development Company, LP

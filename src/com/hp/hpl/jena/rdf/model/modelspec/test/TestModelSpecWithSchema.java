@@ -3,7 +3,7 @@
     All rights reserved.
     [See end of file]
 */
-package com.hp.hpl.jena.rdf.model.test;
+package com.hp.hpl.jena.rdf.model.modelspec.test;
 
 
 import java.util.*;
@@ -12,6 +12,7 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.ModelSpecFactory;
+import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.util.iterator.Filter;
 import com.hp.hpl.jena.vocabulary.*;
 

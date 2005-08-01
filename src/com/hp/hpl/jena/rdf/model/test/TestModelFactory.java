@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestModelFactory.java,v 1.28 2005-07-29 16:08:08 chris-dollin Exp $
+  $Id: TestModelFactory.java,v 1.29 2005-08-01 10:52:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
+import com.hp.hpl.jena.rdf.model.modelspec.test.TestModelSpec;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
@@ -27,7 +28,7 @@ import junit.framework.*;
 
 public class TestModelFactory extends ModelTestBase
     {
-    protected static final Resource DAMLLangResource = resource( ProfileRegistry.DAML_LANG );
+    public static final Resource DAMLLangResource = resource( ProfileRegistry.DAML_LANG );
     
     public TestModelFactory(String name)
         { super(name); }
