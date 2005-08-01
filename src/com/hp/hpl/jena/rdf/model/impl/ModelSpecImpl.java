@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.52 2005-08-01 08:25:38 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.53 2005-08-01 14:07:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -103,19 +103,18 @@ public abstract class ModelSpecImpl implements ModelSpec
     public abstract Property getMakerProperty();
    
     /**
-     	Answer a Model, as per the specification of ModelSource; if the name
-     	is useful, use it, otherwise don't bother. Default implementation is
-     	to return a fresh model.
+     	Answer a Model, as per the specification of ModelSpec; appeal to 
+        the sibling Maker.
     */
-    public Model openModel( String URI )
-        { return ModelFactory.createDefaultModel(); }
+    public Model openModel( String name )
+        { return maker.openModel( name ); }
     
     /**
-     	Answer null, as ModelSpecs as ModelSources don't remember any Models.
-     	This is consistent with openModel() always creating a new Model.
+        Answer the model hidden in the sibling maker, if it has one, and
+        null otherwise.
     */
-    public Model openModelIfPresent( String URI )
-        { return null; }
+    public Model openModelIfPresent( String name )
+        { return maker.hasModel( name ) ? maker.openModel( name ) : null; }
         
     public static Resource getMaker( Resource root, Model desc )
         {

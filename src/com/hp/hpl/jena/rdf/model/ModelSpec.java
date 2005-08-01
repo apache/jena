@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpec.java,v 1.14 2005-04-10 12:45:49 chris-dollin Exp $
+  $Id: ModelSpec.java,v 1.15 2005-08-01 14:05:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -22,6 +22,14 @@ public interface ModelSpec extends ModelSource
         user pressure to retain it.
     */
     Model createModelOver( String name );
+    
+    /**
+        A specialisation of ModelSource::openModel( String ). ModelSpecs will
+        return the same Model when given the same String argument.
+        
+        @see com.hp.hpl.jena.rdf.model.ModelSource#openModel(java.lang.String)
+    */
+    Model openModel( String name );
     
     /**
         Answer an RDF description of this ModelSpec using the JenaModelSpec vocabulary. The
