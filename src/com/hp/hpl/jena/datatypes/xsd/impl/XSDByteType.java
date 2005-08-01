@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDByteType.java,v 1.7 2005-02-21 12:02:20 andy_seaborne Exp $
+ * $Id: XSDByteType.java,v 1.8 2005-08-01 12:34:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -15,7 +15,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * Datatype template used to define XSD int types
  *
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.7 $ on $Date: 2005-02-21 12:02:20 $
+ * @version $Revision: 1.8 $ on $Date: 2005-08-01 12:34:20 $
  */
 public class XSDByteType extends XSDBaseNumericType {
 
@@ -37,15 +37,6 @@ public class XSDByteType extends XSDBaseNumericType {
      */
     public XSDByteType(String typeName, Class javaClass) {
         super(typeName, javaClass);
-    }
-        
-    /**
-     * Compares two instances of values of the given datatype.
-     * This ignores lang tags and just uses the java.lang.Number 
-     * equality.
-     */
-    public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-       return value1.getValue().equals(value2.getValue());
     }
 
 }

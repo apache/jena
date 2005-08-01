@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.46 2005-07-13 15:33:50 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.47 2005-08-01 12:35:21 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -35,7 +35,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.46 $ on $Date: 2005-07-13 15:33:50 $
+ * @version $Revision: 1.47 $ on $Date: 2005-08-01 12:35:21 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -357,6 +357,33 @@ public class TestTypedLiterals extends TestCase {
             assertDiffer("String != plain??", lString, lPlain2);
         }
         
+    }
+    
+    /**
+     * Test cases of numeric comparison.
+     */
+    public void testNumberSameValueAs() {
+        Literal lDouble = m.createTypedLiteral("5", XSDDatatype.XSDdouble);
+        Literal lDouble2 = m.createTypedLiteral("5.5", XSDDatatype.XSDdouble);
+        Literal lFloat = m.createTypedLiteral("5", XSDDatatype.XSDfloat);
+        Literal lint = m.createTypedLiteral("5", XSDDatatype.XSDint);
+        Literal linteger = m.createTypedLiteral("5", XSDDatatype.XSDinteger);
+        Literal lbyte = m.createTypedLiteral("5", XSDDatatype.XSDbyte);
+        
+        assertSameValueAs("integer subclasses equal", lint, linteger);
+        assertSameValueAs("integer subclasses equal", lint, lbyte);
+        assertSameValueAs("integer subclasses equal", linteger, lbyte);
+        
+        assertDiffer("float/double/int distinct", lDouble, lDouble2);
+        assertDiffer("float/double/int distinct", lDouble, lFloat);
+        assertDiffer("float/double/int distinct", lDouble, lint);
+        assertDiffer("float/double/int distinct", lDouble, linteger);
+        assertDiffer("float/double/int distinct", lDouble2, lint);
+        assertDiffer("float/double/int distinct", lDouble2, lbyte);
+        assertDiffer("float/double/int distinct", lint, lDouble);
+        assertDiffer("float/double/int distinct", lbyte, lDouble);
+        assertDiffer("float/double/int distinct", lint, lDouble2);
+        assertDiffer("float/double/int distinct", lbyte, lDouble2);
     }
     
     /**

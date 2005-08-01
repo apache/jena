@@ -103,6 +103,8 @@ Typed literals:
 
     o Added normalization step so that creating a typed literal from
       an XSDDateTime will use narrow types (e.g. xsd:date) when appropriate.
+    
+    o Fixed bug in sameValueAs when comparing an integer to a float/double.
 
 Reasoners:
     o Fixed bug in TransitiveGraphCache which had resulted in some

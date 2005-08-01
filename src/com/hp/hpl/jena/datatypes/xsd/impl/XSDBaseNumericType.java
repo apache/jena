@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.13 2005-02-21 12:02:20 andy_seaborne Exp $
+ * $Id: XSDBaseNumericType.java,v 1.14 2005-08-01 12:34:20 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
 
@@ -24,7 +24,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.13 $ on $Date: 2005-02-21 12:02:20 $
+ * @version $Revision: 1.14 $ on $Date: 2005-08-01 12:34:20 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -112,17 +112,13 @@ public class XSDBaseNumericType extends XSDDatatype {
      * equality.
      */
     public boolean isEqual(LiteralLabel value1, LiteralLabel value2) {
-        Object o1 = value1.getValue();
-        Object o2 = value2.getValue();
-        if (!(o1 instanceof Number) || !(o2 instanceof Number)) {
-            return false;
-        }
-        if (o1 instanceof Float || o1 instanceof Double) {
-            return (((Number)o1).doubleValue() == ((Number)o2).doubleValue());
-        } else if (o1 instanceof BigInteger || o1 instanceof BigDecimal) {
-            return o1.equals(o2);
+        if (value1.getDatatype() instanceof XSDBaseNumericType && value2.getDatatype() instanceof XSDBaseNumericType) {
+            Number n1 = (Number)value1.getValue();
+            Number n2 = (Number)value2.getValue();
+            return n1.longValue() == n2.longValue();
         } else {
-            return (((Number)o1).longValue() == ((Number)o2).longValue());
+            // At least one arg is not part of the integer hierarchy
+            return false;
         }
     }
 }
