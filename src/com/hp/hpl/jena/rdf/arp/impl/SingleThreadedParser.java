@@ -104,6 +104,9 @@ public class SingleThreadedParser extends XMLHandler {
 
     // private SAXParser saxParser;
 
+
+
+
     synchronized public void parse(InputSource input, String base)
             throws IOException, SAXException {
         // Make sure we have a sane state for

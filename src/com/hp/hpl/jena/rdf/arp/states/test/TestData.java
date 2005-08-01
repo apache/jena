@@ -20,10 +20,7 @@ import java.util.TreeSet;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
-import com.hp.hpl.jena.rdf.arp.impl.Names;
-import com.hp.hpl.jena.rdf.arp.impl.URIReference;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.*;
 import com.hp.hpl.jena.rdf.arp.states.AbsXMLLiteralFrame;
 import com.hp.hpl.jena.rdf.arp.states.DAMLCollectionFrame;
 import com.hp.hpl.jena.rdf.arp.states.FrameI;
@@ -149,13 +146,17 @@ public class TestData {
 
     static void add(String sh, String nm, Class f, Object args[]) {
         state2Name.put(f, nm);
-        sh = f.getSimpleName();
+        sh = getSimpleName(f);
         if (shortName2State.get(sh) != null) {
             System.err.println("Duplicate: " + sh);
         }
         state2Args.put(f, args);
         shortName2State.put(sh, f);
         state2ShortName.put(f, sh);
+    }
+
+    private static String getSimpleName(Class f) {
+        return XMLHandler.getSimpleName(f);
     }
 
     static AttributeLexer ap = new AttributeLexer(testFrame, 0, 0);
@@ -373,7 +374,7 @@ public class TestData {
     void stats(Class f) {
         if (false)
         System.out.println(state2ShortName.get(f) + ":" + state2Name.get(f)
-                + ":" + f.getSimpleName() + "  " + localCount + "/"
+                + ":" + getSimpleName(f) + "  " + localCount + "/"
                 + globalCount);
 
     }
@@ -398,7 +399,7 @@ public class TestData {
         it = data.iterator();
         while (it.hasNext()) {
             fw.write((String)it.next());
-            fw.append('\n');
+            fw.write('\n');
         }
         fw.close();
     }

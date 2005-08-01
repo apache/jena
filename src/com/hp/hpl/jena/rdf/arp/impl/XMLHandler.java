@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.2 2005-08-01 15:54:51 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -125,7 +125,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
         frame =
         frame.startElement(uri,localName,rawName,atts);
         if (DEBUG)
-        System.err.println("<"+rawName + "> :: "+oldFrame.getClass().getSimpleName() + " --> " + frame.getClass().getSimpleName());
+        System.err.println("<"+rawName + "> :: "+getSimpleName(oldFrame.getClass()) + " --> " + getSimpleName(frame.getClass()));
     }
 
     public void endElement(String uri, String localName, String rawName)
@@ -133,9 +133,12 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
         frame.endElement();
         frame = frame.getParent();
         if (DEBUG)
-        System.err.println("</"+rawName+"> :: <--" + frame.getClass().getSimpleName() );
+        System.err.println("</"+rawName+"> :: <--" + getSimpleName(frame.getClass()) );
+    }    
+    static public String getSimpleName(Class c) {
+        String rslt[] = c.getName().split("\\.");
+        return rslt[rslt.length-1];
     }
-
     public void characters(char ch[], int start, int length)
             throws SAXException {
         frame.characters(ch,start,length);

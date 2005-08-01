@@ -8,7 +8,6 @@ package com.hp.hpl.jena.shared.wg;
 import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 import java.net.URISyntaxException;
 
-import sun.security.krb5.internal.j;
 
 /**
  * Only for test package, not part of public API.
@@ -33,7 +32,9 @@ public class URI extends com.hp.hpl.jena.rdf.arp.URI {
 				catch (MalformedURIException ee) {
 				}
 			}
-			throw new IllegalArgumentException("Creating <"+s+">: ",e);
+			RuntimeException rte = new IllegalArgumentException("Creating <"+s+">: ");
+            rte.initCause(e);
+            throw rte;
 		}
 	}
 	
