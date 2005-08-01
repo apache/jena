@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecCreatorRegistry.java,v 1.12 2005-04-10 12:45:49 chris-dollin Exp $
+  $Id: ModelSpecCreatorRegistry.java,v 1.13 2005-08-01 08:22:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -99,6 +99,12 @@ public class ModelSpecCreatorRegistry
         {
         public ModelSpec create( Resource root, Model desc ) 
             { return new PlainModelSpec( root, desc ); }      
+        }  
+    
+    static class RDBSpecCreator implements ModelSpecCreator
+        {
+        public ModelSpec create( Resource root, Model desc ) 
+            { return new RDBModelSpec( root, desc ); }      
         }
             
     static class OntSpecCreator implements ModelSpecCreator
@@ -112,6 +118,7 @@ public class ModelSpecCreatorRegistry
         register( JenaModelSpec.InfModelSpec, new InfSpecCreator() );  
         register( JenaModelSpec.OntModelSpec, new OntSpecCreator() );  
         register( JenaModelSpec.PlainModelSpec, new PlainSpecCreator() );   
+        register( JenaModelSpec.RDBModelSpec, new RDBSpecCreator() );
         
         register( JenaModelSpec.ModelSpec, new PlainSpecCreator() );
         register( JenaModelSpec.DefaultModelSpec, new PlainSpecCreator() );   

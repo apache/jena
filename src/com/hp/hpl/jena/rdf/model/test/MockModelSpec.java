@@ -57,6 +57,18 @@ public class MockModelSpec implements ModelSpec
         {        
         return null;
         }
+
+    public Model getModel()
+        {
+        
+        return null;
+        }
+
+    public Model createModel()
+        {
+        
+        return null;
+        }
     }
 
 /*

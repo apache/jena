@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelMakerImpl.java,v 1.16 2005-07-29 16:08:07 chris-dollin Exp $
+  $Id: ModelMakerImpl.java,v 1.17 2005-08-01 08:25:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -71,9 +71,24 @@ public class ModelMakerImpl implements ModelMaker
         
     public boolean hasModel( String name )
         { return maker.hasGraph( name ); }
-        
+      
     public ExtendedIterator listModels()
         { return maker.listGraphs(); }
+    
+    /**
+        @deprecated 
+        @see com.hp.hpl.jena.rdf.model.ModelSource#getModel()
+    */
+    public Model getModel()
+        { return createDefaultModel(); }
+    
+    /**
+        @deprecated 
+        @see com.hp.hpl.jena.rdf.model.ModelSource#createModel()
+     */
+    public Model createModel()
+        { return createFreshModel(); }
+         
     }
 
 /*

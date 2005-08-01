@@ -1,20 +1,17 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.51 2005-07-29 16:08:07 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.52 2005-08-01 08:25:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
 import java.util.*;
-
-import junit.framework.Assert;
 
 /**
     An abstract base class for implementations of ModelSpec. It provides the base 
@@ -229,6 +226,20 @@ public abstract class ModelSpecImpl implements ModelSpec
         while (it.hasNext()) FileManager.get().readModel( m, it.nextStatement().getResource().getURI() );
         return m;
         }
+    
+    /**
+        @deprecated 
+        @see com.hp.hpl.jena.rdf.model.ModelSource#getModel()
+    */
+    public Model getModel()
+        { return createDefaultModel(); }
+    
+    /**
+        @deprecated 
+        @see com.hp.hpl.jena.rdf.model.ModelSource#createModel()
+     */
+    public Model createModel()
+        { return createFreshModel(); }
                 
     }
 

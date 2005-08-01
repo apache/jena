@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaModelSpec.java,v 1.2 2005-04-12 14:14:05 chris-dollin Exp $
+  $Id: JenaModelSpec.java,v 1.3 2005-08-01 08:25:39 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.vocabulary;
@@ -203,6 +203,11 @@ public class JenaModelSpec
         The class of OntModelSpec resources [subclass of InfModelSpec].
     */
     public static final Resource OntModelSpec = resource( "OntModelSpec" );
+    
+    /**
+        The class of RDBModelSpec resources [subclass of PlainModelSpec]
+    */
+    public static final Resource RDBModelSpec = resource( "RDBModelSpec" );
     
     /**
         The resource representing reification mode Standard.

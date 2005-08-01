@@ -1,67 +1,31 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
- 	All rights reserved.
- 	[See end of file]
+ 	All rights reserved - see end of file.
+ 	$Id: RDBModelSpec.java,v 1.1 2005-08-01 08:25:38 chris-dollin Exp $
 */
 
-package com.hp.hpl.jena.rdf.model.test;
+package com.hp.hpl.jena.rdf.model.impl;
 
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.shared.BrokenException;
 
-import junit.framework.TestSuite;
-
-/**
-     Test cases driving ModelSource
-     @author kers
-*/
-public class TestModelSource extends ModelTestBase
+public class RDBModelSpec extends ModelSpecImpl
     {
-    public TestModelSource( String name )
-        { super( name ); }
+    public RDBModelSpec( ModelMaker maker )
+        { super( maker ); }
 
-    public static TestSuite suite()
-        { return new TestSuite( TestModelSource.class ); }
-    
-    public ModelSource getModelSource()
-        { return new ModelSourceImpl(); }
-    
-    public void testMethodsExist()
-        { 
-        ModelSource s = getModelSource();
-        s.createDefaultModel();
-        s.createFreshModel();
-        s.openModel( "spoo" );
-        s.openModelIfPresent( "flarn" );
-        }    
-    
-    /**
-        Minimal test implementation of ModelSource. There should be more of
-        these.
-    
-        @author hedgehog
-    */
-    public static class ModelSourceImpl implements ModelSource
-        {
-        public Model openModel( String name )
-            { return ModelFactory.createDefaultModel(); }
-    
-        public Model openModelIfPresent(String name)
-            { return null; }
-    
-        Model theDefaultModel = ModelFactory.createDefaultModel();
-        
-        public Model createDefaultModel()
-            { return theDefaultModel; }
+    public RDBModelSpec( Resource r, Model d )
+        { super( r, d ); }
 
-        public Model createFreshModel()
-            { return createDefaultModel(); }
+    protected Model doCreateModel()
+        { throw new BrokenException( "doCreateModel not implemented" ); }
 
-        public Model getModel()
-            { return null; }
+    public Model createModelOver( String name )
+        { return maker.createModel( name ); }
 
-        public Model createModel()
-            { return null; }
-        }
+    public Property getMakerProperty()
+        { throw new BrokenException( "getMakerProperty not implemented" ); }
+
     }
 
 

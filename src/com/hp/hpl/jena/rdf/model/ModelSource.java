@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSource.java,v 1.7 2005-07-29 16:08:06 chris-dollin Exp $
+  $Id: ModelSource.java,v 1.8 2005-08-01 08:22:58 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -66,6 +66,16 @@ public interface ModelSource
         doesn't already have one.
     */
     Model openModelIfPresent( String string );
+    
+    /**
+        @deprecated use createDefaultModel or createFreshModel as appropriate.
+    */
+    Model getModel();
+    
+    /**
+        @deprecated use createDefaultModel or createFreshModel as appropriate.
+    */
+    Model createModel();
     }
 
 /*

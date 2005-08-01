@@ -86,7 +86,7 @@ public class TestModelSpecMore extends ModelTestBase
         {
         Model d = modelWithStatements( "_x jms:modelName 'redrose'" );
         ModelSpecImpl s = new ModelSpecImpl( resource( d, "_x" ), d )
-            {
+            {            
             protected Model doCreateModel()
                 {
                 
