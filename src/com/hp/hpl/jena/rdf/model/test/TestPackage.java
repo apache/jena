@@ -1,12 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.40 2005-08-01 10:52:14 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.41 2005-08-01 12:43:52 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
 
-import com.hp.hpl.jena.rdf.model.modelspec.test.TestModelSpecPackage;
+import com.hp.hpl.jena.rdf.model.spec.test.TestModelSpecPackage;
 
 import junit.framework.*;
 
