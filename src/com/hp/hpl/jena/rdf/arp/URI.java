@@ -63,8 +63,11 @@
 package com.hp.hpl.jena.rdf.arp;
 
 import java.io.Serializable;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.hp.hpl.jena.rdf.arp.impl.CharacterModel;
 
 
 /**********************************************************************
@@ -96,19 +99,24 @@ import org.apache.commons.logging.LogFactory;
 * default port for a specific scheme). Rather, it only knows the
 * grammar and basic set of operations that can be applied to a URI.
 *
-* @version  $Id: URI.java,v 1.17 2004-07-13 14:50:24 chris-dollin Exp $
-*
+* @version  $Id: URI.java,v 1.18 2005-08-01 15:07:07 jeremy_carroll Exp $
+*@deprecated Use java.net.URI.
 **********************************************************************/
 public class URI implements Serializable {
 	
-	static Log logger = LogFactory.getLog(URI.class);
+	/**
+     * 
+     */
+    private static final long serialVersionUID = 4314518178707952633L;
+
+    static Log logger = LogFactory.getLog(URI.class);
 
 	/** reserved characters */
 	private static final String RESERVED_CHARACTERS = ";/?:@&=+$,[]";
 
 	/** URI punctuation mark characters - these, combined with
 	    alphanumerics, constitute the "unreserved" characters */
-	private static final String MARK_CHARACTERS = "-_.!~*'() ";
+//	private static final String MARK_CHARACTERS = "-_.!~*'() ";
 
 	/** scheme can be composed of alphanumerics and these characters */
 	private static final String SCHEME_CHARACTERS = "+-.";
@@ -145,7 +153,7 @@ public class URI implements Serializable {
 	/** If specified, stores the fragment for this URI; otherwise null */
 	private String m_fragment = null;
 
-	private static boolean DEBUG = false;
+//	private static boolean DEBUG = false;
 
 	/**
 	* Construct a new and uninitialized URI.
@@ -356,7 +364,7 @@ public class URI implements Serializable {
 	private void initialize(URI p_base, String p_uriSpec)
 		throws MalformedURIException {
 		if (p_base == null && (p_uriSpec == null || p_uriSpec.length() == 0)) {
-			throw new RelativeURIException("Cannot initialize URI with empty parameters.");
+			throw new MalformedURIException("Cannot initialize URI with empty parameters.");
 		}
 
 		// just make a copy of the base if spec is empty
@@ -390,12 +398,12 @@ public class URI implements Serializable {
 			if (p_base == null // del jjc: && fragmentIdx != 0
 			) {
 				// Nothing to be relative against.
-				throw new RelativeURIException("No scheme found in URI '" + p_uriSpec + "'" );
-			} else {
-				if ((!p_base.isGenericURI()) && fragmentIdx != 0)
+				throw new MalformedURIException("No scheme found in URI '" + p_uriSpec + "'" );
+			} 
+		    if ((!p_base.isGenericURI()) && fragmentIdx != 0)
 					// Can't be relative against opaque URI (except using the #frag).
 					throw new MalformedURIException("Cannot apply relative URI to an opaque URI");
-			}
+			
 		} else {
 			initializeScheme(uriSpec);
 			index = m_scheme.length() + 1;
@@ -1014,35 +1022,35 @@ public class URI implements Serializable {
 	 * @exception MalformedURIException if p_addToPath contains syntax
 	 *                                  errors
 	 */
-	private void appendPath(String p_addToPath) throws MalformedURIException {
-		if (p_addToPath == null || p_addToPath.length() == 0) {
-			return;
-		}
-
-		if (!isURIString(p_addToPath)) {
-			throw new MalformedURIException("Path contains invalid character!");
-		}
-
-		if (m_path == null || m_path.length() == 0) {
-			if (p_addToPath.startsWith("/")) {
-				m_path = p_addToPath;
-			} else {
-				m_path = "/" + p_addToPath;
-			}
-		} else if (m_path.endsWith("/")) {
-			if (p_addToPath.startsWith("/")) {
-				m_path = m_path.concat(p_addToPath.substring(1));
-			} else {
-				m_path = m_path.concat(p_addToPath);
-			}
-		} else {
-			if (p_addToPath.startsWith("/")) {
-				m_path = m_path.concat(p_addToPath);
-			} else {
-				m_path = m_path.concat("/" + p_addToPath);
-			}
-		}
-	}
+//	private void appendPath(String p_addToPath) throws MalformedURIException {
+//		if (p_addToPath == null || p_addToPath.length() == 0) {
+//			return;
+//		}
+//
+//		if (!isURIString(p_addToPath)) {
+//			throw new MalformedURIException("Path contains invalid character!");
+//		}
+//
+//		if (m_path == null || m_path.length() == 0) {
+//			if (p_addToPath.startsWith("/")) {
+//				m_path = p_addToPath;
+//			} else {
+//				m_path = "/" + p_addToPath;
+//			}
+//		} else if (m_path.endsWith("/")) {
+//			if (p_addToPath.startsWith("/")) {
+//				m_path = m_path.concat(p_addToPath.substring(1));
+//			} else {
+//				m_path = m_path.concat(p_addToPath);
+//			}
+//		} else {
+//			if (p_addToPath.startsWith("/")) {
+//				m_path = m_path.concat(p_addToPath);
+//			} else {
+//				m_path = m_path.concat("/" + p_addToPath);
+//			}
+//		}
+//	}
 
 	/**
 	 * Set the query string for this URI. A non-null value is valid only
@@ -1381,17 +1389,17 @@ public class URI implements Serializable {
 					|| !isHex(p_uric.charAt(i + 1))
 					|| !isHex(p_uric.charAt(i + 2))) {
 					return false;
-				} else {
+				} 
 					i += 2;
 					continue;
-				}
+				
 			}
 			if (isReservedCharacter(testChar)
 				|| isUnreservedCharacter(testChar)) {
 				continue;
-			} else {
+			} 
 				return false;
-			}
+			
 		}
 		return true;
 	}

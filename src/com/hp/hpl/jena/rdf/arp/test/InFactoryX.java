@@ -2,7 +2,7 @@
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
  * [see end of file]
- * $Id: InFactoryX.java,v 1.3 2005-02-21 12:11:05 andy_seaborne Exp $
+ * $Id: InFactoryX.java,v 1.4 2005-08-01 15:07:03 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.rdf.arp.test;
 

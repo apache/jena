@@ -13,6 +13,7 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.arp.*;
+import com.hp.hpl.jena.rdf.arp.impl.*;
 import com.hp.hpl.jena.shared.wg.*;
 import com.hp.hpl.jena.shared.wg.URI;
 
@@ -81,11 +82,19 @@ class NTripleTestSuite extends WGTestSuite {
 		* @param subj
 		*/
 		private void seen(AResource subj) {
-			if (!anon.contains(subj))
+			if (!anon.contains(subj)) {
+                if (ARPResource.DEBUG) {
+                    ((RuntimeException)subj.getUserData()).printStackTrace();
+                }
+                Assert.assertFalse(
+                        "end-scope called twice for a bnode: "
+                            + subj.getAnonymousID(),
+                        oldAnon.contains(subj));
 				Assert.assertTrue(
 					"end-scope for a bnode that had not been used "
 						+ subj.getAnonymousID(),
 					anon.contains(subj));
+            }
 			anon.remove(subj);
 			oldAnon.add(subj);
 		}
@@ -146,9 +155,16 @@ class NTripleTestSuite extends WGTestSuite {
 		public void atEndOfFile() {
 			if (!anon.isEmpty()) {
 				Iterator it = anon.iterator();
-				while (it.hasNext())
-					System.err.print(
-						((AResource) it.next()).getAnonymousID() + ", ");
+				while (it.hasNext()) {
+                    AResource a =
+                    ((AResource) it.next());
+					System.err.print(a.getAnonymousID() + ", ");
+                    if (ARPResource.DEBUG) {
+                        RuntimeException rte = (RuntimeException)a.getUserData();
+//                        throw rte;
+                        rte.printStackTrace();
+                    }
+                }
 			}
 			Assert.assertTrue("("+xCountDown+") some bnode still in scope ", //hasErrors||
 			anon.isEmpty());
@@ -249,10 +265,8 @@ class NTripleTestSuite extends WGTestSuite {
 			if (wantModel) {
 				ntIn = new FileInputStream(ntriples);
 				return loadNT(ntIn, base);
-			} else {
-				return null;
-			}
-
+			} 
+		    return null;
 		} finally {
 			System.in.close();
 			System.setIn(oldIn);

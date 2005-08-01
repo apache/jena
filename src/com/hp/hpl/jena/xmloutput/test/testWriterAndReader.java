@@ -2,7 +2,7 @@
     (c) Copyright 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
     [See end of file]
-    $Id: testWriterAndReader.java,v 1.31 2005-02-21 12:22:53 andy_seaborne Exp $
+    $Id: testWriterAndReader.java,v 1.32 2005-08-01 15:07:26 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.test;
@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
  * Quite what 'the same' means is debatable.
  * @author  jjc
  
- * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.31 $' Date='$Date: 2005-02-21 12:22:53 $'
+ * @version  Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.32 $' Date='$Date: 2005-08-01 15:07:26 $'
  */
 public class testWriterAndReader 
     extends ModelTestBase implements RDFErrorHandler {
@@ -116,7 +116,11 @@ public class testWriterAndReader
                              //                        2,3,4,5,
                                                      6,7 }))
 						langsuite.addTest(
-							new testWriterAndReader("testOptions", lang, k, j));
+							new testWriterAndReader("testOptions "+k + " "+j, lang, k, j) {
+                                public void runTest() throws IOException {
+                                    testOptions();
+                                }
+                            });
 				}
 			}
 		}
@@ -305,6 +309,7 @@ public class testWriterAndReader
 			"http://daml.umbc.edu/ontologies/calendar-ont",
 			"http://www.daml.org/2001/03/daml+oil-ex" };
             
+    ByteArrayOutputStream tmpOut;
 	/**
 	 * 
 	 * @param rwLang Use Writer for this lang
@@ -366,7 +371,7 @@ public class testWriterAndReader
 				if ((j % 2) == 0 && j > 0)
 					expand(m1, random, 1 + cn / 10);
                 
-                ByteArrayOutputStream tmpOut = new ByteArrayOutputStream() ;
+                tmpOut = new ByteArrayOutputStream() ;
                 rdfWtr.write(m1, tmpOut, baseUriWrite);
                 tmpOut.flush() ;
                 tmpOut.close() ;
@@ -483,6 +488,8 @@ public class testWriterAndReader
 	 */
 	public void warning(Exception e) {
 //		logger.warn( toString() + " " + e.getMessage(), e );
+        System.out.println(new String(tmpOut.toString()));
+        
 		throw new JenaException( e );
 	}
     
@@ -537,5 +544,5 @@ public class testWriterAndReader
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: testWriterAndReader.java,v 1.31 2005-02-21 12:22:53 andy_seaborne Exp $
+ * $Id: testWriterAndReader.java,v 1.32 2005-08-01 15:07:26 jeremy_carroll Exp $
  */

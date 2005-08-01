@@ -1144,7 +1144,7 @@ public class SAX2RDFTest extends TestCase {
 
 	static public TestSuite suite() {
 		TestSuite s = new TestSuite("SAX2RDF");
-		s.addTestSuite(PushMePullYouTest.class);
+//		s.addTestSuite(PushMePullYouTest.class);
 		s.addTestSuite(SAX2RDFMoreTests.class);
 		
 		if (is1_4_1){
@@ -1155,7 +1155,7 @@ public class SAX2RDFTest extends TestCase {
 		}
 		//for (int j=0; j<20; j++)
 		for (int i = 0; i < all.length; i += 25) {
-			String nm = all[i];
+//			String nm = all[i];
 			//if (all[i].indexOf("premises663")==-1)
 			//	continue;
 			if (all[i].startsWith("wg/")) {

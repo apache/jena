@@ -1,6 +1,6 @@
 /*
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP [See end of
- * file] $Id: XMLMemTest.java,v 1.4 2005-02-21 12:11:26 andy_seaborne Exp $
+ * file] $Id: XMLMemTest.java,v 1.5 2005-08-01 15:07:04 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.rdf.arp.test;
 

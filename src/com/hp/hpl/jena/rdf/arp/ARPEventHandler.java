@@ -1,7 +1,7 @@
 /*
    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  [See end of file]
-  $Id: ARPEventHandler.java,v 1.2 2005-02-21 12:08:56 andy_seaborne Exp $
+  $Id: ARPEventHandler.java,v 1.3 2005-08-01 15:07:08 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 

@@ -1,13 +1,12 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.26 2005-02-21 12:11:14 andy_seaborne Exp $
+    $Id: WGTestSuite.java,v 1.27 2005-08-01 15:07:04 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
 
 import junit.framework.*;
-import java.util.zip.*;
 import java.io.*;
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -64,13 +63,13 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 			default:
 			throw new BrokenException("Unknown result type");
 		}
-		Resource result =
-			testResults
-				.createResource()
-				.addProperty(RDF.type, OWLResults.TestRun)
-				.addProperty(RDF.type, rslt)
-				.addProperty(OWLResults.test, test )
-				.addProperty(OWLResults.system, jena2);
+//		Resource result =
+//			testResults
+//				.createResource()
+//				.addProperty(RDF.type, OWLResults.TestRun)
+//				.addProperty(RDF.type, rslt)
+//				.addProperty(OWLResults.test, test )
+//				.addProperty(OWLResults.system, jena2);
 	}
 	private static boolean logging = false;
 	private static String BASE_RESULTS_URI = "http://jena.sourceforge.net/data/rdf-results.rdf";
@@ -692,7 +691,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         Model read(String file, boolean type) throws IOException {
             if (!type) {
                 return loadNT(factory.open(file),file);
-            } else {
+            } 
                 final String uri = file;
                 return loadRDF(
                 new InFactoryX(){
@@ -703,7 +702,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 }
                 
                 , this, uri);
-            }
+            
         }
         
         public void warning(Exception e) {
@@ -886,12 +885,22 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             } catch (IOException ioe) {
                 fail(ioe.getMessage());
             }
-            if (expected != null && !expected.equals(found)) {
+            // TODO: tidy up this code a bit, I don't understand it.
+            HashSet ex2 = expected==null?null:new HashSet(expected);
+            if (expected==null)
+            for (int j = 2; j >= 0; j--)
+                if (j != expectedLevel)  {
+                    if (errorCnt[j] != 0)
+                        ex2 = new HashSet();
+                }
+            if (ex2 != null && !ex2.equals(found)) {
                 Set dup = new HashSet();
                 dup.addAll(found);
-                dup.removeAll(expected);
-                expected.removeAll(found);
-                Iterator it = expected.iterator();
+                dup.removeAll(ex2);
+                ex2.removeAll(found);
+                if (expected != null)
+                    expected.removeAll(found);
+                Iterator it = ex2.iterator();
                 while (it.hasNext()) {
                     int eCode = ((Integer) it.next()).intValue();
                     String msg =

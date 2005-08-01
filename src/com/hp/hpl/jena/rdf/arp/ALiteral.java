@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ALiteral.java,v 1.3 2005-02-21 12:08:43 andy_seaborne Exp $
+   $Id: ALiteral.java,v 1.4 2005-08-01 15:07:08 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
  /*
@@ -35,11 +35,13 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
+import com.hp.hpl.jena.rdf.arp.impl.ANode;
+
 /**
  * A string literal property value from an RDF/XML file. 
  * @author  jjc
  */
-public interface ALiteral {
+public interface ALiteral extends ANode {
 /** Was this formed from a rdf:parseType="Literal" construction.
  * @return true for rdf:parseType="Literal" or any other unrecognised parseType.
  */    
@@ -47,6 +49,7 @@ public interface ALiteral {
     // Usually null, maybe "Literal" or something else.
 /** When <CODE>isWellFormedXML()</CODE> is true, this returns the value of the <I>rdf:parseType</I> attribute, usually "Literal".
  * Otherwise <B>null</B> is returned.
+ * @deprecated Always returns "Literal" or null
  * @return The <I>parseType</I> for well formed XML, or <B>null</B> for normal literals.
  */    
     public String getParseType();

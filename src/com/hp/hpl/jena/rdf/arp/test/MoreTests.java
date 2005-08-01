@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: MoreTests.java,v 1.30 2005-07-25 10:55:10 jeremy_carroll Exp $
+ *  $Id: MoreTests.java,v 1.31 2005-08-01 15:07:04 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -226,7 +226,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 			return;
 		}
 		rdr.setErrorHandler(this);
-		expected = new int[] { WARN_ENCODING_MISMATCH, ERR_ENCODING_MISMATCH };
+		expected = new int[] { WARN_ENCODING_MISMATCH, ERR_ENCODING_MISMATCH, ERR_ENCODING_MISMATCH };
 		rdr.read(m, r, "http://example.org/");
 
 		checkExpected();
@@ -317,7 +317,7 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 	public void testInterrupt() throws SAXException, IOException {
 		ARP a = new ARP();
 		InputStream in;
-		long start = System.currentTimeMillis();
+//		long start = System.currentTimeMillis();
 		in = new FileInputStream("testing/wg/miscellaneous/consistent001.rdf");
 		a.getHandlers().setStatementHandler(new StatementHandler() {
 			int countDown = 10;
@@ -393,29 +393,29 @@ public class MoreTests extends TestCase implements RDFErrorHandler,
 		fail(msg);
 	}
 
-	private void tokenGarbage(String file) {
-		try {
-			Token.COUNT = true;
-			Token.COUNTTEST = true;
-			Token.reinitHighTide();
-			NTriple.main(new String[] { "-t", file });
-			//System.err.println("["+Token.highTide+"]");
-			assertTrue("Too many tokens used: "+ Token.highTide,
-					Token.highTide<2000);
-		} finally {
-			Token.COUNT = false;
-			Token.COUNTTEST = false;
-		}
-	}
-
-	public void testTokenGarbage1() {
-		tokenGarbage("testing/ontology/owl/Wine/wine.owl");
-	}
-
-	public void testTokenGarbage2() {
-
-		tokenGarbage("testing/arp/gc/someWordNet.rdf");
-	}
+//	private void tokenGarbage(String file) {
+//		try {
+//			Token.COUNT = true;
+//			Token.COUNTTEST = true;
+//			Token.reinitHighTide();
+//			NTriple.main(new String[] { "-t", file });
+//			//System.err.println("["+Token.highTide+"]");
+//			assertTrue("Too many tokens used: "+ Token.highTide,
+//					Token.highTide<2000);
+//		} finally {
+//			Token.COUNT = false;
+//			Token.COUNTTEST = false;
+//		}
+//	}
+//
+//	public void testTokenGarbage1() {
+//		tokenGarbage("testing/ontology/owl/Wine/wine.owl");
+//	}
+//
+//	public void testTokenGarbage2() {
+//
+//		tokenGarbage("testing/arp/gc/someWordNet.rdf");
+//	}
 }
 
 /*

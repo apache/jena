@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: StatementHandler.java,v 1.3 2005-02-21 12:09:17 andy_seaborne Exp $
+ * * $Id: StatementHandler.java,v 1.4 2005-08-01 15:07:08 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */

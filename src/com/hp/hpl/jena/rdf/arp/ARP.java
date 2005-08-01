@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.19 2005-04-11 11:54:24 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.20 2005-08-01 15:07:08 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */
@@ -45,13 +45,18 @@
  */
 
 package com.hp.hpl.jena.rdf.arp;
-import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 import java.io.IOException;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
 import java.io.InputStream;
 import java.io.Reader;
+
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
+
+import com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl;
+import com.hp.hpl.jena.rdf.arp.impl.ARPOptionsImpl;
+import com.hp.hpl.jena.rdf.arp.impl.SingleThreadedParser;
 
 
 /** Another RDF Parser.
@@ -74,7 +79,7 @@ import java.io.Reader;
  * analysed as RDF by ARP.
  * Errors may occur
  * in either the XML or the RDF part, see 
- * {@link ARPHandlers#setErrorHandler} for details
+ * {@link ARPHandlersImpl#setErrorHandler} for details
  * of how to distinguish between them.</p>
  * <p>
  * For very large files, ARP does not use any additional
@@ -117,9 +122,12 @@ public class ARP implements ARPConfig
     public void load(Reader in,String xmlBase) throws SAXException, IOException {
         InputSource inputS = new InputSource(in);
         inputS.setSystemId(xmlBase);
+        arpf.initParse(xmlBase,"");
          arpf.parse(inputS);
     }
     void load(InputSource is)  throws SAXException, IOException {
+
+        arpf.initParse("","");
         arpf.parse(is);
     }
 /** Load RDF/XML from an InputStream.
@@ -133,6 +141,7 @@ IOException {
         //load(new InputStreamReader(in),xmlBase);
         InputSource inputS = new InputSource(in);
         inputS.setSystemId(xmlBase);
+        arpf.initParse(xmlBase,"");
         arpf.parse(inputS, xmlBase);
     }
 /** Load RDF/XML from an InputStream, using base URL http://unknown.org/.
@@ -156,13 +165,13 @@ IOException {
      * The handlers used during parsing.
      * The handlers can be changed by calling this method
      * and then using the <code>set..Handler</code> methods
-     * in {@link ARPHandlers}.
+     * in {@link ARPHandlersImpl}.
      * The handlers can be copied onto another ARP instance
      * using the {@link #setHandlersWith} method.
-     * @see ARPHandlers#setStatementHandler(StatementHandler)
-     * @see ARPHandlers#setErrorHandler(ErrorHandler)
-     * @see ARPHandlers#setExtendedHandler(ExtendedHandler)
-     * @see ARPHandlers#setNamespaceHandler(NamespaceHandler)
+     * @see ARPHandlersImpl#setStatementHandler(StatementHandler)
+     * @see ARPHandlersImpl#setErrorHandler(ErrorHandler)
+     * @see ARPHandlersImpl#setExtendedHandler(ExtendedHandler)
+     * @see ARPHandlersImpl#setNamespaceHandler(NamespaceHandler)
      * @see #setHandlersWith
      * @return The handlers used during parsing.
      */
@@ -177,28 +186,28 @@ IOException {
      * instance's copy of the handler information.
      * @param handlers The new values to use.
      */
-    public void setHandlersWith(ARPHandlers handlers){
+    public void setHandlersWith(ARPHandlersImpl handlers){
     	arpf.setHandlersWith(handlers);
     }
     /**
      * The options used during parsing.
      * The options can be changed by calling this method
      * and then using the <code>set..</code> methods
-     * in {@link ARPOptions}.
+     * in {@link ARPOptionsImpl}.
      * The options can be copied onto another ARP instance
      * using the {@link #setOptionsWith} method.
-     * @see ARPOptions#setDefaultErrorMode()
-     * @see ARPOptions#setLaxErrorMode()
-     * @see ARPOptions#setStrictErrorMode()
-     * @see ARPOptions#setStrictErrorMode(int)
-     * @see ARPOptions#setEmbedding(boolean)
-     * @see ARPOptions#setErrorMode(int, int)
+     * @see ARPOptionsImpl#setDefaultErrorMode()
+     * @see ARPOptionsImpl#setLaxErrorMode()
+     * @see ARPOptionsImpl#setStrictErrorMode()
+     * @see ARPOptionsImpl#setStrictErrorMode(int)
+     * @see ARPOptionsImpl#setEmbedding(boolean)
+     * @see ARPOptionsImpl#setErrorMode(int, int)
      * 
      * @see #setOptionsWith
      * @return The handlers used during parsing.
      */
     
-    public ARPOptions getOptions(){
+    public ARPOptionsImpl getOptions(){
     	return arpf.getOptions();
     }
 
@@ -210,18 +219,18 @@ IOException {
      * instance's copy of the options.
      * @param opts The new values to use.
      */
-    public void setOptionsWith(ARPOptions opts){
+    public void setOptionsWith(ARPOptionsImpl opts){
     	arpf.setOptionsWith(opts);
     }
 	/**
-    @deprecated Use {@link #getHandlers}.{@link ARPHandlers#setExtendedHandler setExtendedHandler(eh)}
+    @deprecated Use {@link #getHandlers}.{@link ARPHandlersImpl#setExtendedHandler setExtendedHandler(eh)}
 	 */
 	public ExtendedHandler setExtendedHandler(ExtendedHandler eh) {
 		
 		return getHandlers().setExtendedHandler(eh);
 	}
 	/**
-    @deprecated Use {@link #getHandlers}.{@link ARPHandlers#setNamespaceHandler setNamespaceHandler(nh)}
+    @deprecated Use {@link #getHandlers}.{@link ARPHandlersImpl#setNamespaceHandler setNamespaceHandler(nh)}
 	 */
 	public NamespaceHandler setNamespaceHandler(NamespaceHandler nh) {
 
@@ -240,7 +249,9 @@ IOException {
 	public void setErrorHandler(ErrorHandler eh) {
 		getHandlers().setErrorHandler(eh);
 	}
+    // TODO: get rid of Impl in javadoc.
 	/**
+     * 
     @deprecated Use {@link #getOptions}.{@link ARPOptions#setErrorMode(int,int) setErrorMode(errno,mode)}
 	 */
 	public int setErrorMode(int errno, int mode) {
@@ -277,7 +288,7 @@ IOException {
 		getOptions().setStrictErrorMode(nonErrorMode);
 	}
 	/**
-     @deprecated Use {@link #getOptions}.{@link ARPOptions#setEmbedding(boolean) setEmbedding(embed)}
+     @deprecated Use {@link #getOptions}.{@link ARPOptionsImpl#setEmbedding(boolean) setEmbedding(embed)}
 	 */
 	public void setEmbedding(boolean embed) {
 		

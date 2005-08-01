@@ -1,7 +1,7 @@
 /*
    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestScope.java,v 1.7 2005-02-21 12:11:14 andy_seaborne Exp $
+  $Id: TestScope.java,v 1.8 2005-08-01 15:07:04 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp.test;
 import junit.framework.*;

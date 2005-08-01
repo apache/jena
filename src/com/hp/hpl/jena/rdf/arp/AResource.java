@@ -1,7 +1,7 @@
 /*
  *  (c) Copyright 2001, 2003,2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AResource.java,v 1.8 2005-02-21 12:09:01 andy_seaborne Exp $
+  $Id: AResource.java,v 1.9 2005-08-01 15:07:08 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp;
 

@@ -2,11 +2,10 @@
  *  (c)     Copyright 2000-2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: URITests.java,v 1.4 2005-02-21 12:11:14 andy_seaborne Exp $
+ *  $Id: URITests.java,v 1.5 2005-08-01 15:07:04 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
-import org.apache.commons.logging.*;
 import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.arp.*;
@@ -17,6 +16,7 @@ import com.hp.hpl.jena.rdf.arp.*;
  */
 public class URITests
 	extends TestCase {
+    // TODO: what with these tests
 	static public Test suite() {
 		TestSuite suite = new TestSuite("URIs");
 		suite.addTest(new URITests("testNoDomain"));

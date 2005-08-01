@@ -5,11 +5,14 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import org.xml.sax.*;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
+import com.hp.hpl.jena.rdf.arp.impl.JenaHandler;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.RDFErrorHandler;
 import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
  * Use arbitrary SAX input to Jena.
@@ -20,6 +23,7 @@ import com.hp.hpl.jena.rdf.model.impl.RDFDefaultErrorHandler;
  *
  */
 public class SAX2Model extends SAX2RDF {
+    // TODO: javadoc and new factory
 	/**
 	 * Factory method to create a new SAX2RDF.
 	 * @param base The retrieval URL, or the base URI to be 
@@ -30,10 +34,12 @@ public class SAX2Model extends SAX2RDF {
      * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
 	 * @return A new SAX2RDF
 	 * @throws MalformedURIException
+     * @deprecated
 	 */
 	static public SAX2Model newInstance(String base, Model m) throws MalformedURIException { 
 		return new SAX2Model(base,m,""); 
 	}
+    // TODO: javadoc and new factory
 	/**
 	 * Factory method to create a new SAX2RDF.
 	 * This is particularly
@@ -51,6 +57,7 @@ public class SAX2Model extends SAX2RDF {
 	 * @param lang The current value of <code>xml:lang</code> when parsing starts, usually "".
 	 * @return A new SAX2RDF
 	 * @throws MalformedURIException
+     * @deprecated 
 	 */
 	static public SAX2Model newInstance(String base, Model m, String lang) throws MalformedURIException { 
 		return new SAX2Model(base,m,lang); 
@@ -77,7 +84,7 @@ public class SAX2Model extends SAX2RDF {
      * @param uri The Namespace URI the prefix is mapped to.
      * 
      */
-    public void startPrefixMapping (String prefix, String uri)
+    public void startPrefixMapping (String prefix, String uri) throws SAXParseException
 	 { super.startPrefixMapping(prefix,uri);
     }
 
@@ -85,13 +92,21 @@ public class SAX2Model extends SAX2RDF {
 
 	final private JenaHandler handler;
 
+    // TODO: javadoc here
+    /**
+     * @deprecated
+     * @param base
+     * @param m
+     * @param lang
+     * @throws MalformedURIException
+     */
     protected SAX2Model(String base, Model m, String lang) throws MalformedURIException {
-    	super(base,lang);
+    	super(base,lang,true);
     	handler = new JenaHandler(m,errorHandler);
     	handler.useWith(getHandlers());
     }
 private boolean closed = false;
-    public void close() throws SAXException{
+    public void close() {
     //	System.err.println("closing;");
     	if (!closed) {
     	super.close();

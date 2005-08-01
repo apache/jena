@@ -1,0 +1,1023 @@
+/*(c) Copyright Hewlett-Packard Development Company, LP 
+ *  All rights reserved.
+ * see 20 lines below.
+*/
+
+options {
+  STATIC=false;
+  USER_TOKEN_MANAGER=true;
+  DEBUG_LOOKAHEAD=false;
+}
+
+PARSER_BEGIN(RDFParser)
+
+package com.hp.hpl.jena.rdf.arp;
+
+import java.util.*;
+import org.xml.sax.SAXException;
+
+class RDFParser implements ARPErrorNumbers {
+/*
+ *  (c) Copyright Hewlett-Packard Development Company, LP 
+ *  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ * 3. The name of the author may not be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ * NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ 
+ * * $Id: rdf.jj,v 1.1 2005-08-01 15:07:05 jeremy_carroll Exp $
+   
+   AUTHOR:  Jeremy J. Carroll
+*/
+
+
+
+  static {
+// Terminal description for error messages.
+// The tokeniser (XMLHandler) defines what the tokens actually are.
+     tokenImage[A_ABOUT] = "attribute rdf:about";
+     tokenImage[A_ID] = "attribute rdf:ID";
+     tokenImage[A_NODEID] = "attribute rdf:nodeID";
+     tokenImage[A_OTHER] = "property attributes";
+     tokenImage[A_PARSETYPE] = "rdf:parseType";
+     tokenImage[A_RESOURCE] = "attribute rdf:resource";
+     tokenImage[A_TYPE] = "attribute rdf:type";
+     tokenImage[A_DATATYPE] = "attribute rdf:datatype";
+     tokenImage[A_RDF_N] = "attribute rdf:rdf_NNN";
+     tokenImage[A_XMLLANG] = "attribute xml:lang";
+     tokenImage[A_XMLSPACE] = "attribute xml:space";
+     tokenImage[A_XMLBASE] = "attribute xml:base";
+     tokenImage[AV_RESOURCE] = "'Resource'";
+     tokenImage[AV_LITERAL] = "'Literal'";
+     tokenImage[AV_STRING] = "attribute value";
+     tokenImage[CD_STRING] = "XML ELEMENT CONTENT";
+     tokenImage[E_DESCRIPTION] = "start element rdf:Description";
+     tokenImage[E_END] = "end element tag";
+     tokenImage[E_LI] = "start element rdf:li";
+     tokenImage[E_OTHER] = "general start element tag";
+     tokenImage[E_RDF] = "start element rdf:RDF";
+     tokenImage[E_RDF_N] = "start element rdf:rdf_NNN";
+     tokenImage[AV_DAMLCOLLECTION] = "'daml:collection'";
+     tokenImage[AV_COLLECTION] = "'Collection'";
+     tokenImage[COMMENT]= "XML comment";
+     tokenImage[PROCESSING_INSTRUCTION]="processing instruction";
+     tokenImage[A_XMLNS]="namespace declaration";
+     tokenImage[X_WARNING] = ""; // suppress messages about this ...
+     tokenImage[X_SAX_EX] = ""; // suppress messages about this ...
+   }
+ 
+   XMLHandler arp;
+   ParserSupport X;
+   // For creating syntax error messages.
+   Token startAttr;
+   RDFParser(TokenPipe pipe, XMLHandler arp) {
+     this(pipe);
+     this.arp = arp;
+     X = new ParserSupport(arp);
+   }
+}
+
+PARSER_END(RDFParser)
+
+/* FORMATTING CONVENTIONS
+1: each element in production on own line at column 4 
+2: kleene stars and optionals round single elements on same line
+3: kleene stars and optionals round multiple elements using
+   indentation levels of 2
+4: code at column 40, possibly on same line as element
+5: try/catch at column 30
+6: | at column 2 on own line with comment // OR
+*/
+// Entry point where whole file is known to be rdf and
+// so rdf:RDF element is optional.
+// No kleene star - there can only be one document level element.
+void rdfFile(XMLContext ctxt) :     {}   
+{   
+   whiteOrErr()                        
+   rdfFileSub(ctxt)                    
+   white1(false)
+   
+}
+void rdfFileSub(XMLContext ctxt) :     { ARPResource r  = null; }   
+{   
+   rdf(ctxt)
+ | // OR    
+                            try {                           
+                                       { arp.startRDF(); }
+   r = obj(ctxt)                       
+                            }
+                            finally {
+                                arp.endLocalScope(r);
+                                arp.endRDF();
+                            }
+   
+}
+
+void zwhite(boolean suggestParseType): {}
+{ LOOKAHEAD( { suggestParseType } )
+  xwhite()
+| white()
+}
+void white() :                         {}
+{ white1(true)
+}
+void xwhite() :                         {}
+{ ( xOneWhite() ) *
+}
+
+void white1(boolean warnOnPi) :         {}
+{  ( oneWhite(warnOnPi) ) * 
+}
+void whiteOrErr() :                     {}
+{  ( oneWhite(false)| warning() ) * 
+}
+void xOneWhite() :                     { Token w; }
+{  w=<CD_STRING>                       { X.checkWhite((StrToken)w,true); } 
+ | // OR
+   w=<PROCESSING_INSTRUCTION>          { X.processingInstruction(w,true); }
+ | // OR
+   <COMMENT>    
+ | // OR
+   saxEx()       
+}
+
+void oneWhite(boolean warnOnPi) :      { Token w; }
+{  w=<CD_STRING>                       { X.checkWhite((StrToken)w,false); } 
+ | // OR
+   pi(warnOnPi)
+ | // OR
+   <COMMENT>    
+ | // OR
+   saxEx()       
+}
+
+Token saxEx():                         { Token rslt;}
+{ rslt = <X_SAX_EX>                    { X.saxException(rslt); 
+                                         return rslt;
+                                       }
+}
+
+void empty():                          {}
+{ (oneEmpty())*
+}
+
+void oneEmpty():                       {}
+{
+   pi(true)
+ | // OR
+   <COMMENT>  
+}
+Token pi(boolean warnOnPi) :           { Token w; }
+{  w=<PROCESSING_INSTRUCTION>          { if (warnOnPi) X.processingInstruction(w,false);
+                                         return w;
+                                       }
+}
+
+/* [6.1] RDF  ::= ['<rdf:RDF>'] obj* ['</rdf:RDF>'] */
+ 
+void rdf(XMLContext ctxt) :            { ARPResource r = null; }
+{                      try { (
+  <E_RDF>                              { arp.startRDF(); }
+   ctxt=xmlAttrs(ctxt) 
+   white() 
+   (                      try { (
+     r = obj(ctxt)                    
+                          ) } finally { arp.endLocalScope(r); 
+                                        r = null;
+                                      }
+                            
+     white() 
+   ) *    
+   <E_END>                             
+                        ) } 
+                        catch ( ParseException e ) {
+                                       error_recovery(e);
+                             }
+                        finally {
+                               arp.endRDF();
+                             }
+}
+
+/* [6.2] obj            ::= description | container */
+
+ARPResource obj(XMLContext ctxt) :     
+                                       {  ARPResource r = 
+                                                        new ARPResource(arp); }
+{                            try { (
+   description(ctxt,r,false)           { return r; }
+                             ) }
+                             catch (ParseException e) {
+                               arp.endLocalScope(r);
+                               throw e;
+                             }
+                             catch (RuntimeException e) {
+                               arp.endLocalScope(r);
+                               throw e;
+                             }
+}
+
+ARPResource xobj(XMLContext ctxt) :     
+                                       {  ARPResource r = 
+                                                        new ARPResource(arp); }
+{                            try { (
+   description(ctxt,r,true)            { 
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                           return r; }
+                             ) }
+                             catch (ParseException e) {
+                               arp.endLocalScope(r);
+                               throw e;
+                             }
+                             catch (RuntimeException e) {
+                               arp.endLocalScope(r);
+                               throw e;
+                             }
+}
+
+
+/* [6.3] description    ::= '<rdf:Description' idAboutAttr? propAttr* '/>'
+ *                        | '<rdf:Description' idAboutAttr?  propAttr* '>'
+ *                                       propertyElt* '</rdf:Description>'
+ *                        | typedNode  */
+
+void description(XMLContext ctxt, ARPResource r, boolean suggestParseType) 
+                                     : {}
+{                            try { (
+   <E_DESCRIPTION> 
+   ctxt=xmlAttrs(ctxt) 
+   [ idAboutAttr(ctxt,r) ] 
+   ( propAttr(ctxt,r) ) * 
+   zwhite(suggestParseType) 
+   ( propertyElt(ctxt,r) 
+     zwhite(suggestParseType) 
+	   ) *                             { 
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                        }
+   <E_END>
+ | // OR
+   typedNode(ctxt,r,suggestParseType)
+                             ) } 
+                             catch ( ParseException e ) {
+                                       error_recovery(e);
+                             }
+}
+
+
+/*
+ [6.5] idAboutAttr    ::= idAttr | aboutAttr | nodeIdAttr
+*/
+void idAboutAttr(XMLContext ctxt,ARPResource r) 
+                                     : { String s;}
+{  s = idAttr(ctxt)                    { r.setAbout(s); } 
+ | // OR
+   aboutAttr(ctxt,r) 
+  | // OR
+   nodeIdAttr(ctxt,r) 
+}
+
+/*
+ [6.6] idAttr         ::= ' ID="' IDsymbol '"'
+*/
+String idAttr(XMLContext ctxt)       : { String s; }
+{ <A_ID> 
+  s=idSymbol(ctxt) 
+  ( warning() ) *                      { return s; }
+}
+
+/*
+  [6.7] aboutAttr      ::= ' about="' URI-reference '"'
+*/
+void aboutAttr(XMLContext ctxt,ARPResource r) 
+                                     : { URIReference u; }
+{  <A_ABOUT> 
+   u=uriReference(ctxt) 
+   ( warning() ) *                     { r.setAbout(u); }
+}
+
+/*
+   nodeIdAttr      ::= ' rdf:nodeID="' XMLNCName '"'
+*/
+void nodeIdAttr(XMLContext ctxt,ARPResource r) 
+                                     : { Token t;}
+{  <A_NODEID> 
+   t=<AV_STRING>                       
+   ( warning() ) *                     { r.setNodeId(X.checkNodeID(t)); } 
+}
+
+
+
+
+
+/* 
+ [6.10] propAttr       ::= typeAttr
+                          | propName '="' string '"' (with embedded quotes escaped)
+*/
+void propAttr(XMLContext ctxt,ARPResource r) 
+                                     : { Token str; 
+                                         Token prop; 
+                                       }
+{  typeAttr(ctxt,r) 
+ | // OR
+   prop=<A_OTHER> 
+   str=<AV_STRING> 
+   ( warning() ) *                      {  X.checkString(str);
+                                           r.setPredicateObject(
+                                                 ((ARPQname)prop)
+                                                      .asURIReference(arp), 
+                                                 new ARPString((StrToken)str,
+                                                            ctxt.getLang()) ); 
+                                        }
+ | // OR
+   prop=<A_RDF_N> 
+   str=<AV_STRING> 
+   ( warning() ) *                      {  X.checkString(str);
+                                           r.setPredicateObject(
+                                                 ((ARPQname)prop)
+                                                      .asURIReference(arp), 
+                                                 new ARPString((StrToken)str,
+                                                            ctxt.getLang()) ); 
+                                        }
+}
+
+/*
+ [6.11] typeAttr       ::= ' type="' URI-reference '"'
+*/
+void  typeAttr(XMLContext ctxt,ARPResource r) 
+                                     : { URIReference u; }
+{  <A_TYPE> 
+   u= uriReference(ctxt) 
+   ( warning() ) *                     { r.setType(u); } 
+}
+/*
+ [6.12] propertyElt    ::= '<' propName idAttr? '>' value '</' propName '>'
+                         | '<' propName idAttr? parseLiteral '>'
+                               literal '</' propName '>'
+                         | '<' propName idAttr? parseResource '>'
+                               propertyElt* '</' propName '>'
+                         | '<' propName idRefAttr?  propAttr* '/>'
+
+Merged with:
+ [6.29] referencedItem ::= '<rdf:li' resourceAttr '/>'
+ [6.30] inlineItem     ::= '<rdf:li' '>' value </rdf:li>'
+                         | '<rdf:li' parseLiteral '>' literal </rdf:li>'
+                         | '<rdf:li' parseResource '>' propertyElt* </rdf:li>'
+
+see working group notes.
+
+In these productions E_END comes after the action in case the action 
+throws a ParseException. In such a case, error_recovery is looking for the
+E_END.
+*/
+
+
+void propertyElt(XMLContext ctxt,ARPResource r)
+                                     : { Token p; }
+{                            try { (
+    p=propertyEltTag()                 { p = (Token)p.clone();
+                                         // We do not want to hold on
+                                         // to the sequence of all subsequent
+                                         // tokens.
+                                         p.next = null;
+                                       }
+    ctxt=xmlAttrs(ctxt) 
+    propertyEltIdAndValue( ctxt, r, p )
+    <E_END>  
+                             ) } catch ( ParseException e ) {
+                                         error_recovery(e);
+                             }
+}
+Token propertyEltTag()               : { Token p; }
+{  p=<E_OTHER>                         { return p; }
+ | // OR
+   p=<E_LI>                            { return p; }
+ | // OR
+   p=<E_RDF_N>                         { return p; }
+}
+
+void propertyEltIdAndValue( XMLContext ctxt,ARPResource r, Token p ) 
+                                     : { String reify = null; 
+                                         Object v;
+                                       }
+{ 
+   [ reify = idAttr(ctxt) ] 
+   v = propEltValue(ctxt)              { try {
+                                           X.createTriple(r, p, v, reify );
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                         }
+                                         finally {
+                                          arp.endLocalScope(v); 
+                                  
+                                         }
+                                       }
+}
+
+Object propEltValue(XMLContext ctxt) : { String xml; 
+                                         Object v; 
+                                         Token parseType; 
+                                         String parseTypeVal;
+                                         ARPResource ptr; 
+                                         AResourceInternal daml[];
+                                         ARPString dtLex;
+                                         URIReference dtURI;
+                                         Location wh;
+                                       }
+{ 
+                             LOOKAHEAD(2) 
+   <A_PARSETYPE> 
+   parseType=<AV_LITERAL>              { parseTypeVal = 
+                                             ((StrToken)parseType).value;
+                                         // Allow garbage collector
+                                         // to operate for very large 
+                                         // xml:literals
+                                         wh = parseType.location;
+                                         parseType = null; 
+                                       }
+   ( warning() ) *
+   xml=litValue(ctxt.getNamespaces(),wh)
+                                       { return 
+                                          new ARPString(xml,
+                                                 ctxt.getLang(),
+                                                 parseTypeVal ); 
+                                       }
+ | // OR
+                             LOOKAHEAD(2) 
+   <A_PARSETYPE> 
+   <AV_DAMLCOLLECTION>                   { daml = new AResourceInternal[1]; }
+   ( warning() ) * 
+   white() 
+   collection(ctxt, 
+          X.damlCollectionAction(daml) ) { return daml[0]; }
+
+ | // OR
+                             LOOKAHEAD(2) 
+   <A_PARSETYPE> 
+   <AV_COLLECTION>                      { daml = new AResourceInternal[1]; }
+   ( warning() ) * 
+   white()                              
+   collection(ctxt, 
+        X.collectionAction(daml) )      { return daml[0]; }
+
+ | // OR
+   dtURI = datatypeAttr(ctxt)        
+   dtLex = string(ctxt)                 { return X.createDatatypeLiteral(dtURI,dtLex); }
+ | // OR
+                                        { ptr = new ARPResource(arp); }
+                         try { (
+   propEltValueWithRes(ctxt,ptr) 
+                                     { return ptr; }
+                        ) }
+                        catch (ParseException e) {
+                         arp.endLocalScope(ptr);
+                         throw e;
+                        }
+                        catch (RuntimeException e) {
+                         arp.endLocalScope(ptr);
+                         throw e;
+                        }
+ | // OR    This one last because it can expand to empty.
+  v= value(ctxt)                        { return v; }
+}
+
+
+
+void propEltValueWithRes(XMLContext ctxt, ARPResource ptr) 
+                                     : {} 
+{    
+   <A_PARSETYPE> 
+   <AV_RESOURCE> 
+   ( warning() ) *                      
+   white() 
+   ( propertyElt(ctxt,ptr) 
+     white() 
+   ) *                                  
+
+ | // OR 
+                                        
+   resourceOrNodeIdAttr(ctxt,ptr)  
+   ( propAttr(ctxt,ptr) ) *
+   empty()                              
+
+ | // OR
+                                          
+   ( propAttr(ctxt,ptr) ) +
+   empty()                              
+
+ }
+
+
+
+void collection(XMLContext ctxt, CollectionAction act) 
+                                     : { CollectionAction firstAct = act; }
+{                     try { (                      
+   ( act=objInCollection(ctxt,act) ) * { act.terminate(); 
+                                       }
+                      ) }
+                      catch (RuntimeException e) {
+                        firstAct.cleanUp();
+                        act.cleanUp();
+                        throw e;
+                      }
+                      catch (ParseException e) {
+                        firstAct.cleanUp();
+                        act.cleanUp();
+                        throw e;
+                      }
+}
+
+CollectionAction objInCollection(XMLContext ctxt, CollectionAction act )
+                                     : { ARPResource head;
+                                         CollectionAction rslt;
+                                       }
+{  head=obj(ctxt)                    { rslt = act.next( head ); }
+// The subtlety here is if the file ends suddenly durign the whitespace
+// we want to clean up the head.
+   white()                           { return rslt; }
+}
+/*
+ [6.13] typedNode      ::= '<' typeName idAboutAttr?  propAttr* '/>'
+                         | '<' typeName idAboutAttr?  propAttr* '>'
+                               propertyElt* '</' typeName '>'
+ We do the action at the right point to reflect the XML
+ document order in the bagID bag (if any).
+*/
+
+void typedNode(XMLContext ctxt, ARPResource r, boolean suggestParseType) 
+                                     : { Token type; }
+{  type=typedNodeTag()                 { type = (Token)type.clone();
+                                         type.next = null;
+                                       }
+   ctxt=xmlAttrs(ctxt) 
+   [ idAboutAttr(ctxt,r) ]              { r.setType(
+                                               ((ARPQname)type)
+                                                   .asURIReference(arp)); 
+                                       }
+   ( propAttr(ctxt,r) ) *
+   zwhite(suggestParseType) 
+   ( propertyElt(ctxt,r) 
+     zwhite(suggestParseType) 
+   ) *                   
+   <E_END>
+}
+
+
+Token typedNodeTag()
+                                     : { Token rslt; }
+{  rslt=<E_OTHER>                      { return rslt; }
+ | // OR
+   rslt=<E_RDF_N>                      { arp.parseWarning(
+                                           WARN_RDF_NN_AS_TYPE,
+                                           rslt.location,
+                                           ((ARPQname)rslt).qName + 
+                                           " is being used as a type."
+                                         );
+                                         return rslt; 
+                                       }
+ | // OR
+   rslt=<E_LI>                         { arp.parseWarning(
+                                           ERR_LI_AS_TYPE,
+                                           rslt.location,
+                                           ((ARPQname)rslt).qName + 
+                                           " is being used as a type."
+                                         );
+                                         return rslt;
+                                       }
+}
+
+/*
+ [6.17] value          ::= obj | string
+ 
+ RETURN the value, note the class of the return type
+ distinguishes which expansion was used.
+ Here lies the major issue with the grammar.
+ As we look at white space at the beginning of value then
+ we don't know if it is a string value, or just filling up to
+ the next obj. We use a special javaCC lookahead here.
+ What is says is to use the string rule in the case that we
+ have any amount of parsed character data (including none) 
+ followed by an end element.
+ The end element is matched in the calling production! (yuk!)
+*/
+Object value(XMLContext ctxt)        : { Object rslt; }
+{                  LOOKAHEAD( ( <CD_STRING> | <COMMENT> | <PROCESSING_INSTRUCTION> | <X_SAX_EX> ) * <E_END>  ) 
+   rslt = string(ctxt)                 { 
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                           return rslt; 
+                                       }
+|  // OR
+   xwhite()                            { 
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                       }
+                            
+   rslt = xobj(ctxt) 
+                            try { (
+   xwhite()                             { return rslt; }
+                            ) }
+                            catch (ParseException pe) {
+                              arp.endLocalScope(rslt);
+                              throw pe;
+                            }
+                            catch (RuntimeException e) {
+                              arp.endLocalScope(rslt);
+                              throw e;
+                            }
+}
+
+/*
+ [6.18] resourceAttr   ::= ' resource="' URI-reference '"'
+*/
+void resourceAttr( XMLContext ctxt, ARPResource r )
+                                     : { URIReference u; }
+{  <A_RESOURCE> 
+   u=uriReference(ctxt) 
+   ( warning() ) *                     { r.setAbout(u); }
+}
+/*
+ [6.18a] datatypeAttr   ::= ' datatype="' URI-reference '"'
+*/
+URIReference datatypeAttr( XMLContext ctxt )
+                                     : { URIReference u; }
+{  <A_DATATYPE> 
+   u=uriReference(ctxt) 
+   ( warning() ) *                     { return u; }
+}
+void resourceOrNodeIdAttr( XMLContext ctxt, ARPResource r ) 
+                                     : {  }
+                                     
+
+{  
+   resourceAttr(ctxt,r)
+|  // OR
+   nodeIdAttr(ctxt,r)
+}
+
+
+/*
+ [6.20] URI-reference  ::= string, interpreted per [URI]
+ 
+ RETURN the URI-reference.
+*/
+URIReference uriReference(XMLContext ctxt) 
+                                     : { Token t;
+                                       }
+{  t=<AV_STRING>                       { return X.makeURIReference(ctxt,t);
+                                       }
+}
+
+/*
+ [6.21] IDsymbol       ::= (any legal XML name symbol)
+ 
+ RETURN the IDsymbol
+*/
+String idSymbol(XMLContext ctxt)     : { Token t; 
+                                       }
+{ t=<AV_STRING>                        { StrToken strtok = (StrToken)t;
+                                         String rslt = ctxt.resolveSameDocRef(t.location, "#"+ strtok.value);
+                                         X.checkIdSymbol(ctxt,strtok,rslt); 
+                                         return  rslt;
+                                       }
+}
+
+
+/*
+ [6.24] string         ::= (any XML text, with "<", ">", and "&" escaped)
+ 
+ RETURN the string.
+
+Notice the action within the kleene star.
+*/
+
+ARPString string(XMLContext ctxt)    : { Vector pieces = new Vector(); 
+                                         Token tok = null; 
+                                         boolean checkComposingChar[] = new boolean[]{true}; 
+                                       }
+{  ( tok=string1(pieces,checkComposingChar) ) *           
+                                       { ARPString rslt = 
+                                                new ARPString(pieces,ctxt.getLang());
+                                         X.checkNormalFormC(tok,rslt);
+                                         return rslt; }
+}
+
+Token string1(Vector rslts, boolean checkComposingChar[])        
+                                     : { Token rslt; }
+{ rslt = <CD_STRING>                   { if (checkComposingChar[0])
+                                             X.checkComposingChar(rslt);
+                                         checkComposingChar[0] = false;
+                                         rslts.add(rslt);
+                                         return rslt;
+                                       }
+| 
+  rslt = <COMMENT>                     { checkComposingChar[0] = true;
+                                         return rslt; }
+| 
+  rslt = pi(true)                      { checkComposingChar[0] = true;
+                                         return rslt; }   
+| // OR
+  rslt = saxEx()                       { return rslt; }                                          
+}
+
+/**
+  @return The new XML context.
+  @param ctxt The current XML context.
+*/
+XMLContext xmlAttrs(XMLContext ctxt) : {}
+{                                      { startAttr = getToken(1); }
+   ( warning() | ctxt=xmlns(ctxt) ) *
+
+   [ ctxt=xmlBase(ctxt) 
+     ( warning() ) * 
+   ] 
+   [ ctxt=xmlLang(ctxt) 
+     ( warning() ) * 
+   ]
+   [ <A_XMLSPACE> <AV_STRING> 
+     ( warning() ) * 
+   ]                                   { return ctxt; }
+}
+
+XMLContext xmlns(XMLContext ctxt) :    { Token prefix, uri; }
+{
+   prefix= <A_XMLNS> 
+   uri = <AV_STRING>                   {  X.checkNamespaceURI(uri);
+                                          return ctxt.addNamespace(prefix,uri); 
+                                       }
+}
+
+XMLContext xmlBase(XMLContext ctxt)  : { Token t; }
+{  <A_XMLBASE> 
+   t=<AV_STRING>                       { return X.changeXMLBase(ctxt, t); }
+}
+
+XMLContext xmlLang(XMLContext ctxt)  : { Token t; }
+{  <A_XMLLANG> 
+   t=<AV_STRING>                       { StrToken rslt = (StrToken)t;
+                                         X.checkXMLLang(rslt);
+                                         return ctxt.withLang(rslt.value);
+                                       }
+}
+
+// issue a warning,
+// will throw ParseException if this warning is
+// being treated as an error.
+void warning()                       : { Token t; }
+{ t=<X_WARNING>                        { arp.parseWarning((Warn)t); }   
+ //| // OR
+ //  saxEx()   
+}
+
+// XML RULES
+
+// Entry point for a file containing RDF somewhere
+// indicated by the rdf:RDF element.
+void embeddedFile(XMLContext ctxt)    : {}
+{  whiteOrErr()
+   root(ctxt)
+   white1(false)
+}
+
+void root(XMLContext ctxt)        : {}
+{                                   
+   rdf(ctxt)                        
+ | // OR
+   element(ctxt)
+}
+// For parsing before we find an rdf:RDF element.
+void element(XMLContext ctxt)         : {}
+{  startElement() 
+   (                         LOOKAHEAD(1) 
+     nowarning() 
+   ) *  
+   ctxt=xmlAttrsNoWarnings(ctxt) 
+                                          {
+                                           // javaCC bug work-around
+                                           jj_scanpos = jj_lastpos = null; 
+                                           }
+   ( attr() ) * 
+   ( content(ctxt) ) * 
+   <E_END>
+}
+
+void attr()                          : {}
+{  attrName() 
+   attrValue() 
+   ( nowarning() ) *
+}
+
+
+// Eat a warning.
+void nowarning()                     : {}
+{  <X_WARNING>
+ //| // OR
+ //  saxEx()   
+}
+XMLContext xmlAttrsNoWarnings(XMLContext ctxt) 
+                                     : {}
+{                                      { startAttr = getToken(1); }
+   ( warning() | ctxt=xmlns(ctxt) ) *
+   [ ctxt=xmlBase(ctxt) 
+     ( nowarning() ) * 
+   ] 
+   [ ctxt=xmlLang(ctxt) 
+     ( nowarning() ) * 
+   ]                                   { return ctxt; }
+}
+
+void content(XMLContext ctxt)        : {}
+{                                      
+   rdf(ctxt)                           
+ | // OR
+   <CD_STRING>
+ | // OR
+   element(ctxt)
+ |
+   <COMMENT>
+ |
+   <PROCESSING_INSTRUCTION>
+ |
+   saxEx()
+}
+void startElement()                   : {}
+{ // One of:
+    <E_DESCRIPTION> 
+  | <E_LI> 
+  | <E_OTHER> 
+  | <E_RDF_N> 
+// Not <E_RDF> 
+}
+
+// XML for rdf:parseType="Literal".
+Token litStartElement()               : { Token t; }
+{ // One of:
+    t=<E_DESCRIPTION>                  { return t; }
+  | t=<E_LI>                           { return t; }
+  | t=<E_OTHER>                        { return t; }
+  | t=<E_RDF_N>                        { return t; }
+  | t=<E_RDF>                          { return t; }
+}
+Token litAttrName()                  : { Token t; }
+{ // One of: 
+    t=<A_ABOUT>                        { return t; }
+  | t=<A_ID>                           { return t; }
+  | t=<A_OTHER>                        { return t; }
+  | t=<A_PARSETYPE>                    { return t; }
+  | t=<A_DATATYPE>                     { return t; }
+  | t=<A_NODEID>                       { return t; }
+  | t=<A_RDF_N>                        { return t; }
+  | t=<A_RESOURCE>                     { return t; }
+  | t=<A_TYPE>                         { return t; }
+  | t=<A_XMLBASE>                      { return t; }
+  | t=<A_XMLLANG>                      { return t; }
+  | t=<A_XMLSPACE>                     { return t; }
+  // not A_XMLNS
+}
+
+void attrName()                      : {}
+{  // One of:
+    <A_ABOUT> 
+  | <A_ID> 
+  | <A_OTHER> 
+  | <A_PARSETYPE> 
+  | <A_RDF_N> 
+  | <A_RESOURCE> 
+  | <A_TYPE> 
+  | <A_NODEID>
+  | <A_DATATYPE>
+ /* Not <A_XMLBASE> or <A_XMLLANG> or <A_XMLNS>
+ */
+}
+Token  attrValue()                   : {Token t; }
+{ // One of:  
+    t=<AV_STRING>                      { return t; }
+  | t=<AV_LITERAL>                     { return t; }
+  | t=<AV_DAMLCOLLECTION>              { return t; }
+  | t=<AV_COLLECTION>                  { return t; }
+  | t=<AV_RESOURCE>                    { return t; }
+}
+/**
+  @param allNs The namespace prefixes currently in-scope
+  @param ns The namespace prefixes as currently visible
+*/
+void litElement(StringBuffer val,Map allNs, Map ns) 
+                                     : { Token t; 
+                                         SortedMap visiblyUsed = new TreeMap();
+                                         SortedMap attrs = new TreeMap();
+                                       }
+{  t=litStartElement()                 { X.startLitElement(val,
+                                                                t,
+                                                                visiblyUsed); 
+                                         t = (Token)t.clone();
+                                         t.next = null;
+                                         startAttr = getToken(1);
+                                       } 
+   ( nowarning() ) * 
+   ( allNs=litXmlns(allNs, visiblyUsed) ) *
+   ( litAttr(attrs,visiblyUsed) ) *       
+                                       {  ns=X.litAttributes(val,attrs,visiblyUsed,ns,allNs,t);
+                                          val.append('>'); 
+                                       }
+   ( litContent(val,allNs,ns) ) * 
+   <E_END>                             { X.endLitElement(val,t); } 
+}
+Map litXmlns(Map ns, Map used)       : { Token prefix, uri; }
+{
+   prefix= <A_XMLNS> 
+   uri = <AV_STRING>                   
+   ( nowarning() ) *                   { return X.litNamespace(prefix,uri,ns,used); }
+}
+
+void litAttr(Map attrs,Map visiblyUsed) 
+                                     : { Token attr; Token val; String key; }
+{  attr=litAttrName()                  { key=X.litAttrName( attr,
+                                                visiblyUsed); 
+                                       }
+   val=attrValue()                     { attrs.put(key,X.litAttribute(attr,val)); }
+   ( nowarning() ) *                   
+}
+
+/**
+  @param allNs The namespace prefixes currently in-scope
+  @param ns The namespace prefixes as currently visible
+*/
+void litContent(StringBuffer val,Map allNs, Map ns)
+                                     : { Token t; }
+{  t=<CD_STRING>                       { X.litText(val,t); }
+ | // OR
+   t=<COMMENT>                         { X.litComment(val,t); }
+ | // OR
+   t=<PROCESSING_INSTRUCTION>          { X.litProcessingInstruction(val,t); }
+ | // OR
+   litElement(val,allNs,ns)   
+ | // OR
+   saxEx()   
+}
+
+String litValue(Map allNs, Location wh): { StringBuffer buf = new StringBuffer(); 
+                                       }
+{ ( litContent(buf,allNs,ParserSupport.xmlNameSpace()) ) *                
+                                       { String r = buf.toString(); 
+                                         X.checkEncoding(r,wh);
+                                         return r;
+                                       }
+}
+JAVACODE
+void error_recovery(ParseException e) throws ParseException {
+  e.setStartAttribute( startAttr );
+  try {
+    arp.userError(e);
+  }
+  catch (SAXException sax) {
+    if ( sax == e ) {
+        e.setFatal(true);
+        throw e;
+    }
+    throw new WrappedException(sax);
+  }
+  if ( e.getFatal() )
+     throw e;
+  
+  Token t;
+  int needed = 1;
+  do {
+    t = getNextToken();
+    switch ( t.kind ) {
+     case EOF:
+       ParseException failure = new ParseException(ERR_UNABLE_TO_RECOVER,"Error recovery failed.");
+       failure.setFatal(true);
+       throw failure;
+     case E_END: needed--; break;
+     case X_SAX_EX:
+        X.saxException(t);
+     	break;
+     case X_WARNING:
+     	arp.parseWarning((Warn)t);
+     	break;
+     case E_LI:
+     case E_RDF:
+     case E_RDF_N:
+     case E_DESCRIPTION:
+     case E_OTHER: needed++; break;
+    }
+  } while (needed>0);
+}

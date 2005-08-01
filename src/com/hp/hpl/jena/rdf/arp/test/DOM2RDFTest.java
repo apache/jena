@@ -58,20 +58,20 @@ class DOM2RDFTest extends SAX2RDFTest {
 				.parse(in,base);
 			
 		// Make DOM into transformer input
-		Source input = new DOMSource(document);
+//		Source input = new DOMSource(document);
         DOM2Model d2m = new DOM2Model(base,m2);	
 
 		d2m.setErrorHandler(eh2);
 		
-		try {
+//		try {
 			try {
 		        d2m.load(document);
 			} finally {
 				d2m.close();
 			}
-		} catch (SAXParseException e) {
-			// already reported, leave it be.
-		}
+//		} catch (SAXParseException e) {
+//			// already reported, leave it be.
+//		}
 		
 
 	}

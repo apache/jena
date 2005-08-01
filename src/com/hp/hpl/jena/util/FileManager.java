@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.18 2005-03-08 13:12:47 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.19 2005-08-01 15:07:26 jeremy_carroll Exp $
  */
  
 public class FileManager
@@ -298,6 +298,9 @@ public class FileManager
                         File f = new File(tmp) ;
                         baseURI = "file:///"+f.getCanonicalPath() ;
                         baseURI = baseURI.replace('\\','/') ;
+
+//                        baseURI = baseURI.replace(" ","%20");
+//                        baseURI = baseURI.replace("~","%7E");
                         // Convert to URI.  Except that it removes ///
                         // Could do that and fix up (again)
                         //java.net.URL u = new java.net.URL(baseURI) ;

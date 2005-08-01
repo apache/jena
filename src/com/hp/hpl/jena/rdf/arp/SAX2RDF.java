@@ -24,12 +24,19 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: SAX2RDF.java,v 1.11 2005-04-15 10:43:55 jeremy_carroll Exp $
+ * * $Id: SAX2RDF.java,v 1.12 2005-08-01 15:07:08 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
 package com.hp.hpl.jena.rdf.arp;
-import org.xml.sax.*;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
+
+import com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl;
+import com.hp.hpl.jena.rdf.arp.impl.ARPOptionsImpl;
+import com.hp.hpl.jena.rdf.arp.impl.SAX2RDFImpl;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 /**
  * <p>
@@ -75,11 +82,12 @@ implements ARPConfig {
 	 *
 	 * @param base The retrieval URL, or the base URI to be 
      * used while parsing.
+     * @deprecated Use {@link #create}.
      *  @return A new SAX2RDF
 	 * @throws MalformedURIException
 	 */
 	static public SAX2RDF newInstance(String base) throws MalformedURIException { 
-		return new SAX2RDF(base,""); 
+		return new SAX2RDF(base,"",true); 
 	}
 	/**
 	 * Factory method to create a new SAX2RDF.
@@ -96,11 +104,53 @@ implements ARPConfig {
 	 * @param lang The current value of xml:lang when parsing starts, usually "".
 	 * @return A new SAX2RDF
 	 * @throws MalformedURIException If base is bad.
+     * @deprecated Use {@link #create}.
 	 */
 	static public SAX2RDF newInstance(String base, String lang) throws MalformedURIException { 
-		return new SAX2RDF(base,lang); 
+		try {
+        return  create(base,lang);    
+        }
+        catch (SAXParseException e) {
+            throw new MalformedURIException();
+        }
+        
 	}    
-	/**
+    /**
+     * Factory method to create a new SAX2RDF.
+     * Use
+     * {@link #getHandlers} or {@link #setHandlersWith} to provide
+     * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
+     *
+     * @param base The retrieval URL, or the base URI to be 
+     * used while parsing.
+     *  @return A new SAX2RDF
+     * @throws ParseException
+     */
+    static public SAX2RDF create(String base) throws SAXParseException { 
+        return new SAX2RDF(base,""); 
+    }
+    /**
+     * Factory method to create a new SAX2RDF.
+     * This is particularly
+     * intended for when parsing a non-root element within
+     * an XML document. In which case the application
+     * needs to find this value in the outer context.
+     * Optionally, namespace prefixes can be passed from the
+     * outer context using {@link #startPrefixMapping}.
+     * @param base The retrieval URL, or the base URI to be 
+     * used while parsing. Use
+     * {@link #getHandlers} or {@link #setHandlersWith} to provide
+     * a {@link StatementHandler}, and usually an {@link org.xml.sax.ErrorHandler}
+     * @param lang The current value of xml:lang when parsing starts, usually "".
+     * @return A new SAX2RDF
+     * @throws ParseException If base or lang is bad.
+     */
+    static public SAX2RDF create(String base, String lang) throws SAXParseException { 
+        return new SAX2RDF(base,lang); 
+    }    
+    
+    
+    /**
      * Begin the scope of a prefix-URI Namespace mapping.
      *
      *<p>This is passed to any {@link NamespaceHandler} associated
@@ -122,15 +172,30 @@ implements ARPConfig {
      * @param uri The Namespace URI the prefix is mapped to.
      * 
      */
-    public void startPrefixMapping (String prefix, String uri)
+    public void startPrefixMapping (String prefix, String uri) throws SAXParseException
 	 { super.startPrefixMapping(prefix,uri);
     }
 
-    SAX2RDF(String base,  String lang) throws MalformedURIException {
+    SAX2RDF(String base,  String lang) throws SAXParseException {
     	super(base,lang);
+        
     	initParse(base);
     }
-	/** This is used when configuring a parser that
+    /**
+     * @deprecated Use the other constructor.
+     * @param b ignored completely
+     */
+	SAX2RDF(String base, String lang, boolean b) throws MalformedURIException {
+        super(base,lang);
+        try {
+            initParse(base);
+        }
+        catch (SAXParseException e) {
+            throw new MalformedURIException(e);
+        }
+        
+    }
+    /** This is used when configuring a parser that
 	 * is not loading into a Jena Model, but is processing
 	 * the triples etc. in some other way.
 
@@ -143,21 +208,21 @@ implements ARPConfig {
 	 * is not loading into a Jena Model, but is processing
 	 * the triples etc. in some other way.
 	
-	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setHandlersWith(com.hp.hpl.jena.rdf.arp.ARPHandlers)
+	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setHandlersWith(com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl)
 	 */
-	public void setHandlersWith(ARPHandlers handlers) {
+	public void setHandlersWith(ARPHandlersImpl handlers) {
 		super.setHandlersWith(handlers);
 	}
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#getOptions()
 	 */
-	public ARPOptions getOptions() {
+	public ARPOptionsImpl getOptions() {
 		return super.getOptions();
 	}
 	/* (non-Javadoc)
 	 * @see com.hp.hpl.jena.rdf.arp.ARPConfig#setOptions(com.hp.hpl.jena.rdf.arp.ARPOptions)
 	 */
-	public void setOptionsWith(ARPOptions opts) {
+	public void setOptionsWith(ARPOptionsImpl opts) {
 		super.setOptionsWith(opts);
 		
 	}
@@ -178,7 +243,7 @@ implements ARPConfig {
 		rdr.setFeature("http://xml.org/sax/features/namespaces", true);
 		rdr.setFeature(
 			"http://xml.org/sax/features/namespace-prefixes",
-			true);
+			false);
 		rdr.setProperty(
 			"http://xml.org/sax/properties/lexical-handler",
 			sax2rdf);

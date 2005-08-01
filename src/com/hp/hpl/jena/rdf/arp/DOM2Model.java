@@ -5,87 +5,101 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import javax.xml.transform.*;
-import javax.xml.transform.dom.*;
-import javax.xml.transform.sax.*;
-import org.w3c.dom.*;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.sax.SAXResult;
 
-import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.shared.*;
+import org.w3c.dom.Node;
+
+import com.hp.hpl.jena.rdf.arp.impl.JumpUpTheStackException;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.shared.JenaException;
 
 /**
- * Transform DOM nodes of RDF.XML into Jena Models.
- * Known not to work with Java 1.4.1.
+ * Transform DOM nodes of RDF.XML into Jena Models. Known not to work with Java
+ * 1.4.1.
+ * 
  * @author Jeremy J. Carroll
- *  
+ * 
  */
 public class DOM2Model extends SAX2Model {
 
-	/**
-	 * Create a new DOM2Model.
-	 * 
-	 * @param base
-	 *            The retrieval URL, or the base URI to be used while parsing.
-	 * @param m
-	 *            A Jena Model in which to put the triples, this can be null. If
-	 *            it is null, then use {@link #getHandlers}or
-	 *            {@link #setHandlersWith}to provide a {@link StatementHandler},
-	 *            and usually an {@link org.xml.sax.ErrorHandler}
-	 * @throws MalformedURIException
-	 */
-	public DOM2Model(String base, Model m) throws MalformedURIException {
-		this(base, m, "");
-	}
+    // TODO: javadoc
+    /**
+     * Create a new DOM2Model.
+     * 
+     * @param base
+     *            The retrieval URL, or the base URI to be used while parsing.
+     * @param m
+     *            A Jena Model in which to put the triples, this can be null. If
+     *            it is null, then use {@link #getHandlers}or
+     *            {@link #setHandlersWith}to provide a {@link StatementHandler},
+     *            and usually an {@link org.xml.sax.ErrorHandler}
+     * @throws MalformedURIException
+     * @deprecated
+     */
+    public DOM2Model(String base, Model m) throws MalformedURIException {
+        this(base, m, "");
+    }
 
-	/**
-	 * Create a new DOM2Model. This is particularly intended for
-	 * when parsing a non-root element within an XML document. In which case the
-	 * application needs to find this value in the outer context. Optionally,
-	 * namespace prefixes can be passed from the outer context using
-	 * {@link #startPrefixMapping}.
-	 * 
-	 * @param base
-	 *            The retrieval URL, or the base URI to be used while parsing.
-	 * @param m
-	 *            A Jena Model in which to put the triples, this can be null. If
-	 *            it is null, then use {@link #getHandlers}or
-	 *            {@link #setHandlersWith}to provide a {@link StatementHandler},
-	 *            and usually an {@link org.xml.sax.ErrorHandler}
-	 * @param lang
-	 *            The current value of <code>xml:lang</code> when parsing
-	 *            starts, usually "".
-	 * @throws MalformedURIException
-	 */
-	public DOM2Model(String base, Model m, String lang)
-			throws MalformedURIException {
-		super(base, m, lang);
-	}
-/**
- * Parse a DOM Node with the RDF/XML parser, loading
- * the triples into the associated Model.
- * Known not to work with Java 1.4.1.
- * @param document
- */
-	public void load(Node document) {
-		Source input = new DOMSource(document);
+    // TODO: javadoc and factory
+    /**
+     * Create a new DOM2Model. This is particularly intended for when parsing a
+     * non-root element within an XML document. In which case the application
+     * needs to find this value in the outer context. Optionally, namespace
+     * prefixes can be passed from the outer context using
+     * {@link #startPrefixMapping}.
+     * 
+     * @param base
+     *            The retrieval URL, or the base URI to be used while parsing.
+     * @param m
+     *            A Jena Model in which to put the triples, this can be null. If
+     *            it is null, then use {@link #getHandlers}or
+     *            {@link #setHandlersWith}to provide a {@link StatementHandler},
+     *            and usually an {@link org.xml.sax.ErrorHandler}
+     * @param lang
+     *            The current value of <code>xml:lang</code> when parsing
+     *            starts, usually "".
+     * @throws MalformedURIException
+     * @deprecated
+     */
+    public DOM2Model(String base, Model m, String lang)
+            throws MalformedURIException {
+        super(base, m, lang);
+    }
 
-		// Make a SAXResult object using this handler
-		SAXResult output = new SAXResult(this);
-		output.setLexicalHandler(this);
+    /**
+     * Parse a DOM Node with the RDF/XML parser, loading the triples into the
+     * associated Model. Known not to work with Java 1.4.1.
+     * 
+     * @param document
+     */
+    public void load(Node document) {
+        Source input = new DOMSource(document);
 
-		// Run transform
-		TransformerFactory xformFactory = TransformerFactory.newInstance();
-		try {
-		Transformer idTransform = xformFactory.newTransformer();
-		idTransform.transform(input, output);
-		}
-		catch (RuntimeException rte){
-			throw rte;
-		}
-		catch (Exception nrte){
-			throw new JenaException(nrte);
-		}
-	}
+        // Make a SAXResult object using this handler
+        SAXResult output = new SAXResult(this);
+        output.setLexicalHandler(this);
+
+        // Run transform
+        TransformerFactory xformFactory = TransformerFactory.newInstance();
+        try {
+            Transformer idTransform = xformFactory.newTransformer();
+            idTransform.transform(input, output);
+        }
+        catch (JumpUpTheStackException e) {
+            // ignore this.
+        } 
+        catch (RuntimeException rte) {
+            throw rte;
+        } catch (Exception nrte) {
+            throw new JenaException(nrte);
+        } finally {
+            close();
+        }
+    }
 
 }
 

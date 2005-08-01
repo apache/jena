@@ -6,6 +6,9 @@
  */
 package com.hp.hpl.jena.shared.wg;
 import com.hp.hpl.jena.rdf.arp.MalformedURIException;
+import java.net.URISyntaxException;
+
+import sun.security.krb5.internal.j;
 
 /**
  * Only for test package, not part of public API.
@@ -21,14 +24,16 @@ public class URI extends com.hp.hpl.jena.rdf.arp.URI {
 		    return new URI(s);
 		}
 		catch (MalformedURIException e) {
-			if ( e.toString().indexOf("No scheme")!= -1) {
+			if ( e.toString().indexOf("No scheme")!= -1
+            ||   e.toString().indexOf("Cannot initialize URI with empty parameters.")!= -1
+            ) {
 				try {
 				return new URI(s,false);
 				}
 				catch (MalformedURIException ee) {
 				}
 			}
-			throw new IllegalArgumentException(e.toString());
+			throw new IllegalArgumentException("Creating <"+s+">: ",e);
 		}
 	}
 	
@@ -43,6 +48,9 @@ public class URI extends com.hp.hpl.jena.rdf.arp.URI {
 	private URI(URI x, URI y) throws MalformedURIException {
 		super(x, y.toString());
 	}
+    private URI(URI x, String y) throws MalformedURIException {
+        super(x, y);
+    }
 	public boolean isAbsolute() {
 		return relative == null;
 	}
@@ -74,6 +82,34 @@ public class URI extends com.hp.hpl.jena.rdf.arp.URI {
         
     public String toString() 
         { return getURIString(); }
+
+    public URI resolve(String uri) throws URISyntaxException {
+        try {
+            return new URI(this,uri);
+        } catch (MalformedURIException e) {
+            throw asURISyntaxException(uri, e);
+        }
+    }
+
+    private static URISyntaxException asURISyntaxException(String uri, MalformedURIException e)  {
+        URISyntaxException urie = new URISyntaxException(uri,e.getMessage());
+        urie.initCause(e);
+        return urie;
+    }
+
+    public String toASCIIString() {
+        // TODO: toASCIIString()
+        return toString();
+    }
+
+    public static URI construct(String uri) throws URISyntaxException {
+        
+        try {
+            return new URI(uri);
+        } catch (MalformedURIException e) {
+            throw asURISyntaxException(uri, e);
+        }
+    }
 }
 /*
  *  (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP

@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARPErrorNumbers.java,v 1.17 2005-04-17 18:03:09 jeremy_carroll Exp $
+   $Id: ARPErrorNumbers.java,v 1.18 2005-08-01 15:07:09 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
 /*
@@ -150,8 +150,6 @@ public interface ARPErrorNumbers {
      *The same name has been used for more than one rdf:ID or rdf:bagID,
      * in the context of the same xml:base (if any). 
       The default mode allows this with a warning. 
-     Strict mode skips to the end of the enclosing element of the second 
-     and subsequent occurrences.
      This check is expensive in memory. When processing very large files,
      it may be sensible to switch the check off by using
      {@link ARP#setErrorMode(int,int)} to ignore this condition.
@@ -403,6 +401,10 @@ public interface ARPErrorNumbers {
 	    * (W134).
 	    */
 	   public int WARN_NONCANONICAL_IANA_NAME =134;
+       
+       // TODO: javadoc here
+        int WARN_NOT_RDF_NAMESPACE = 135;
+        
     
     /** Should not happen. 
         Please report occurrence to jjc@hpl.hp.com with test case, if possible. 
