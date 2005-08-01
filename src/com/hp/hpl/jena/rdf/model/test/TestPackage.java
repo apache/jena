@@ -1,10 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.38 2005-07-29 11:18:50 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.39 2005-08-01 10:24:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
+
+import com.hp.hpl.jena.rdf.model.modelspec.test.TestModelSpecPackage;
 
 import junit.framework.*;
 
@@ -22,6 +24,7 @@ public class TestPackage extends TestSuite {
     /** Creates new TestPackage */
     private TestPackage() {
         super("Model");
+        addTest( TestModelSpecPackage.suite() );
         addTest( TestModelSpecRDB.suite() );
         addTest( "TestModel", TestModelFactory.suite() );
         addTest( "TestModelFactory", TestModelFactory.suite() );
