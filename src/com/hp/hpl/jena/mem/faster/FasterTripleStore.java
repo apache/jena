@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.5 2005-07-27 16:21:45 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.6 2005-08-02 15:26:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -140,7 +140,7 @@ public class FasterTripleStore
         {
         if (pt.S instanceof QueryNode.Fixed) 
             return subjects.createFixedSApplyer( pt );
-        if (pt.O instanceof QueryNode.Fixed) 
+        if (pt.O instanceof QueryNode.Fixed && indexable( pt.O.node )) 
             return objects.createFixedOApplyer( pt );
         if (pt.S instanceof QueryNode.Bound) 
             return subjects.createBoundSApplyer( pt );
@@ -148,6 +148,9 @@ public class FasterTripleStore
             return objects.createBoundOApplyer( pt );
         return varSvarOApplyer( pt );
         }
+    
+    protected boolean indexable( Node n )
+        { return true; }
 
     protected Applyer varSvarOApplyer( final QueryTriple pt )
         { 

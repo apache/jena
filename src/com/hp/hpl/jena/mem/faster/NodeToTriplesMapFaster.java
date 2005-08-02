@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.6 2005-07-28 14:03:27 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.7 2005-08-02 15:26:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -286,6 +286,7 @@ public class NodeToTriplesMapFaster
     
     public Applyer createFixedOApplyer( final ProcessedTriple Q )
         {        
+        System.err.println( ">> " + Q );
         final Bunch ss = (Bunch) map.get( Q.O.node );
         if (ss == null)
             return new EmptyApplyer();

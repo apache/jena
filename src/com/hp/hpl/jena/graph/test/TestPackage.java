@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestPackage.java,v 1.22 2005-06-22 14:48:32 chris-dollin Exp $
+  $Id: TestPackage.java,v 1.23 2005-08-02 15:25:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -23,6 +23,7 @@ public class TestPackage extends TestSuite {
     /** Creates new TestPackage */
     private TestPackage() {
         super("graph");
+        addTest( TestFindLiterals.suite() );
         addTest( TestTripleCache.suite() );
         addTest( TestNodeCache.suite() );
         addTest( TestNode.suite() );
