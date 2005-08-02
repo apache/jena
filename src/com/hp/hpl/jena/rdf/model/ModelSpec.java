@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpec.java,v 1.15 2005-08-01 14:05:23 chris-dollin Exp $
+  $Id: ModelSpec.java,v 1.16 2005-08-02 10:07:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model;
@@ -30,6 +30,11 @@ public interface ModelSpec extends ModelSource
         @see com.hp.hpl.jena.rdf.model.ModelSource#openModel(java.lang.String)
     */
     Model openModel( String name );
+    
+    /**
+        Open the "default" model. Do not create one.
+    */
+    Model openModel();
     
     /**
         Answer an RDF description of this ModelSpec using the JenaModelSpec vocabulary. The

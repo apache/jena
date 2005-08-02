@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphRDBMaker.java,v 1.22 2005-07-29 16:06:41 chris-dollin Exp $
+  $Id: GraphRDBMaker.java,v 1.23 2005-08-02 10:05:38 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.impl;
@@ -70,6 +70,15 @@ public class GraphRDBMaker extends BaseGraphMaker
         The default graph for this maker, or null if there isn't one.
     */
     protected Graph defaultGraph = null;
+    
+    public Graph openGraph()
+        { 
+        if (defaultGraph != null)
+            return defaultGraph;
+        if (c.containsDefaultModel())
+            return defaultGraph = consGraph( null, false );
+        throw new DoesNotExistException( "no default graph in this GraphMaker" );
+        }
     
     /**
         Answer an "anonymous", freshly-created graph. We fake this by creating 

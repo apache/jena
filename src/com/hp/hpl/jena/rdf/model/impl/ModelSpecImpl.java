@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.53 2005-08-01 14:07:50 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.54 2005-08-02 10:07:44 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -108,6 +108,12 @@ public abstract class ModelSpecImpl implements ModelSpec
     */
     public Model openModel( String name )
         { return maker.openModel( name ); }
+    
+    public Model openModel()
+        {
+        Statement s = root.getProperty( JenaModelSpec.modelName );
+        return s == null ? maker.openModel() : maker.openModel( s.getString(), true );
+        }
     
     /**
         Answer the model hidden in the sibling maker, if it has one, and

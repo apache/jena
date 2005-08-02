@@ -69,6 +69,12 @@ public class MockModelSpec implements ModelSpec
         
         return null;
         }
+
+    public Model openModel()
+        {
+        
+        return null;
+        }
     }
 
 /*

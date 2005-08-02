@@ -1,13 +1,12 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BaseGraphMaker.java,v 1.14 2005-07-05 11:21:35 chris-dollin Exp $
+  $Id: BaseGraphMaker.java,v 1.15 2005-08-02 10:07:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -46,6 +45,11 @@ public abstract class BaseGraphMaker implements GraphMaker
         }
         
     private Graph defaultGraph;
+    
+    public Graph openGraph()
+        { if (defaultGraph == null) 
+            throw new DoesNotExistException( "no default graph in this GraphMaker" ); 
+        return defaultGraph; }
     
     /**
         Make a fresh anonymous graph.
