@@ -1,10 +1,15 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFindLiterals.java,v 1.1 2005-08-02 15:25:07 chris-dollin Exp $
+ 	$Id: TestFindLiterals.java,v 1.2 2005-08-02 16:03:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
+
+import java.util.*;
+
+import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.util.iterator.Map1;
 
 import junit.framework.TestSuite;
 
@@ -13,11 +18,66 @@ public class TestFindLiterals extends GraphTestBase
     public TestFindLiterals( String name )
         { super( name ); }
 
-    public static TestSuite suite()
-        { return new TestSuite( TestFindLiterals.class ); }
+    static final Map1 getObject = new Map1() 
+        {
+        public Object map1( Object o ) { return ((Triple) o).getObject(); }
+        };
     
-    public void testNull()
-        {  }
+    public static TestFindLiterals aTest
+        ( final String graph, final String size, final String search, final String results )
+        {
+        return new TestFindLiterals
+            ( "TestFindLiterals: graph {" + graph 
+            + "} size " + size 
+            + " search " + search 
+            + " expecting {" + results + "}" )
+            {
+            public void runBare()
+                { 
+                Graph g = graphWith( graph );
+                int n = Integer.parseInt( size );
+                Node literal = Node.create( search );
+            //
+                assertEquals( "graph has wrong size", n, g.size() );
+                Set got = iteratorToSet
+                    ( g.find( Node.ANY, Node.ANY, literal ).mapWith( getObject ) );
+                assertEquals( nodeSet( results ), got );
+                }
+            };
+        }
+    
+    public static TestSuite suite()
+        { 
+        TestSuite result = new TestSuite(  ); 
+    //
+        result.addTest( aTest( "a P 'simple'", "1", "'simple'", "'simple'" ) );
+        result.addTest( aTest( "a P 'simple'xsd:string", "1", "'simple'", "'simple'xsd:string" ) );
+        result.addTest( aTest( "a P 'simple'", "1", "'simple'xsd:string", "'simple'" ) );
+        result.addTest( aTest( "a P 'simple'xsd:string", "1", "'simple'xsd:string", "'simple'xsd:string" ) );
+    //
+        result.addTest( aTest( "a P 'simple'; a P 'simple'xsd:string", "2", "'simple'", "'simple' 'simple'xsd:string" ) );
+        result.addTest( aTest( "a P 'simple'; a P 'simple'xsd:string", "2", "'simple'xsd:string", "'simple' 'simple'xsd:string" ) );
+    //
+        result.addTest( aTest( "a P 1", "1", "1", "1" ) );
+        result.addTest( aTest( "a P '1'xsd:float", "1", "'1'xsd:float", "'1'xsd:float" ) );
+        result.addTest( aTest( "a P '1'xsd:double", "1", "'1'xsd:double", "'1'xsd:double" ) );
+        result.addTest( aTest( "a P '1'xsd:float", "1", "'1'xsd:float", "'1'xsd:float" ) );
+        // TODO result.addTest( aTest( "a P '1'xsd:float", "1", "'1'xsd:double", "'1'xsd:float" ) );
+        // TODO result.addTest( aTest( "a P '1'xsd:double", "1", "'1'xsd:float", "'1'xsd:double" ) );
+    //
+        result.addTest( aTest( "a P 1", "1", "'1'", "" ) );
+        result.addTest( aTest( "a P 1", "1", "'1'xsd:integer", "'1'xsd:integer" ) );
+        result.addTest( aTest( "a P 1", "1", "'1'", "" ) );
+        return result;
+        }
+    
+    public void testX()
+        {
+        Node A = Node.create( "'1'xsd:float" );
+        Node B = Node.create( "'1'xsd:double" );
+        assertTrue( A.sameValueAs( B ) );
+        assertTrue( B.sameValueAs( A ) );
+        }
     }
 
 
