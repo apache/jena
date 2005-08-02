@@ -5,12 +5,11 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestReasoners.java,v 1.30 2005-07-05 11:21:43 chris-dollin Exp $
+ * $Id: TestReasoners.java,v 1.31 2005-08-02 09:25:37 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
 import com.hp.hpl.jena.reasoner.transitiveReasoner.*;
-import com.hp.hpl.jena.reasoner.rdfsReasoner1.*;
 import com.hp.hpl.jena.reasoner.rulesys.RDFSRuleReasonerFactory;
 import com.hp.hpl.jena.reasoner.*;
 import com.hp.hpl.jena.rdf.model.*;
@@ -18,6 +17,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.IteratorCollection;
+import com.hp.hpl.jena.util.PrintUtil;
 import com.hp.hpl.jena.vocabulary.*;
 
 import junit.framework.TestCase;
@@ -29,10 +29,10 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Unit tests for initial experimental reasoners
+ * Outline unit tests for initial experimental reasoners
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.30 $ on $Date: 2005-07-05 11:21:43 $
+ * @version $Revision: 1.31 $ on $Date: 2005-08-02 09:25:37 $
  */
 public class TestReasoners extends TestCase {
     
@@ -281,7 +281,7 @@ public class TestReasoners extends TestCase {
     }
     
     /**
-     * Test rebind operation for the RDFS1 reasoner
+     * Test rebind operation for the RDFS reasoner
      */
     public void testRDFSRebind() {
         Graph data = Factory.createGraphMem();
@@ -291,7 +291,7 @@ public class TestReasoners extends TestCase {
         Node C4 = Node.createURI("C4");
         data.add( new Triple(C1, RDFS.subClassOf.asNode(), C2) );
         data.add( new Triple(C2, RDFS.subClassOf.asNode(), C3) );
-        Reasoner reasoner = RDFSReasonerFactory.theInstance().create(null);
+        Reasoner reasoner = RDFSRuleReasonerFactory.theInstance().create(null);
         InfGraph infgraph = reasoner.bind(data);
         TestUtil.assertIteratorValues(this, 
             infgraph.find(C1, RDFS.subClassOf.asNode(), null), 
@@ -313,6 +313,33 @@ public class TestReasoners extends TestCase {
             } );
     }
  
+    /**
+     * Test remove operations on an RDFS reasoner instance.
+     * This is an example to test that rebing is invoked correctly rather
+     * than an RDFS-specific test.
+     */
+    public void testRDFSRemove() {
+        InfModel m = ModelFactory.createRDFSModel(ModelFactory.createDefaultModel());
+        String NS = PrintUtil.egNS;
+        Property p = m.createProperty(NS, "p");
+        Resource D = m.createResource(NS + "D");
+        Resource i = m.createResource(NS + "i");
+        Resource c = m.createResource(NS + "c");
+        Resource d = m.createResource(NS + "d");
+        p.addProperty(RDFS.domain, D);
+        i.addProperty(p, c);
+        i.addProperty(p, d);
+        TestUtil.assertIteratorValues(this, i.listProperties(), new Object[] {
+                m.createStatement(i, p, c),
+                m.createStatement(i, p, d),
+                m.createStatement(i, RDF.type, D),
+                m.createStatement(i, RDF.type, RDFS.Resource),
+        });
+        i.removeAll(p);
+        TestUtil.assertIteratorValues(this, i.listProperties(), new Object[] {
+        });
+    }
+    
     /**
      * Cycle bug in transitive reasoner
      */

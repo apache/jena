@@ -115,6 +115,8 @@ Reasoners:
       non-mononitic rewrites.
     o Fixed bug in rebind/reset of infgraphs which use TGC and failed to 
       reset the transitive engine.
+    o Optimized Resource.remove operations for the case where the parent model
+      is an InfModel.
       
 ;;; -- end post2.2final change list -------------------------------------
 
