@@ -43,6 +43,20 @@ Node/Node_Literal/Literal
       by Literal::isWellFormedXML(). There is a missing API method
       eg isWellFormed() which would apply to any typed literal; 
       this will arrive in due course.
+      
+    o Support for indexing of typed literals added. NodeToTripleMaps now
+      use an indexing object to represent the Node rather than the Node
+      itself. That object should implement the appropriate semantic equality:
+        index(x) == index(y) <=>  sameValueAs(x, y)
+      If future datatyping extensions can't meet this contract it could be weakened to:
+        index(x) != index(y) => ! sameValueAs(x, y)
+      at the expense of post-processing find results with a sameValueAs test.
+      Currently the index objects used are:
+        plain literals, no lang and xsd:string literals -> the lexical form
+        plain literals, lang tag -> the Node
+        XMLLiterals -> the Node
+        known typed literals -> the java getValue() object
+        unknown typed literals -> a cons of the lexical value and datatype URI
 
 RDFNode/Resource/Literal
 
