@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 11:52:04 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-08-03 15:23:08 $
+ *               by   $Author: der $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.21 2005-02-21 11:52:04 andy_seaborne Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.22 2005-08-03 15:23:08 der Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -120,7 +120,7 @@ public class MultiUnion
             getBaseGraph().add( t );
         }
         catch (NullPointerException e) {
-            throw new JenaException( "Tried to add to a union graph that has no component graphs." );
+            throw new JenaException( "Tried to add to a union graph that has no component graphs.", e);
         }
     }
 
@@ -138,7 +138,7 @@ public class MultiUnion
             getBaseGraph().delete( t );
         }
         catch (NullPointerException e) {
-            throw new JenaException( "Tried to delete from a union graph that has no component graphs." );
+            throw new JenaException( "Tried to delete from a union graph that has no component graphs.", e );
         }
     }
 
