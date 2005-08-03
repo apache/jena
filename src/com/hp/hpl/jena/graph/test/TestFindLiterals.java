@@ -1,7 +1,11 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFindLiterals.java,v 1.4 2005-08-03 09:44:10 der Exp $
+<<<<<<< TestFindLiterals.java
+ 	$Id: TestFindLiterals.java,v 1.5 2005-08-03 09:47:40 chris-dollin Exp $
+=======
+ 	$Id: TestFindLiterals.java,v 1.5 2005-08-03 09:47:40 chris-dollin Exp $
+>>>>>>> 1.4
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -76,7 +80,7 @@ public class TestFindLiterals extends GraphTestBase
         result.addTest( aTest( "a P '1'xsd:short", "1", "'1'xsd:integer", "'1'xsd:short" ) );
         result.addTest( aTest( "a P '1'xsd:int", "1", "'1'xsd:integer", "'1'xsd:int" ) );
         return result;
-        }
+        }    
     
     public void testFloatVsDouble()
         {
@@ -87,14 +91,6 @@ public class TestFindLiterals extends GraphTestBase
         assertFalse( B.sameValueAs( A ) );
         assertFalse( A.matches( B ) );
         assertFalse( B.matches( A ) );
-        }
-    
-    public void testStringVsNumbers()
-        {
-        assertFalse( Node.create( "'12345'" ).sameValueAs( Node.create( "12345" ) ) );
-        assertFalse( Node.create( "'12345'" ).sameValueAs( Node.create( "'12345'xsd:integer" ) ) );
-        assertFalse( Node.create( "'12345'" ).sameValueAs( Node.create( "'12345'xsd:float" ) ) );
-        assertFalse( Node.create( "'12345'" ).sameValueAs( Node.create( "'12345'xsd:double" ) ) );
         }
     }
 
