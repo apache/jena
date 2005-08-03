@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFindLiterals.java,v 1.3 2005-08-03 06:22:56 chris-dollin Exp $
+ 	$Id: TestFindLiterals.java,v 1.4 2005-08-03 09:44:10 der Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -62,6 +62,8 @@ public class TestFindLiterals extends GraphTestBase
         result.addTest( aTest( "a P '1'xsd:float", "1", "'1'xsd:float", "'1'xsd:float" ) );
         result.addTest( aTest( "a P '1'xsd:double", "1", "'1'xsd:double", "'1'xsd:double" ) );
         result.addTest( aTest( "a P '1'xsd:float", "1", "'1'xsd:float", "'1'xsd:float" ) );
+        result.addTest( aTest( "a P '1.1'xsd:float", "1", "'1'xsd:float", "" ) );
+        result.addTest( aTest( "a P '1'xsd:double", "1", "'1'xsd:int", "" ) );
     //    
     // floats & doubles are not compatible
     //
@@ -71,6 +73,8 @@ public class TestFindLiterals extends GraphTestBase
         result.addTest( aTest( "a P 1", "1", "'1'", "" ) );
         result.addTest( aTest( "a P 1", "1", "'1'xsd:integer", "'1'xsd:integer" ) );
         result.addTest( aTest( "a P 1", "1", "'1'", "" ) );
+        result.addTest( aTest( "a P '1'xsd:short", "1", "'1'xsd:integer", "'1'xsd:short" ) );
+        result.addTest( aTest( "a P '1'xsd:int", "1", "'1'xsd:integer", "'1'xsd:int" ) );
         return result;
         }
     
