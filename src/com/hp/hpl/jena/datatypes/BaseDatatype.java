@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: BaseDatatype.java,v 1.10 2005-06-27 20:16:05 der Exp $
+ * $Id: BaseDatatype.java,v 1.11 2005-08-03 13:00:58 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.graph.impl.LiteralLabel;
  * can inherit.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.10 $ on $Date: 2005-06-27 20:16:05 $
+ * @version $Revision: 1.11 $ on $Date: 2005-08-03 13:00:58 $
  */
 public class BaseDatatype implements RDFDatatype {
     
@@ -40,10 +40,44 @@ public class BaseDatatype implements RDFDatatype {
     }
     
     /**
+     * Pair object used to encode both lexical form 
+     * and datatype for a typed literal with unknown
+     * datatype.
+     */
+    public static class TypedValue {
+        public final String lexicalValue;
+        public final String datatypeURI;
+        
+        public TypedValue(String lexicalValue, String datatypeURI) {
+            this.lexicalValue = lexicalValue;
+            this.datatypeURI = datatypeURI;
+        }
+        
+        public boolean equals(Object other) {
+            if (other instanceof TypedValue) {
+                return lexicalValue.equals(((TypedValue)other).lexicalValue) 
+                         && datatypeURI.equals(((TypedValue)other).datatypeURI);
+            } else {
+                return false;
+            }
+        }
+        
+        public int hashCode() {
+            return lexicalValue.hashCode() ^ datatypeURI.hashCode();
+        }
+        
+    }
+    
+    /**
      * Convert a value of this datatype out
      * to lexical form.
      */
     public String unparse(Object value) {
+        // Default implementation expects a parsed TypedValue but will 
+        // accept a pure lexical form
+        if (value instanceof TypedValue) {
+            return ((TypedValue)value).lexicalValue;
+        } 
         return value.toString();
     }
     
@@ -52,7 +86,7 @@ public class BaseDatatype implements RDFDatatype {
      * @throws DatatypeFormatException if the lexical form is not legal
      */
     public Object parse(String lexicalForm) throws DatatypeFormatException {
-        return lexicalForm;
+        return new TypedValue(lexicalForm, getURI());
     }
     
     /**
@@ -115,6 +149,16 @@ public class BaseDatatype implements RDFDatatype {
      */
     public Class getJavaClass() {
         return null;
+    }
+    
+    /**
+     * Cannonicalise a java Object value to a normal form.
+     * Primarily used in cases such as xsd:integer to reduce
+     * the Java object representation to the narrowest of the Number
+     * subclasses to ensure that indexing of typed literals works. 
+     */
+    public Object cannonicalise( Object value ) {
+        return value;
     }
     
     /**
