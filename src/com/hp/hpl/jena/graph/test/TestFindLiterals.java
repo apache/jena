@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestFindLiterals.java,v 1.2 2005-08-02 16:03:34 chris-dollin Exp $
+ 	$Id: TestFindLiterals.java,v 1.3 2005-08-03 06:22:56 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -48,7 +48,7 @@ public class TestFindLiterals extends GraphTestBase
     
     public static TestSuite suite()
         { 
-        TestSuite result = new TestSuite(  ); 
+        TestSuite result = new TestSuite( TestFindLiterals.class ); 
     //
         result.addTest( aTest( "a P 'simple'", "1", "'simple'", "'simple'" ) );
         result.addTest( aTest( "a P 'simple'xsd:string", "1", "'simple'", "'simple'xsd:string" ) );
@@ -62,8 +62,11 @@ public class TestFindLiterals extends GraphTestBase
         result.addTest( aTest( "a P '1'xsd:float", "1", "'1'xsd:float", "'1'xsd:float" ) );
         result.addTest( aTest( "a P '1'xsd:double", "1", "'1'xsd:double", "'1'xsd:double" ) );
         result.addTest( aTest( "a P '1'xsd:float", "1", "'1'xsd:float", "'1'xsd:float" ) );
-        // TODO result.addTest( aTest( "a P '1'xsd:float", "1", "'1'xsd:double", "'1'xsd:float" ) );
-        // TODO result.addTest( aTest( "a P '1'xsd:double", "1", "'1'xsd:float", "'1'xsd:double" ) );
+    //    
+    // floats & doubles are not compatible
+    //
+        result.addTest( aTest( "a P '1'xsd:float", "1", "'1'xsd:double", "" ) );
+        result.addTest( aTest( "a P '1'xsd:double", "1", "'1'xsd:float", "" ) );
     //
         result.addTest( aTest( "a P 1", "1", "'1'", "" ) );
         result.addTest( aTest( "a P 1", "1", "'1'xsd:integer", "'1'xsd:integer" ) );
@@ -71,12 +74,23 @@ public class TestFindLiterals extends GraphTestBase
         return result;
         }
     
-    public void testX()
+    public void testFloatVsDouble()
         {
         Node A = Node.create( "'1'xsd:float" );
         Node B = Node.create( "'1'xsd:double" );
-        assertTrue( A.sameValueAs( B ) );
-        assertTrue( B.sameValueAs( A ) );
+        assertFalse( A.equals( B ) );
+        assertFalse( A.sameValueAs( B ) );
+        assertFalse( B.sameValueAs( A ) );
+        assertFalse( A.matches( B ) );
+        assertFalse( B.matches( A ) );
+        }
+    
+    public void testStringVsNumbers()
+        {
+        assertFalse( Node.create( "'12345'" ).sameValueAs( Node.create( "12345" ) ) );
+        assertFalse( Node.create( "'12345'" ).sameValueAs( Node.create( "'12345'xsd:integer" ) ) );
+        assertFalse( Node.create( "'12345'" ).sameValueAs( Node.create( "'12345'xsd:float" ) ) );
+        assertFalse( Node.create( "'12345'" ).sameValueAs( Node.create( "'12345'xsd:double" ) ) );
         }
     }
 

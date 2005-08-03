@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Triple.java,v 1.22 2005-06-29 16:31:28 chris-dollin Exp $
+  $Id: Triple.java,v 1.23 2005-08-03 06:22:03 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -215,7 +215,8 @@ public class Triple implements TripleMatch
             public Filter filterOn( final Node n )
                 { return n.isConcrete() 
                     ? new Filter() 
-                        { public boolean accept( Object x ) { return n.sameValueAs( ((Triple) x).obj ); } }
+                        { public boolean accept( Object x ) 
+                            { return n.sameValueAs( ((Triple) x).obj ); } }
                     : Filter.any; 
                 }
             };
