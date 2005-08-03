@@ -3,17 +3,28 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp.impl;
+package com.hp.hpl.jena.rdf.arp.states;
 
-/**
- * This exception is simply used to jump through the SAX
- * processing, after a fatal error, which, in some cases,
- * we do not wish to report via an exception.
- * @author Jeremy J. Carroll
- *
- */
-public class JumpUpTheStackException extends RuntimeException {
-    // TODO: replace by old fatal parsing error ...
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXParseException;
+
+import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+
+public class WantEmpty extends Frame {
+
+    public WantEmpty(FrameI s, XMLContext x) {
+        super(s, x);
+    }
+
+    public void characters(char[] ch, int start, int length) throws SAXParseException {
+        warning(ERR_SYNTAX_ERROR,"empty property must be empty");
+    }
+
+    public FrameI startElement(String uri, String localName, String rawName,
+            Attributes atts) throws SAXParseException {
+        warning(ERR_SYNTAX_ERROR,"XML element <"+rawName+"> inside empty property element");
+        return this;
+    }
 
 }
 

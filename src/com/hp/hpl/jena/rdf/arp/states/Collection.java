@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.arp.impl.ANode;
 import com.hp.hpl.jena.rdf.arp.impl.ARPResource;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
-abstract class CollectionFrame extends WantDescriptionFrame {
+abstract class Collection extends WantDescription {
     // TODO: document this carefully.
     // TODO: refactor this class a bit: drop AbortableWantsObjectI ?
     
@@ -21,7 +21,7 @@ abstract class CollectionFrame extends WantDescriptionFrame {
         void init();
     }
     WantsObjectI nextSlot;
-    public CollectionFrame(WantsObjectFrameI s, XMLContext x) {
+    public Collection(WantsObjectFrameI s, XMLContext x) {
         super(s, x);
         nextSlot = s;
     }

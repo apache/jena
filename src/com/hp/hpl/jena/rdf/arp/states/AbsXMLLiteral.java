@@ -15,7 +15,7 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
-public abstract class AbsXMLLiteralFrame extends Frame {
+public abstract class AbsXMLLiteral extends Frame {
     static Map xmlNameSpace = new TreeMap();
     static {
         xmlNameSpace.put("xml", xmlns);
@@ -42,17 +42,17 @@ public abstract class AbsXMLLiteralFrame extends Frame {
         rslt.append(s);
     }
 
-    public AbsXMLLiteralFrame(FrameI p, XMLContext x, StringBuffer r) {
+    public AbsXMLLiteral(FrameI p, XMLContext x, StringBuffer r) {
         super(p, x);
         rslt = r;
         namespaces = xmlNameSpace;
     }
-    public AbsXMLLiteralFrame(AbsXMLLiteralFrame p, Map ns) {
+    public AbsXMLLiteral(AbsXMLLiteral p, Map ns) {
         super(p, p.xml);
         rslt = p.rslt;
         namespaces = ns;
     }
-    public AbsXMLLiteralFrame(XMLHandler h,XMLContext x) {
+    public AbsXMLLiteral(XMLHandler h,XMLContext x) {
         super(h, x);
         rslt = new StringBuffer();
         namespaces = xmlNameSpace;

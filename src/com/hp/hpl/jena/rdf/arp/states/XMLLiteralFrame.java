@@ -14,7 +14,7 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
 
 
-public class XMLLiteralFrame extends AbsXMLLiteralFrame {
+public class XMLLiteralFrame extends AbsXMLLiteral {
     
 
     

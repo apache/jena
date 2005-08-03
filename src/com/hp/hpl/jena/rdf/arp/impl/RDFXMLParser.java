@@ -17,6 +17,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.hp.hpl.jena.rdf.arp.FatalParsingErrorException;
 import com.hp.hpl.jena.rdf.arp.SAX2RDF;
 import com.hp.hpl.jena.util.CharEncoding;
 
@@ -29,7 +30,7 @@ import com.hp.hpl.jena.util.CharEncoding;
  * @author Jeremy J. Carroll
  * 
  */
-public class SingleThreadedParser extends XMLHandler {
+public class RDFXMLParser extends XMLHandler {
 
     private SAXParser saxParser;
 
@@ -37,7 +38,7 @@ public class SingleThreadedParser extends XMLHandler {
 
     private String xmlEncoding = null;
 
-    private SingleThreadedParser(SAXParser rdr) {
+    private RDFXMLParser(SAXParser rdr) {
         super();
         saxParser = rdr;
         try {
@@ -65,7 +66,7 @@ public class SingleThreadedParser extends XMLHandler {
             }
         }
 
-        SingleThreadedParser a;
+        RDFXMLParser a;
 
         public void xmlDecl(String version, String encoding, String standalone,
                 Augmentations augs) {
@@ -86,10 +87,10 @@ public class SingleThreadedParser extends XMLHandler {
          */
     }
 
-    public static SingleThreadedParser create() {
+    public static RDFXMLParser create() {
         StandardParserConfiguration c = new StandardParserConfiguration();
         MySAXParser msp = new MySAXParser(c);
-        SingleThreadedParser a = new SingleThreadedParser(msp);
+        RDFXMLParser a = new RDFXMLParser(msp);
         msp.a = a;
         return a;
     }
@@ -140,7 +141,7 @@ public class SingleThreadedParser extends XMLHandler {
         catch (WrappedException wrapped) {
             wrapped.throwMe();
         }
-        catch (JumpUpTheStackException e) {
+        catch (FatalParsingErrorException e) {
             // ignore this.
         }
         // definitely reported with new design ...

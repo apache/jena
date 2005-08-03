@@ -15,12 +15,12 @@ import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
-abstract public class WantDescriptionFrame extends Frame implements HasSubjectFrameI {
+abstract public class WantDescription extends Frame implements HasSubjectFrameI {
 
-    public WantDescriptionFrame(FrameI s, XMLContext x) {
+    public WantDescription(FrameI s, XMLContext x) {
         super(s, x);
     }
-    public WantDescriptionFrame(FrameI s, AttributeLexer x) throws SAXParseException {
+    public WantDescription(FrameI s, AttributeLexer x) throws SAXParseException {
         super(s, x);
     }
     ANode subject;

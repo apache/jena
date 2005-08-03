@@ -3,29 +3,18 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp.states;
+package com.hp.hpl.jena.rdf.arp;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXParseException;
-
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
-
-public class WantEmptyFrame extends Frame {
-
-    public WantEmptyFrame(FrameI s, XMLContext x) {
-        super(s, x);
-    }
-
-    public void characters(char[] ch, int start, int length) throws SAXParseException {
-        warning(ERR_SYNTAX_ERROR,"empty property must be empty");
-    }
-
-    public FrameI startElement(String uri, String localName, String rawName,
-            Attributes atts) throws SAXParseException {
-        warning(ERR_SYNTAX_ERROR,"XML element <"+rawName+"> inside empty property element");
-        return this;
-    }
-
+/**
+ * This is thrown after a fatal error of any description,
+ * most importantly a {@link ARPErrorNumbers#ERR_SAX_FATAL_ERROR}.
+ * It should only be seen in user code when using 
+ * {@link SAX2RDF} or {@link SAX2Model}.
+ * @author Jeremy J. Carroll
+ *
+ */
+public class FatalParsingErrorException extends RuntimeException {
+    
 }
 
 

@@ -6,10 +6,8 @@
 package com.hp.hpl.jena.rdf.arp.states;
 
 import com.hp.hpl.jena.rdf.arp.impl.*;
-import com.hp.hpl.jena.rdf.arp.*;
-import com.hp.hpl.jena.rdf.arp.states.CollectionFrame.AbortableWantsObjectI;
 
-public class RDFCollectionFrame extends CollectionFrame {
+public class RDFCollectionFrame extends Collection {
 
     public RDFCollectionFrame(WantsObjectFrameI s, XMLContext x) {
         super(s, x);

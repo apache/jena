@@ -11,18 +11,18 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
-abstract class AbsWantLiteralValueOrDescriptionFrame extends
-        WantDescriptionFrame {
+abstract class AbsWantLiteralValueOrDescription extends
+        WantDescription {
 
     private StringBuffer buf;
 
     private boolean checkComposingChar = true;
 
-    public AbsWantLiteralValueOrDescriptionFrame(FrameI s, XMLContext x) {
+    public AbsWantLiteralValueOrDescription(FrameI s, XMLContext x) {
         super(s, x);
     }
 
-    public AbsWantLiteralValueOrDescriptionFrame(FrameI s, AttributeLexer x)
+    public AbsWantLiteralValueOrDescription(FrameI s, AttributeLexer x)
             throws SAXParseException {
         super(s, x);
     }

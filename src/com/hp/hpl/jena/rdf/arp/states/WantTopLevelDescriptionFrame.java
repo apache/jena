@@ -9,7 +9,7 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
 
-public class WantTopLevelDescriptionFrame extends WantDescriptionFrame {
+public class WantTopLevelDescriptionFrame extends WantDescription {
 
     public WantTopLevelDescriptionFrame(FrameI s, AttributeLexer x)  throws SAXParseException {
         super(s, x);

@@ -8,7 +8,7 @@ package com.hp.hpl.jena.rdf.arp.states;
 import com.hp.hpl.jena.rdf.arp.impl.ANode;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
-public class DAMLCollectionFrame extends CollectionFrame {
+public class DAMLCollectionFrame extends Collection {
 
     // TODO: duplicate ntriple rdfms-seq-representation/test001 for daml:collection
     // TODO: duplicate ARP Scoping test for collection

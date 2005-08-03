@@ -26,7 +26,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ARP.java,v 1.20 2005-08-01 15:07:08 jeremy_carroll Exp $
+   $Id: ARP.java,v 1.21 2005-08-03 10:16:36 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
    with modification from PI Software
 */
@@ -56,7 +56,7 @@ import org.xml.sax.SAXException;
 
 import com.hp.hpl.jena.rdf.arp.impl.ARPHandlersImpl;
 import com.hp.hpl.jena.rdf.arp.impl.ARPOptionsImpl;
-import com.hp.hpl.jena.rdf.arp.impl.SingleThreadedParser;
+import com.hp.hpl.jena.rdf.arp.impl.RDFXMLParser;
 
 
 /** Another RDF Parser.
@@ -94,13 +94,13 @@ import com.hp.hpl.jena.rdf.arp.impl.SingleThreadedParser;
 public class ARP implements ARPConfig 
 {
 
-    final private SingleThreadedParser arpf;
+    final private RDFXMLParser arpf;
     
 /** Creates a new RDF Parser.
  * Can parse one file at a time.
  */    
     public ARP()  {
-        arpf =  SingleThreadedParser.create();
+        arpf =  RDFXMLParser.create();
     }
 	/**
  * When parsing a file, this returns a Locator giving the

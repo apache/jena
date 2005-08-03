@@ -12,7 +12,7 @@ import com.hp.hpl.jena.rdf.arp.impl.ARPDatatypeLiteral;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
-public class WantTypedLiteralFrame extends AbsWantLiteralValueOrDescriptionFrame implements FrameI {
+public class WantTypedLiteralFrame extends AbsWantLiteralValueOrDescription implements FrameI {
 
     final URIReference dtURI;
     public WantTypedLiteralFrame(WantsObjectFrameI p, String datatypeURI, XMLContext ap)

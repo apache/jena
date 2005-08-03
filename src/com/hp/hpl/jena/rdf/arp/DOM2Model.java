@@ -13,7 +13,6 @@ import javax.xml.transform.sax.SAXResult;
 
 import org.w3c.dom.Node;
 
-import com.hp.hpl.jena.rdf.arp.impl.JumpUpTheStackException;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.shared.JenaException;
 
@@ -89,7 +88,7 @@ public class DOM2Model extends SAX2Model {
             Transformer idTransform = xformFactory.newTransformer();
             idTransform.transform(input, output);
         }
-        catch (JumpUpTheStackException e) {
+        catch (FatalParsingErrorException e) {
             // ignore this.
         } 
         catch (RuntimeException rte) {

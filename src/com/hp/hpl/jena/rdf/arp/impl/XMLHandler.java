@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.2 2005-08-01 15:54:51 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.3 2005-08-03 10:15:35 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -55,11 +55,12 @@ import com.hp.hpl.jena.rdf.arp.ALiteral;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.ARPHandlers;
 import com.hp.hpl.jena.rdf.arp.AResource;
+import com.hp.hpl.jena.rdf.arp.FatalParsingErrorException;
 import com.hp.hpl.jena.rdf.arp.ParseException;
 import com.hp.hpl.jena.rdf.arp.StatementHandler;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
 import com.hp.hpl.jena.rdf.arp.states.FrameI;
-import com.hp.hpl.jena.rdf.arp.states.WantRDFFrame;
+import com.hp.hpl.jena.rdf.arp.states.LookingForRDF;
 
 
 
@@ -200,7 +201,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
                     handlers.getErrorHandler().fatalError(e);
                     // If we get here,  we shouldn't go on
                     // throw an error into Jena.
-                    throw new JumpUpTheStackException();
+                    throw new FatalParsingErrorException();
             }
         } 
         catch (SAXParseException xx) {
@@ -224,7 +225,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
         warning(ERR_SAX_FATAL_ERROR, e);
         // If we get here,  we shouldn't go on
         // throw an error into Jena.
-        throw new JumpUpTheStackException();
+        throw new FatalParsingErrorException();
         
     }
     
@@ -322,10 +323,10 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
         // TODO: embedding option or not?
         // TODO: first frame
         if (getOptions().getEmbedding())
-            frame = new WantRDFFrame(this, initialContext(base,lang));
+            frame = new LookingForRDF(this, initialContext(base,lang));
         else
             // TODO: following line is wrong
-            frame = new WantRDFFrame(this, initialContext(base,lang));
+            frame = new LookingForRDF(this, initialContext(base,lang));
         
     }
     

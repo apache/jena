@@ -13,13 +13,13 @@ import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
-public class WantRDFFrame extends Frame {
+public class LookingForRDF extends Frame {
 
-    public WantRDFFrame(FrameI s, AttributeLexer x)  throws SAXParseException {
+    public LookingForRDF(FrameI s, AttributeLexer x)  throws SAXParseException {
         super(s, x);
     }
 
-    public WantRDFFrame(XMLHandler s, XMLContext x) {
+    public LookingForRDF(XMLHandler s, XMLContext x) {
         super(s, x);
     }
 
@@ -39,7 +39,7 @@ public class WantRDFFrame extends Frame {
         AttributeLexer ap = new AttributeLexer(this, A_XMLBASE
                 | A_XMLLANG, 0);
         ap.processSpecials(atts);
-        return new WantRDFFrame(this, ap);
+        return new LookingForRDF(this, ap);
 
     }
 

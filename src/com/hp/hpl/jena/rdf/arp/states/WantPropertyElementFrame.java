@@ -131,7 +131,7 @@ public class WantPropertyElementFrame extends Frame implements
             return new WantTypedLiteralFrame(this, resolve(x, ap.datatype), x);
         case EMPTYWITHOBJ:
 
-            return new WantEmptyFrame(this, x);
+            return new WantEmpty(this, x);
         }
         throw new IllegalStateException("impossible");
 

@@ -27,7 +27,7 @@ import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.rdf.arp.impl.JenaHandler;
-import com.hp.hpl.jena.rdf.arp.impl.SingleThreadedParser;
+import com.hp.hpl.jena.rdf.arp.impl.RDFXMLParser;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -77,10 +77,10 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
      * Creates new JenaReader
      */
     public JenaReader() {
-        arpf = SingleThreadedParser.create();
+        arpf = RDFXMLParser.create();
     }
 
-    final private SingleThreadedParser arpf;
+    final private RDFXMLParser arpf;
 
     private Model model;
 

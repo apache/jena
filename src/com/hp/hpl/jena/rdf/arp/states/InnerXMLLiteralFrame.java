@@ -7,10 +7,10 @@ package com.hp.hpl.jena.rdf.arp.states;
 
 import java.util.Map;
 
-public class InnerXMLLiteralFrame extends AbsXMLLiteralFrame {
+public class InnerXMLLiteralFrame extends AbsXMLLiteral {
 
     final String qname;
-    public InnerXMLLiteralFrame(AbsXMLLiteralFrame f, String rawName, Map ns) {
+    public InnerXMLLiteralFrame(AbsXMLLiteral f, String rawName, Map ns) {
         super(f,ns);
         qname = rawName;
     }

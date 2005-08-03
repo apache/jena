@@ -21,16 +21,16 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.*;
-import com.hp.hpl.jena.rdf.arp.states.AbsXMLLiteralFrame;
+import com.hp.hpl.jena.rdf.arp.states.AbsXMLLiteral;
 import com.hp.hpl.jena.rdf.arp.states.DAMLCollectionFrame;
 import com.hp.hpl.jena.rdf.arp.states.FrameI;
 import com.hp.hpl.jena.rdf.arp.states.HasSubjectFrameI;
 import com.hp.hpl.jena.rdf.arp.states.InnerXMLLiteralFrame;
 import com.hp.hpl.jena.rdf.arp.states.RDFCollectionFrame;
-import com.hp.hpl.jena.rdf.arp.states.WantEmptyFrame;
+import com.hp.hpl.jena.rdf.arp.states.WantEmpty;
 import com.hp.hpl.jena.rdf.arp.states.WantLiteralValueOrDescriptionFrame;
 import com.hp.hpl.jena.rdf.arp.states.WantPropertyElementFrame;
-import com.hp.hpl.jena.rdf.arp.states.WantRDFFrame;
+import com.hp.hpl.jena.rdf.arp.states.LookingForRDF;
 import com.hp.hpl.jena.rdf.arp.states.WantTopLevelDescriptionFrame;
 import com.hp.hpl.jena.rdf.arp.states.WantTypedLiteralFrame;
 import com.hp.hpl.jena.rdf.arp.states.WantsObjectFrameI;
@@ -175,11 +175,11 @@ public class TestData {
                 testFrame, xmlContext });
         add("tp", "top-level", WantTopLevelDescriptionFrame.class,
                 new Object[] { testFrame, ap });
-        add("em", "empty-prop-elt", WantEmptyFrame.class, new Object[] {
+        add("em", "empty-prop-elt", WantEmpty.class, new Object[] {
                 testFrame, xmlContext });
         add("de", "inside-Description", WantPropertyElementFrame.class,
                 new Object[] { testFrame, xmlContext });
-        add("RD", "looking-for-RDF", WantRDFFrame.class, new Object[] {
+        add("RD", "looking-for-RDF", LookingForRDF.class, new Object[] {
                 testFrame, ap });
     }
 
@@ -225,7 +225,7 @@ public class TestData {
         eventList.test(f);
         rslt.append(eventListName(f,null));
         rslt.append(" $ " + testInfo(f) + " {");
-        if ( eventList.testResult.getClass() != WantRDFFrame.class)
+        if ( eventList.testResult.getClass() != LookingForRDF.class)
             
         for (int i=0;i<characters.length;i++) {
             if (skip != null && characters[i].startsWith(skip))
@@ -274,7 +274,7 @@ public class TestData {
                 xmlHandler.info() + " " + testFrame.info());
     }
 
-    static Class tryClasses[] = { FrameI.class, AbsXMLLiteralFrame.class,
+    static Class tryClasses[] = { FrameI.class, AbsXMLLiteral.class,
             HasSubjectFrameI.class, WantsObjectFrameI.class };
 
   
@@ -300,7 +300,7 @@ public class TestData {
     }
     
     void expand(Class f) {
-        if (AbsXMLLiteralFrame.class.isAssignableFrom(f))
+        if (AbsXMLLiteral.class.isAssignableFrom(f))
             return;
         if (randomPurgeXMLAttrs())
             return;
@@ -314,8 +314,8 @@ public class TestData {
             return;
         }
         characterize(f);
-        if (eventList.size >= (AbsXMLLiteralFrame.class.isAssignableFrom(f) ? 3 :
-            eventList.testResult instanceof WantRDFFrame ? 2
+        if (eventList.size >= (AbsXMLLiteral.class.isAssignableFrom(f) ? 3 :
+            eventList.testResult instanceof LookingForRDF ? 2
                 : 8))
             return;
         for (int i = 0; i < allEvents.length; i++) {

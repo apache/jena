@@ -11,7 +11,7 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.impl.ARPString;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
-public class WantLiteralValueOrDescriptionFrame extends AbsWantLiteralValueOrDescriptionFrame {
+public class WantLiteralValueOrDescriptionFrame extends AbsWantLiteralValueOrDescription {
 
     boolean seenAnElement = false;
 
