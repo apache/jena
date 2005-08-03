@@ -3,6 +3,27 @@ Release Notes
 
 ;;; -- Post 2.2final change list ----------------------------------------
 
+ARP
+    o Total rewrite of internals. Now approx four times faster.
+      User code will experience significantly less speed up,
+      depending on the percentage of runtime taken up with
+      parsing (as opposed to reading the data from the network
+      or disk, and adding the triples to a Model).
+    
+    o oldarp package contains the final version of the previous 
+      design of ARP. This has some changes since the previous
+      release (in Jena 2.2), most significantly corrected a bug
+      in the implementation of the XML Base Rec.
+      
+    o The contract concerning behaviour after syntax errors has 
+      changed. (TBD: describe new contract).
+      
+    o Some changes in the error codes produced for ill-formed
+      input.
+    
+    o A few public classes that were in the old ARP package, but
+      labelled as not part of the API have been removed.
+      
 Node/Node_Literal/Literal
 
     o Node has gained the method getIndexingValue(), which is the
