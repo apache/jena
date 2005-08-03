@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDDatatype.java,v 1.9 2005-02-21 12:02:15 andy_seaborne Exp $
+ * $Id: XSDDatatype.java,v 1.10 2005-08-03 13:06:31 chris-dollin Exp $
  *****************************************************************/
 
 package com.hp.hpl.jena.datatypes.xsd;
@@ -40,7 +40,7 @@ import org.apache.xerces.xni.grammars.XSGrammar;
  * XSD implementation.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.9 $ on $Date: 2005-02-21 12:02:15 $
+ * @version $Revision: 1.10 $ on $Date: 2005-08-03 13:06:31 $
  */
 public class XSDDatatype extends BaseDatatype {
 
@@ -385,15 +385,13 @@ public class XSDDatatype extends BaseDatatype {
 
             case XSConstants.UNSIGNEDINT_DT:
             case XSConstants.LONG_DT:
-                return Long.valueOf(trimPlus(validatedInfo.normalizedValue));
+                return suitableInteger( trimPlus(validatedInfo.normalizedValue) );
 
             case XSConstants.UNSIGNEDBYTE_DT:
             case XSConstants.SHORT_DT:
-                return Short.valueOf(trimPlus(validatedInfo.normalizedValue));
-                
             case XSConstants.BYTE_DT:
-                return Byte.valueOf(trimPlus(validatedInfo.normalizedValue));
-                
+                return Integer.valueOf(trimPlus(validatedInfo.normalizedValue));
+                                
             case XSConstants.UNSIGNEDLONG_DT:
             case XSConstants.INTEGER_DT:
             case XSConstants.NONNEGATIVEINTEGER_DT:
@@ -403,7 +401,7 @@ public class XSDDatatype extends BaseDatatype {
             case XSConstants.DECIMAL_DT:
                 Object xsdValue = validatedInfo.actualValue;
                 if (decimalDV.getTotalDigits(xsdValue) == 0) {
-                    return new Long(0);
+                    return new Integer(0);
                 }
                 if (decimalDV.getFractionDigits(xsdValue) >= 1) {
                     return new BigDecimal(trimPlus(validatedInfo.normalizedValue));
@@ -417,13 +415,35 @@ public class XSDDatatype extends BaseDatatype {
                 if (decimalDV.getTotalDigits(xsdValue) > 18) {
                     return new BigInteger(lexical);
                 } else {
-                    return new Long(lexical);
+                    return suitableInteger( lexical );
                 }
                 
             default:
                 return parseValidated(validatedInfo.normalizedValue);
         }
     }
+
+    /**
+     	@param lexical
+     	@return
+    */
+    protected Number suitableInteger( String lexical )
+        {
+        long number = Long.parseLong( lexical );
+        return suitableInteger( number );
+        }
+
+    /**
+     	@param number
+     	@return
+    */
+    protected Number suitableInteger( long number )
+        {
+        if (number > Integer.MAX_VALUE || number < Integer.MIN_VALUE)
+            return new Long( number );
+        else 
+            return new Integer( (int) number );
+        }
 
     /**
      * Parse a validated lexical form. Subclasses which use the default

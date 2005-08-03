@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: LiteralLabel.java,v 1.20 2005-07-13 15:33:50 chris-dollin Exp $
+  $Id: LiteralLabel.java,v 1.21 2005-08-03 13:06:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -118,7 +118,7 @@ final public class LiteralLabel {
                 setValue(lex);
             }
         } else {
-		    this.value = value;
+		    this.value = dtype.cannonicalise( value );
         }
         normalize();
 	}
@@ -252,9 +252,16 @@ final public class LiteralLabel {
     
     /** 
      	Answer the value used to index this literal
+        TODO Consider pushing indexing decisions down to the datatype
     */
-    public Object getIndexingValue()
-        { return getLexicalForm(); }
+    public Object getIndexingValue() {
+        if (isXML()) {
+            return this;
+        } else {
+            return wellformed ? getValue() : getLexicalForm(); 
+        }
+    }
+
 
 	/** 
      	Answer the language associated with this literal (the empty string if

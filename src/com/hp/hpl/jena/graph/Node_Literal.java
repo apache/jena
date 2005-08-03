@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Node_Literal.java,v 1.14 2005-07-13 13:51:35 chris-dollin Exp $
+  $Id: Node_Literal.java,v 1.15 2005-08-03 13:06:33 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -47,7 +47,7 @@ public class Node_Literal extends Node_Concrete
         { return true; }    
         
     public Object getIndexingValue()
-        { return getLiteral().getIndexingValue(); }
+        { return getLiteral().getDatatype() == null && !getLiteral().language().equals( "" ) ? this : getLiteral().getIndexingValue(); }
     
     public Object visitWith( NodeVisitor v )
         { return v.visitLiteral( this, getLiteral() ); }

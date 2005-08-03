@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.47 2005-08-01 12:35:21 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.48 2005-08-03 13:06:34 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -27,7 +27,6 @@ import java.math.*;
 import java.util.*;
 import java.io.*;
 
-import org.apache.xerces.impl.dv.util.Base64;
 import org.apache.xerces.impl.dv.util.HexBin;
    
 /**
@@ -35,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.47 $ on $Date: 2005-08-01 12:35:21 $
+ * @version $Revision: 1.48 $ on $Date: 2005-08-03 13:06:34 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -95,7 +94,7 @@ public class TestTypedLiterals extends TestCase {
             int i = l3.getInt();
             assertTrue("Allowed int conversion", false);
         } catch (DatatypeFormatException e) {}
-        assertEquals("Extract value", l1.getValue(), "foo");
+        assertEquals("Extract value", l1.getValue(), new BaseDatatype.TypedValue("foo", typeURI));
         assertEquals("Extract xml tag", l1.isWellFormedXML(), false);
         
         JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = false;
@@ -193,32 +192,32 @@ public class TestTypedLiterals extends TestCase {
         assertSameValueAs("equality fn", l1, l3);
         
         // Minimal check on long, short, byte
-        checkLegalLiteral("12345", XSDDatatype.XSDlong, Long.class, new Long(12345));
-        checkLegalLiteral("-12345", XSDDatatype.XSDlong, Long.class, new Long(-12345));
+        checkLegalLiteral("12345", XSDDatatype.XSDlong, Integer.class, new Integer(12345));
+        checkLegalLiteral("-12345", XSDDatatype.XSDlong, Integer.class, new Integer(-12345));
         checkIllegalLiteral("2.3", XSDDatatype.XSDlong);
         
-        checkLegalLiteral("1234", XSDDatatype.XSDshort, Short.class, new Short((short)1234));
-        checkLegalLiteral("-1234", XSDDatatype.XSDshort, Short.class, new Short((short)-1234));
-        checkLegalLiteral("32767", XSDDatatype.XSDshort, Short.class, new Short((short)32767));
-        checkLegalLiteral("-32768", XSDDatatype.XSDshort, Short.class, new Short((short)-32768));
+        checkLegalLiteral("1234", XSDDatatype.XSDshort, Integer.class, new Integer((short)1234));
+        checkLegalLiteral("-1234", XSDDatatype.XSDshort, Integer.class, new Integer((short)-1234));
+        checkLegalLiteral("32767", XSDDatatype.XSDshort, Integer.class, new Integer((short)32767));
+        checkLegalLiteral("-32768", XSDDatatype.XSDshort, Integer.class, new Integer((short)-32768));
         checkIllegalLiteral("32769", XSDDatatype.XSDshort);
         checkIllegalLiteral("2.3", XSDDatatype.XSDshort);
 
-        checkLegalLiteral("42", XSDDatatype.XSDbyte, Byte.class, new Byte((byte)42));
-        checkLegalLiteral("-42", XSDDatatype.XSDbyte, Byte.class, new Byte((byte)-42));
-        checkLegalLiteral("127", XSDDatatype.XSDbyte, Byte.class, new Byte((byte)127));
-        checkLegalLiteral("-128", XSDDatatype.XSDbyte, Byte.class, new Byte((byte)-128));
+        checkLegalLiteral("42", XSDDatatype.XSDbyte, Integer.class, new Integer((byte)42));
+        checkLegalLiteral("-42", XSDDatatype.XSDbyte, Integer.class, new Integer((byte)-42));
+        checkLegalLiteral("127", XSDDatatype.XSDbyte, Integer.class, new Integer((byte)127));
+        checkLegalLiteral("-128", XSDDatatype.XSDbyte, Integer.class, new Integer((byte)-128));
         checkIllegalLiteral("32769", XSDDatatype.XSDbyte);
         checkIllegalLiteral("128", XSDDatatype.XSDbyte);
         checkIllegalLiteral("2.3", XSDDatatype.XSDbyte);
         
         // Minimal check on unsigned normal types
-        checkLegalLiteral("12345", XSDDatatype.XSDunsignedLong, Long.class, new Long(12345));
-        checkLegalLiteral("+12345", XSDDatatype.XSDunsignedLong, Long.class, new Long(12345));
+        checkLegalLiteral("12345", XSDDatatype.XSDunsignedLong, Integer.class, new Integer(12345));
+        checkLegalLiteral("+12345", XSDDatatype.XSDunsignedLong, Integer.class, new Integer(12345));
         checkLegalLiteral("9223372036854775808", XSDDatatype.XSDunsignedLong, BigInteger.class, new BigInteger("9223372036854775808"));
         checkIllegalLiteral("-12345", XSDDatatype.XSDunsignedLong);
         
-        checkLegalLiteral("12345", XSDDatatype.XSDunsignedInt, Long.class, new Long(12345));
+        checkLegalLiteral("12345", XSDDatatype.XSDunsignedInt, Integer.class, new Integer(12345));
         checkLegalLiteral("2147483648", XSDDatatype.XSDunsignedInt, Long.class, new Long(2147483648l));
         checkIllegalLiteral("-12345", XSDDatatype.XSDunsignedInt);
         
@@ -226,38 +225,38 @@ public class TestTypedLiterals extends TestCase {
         checkLegalLiteral("32679", XSDDatatype.XSDunsignedShort, Integer.class, new Integer(32679));
         checkIllegalLiteral("-12345", XSDDatatype.XSDunsignedShort);
         
-        checkLegalLiteral("123", XSDDatatype.XSDunsignedByte, Short.class, new Short((short)123));
-        checkLegalLiteral("129", XSDDatatype.XSDunsignedByte, Short.class, new Short((short)129));
+        checkLegalLiteral("123", XSDDatatype.XSDunsignedByte, Integer.class, new Integer((short)123));
+        checkLegalLiteral("129", XSDDatatype.XSDunsignedByte, Integer.class, new Integer((short)129));
         checkIllegalLiteral("-123", XSDDatatype.XSDunsignedByte);
         
         // Minimal check on the big num types
-        checkLegalLiteral("12345", XSDDatatype.XSDinteger, Long.class, new Long(12345));
-        checkLegalLiteral("0", XSDDatatype.XSDinteger, Long.class, new Long(0));
-        checkLegalLiteral("-12345", XSDDatatype.XSDinteger, Long.class, new Long(-12345));
+        checkLegalLiteral("12345", XSDDatatype.XSDinteger, Integer.class, new Integer(12345));
+        checkLegalLiteral("0", XSDDatatype.XSDinteger, Integer.class, new Integer(0));
+        checkLegalLiteral("-12345", XSDDatatype.XSDinteger, Integer.class, new Integer(-12345));
         checkLegalLiteral("9223372036854775808", XSDDatatype.XSDinteger, BigInteger.class, new BigInteger("9223372036854775808"));
         
-        checkLegalLiteral("12345", XSDDatatype.XSDpositiveInteger, Long.class, new Long(12345));
+        checkLegalLiteral("12345", XSDDatatype.XSDpositiveInteger, Integer.class, new Integer(12345));
         checkIllegalLiteral("0", XSDDatatype.XSDpositiveInteger);
         checkIllegalLiteral("-12345", XSDDatatype.XSDpositiveInteger);
         checkLegalLiteral("9223372036854775808", XSDDatatype.XSDpositiveInteger, BigInteger.class, new BigInteger("9223372036854775808"));
         
-        checkLegalLiteral("12345", XSDDatatype.XSDnonNegativeInteger, Long.class, new Long(12345));
-        checkLegalLiteral("0", XSDDatatype.XSDnonNegativeInteger, Long.class, new Long(0));
+        checkLegalLiteral("12345", XSDDatatype.XSDnonNegativeInteger, Integer.class, new Integer(12345));
+        checkLegalLiteral("0", XSDDatatype.XSDnonNegativeInteger, Integer.class, new Integer(0));
         checkIllegalLiteral("-12345", XSDDatatype.XSDnonNegativeInteger);
         checkLegalLiteral("9223372036854775808", XSDDatatype.XSDnonNegativeInteger, BigInteger.class, new BigInteger("9223372036854775808"));
         
-        checkLegalLiteral("-12345", XSDDatatype.XSDnegativeInteger, Long.class, new Long(-12345));
+        checkLegalLiteral("-12345", XSDDatatype.XSDnegativeInteger, Integer.class, new Integer(-12345));
         checkIllegalLiteral("0", XSDDatatype.XSDnegativeInteger);
         checkIllegalLiteral("12345", XSDDatatype.XSDnegativeInteger);
         checkLegalLiteral("-9223372036854775808", XSDDatatype.XSDnegativeInteger, BigInteger.class, new BigInteger("-9223372036854775808"));
         
-        checkLegalLiteral("-12345", XSDDatatype.XSDnonPositiveInteger, Long.class, new Long(-12345));
-        checkLegalLiteral("0", XSDDatatype.XSDnonPositiveInteger, Long.class, new Long(0));
+        checkLegalLiteral("-12345", XSDDatatype.XSDnonPositiveInteger, Integer.class, new Integer(-12345));
+        checkLegalLiteral("0", XSDDatatype.XSDnonPositiveInteger, Integer.class, new Integer(0));
         checkIllegalLiteral("12345", XSDDatatype.XSDnonPositiveInteger);
         checkLegalLiteral("-9223372036854775808", XSDDatatype.XSDnonPositiveInteger, BigInteger.class, new BigInteger("-9223372036854775808"));
         
-        checkLegalLiteral("12345", XSDDatatype.XSDdecimal, Long.class, new Long("12345"));
-        checkLegalLiteral("0.0", XSDDatatype.XSDdecimal, Long.class, new Long("0"));
+        checkLegalLiteral("12345", XSDDatatype.XSDdecimal, Integer.class, new Integer("12345"));
+        checkLegalLiteral("0.0", XSDDatatype.XSDdecimal, Integer.class, new Integer("0"));
         checkLegalLiteral("42.45", XSDDatatype.XSDdecimal, BigDecimal.class, new BigDecimal("42.45"));
         checkLegalLiteral("9223372036854775808.1234", XSDDatatype.XSDdecimal, BigDecimal.class, new BigDecimal("9223372036854775808.1234"));
         checkLegalLiteral("123.4", XSDDatatype.XSDdecimal, BigDecimal.class, new BigDecimal("123.4"));
@@ -412,12 +411,12 @@ public class TestTypedLiterals extends TestCase {
 
         // Check the numeric restriction
         RDFDatatype over12Type = tm.getSafeTypeByName(uri + "#over12");
-        checkLegalLiteral("15", over12Type, Long.class, new Long(15));
+        checkLegalLiteral("15", over12Type, Integer.class, new Integer(15));
         checkIllegalLiteral("12", over12Type);
         
         // Check the union type
         RDFDatatype clothingsize = tm.getSafeTypeByName(uri + "#clothingsize");
-        checkLegalLiteral("42", clothingsize, Long.class, new Long(42));
+        checkLegalLiteral("42", clothingsize, Integer.class, new Integer(42));
         checkLegalLiteral("short", clothingsize, String.class, "short");
         
         // Check use of isValidLiteral for base versus derived combinations
@@ -728,9 +727,9 @@ public class TestTypedLiterals extends TestCase {
         assertTrue(! XSDDatatype.XSDint.isValidLiteral(ll));
        
        // Test the isValidValue form which had a problem with numbers
-       assertTrue(XSDDatatype.XSDnonNegativeInteger.isValidValue(new Long(10)));
        assertTrue(XSDDatatype.XSDnonNegativeInteger.isValidValue(new Integer(10)));
-       assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue(new Long(-10)));
+       assertTrue(XSDDatatype.XSDnonNegativeInteger.isValidValue(new Integer(10)));
+       assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue(new Integer(-10)));
        assertTrue(!XSDDatatype.XSDnonNegativeInteger.isValidValue("10"));
        
        // The correct behaviour on float/double is unclear but will be clarified

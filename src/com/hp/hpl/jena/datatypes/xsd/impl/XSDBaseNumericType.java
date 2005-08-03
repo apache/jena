@@ -5,12 +5,9 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: XSDBaseNumericType.java,v 1.14 2005-08-01 12:34:20 der Exp $
+ * $Id: XSDBaseNumericType.java,v 1.15 2005-08-03 13:06:32 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.datatypes.xsd.impl;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import com.hp.hpl.jena.datatypes.*;
 import com.hp.hpl.jena.datatypes.xsd.*;
@@ -24,7 +21,7 @@ import com.hp.hpl.jena.shared.impl.JenaParameters;
  * that float and double are not included in this set.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.14 $ on $Date: 2005-08-01 12:34:20 $
+ * @version $Revision: 1.15 $ on $Date: 2005-08-03 13:06:32 $
  */
 public class XSDBaseNumericType extends XSDDatatype {
 
@@ -83,6 +80,16 @@ public class XSDBaseNumericType extends XSDDatatype {
         } else {
             return false;
         }
+    }
+    
+    /**
+     * Cannonicalise a java Object value to a normal form.
+     * Primarily used in cases such as xsd:integer to reduce
+     * the Java object representation to the narrowest of the Number
+     * subclasses to ensure that indexing of typed literals works. 
+     */
+    public Object cannonicalise( Object value ) {
+        return suitableInteger( ((Number)value).longValue() );
     }
    
     /**

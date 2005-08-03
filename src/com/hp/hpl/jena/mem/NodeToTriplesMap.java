@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.29 2005-06-28 13:54:40 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.30 2005-08-03 13:06:35 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -48,8 +48,8 @@ public class NodeToTriplesMap
     public Iterator domain()
         { return map.keySet().iterator(); }
 
-    protected final Node getIndexField( Triple t )
-        { return indexField.getField( t ); }
+    protected final Object getIndexField( Triple t )
+        { return indexField.getField( t ).getIndexingValue(); }
     
     /**
          Add <code>t</code> to this NTM; the node <code>o</code> <i>must</i>
@@ -58,7 +58,7 @@ public class NodeToTriplesMap
     */
     public boolean add( Triple t ) 
         {
-        Node o = getIndexField( t );
+        Object o = getIndexField( t );
         Set s = (Set) map.get( o );
         if (s == null) map.put( o, s = CollectionFactory.createHashedSet() );
         if (s.add( t )) { size += 1; return true; } else return false; 
@@ -70,7 +70,7 @@ public class NodeToTriplesMap
     */
     public boolean remove( Triple t )
         { 
-        Node o = getIndexField( t );
+        Object o = getIndexField( t );
         Set s = (Set) map.get( o );
         if (s == null)
             return false;
@@ -91,11 +91,17 @@ public class NodeToTriplesMap
         {
         Set s = (Set) map.get( o );
         return s == null ? NullIterator.instance : s.iterator();
+        }    
+    
+    public Iterator iterator( Object o )
+        {
+        Set s = (Set) map.get( o );
+        return s == null ? NullIterator.instance : s.iterator();
         }
     
     /**
-         Clear this NTM; it will contain no triples.
-    */
+     * Clear this NTM; it will contain no triples.
+     */
     public void clear() 
         { map.clear(); size = 0; }
     
@@ -124,7 +130,7 @@ public class NodeToTriplesMap
     */
     public ExtendedIterator iterator( Triple pattern )
         {
-        Node o = getIndexField( pattern );
+        Object o = getIndexField( pattern );
         Set s = (Set) map.get( o );
         return s == null
             ? NullIterator.instance
@@ -169,7 +175,7 @@ public class NodeToTriplesMap
                    {
                    if (current.hasNext()) return true;
                    if (nodes.hasNext() == false) return false;
-                   current = iterator( (Node) nodes.next() );
+                   current = iterator( nodes.next() );
                    }
                }
            

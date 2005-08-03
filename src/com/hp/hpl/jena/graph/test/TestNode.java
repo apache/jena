@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestNode.java,v 1.39 2005-07-13 13:51:35 chris-dollin Exp $
+  $Id: TestNode.java,v 1.40 2005-08-03 13:06:34 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -581,7 +581,7 @@ public class TestNode extends GraphTestBase
     public void testGetIndexingValueLanguagedString()
         {
         Node s = Node.create( "'chat'fr" );
-        assertEquals( s.getLiteral().getIndexingValue(), s.getIndexingValue() );
+        assertEquals( s, s.getIndexingValue() );
         }
     
     public void testGetIndexingValueXSDString()
