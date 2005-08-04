@@ -1,0 +1,17 @@
+#
+# Copyright World Wide Web Consortium, (Massachusetts Institute of
+# Technology, Institut National de Recherche en Informatique et en
+# Automatique, Keio University).
+#
+# All Rights Reserved.
+#
+# Please see the full Copyright clause at
+# <http://www.w3.org/Consortium/Legal/copyright-software.html>
+#
+# Plain literals without language denote the same thing as
+# the corresponding xsd:strings (where their value spaces intersect).
+#
+# $Id: test011b.nt,v 1.1 2005-08-04 09:53:15 jeremy_carroll Exp $
+#
+#####################################################################
+<http://example.org/foo> <http://example.org/bar> "a string"^^<http://www.w3.org/2001/XMLSchema#string> .

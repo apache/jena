@@ -8,7 +8,7 @@
 # Please see the full Copyright clause at
 # <http://www.w3.org/Consortium/Legal/copyright-software.html>
 #
-# $Id: test008a.nt,v 1.1.1.1 2002-12-19 19:37:00 bwm Exp $
+# $Id: test008a.nt,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
 #
 #####################################################################
 <http://example.org/a> <http://example.org/b> "10" .

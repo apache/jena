@@ -14,10 +14,10 @@
   Test:  2
   Author: Dave Beckett
 
-    In-scope xml:lang applies to rdf:parseType="Literal"
+    In-scope xml:lang does not apply to rdf:parseType="Literal"
     element content values
 
-  $Id: test002.rdf,v 1.1.1.1 2002-12-19 19:37:38 bwm Exp $
+  $Id: test002.rdf,v 1.2 2005-08-04 09:53:18 jeremy_carroll Exp $
 -->
 
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"

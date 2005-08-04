@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.27 2005-08-01 15:07:04 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.28 2005-08-04 09:53:13 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -159,7 +159,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     private Act semTest = new Act() {
 		  public void act(Resource r) {
 		  	if (doSemanticTests()){
-		  		addTest(r, new ReasoningTest(r));
+//		  		addTest(r, new ReasoningTest(r));
 		  	}
 		  }
     };
@@ -254,8 +254,10 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         if (dynamic)
             try {
             	String wgDir = ARPTests.wgTestDir.toString();
-            	System.err.println(wgDir);
-            	  wgReasoner = new WGReasonerTester("Manifest",wgDir);
+            	System.err.println(testDir+", "+fact.getMapBase());
+            	  wgReasoner = new WGReasonerTester("Manifest.rdf",
+                          "testing/wg/");
+//                          wgDir);
                 createMe =
                     "new "
                         + this.getClass().getName()

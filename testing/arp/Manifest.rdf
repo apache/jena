@@ -861,7 +861,7 @@ rdf:about="http://jcarroll.hpl.hp.com/arp-tests/comments/error01.rdf"/>
 
 <rdf:Description rdf:about='http://jcarroll.hpl.hp.com/arp-tests/relative-namespaces/50_0'>
 
-<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_BAD_NAMESPACE_URI'/>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#WARN_RELATIVE_NAMESPACE_URI_DEPRECATED'/>
 
 </rdf:Description>
 

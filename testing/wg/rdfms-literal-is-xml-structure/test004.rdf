@@ -12,7 +12,7 @@
   Description: tests parseType="Literal" with a string that contains
     one pair of XML tags with a simple CDATA string.
 
-  $Id: test004.rdf,v 1.1.1.1 2002-12-19 19:37:17 bwm Exp $
+  $Id: test004.rdf,v 1.2 2005-08-04 09:53:24 jeremy_carroll Exp $
 
 -->
 

@@ -173,6 +173,9 @@ public class TestInputStreamFactory {
 	
 	    return in;
 	}
+    public URI getMapBase() {
+        return mapBase;
+    }
 
 }
 

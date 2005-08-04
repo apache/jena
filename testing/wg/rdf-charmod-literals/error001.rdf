@@ -11,27 +11,34 @@
 
   Issue: rdf-charmod-literals
 
-  Description: Illegal literal value; not in NFC
+  Description: was, Illegal literal value; not in NFC
+  Description: No longer in error, withdrawn.
 
     Black test case 1 from
     http://lists.w3.org/Archives/Public/w3c-rdfcore-wg/2002Apr/0016.html
 
-  $Id: error001.rdf,v 1.1.1.1 2002-12-19 19:37:00 bwm Exp $
+  $Id: error001.rdf,v 1.2 2005-08-04 09:53:23 jeremy_carroll Exp $
 
 -->
 
+<!--
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:eg="http://example.org/">
+-->
 <!-- Someone else registers himself under the unused name of Dürst,
         along with some other creation as its creator. -->
+<!--
 
    <rdf:Description rdf:about="http://example.org/adult-content.html">
 
+-->
    <!-- The ü below is two characters a u followed by 
         #x308 (encoded as two UTF-8 octets #xCC #x88).
         It should be displayed identically to ü (character #xFC encoded
         as two UTF-8 octets #xC3 #xBC). -->
+<!--
       <eg:Creator eg:named="Dürst"/>
 
    </rdf:Description>
 </rdf:RDF>
+-->

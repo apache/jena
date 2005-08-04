@@ -146,10 +146,10 @@ Additional facts to be merged with the standard Manifest file.
 <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT' />
 </rdf:Description>
 <rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-012'>
-<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
 </rdf:Description>
 <rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-011'>
-<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
 </rdf:Description>
 <rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-014'>
 <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
@@ -158,7 +158,7 @@ Additional facts to be merged with the standard Manifest file.
 <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
 </rdf:Description>
 <rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-001'>
-<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_SYNTAX_ERROR'/>
+<jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>
 </rdf:Description>
 <rdf:Description rdf:about='http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#error-003'>
 <jjc:error rdf:resource='http://jcarroll.hpl.hp.com/testSchema#ERR_BAD_RDF_ELEMENT'/>

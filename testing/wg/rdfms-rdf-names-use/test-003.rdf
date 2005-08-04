@@ -15,7 +15,7 @@
   Description: 
     Bag is allowed as a node element name.
 
-  $Id: test-003.rdf,v 1.1.1.1 2002-12-19 19:37:29 bwm Exp $
+  $Id: test-003.rdf,v 1.2 2005-08-04 09:53:13 jeremy_carroll Exp $
 -->
 
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">

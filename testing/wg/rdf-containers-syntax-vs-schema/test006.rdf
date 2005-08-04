@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!-- 	Issue: rdf-containers-syntax-vs-schema
         Test:  test06
-        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdf-containers-syntax-vs-schema/test006.rdf,v 1.1.1.1 2002-12-19 19:37:04 bwm Exp $
+        $Header: /home/afs/SourceForge/Jena-CVS/jena2/testing/wg/rdf-containers-syntax-vs-schema/test006.rdf,v 1.2 2005-08-04 09:53:16 jeremy_carroll Exp $
 
         containers match the typed node production
 -->
@@ -24,5 +24,5 @@
   <rdf:Alt rdf:about="#e2" rdf:_2="2" rdf:value="foobar">
     <rdf:value>barfoo</rdf:value>
   </rdf:Alt>
-  <rdf:Bag rdf:bagID="e3"/>
+  <rdf:Bag />
 </rdf:RDF>

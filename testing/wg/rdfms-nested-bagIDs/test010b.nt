@@ -8,7 +8,7 @@
 # Please see the full Copyright clause at
 # <http://www.w3.org/Consortium/Legal/copyright-software.html>
 #
-# $Id: test010b.nt,v 1.1.1.1 2002-12-19 19:37:22 bwm Exp $
+# $Id: test010b.nt,v 1.2 2005-08-04 09:53:15 jeremy_carroll Exp $
 # 
 #####################################################################
 <http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-nested-bagIDs/test010.rdf#bag> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/1999/02/22-rdf-syntax-ns#Bag> .

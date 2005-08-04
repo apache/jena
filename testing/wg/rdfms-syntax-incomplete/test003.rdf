@@ -15,7 +15,7 @@
 
   On an rdf:Description or typed node rdf:nodeID behaves
   similarly to an rdf:about.
-  $Id: test003.rdf,v 1.1.1.1 2002-12-19 19:37:36 bwm Exp $
+  $Id: test003.rdf,v 1.2 2005-08-04 09:53:17 jeremy_carroll Exp $
 
 -->
 
@@ -23,6 +23,6 @@
          xmlns:eg="http://example.org/">
 
  <!-- In this example the rdf:nodeID is redundant. -->
- <rdf:Description rdf:nodeID="a" eg:property1="value" rdf:bagID="bag"/>
+ <rdf:Description rdf:nodeID="a" eg:property1="value" />
 
 </rdf:RDF>

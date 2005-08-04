@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: WGReasonerTester.java,v 1.25 2005-07-05 11:21:43 chris-dollin Exp $
+ * $Id: WGReasonerTester.java,v 1.26 2005-08-04 09:53:29 jeremy_carroll Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.test;
 
@@ -43,7 +43,7 @@ import java.net.*;
  * and check that at least one trile is missing. </p>
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.25 $ on $Date: 2005-07-05 11:21:43 $
+ * @version $Revision: 1.26 $ on $Date: 2005-08-04 09:53:29 $
  */
 public class WGReasonerTester {
 
@@ -57,7 +57,7 @@ public class WGReasonerTester {
     public static final String DEFAULT_BASE_DIR = "testing/wg/";
     
     /** The base directory in which the test data is actually stored */
-    protected String baseDir = DEFAULT_BASE_DIR;
+    final protected String baseDir;
     
     /** The rdf class for positive tests */
     public static final Resource PositiveEntailmentTest;
@@ -132,7 +132,7 @@ public class WGReasonerTester {
      * tests - relative to baseDir
      */
     public WGReasonerTester(String manifest) throws IOException {
-        testManifest = loadFile(manifest);
+        this(manifest, DEFAULT_BASE_DIR);
     }
     
     /**

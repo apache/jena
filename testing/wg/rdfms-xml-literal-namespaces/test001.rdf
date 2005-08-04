@@ -16,7 +16,7 @@
          dependent. Based on example from Issues List.
 
 
-  $Id: test001.rdf,v 1.1.1.1 2002-12-19 19:37:37 bwm Exp $
+  $Id: test001.rdf,v 1.2 2005-08-04 09:53:28 jeremy_carroll Exp $
 
 -->
 <rdf:RDF xmlns="http://www.w3.org/1999/xhtml"
