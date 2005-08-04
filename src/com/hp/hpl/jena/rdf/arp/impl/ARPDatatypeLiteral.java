@@ -17,14 +17,12 @@ import com.hp.hpl.jena.rdf.arp.states.Frame;
 public class ARPDatatypeLiteral implements ALiteral {
 
     final private String datatype;
-   // final private String lang;
     final private String lexForm;
+    
     public ARPDatatypeLiteral(Frame f, String lexf,URIReference dt) throws SAXParseException{
-        // TODO: literal error checking
-
+       
         f.checkString(lexf);
        datatype = dt.getURI();
-    //   lang = lexf.getLang();
        lexForm = lexf;
     }
     /**

@@ -4,7 +4,6 @@
  */
 
 package com.hp.hpl.jena.rdf.arp.states;
-import java.net.URISyntaxException;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
@@ -12,6 +11,7 @@ import org.xml.sax.SAXParseException;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.impl.ARPString;
 import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
+import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
 import com.hp.hpl.jena.rdf.arp.impl.Names;
 import com.hp.hpl.jena.rdf.arp.impl.ParserSupport;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
@@ -19,31 +19,21 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 public abstract class Frame extends ParserSupport implements  Names, FrameI, ARPErrorNumbers {
-    final XMLContext xml;
     final FrameI parent;
-    public XMLContext getXMLContext() {
-        return xml;
-    }
     public FrameI getParent() {
         return parent;
     }
     public Frame(FrameI p, AttributeLexer ap) throws SAXParseException {
-        super(p.getXMLHandler());
-        xml = ap.xml(p.getXMLContext());
+        super(p.getXMLHandler(),ap.xml(p.getXMLContext()));
         parent = p;
     }
     public Frame(FrameI p, XMLContext x) {
-        super(p.getXMLHandler());
-        xml = x;
+        super(p.getXMLHandler(),x);
         parent = p;
     }
     public Frame(XMLHandler a, XMLContext x) {
-        super(a);
-        xml = x;
+        super(a,x);
         parent = null;
-    }
-    public XMLHandler getXMLHandler() {
-        return arp;
     }
     public void comment(char[] ch, int start, int length) throws SAXParseException {
      // generally ignore
@@ -69,15 +59,6 @@ public abstract class Frame extends ParserSupport implements  Names, FrameI, ARP
             "A processing instruction is in RDF content. No processing was done."
                 );
      }
-    String resolve(XMLContext x, String uri) throws SAXParseException {
-        try {
-            return x.resolve(uri);
-        }
-        catch (URISyntaxException e) {
-            badURI(uri,e);
-            return uri;
-        }
-    }
     void    processPropertyAttributes(AttributeLexer ap,
             Attributes atts, XMLContext x) throws SAXParseException {
         if (ap.type!=null) {
@@ -97,6 +78,23 @@ public abstract class Frame extends ParserSupport implements  Names, FrameI, ARP
     }
     public void abort() {
       // nothing.
+    }
+    protected FrameI rdfStartElement(String uri, String localName, String rawName, Attributes atts) throws SAXParseException {
+        ElementLexer el = new ElementLexer(this,uri,localName,rawName,
+                    E_RDF,0);
+        if (el.goodMatch)  {
+                AttributeLexer ap = new AttributeLexer(this, A_XMLBASE
+                        | A_XMLLANG | A_XML_OTHER, 0);
+                if (ap.processSpecials(atts) != atts.getLength()) {
+                    warning(ERR_SYNTAX_ERROR,"Illegal attributes on rdf:RDF");
+                }
+                arp.startRDF();
+                return new WantTopLevelDescription(this, ap); 
+        }
+        AttributeLexer ap = new AttributeLexer(this, A_XMLBASE
+                | A_XMLLANG, 0);
+        ap.processSpecials(atts);
+        return new LookingForRDF(this, ap);
     }
 
 }

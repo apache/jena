@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.3 2005-08-03 10:15:35 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.4 2005-08-04 21:41:37 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -41,10 +41,8 @@ import java.io.InterruptedIOException;
 import com.hp.hpl.jena.shared.wg.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -61,6 +59,7 @@ import com.hp.hpl.jena.rdf.arp.StatementHandler;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
 import com.hp.hpl.jena.rdf.arp.states.FrameI;
 import com.hp.hpl.jena.rdf.arp.states.LookingForRDF;
+import com.hp.hpl.jena.rdf.arp.states.StartStateRDForDescription;
 
 
 
@@ -199,9 +198,7 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
                     break;
                 case EM_FATAL :
                     handlers.getErrorHandler().fatalError(e);
-                    // If we get here,  we shouldn't go on
-                    // throw an error into Jena.
-                    throw new FatalParsingErrorException();
+                    break;
             }
         } 
         catch (SAXParseException xx) {
@@ -211,8 +208,14 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
             throw new WrappedException(ee);
         }
         if ( e instanceof ParseException 
-                && ((ParseException)e).promoteMe)
+                && ((ParseException)e).isPromoted())
             throw e;
+       if (options.getErrorMode()[id]==EM_FATAL) {
+           // If we get here,  we shouldn't go on
+           // throw an error into Jena.
+           throw new FatalParsingErrorException();
+           
+       }
     }
     
     public void error(SAXParseException e) throws SAXParseException {
@@ -319,14 +322,10 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
     {
         nodeIdUserData = new HashMap();
         idsUsed = new HashMap();
-        // String base = input.getSystemId();
-        // TODO: embedding option or not?
-        // TODO: first frame
         if (getOptions().getEmbedding())
             frame = new LookingForRDF(this, initialContext(base,lang));
         else
-            // TODO: following line is wrong
-            frame = new LookingForRDF(this, initialContext(base,lang));
+            frame = new StartStateRDForDescription(this, initialContext(base,lang));
         
     }
     

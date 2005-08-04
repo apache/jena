@@ -9,7 +9,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
-import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
@@ -25,21 +24,7 @@ public class LookingForRDF extends Frame {
 
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
-        ElementLexer el = new ElementLexer(this,uri,localName,rawName,
-                    E_RDF,0);
-        if (el.goodMatch)  {
-                AttributeLexer ap = new AttributeLexer(this, A_XMLBASE
-                        | A_XMLLANG | A_XML_OTHER, 0);
-                if (ap.processSpecials(atts) != atts.getLength()) {
-                    warning(ERR_SYNTAX_ERROR,"Illegal attributes on rdf:RDF");
-                }
-                arp.startRDF();
-                return new WantTopLevelDescriptionFrame(this, ap); 
-        }
-        AttributeLexer ap = new AttributeLexer(this, A_XMLBASE
-                | A_XMLLANG, 0);
-        ap.processSpecials(atts);
-        return new LookingForRDF(this, ap);
+        return rdfStartElement(uri, localName, rawName, atts);
 
     }
 

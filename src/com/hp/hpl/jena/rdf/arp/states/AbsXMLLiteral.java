@@ -209,7 +209,7 @@ public abstract class AbsXMLLiteral extends Frame {
                 // else prefix was overwritten with different value
             }
         }
-        return new InnerXMLLiteralFrame(this, rawName, childNameSpaces);
+        return new InnerXMLLiteral(this, rawName, childNameSpaces);
     }
  
 }

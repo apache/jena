@@ -5,23 +5,32 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
-import com.hp.hpl.jena.rdf.arp.impl.*;
+import org.xml.sax.SAXParseException;
 
-public class RDFCollectionFrame extends Collection {
+import com.hp.hpl.jena.rdf.arp.impl.ARPString;
+import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
-    public RDFCollectionFrame(WantsObjectFrameI s, XMLContext x) {
-        super(s, x);
+
+
+
+
+public class OuterXMLLiteral extends AbsXMLLiteral {
+    
+
+    
+    public OuterXMLLiteral(WantsObjectFrameI s, XMLContext x) {
+        super(s, x, new StringBuffer());
     }
 
-    ANode nil() {
-        return RDF_NIL;
+    public void endElement() throws SAXParseException {
+        ((WantsObjectFrameI)getParent()).theObject(
+                new ARPString(this,rslt.toString(),"","Literal" )
+                );
+        
     }
-    void restTriple(ANode subj,ANode obj) {
-        triple(subj,RDF_REST,obj);
-    }
-    void firstTriple(ANode subj, ANode obj) {
-        triple(subj,RDF_FIRST,obj);
-    }
+
+
+
 }
 
 

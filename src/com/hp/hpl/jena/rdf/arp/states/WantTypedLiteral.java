@@ -5,29 +5,36 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
-import com.hp.hpl.jena.rdf.arp.impl.ANode;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXParseException;
+
+import com.hp.hpl.jena.rdf.arp.impl.ARPDatatypeLiteral;
+import com.hp.hpl.jena.rdf.arp.impl.URIReference;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
-public class DAMLCollectionFrame extends Collection {
+public class WantTypedLiteral extends AbsWantLiteralValueOrDescription implements FrameI {
 
-    // TODO: duplicate ntriple rdfms-seq-representation/test001 for daml:collection
-    // TODO: duplicate ARP Scoping test for collection
-    public DAMLCollectionFrame(WantsObjectFrameI s, XMLContext x) {
-        super(s, x);
+    final URIReference dtURI;
+    public WantTypedLiteral(WantsObjectFrameI p, String datatypeURI, XMLContext ap)
+      throws SAXParseException {
+        super(p, ap);
+        dtURI = URIReference.resolve(this,xml,datatypeURI);
+    }
+    public FrameI startElement(String uri, String localName, String rawName,
+            Attributes atts) throws SAXParseException {
+        warning(ERR_SYNTAX_ERROR,"Cannot have XML element content <"+rawName+">as part of typed literal");
+        
+        return super.startElement(uri,localName,rawName,atts);
     }
 
-    void restTriple(ANode subj, ANode obj) {
-        triple(subj,DAML_REST,obj);
+    public void endElement() throws SAXParseException {
+       ((WantsObjectFrameI) getParent()).theObject(
+              new ARPDatatypeLiteral(this,getBuf().toString(),
+                      dtURI)); 
+       super.endElement();
     }
-
-    void firstTriple(ANode subj, ANode obj) {
-        triple(subj,DAML_FIRST,obj);
-        triple(subj,RDF_TYPE,DAML_LIST);
-    }
-
-    ANode nil() {
-        return DAML_NIL;
-    }
+    
+    
 
 }
 

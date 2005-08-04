@@ -5,22 +5,31 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
-import java.util.Map;
+import org.xml.sax.SAXParseException;
 
-public class InnerXMLLiteralFrame extends AbsXMLLiteral {
+import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
+import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
-    final String qname;
-    public InnerXMLLiteralFrame(AbsXMLLiteral f, String rawName, Map ns) {
-        super(f,ns);
-        qname = rawName;
+public class WantTopLevelDescription extends WantDescription {
+
+    public WantTopLevelDescription(FrameI s, AttributeLexer x)  throws SAXParseException {
+        super(s, x);
+    }
+    
+    public WantTopLevelDescription(XMLHandler handler, XMLContext x) {
+        super(handler,x);
     }
 
-    public void endElement() {
-        append("</");
-        append(qname);
-        append('>');
+    public void endElement() throws SAXParseException {
+        super.endElement();
+        arp.endRDF();
     }
-
+    
+    public void abort() {
+        super.abort();
+        arp.endRDF();
+    }
 
 }
 

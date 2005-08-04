@@ -48,9 +48,8 @@ Test test8 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfco
 test2.addTest(test8);
 Test test9 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#test-018","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/test-018.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/test-018.nt",false);
 test2.addTest(test9);
-// TODO: not mandatory
-//Test test10 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/Manifest.rdf#test001","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/test001.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/test001.nt",false);
-//test2.addTest(test10);
+Test test10 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/Manifest.rdf#test001","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/test001.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/test001.nt",false);
+test2.addTest(test10);
 Test test11 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/datatypes/Manifest.rdf#test001","http://www.w3.org/2000/10/rdf-tests/rdfcore/datatypes/test001.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/datatypes/test001.nt",false);
 test2.addTest(test11);
 Test test12 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-xmllang/Manifest.rdf#test005","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-xmllang/test005.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-xmllang/test005.nt",false);
@@ -470,9 +469,8 @@ Test test218 = test211.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/r
 test212.addTest(test218);
 Test test219 = test211.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#test-018","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/test-018.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/test-018.nt",false);
 test212.addTest(test219);
-// TODO: not mandatory
-//Test test220 = test211.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/Manifest.rdf#test001","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/test001.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/test001.nt",false);
-//test212.addTest(test220);
+Test test220 = test211.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/Manifest.rdf#test001","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/test001.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdf-element-not-mandatory/test001.nt",false);
+test212.addTest(test220);
 Test test221 = test211.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/datatypes/Manifest.rdf#test001","http://www.w3.org/2000/10/rdf-tests/rdfcore/datatypes/test001.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/datatypes/test001.nt",false);
 test212.addTest(test221);
 Test test222 = test211.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-xmllang/Manifest.rdf#test005","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-xmllang/test005.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-xmllang/test005.nt",false);

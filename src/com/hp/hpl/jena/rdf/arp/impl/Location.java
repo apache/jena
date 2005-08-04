@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: Location.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * * $Id: Location.java,v 1.2 2005-08-04 21:41:37 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -59,13 +59,6 @@ public class Location implements Locator {
         endColumn = locator.getColumnNumber();
         publicId = locator.getPublicId();
     	}
-    }
-    // TODO: delete this, unused.
-    Location(String sysId,int line,int col) {
-        inputName = sysId;
-        endLine = line;
-        endColumn = col;
-        publicId = null;
     }
     public String toString() {
         return //"before column " + endColumn +

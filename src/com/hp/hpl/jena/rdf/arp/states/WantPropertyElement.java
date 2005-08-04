@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
-public class WantPropertyElementFrame extends Frame implements
+public class WantPropertyElement extends Frame implements
         WantsObjectFrameI, HasSubjectFrameI {
     int liCounter = 1;
 
@@ -30,7 +30,7 @@ public class WantPropertyElementFrame extends Frame implements
     boolean objectIsBlank = false;
     boolean nonWhiteMsgGiven = false;
 
-    public WantPropertyElementFrame(HasSubjectFrameI s, XMLContext x) {
+    public WantPropertyElement(HasSubjectFrameI s, XMLContext x) {
         super(s, x);
     }
 
@@ -118,17 +118,17 @@ public class WantPropertyElementFrame extends Frame implements
         
         switch (nextStateCode) {
         case 0:
-            return new WantLiteralValueOrDescriptionFrame(this, x);
+            return new WantLiteralValueOrDescription(this, x);
         case PTLITERAL:
-            return new XMLLiteralFrame(this, x);
+            return new OuterXMLLiteral(this, x);
         case PTRESOURCE:
-            return new WantPropertyElementFrame(this, x);
+            return new WantPropertyElement(this, x);
         case PTRDFCOLLECTION:
-            return new RDFCollectionFrame(this, x);
+            return new RDFCollection(this, x);
         case PTDAMLCOLLECTION:
-            return new DAMLCollectionFrame(this, x);
+            return new DAMLCollection(this, x);
         case TYPEDLITERAL:
-            return new WantTypedLiteralFrame(this, resolve(x, ap.datatype), x);
+            return new WantTypedLiteral(this, resolve(x, ap.datatype), x);
         case EMPTYWITHOBJ:
 
             return new WantEmpty(this, x);

@@ -9,13 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.parsers.*;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
 
 
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 import com.hp.hpl.jena.rdf.arp.DOM2Model;

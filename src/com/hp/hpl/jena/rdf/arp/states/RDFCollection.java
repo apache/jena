@@ -5,37 +5,23 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXParseException;
+import com.hp.hpl.jena.rdf.arp.impl.*;
 
-import com.hp.hpl.jena.rdf.arp.impl.ARPDatatypeLiteral;
-import com.hp.hpl.jena.rdf.arp.impl.URIReference;
-import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+public class RDFCollection extends Collection {
 
-public class WantTypedLiteralFrame extends AbsWantLiteralValueOrDescription implements FrameI {
-
-    final URIReference dtURI;
-    public WantTypedLiteralFrame(WantsObjectFrameI p, String datatypeURI, XMLContext ap)
-      throws SAXParseException {
-        super(p, ap);
-        dtURI = URIReference.resolve(this,xml,datatypeURI);
-    }
-    public FrameI startElement(String uri, String localName, String rawName,
-            Attributes atts) throws SAXParseException {
-        warning(ERR_SYNTAX_ERROR,"Cannot have XML element content <"+rawName+">as part of typed literal");
-        
-        return super.startElement(uri,localName,rawName,atts);
+    public RDFCollection(WantsObjectFrameI s, XMLContext x) {
+        super(s, x);
     }
 
-    public void endElement() throws SAXParseException {
-       ((WantsObjectFrameI) getParent()).theObject(
-              new ARPDatatypeLiteral(this,getBuf().toString(),
-                      dtURI)); 
-       super.endElement();
+    ANode nil() {
+        return RDF_NIL;
     }
-    
-    
-
+    void restTriple(ANode subj,ANode obj) {
+        triple(subj,RDF_REST,obj);
+    }
+    void firstTriple(ANode subj, ANode obj) {
+        triple(subj,RDF_FIRST,obj);
+    }
 }
 
 

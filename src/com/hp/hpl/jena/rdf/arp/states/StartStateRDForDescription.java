@@ -5,24 +5,38 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
-import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
+import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
-public class WantTopLevelDescriptionFrame extends WantDescription {
+public class StartStateRDForDescription extends WantTopLevelDescription {
 
-    public WantTopLevelDescriptionFrame(FrameI s, AttributeLexer x)  throws SAXParseException {
-        super(s, x);
+    boolean sawRdfRDF;
+    
+    public StartStateRDForDescription(XMLHandler handler, XMLContext x)
+            throws SAXParseException {
+        super(handler, x);
     }
     
-    public void endElement() throws SAXParseException {
-        super.endElement();
-        arp.endRDF();
+    public FrameI startElement(String uri, String localName, String rawName,
+            Attributes atts) throws SAXParseException {
+        if (localName.equals("RDF")) {
+          if (uri.equals(rdfns)) {
+              sawRdfRDF = true;
+            return rdfStartElement(uri, localName, rawName, atts);
+          }
+          warning(WARN_NOT_RDF_NAMESPACE,"Top-level "+rawName+" element is not in the RDF namespace. Probably a mistake.");
+        }
+        sawRdfRDF = false;
+        arp.startRDF();
+        return super.startElement(uri,localName,rawName,atts);
     }
     
     public void abort() {
-        super.abort();
-        arp.endRDF();
+        if (!sawRdfRDF)
+            super.abort();
     }
 
 }

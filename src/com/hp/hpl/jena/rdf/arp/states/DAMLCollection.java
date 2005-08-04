@@ -5,31 +5,29 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
-import org.xml.sax.SAXParseException;
-
-import com.hp.hpl.jena.rdf.arp.impl.ARPString;
+import com.hp.hpl.jena.rdf.arp.impl.ANode;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
+public class DAMLCollection extends Collection {
 
-
-
-
-public class XMLLiteralFrame extends AbsXMLLiteral {
-    
-
-    
-    public XMLLiteralFrame(WantsObjectFrameI s, XMLContext x) {
-        super(s, x, new StringBuffer());
+    // TODO: duplicate ntriple rdfms-seq-representation/test001 for daml:collection
+    // TODO: duplicate ARP Scoping test for collection
+    public DAMLCollection(WantsObjectFrameI s, XMLContext x) {
+        super(s, x);
     }
 
-    public void endElement() throws SAXParseException {
-        ((WantsObjectFrameI)getParent()).theObject(
-                new ARPString(this,rslt.toString(),"","Literal" )
-                );
-        
+    void restTriple(ANode subj, ANode obj) {
+        triple(subj,DAML_REST,obj);
     }
 
+    void firstTriple(ANode subj, ANode obj) {
+        triple(subj,DAML_FIRST,obj);
+        triple(subj,RDF_TYPE,DAML_LIST);
+    }
 
+    ANode nil() {
+        return DAML_NIL;
+    }
 
 }
 

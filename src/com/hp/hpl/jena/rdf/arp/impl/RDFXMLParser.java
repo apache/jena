@@ -78,13 +78,6 @@ public class RDFXMLParser extends XMLHandler {
             super.xmlDecl(version, encoding, standalone, augs);
 
         }
-        /*
-         * public void startDocument(XMLLocator locator, java.lang.String
-         * encoding, NamespaceContext namespaceContext, Augmentations augs) {
-         * a.setEncoding(encoding);
-         * super.startDocument(locator,encoding,namespaceContext,augs); }
-         * 
-         */
     }
 
     public static RDFXMLParser create() {
@@ -95,17 +88,10 @@ public class RDFXMLParser extends XMLHandler {
         return a;
     }
 
-    // TODO: generalError(ERR_UTF_ENCODING, e);
-
-    // TODO: generalError(ERR_GENERIC_IO, e);
 
     public void parse(InputSource input) throws IOException, SAXException {
         parse(input, input.getSystemId());
     }
-
-    // private SAXParser saxParser;
-
-
 
 
     synchronized public void parse(InputSource input, String base)
@@ -136,24 +122,12 @@ public class RDFXMLParser extends XMLHandler {
                 // e1.printStackTrace();
             }
         } 
-//        catch (FatalParsingErrorException e) {
-//        }
         catch (WrappedException wrapped) {
             wrapped.throwMe();
         }
         catch (FatalParsingErrorException e) {
             // ignore this.
         }
-        // definitely reported with new design ...
-        // catch (ParseException parse) {
-        // This has not been reported???
-        // TODO more work on error reporting
-
-        // userError(parse);
-        // Don't overdo it.
-        // throw parse.rootCause();
-
-        // }
         finally {
             afterParse();
         }
@@ -174,7 +148,6 @@ public class RDFXMLParser extends XMLHandler {
 
         CharEncoding encodingInfo = CharEncoding.create(original);
         String e = encodingInfo.name();
-        // System.err.println("xmlEncoding = " + e);
         if (xmlEncoding == null) {
             // special case UTF-8 or UTF-16?
             if (e.equals("UTF") && readerXMLEncoding != null
@@ -183,8 +156,6 @@ public class RDFXMLParser extends XMLHandler {
                 return;
             }
             xmlEncoding = e;
-            // try {
-
             if (readerXMLEncoding != null
                     && !readerXMLEncoding.equalsIgnoreCase(e)) {
                 warning(
@@ -208,11 +179,6 @@ public class RDFXMLParser extends XMLHandler {
                         + e + "\" would give more interoperability.");
 
             }
-            // TODO: delete catch altogether?
-            // } catch (SAXParseException e1) {
-            // e1.printStackTrace();
-            // }
-
         }
     }
 

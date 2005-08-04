@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ARPString.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * * $Id: ARPString.java,v 1.2 2005-08-04 21:41:37 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -54,7 +54,6 @@ public class ARPString implements ALiteral {
     public ARPString(Frame f,String value,String lang,String parseType)
       throws SAXParseException 
       {
-        // TODO: literal error checking
         f.checkString(value);
         this.value = value;
         this.lang = "";
@@ -62,7 +61,6 @@ public class ARPString implements ALiteral {
         this.parseType = parseType;
     }
     public ARPString(Frame f, String value,String lang) throws SAXParseException {
-//      TODO: literal error checking
         f.checkString(value);
         this.value = value;
         this.lang = lang;

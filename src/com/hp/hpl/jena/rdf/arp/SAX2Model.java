@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.rdf.arp;
 
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.JenaHandler;

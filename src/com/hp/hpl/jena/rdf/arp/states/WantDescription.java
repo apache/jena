@@ -14,6 +14,7 @@ import com.hp.hpl.jena.rdf.arp.impl.AttributeLexer;
 import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
+import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 abstract public class WantDescription extends Frame implements HasSubjectFrameI {
 
@@ -22,6 +23,9 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
     }
     public WantDescription(FrameI s, AttributeLexer x) throws SAXParseException {
         super(s, x);
+    }
+    public WantDescription(XMLHandler handler, XMLContext x) {
+        super(handler,x);
     }
     ANode subject;
     boolean subjectIsBlank = false;
@@ -78,7 +82,7 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
             
         processPropertyAttributes(ap,atts,x);
         
-        return new WantPropertyElementFrame(this,x);
+        return new WantPropertyElement(this,x);
    }
     private void clearSubject() {
         if (subjectIsBlank)

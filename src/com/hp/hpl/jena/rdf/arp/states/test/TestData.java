@@ -22,19 +22,19 @@ import org.xml.sax.SAXParseException;
 
 import com.hp.hpl.jena.rdf.arp.impl.*;
 import com.hp.hpl.jena.rdf.arp.states.AbsXMLLiteral;
-import com.hp.hpl.jena.rdf.arp.states.DAMLCollectionFrame;
+import com.hp.hpl.jena.rdf.arp.states.DAMLCollection;
 import com.hp.hpl.jena.rdf.arp.states.FrameI;
 import com.hp.hpl.jena.rdf.arp.states.HasSubjectFrameI;
-import com.hp.hpl.jena.rdf.arp.states.InnerXMLLiteralFrame;
-import com.hp.hpl.jena.rdf.arp.states.RDFCollectionFrame;
+import com.hp.hpl.jena.rdf.arp.states.InnerXMLLiteral;
+import com.hp.hpl.jena.rdf.arp.states.RDFCollection;
 import com.hp.hpl.jena.rdf.arp.states.WantEmpty;
-import com.hp.hpl.jena.rdf.arp.states.WantLiteralValueOrDescriptionFrame;
-import com.hp.hpl.jena.rdf.arp.states.WantPropertyElementFrame;
+import com.hp.hpl.jena.rdf.arp.states.WantLiteralValueOrDescription;
+import com.hp.hpl.jena.rdf.arp.states.WantPropertyElement;
 import com.hp.hpl.jena.rdf.arp.states.LookingForRDF;
-import com.hp.hpl.jena.rdf.arp.states.WantTopLevelDescriptionFrame;
-import com.hp.hpl.jena.rdf.arp.states.WantTypedLiteralFrame;
+import com.hp.hpl.jena.rdf.arp.states.WantTopLevelDescription;
+import com.hp.hpl.jena.rdf.arp.states.WantTypedLiteral;
 import com.hp.hpl.jena.rdf.arp.states.WantsObjectFrameI;
-import com.hp.hpl.jena.rdf.arp.states.XMLLiteralFrame;
+import com.hp.hpl.jena.rdf.arp.states.OuterXMLLiteral;
 
 /**
  * For each state s, for each element-attribute event e1, - test s, e1 - if s,
@@ -161,23 +161,23 @@ public class TestData {
 
     static AttributeLexer ap = new AttributeLexer(testFrame, 0, 0);
     static {
-        add("ix", "inner-xml-literal", InnerXMLLiteralFrame.class,
+        add("ix", "inner-xml-literal", InnerXMLLiteral.class,
                 new Object[] { testFrame, "foo", testFrame.namespaces });
-        add("xl", "xml-literal", XMLLiteralFrame.class, new Object[] {
+        add("xl", "xml-literal", OuterXMLLiteral.class, new Object[] {
                 testFrame, xmlContext });
-        add("ip", "vanilla-prop-elt", WantLiteralValueOrDescriptionFrame.class,
+        add("ip", "vanilla-prop-elt", WantLiteralValueOrDescription.class,
                 new Object[] { testFrame, xmlContext });
-        add("tl", "typed-literal", WantTypedLiteralFrame.class, new Object[] {
+        add("tl", "typed-literal", WantTypedLiteral.class, new Object[] {
                 testFrame, "http://ex/dt", xmlContext });
-        add("dl", "daml:collection", DAMLCollectionFrame.class, new Object[] {
+        add("dl", "daml:collection", DAMLCollection.class, new Object[] {
                 testFrame, xmlContext });
-        add("cl", "collection", RDFCollectionFrame.class, new Object[] {
+        add("cl", "collection", RDFCollection.class, new Object[] {
                 testFrame, xmlContext });
-        add("tp", "top-level", WantTopLevelDescriptionFrame.class,
+        add("tp", "top-level", WantTopLevelDescription.class,
                 new Object[] { testFrame, ap });
         add("em", "empty-prop-elt", WantEmpty.class, new Object[] {
                 testFrame, xmlContext });
-        add("de", "inside-Description", WantPropertyElementFrame.class,
+        add("de", "inside-Description", WantPropertyElement.class,
                 new Object[] { testFrame, xmlContext });
         add("RD", "looking-for-RDF", LookingForRDF.class, new Object[] {
                 testFrame, ap });
@@ -284,7 +284,7 @@ public class TestData {
         Class types[] = new Class[args.length];
         for (int i = 1; i < args.length; i++)
             types[i] = args[i].getClass();
-        if (cl == InnerXMLLiteralFrame.class)
+        if (cl == InnerXMLLiteral.class)
             types[2] = Map.class;
         for (int j = 0; j < tryClasses.length; j++) {
             types[0] = tryClasses[j];

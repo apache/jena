@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.2 2005-08-04 21:41:37 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -68,13 +68,15 @@ public class ParserSupport
         warning(WARN_MALFORMED_URI, "Bad URI: " + msg);
     }
     
-	protected ParserSupport(XMLHandler arp) {
+	protected ParserSupport(XMLHandler arp, XMLContext xml) {
 		this.arp = arp;
+        this.xml= xml;
 	}
     Map idsUsed() {
         return arp.idsUsed;
     }
     protected final XMLHandler arp;
+    public final XMLContext xml;
 	/**
 	 * @param str The fully expanded URI
 	 */
@@ -126,7 +128,7 @@ public class ParserSupport
 		}
 		return str;
 	}
-    // TODO: make calls to checkString
+    // TODO: make calls to checkString inside XMLLiteral code
 	public void checkString(String t) throws SAXParseException {
 		if (!CharacterModel.isNormalFormC(t))
 			warning(
@@ -135,7 +137,7 @@ public class ParserSupport
 		checkEncoding(t);
 		checkComposingChar(t);
 	}
-    // TODO: make calls to checkComposingChar, when sewing pieces together
+    // TODO: make calls to checkComposingChar, when sewing pieces together inside XMLLiteral code
 	void checkComposingChar(String t) throws SAXParseException {
 		if (CharacterModel.startsWithComposingCharacter(t))
 			warning(
@@ -199,30 +201,7 @@ public class ParserSupport
 		}
 	}
 
-//	void createTriple(ARPResource r, Token p, Object v, String reify)
-//		throws ParseException {
-//		switch (p.kind) {
-//			case E_OTHER :
-//			case E_RDF_N :
-//				r.setPredicateObject(
-//					((ARPQname) p).asURIReference(arp),
-//					v,
-//					reify);
-//				break;
-//			case E_LI :
-//				r.setLiObject(v, reify);
-//				break;
-//			default :
-//				throw new RuntimeException("Assertion failure in ParserSupport.createTriple");
-//		}
-//	}
 
-    // TODO: typed literal creation ...
-//	ARPDatatypeLiteral createDatatypeLiteral(
-//		URIReference dtURI,
-//		ARPString dtLex) {
-//		return new ARPDatatypeLiteral(dtLex, dtURI);
-//	}
 	public void checkEncoding(String s) throws SAXParseException {
 		if (arp.encodingProblems) {
 			for (int i = s.length() - 1; i >= 0; i--) {
@@ -233,180 +212,6 @@ public class ParserSupport
 			}
 		}
 	}
-	/*
-	   private Map checkNameSpace(StringBuffer b,ARPQname qn,Map ns) {
-	       String q = qn.qName;
-	       int colon = q.indexOf(':');
-	       String prefix = colon==-1?"":q.substring(0,colon);
-	       String old = (String)ns.get(prefix);
-	       if ( old == null || !old.equals(qn.nameSpace) ) {
-	           Map rslt = new HashMap(ns);
-	           rslt.put(prefix,qn.nameSpace);
-	           if ( prefix.length() == 0 ) {
-	               // MUST use \" as delimiter refer to RFC 2396, \' may appear in uri.
-	               b.append(" xmlns=\"" + qn.nameSpace + "\"");
-	           } else {
-	               // MUST use \" as delimiter refer to RFC 2396, \' may appear in uri.
-	               b.append(" xmlns:"+prefix+"=\"" + qn.nameSpace + "\"");
-	           }
-	           return rslt;
-	       } else {
-	           return ns;
-	       }
-	   }
-	   */
-//	private void useNameSpace(Map ns, ARPQname qn) {
-//		useNameSpace(ns, qn.prefix(), qn.nameSpace);
-//	}
-//	private void useNameSpace(Map ns, String prefix, String uri) {
-//		ns.put(prefix, uri);
-//	}
-//	void startLitElement(StringBuffer b, Token t, Map ns) {
-//		ARPQname qn = (ARPQname) t;
-//		b.append("<" + qn.qName);
-//		useNameSpace(ns, qn);
-//		return;
-//	}
-//	private void checkNamespace(Map allNs, String prefix, String uri, Token t)
-//		throws ParseException {
-//		checkNamespaceURI(uri, t);
-//		String ns = (String) allNs.get(prefix);
-//		if (ns == null || !ns.equals(uri)) {
-//			//	System.err.println(prefix);
-//			//	System.err.println(uri);
-//			//	System.err.println(ns);
-//			//	System.err.println(t);
-//			//	Iterator it = allNs.entrySet().iterator();
-//			//	while ( it.hasNext() ) {
-//			//		Map.Entry e = (Map.Entry)it.next();
-//			//		System.out.println(e.getKey().toString() + " = " +
-//			//	  e.getValue().toString());
-//			//	}
-//			arp.parseWarning(
-//				ERR_INTERNAL_ERROR,
-//				t.location,
-//				"Internal namespaces error, please report to jjc@hpl.hp.com.");
-//
-//		}
-//	}
-	/**
-	 * @param buf Add namespace attrs and then attrs to this buf.
-	 * @param attrs The attributes on this element.
-	 * @param visiblyUsed The visibly used namespaces on this element.
-	 * @param ns The namespaces declared within the parent element
-	 *            of the resulting XML Literal
-	 * @param allNs The namespaces as in the input document.
-	 */
-//	Map litAttributes(
-//		StringBuffer buf,
-//		SortedMap attrs,
-//		SortedMap visiblyUsed,
-//		Map ns,
-//		Map allNs,
-//		Token t)
-//		throws ParseException {
-//		boolean nsIsNew = false;
-//		Iterator it = visiblyUsed.entrySet().iterator();
-//		while (it.hasNext()) {
-//			Map.Entry entry = (Map.Entry) it.next();
-//			String prefix = (String) entry.getKey();
-//			String uri = (String) entry.getValue();
-//			checkNamespace(allNs, prefix, uri, t);
-//			if (uri.equals(ns.get(prefix)))
-//				continue;
-//			if (!nsIsNew) {
-//				ns = new HashMap(ns);
-//				nsIsNew = true;
-//			}
-//			ns.put(prefix, uri);
-//			String attr = prefix.equals("") ? "xmlns" : "xmlns:" + prefix;
-//			buf.append(" " + attr + "=\"" + encodeAttributeText(uri) + "\"");
-//		}
-//		it = attrs.values().iterator();
-//		while (it.hasNext()) {
-//			buf.append((String) it.next());
-//		}
-//		return ns;
-//	}
-//	Map litNamespace(Token prefix, Token uri, Map ns, Map used) {
-//		String urins = ((StrToken) uri).value;
-//		String prefixS = ((StrToken) prefix).value;
-//		// useNameSpace(used,prefixS,urins); reagle-01 reagle-02
-//		Map rslt = new HashMap(ns);
-//		rslt.put(prefixS, urins);
-//		return rslt;
-//	}
-//	String litAttrName(Token attr, Map visiblyUsed) {
-//		ARPQname qn = (ARPQname) attr;
-//		if (!qn.prefix().equals("")) {
-//			useNameSpace(visiblyUsed, qn);
-//		}
-//		return qn.qName;
-//	}
-//	String litAttribute(Token attr, Token val) {
-//		ARPQname qn = (ARPQname) attr;
-//		return " "
-//			+ qn.qName
-//			+ "=\""
-//			+ encodeAttributeText(((StrToken) val).value)
-//			+ "\"";
-//	}
-//	void litComment(StringBuffer b, Token comment) {
-//		b.append("<!--" + ((StrToken) comment).value + "-->");
-//	}
-//	void litProcessingInstruction(StringBuffer b, Token pi) {
-//		b.append("<?" + ((StrToken) pi).value + "?>");
-//	}
-//	void endLitElement(StringBuffer b, Token t) {
-//		String q = ((ARPQname) t).qName;
-//		b.append("</" + q + ">");
-//	}
-/*
-	Map litAttrName(StringBuffer b,Token t,Map ns) {
-	    ARPQname qn = (ARPQname)t;
-	    Map rslt = checkNameSpace(b,qn,ns);
-	    b.append(" " + qn.qName );
-	    return ns;
-	}
-	void litAttrValue(StringBuffer b,Token t) {
-	    b.append("=\"" + encodeAttr(((StrToken)t).value) + "\"");
-	}
-	*/
-//	void litText(StringBuffer b, Token t) {
-//		b.append(encodeTextNode(((StrToken) t).value));
-//	}
-	/*
-	    private void checkXMLLiteralNameSpace(String uri,String raw) {
-	        if ( !uri.equals("") ) {
-	            int colon = raw.indexOf(':');
-	            String prefix = colon==-1?null:raw.substring(0,colon);
-	            String oldUri = (String)xmlLiteralNameSpaces.get(prefix);
-	            if (oldUri!=null && oldUri.equals(uri))
-	                return;
-	            thisDepthXMLLiteralNameSpaces.add(new String[]{prefix,oldUri});
-	            xmlLiteralNameSpaces.put(prefix,uri);
-	            if ( prefix == null ) {
-	                xmlLiteralValue.append(" xmlns");
-	            } else {
-	                xmlLiteralValue.append(" xmlns:");
-	                xmlLiteralValue.append(prefix);
-	            }
-	            xmlLiteralValue.append("='");
-	            xmlLiteralValue.append(encodeAttr(uri));
-	            xmlLiteralValue.append('\'');
-	        }
-	    }
-	*/
-
-	// http://www.w3.org/TR/2001/REC-xml-c14n-20010315#ProcessingModel
-	/* The string value of the node is modified by replacing all 
-	 * ampersands (&) with &amp;, all open angle brackets (<) with 
-	 * &lt;, all quotation mark characters with &quot;, and the 
-	 * whitespace characters #x9, #xA, and #xD, with character references. 
-	 * The character references are written in uppercase hexadecimal 
-	 * with no leading zeroes (for example, #xD is represented by the 
-	 * character reference &#xD;). 
-	 */
 
 	/**
      * whether this is a warning or an error is determined later.
@@ -442,86 +247,23 @@ public class ParserSupport
     protected void triple(ANode a, ANode b, ANode c) {
         arp.triple(a,b,c);
     }
-//    static private String encodeAttributeText(String s) {
-//		StringBuffer rslt = null;
-//		String replace;
-//		char ch;
-//		for (int i = 0; i < s.length(); i++) {
-//			ch = s.charAt(i);
-//			switch (ch) {
-//				case '&' :
-//					replace = "&amp;";
-//					break;
-//				case '<' :
-//					replace = "&lt;";
-//					break;
-//				case '"' :
-//					replace = "&quot;";
-//					break;
-//				case 9 :
-//					replace = "&#x9;";
-//					break;
-//				case 0xA :
-//					replace = "&#xA;";
-//					break;
-//				case 0xD :
-//					replace = "&#xD;";
-//					break;
-//				default :
-//					replace = null;
-//			}
-//			if (replace != null) {
-//				if (rslt == null) {
-//					rslt = new StringBuffer();
-//					rslt.append(s.substring(0, i));
-//				}
-//				rslt.append(replace);
-//			} else if (rslt != null) {
-//				rslt.append(ch);
-//			}
-//		}
-//		return rslt == null ? s : rslt.toString();
-//	}
-	// http://www.w3.org/TR/2001/REC-xml-c14n-20010315#ProcessingModel
-	/** except all ampersands are replaced by &amp;, all open angle
-	  brackets () are replaced by &lt;, all closing angle brackets 
-	  (>) are replaced by &gt;, and all #xD characters are replaced 
-	  by &#xD;.  
-	 */
 
-//	static private String encodeTextNode(String s) {
-//		StringBuffer rslt = null;
-//		String replace;
-//		char ch;
-//		for (int i = 0; i < s.length(); i++) {
-//			ch = s.charAt(i);
-//			switch (ch) {
-//				case '&' :
-//					replace = "&amp;";
-//					break;
-//				case '<' :
-//					replace = "&lt;";
-//					break;
-//				case '>' :
-//					replace = "&gt;";
-//					break;
-//				case 0xD :
-//					replace = "&#xD;";
-//					break;
-//				default :
-//					replace = null;
-//			}
-//			if (replace != null) {
-//				if (rslt == null) {
-//					rslt = new StringBuffer();
-//					rslt.append(s.substring(0, i));
-//				}
-//				rslt.append(replace);
-//			} else if (rslt != null) {
-//				rslt.append(ch);
-//			}
-//		}
-//		return rslt == null ? s : rslt.toString();
-//	}
+    public XMLContext getXMLContext() {
+        return xml;
+    }
+
+    public XMLHandler getXMLHandler() {
+        return arp;
+    }
+
+    protected String resolve(XMLContext x, String uri) throws SAXParseException {
+        try {
+            return x.resolve(uri);
+        }
+        catch (URISyntaxException e) {
+            badURI(uri,e);
+            return uri;
+        }
+    }
 
 }
