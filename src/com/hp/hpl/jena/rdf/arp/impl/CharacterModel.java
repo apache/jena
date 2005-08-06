@@ -31,6 +31,7 @@ public class CharacterModel {
 	        return normalized.equals(str);
 	    }
 	}
+    
 	
 	/* Does this string start with a composing character as defined
 	 * by the 

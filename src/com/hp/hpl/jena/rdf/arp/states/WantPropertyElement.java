@@ -5,7 +5,6 @@
 
 package com.hp.hpl.jena.rdf.arp.states;
 
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXParseException;
 
@@ -17,8 +16,10 @@ import com.hp.hpl.jena.rdf.arp.impl.ElementLexer;
 import com.hp.hpl.jena.rdf.arp.impl.URIReference;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
-public class WantPropertyElement extends Frame implements
-        WantsObjectFrameI, HasSubjectFrameI {
+import java.util.*;
+
+public class WantPropertyElement extends Frame implements WantsObjectFrameI,
+        HasSubjectFrameI {
     int liCounter = 1;
 
     ANode predicate;
@@ -28,35 +29,28 @@ public class WantPropertyElement extends Frame implements
     ANode reify;
 
     boolean objectIsBlank = false;
-    boolean nonWhiteMsgGiven = false;
 
     public WantPropertyElement(HasSubjectFrameI s, XMLContext x) {
         super(s, x);
     }
 
+    // These three are used as bitfields
     static final private int TYPEDLITERAL = 1;
 
     static final private int EMPTYWITHOBJ = 2;
 
-    static final private int PTLITERAL = 3;
-
-    static final private int PTRESOURCE = 4;
-
-    static final private int PTRDFCOLLECTION = 5;
-
-    static final private int PTDAMLCOLLECTION = 6;
+    static final private int PARSETYPE = 4;
 
     public FrameI startElement(String uri, String localName, String rawName,
-            Attributes atts)  throws SAXParseException {
+            Attributes atts) throws SAXParseException {
         clearObject();
         nonWhiteMsgGiven = false;
         ElementLexer el = new ElementLexer(this, uri, localName, rawName, E_LI,
                 CoreAndOldTerms | E_DESCRIPTION);
-//        if (el.badMatch)
-//            warning(ERR_SYNTAX_ERROR,"bad use of " + rawName);
-        predicate = el.goodMatch ? 
-                (AResourceInternal)rdf_n(liCounter++)
-                : URIReference.fromQName(this,uri,localName);
+        // if (el.badMatch)
+        // warning(ERR_SYNTAX_ERROR,"bad use of " + rawName);
+        predicate = el.goodMatch ? (AResourceInternal) rdf_n(liCounter++)
+                : URIReference.fromQName(this, uri, localName);
 
         AttributeLexer ap = new AttributeLexer(this,
         // xml:
@@ -67,92 +61,108 @@ public class WantPropertyElement extends Frame implements
                 // bad rdf:
                 A_BADATTRS);
         int cnt = ap.processSpecials(atts);
-        int nextStateCode = 0;
+
+        // These three states are intended as mutually
+        // incompatible, but all three can occur
+        // together. Any two of the three, or all
+        // three is a syntax errror.
+        // Having none of these is legal.
+        final int nextStateCode = (ap.datatype == null ? 0 : TYPEDLITERAL)
+                | (ap.parseType == null ? 0 : PARSETYPE)
+                | (mustBeEmpty(ap, atts, cnt) ? EMPTYWITHOBJ : 0);
+
+        if (this.badStateCode(nextStateCode)) {
+            warning(errorNumber(nextStateCode), descriptionOfCases(ap,
+                    nextStateCode, propertyAttributeDescription(atts, ap, cnt)));
+        }
+
         XMLContext x = ap.xml(xml);
 
-        reify = ap.id == null ? null : 
-            URIReference.fromID(this,x,ap.id);
-        if (cnt < atts.getLength() || ap.type != null || ap.nodeID != null
-                || ap.resource != null) {
+        reify = ap.id == null ? null : URIReference.fromID(this, x, ap.id);
+        if (mustBeEmpty(ap, atts, cnt)) {
             if (ap.nodeID != null) {
                 object = new ARPResource(arp, ap.nodeID);
-               objectIsBlank = true;
+                objectIsBlank = true;
             }
             if (ap.resource != null) {
                 if (object != null)
-                    warning(ERR_SYNTAX_ERROR,"Both rdf:nodeID and rdf:resource attributes cannot be specified on a property element.");
+                    if (!badStateCode(nextStateCode))  // otherwise warning already given
+                       warning(
+                            ERR_SYNTAX_ERROR,
+                            "It is not permitted to specifiy both rdf:nodeID and rdf:resource attributes on a property element.");
                 else
-                    object = URIReference.resolve(this,x,ap.resource);
+                    object = URIReference.resolve(this, x, ap.resource);
             }
             if (object == null) {
                 object = new ARPResource(arp);
                 objectIsBlank = true;
             }
-            // ((HasSubjectFrameI) getParent()).aPredAndObj(predicate, object);
-
             processPropertyAttributes(ap, atts, x);
-            nextStateCode = check(nextStateCode, EMPTYWITHOBJ);
-        }
-        if (ap.datatype != null)
-            nextStateCode = check(nextStateCode, TYPEDLITERAL);
-        if (ap.parseType != null) {
-            if (ap.parseType.equals("Collection")) {
-                nextStateCode = check(nextStateCode, PTRDFCOLLECTION);
-            } else if (ap.parseType.equals("daml:collection")) {
-                warning(IGN_DAML_COLLECTION,"'daml:collection' is not really a legal value for rdf:parseType");
-                nextStateCode = check(nextStateCode, PTDAMLCOLLECTION);
-            } else if (ap.parseType.equals("Resource")) {
-                object = new ARPResource(arp);
-                objectIsBlank = true;
-                nextStateCode = check(nextStateCode, PTRESOURCE);
-            } else if (ap.parseType.equals("Literal")) {
-                nextStateCode = check(nextStateCode, PTLITERAL);
-            } else {
-                warning(WARN_UNKNOWN_PARSETYPE,"Unknown rdf:parseType: '"+ap.parseType+ "' (treated as 'Literal'.");
-                nextStateCode = check(nextStateCode, PTLITERAL);
-            }
         }
 
-        if (object!=null)
+        if (object != null)
             theObject(object);
-        
+
+        return nextFrame(atts, ap, cnt, nextStateCode, x);
+
+    }
+
+
+    private boolean mustBeEmpty(AttributeLexer ap, Attributes atts, int cnt) {
+        return cnt < atts.getLength() || ap.type != null || ap.nodeID != null
+                || ap.resource != null;
+    }
+
+
+    private FrameI nextFrame(Attributes atts, AttributeLexer ap, int cnt,
+            int nextStateCode, XMLContext x) throws SAXParseException {
         switch (nextStateCode) {
         case 0:
             return new WantLiteralValueOrDescription(this, x);
-        case PTLITERAL:
-            return new OuterXMLLiteral(this, x);
-        case PTRESOURCE:
-            return new WantPropertyElement(this, x);
-        case PTRDFCOLLECTION:
-            return new RDFCollection(this, x);
-        case PTDAMLCOLLECTION:
-            return new DAMLCollection(this, x);
+        case PARSETYPE | TYPEDLITERAL:
+        case PARSETYPE | TYPEDLITERAL | EMPTYWITHOBJ:
+        case PARSETYPE | EMPTYWITHOBJ:
+        case PARSETYPE:
+            return withParsetype(ap.parseType, x);
+        case TYPEDLITERAL | EMPTYWITHOBJ:
         case TYPEDLITERAL:
             return new WantTypedLiteral(this, resolve(x, ap.datatype), x);
         case EMPTYWITHOBJ:
-
             return new WantEmpty(this, x);
         }
         throw new IllegalStateException("impossible");
-
     }
 
-    private int check(int oldV, int newV) throws SAXParseException {
-        if (oldV != 0)
-            // TODO: make this msg more precise
-            warning(ERR_SYNTAX_ERROR,"Illegal attribute combination on property element");
-        return newV;
-    }
 
-    // TODO: generalize this, check all instances of isWhite
-    public void characters(char[] ch, int start, int length)  throws SAXParseException{
-        if ((!nonWhiteMsgGiven) && !isWhite(ch, start, length)) {
-            nonWhiteMsgGiven = true;
-            warning(ERR_NOT_WHITESPACE,
-              "Expecting propertyElement(s). String data \"" +
-              new String(ch,start,length)+
-              "\" not allowed: maybe you wanted to use rdf:parseType='Literal' for XML content.");
+    private FrameI withParsetype(String pt, XMLContext x)
+            throws SAXParseException {
+        if (pt.equals("Collection")) {
+            return new RDFCollection(this, x);
         }
+        if (pt.equals("daml:collection")) {
+            warning(IGN_DAML_COLLECTION,
+                    "'daml:collection' is not really a legal value for rdf:parseType");
+            return new DAMLCollection(this, x);
+        }
+        if (pt.equals("Resource")) {
+            if (object == null) {
+                // in some error cases the object has already been set.
+                object = new ARPResource(arp);
+                objectIsBlank = true;
+                theObject(object);
+            }
+            return new WantPropertyElement(this, x);
+        }
+        if (!pt.equals("Literal")) {
+            warning(WARN_UNKNOWN_PARSETYPE, "Unknown rdf:parseType: '" + pt
+                    + "' (treated as 'Literal'.");
+        }
+        return new OuterXMLLiteral(this, x, pt);
+    }
+
+    String suggestParsetypeLiteral() {
+        return (getParent() instanceof WantTopLevelDescription) ? "" : super
+                .suggestParsetypeLiteral();
     }
 
     public void aPredAndObj(ANode p, ANode o) {
@@ -177,31 +187,206 @@ public class WantPropertyElement extends Frame implements
     public void endElement() {
         clearObject();
     }
+
     public void abort() {
         clearObject();
     }
+
     private void clearObject() {
         if (objectIsBlank)
             arp.endLocalScope(object);
         objectIsBlank = false;
         object = null;
     }
-    
-   static private URIReference _rdf_n[] = new URIReference[0];
-    
+
+    static private URIReference _rdf_n[] = new URIReference[0];
+
     static private URIReference rdf_n(int i) {
-        if (i>=_rdf_n.length) {
-            int newLength = (i+10)*3/2;
+        if (i >= _rdf_n.length) {
+            int newLength = (i + 10) * 3 / 2;
             URIReference new_rdf_n[] = new URIReference[newLength];
-            System.arraycopy(_rdf_n,0,new_rdf_n,0,_rdf_n.length);
-            for (int j=_rdf_n.length;j<newLength;j++) {
-                new_rdf_n[j] = URIReference.createNoChecks(rdfns+"_"+j);
+            System.arraycopy(_rdf_n, 0, new_rdf_n, 0, _rdf_n.length);
+            for (int j = _rdf_n.length; j < newLength; j++) {
+                new_rdf_n[j] = URIReference.createNoChecks(rdfns + "_" + j);
             }
             _rdf_n = new_rdf_n;
         }
         return _rdf_n[i];
     }
- 
+
+    /* **********************
+    
+     * ERROR HANDLING CODE
+     
+     * ************************/
+    
+    // Error detection
+    
+    private boolean badStateCode(int nextStateCode) {
+        switch (nextStateCode) {
+        case PARSETYPE | TYPEDLITERAL:
+        case PARSETYPE | TYPEDLITERAL | EMPTYWITHOBJ:
+        case PARSETYPE | EMPTYWITHOBJ:
+        case TYPEDLITERAL | EMPTYWITHOBJ:
+            return true;
+        case 0:
+        case PARSETYPE:
+        case TYPEDLITERAL:
+        case EMPTYWITHOBJ:
+            return false;
+        }
+        throw new IllegalStateException("impossible");
+    }
+    
+//  Error classification
+    
+    private int errorNumber(int nextStateCode) {
+        // TODO: refine this error code.
+        return ERR_SYNTAX_ERROR;
+    }
+
+    /* **********************
+    
+     * ERROR MESSAGES
+     
+     * ************************/
+    
+    
+    private String descriptionOfCases(AttributeLexer ap, int nextStateCode,
+            String propAttrs) {
+        return 
+         ( (propAttrs == null&&ap.type==null) 
+         || (ap.nodeID == null && ap.resource == null && ap.type == null)
+         || (ap.nodeID == null && ap.resource == null && propAttrs == null )
+         ) 
+          ? pairwiseIncompatibleErrorMessage(nextStateCode, ap, propAttrs)
+          : complicatedErrorMessage(nextStateCode, ap, propAttrs);
+    }
+
+    private String pairwiseIncompatibleErrorMessage(int nextStateCode, AttributeLexer ap, String propAttrs) {
+        ArrayList cases = new ArrayList();
+        if ((nextStateCode & PARSETYPE) != 0)
+            cases.add("rdf:parseType");
+        if ((nextStateCode & TYPEDLITERAL) != 0)
+            cases.add("rdf:datatype");
+        if (ap.nodeID != null)
+            cases.add("rdf:nodeID");
+        if (ap.resource != null)
+            cases.add("rdf:resource");
+        if ( ap.type != null)
+            cases.add("rdf:type");
+        
+        if (cases.size()==1) {
+            if ( propAttrs == null)
+                throw new IllegalStateException("Shouldn't happen.");
+            return "The attribute " + cases.get(0) + 
+            " is not permitted with "+propAttrs + " on a property element.";
+        }
+        String rslt = 
+                "On a property element, only one of the ";
+        if (propAttrs == null)
+            rslt += "attributes ";
+        for (int i = 0;i<cases.size();i++) {
+            rslt += cases.get(i);
+            switch (cases.size()-i) {
+            case 1:
+                break;
+            case 2:
+                rslt += " or ";
+                break;
+                default:
+                    rslt += ", ";
+                break;
+            }
+        }
+        if ( propAttrs != null ) {
+            rslt += "attributes or "+propAttrs;
+        }
+        rslt += " is permitted.";
+        return rslt;
+    }
+
+    private String complicatedErrorMessage(int nextStateCode, AttributeLexer ap, String propAttrs) {
+        String rslt = "";
+        if (ap.nodeID == null && ap.resource == null) 
+            throw new IllegalStateException("precondition failed.");
+        if (ap.nodeID != null && ap.resource != null) {
+            rslt += "the mutually incompatible attributes rdf:nodeID and rdf:resource,";
+        } else {
+            rslt += "the attribute "
+                    + (ap.nodeID != null ? "rdf:nodeID" : "rdf:resource");
+            if (ap.type!=null && propAttrs!=null)
+                rslt += ",";
+        }
+        if (ap.type!=null && propAttrs!=null) {
+            rslt += " the attribute rdf:type and the "+propAttrs;
+            rslt = "On a property element, each of " + rslt;
+        } else if (ap.type!=null) {
+            rslt = "On a property element, both " + rslt + " and the attribute rdf:type";
+        } else {
+            rslt = "On a property element, both " + rslt + " and the " + propAttrs;
+        }
+        rslt += " are incompatible with ";
+        if ((nextStateCode & (TYPEDLITERAL | PARSETYPE)) == (TYPEDLITERAL | PARSETYPE))
+            rslt += "the mutually incompatible attributes rdf:datatype and rdf:parseType.";
+        else
+            rslt += "the attribute "
+                    + ((nextStateCode & PARSETYPE) == PARSETYPE ? "rdf:parseType"
+                            : "rdf:datatype") + ".";
+
+        return rslt;
+    }
+
+    private String propertyAttributeDescription(Attributes atts,
+            AttributeLexer ap, int cnt) {
+        String propAttrs = null;
+        int propAttrCount = atts.getLength() - cnt;
+        int found = 0;
+        if (propAttrCount == 0)
+            return null;
+        switch (propAttrCount) {
+        case 0:
+            break;
+        case 1:
+        case 2:
+        case 3:
+            for (int i = 0; i < atts.getLength(); i++)
+                if (!ap.done(i)) {
+                    propAttrs += atts.getQName(i);
+                    found++;
+                    switch (propAttrCount - found) {
+                    case 0:
+                        break;
+                    case 1:
+                        propAttrs += " and ";
+                        break;
+                    default:
+                        propAttrs += ", ";
+                    }
+                }
+            break;
+        default:
+            if (propAttrCount < 0)
+                throw new IllegalStateException("Shouldn't happen.");
+            for (int i = 0; i < atts.getLength(); i++)
+                if (!ap.done(i)) {
+                    found++;
+                    switch (found) {
+                    case 1:
+                        propAttrs += atts.getQName(i) + ", ";
+                        break;
+                    case 2:
+                        propAttrs += atts.getQName(i) + ", ...";
+                        break;
+                    default:
+                    // ignore
+                    }
+                }
+        }
+        return "property attributes (" + propAttrs + ")";
+    }
+
+
 }
 
 /*

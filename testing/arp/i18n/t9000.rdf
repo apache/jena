@@ -27,18 +27,7 @@
     <NC:li  RDF:resource='|'/>
     <NC:li  RDF:resource='/'/>
     <NC:li  RDF:resource='#'/>
-  <!--
-    These properties don't work because Jena screws up character encodings.
-    <NC:ü RDF:resource="baz"/>
-    <NC:ñ RDF:resource="\\"/>
-    <NC:ë RDF:resource="!|{"/>
-    <NC:đ RDF:resource="^"/>
-    <NC:ĉ RDF:resource="'"/>
-    <NC:å RDF:resource="`"/>
-    <NC:å RDF:resource='"'/>
-    <NC:å RDF:resource=' '/>
-    <NC:å RDF:resource='&#9;'/>
-    -->
+ 
   </RDF:Description>
 
 </RDF:RDF>

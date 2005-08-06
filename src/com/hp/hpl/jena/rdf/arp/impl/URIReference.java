@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: URIReference.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * * $Id: URIReference.java,v 1.2 2005-08-06 06:14:50 jeremy_carroll Exp $
  
  AUTHOR:  Jeremy J. Carroll
  */
@@ -147,8 +147,7 @@ public class URIReference implements AResourceInternal, ARPErrorNumbers {
      * @throws ParseException
      */
     public static URIReference fromID(Frame f, XMLContext x, String name) throws SAXParseException {
-        // TODO: what errors can occur with an rdf:ID
-        f.checkEncoding(name);
+        // Errors are checked for by the AttributeLexer
         return new URIReference(x.getBase() + "#" + name);
     }
 

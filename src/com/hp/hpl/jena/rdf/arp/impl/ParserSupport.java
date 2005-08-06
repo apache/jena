@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.2 2005-08-04 21:41:37 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.3 2005-08-06 06:14:50 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -128,7 +128,6 @@ public class ParserSupport
 		}
 		return str;
 	}
-    // TODO: make calls to checkString inside XMLLiteral code
 	public void checkString(String t) throws SAXParseException {
 		if (!CharacterModel.isNormalFormC(t))
 			warning(
@@ -137,7 +136,6 @@ public class ParserSupport
 		checkEncoding(t);
 		checkComposingChar(t);
 	}
-    // TODO: make calls to checkComposingChar, when sewing pieces together inside XMLLiteral code
 	void checkComposingChar(String t) throws SAXParseException {
 		if (CharacterModel.startsWithComposingCharacter(t))
 			warning(

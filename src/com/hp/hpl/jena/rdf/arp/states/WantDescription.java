@@ -73,8 +73,6 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
                 CoreAndOldTerms|E_LI);
         if (el.badMatch) {
             // TODO: if error was only warning ....
-            // TODO: duplicate?
-//            warning(ERR_LI_AS_TYPE,"Illegal use of "+rawName);
         } else if (!el.goodMatch) {
             triple(subject,RDF_TYPE,
                     URIReference.fromQName(this,uri,localName));
@@ -91,13 +89,7 @@ abstract public class WantDescription extends Frame implements HasSubjectFrameI 
         subjectIsBlank = false;
     }
 
-    public void characters(char[] ch, int start, int length)  throws SAXParseException{
-        if (!isWhite(ch,start,length))
-            warning(ERR_NOT_WHITESPACE,"Expecting rdf:Description or typed node. " +
-                    "Found +\"" + new String(ch,start,length) +
-                    "\". String data not allowed here");
-
-    }
+ 
     public void aPredAndObj(ANode p, ANode o) {
         triple(subject,p,o);
         

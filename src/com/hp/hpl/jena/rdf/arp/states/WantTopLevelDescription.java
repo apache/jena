@@ -21,6 +21,11 @@ public class WantTopLevelDescription extends WantDescription {
         super(handler,x);
     }
 
+
+    String suggestParsetypeLiteral() {
+        return "";
+    }
+    
     public void endElement() throws SAXParseException {
         super.endElement();
         arp.endRDF();

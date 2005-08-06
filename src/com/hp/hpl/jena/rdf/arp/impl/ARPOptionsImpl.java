@@ -37,8 +37,7 @@ public class ARPOptionsImpl extends  ARPOptions implements ARPErrorNumbers {
 	static {
 		for (int i = 0; i < defaultErrorMode.length; i++)
 			defaultErrorMode[i] = i / 100;
-        // TODO: make error message better, and improve specifity of detection:
-        defaultErrorMode[135] = 0;
+        
 	}
 	private int errorMode[] = (int[]) defaultErrorMode.clone();
 
@@ -126,6 +125,7 @@ public class ARPOptionsImpl extends  ARPOptions implements ARPErrorNumbers {
 		setErrorMode(WARN_UNKNOWN_RDF_ATTRIBUTE, warning);
 		setErrorMode(WARN_UNQUALIFIED_RDF_ATTRIBUTE, warning);
 		setErrorMode(WARN_UNKNOWN_XML_ATTRIBUTE, nonErrorMode);
+        setErrorMode(WARN_NOT_RDF_NAMESPACE,nonErrorMode);
 		// setErrorMode(WARN_QNAME_AS_ID, error);
 		//      setErrorMode(WARN_BAD_XML, error);
 		setErrorMode(WARN_SAX_WARNING, warning);

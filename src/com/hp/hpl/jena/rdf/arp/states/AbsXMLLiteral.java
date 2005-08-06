@@ -16,11 +16,19 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 public abstract class AbsXMLLiteral extends Frame {
+    boolean checkComposingChar = true;
+
     static Map xmlNameSpace = new TreeMap();
     static {
         xmlNameSpace.put("xml", xmlns);
         xmlNameSpace.put("", "");
     }
+
+    String suggestParsetypeLiteral() {
+        // shouldn't be called.
+        return "";
+    }
+    
     final protected StringBuffer rslt;
     public final Map namespaces; 
 
@@ -111,8 +119,14 @@ public abstract class AbsXMLLiteral extends Frame {
       brackets () are replaced by &lt;, all closing angle brackets 
       (>) are replaced by &gt;, and all #xD characters are replaced 
       by &#xD;.  
+     * @throws SAXParseException 
      */
-    public void characters(char[] chrs, int start, int length) {
+    public void characters(char[] chrs, int start, int length) throws SAXParseException {
+
+        if (checkComposingChar)
+            checkComposingChar(chrs, start, length);
+        checkComposingChar = false;
+        
         String replace;
         char ch;
         for (int i = 0; i < length; i++) {
@@ -145,6 +159,8 @@ public abstract class AbsXMLLiteral extends Frame {
         append("<!--");
         append(ch,start,length);
         append("-->");
+
+        checkComposingChar = true;
     }
 
     public void processingInstruction(String target, String data) {
@@ -153,9 +169,14 @@ public abstract class AbsXMLLiteral extends Frame {
         append(' ');
         append(data);
         append("?>");
+
+        checkComposingChar = true;
     }
 
     public FrameI startElement(String uri, String localName, String rawName, Attributes atts) {
+
+        checkComposingChar = true;
+        
         Map attrMap = new TreeMap();
         Map childNameSpaces = new TreeMap();
         startLitElement( uri,  rawName, childNameSpaces);

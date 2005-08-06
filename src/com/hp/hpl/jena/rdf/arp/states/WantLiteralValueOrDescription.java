@@ -45,7 +45,7 @@ public class WantLiteralValueOrDescription extends AbsWantLiteralValueOrDescript
 
                 warning(ERR_NOT_WHITESPACE,"Cannot have both string data: \"" +
                  new String(ch,start,length)   +     
-                "\"and XML data inside a property element. Maybe you want rdf:parseType='Literal'.");
+                "\"and XML data inside a property element. "+ suggestParsetypeLiteral());
         } else
             super.characters(ch, start, length);
     }

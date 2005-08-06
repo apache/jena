@@ -11,7 +11,7 @@
         <NC:incomingServer>
           <NC:nsIMsgIncomingServer>
             <NC:hostName>imap.mail.aol.com</NC:hostName>
-            <NCY:type xmlns:NCY="http://home.netscape.com/NC-rdf#">imap</NCY:type>
+            <NCY:typex xmlns:NCY="http://home.netscape.com/NC-rdf#">imap</NCY:typex>
             <NC:rememberPassword>false</NC:rememberPassword>
             <NC:redirectorType>aol</NC:redirectorType>
           </NC:nsIMsgIncomingServer>

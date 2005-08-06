@@ -2,7 +2,7 @@
  *  (c)     Copyright 2000-2004, 2005 Hewlett-Packard Development Company, LP
  *   All rights reserved.
  * [See end of file]
- *  $Id: URITests.java,v 1.5 2005-08-01 15:07:04 jeremy_carroll Exp $
+ *  $Id: URITests.java,v 1.6 2005-08-06 06:14:51 jeremy_carroll Exp $
  */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -20,7 +20,8 @@ public class URITests
 	static public Test suite() {
 		TestSuite suite = new TestSuite("URIs");
 		suite.addTest(new URITests("testNoDomain"));
-	//	suite.addTest(new URITests("testLong"));
+        // is this test right or wrong??
+//		suite.addTest(new URITests("testLong"));
 		return suite;
 	}
 

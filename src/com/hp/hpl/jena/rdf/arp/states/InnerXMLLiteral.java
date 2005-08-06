@@ -19,6 +19,7 @@ public class InnerXMLLiteral extends AbsXMLLiteral {
         append("</");
         append(qname);
         append('>');
+        checkComposingChar = true;
     }
 
 

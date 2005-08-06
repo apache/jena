@@ -46,7 +46,6 @@ public class RDFXMLParser extends XMLHandler {
         } catch (SAXException e) {
             throw new RuntimeException("Supposedly impossible:", e);
         }
-        // setErrorHandler(new DefaultErrorHandler());
     }
 
     public SAXParser getSAXParser() {
@@ -56,14 +55,14 @@ public class RDFXMLParser extends XMLHandler {
     static private class MySAXParser extends SAXParser {
         MySAXParser(StandardParserConfiguration c) {
             super(c);
-            try {
-                setFeature("http://xml.org/sax/features/string-interning",
-                        false);
-            } catch (SAXException e) {
-                // Not supported - aggh
-                // TODO ask on xerces list why not?
-                // e.printStackTrace();
-            }
+//            try {
+//                setFeature("http://xml.org/sax/features/string-interning",
+//                        false);
+//            } catch (SAXException e) {
+//                // Not supported - aggh
+//                // TO DO ask on xerces list why not?
+//                // e.printStackTrace();
+//            }
         }
 
         RDFXMLParser a;
@@ -110,17 +109,10 @@ public class RDFXMLParser extends XMLHandler {
 
         } 
         catch (UTFDataFormatException e) {
-            try {
                 generalError(ERR_UTF_ENCODING, e);
-            } catch (SAXParseException e1) {
-                // e1.printStackTrace();
-            }
-        } catch (IOException e) {
-            try {
+        } 
+        catch (IOException e) {
                 generalError(ERR_GENERIC_IO, e);
-            } catch (SAXParseException e1) {
-                // e1.printStackTrace();
-            }
         } 
         catch (WrappedException wrapped) {
             wrapped.throwMe();

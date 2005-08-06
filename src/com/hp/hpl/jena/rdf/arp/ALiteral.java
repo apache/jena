@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
-   $Id: ALiteral.java,v 1.4 2005-08-01 15:07:08 jeremy_carroll Exp $
+   $Id: ALiteral.java,v 1.5 2005-08-06 06:14:52 jeremy_carroll Exp $
    AUTHOR:  Jeremy J. Carroll
 */
  /*
@@ -49,7 +49,6 @@ public interface ALiteral extends ANode {
     // Usually null, maybe "Literal" or something else.
 /** When <CODE>isWellFormedXML()</CODE> is true, this returns the value of the <I>rdf:parseType</I> attribute, usually "Literal".
  * Otherwise <B>null</B> is returned.
- * @deprecated Always returns "Literal" or null
  * @return The <I>parseType</I> for well formed XML, or <B>null</B> for normal literals.
  */    
     public String getParseType();

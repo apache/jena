@@ -47,8 +47,10 @@ abstract class QNameLexer implements Names, ARPErrorNumbers {
           && wanted.equals(getLocalName())) {
             if (isInRdfns())
                 return fl;
-            // TODO: add test for this one
-            frame.warning(WARN_NOT_RDF_NAMESPACE,"Maybe you wanted rdf:"+getLocalName());
+            frame.warning(WARN_NOT_RDF_NAMESPACE,getQName() + " is not special. " +
+                    (getQName().toLowerCase().startsWith("rdf:")?
+                        ("The namespace binding of the RDF namespace is incorrect. It should be <"+rdfns+"> not <"+getUri()+">"):
+                        ("Maybe it should be rdf:"+getLocalName())));
         }
         return 0;
     }

@@ -6,38 +6,26 @@
   <RDF:Description RDF:about="&lt;b&gt;boo">
   <!--&lt;b&gt;boo">-->
     <NC:xx />
-    <NC:li RDF:resource="\\"/>
-    <NC:li RDF:resource="'"/>
-    <NC:li  RDF:resource='"'/>
+    <NC:lix RDF:resource="\\"/>
+    <NC:lix RDF:resource="'"/>
+    <NC:lix  RDF:resource='"'/>
     <!-- the meaning of rfc2732 is unclear ...
     <NC:li  RDF:resource='['/>
     <NC:li  RDF:resource=']'/>
     -->
-    <NC:li  RDF:resource='{'/>
-    <NC:li  RDF:resource='}'/>
-    <NC:li  RDF:resource='&#9;'/>
-    <NC:li  RDF:resource='&#10;&#10;'/>
-    <NC:li  RDF:resource='&#13;'/>
-    <NC:li  RDF:resource='`'/>
-    <NC:li  RDF:resource=' '/>
-    <NC:li  RDF:resource='  '/>
-    <NC:li  RDF:resource='   '/>
-    <NC:li  RDF:resource='    '/>
-    <NC:li  RDF:resource='|'/>
-    <NC:li  RDF:resource='/'/>
-    <NC:li  RDF:resource='#'/>
-  <!--
-    These properties don't work because Jena screws up character encodings.
-    <NC:ü RDF:resource="baz"/>
-    <NC:ñ RDF:resource="\\"/>
-    <NC:ë RDF:resource="!|{"/>
-    <NC:đ RDF:resource="^"/>
-    <NC:ĉ RDF:resource="'"/>
-    <NC:å RDF:resource="`"/>
-    <NC:å RDF:resource='"'/>
-    <NC:å RDF:resource=' '/>
-    <NC:å RDF:resource='&#9;'/>
-    -->
+    <NC:lix  RDF:resource='{'/>
+    <NC:lix  RDF:resource='}'/>
+    <NC:lix  RDF:resource='&#9;'/>
+    <NC:lix  RDF:resource='&#10;&#10;'/>
+    <NC:lix  RDF:resource='&#13;'/>
+    <NC:lix  RDF:resource='`'/>
+    <NC:lix  RDF:resource=' '/>
+    <NC:lix  RDF:resource='  '/>
+    <NC:lix  RDF:resource='   '/>
+    <NC:lix  RDF:resource='    '/>
+    <NC:lix  RDF:resource='|'/>
+    <NC:lix  RDF:resource='/'/>
+    <NC:lix  RDF:resource='#'/>
   </RDF:Description>
 
 </RDF:RDF>

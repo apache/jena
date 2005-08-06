@@ -216,6 +216,10 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
     String getQName() {
         return att.getQName(index);
     }
+    
+    public boolean done(int i) {
+        return done.get(i);
+    }
 }
 
 /*

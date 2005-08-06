@@ -43,10 +43,10 @@ abstract class AbsWantLiteralValueOrDescription extends
             throws SAXParseException {
         if (checkComposingChar)
             checkComposingChar(ch, start, length);
+        checkComposingChar = false;
         if (buf == null)
             buf = new StringBuffer(length);
         getBuf().append(ch, start, length);
-        checkComposingChar = false;
     }
 
     void setBuf(StringBuffer buf) {
@@ -73,13 +73,10 @@ abstract class AbsWantLiteralValueOrDescription extends
         checkComposingChar = true;
     }
 
-    // TODO: move this up the hierarchy a bit ... ?
     public void processingInstruction(String a, String b)
             throws SAXParseException {
         checkComposingChar = true;
-        warning(WARN_PROCESSING_INSTRUCTION_IN_RDF,
-                "A processing instruction is in RDF content. No processing was done."
-                        + " Maybe a missing rdf:parseType='Literal'");
+        super.processingInstruction(a,b);
 
     }
 

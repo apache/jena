@@ -7,7 +7,7 @@
     <NC:providers RDF:ID="reify" RDF:parseType="Resource">
     
             <NC:hostName RDF:ID="hooray">imap.mail.aol.com</NC:hostName>
-            <NC:type>imap</NC:type>
+            <NC:typex>imap</NC:typex>
             <NC:rememberPassword RDF:ID="foobar">
                   <RDF:Description RDF:about="NC:trickMe"/>
             </NC:rememberPassword>

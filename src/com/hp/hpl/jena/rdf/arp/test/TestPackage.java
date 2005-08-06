@@ -440,9 +440,10 @@ Test test204 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/
 test176.addTest(test204);
 Test test205 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/xmlns/test01","http://jcarroll.hpl.hp.com/arp-tests/xmlns/test01.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/xmlns/test0X.nt",false);
 test176.addTest(test205);
-// TODO: fix i18n/t9000 (li)
-//Test test206 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000","http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.nt",false);
-//test176.addTest(test206);
+Test test206 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000","http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/i18n/t9000.nt",false );
+//new int[]{ //135, 135,135, 135,135, 135,135, 135,135, 
+//        135, });
+test176.addTest(test206);
 Test test207 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/xmlns/test03","http://jcarroll.hpl.hp.com/arp-tests/xmlns/test03.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/xmlns/test0X.nt",false);
 test176.addTest(test207);
 Test test208 = test175.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/xmlns/test02","http://jcarroll.hpl.hp.com/arp-tests/xmlns/test02.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/xmlns/test0X.nt",false);
@@ -803,5 +804,6 @@ test211.addTest(test379);
 //test211.addTest(test383);
 test0.addTest(test211);
 return test0;
+//return test206;
 } }
 

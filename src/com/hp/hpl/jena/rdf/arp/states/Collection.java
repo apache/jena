@@ -13,28 +13,33 @@ import com.hp.hpl.jena.rdf.arp.impl.ARPResource;
 import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
 abstract class Collection extends WantDescription {
-    // TODO: document this carefully.
-    // TODO: refactor this class a bit: drop AbortableWantsObjectI ?
-    
-    protected interface AbortableWantsObjectI extends WantsObjectI {
-        void abort();
-        void init();
-    }
+    // TODO: document this carefully.    
+   
     WantsObjectI nextSlot;
     public Collection(WantsObjectFrameI s, XMLContext x) {
         super(s, x);
         nextSlot = s;
     }
-    
+    ANode bnode;
    public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts)  throws SAXParseException {
       FrameI fi = super.startElement(uri,localName,rawName,atts);
-      final ANode bnode = new ARPResource(arp);
-      WantsObjectI prevSlot = nextSlot;
-      nextSlot = null;
-      nextSlot = listNode(bnode);
-      prevSlot.theObject(bnode);
-      ((AbortableWantsObjectI)nextSlot).init();
+      ANode prevNode = bnode;
+      bnode = new ARPResource(arp);
+      try {
+       nextSlot.theObject(bnode);
+      }
+      finally {
+          if (prevNode != null)
+            arp.endLocalScope(prevNode);
+      }
+      firstTriple(bnode,subject);
+      final ANode thisNode = bnode;
+      nextSlot = new WantsObjectI() {
+          public void theObject(ANode a) {
+                 restTriple(thisNode,a);
+          }
+      };
       return fi;
       
     }
@@ -51,46 +56,22 @@ abstract class Collection extends WantDescription {
     
 
     final public void endElement() throws SAXParseException {
-        WantsObjectI prevSlot = nextSlot;
-        nextSlot = null;
-        prevSlot.theObject(nil());
+        nextSlot.theObject(nil());
+        if (bnode != null) {
+            arp.endLocalScope(bnode);
+            bnode = null;
+        }
         super.endElement();
     }
     public void abort() {
-        if (nextSlot != null && nextSlot instanceof AbortableWantsObjectI)
-            ((AbortableWantsObjectI)nextSlot).abort();
+        if (bnode != null) {
+            arp.endLocalScope(bnode);
+            bnode = null;
+        }
         super.abort();
     }
     
-    /**
-     * The implementor of listNode is responsible for calling
-     * endLocalScope on bnode.
-     * @param bnode
-     * @return
-     */
-   final AbortableWantsObjectI listNode(final ANode bnode) {
-        // Do not use the bnode.
-        // Put first use in the init method.
-        return new AbortableWantsObjectI() {
-            public void theObject(ANode a) {
-                try {
-//                    System.err.print(((AResource)bnode).getAnonymousID()+".");
-//                    System.err.println(((AResource)a).getAnonymousID());
-                   restTriple(bnode,a);
-                }
-                finally {
-                   arp.endLocalScope(bnode);
-                }
-            }
-            public void abort() {
-                arp.endLocalScope(bnode);
-            }
-            public void init() {
-                firstTriple(bnode,subject);
-            }
-          };
-    }
-
+   
 
 }
 

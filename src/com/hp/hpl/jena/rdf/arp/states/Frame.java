@@ -20,6 +20,7 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLHandler;
 
 public abstract class Frame extends ParserSupport implements  Names, FrameI, ARPErrorNumbers {
     final FrameI parent;
+    protected boolean nonWhiteMsgGiven = false;
     public FrameI getParent() {
         return parent;
     }
@@ -52,14 +53,13 @@ public abstract class Frame extends ParserSupport implements  Names, FrameI, ARP
             // often nothing
         }
     public void processingInstruction(String target, String data)  throws SAXParseException {
-       // generally ignore
-
+       // generally ignored, maybe not what was intended.
         warning(
             WARN_PROCESSING_INSTRUCTION_IN_RDF,
-            "A processing instruction is in RDF content. No processing was done."
+            "A processing instruction is in RDF content. No processing was done. "+suggestParsetypeLiteral()
                 );
      }
-    void    processPropertyAttributes(AttributeLexer ap,
+    void processPropertyAttributes(AttributeLexer ap,
             Attributes atts, XMLContext x) throws SAXParseException {
         if (ap.type!=null) {
             ((HasSubjectFrameI)this).aPredAndObj(RDF_TYPE,
@@ -68,7 +68,7 @@ public abstract class Frame extends ParserSupport implements  Names, FrameI, ARP
         int sz = atts.getLength();
         if (ap.count != sz) {
             for (int i=0;i<sz;i++) {
-                if (!ap.done.get(i)) {
+                if (!ap.done(i)) {
                     ((HasSubjectFrameI)this).aPredAndObj(
                             URIReference.fromQName(this,atts.getURI(i),atts.getLocalName(i)),
                             new ARPString(this,atts.getValue(i),x.getLang()));
@@ -76,6 +76,7 @@ public abstract class Frame extends ParserSupport implements  Names, FrameI, ARP
             }
         }
     }
+
     public void abort() {
       // nothing.
     }
@@ -95,6 +96,24 @@ public abstract class Frame extends ParserSupport implements  Names, FrameI, ARP
                 | A_XMLLANG, 0);
         ap.processSpecials(atts);
         return new LookingForRDF(this, ap);
+    }
+  
+    /**
+     * Additional message if mixed content is found in a syntactically
+     * disallowed place. Subclasses override to suppress message.
+     * @return
+     */
+    String suggestParsetypeLiteral() {
+        return "Maybe there should be an rdf:parseType='Literal' for embedding miixed XML content in RDF.";
+    }
+    public void characters(char[] ch, int start, int length) throws SAXParseException {
+        if ((!nonWhiteMsgGiven) && !isWhite(ch, start, length)) {
+            nonWhiteMsgGiven = true;
+            warning(ERR_NOT_WHITESPACE,
+              "Expecting propertyElement(s). String data \"" +
+              new String(ch,start,length)+
+              "\" not allowed. " + suggestParsetypeLiteral());
+        }
     }
 
 }

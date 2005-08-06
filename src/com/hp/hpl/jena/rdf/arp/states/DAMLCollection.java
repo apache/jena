@@ -10,8 +10,6 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
 public class DAMLCollection extends Collection {
 
-    // TODO: duplicate ntriple rdfms-seq-representation/test001 for daml:collection
-    // TODO: duplicate ARP Scoping test for collection
     public DAMLCollection(WantsObjectFrameI s, XMLContext x) {
         super(s, x);
     }

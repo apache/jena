@@ -16,16 +16,19 @@ import com.hp.hpl.jena.rdf.arp.impl.XMLContext;
 
 public class OuterXMLLiteral extends AbsXMLLiteral {
     
-
+   final String parseType;
     
-    public OuterXMLLiteral(WantsObjectFrameI s, XMLContext x) {
+    public OuterXMLLiteral(WantsObjectFrameI s, XMLContext x, String pt) {
         super(s, x, new StringBuffer());
+        parseType = pt;
+        
     }
 
     public void endElement() throws SAXParseException {
         ((WantsObjectFrameI)getParent()).theObject(
-                new ARPString(this,rslt.toString(),"","Literal" )
+                new ARPString(this,rslt.toString(),"",parseType )
                 );
+
         
     }
 

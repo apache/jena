@@ -17,6 +17,10 @@ public class LookingForRDF extends Frame {
     public LookingForRDF(FrameI s, AttributeLexer x)  throws SAXParseException {
         super(s, x);
     }
+    
+    String suggestParsetypeLiteral() {
+        return "";
+    }
 
     public LookingForRDF(XMLHandler s, XMLContext x) {
         super(s, x);

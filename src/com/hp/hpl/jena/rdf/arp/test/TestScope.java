@@ -1,7 +1,7 @@
 /*
    (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestScope.java,v 1.8 2005-08-01 15:07:04 jeremy_carroll Exp $
+  $Id: TestScope.java,v 1.9 2005-08-06 06:14:51 jeremy_carroll Exp $
 */
 package com.hp.hpl.jena.rdf.arp.test;
 import junit.framework.*;
@@ -23,7 +23,7 @@ public class TestScope extends TestCase {
   public	TestScope(String nm){
 		super(nm);
 	}
-	
+	/*
 	public void test01() throws Exception {
 
 		check("testing/wg/rdfms-syntax-incomplete/test004.rdf");
@@ -44,6 +44,10 @@ public class TestScope extends TestCase {
 	public void test05() throws Exception {
 		check("testing/arp/scope/test05.rdf");
 	}
+*/
+    public void test06() throws Exception {
+        check("testing/arp/scope/test06.rdf");
+    }
 	static RDFErrorHandler suppress = new RDFErrorHandler(){
 
 		public void warning(Exception e) {

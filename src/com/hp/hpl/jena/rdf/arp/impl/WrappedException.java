@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: WrappedException.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * * $Id: WrappedException.java,v 1.2 2005-08-06 06:14:50 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -36,8 +36,9 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
+import java.io.IOException;
+
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 /**
  * Wrap some other exception - being wise to SAXExceptions which
  * wrap something else.
@@ -45,34 +46,40 @@ import org.xml.sax.SAXParseException;
  
  */
 class WrappedException extends java.lang.RuntimeException {
-    // TODO: revisit.
-    final Exception inner;  
     /** Creates new WrappedException */
     WrappedException(SAXException e) {
         Exception in0 = e.getException();
-        if ( in0 == null 
-             || !( (in0 instanceof RuntimeException) 
-                 ) 
-           )
-            inner = e;
-        else
-            inner = in0;
+        if ( in0 == null ) {
+            initCause(e);
+            return;
+        }
+        if ( (in0 instanceof RuntimeException) 
+             || (in0 instanceof SAXException )
+             || (in0 instanceof IOException ) )
+            {
+            initCause(in0);
+            return;
+        }
+        initCause(e);
     }
-    WrappedException(Exception e) {
-        inner = e;
+    WrappedException(IOException e) {
+        initCause(e);
     }
-    /** Throw the exception, prefering to throw an
-     unchecked exception if possible, or a SAXException
-     if not.
+    /** Throw the exception,  falling back to be a wrapped SAXParseException.
      */
-    void throwMe() throws SAXException {
+    void throwMe() throws IOException, SAXException {
+        Throwable inner = this.getCause();
         if ( inner instanceof SAXException ) {
             throw (SAXException)inner;
+        }  
+        if ( inner instanceof IOException ) {
+            throw (IOException)inner;
         }
         if ( inner instanceof RuntimeException ) {
             throw (RuntimeException)inner;
         }
-        throw new SAXParseException(null,null,inner);
+        // I don't think this line is reachable:
+        throw new RuntimeException("Supposedly unreacahble code.");
     }
     
 

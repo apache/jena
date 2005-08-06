@@ -17,12 +17,12 @@ public class WantEmpty extends Frame {
     }
 
     public void characters(char[] ch, int start, int length) throws SAXParseException {
-        warning(ERR_SYNTAX_ERROR,"empty property must be empty");
+        warning(ERR_SYNTAX_ERROR,"The attributes on this property element, are not permitted with any content.");
     }
 
     public FrameI startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXParseException {
-        warning(ERR_SYNTAX_ERROR,"XML element <"+rawName+"> inside empty property element");
+        warning(ERR_SYNTAX_ERROR,"XML element <"+rawName+"> inside an empty property element, whose attributes prohibit any content.");
         return this;
     }
 
