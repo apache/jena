@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.io.*;
 import java.util.zip.*;
 
+import com.hp.hpl.jena.iri.*;
 import com.hp.hpl.jena.shared.*;
 
 /**
@@ -24,9 +25,11 @@ import com.hp.hpl.jena.shared.*;
  * 
  */
 public class TestInputStreamFactory {
+    
+    final IRIFactory iriFactory = new IRIFactory();
 
-	final private URI base;
-	final private URI mapBase;
+	final private RDFURIReference base;
+	final private RDFURIReference mapBase;
 	final private ZipFile zip;
 	final private String property;
     private String createMe = "error";
@@ -34,7 +37,7 @@ public class TestInputStreamFactory {
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param getBaseDir Replace the baseDir into getBaseDir before opening any URL.
 	 */
-	public TestInputStreamFactory(URI baseDir, URI getBaseDir) {
+	public TestInputStreamFactory(RDFURIReference baseDir, RDFURIReference getBaseDir) {
 		base = baseDir;
 		mapBase = getBaseDir;
 		zip = null;
@@ -43,7 +46,7 @@ public class TestInputStreamFactory {
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param zip To open a URL remove the baseDir from the URL and get the named file from the zip.
 	 */
-	public TestInputStreamFactory(URI baseDir, ZipFile zip) {
+	public TestInputStreamFactory(RDFURIReference baseDir, ZipFile zip) {
 		base = baseDir;
 		mapBase = null;
 		this.zip = zip;
@@ -53,7 +56,7 @@ public class TestInputStreamFactory {
 	/** @param baseDir A prefix of all URLs accessed through this factory.
 	 *  @param zip To open a URL remove the baseDir from the URL and get the named file from the zip.
 	 */
-	public TestInputStreamFactory(URI baseDir, String propDir) {
+	public TestInputStreamFactory(RDFURIReference baseDir, String propDir) {
         createMe = "new TestInputStreamFactory(URI.create(\""
         +baseDir.toString()
         +"\"),\""+propDir+"\")";
@@ -63,7 +66,7 @@ public class TestInputStreamFactory {
 		property = propDir.endsWith("/") ? propDir : propDir + "/";
 	}
 
-	public URI getBase() {
+	public RDFURIReference getBase() {
 		return base;
 	}
 	/**
@@ -72,7 +75,7 @@ public class TestInputStreamFactory {
 	 * @param str The URI to open
 	 */
 	public InputStream open(String str) {
-		return open(URI.create(str));
+		return open(iriFactory.create(str));
 	}
 	/**
 	 * opens the file, and really does it - not a delayed
@@ -82,7 +85,7 @@ public class TestInputStreamFactory {
 	 * @throws IOException
 	 */
 	public InputStream fullyOpen(String str) throws IOException {
-		InputStream in = open(URI.create(str));
+		InputStream in = open(iriFactory.create(str));
 		if (in instanceof LazyInputStream
 						&& !((LazyInputStream) in).connect())
 						return null;
@@ -94,7 +97,7 @@ public class TestInputStreamFactory {
 	 * @param uri to be opened.
 	 * @return the opened stream
 	 */
-	public InputStream open(URI uri) {
+	public InputStream open(RDFURIReference uri) {
 		return (InputStream) open(uri, true);
 
 	}
@@ -103,7 +106,7 @@ public class TestInputStreamFactory {
 
 	}
 	public OutputStream openOutput(String str) {
-		OutputStream foo = (OutputStream) open(URI.create(str), false);
+		OutputStream foo = (OutputStream) open(iriFactory.create(str), false);
 	//	System.out.println(foo.toString());
 		return foo;
 	}
@@ -111,8 +114,10 @@ public class TestInputStreamFactory {
     public String getCreationJava() {
     	return createMe;
     }
-	private Object open(URI uri, boolean in) {
-		URI relative = uri.isAbsolute() ? base.relativize(uri) : uri;
+	private Object open(RDFURIReference uri, boolean in) {
+        
+		RDFURIReference relative = uri.isAbsolute() ? base.relativize(uri,
+                RDFURIReference.RELATIVE) : uri;
 		
 		if (relative.isAbsolute())
 			throw new IllegalArgumentException(
@@ -121,7 +126,7 @@ public class TestInputStreamFactory {
 		String relPath = relative.toString();
 		if ( relPath.length() - relPath.lastIndexOf('.') > 5 ) {
 			relPath = relPath + ".rdf";
-			relative = URI.create(relPath);
+			relative = iriFactory.create(relPath);
 		}
 		
 		if (mapBase != null) {
@@ -173,7 +178,7 @@ public class TestInputStreamFactory {
 	
 	    return in;
 	}
-    public URI getMapBase() {
+    public RDFURIReference getMapBase() {
         return mapBase;
     }
 

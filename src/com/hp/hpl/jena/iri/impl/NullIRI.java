@@ -3,50 +3,56 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp;
+package com.hp.hpl.jena.iri.impl;
 
-import com.hp.hpl.jena.iri.impl.XercesURI;
 
-// TODO: deprecated message.
-/**
- * 
- * @author Jeremy J. Carroll
- * @deprecated
- */
-public class URI extends XercesURI {
+import com.hp.hpl.jena.iri.*;
 
-    public URI() {
-        super();
+public class NullIRI extends EmptyIRI {
+  
+    public NullIRI(IRIFactory f) {
+        super(f,"A null pointer given as an absolute URI. URI resolution is not possible.");
     }
 
-    public URI(URI p_other) {
-        super(p_other);
+    private NullIRI(IRIException exception, AbsIRI p) {
+        super(exception,p);
     }
 
-    public URI(String p_uriSpec) throws MalformedURIException {
-        super(p_uriSpec);
+    RDFURIReference resolveAgainst(JavaURIWrapper base) {
+        return this;
     }
 
-    public URI(URI p_base, String p_uriSpec) throws MalformedURIException {
-        super(p_base, p_uriSpec);
+    public boolean isRelative() {
+        return false;
     }
 
-    public URI(String p_scheme, String p_schemeSpecificPart)
-            throws MalformedURIException {
-        super(p_scheme, p_schemeSpecificPart);
+
+    public boolean isIRI() {
+        return false;
     }
 
-    public URI(String p_scheme, String p_host, String p_path,
-            String p_queryString, String p_fragment)
-            throws MalformedURIException {
-        super(p_scheme, p_host, p_path, p_queryString, p_fragment);
+    public boolean isJavaNetURI() {
+        return false;
     }
 
-    public URI(String p_scheme, String p_userinfo, String p_host, int p_port,
-            String p_path, String p_queryString, String p_fragment)
-            throws MalformedURIException {
-        super(p_scheme, p_userinfo, p_host, p_port, p_path, p_queryString,
-                p_fragment);
+    public boolean isVeryBad() {
+        return true;
+    }
+
+    public boolean isXSanyURI() {
+        return false;
+    }
+
+    public RDFURIReference reparent(AbsIRI p) {
+        return new NullIRI(exception,p);
+    }
+    
+    public boolean isURIinASCII() {
+        return false;
+    }
+
+    public String toASCIIString() {
+        return null;
     }
 
 }

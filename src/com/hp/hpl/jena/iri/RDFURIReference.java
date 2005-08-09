@@ -3,54 +3,65 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp;
+package com.hp.hpl.jena.iri;
 
-import com.hp.hpl.jena.iri.impl.XercesURI;
+import java.net.*;
+import java.util.*;
 
-// TODO: deprecated message.
-/**
- * 
- * @author Jeremy J. Carroll
- * @deprecated
- */
-public class URI extends XercesURI {
+public interface RDFURIReference extends IRIConformanceLevels {
 
-    public URI() {
-        super();
-    }
+    public boolean isAbsolute();
+    public boolean isOpaque();
+    public boolean isRelative();
+    public boolean isRDFURIReference();
+    public boolean isIRI();
+    public boolean isJavaNetURI();
+    public boolean isURIinASCII();
+    boolean isVeryBad();
+    boolean isXSanyURI();
+    boolean hasException(int conformance);
+    Iterator exceptions(int conformance);
+    boolean hasException();
+    Iterator exceptions();
+    
 
-    public URI(URI p_other) {
-        super(p_other);
-    }
+    
 
-    public URI(String p_uriSpec) throws MalformedURIException {
-        super(p_uriSpec);
-    }
+    public RDFURIReference resolve(RDFURIReference rel);
+    public RDFURIReference resolve(String uri);
+    
 
-    public URI(URI p_base, String p_uriSpec) throws MalformedURIException {
-        super(p_base, p_uriSpec);
-    }
+    public URL toURL() throws MalformedURLException;
 
-    public URI(String p_scheme, String p_schemeSpecificPart)
-            throws MalformedURIException {
-        super(p_scheme, p_schemeSpecificPart);
-    }
+    // not well specified really ...
+//    public RDFURIReference relativize(RDFURIReference x);
 
-    public URI(String p_scheme, String p_host, String p_path,
-            String p_queryString, String p_fragment)
-            throws MalformedURIException {
-        super(p_scheme, p_host, p_path, p_queryString, p_fragment);
-    }
 
-    public URI(String p_scheme, String p_userinfo, String p_host, int p_port,
-            String p_path, String p_queryString, String p_fragment)
-            throws MalformedURIException {
-        super(p_scheme, p_userinfo, p_host, p_port, p_path, p_queryString,
-                p_fragment);
-    }
+    public String toString();
+
+
+    public String toASCIIString();
+    
+   
+
+    static final public int SAMEDOCUMENT = 1;
+    static final public int NETWORK = 2;
+    static final public int ABSOLUTE = 4;
+    static final public int RELATIVE = 8;
+    static final public int PARENT = 16;
+    static final public int GRANDPARENT = 32;
+    
+    public String relativize(String abs, int flags);
+    public RDFURIReference relativize(RDFURIReference abs, int flags);
+    public String getUserinfo();
+    public int getPort();
+    public String getPath();
+    public String getQuery();
+    public String getFragment();
+    public String getHost();
+    public String getScheme();
 
 }
-
 
 /*
  *  (c) Copyright 2005 Hewlett-Packard Development Company, LP
@@ -78,4 +89,4 @@ public class URI extends XercesURI {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
- 
+

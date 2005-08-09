@@ -3,50 +3,71 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp;
+package com.hp.hpl.jena.iri;
 
-import com.hp.hpl.jena.iri.impl.XercesURI;
+import java.net.URISyntaxException;
 
-// TODO: deprecated message.
-/**
- * 
- * @author Jeremy J. Carroll
- * @deprecated
- */
-public class URI extends XercesURI {
+import org.xml.sax.Locator;
 
-    public URI() {
-        super();
+import com.hp.hpl.jena.rdf.arp.MalformedURIException;
+
+public class IRIException extends RuntimeException {
+
+    final int conformanceLevel;
+    
+//    public IRIException() {
+//        super();
+//    }
+
+    /**
+     * Not part of API.
+     */
+    public IRIException(int lvl,IRIFactory f,String message) {
+        super(message);
+        conformanceLevel = lvl;
+        Locator l = f.locator;
+        file =l.getSystemId();
+        line = l.getLineNumber();
+        column = l.getColumnNumber();
     }
 
-    public URI(URI p_other) {
-        super(p_other);
+//    public IRIException(int lvl, String message, Throwable cause) {
+//        super(message, cause);
+//        conformanceLevel = lvl;
+//    }
+    /**
+     * Not part of API.
+     */
+    public IRIException(int lvl, IRIFactory f, URISyntaxException cause) {
+        this(lvl,f,(Exception)cause);
+   }
+    /**
+     * Not part of API.
+     */
+    public IRIException(int lvl, IRIFactory f, MalformedURIException cause) {
+        this(lvl,f,(Exception)cause);
     }
-
-    public URI(String p_uriSpec) throws MalformedURIException {
-        super(p_uriSpec);
+    final int line;
+    final int column;
+    final String file;
+    private IRIException(int lvl, IRIFactory fact, Exception e) {
+        super(e);
+        conformanceLevel = lvl;
+        Locator l = fact.locator;
+        file =l.getSystemId();
+        line = l.getLineNumber();
+        column = l.getColumnNumber();
+        
     }
-
-    public URI(URI p_base, String p_uriSpec) throws MalformedURIException {
-        super(p_base, p_uriSpec);
-    }
-
-    public URI(String p_scheme, String p_schemeSpecificPart)
-            throws MalformedURIException {
-        super(p_scheme, p_schemeSpecificPart);
-    }
-
-    public URI(String p_scheme, String p_host, String p_path,
-            String p_queryString, String p_fragment)
-            throws MalformedURIException {
-        super(p_scheme, p_host, p_path, p_queryString, p_fragment);
-    }
-
-    public URI(String p_scheme, String p_userinfo, String p_host, int p_port,
-            String p_path, String p_queryString, String p_fragment)
-            throws MalformedURIException {
-        super(p_scheme, p_userinfo, p_host, p_port, p_path, p_queryString,
-                p_fragment);
+    /**
+     * Indicates the specification that has been broken.
+     * The possible return values are:
+     * <dd>
+     * </dd>
+     * @return
+     */
+    public int getConformance() {
+        return conformanceLevel;
     }
 
 }

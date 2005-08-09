@@ -31,15 +31,13 @@
  */
 
 package com.hp.hpl.jena.rdf.oldarp.test;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Enumeration;
-
-import junit.framework.Test;
 import junit.framework.TestSuite;
+import junit.framework.Test;
+import java.io.*;
+import java.util.*;
 
-import com.hp.hpl.jena.shared.wg.URI;
+import com.hp.hpl.jena.iri.*;
+import com.hp.hpl.jena.shared.wg.*;
 /**
  * The JUnit test suite for ARP.
  *
@@ -54,15 +52,15 @@ public class ARPTests extends java.lang.Object {
 	 * copy of the tests.
 	 */
 	static public boolean internet = false;
-	static URI wgTestDir =
-		URI.create("http://www.w3.org/2000/10/rdf-tests/rdfcore/");
-	static URI arpTestDir =
-		URI.create("http://jcarroll.hpl.hp.com/arp-tests/");
+	static RDFURIReference wgTestDir =
+		IRIFactory.defaultFactory().create("http://www.w3.org/2000/10/rdf-tests/rdfcore/");
+	static RDFURIReference arpTestDir =
+        IRIFactory.defaultFactory().create("http://jcarroll.hpl.hp.com/arp-tests/");
 	/** Creates new ARPTests */
 	static public Test suite() {
 		TestSuite s = new TestSuite("ARP");
 		if (internet) {
-			s.addTest(NTripleTestSuite.suite(wgTestDir, wgTestDir, "WG Parser Tests"));
+			s.addTest(NTripleTestSuite.suite(wgTestDir, wgTestDir.toString(), "WG Parser Tests"));
 		} else {
 			s.addTest(WGTestSuite.suite(wgTestDir, "wg",
 			//    URI.create(

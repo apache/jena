@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: XMLContext.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ * * $Id: XMLContext.java,v 1.2 2005-08-09 03:30:19 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -36,7 +36,8 @@
 
 package com.hp.hpl.jena.rdf.arp.impl;
 
-import com.hp.hpl.jena.shared.wg.URI;
+import com.hp.hpl.jena.iri.*;
+
 import java.net.URISyntaxException;
 
 import org.xml.sax.SAXParseException;
@@ -51,6 +52,7 @@ public class XMLContext  {
 //    final private String base;
     
     static private String truncateXMLBase(String rslt) {
+        if (rslt ==null) return null;
         int hash = rslt.indexOf('#');
         if (hash != -1) {
             return rslt.substring(0, hash);
@@ -59,24 +61,25 @@ public class XMLContext  {
     }
     
     final private String lang;
-    final private URI uri;
+    final private RDFURIReference uri;
     final XMLContext document;
     /** Creates new XMLContext */
-    public XMLContext(String base)throws URISyntaxException {
-        this(URI.create(truncateXMLBase(base)));
+    public XMLContext(XMLHandler h, String base) {
+        this(h.iriFactory().create(truncateXMLBase(base)));
     }
-    private XMLContext(URI uri) {
+
+    XMLContext(RDFURIReference uri) {
 		this(null,uri,"");
 
 	}
     
-    protected XMLContext(XMLContext document,URI uri,String lang)  {
+    protected XMLContext(XMLContext document,RDFURIReference uri,String lang)  {
 //        this.base=base;
         this.lang=lang;
         this.uri = uri;
         this.document = document==null?this:document;
     }
-    XMLContext withBase(String b)  throws URISyntaxException, SAXParseException {
+    XMLContext withBase(String b) throws SAXParseException  {
         return new XMLContext(document,resolveAsURI(truncateXMLBase(b)),lang);
     }
     XMLContext revertToDocument() {
@@ -88,7 +91,7 @@ public class XMLContext  {
     public String getLang() {
         return lang;
     }
-    URI getURI() {
+    RDFURIReference getURI() {
         return uri;
     }
     boolean isSameAsDocument() {
@@ -97,48 +100,14 @@ public class XMLContext  {
     XMLContext getDocument() {
         return document;
     }
-    XMLContext clone(XMLContext document,URI uri,String lang) {
+    XMLContext clone(XMLContext document,RDFURIReference uri,String lang) {
     	return new XMLContext(document,uri,lang);
     }
-    URI resolveAsURI(String uri)throws URISyntaxException, SAXParseException  {
-       try {
-           // Bug with java.net.URI does not resolve "" correctly
-           // as a same doc ref.
-        return uri.length()==0
-                 ?getURI()
-                 :fudgeURI().resolve(uri);
-       }
-       catch (IllegalArgumentException e) {
-           Throwable c = e.getCause();
-           if ( c instanceof URISyntaxException)
-               throw (URISyntaxException)c;
-           throw e;
-       }
-     
+    RDFURIReference resolveAsURI(String relUri) throws SAXParseException{
+        return uri.resolve(relUri);
     }
-    /*
-     * Bug with java.net.URI
-     *    resolves foo against http://example.org
-     *    without sticking in the slash.
-     */
-    private URI fudgedURI = null;
-    private URI fudgeURI() {
-        if (fudgedURI==null) {
-//            if (uri.toString().endsWith(".org"))
-//                System.err.println("x");
-             fudgedURI = uri;
-//            String rawPath = uri.getRawPath();
-//            if ( uri.isOpaque() || (rawPath!=null&&rawPath.length()>0
-//                && uri.getAuthority() != null    
-//                )   )
-//                fudgedURI = uri;
-//            else {
-//                fudgedURI = uri.resolve("/");
-//            }
-        }
-        return fudgedURI;
-    }
-    public String resolve(String uri) throws URISyntaxException, SAXParseException  {
+
+    public String resolve(String uri) throws SAXParseException {
 	 return resolveAsURI(uri).toString();
     }
     /**

@@ -1,25 +1,25 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.1 2005-08-01 15:07:07 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.2 2005-08-09 03:30:16 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.oldarp.test;
 
 import junit.framework.*;
-import java.util.zip.*;
 import java.io.*;
 
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.RDFURIReference;
+import com.hp.hpl.jena.iri.impl.XercesURIWrapper;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
-import com.hp.hpl.jena.rdf.oldarp.*;
-
 import java.util.*;
+import com.hp.hpl.jena.rdf.arp.*;
 import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
 import com.hp.hpl.jena.shared.wg.*;
-import com.hp.hpl.jena.shared.wg.URI;
 
 import com.hp.hpl.jena.reasoner.test.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
@@ -65,13 +65,13 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
 			default:
 			throw new BrokenException("Unknown result type");
 		}
-		Resource result =
-			testResults
-				.createResource()
-				.addProperty(RDF.type, OWLResults.TestRun)
-				.addProperty(RDF.type, rslt)
-				.addProperty(OWLResults.test, test )
-				.addProperty(OWLResults.system, jena2);
+//		Resource result =
+//			testResults
+//				.createResource()
+//				.addProperty(RDF.type, OWLResults.TestRun)
+//				.addProperty(RDF.type, rslt)
+//				.addProperty(OWLResults.test, test )
+//				.addProperty(OWLResults.system, jena2);
 	}
 	private static boolean logging = false;
 	private static String BASE_RESULTS_URI = "http://jena.sourceforge.net/data/rdf-results.rdf";
@@ -151,7 +151,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     static private Resource ntriple = new ResourceImpl(testNS, "NT-Document");
 	//  static private Resource falseDoc = new ResourceImpl(testNS, "False-Document");
 
-    private URI testDir;
+    private RDFURIReference testDir;
     
     private Act noop = new Act() {
         public void act(Resource r) {
@@ -161,7 +161,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     private Act semTest = new Act() {
 		  public void act(Resource r) {
 		  	if (doSemanticTests()){
-		  		addTest(r, new ReasoningTest(r));
+//		  		addTest(r, new ReasoningTest(r));
 		  	}
 		  }
     };
@@ -256,8 +256,10 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         if (dynamic)
             try {
             	String wgDir = ARPTests.wgTestDir.toString();
-            	System.err.println(wgDir);
-            	  wgReasoner = new WGReasonerTester("Manifest",wgDir);
+            	System.err.println(testDir+", "+fact.getMapBase());
+            	  wgReasoner = new WGReasonerTester("Manifest.rdf",
+                          "testing/wg/");
+//                          wgDir);
                 createMe =
                     "new "
                         + this.getClass().getName()
@@ -309,14 +311,14 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     
    // private ZipFile zip;
     
-    static TestSuite suite(URI testDir, String d, String nm) {
+    static TestSuite suite(RDFURIReference testDir, String d, String nm) {
         return new WGTestSuite(
             new TestInputStreamFactory(testDir, d),
             nm,
             true);
     }
 
-    static TestSuite suite(URI testDir, URI d, String nm) {
+    static TestSuite suite(RDFURIReference testDir, XercesURIWrapper d, String nm) {
         return new WGTestSuite(
             new TestInputStreamFactory(testDir, d),
             nm,
@@ -396,7 +398,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 WGTestSuite
                     .this
                     .testDir
-                    .relativize(URI.create(r.getURI()))
+                    .relativize(IRIFactory.defaultFactory().create(r.getURI()),
+                            RDFURIReference.RELATIVE)
                     .toString());
             testID = r;
         }
@@ -687,13 +690,14 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         //Resource testID;
         Test2(String r) {
             super(
-                WGTestSuite.this.testDir.relativize(URI.create(r)).toString());
+                WGTestSuite.this.testDir.relativize(r,
+                        RDFURIReference.RELATIVE));
             //   testID = r;
         }
         Model read(String file, boolean type) throws IOException {
             if (!type) {
                 return loadNT(factory.open(file),file);
-            } else {
+            } 
                 final String uri = file;
                 return loadRDF(
                 new InFactoryX(){
@@ -704,7 +708,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 }
                 
                 , this, uri);
-            }
+            
         }
         
         public void warning(Exception e) {
@@ -887,12 +891,22 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
             } catch (IOException ioe) {
                 fail(ioe.getMessage());
             }
-            if (expected != null && !expected.equals(found)) {
+            // TODO: tidy up this code a bit, I don't understand it.
+            HashSet ex2 = expected==null?null:new HashSet(expected);
+            if (expected==null)
+            for (int j = 2; j >= 0; j--)
+                if (j != expectedLevel)  {
+                    if (errorCnt[j] != 0)
+                        ex2 = new HashSet();
+                }
+            if (ex2 != null && !ex2.equals(found)) {
                 Set dup = new HashSet();
                 dup.addAll(found);
-                dup.removeAll(expected);
-                expected.removeAll(found);
-                Iterator it = expected.iterator();
+                dup.removeAll(ex2);
+                ex2.removeAll(found);
+                if (expected != null)
+                    expected.removeAll(found);
+                Iterator it = ex2.iterator();
                 while (it.hasNext()) {
                     int eCode = ((Integer) it.next()).intValue();
                     String msg =

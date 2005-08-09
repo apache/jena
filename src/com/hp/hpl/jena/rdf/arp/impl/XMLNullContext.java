@@ -1,16 +1,15 @@
 /*
  (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  [See end of file]
- $Id: XMLNullContext.java,v 1.1 2005-08-01 15:07:03 jeremy_carroll Exp $
+ $Id: XMLNullContext.java,v 1.2 2005-08-09 03:30:20 jeremy_carroll Exp $
  */
 package com.hp.hpl.jena.rdf.arp.impl;
 
 
-import com.hp.hpl.jena.shared.wg.URI;
-import java.net.URISyntaxException;
 
 import org.xml.sax.SAXParseException;
 
+import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.states.Frame;
 
@@ -25,15 +24,15 @@ class XMLNullContext extends XMLContext implements ARPErrorNumbers {
 
     final String errmsg;
 
-    XMLNullContext(XMLHandler f, int eno) throws URISyntaxException {
-        super("");
+    XMLNullContext(XMLHandler f, int eno)  {
+        super(f.iriFactory().create(""));
         forErrors = f;
         errno = eno;
         errmsg = eno == ERR_RESOLVING_URI_AGAINST_NULL_BASE ? "Base URI is null, but there are relative URIs to resolve."
                 : "Base URI is \"\", relative URIs left as relative.";
     }
 
-    private XMLNullContext(XMLContext document, URI uri, String lang,
+    private XMLNullContext(XMLContext document, RDFURIReference uri, String lang,
             XMLNullContext parent) {
         super(document, uri, lang);
         forErrors = parent.forErrors;
@@ -41,18 +40,14 @@ class XMLNullContext extends XMLContext implements ARPErrorNumbers {
         errmsg = parent.errmsg;
     }
 
-    XMLContext clone(XMLContext document, URI uri,  String lang) {
+    XMLContext clone(XMLContext document,RDFURIReference uri,  String lang) {
         return new XMLNullContext(document, uri, lang, this);
     }
 
-    URI resolveAsURI(String uri) throws URISyntaxException, SAXParseException {
-        URI rslt = URI.construct(uri);
+    RDFURIReference resolveAsURI(String uri) throws SAXParseException {
+        RDFURIReference rslt = this.getURI().resolve(uri);
         if (!rslt.isAbsolute()) {
             badBaseUsed();
-            // TODO: different exception here
-            if (errno == ERR_RESOLVING_URI_AGAINST_NULL_BASE)
-                throw new URISyntaxException(uri,
-                        "cannot resolve, because no base");
         }
         return rslt;
 

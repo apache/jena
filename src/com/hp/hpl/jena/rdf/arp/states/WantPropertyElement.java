@@ -85,13 +85,14 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
                 objectIsBlank = true;
             }
             if (ap.resource != null) {
-                if (object != null)
-                    if (!badStateCode(nextStateCode))  // otherwise warning already given
-                       warning(
-                            ERR_SYNTAX_ERROR,
-                            "It is not permitted to specifiy both rdf:nodeID and rdf:resource attributes on a property element.");
-                else
-                    object = URIReference.resolve(this, x, ap.resource);
+                if (object != null) {
+                    if (!badStateCode(nextStateCode)) // otherwise warning
+                                                        // already given
+                        warning(
+                                ERR_SYNTAX_ERROR,
+                                "It is not permitted to specifiy both rdf:nodeID and rdf:resource attributes on a property element."); 
+                } else
+                    object = URIReference.resolve(this, x, ap.resource); 
             }
             if (object == null) {
                 object = new ARPResource(arp);
@@ -107,12 +108,10 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
 
     }
 
-
     private boolean mustBeEmpty(AttributeLexer ap, Attributes atts, int cnt) {
         return cnt < atts.getLength() || ap.type != null || ap.nodeID != null
                 || ap.resource != null;
     }
-
 
     private FrameI nextFrame(Attributes atts, AttributeLexer ap, int cnt,
             int nextStateCode, XMLContext x) throws SAXParseException {
@@ -132,7 +131,6 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         }
         throw new IllegalStateException("impossible");
     }
-
 
     private FrameI withParsetype(String pt, XMLContext x)
             throws SAXParseException {
@@ -214,14 +212,13 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         return _rdf_n[i];
     }
 
-    /* **********************
-    
+    /***************************************************************************
+     * 
      * ERROR HANDLING CODE
-     
-     * ************************/
-    
+     * 
+     **************************************************************************/
+
     // Error detection
-    
     private boolean badStateCode(int nextStateCode) {
         switch (nextStateCode) {
         case PARSETYPE | TYPEDLITERAL:
@@ -237,33 +234,32 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         }
         throw new IllegalStateException("impossible");
     }
-    
-//  Error classification
-    
+
+    // Error classification
+
     private int errorNumber(int nextStateCode) {
         // TODO: refine this error code.
         return ERR_SYNTAX_ERROR;
     }
 
-    /* **********************
-    
+    /***************************************************************************
+     * 
      * ERROR MESSAGES
-     
-     * ************************/
-    
-    
+     * 
+     **************************************************************************/
+    // TODO: add tests for these error messages
+
     private String descriptionOfCases(AttributeLexer ap, int nextStateCode,
             String propAttrs) {
-        return 
-         ( (propAttrs == null&&ap.type==null) 
-         || (ap.nodeID == null && ap.resource == null && ap.type == null)
-         || (ap.nodeID == null && ap.resource == null && propAttrs == null )
-         ) 
-          ? pairwiseIncompatibleErrorMessage(nextStateCode, ap, propAttrs)
-          : complicatedErrorMessage(nextStateCode, ap, propAttrs);
+        return ((propAttrs == null && ap.type == null)
+                || (ap.nodeID == null && ap.resource == null && ap.type == null) || (ap.nodeID == null
+                && ap.resource == null && propAttrs == null)) ? pairwiseIncompatibleErrorMessage(
+                nextStateCode, ap, propAttrs)
+                : complicatedErrorMessage(nextStateCode, ap, propAttrs);
     }
 
-    private String pairwiseIncompatibleErrorMessage(int nextStateCode, AttributeLexer ap, String propAttrs) {
+    private String pairwiseIncompatibleErrorMessage(int nextStateCode,
+            AttributeLexer ap, String propAttrs) {
         ArrayList cases = new ArrayList();
         if ((nextStateCode & PARSETYPE) != 0)
             cases.add("rdf:parseType");
@@ -273,58 +269,60 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
             cases.add("rdf:nodeID");
         if (ap.resource != null)
             cases.add("rdf:resource");
-        if ( ap.type != null)
+        if (ap.type != null)
             cases.add("rdf:type");
-        
-        if (cases.size()==1) {
-            if ( propAttrs == null)
+
+        if (cases.size() == 1) {
+            if (propAttrs == null)
                 throw new IllegalStateException("Shouldn't happen.");
-            return "The attribute " + cases.get(0) + 
-            " is not permitted with "+propAttrs + " on a property element.";
+            return "The attribute " + cases.get(0) + " is not permitted with "
+                    + propAttrs + " on a property element.";
         }
-        String rslt = 
-                "On a property element, only one of the ";
+        String rslt = "On a property element, only one of the ";
         if (propAttrs == null)
             rslt += "attributes ";
-        for (int i = 0;i<cases.size();i++) {
+        for (int i = 0; i < cases.size(); i++) {
             rslt += cases.get(i);
-            switch (cases.size()-i) {
+            switch (cases.size() - i) {
             case 1:
                 break;
             case 2:
                 rslt += " or ";
                 break;
-                default:
-                    rslt += ", ";
+            default:
+                rslt += ", ";
                 break;
             }
         }
-        if ( propAttrs != null ) {
-            rslt += "attributes or "+propAttrs;
+        if (propAttrs != null) {
+            rslt += "attributes or " + propAttrs;
         }
         rslt += " is permitted.";
         return rslt;
     }
 
-    private String complicatedErrorMessage(int nextStateCode, AttributeLexer ap, String propAttrs) {
+    private String complicatedErrorMessage(int nextStateCode,
+            AttributeLexer ap, String propAttrs) {
         String rslt = "";
-        if (ap.nodeID == null && ap.resource == null) 
+        if (ap.nodeID == null && ap.resource == null)
             throw new IllegalStateException("precondition failed.");
         if (ap.nodeID != null && ap.resource != null) {
             rslt += "the mutually incompatible attributes rdf:nodeID and rdf:resource,";
         } else {
             rslt += "the attribute "
                     + (ap.nodeID != null ? "rdf:nodeID" : "rdf:resource");
-            if (ap.type!=null && propAttrs!=null)
+            if (ap.type != null && propAttrs != null)
                 rslt += ",";
         }
-        if (ap.type!=null && propAttrs!=null) {
-            rslt += " the attribute rdf:type and the "+propAttrs;
+        if (ap.type != null && propAttrs != null) {
+            rslt += " the attribute rdf:type and the " + propAttrs;
             rslt = "On a property element, each of " + rslt;
-        } else if (ap.type!=null) {
-            rslt = "On a property element, both " + rslt + " and the attribute rdf:type";
+        } else if (ap.type != null) {
+            rslt = "On a property element, both " + rslt
+                    + " and the attribute rdf:type";
         } else {
-            rslt = "On a property element, both " + rslt + " and the " + propAttrs;
+            rslt = "On a property element, both " + rslt + " and the "
+                    + propAttrs;
         }
         rslt += " are incompatible with ";
         if ((nextStateCode & (TYPEDLITERAL | PARSETYPE)) == (TYPEDLITERAL | PARSETYPE))
@@ -385,7 +383,6 @@ public class WantPropertyElement extends Frame implements WantsObjectFrameI,
         }
         return "property attributes (" + propAttrs + ")";
     }
-
 
 }
 

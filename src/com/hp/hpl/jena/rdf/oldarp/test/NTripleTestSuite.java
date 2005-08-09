@@ -11,10 +11,11 @@ import java.util.*;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.hp.hpl.jena.iri.RDFURIReference;
+import com.hp.hpl.jena.iri.impl.XercesURIWrapper;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.oldarp.*;
 import com.hp.hpl.jena.shared.wg.*;
-import com.hp.hpl.jena.shared.wg.URI;
 
 /**
  * A version of the test suite which uses the
@@ -29,14 +30,14 @@ class NTripleTestSuite extends WGTestSuite {
 		super(fact, name, b);
 	}
 
-	static TestSuite suite(URI testDir, String d, String nm) {
+	static TestSuite suite(RDFURIReference testDir, String d, String nm) {
 		return new NTripleTestSuite(
 			new TestInputStreamFactory(testDir, d),
 			nm,
 			true);
 	}
 
-	static TestSuite suite(URI testDir, URI d, String nm) {
+	static TestSuite suite(RDFURIReference testDir, XercesURIWrapper d, String nm) {
 		return new NTripleTestSuite(
 			new TestInputStreamFactory(testDir, d),
 			nm,

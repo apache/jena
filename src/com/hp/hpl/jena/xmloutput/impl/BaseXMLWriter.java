@@ -2,7 +2,7 @@
  *  (c) Copyright 2000, 2001, 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *  All rights reserved.
  *  [See end of file]
- *  $Id: BaseXMLWriter.java,v 1.46 2005-04-17 19:11:17 jeremy_carroll Exp $
+ *  $Id: BaseXMLWriter.java,v 1.47 2005-08-09 03:30:20 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.xmloutput.impl;
@@ -19,7 +19,6 @@ import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.rdf.arp.URI;
-import com.hp.hpl.jena.rdf.arp.ARP;
 import com.hp.hpl.jena.rdf.arp.MalformedURIException;
 
 import java.io.*;
@@ -51,7 +50,7 @@ import org.apache.commons.logging.LogFactory;
  * </ul>
  *
  * @author  jjcnee
- * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.46 $' Date='$Date: 2005-04-17 19:11:17 $'
+ * @version   Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.47 $' Date='$Date: 2005-08-09 03:30:20 $'
 */
 abstract public class BaseXMLWriter implements RDFXMLWriterI {
 	

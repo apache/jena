@@ -25,7 +25,7 @@
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * 
- * $Id: XMLHandler.java,v 1.5 2005-08-06 06:14:50 jeremy_carroll Exp $
+ * $Id: XMLHandler.java,v 1.6 2005-08-09 03:30:19 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -38,7 +38,6 @@
 package com.hp.hpl.jena.rdf.arp.impl;
 
 import java.io.InterruptedIOException;
-import com.hp.hpl.jena.shared.wg.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,6 +48,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
+import com.hp.hpl.jena.iri.*;
 import com.hp.hpl.jena.rdf.arp.ALiteral;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.ARPHandlers;
@@ -61,8 +61,6 @@ import com.hp.hpl.jena.rdf.arp.states.FrameI;
 import com.hp.hpl.jena.rdf.arp.states.LookingForRDF;
 import com.hp.hpl.jena.rdf.arp.states.StartStateRDForDescription;
 
-
-
 /**
  * This class converts SAX events into a stream of encapsulated events suitable
  * for the RDF parser. In effect, this is the RDF lexer. updates by kers to
@@ -70,37 +68,38 @@ import com.hp.hpl.jena.rdf.arp.states.StartStateRDForDescription;
  * 
  * @author jjc
  */
-public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, Names {
-
+public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers,
+        Names {
 
     boolean encodingProblems = false;
 
     protected Map idsUsed = new HashMap();
-  
+
     public void triple(ANode s, ANode p, ANode o) {
-//        System.out.println(s + " " + p + " " + o + " .");
+        // System.out.println(s + " " + p + " " + o + " .");
         StatementHandler stmt = handlers.getStatementHandler();
-        AResourceInternal subj = (AResourceInternal)s;
-        AResourceInternal pred = (AResourceInternal)p;
+        AResourceInternal subj = (AResourceInternal) s;
+        AResourceInternal pred = (AResourceInternal) p;
         subj.setHasBeenUsed();
         if (o instanceof AResource) {
-            AResourceInternal obj = (AResourceInternal)o;
+            AResourceInternal obj = (AResourceInternal) o;
             obj.setHasBeenUsed();
-            stmt.statement(subj,pred,obj);
+            stmt.statement(subj, pred, obj);
         } else
-            stmt.statement(subj,pred,(ALiteral)o);
+            stmt.statement(subj, pred, (ALiteral) o);
     }
+
     // This is the current frame.
     FrameI frame;
 
-
-    public void startPrefixMapping(String prefix, String uri) throws SAXParseException {
+    public void startPrefixMapping(String prefix, String uri)
+            throws SAXParseException {
         checkNamespaceURI(uri);
-        handlers.getNamespaceHandler().startPrefixMapping(prefix,uri);
+        handlers.getNamespaceHandler().startPrefixMapping(prefix, uri);
     }
 
     public void endPrefixMapping(String prefix) {
-         handlers.getNamespaceHandler().endPrefixMapping(prefix);
+        handlers.getNamespaceHandler().endPrefixMapping(prefix);
     }
 
     public Locator getLocator() {
@@ -109,21 +108,22 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
 
     Locator locator;
 
-  
     public void setDocumentLocator(Locator locator) {
         this.locator = locator;
     }
 
     static final private boolean DEBUG = false;
+
     public void startElement(String uri, String localName, String rawName,
             Attributes atts) throws SAXException {
         if (Thread.interrupted())
             throw new WrappedException(new InterruptedIOException());
         FrameI oldFrame = frame;
-        frame =
-        frame.startElement(uri,localName,rawName,atts);
+        frame = frame.startElement(uri, localName, rawName, atts);
         if (DEBUG)
-        System.err.println("<"+rawName + "> :: "+getSimpleName(oldFrame.getClass()) + " --> " + getSimpleName(frame.getClass()));
+            System.err.println("<" + rawName + "> :: "
+                    + getSimpleName(oldFrame.getClass()) + " --> "
+                    + getSimpleName(frame.getClass()));
     }
 
     public void endElement(String uri, String localName, String rawName)
@@ -131,15 +131,18 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
         frame.endElement();
         frame = frame.getParent();
         if (DEBUG)
-        System.err.println("</"+rawName+"> :: <--" + getSimpleName(frame.getClass()) );
-    }    
+            System.err.println("</" + rawName + "> :: <--"
+                    + getSimpleName(frame.getClass()));
+    }
+
     static public String getSimpleName(Class c) {
         String rslt[] = c.getName().split("\\.");
-        return rslt[rslt.length-1];
+        return rslt[rslt.length - 1];
     }
+
     public void characters(char ch[], int start, int length)
             throws SAXException {
-        frame.characters(ch,start,length);
+        frame.characters(ch, start, length);
     }
 
     public void ignorableWhitespace(char ch[], int start, int length)
@@ -154,126 +157,138 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
     Object getUserData(String nodeId) {
         return nodeIdUserData.get(nodeId);
     }
-    
+
     public void comment(char[] ch, int start, int length)
             throws SAXParseException {
-        frame.comment(ch,start,length);
+        frame.comment(ch, start, length);
     }
 
     public void processingInstruction(String target, String data)
             throws SAXException {
-        frame.processingInstruction(target,data);
+        frame.processingInstruction(target, data);
     }
 
-    public void warning(int id, String msg)  throws SAXParseException {
+    public void warning(int id, String msg) throws SAXParseException {
         if (options.getErrorMode()[id] != EM_IGNORE)
-            warning(id,location(),msg);
+            warning(id, location(), msg);
     }
 
-    void warning(int id, Location loc, String msg)  throws SAXParseException {
+    void warning(int id, Location loc, String msg) throws SAXParseException {
         if (options.getErrorMode()[id] != EM_IGNORE)
-            warning(id,new ParseException(id,loc,msg){
+            warning(id, new ParseException(id, loc, msg) {
                 private static final long serialVersionUID = 1990910846204964756L;
             });
     }
 
     void generalError(int id, Exception e) throws SAXParseException {
         Location where = new Location(locator);
-        //   System.err.println(e.getMessage());
-        warning(id,new ParseException(id,where,e));
+        // System.err.println(e.getMessage());
+        warning(id, new ParseException(id, where, e));
 
     }
+
     void warning(int id, SAXParseException e) throws SAXParseException {
         try {
             switch (options.getErrorMode()[id]) {
-                case EM_IGNORE :
-                    break;
-                case EM_WARNING :
-                    handlers.getErrorHandler().warning(e);
-                    break;
-                case EM_ERROR :
-                    handlers.getErrorHandler().error(e);
-                    break;
-                case EM_FATAL :
-                    handlers.getErrorHandler().fatalError(e);
-                    break;
+            case EM_IGNORE:
+                break;
+            case EM_WARNING:
+                handlers.getErrorHandler().warning(e);
+                break;
+            case EM_ERROR:
+                handlers.getErrorHandler().error(e);
+                break;
+            case EM_FATAL:
+                handlers.getErrorHandler().fatalError(e);
+                break;
             }
-        } 
-        catch (SAXParseException xx) {
+        } catch (SAXParseException xx) {
             throw xx;
-        }
-        catch (SAXException ee) {
+        } catch (SAXException ee) {
             throw new WrappedException(ee);
         }
-        if ( e instanceof ParseException 
-                && ((ParseException)e).isPromoted())
+        if (e instanceof ParseException && ((ParseException) e).isPromoted())
             throw e;
-       if (options.getErrorMode()[id]==EM_FATAL) {
-           // If we get here,  we shouldn't go on
-           // throw an error into Jena.
-           throw new FatalParsingErrorException();
-           
-       }
+        if (options.getErrorMode()[id] == EM_FATAL) {
+            // If we get here, we shouldn't go on
+            // throw an error into Jena.
+            throw new FatalParsingErrorException();
+
+        }
     }
-    
+
     public void error(SAXParseException e) throws SAXParseException {
         warning(ERR_SAX_ERROR, e);
     }
+
     public void warning(SAXParseException e) throws SAXParseException {
         warning(WARN_SAX_WARNING, e);
     }
+
     public void fatalError(SAXParseException e) throws SAXException {
         warning(ERR_SAX_FATAL_ERROR, e);
-        // If we get here,  we shouldn't go on
+        // If we get here, we shouldn't go on
         // throw an error into Jena.
         throw new FatalParsingErrorException();
-        
-    }
-    
 
+    }
 
     /**
      * @param v
      */
     public void endLocalScope(ANode v) {
         if (handlers.getExtendedHandler() != ARPHandlersImpl.nullScopeHandler) {
-                ARPResource bn = (ARPResource) v;
-              if (!bn.getHasBeenUsed())
+            ARPResource bn = (ARPResource) v;
+            if (!bn.getHasBeenUsed())
                 return;
-                if (bn.hasNodeID()) {
-                    // save for later end scope
-                    if ( handlers.getExtendedHandler().discardNodesWithNodeID())
-                      return;
-                    String bnodeID = bn.nodeID;
-                    if (!nodeIdUserData.containsKey(bnodeID))
-                        nodeIdUserData.put(bnodeID, null);
-                } else {
-                    handlers.getExtendedHandler().endBNodeScope(bn);
-                }
+            if (bn.hasNodeID()) {
+                // save for later end scope
+                if (handlers.getExtendedHandler().discardNodesWithNodeID())
+                    return;
+                String bnodeID = bn.nodeID;
+                if (!nodeIdUserData.containsKey(bnodeID))
+                    nodeIdUserData.put(bnodeID, null);
+            } else {
+                handlers.getExtendedHandler().endBNodeScope(bn);
             }
-   }
-
+        }
+    }
 
     public void endRDF() {
         handlers.getExtendedHandler().endRDF();
     }
+
     public void startRDF() {
         handlers.getExtendedHandler().startRDF();
     }
 
- 
     boolean ignoring(int eCode) {
-        return options.getErrorMode()[eCode]==EM_IGNORE;
+        return options.getErrorMode()[eCode] == EM_IGNORE;
     }
 
-    protected XMLContext initialContext(String base, String lang) throws SAXParseException {
+    protected XMLContext initialContext(String base, String lang)
+            throws SAXParseException {
         return initialContextWithBase(base).withLang(lang);
     }
 
+    protected void checkBadURI(RDFURIReference uri) throws SAXParseException {
+        if (uri.isRDFURIReference() || !uri.isVeryBad())
+            return;
+        // TODO: extract good message
+        String msg = "todo <"+uri+">";
+//            e.getMessage();
+//        if (msg.endsWith(uri)) {
+//            msg = msg.substring(0,msg.length()-uri.length())+"<"+uri+">";            
+//        } else {
+//            msg = "<" + uri + "> " + msg; 
+//        }
+//        URI uri2;
+//        uri2.
+        warning(WARN_MALFORMED_URI, "Bad URI: " + msg);
+    }
     private XMLContext initialContextWithBase(String base) throws SAXParseException {
-        try {
+        
             if (base == null) {
-                // TODO: base warnings
                 warning(IGN_NO_BASE_URI_SPECIFIED,
                         "Base URI not specified for input file; local URI references will be in error.");
 
@@ -286,21 +301,40 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
                 return new XMLNullContext(this,
                         WARN_RESOLVING_URI_AGAINST_EMPTY_BASE);
             } else {
-                return new XMLContext(base);
+                return new XMLContext(this,base);
             }
-        } catch (URISyntaxException e) {
-            // TODO: bad base what here?
-            return null;
+    }
+    private XMLContext initialContextWithBasex(String base)
+            throws SAXParseException {
+        XMLContext rslt = new XMLContext(this, base);
+        RDFURIReference b = rslt.getURI();
+        if (base == null) {
+            warning(IGN_NO_BASE_URI_SPECIFIED,
+                    "Base URI not specified for input file; local URI references will be in error.");
+
+        } else if (base.equals("")) {
+            warning(IGN_NO_BASE_URI_SPECIFIED,
+                    "Base URI specified as \"\"; local URI references will not be resolved.");
+
+        } else {
+            checkBadURI(b);
+            // Warnings on bad base.
+
+            // if (b.isVeryBad()||b.isRelative()) {
+            // return
         }
+
+        return rslt;
     }
 
-
     private ARPOptionsImpl options = new ARPOptionsImpl();
+
     private ARPHandlersImpl handlers = new ARPHandlersImpl();
-    
+
     StatementHandler getStatementHandler() {
         return handlers.getStatementHandler();
     }
+
     public ARPHandlers getHandlers() {
         return handlers;
     }
@@ -308,91 +342,114 @@ public class XMLHandler extends LexicalHandlerImpl implements ARPErrorNumbers, N
     public ARPOptionsImpl getOptions() {
         return options;
     }
+
     public void setOptionsWith(ARPOptionsImpl newOpts) {
         options = newOpts.copy();
     }
-    public void setHandlersWith(ARPHandlersImpl newHh){
+
+    public void setHandlersWith(ARPHandlersImpl newHh) {
         handlers = newHh.copy();
-    }   
+    }
+
     private Map nodeIdUserData;
-    
-    public void initParse(String base,String lang)  throws SAXParseException 
-    {
+
+    public void initParse(String base, String lang) throws SAXParseException {
         nodeIdUserData = new HashMap();
         idsUsed = new HashMap();
         if (getOptions().getEmbedding())
-            frame = new LookingForRDF(this, initialContext(base,lang));
+            frame = new LookingForRDF(this, initialContext(base, lang));
         else
-            frame = new StartStateRDForDescription(this, initialContext(base,lang));
-        
+            frame = new StartStateRDForDescription(this, initialContext(base,
+                    lang));
+
     }
-    
+
     /**
-     * This method must be always be called after parsing,
-     * e.g. in a finally block.
-     *
+     * This method must be always be called after parsing, e.g. in a finally
+     * block.
+     * 
      */
     void afterParse() {
-        while (frame!=null) {
+        while (frame != null) {
             frame.abort();
             frame = frame.getParent();
         }
-//        endRDF();
+        // endRDF();
         endBnodeScope();
     }
 
     void endBnodeScope() {
-        if ( handlers.getExtendedHandler() != ARPHandlersImpl.nullScopeHandler ) {
+        if (handlers.getExtendedHandler() != ARPHandlersImpl.nullScopeHandler) {
             Iterator it = nodeIdUserData.keySet().iterator();
             while (it.hasNext()) {
-                String nodeId = (String)it.next();
-                ARPResource bn = new ARPResource(this,nodeId);
+                String nodeId = (String) it.next();
+                ARPResource bn = new ARPResource(this, nodeId);
                 handlers.getExtendedHandler().endBNodeScope(bn);
             }
         }
     }
-    
-    
+
     public Location location() {
         return new Location(locator);
     }
 
+    private IRIFactory factory;
+
+    IRIFactory iriFactory() {
+        if (factory == null) {
+            if (locator != null)
+                factory = new IRIFactory(locator);
+            else
+                factory = new IRIFactory(new Locator() {
+
+                    public int getColumnNumber() {
+                        return locator == null ? -1 : locator.getColumnNumber();
+                    }
+
+                    public int getLineNumber() {
+                        return locator == null ? -1 : locator.getLineNumber();
+                    }
+
+                    public String getPublicId() {
+                        return locator == null ? null : locator.getPublicId();
+                    }
+
+                    public String getSystemId() {
+                        return locator == null ? null : locator.getSystemId();
+                    }
+
+                });
+
+        }
+        return factory;
+    }
+
     private void checkNamespaceURI(String uri) throws SAXParseException {
-        ((Frame)frame).checkEncoding(uri);
+        ((Frame) frame).checkEncoding(uri);
         if (uri.length() != 0)
-            try {
-                URI u = URI.create(uri);
+             {
+                RDFURIReference u = iriFactory().create(uri);
                 if (!u.isAbsolute()) {
                     warning(
                             WARN_RELATIVE_NAMESPACE_URI_DEPRECATED,
-                      "The namespace URI: <"+uri+"> is relative. Such use has been deprecated by the W3C, and may result in RDF interoperability failures. Use an absolute namespace URI."      
-                            );
+                            "The namespace URI: <"
+                                    + uri
+                                    + "> is relative. Such use has been deprecated by the W3C, and may result in RDF interoperability failures. Use an absolute namespace URI.");
                 }
                 if (!u.toASCIIString().equals(u.toString()))
-                        warning(
-                                WARN_BAD_NAMESPACE_URI,
-                     "Non-ascii characters in a namespace URI may not be completely portable: <"+
-                     u.toString()+">. Resulting RDF URI references are legal.");
-                
+                    warning(
+                            WARN_BAD_NAMESPACE_URI,
+                            "Non-ascii characters in a namespace URI may not be completely portable: <"
+                                    + u.toString()
+                                    + ">. Resulting RDF URI references are legal.");
+
                 if (uri.startsWith(rdfns) && !uri.equals(rdfns))
-                    warning(
-                        WARN_BAD_RDF_NAMESPACE_URI,
-                        "Namespace URI ref <"
-                            + uri
-                            + "> may not be used in RDF/XML.");
+                    warning(WARN_BAD_RDF_NAMESPACE_URI, "Namespace URI ref <"
+                            + uri + "> may not be used in RDF/XML.");
                 if (uri.startsWith(xmlns) && !uri.equals(xmlns))
-                    warning(
-                        WARN_BAD_XML_NAMESPACE_URI,
-                        "Namespace URI ref <"
-                            + uri
-                            + "> may not be used in RDF/XML.");
-//            } catch (URISyntaxException m) {
-                // TODO: make this a bit cleaner here:
-            } catch (Exception m) {
-                                warning(
-                    WARN_BAD_NAMESPACE_URI,
-                    "Illegal URI in xmlns declaration: " + uri);
-            }
+                    warning(WARN_BAD_XML_NAMESPACE_URI, "Namespace URI ref <"
+                            + uri + "> may not be used in RDF/XML.");
+             }   
     }
 
 }

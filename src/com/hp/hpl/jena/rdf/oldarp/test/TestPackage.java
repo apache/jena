@@ -29,12 +29,12 @@ package com.hp.hpl.jena.rdf.oldarp.test;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import com.hp.hpl.jena.iri.*;
 import com.hp.hpl.jena.shared.wg.TestInputStreamFactory;
-import com.hp.hpl.jena.shared.wg.URI;
 public class TestPackage{
 static public Test suite() {
 TestSuite test0 = new TestSuite("ARP");
-WGTestSuite test1 = new com.hp.hpl.jena.rdf.oldarp.test.WGTestSuite(new TestInputStreamFactory(URI.create("http://www.w3.org/2000/10/rdf-tests/rdfcore/"),"wg"), "WG Parser Tests", false );
+WGTestSuite test1 = new com.hp.hpl.jena.rdf.oldarp.test.WGTestSuite(new TestInputStreamFactory(IRIFactory.defaultFactory().create("http://www.w3.org/2000/10/rdf-tests/rdfcore/"),"wg"), "WG Parser Tests", false );
 TestSuite test2 = new TestSuite("APPROVED");
 Test test3 = test1.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#test-037","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/test-037.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/test-037.nt",false);
 test2.addTest(test3);
@@ -376,7 +376,7 @@ Test test171 = test1.createNegativeTest("http://www.w3.org/2000/10/rdf-tests/rdf
 test143.addTest(test171);
 test1.addTest(test143);
 test0.addTest(test1);
-WGTestSuite test172 = new com.hp.hpl.jena.rdf.oldarp.test.WGTestSuite(new TestInputStreamFactory(URI.create("http://jcarroll.hpl.hp.com/arp-tests/"),"arp"), "ARP Tests", false );
+WGTestSuite test172 = new com.hp.hpl.jena.rdf.oldarp.test.WGTestSuite(new TestInputStreamFactory(IRIFactory.defaultFactory().create("http://jcarroll.hpl.hp.com/arp-tests/"),"arp"), "ARP Tests", false );
 TestSuite test173 = new TestSuite("ARP");
 Test test174 = test172.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported1","http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported1.rdf",true,"http://jcarroll.hpl.hp.com/arp-tests/xml-literals/reported1.nt",false);
 test173.addTest(test174);
@@ -448,7 +448,7 @@ Test test207 = test172.createPositiveTest("http://jcarroll.hpl.hp.com/arp-tests/
 test173.addTest(test207);
 test172.addTest(test173);
 test0.addTest(test172);
-WGTestSuite test208 = new com.hp.hpl.jena.rdf.oldarp.test.NTripleTestSuite(new TestInputStreamFactory(URI.create("http://www.w3.org/2000/10/rdf-tests/rdfcore/"),"wg"), "NTriple WG Tests", false );
+WGTestSuite test208 = new com.hp.hpl.jena.rdf.oldarp.test.NTripleTestSuite(new TestInputStreamFactory(IRIFactory.defaultFactory().create("http://www.w3.org/2000/10/rdf-tests/rdfcore/"),"wg"), "NTriple WG Tests", false );
 TestSuite test209 = new TestSuite("APPROVED");
 Test test210 = test208.createPositiveTest("http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/Manifest.rdf#test-037","http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/test-037.rdf",true,"http://www.w3.org/2000/10/rdf-tests/rdfcore/rdfms-rdf-names-use/test-037.nt",false);
 test209.addTest(test210);

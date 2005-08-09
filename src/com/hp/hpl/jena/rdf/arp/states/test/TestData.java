@@ -64,14 +64,7 @@ public class TestData {
 //    }
     static String dataFile = "testing/arp/state.txt";
 
-    static XMLContext xmlContext;
-    static {
-        try {
-            xmlContext = new XMLContext("http://example.org/base/");
-        } catch (URISyntaxException e) {
-
-        }
-    }
+    static XMLContext xmlContext= new XMLContext(xmlHandler,"http://example.org/base/");
     static TestFrame testFrame = new TestFrame(xmlHandler, xmlContext);
     
     static char white[] = { 32, 32, 32, 32, 32 };

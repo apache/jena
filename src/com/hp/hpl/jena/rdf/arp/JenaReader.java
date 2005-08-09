@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import com.hp.hpl.jena.shared.wg.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -26,6 +25,7 @@ import com.hp.hpl.jena.graph.Graph;
 import com.hp.hpl.jena.graph.GraphEvents;
 import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.Triple;
+import com.hp.hpl.jena.iri.impl.XercesURIWrapper;
 import com.hp.hpl.jena.rdf.arp.impl.JenaHandler;
 import com.hp.hpl.jena.rdf.arp.impl.RDFXMLParser;
 import com.hp.hpl.jena.rdf.model.Literal;
@@ -178,13 +178,13 @@ public class JenaReader implements RDFReader, ARPErrorNumbers {
             throws JenaException {
         model = m;
         if (xmlBase != null && !xmlBase.equals("")) {
-            try {
-                // TODO: delete this code, isn't the check done later anyway.
-                // TODO: add test for this code first.
-                URI.construct(xmlBase);
-            } catch (URISyntaxException e) {
-                errorHandler.error(e);
-            }
+//            try {
+                // TO DO: delete this code, isn't the check done later anyway.
+                // TODO: add test for this code first, well later will do.
+//                XercesURIWrapper.construct(xmlBase);
+//            } catch (URISyntaxException e) {
+//                errorHandler.error(e);
+//            }
         }
         /*
          * arpf.getHandlers().setNamespaceHandler(new NamespaceHandler() {

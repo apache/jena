@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: WGTestSuite.java,v 1.28 2005-08-04 09:53:13 jeremy_carroll Exp $
+    $Id: WGTestSuite.java,v 1.29 2005-08-09 03:30:17 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.arp.test;
@@ -9,6 +9,9 @@ package com.hp.hpl.jena.rdf.arp.test;
 import junit.framework.*;
 import java.io.*;
 
+import com.hp.hpl.jena.iri.IRIFactory;
+import com.hp.hpl.jena.iri.RDFURIReference;
+import com.hp.hpl.jena.iri.impl.XercesURIWrapper;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.impl.*;
 import java.util.*;
@@ -17,7 +20,6 @@ import com.hp.hpl.jena.vocabulary.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.impl.JenaParameters;
 import com.hp.hpl.jena.shared.wg.*;
-import com.hp.hpl.jena.shared.wg.URI;
 
 import com.hp.hpl.jena.reasoner.test.*;
 import com.hp.hpl.jena.reasoner.rulesys.*;
@@ -149,7 +151,7 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     static private Resource ntriple = new ResourceImpl(testNS, "NT-Document");
 	//  static private Resource falseDoc = new ResourceImpl(testNS, "False-Document");
 
-    private URI testDir;
+    private RDFURIReference testDir;
     
     private Act noop = new Act() {
         public void act(Resource r) {
@@ -309,14 +311,14 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
     
    // private ZipFile zip;
     
-    static TestSuite suite(URI testDir, String d, String nm) {
+    static TestSuite suite(RDFURIReference testDir, String d, String nm) {
         return new WGTestSuite(
             new TestInputStreamFactory(testDir, d),
             nm,
             true);
     }
 
-    static TestSuite suite(URI testDir, URI d, String nm) {
+    static TestSuite suite(RDFURIReference testDir, XercesURIWrapper d, String nm) {
         return new WGTestSuite(
             new TestInputStreamFactory(testDir, d),
             nm,
@@ -396,7 +398,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
                 WGTestSuite
                     .this
                     .testDir
-                    .relativize(URI.create(r.getURI()))
+                    .relativize(IRIFactory.defaultFactory().create(r.getURI()),
+                            RDFURIReference.RELATIVE)
                     .toString());
             testID = r;
         }
@@ -687,7 +690,8 @@ class WGTestSuite extends TestSuite implements ARPErrorNumbers {
         //Resource testID;
         Test2(String r) {
             super(
-                WGTestSuite.this.testDir.relativize(URI.create(r)).toString());
+                WGTestSuite.this.testDir.relativize(r,
+                        RDFURIReference.RELATIVE));
             //   testID = r;
         }
         Model read(String file, boolean type) throws IOException {

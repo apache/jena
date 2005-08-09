@@ -3,52 +3,30 @@
  * [See end of file]
  */
 
-package com.hp.hpl.jena.rdf.arp;
+package com.hp.hpl.jena.iri;
 
-import com.hp.hpl.jena.iri.impl.XercesURI;
-
-// TODO: deprecated message.
-/**
- * 
- * @author Jeremy J. Carroll
- * @deprecated
- */
-public class URI extends XercesURI {
-
-    public URI() {
-        super();
-    }
-
-    public URI(URI p_other) {
-        super(p_other);
-    }
-
-    public URI(String p_uriSpec) throws MalformedURIException {
-        super(p_uriSpec);
-    }
-
-    public URI(URI p_base, String p_uriSpec) throws MalformedURIException {
-        super(p_base, p_uriSpec);
-    }
-
-    public URI(String p_scheme, String p_schemeSpecificPart)
-            throws MalformedURIException {
-        super(p_scheme, p_schemeSpecificPart);
-    }
-
-    public URI(String p_scheme, String p_host, String p_path,
-            String p_queryString, String p_fragment)
-            throws MalformedURIException {
-        super(p_scheme, p_host, p_path, p_queryString, p_fragment);
-    }
-
-    public URI(String p_scheme, String p_userinfo, String p_host, int p_port,
-            String p_path, String p_queryString, String p_fragment)
-            throws MalformedURIException {
-        super(p_scheme, p_userinfo, p_host, p_port, p_path, p_queryString,
-                p_fragment);
-    }
-
+public interface IRIConformanceLevels {
+    // TODO: javadoc hrefs to specs
+    /**
+     * Indicates the specification in RDF Concepts and Abstract Syntax.
+     */
+    int RDF_URI_Reference = 1;
+    /**
+     * Indicates the IRI RFC
+     */
+    int IRI = 2;
+    /**
+     * Indicates the specification in XSD
+     */
+    int XML_Schema_anyURI = 4;
+    /**
+     * Indicates the java.net.URI
+     */
+    int Java_Net_URI = 8;
+    /**
+     * Indicates that the IRI/URI must be absolute
+     */
+    int Absolute_URI = 16;
 }
 
 

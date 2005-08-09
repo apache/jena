@@ -144,11 +144,11 @@ public class AttributeLexer extends QNameLexer implements ARPErrorNumbers {
     }
     private XMLContext computeXml(XMLContext in) throws SAXParseException {
         if (base != null) {
-            try {
-                in = in.withBase(base);
-            } catch (URISyntaxException e) {
-                frame.badURI(base,e);
-                in = in.revertToDocument();
+            in = in.withBase(base);
+            if (!in.getURI().isRDFURIReference()) {
+                frame.checkBadURI(in.getURI());
+                // TODO: do we want to revert, ever?
+//                in = in.revertToDocument();
             }
         }
         if (lang != null)

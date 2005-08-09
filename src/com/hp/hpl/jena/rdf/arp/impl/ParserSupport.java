@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  
- * * $Id: ParserSupport.java,v 1.3 2005-08-06 06:14:50 jeremy_carroll Exp $
+ * * $Id: ParserSupport.java,v 1.4 2005-08-09 03:30:19 jeremy_carroll Exp $
    
    AUTHOR:  Jeremy J. Carroll
 */
@@ -43,6 +43,7 @@ import java.util.Map;
 import org.apache.xerces.util.XMLChar;
 import org.xml.sax.SAXParseException;
 
+import com.hp.hpl.jena.iri.RDFURIReference;
 import com.hp.hpl.jena.rdf.arp.ARPErrorNumbers;
 import com.hp.hpl.jena.rdf.arp.lang.LanguageTag;
 import com.hp.hpl.jena.rdf.arp.lang.LanguageTagCodes;
@@ -56,16 +57,8 @@ import com.hp.hpl.jena.rdf.arp.lang.LanguageTagSyntaxException;
 public class ParserSupport
 	implements ARPErrorNumbers,  LanguageTagCodes, Names {
     
-    protected void badURI(String uri, URISyntaxException e) throws SAXParseException {
-        String msg = e.getMessage();
-        if (msg.endsWith(uri)) {
-            msg = msg.substring(0,msg.length()-uri.length())+"<"+uri+">";            
-        } else {
-            msg = "<" + uri + "> " + msg; 
-        }
-//        URI uri2;
-//        uri2.
-        warning(WARN_MALFORMED_URI, "Bad URI: " + msg);
+    protected void checkBadURI(RDFURIReference uri) throws SAXParseException {
+        arp.checkBadURI(uri);
     }
     
 	protected ParserSupport(XMLHandler arp, XMLContext xml) {
@@ -255,13 +248,9 @@ public class ParserSupport
     }
 
     protected String resolve(XMLContext x, String uri) throws SAXParseException {
-        try {
-            return x.resolve(uri);
-        }
-        catch (URISyntaxException e) {
-            badURI(uri,e);
-            return uri;
-        }
+        RDFURIReference ref = x.resolveAsURI(uri);
+        checkBadURI(ref);
+        return ref.toString();
     }
 
 }
