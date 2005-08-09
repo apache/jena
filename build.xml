@@ -126,6 +126,8 @@
       <fileset dir="${orig-src.dir}"
            includes="com/hp/hpl/jena/enhanced/**"/>
       <fileset dir="${orig-src.dir}"
+           includes="com/hp/hpl/jena/iri/**"/>
+      <fileset dir="${orig-src.dir}"
            includes="com/hp/hpl/jena/graph/**"/>
       <fileset dir="${orig-src.dir}"
            includes="com/hp/hpl/jena/db/**"/>
