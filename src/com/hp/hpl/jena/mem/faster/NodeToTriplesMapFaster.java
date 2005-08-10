@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.7 2005-08-02 15:26:29 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.8 2005-08-10 12:27:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -53,8 +53,8 @@ public class NodeToTriplesMapFaster
     public Iterator domain()
        { return map.keySet().iterator(); }
     
-    protected final Node getIndexField( Triple t )
-       { return indexField.getField( t ); }
+    protected final Object getIndexField( Triple t )
+       { return indexField.getField( t ).getIndexingValue(); }
     
     protected static abstract class Bunch
         {
@@ -169,7 +169,7 @@ public class NodeToTriplesMapFaster
     */
     public boolean add( Triple t ) 
        {
-       Node o = getIndexField( t );
+       Object o = getIndexField( t );
        Bunch s = (Bunch) map.get( o );
        if (s == null) map.put( o, s = new ArrayBunch() );
        if (s.contains( t ))
@@ -190,7 +190,7 @@ public class NodeToTriplesMapFaster
     */
     public boolean remove( Triple t )
        { 
-       Node o = getIndexField( t );
+       Object o = getIndexField( t );
        Bunch s = (Bunch) map.get( o );
        if (s == null || !s.contains( t ))
            return false;
@@ -207,7 +207,7 @@ public class NodeToTriplesMapFaster
         Answer an iterator over all the triples in this NTM which have index node
         <code>o</code>.
     */
-    public Iterator iterator( Node o ) 
+    public Iterator iterator( Object o ) 
        {
        Bunch s = (Bunch) map.get( o );
        return s == null ? NullIterator.instance : s.iterator();
@@ -244,7 +244,7 @@ public class NodeToTriplesMapFaster
     */
     public ExtendedIterator iterator( Node index, Node n2, Node n3 )
        {
-       Bunch s = (Bunch) map.get( index );
+       Bunch s = (Bunch) map.get( index.getIndexingValue() );
        return s == null
            ? NullIterator.instance
            : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
@@ -286,8 +286,11 @@ public class NodeToTriplesMapFaster
     
     public Applyer createFixedOApplyer( final ProcessedTriple Q )
         {        
-        System.err.println( ">> " + Q );
-        final Bunch ss = (Bunch) map.get( Q.O.node );
+        if (Q.O.node.equals( Node.createLiteral( "value" ) ) )
+            {
+            System.err.println( ">> " + Q );
+            }
+        final Bunch ss = (Bunch) map.get( Q.O.node.getIndexingValue() );
         if (ss == null)
             return new EmptyApplyer();
         else
@@ -309,7 +312,7 @@ public class NodeToTriplesMapFaster
             {
             public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
-                Bunch c = (Bunch) map.get( pt.O.finder( d ) );
+                Bunch c = (Bunch) map.get( pt.O.finder( d ).getIndexingValue() );
                 if (c != null)
                     {
                     MatchOrBind s = MatchOrBind.createSP( d, pt );
@@ -389,7 +392,7 @@ public class NodeToTriplesMapFaster
                   {
                   if (current.hasNext()) return true;
                   if (nodes.hasNext() == false) return false;
-                  current = iterator( (Node) nodes.next() );
+                  current = iterator( nodes.next() );
                   }
               }
           

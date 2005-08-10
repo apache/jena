@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryNode.java,v 1.7 2005-07-28 14:00:50 chris-dollin Exp $
+    $Id: QueryNode.java,v 1.8 2005-08-10 12:27:25 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -30,15 +30,33 @@ import com.hp.hpl.jena.shared.BrokenException;
 */
 public abstract class QueryNode
     {
+    /**
+        Internal exception to throw if, against all chance, something that
+        shouldn't be involved in a match <i>is</i>.
+        @author kers
+    */
     public class MustNotMatchException extends BrokenException
         {
         public MustNotMatchException( String message )
             { super( message ); }
         }
 
+    /**
+        Fake index value to use when no index makes sense; we choose a value
+        that will fail any array-bound check if it happens to be used anyway.
+    */
     public static final int NO_INDEX = -1;
     
+    /**
+        The Node value on which this QueryNode is based.
+    */
     public final Node node;
+    
+    /**
+        The index value allocated to this query node; NO_INDEX except for a
+        variable node, in which case it is the allocated index in the domain
+        object.
+    */
     public final int index;
     
     protected QueryNode( Node node )
@@ -47,20 +65,50 @@ public abstract class QueryNode
     protected QueryNode( Node node, int index )
         { this.node = node; this.index = index; }
     
+    /**
+        Return a handy string representation for debugging purposes. Not for
+        machine consumption.
+    */
     public String toString()
         { return node.toString() + "[" + index + "]"; }
     
+    /**
+        Answer a Node value to use when this QueryValue is used to select 
+        objects in a Graph::find() operation; for concrete nodes, that very 
+        node, for variables their current value (ANY if not bound).
+    */
     public Node finder( Domain d )
         { return Node.ANY; }
     
+    /**
+        Answer true iff this QueryNode must be used in a triple-match of its
+        owning QueryTriple.
+    */
     public boolean mustMatch()
         { return false; }
     
+    /**
+        Answer true iff this QueryNode matches, in the context of the binding
+        Domain <code>d</code>, the node <code>x</code>.
+    */
     public boolean match( Domain d, Node x )
         { throw new MustNotMatchException( "QueryNode " + this + " cannot match" ); }
     
+    /**
+        Optimisation: the action to be performed when matching a just-bound
+        variable or binding a newly-bound variable, or nothing for any other
+        kind of QueryNode.
+    */
     public abstract boolean matchOrBind( Domain d, Node x );
         
+    /**
+        Answer a QueryNode that classifies the argument node <code>n</code>.
+        The factory <code>f</code> is used to create the different QueryNodes,
+        allowing different classifiers to use their own subclasses of QueryNode
+        if they wish. <code>map</code> is the variable-to-index map, and
+        <code>recent</code> is the set of those variables "just" bound, ie,
+        earlier in the same triple.
+    */
     public static QueryNode classify
         ( QueryNodeFactory f, Mapping map, Set recent, Node n )
         {

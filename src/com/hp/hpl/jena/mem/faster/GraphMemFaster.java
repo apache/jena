@@ -1,16 +1,19 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.7 2005-07-27 16:21:46 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.8 2005-08-10 12:27:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
+
+import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.vocabulary.RDF;
 
 public class GraphMemFaster extends GraphMemBase
     {
@@ -54,8 +57,64 @@ public class GraphMemFaster extends GraphMemBase
         { return store.find( m.asTriple() ); }
 
     public Applyer createApplyer( ProcessedTriple pt )
-        { return store.createApplyer( pt ); }
+        { 
+        Applyer plain = store.createApplyer( pt ); 
+        return matchesReification( pt ) && hasReifications() ? withReification( plain, pt ) : plain;
+        }
     
+    protected boolean matchesReification( ProcessedTriple pt )
+        {
+        return 
+            pt.P.node.isVariable()
+            || isReificationPredicate( pt.P.node )
+            || isReificationType( pt )
+            ;
+        }
+
+    protected boolean isReificationType( ProcessedTriple pt )
+        {
+        return 
+            pt.P.node.equals( RDF.Nodes.type )
+            && couldBeStatement( pt.O.node )
+            ;
+        }
+
+    protected boolean couldBeStatement( Node node )
+        {
+        return
+            node.isVariable()
+            || node.equals( RDF.Nodes.Statement )
+            ;
+        }
+
+    protected boolean isReificationPredicate( Node node )
+        {
+        return 
+            node.equals( RDF.Nodes.subject )
+            || node.equals( RDF.Nodes.predicate )
+            || node.equals( RDF.Nodes.object )
+            ;
+        }
+
+    protected Applyer withReification( final Applyer plain, final ProcessedTriple pt )
+        {
+        return new Applyer() 
+            {
+            public void applyToTriples( Domain d, Matcher m, StageElement next )
+                {
+                plain.applyToTriples( d, m, next );
+                Triple tm = new Triple
+                    ( pt.S.finder( d ), pt.P.finder( d ), pt.O.finder( d ) );
+                Iterator it = reifier.findExposed( tm );
+                while (it.hasNext())
+                    if (m.match( d, (Triple) it.next() )) next.run( d );
+                }
+            };
+        }
+
+    protected boolean hasReifications()
+        { return reifier != null && reifier.size() > 0; }
+
     /**
          Answer true iff this graph contains <code>t</code>. If <code>t</code>
          happens to be concrete, then we hand responsibility over to the store.

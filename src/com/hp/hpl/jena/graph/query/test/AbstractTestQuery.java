@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.36 2005-07-11 14:04:04 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.37 2005-08-10 12:27:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -747,6 +747,25 @@ public abstract class AbstractTestQuery extends QueryTestBase
         // System.err.println( ">> dontCount=" + dontCount + " optimCount=" + optimCount );
         if (optimCount > dontCount) 
             fail( "optimisation " + optimCount + " yet plain " + dontCount );   
+        }
+    
+    public void testFixedTypedLiterals()
+        {
+        Query q = new Query()
+            .addMatch( Query.S, Query.P, node( "'value'" ) );
+        Graph g = getGraphWith( "a P 'value'xsd:string; b P 'value'xsd:nosuch" );
+        ExtendedIterator it = q.executeBindings( g, new Node[] {Query.S, Query.P} );
+        assertEquals( nodeSet( "a" ), iteratorToSet( it.mapWith( select(0) ) ) );
+        }
+    
+    public void testBoundTypedLiterals()
+        {
+        Query q = new Query()
+            .addMatch( node( "b" ), node( "V" ), Query.X )
+            .addMatch( Query.S, node( "P" ), Query.X );
+        Graph g = getGraphWith( "a P 'value'xsd:string; b V 'value'" );
+        ExtendedIterator it = q.executeBindings( g, new Node[] {Query.S, Query.P} );
+        assertEquals( nodeSet( "a" ), iteratorToSet( it.mapWith( select(0) ) ) );
         }
       
     int queryCount( TripleSorter sort )

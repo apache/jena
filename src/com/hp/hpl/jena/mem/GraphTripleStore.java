@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.18 2005-08-03 13:06:35 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.19 2005-08-10 12:27:31 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -93,7 +93,7 @@ public class GraphTripleStore implements TripleStore
         return new UniqueExtendedIterator( objects.iterator().mapWith( getObject ) );
         }
     
-    static final Map1 getObject = new Map1() 
+    public static final Map1 getObject = new Map1() 
         { public Object map1( Object o ) { return ((Triple) o).getObject(); } };
     
     /**

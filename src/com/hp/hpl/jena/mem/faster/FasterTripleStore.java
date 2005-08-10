@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.6 2005-08-02 15:26:29 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.7 2005-08-10 12:27:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -11,6 +11,7 @@ import java.util.Iterator;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.mem.GraphTripleStore;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class FasterTripleStore
@@ -92,9 +93,12 @@ public class FasterTripleStore
     
     public ExtendedIterator listPredicates()
         { return WrappedIterator.createNoRemove( predicates.domain() ); }
-    
+        
     public ExtendedIterator listObjects()
-        { return WrappedIterator.createNoRemove( objects.domain() ); }
+        // { return WrappedIterator.createNoRemove( objects.domain() ); }
+        {
+        return new UniqueExtendedIterator( objects.iterator().mapWith( GraphTripleStore.getObject ) );
+        }
     
     /**
          Answer true iff this triple store contains the (concrete) triple <code>t</code>.
@@ -128,7 +132,7 @@ public class FasterTripleStore
             
         if (sm.isConcrete())
             return new StoreTripleIteratorFaster( parent, subjects.iterator( sm, pm, om ), subjects, predicates, objects );
-        else if (om.isConcrete() && !om.isLiteral())
+        else if (om.isConcrete())
             return new StoreTripleIteratorFaster( parent, objects.iterator( om, sm, pm ), objects, subjects, predicates );
         else if (pm.isConcrete())
             return new StoreTripleIteratorFaster( parent, predicates.iterator( pm, om, sm ), predicates, subjects, objects );
@@ -140,7 +144,7 @@ public class FasterTripleStore
         {
         if (pt.S instanceof QueryNode.Fixed) 
             return subjects.createFixedSApplyer( pt );
-        if (pt.O instanceof QueryNode.Fixed && indexable( pt.O.node )) 
+        if (pt.O instanceof QueryNode.Fixed) 
             return objects.createFixedOApplyer( pt );
         if (pt.S instanceof QueryNode.Bound) 
             return subjects.createBoundSApplyer( pt );
@@ -148,9 +152,6 @@ public class FasterTripleStore
             return objects.createBoundOApplyer( pt );
         return varSvarOApplyer( pt );
         }
-    
-    protected boolean indexable( Node n )
-        { return true; }
 
     protected Applyer varSvarOApplyer( final QueryTriple pt )
         { 
