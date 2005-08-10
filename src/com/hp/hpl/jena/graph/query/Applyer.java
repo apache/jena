@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Applyer.java,v 1.1 2005-07-27 16:15:05 chris-dollin Exp $
+ 	$Id: Applyer.java,v 1.2 2005-08-10 15:21:05 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -16,7 +16,17 @@ package com.hp.hpl.jena.graph.query;
 public abstract class Applyer
     {   
     public abstract void applyToTriples( Domain d, Matcher m, StageElement next );
+
+    /**
+        An Applyer that never calls its <code>next</code> StageElement.
+    */
+    public static final Applyer empty = new Applyer()
+        {
+        public void applyToTriples( Domain d, Matcher m, StageElement next )
+            {}
+        };
     }
+
 
 /*
  * (c) Copyright 2005 Hewlett-Packard Development Company, LP

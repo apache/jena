@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.8 2005-08-10 12:27:32 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.9 2005-08-10 15:21:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -17,14 +17,6 @@ import com.hp.hpl.jena.util.iterator.*;
 
 public class NodeToTriplesMapFaster
     {
-    protected final class EmptyApplyer extends Applyer
-        {
-        public void applyToTriples( Domain d, Matcher m, StageElement next )
-            {
-            System.err.println( ">> None" );
-            }
-        }
-
     /**
     The map from nodes to Set(Triple).
     */
@@ -286,13 +278,9 @@ public class NodeToTriplesMapFaster
     
     public Applyer createFixedOApplyer( final ProcessedTriple Q )
         {        
-        if (Q.O.node.equals( Node.createLiteral( "value" ) ) )
-            {
-            System.err.println( ">> " + Q );
-            }
         final Bunch ss = (Bunch) map.get( Q.O.node.getIndexingValue() );
         if (ss == null)
-            return new EmptyApplyer();
+            return Applyer.empty;
         else
             {
             return new Applyer() 
@@ -342,7 +330,7 @@ public class NodeToTriplesMapFaster
         {
         final Bunch ss = (Bunch) map.get( Q.S.node );
         if (ss == null)
-            return new EmptyApplyer();
+            return Applyer.empty;
         else
             {
             return new Applyer() 

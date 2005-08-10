@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.8 2005-08-10 12:27:32 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.9 2005-08-10 15:21:06 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -9,11 +9,11 @@ package com.hp.hpl.jena.mem.faster;
 import java.util.Iterator;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.Reifier.Util;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 public class GraphMemFaster extends GraphMemBase
     {
@@ -61,42 +61,20 @@ public class GraphMemFaster extends GraphMemBase
         Applyer plain = store.createApplyer( pt ); 
         return matchesReification( pt ) && hasReifications() ? withReification( plain, pt ) : plain;
         }
-    
-    protected boolean matchesReification( ProcessedTriple pt )
+
+    protected boolean hasReifications()
+        { return reifier != null && reifier.size() > 0; }
+
+    public static boolean matchesReification( QueryTriple pt )
         {
         return 
             pt.P.node.isVariable()
-            || isReificationPredicate( pt.P.node )
-            || isReificationType( pt )
+            || Util.isReificationPredicate( pt.P.node )
+            || Util.isReificationType( pt.P.node, pt.O.node )
             ;
         }
-
-    protected boolean isReificationType( ProcessedTriple pt )
-        {
-        return 
-            pt.P.node.equals( RDF.Nodes.type )
-            && couldBeStatement( pt.O.node )
-            ;
-        }
-
-    protected boolean couldBeStatement( Node node )
-        {
-        return
-            node.isVariable()
-            || node.equals( RDF.Nodes.Statement )
-            ;
-        }
-
-    protected boolean isReificationPredicate( Node node )
-        {
-        return 
-            node.equals( RDF.Nodes.subject )
-            || node.equals( RDF.Nodes.predicate )
-            || node.equals( RDF.Nodes.object )
-            ;
-        }
-
-    protected Applyer withReification( final Applyer plain, final ProcessedTriple pt )
+    
+    protected Applyer withReification( final Applyer plain, final QueryTriple pt )
         {
         return new Applyer() 
             {
@@ -111,9 +89,6 @@ public class GraphMemFaster extends GraphMemBase
                 }
             };
         }
-
-    protected boolean hasReifications()
-        { return reifier != null && reifier.size() > 0; }
 
     /**
          Answer true iff this graph contains <code>t</code>. If <code>t</code>
