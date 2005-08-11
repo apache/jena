@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.29 2005-08-11 14:14:32 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.30 2005-08-11 15:24:43 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -296,53 +296,68 @@ public class GraphTestBase extends JenaTestBase
         <code>fact</code> in the usual way.
     */
     public static boolean contains( Graph g, String fact )
-        {
-        return g.contains( triple( fact ) ); 
-        }
+        { return g.contains( triple( fact ) ); }
     
+    /**
+        Assert that <code>g</code> contains every triple in <code>triples</code>.
+    */
     public void testContains( Graph g, Triple [] triples )
         { 
         for (int i = 0; i < triples.length; i += 1) 
             assertTrue( "contains " + triples[i], g.contains( triples[i] ) ); 
         }
 
+    /**
+        Assert that <code>g</code> contains every triple in <code>triples</code>.
+    */
     public void testContains( Graph g, List triples )
         {
         for (int i = 0; i < triples.size(); i += 1)
              assertTrue( g.contains( (Triple) triples.get(i) ) );
         }
 
+    /**
+        Assert that <code>g</code> contains every triple in <code>it</code>.
+    */
     public void testContains( Graph g, Iterator it )
         { while (it.hasNext()) assertTrue( g.contains( (Triple) it.next() ) ); }
 
+    /**
+        Assert that <code>g</code> contains every triple in <code>other</code>.
+    */
     public void testContains( Graph g, Graph other )
         { testContains( g, GraphUtil.findAll( other ) ); }
     
+    /**
+        Assert that <code>g</code> contains none of the triples in 
+        <code>triples</code>.
+    */
     public void testOmits( Graph g, Triple [] triples )
         { for (int i = 0; i < triples.length; i += 1) assertFalse( "", g.contains( triples[i] ) ); }
-
+    
+    /**
+        Assert that <code>g</code> contains none of the triples in 
+        <code>triples</code>.
+    */
     public void testOmits( Graph g, List triples )
         {
         for (int i = 0; i < triples.size(); i += 1)
              assertFalse( "", g.contains( (Triple) triples.get(i) ) );
         }
-
+    
+    /**
+        Assert that <code>g</code> contains none of the triples in 
+        <code>it</code>.
+    */
     public void testOmits( Graph g, Iterator it )
         { while (it.hasNext()) assertFalse( "", g.contains( (Triple) it.next() ) ); }
-
+    
+    /**
+        Assert that <code>g</code> contains none of the triples in 
+        <code>other</code>.
+    */
     public void testOmits( Graph g, Graph other )
         { testOmits( g, GraphUtil.findAll( other ) ); }
-    
-    public static void show( String title, Graph g )
-        {
-        ClosableIterator it = GraphUtil.findAll( g );
-        System.out.println( title );
-        while (it.hasNext()) 
-            {
-            Triple t = (Triple) it.next();
-            System.out.println( "  " + t.getSubject() + " @" + t.getPredicate() + " " + t.getObject() );
-            }
-        }
 
     /**
         Answer an instance of <code>graphClass</code>. If <code>graphClass</code> has

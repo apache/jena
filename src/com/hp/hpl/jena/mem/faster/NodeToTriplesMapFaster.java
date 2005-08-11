@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.9 2005-08-10 15:21:06 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.10 2005-08-11 15:24:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -246,34 +246,50 @@ public class NodeToTriplesMapFaster
 
     static abstract class MatchOrBind
         {
-        public static MatchOrBind createSP( final Domain d, final ProcessedTriple Q )
+        public static MatchOrBind createSP( final ProcessedTriple Q )
             {
             return new MatchOrBind()
                 {
+                protected Domain d;
+                protected final QueryNode S = Q.S;
+                protected final QueryNode P = Q.P;
+                
+                public MatchOrBind reset( Domain d )
+                    { this.d = d; return this; }
+                
                 public boolean matches( Triple t )
                     {
                     return 
-                        Q.S.matchOrBind( d, t.getSubject() )
-                        && Q.P.matchOrBind( d, t.getPredicate() )
+                        S.matchOrBind( d, t.getSubject() )
+                        && P.matchOrBind( d, t.getPredicate() )
                         ;
                     }
                 };
             }
         
-        public static MatchOrBind createPO( final Domain d, final ProcessedTriple Q )
+        public static MatchOrBind createPO( final ProcessedTriple Q )
             {
             return new MatchOrBind()
                 {
+                protected Domain d;
+                protected final QueryNode P = Q.P;
+                protected final QueryNode O = Q.O;
+                
+                public MatchOrBind reset( Domain d )
+                    { this.d = d; return this; }
+                
                 public boolean matches( Triple t )
                     {
                     return 
-                        Q.P.matchOrBind( d, t.getPredicate() )
-                        && Q.O.matchOrBind( d, t.getObject() )
+                        P.matchOrBind( d, t.getPredicate() )
+                        && O.matchOrBind( d, t.getObject() )
                         ;
                     }
                 };
-            }        
+            }   
         public abstract boolean matches( Triple t );
+        
+        public abstract MatchOrBind reset( Domain d );
         }
     
     public Applyer createFixedOApplyer( final ProcessedTriple Q )
@@ -285,11 +301,10 @@ public class NodeToTriplesMapFaster
             {
             return new Applyer() 
                 {
+                final MatchOrBind x = MatchOrBind.createSP( Q );
+                
                 public void applyToTriples( Domain d, Matcher m, StageElement next )
-                    {
-                    MatchOrBind s = MatchOrBind.createSP( d, Q );
-                    ss.app( d, next, s );
-                    }
+                    { ss.app( d, next, x.reset( d ) ); }
                 };
             }
         }
@@ -298,14 +313,12 @@ public class NodeToTriplesMapFaster
         {        
         return new Applyer()
             {
+            final MatchOrBind x = MatchOrBind.createSP( pt );
+            
             public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
                 Bunch c = (Bunch) map.get( pt.O.finder( d ).getIndexingValue() );
-                if (c != null)
-                    {
-                    MatchOrBind s = MatchOrBind.createSP( d, pt );
-                    c.app( d, next, s );
-                    }
+                if (c != null) c.app( d, next, x.reset( d ) );
                 }
             };
         }
@@ -314,14 +327,12 @@ public class NodeToTriplesMapFaster
         {
         return new Applyer()
             {
+            final MatchOrBind x = MatchOrBind.createPO( pt );
+            
             public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
                 Bunch c = (Bunch) map.get( pt.S.finder( d ) );
-                if (c != null)
-                    {
-                    MatchOrBind s = MatchOrBind.createPO( d, pt );
-                    c.app( d, next, s );
-                    }
+                if (c != null) c.app( d, next, x.reset( d ) );
                 }
             };
         }
@@ -335,11 +346,10 @@ public class NodeToTriplesMapFaster
             {
             return new Applyer() 
                 {
+                final MatchOrBind x = MatchOrBind.createPO( Q );
+                
                 public void applyToTriples( Domain d, Matcher m, StageElement next )
-                    {
-                    MatchOrBind s = MatchOrBind.createPO( d, Q );
-                    ss.app( d, next, s );
-                    }
+                    { ss.app( d, next, x.reset( d ) ); }
                 };
             }
         }
