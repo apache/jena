@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: JenaTestBase.java,v 1.16 2005-06-29 16:33:22 chris-dollin Exp $
+  $Id: JenaTestBase.java,v 1.17 2005-08-11 14:14:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.test;
@@ -52,7 +52,8 @@ public class JenaTestBase extends TestCase
         { return CollectionFactory.createHashedSet( L ); }
 
     /**
-        Answer a List of the substrings of <code>s</code> separated by spaces.
+        Answer a List of the substrings of <code>s</code> that are separated 
+        by spaces.
     */
     protected List listOfStrings( String s )
         {
@@ -69,16 +70,17 @@ public class JenaTestBase extends TestCase
         { return WrappedIterator.create( listOfStrings( s ).iterator() ); }
     
     /**
-        Do nothing; a way of notating that a test has succeeded, useful in the body of a
-        catch-block to silence excessively [un]helpful disgnostics. 
+        Do nothing; a way of notating that a test has succeeded, useful in the 
+        body of a catch-block to silence excessively [un]helpful disgnostics. 
     */
     public static void pass()
         {}
         
     /**
-        Answer the constructor of the class <code>c</code> which takes arguments of the
-        type(s) in <code>args</code>, or <code>null</code> if there isn't one.
-     */
+        Answer the constructor of the class <code>c</code> which takes arguments 
+        of the type(s) in <code>args</code>, or <code>null</code> if there 
+        isn't one.
+    */
     public static Constructor getConstructor( Class c, Class [] args )
         {
         try { return c.getConstructor( args ); }
@@ -86,15 +88,16 @@ public class JenaTestBase extends TestCase
         }
 
     /**
-        Answer true iff the method <code>m</code> is a public method which fits the
-        pattern of being a test method, ie, test*() returning void.
-     */
+        Answer true iff the method <code>m</code> is a public method which fits
+        the pattern of being a test method, ie, test*() returning void.
+    */
     public static boolean isPublicTestMethod( Method m ) 
         { return Modifier.isPublic( m.getModifiers() ) && isTestMethod( m ); }
      
     /**
-        Answer true iff the method <code>m</code> has a name starting "test", takes no
-        arguments, and returns void; must catch junit tests, in other words.
+        Answer true iff the method <code>m</code> has a name starting "test",
+        takes no arguments, and returns void; must catch junit tests, in other 
+        words.
     */
     public static boolean isTestMethod( Method m ) 
         { return 
@@ -125,11 +128,14 @@ public class JenaTestBase extends TestCase
             fail( "" + subClass + " should have " + superClass + " as a parent" );
         }
 
-    public List append(List L, List R)
+    /**
+        Answer a fresh list which is the concatenation of <code>L</code> then
+        <code>R</code>. Neither <code>L</code> nor <code>R</code> is updated.
+    */
+    public List append( List L, List R )
         { List result = new ArrayList( L );
         result.addAll( R );
         return result; }
-
     }
 
 

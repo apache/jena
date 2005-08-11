@@ -1,17 +1,12 @@
 /*
   (c) Copyright 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphMatchWithInference.java,v 1.1 2005-06-13 10:51:58 jeremy_carroll Exp $
+  $Id: TestGraphMatchWithInference.java,v 1.2 2005-08-11 14:14:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
 
-import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileUtils;
-
-import java.io.*;
 
 import junit.framework.*;
 
@@ -40,7 +35,7 @@ public class TestGraphMatchWithInference extends GraphTestBase
         Model concrete = ModelFactory.createDefaultModel();
         concrete.add(mrdfs);
         
-        assertIsomorphic(concrete.getGraph(),  mrdfs.getGraph() );
+        assertIsomorphic( concrete.getGraph(),  mrdfs.getGraph() );
         
         assertIsomorphic( mrdfs.getGraph(), concrete.getGraph() );
         }

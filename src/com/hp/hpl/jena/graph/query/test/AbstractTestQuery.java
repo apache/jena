@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.37 2005-08-10 12:27:31 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.38 2005-08-11 14:14:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -447,7 +447,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         {
         Graph g = getGraphWith( "x pred1 foo; y pred2 bar" );
         Query q = new Query( getGraphWith( "?X ?? foo; ?Y ?? bar" ) );
-        List bindings = ebList( g, q, nodes( "?X ?Y" ) );
+        List bindings = ebList( g, q, nodeArray( "?X ?Y" ) );
         assertEquals( 1, bindings.size() );
         assertEquals( node( "x" ), ((Domain) bindings.get(0)).get(0) );
         assertEquals( node( "y" ), ((Domain) bindings.get(0)).get(1) );
@@ -529,7 +529,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Triple [] triples = tripleArray( query );
         for (int i = 0; i < triples.length; i += 1) q.addMatch( triples[i] );
         // eb( g, q, nodes( vars ) ); 
-        q.executeBindings( g, nodes( vars ) );
+        q.executeBindings( g, nodeArray( vars ) );
         assertEquals( expected, q.getVariableCount() );
         }
         
@@ -557,7 +557,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         for (int n = 0; n < 1000; n += 1) graphAdd( g, "ping pong X" + n );
         Query q = new Query().addMatch( Query.S, Query.P, Query.O );
         List stages = new ArrayList();
-        ExtendedIterator it = eb( g, q, nodes( "?P" ) ); 
+        ExtendedIterator it = eb( g, q, nodeArray( "?P" ) ); 
         /* eat one answer to poke pipe */ it.next();
         for (int i = 0; i < stages.size(); i += 1) assertFalse( ((Stage) stages.get(i)).isClosed() );
         it.close();
@@ -693,7 +693,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Graph g = dataGraph();
         Map answer = getAnswer( g, TripleSorter.dontSort );
         assertEquals( 1, answer.size() );
-        assertEquals( new Integer(1), answer.get( Arrays.asList( nodes( "a d" ) ) ) );
+        assertEquals( new Integer(1), answer.get( Arrays.asList( nodeArray( "a d" ) ) ) );
     /* */
         assertEquals( answer, getAnswer( g, TripleSorter.dontSort ) );
         assertEquals( answer, getAnswer( g, fiddle( 0, 2, 1 ) ) );
@@ -725,7 +725,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Query q = new Query();
         q.addMatch( triple( "?a ?? ?d " ) ).addMatch( triple( "?a X ?b" ) ).addMatch( triple( "?b Y ?c" ) );
         q.addConstraint( notEqual( node( "?d" ), node( "?b" ) ) );
-        Node [] answers = nodes( "?a ?d" );
+        Node [] answers = nodeArray( "?a ?d" );
         q.setTripleSorter( sorter );
         ExtendedIterator it = eb( g, q, answers );     
         while (it.hasNext()) addAnswer( result, (List) it.next(), answers.length );

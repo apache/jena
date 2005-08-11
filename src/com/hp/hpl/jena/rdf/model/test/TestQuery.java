@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestQuery.java,v 1.11 2005-02-21 12:15:17 andy_seaborne Exp $
+  $Id: TestQuery.java,v 1.12 2005-08-11 14:14:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -51,7 +51,7 @@ public class TestQuery extends ModelTestBase
                 {"jqv:x", "?x"}
             };
         for (int i = 0; i < tests.length; i += 1)
-            testVariablesTranslate( resources( m, tests[i][0] ), nodes( tests[i][1] ) );
+            testVariablesTranslate( resources( m, tests[i][0] ), nodeArray( tests[i][1] ) );
         }
         
     private void testQueryTranslates( String model, String graph )

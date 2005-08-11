@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]ispo
-  $Id: GraphTestBase.java,v 1.28 2005-07-05 11:21:37 chris-dollin Exp $
+  $Id: GraphTestBase.java,v 1.29 2005-08-11 14:14:32 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -11,13 +11,10 @@ package com.hp.hpl.jena.graph.test;
 	@author kers
 */
 
-import com.hp.hpl.jena.util.CollectionFactory;
-import com.hp.hpl.jena.util.IteratorCollection;
+import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.util.iterator.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.impl.GraphBase;
-import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.test.*;
 
@@ -29,18 +26,33 @@ public class GraphTestBase extends JenaTestBase
     public GraphTestBase( String name )
     	{ super( name ); }
     	
+    /**
+        Answer a Node as described by <code>x</code>; a shorthand for
+        <code>Node.create(x)</code>, which see.
+    */
     public static Node node( String x )
         { return Node.create( x ); }
         
-    public static Model modelFor( Graph g )
-        { return ModelFactory.createModelForGraph( g ); }
-        
-    public static Set iteratorToSet( Iterator L )
-        { return IteratorCollection.iteratorToSet( L ); }
-
+    /**
+        Answer a set containing the elements from the iterator <code>it</code>;
+        a shorthand for <code>IteratorCollection.iteratorToSet(it)</code>,
+        which see.
+    */
+    public static Set iteratorToSet( Iterator it )
+        { return IteratorCollection.iteratorToSet( it ); }
+    
+    /**
+        Answer a list containing the elements from the iterator <code>it</code>,
+        in order; a shorthand for <code>IteratorCollection.iteratorToList(it)</code>,
+        which see.
+    */
     public static List iteratorToList( Iterator it )
         { return IteratorCollection.iteratorToList( it ); }
                 
+    /**
+        Answer a set of the nodes described (as per <code>node()</code>) by
+        the space-separated substrings of <code>nodes</code>.
+    */
     public Set nodeSet( String nodes )
         {
         Set result = CollectionFactory.createHashedSet();
@@ -48,16 +60,34 @@ public class GraphTestBase extends JenaTestBase
         while (st.hasMoreTokens()) result.add( node( st.nextToken() ) );
         return result;
         }
-        
-    public Set arrayToSet( Object [] elements )
-        { return CollectionFactory.createHashedSet( Arrays.asList( elements ) ); }
-                
+    
+    /**
+        Answer a set of the elements of <code>A</code>.
+    */
+    public Set arrayToSet( Object [] A )
+        { return CollectionFactory.createHashedSet( Arrays.asList( A ) ); }
+    
+    /**
+        Answer a triple described by the three space-separated node descriptions
+        in <code>fact</code>; a shorthand for <code>Triple.create(fact)</code>,
+        which see.
+    */
     public static Triple triple( String fact )
         { return Triple.create( fact ); }
     
+    /**
+        Answer a triple described by the three space-separated node descriptions
+        in <code>fact</code>, using prefix-mappings from <code>pm</code>; a 
+        shorthand for <code>Triple.create(pm, fact)</code>, which see.
+    */
     public static Triple triple( PrefixMapping pm, String fact )
         { return Triple.create( pm, fact ); }
         
+    /**
+        Answer an array of triples; each triple is described by one of the
+        semi-separated substrings of <code>facts</code>, as per 
+        <code>triple</code> with prefix-mapping <code>Extended</code>.
+    */
     public static Triple [] tripleArray( String facts )
         {
         ArrayList al = new ArrayList();
@@ -66,6 +96,11 @@ public class GraphTestBase extends JenaTestBase
         return (Triple []) al.toArray( new Triple [al.size()] );
         }
     
+    /**
+        Answer a set of triples where the elements are described by the
+        semi-separated substrings of <code>facts</code>, as per 
+        <code>triple</code>.
+    */
     public static Set tripleSet( String facts )
         {
         Set result = new HashSet();
@@ -74,6 +109,11 @@ public class GraphTestBase extends JenaTestBase
         return result;
         }
        
+    /**
+        Answer a list of nodes, where the nodes are described by the 
+        space-separated substrings of <code>items</code> as per
+        <code>node()</code>.
+    */
     public static List nodeList( String items )
         {
         ArrayList nl = new ArrayList();
@@ -82,19 +122,31 @@ public class GraphTestBase extends JenaTestBase
         return nl;
         }   
     
-    public static Node [] nodes( String items )
+    /**
+        Answer an array of nodes, where the nodes are described by the 
+        space-separated substrings of <code>items</code> as per
+    */
+    public static Node [] nodeArray( String items )
         {
         List nl = nodeList( items );  
         return (Node []) nl.toArray( new Node [nl.size()] );
         } 
-        
+    
+    /**
+        Answer the graph <code>g</code> after adding to it every triple
+        encoded in <code>s</code> in the fashion of <code>tripleArray</code>,
+        a semi-separated sequence of space-separated node descriptions.
+    */
     public static Graph graphAdd( Graph g, String s )
         {
         StringTokenizer semis = new StringTokenizer( s, ";" );
         while (semis.hasMoreTokens()) g.add( triple( PrefixMapping.Extended, semis.nextToken() ) );     
         return g;
         }
-        
+    
+    /**
+        Answer a new memory-based graph with Extended prefixes.
+    */
     public static Graph newGraph()
         {
         Graph result = Factory.createGraphMem();
@@ -102,17 +154,26 @@ public class GraphTestBase extends JenaTestBase
         return result;
         }
     
+    /**
+        Answer a new memory-based graph with initial contents as described
+        by <code>s</code> in the fashion of <code>graphAdd()</code>.
+    */
     public static Graph graphWith( String s )
-        {
-        return graphAdd( newGraph(), s );
-        }
-        
+        { return graphAdd( newGraph(), s ); }
+    
+    /**
+        Assert that the graph <code>g</code> is isomorphic to the graph 
+        described by <code>template</code> in the fashion of 
+        <code>graphWith</code>.
+    */
     public static void assertEqualsTemplate( String title, Graph g, String template )
-        {
-        // assertTrue( title, g.isIsomorphicWith( graphWith( template ) ) );
-        assertIsomorphic( title, graphWith( template ), g );
-        }
+        { assertIsomorphic( title, graphWith( template ), g ); }
                 
+    /**
+        Assert that the supplied graph <code>got</code> is isomorphic with the
+        the desired graph <code>expected</code>; if not, display a readable
+        description of both graphs.
+    */
     public static void assertIsomorphic( String title, Graph expected, Graph got )
         {
         if (!expected.isIsomorphicWith( got ))
@@ -122,6 +183,11 @@ public class GraphTestBase extends JenaTestBase
             }
         }
     
+    /**
+        Answer a string which is a newline-separated list of triples (as
+        produced by niceTriple) in the graph <code>g</code>. The map 
+        <code>bnodes</code> maps already-seen bnodes to their "nice" strings. 
+    */
     public static String nice( Graph g, Map bnodes )
         {
         StringBuffer b = new StringBuffer( g.size() * 100 );
@@ -130,6 +196,11 @@ public class GraphTestBase extends JenaTestBase
         return b.toString();
         }
     
+    /**
+        Append to the string buffer <code>b</code> a "nice" representation 
+        of the triple <code>t</code> on a new line, using (and updating)
+        <code>bnodes</code> to supply "nice" strings for any blank nodes.
+    */
     protected static void niceTriple( StringBuffer b, Map bnodes, Triple t )
         {
         b.append( "\n    " );
@@ -138,8 +209,18 @@ public class GraphTestBase extends JenaTestBase
         appendNode( b, bnodes, t.getObject() );
         }
 
-    static int bnc = 1000;
+    /**
+        A counter for new bnode strings; it starts at 1000 so as to make
+        the bnode strings more uniform (at least for the first 9000 bnodes).
+    */
+    protected static int bnc = 1000;
     
+    /**
+        Append to the string buffer <code>b</code> a space followed by the
+        "nice" representation of the node <code>n</code>. If <code>n</code>
+        is a bnode, re-use any existing string for it from <code>bnodes</code>
+        or make a new one of the form <i>_bNNNN</i> with NNNN a new integer.
+    */
     protected static void appendNode( StringBuffer b, Map bnodes, Node n )
         {
         b.append( ' ' );
@@ -153,39 +234,72 @@ public class GraphTestBase extends JenaTestBase
             b.append( nice( n ) );
         }
     
+    /**
+        Answer the "nice" representation of this node, the string returned by
+        <code>n.toString(PrefixMapping.Extended,true)</code>.
+    */
     protected static String nice( Node n )
         { return n.toString( PrefixMapping.Extended, true ); }
             
+    /**
+        Assert that the computed graph <code>got</code> is isomorphic with the
+        desired graph <code>expected</code>; if not, fail with a default
+        message (and pretty output of the graphs).
+    */
     public static void assertIsomorphic( Graph expected, Graph got )
         { assertIsomorphic( "graphs must be isomorphic", expected, got ); }
 
+    /**
+        Assert that the graph <code>g</code> must contain the triple described
+        by <code>s</code>; if not, fail with pretty output of both graphs
+        and a message containing <code>name</code>.
+    */
     public static void assertContains( String name, String s, Graph g )
         {
         assertTrue( name + " must contain " + s, g.contains( triple( s ) ) );
         }
-        
+    
+    /**
+        Assert that the graph <code>g</code> contains all the triples described
+        by the string <code>s</code; if not, fail with a message containing
+        <code>name</code>.
+    */
     public static void assertContainsAll( String name, Graph g, String s )
         {
         StringTokenizer semis = new StringTokenizer( s, ";" );
         while (semis.hasMoreTokens()) assertContains( name, semis.nextToken(), g );       
         }
-        
-    public void assertOmits( String name, Graph g, String s )
+    
+    /**
+        Assert that the graph <code>g</code> does not contain the triple
+        described by <code>s<code>; if it does, fail with a message containing
+        <code>name</code>.
+    */
+    public static void assertOmits( String name, Graph g, String s )
         {
         assertFalse( name + " must not contain " + s, g.contains( triple( s ) ) );
         }
-        
-    public void assertOmitsAll( String name, Graph g, String s )
+    
+    /**
+        Assert that the graph <code>g</code> contains none of the triples
+        described by <code>s</code> in the usual way; otherwise, fail with
+        a message containing <code>name</code>.
+    */
+    public static void assertOmitsAll( String name, Graph g, String s )
         {
         StringTokenizer semis = new StringTokenizer( s, ";" );
         while (semis.hasMoreTokens()) assertOmits( name, g, semis.nextToken() );     
         }
         
+    /**
+        Assert that <code>g</code> contains the triple described by 
+        <code>fact</code> in the usual way.
+    */
     public static boolean contains( Graph g, String fact )
         {
         return g.contains( triple( fact ) ); 
         }
-      
+    
     public void testContains( Graph g, Triple [] triples )
         { 
         for (int i = 0; i < triples.length; i += 1) 
