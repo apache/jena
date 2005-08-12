@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.30 2005-08-03 13:06:35 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.31 2005-08-12 13:23:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -185,6 +185,9 @@ public class NodeToTriplesMap
                }
            };
    }
+
+    public Set get( Object y )
+        { return (Set) map.get( y ); }
 
 
     }

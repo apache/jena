@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.10 2005-08-11 15:24:51 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.11 2005-08-12 13:23:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -193,7 +193,7 @@ public class NodeToTriplesMapFaster
            if (size == 0) map.put( o, null );
            return true;
         } 
-       }
+    }
     
     /**
         Answer an iterator over all the triples in this NTM which have index node
@@ -400,6 +400,9 @@ public class NodeToTriplesMapFaster
               }
           };
       }
+
+    public Bunch get( Object index )
+        { return (Bunch) map.get( index ); }
     }
 
 

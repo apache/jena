@@ -1,9 +1,11 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.19 2005-08-10 12:27:31 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.20 2005-08-12 13:23:08 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
+
+import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.*;
@@ -88,9 +90,12 @@ public class GraphTripleStore implements TripleStore
         { return WrappedIterator.createNoRemove( predicates.domain() ); }
     
     public ExtendedIterator listObjects()
-        // { return WrappedIterator.createNoRemove( objects.domain() ); }
         {
-        return new UniqueExtendedIterator( objects.iterator().mapWith( getObject ) );
+        return new ObjectIterator( objects.domain() )
+            {
+            protected Iterator iteratorFor( Object y )
+                { return objects.get( y ).iterator(); }
+            };
         }
     
     public static final Map1 getObject = new Map1() 

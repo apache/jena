@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.60 2005-07-05 11:21:37 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.61 2005-08-12 13:23:01 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -633,6 +633,16 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         it.next();
         try { it.remove(); fail( "listObjects for " + g.getClass() + " should not support .remove()" ); }
         catch (UnsupportedOperationException e) { pass(); }
+        }
+    
+    public void testListObjectNoDuplicates()
+        {
+        Graph g = getGraphWith( "a P 1; b P 1" );
+        int count = 0;
+        Node one = node( "1" );
+        Iterator it = g.queryHandler().objectsFor( Node.ANY, Node.ANY );
+        while (it.hasNext()) if (it.next().equals( one )) count += 1;
+        assertEquals( 1, count );
         }
     
     public void testPredicatesFor()

@@ -1,17 +1,18 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.7 2005-08-10 12:27:32 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.8 2005-08-12 13:23:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
 
-import java.util.Iterator;
+import java.util.*;
+
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.GraphTripleStore;
+import com.hp.hpl.jena.mem.ObjectIterator;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class FasterTripleStore
@@ -95,9 +96,12 @@ public class FasterTripleStore
         { return WrappedIterator.createNoRemove( predicates.domain() ); }
         
     public ExtendedIterator listObjects()
-        // { return WrappedIterator.createNoRemove( objects.domain() ); }
         {
-        return new UniqueExtendedIterator( objects.iterator().mapWith( GraphTripleStore.getObject ) );
+        return new ObjectIterator( objects.domain() )
+            {
+            protected Iterator iteratorFor( Object y )
+                { return objects.get( y ).iterator(); }
+            };
         }
     
     /**
