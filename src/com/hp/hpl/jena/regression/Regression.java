@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: Regression.java,v 1.21 2005-08-12 13:23:11 chris-dollin Exp $
+    $Id: Regression.java,v 1.22 2005-08-12 15:24:46 chris-dollin Exp $
  */
 
 package com.hp.hpl.jena.regression;
@@ -20,10 +20,11 @@ import java.io.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/** A common set of regression tests.
+/** A common set of regression tests. [Now being factored out into the
+ * NewRegression suite; kers.]
  *
  * @author  bwm
- * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.21 $' Date='$Date: 2005-08-12 13:23:11 $'
+ * @version Release='$Name: not supported by cvs2svn $' Revision='$Revision: 1.22 $' Date='$Date: 2005-08-12 15:24:46 $'
  */
 public class Regression extends Object {
 
@@ -4818,7 +4819,7 @@ public class Regression extends Object {
         return temp;
     }
 
-    public class LitTestObj {
+    public static class LitTestObj {
         protected long content;
 
         public LitTestObj(long l) {
@@ -4842,13 +4843,13 @@ public class Regression extends Object {
         }
     }
 
-    public class LitTestObjF implements ObjectF {
+    public static class LitTestObjF implements ObjectF {
         public Object createObject(String s) {
             return new LitTestObj(s);
         }
     }
 
-    public class ResTestObjF implements ResourceF {
+    public static class ResTestObjF implements ResourceF {
         public Resource createResource(Resource r)
             { return new ResourceImpl( r, (ModelCom) r.getModel() ); }
     }
@@ -4879,5 +4880,5 @@ public class Regression extends Object {
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: Regression.java,v 1.21 2005-08-12 13:23:11 chris-dollin Exp $
+ * $Id: Regression.java,v 1.22 2005-08-12 15:24:46 chris-dollin Exp $
  */
