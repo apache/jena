@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMapping.java,v 1.30 2005-04-10 12:45:52 chris-dollin Exp $
+  $Id: PrefixMapping.java,v 1.31 2005-08-15 15:44:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared;
@@ -205,7 +205,17 @@ public interface PrefixMapping
         .setNsPrefix( "jms", JenaModelSpec.getURI() )
         .setNsPrefix( "eg", "http://www.example.org/" )
         .lock()
-        ;   
+        ;
+
+    /**
+        Answer true iff this prefix-mappings are equal, that is, map the same
+        prefixes to the same URIs; same as
+        <blockquote>
+        this.getNsPrefixMap().equals( other.getNsPrefixMap() )
+        </blockquote>
+        except that it may avoid unnecessary Map creations.
+    */
+    boolean equalTo( PrefixMapping other );   
     }
 
 /*

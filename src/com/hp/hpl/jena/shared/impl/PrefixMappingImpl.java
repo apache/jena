@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PrefixMappingImpl.java,v 1.22 2005-03-18 13:56:44 chris-dollin Exp $
+  $Id: PrefixMappingImpl.java,v 1.23 2005-08-15 15:44:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.impl;
@@ -14,9 +14,8 @@ import java.util.*;
 import org.apache.xerces.util.XMLChar;
 
 /**
-    An implementation of PrefixMapping. The mappings are stored in a hash
-    prefixToURI, with the reverse lookup done with a linear search. This may need
-    improving but could get complicated. The test for a legal prefix is left to
+    An implementation of PrefixMapping. The mappings are stored in a pair
+    of hash tables, one per direction. The test for a legal prefix is left to
     xerces's XMLChar.isValidNCName() predicate.
         
  	@author kers
@@ -48,9 +47,7 @@ public class PrefixMappingImpl implements PrefixMapping
         {
         checkUnlocked();
         checkLegal( prefix );
-        if (!prefix.equals( "" )) 
-            { checkProper( uri );
-            /* removeExistingNonDefault( uri ); */ }
+        if (!prefix.equals( "" )) checkProper( uri );
         set( prefix, uri );
         return this;
         }
@@ -153,11 +150,7 @@ public class PrefixMappingImpl implements PrefixMapping
         { return CollectionFactory.createHashedMap( prefixToURI ); }
         
     public String getNsURIPrefix( String uri )
-        {
-        return (String) URItoPrefix.get( uri );
-//        Map.Entry e = findMapping( uri, false );
-//        return e == null ? null : (String) e.getKey();
-        }
+        { return (String) URItoPrefix.get( uri ); }
         
     /**
         Expand a prefixed URI. There's an assumption that any URI of the form
@@ -171,8 +164,7 @@ public class PrefixMappingImpl implements PrefixMapping
             return prefixed;
         else
             {
-            String prefix = prefixed.substring( 0, colon );
-            String uri = get( prefix );
+            String uri = get( prefixed.substring( 0, colon ) );
             return uri == null ? prefixed : uri + prefixed.substring( colon + 1 );
             } 
         }
@@ -192,7 +184,7 @@ public class PrefixMappingImpl implements PrefixMapping
         have to (reverse-)lookup the namespace in the prefix table.
         
      	@see com.hp.hpl.jena.shared.PrefixMapping#qnameFor(java.lang.String)
-     */
+    */
     public String qnameFor( String uri )
         { 
         int split = Util.splitNamespace( uri );
@@ -200,8 +192,6 @@ public class PrefixMappingImpl implements PrefixMapping
         if (local.equals( "" )) return null;
         String prefix = (String) URItoPrefix.get( ns );
         return prefix == null ? null : prefix + ":" + local;
-//        Map.Entry e = findMapping( ns, false );
-//        return e == null ? null : (String) e.getKey() + ":" + local;
         }
     
     /**
@@ -224,6 +214,23 @@ public class PrefixMappingImpl implements PrefixMapping
         return e == null ? uri : e.getKey() + ":" + uri.substring( ((String) e.getValue()).length() );
         }
         
+    public boolean equalTo( PrefixMapping other )
+        {
+        return other instanceof PrefixMappingImpl 
+            ? equals( (PrefixMappingImpl) other )
+            : equalsByMap( other )
+            ;
+        }
+    
+    protected boolean equals( PrefixMappingImpl other )
+        { return other.sameAs( this ); }
+    
+    protected boolean sameAs( PrefixMappingImpl other )
+        { return prefixToURI.equals( other.prefixToURI ); }
+    
+    protected final boolean equalsByMap( PrefixMapping other )
+        { return getNsPrefixMap().equals( other.getNsPrefixMap() ); }
+    
     /**
         Answer a prefixToURI entry in which the value is an initial substring of <code>uri</code>.
         If <code>partial</code> is false, then the value must equal <code>uri</code>.

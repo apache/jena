@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.20 2005-03-18 13:56:44 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.21 2005-08-15 15:44:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -24,6 +24,10 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     public AbstractTestPrefixMapping( String name )
          { super( name ); }
 
+    /**
+        Subclasses implement to return a new, empty prefixMapping of their
+        preferred kind.
+    */
     abstract protected PrefixMapping getMapping();
         
     static final String crispURI = "http://crisp.nosuch.net/";
@@ -387,6 +391,47 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         A.removeNsPrefix( "hr" );
         assertEquals( null, A.getNsPrefixURI( "hr" ) );
         assertEquals( bURI, A.getNsPrefixURI( "br" ) );
+        }
+    
+    public void testEqualityAgainstImpl()
+        {
+        testEquals( "" );
+        testEquals( "", "x=a", false );
+        testEquals( "x=a", "", false );
+        testEquals( "x=a" );
+        testEquals( "x=a y=b", "y=b x=a", true );
+        testEquals( "x=a x=b", "x=b x=a", false );
+        }
+    
+    protected void testEquals( String S )
+        { testEquals( S, S, true ); }
+    
+    protected void testEquals( String S, String T, boolean expected )
+        {
+        testEqualsBase( S, T, expected );
+        testEqualsBase( T, S, expected );
+        }
+    
+    public void testEqualsBase( String S, String T, boolean expected )
+        {
+        PrefixMapping A = PrefixMapping.Factory.create();
+        PrefixMapping B = getMapping();
+        fill( A, S );
+        fill( B, T );
+        String title = "usual: '" + S + "', testing: '" + T + "', should be " + (expected ? "equal" : "different");
+        assertEquals( title, expected, A.equalTo( B ) );
+        assertEquals( title, expected, B.equalTo( A ) );
+        }
+    
+    protected void fill( PrefixMapping pm, String settings )
+        {
+        List L = listOfStrings( settings );
+        for (int i = 0; i < L.size(); i += 1)
+            {
+            String setting = (String) L.get(i);
+            int eq = setting.indexOf( '=' );
+            pm.setNsPrefix( setting.substring( 0, eq ), setting.substring( eq + 1 ) );
+            }
         }
     
     public void testAllowNastyNamespace()

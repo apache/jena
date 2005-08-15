@@ -1,7 +1,7 @@
 /*
  * (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PolyadicPrefixMappingImpl.java,v 1.6 2005-02-21 11:52:04 andy_seaborne Exp $
+  $Id: PolyadicPrefixMappingImpl.java,v 1.7 2005-08-15 15:44:08 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
@@ -20,8 +20,13 @@ public class PolyadicPrefixMappingImpl extends PrefixMappingImpl implements Pref
     private PrefixMapping pending = new PrefixMappingImpl();
     
     public PolyadicPrefixMappingImpl( Polyadic p )
-        { poly = p; 
-        }
+        { poly = p; }
+    
+    protected boolean equals( PrefixMappingImpl other )
+        { return equalsByMap( other ); }
+    
+    protected boolean sameAs( PrefixMappingImpl other )
+        { return equalsByMap( other ); }
            
     private PrefixMapping getBaseMapping()
         { 
