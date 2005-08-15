@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.86 $
+ * Revision           $Revision: 1.87 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-07-29 11:15:50 $
+ * Last modified on   $Date: 2005-08-15 15:34:53 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.86 2005-07-29 11:15:50 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.87 2005-08-15 15:34:53 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2233,13 +2233,6 @@ public class OntModelImpl
      * may be an expensive operation)
      */
     public void addSubModel( Model model, boolean rebind ) {
-        Graph subG = model.getGraph();
-
-        if (subG instanceof MultiUnion) {
-            // we need to get the base graph when adding a ontmodel
-            subG = ((MultiUnion) subG).getBaseGraph();
-        }
-
         getUnionGraph().addGraph( model.getGraph() );
         if (rebind) {
             rebind();
