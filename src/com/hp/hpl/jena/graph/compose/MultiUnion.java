@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: MultiUnion.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-08-03 15:23:08 $
- *               by   $Author: der $
+ * Last modified on   $Date: 2005-08-15 15:38:09 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -41,7 +41,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: MultiUnion.java,v 1.22 2005-08-03 15:23:08 der Exp $
+ * @version CVS $Id: MultiUnion.java,v 1.23 2005-08-15 15:38:09 ian_dickinson Exp $
  */
 public class MultiUnion
     extends Polyadic
@@ -70,76 +70,66 @@ public class MultiUnion
         super();
     }
 
-    
+
     /**
      * <p>
      * Construct a union of all of the given graphs
      * </p>
-     * 
+     *
      * @param graphs An array of the sub-graphs of this union
      */
     public MultiUnion( Graph[] graphs) {
         super( graphs );
     }
 
-    
+
     /**
      * <p>
      * Construct a union of all of the given graphs.
      * </p>
-     * 
+     *
      * @param graphs An iterator of the sub-graphs of this union. If graphs is
      *               a closable iterator, it will be automatically closed.
      */
     public MultiUnion( Iterator graphs ) {
         super( graphs );
     }
-    
+
 
     // External signature methods
     //////////////////////////////////
 
     /**
-        Unions share the reifiers of their base graphs. 
+        Unions share the reifiers of their base graphs.
     */
     public Reifier getReifier()
         { Graph base = getBaseGraph();
         return base == null ? super.getReifier() : base.getReifier(); }
-    
+
     /**
      * <p>
      * Add the given triple to the union model; the actual component model to
-     * be updated will be the designated (or default) {@linkplain #getBaseGraph updateable} graph. 
+     * be updated will be the designated (or default) {@linkplain #getBaseGraph updateable} graph.
      * </p>
-     * 
+     *
      * @param t A triple to add to the union graph
      * @exception JenaException if the union does not contain any sub-graphs yet
      */
     public void performAdd( Triple t ) {
-        try {
-            getBaseGraph().add( t );
-        }
-        catch (NullPointerException e) {
-            throw new JenaException( "Tried to add to a union graph that has no component graphs.", e);
-        }
+        getRequiredBaseGraph().add( t );
     }
 
     /**
      * <p>
      * Delete the given triple from the union model; the actual component model to
-     * be updated will be the designated (or default) {@linkplain #getBaseGraph updateable} graph. 
+     * be updated will be the designated (or default) {@linkplain #getBaseGraph updateable} graph.
      * </p>
-     * 
+     *
      * @param t A triple to from the union graph
      * @exception JenaException if the union does not contain any sub-graphs yet
      */
     public void performDelete( Triple t ) {
-        try {
-            getBaseGraph().delete( t );
-        }
-        catch (NullPointerException e) {
-            throw new JenaException( "Tried to delete from a union graph that has no component graphs.", e );
-        }
+        getRequiredBaseGraph().delete( t );
     }
 
 
@@ -147,7 +137,7 @@ public class MultiUnion
      * <p>
      * Answer true if at least one of the graphs in this union contain the given triple.
      * </p>
-     * 
+     *
      * @param t A triple
      * @return True if any of the graphs in the union contain t
      */
@@ -157,10 +147,10 @@ public class MultiUnion
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
 
     /**
      * <p>
@@ -168,20 +158,20 @@ public class MultiUnion
      * that the requirement to remove duplicates from the union means that this will be an
      * expensive operation for large (and especially for persistent) graphs.
      * </p>
-     * 
+     *
      * @param t The matcher to match against
      * @return An iterator of all triples matching t in the union of the graphs.
      */
     public ExtendedIterator graphBaseFind( final TripleMatch t ) {
         Set seen = CollectionFactory.createHashedSet();
         ExtendedIterator i = NullIterator.instance;
-        
+
         // now add the rest of the chain
         for (Iterator graphs = m_subGraphs.iterator(); graphs.hasNext(); ) {
             ExtendedIterator newTriples = recording( rejecting( ((Graph) graphs.next()).find( t ), seen ), seen );
             i = i.andThen( newTriples );
         }
-        
+
         // ensure that .remove notifies this graph's event manager
         return SimpleEventManager.notifyingRemove( MultiUnion.this, i );
     }
@@ -192,10 +182,10 @@ public class MultiUnion
      * Add the given graph to this union.  If it is already a member of the union, don't
      * add it a second time.
      * </p>
-     * 
+     *
      * @param graph A sub-graph to add to this union
-     */        
-    public void addGraph( Graph graph ) { 
+     */
+    public void addGraph( Graph graph ) {
         if (!m_subGraphs.contains( graph )) {
             m_subGraphs.add( graph );
         }
