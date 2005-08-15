@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntProperty.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-11 16:41:41 $
+ * Last modified on   $Date: 2005-08-15 16:11:54 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntProperty.java,v 1.16 2005-04-11 16:41:41 ian_dickinson Exp $
+ * @version CVS $Id: OntProperty.java,v 1.17 2005-08-15 16:11:54 ian_dickinson Exp $
  */
 public interface OntProperty
     extends OntResource, Property
@@ -228,14 +228,22 @@ public interface OntProperty
 
     /**
      * <p>Assert that the given resource represents the class of individuals that form the
-     * range of this property. Any existing <code>range</code> statements for this property are removed.</p>
+     * range of this property. Any existing <code>range</code> statements for this property are
+     * first removed. Therefore, if the property is known not to have a range declaration, it
+     * is more efficient to use {@link #addRange} since no removal step is necessary.
+     * See {@link #addRange} for additional usage notes on the value of <code>res</code>.</p>
      * @param res The resource that represents the range class for this property.
      * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
      */
     public void setRange( Resource res );
 
     /**
-     * <p>Add a resource representing the range of this property.</p>
+     * <p>Add a resource representing the range of this property. The resource denotes the class
+     * or datatype that objects of statements using this property as predicate should
+     * belong to. For datatype properties, XML Schema Datatype names are pre-declared
+     * as resources in the {@link com.hp.hpl.jena.vocabulary.XSD XSD} vocabulary class. For object properties,
+     * the resource should be represent the range class. Note that {@link OntClass} is
+     * a Java sub-class of {@link Resource}, so OntClass objects can be passed directly.</p>
      * @param res A resource that represents a range class for this property.
      * @exception OntProfileException If the {@link Profile#RANGE()} property is not supported in the current language profile.
      */
