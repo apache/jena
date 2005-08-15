@@ -3,6 +3,15 @@ Release Notes
 
 ;;; -- Post 2.2final change list ----------------------------------------
 
+PrefixMappings
+    o new boolean method equalTo(PrefixMapping) compares mappings
+      for equality but has opportunity to avoid creating intermediate
+      maps.
+
+    o NOTE: cannot overload .equals() because Model::equals() is already
+      defined. Making Model implement PrefixMapping may have been a
+      mistake ...
+
 ARP
     o Total rewrite of internals. Now approx four times faster.
       User code will experience significantly less speed up,
