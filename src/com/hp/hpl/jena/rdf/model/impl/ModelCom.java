@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: ModelCom.java,v 1.107 2005-08-15 15:44:09 chris-dollin Exp $
+    $Id: ModelCom.java,v 1.108 2005-08-16 11:12:31 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -119,20 +119,20 @@ public class ModelCom
     
     public Model add(Resource s, Property p, String o, boolean wellFormed)
         {
-        add(s, p, literal(o, "", wellFormed));
+        add( s, p, literal( o, "", wellFormed ) );
         return this;
         }
     
-    public Model add(Resource s, Property p, String o, String lang,
+    public Model add( Resource s, Property p, String o, String lang,
       boolean wellFormed)  {
-        add(s, p, literal(o, lang, wellFormed));
+        add( s, p, literal( o, lang, wellFormed ) );
         return this;
     }
     
     private Literal literal( String s, String lang, boolean wellFormed )
         { return new LiteralImpl( Node.createLiteral( s, lang, wellFormed), this ); }
     
-    public Model add(Resource s, Property p, String o, String l)
+    public Model add( Resource s, Property p, String o, String l )
         { return add( s, p, o, l, false ); }
     
     /**
@@ -326,142 +326,107 @@ public class ModelCom
     public boolean contains( Resource s, Property p, double o )
         { return contains(s, p, String.valueOf( o ) ); }
     
-    public boolean contains(Resource s, Property p, String o)
-        { return contains(s, p, o, "" ); }
+    public boolean contains( Resource s, Property p, String o )
+        { return contains( s, p, o, "" ); }
     
-    public boolean contains(Resource s, Property p, String o, String l)
+    public boolean contains( Resource s, Property p, String o, String l )
         { return contains( s, p, literal( o, l, false ) ); }
     
     public boolean contains(Resource s, Property p, Object o)
         { return contains( s, p, ensureRDFNode( o ) ); }
     
-    public boolean containsAny(StmtIterator iter) {
-        while (iter.hasNext()) {
-            if (contains(iter.nextStatement())) return true;
-        }
+    public boolean containsAny( Model model ) 
+        { return containsAnyThenClose( model.listStatements() ); }
+    
+    public boolean containsAll( Model model )  
+        { return containsAllThenClose( model.listStatements() ); }
+    
+    protected boolean containsAnyThenClose( StmtIterator iter )
+        { try { return containsAny( iter ); } finally { iter.close(); } }
+
+    protected boolean containsAllThenClose( StmtIterator iter )
+        { try { return containsAll( iter ); } finally { iter.close(); } }
+    
+    public boolean containsAny( StmtIterator iter ) 
+        {
+        while (iter.hasNext()) if (contains(iter.nextStatement())) return true;
         return false;
-    }
-    
-    public boolean containsAll(StmtIterator iter)  {
-        while (iter.hasNext()) {
-            if (!contains(iter.nextStatement())) return false;
         }
+    
+    public boolean containsAll( StmtIterator iter )  
+        {
+        while (iter.hasNext()) if (!contains(iter.nextStatement())) return false;
         return true;
-    }
+        }
     
-    public boolean containsAny(Model model) {
-        StmtIterator iter = model.listStatements();
-        try { return containsAny(iter); }
-        finally { iter.close(); }
-    }
+    protected StmtIterator listStatements( Resource S, Property P, Node O )
+        {
+        return IteratorFactory.asStmtIterator
+            ( graph.find( asNode( S ), asNode( P ), O ), this );
+        }
     
-    public boolean containsAll(Model model)  {
-        StmtIterator iter = model.listStatements();
-        try { return containsAll(iter); } 
-        finally { iter.close(); }
-    }
+    public StmtIterator listStatements( Resource S, Property P, RDFNode O )
+        { return listStatements( S, P, asNode( O ) ); }
     
-    public StmtIterator listStatements(Resource subject,
-                                        Property predicate,
-                                        RDFNode  object)
-        { return listStatements( new SimpleSelector( subject, predicate, object ) ); }
+    public StmtIterator listStatements( Resource S, Property P, String O )
+        { return listStatements( S, P, Node.createLiteral( O ) ); }
     
-    public StmtIterator listStatements(Resource subject,
-                                        Property predicate,
-                                        boolean object)
-        { return listStatements( new SimpleSelector( subject, predicate, object ) ); }
+    public StmtIterator listStatements( Resource S, Property P, String O, String L )
+        { return listStatements( S, P, Node.createLiteral( O, L, false ) ); }
     
-    public StmtIterator listStatements(Resource subject,
-                                        Property predicate,
-                                        long    object)
-        { return listStatements( new SimpleSelector( subject, predicate, object ) ); }
+    public StmtIterator listStatements( Resource S, Property P, boolean O )
+        { return listStatements( S, P, String.valueOf( O ) ); }
     
-    public StmtIterator listStatements(Resource subject,
-                                        Property predicate,
-                                        char  object)
-        { return listStatements( new SimpleSelector( subject, predicate, object ) ); }
+    public StmtIterator listStatements( Resource S, Property P, long O )
+        { return listStatements( S, P, String.valueOf( O ) ); }
     
-    public StmtIterator listStatements(Resource subject,
-                                        Property predicate,
-                                        float   object)
-         { return listStatements( new SimpleSelector( subject, predicate, object ) ); }
+    public StmtIterator listStatements( Resource S, Property P, char  O )
+        { return listStatements( S, P, String.valueOf( O ) ); }
     
-    public StmtIterator listStatements(Resource subject,
-                                        Property predicate,
-                                        double  object)
-        { return listStatements( new SimpleSelector(subject, predicate, object ) ); }
+    public StmtIterator listStatements( Resource S, Property P, float O )
+         { return listStatements( S, P, String.valueOf( O ) ); }
     
-    public StmtIterator listStatements(Resource subject,
-                                        Property predicate,
-                                        String   object)
-        { return listStatements( new SimpleSelector(subject, predicate, object ) ); }
+    public StmtIterator listStatements( Resource S, Property P, double  O )
+        { return listStatements( S, P, String.valueOf( O ) ); }
+        
+    public ResIterator listSubjectsWithProperty( Property p, boolean o )
+        { return listSubjectsWithProperty(p, String.valueOf( o ) ); }
     
-    public StmtIterator listStatements(Resource subject,
-                                        Property predicate,
-                                        String   object,
-                                        String   lang)
-        { return listStatements( new SimpleSelector(subject, predicate, object, lang ) ); }
+    public ResIterator listSubjectsWithProperty( Property p, long o )
+        { return listSubjectsWithProperty(p, String.valueOf( o ) ); }
     
-    public ResIterator listSubjectsWithProperty(Property p, boolean o)
-     {
-        return listSubjectsWithProperty(p, String.valueOf( o ) );
-    }
+    public ResIterator listSubjectsWithProperty( Property p, char o )
+        { return listSubjectsWithProperty(p, String.valueOf( o ) ); }
     
-    public ResIterator listSubjectsWithProperty(Property p, long o)
-     {
-        return listSubjectsWithProperty(p, String.valueOf( o ) );
-    }
+    public ResIterator listSubjectsWithProperty( Property p, float o )
+        { return listSubjectsWithProperty(p, String.valueOf( o ) ); }
     
-    public ResIterator listSubjectsWithProperty(Property p, char o)
-     {
-        return listSubjectsWithProperty(p, String.valueOf( o ) );
-    }
+    public ResIterator listSubjectsWithProperty( Property p, double o )
+        { return listSubjectsWithProperty(p, String.valueOf( o ) ); }
     
-    public ResIterator listSubjectsWithProperty(Property p, float o)
-     {
-        return listSubjectsWithProperty(p, String.valueOf( o ) );
-    }
+    public ResIterator listSubjectsWithProperty( Property p, String o )
+        { return listSubjectsWithProperty( p, o, "" ); }
     
-    public ResIterator listSubjectsWithProperty(Property p, double o)
-     {
-        return listSubjectsWithProperty(p, String.valueOf( o ) );
-    }
+    public ResIterator listSubjectsWithProperty( Property p, String o, String l )
+        { return listSubjectsWithProperty(p, literal( o, l, false ) ); }
     
-    public ResIterator listSubjectsWithProperty(Property p, String o)
-     {
-        return listSubjectsWithProperty( p, o, "" );
-    }
+    public ResIterator listSubjectsWithProperty( Property p, Object o )
+        { return listSubjectsWithProperty( p, ensureRDFNode( o ) ); }
     
-    public ResIterator listSubjectsWithProperty(Property p, String o, String l)
-     {
-        return listSubjectsWithProperty(p, literal( o, l, false ) );
-    }
+    public Resource createResource( Resource type )  
+        { return createResource().addProperty( RDF.type, type ); }
     
-    public ResIterator listSubjectsWithProperty(Property p, Object o)
-     {
-        return listSubjectsWithProperty( p, ensureRDFNode( o ) );
-    }
+    public Resource createResource( String uri,Resource type )
+        { return getResource( uri ).addProperty( RDF.type, type ); }
     
-    public Resource createResource(Resource type)  {
-        return createResource().addProperty(RDF.type, type);
-    }
-    
-    public Resource createResource(String uri,Resource type)
-     {
-        return getResource(uri)
-                   .addProperty(RDF.type, type);
-    }
-    
-    public Resource createResource(ResourceF f)  {
-        return createResource(null, f);
-    }
+    public Resource createResource( ResourceF f )  
+        { return createResource( null, f ); }
     
     public Resource createResource( AnonId id )
         { return new ResourceImpl( id, this ); }
         
-    public Resource createResource(String uri, ResourceF f)  {
-       return f.createResource( createResource( uri ) );
-    }
+    public Resource createResource( String uri, ResourceF f )  
+        { return f.createResource( createResource( uri ) ); }
     
  
     /** create a type literal from a boolean value.
@@ -472,8 +437,8 @@ public class ModelCom
      * 
      * @return a new literal representing the value v
      */
-    public Literal createTypedLiteral(boolean v)  {
-        return createTypedLiteral(new Boolean(v));
+    public Literal createTypedLiteral( boolean v )  {
+        return createTypedLiteral( new Boolean( v ) );
     }
     
     /** create a typed literal from an integer value.
@@ -605,129 +570,95 @@ public class ModelCom
      * representation for this java class. No language tag is supplied.
      * @param value the literal value to encapsulate
      */
-    public Literal createTypedLiteral(Object value) {
+    public Literal createTypedLiteral( Object value ) 
+        {
         // Catch special case of a Calendar which we want to act as if it were an XSDDateTime
-        if (value instanceof Calendar) {
-            return createTypedLiteral((Calendar)value);
+        if (value instanceof Calendar) 
+            return createTypedLiteral( (Calendar)value );
+        LiteralLabel ll = new LiteralLabel( value );
+        return new LiteralImpl( Node.createLiteral( ll ), this);
         }
-        LiteralLabel ll = new LiteralLabel(value);
-        return new LiteralImpl(Node.createLiteral(ll), this);
-    }
 
-    public Literal createLiteral(boolean v)  
-        { return createLiteral(String.valueOf(v), ""); }
+    public Literal createLiteral( boolean v )  
+        { return createLiteral( String.valueOf( v ), "" ); }
     
-    public Literal createLiteral(int v)  {
-        return createLiteral(String.valueOf(v), "");
-    }
+    public Literal createLiteral( int v )  
+        { return createLiteral( String.valueOf( v ), "" ); }
     
-    public Literal createLiteral(long v)  {
-        return createLiteral(String.valueOf(v), "");
-    }
+    public Literal createLiteral( long v )  
+        { return createLiteral( String.valueOf( v ), "" ); }
     
-    public Literal createLiteral(char v)  {
-        return createLiteral(String.valueOf(v), "");
-    }
+    public Literal createLiteral( char v )  
+        { return createLiteral( String.valueOf( v ), "" ); }
     
-    public Literal createLiteral(float v)  {
-        return createLiteral(String.valueOf(v), "");
-    }
+    public Literal createLiteral( float v )  
+        { return createLiteral( String.valueOf( v ), "" ); }
     
-    public Literal createLiteral(double v)  {
-        return createLiteral(String.valueOf(v), "");
-    }
+    public Literal createLiteral( double v )  
+        { return createLiteral( String.valueOf( v ), "" ); }
     
-    public Literal createLiteral(String v)  {
-        return createLiteral(v, "");
-    }
+    public Literal createLiteral( String v )  
+        { return createLiteral( v, "" ); }
     
-    public Literal createLiteral(String v, String l)  {
-        return literal(v, l, false);
-    }
+    public Literal createLiteral( String v, String l )  
+        { return literal( v, l, false ); }
     
-    public Literal createLiteral(String v, boolean wellFormed) {
-        return literal(v, "", wellFormed);
-    }
+    public Literal createLiteral( String v, boolean wellFormed ) 
+        { return literal( v, "", wellFormed ); }
     
-    public Literal createLiteral(String v, String l, boolean wellFormed) {
-        return literal(v, l, wellFormed);
-    }
+    public Literal createLiteral(String v, String l, boolean wellFormed) 
+        { return literal( v, l, wellFormed ); }
     
-    public Literal createLiteral(Object v)  {
-        return createLiteral(v.toString(), "");
-    }
+    public Literal createLiteral( Object v )  
+        { return createLiteral( v.toString(), "" ); }
     
-    public Statement createStatement(Resource r, Property p, boolean o)
-     {
-        return createStatement(r, p, createLiteral(o));
-    }
+    public Statement createStatement( Resource r, Property p, boolean o )
+        { return createStatement( r, p, createLiteral( o ) ); }
     
-    public Statement createStatement(Resource r, Property p, long o)
-     {
-        return createStatement(r, p, createLiteral(o));
-    }
+    public Statement createStatement( Resource r, Property p, long o )
+        { return createStatement( r, p, createLiteral( o ) ); }
     
-    public Statement createStatement(Resource r, Property p, char o)
-     {
-        return createStatement(r, p, createLiteral(o));
-    }
+    public Statement createStatement( Resource r, Property p, char o )
+        { return createStatement( r, p, createLiteral( o ) ); }
     
-    public Statement createStatement(Resource r, Property p, float o)
-     {
-        return createStatement(r, p, createLiteral(o));
-    }
+    public Statement createStatement( Resource r, Property p, float o )
+        { return createStatement( r, p, createLiteral( o ) ); }
     
-    public Statement createStatement(Resource r, Property p, double o)
-     {
-        return createStatement(r, p, createLiteral(o));
-    }
+    public Statement createStatement( Resource r, Property p, double o )
+        { return createStatement( r, p, createLiteral( o ) ); }
     
-    public Statement createStatement(Resource r, Property p, String o)
-     {
-        return createStatement(r, p, createLiteral(o));
-    }
+    public Statement createStatement( Resource r, Property p, String o )
+        { return createStatement( r, p, createLiteral( o ) ); }
     
     public Statement createStatement(Resource r, Property p, Object o)
-     {
-        return createStatement( r, p, ensureRDFNode( o ) );
-    }
+        { return createStatement( r, p, ensureRDFNode( o ) ); }
     
-    public Statement createStatement(Resource r, Property p, String o,
-                                     boolean wellFormed)  {
-        return createStatement( r, p, o, "", wellFormed );
-    }
+    public Statement createStatement
+        ( Resource r, Property p, String o, boolean wellFormed )  
+        { return createStatement( r, p, o, "", wellFormed ); }
     
     public Statement createStatement(Resource r, Property p, String o, String l)
-       {
-        return createStatement( r, p, o, l, false );
-    }
+        { return createStatement( r, p, o, l, false ); }
     
-    public Statement createStatement(Resource r, Property p, String o, String l,
-                                     boolean wellFormed)  {
-        return createStatement(r, p, literal(o,l,wellFormed));
-    }
+    public Statement createStatement
+        ( Resource r, Property p, String o, String l, boolean wellFormed )  
+        { return createStatement( r, p, literal( o, l, wellFormed ) ); }
     
-    public Bag createBag()  {
-        return createBag(null);
-    }
+    public Bag createBag()  
+        { return createBag( null ); }
     
-    public Alt createAlt()  {
-        return createAlt(null);
-    }
+    public Alt createAlt()  
+        { return createAlt( null ); }
     
-    public Seq createSeq()  {
-        return createSeq(null);
-    }
+    public Seq createSeq()  
+        { return createSeq( null ); }
     
     /**
-     * <p>Answer a new empty list</p>
-     * @return An RDF-encoded list of no elements
-     */
-    public RDFList createList() {
-        Resource list = getResource( RDF.nil.getURI() );
-        
-        return (RDFList) list.as( RDFList.class );
-    }
+        Answer a (the) new empty list
+        @return An RDF-encoded list of no elements (ie nil)
+    */
+    public RDFList createList() 
+        { return (RDFList) getResource( RDF.nil.getURI() ).as( RDFList.class ); }
     
     
     /**
@@ -772,42 +703,32 @@ public class ModelCom
         return IteratorFactory.asProperty(makeURI(uri),this);
     }
     
-    public Property getProperty(String nameSpace,String localName)
-       {
-        return getProperty(nameSpace+localName);
-    }
+    public Property getProperty( String nameSpace,String localName )
+        { return getProperty( nameSpace + localName ); }
     
-    public Seq getSeq(String uri)  {
-      return (Seq)IteratorFactory.asResource(makeURI(uri),Seq.class, this);
-    }
+    public Seq getSeq( String uri )  
+        { return (Seq) IteratorFactory.asResource( makeURI( uri ),Seq.class, this); }
     
-    public Seq getSeq(Resource r)  {
-        return (Seq) r.as( Seq.class );
-    }
+    public Seq getSeq( Resource r )  
+        { return (Seq) r.as( Seq.class ); }
     
-    public Bag getBag(String uri)  {
-      return (Bag)IteratorFactory.asResource(makeURI(uri),Bag.class, this);
-    }
+    public Bag getBag( String uri )  
+        { return (Bag) IteratorFactory.asResource( makeURI( uri ),Bag.class, this ); }
     
-    public Bag getBag(Resource r)  {
-        return (Bag) r.as( Bag.class );
-    }
+    public Bag getBag( Resource r )  
+        { return (Bag) r.as( Bag.class ); }
     
-    static private Node makeURI(String uri) {
-        return uri == null ? Node.createAnon() : Node.createURI(uri);
-    }
+    static private Node makeURI(String uri) 
+        { return uri == null ? Node.createAnon() : Node.createURI( uri ); }
     
-    public Alt getAlt(String uri)  {
-      return (Alt)IteratorFactory.asResource(makeURI(uri),Alt.class, this);
-    }
+    public Alt getAlt( String uri )  
+        { return (Alt) IteratorFactory.asResource( makeURI(uri) ,Alt.class, this ); }
     
-    public Alt getAlt(Resource r)  {
-        return (Alt) r.as( Alt.class );
-    }
+    public Alt getAlt( Resource r )  
+        { return (Alt) r.as( Alt.class ); }
     
-    public long size()  {
-        return graph.size();
-    }
+    public long size()  
+        { return graph.size(); }
 
     public boolean isEmpty()
         { return graph.isEmpty(); }
@@ -828,13 +749,7 @@ public class ModelCom
         }
         
     private Iterator listPredicates()
-        {
-//        Set predicates = CollectionFactory.createHashedSet();
-//        ClosableIterator it = graph.find( null, null, null );
-//        while (it.hasNext()) predicates.add( ((Triple) it.next()).getPredicate() );
-//        return predicates.iterator();
-        return getGraph().queryHandler().predicatesFor( Node.ANY, Node.ANY );
-        }
+        { return getGraph().queryHandler().predicatesFor( Node.ANY, Node.ANY ); }
      
     private Iterator listTypes()
         {
@@ -944,17 +859,17 @@ public class ModelCom
             }            
         }
         
-    public StmtIterator listStatements()  {
-        return IteratorFactory.asStmtIterator( GraphUtil.findAll( graph ), this);
-    }
+    public StmtIterator listStatements()  
+        { return IteratorFactory.asStmtIterator( GraphUtil.findAll( graph ), this); }
 
     /**
         add a Statement to this Model by adding its SPO components.
     */
-    public Model add(Statement s)  {
+    public Model add( Statement s )  
+        {
         add( s.getSubject(), s.getPredicate(), s.getObject() );
         return this;
-    }
+        }
     
     /**
         Add all the statements to the model by converting them to an array of corresponding
@@ -1003,17 +918,17 @@ public class ModelCom
         return this;
         }
      
-     /**
+    /**
         Remove all the Statements from the model by converting the List to a
-        Statement [] and removing that.
-     */
+        List(Statement) and removing that.
+    */
     public Model remove( List statements )
         {
         getBulkUpdateHandler().delete( asTriples( statements ) );
         return this;
         }
            
-    public Model add(Resource s,Property p,RDFNode o)  {
+    public Model add( Resource s, Property p, RDFNode o )  {
         modelReifier.noteIfReified( s, p, o );
         graph.add( Triple.create( s.asNode(), p.asNode(), o.asNode() ) );
         return this;
@@ -1129,7 +1044,7 @@ public class ModelCom
     public NodeIterator listObjectsOfProperty(Resource s, Property p)
         { return listObjectsFor( s, p ); }
             
-    public StmtIterator listStatements(final Selector selector)
+    public StmtIterator listStatements( final Selector selector )
         {
         StmtIterator sts = IteratorFactory.asStmtIterator( findTriplesFrom( selector ), this );
         return selector.isSimple() 
@@ -1182,21 +1097,17 @@ public class ModelCom
     private TransactionHandler getTransactionHandler()
         { return getGraph().getTransactionHandler(); }
         
-    public boolean independent() {
-        return true;
-    }
+    public boolean independent() 
+        { return true; }
     
-    public Resource createResource()  {
-        return IteratorFactory.asResource( Node.createAnon(),this );
-    }
+    public Resource createResource()  
+        { return IteratorFactory.asResource( Node.createAnon(),this ); }
     
-    public Resource createResource(String uri)  {
-        return getResource(uri);
-    }
+    public Resource createResource( String uri )  
+        { return getResource( uri ); }
     
-    public Property createProperty(String uri)  {
-        return getProperty(uri);
-    }
+    public Property createProperty( String uri )  
+        { return getProperty( uri ); }
     
     public Property createProperty(String nameSpace, String localName)
         { return getProperty(nameSpace, localName); }
