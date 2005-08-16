@@ -48,7 +48,7 @@ import java.util.*;
  * @since Jena 2.0
  * 
  * @author csayers (based in part on GraphMem by bwm).
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  */
 public class GraphRDB extends GraphBase implements Graph {
 
@@ -241,6 +241,20 @@ public class GraphRDB extends GraphBase implements Graph {
 		}
 		m_specializedGraphs = m_specializedGraphsAll;
 	}
+    
+    /**
+        Database graphs do not presently support the equivalence of plain
+        string literals and xsd:string literals (and other typed literals
+        in general).
+         
+        @see com.hp.hpl.jena.graph.Graph#getCapabilities()
+    */
+    public Capabilities getCapabilities()
+        { 
+        if (capabilities == null) capabilities = new AllCapabilities()
+            { public boolean handlesLiteralTyping() { return false; } };
+        return capabilities;
+        }
 	
 	/** 
 	 * Returns the Node for this model in the system properties graph.

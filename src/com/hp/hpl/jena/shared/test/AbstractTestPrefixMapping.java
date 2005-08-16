@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestPrefixMapping.java,v 1.21 2005-08-15 15:44:09 chris-dollin Exp $
+  $Id: AbstractTestPrefixMapping.java,v 1.22 2005-08-16 13:55:51 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.shared.test;
@@ -393,7 +393,7 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
         assertEquals( bURI, A.getNsPrefixURI( "br" ) );
         }
     
-    public void testEqualityAgainstImpl()
+    public void testEquality()
         {
         testEquals( "" );
         testEquals( "", "x=a", false );
@@ -414,8 +414,12 @@ public abstract class AbstractTestPrefixMapping extends GraphTestBase
     
     public void testEqualsBase( String S, String T, boolean expected )
         {
-        PrefixMapping A = PrefixMapping.Factory.create();
-        PrefixMapping B = getMapping();
+        testEquals( S, T, expected, getMapping(), getMapping() );
+        testEquals( S, T, expected, PrefixMapping.Factory.create(), getMapping() );
+        }
+
+    protected void testEquals( String S, String T, boolean expected, PrefixMapping A, PrefixMapping B )
+        {
         fill( A, S );
         fill( B, T );
         String title = "usual: '" + S + "', testing: '" + T + "', should be " + (expected ? "equal" : "different");

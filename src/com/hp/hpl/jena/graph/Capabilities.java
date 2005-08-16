@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Capabilities.java,v 1.8 2005-02-21 11:51:56 andy_seaborne Exp $
+  $Id: Capabilities.java,v 1.9 2005-08-16 13:55:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph;
@@ -20,26 +20,26 @@ public interface Capabilities
     /**
         Answer true if Graph::add() can be used to add at least some triples to
         the graph.
-     */
+    */
     boolean addAllowed();
     
     /**
         Answer true if Graph::add() can be used to add at least some triples to the
         graph. If everyTriple is true, answer true iff *any* triple can be added (ie the
         graph places no special restrictions on triples).
-     */
+    */
     boolean addAllowed( boolean everyTriple );
     
     /**
         Answer true iff Graph::delete() can be used to remove at least some triples
         from the graph.
-     */
+    */
     boolean deleteAllowed();
     
     /**
         Answer true if Graph::delete() can be used to remove at least some triples 
         from the graph. If everyTriple is true, any such triple may be removed.
-     */
+    */
     boolean deleteAllowed( boolean everyTriple );
     
     /**
@@ -55,9 +55,16 @@ public interface Capabilities
 
     /**
          Answer true if the find() contract on the associated graph is "safe", ie,
-         can be sued safely by the pretty-printer (we'll tighten up that definition).
+         can be used safely by the pretty-printer (we'll tighten up that definition).
      */
     boolean findContractSafe();
+
+    /**
+        Answer true iff this graph compares literals for equality by value
+        rather than by lexical form (the memory-based graphs do; at present
+        the RDB-graphs do not).
+    */
+    boolean handlesLiteralTyping();
     }
 
 /*

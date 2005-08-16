@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestCapabilities.java,v 1.5 2005-02-21 11:52:37 andy_seaborne Exp $
+  $Id: TestCapabilities.java,v 1.6 2005-08-16 13:55:50 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -18,44 +18,31 @@ public class TestCapabilities extends GraphTestBase
     protected final class AllFalse implements Capabilities
         {
         public boolean sizeAccurate()
-            {
-            return false;
-            }
+            { return false; }
 
         public boolean addAllowed()
-            {
-            return false;
-            }
+            { return false; }
 
         public boolean addAllowed( boolean everyTriple )
-            {
-            return false;
-            }
+            { return false; }
 
         public boolean deleteAllowed()
-            {
-            return false;
-            }
+            { return false; }
 
         public boolean deleteAllowed( boolean everyTriple )
-            {
-            return false;
-            }
+            { return false; }
 
         public boolean iteratorRemoveAllowed()
-            {
-            return false;
-            }
+            { return false; }
 
         public boolean canBeEmpty()
-            {
-            return false;
-            }
+            { return false; }
 
         public boolean findContractSafe()
-            {
-            return false;
-            }
+            { return false; }
+
+        public boolean handlesLiteralTyping()
+            { return false; }
         }
 
     public TestCapabilities( String name )
@@ -90,6 +77,7 @@ public class TestCapabilities extends GraphTestBase
         b = c.sizeAccurate();
         b = c.iteratorRemoveAllowed();
         b = c.findContractSafe();
+        b = c.handlesLiteralTyping();
         }
     }
 

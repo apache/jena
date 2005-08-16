@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AllCapabilities.java,v 1.6 2005-02-21 11:52:08 andy_seaborne Exp $
+  $Id: AllCapabilities.java,v 1.7 2005-08-16 13:55:48 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -25,6 +25,7 @@ public class AllCapabilities implements Capabilities
     public boolean canBeEmpty() { return true; }
     public boolean iteratorRemoveAllowed() { return true; }
     public boolean findContractSafe() { return true; }
+    public boolean handlesLiteralTyping() { return true; }
     }
 
 /*
