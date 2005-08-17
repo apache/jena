@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegression.java,v 1.2 2005-08-17 09:48:55 chris-dollin Exp $
+ 	$Id: NewRegression.java,v 1.3 2005-08-17 10:56:23 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -24,6 +24,7 @@ public class NewRegression extends ModelTestBase
         TestSuite result = new TestSuite( NewRegression.class ); 
         result.addTest( NewRegressionLiterals.suite() );
         result.addTest( NewRegressionResources.suite() );
+        result.addTest( NewRegressionStatements.suite() );
         return result;
         }
     
@@ -33,178 +34,6 @@ public class NewRegression extends ModelTestBase
 
     }
 
-//
-//            {
-//                String subjURI = "http://aldabaran.hpl.hp.com/foo";
-//                String predURI = "http://aldabaran.hpl.hp.com/bar";
-//                Resource r = m.createResource(subjURI);
-//                Property p = m.createProperty(predURI);
-//                Statement s;
-//
-//                n = 300;
-//
-//                try {
-//                    boolean tv = true;
-//                    n=310;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! s.getBoolean()) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    byte tv = Byte.MAX_VALUE;
-//                    n=320;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! (s.getByte()==tv)) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    short tv = Short.MAX_VALUE;
-//                    n=330;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! (s.getShort()== tv)) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    int tv = Integer.MAX_VALUE;
-//                    n=340;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! (s.getInt()==tv)) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    long tv = Long.MAX_VALUE;
-//                    n=350;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! (s.getLong()==tv)) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    char tv = '$';
-//                    n=360;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! (s.getChar()==tv)) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    float tv = (float) 123.456;
-//                    n=370;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! ((s.getFloat()-tv) < 0.0005)) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    double tv = 12345.67890;
-//                    n=380;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! ((s.getDouble()-tv) < 0.0000005)) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    String tv = "this is a test string";
-//                    String lang = "en";
-//                    n=390;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! s.getString().equals(tv)) error(test,n);
-//                  //  n++; if (! s.getLiteral().equals(tv)) error(test,n);
-//                    n++; s = m.createStatement(r,p,tv,lang);
-//                    n++; if (! s.getLanguage().equals(lang)) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    LitTestObj tv = new LitTestObj(Long.MIN_VALUE);
-//                    String lang = "fr";
-//                    n=400;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                            error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                             error(test,n);
-//                    n++; if (! s.getObject(new LitTestObjF()).equals(tv))
-//                              error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    Resource tv = m.createResource();
-//                    n=410;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! s.getResource().equals(tv)) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    Literal tv = m.createLiteral(true);
-//                    n=420;
-//                    n++; s = m.createStatement(r, p, tv);
-//                    n++; if (! s.getSubject().getURI().equals(subjURI))
-//                    error(test,n);
-//                    n++; if (! s.getPredicate().getURI().equals(predURI))
-//                    error(test,n);
-//                    n++; if (! s.getBoolean()) error(test,n);
-//                } catch (Exception e) {
-//                    error(test, n, e);
-//                }
-//            }
 //
 //            {
 //                // test container creation
