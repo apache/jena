@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegression.java,v 1.1 2005-08-12 15:24:46 chris-dollin Exp $
+ 	$Id: NewRegression.java,v 1.2 2005-08-17 09:48:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -10,6 +10,9 @@ import junit.framework.TestSuite;
 
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
+import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.regression.Regression.*;
+import com.hp.hpl.jena.shared.InvalidPropertyURIException;
 
 public class NewRegression extends ModelTestBase
     {
@@ -20,133 +23,16 @@ public class NewRegression extends ModelTestBase
         { 
         TestSuite result = new TestSuite( NewRegression.class ); 
         result.addTest( NewRegressionLiterals.suite() );
+        result.addTest( NewRegressionResources.suite() );
         return result;
         }
     
     public void testNothing()
         {}
 
-    protected Model getModel()
-        { return ModelFactory.createDefaultModel(); }
-    
-    public void testCreateAnonResource()
-        {
-        Model m = getModel();
-        Resource r = m.createResource();
-        assertTrue( r.isAnon() );
-        assertNull( r.getURI() );
-        assertNull( r.getNameSpace() );
-        assertNull( r.getLocalName() );
-        }
 
     }
 
-//            {
-//                Resource r;
-//                n = 100;
-//
-//
-//                try {
-//                    n = 120;
-//                    n++; r = m.createResource((String) null);
-//                    n++; if (! r.isAnon()) error(test, n);
-//                    n++; if (!  (r.getURI() == null)) error(test, n);
-//                } catch (JenaException e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    n = 140;
-//                    uri = "http://aldabaran.hpl.hp.com/foo";
-//                    n++; r = m.createResource(uri);
-//                    n++; if (! r.getURI().equals(uri)) error(test, n);
-//                } catch (JenaException e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    n = 150;
-//                    n++; r = m.createResource(RDF.Property);
-//                    n++; if (! r.isAnon()) error(test, n);
-//                } catch (JenaException e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    n = 160;
-//                    uri = "http://aldabaran.hpl.hp.com/foo";
-//                    n++; r = m.createResource(uri, RDF.Property);
-//                    n++; if (! r.getURI().equals(uri)) error(test, n);
-//                } catch (JenaException e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    n = 170;
-//                    n++; r = m.createResource(new ResTestObjF());
-//                    n++; if (! r.isAnon()) error(test, n);
-//                } catch (JenaException e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    n = 180;
-//                    uri = "http://aldabaran.hpl.hp.com/foo";
-//                    n++; r = m.createResource(uri, new ResTestObjF());
-//                    n++; if (! r.getURI().equals(uri)) error(test, n);
-//                } catch (JenaException e) {
-//                    error(test, n, e);
-//                }
-//            }
-//
-//            {
-//                Property p;
-//                n = 200;
-//
-//                try {
-//                    n++; p = m.createProperty(null); error(test, n);
-//                } catch (InvalidPropertyURIException jx) {
-//                    // as expected.
-//
-//                }
-//
-//                try {
-//                    n++; p = m.createProperty("abc/def");
-//                    n++; if (! p.getNameSpace().equals("abc/")) error(test, n);
-//                    n++; if (! p.getLocalName().equals("def")) error(test, n);
-//                    n++; if (! p.getURI().equals("abc/def")) error(test,n);
-//                } catch (JenaException e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    n++; p = m.createProperty("abc/", "def");
-//                    n++; if (! p.getNameSpace().equals("abc/")) error(test, n);
-//                    n++; if (! p.getLocalName().equals("def")) error(test, n);
-//                    n++; if (! p.getURI().equals("abc/def")) error(test,n);
-//                } catch (JenaException e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    n++; p = m.createProperty(RDF.getURI() + "_345");
-//                    n++; if (! p.getNameSpace().equals(RDF.getURI())) error(test, n);
-//                    n++; if (! p.getLocalName().equals("_345")) error(test, n);
-//                    n++; if (! p.getURI().equals(RDF.getURI() + "_345")) error(test,n);
-//                } catch (JenaException e) {
-//                    error(test, n, e);
-//                }
-//
-//                try {
-//                    n++; p = m.createProperty(RDF.getURI(), "_345");
-//                    n++; if (! p.getNameSpace().equals(RDF.getURI())) error(test, n);
-//                    n++; if (! p.getLocalName().equals("_345")) error(test, n);
-//                    n++; if (! p.getURI().equals(RDF.getURI() + "_345")) error(test,n);
-//                } catch (JenaException e) {
-//                    error(test, n, e);
-//                }
-//
-//            }
 //
 //            {
 //                String subjURI = "http://aldabaran.hpl.hp.com/foo";
