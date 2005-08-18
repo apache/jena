@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionGet.java,v 1.1 2005-08-17 14:02:16 chris-dollin Exp $
+ 	$Id: NewRegressionGet.java,v 1.2 2005-08-18 09:45:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -20,7 +20,6 @@ public class NewRegressionGet extends ModelTestBase
 
     public static TestSuite suite()
         { return new TestSuite( NewRegressionGet.class ); }
-
 
     protected Model getModel()
         { return ModelFactory.createDefaultModel(); }
