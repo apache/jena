@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionListSubjects.java,v 1.1 2005-08-18 09:45:49 chris-dollin Exp $
+ 	$Id: NewRegressionListSubjects.java,v 1.2 2005-08-18 15:03:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -42,19 +42,19 @@ public class NewRegressionListSubjects extends ModelTestBase
     
     static final String predicatePrefix = "http://aldabaran/test8/";
     
-    Resource [] subject;
-    Property [] predicate;  
-    RDFNode []  object;
-    Literal []  tvLitObj;
-    Resource [] tvResObj;
+    Resource [] subjects;
+    Property [] predicates;  
+    RDFNode []  objects;
+    Literal []  tvLitObjs;
+    Resource [] tvResObjs;
     
-    boolean [] tvBoolean = { false, true };
-    long []    tvLong    = { 123, 321 };
-    char []    tvChar    = { '@', ';' };
-    float []   tvFloat   = { 456.789f, 789.456f };
-    double []  tvDouble  = { 123.456, 456.123 };
-    String []  tvString  = { "test8 testing string 1", "test8 testing string 2" };
-    String []  lang      = { "en", "fr" };
+    boolean [] tvBooleans = { false, true };
+    long []    tvLongs    = { 123, 321 };
+    char []    tvChars    = { '@', ';' };
+    float []   tvFloats   = { 456.789f, 789.456f };
+    double []  tvDoubles  = { 123.456, 456.123 };
+    String []  tvStrings  = { "test8 testing string 1", "test8 testing string 2" };
+    String []  langs     = { "en", "fr" };
     
     protected Set subjectsTo( String prefix, int limit )
         {
@@ -65,63 +65,63 @@ public class NewRegressionListSubjects extends ModelTestBase
     
     public void test8()  
         {
-        assertEquiv( subjectsTo( subjectPrefix, 5 ), m.listSubjectsWithProperty( predicate[4] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 5 ), m.listSubjectsWithProperty( predicates[4] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0] ) );
         
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], tvBoolean[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvBooleans[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], tvBoolean[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvBooleans[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], (byte) tvLong[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], (byte) tvLongs[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], (byte) tvLong[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], (byte) tvLongs[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], (short) tvLong[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], (short) tvLongs[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], (short) tvLong[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], (short) tvLongs[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], (int) tvLong[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], (int) tvLongs[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], (int) tvLong[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], (int) tvLongs[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], (long) tvLong[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], (long) tvLongs[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], (long) tvLong[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], (long) tvLongs[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], tvChar[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvChars[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], tvChar[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvChars[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], tvFloat[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvFloats[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], tvFloat[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvFloats[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], tvDouble[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvDoubles[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], tvDouble[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvDoubles[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], tvString[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvStrings[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], tvString[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvStrings[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], tvString[0], lang[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvStrings[0], langs[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], tvString[1], lang[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvStrings[1], langs[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], tvString[0], lang[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvStrings[0], langs[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], tvString[1], lang[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvStrings[1], langs[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], tvLitObj[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvLitObjs[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], tvLitObj[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvLitObjs[1] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicate[0], tvResObj[0] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 2 ), m.listSubjectsWithProperty( predicates[0], tvResObjs[0] ) );
 
-        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicate[0], tvResObj[1] ) );
+        assertEquiv( subjectsTo( subjectPrefix, 0 ), m.listSubjectsWithProperty( predicates[0], tvResObjs[1] ) );
 
-        assertEquiv( new HashSet( Arrays.asList( object ) ), m.listObjectsOfProperty( predicate[1] ) );
+        assertEquiv( new HashSet( Arrays.asList( objects ) ), m.listObjectsOfProperty( predicates[1] ) );
         }
 
     protected void assertEquiv( Set set, Iterator iterator )
@@ -133,8 +133,8 @@ public class NewRegressionListSubjects extends ModelTestBase
 
     public void testGetRequiredProperty()
         {
-        Statement s = m.getRequiredProperty( subject[1], predicate[1] );
-        try { m.getRequiredProperty( subject[1], RDF.value ); 
+        Statement s = m.getRequiredProperty( subjects[1], predicates[1] );
+        try { m.getRequiredProperty( subjects[1], RDF.value ); 
             fail( "should not find absent property" ); } 
         catch (PropertyNotFoundException e) 
             { pass(); }
@@ -143,52 +143,52 @@ public class NewRegressionListSubjects extends ModelTestBase
     protected void fillModel(  )
         {
         final int num = 5;
-        tvLitObj = new Literal[] 
+        tvLitObjs = new Literal[] 
             { m.createLiteral( new LitTestObjF() ),
             m.createLiteral( new LitTestObjF() ) };
         
-        tvResObj  = new Resource[] 
+        tvResObjs  = new Resource[] 
             { m.createResource( new ResTestObjF() ),
             m.createResource( new ResTestObjF() ) };
         
-        object = new RDFNode[]
+        objects = new RDFNode[]
             {
-            m.createLiteral( tvBoolean[1] ),
-            m.createLiteral( tvLong[1] ),
-            m.createLiteral( tvChar[1] ),
-            m.createLiteral( tvFloat[1] ),
-            m.createLiteral( tvDouble[1] ),
-            m.createLiteral( tvString[1] ),
-            m.createLiteral( tvString[1], lang[1] ),
-            tvLitObj[1],
-            tvResObj[1]                  
+            m.createLiteral( tvBooleans[1] ),
+            m.createLiteral( tvLongs[1] ),
+            m.createLiteral( tvChars[1] ),
+            m.createLiteral( tvFloats[1] ),
+            m.createLiteral( tvDoubles[1] ),
+            m.createLiteral( tvStrings[1] ),
+            m.createLiteral( tvStrings[1], langs[1] ),
+            tvLitObjs[1],
+            tvResObjs[1]                  
             };
 
-        subject = new Resource[num];
-        predicate = new Property[num];
+        subjects = new Resource[num];
+        predicates = new Property[num];
         
         for (int i = 0; i<num; i++) 
             {
-            subject[i] = m.createResource( subjectPrefix + i );
-            predicate[i] = m.createProperty( predicatePrefix + i, "p");
+            subjects[i] = m.createResource( subjectPrefix + i );
+            predicates[i] = m.createProperty( predicatePrefix + i, "p");
             }
         
         for (int i = 0; i < num; i += 1) 
-            m.add(subject[i], predicate[4], false );
+            m.add(subjects[i], predicates[4], false );
         
         for (int i = 0; i < 2 ; i += 1) 
             {
             for (int j = 0; j < 2; j += 1) 
                 {
-                m.add(subject[i], predicate[j], tvBoolean[j] );
-                m.add(subject[i], predicate[j], tvLong[j] );
-                m.add(subject[i], predicate[j], tvChar[j] );
-                m.add(subject[i], predicate[j], tvFloat[j] );
-                m.add(subject[i], predicate[j], tvDouble[j] );
-                m.add(subject[i], predicate[j], tvString[j] );
-                m.add(subject[i], predicate[j], tvString[j], lang[j] );
-                m.add(subject[i], predicate[j], tvLitObj[j] );
-                m.add(subject[i], predicate[j], tvResObj[j] );
+                m.add(subjects[i], predicates[j], tvBooleans[j] );
+                m.add(subjects[i], predicates[j], tvLongs[j] );
+                m.add(subjects[i], predicates[j], tvChars[j] );
+                m.add(subjects[i], predicates[j], tvFloats[j] );
+                m.add(subjects[i], predicates[j], tvDoubles[j] );
+                m.add(subjects[i], predicates[j], tvStrings[j] );
+                m.add(subjects[i], predicates[j], tvStrings[j], langs[j] );
+                m.add(subjects[i], predicates[j], tvLitObjs[j] );
+                m.add(subjects[i], predicates[j], tvResObjs[j] );
                 }
             }
         }

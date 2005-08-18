@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NewRegressionAddAndContains.java,v 1.1 2005-08-17 14:02:16 chris-dollin Exp $
+ 	$Id: NewRegressionAddAndContains.java,v 1.2 2005-08-18 15:03:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.regression;
@@ -9,11 +9,10 @@ package com.hp.hpl.jena.regression;
 import junit.framework.*;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
 import com.hp.hpl.jena.regression.Regression.LitTestObj;
 import com.hp.hpl.jena.vocabulary.RDF;
 
-public class NewRegressionAddAndContains extends ModelTestBase
+public class NewRegressionAddAndContains extends NewRegressionBase
     {
     public NewRegressionAddAndContains( String name )
         { super( name ); }
@@ -40,15 +39,15 @@ public class NewRegressionAddAndContains extends ModelTestBase
     
     public void testEmpty() 
         {
-        assertFalse( m.contains( S, P, true ) );
+        assertFalse( m.contains( S, P, tvBoolean ) );
         assertFalse( m.contains( S, P, m.createResource() ) );
-        assertFalse( m.contains( S, P, (byte) 1 ) );
-        assertFalse( m.contains( S, P, (short) 2 ) );
-        assertFalse( m.contains( S, P, (int) -1 ) );
-        assertFalse( m.contains( S, P, (long) -2 ) );
-        assertFalse( m.contains( S, P, '!' ) );
-        assertFalse( m.contains( S, P, 123.456f ) );
-        assertFalse( m.contains( S, P, 12345.67890 ) );
+        assertFalse( m.contains( S, P, tvByte ) );
+        assertFalse( m.contains( S, P, tvShort ) );
+        assertFalse( m.contains( S, P, tvInt ) );
+        assertFalse( m.contains( S, P, tvLong ) );
+        assertFalse( m.contains( S, P, tvChar ) );
+        assertFalse( m.contains( S, P, tvFloat ) );
+        assertFalse( m.contains( S, P, tvDouble ) );
         assertFalse( m.contains( S, P, new LitTestObj( 12345 ) ) );
         assertFalse( m.contains( S, P, "test string" ) );
         assertFalse( m.contains( S, P, "test string", "en" ) );
@@ -63,50 +62,50 @@ public class NewRegressionAddAndContains extends ModelTestBase
     
     public void testAddContainsBoolean()
         {
-        m.add( S, P, true );
-        assertTrue( m.contains( S, P, true ) );
+        m.add( S, P, tvBoolean );
+        assertTrue( m.contains( S, P, tvBoolean ) );
         }
     
     public void testAddContainsByte()
         {
-        m.add( S, P, (byte) 1 );
-        assertTrue( m.contains( S, P, (byte) 1 ) );
+        m.add( S, P, tvByte );
+        assertTrue( m.contains( S, P, tvByte ) );
         }
     
     public void testAddContainsShort()
         {
-        m.add( S, P, (short) 2 );
-        assertTrue( m.contains( S, P, (short) 2 ) );
+        m.add( S, P, tvShort );
+        assertTrue( m.contains( S, P, tvShort ) );
         }    
     
     public void testAddContainsInt()
         {
-        m.add( S, P, -1 );
-        assertTrue( m.contains( S, P, -1 ) );
+        m.add( S, P, tvInt );
+        assertTrue( m.contains( S, P, tvInt ) );
         }
     
     public void testAddContainsLong()
         {
-        m.add( S, P, (long) -2 );
-        assertTrue( m.contains( S, P, (long) -2 ) );
+        m.add( S, P, tvLong );
+        assertTrue( m.contains( S, P, tvLong ) );
         }
     
     public void testAddContainsChar()
         {
-        m.add( S, P, '!' );
-        assertTrue( m.contains( S, P, '!' ) );
+        m.add( S, P, tvChar );
+        assertTrue( m.contains( S, P, tvChar ) );
         }
     
     public void testAddContainsFloat()
         {
-        m.add( S, P, 123.456f );
-        assertTrue( m.contains( S, P, 123.456f ) );
+        m.add( S, P, tvFloat );
+        assertTrue( m.contains( S, P, tvFloat ) );
         }
     
     public void testAddContainsDouble()
         {
-        m.add( S, P, 12345.67890 );
-        assertTrue( m.contains( S, P, 12345.67890 ) );
+        m.add( S, P, tvDouble );
+        assertTrue( m.contains( S, P, tvDouble ) );
         }
 
     public void testAddContainsObject()
