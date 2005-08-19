@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.6 2005-07-27 16:15:07 chris-dollin Exp $
+    $Id: PatternStageBase.java,v 1.7 2005-08-19 15:07:27 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -11,7 +11,14 @@ import com.hp.hpl.jena.graph.Triple;
 /**
     PatternStageBase contains the features that are common to the 
     traditional PatternStage engine and the Faster engine. (Eventually
-    the two will merge back together.)
+    the two will merge back together.) Notable, it:
+    
+    <ul>
+    <li>remembers the graph 
+    <li>classifies all the triples according to the factory
+    <li>constructs the array of applicable guards
+    </ul>
+    
     @author hedgehog
 */
 public abstract class PatternStageBase extends Stage
@@ -47,7 +54,7 @@ public abstract class PatternStageBase extends Stage
         return result;
         }
 
-    protected StageElement makeStageElementChain(Pipe sink, int index)
+    protected StageElement makeStageElementChain( Pipe sink, int index )
         {
         if (index == classified.length)
             return new StageElement.PutBindings( sink );
