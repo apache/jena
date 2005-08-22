@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.48 2005-08-03 13:06:34 chris-dollin Exp $
+ * $Id: TestTypedLiterals.java,v 1.49 2005-08-22 15:08:13 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.48 $ on $Date: 2005-08-03 13:06:34 $
+ * @version $Revision: 1.49 $ on $Date: 2005-08-22 15:08:13 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -106,6 +106,11 @@ public class TestTypedLiterals extends TestCase {
         }
         JenaParameters.enableSilentAcceptanceOfUnknownDatatypes = originalFlag;
         assertTrue("Detected unknown datatype", foundException);
+        
+        // Check we can create a literal of an unregistered java type without anything blowing up
+        Object foo = new java.sql.Date(123456l);
+        LiteralLabel ll = new LiteralLabel(foo);
+        assertEquals(ll.getLexicalForm(), foo.toString());
     }
     
     /**
