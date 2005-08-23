@@ -117,20 +117,22 @@ public class TestModelSpecMore extends ModelTestBase
             }
     
         protected Model doCreateModel()
-            {
-            
+            {            
             return null;
             }
     
         public Model createModelOver( String name )
-            {
-            
+            {            
             return null;
             }
     
         public Property getMakerProperty()
+            {            
+            return null;
+            }
+
+        public Model implementCreateModelOver(String name)
             {
-            
             return null;
             }
         }

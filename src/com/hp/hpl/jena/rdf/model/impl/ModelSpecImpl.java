@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: ModelSpecImpl.java,v 1.54 2005-08-02 10:07:44 chris-dollin Exp $
+  $Id: ModelSpecImpl.java,v 1.55 2005-08-23 19:42:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -84,7 +84,7 @@ public abstract class ModelSpecImpl implements ModelSpec
     protected Model makeDefaultModel()
         {
         Statement s = root.getProperty( JenaModelSpec.modelName );
-        return s == null ? maker.createFreshModel() : maker.createModel( s.getString() );
+        return loadFiles( s == null ? maker.createFreshModel() : maker.createModel( s.getString() ) );
         }
     /**
         Answer a Model created according to this ModelSpec and based on an underlying
@@ -92,7 +92,10 @@ public abstract class ModelSpecImpl implements ModelSpec
          
      	@see com.hp.hpl.jena.rdf.model.ModelSpec#createModelOver(java.lang.String)
      */
-    public abstract Model createModelOver( String name );
+    public Model createModelOver( String name )
+        { return loadFiles( implementCreateModelOver( name ) ); }
+    
+    public abstract Model implementCreateModelOver( String name );
     
     /**
         Answer the JenaModelSpec subproperty of JenaModelSpec.maker that describes the relationship 
@@ -107,12 +110,12 @@ public abstract class ModelSpecImpl implements ModelSpec
         the sibling Maker.
     */
     public Model openModel( String name )
-        { return maker.openModel( name ); }
+        { return loadFiles( maker.openModel( name ) ); }
     
     public Model openModel()
         {
         Statement s = root.getProperty( JenaModelSpec.modelName );
-        return s == null ? maker.openModel() : maker.openModel( s.getString(), true );
+        return loadFiles( s == null ? maker.openModel() : maker.openModel( s.getString(), true ) );
         }
     
     /**
@@ -120,7 +123,7 @@ public abstract class ModelSpecImpl implements ModelSpec
         null otherwise.
     */
     public Model openModelIfPresent( String name )
-        { return maker.hasModel( name ) ? maker.openModel( name ) : null; }
+        { return maker.hasModel( name ) ? loadFiles( maker.openModel( name ) ) : null; }
         
     public static Resource getMaker( Resource root, Model desc )
         {
@@ -228,9 +231,13 @@ public abstract class ModelSpecImpl implements ModelSpec
     protected Model loadFiles( Model m )
         {
         StmtIterator it = description.listStatements( root, JenaModelSpec.loadWith, (RDFNode) null );
-        while (it.hasNext()) FileManager.get().readModel( m, it.nextStatement().getResource().getURI() );
+        while (it.hasNext()) loadFile( m, it.nextStatement().getResource() );
         return m;
         }
+
+    protected Model loadFile( Model m, Resource file )
+        { FileManager.get().readModel( m, file.getURI() ); 
+        return m; }
     
     /**
         @deprecated 

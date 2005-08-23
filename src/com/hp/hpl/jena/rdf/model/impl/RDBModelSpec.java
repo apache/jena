@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: RDBModelSpec.java,v 1.1 2005-08-01 08:25:38 chris-dollin Exp $
+ 	$Id: RDBModelSpec.java,v 1.2 2005-08-23 19:42:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -20,12 +20,11 @@ public class RDBModelSpec extends ModelSpecImpl
     protected Model doCreateModel()
         { throw new BrokenException( "doCreateModel not implemented" ); }
 
-    public Model createModelOver( String name )
+    public Model implementCreateModelOver( String name )
         { return maker.createModel( name ); }
 
     public Property getMakerProperty()
         { throw new BrokenException( "getMakerProperty not implemented" ); }
-
     }
 
 

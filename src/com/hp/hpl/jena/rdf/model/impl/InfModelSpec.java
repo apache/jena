@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: InfModelSpec.java,v 1.19 2005-05-26 10:15:55 chris-dollin Exp $
+  $Id: InfModelSpec.java,v 1.20 2005-08-23 19:42:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -57,7 +57,7 @@ public class InfModelSpec extends ModelSpecImpl
         Answer a new InfModel based over the graph named in the underlying ModelMaker. 
      	@see com.hp.hpl.jena.rdf.model.ModelSpec#createModelOver(java.lang.String)
      */
-    public Model createModelOver( String name )
+    public Model implementCreateModelOver( String name )
         { return createModel( maker.getGraphMaker().createGraph( name ) ); }
         
     /**

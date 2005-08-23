@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: PlainModelSpec.java,v 1.14 2005-07-29 16:08:07 chris-dollin Exp $
+  $Id: PlainModelSpec.java,v 1.15 2005-08-23 19:42:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.impl;
@@ -50,7 +50,7 @@ public class PlainModelSpec extends ModelSpecImpl implements ModelSpec
         
      	@see com.hp.hpl.jena.rdf.model.ModelSpec#createModelOver(java.lang.String)
      */
-    public Model createModelOver( String name )
+    public Model implementCreateModelOver( String name )
         { return maker.openModel( name, false ); }
 
     /**

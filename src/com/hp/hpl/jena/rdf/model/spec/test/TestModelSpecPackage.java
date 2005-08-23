@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: TestModelSpecPackage.java,v 1.1 2005-08-01 12:43:51 chris-dollin Exp $
+ 	$Id: TestModelSpecPackage.java,v 1.2 2005-08-23 19:42:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.spec.test;
@@ -20,6 +20,7 @@ public class TestModelSpecPackage extends TestCase
         result.addTest( TestModelSpecsWithRuleSets.suite() );
         result.addTest( TestModelSpecFactory.suite() );
         result.addTest( TestModelSource.suite() );
+        result.addTest( TestModelSpecImplLoadFiles.suite() );
         return result;
         }
     }
