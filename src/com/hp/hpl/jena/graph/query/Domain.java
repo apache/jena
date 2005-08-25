@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Domain.java,v 1.11 2005-07-08 14:30:26 chris-dollin Exp $
+  $Id: Domain.java,v 1.12 2005-08-25 10:14:13 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -55,7 +55,9 @@ public final class Domain extends AbstractList implements IndexValues
         
     public boolean equals( Object x )
         {
-        return x instanceof Domain && Arrays.equals( this.value, ((Domain) x).value );
+        return 
+            x instanceof Domain && Arrays.equals( this.value, ((Domain) x).value )
+            || super.equals( x );
         }
 		
 	public String toString()

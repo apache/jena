@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.39 2005-08-16 13:55:49 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.40 2005-08-25 10:14:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -39,7 +39,7 @@ public abstract class AbstractTestQuery extends QueryTestBase
     
     public static TestSuite suite()
         { return new TestSuite( QueryTest.class ); }
-        
+              
     public Graph getGraphWith( String facts )
         { return graphAdd( getGraph(), facts ); }
         
@@ -98,93 +98,47 @@ public abstract class AbstractTestQuery extends QueryTestBase
         Graph empty = getGraph();
         Query q = new Query().addMatch( X, Y, Z );
         BindingQueryPlan bqp = empty.queryHandler().prepareBindings( q, justX );
-        try
-            {
-            bqp.executeBindings().next();
-            fail( "there are no bindings; next() should fail" );    
-            }    
-        catch (NoSuchElementException e)
-            { pass(); }
+        assertEquals( new HashSet(), iteratorToSet( bqp.executeBindings() ) );
         }
         
-    public void testBinding1( )
+    public void testSingleBindings( )
         {
         Graph single = getGraphWith( "rice grows quickly" );
-        Query q = new Query();
         Node V1 = node( "?v1" ), V3 = node( "?v3" );
-        BindingQueryPlan qp = single.queryHandler().prepareBindings( q.addMatch( V1, node("grows"), V3 ), new Node[] {V1, V3} );
-        Domain binding = (Domain) qp.executeBindings().next();
-        assertEquals( "binding subject to rice", binding.get(0), node("rice") ); 
-        assertEquals( "binding object to quickly", binding.get(1), node("quickly") ); 
+        Query q = new Query().addMatch( V1, node( "grows" ), V3 );
+        BindingQueryPlan qp = single.queryHandler().prepareBindings( q, new Node[] {V1, V3} );
+        assertEquals( nodeListSet( "rice quickly" ), iteratorToSet( qp.executeBindings() ) );
         }
 
-	public void testBinding2() { 
-		Graph several = getGraphWith("rice grows quickly; time isan illusion");
-		String[][] answers = { { "time", "isan", "illusion" }, {
-				"rice", "grows", "quickly" }
-		};
-		boolean[] found = { false, false };
-		Query q = new Query();
-		Node V1 = node("?v1"), V2 = node("?v2"), V3 = node("?v3");
-		BindingQueryPlan qp =
-			several.queryHandler().prepareBindings(
-				q.addMatch(V1, V2, V3),
-				new Node[] { V1, V2, V3 });
-		Iterator bindings = qp.executeBindings();
-		for (int i = 0; i < answers.length; i += 1) {
-			if (bindings.hasNext() == false)
-				fail("wanted some more results");
-			Domain bound = (Domain) bindings.next();
-			for (int k = 0; k < answers.length; k++) {
-				if (found[k])
-					continue;
-				boolean match = true;
-				for (int j = 0; j < 3; j += 1) {
-					if (!bound.get(j).equals(node(answers[k][j]))) {
-						match = false;
-						break;
-					}
-				}
-				if (match) {
-					found[k] = true;
-					break;
-				}
-			}
-		}
-		for (int k = 0; k < answers.length; k++) {
-			if (!found[k])
-				assertTrue("binding failure", false);
-		}
-		assertFalse("iterator should be empty", bindings.hasNext());
-	}
+	public void testMultipleBindings() 
+        { 
+		Graph several = getGraphWith( "rice grows quickly; time isan illusion" );
+		Node V1 = node( "?v1" ), V2 = node( "?v2" ), V3 = node( "?v3" );
+		Query q = new Query().addMatch( V1, V2, V3 );
+		BindingQueryPlan qp = several.queryHandler().prepareBindings
+            ( q, new Node[] { V1, V2, V3 } );
+        Set wanted = nodeListSet( "time isan illusion; rice grows quickly" );
+        assertEquals( wanted, iteratorToSet( qp.executeBindings() ) );
+        }
 
-
+    protected static Set nodeListSet( String s )
+        {
+        Set result = new HashSet();
+        StringTokenizer st = new StringTokenizer( s, ";" );
+        while (st.hasMoreTokens()) result.add( nodeList( st.nextToken() ) );
+        return result;
+        }
+    
     public void testMultiplePatterns()
         {
-        Graph bookish = getGraphWith( "ben wrote Clayface; Starfish ingenre SF; Clayface ingenre Geology; bill wrote Starfish" );
+        Graph bookish = getGraphWith
+            ( "ben wrote Clayface; Starfish ingenre SF; Clayface ingenre Geology; bill wrote Starfish" );
         Query q = new Query();
         Node A = node( "?A" ); 
-        q.addMatch(  X, node("wrote"), A ).addMatch(  A, node("ingenre"), node("SF") );
+        q.addMatch( X, node( "wrote" ), A ).addMatch(  A, node( "ingenre" ), node( "SF" ) );
         BindingQueryPlan qp = bookish.queryHandler().prepareBindings( q, justX );
-        Iterator bindings = qp.executeBindings();
-        if (bindings.hasNext())
-            {
-            Domain it = (Domain) bindings.next();
-            if (it.size() > 0)
-                {
-                if (it.get(0).equals( node("bill") ))
-                    {
-                    if (bindings.hasNext())
-                        System.out.println( "! failed: more than one multiple pattern answer: " + bindings.next() );
-                    }
-                else
-                    System.out.println( "! failed: multiple pattern answer should be 'bill'" );
-                }
-            else
-                System.out.println( "! failed: multiple pattern answer should have one element" );
-            }
-        else
-            System.out.println( "! failed: multiple pattern query should have an answer" );
+        Set justBill = nodeListSet( "bill Starfish" );
+        assertEquals( justBill, iteratorToSet( qp.executeBindings() ) );
         }
     
     /**

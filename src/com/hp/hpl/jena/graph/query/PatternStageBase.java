@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
     [See end of file]
-    $Id: PatternStageBase.java,v 1.7 2005-08-19 15:07:27 chris-dollin Exp $
+    $Id: PatternStageBase.java,v 1.8 2005-08-25 10:14:13 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -69,6 +69,7 @@ public abstract class PatternStageBase extends Stage
         }
 
     }
+
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved.
