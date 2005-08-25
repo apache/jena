@@ -1,18 +1,17 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFasterQueryHandler.java,v 1.2 2005-07-04 14:22:51 chris-dollin Exp $
+ 	$Id: GraphMemFasterQueryHandler.java,v 1.3 2005-08-25 19:13:59 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.graph.query.QueryHandler;
+import com.hp.hpl.jena.mem.GraphMemBaseQueryHandler;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 
-public class GraphMemFasterQueryHandler extends SimpleQueryHandler implements QueryHandler
+public class GraphMemFasterQueryHandler extends GraphMemBaseQueryHandler implements QueryHandler
     {
     protected GraphMemFaster graphMem;
     

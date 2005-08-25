@@ -1,7 +1,7 @@
 /*
 (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 [See end of file]
-$Id: GraphMemQueryHandler.java,v 1.7 2005-06-28 13:54:40 chris-dollin Exp $
+$Id: GraphMemQueryHandler.java,v 1.8 2005-08-25 19:13:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -17,7 +17,7 @@ import com.hp.hpl.jena.util.iterator.*;
    
  	@author hedgehog
 */
-public class GraphMemQueryHandler extends SimpleQueryHandler
+public class GraphMemQueryHandler extends GraphMemBaseQueryHandler
 	{
     protected GraphMem graphMem;
     

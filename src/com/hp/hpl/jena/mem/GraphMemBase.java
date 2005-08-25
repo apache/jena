@@ -1,10 +1,11 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphMemBase.java,v 1.6 2005-08-25 17:57:42 chris-dollin Exp $
+  $Id: GraphMemBase.java,v 1.7 2005-08-25 19:13:54 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
+import com.hp.hpl.jena.graph.BulkUpdateHandler;
 import com.hp.hpl.jena.graph.impl.GraphBase;
 import com.hp.hpl.jena.shared.ReificationStyle;
 
@@ -68,6 +69,12 @@ public abstract class GraphMemBase extends GraphBase
          Remove all triples from this graph; used to implement removeAll.
     */
     public abstract void clear();
+
+    public BulkUpdateHandler getBulkUpdateHandler()
+        {
+        if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );
+        return bulkHandler;
+        }
     }
 
 

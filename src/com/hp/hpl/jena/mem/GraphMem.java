@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.52 2005-07-05 11:21:37 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.53 2005-08-25 19:13:54 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -56,12 +56,6 @@ public class GraphMem extends GraphMemBase implements Graph
         return queryHandler;
         }
         
-    public BulkUpdateHandler getBulkUpdateHandler()
-        {
-        if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );
-        return bulkHandler;
-        }
-
     /**
          Answer an ExtendedIterator over all the triples in this graph that match the
          triple-pattern <code>m</code>. Delegated to the store.
