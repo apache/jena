@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.8 2005-02-21 12:03:46 andy_seaborne Exp $
+  $Id: SmallGraphMem.java,v 1.9 2005-08-25 17:57:42 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -51,16 +51,12 @@ public class SmallGraphMem extends GraphMemBase
     protected void destroy()
         { triples = null; }
     
+    public void clear()
+        { triples.clear(); }
+    
     public BulkUpdateHandler getBulkUpdateHandler()
         {
-        if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this )
-        	{
-            protected void clearComponents()
-        	    {
-        	    SmallGraphMem g = (SmallGraphMem) graph;
-        	    g.triples.clear();
-        	    }
-        	};
+        if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );
         return bulkHandler;
         }
     

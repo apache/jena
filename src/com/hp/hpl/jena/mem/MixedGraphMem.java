@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: MixedGraphMem.java,v 1.10 2005-05-24 10:02:34 chris-dollin Exp $
+  $Id: MixedGraphMem.java,v 1.11 2005-08-25 17:57:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -49,13 +49,12 @@ public class MixedGraphMem extends GraphMemBase implements Graph
         return store.isEmpty();
         }
     
+    public void clear()
+        { store.clear(); }
+    
     public BulkUpdateHandler getBulkUpdateHandler()
         {
-        if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this )
-        	{
-            protected void clearComponents()
-        	    { ((MixedGraphMem) graph).store.clear(); }
-        	};
+        if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );
         return bulkHandler;
         }
     

@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFaster.java,v 1.9 2005-08-10 15:21:06 chris-dollin Exp $
+ 	$Id: GraphMemFaster.java,v 1.10 2005-08-25 17:57:42 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -45,7 +45,7 @@ public class GraphMemFaster extends GraphMemBase
         
     public BulkUpdateHandler getBulkUpdateHandler()
         {
-        if (bulkHandler == null) bulkHandler = new GraphMemFasterBulkUpdateHandler( this );
+        if (bulkHandler == null) bulkHandler = new GraphMemBulkUpdateHandler( this );
         return bulkHandler;
         }
 

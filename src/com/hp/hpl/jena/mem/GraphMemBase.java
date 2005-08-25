@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphMemBase.java,v 1.5 2005-02-21 12:03:45 andy_seaborne Exp $
+  $Id: GraphMemBase.java,v 1.6 2005-08-25 17:57:42 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -63,6 +63,11 @@ public abstract class GraphMemBase extends GraphBase
             super.close();
             }
         }
+    
+    /**
+         Remove all triples from this graph; used to implement removeAll.
+    */
+    public abstract void clear();
     }
 
 
