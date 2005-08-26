@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.11 2005-08-12 13:23:09 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.12 2005-08-26 12:48:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -11,42 +11,14 @@ import java.util.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.mem.NodeToTriplesMapBase;
 import com.hp.hpl.jena.shared.BrokenException;
-import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
 
-public class NodeToTriplesMapFaster
-    {
-    /**
-    The map from nodes to Set(Triple).
-    */
-    protected Map map = CollectionFactory.createHashedMap();
-    
-    protected final Field indexField;
-    protected final Field f2;
-    protected final Field f3;
-    
+public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
+    {    
     public NodeToTriplesMapFaster( Field indexField, Field f2, Field f3 )
-       { this.indexField = indexField; this.f2 = f2; this.f3 = f3; }
-    
-    public Map forTestingOnly_getMap()
-       { return map; }
-    
-    /**
-         The number of triples held in this NTM, maintained incrementally 
-         (because it's a pain to compute from scratch).
-    */
-    private int size = 0;
-    
-    /**
-        The nodes which appear in the index position of the stored triples; useful
-        for eg listSubjects().
-    */
-    public Iterator domain()
-       { return map.keySet().iterator(); }
-    
-    protected final Object getIndexField( Triple t )
-       { return indexField.getField( t ).getIndexingValue(); }
+       { super( indexField, f2, f3 ); }
     
     protected static abstract class Bunch
         {
@@ -204,21 +176,6 @@ public class NodeToTriplesMapFaster
        Bunch s = (Bunch) map.get( o );
        return s == null ? NullIterator.instance : s.iterator();
        }
-    
-    /**
-        Clear this NTM; it will contain no triples.
-    */
-    public void clear() 
-       { map.clear(); size = 0; }
-    
-    public int size()
-       { return size; }
-    
-    public void removedOneViaIterator()
-       { size -= 1; }
-    
-    public boolean isEmpty()
-       { return size == 0; }
     
     /**
         Answer true iff this NTM contains the concrete triple <code>t</code>.

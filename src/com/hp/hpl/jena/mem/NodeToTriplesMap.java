@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.31 2005-08-12 13:23:08 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.32 2005-08-26 12:48:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -18,43 +18,13 @@ import com.hp.hpl.jena.util.iterator.*;
 	Subclasses must override at least one of useXXXInFilter methods.
 	@author kers
 */
-public class NodeToTriplesMap 
-    {
-    /**
-         The map from nodes to Set(Triple).
-    */
-    protected Map map = CollectionFactory.createHashedMap();
-    
-    protected final Field indexField;
-    protected final Field f2;
-    protected final Field f3;
-    
+public class NodeToTriplesMap extends NodeToTriplesMapBase 
+    {    
     public NodeToTriplesMap( Field indexField, Field f2, Field f3 )
-        { this.indexField = indexField; this.f2 = f2; this.f3 = f3; }
-    
-    public Map forTestingOnly_getMap()
-        { return map; }
-    
-    /**
-          The number of triples held in this NTM, maintained incrementally 
-          (because it's a pain to compute from scratch).
-    */
-    private int size = 0;
-    
-    /**
-         The nodes which appear in the index position of the stored triples; useful
-         for eg listSubjects().
-    */
-    public Iterator domain()
-        { return map.keySet().iterator(); }
+        { super( indexField, f2, f3 ); }
 
-    protected final Object getIndexField( Triple t )
-        { return indexField.getField( t ).getIndexingValue(); }
-    
-    /**
-         Add <code>t</code> to this NTM; the node <code>o</code> <i>must</i>
-         be the index node of the triple. Answer <code>true</code> iff the triple
-         was not previously in the set, ie, it really truly has been added. 
+    /** 
+     	@see com.hp.hpl.jena.mem.Temp#add(com.hp.hpl.jena.graph.Triple)
     */
     public boolean add( Triple t ) 
         {
@@ -64,9 +34,8 @@ public class NodeToTriplesMap
         if (s.add( t )) { size += 1; return true; } else return false; 
         }
     
-    /**
-         Remove <code>t</code> from this NTM. Answer <code>true</code> iff the 
-         triple was previously in the set, ie, it really truly has been removed. 
+    /** 
+     	@see com.hp.hpl.jena.mem.Temp#remove(com.hp.hpl.jena.graph.Triple)
     */
     public boolean remove( Triple t )
         { 
@@ -83,9 +52,8 @@ public class NodeToTriplesMap
         	} 
         }
     
-    /**
-         Answer an iterator over all the triples in this NTM which have index node
-         <code>o</code>.
+    /** 
+     	@see com.hp.hpl.jena.mem.Temp#iterator(com.hp.hpl.jena.graph.Node)
     */
     public Iterator iterator( Node o ) 
         {
@@ -93,29 +61,17 @@ public class NodeToTriplesMap
         return s == null ? NullIterator.instance : s.iterator();
         }    
     
+    /** 
+     	@see com.hp.hpl.jena.mem.Temp#iterator(java.lang.Object)
+    */
     public Iterator iterator( Object o )
         {
         Set s = (Set) map.get( o );
         return s == null ? NullIterator.instance : s.iterator();
         }
     
-    /**
-     * Clear this NTM; it will contain no triples.
-     */
-    public void clear() 
-        { map.clear(); size = 0; }
-    
-    public int size()
-        { return size; }
-    
-    public void removedOneViaIterator()
-        { size -= 1; }
-    
-    public boolean isEmpty()
-        { return size == 0; }
-    
-    /**
-         Answer true iff this NTM contains the concrete triple <code>t</code>.
+    /** 
+     	@see com.hp.hpl.jena.mem.Temp#contains(com.hp.hpl.jena.graph.Triple)
     */
     public boolean contains( Triple t )
         { 
@@ -123,10 +79,8 @@ public class NodeToTriplesMap
         return s == null ? false : s.contains( t );
         }
     
-    /**
-         Answer an iterator over all the triples in this NTM which match
-         <code>pattern</code>. The index field of this NTM is guaranteed
-         concrete in the pattern.
+    /** 
+     	@see com.hp.hpl.jena.mem.Temp#iterator(com.hp.hpl.jena.graph.Triple)
     */
     public ExtendedIterator iterator( Triple pattern )
         {
@@ -139,9 +93,8 @@ public class NodeToTriplesMap
             ;
         }    
     
-    /**
-         Answer an iterator over all the triples in this NTM which are 
-         accepted by <code>pattern</code>.
+    /** 
+     	@see com.hp.hpl.jena.mem.Temp#iterateAll(com.hp.hpl.jena.graph.Triple)
     */
     public ExtendedIterator iterateAll( Triple pattern )
         {
@@ -153,8 +106,8 @@ public class NodeToTriplesMap
             ;
         }
     
-    /**
-        Answer an iterator over all the triples in this NTM.
+    /** 
+     	@see com.hp.hpl.jena.mem.Temp#iterator()
     */
     public ExtendedIterator iterator()
        {
@@ -186,6 +139,9 @@ public class NodeToTriplesMap
            };
    }
 
+    /** 
+     	@see com.hp.hpl.jena.mem.Temp#get(java.lang.Object)
+    */
     public Set get( Object y )
         { return (Set) map.get( y ); }
 
