@@ -27,7 +27,7 @@ import java.util.*;
  * 
  * 
  * @author csayers
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class DBPropDatabase extends DBProp {
 
@@ -131,12 +131,46 @@ public class DBPropDatabase extends DBProp {
 	}
     
 	static Node findDBPropNode( SpecializedGraph g) {
+		Node res = null;
 		ClosableIterator matches = g.find( null, dbEngineType, null, newComplete() );
-		if( matches.hasNext()) 
-            try { return ((Triple) matches.next()).getSubject(); }
-            finally { matches.close(); }
+		if (matches.hasNext()) {
+			try {
+				res = ((Triple) matches.next()).getSubject();
+				if (matches.hasNext())
+					res = null;
+				return res;
+			} finally {
+				matches.close();
+			}
+		}
 		return null;		
 	}
+	
+	protected String findDBPropString( Node_URI predicate) {
+		// similar to getPropString but doesn't match on the subject field.
+		// there should only be one instance of the db properties in the database.
+		// if zero or multiple instances of the property, return null.
+		ClosableIterator it = graph.find(null, predicate, null, newComplete());
+		if (it.hasNext()) {
+			try {
+				String res = null;
+				Node obj = ((Triple) it.next()).getObject();
+				if (!it.hasNext())
+					res = obj.getLiteralLexicalForm();
+				return res;
+			} finally {
+				it.close();
+			}
+		}
+		return null;
+	}
+	
+	public String getInitLongObjectLength() { return findDBPropString( dbLongObjectLength); }
+	public String getInitIndexKeyLength() { return findDBPropString( dbIndexKeyLength); }
+	public String getInitDoCompressURI() { return findDBPropString( dbDoCompressURI); }
+	public String getInitCompressURILength() { return findDBPropString( dbCompressURILength); }
+	
+
 }
 
 /*
