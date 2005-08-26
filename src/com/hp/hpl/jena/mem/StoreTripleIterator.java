@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: StoreTripleIterator.java,v 1.4 2005-06-20 14:46:09 chris-dollin Exp $
+  $Id: StoreTripleIterator.java,v 1.5 2005-08-26 14:09:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -21,12 +21,16 @@ import com.hp.hpl.jena.graph.Graph;
 */
 public class StoreTripleIterator extends TrackingTripleIterator
 	{
-    protected NodeToTriplesMap X;
-    protected NodeToTriplesMap A;
-    protected NodeToTriplesMap B;
+    protected NodeToTriplesMapBase X;
+    protected NodeToTriplesMapBase A;
+    protected NodeToTriplesMapBase B;
     protected Graph toNotify;
     
-    public StoreTripleIterator( Graph toNotify, Iterator it, NodeToTriplesMap X, NodeToTriplesMap A, NodeToTriplesMap B )
+    public StoreTripleIterator
+        ( Graph toNotify, Iterator it, 
+          NodeToTriplesMapBase X, 
+          NodeToTriplesMapBase A, 
+          NodeToTriplesMapBase B )
     	{ 
         super( it ); 
         this.X = X;

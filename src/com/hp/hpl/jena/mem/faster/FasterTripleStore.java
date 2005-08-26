@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.10 2005-08-26 12:48:49 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.11 2005-08-26 14:09:10 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -164,7 +164,7 @@ public class FasterTripleStore implements TripleStore
                 if (P.isConcrete())
                     return predicates.iterator( P, Node.ANY, Node.ANY );
                 else
-                    return subjects.iterator();
+                    return subjects.iterateAll();
                 }
     
             public void applyToTriples( Domain d, Matcher m, StageElement next )

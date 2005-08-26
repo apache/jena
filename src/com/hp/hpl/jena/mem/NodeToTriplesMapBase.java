@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.1 2005-08-26 12:48:45 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.2 2005-08-26 14:09:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -20,7 +20,6 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 */
 public abstract class NodeToTriplesMapBase
     {
-
     /**
          The map from nodes to Set(Triple).
     */
@@ -52,11 +51,6 @@ public abstract class NodeToTriplesMapBase
      */
     public abstract boolean remove( Triple t );
 
-    /**
-     Answer an iterator over all the triples in this NTM which have index node
-     <code>o</code>.
-     */
-    // public abstract Iterator iterator( Node o );
 
     public abstract Iterator iterator( Object o );
 
@@ -67,23 +61,9 @@ public abstract class NodeToTriplesMapBase
     public abstract boolean contains( Triple t );
 
     /**
-     Answer an iterator over all the triples in this NTM which match
-     <code>pattern</code>. The index field of this NTM is guaranteed
-     concrete in the pattern.
-     */
-    // public abstract ExtendedIterator iterator( Triple pattern );
-
-    /**
-     Answer an iterator over all the triples in this NTM which are 
-     accepted by <code>pattern</code>.
-     */
-    // public abstract ExtendedIterator iterateAll( Triple pattern );
-
-    /**
-     Answer an iterator over all the triples in this NTM.
-     */
-    public abstract ExtendedIterator iterator();
-
+        Answer an iterator over all the triples in this NodeToTriplesMap[Base].
+    */
+    public abstract ExtendedIterator iterateAll();
 
     /**
         The nodes which appear in the index position of the stored triples; useful
@@ -109,8 +89,6 @@ public abstract class NodeToTriplesMapBase
 
     public boolean isEmpty()
         { return size == 0; }
-
-    // public abstract Set get( Object y );
 
     }
 

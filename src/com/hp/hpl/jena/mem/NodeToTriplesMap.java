@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.32 2005-08-26 12:48:45 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.33 2005-08-26 14:09:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -102,14 +102,14 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
             indexField.filterOn( pattern )
             .and( f2.filterOn( pattern ) )
             .and( f3.filterOn( pattern ) )
-            .filterKeep( iterator() )
+            .filterKeep( iterateAll() )
             ;
         }
     
     /** 
-     	@see com.hp.hpl.jena.mem.Temp#iterator()
+     	@see com.hp.hpl.jena.mem.Temp#iterateAll()
     */
-    public ExtendedIterator iterator()
+    public ExtendedIterator iterateAll()
        {
        final Iterator nodes = domain();
        return new NiceIterator()

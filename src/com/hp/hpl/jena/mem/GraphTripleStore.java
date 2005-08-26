@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.21 2005-08-26 12:48:45 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.22 2005-08-26 14:09:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -132,7 +132,7 @@ public class GraphTripleStore implements TripleStore
         else if (pm.isConcrete())
             return new StoreTripleIterator( parent, predicates.iterator( t ), predicates, subjects, objects );
         else
-            return new StoreTripleIterator( parent, subjects.iterateAll( t ), subjects, predicates, objects );
+            return new StoreTripleIterator( parent, subjects.iterateAll(), subjects, predicates, objects );
         }
     
     /**
