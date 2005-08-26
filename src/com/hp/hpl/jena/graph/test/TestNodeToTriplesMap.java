@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: TestNodeToTriplesMap.java,v 1.13 2005-08-26 14:09:05 chris-dollin Exp $
+  $Id: TestNodeToTriplesMap.java,v 1.14 2005-08-26 15:03:00 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.test;
 
@@ -143,14 +143,14 @@ public class TestNodeToTriplesMap extends GraphTestBase
     
     public void testSpecificIteratorWithPatternOnEmpty()
         {
-        assertEquals( tripleSet( "" ), iteratorToSet( ntS.iterator( triple( "x P b" ) ) ) );
+        assertEquals( tripleSet( "" ), iteratorToSet( ntS.obsoleteIterator( triple( "x P b" ) ) ) );
         }
     
     public void testSpecificIteratorWithPatternOnSomething()
         {
         addTriples( ntS, "x P a; y P b; y R c" );
-        assertEquals( tripleSet( "x P a" ), iteratorToSet( ntS.iterator( triple( "x P ??" ) ) ) );
-        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( ntS.iterator( triple( "y ?? ??" ) ) ) );
+        assertEquals( tripleSet( "x P a" ), iteratorToSet( ntS.obsoleteIterator( triple( "x P ??" ) ) ) );
+        assertEquals( tripleSet( "y P b; y R c" ), iteratorToSet( ntS.obsoleteIterator( triple( "y ?? ??" ) ) ) );
         }
 
     public void testUnspecificRemoveS()

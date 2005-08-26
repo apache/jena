@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.2 2005-08-26 14:09:09 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.3 2005-08-26 15:03:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -51,9 +51,7 @@ public abstract class NodeToTriplesMapBase
      */
     public abstract boolean remove( Triple t );
 
-
     public abstract Iterator iterator( Object o );
-
 
     /**
      Answer true iff this NTM contains the concrete triple <code>t</code>.

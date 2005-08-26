@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.33 2005-08-26 14:09:09 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.34 2005-08-26 15:03:00 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -53,16 +53,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         }
     
     /** 
-     	@see com.hp.hpl.jena.mem.Temp#iterator(com.hp.hpl.jena.graph.Node)
-    */
-    public Iterator iterator( Node o ) 
-        {
-        Set s = (Set) map.get( o );
-        return s == null ? NullIterator.instance : s.iterator();
-        }    
-    
-    /** 
-     	@see com.hp.hpl.jena.mem.Temp#iterator(java.lang.Object)
+     	@see com.hp.hpl.jena.mem.Temp#obsoleteIterator(java.lang.Object)
     */
     public Iterator iterator( Object o )
         {
@@ -80,9 +71,19 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         }
     
     /** 
-     	@see com.hp.hpl.jena.mem.Temp#iterator(com.hp.hpl.jena.graph.Triple)
+     	@see com.hp.hpl.jena.mem.Temp#obsoleteIterator(com.hp.hpl.jena.graph.Triple)
     */
-    public ExtendedIterator iterator( Triple pattern )
+    public ExtendedIterator iterator( Node index, Node n2, Node n3 )
+        {
+        Set s = (Set) map.get( index.getIndexingValue() );
+        return s == null
+            ? NullIterator.instance
+            : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
+                .filterKeep( s.iterator() )
+            ;
+        }  
+    
+    public ExtendedIterator obsoleteIterator( Triple pattern )   
         {
         Object o = getIndexField( pattern );
         Set s = (Set) map.get( o );
@@ -91,7 +92,7 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
             : f2.filterOn( pattern ).and( f3.filterOn( pattern ) )
                 .filterKeep( s.iterator() )
             ;
-        }    
+        }  
     
     /** 
      	@see com.hp.hpl.jena.mem.Temp#iterateAll(com.hp.hpl.jena.graph.Triple)

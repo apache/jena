@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestGraph.java,v 1.61 2005-08-12 13:23:01 chris-dollin Exp $i
+  $Id: AbstractTestGraph.java,v 1.62 2005-08-26 15:03:00 chris-dollin Exp $i
 */
 
 package com.hp.hpl.jena.graph.test;
@@ -49,7 +49,7 @@ public /* abstract */ class AbstractTestGraph extends GraphTestBase
         {
         Graph g = getGraph();
         Node r = Node.create( "r" ), s = Node.create( "s" ), p = Node.create( "P" );
-        g.add( Triple.create( r, p,  s ) );
+        g.add( Triple.create( r, p, s ) );
         assertTrue( g.contains( r, p, Node.ANY ) );
         assertTrue( g.find( r, p, Node.ANY ).hasNext() );
         }
