@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: MixedGraphMemStore.java,v 1.1 2005-05-24 10:02:34 chris-dollin Exp $
+ 	$Id: MixedGraphMemStore.java,v 1.2 2005-08-26 11:20:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -11,7 +11,6 @@ import java.util.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.*;
-
 
 public class MixedGraphMemStore 
     {
@@ -107,10 +106,7 @@ public class MixedGraphMemStore
             protected Triple remember = null;
             protected Node key = null;
             protected Set seen = CollectionFactory.createHashedSet();
-            protected Filter filter = new TripleMatchFilter( pattern );
-            
-            protected Triple ANY = Triple.create( "?? ?? ??" );
-            
+                        
             public Object next()
                 {
                 ensureHasNext();

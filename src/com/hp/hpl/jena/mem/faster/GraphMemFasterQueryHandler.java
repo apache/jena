@@ -1,52 +1,22 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: GraphMemFasterQueryHandler.java,v 1.3 2005-08-25 19:13:59 chris-dollin Exp $
+ 	$Id: GraphMemFasterQueryHandler.java,v 1.4 2005-08-26 11:20:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.mem.GraphMemBaseQueryHandler;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.mem.*;
 
 public class GraphMemFasterQueryHandler extends GraphMemBaseQueryHandler implements QueryHandler
     {
-    protected GraphMemFaster graphMem;
-    
     GraphMemFasterQueryHandler( GraphMemFaster graph ) 
-        { super( graph ); 
-        this.graphMem = graph; }
-
+        { super( graph ); }
+    
     public Stage patternStage( Mapping map, ExpressionSet constraints, Triple [] t )
         { return new FasterPatternStage( graph, map, constraints, t ); }
-    
-    public ExtendedIterator objectsFor( Node p, Node o )
-        { return bothANY( p, o ) ? findObjects() : super.objectsFor( p, o ); }
-
-    public ExtendedIterator predicatesFor( Node s, Node o )
-        { return bothANY( s, o ) ? findPredicates() : super.predicatesFor( s, o ); }
-    
-    public ExtendedIterator subjectsFor( Node p, Node o )
-        { return bothANY( p, o ) ? findSubjects() : super.subjectsFor( p, o ); }   
-
-    /**
-         Answer true iff both <code>a</code> and <code>b</code> are ANY wildcards
-         or are null (legacy). 
-    */
-    private boolean bothANY( Node a, Node b )
-        { return (a == null || a.equals( Node.ANY )) && (b == null || b.equals( Node.ANY )); }
-
-    public ExtendedIterator findPredicates()
-        { return graphMem.store.listPredicates(); }
-
-    public ExtendedIterator findObjects()
-        { return graphMem.store.listObjects(); }
-    
-    public ExtendedIterator findSubjects()
-        { return graphMem.store.listSubjects(); }
-
     }
 
 

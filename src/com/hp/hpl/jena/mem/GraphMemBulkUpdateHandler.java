@@ -1,7 +1,7 @@
 /*
-(c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
-[See end of file]
-$Id: GraphMemBulkUpdateHandler.java,v 1.7 2005-08-25 17:57:42 chris-dollin Exp $
+    (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
+    [See end of file]
+    $Id: GraphMemBulkUpdateHandler.java,v 1.8 2005-08-26 11:20:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;

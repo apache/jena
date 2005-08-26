@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.8 2005-08-12 13:23:09 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.9 2005-08-26 11:20:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -11,11 +11,12 @@ import java.util.*;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
+import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.ObjectIterator;
 import com.hp.hpl.jena.util.iterator.*;
 
-public class FasterTripleStore
+public class FasterTripleStore implements TripleStore
     {
     protected NodeToTriplesMapFaster subjects = new NodeToTriplesMapFaster
         ( Field.getSubject, Field.getPredicate, Field.getObject );

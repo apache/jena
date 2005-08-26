@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: BufferPipe.java,v 1.7 2005-02-21 11:52:15 andy_seaborne Exp $
+  $Id: BufferPipe.java,v 1.8 2005-08-26 11:20:20 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query;
@@ -86,6 +86,7 @@ public class BufferPipe implements Pipe
     public Domain get()
         {
         if (hasNext() == false) throw new NoSuchElementException(); 
+        if (!(pending instanceof Domain)) throw new RuntimeException( pending.getClass().toString() );
         try { return (Domain) pending; } finally { pending = null; } 
         }
 

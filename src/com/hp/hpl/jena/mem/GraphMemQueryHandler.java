@@ -1,54 +1,25 @@
 /*
 (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
 [See end of file]
-$Id: GraphMemQueryHandler.java,v 1.8 2005-08-25 19:13:54 chris-dollin Exp $
+$Id: GraphMemQueryHandler.java,v 1.9 2005-08-26 11:20:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
-
-import com.hp.hpl.jena.graph.Node;
-import com.hp.hpl.jena.graph.query.SimpleQueryHandler;
-import com.hp.hpl.jena.util.iterator.*;
 
 /**
    A GraphMemQueryHandler is an extension of the SimpleQueryHandler which
    implements some of the query code more efficiently by exploiting the
    GraphMem's indexes.
    
+   <p>All the code has ended up in the new superclass GraphMemBaseQueryHandler,
+   so see that for interesting details; this class may be removed at some point.
+   
  	@author hedgehog
 */
 public class GraphMemQueryHandler extends GraphMemBaseQueryHandler
 	{
-    protected GraphMem graphMem;
-    
-	GraphMemQueryHandler( GraphMem graph ) 
-	    { super( graph ); 
-        this.graphMem = graph; }
-
-	public ExtendedIterator objectsFor( Node p, Node o )
-	    { return bothANY( p, o ) ? findObjects() : super.objectsFor( p, o ); }
-
-    public ExtendedIterator predicatesFor( Node s, Node o )
-        { return bothANY( s, o ) ? findPredicates() : super.predicatesFor( s, o ); }
-    
-    public ExtendedIterator subjectsFor( Node p, Node o )
-	    { return bothANY( p, o ) ? findSubjects() : super.subjectsFor( p, o ); }   
-
-    /**
-         Answer true iff both <code>a</code> and <code>b</code> are ANY wildcards
-         or are null (legacy). 
-    */
-    private boolean bothANY( Node a, Node b )
-        { return (a == null || a.equals( Node.ANY )) && (b == null || b.equals( Node.ANY )); }
-
-    public ExtendedIterator findPredicates()
-        { return graphMem.store.listPredicates(); }
-
-	public ExtendedIterator findObjects()
-	    { return graphMem.store.listObjects(); }
-	
-	public ExtendedIterator findSubjects()
-	    { return graphMem.store.listSubjects(); }
+    GraphMemQueryHandler( GraphMem graph ) 
+	    { super( graph ); }
 	}
 
 /*

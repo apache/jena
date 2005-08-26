@@ -1,14 +1,14 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SmallGraphMem.java,v 1.9 2005-08-25 17:57:42 chris-dollin Exp $
+  $Id: SmallGraphMem.java,v 1.10 2005-08-26 11:20:25 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
 import java.util.Set;
 
 import com.hp.hpl.jena.graph.*;
-import com.hp.hpl.jena.graph.impl.SimpleEventManager;
+import com.hp.hpl.jena.graph.impl.*;
 import com.hp.hpl.jena.shared.ReificationStyle;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
@@ -30,6 +30,12 @@ public class SmallGraphMem extends GraphMemBase
     
     public SmallGraphMem( ReificationStyle style )
         { super( style ); }
+    
+    /**
+        SmallGraphMem's don't use TripleStore's at present. 
+    */
+    protected TripleStore createTripleStore()
+        { return null; }
     
     public void performAdd( Triple t )
         { if (!getReifier().handledAdd( t )) triples.add( t ); }

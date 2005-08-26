@@ -1,12 +1,13 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: GraphMem.java,v 1.53 2005-08-25 19:13:54 chris-dollin Exp $
+  $Id: GraphMem.java,v 1.54 2005-08-26 11:20:24 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
 
 import com.hp.hpl.jena.graph.*;
+import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.iterator.*;
@@ -16,9 +17,7 @@ import com.hp.hpl.jena.util.iterator.*;
     @author  bwm, kers
 */
 public class GraphMem extends GraphMemBase implements Graph 
-    {
-    protected GraphTripleStore store = new GraphTripleStore( this );
-    
+    {    
     public GraphTripleStore forTestingOnly_getStore() 
         { return (GraphTripleStore) store; }
     
@@ -37,6 +36,9 @@ public class GraphMem extends GraphMemBase implements Graph
     */
     public GraphMem( ReificationStyle style )
         { super( style ); }
+    
+    protected TripleStore createTripleStore()
+        { return new GraphTripleStore( this ); }
 
     protected void destroy()
         { store.close(); }

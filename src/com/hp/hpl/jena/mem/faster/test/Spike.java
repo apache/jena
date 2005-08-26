@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: Spike.java,v 1.3 2005-08-25 10:14:19 chris-dollin Exp $
+ 	$Id: Spike.java,v 1.4 2005-08-26 11:20:25 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster.test;
@@ -13,12 +13,12 @@ import com.hp.hpl.jena.graph.impl.WrappedGraph;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.graph.query.StageElement.PutBindings;
 import com.hp.hpl.jena.graph.query.test.*;
-import com.hp.hpl.jena.graph.query.test.AbstractTestQuery;
 import com.hp.hpl.jena.graph.test.GraphTestBase;
 import com.hp.hpl.jena.mem.faster.*;
+import com.hp.hpl.jena.mem.faster.test.Spike.MagicPatternStage.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.rdf.model.test.ModelTestBase;
-import com.hp.hpl.jena.shared.JenaException;
+import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.util.*;
 import com.hp.hpl.jena.util.iterator.*;
 
@@ -96,9 +96,153 @@ public class Spike extends AbstractTestQuery
             public Object map1( Object o ) { return ((Triple) o).getSubject(); }
             };
             
-        protected List [] listForVariable = new List[27];
+        protected abstract static class Block
+            {
+            public abstract void app( Domain d, Node n );
+            }
         
-        protected List listFor( int varIndex )
+        protected abstract static class  Bunch
+            {
+            public abstract void add( Node n );
+            public abstract int size();
+            public abstract boolean contains( Node n );
+            public abstract void each( Domain d, Block b );
+            public abstract void only( Bunch other );
+            }
+        
+        protected static class MapDomainBunch extends Bunch
+            {
+            protected Map map;
+            
+            public MapDomainBunch( Map map )
+                { this.map = map; }
+            
+            public void add( Node n )
+                { throw new UnsupportedOperationException( "" ); }
+
+            public int size()
+                { return map.size(); }
+
+            public boolean contains( Node n )
+                { return map.containsKey( n ); }
+
+            public void each( Domain d, Block b )
+                { throw new UnsupportedOperationException( "" ); }
+
+            public void only( Bunch other )
+                {
+                for (Iterator it = map.keySet().iterator(); it.hasNext(); )
+                    {
+                    if (!other.contains( (Node) it.next() )) it.remove();
+                    }
+                }
+            }
+        
+        protected static class MapRangeBunch extends Bunch
+            {
+            protected Map map;
+            protected Set elements;
+            
+            public MapRangeBunch( Map map )
+                { 
+                this.map = map; 
+                computeElements();
+                }
+
+            protected Set computeElements()
+                {
+                if (this.elements == null)
+                    {
+                    this.elements = new HashSet();
+                    for (Iterator it = map.entrySet().iterator(); it.hasNext(); )
+                        {
+                        Map.Entry e = (Map.Entry) it.next();
+                        Bunch b = (Bunch) e.getValue();
+                        b.each( null, new Block() 
+                            {
+                            public void app( Domain d, Node n )
+                                { elements.add( n ); }
+                            } );
+                        }
+                    }
+                return this.elements;
+                }
+            
+            public void add( Node n )
+                { throw new UnsupportedOperationException( "" ); }
+
+            public int size()
+                { return computeElements().size(); }
+
+            public boolean contains( Node n )
+                { return computeElements().contains( n );  }
+
+            public void each( Domain d, Block b )
+                {
+                for (Iterator it = computeElements().iterator(); it.hasNext();)
+                    {
+                    b.app( d, (Node) it.next() );
+                    }
+                }
+
+            public void only( Bunch other )
+                { 
+//               System.err.println( ">> only " + other );
+                for (Iterator it = map.entrySet().iterator(); it.hasNext();)
+                    {
+                    Map.Entry e = (Map.Entry) it.next();
+//                    System.err.println( ">> updating " + e.getValue() );
+                    ((Bunch) e.getValue()).only( other );
+//                    System.err.println( "]]   to " + e.getValue() );
+                    }
+                }
+        
+            }
+        
+        protected static class BunchList extends Bunch
+            {
+            protected final List elements;
+            
+            public BunchList()
+                { this( new ArrayList() ); }
+            
+            public BunchList( List elements )
+                { this.elements = elements; }
+            
+            public void add( Node n )
+                { elements.add( n ); }
+
+            public int size()
+                { return elements.size(); }
+
+            public boolean contains( Node n )
+                { return elements.contains( n ); }
+
+            public void each( Domain d, Block b )
+                { 
+                for (int i = 0; i < elements.size(); i += 1)
+                    b.app( d, (Node) elements.get( i ) ); 
+                }
+
+            public void only( Bunch other )
+                { for (int i = 0; i < elements.size(); i += 1)
+                    if (!other.contains( (Node) elements.get(i) ))
+                        elements.remove(i);
+                }
+            
+            public String toString()
+                { return elements.toString(); }
+        
+            }
+        
+        protected Bunch [] listForVariable = new Bunch[27];
+        
+        protected void constrainBunch( int index, Bunch elements )
+            {
+            listForVariable[index].only( elements );
+            }
+        
+        protected Bunch listFor( int varIndex )
             {
             if (listForVariable[varIndex] == null) 
                 {
@@ -109,148 +253,136 @@ public class Spike extends AbstractTestQuery
             return listForVariable[varIndex];
             }
         
-        protected void setListFor( int varIndex, List L )
+        protected void setListFor( int varIndex, Bunch L )
             {
             listForVariable[varIndex] = L;
             }
-            
-        protected StageElement makeStageElementChain( final Pipe sink, final int index )
+        
+        protected StageElement makeIntermediateStageElement( Pipe sink, int index )
             {
-            if (index == classified.length)
-                return new StageElement.PutBindings( sink );
+            final SpikeTriple t = (SpikeTriple) classified[index];
+            if (t.isGenerator())
+                {
+                return createSubjectGenerator( sink, index, t );
+                }
+            else if (t.isFilter())
+                {
+                return createSubjectFilter( sink, index, t );
+                }
+            else if (t.isJoin())
+                {
+                return createSOJoin( sink, index, t );
+                }
             else
                 {
-                final ValuatorSet s = guards[index];
-                SpikeTriple st = (SpikeTriple) classified[index];
-                Matcher m = st.createMatcher();
-                Applyer f = st.createApplyer( graph );
-                if (st.isJoin())
-                    {
-                    Iterator it = graph.find( Node.ANY, st.P.node, Node.ANY );
-                    final int Sindex = st.S.index, Oindex = st.O.index;
-                    final Map SO = new HashMap();
-                    Set Os = new HashSet();
-                    while (it.hasNext())
-                        {
-                        Triple t = (Triple) it.next();
-                        Node S = t.getSubject(), O = t.getObject();
-                        Os.add( O );
-                        List already = (List) SO.get( S );
-                        if (already == null)
-                            SO.put( S, unitList( O ) );
-                        else
-                            already.add( O );
-                        }
-                    setListFor( Sindex, new ArrayList( SO.keySet() ) );
-                    setListFor( Oindex, new ArrayList( Os ) );
-                    return new StageElement()
-                        {
-                        public void run( Domain d )
-                            {
-                            Iterator it = SO.entrySet().iterator();
-                            while (it.hasNext())
-                                {
-                                Map.Entry e = (Map.Entry) it.next();
-                                Node S = (Node) e.getKey();
-                                d.setElement( Sindex, S );
-                                List Os = (List) e.getValue();
-                                for (int i = 0; i < Os.size(); i += 1)
-                                    {
-                                    Node O = (Node) Os.get( i );
-                                    d.setElement( Oindex, O );
-                                    constructNext( sink, index, s ).run( d );
-                                    }
-                                }
-                            }
-                        };
-                    }
-                if (st.isGenerator()) return generatorStage( st, constructNext( sink, index, s ) );
-                if (st.isFilter()) return filterStage( st, constructNext( sink, index, s ) );
-                return new StageElement.FindTriples( this, m, f, constructNext( sink, index, s ) );
+                System.err.println( "]] " + t );
+                final StageElement next = makeNextStageElement( sink, index );
+                return makeFindStageElement( index, next );
                 }
             }
 
-        /**
-         	@param sink
-         	@param index
-         	@param s
-         	@return
-        */
-        protected StageElement constructNext( Pipe sink, int index, ValuatorSet s )
+        protected StageElement createSOJoin( Pipe sink, int index, final SpikeTriple t )
             {
-            final StageElement next = makeStageElementChain( sink, index + 1 );
-            final StageElement then = s.isNonTrivial() ? new StageElement.RunValuatorSet( s, next ) : next;
-            return then;
+            final Map m = new HashMap();
+            Iterator it = graph.find( Node.ANY, t.P.node, Node.ANY );
+            while (it.hasNext())
+                {
+                Triple tt = (Triple) it.next();
+                Node S = tt.getSubject(), O = tt.getObject();
+                Bunch L = (Bunch) m.get( S );
+                if (L == null)
+                    {
+                    L = new BunchList();
+                    L.add( O );
+                    m.put( S, L );
+                    }
+                else
+                    L.add( O );
+                }
+            setListFor( t.S.index, new MapDomainBunch( m ) );
+            setListFor( t.O.index, new MapRangeBunch( m ) );
+            final StageElement next = makeNextStageElement( sink, index );
+            final Block block = new Block()
+                {
+                public void app( Domain d, Node n )
+                    {
+                    d.setElement( t.O.index, n );
+                    next.run( d );
+                    }
+                };
+            return new StageElement()
+                {
+                public void run( Domain d )
+                    {
+                    Iterator sIt = m.entrySet().iterator();
+                    while (sIt.hasNext())
+                        {
+                        Map.Entry e = (Map.Entry) sIt.next();
+                        Node S = (Node) e.getKey();
+                        Bunch Os = (Bunch) e.getValue();
+                        d.setElement( t.S.index, S );
+                        Os.each( d, block );
+                        }
+                    }
+                };
             }
 
-        protected Object unitList( Node o )
-            { 
-            List result = new ArrayList();
-            result.add( o );
-            return result;
-            }
-
-        protected StageElement filterStage( SpikeTriple st, final StageElement then )
+        protected StageElement createSubjectFilter( Pipe sink, int index, final SpikeTriple t )
             {
-            final int j = st.S.index;
-            List already = listFor( j );
-            final List restricted = new ArrayList();
-            Iterator it = 
-                graph.find( Node.ANY, st.P.node, st.O.node )
-                .mapWith( getSubject );
+            Bunch current = listFor( t.S.index );
+            assertNotNull( current );
+            Bunch fresh = new BunchList();
+            Iterator it = graph.find( Node.ANY, t.P.node, t.O.node ).mapWith( getSubject );
             while (it.hasNext())
                 {
                 Node x = (Node) it.next();
-                if (already.contains( x )) restricted.add( x );
+                if (current.contains( x )) fresh.add( x );
                 }
-            setListFor( j, restricted );
-            final int size = restricted.size();
-            return new StageElement() 
-                {
-                public void run( Domain current )
-                    {
-                    for (int i = 0; i < size; i += 1)
-                        {
-                        current.setElement( j, (Node) restricted.get( i ) );
-                        then.run( current );
-                        }
-                    }
-                };
+            constrainBunch( t.S.index, fresh );    
+            return makeNextStageElement( sink, index ); 
             }
 
-        protected StageElement generatorStage( SpikeTriple st, final StageElement then )
+        protected StageElement createSubjectGenerator( Pipe sink, int index, final SpikeTriple t )
             {
-            final List answers = IteratorCollection.iteratorToList
-                (
-                graph.find( Node.ANY, st.P.node, st.O.node )
-                .mapWith( getSubject )
-                );
-            final int size = answers.size();
-            final int j = st.S.index;
-            return new StageElement() 
+            final Bunch elements = new BunchList( iteratorToList
+                ( graph.find( Node.ANY, t.P.node, t.O.node ).mapWith( getSubject ) ) );
+            setListFor( t.S.index, elements );
+            final StageElement next = makeNextStageElement( sink, index );
+            final Block block = new Block() 
                 {
-                public void run( Domain current )
+                public void app( Domain d, Node n )
                     {
-                    for (int i = 0; i < size; i += 1)
-                        {
-                        current.setElement( j, (Node) answers.get( i ) );
-                        then.run( current );
-                        }
+                    d.setElement( t.S.index, n );
+                    next.run( d );
                     }
+                };
+            return new StageElement()
+                {
+                public void run( final Domain current )
+                    { listFor( t.S.index ).each( current, block ); }               
                 };
             }
 
+        protected StageElement makeNextStageElement( Pipe sink, int index )
+            {
+            ValuatorSet s = guards[index];
+            StageElement rest = makeStageElementChain( sink, index + 1 );
+            return s.isNonTrivial() ? new StageElement.RunValuatorSet( s, rest ) : rest;
+            }
+
+        protected StageElement makeFindStageElement( int index, StageElement next )
+            {
+            Applyer f = classified[index].createApplyer( graph );
+            Matcher m = classified[index].createMatcher();
+            return new StageElement.FindTriples( this, m, f, next );
+            }
         }
 
     public Spike( String name )
         { super( name ); }
     
     public static TestSuite suite()  
-        {
-        return new TestSuite( Spike.class );
-//        result.addTest( new Spike( "testMultiplePatterns" ) );
-//        return result;
-        }
+        { return new TestSuite( Spike.class ); }
     
     protected Graph wrap( Graph g )
         {
