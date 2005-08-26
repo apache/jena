@@ -26,6 +26,7 @@ import com.hp.hpl.jena.rdf.model.AnonId;
 import com.hp.hpl.jena.shared.*;
 
 import com.hp.hpl.jena.vocabulary.RDF;
+import com.hp.hpl.jena.vocabulary.DB;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,7 +46,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.53 $ on $Date: 2005-07-13 15:33:49 $
+* @version $Revision: 1.54 $ on $Date: 2005-08-26 02:27:49 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -330,36 +331,40 @@ public abstract class DriverRDB implements IRDBDriver {
 		m_sysProperties = createLSetInstanceFromName(m_lsetClassName, pSet,
 				DEFAULT_ID);
 		m_dbProps = new DBPropDatabase(m_sysProperties);
+		
+		// need to get initial values for encoding parameters
+		String longObjLen = m_dbProps.getInitLongObjectLength();
+		String indexKeyLen = m_dbProps.getInitIndexKeyLength();
+		String compURI = m_dbProps.getInitDoCompressURI();
+		String compURILen = m_dbProps.getInitCompressURILength();
+
+		if (longObjLen == null)
+			throwBadFormat("long object length");
+		else
+			LONG_OBJECT_LENGTH = Integer.parseInt(longObjLen);
+		if (indexKeyLen == null)
+			throwBadFormat("index key length");
+		else
+			INDEX_KEY_LENGTH = Integer.parseInt(indexKeyLen);
+		if (compURI == null)
+			throwBadFormat("compress URIs");
+		else
+			URI_COMPRESS = Boolean.valueOf(compURI).booleanValue();
+		if (compURILen == null)
+			throwBadFormat("URI compress length");
+		else
+			URI_COMPRESS_LENGTH = Integer.parseInt(compURILen);
 
 		// now reset the configuration parameters
 		checkEngine(m_dbProps);
 		checkDriverVersion(m_dbProps);
 		checkLayoutVersion(m_dbProps);
-		String val = m_dbProps.getLongObjectLength();
-		if (val == null)
-			throwBadFormat("long object length");
-		else
-			LONG_OBJECT_LENGTH = Integer.parseInt(val);
-		val = m_dbProps.getIndexKeyLength();
-		if (val == null)
-			throwBadFormat("index key length");
-		else
-			INDEX_KEY_LENGTH = Integer.parseInt(val);
+		String val = null;
 		val = m_dbProps.getIsTransactionDb();
 		if (val == null)
 			throwBadFormat("database supports transactions");
 		else
 			IS_XACT_DB = Boolean.valueOf(val).booleanValue();
-		val = m_dbProps.getDoCompressURI();
-		if (val == null)
-			throwBadFormat("compress URIs");
-		else
-			URI_COMPRESS = Boolean.valueOf(val).booleanValue();
-		val = m_dbProps.getCompressURILength();
-		if (val == null)
-			throwBadFormat("URI compress length");
-		else
-			URI_COMPRESS_LENGTH = Integer.parseInt(val);
 		val = m_dbProps.getTableNamePrefix();
 		if (val == null)
 			throwBadFormat("table name prefix");
@@ -1565,7 +1570,10 @@ public abstract class DriverRDB implements IRDBDriver {
 			String qname;
 			if ( URI_COMPRESS == true ) {
 				pos = dbSplitNamespace(uri);
-				noCompress = (pos == uri.length()) || (pos <= URI_COMPRESS_LENGTH);
+				if ( uri.startsWith(DB.uri) )
+					noCompress = true;
+				else
+					noCompress = (pos == uri.length()) || (pos <= URI_COMPRESS_LENGTH);
 			} else
 				noCompress = true;
 			if ( noCompress ) {
