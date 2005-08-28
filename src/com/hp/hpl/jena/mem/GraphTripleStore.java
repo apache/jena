@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.23 2005-08-26 15:03:00 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.24 2005-08-28 11:17:14 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -21,10 +21,10 @@ import com.hp.hpl.jena.util.iterator.*;
  */
 public class GraphTripleStore implements TripleStore
     {
-    protected NodeToTriplesMap subjects = new NodeToTriplesMap
+    protected NodeToTriplesMapBase subjects = new NodeToTriplesMap
         ( Field.getSubject, Field.getPredicate, Field.getObject );
         
-    protected NodeToTriplesMap predicates = new NodeToTriplesMap
+    protected NodeToTriplesMapBase predicates = new NodeToTriplesMap
         ( Field.getPredicate, Field.getObject, Field.getSubject );
         
     protected NodeToTriplesMap objects = new NodeToTriplesMap

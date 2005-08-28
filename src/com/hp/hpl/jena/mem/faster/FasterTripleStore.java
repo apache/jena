@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.11 2005-08-26 14:09:10 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.12 2005-08-28 11:17:36 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -130,13 +130,13 @@ public class FasterTripleStore implements TripleStore
         Node sm = t.getSubject();
             
         if (sm.isConcrete())
-            return new StoreTripleIteratorFaster( parent, subjects.iterator( sm, pm, om ), subjects, predicates, objects );
+            return new StoreTripleIterator( parent, subjects.iterator( sm, pm, om ), subjects, predicates, objects );
         else if (om.isConcrete())
-            return new StoreTripleIteratorFaster( parent, objects.iterator( om, sm, pm ), objects, subjects, predicates );
+            return new StoreTripleIterator( parent, objects.iterator( om, sm, pm ), objects, subjects, predicates );
         else if (pm.isConcrete())
-            return new StoreTripleIteratorFaster( parent, predicates.iterator( pm, om, sm ), predicates, subjects, objects );
+            return new StoreTripleIterator( parent, predicates.iterator( pm, om, sm ), predicates, subjects, objects );
         else
-            return new StoreTripleIteratorFaster( parent, subjects.iterateAll( sm, pm, om ), subjects, predicates, objects );
+            return new StoreTripleIterator( parent, subjects.iterateAll( sm, pm, om ), subjects, predicates, objects );
         }
     
     public Applyer createApplyer( ProcessedTriple pt )

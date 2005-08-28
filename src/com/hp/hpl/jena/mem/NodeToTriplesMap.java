@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.34 2005-08-26 15:03:00 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.35 2005-08-28 11:17:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -70,19 +70,6 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
         return s == null ? false : s.contains( t );
         }
     
-    /** 
-     	@see com.hp.hpl.jena.mem.Temp#obsoleteIterator(com.hp.hpl.jena.graph.Triple)
-    */
-    public ExtendedIterator iterator( Node index, Node n2, Node n3 )
-        {
-        Set s = (Set) map.get( index.getIndexingValue() );
-        return s == null
-            ? NullIterator.instance
-            : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
-                .filterKeep( s.iterator() )
-            ;
-        }  
-    
     public ExtendedIterator obsoleteIterator( Triple pattern )   
         {
         Object o = getIndexField( pattern );
@@ -104,6 +91,18 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
             .and( f2.filterOn( pattern ) )
             .and( f3.filterOn( pattern ) )
             .filterKeep( iterateAll() )
+            ;
+        }
+    /** 
+    @see com.hp.hpl.jena.mem.Temp#obsoleteIterator(com.hp.hpl.jena.graph.Triple)
+    */
+    public ExtendedIterator iterator(Node index, Node n2, Node n3)
+        {
+        Set s = (Set) map.get( index.getIndexingValue() );
+        return s == null
+            ? NullIterator.instance
+            : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
+                .filterKeep( s.iterator() )
             ;
         }
     

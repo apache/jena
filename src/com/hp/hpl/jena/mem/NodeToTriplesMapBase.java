@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.3 2005-08-26 15:03:00 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.4 2005-08-28 11:17:14 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NullIterator;
 
 /**
     A base class for the "normal" nad "faster" NodeToTriplesMaps.
@@ -87,6 +88,8 @@ public abstract class NodeToTriplesMapBase
 
     public boolean isEmpty()
         { return size == 0; }
+
+    public abstract ExtendedIterator iterator( Node index, Node n2, Node n3 );
 
     }
 
