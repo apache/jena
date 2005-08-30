@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.15 2005-08-30 12:43:45 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.16 2005-08-30 17:18:41 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -11,120 +11,17 @@ import java.util.*;
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.mem.ArrayBunch;
+import com.hp.hpl.jena.mem.SetBunch;
+import com.hp.hpl.jena.mem.TripleBunch;
+import com.hp.hpl.jena.mem.MatchOrBind;
 import com.hp.hpl.jena.mem.NodeToTriplesMapBase;
-import com.hp.hpl.jena.shared.BrokenException;
 import com.hp.hpl.jena.util.iterator.*;
 
 public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     {    
     public NodeToTriplesMapFaster( Field indexField, Field f2, Field f3 )
        { super( indexField, f2, f3 ); }
-    
-    protected static abstract class Bunch
-        {
-        public abstract boolean contains( Triple t );
-        public abstract int size();
-        public abstract void add( Triple t );
-        public abstract void remove( Triple t );
-        public abstract ExtendedIterator iterator();
-        public abstract void app( Domain d, StageElement next, MatchOrBind s );
-        }
-    
-    protected static class ArrayBunch extends Bunch
-        {
-        public ArrayBunch()
-            {}
-        
-        protected int size = 0;
-        protected Triple [] elements = new Triple[9];
-
-        public boolean contains( Triple t )
-            {
-            for (int i = 0; i < size; i += 1)
-                if (t.equals( elements[i])) return true;
-            return false;
-            }
-
-        public int size()
-            { return size; }
-
-        public void add( Triple t )
-            { elements[size++] = t; }
-
-        public void remove( Triple t )
-            { 
-            for (int i = 0; i < size; i += 1)
-                {
-                if (t.equals( elements[i] ))
-                    { elements[i] = elements[--size];
-                    return; }
-                }
-            }
-        
-        public void app( Domain d, StageElement next, MatchOrBind s )
-            {
-            for (int i = 0; i < size; i += 1)
-                if (s.matches( elements[i] )) next.run( d );
-            }
-        
-        public ExtendedIterator iterator()
-            {
-            return new NiceIterator()
-                {
-                protected int i = 0;
-                
-                public boolean hasNext()
-                    { return i < size; }
-            
-                public Object next()
-                    {
-                    if (!hasNext()) throw new BrokenException( "ARGH" );
-                    return elements[i++]; 
-                    }
-                
-                public void remove()
-                    {
-                    if (i == size)
-                        size -= 1;
-                    else
-                        elements[--i] = elements[--size];
-                    }
-                };
-            }
-        }
-    
-    protected static class SetBunch extends Bunch
-        {
-        protected Set elements = new HashSet(20);
-        
-        public SetBunch( Bunch b )
-            { 
-            for (Iterator it = b.iterator(); it.hasNext();) 
-                elements.add( it.next() );
-            }
-
-        public boolean contains( Triple t )
-            { return elements.contains( t ); }
-
-        public int size()
-            { return elements.size(); }
-
-        public void add( Triple t )
-            { elements.add( t ); }
-
-        public void remove( Triple t )
-            { elements.remove( t ); }
-
-        public ExtendedIterator iterator()
-            { return WrappedIterator.create( elements.iterator() ); }        
-        
-        public void app( Domain d, StageElement next, MatchOrBind s )
-            {
-            Iterator it = iterator();
-            while (it.hasNext())
-                if (s.matches( (Triple) it.next() )) next.run( d );
-            }
-        }
     
     /**
         Add <code>t</code> to this NTM; the node <code>o</code> <i>must</i>
@@ -134,7 +31,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     public boolean add( Triple t ) 
        {
        Object o = getIndexField( t );
-       Bunch s = (Bunch) map.get( o );
+       TripleBunch s = (TripleBunch) map.get( o );
        if (s == null) map.put( o, s = new ArrayBunch() );
        if (s.contains( t ))
            return false;
@@ -155,7 +52,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     public boolean remove( Triple t )
        { 
        Object o = getIndexField( t );
-       Bunch s = (Bunch) map.get( o );
+       TripleBunch s = (TripleBunch) map.get( o );
        if (s == null || !s.contains( t ))
            return false;
        else
@@ -173,7 +70,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     */
     public Iterator iterator( Object o ) 
        {
-       Bunch s = (Bunch) map.get( o );
+       TripleBunch s = (TripleBunch) map.get( o );
        return s == null ? NullIterator.instance : s.iterator();
        }
     
@@ -182,7 +79,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     */
     public boolean contains( Triple t )
        { 
-       Bunch s = (Bunch) map.get( getIndexField( t ) );
+       TripleBunch s = (TripleBunch) map.get( getIndexField( t ) );
        return s == null ? false : s.contains( t );
        }
     
@@ -193,7 +90,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     */
     public ExtendedIterator iterator( Node index, Node n2, Node n3 )
        {
-       Bunch s = (Bunch) map.get( index.getIndexingValue() );
+       TripleBunch s = (TripleBunch) map.get( index.getIndexingValue() );
        return s == null
            ? NullIterator.instance
            : f2.filterOn( n2 ).and( f3.filterOn( n3 ) )
@@ -201,57 +98,9 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
            ;
        }    
 
-    static abstract class MatchOrBind
-        {
-        public static MatchOrBind createSP( final ProcessedTriple Q )
-            {
-            return new MatchOrBind()
-                {
-                protected Domain d;
-                protected final QueryNode S = Q.S;
-                protected final QueryNode P = Q.P;
-                
-                public MatchOrBind reset( Domain d )
-                    { this.d = d; return this; }
-                
-                public boolean matches( Triple t )
-                    {
-                    return 
-                        S.matchOrBind( d, t.getSubject() )
-                        && P.matchOrBind( d, t.getPredicate() )
-                        ;
-                    }
-                };
-            }
-        
-        public static MatchOrBind createPO( final ProcessedTriple Q )
-            {
-            return new MatchOrBind()
-                {
-                protected Domain d;
-                protected final QueryNode P = Q.P;
-                protected final QueryNode O = Q.O;
-                
-                public MatchOrBind reset( Domain d )
-                    { this.d = d; return this; }
-                
-                public boolean matches( Triple t )
-                    {
-                    return 
-                        P.matchOrBind( d, t.getPredicate() )
-                        && O.matchOrBind( d, t.getObject() )
-                        ;
-                    }
-                };
-            }   
-        public abstract boolean matches( Triple t );
-        
-        public abstract MatchOrBind reset( Domain d );
-        }
-    
     public Applyer createFixedOApplyer( final ProcessedTriple Q )
         {        
-        final Bunch ss = (Bunch) map.get( Q.O.node.getIndexingValue() );
+        final TripleBunch ss = (TripleBunch) map.get( Q.O.node.getIndexingValue() );
         if (ss == null)
             return Applyer.empty;
         else
@@ -274,7 +123,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
             
             public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
-                Bunch c = (Bunch) map.get( pt.O.finder( d ).getIndexingValue() );
+                TripleBunch c = (TripleBunch) map.get( pt.O.finder( d ).getIndexingValue() );
                 if (c != null) c.app( d, next, x.reset( d ) );
                 }
             };
@@ -288,7 +137,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
             
             public void applyToTriples( Domain d, Matcher m, StageElement next )
                 {
-                Bunch c = (Bunch) map.get( pt.S.finder( d ) );
+                TripleBunch c = (TripleBunch) map.get( pt.S.finder( d ) );
                 if (c != null) c.app( d, next, x.reset( d ) );
                 }
             };
@@ -296,7 +145,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
 
     public Applyer createFixedSApplyer( final ProcessedTriple Q )
         {
-        final Bunch ss = (Bunch) map.get( Q.S.node );
+        final TripleBunch ss = (TripleBunch) map.get( Q.S.node );
         if (ss == null)
             return Applyer.empty;
         else
@@ -311,8 +160,8 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
             }
         }
        
-    protected Bunch get( Object index )
-        { return (Bunch) map.get( index ); }
+    protected TripleBunch get( Object index )
+        { return (TripleBunch) map.get( index ); }
     
     /**
      Answer an iterator over all the triples that are indexed by the item <code>y</code>.
