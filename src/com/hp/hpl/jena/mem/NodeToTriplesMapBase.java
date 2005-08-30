@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.5 2005-08-30 11:14:47 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.6 2005-08-30 12:43:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -12,6 +12,7 @@ import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
 import com.hp.hpl.jena.util.CollectionFactory;
 import com.hp.hpl.jena.util.iterator.ExtendedIterator;
+import com.hp.hpl.jena.util.iterator.NiceIterator;
 import com.hp.hpl.jena.util.iterator.NullIterator;
 
 /**
@@ -40,29 +41,24 @@ public abstract class NodeToTriplesMapBase
         { this.indexField = indexField; this.f2 = f2; this.f3 = f3; }
     
     /**
-     Add <code>t</code> to this NTM; the node <code>o</code> <i>must</i>
-     be the index node of the triple. Answer <code>true</code> iff the triple
-     was not previously in the set, ie, it really truly has been added. 
-     */
+         Add <code>t</code> to this NTM; the node <code>o</code> <i>must</i>
+         be the index node of the triple. Answer <code>true</code> iff the triple
+         was not previously in the set, ie, it really truly has been added. 
+    */
     public abstract boolean add( Triple t );
 
     /**
-     Remove <code>t</code> from this NTM. Answer <code>true</code> iff the 
-     triple was previously in the set, ie, it really truly has been removed. 
-     */
+         Remove <code>t</code> from this NTM. Answer <code>true</code> iff the 
+         triple was previously in the set, ie, it really truly has been removed. 
+    */
     public abstract boolean remove( Triple t );
 
     public abstract Iterator iterator( Object o );
 
     /**
-     Answer true iff this NTM contains the concrete triple <code>t</code>.
-     */
-    public abstract boolean contains( Triple t );
-
-    /**
-        Answer an iterator over all the triples in this NodeToTriplesMap[Base].
+         Answer true iff this NTM contains the concrete triple <code>t</code>.
     */
-    public abstract ExtendedIterator iterateAll();
+    public abstract boolean contains( Triple t );
 
     /**
         The nodes which appear in the index position of the stored triples; useful
@@ -96,7 +92,38 @@ public abstract class NodeToTriplesMapBase
         Note that <code>y</code> need not be a Node (because of indexing values).
     */
     public abstract Iterator iteratorForIndexed( Object y );
-
+    /**
+    Answer an iterator over all the triples in this NTM.
+     */
+     public ExtendedIterator iterateAll()
+       {
+       final Iterator nodes = domain();
+       return new NiceIterator()
+           {
+           private Iterator current = NullIterator.instance;
+           
+           public Object next()
+               {
+               if (hasNext() == false) noElements( "NodeToTriples iterator" );
+               return current.next();
+               }
+           
+           public boolean hasNext()
+               {
+               while (true)
+                   {
+                   if (current.hasNext()) return true;
+                   if (nodes.hasNext() == false) return false;
+                   current = iterator( nodes.next() );
+                   }
+               }
+           
+           public void remove()
+               {
+               current.remove();
+               }
+           };
+       }
     }
 
 

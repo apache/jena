@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.14 2005-08-30 11:14:55 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.15 2005-08-30 12:43:45 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -311,39 +311,6 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
             }
         }
        
-    /**
-       Answer an iterator over all the triples in this NTM.
-    */
-    public ExtendedIterator iterateAll()
-      {
-      final Iterator nodes = domain();
-      return new NiceIterator()
-          {
-          private Iterator current = NullIterator.instance;
-          
-          public Object next()
-              {
-              if (hasNext() == false) noElements( "NodeToTriples iterator" );
-              return current.next();
-              }
-          
-          public boolean hasNext()
-              {
-              while (true)
-                  {
-                  if (current.hasNext()) return true;
-                  if (nodes.hasNext() == false) return false;
-                  current = iterator( nodes.next() );
-                  }
-              }
-          
-          public void remove()
-              {
-              current.remove();
-              }
-          };
-      }
-
     protected Bunch get( Object index )
         { return (Bunch) map.get( index ); }
     
