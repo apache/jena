@@ -1,144 +1,29 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.13 2005-08-30 11:14:55 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.14 2005-08-30 12:20:01 chris-dollin Exp $
 */
-
 package com.hp.hpl.jena.mem.faster;
 
 import java.util.*;
-
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple.Field;
 import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.*;
-import com.hp.hpl.jena.util.iterator.*;
 
-public class FasterTripleStore implements TripleStore
-    {
-    protected NodeToTriplesMapBase subjects = new NodeToTriplesMapFaster
-        ( Field.getSubject, Field.getPredicate, Field.getObject );
-    
-    protected NodeToTriplesMapBase predicates = new NodeToTriplesMapFaster
-        ( Field.getPredicate, Field.getObject, Field.getSubject );
-        
-    protected NodeToTriplesMapBase objects = new NodeToTriplesMapFaster
-        ( Field.getObject, Field.getSubject, Field.getPredicate );
-    
-    protected Graph parent;
-    
+public class FasterTripleStore extends GraphTripleStoreBase  implements TripleStore
+    {    
     public FasterTripleStore( Graph parent )
-        { this.parent = parent; }
-    
-    /**
-         Destroy this triple store - discard the indexes.
-    */
-    public void close()
-        { subjects = objects = predicates = null; }
-    
-    /**
-         Add a triple to this triple store.
-    */
-    public void add( Triple t )
-        {
-        if (subjects.add( t ))
-            {
-            predicates.add( t );
-            objects.add( t ); 
-            }
+        { 
+        super( parent,
+            new NodeToTriplesMapFaster( Field.getSubject, Field.getPredicate, Field.getObject ),
+            new NodeToTriplesMapFaster( Field.getPredicate, Field.getObject, Field.getSubject ),
+            new NodeToTriplesMapFaster( Field.getObject, Field.getSubject, Field.getPredicate )
+                ); 
         }
-    
-    /**
-         Remove a triple from this triple store.
-    */
-    public void delete( Triple t )
-        {
-        if (subjects.remove( t ))
-            {
-            predicates.remove( t );
-            objects.remove( t ); 
-            }
-        }
-    
-    /**
-         Clear this store, ie remove all triples from it.
-    */
-    public void clear()
-        {
-        subjects.clear();
-        predicates.clear();
-        objects.clear();
-        }
-    
-    /**
-         Answer the size (number of triples) of this triple store.
-    */
-    public int size()
-        { return subjects.size(); }
-    
-    /**
-         Answer true iff this triple store is empty.
-    */
-    public boolean isEmpty()
-        { return subjects.isEmpty(); }
-    
-    public ExtendedIterator listSubjects()
-        { return WrappedIterator.createNoRemove( subjects.domain() ); }
-    
-    public ExtendedIterator listPredicates()
-        { return WrappedIterator.createNoRemove( predicates.domain() ); }
-        
-    public ExtendedIterator listObjects()
-        {
-        return new ObjectIterator( objects.domain() )
-            {
-            protected Iterator iteratorFor( Object y )
-                { return objects.iteratorForIndexed( y ); }
-            };
-        }
-    
-    /**
-         Answer true iff this triple store contains the (concrete) triple <code>t</code>.
-    */
-    public boolean contains( Triple t )
-        { return subjects.contains( t ); }
-    
-    /** 
-        Answer an ExtendedIterator returning all the triples from this store that
-        match the pattern <code>m = (S, P, O)</code>.
-        
-        <p>Because the node-to-triples maps index on each of subject, predicate,
-        and (non-literal) object, concrete S/P/O patterns can immediately select
-        an appropriate map. Because the match for literals must be by sameValueAs,
-        not equality, the optimisation is not applied for literals. [This is probably a
-        Bad Thing for strings.]
-        
-        <p>Practice suggests doing the predicate test <i>last</i>, because there are
-        "usually" many more statements than predicates, so the predicate doesn't
-        cut down the search space very much. By "practice suggests" I mean that
-        when the order went, accidentally, from S/O/P to S/P/O, performance on
-        (ANY, P, O) searches on largish models with few predicates declined
-        dramatically - specifically on the not-galen.owl ontology.
-    */
-    public ExtendedIterator find( TripleMatch tm )
-        {
-        Triple t = tm.asTriple();
-        Node pm = t.getPredicate();
-        Node om = t.getObject();
-        Node sm = t.getSubject();
-            
-        if (sm.isConcrete())
-            return new StoreTripleIterator( parent, subjects.iterator( sm, pm, om ), subjects, predicates, objects );
-        else if (om.isConcrete())
-            return new StoreTripleIterator( parent, objects.iterator( om, sm, pm ), objects, subjects, predicates );
-        else if (pm.isConcrete())
-            return new StoreTripleIterator( parent, predicates.iterator( pm, om, sm ), predicates, subjects, objects );
-        else
-            return new StoreTripleIterator( parent, subjects.iterateAll(), subjects, predicates, objects );
-        }
-    
+     
     protected NodeToTriplesMapFaster getSubjects()
         { return (NodeToTriplesMapFaster) subjects; }
     
