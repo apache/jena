@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: GraphTripleStore.java,v 1.24 2005-08-28 11:17:14 chris-dollin Exp $
+  $Id: GraphTripleStore.java,v 1.25 2005-08-30 11:14:47 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -27,7 +27,7 @@ public class GraphTripleStore implements TripleStore
     protected NodeToTriplesMapBase predicates = new NodeToTriplesMap
         ( Field.getPredicate, Field.getObject, Field.getSubject );
         
-    protected NodeToTriplesMap objects = new NodeToTriplesMap
+    protected NodeToTriplesMapBase objects = new NodeToTriplesMap
         ( Field.getObject, Field.getSubject, Field.getPredicate );
    
     protected Graph parent;
@@ -88,7 +88,7 @@ public class GraphTripleStore implements TripleStore
         return new ObjectIterator( objects.domain() )
             {
             protected Iterator iteratorFor( Object y )
-                { return objects.get( y ).iterator(); }
+                { return objects.iteratorForIndexed( y ); }
             };
         }
     

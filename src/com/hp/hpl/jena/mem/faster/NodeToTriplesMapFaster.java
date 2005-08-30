@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.13 2005-08-26 14:09:10 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.14 2005-08-30 11:14:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -310,21 +310,7 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
                 };
             }
         }
-    
-    /**
-        Answer an iterator over all the triples in this NTM which are 
-        accepted by <code>pattern</code>.
-    */
-    public ExtendedIterator iterateAll( Node index, Node n2, Node n3 )
-       {
-       return
-           indexField.filterOn( index )
-           .and( f2.filterOn( n2 ) )
-           .and( f3.filterOn( n3 ) )
-           .filterKeep( iterateAll() )
-           ;
-       }
-    
+       
     /**
        Answer an iterator over all the triples in this NTM.
     */
@@ -358,8 +344,15 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
           };
       }
 
-    public Bunch get( Object index )
+    protected Bunch get( Object index )
         { return (Bunch) map.get( index ); }
+    
+    /**
+     Answer an iterator over all the triples that are indexed by the item <code>y</code>.
+        Note that <code>y</code> need not be a Node (because of indexing values).
+    */
+    public Iterator iteratorForIndexed( Object y )
+        { return get( y ).iterator();  }
     }
 
 

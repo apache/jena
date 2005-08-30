@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.12 2005-08-28 11:17:36 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.13 2005-08-30 11:14:55 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -18,13 +18,13 @@ import com.hp.hpl.jena.util.iterator.*;
 
 public class FasterTripleStore implements TripleStore
     {
-    protected NodeToTriplesMapFaster subjects = new NodeToTriplesMapFaster
+    protected NodeToTriplesMapBase subjects = new NodeToTriplesMapFaster
         ( Field.getSubject, Field.getPredicate, Field.getObject );
     
-    protected NodeToTriplesMapFaster predicates = new NodeToTriplesMapFaster
+    protected NodeToTriplesMapBase predicates = new NodeToTriplesMapFaster
         ( Field.getPredicate, Field.getObject, Field.getSubject );
         
-    protected NodeToTriplesMapFaster objects = new NodeToTriplesMapFaster
+    protected NodeToTriplesMapBase objects = new NodeToTriplesMapFaster
         ( Field.getObject, Field.getSubject, Field.getPredicate );
     
     protected Graph parent;
@@ -36,7 +36,7 @@ public class FasterTripleStore implements TripleStore
          Destroy this triple store - discard the indexes.
     */
     public void close()
-        { subjects = predicates = objects = null; }
+        { subjects = objects = predicates = null; }
     
     /**
          Add a triple to this triple store.
@@ -95,7 +95,7 @@ public class FasterTripleStore implements TripleStore
         return new ObjectIterator( objects.domain() )
             {
             protected Iterator iteratorFor( Object y )
-                { return objects.get( y ).iterator(); }
+                { return objects.iteratorForIndexed( y ); }
             };
         }
     
@@ -136,19 +136,25 @@ public class FasterTripleStore implements TripleStore
         else if (pm.isConcrete())
             return new StoreTripleIterator( parent, predicates.iterator( pm, om, sm ), predicates, subjects, objects );
         else
-            return new StoreTripleIterator( parent, subjects.iterateAll( sm, pm, om ), subjects, predicates, objects );
+            return new StoreTripleIterator( parent, subjects.iterateAll(), subjects, predicates, objects );
         }
+    
+    protected NodeToTriplesMapFaster getSubjects()
+        { return (NodeToTriplesMapFaster) subjects; }
+    
+    protected NodeToTriplesMapFaster getObjects()
+        { return (NodeToTriplesMapFaster) objects; }
     
     public Applyer createApplyer( ProcessedTriple pt )
         {
         if (pt.S instanceof QueryNode.Fixed) 
-            return subjects.createFixedSApplyer( pt );
+            return getSubjects().createFixedSApplyer( pt );
         if (pt.O instanceof QueryNode.Fixed) 
-            return objects.createFixedOApplyer( pt );
+            return getObjects().createFixedOApplyer( pt );
         if (pt.S instanceof QueryNode.Bound) 
-            return subjects.createBoundSApplyer( pt );
+            return getSubjects().createBoundSApplyer( pt );
         if (pt.O instanceof QueryNode.Bound) 
-            return objects.createBoundOApplyer( pt );
+            return getObjects().createBoundOApplyer( pt );
         return varSvarOApplyer( pt );
         }
 

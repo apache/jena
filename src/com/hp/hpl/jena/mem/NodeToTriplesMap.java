@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: NodeToTriplesMap.java,v 1.35 2005-08-28 11:17:14 chris-dollin Exp $
+  $Id: NodeToTriplesMap.java,v 1.36 2005-08-30 11:14:47 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -142,10 +142,15 @@ public class NodeToTriplesMap extends NodeToTriplesMapBase
     /** 
      	@see com.hp.hpl.jena.mem.Temp#get(java.lang.Object)
     */
-    public Set get( Object y )
+    protected Set get( Object y )
         { return (Set) map.get( y ); }
 
-
+    /**
+        Answer an iterator over all the triples that are indexed by the item <code>y</code>.
+        Note that <code>y</code> need not be a Node (because of indexing values).
+    */
+    public Iterator iteratorForIndexed( Object y )
+        { return get( y ).iterator();  }
     }
 
 /*
