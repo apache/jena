@@ -9,10 +9,13 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
+import com.hp.hpl.jena.reasoner.rulesys.test.TestFBRules;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 import java.util.*;
+
+import org.apache.commons.logging.*;
 
 /**
 	@author kers
@@ -23,7 +26,8 @@ import java.util.*;
 */
 public final class DBQueryStageCompiler
     {
-	
+    protected static Log logger = LogFactory.getLog( DBQueryStageCompiler.class );
+    
     public DBQueryStageCompiler()
         {}
       
@@ -46,6 +50,7 @@ public final class DBQueryStageCompiler
 			compileConstraints (compiler, query, constraints);
 			compileQuery (compiler, query);
         }
+        if (logger.isDebugEnabled()) logger.debug( "generated SQL: " + query.stmt );
         return query;
     }
        
