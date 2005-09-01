@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: Rewrite.java,v 1.9 2005-02-21 11:52:25 andy_seaborne Exp $
+  $Id: Rewrite.java,v 1.10 2005-09-01 10:56:09 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -60,20 +60,16 @@ public class Rewrite
         protected abstract boolean evalBool( String l, String r );
         }
     
-    public static abstract class DyadicLower extends DyadicLiteral
-        {
-        public DyadicLower( Expression L, String F, String R )
-            { super( L, F, R.toLowerCase() ); }
-        }
-    
-    public static Expression endsWith( Expression L, String content, String modifiers )
+    public static Expression endsWith( Expression L, final String content, String modifiers )
         {
         if (modifiers.equals( "i" ))
             {
-            return new DyadicLower( L, ExpressionFunctionURIs.J_endsWithInsensitive, content )
-                {            
+            return new DyadicLiteral( L, ExpressionFunctionURIs.J_endsWithInsensitive, content )
+                {          
+                protected final String lowerContent = content.toLowerCase();
+                
                 public boolean evalBool( String l, String r )
-                    { return l.toLowerCase().endsWith( r ); }
+                    { return l.toLowerCase().endsWith( lowerContent ); }
                 };
             }
         else
@@ -86,14 +82,16 @@ public class Rewrite
             }
         }
 
-    public static Expression startsWith( Expression L, String content, String modifiers )
+    public static Expression startsWith( Expression L, final String content, String modifiers )
         {
         if (modifiers.equals( "i" ))
             {      
-            return new DyadicLower( L, ExpressionFunctionURIs.J_startsWithInsensitive, content )
+            return new DyadicLiteral( L, ExpressionFunctionURIs.J_startsWithInsensitive, content )
                 { 
+                protected final String lowerContent = content.toLowerCase();
+                
                 public boolean evalBool( String l, String r )
-                    { return l.toLowerCase().startsWith( r ); }
+                    { return l.toLowerCase().startsWith( lowerContent ); }
                 };  
             }
         else
@@ -106,14 +104,16 @@ public class Rewrite
             }          
         }
 
-    public static Expression contains( Expression L, String content, String modifiers )
+    public static Expression contains( Expression L, final String content, String modifiers )
         {
         if (modifiers.equals( "i" ))
             {
-            return new DyadicLower( L, ExpressionFunctionURIs.J_containsInsensitive, content )
+            return new DyadicLiteral( L, ExpressionFunctionURIs.J_containsInsensitive, content )
                 { 
+                protected final String lowerContent = content.toLowerCase();
+                
                 public boolean evalBool( String l, String r )
-                    { return l.toLowerCase().indexOf( r ) > -1; }
+                    { return l.toLowerCase().indexOf( lowerContent ) > -1; }
                 };      
             }
         else

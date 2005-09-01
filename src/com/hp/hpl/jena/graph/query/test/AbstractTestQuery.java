@@ -1,7 +1,7 @@
   /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestQuery.java,v 1.41 2005-08-26 15:02:56 chris-dollin Exp $
+  $Id: AbstractTestQuery.java,v 1.42 2005-09-01 10:56:09 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
@@ -578,13 +578,13 @@ public abstract class AbstractTestQuery extends QueryTestBase
         assertEquals( desired, e2 );
         }    
     
-    public void testRewriteContainsInsensitiveExpression()
+    public void testRewritePreservesCharacterCases()
         {
         Query q = new Query();
         Expression L = constant( "x" );
         Expression R = createModifiedPattern( "coNtaIns", "i" );
         Expression provided = dyadic( L, "Q_StringMatch", R );
-        Expression desired = dyadic( L, "J_containsInsensitive", constant( "contains" ) );
+        Expression desired = dyadic( L, "J_containsInsensitive", constant( "coNtaIns" ) );
         q.addConstraint( provided );
         Expression e2 = (Expression) q.getConstraints().iterator().next();
         assertEquals( desired, e2 );
