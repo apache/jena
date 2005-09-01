@@ -22,7 +22,7 @@ import com.hp.hpl.jena.util.iterator.*;
  *  </p>
  * 
  * @author Andy Seaborne
- * @version $Id: dblist.java,v 1.5 2005-02-21 11:49:11 andy_seaborne Exp $
+ * @version $Id: dblist.java,v 1.6 2005-09-01 11:13:58 andy_seaborne Exp $
  */ 
  
 public class dblist extends DBcmd
@@ -49,14 +49,16 @@ public class dblist extends DBcmd
     {
         super("dblist", false) ;
     }
+
+    static String defaultModelName = "DEFAULT" ;
     
     protected void exec0()
     {
-        if ( getConnection().containsDefaultModel() )
-        {
-            System.out.println("Model: <<default model>>") ;
-            properties(null) ;
-        }
+//        if ( getConnection().containsDefaultModel() )
+//        {
+//            System.out.println("Model: <<default model>>") ;
+//            properties(null) ;
+//        }
         
         ClosableIterator iter = getConnection().getAllModelNames() ;
         try {

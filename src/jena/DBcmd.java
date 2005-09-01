@@ -13,7 +13,7 @@ import java.util.* ;
 /** Framework for the database commands.
  * 
  * @author Andy Seaborne
- * @version $Id: DBcmd.java,v 1.6 2005-02-21 11:49:04 andy_seaborne Exp $
+ * @version $Id: DBcmd.java,v 1.7 2005-09-01 11:13:58 andy_seaborne Exp $
  */ 
  
 abstract class DBcmd
@@ -140,6 +140,7 @@ abstract class DBcmd
             System.exit(9) ;
         }
 
+        argDbType = argDbType.toLowerCase() ;
         String driverClass = (String)drivers.get(argDbType);
         if (cmdLine.contains(argDeclDbDriver))
             driverClass = cmdLine.getArg(argDeclDbDriver).getValue();
@@ -152,7 +153,7 @@ abstract class DBcmd
 
         try
         {
-            Class.forName(driverClass).newInstance();
+            Class.forName(driverClass); //.newInstance();
         }
         catch (Exception ex)
         {

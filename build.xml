@@ -41,10 +41,6 @@
   <property name="jarfile"         value="${name}.jar"/>
   <property name="srczipfile"      value="${name}-src.zip"/>
 
-  <!-- Oh dear - a fixed path
-  <property name="javacchome"      value="c:/home/afs/sys/javacc-2.1"/>
-  -->
-
   <!-- Sub-system specific -->
   <property name="rdql.root" value="src/com/hp/hpl/jena/rdql"/>
 
@@ -167,7 +163,10 @@
 
   </target>
 
+  <!--
   <target name="compile" depends="pre-compile,build-src,compile-jena,compile-apps"/>
+  -->
+  <target name="compile" depends="pre-compile,build-src,compile-jena"/>
 
   <target name="compile-jena" depends="pre-compile">
     <javac srcdir="${src.dir}"
@@ -183,17 +182,19 @@
     <copy todir="${classes.dir}" file="${src.dir}/log4j.properties"/>
   </target>
 
+  <!--
   <target name="compile-apps" depends="pre-compile">
     <javac srcdir="${src.dir}/jena"
        destdir="${classes.dir}"
-       debug="${debug}"
-       deprecation="${deprecation}"
-       optimize="${optimize}"
+       debug="${java.debug}"
+       deprecation="${java.deprecation}"
+       optimize="${java.optimize}"
        source="${java.source}"
        target="${java.target}">
       <classpath refid="classpath" />
     </javac>
   </target>
+  -->
 
 
 
