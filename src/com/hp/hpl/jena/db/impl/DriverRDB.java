@@ -46,7 +46,7 @@ import org.apache.xerces.util.XMLChar;
 * loaded in a separate file etc/[layout]_[database].sql from the classpath.
 *
 * @author hkuno modification of Jena1 code by Dave Reynolds (der)
-* @version $Revision: 1.54 $ on $Date: 2005-08-26 02:27:49 $
+* @version $Revision: 1.55 $ on $Date: 2005-09-01 11:15:00 $
 */
 
 public abstract class DriverRDB implements IRDBDriver {
@@ -2287,7 +2287,8 @@ public abstract class DriverRDB implements IRDBDriver {
 		String fun, String stringToMatch ) {
 		boolean ignCase = 
 		   fun.equals(ExpressionFunctionURIs.J_startsWithInsensitive) ||
-		   fun.equals(ExpressionFunctionURIs.J_endsWithInsensitive);
+		   fun.equals(ExpressionFunctionURIs.J_endsWithInsensitive) ||
+           fun.equals(ExpressionFunctionURIs.J_containsInsensitive) ;
 		boolean pfxMatch = 
 		   fun.equals(ExpressionFunctionURIs.J_startsWith) ||
 		   fun.equals(ExpressionFunctionURIs.J_startsWithInsensitive);
