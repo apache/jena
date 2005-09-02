@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: GraphTripleStoreBase.java,v 1.2 2005-09-02 10:38:19 chris-dollin Exp $
+    $Id: GraphTripleStoreBase.java,v 1.3 2005-09-02 11:05:49 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -105,10 +105,10 @@ public abstract class GraphTripleStoreBase implements TripleStore
           Answer true iff this triple store contains the (concrete) triple <code>t</code>.
      */
      public boolean contains( Triple t )
-         { return subjects.contains( t ); }
-     
-     public boolean containsBySameValueAs( Triple t )
          { return subjects.containsBySameValueAs( t ); }
+     
+     public boolean containsByEquality( Triple t )
+         { return subjects.contains( t ); }
      
      /** 
          Answer an ExtendedIterator returning all the triples from this store that

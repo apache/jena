@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.15 2005-09-02 10:38:19 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.16 2005-09-02 11:05:49 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem.faster;
 
@@ -32,8 +32,8 @@ public class FasterTripleStore extends GraphTripleStoreBase implements TripleSto
     
     public Applyer createApplyer( ProcessedTriple pt )
         {
-        if (pt.hasNoVariables())
-            return containsApplyer( pt );
+//        if (pt.hasNoVariables())
+//            return containsApplyer( pt );
         if (pt.S instanceof QueryNode.Fixed) 
             return getSubjects().createFixedSApplyer( pt );
         if (pt.O instanceof QueryNode.Fixed) 
