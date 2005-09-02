@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: FasterTripleStore.java,v 1.14 2005-08-30 12:20:01 chris-dollin Exp $
+ 	$Id: FasterTripleStore.java,v 1.15 2005-09-02 10:38:19 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem.faster;
 
@@ -13,7 +13,7 @@ import com.hp.hpl.jena.graph.impl.TripleStore;
 import com.hp.hpl.jena.graph.query.*;
 import com.hp.hpl.jena.mem.*;
 
-public class FasterTripleStore extends GraphTripleStoreBase  implements TripleStore
+public class FasterTripleStore extends GraphTripleStoreBase implements TripleStore
     {    
     public FasterTripleStore( Graph parent )
         { 
@@ -32,6 +32,8 @@ public class FasterTripleStore extends GraphTripleStoreBase  implements TripleSt
     
     public Applyer createApplyer( ProcessedTriple pt )
         {
+        if (pt.hasNoVariables())
+            return containsApplyer( pt );
         if (pt.S instanceof QueryNode.Fixed) 
             return getSubjects().createFixedSApplyer( pt );
         if (pt.O instanceof QueryNode.Fixed) 
@@ -41,6 +43,18 @@ public class FasterTripleStore extends GraphTripleStoreBase  implements TripleSt
         if (pt.O instanceof QueryNode.Bound) 
             return getObjects().createBoundOApplyer( pt );
         return varSvarOApplyer( pt );
+        }
+
+    protected Applyer containsApplyer( final ProcessedTriple pt )
+        { 
+        return new Applyer()
+            {
+            public void applyToTriples( Domain d, Matcher m, StageElement next )
+                {
+                Triple t = new Triple( pt.S.finder( d ), pt.P.finder( d ), pt.O.finder( d ) );
+                if (objects.contains( t )) next.run( d );
+                }    
+            };
         }
 
     protected Applyer varSvarOApplyer( final QueryTriple pt )

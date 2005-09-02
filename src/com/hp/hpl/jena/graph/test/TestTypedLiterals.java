@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestTypedLiterals.java,v 1.49 2005-08-22 15:08:13 der Exp $
+ * $Id: TestTypedLiterals.java,v 1.50 2005-09-02 10:38:19 chris-dollin Exp $
  *****************************************************************/
 package com.hp.hpl.jena.graph.test;
 
@@ -34,7 +34,7 @@ import org.apache.xerces.impl.dv.util.HexBin;
  * TypeMapper and LiteralLabel.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.49 $ on $Date: 2005-08-22 15:08:13 $
+ * @version $Revision: 1.50 $ on $Date: 2005-09-02 10:38:19 $
  */
 public class TestTypedLiterals extends TestCase {
               
@@ -654,6 +654,21 @@ public class TestTypedLiterals extends TestCase {
         assertEquals("DateTime from date", "2004-04-21T19:50:42Z", l1.getValue().toString());
         //System.err.println("date is: "+ncal.getTime());
 
+    } 
+    
+    /**
+     * Test query applied to graphs containing typed values
+     */
+    public void TODOtestTypedContains() {
+        Model model = ModelFactory.createDefaultModel();
+        Property p = model.createProperty("urn:x-eg/p");
+        Literal l1 = model.createTypedLiteral("10", "http://www.w3.org/2001/XMLSchema#integer");
+        Literal l2 = model.createTypedLiteral("010", "http://www.w3.org/2001/XMLSchema#integer");
+        assertSameValueAs( "sameas test", l1, l2 );
+        Resource a = model.createResource("urn:x-eg/a");
+        a.addProperty( p, l1 );
+        assertTrue( model.getGraph().contains( a.asNode(), p.asNode(), l1.asNode() ) );
+        assertTrue( model.getGraph().contains( a.asNode(), p.asNode(), l2.asNode() ) );
     }
       
     /**
@@ -670,6 +685,7 @@ public class TestTypedLiterals extends TestCase {
         assertTrue(model.getGraph().find(null, p.asNode(), l1.asNode()).hasNext());
         assertTrue(model.getGraph().find(null, p.asNode(), l2.asNode()).hasNext());
         assertTrue(model.getGraph().find(a.asNode(), p.asNode(), l2.asNode()).hasNext());
+        // TODO: assertTrue( model.getGraph().contains( a.asNode(), p.asNode(), l2.asNode() ) );
         Query q = new Query();
         q.addMatch(a.asNode(), p.asNode(), l2.asNode());
         Iterator qi = model.getGraph().queryHandler().prepareBindings(q, new Node[] {}).executeBindings();

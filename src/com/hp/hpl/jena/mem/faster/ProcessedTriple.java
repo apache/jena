@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: ProcessedTriple.java,v 1.12 2005-07-27 16:21:47 chris-dollin Exp $
+ 	$Id: ProcessedTriple.java,v 1.13 2005-09-02 10:38:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -32,6 +32,9 @@ public class ProcessedTriple extends QueryTriple
 
     public Applyer createApplyer( Graph g )
         { return ((GraphMemFaster) g).createApplyer( this ); }
+
+    public boolean hasNoVariables()
+        { return S.isFrozen() && P.isFrozen() && O.isFrozen(); }
     }
 
 /*

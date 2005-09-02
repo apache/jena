@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapFaster.java,v 1.16 2005-08-30 17:18:41 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapFaster.java,v 1.17 2005-09-02 10:38:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem.faster;
@@ -80,7 +80,13 @@ public class NodeToTriplesMapFaster extends NodeToTriplesMapBase
     public boolean contains( Triple t )
        { 
        TripleBunch s = (TripleBunch) map.get( getIndexField( t ) );
-       return s == null ? false : s.contains( t );
+       return s == null ? false :  s.contains( t );
+       }    
+    
+    public boolean containsBySameValueAs( Triple t )
+       { 
+       TripleBunch s = (TripleBunch) map.get( getIndexField( t ) );
+       return s == null ? false :  s.containsBySameValueAs( t );
        }
     
     /**

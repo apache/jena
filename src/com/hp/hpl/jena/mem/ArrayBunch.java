@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: ArrayBunch.java,v 1.1 2005-08-30 17:18:32 chris-dollin Exp $
+    $Id: ArrayBunch.java,v 1.2 2005-09-02 10:38:19 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -19,6 +19,13 @@ public class ArrayBunch extends TripleBunch
     
     protected int size = 0;
     protected Triple [] elements = new Triple[9];
+    
+    public boolean containsBySameValueAs( Triple t )
+        {
+        for (int i = 0; i < size; i += 1)
+            if (t.matches( elements[i])) return true;
+        return false;
+        }
     
     public boolean contains( Triple t )
         {

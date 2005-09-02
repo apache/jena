@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: QueryNode.java,v 1.9 2005-08-25 10:14:13 chris-dollin Exp $
+    $Id: QueryNode.java,v 1.10 2005-09-02 10:38:15 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.query;
 
@@ -71,6 +71,13 @@ public abstract class QueryNode
     */
     public String toString()
         { return node.toString() + "[" + index + "]"; }
+
+    /**
+        Answer true iff this node is "frozen", ie its value is fixed, when it
+        is encountered; that is, it is not a Bind or JustBound node.
+    */
+    public boolean isFrozen()
+        { return true; }
     
     /**
         Answer a Node value to use when this QueryValue is used to select 
@@ -157,6 +164,9 @@ public abstract class QueryNode
         public boolean mustMatch()
             { return true; }
         
+        public boolean isFrozen()
+            { return false; }
+        
         public boolean match( Domain d, Node value )
             { d.setElement( index, value );
             return true; }
@@ -176,6 +186,9 @@ public abstract class QueryNode
         
         public boolean mustMatch()
             { return true; } 
+        
+        public boolean isFrozen()
+            { return false; }
         
         public boolean match( Domain d, Node X )
             { return X.matches( d.getElement( index ) ); }

@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: TripleBunch.java,v 1.1 2005-08-30 17:18:32 chris-dollin Exp $
+    $Id: TripleBunch.java,v 1.2 2005-09-02 10:38:19 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -14,6 +14,7 @@ import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 public abstract class TripleBunch 
     {
     public abstract boolean contains( Triple t );
+    public abstract boolean containsBySameValueAs( Triple t );
     public abstract int size();
     public abstract void add( Triple t );
     public abstract void remove( Triple t );

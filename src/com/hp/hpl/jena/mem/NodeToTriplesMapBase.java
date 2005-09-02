@@ -1,7 +1,7 @@
 /*
  	(c) Copyright 2005 Hewlett-Packard Development Company, LP
  	All rights reserved - see end of file.
- 	$Id: NodeToTriplesMapBase.java,v 1.6 2005-08-30 12:43:45 chris-dollin Exp $
+ 	$Id: NodeToTriplesMapBase.java,v 1.7 2005-09-02 10:38:19 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.mem;
@@ -59,6 +59,8 @@ public abstract class NodeToTriplesMapBase
          Answer true iff this NTM contains the concrete triple <code>t</code>.
     */
     public abstract boolean contains( Triple t );
+    
+    public abstract boolean containsBySameValueAs( Triple t );
 
     /**
         The nodes which appear in the index position of the stored triples; useful

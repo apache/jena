@@ -1,7 +1,7 @@
 /*
     (c) Copyright 2005 Hewlett-Packard Development Company, LP
     All rights reserved - see end of file.
-    $Id: SetBunch.java,v 1.1 2005-08-30 17:18:32 chris-dollin Exp $
+    $Id: SetBunch.java,v 1.2 2005-09-02 10:38:19 chris-dollin Exp $
 */
 package com.hp.hpl.jena.mem;
 
@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.graph.query.Domain;
 import com.hp.hpl.jena.graph.query.StageElement;
@@ -24,10 +25,27 @@ public class SetBunch extends TripleBunch
         for (Iterator it = b.iterator(); it.hasNext();) 
             elements.add( it.next() );
         }
-    
+
+    protected static boolean equalsObjectOK( Triple t )
+        { 
+        Node o = t.getObject();
+        return o.isLiteral() ? o.getLiteralDatatype() == null : true;
+        }
+
     public boolean contains( Triple t )
         { return elements.contains( t ); }
     
+    public boolean containsBySameValueAs( Triple t )
+        { return equalsObjectOK( t ) ? elements.contains( t ) : slowContains( t ); }
+    
+    protected boolean slowContains( Triple t )
+        { 
+        Iterator it = elements.iterator();
+        while (it.hasNext())
+            if (t.matches( (Triple) it.next() )) return true;
+        return false;
+        }
+
     public int size()
         { return elements.size(); }
     
