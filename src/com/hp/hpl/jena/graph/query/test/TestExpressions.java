@@ -1,13 +1,14 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestExpressions.java,v 1.10 2005-02-21 11:52:33 andy_seaborne Exp $
+  $Id: TestExpressions.java,v 1.11 2005-09-02 13:15:28 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.query.test;
 
 import junit.framework.*;
 
+import com.hp.hpl.jena.graph.Node;
 import com.hp.hpl.jena.graph.query.*;
 
 /**
@@ -171,7 +172,38 @@ public class TestExpressions extends QueryTestBase
         assertEquals( false, evalBool( contains( lit( "hello" ), pli( "lot" ) ) ) );
         }
 
+    public void testLangedLiteralsEndsWith()
+        {
+        assertEquals( true, evalBool( endsWith( litString( "'spoo'en" ), "o" ) ) );
+        assertEquals( true, evalBool( endsWith( litString( "'spoo'go" ), "o" ) ) );
+        assertEquals( false, evalBool( endsWith( litString( "'spot'go" ), "o" ) ) );
+        assertEquals( false, evalBool( endsWith( litString( "'spot'en" ), "o" ) ) );
+        }
 
+    public void testTypedLiteralsEndsWith()
+        {
+        assertEquals( true, evalBool( endsWith( litString( "'spoo'xsd:mint" ), "o" ) ) );
+        assertEquals( true, evalBool( endsWith( litString( "'spoo'xsd:gloo" ), "o" ) ) );
+        assertEquals( false, evalBool( endsWith( litString( "'spot'xsd:slat" ), "o" ) ) );
+        assertEquals( false, evalBool( endsWith( litString( "'spot'xsd:do" ), "o" ) ) );
+        }
+    
+    public void testLangedLiteralsContains()
+        {
+        assertEquals( true, evalBool( contains( litString( "'spoo'en" ), "po" ) ) );
+        assertEquals( true, evalBool( contains( litString( "'spoo'go" ), "sp" ) ) );
+        assertEquals( false, evalBool( contains( litString( "'spot'go" ), "go" ) ) );
+        assertEquals( false, evalBool( contains( litString( "'spot'en" ), "en" ) ) );
+        }
+
+    public void testTypedLiteralsContains()
+        {
+        assertEquals( true, evalBool( contains( litString( "'spoo'xsd:mint" ), "sp" ) ) );
+        assertEquals( true, evalBool( contains( litString( "'spoo'xsd:gloo" ), "po" ) ) );
+        assertEquals( false, evalBool( contains( litString( "'spot'xsd:slat" ), "sl" ) ) );
+        assertEquals( false, evalBool( contains( litString( "'spot'xsd:do" ), "do" ) ) );
+        }
+    
     public void testEndsWith()
         {
         assertEquals( true, evalBool( endsWith( lit( "hello" ), "o" ) ) );
@@ -199,6 +231,9 @@ public class TestExpressions extends QueryTestBase
     
     private boolean evalBool(Expression e)
         { return e.prepare( emptyMapping ).evalBool( noIVs ); }
+    
+    protected Expression litString( String s )
+        { return lit( Node.create( s ) ); }  
 
     protected Expression lit( Object x )
         { return new Expression.Fixed( x ); }
