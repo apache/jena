@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.45 $
+ * Revision           $Revision: 1.46 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-03-04 12:49:37 $
+ * Last modified on   $Date: 2005-09-05 15:55:18 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -47,7 +47,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.45 2005-03-04 12:49:37 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.46 2005-09-05 15:55:18 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -297,6 +297,7 @@ public class OntDocumentManager
      * <strong>not</strong> reload the configuration information from
      * the search path.  Note also that the metadata search path is one
      * of the values that is reset back to its default value.</p>
+     * @see #reset( boolean )
      */
     public void reset() {
         reset( false );
@@ -305,11 +306,14 @@ public class OntDocumentManager
 
     /**
      * <p>
-     * Answer an iterator over the ontology documents this document mananger is managing.
+     * Answer an iterator over the ontology document URI's that this document manager
+     * knows to re-direct to other URL's. <strong>Note</strong> that being in this
+     * iteration does <em>not</em> mean that a document with the given name is in
+     * the set of cached models held by this document manager.
      * </p>
      *
      * @return An Iterator ranging over the public URI strings for the known
-     * (i&#046;e&#046; cached) document models
+     * document URI's.
      */
     public Iterator listDocuments() {
         return m_altMap.keySet().iterator();

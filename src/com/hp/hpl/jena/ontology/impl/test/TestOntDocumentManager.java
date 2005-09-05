@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.16 $
+ * Revision           $Revision: 1.17 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-03-04 12:51:03 $
+ * Last modified on   $Date: 2005-09-05 15:55:31 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -28,6 +28,7 @@ import junit.framework.*;
 
 import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.reasoner.test.TestUtil;
 import com.hp.hpl.jena.vocabulary.*;
 
 
@@ -39,7 +40,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.16 2005-03-04 12:51:03 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.17 2005-09-05 15:55:31 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -104,6 +105,33 @@ public class TestOntDocumentManager
         OntDocumentManager.getInstance().reset( true );
     }
 
+    public void testConstruct0() {
+        OntDocumentManager m = new OntDocumentManager();
+        assertNotNull( m );
+        assertEquals( m.getMetadataSearchPath(), OntDocumentManager.DEFAULT_METADATA_PATH );
+    }
+
+    public void testConstruct1() {
+        OntDocumentManager mgr = new OntDocumentManager( "" );
+        assertTrue( "Should be no specification loaded", !mgr.listDocuments().hasNext() );
+    }
+
+    public void testConstruct2() {
+        // make sure we don't fail on null
+        OntDocumentManager mgr = new OntDocumentManager( (String) null );
+        assertTrue( "Should be no specification loaded", !mgr.listDocuments().hasNext() );
+    }
+
+    public void testConstruct3() {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        r.addProperty( RDF.type, OntDocManagerVocab.OntologySpec );
+        r.addProperty( OntDocManagerVocab.publicURI, m.createResource("http://example.com/foo") );
+        r.addProperty( OntDocManagerVocab.altURL, m.createResource("file:local.rdf") );
+
+        OntDocumentManager mgr = new OntDocumentManager( m );
+        assertEquals( "cache URL not correct", "file:local.rdf", mgr.doAltURLMapping( "http://example.com/foo" ));
+    }
 
     public void testInitialisation() {
         OntDocumentManager mgr = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
@@ -112,15 +140,76 @@ public class TestOntDocumentManager
         assertNotNull( "cache URL for owl should not be null", mgr.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
         assertEquals( "cache URL for owl not correct", "file:vocabularies/owl.owl", mgr.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
         assertEquals( "prefix for owl not correct", "owl", mgr.getPrefixForURI( "http://www.w3.org/2002/07/owl#" ));
-
-        mgr = new OntDocumentManager( "" );
-        assertTrue( "Should be no specification loaded", !mgr.listDocuments().hasNext() );
-
-        // make sure we don't fail on null
-        mgr = new OntDocumentManager( (String) null );
-        assertTrue( "Should be no specification loaded", !mgr.listDocuments().hasNext() );
-
     }
+
+    public void testGetInstance() {
+        OntDocumentManager odm = OntDocumentManager.getInstance();
+        assertNotNull( odm );
+
+        OntDocumentManager odm2 = OntDocumentManager.getInstance();
+        assertSame( odm, odm2 );
+    }
+
+    public void testSetMetadataSearchPath() {
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        assertEquals( "file:etc/ont-policy-test.rdf", odm.getMetadataSearchPath() );
+        assertTrue( odm.listDocuments().hasNext() );
+        assertEquals( "file:etc/ont-policy-test.rdf", odm.getLoadedPolicyURL() );
+
+        odm.setMetadataSearchPath( "file:notexist.rdf", false );
+        assertTrue( odm.listDocuments().hasNext() );
+        assertNull( odm.getLoadedPolicyURL() );
+
+        odm.setMetadataSearchPath( "file:notexist.rdf", true );
+        assertFalse( odm.listDocuments().hasNext() );
+        assertNull( odm.getLoadedPolicyURL() );
+
+        odm.setMetadataSearchPath( "file:etc/ont-policy-test.rdf", false );
+        assertTrue( odm.listDocuments().hasNext() );
+        assertEquals( "file:etc/ont-policy-test.rdf", odm.getLoadedPolicyURL() );
+    }
+
+    public void testConfigure0() {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        r.addProperty( RDF.type, OntDocManagerVocab.OntologySpec );
+        r.addProperty( OntDocManagerVocab.publicURI, m.createResource("http://example.com/foo") );
+        r.addProperty( OntDocManagerVocab.altURL, m.createResource("file:local.rdf") );
+
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        TestUtil.assertIteratorLength( odm.listDocuments(), 3 );
+
+        odm.configure( m, false );
+        TestUtil.assertIteratorLength( odm.listDocuments(), 4 );
+    }
+
+    public void testConfigure1() {
+        Model m = ModelFactory.createDefaultModel();
+        Resource r = m.createResource();
+        r.addProperty( RDF.type, OntDocManagerVocab.OntologySpec );
+        r.addProperty( OntDocManagerVocab.publicURI, m.createResource("http://example.com/foo") );
+        r.addProperty( OntDocManagerVocab.altURL, m.createResource("file:local.rdf") );
+
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        TestUtil.assertIteratorLength( odm.listDocuments(), 3 );
+
+        odm.configure( m );
+        TestUtil.assertIteratorLength( odm.listDocuments(), 1 );
+    }
+
+    public void testConfigure2() {
+        // create a simple policy
+        Model m = ModelFactory.createDefaultModel();
+        Resource policy = m.createResource();
+        m.add( policy, RDF.type, OntDocManagerVocab.DocumentManagerPolicy );
+        m.add( policy, OntDocManagerVocab.cacheModels, false );
+
+        OntDocumentManager mgr = new OntDocumentManager( (String) null );
+        assertTrue( mgr.getCacheModels() );
+        mgr.configure( m );
+        assertFalse( "Docmgr configure() should have updated cache models flag", mgr.getCacheModels() );
+    }
+
 
     public void testReset() {
         OntDocumentManager mgr = new OntDocumentManager( (String) null );
@@ -150,50 +239,142 @@ public class TestOntDocumentManager
         assertTrue( mgr.useDeclaredPrefixes() );
     }
 
-    public void testConfigure() {
-        // create a simple policy
-        Model m = ModelFactory.createDefaultModel();
-        Resource policy = m.createResource();
-        m.add( policy, RDF.type, OntDocManagerVocab.DocumentManagerPolicy );
-        m.add( policy, OntDocManagerVocab.cacheModels, false );
-
-        OntDocumentManager mgr = new OntDocumentManager( (String) null );
-        assertTrue( mgr.getCacheModels() );
-        mgr.configure( m );
-        assertFalse( "Docmgr configure() should have updated cache models flag", mgr.getCacheModels() );
+    public void testDoAltMapping() {
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        assertEquals( "file:vocabularies/owl.owl", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ));
+        assertEquals( "http://example.com/nocache", odm.doAltURLMapping( "http://example.com/nocache" ));
     }
 
+    public void testGetLanguage() {
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        assertEquals( ProfileRegistry.OWL_LANG, odm.getLanguage( "http://www.w3.org/2002/07/owl" ));
+        assertNull( odm.getLanguage( "http://example.com/notthere" ));
+    }
+
+    public void testGetPrefixForURI() {
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        assertEquals( "owl", odm.getPrefixForURI( "http://www.w3.org/2002/07/owl#" ));
+        assertNull( odm.getPrefixForURI( "http://example.com/notthere" ));
+    }
+
+    public void testGetURIForPrefix() {
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        assertEquals( "http://www.w3.org/2002/07/owl#", odm.getURIForPrefix( "owl" ));
+        assertNull( odm.getURIForPrefix( "http://example.com/notthere" ));
+    }
+
+    public void testAddModel0() {
+        OntDocumentManager odm = OntDocumentManager.getInstance();
+        Model m = ModelFactory.createDefaultModel();
+        String uri = "http://example.com/test#m";
+        assertNull( odm.getModel( uri ));
+        odm.addModel( uri, m );
+        assertSame( m, odm.getModel(uri));
+    }
+
+    public void testAddModel1() {
+        OntDocumentManager odm = OntDocumentManager.getInstance();
+        Model m0 = ModelFactory.createDefaultModel();
+        Model m1 = ModelFactory.createDefaultModel();
+        String uri = "http://example.com/test#m";
+        assertNull( odm.getModel( uri ));
+        odm.addModel( uri, m0 );
+
+        // add duplicate with no replace
+        odm.addModel( uri, m1 );
+        assertSame( m0, odm.getModel(uri));
+
+        // add duplicate with replace
+        odm.addModel( uri, m1, true );
+        assertSame( m1, odm.getModel(uri));
+    }
+
+    public void testClearCache() {
+        OntDocumentManager odm = OntDocumentManager.getInstance();
+        Model m = ModelFactory.createDefaultModel();
+        String uri = "http://example.com/test#m";
+        assertNull( odm.getModel( uri ));
+        odm.addModel( uri, m );
+        odm.clearCache();
+        assertSame( null, odm.getModel(uri));
+    }
+
+    public void testForget() {
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        assertEquals( "file:vocabularies/owl.owl", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
+        assertEquals( "http://www.w3.org/2002/07/owl#", odm.getLanguage( "http://www.w3.org/2002/07/owl"));
+        OntModel m = ModelFactory.createOntologyModel();
+        odm.addModel( "http://www.w3.org/2002/07/owl#", m );
+        assertNotNull( odm.getModel( "http://www.w3.org/2002/07/owl#" ));
+
+        odm.forget( "http://www.w3.org/2002/07/owl#" );
+        odm.forget( "http://www.w3.org/2002/07/owl" );
+
+        assertEquals( "http://www.w3.org/2002/07/owl", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
+        assertNull( odm.getLanguage( "http://www.w3.org/2002/07/owl"));
+        assertNull( odm.getModel( "http://www.w3.org/2002/07/owl#" ));
+    }
+
+    public void testGetOntology() {
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        OntModel m = odm.getOntology( "http://www.w3.org/2002/07/owl", OntModelSpec.OWL_MEM );
+        assertNotNull( m );
+        assertSame( odm, m.getDocumentManager() );
+        assertSame( m, odm.getOntology( "http://www.w3.org/2002/07/owl", OntModelSpec.OWL_MEM ) );
+    }
+
+    public void testProcessImports() {
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        assertTrue( odm.getProcessImports() );
+        odm.setProcessImports( false );
+        assertFalse( odm.getProcessImports() );
+    }
+
+    public void testCacheModels() {
+        OntDocumentManager odm = new OntDocumentManager( "file:etc/ont-policy-test.rdf" );
+        assertTrue( odm.getCacheModels() );
+        odm.setCacheModels( false );
+        assertFalse( odm.getCacheModels() );
+    }
 
     public void testManualAssociation() {
-        OntDocumentManager mgr = new OntDocumentManager( (String) null );
+        OntDocumentManager odm = new OntDocumentManager( (String) null );
 
-        mgr.addPrefixMapping( "http://www.w3.org/2002/07/owl#", "owl" );
-        assertEquals( "prefix for owl not correct", "owl", mgr.getPrefixForURI( "http://www.w3.org/2002/07/owl#" ));
-        assertEquals( "URI for owl not correct", "http://www.w3.org/2002/07/owl#", mgr.getURIForPrefix( "owl" ));
+        odm.addPrefixMapping( "http://www.w3.org/2002/07/owl#", "owl" );
+        assertEquals( "prefix for owl not correct", "owl", odm.getPrefixForURI( "http://www.w3.org/2002/07/owl#" ));
+        assertEquals( "URI for owl not correct", "http://www.w3.org/2002/07/owl#", odm.getURIForPrefix( "owl" ));
 
-        mgr.addAltEntry( "http://www.w3.org/2002/07/owl", "file:foo.bar" );
-        assertEquals( "Failed to retrieve cache location", "file:foo.bar", mgr.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
+        odm.addAltEntry( "http://www.w3.org/2002/07/owl", "file:foo.bar" );
+        assertEquals( "Failed to retrieve cache location", "file:foo.bar", odm.doAltURLMapping( "http://www.w3.org/2002/07/owl" ) );
 
-        mgr.addLanguageEntry( "http://www.w3.org/2002/07/owl", "http://www.w3.org/2002/07/owl" );
-        assertEquals( "Failed to retrieve language", "http://www.w3.org/2002/07/owl", mgr.getLanguage( "http://www.w3.org/2002/07/owl" ) );
+        odm.addLanguageEntry( "http://www.w3.org/2002/07/owl", "http://www.w3.org/2002/07/owl" );
+        assertEquals( "Failed to retrieve language", "http://www.w3.org/2002/07/owl", odm.getLanguage( "http://www.w3.org/2002/07/owl" ) );
     }
 
 
     public void testIgnoreImport() {
-        OntDocumentManager dm = new OntDocumentManager();
+        OntDocumentManager odm = new OntDocumentManager();
+        TestUtil.assertIteratorLength( odm.listIgnoredImports(), 0 );
 
-        dm.addIgnoreImport( "file:testing/ontology/testImport3/c.owl" );
+        odm.addIgnoreImport( "file:testing/ontology/testImport3/c.owl" );
+        TestUtil.assertIteratorLength( odm.listIgnoredImports(), 1 );
+        assertTrue( odm.ignoringImport( "file:testing/ontology/testImport3/c.owl"));
+        assertFalse( odm.ignoringImport( "file:testing/ontology/foo.owl"));
 
-        OntModelSpec spec = new OntModelSpec( null, dm, null, ProfileRegistry.OWL_LANG );
+        OntModelSpec spec = new OntModelSpec( null, odm, null, ProfileRegistry.OWL_LANG );
         OntModel m = ModelFactory.createOntologyModel( spec, null );
         assertNotNull( "Ontology model should not be null", m );
 
         m.read( "file:testing/ontology/testImport3/a.owl" );
         assertEquals( "Marker count not correct", 2, countMarkers( m ));
+
+        odm.removeIgnoreImport( "file:testing/ontology/testImport3/c.owl" );
+        TestUtil.assertIteratorLength( odm.listIgnoredImports(), 0 );
+        assertFalse( odm.ignoringImport( "file:testing/ontology/testImport3/c.owl"));
     }
 
     /** Simple case: a imports b, b imports c, remove c */
-    public void testRemoveImport1() {
+    public void testUnloadImport1() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/testImport3/a.owl" );
         assertEquals( "Marker count not correct", 3, countMarkers( m ) );
@@ -205,7 +386,7 @@ public class TestOntDocumentManager
     }
 
     /** case 2: a imports b, b imports c, remove b */
-    public void testRemoveImport2() {
+    public void testUnloadImport2() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/testImport3/a.owl" );
         assertEquals( "Marker count not correct", 3, countMarkers( m ) );
@@ -219,7 +400,7 @@ public class TestOntDocumentManager
     }
 
     /** case 3: a imports b, b imports c, a imports d, d imports c, remove b */
-    public void testRemoveImport3() {
+    public void testUnloadImport3() {
         OntModel m = ModelFactory.createOntologyModel();
         m.read( "file:testing/ontology/testImport6/a.owl" );
         assertEquals( "Marker count not correct", 4, countMarkers( m ) );
@@ -300,33 +481,6 @@ public class TestOntDocumentManager
         o3.setMetadataSearchPath( "file:etc/ont-policy-test.notexist.rdf", true );
         assertNull( "Most recent policy should be null", o3.getLoadedPolicyURL() );
     }
-
-    public void testAddModel0() {
-        OntDocumentManager odm = OntDocumentManager.getInstance();
-        Model m = ModelFactory.createDefaultModel();
-        String uri = "http://example.com/test#m";
-        assertNull( odm.getModel( uri ));
-        odm.addModel( uri, m );
-        assertSame( m, odm.getModel(uri));
-    }
-
-    public void testAddModel1() {
-        OntDocumentManager odm = OntDocumentManager.getInstance();
-        Model m0 = ModelFactory.createDefaultModel();
-        Model m1 = ModelFactory.createDefaultModel();
-        String uri = "http://example.com/test#m";
-        assertNull( odm.getModel( uri ));
-        odm.addModel( uri, m0 );
-
-        // add duplicate with no replace
-        odm.addModel( uri, m1 );
-        assertSame( m0, odm.getModel(uri));
-
-        // add duplicate with replace
-        odm.addModel( uri, m1, true );
-        assertSame( m1, odm.getModel(uri));
-    }
-
 
     /* count the number of marker statements in the combined model */
     public static int countMarkers( Model m ) {
