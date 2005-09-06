@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryRoleAncestorsTranslator.java,v $
- * Revision           $Revision: 1.8 $
+ * Revision           $Revision: 1.9 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-03-16 18:52:27 $
+ * Last modified on   $Date: 2005-09-06 15:22:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -43,9 +43,9 @@ import com.hp.hpl.jena.util.iterator.*;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version CVS $Id: DIGQueryRoleAncestorsTranslator.java,v 1.8 2005-03-16 18:52:27 ian_dickinson Exp $
+ * @version CVS $Id: DIGQueryRoleAncestorsTranslator.java,v 1.9 2005-09-06 15:22:23 ian_dickinson Exp $
  */
-public class DIGQueryRoleAncestorsTranslator 
+public class DIGQueryRoleAncestorsTranslator
     extends DIGQueryTranslator
 {
 
@@ -60,8 +60,8 @@ public class DIGQueryRoleAncestorsTranslator
 
     /** Flag for querying for ancestors */
     protected boolean m_ancestors;
-    
-    
+
+
     // Constructors
     //////////////////////////////////
 
@@ -74,7 +74,7 @@ public class DIGQueryRoleAncestorsTranslator
         super( (ancestors ? null : ALL), predicate, (ancestors ? ALL : null) );
         m_ancestors = ancestors;
     }
-    
+
 
     // External signature methods
     //////////////////////////////////
@@ -86,16 +86,16 @@ public class DIGQueryRoleAncestorsTranslator
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        
+
         if (m_ancestors) {
             Element parents = da.createQueryElement( query, DIGProfile.RANCESTORS );
-            da.addClassDescription( parents, pattern.getSubject() );
+            da.addNamedElement( parents, DIGProfile.RATOM, pattern.getSubject().getURI() );
         }
         else {
             Element descendants = da.createQueryElement( query, DIGProfile.RDESCENDANTS );
-            da.addClassDescription( descendants, pattern.getObject() );
+            da.addNamedElement( descendants, DIGProfile.RATOM, pattern.getObject().getURI() );
         }
-        
+
         return query;
     }
 
@@ -107,8 +107,8 @@ public class DIGQueryRoleAncestorsTranslator
         // translate the concept set to triples, but then we must add :a rdfs:subPropertyOf :a to match owl semantics
         return translateRoleSetResponse( response, query, m_ancestors );
     }
-    
-    
+
+
     public Document translatePattern( TriplePattern pattern, DIGAdapter da, Model premises ) {
         // not used
         return null;
@@ -117,7 +117,7 @@ public class DIGQueryRoleAncestorsTranslator
     public boolean checkSubject( com.hp.hpl.jena.graph.Node subject, DIGAdapter da, Model premises ) {
         return !m_ancestors || da.isRole( subject, premises );
     }
-    
+
     public boolean checkObject( com.hp.hpl.jena.graph.Node object, DIGAdapter da, Model premises ) {
         return m_ancestors || da.isRole( object, premises );
     }

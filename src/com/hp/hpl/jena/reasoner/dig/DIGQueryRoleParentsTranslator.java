@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGQueryRoleParentsTranslator.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:24 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-09-06 15:22:23 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -42,9 +42,9 @@ import com.hp.hpl.jena.reasoner.TriplePattern;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGQueryRoleParentsTranslator.java,v 1.4 2005-02-21 12:16:24 andy_seaborne Exp $)
+ * @version Release @release@ ($Id: DIGQueryRoleParentsTranslator.java,v 1.5 2005-09-06 15:22:23 ian_dickinson Exp $)
  */
-public class DIGQueryRoleParentsTranslator 
+public class DIGQueryRoleParentsTranslator
     extends DIGQueryRoleAncestorsTranslator
 {
 
@@ -57,7 +57,7 @@ public class DIGQueryRoleParentsTranslator
     // Instance variables
     //////////////////////////////////
 
-    
+
     // Constructors
     //////////////////////////////////
 
@@ -69,7 +69,7 @@ public class DIGQueryRoleParentsTranslator
     public DIGQueryRoleParentsTranslator( String predicate, boolean parents ) {
         super( predicate, parents );
     }
-    
+
 
     // External signature methods
     //////////////////////////////////
@@ -81,16 +81,16 @@ public class DIGQueryRoleParentsTranslator
     public Document translatePattern( TriplePattern pattern, DIGAdapter da ) {
         DIGConnection dc = da.getConnection();
         Document query = dc.createDigVerb( DIGProfile.ASKS, da.getProfile() );
-        
+
         if (m_ancestors) {
             Element parents = da.createQueryElement( query, DIGProfile.RPARENTS );
-            da.addClassDescription( parents, pattern.getSubject() );
+            da.addNamedElement( parents, DIGProfile.RATOM, pattern.getSubject().getURI() );
         }
         else {
             Element descendants = da.createQueryElement( query, DIGProfile.RCHILDREN );
-            da.addClassDescription( descendants, pattern.getObject() );
+            da.addNamedElement( descendants, DIGProfile.RATOM, pattern.getObject().getURI() );
         }
-        
+
         return query;
     }
 

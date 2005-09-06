@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-03-16 18:55:08 $
+ * Last modified on   $Date: 2005-09-06 15:22:23 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.21 2005-03-16 18:55:08 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.22 2005-09-06 15:22:23 ian_dickinson Exp $)
  */
 public class TestDigReasoner
     extends TestCase
@@ -553,7 +553,7 @@ public class TestDigReasoner
         Individual i0 = m.getIndividual( NS + "i0" );
 
         TestUtil.assertIteratorValues( this, i0.listRDFTypes(false),
-                                       new Resource[] {F0, F2}, 1 );
+                                       new Resource[] {F0, F2, OWL.Thing}, 1 );
     }
 
     public void testInstance() {
@@ -830,6 +830,20 @@ public class TestDigReasoner
         for (StmtIterator i = m.listStatements( null, RDFS.subPropertyOf, p2 );  i.hasNext(); ) {
             System.err.println( "p2 has sub prop " + i.next() );
         }
+    }
+
+    // for debuging the basic query tests one at a time
+    public void testBasicQueryN()
+        throws Exception
+    {
+        String root = "testing/ontology/dig/owl/basicq";
+        int testN = 24;
+
+        File testSource = new File( root + "/test_" + testN + ".source.xml" );
+        File testQuery = new File( root + "/test_" + testN + ".query.xml" );
+        File testTarget = new File( root + "/test_" + testN + ".result.xml" );
+
+        new DigBasicQueryTest( testSource, testTarget, testQuery, OntModelSpec.OWL_MEM ).runTest();
     }
 
 

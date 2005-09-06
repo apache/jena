@@ -10,6 +10,9 @@
   		<catom name="anon:" />
   	</synonyms>
   	<synonyms>
+			<top/>
+  	</synonyms>
+      	<synonyms>
   		<catom name="http://example.org/foo#C" />
   	</synonyms>
   </conceptSet>
