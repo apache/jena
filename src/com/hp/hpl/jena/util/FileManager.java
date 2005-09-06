@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.21 2005-09-06 10:39:41 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.22 2005-09-06 10:52:38 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -88,21 +88,26 @@ public class FileManager
         modelCache = null ;
     }
 
-    /** Create a standard FileManager. */
-    private static FileManager makeGlobal()
+    /** Create a "standard" FileManager. */
+    public static FileManager makeGlobal()
     {
         FileManager fMgr = new FileManager(LocationMapper.get()) ;
-        fMgr.addLocatorFile() ;
-        fMgr.addLocatorURL() ;
-        fMgr.addLocatorClassLoader(fMgr.getClass().getClassLoader()) ;
+        setStdLocators(fMgr) ;
         return fMgr ;
     }
     
-    /** Create with the given location mapper */
-    public FileManager(LocationMapper _mapper)
+    /** Force a file handler to have the default configuration. */
+    public static void setStdLocators(FileManager fMgr)
     {
-        setLocationMapper(_mapper) ;
+        fMgr.handlers.clear() ;
+        fMgr.addLocatorFile() ;
+        fMgr.addLocatorURL() ;
+        fMgr.addLocatorClassLoader(fMgr.getClass().getClassLoader()) ;
     }
+    
+    
+    /** Create with the given location mapper */
+    public FileManager(LocationMapper _mapper)    { setLocationMapper(_mapper) ; }
 
     /** @deprecated USe setLocationMapper */
     public void setMapper(LocationMapper _mapper) { setLocationMapper(_mapper) ; }
