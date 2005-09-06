@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.20 2005-09-06 10:22:22 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.21 2005-09-06 10:39:41 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -81,7 +81,9 @@ public class FileManager
     public FileManager(FileManager filemanager)
     {
         handlers.addAll(filemanager.handlers) ;
-        mapper = new LocationMapper(filemanager.getLocationMapper()) ;
+        mapper = null ;
+        if ( filemanager.getLocationMapper() != null )
+            mapper = new LocationMapper(filemanager.getLocationMapper()) ;
         cacheModelLoads = false ;
         modelCache = null ;
     }

@@ -17,7 +17,7 @@ import com.hp.hpl.jena.rdf.model.Model ;
 /** TestLocationMapper
  * 
  * @author Andy Seaborne
- * @version $Id: TestLocationMapper.java,v 1.4 2005-03-18 21:47:06 andy_seaborne Exp $
+ * @version $Id: TestLocationMapper.java,v 1.5 2005-09-06 10:39:49 andy_seaborne Exp $
  */
 
 public class TestLocationMapper extends TestCase
@@ -87,6 +87,52 @@ public class TestLocationMapper extends TestCase
             assertEquals("Different entries", v1, v2) ;
         }
     }
+
+    public void testLocationMappingClone1()
+    {
+        LocationMapper locMap1 = new LocationMapper(mapping) ;
+        // See testLocationMappingURLtoFile
+//        String alt = locMap.altMapping("http://example.org/file") ;
+//        assertNotNull(alt) ;
+//        assertEquals(alt, "file:"+testingDir+"/location-mapping-test-file") ;
+        
+        LocationMapper locMap2 = new LocationMapper(locMap1) ;
+        // Remove from original
+        locMap1.removeAltEntry("http://example.org/file") ;
+        String alt = locMap2.altMapping("http://example.org/file") ;
+        assertNotNull(alt) ;
+        assertEquals(alt, "file:"+testingDir+"/location-mapping-test-file") ;
+    }
+    
+    public void testLocationMappingClone2()
+    {
+        LocationMapper locMap1 = new LocationMapper(mapping) ;
+        // See testLocationMappingURLtoFile
+//        String alt = locMap.altMapping("http://example.org/file") ;
+//        assertNotNull(alt) ;
+//        assertEquals(alt, "file:"+testingDir+"/location-mapping-test-file") ;
+        
+        LocationMapper locMap2 = new LocationMapper(locMap1) ;
+
+        // Change this one
+        locMap2.addAltPrefix("http://example.org/OTHER", "file:OTHER") ;
+        {
+            String alt = locMap2.altMapping("http://example.org/OTHER/f") ;
+            assertNotNull(alt) ;
+            assertEquals(alt, "file:OTHER/f") ;
+        }
+        // Not the other
+        {
+            String alt = locMap1.altMapping("http://example.org/OTHER/f") ;
+            assertNotNull(alt) ;
+            // Did not change
+            assertEquals(alt, "http://example.org/OTHER/f") ;
+        }
+    }
+
+
+
+
 
 
     
