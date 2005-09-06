@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.9 2005-04-11 17:38:58 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.10 2005-09-06 10:22:22 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -63,6 +63,14 @@ public class LocationMapper
 
     /** Create a LocationMapper with no mapping yet */
     public LocationMapper() { }
+    
+    /** Create a LocationMapper made like another one
+     * This is a deep copy of the location and prefix maps..*/
+    public LocationMapper(LocationMapper locMapper)
+    {
+        altLocations.putAll(locMapper.altLocations) ;
+        altPrefixes.putAll(locMapper.altPrefixes) ;
+    }
     
     /** Create a LocationMapper from an existing model
      * @see com.hp.hpl.jena.vocabulary.LocationMappingVocab

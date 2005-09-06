@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.19 2005-08-01 15:07:26 jeremy_carroll Exp $
+ * @version    $Id: FileManager.java,v 1.20 2005-09-06 10:22:22 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -72,6 +72,19 @@ public class FileManager
     
     /** Create an uninitialized FileManager */
     public FileManager() {}
+    
+    /** Create a new file manager that is a deep copy another.
+     *  Location mapper and locators chain are copied (the locators are not cloned).
+     *  The model cache is not copied and is initially set to not cache.
+     * @param filemanager
+     */
+    public FileManager(FileManager filemanager)
+    {
+        handlers.addAll(filemanager.handlers) ;
+        mapper = new LocationMapper(filemanager.getLocationMapper()) ;
+        cacheModelLoads = false ;
+        modelCache = null ;
+    }
 
     /** Create a standard FileManager. */
     private static FileManager makeGlobal()
@@ -86,15 +99,18 @@ public class FileManager
     /** Create with the given location mapper */
     public FileManager(LocationMapper _mapper)
     {
-        setMapper(_mapper) ;
+        setLocationMapper(_mapper) ;
     }
 
-    /** Set the location mapping */
-    public void setMapper(LocationMapper _mapper)
-    {
-        mapper = _mapper ;
-    }
+    /** @deprecated USe setLocationMapper */
+    public void setMapper(LocationMapper _mapper) { setLocationMapper(_mapper) ; }
     
+    
+    /** Set the location mapping */
+    public void setLocationMapper(LocationMapper _mapper) { mapper = _mapper ; }
+    
+    /** Get the location mapping */
+    public LocationMapper getLocationMapper() { return mapper ; }
     
     /** Return an iterator over all the handlers */
     public Iterator locators() { return handlers.listIterator() ; }
@@ -140,6 +156,8 @@ public class FileManager
     /** Remove a locator */ 
     public void remove(Locator loc) { handlers.remove(loc) ; }
 
+    // -------- Cache operations
+    
     /** Reset the model cache */
     public void resetCache()
     {
@@ -165,6 +183,18 @@ public class FileManager
             modelCache = new HashMap() ; 
     }
     
+    
+    
+    /** return whether caching is on of off */
+    boolean getCachingModels() { return cacheModelLoads ; }
+
+    
+    /** Read out of the cache - return null if not in the cache */ 
+    public Model readFromCache(String filenameOrURI)
+    { return (Model)modelCache.get(filenameOrURI) ; }
+    
+    // -------- Cache operations (end)
+
     /** Load a model from a file (local or remote).
      *  Guesses the syntax of the file based on filename extension, 
      *  defaulting to RDF/XML.
@@ -327,9 +357,13 @@ public class FileManager
         return openNoMap(uri) ;
     }
 
-    /** Apply the mapping of a filename or URI */
-    
+
+    /** @deprecated Use mapURI */
     public String remap(String filenameOrURI)
+    { return mapURI(filenameOrURI) ; }
+    
+    /** Apply the mapping of a filename or URI */
+    public String mapURI(String filenameOrURI)
     {
         if ( mapper == null )
             return filenameOrURI ; 
