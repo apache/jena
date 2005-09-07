@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.23 2005-09-06 16:44:23 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.24 2005-09-07 08:27:35 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -173,7 +173,7 @@ public class FileManager
             for ( Iterator iter = modelCache.keySet().iterator() ; iter.hasNext() ; )
             {
                 String name = (String)iter.next() ;
-                Model m = (Model)modelCache.remove(name) ;
+                Model m = (Model)modelCache.get(name) ;
                 if ( m != null )
                     m.close() ;
             }
