@@ -9,6 +9,7 @@ package com.hp.hpl.jena.util.test;
 import junit.framework.*;
 import java.io.* ;
 
+import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.util.LocationMapper;
 
@@ -17,7 +18,7 @@ import org.apache.commons.logging.*;
 /** com.hp.hpl.jena.brql.util.test.TestFileManager
  * 
  * @author Andy Seaborne
- * @version $Id: TestFileManager.java,v 1.5 2005-09-06 10:39:49 andy_seaborne Exp $
+ * @version $Id: TestFileManager.java,v 1.6 2005-09-07 13:57:08 andy_seaborne Exp $
  */
 
 public class TestFileManager extends TestCase
@@ -26,6 +27,7 @@ public class TestFileManager extends TestCase
     static final String testingDir = "testing/FileManager" ;
     static final String filename = "fmgr-test-file" ; 
     static final String filenameNonExistent = "fmgr-test-file-1421" ;
+    static final String fileModel = "foo.n3" ;
     static final String zipname = testingDir+"/fmgr-test.zip" ;
     
     public TestFileManager( String name )
@@ -153,6 +155,47 @@ public class TestFileManager extends TestCase
         closeInputStream(in) ;
     }
 
+    public void testCache1()
+    {
+        FileManager fileManager = new FileManager() ;
+        fileManager.addLocatorFile(testingDir) ;
+        Model m1 = fileManager.loadModel(fileModel) ;
+        Model m2 = fileManager.loadModel(fileModel) ;
+        assertNotSame(m1, m2) ;
+    }
+    
+    public void testCache2()
+    {
+        FileManager fileManager = FileManager.get() ;
+        fileManager.addLocatorFile(testingDir) ;
+        fileManager.setModelCaching(true) ;
+        Model m1 = fileManager.loadModel(fileModel) ;
+        Model m2 = fileManager.loadModel(fileModel) ;
+        assertSame(m1, m2) ;
+    }
+    
+    public void testCache3()
+    {
+        FileManager fileManager = FileManager.get() ;
+        fileManager.addLocatorFile(testingDir) ;
+        fileManager.setModelCaching(true) ;
+        Model m1 = fileManager.loadModel(fileModel) ;
+        Model m2 = fileManager.loadModel(fileModel) ;
+        assertSame(m1, m2) ;
+        
+        fileManager.removeCacheModel(fileModel) ;
+        Model m3 = fileManager.loadModel(fileModel) ;
+        assertNotSame(m1, m3) ;
+        
+        fileManager.resetCache() ;
+        Model m4 = fileManager.loadModel(fileModel) ;
+        Model m5 = fileManager.loadModel(fileModel) ;
+
+        assertSame(m4, m5) ;
+        assertNotSame(m1, m4) ;
+        assertNotSame(m3, m4) ;
+    }
+    
 //    public void testFileManagerLocatorURL()
 //    {
 //        FileManager fileManager = new FileManager() ;

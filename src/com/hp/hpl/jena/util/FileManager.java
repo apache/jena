@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.24 2005-09-07 08:27:35 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.25 2005-09-07 13:57:05 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -56,7 +56,7 @@ public class FileManager
     List handlers = new ArrayList() ;
     LocationMapper mapper = null ;
     boolean cacheModelLoads = false ;
-    Map modelCache = null ;
+    ModelCache modelCache = null ;
     
     
     /** Get the global file manager.
@@ -169,16 +169,7 @@ public class FileManager
     public void resetCache()
     {
         if ( modelCache != null )
-        {
-            for ( Iterator iter = modelCache.keySet().iterator() ; iter.hasNext() ; )
-            {
-                String name = (String)iter.next() ;
-                Model m = (Model)modelCache.get(name) ;
-                if ( m != null )
-                    m.close() ;
-            }
-            modelCache = new HashMap() ;
-        }
+            modelCache.reset() ;
     }
     
     /** Change the state of model cache : does not clear the cache */ 
@@ -187,7 +178,7 @@ public class FileManager
     {
         cacheModelLoads = state ;
         if ( cacheModelLoads && modelCache == null )
-            modelCache = new HashMap() ; 
+            modelCache = new ModelCache() ; 
     }
     
     /** return whether caching is on of off */
@@ -198,14 +189,14 @@ public class FileManager
     { 
         if ( ! getCachingModels() )
             return null; 
-        return (Model)modelCache.get(filenameOrURI) ;
+        return modelCache.get(filenameOrURI) ;
     }
     
     public boolean hasCachedModel(String filenameOrURI)
     { 
         if ( ! getCachingModels() )
             return false ; 
-        return modelCache.containsKey(filenameOrURI) ;
+        return modelCache.contains(filenameOrURI) ;
     }
     
     public void addCacheModel(String uri, Model m)
@@ -258,21 +249,17 @@ public class FileManager
 
     public Model loadModel(String filenameOrURI, String baseURI, String rdfSyntax)
     {
-        if ( modelCache != null && modelCache.containsKey(filenameOrURI) )
+        if ( modelCache != null && modelCache.contains(filenameOrURI) )
         {
             log.debug("Model cache hit: "+filenameOrURI) ;
-            return (Model)modelCache.get(filenameOrURI) ;
+            return modelCache.get(filenameOrURI) ;
         }
         
         Model m = ModelFactory.createDefaultModel() ;
         readModel(m, filenameOrURI, baseURI, rdfSyntax) ;
         
         if ( this.cacheModelLoads )
-        {
-            if ( modelCache == null )
-                modelCache = new HashMap() ;
             modelCache.put(filenameOrURI, m) ;
-        }
         return m ;
     }
     
@@ -461,6 +448,40 @@ public class FileManager
     }
 }
 
+
+class ModelCache
+{
+    Map modelCache = new HashMap() ;
+    ModelCache() {}
+    
+    /** Reset the model cache */
+    public void reset()
+    {
+        if ( modelCache != null )
+        {
+//            for ( Iterator iter = modelCache.keySet().iterator() ; iter.hasNext() ; )
+//            {
+//                String name = (String)iter.next() ;
+//                Model m = (Model)modelCache.get(name) ;
+//                if ( m != null )
+//                    m.close() ;
+//            }
+            modelCache.clear() ;
+        }
+    }
+    
+    public Model get(String filenameOrURI)
+    { return (Model)modelCache.get(filenameOrURI) ; }
+    
+    public boolean contains(String filenameOrURI)
+    { return modelCache.containsKey(filenameOrURI) ; }
+    
+    public void put(String uri, Model m)
+    { modelCache.put(uri, m) ; }
+
+    public void remove(String uri)
+    { modelCache.remove(uri) ; }
+}
 
 
 /*
