@@ -5,7 +5,7 @@
  * 
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
- * $Id: TestGenericRules.java,v 1.18 2005-07-05 11:21:43 chris-dollin Exp $
+ * $Id: TestGenericRules.java,v 1.19 2005-09-07 11:11:33 der Exp $
  *****************************************************************/
 package com.hp.hpl.jena.reasoner.rulesys.test;
 
@@ -34,7 +34,7 @@ import org.apache.commons.logging.LogFactory;
  * enough to validate the packaging.
  * 
  * @author <a href="mailto:der@hplb.hpl.hp.com">Dave Reynolds</a>
- * @version $Revision: 1.18 $ on $Date: 2005-07-05 11:21:43 $
+ * @version $Revision: 1.19 $ on $Date: 2005-09-07 11:11:33 $
  */
 public class TestGenericRules extends TestCase {
     
@@ -231,6 +231,20 @@ public class TestGenericRules extends TestCase {
                 new Triple(an, RDF.Nodes.type, C),
                 new Triple(an, RDF.Nodes.type, D),
               } );
+        
+        // Test that the parameter initialization is not be overridden by subclasses
+        m = ModelFactory.createDefaultModel();
+        configuration = m.createResource(GenericRuleReasonerFactory.URI);
+        configuration.addProperty( ReasonerVocabulary.PROPenableTGCCaching, m.createLiteral("true") );
+        reasoner = (GenericRuleReasoner)GenericRuleReasonerFactory.theInstance().create(configuration);
+        InfModel im = ModelFactory.createInfModel(reasoner, ModelFactory.createDefaultModel());
+        Resource Ac = im.createResource(PrintUtil.egNS + "A");
+        Resource Bc = im.createResource(PrintUtil.egNS + "B");
+        Resource Cc = im.createResource(PrintUtil.egNS + "C");
+        im.add(Ac, RDFS.subClassOf, Bc);
+        im.add(Bc, RDFS.subClassOf, Cc);
+        assertTrue("TGC enabled correctly", im.contains(Ac, RDFS.subClassOf, Cc));
+        
      }
     
     /**
