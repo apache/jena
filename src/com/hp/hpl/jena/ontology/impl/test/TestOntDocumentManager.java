@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            4 Mar 2003
  * Filename           $RCSfile: TestOntDocumentManager.java,v $
- * Revision           $Revision: 1.17 $
+ * Revision           $Revision: 1.18 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-05 15:55:31 $
+ * Last modified on   $Date: 2005-09-08 15:38:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.vocabulary.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestOntDocumentManager.java,v 1.17 2005-09-05 15:55:31 ian_dickinson Exp $
+ * @version CVS $Id: TestOntDocumentManager.java,v 1.18 2005-09-08 15:38:29 ian_dickinson Exp $
  */
 public class TestOntDocumentManager
     extends TestCase
@@ -92,7 +92,6 @@ public class TestOntDocumentManager
                                                      ((Boolean) s_testData[i][2]).booleanValue(),
                                                      (String) s_testData[i][3]) );
         }
-
         return suite;
     }
 
@@ -220,11 +219,10 @@ public class TestOntDocumentManager
         mgr.reset();
         assertTrue( mgr.getProcessImports() );
 
-        assertEquals( OntDocumentManager.DEFAULT_METADATA_PATH, mgr.getMetadataSearchPath() );
         mgr.setMetadataSearchPath( "file:foo.xml", true );
         assertEquals( "file:foo.xml", mgr.getMetadataSearchPath() );
         mgr.reset();
-        assertEquals( OntDocumentManager.DEFAULT_METADATA_PATH, mgr.getMetadataSearchPath() );
+        assertEquals( "file:foo.xml", mgr.getMetadataSearchPath() );
 
         assertTrue( mgr.getCacheModels() );
         mgr.setCacheModels(false );
@@ -320,7 +318,8 @@ public class TestOntDocumentManager
         OntModel m = odm.getOntology( "http://www.w3.org/2002/07/owl", OntModelSpec.OWL_MEM );
         assertNotNull( m );
         assertSame( odm, m.getDocumentManager() );
-        assertSame( m, odm.getOntology( "http://www.w3.org/2002/07/owl", OntModelSpec.OWL_MEM ) );
+        OntModel m1 = odm.getOntology( "http://www.w3.org/2002/07/owl", OntModelSpec.OWL_MEM );
+        assertSame( m, m1 );
     }
 
     public void testProcessImports() {

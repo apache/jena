@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.46 $
+ * Revision           $Revision: 1.47 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-05 15:55:18 $
+ * Last modified on   $Date: 2005-09-08 15:38:29 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -32,7 +32,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xerces.util.XMLChar;
 
 import com.hp.hpl.jena.rdf.model.*;
-import com.hp.hpl.jena.util.FileUtils;
+import com.hp.hpl.jena.util.*;
+import com.hp.hpl.jena.vocabulary.OntDocManagerVocab;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.shared.*;
 import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
@@ -42,20 +43,36 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * <p>
  * Provides services for managing ontology documents, including loading imported
  * documents, and locally caching documents from resolvable URL's to improve
- * load performance.
+ * load performance. This class now delegates some of the responsibility for
+ * resolving URI's and caching models to {@link com.hp.hpl.jena.util.FileManager FileManager}.
+ * By default, OntDocumentManager will use a copy of the
+ * singleton global FileManager. Alternatively, a specific <code>FileManager</code>
+ * can be given to a document manager instance to use when resolving URI's and file paths.
+ * Note that the default behaviour is to hold a <strong>copy</strong> of the global file
+ * manager. In order to ensure that the document manager directly uses the global
+ * file manager (e.g. so that document manager sees updates to the location mappings
+ * held by the file manager), use the {@link #setFileManager(FileManager)} method. For
+ * example:
  * </p>
- *
+ * <pre>OntDocumentManager dm = OntDocumentManager.getInstance();
+ * dm.setFileManager( FileManager.get() );</pre>
+ * <p>Note that in Jena 2.3, we have deprecated the capability of the document manager
+ * to store a table of known prefixes, and a table mapping document URI's to ontology language
+ * types. <strong>The intention is to remove both of these capabilities from
+ * Jena 2.4 onwards</strong>. If this change would be problematic, please send email to the
+ * <a href="http://groups.yahoo.com/group/jena-dev">Jena support
+ * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.46 2005-09-05 15:55:18 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.47 2005-09-08 15:38:29 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
+    // Constants
+    ////////////////////////////////////
+
 	/** The default path for searching for the metadata on locally cached ontologies */
     public static final String DEFAULT_METADATA_PATH = "file:ont-policy.rdf;file:etc/ont-policy.rdf";
-
-    /** Delimiter between path entries */
-    public static final String PATH_DELIMITER = ";";
 
     /** Namespace for ontology metadata resources and properties */
     public static final String NS = "http://jena.hpl.hp.com/schemas/2003/03/ont-manager#";
@@ -63,45 +80,45 @@ public class OntDocumentManager
     /** The anchor char is added to the end of namespace prefix expansions */
     public static final String ANCHOR = "#";
 
+    /** rdf:type for ontology specification nodes in meta-data file */
+    public static final Resource ONTOLOGY_SPEC = OntDocManagerVocab.OntologySpec;
+
+    /** Represents the public URI of an ontology; also used to derive the namespace */
+    public static final Property PUBLIC_URI = OntDocManagerVocab.publicURI;
+
+    /** Represents the alternative local copy of the public ontology; assumed to be resolvable, hence URL not URI */
+    public static final Property ALT_URL = OntDocManagerVocab.altURL;
+
+    /** Represents the standard prefix for this namespace */
+    public static final Property PREFIX = OntDocManagerVocab.prefix;
+
+    /** Represents the ontology language used to encode the ontology */
+    public static final Property LANGUAGE = OntDocManagerVocab.language;
+
+    /** rdf:type for document manager policy nodes */
+    public static final Resource DOC_MGR_POLICY = OntDocManagerVocab.DocumentManagerPolicy;
+
+    /** Defines boolean policy choice of caching loaded models */
+    public static final Property CACHE_MODELS = OntDocManagerVocab.cacheModels;
+
+    /** Defines boolean policy choice of loading the imports closure */
+    public static final Property PROCESS_IMPORTS = OntDocManagerVocab.processImports;
+
+    /** Specifies the URI of an ontology that we do not want to import, even if processImports is true. */
+    public static final Property IGNORE_IMPORT = OntDocManagerVocab.ignoreImport;
+
+    /** The policy property for including the pre-declared namespace prefixes in a model. */
+    public static final Property USE_DECLARED_NS_PREFIXES = OntDocManagerVocab.useDeclaredNsPrefixes;
+
 
     // Static variables
     //////////////////////////////////
 
-    /** Holds vocabulary terms */
-    private static final Model vocab = ModelFactory.createDefaultModel();
-
-    /** rdf:type for ontology specification nodes in meta-data file */
-    public static final Resource ONTOLOGY_SPEC = vocab.createResource( NS + "OntologySpec" );
-
-    /** Represents the public URI of an ontology; also used to derive the namespace */
-    public static final Property PUBLIC_URI = vocab.createProperty( NS + "publicURI" );
-
-    /** Represents the alternative local copy of the public ontology; assumed to be resolvable, hence URL not URI */
-    public static final Property ALT_URL = vocab.createProperty( NS + "altURL" );
-
-    /** Represents the standard prefix for this namespace */
-    public static final Property PREFIX = vocab.createProperty( NS + "prefix" );
-
-    /** Represents the ontology language used to encode the ontology */
-    public static final Property LANGUAGE = vocab.createProperty( NS + "language" );
-
-    /** rdf:type for document manager policy nodes */
-    public static final Resource DOC_MGR_POLICY = vocab.createResource( NS + "DocumentManagerPolicy" );
-
-    /** Defines boolean policy choice of caching loaded models */
-    public static final Property CACHE_MODELS = vocab.createProperty( NS, "cacheModels" );
-
-    /** Defines boolean policy choice of loading the imports closure */
-    public static final Property PROCESS_IMPORTS = vocab.createProperty( NS, "processImports" );
-
-    /** Specifies the URI of an ontology that we do not want to import, even if processImports is true. */
-    public static final Property IGNORE_IMPORT = vocab.createProperty( NS, "ignoreImport" );
-
-    /** The policy property for including the pre-declared namespace prefixes in a model. */
-    public static final Property USE_DECLARED_NS_PREFIXES = vocab.createProperty( NS, "useDeclaredNsPrefixes" );
-
     /** Default document manager instance */
     private static OntDocumentManager s_instance = null;
+
+    /** Log for this class */
+    private static Log log = LogFactory.getLog( OntDocumentManager.class );
 
 
     // Instance variables
@@ -110,20 +127,14 @@ public class OntDocumentManager
     /** The search path for metadata */
     protected String m_searchPath = DEFAULT_METADATA_PATH;
 
-    /** Mapping from public URI to local cache (typically file) URL's for efficiently loading models */
-    protected Map m_altMap = new HashMap();
+    /** FileManager instance that provides location resolution service - defaults to global instance */
+    protected FileManager m_fileMgr = null;
 
-    /** Mapping of public URI's to loaded models */
-    protected Map m_modelMap = new HashMap();
+    /** Flag to indicate we're using a copy of the global file manager */
+    protected boolean m_usingGlobalFileMgr = false;
 
     /** Mapping of public public URI's to language resources */
     protected Map m_languageMap = new HashMap();
-
-    /** Log for this class */
-    private Log m_log = LogFactory.getLog( getClass() );
-
-    /** Flag: cache models as they are loaded */
-    protected boolean m_cacheModels = true;
 
     /** Flag: process the imports closure */
     protected boolean m_processImports = true;
@@ -168,8 +179,37 @@ public class OntDocumentManager
      * semi-colon (;).
      */
     public OntDocumentManager( String path ) {
+        this( null, path );
+    }
+
+
+    /**
+     * <p>
+     * Initialise a document manager by with the given FileManager, and
+     * then searching the given path for ontology
+     * metadata about known ontologies cached locally.
+     * </p>
+     *
+     * @param path The search path to search for initial metadata
+     * @see #OntDocumentManager(String)
+     */
+    public OntDocumentManager( FileManager fileMgr, String path ) {
+        setFileManager( fileMgr );
+        setDefaults();
         m_searchPath = (path == null) ? "" : path;
-        initialiseMetadata( m_searchPath, false );
+        initialiseMetadata( m_searchPath );
+    }
+
+
+    /**
+     * <p>Initialise a document manager with the given configuration model. This model
+     * is used in place of any model that might be
+     * found by searching the meta-data search path. Uses the default file manager,
+     * i.e. a copy of the global file manager.</p>
+     * @param config An RDF model containing configuration information for this document manager.
+     */
+    public OntDocumentManager( Model config ) {
+        this( null, config );
     }
 
 
@@ -177,10 +217,13 @@ public class OntDocumentManager
      * <p>Initialise a document manager with the given configuration model. This model
      * is used in place of any model that might be
      * found by searching the meta-data search path.</p>
+     * @param fileMgr A file manager to use when locating source files for ontologies
      * @param config An RDF model containing configuration information for this document manager.
      */
-    public OntDocumentManager( Model config ) {
+    public OntDocumentManager( FileManager fileMgr, Model config ) {
         // we don't need to reset first since this is a new doc mgr
+        setFileManager( fileMgr );
+        setDefaults();
         configure( config, false );
     }
 
@@ -201,6 +244,43 @@ public class OntDocumentManager
             s_instance = new OntDocumentManager();
         }
         return s_instance;
+    }
+
+
+    /**
+     * <p>Answer the file manager instance being used by this document manager.</p>
+     * @return This object's file manager
+     */
+    public FileManager getFileManager() {
+        return m_fileMgr;
+    }
+
+
+    /**
+     * <p>Set the file manager used by this ODM instance to <strong>a
+     * copy</strong> of the global file manager (and, by extension, the
+     * global location mapper).</p>
+     */
+    public void setFileManager() {
+        setFileManager( new FileManager( FileManager.get() ) );
+        m_usingGlobalFileMgr = true;
+    }
+
+    /**
+     * <p>Set the file manager used by this ODM instance to <strong>a
+     * copy</strong> of the global file manager (and, by extension, the
+     * global location mapper).</p>
+     * @param fileMgr The new file manager
+     */
+    public void setFileManager( FileManager fileMgr ) {
+        if (fileMgr == null) {
+            // use default fm
+            setFileManager();
+        }
+        else {
+            m_fileMgr = fileMgr;
+            m_usingGlobalFileMgr = false;
+        }
     }
 
 
@@ -230,9 +310,12 @@ public class OntDocumentManager
      * @param replace If true, clear existing mappings first
      */
     public void setMetadataSearchPath( String path, boolean replace ) {
+        if (replace) {
+            reset();
+        }
         m_searchPath = path;
         m_policyURL = null;
-        initialiseMetadata( path, replace );
+        initialiseMetadata( path );
     }
 
 
@@ -258,36 +341,43 @@ public class OntDocumentManager
      */
     public void configure( Model config, boolean reset ) {
         if (reset) {
-            reset();
+            reset( false );
         }
 
-        loadMetadata( config );
+        processMetadata( config );
     }
 
 
     /**
      * <p>Reset all state in this document manager back to the default
      * values it would have had when the object was created. Optionally
-     * reload the profile metadata from the search path.</p>
+     * reload the profile metadata from the search path. <strong>Note</strong>
+     * that the metadata search path is not changed by this reset.</p>
      * @param reload If true, reload the configuration file from the
      * search path.
      */
     public void reset( boolean reload ) {
-        m_altMap.clear();
-        m_modelMap.clear();
-        m_languageMap.clear();
-        m_cacheModels = true;
-        m_processImports = true;
-        m_ignoreImports.clear();
-        m_prefixMap = new PrefixMappingImpl();
-        m_useDeclaredPrefixes = true;
-
-        if (reload) {
-            // reload the default values
-            setMetadataSearchPath( DEFAULT_METADATA_PATH, true );
+        // first check if we are using the global file manager, or a local one
+        if (m_usingGlobalFileMgr) {
+            // we can do a general reset by throwing away the old FM and creating a new one
+            setFileManager();
         }
         else {
-            m_searchPath = DEFAULT_METADATA_PATH;
+            // not using the global default FM, so we reset to best effort
+            getFileManager().resetCache();
+        }
+
+        setDefaults();
+
+        m_languageMap.clear();
+        m_ignoreImports.clear();
+
+        // copy the standard prefixes
+        m_prefixMap = new PrefixMappingImpl();
+        m_prefixMap.setNsPrefixes( PrefixMapping.Standard );
+
+        if (reload) {
+            initialiseMetadata( m_searchPath );
         }
     }
 
@@ -316,7 +406,7 @@ public class OntDocumentManager
      * document URI's.
      */
     public Iterator listDocuments() {
-        return m_altMap.keySet().iterator();
+        return getFileManager().getLocationMapper().listAltEntries();
     }
 
 
@@ -330,8 +420,7 @@ public class OntDocumentManager
      * @return The resolvable location of the alternative copy, if known, or <code>uri</code> otherwise
      */
     public String doAltURLMapping( String uri ) {
-        String alt = (String) m_altMap.get( uri );
-        return (alt == null) ? uri : alt;
+        return getFileManager().mapURI( uri );
     }
 
 
@@ -342,6 +431,7 @@ public class OntDocumentManager
      *
      * @param uri The ontology document to lookup
      * @return The URI of the representation language, or null.
+     * @deprecated Language determination via the ODM will be removed from Jena 2.4 onwards
      */
     public String getLanguage( String uri ) {
         return (String) m_languageMap.get( uri );
@@ -356,6 +446,7 @@ public class OntDocumentManager
      * @param uri The ontology document to lookup
      * @return  The string to use as a prefix when serialising qnames in the
      *          given document's namespace, or null if not known
+     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
      */
     public String getPrefixForURI( String uri ) {
         return m_prefixMap.getNsURIPrefix( uri );
@@ -369,6 +460,7 @@ public class OntDocumentManager
      *
      * @param prefix A prefix string
      * @return The basename that the prefix expands to, or null
+     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
      */
     public String getURIForPrefix( String prefix ) {
         return m_prefixMap.getNsPrefixURI( prefix );
@@ -385,7 +477,7 @@ public class OntDocumentManager
      * @see #getOntology
      */
     public Model getModel( String uri ) {
-        return (Model) m_modelMap.get( uri );
+        return getFileManager().getFromCache( uri );
     }
 
 
@@ -395,6 +487,7 @@ public class OntDocumentManager
      * </p>
      *
      * @return True if pre-declared prefixes should be added to the models
+     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
      */
     public boolean useDeclaredPrefixes() {
         return m_useDeclaredPrefixes;
@@ -406,6 +499,7 @@ public class OntDocumentManager
      *
      * @param useDeclaredPrefixes If true, new models will include the pre-declared prefixes set held
      * by this document manager.
+     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
      */
     public void setUseDeclaredPrefixes( boolean useDeclaredPrefixes ) {
         m_useDeclaredPrefixes = useDeclaredPrefixes;
@@ -416,6 +510,7 @@ public class OntDocumentManager
      * document manager.</p>
      *
      * @return The namespace prefix mapping
+     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
      */
     public PrefixMapping getDeclaredPrefixMapping() {
         return m_prefixMap;
@@ -430,6 +525,7 @@ public class OntDocumentManager
      *
      * @param uri The base URI that <code>prefix</code> expands to
      * @param prefix A qname prefix
+     * @deprecated Prefix management via the ODM is very likely to be removed from Jena 2.4 onwards
      */
     public void addPrefixMapping( String uri, String prefix ) {
         m_prefixMap.setNsPrefix( prefix, uri );
@@ -447,7 +543,7 @@ public class OntDocumentManager
      *         ontology document can be found
      */
     public void addAltEntry( String docURI, String locationURL ) {
-        m_altMap.put( docURI, locationURL );
+        getFileManager().getLocationMapper().addAltEntry( docURI, locationURL );
     }
 
 
@@ -479,10 +575,10 @@ public class OntDocumentManager
      * @param replace If true, replace any existing entry with this one.
      */
     public void addModel( String docURI, Model model, boolean replace ) {
-        if (m_cacheModels &&
-            (!m_modelMap.containsKey( docURI ) || replace))
+        if (getFileManager().getCachingModels() &&
+            (replace || !getFileManager().hasCachedModel( docURI )))
         {
-            m_modelMap.put( docURI, model );
+            getFileManager().addCacheModel( docURI, model );
         }
     }
 
@@ -495,6 +591,7 @@ public class OntDocumentManager
      *
      * @param docURI The public URI of the ontology document
      * @param language A string defining the URI of the language
+     * @deprecated Language determination via the ODM will be removed from Jena 2.4 onwards
      */
     public void addLanguageEntry( String docURI, String language ) {
         m_languageMap.put( docURI, language );
@@ -510,8 +607,8 @@ public class OntDocumentManager
      * @param docURI The public URI for an ontology document
      */
     public void forget( String docURI ) {
-        m_altMap.remove( docURI );
-        m_modelMap.remove( docURI );
+        getFileManager().getLocationMapper().removeAltEntry( docURI );
+        getFileManager().removeCacheModel( docURI );
         m_languageMap.remove( docURI );
     }
 
@@ -539,8 +636,8 @@ public class OntDocumentManager
         }
 
         // cached already?
-        if (m_modelMap.containsKey( uri )) {
-            Model cached = (Model) m_modelMap.get( uri );
+        if (getFileManager().hasCachedModel( uri )) {
+            Model cached = getFileManager().getFromCache( uri );
             if (cached instanceof OntModel) {
                 return (OntModel) cached;
             }
@@ -548,11 +645,14 @@ public class OntDocumentManager
                 return ModelFactory.createOntologyModel( _spec, cached );
             }
         }
+        else {
+            OntModel m = ModelFactory.createOntologyModel( _spec, null );
+            read( m, uri, true );
 
-        OntModel m = ModelFactory.createOntologyModel( _spec, null );
-        read( m, uri, true );
-
-        return m;
+            // cache this model for future re-use
+            getFileManager().addCacheModel( uri, m );
+            return m;
+        }
     }
 
 
@@ -579,7 +679,7 @@ public class OntDocumentManager
      * @return If true, a cache is maintained of loaded models from their URI's.
      */
     public boolean getCacheModels() {
-        return m_cacheModels;
+        return getFileManager().getCachingModels();
     }
 
 
@@ -605,7 +705,7 @@ public class OntDocumentManager
      * @see #getCacheModels()
      */
     public void setCacheModels( boolean cacheModels ) {
-        m_cacheModels = cacheModels;
+        getFileManager().setModelCaching( cacheModels );
     }
 
     /**
@@ -647,7 +747,7 @@ public class OntDocumentManager
      * </p>
      */
     public void clearCache() {
-        m_modelMap.clear();
+        getFileManager().resetCache();
     }
 
 
@@ -793,14 +893,9 @@ public class OntDocumentManager
             StmtIterator i = model.listStatements( null, profile.IMPORTS(), (RDFNode) null );
 
             while (i.hasNext()) {
-                // read the next import statement
-                Resource imp = i.nextStatement().getResource();
-
-                // add to the queue
-                readQueue.add( imp.getURI() );
+                // read the next import statement and add to the queue
+                readQueue.add( i.nextStatement().getResource().getURI() );
             }
-
-            i.close();
         }
     }
 
@@ -812,24 +907,13 @@ public class OntDocumentManager
      * </p>
      *
      * @param path The URI path to search for a loadable model
-     * @param replace If true, clear existing mappings first
      */
-    protected void initialiseMetadata( String path, boolean replace ) {
-        // first clear out any old mappings if necessary
-        if (replace) {
-            m_altMap.clear();
-            m_modelMap.clear();
-            m_prefixMap = new PrefixMappingImpl();
-        }
-
-        // copy the standard prefixes
-        m_prefixMap.setNsPrefixes( PrefixMapping.Standard );
-
+    protected void initialiseMetadata( String path ) {
         // search the path for metadata about locally cached models
         Model metadata = findMetadata( path );
 
         if (metadata != null) {
-            loadMetadata( metadata );
+            processMetadata( metadata );
         }
     }
 
@@ -844,22 +928,39 @@ public class OntDocumentManager
      * @return A model loaded by resolving an entry on the path, or null if
      * no path entries succeed.
      */
-    protected Model findMetadata( String path ) {
-        StringTokenizer pathElems = new StringTokenizer( path, PATH_DELIMITER );
-        Model m = ModelFactory.createDefaultModel();
-        boolean loaded = false;
-
-        // try to read each path entry in turn
-        while (!loaded  &&  pathElems.hasMoreTokens()) {
-            String mdURI = pathElems.nextToken();
-            loaded = read( m, mdURI, false );
-            if (loaded) {
-                m_policyURL = mdURI;
-            }
+    protected Model findMetadata( String configPath ) {
+        if (configPath == null) {
+            return null;
         }
 
-        // only return m if we found some metadata
-        return loaded ? m : null;
+        // Make a temporary file manager to look for the metadata file
+        FileManager fm = new FileManager();
+        fm.addLocatorFile();
+        fm.addLocatorClassLoader( fm.getClass().getClassLoader() );
+
+        try {
+            String uri = null ;
+            InputStream in = null ;
+
+            StringTokenizer pathElems = new StringTokenizer( configPath, FileManager.PATH_DELIMITER );
+            while (in == null && pathElems.hasMoreTokens()) {
+                uri = pathElems.nextToken();
+                in = fm.openNoMap( uri );
+            }
+
+            if (in != null) {
+                String syntax = FileUtils.guessLang(uri);
+                Model model = ModelFactory.createDefaultModel() ;
+                model.read( in, uri, syntax );
+                m_policyURL = uri;
+                return model;
+            }
+        }
+        catch (JenaException e) {
+            log.warn( "Exception while reading configuration: " + e.getMessage(), e);
+        }
+
+        return null;
     }
 
 
@@ -871,7 +972,10 @@ public class OntDocumentManager
      *
      * @param metadata A model containing metadata about ontologies.
      */
-    protected void loadMetadata( Model metadata ) {
+    protected void processMetadata( Model metadata ) {
+        // there may be configuration for the location mapper in the ODM metadata file
+        getFileManager().getLocationMapper().processConfig( metadata );
+
         // first we process the general policy statements for this document manager
         for (ResIterator i = metadata.listSubjectsWithProperty( RDF.type, DOC_MGR_POLICY ); i.hasNext(); ) {
             Resource policy = i.nextResource();
@@ -924,7 +1028,7 @@ public class OntDocumentManager
                 if (s != null) addLanguageEntry( publicURI, s.getResource().getURI() );
             }
             else {
-                m_log.warn( "Ontology specification node lists no public URI - node ignored");
+                log.warn( "Ontology specification node lists no public URI - node ignored");
             }
         }
     }
@@ -943,7 +1047,7 @@ public class OntDocumentManager
      */
     protected void loadImport( OntModel model, String importURI, List readQueue ) {
         if (m_processImports) {
-            LogFactory.getLog( getClass() ).debug( "OntDocumentManager loading " + importURI );
+            log.debug( "OntDocumentManager loading " + importURI );
 
             // add this model to occurs check list
             model.addLoadedImport( importURI );
@@ -992,51 +1096,25 @@ public class OntDocumentManager
      * @return True if the uri was read successfully
      */
     protected boolean read( Model model, String uri, boolean warn ) {
-        // map to the cache URI if defined
-        String resolvableURI = doAltURLMapping( uri );
-        String file = resolvableURI.startsWith( "file:" ) ? resolvableURI.substring( 5 ) : resolvableURI;
-
-        // try to load the URI
+        boolean success = false;
         try {
-            // try to use the extension of the url to guess what syntax to use (.n3 => "N3", etc)
-            String lang = FileUtils.guessLang( resolvableURI );
-
-            // see if we can find the file as a resource
-            InputStream is = getClass().getClassLoader().getResourceAsStream( file );
-
-            if (is == null) {
-                // we can't get this URI as a system resource, so just try to read
-                // it in the normal way. Uses the original URI as the base (in case xml:base
-                // is not set in the document itself)
-                model.read( resolvableURI, uri, lang );
-            }
-            else {
-                try {
-                    // we have opened the file as a system resource - try to load it into the model
-                    model.read( is, uri, lang );
-                }
-                finally {
-                    try {is.close();} catch (IOException ignore) {}
-                }
-            }
-
-            // success: cache the model against the uri
-            addModel( uri, model );
-            return true;
+            getFileManager().readModel( model, uri );
+            success = true;
         }
-        catch (JenaException e) {
-            if (warn) {
-                String u = "<" + resolvableURI + ">";
-                if (!resolvableURI.equals( uri )) {
-                    u = u + " (re-directed via the document mgr from <" + uri + ">)";
-                }
-
-                LogFactory.getLog( OntDocumentManager.class )
-                      .warn( "An error occurred while attempting to read from " + u +
-                             ". Error was '" + e.getMessage() + "'.", e );
-            }
-            return false;
+        catch (Exception e) {
+            log.warn( "An error occurred while attempting to read from " + uri + ". Msg was '" + e.getMessage() + "'.", e );
         }
+        return success;
+    }
+
+
+    /**
+     * <p>Set the default option settings.</p>
+     */
+    protected void setDefaults() {
+        setCacheModels( true );
+        setUseDeclaredPrefixes( true );
+        setProcessImports( true );
     }
 
 
