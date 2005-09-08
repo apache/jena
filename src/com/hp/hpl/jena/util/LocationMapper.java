@@ -29,7 +29,7 @@ import org.apache.commons.logging.*;
  * @see FileManager
  *  
  * @author Andy Seaborne
- * @version $Id: LocationMapper.java,v 1.11 2005-09-06 10:52:38 andy_seaborne Exp $
+ * @version $Id: LocationMapper.java,v 1.12 2005-09-08 13:58:14 andy_seaborne Exp $
  */
 
 public class LocationMapper
@@ -56,7 +56,7 @@ public class LocationMapper
         {
             theMapper = new LocationMapper() ;
             if ( getGlobalConfigPath() != null )
-            theMapper.initFromPath(getGlobalConfigPath(), false) ;
+                theMapper.initFromPath(getGlobalConfigPath(), false) ;
         }
         return theMapper ;
     }
@@ -243,7 +243,7 @@ public class LocationMapper
         return s ;
     }
     
-    private void processConfig(Model m)
+    public void processConfig(Model m)
     {
         StmtIterator mappings =
             m.listStatements(null, LocationMappingVocab.mapping, (RDFNode)null) ;

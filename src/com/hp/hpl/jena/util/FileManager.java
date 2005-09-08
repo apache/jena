@@ -40,7 +40,7 @@ import com.hp.hpl.jena.shared.*;
  * @see LocationMapper
  * 
  * @author     Andy Seaborne
- * @version    $Id: FileManager.java,v 1.25 2005-09-07 13:57:05 andy_seaborne Exp $
+ * @version    $Id: FileManager.java,v 1.26 2005-09-08 13:58:14 andy_seaborne Exp $
  */
  
 public class FileManager
@@ -303,7 +303,7 @@ public class FileManager
         if ( baseURI == null )
             baseURI = chooseBaseURI(filenameOrURI) ;
 
-        String mappedURI = remap(filenameOrURI) ;
+        String mappedURI = mapURI(filenameOrURI) ;
 
         if ( syntax == null )
         {
