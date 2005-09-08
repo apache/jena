@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: DIGAdapter.java,v $
- * Revision           $Revision: 1.21 $
+ * Revision           $Revision: 1.22 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-06-29 07:29:05 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2005-09-08 15:31:48 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * [See end of file]
@@ -34,7 +34,6 @@ import com.hp.hpl.jena.ontology.*;
 import com.hp.hpl.jena.rdf.model.*;
 import com.hp.hpl.jena.reasoner.TriplePattern;
 import com.hp.hpl.jena.util.iterator.*;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import com.hp.hpl.jena.util.xml.SimpleXMLPath;
 import com.hp.hpl.jena.vocabulary.*;
 
@@ -49,7 +48,7 @@ import org.w3c.dom.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGAdapter.java,v 1.21 2005-06-29 07:29:05 chris-dollin Exp $
+ * @version CVS $Id: DIGAdapter.java,v 1.22 2005-09-08 15:31:48 ian_dickinson Exp $
  */
 public class DIGAdapter
 {
@@ -58,9 +57,18 @@ public class DIGAdapter
 
     /** DIG profile for 1.7 */
     public static final DIGProfile RACER_17_PROFILE = new DIGProfile() {
-        public String getDIGNamespace()   {return "http://dl.kr.org/dig/lang"; }
-        public String getSchemaLocation() {return "http://potato.cs.man.ac.uk/dig/level0/dig.xsd"; }
-        public String getContentType()    {return "application/x-www-form-urlencoded";}
+        public String getDIGNamespace()          {return "http://dl.kr.org/dig/lang"; }
+        public String getSchemaLocation()        {return "http://potato.cs.man.ac.uk/dig/level0/dig.xsd"; }
+        public String getContentType()           {return "application/x-www-form-urlencoded";}
+        public String getInconsistentKBMessage() {return null;}
+    };
+
+    /** DIG profile for Pellet */
+    public static final DIGProfile PELLET_PROFILE = new DIGProfile() {
+        public String getDIGNamespace()          {return "http://dl.kr.org/dig/lang"; }
+        public String getSchemaLocation()        {return "http://potato.cs.man.ac.uk/dig/level0/dig.xsd"; }
+        public String getContentType()           {return "application/x-www-form-urlencoded";}
+        public String getInconsistentKBMessage() {return "Inconsistent KB";}
     };
 
     // switch codes for expression types
@@ -175,8 +183,8 @@ public class DIGAdapter
     // Instance variables
     //////////////////////////////////
 
-    /** The profile for the DIG interface this reasoner is interacting with. Defaults to Racer 1.7 */
-    protected DIGProfile m_profile = RACER_17_PROFILE;
+    /** The profile for the DIG interface this reasoner is interacting with. Pellet */
+    protected DIGProfile m_profile = PELLET_PROFILE;
 
     /** The graph that contains the data we are uploading to the external DIG reasoner */
     protected OntModel m_sourceData;
@@ -455,8 +463,8 @@ public class DIGAdapter
         for (int i = 0;  i < s_queryTable.length;  i++) {
             DIGQueryTranslator dqt = s_queryTable[i];
 
-            if (s_queryTable[i].trigger( pattern, this, premises )) {
-                return s_queryTable[i];
+            if (dqt.trigger( pattern, this, premises )) {
+                return dqt;
             }
         }
 

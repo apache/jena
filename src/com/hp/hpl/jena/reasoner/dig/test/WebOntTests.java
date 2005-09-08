@@ -7,11 +7,11 @@
  * Web site           @website@
  * Created            20-Apr-2004
  * Filename           $RCSfile: WebOntTests.java,v $
- * Revision           $Revision: 1.9 $
+ * Revision           $Revision: 1.10 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:16:34 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-09-08 15:31:48 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  *****************************************************************************/
@@ -51,7 +51,7 @@ import org.apache.commons.logging.LogFactory;
  * interface. This class is derived from Dave's
  * {@link com.hp.hpl.jena.reasoner.rulesys.test.WebOntTestHarness WebOntTestHarness}.
  * </p>
- * 
+ *
  * @author Ian Dickinson, HP Labs ( <a href="mailto:Ian.Dickinson@hp.com">email
  *         </a>)
  * @version Release @release@ ($Id: eclipse-template.txt,v 1.2 2003/10/20
@@ -70,58 +70,58 @@ public class WebOntTests
 
     /** The namespace for terms in the owl test ontology */
     public static final String OTEST_NS = BASE_URI + "testOntology#";
-    
+
     /** The base URI for the results file */
     public static String BASE_RESULTS_URI = "http://jena.sourceforge.net/data/owl-results.rdf";
 
     /** The list of subdirectories to process (omits the rdf/rdfs dirs) */
     public static final String[] TEST_DIRS = {
-            "AllDifferent", 
-            "AnnotationProperty", 
+            "AllDifferent",
+            "AnnotationProperty",
             "DatatypeProperty",
-            "FunctionalProperty", 
-            "I3.2", 
-            "I3.4", 
-            "I4.1", 
+            "FunctionalProperty",
+            "I3.2",
+            "I3.4",
+            "I4.1",
             "I4.5",
-            "I4.6", 
+            "I4.6",
             "I5.1",
-            "I5.2", 
-            "I5.21", 
-            "I5.24", 
+            "I5.2",
+            "I5.21",
+            "I5.24",
             "I5.26",
-            "I5.3", 
-            "I5.5", 
+            "I5.3",
+            "I5.5",
             "I5.8",
-            "InverseFunctionalProperty", 
+            "InverseFunctionalProperty",
             "Nothing",
-            "Restriction", 
+            "Restriction",
             "SymmetricProperty",
-            "Thing", 
-            "TransitiveProperty", 
-            "Class", 
-            "allValuesFrom", 
-            "amp-in-url", 
-            "cardinality", 
-            "complementOf", 
+            "Thing",
+            "TransitiveProperty",
+            "Class",
+            "allValuesFrom",
+            "amp-in-url",
+            "cardinality",
+            "complementOf",
             "datatypes",
-            "differentFrom", 
-            "disjointWith", 
-            "distinctMembers", 
-            "equivalentClass", 
-            "equivalentProperty", 
+            "differentFrom",
+            "disjointWith",
+            "distinctMembers",
+            "equivalentClass",
+            "equivalentProperty",
             "imports",
-            "intersectionOf", 
-            "inverseOf", 
-            "localtests", 
-            "maxCardinality", 
-            "miscellaneous", 
-            "oneOf", 
-            "sameAs", 
-            "someValuesFrom", 
+            "intersectionOf",
+            "inverseOf",
+            "localtests",
+            "maxCardinality",
+            "miscellaneous",
+            "oneOf",
+            "sameAs",
+            "someValuesFrom",
             "statement-entailment",
-            "unionOf", 
-            "xmlbase", 
+            "unionOf",
+            "xmlbase",
             "description-logic",
              "extra-credit",
     };
@@ -140,7 +140,7 @@ public class WebOntTests
 
     /** List of acceptable test levels */
     public static final List ACCEPTABLE_TEST_LEVELS = Arrays.asList( new Resource[] {OWLTest.Lite, OWLTest.DL} );
-    
+
     /** List of predicates we don't want in the premises (because we will try to prove them) */
     protected static List UNSAFE_PREMISE_PREDICATES = new ArrayList();
     static {
@@ -155,8 +155,8 @@ public class WebOntTests
         UNSAFE_PREMISE_PREDICATES.add( DAML_OIL.subClassOf );
         UNSAFE_PREMISE_PREDICATES.add( DAML_OIL.subPropertyOf );
     }
-    
-    
+
+
     // Static variables
     //////////////////////////////////
 
@@ -205,24 +205,24 @@ public class WebOntTests
         initResults();
     }
 
-    
+
     // External signature methods
     //////////////////////////////////
 
     public static void main( String[] args ) throws IOException {
         String resultFile = "owl-results.rdf";
         String testName = null;
-        
+
         if (args.length >= 1) {
             testName = args[0];
         }
 
         WebOntTests harness = new WebOntTests();
-        
+
         // initialise the document manager
-        OntDocumentManager.getInstance().addAltEntry( "http://www.w3.org/2002/03owlt/miscellaneous/consistent002", 
+        OntDocumentManager.getInstance().addAltEntry( "http://www.w3.org/2002/03owlt/miscellaneous/consistent002",
                                                         "file:testing/wg/miscellaneous/consistent002.rdf" );
-        OntDocumentManager.getInstance().addAltEntry( "http://www.w3.org/2002/03owlt/miscellaneous/consistent001", 
+        OntDocumentManager.getInstance().addAltEntry( "http://www.w3.org/2002/03owlt/miscellaneous/consistent001",
                                                         "file:testing/wg/miscellaneous/consistent001.rdf" );
 
         if (testName == null) {
@@ -293,7 +293,7 @@ public class WebOntTests
             e.printStackTrace();
         }
         m_testCount++;
-        
+
         if (success) {
             System.out.print((m_testCount % 40 == 0) ? ".\n" : ".");
             System.out.flush();
@@ -303,7 +303,7 @@ public class WebOntTests
             System.out.println("\nFAIL: " + test);
         }
         Resource resultType = null;
-        
+
         if (fail) {
             resultType = OWLResults.FailingRun;
         }
@@ -316,20 +316,20 @@ public class WebOntTests
                 resultType = success ? OWLResults.PassingRun : OWLResults.IncompleteRun;
             }
         }
-        
+
         // log to the rdf result format
-        Resource result = m_testResults.createResource()
-                                       .addProperty(RDF.type, OWLResults.TestRun)
-                                       .addProperty(RDF.type, resultType)
-                                       .addProperty(OWLResults.test, test)
-                                       .addProperty(OWLResults.system, m_jena2);
+        m_testResults.createResource()
+                     .addProperty(RDF.type, OWLResults.TestRun)
+                     .addProperty(RDF.type, resultType)
+                     .addProperty(OWLResults.test, test)
+                     .addProperty(OWLResults.system, m_jena2);
     }
 
     /**
      * Run a single test of any sort, return true if the test succeeds.
      */
-    public boolean doRunTest( Resource test ) 
-        throws IOException 
+    public boolean doRunTest( Resource test )
+        throws IOException
     {
         if (test.hasProperty(RDF.type, OWLTest.PositiveEntailmentTest)
                 || test.hasProperty(RDF.type, OWLTest.NegativeEntailmentTest)
@@ -341,7 +341,7 @@ public class WebOntTests
             boolean processImports = test.hasProperty( RDF.type, OWLTest.ImportEntailmentTest );
             Model premises = getDoc( test, RDFTest.premiseDocument, processImports );
             Model conclusions = getDoc( test, RDFTest.conclusionDocument );
-            
+
             long t1 = System.currentTimeMillis();
             boolean correct = testEntailment( conclusions, m_reasoner.bind( premises.getGraph() ) );
             m_lastTestDuration = System.currentTimeMillis() - t1;
@@ -413,7 +413,7 @@ public class WebOntTests
     /**
      * Utility to load a file into a model a Model. Files are assumed to be
      * relative to the BASE_URI.
-     * 
+     *
      * @param file the file name, relative to baseDir
      * @return the loaded Model
      */
@@ -442,18 +442,18 @@ public class WebOntTests
     public boolean testEntailment( Model conclusions, InfGraph inf ) {
         List queryRoots = listQueryRoots( conclusions );
         Model result = ModelFactory.createDefaultModel();
-        
+
         for (Iterator i = queryRoots.iterator(); i.hasNext(); ) {
             Resource root = (Resource) i.next();
-            
+
             for (StmtIterator j = root.listProperties();  j.hasNext(); ) {
                 Statement rootQuery = j.nextStatement();
                 Resource subject = rootQuery.getSubject();
                 RDFNode object = rootQuery.getObject();
-                
+
                 OntModel premises = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM, null );
                 premises.setStrictMode( false );
-                
+
                 if (subject.isAnon()) {
                     // subject is assumed to be an expression
                     addSubGraph( subject, premises );
@@ -461,13 +461,13 @@ public class WebOntTests
                 if (object instanceof Resource && ((Resource) object).isAnon()) {
                     addSubGraph( (Resource) object, premises );
                 }
-                
+
                 // add the resulting triples to the graph
                 try {
                     ExtendedIterator k =inf.find( rootQuery.getSubject().asNode(),
                                                   rootQuery.getPredicate().asNode(),
                                                   rootQuery.getObject().asNode(),
-                                                  premises.getGraph() ); 
+                                                  premises.getGraph() );
                     while (k.hasNext()) {
                         //Triple t = (Triple) k.next();
                         Object x = k.next();
@@ -475,7 +475,7 @@ public class WebOntTests
                         LogFactory.getLog( getClass() ).debug( "testEntailment got triple " + t );
                         result.getGraph().add( t );
                     }
-                    
+
                     // transcribe the premises into the results
                     result.add( premises );
                 }
@@ -485,7 +485,7 @@ public class WebOntTests
                 }
             }
         }
-        
+
         result.write( System.out, "RDF/XML-ABBREV" );
         // now check that the conclusions, framed as a query, holds
         QueryHandler qh = result.queryHandler();
@@ -568,7 +568,7 @@ public class WebOntTests
         while (si.hasNext()) {
             Resource test = si.nextStatement().getSubject();
             boolean accept = true;
-            
+
             // Check test status
             Literal status = (Literal) test.getProperty(RDFTest.status).getObject();
             if (s_approvedOnly) {
@@ -583,14 +583,14 @@ public class WebOntTests
                     }
                 }
             }
-            
+
             // Check for blocked tests
             for (int i = 0; i < BLOCKED_TESTS.length; i++) {
                 if (BLOCKED_TESTS[i].equals(test.toString())) {
                     accept = false;
                 }
             }
-            
+
             // Check test level
             if (accept) {
                 boolean reject = true;
@@ -599,13 +599,13 @@ public class WebOntTests
                         reject = false;
                     }
                 }
-                
+
                 if (reject) {
                     LogFactory.getLog( getClass() ).debug( "Ignoring test " + test + " because it either has no test level defined, or an unacceptable test level" );
                     accept = false;
                 }
             }
-            
+
             // End of filter tests
             if (accept) {
                 result.add(test);
@@ -619,10 +619,8 @@ public class WebOntTests
      * reasoner about ... we interpret this as every named resource in the given model
      */
     protected List listQueryRoots( Model m ) {
-        Set seen = new HashSet();
-        List q = new ArrayList();
         List roots = new ArrayList();
-        
+
         for (ResIterator i = m.listSubjects(); i.hasNext(); ) {
             Resource subj = i.nextResource();
             if (!subj.isAnon()) {
@@ -635,7 +633,7 @@ public class WebOntTests
         }
         return roots;
     }
-    
+
     /**
      * Add the reachable sub-graph from root, unless it traverses a predicate
      * that we might be trying to establish.
@@ -646,14 +644,14 @@ public class WebOntTests
         List q = new ArrayList();
         Set seen = new HashSet();
         q.add( root );
-        
+
         while (!q.isEmpty()) {
             Resource r = (Resource) q.remove( 0 );
-            
+
             if (!seen.contains( r )) {
                 for (StmtIterator i = r.listProperties(); i.hasNext(); ) {
                     Statement s = i.nextStatement();
-                    
+
                     if (safePremise( s.getPredicate() )) {
                         premises.add( s );
                         if (s.getObject() instanceof Resource) {
@@ -665,7 +663,7 @@ public class WebOntTests
             }
         }
     }
-    
+
     /**
      * <p>Answer true if p is a property that is safe to add as a premise without
      * assertng what we are trying to find out.  Properties ruled out by this
@@ -676,8 +674,8 @@ public class WebOntTests
     protected boolean safePremise( Property p ) {
         return !(UNSAFE_PREMISE_PREDICATES.contains( p ));
     }
-    
-    
+
+
     //==============================================================================
     // Inner class definitions
     //==============================================================================
@@ -688,7 +686,7 @@ public class WebOntTests
 /*
  * (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *  1. Redistributions of source code must retain the above copyright notice,
@@ -698,7 +696,7 @@ public class WebOntTests
  * documentation and/or other materials provided with the distribution.
  *  3. The name of the author may not be used to endorse or promote products
  * derived from this software without specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            July 19th 2003
  * Filename           $RCSfile: DIGInfGraph.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-03-16 18:52:27 $
+ * Last modified on   $Date: 2005-09-08 15:31:48 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -46,7 +46,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: DIGInfGraph.java,v 1.13 2005-03-16 18:52:27 ian_dickinson Exp $
+ * @version CVS $Id: DIGInfGraph.java,v 1.14 2005-09-08 15:31:48 ian_dickinson Exp $
  */
 public class DIGInfGraph
     extends BaseInfGraph
@@ -227,6 +227,11 @@ public class DIGInfGraph
             m_adapter.collectNamedTerms( DIGProfile.ALL_INDIVIDUALS,
                                          new String[] {DIGProfile.INDIVIDUAL_SET, DIGProfile.INDIVIDUAL} );
         }
+        catch (DIGInconsistentKBException e) {
+            report.add( true, "DIG KB inconsistent", e.getMessage() );
+            // no point continuing further
+            return report;
+        }
         catch (DIGErrorResponseException e) {
             report.add( true, "DIG KB incoherent", e.getMessage() );
         }
@@ -252,13 +257,24 @@ public class DIGInfGraph
         for (Iterator j = m_adapter.getKnownIndividuals().iterator(); j.hasNext(); ) {
             String ind = (String) j.next();
             Node indNode = (Node) vMap.map1( ind );
+            ExtendedIterator i1 = null;
 
             try {
-                ExtendedIterator i1 = q1.find( new TriplePattern( indNode, RDF.type.asNode(), null ), m_adapter );
+                i1 = q1.find( new TriplePattern( indNode, RDF.type.asNode(), null ), m_adapter );
+            }
+            catch (DIGInconsistentKBException e) {
+                report.add( true, "DIG KB inconsistent", e.getMessage() );
+                // no point continuing further
+                break;
             }
             catch (DIGErrorResponseException e) {
                 // we assume this is an incoherent KB exception - should check
                 report.add( true, "meaningless individual", (indNode.isBlank() ? indNode.getBlankNodeId().toString() : indNode.getURI()), ind );
+            }
+            finally {
+                if (i1 != null) {
+                    i1.close();
+                }
             }
         }
 

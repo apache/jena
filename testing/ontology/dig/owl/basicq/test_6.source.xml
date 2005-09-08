@@ -31,5 +31,5 @@
 	<p><A rdf:ID="a1" /></p>
 </A>
 
-<A rdf:about="#a1"><owl:differentFrom rdf:resource="#a0" /></A>
+<!--A rdf:about="#a1"><owl:differentFrom rdf:resource="#a0" /></A-->
 </rdf:RDF>

@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            11-Sep-2003
  * Filename           $RCSfile: TestDigReasoner.java,v $
- * Revision           $Revision: 1.22 $
+ * Revision           $Revision: 1.23 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-06 15:22:23 $
+ * Last modified on   $Date: 2005-09-08 15:31:48 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -53,7 +53,7 @@ import javax.xml.parsers.DocumentBuilder;
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: TestDigReasoner.java,v 1.22 2005-09-06 15:22:23 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: TestDigReasoner.java,v 1.23 2005-09-08 15:31:48 ian_dickinson Exp $)
  */
 public class TestDigReasoner
     extends TestCase
@@ -101,8 +101,6 @@ public class TestDigReasoner
     }
 
     public void testAxioms() {
-        String NS = "http://example.org/foo#";
-
         DIGReasoner r = (DIGReasoner) ReasonerRegistry.getDIGReasoner();
         DIGReasoner ro = (DIGReasoner) ReasonerRegistry.getDIGReasoner( OWL.NAMESPACE, null );
         DIGReasoner rd = (DIGReasoner) ReasonerRegistry.getDIGReasoner( DAML_OIL.NAMESPACE_DAML, null );
@@ -714,7 +712,7 @@ public class TestDigReasoner
         StmtIterator i = m.listStatements( null, OWL.equivalentClass, OWL.Nothing );
         int unsatCount = 0;
         while (i.hasNext()) {
-            Resource s = i.nextStatement().getSubject();
+            /*Resource s = */i.nextStatement().getSubject();
             //System.out.println( "Class " + s + " is unsatisfiable" );
             unsatCount++;
         }
@@ -738,7 +736,7 @@ public class TestDigReasoner
         int nonICount = 0;
 
         for (StmtIterator j = m.listStatements( null, RDF.type, m.getResource(NS+"A")); j.hasNext(); ) {
-            if (j.nextStatement().getSubject().getURI().equals( NS + "i0") ) {
+            if (j.nextStatement().getSubject().equals( i0 )) {
                 iCount++;
             }
             else {
@@ -775,19 +773,19 @@ public class TestDigReasoner
         for ( Iterator instances = model.listIndividuals(); instances.hasNext(); ) {
             Individual inst = (Individual) instances.next();
 
-            System.out.println( "Looking at " + inst );
             try {
-                System.out.println( "Label try #1: " + "  "+inst.getLabel("en"));
+                //System.out.println( "Label try #1: " + "  "+inst.getLabel("en"));
+                inst.getLabel("en");
             }
             catch (Exception e) {
-                System.out.println( "First attempt failed: " + e.getMessage() );
+                //System.out.println( "First attempt failed: " + e.getMessage() );
                 ex0 = true;
             }
 
             try {
                 Resource baseInst = (Resource) inst.inModel( base );
-                String label = baseInst.getProperty( RDFS.label ).getString();
-                System.out.println("Label try #2: " +  label );
+                /*String label =*/ baseInst.getProperty( RDFS.label ).getString();
+                //System.out.println("Label try #2: " +  label );
             }
             catch (Exception e) {
                 System.out.println( "Second attempt failed " + e.getMessage() );
@@ -799,41 +797,9 @@ public class TestDigReasoner
         assertTrue( !(ex0 || ex1) );
     }
 
-    public void xxtestDebug1() {
-        String NS = "http://example.org/foo#";
-
-        OntModel base = ModelFactory.createOntologyModel( OntModelSpec.OWL_DL_MEM, null );
-        Individual a = base.createIndividual( NS + "a", OWL.Thing );
-        Individual b = base.createIndividual( NS + "b", OWL.Thing );
-        OntClass A = base.createEnumeratedClass( NS + "A", base.createList( new Resource[] {a,b} ));
-
-        DIGReasoner r = (DIGReasoner) ReasonerRegistry.theRegistry().create( DIGReasonerFactory.URI, null );
-
-        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM );
-        spec.setReasoner( r );
-        OntModel m = ModelFactory.createOntologyModel( spec, base );
-
-        for (Iterator i = m.listClasses();  i.hasNext(); ) {
-            System.err.println( "concept " + i.next() );
-        }
-    }
-
-    public void xxtestDebug() {
-        String NS = "http://example.org/foo#";
-
-        OntModelSpec spec = new OntModelSpec( OntModelSpec.OWL_DL_MEM_RULE_INF );
-        OntModel m = ModelFactory.createOntologyModel( spec, null );
-        m.read( "file:testing/ontology/dig/owl/test1.xml" );
-
-        ObjectProperty p2 = m.getObjectProperty( NS + "p2" );
-
-        for (StmtIterator i = m.listStatements( null, RDFS.subPropertyOf, p2 );  i.hasNext(); ) {
-            System.err.println( "p2 has sub prop " + i.next() );
-        }
-    }
 
     // for debuging the basic query tests one at a time
-    public void testBasicQueryN()
+    public void xxtestBasicQueryN()
         throws Exception
     {
         String root = "testing/ontology/dig/owl/basicq";
@@ -1053,7 +1019,7 @@ public class TestDigReasoner
             log.debug( "DIG test " + m_source.getPath() );
             Document resultD = da.getConnection().sendDigVerb( queryD, da.getProfile() );
 
-            da.getConnection().errorCheck( resultD );
+            da.getConnection().errorCheck( resultD, da.getProfile() );
             assertFalse( "Should not be warnings", da.getConnection().warningCheck( resultD ) );
 
             da.close();

@@ -3,14 +3,14 @@
  * -----------------------
  * Original author    Ian Dickinson, HP Labs Bristol
  * Author email       ian.dickinson@hp.com
- * Package            Jena 2
- * Web                http://sourceforge.net/projects/jena/
- * Created            11-Sep-2003
- * Filename           $RCSfile: DIGErrorResponseException.java,v $
- * Revision           $Revision: 1.6 $
+ * Package            Jena2
+ * Web site           http://jena.sourceforge.net
+ * Created            08-Sep-2005
+ * Filename           $RCSfile: DIGInconsistentKBException.java,v $
+ * Revision           $Revision: 1.1 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-08 15:31:47 $
+ * Last modified on   $Date: 2005-09-08 15:31:48 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -25,41 +25,23 @@ package com.hp.hpl.jena.reasoner.dig;
 // Imports
 ///////////////
 
+
 /**
  * <p>
- * An exception that encapsulates an error response from the DIG server, including
- * error number and message.
+ * This exception denotes the special error condition that the remote reasoner
+ * detected an inconsistent knowledge base. Some reasoners, e.g. Pellet, do not
+ * continue reasoning after an inconsistent KB has been detected.
  * </p>
  *
  * @author Ian Dickinson, HP Labs (<a href="mailto:Ian.Dickinson@hp.com">email</a>)
- * @version Release @release@ ($Id: DIGErrorResponseException.java,v 1.6 2005-09-08 15:31:47 ian_dickinson Exp $)
+ * @version Release @release@ ($Id: DIGInconsistentKBException.java,v 1.1 2005-09-08 15:31:48 ian_dickinson Exp $)
  */
-public class DIGErrorResponseException
-    extends DIGReasonerException
+public class DIGInconsistentKBException
+    extends DIGErrorResponseException
 {
     // Constants
     //////////////////////////////////
-    private static final long serialVersionUID = 1669564065915390071L;
-
-    public static final int GENERAL_UNSPECIFIED_ERROR = 100;
-    public static final int UNKNOWN_REQUEST = 101;
-    public static final int MAFORMED_REQUEST = 102;
-    public static final int UNSUPPORTED_OPERATION = 103;
-
-    public static final int CANNOT_CREATE_NEW_KB = 201;
-    public static final int MALFORMED_KB_URI = 202;
-    public static final int UNKNOWN_OR_STALE_KB_URI = 203;
-    public static final int KB_RELEASE_ERROR = 204;
-    public static final int MISSING_URI = 205;
-
-    public static final int GENERAL_TELL_ERROR = 301;
-    public static final int UNSUPPORTED_TELL_OPERATION = 302;
-    public static final int UNKNOWN_TELL_OPERATION = 303;
-
-    public static final int GENERAL_ASK_ERROR = 401;
-    public static final int UNSUPPORTED_ASK_OPERATION = 402;
-    public static final int UNKNOWN_ASK_OPERATION = 403;
-
+    private static final long serialVersionUID = -2990713420344301511L;
 
     // Static variables
     //////////////////////////////////
@@ -67,46 +49,16 @@ public class DIGErrorResponseException
     // Instance variables
     //////////////////////////////////
 
-    /** The msg attribute from the DIG error message */
-    private String m_msgAttr;
-
-    /** The DIG error code */
-    private int m_errorCode;
-
-
     // Constructors
     //////////////////////////////////
 
-    public DIGErrorResponseException( String msg, String msgAttr, int errorCode ) {
-        super( "DIG error: " + msgAttr + " - " + msg );
-        m_msgAttr = msgAttr;
-        m_errorCode = errorCode;
+    public DIGInconsistentKBException( String msg, String msgAttr, int errorCode ) {
+        super( msg, msgAttr, errorCode );
     }
 
 
     // External signature methods
     //////////////////////////////////
-
-    /**
-     * <p>Answer the error code sent back by DIG.  Well known error codes are listed
-     * as constants exported from this class.</p>
-     * @return The DIG error code; the value of the <code>code</code> attribute in
-     * the error response returned by the reasoner.
-     */
-    public int getErrorCode() {
-        return m_errorCode;
-    }
-
-
-    /**
-     * <p>Answer the error message sent back by DIG as the 'message' attribute.</p>
-     * @return The DIG error message; the value of the <code>message</code> attribute
-     * in the error response returned by the reasoner
-     */
-    public String getDIGMessageAttrib() {
-        return m_msgAttr;
-    }
-
 
     // Internal implementation methods
     //////////////////////////////////
