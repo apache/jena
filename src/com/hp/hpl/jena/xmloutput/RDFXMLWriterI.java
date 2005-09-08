@@ -162,7 +162,7 @@ to false write the declaration to an OutputStream before calling
  <tr BGCOLOR="white" CLASS="TableRowColor">
  <td>prettyTypes</td>
  <td>Only for the RDF/XML-ABBREV writer.
-This a list of
+This is a list of
  the types of the principal objects in the model.  The writer
   will tend to create RDF/XML with resources of these types at the
   top level.
