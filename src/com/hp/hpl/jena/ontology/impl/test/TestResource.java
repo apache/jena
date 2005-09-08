@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            23-May-2003
  * Filename           $RCSfile: TestResource.java,v $
- * Revision           $Revision: 1.13 $
+ * Revision           $Revision: 1.14 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-05-05 12:32:22 $
+ * Last modified on   $Date: 2005-09-08 15:35:26 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -40,7 +40,7 @@ import com.hp.hpl.jena.vocabulary.RDF;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: TestResource.java,v 1.13 2005-05-05 12:32:22 ian_dickinson Exp $
+ * @version CVS $Id: TestResource.java,v 1.14 2005-09-08 15:35:26 ian_dickinson Exp $
  */
 public class TestResource
     extends OntTestBase
@@ -395,7 +395,6 @@ public class TestResource
                     Resource r = m.createResource();
                     r.addProperty( RDF.type, m.getProfile().CLASS() );
                     OntResource or = (OntResource) r.as( OntResource.class );
-                    boolean f = owlFull();
                     assertFalse( "should not be annotation prop", or.isAnnotationProperty() );
                     assertFalse( "should not be all different", or.isAllDifferent() );
                     assertTrue( "should be class", or.isClass() );

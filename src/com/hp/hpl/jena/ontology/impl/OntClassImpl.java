@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            27-Mar-2003
  * Filename           $RCSfile: OntClassImpl.java,v $
- * Revision           $Revision: 1.48 $
+ * Revision           $Revision: 1.49 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-04-11 16:41:41 $
+ * Last modified on   $Date: 2005-09-08 15:33:04 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -44,7 +44,7 @@ import java.util.*;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntClassImpl.java,v 1.48 2005-04-11 16:41:41 ian_dickinson Exp $
+ * @version CVS $Id: OntClassImpl.java,v 1.49 2005-09-08 15:33:04 ian_dickinson Exp $
  */
 public class OntClassImpl
     extends OntResourceImpl
@@ -860,12 +860,6 @@ public class OntClassImpl
 
     // Internal implementation methods
     //////////////////////////////////
-
-
-    private void collectProperty( Property p, Set props, OntModel m ) {
-        // make sure that the property is attached to the right model
-        props.add( m.getProperty( p.getURI() ) );
-    }
 
     /**
      * <p>Answer true if this class has the given class as a direct super-class, without using

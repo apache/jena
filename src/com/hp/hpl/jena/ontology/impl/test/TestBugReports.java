@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            16-Jun-2003
  * Filename           $RCSfile: TestBugReports.java,v $
- * Revision           $Revision: 1.69 $
+ * Revision           $Revision: 1.70 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-07-29 16:08:06 $
- *               by   $Author: chris-dollin $
+ * Last modified on   $Date: 2005-09-08 15:34:58 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -864,7 +864,7 @@ public class TestBugReports
 
         // will generate warnings, so suppress until Jeremy has fixed
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        //writer.write(baseModel, out, BASE );
+        writer.write(baseModel, out, BASE );
     }
 
     /** Bug report by Harry Chen - closed exception when reading many models */
@@ -928,10 +928,10 @@ public class TestBugReports
         "  </owl:Class>" +
         "</rdf:RDF>";
         String NS = "http://jena.hpl.hp.com/test#";
-        OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+        OntModel m = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM_MICRO_RULE_INF, null);
         m.read(new ByteArrayInputStream( SOURCE.getBytes()), NS );
 
-        OntClass dummy = m.getOntClass( NS + "Dummy" );
+        //OntClass dummy = m.getOntClass( NS + "Dummy" );
         // assert commented out - bug not accepted -ijd
         //TestUtil.assertIteratorValues( this, dummy.listDeclaredProperties(),
         //                               new Object[] {m.getObjectProperty( NS+"hasPublications")} );
@@ -991,8 +991,7 @@ public class TestBugReports
               Restriction r = (Restriction) j.next();
               if (r.isHasValueRestriction()) {
                   HasValueRestriction hv = r.asHasValueRestriction();
-                  String s = hv.getHasValue().toString();
-                  //System.out.println( s );
+                  hv.getHasValue().toString();
               }
         }
     }
@@ -1278,12 +1277,27 @@ public class TestBugReports
         OntModel ml = ModelFactory.createOntologyModel( OntModelSpec.OWL_LITE_MEM );
 
         DataRange drd = md.createDataRange( md.createList( new Resource[] {OWL.Thing}) );
-
         assertNotNull( drd );
-
         HasValueRestriction hvrd = md.createHasValueRestriction( null, RDFS.seeAlso, OWL.Thing );
-
         assertNotNull( hvrd );
+
+        boolean ex = false;
+        try {
+            drd = ml.createDataRange( md.createList( new Resource[] {OWL.Thing}) );
+        }
+        catch (ProfileException e) {
+            ex = true;
+        }
+        assertTrue( ex );
+
+        ex = false;
+        try {
+            hvrd = ml.createHasValueRestriction( null, RDFS.seeAlso, OWL.Thing );
+        }
+        catch (ProfileException e) {
+            ex = true;
+        }
+        assertTrue( ex );
     }
 
     public void test_ijd_01() {

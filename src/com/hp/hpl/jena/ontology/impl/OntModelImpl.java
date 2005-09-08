@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            22 Feb 2003
  * Filename           $RCSfile: OntModelImpl.java,v $
- * Revision           $Revision: 1.87 $
+ * Revision           $Revision: 1.88 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-08-15 15:34:53 $
+ * Last modified on   $Date: 2005-09-08 15:33:45 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -54,7 +54,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntModelImpl.java,v 1.87 2005-08-15 15:34:53 ian_dickinson Exp $
+ * @version CVS $Id: OntModelImpl.java,v 1.88 2005-09-08 15:33:45 ian_dickinson Exp $
  */
 public class OntModelImpl
     extends ModelCom
@@ -2603,7 +2603,7 @@ public class OntModelImpl
         if (owlSyntaxCheckerClass == null ) {
             try {
               owlSyntaxCheckerClass = Class.forName(owlSyntaxCheckerClassName);
-              OWLSyntaxChecker chk = (OWLSyntaxChecker)owlSyntaxCheckerClass.newInstance();
+              owlSyntaxCheckerClass.newInstance();
             }
             catch (Exception e){
                 throw new ConfigException("owlsyntax.jar must be on the classpath.",e);

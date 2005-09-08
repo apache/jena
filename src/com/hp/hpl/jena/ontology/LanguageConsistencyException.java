@@ -7,11 +7,11 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            09-May-2003
  * Filename           $RCSfile: LanguageConsistencyException.java,v $
- * Revision           $Revision: 1.4 $
+ * Revision           $Revision: 1.5 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-02-21 12:04:29 $
- *               by   $Author: andy_seaborne $
+ * Last modified on   $Date: 2005-09-08 15:32:35 $
+ *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
  * (see footer for full conditions)
@@ -29,18 +29,20 @@ package com.hp.hpl.jena.ontology;
  * <p>
  * An exception that denotes some inconsistency between the arguments to a method
  * in the ontology API, and the language definition for a given ontology profile.
- * For example, the arguments of an intersection class description should all be classes. 
+ * For example, the arguments of an intersection class description should all be classes.
  * </p>
  *
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: LanguageConsistencyException.java,v 1.4 2005-02-21 12:04:29 andy_seaborne Exp $
+ * @version CVS $Id: LanguageConsistencyException.java,v 1.5 2005-09-08 15:32:35 ian_dickinson Exp $
  */
-public class LanguageConsistencyException 
+public class LanguageConsistencyException
     extends OntologyException
 {
     // Constants
     //////////////////////////////////
+    private static final long serialVersionUID = 1962961408291647160L;
+
 
     // Static variables
     //////////////////////////////////
@@ -54,7 +56,7 @@ public class LanguageConsistencyException
     public LanguageConsistencyException( String message ) {
         super( message );
     }
-    
+
     // External signature methods
     //////////////////////////////////
 
