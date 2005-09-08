@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: AbstractTestReifiedStatements.java,v 1.12 2005-02-21 12:14:59 andy_seaborne Exp $
+  $Id: AbstractTestReifiedStatements.java,v 1.13 2005-09-08 15:14:18 jeremy_carroll Exp $
 */
 
 package com.hp.hpl.jena.rdf.model.test;
@@ -162,6 +162,21 @@ public abstract class AbstractTestReifiedStatements extends ModelTestBase
         testDoesNotReify( "model should not reify rubbish", model.createResource( "spoo:rubbish" ) );
         }
 
+//    public void testQuintetOfQuadlets() {
+//        Resource rs = model.createResource();
+//        rs.addProperty(RDF.type,RDF.Statement);
+//        model.createResource().addProperty(RDF.value,rs);
+//        rs.addProperty(RDF.subject,model.createResource());
+//        rs.addProperty(RDF.predicate,model.createProperty("http://example.org/foo"));
+//        rs.addProperty(RDF.object,model.createResource());
+//        rs.addProperty(RDF.object,model.createResource());
+//        StmtIterator it = model.listStatements();
+//        while (it.hasNext()) {
+//            Statement s = it.nextStatement();
+//            assertFalse(s.getObject().equals(s.getSubject()));
+//        }
+//    }
+    
     public void testConstructionByURI()
         {
         ReifiedStatement rs = model.createReifiedStatement( "spoo:handle", SPO );
