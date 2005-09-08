@@ -23,7 +23,7 @@
  * WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
  * OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *  * $Id: ParseException.java,v 1.10 2005-08-04 21:41:38 jeremy_carroll Exp $
+ *  * $Id: ParseException.java,v 1.11 2005-09-08 09:29:37 jeremy_carroll Exp $
  * 
  * AUTHOR: Jeremy J. Carroll
  */
@@ -132,10 +132,10 @@ public class ParseException extends SAXParseException implements
             return (file != null ? (file + ": ") : "") + msg;
 
         if (sax.getColumnNumber() == -1) {
-            return rslt + "[" + sax.getLineNumber() + "]: " + msg;
+            return rslt + "(line " + sax.getLineNumber() + "): " + msg;
         }
-        return rslt + "[" + sax.getLineNumber() + ":" + sax.getColumnNumber()
-                + "]: " + msg;
+        return rslt + "(line " + sax.getLineNumber() + " column " + sax.getColumnNumber()
+                + "): " + msg;
 
     }
 
