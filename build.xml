@@ -540,48 +540,14 @@
     </java>
   </target>
 
-  <target name="pre-tools-compile" >
-    <!-- Ensure a clean compile -->
-    <delete dir="${tools.bin}"/>
-    <mkdir dir="${tools.bin}"/>
-  </target>
+    <!-- internal tools targets: delegated to build-internal antfile -->
 
-  <target name="tools-compile" depends="pre-tools-compile">
-      <javac srcdir="internal-tools/src"
-         destdir="${tools.bin}"
-         debug="${debug}"
-         deprecation="${deprecation}"
-         optimize="${optimize}"
-         source="${java.source}"
-         target="${java.target}">
-        <classpath>
-		    <path refid="classpath"/>
-		    <pathelement path="${classes.dir}"/>
-		</classpath>
-      </javac>
-  </target>
+    <target name="tools-compile">
+        <ant antfile="build-itnernal.xml" target="tools-compile"/>
+    </target>
 
-<target name="contrib">
-    <java classname="com.hp.hpl.jena.internal.tools.RDFtoTable">
-      <arg value="doc/contrib/contributions-table.n3"/>
-      <arg value="doc/contrib/contributions.n3"/>
-      <redirector output="doc/contrib/table.tmp"/>
-      <classpath>
-        <pathelement path="${tools.bin}"/>
-		<pathelement path="${classes.dir}"/>
-		<path refid="classpath"/>
-      </classpath>
-    </java>
-    <java classname="com.hp.hpl.jena.internal.tools.InsertFile">
-      <arg value="doc/contrib/contrib-template.html"/>
-      <arg value="doc/contrib/table.tmp"/>
-      <redirector output="doc/contrib/contributions.html"/>
-      <classpath>
-        <pathelement path="${tools.bin}"/>
-		<pathelement path="${classes.dir}"/>
-		<path refid="classpath"/>
-      </classpath>
-    </java>
-  </target>
+    <target name="contrib">
+        <ant antfile="build-internal.xml" target="contrib"/>
+    </target>
 
 </project>
