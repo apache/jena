@@ -1,12 +1,10 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: TestGraphRDBMaker.java,v 1.9 2005-04-15 12:40:54 chris-dollin Exp $
+  $Id: TestGraphRDBMaker.java,v 1.10 2005-09-09 09:08:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.db.test;
-
-import java.sql.SQLException;
 
 import com.hp.hpl.jena.db.*;
 import com.hp.hpl.jena.db.impl.*;

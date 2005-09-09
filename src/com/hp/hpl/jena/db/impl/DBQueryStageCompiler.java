@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.graph.query.*;
-import com.hp.hpl.jena.reasoner.rulesys.test.TestFBRules;
 import com.hp.hpl.jena.shared.JenaException;
 import com.hp.hpl.jena.vocabulary.RDF;
 

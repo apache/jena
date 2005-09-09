@@ -1,16 +1,13 @@
 /*
   (c) Copyright 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: Delta.java,v 1.10 2005-07-05 11:21:34 chris-dollin Exp $
+  $Id: Delta.java,v 1.11 2005-09-09 09:08:53 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.compose;
 
 import com.hp.hpl.jena.graph.*;
 import com.hp.hpl.jena.util.iterator.*;
-
-import com.hp.hpl.jena.mem.*;
-
 
 /**
     Graph operation for wrapping a base graph and leaving it unchanged while recording

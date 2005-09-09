@@ -207,7 +207,7 @@ public class DBPattern  {
 	private int fixedCost = 0;
 	private int boundCost = 0;
 	private int unboundCost = 4;
-	private int unboundPredFactor = 4;
+	// private int unboundPredFactor = 4;
 
 	private int elementCost ( Element x ) {
 		if ( x instanceof Fixed ) 
