@@ -3,6 +3,15 @@ Release Notes
 
 ;;; -- Post 2.2final change list ----------------------------------------
 
+Constraint rewriter
+    o the .graph.query.Rewrite class recognises certain RDQL regex
+      idioms and rewrites them. The rewritten expressions contained
+      errors: (a) the case-insensitive classes stored the lowercased
+      version fo the test string, which broken the RDB generated code;
+      (b) against all his principles, kers had used toString() on
+      the results of expression evaluation, which broke the comparison
+      on typed or languaged literals. These Have Been Fixed.
+
 PrefixMappings
     o new boolean method equalTo(PrefixMapping) compares mappings
       for equality but has opportunity to avoid creating intermediate
@@ -94,6 +103,9 @@ GraphMem/GraphTripleStore/NodeToTriplesMap
       two around the houses, this was optimised to only test the non-wild
       remaining fields, using the new Triple.Field operations plus the new
       Filter operations.
+
+    o The default memory-based graph is now GraphMemFaster, which does
+      optimised query handling.
 
 Triple
 

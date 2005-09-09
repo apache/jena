@@ -65,4 +65,13 @@
         </java>
     </target>
 
+    <target name="upload">
+        <scp todir="chris-dollin@shell.sourceforge.net:/home/groups/j/je/jena/htdocs/contrib/" password="${password}">
+            <fileset dir="doc/contrib">
+                <include name="contributions.n3"/>
+                <include name="contributions.html"/>
+            </fileset>
+        </scp>
+    </target>
+
 </project>
