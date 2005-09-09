@@ -1,7 +1,7 @@
 /*
      (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
      [See end of file]
-     $Id: ReifierFragmentHandler.java,v 1.3 2005-02-21 11:52:10 andy_seaborne Exp $
+     $Id: ReifierFragmentHandler.java,v 1.4 2005-09-09 07:11:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -30,7 +30,7 @@ public interface ReifierFragmentHandler
          @param reified the completely reified triple
          @return true iff the fragment clashed with the triple
     */
-    public abstract boolean clashedWith( Node fragmentObject, Triple reified );
+    public abstract boolean clashedWith( Node tag, Node fragmentObject, Triple reified );
 
     /**
          If this <code>fragment</code> completes a reification for <code>tag</code>,

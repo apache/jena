@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2004, 2005 Hewlett-Packard Development Company, LP, all rights reserved.
   [See end of file]
-  $Id: SimpleReifierFragmentHandler.java,v 1.3 2005-02-21 11:52:11 andy_seaborne Exp $
+  $Id: SimpleReifierFragmentHandler.java,v 1.4 2005-09-09 07:11:29 chris-dollin Exp $
 */
 package com.hp.hpl.jena.graph.impl;
 
@@ -18,11 +18,11 @@ public abstract class SimpleReifierFragmentHandler implements ReifierFragmentHan
     
     public abstract boolean clashesWith( ReifierFragmentsMap map, Node fragmentObject, Triple reified );
     
-    public boolean clashedWith( Node fragmentObject, Triple reified )
+    public boolean clashedWith( Node tag, Node fragmentObject, Triple reified )
         {
         if (clashesWith( map, fragmentObject, reified ))
             {
-            map.putAugmentedTriple( this, reified.getSubject(), fragmentObject, reified );
+            map.putAugmentedTriple( this, tag, fragmentObject, reified );
             return true;
             }
         else

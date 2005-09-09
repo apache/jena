@@ -1,7 +1,7 @@
 /*
   (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
   [See end of file]
-  $Id: SimpleReifier.java,v 1.48 2005-06-17 09:24:30 chris-dollin Exp $
+  $Id: SimpleReifier.java,v 1.49 2005-09-09 07:11:29 chris-dollin Exp $
 */
 
 package com.hp.hpl.jena.graph.impl;
@@ -152,7 +152,7 @@ public class SimpleReifier implements Reifier
         Triple reified = tripleMap.getTriple( tag );
         if (reified == null)
             updateFragments( s, fragment, tag, object );
-        else if (s.clashedWith( object, reified )) 
+        else if (s.clashedWith( tag, object, reified )) 
             tripleMap.removeTriple( tag, reified );
         }
 
