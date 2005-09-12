@@ -1,58 +1,50 @@
+<!-- CVS: $Id: build.xml,v 1.95 2005-09-12 15:47:56 ian_dickinson Exp $ -->
+
 <project name="jena" default="main" basedir=".">
+
+  <!-- Configuration properties -->
+  <!-- ======================== -->
 
   <property name="Name"            value="Jena"/>
   <property name="name"            value="jena"/>
 
-  <!-- The major and minor version numbers  -->
+  <!-- Release version labels -->
   <property name="version-major"   value="2"/>
   <property name="version-minor"   value="2"/>
-  <!-- e.g. -beta1, or empty string for stable releases -->
-  <property name="version-status"  value=".1"/>
-  <property name="version"
-        value="${version-major}.${version-minor}${version-status}"/>
+  <property name="version-status"  value=".1"/> <!-- e.g. -beta1, or empty string for stable releases -->
 
+  <property name="version"         value="${version-major}.${version-minor}${version-status}"/>
+
+  <!-- Output file names and locations -->
   <property name="dist.name"       value="${Name}-${version}"/>
   <property name="dist.zip.name"   value="${Name}-${version}.zip"/>
-
   <property name="web.site"        value="http://jena.sourceforge.net/" />
+  <property name="jarfile"         value="${name}.jar"/>
+  <property name="testjarfile"     value="${name}test.jar"/>
+  <property name="srczipfile"      value="${name}-src.zip"/>
 
-  <property name="java.debug"      value="true"/>
-  <property name="java.debuglevel" value="source,lines"/>
-  <property name="java.deprecation"   value="false"/>
-  <property name="java.optimize"   value="true"/>
-  <property name="java.source"     value="1.4"/>
-  <property name="java.target"     value="1.4"/>
-
-  <property name="orig-src.dir"    value="src"/>
-  <property name="src.dir"         value="bldsrc"/>
+  <!-- Source code locations -->
+  <property name="src.dir"         value="src"/>
+  <property name="bldsrc.dir"      value="bldsrc"/>
   <property name="classes.dir"     value="bldbin"/>
   <property name="dist.root"       value="dist"/>
   <property name="dist.dir"        value="${dist.root}/${dist.name}"/>
   <property name="lib.dir"         value="lib"/>
-
-  <property name="tools.bin"       value="tools-bin/"/>
-
   <property name="doc.dir"         value="doc"/>
   <property name="vocab.dir"       value="vocabularies"/>
   <property name="javadoc.dir"     value="doc/javadoc"/>
   <property name="etc.dir"         value="etc"/>
   <property name="test.dir"        value="testing"/>
 
-  <property name="jarfile"         value="${name}.jar"/>
-  <property name="srczipfile"      value="${name}-src.zip"/>
-
-  <!-- Sub-system specific -->
-  <property name="rdql.root" value="src/com/hp/hpl/jena/rdql"/>
-
-  <!-- vocabulary generation -->
-  <property name="vocab.java"       value="src/com/hp/hpl/jena/vocabulary" />
+  <!-- Vocabulary generation -->
+  <property name="vocab.java"      value="src/com/hp/hpl/jena/vocabulary" />
   <property name="vocab.tool"      value="jena.schemagen" />
   <property name="vocab.template"  value="vocabularies/jenavocab.rdf" />
 
+  <!-- Classpaths -->
   <path id="classpath">
     <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
   </path>
-
   <path id="classpath.tools">
     <fileset dir="${lib.dir}" includes="*.jar"/>
   </path>
@@ -67,109 +59,82 @@
     <filter token="version"       value="${version}" />
   </filterset>
 
-  <!-- Main external targets -->
-  <target name="main" depends="init,bin" description="Build jena.jar"/>
-  <!-- Alternative name -->
-  <target name="jar"  depends="main" description="Build jena.jar"/>
+  <!-- Primary externally visible targets -->
+  <!-- ================================== -->
 
-  <target name="release" depends="init,package"
-      description="Create Jena release"/>
+  <target name="main" depends="compile-jena,make-jar"
+    description="Copy and compile source code, then build ${jarfile}"/>
 
-  <!-- Section: Grammars, Compilation and JAR -->
+  <target name="jar"  depends="main"
+    description="Alias for target 'main'; builds ${jarfile}"/>
 
-  <target name="init">
-    <tstamp/>
+  <target name="jar-optimised"  depends="optimise-javac-flags,main"
+    description="Builds ${jarfile} with javac optimisation turned on and no debug info"/>
+
+  <target name="release" depends="package"
+      description="Create a complete Jena release"/>
+
+  <target name="jar-etc"
+    description="Constructs a .jar file containing only the files from Jena's etc directory">
+  	<jar destfile="lib/etc.jar" basedir="." includes="etc/**"></jar>
+  </target>
+
+  <target name="test" depends="test-jar"
+    description="Runs the unit tests against ${jarfile}"/>
+
+  <target name="tools-compile"
+    description="Compile auxilliary tools; delegated to build-internal.xml">
+    <ant antfile="build-internal.xml" target="tools-compile"/>
+  </target>
+
+  <target name="contrib"
+    description="Build the Jena contribs html page; delegated to build-internal.xml">
+    <ant antfile="build-internal.xml" target="contrib"/>
   </target>
 
 
-  <target name="bin" depends="compile,make-jar"/>
+  <!-- Source code preparation targets -->
+  <!-- =============================== -->
 
-  <target name="grammars" depends="arp-grammar"/>
-
-  <!--
-  <target name="rdql-grammar">
-    <jjtree target="${rdql.root}/parser/rdql.jjt"
-        outputdirectory="${rdql.root}/parser"
-        javacchome="${javacchome}"
-        buildnodefiles="false"/>
-
-    <javacc target="${rdql.root}/parser/rdql.jj"
-        outputdirectory="${rdql.root}/parser"
-        javacchome="${javacchome}"/>
-  </target>
-  -->
-
-  <target name="arp-grammar"/>
-
-  <target name="pre-compile" >
-    <!-- Ensure a clean compile -->
+  <target name="clean-classes"
+    description="Remove all contents from ${classes.dir} to ensure a clean build">
     <delete dir="${classes.dir}"/>
     <mkdir dir="${classes.dir}"/>
   </target>
 
-  <target name="build-src">
-    <!-- Ensure clean source build -->
-    <delete dir="${src.dir}"/>
-    <mkdir  dir="${src.dir}"/>
+  <target name="copy-src-tree"
+    description="Create a copy of the source tree in the build directory, and apply source code filters">
+    <delete dir="${bldsrc.dir}"/>
+    <mkdir  dir="${bldsrc.dir}"/>
     <tstamp>
       <format property="BUILD_TIME" pattern="d-MMMM-yyyy HH:mm"/>
     </tstamp>
-    <copy todir="${src.dir}">
-      <fileset dir="${orig-src.dir}"
-           includes="*"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/*"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/enhanced/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/iri/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/graph/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/db/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/datatypes/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/mem/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/n3/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/ontology/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/rdf/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/rdql/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/reasoner/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/regression/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/shared/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/test/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/util/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/vocabulary/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="com/hp/hpl/jena/xmloutput/**"/>
-      <fileset dir="${orig-src.dir}"
-           includes="jena/**"/>
+    <copy todir="${bldsrc.dir}" >
+      <fileset dir="${src.dir}" />
       <filterset>
-    <filterset refid="filters.shared" />
-    <filter token="build-time"    value="${BUILD_TIME}" />
+        <filterset refid="filters.shared" />
+        <filter token="build-time" value="${BUILD_TIME}" />
       </filterset>
     </copy>
-
   </target>
 
-  <!--
-  <target name="compile" depends="pre-compile,build-src,compile-jena,compile-apps"/>
-  -->
-  <target name="compile" depends="pre-compile,build-src,compile-jena"/>
+  <target name="copy-aux-files"
+    description="Copy auxilliary files (e.g. ./etc) into the classes dir so that they will be included in jena.jar" >
+    <copy todir="${classes.dir}/${etc.dir}">
+      <fileset dir="${etc.dir}" includes="**"/>
+    </copy>
+    <copy todir="${classes.dir}/${vocab.dir}">
+      <fileset dir="${vocab.dir}" includes="**"/>
+    </copy>
+  </target>
 
-  <target name="compile-jena" depends="pre-compile">
-    <javac srcdir="${src.dir}"
+  <!-- Primary Java build targets -->
+  <!-- ========================== -->
+
+  <target name="compile-jena" depends="clean-classes,copy-src-tree,default-javac-flags"
+    description="Compile the copied Jena source tree into class files under ${classes.dir}">
+    <javac
+       srcdir="${bldsrc.dir}"
        destdir="${classes.dir}"
        debug="${java.debug}"
        debuglevel="${java.debuglevel}"
@@ -179,62 +144,55 @@
        target="${java.target}">
       <classpath refid="classpath" />
     </javac>
-    <copy todir="${classes.dir}" file="${src.dir}/log4j.properties"/>
+    <copy todir="${classes.dir}" file="${bldsrc.dir}/log4j.properties"/>
   </target>
 
-  <!--
-  <target name="compile-apps" depends="pre-compile">
-    <javac srcdir="${src.dir}/jena"
-       destdir="${classes.dir}"
-       debug="${java.debug}"
-       deprecation="${java.deprecation}"
-       optimize="${java.optimize}"
-       source="${java.source}"
-       target="${java.target}">
-      <classpath refid="classpath" />
-    </javac>
-  </target>
-  -->
-
-
-
-  <target name="make-jar" depends="compile,copy-etc">
-    <jar jarfile="${lib.dir}/${jarfile}"
-     basedir="${classes.dir}">
+  <target name="make-jar" depends="compile-jena,copy-aux-files"
+    description="Create jena.jar and jenatest.jar files from the contents of the classes dir">
+    <property name="pattern.tests" value="**/test/*"/>
+    <jar jarfile="${lib.dir}/${jarfile}">
+      <fileset dir="${classes.dir}" excludes="${pattern.tests}"/>
+    </jar>
+    <jar jarfile="${lib.dir}/${testjarfile}">
+      <fileset dir="${classes.dir}" includes="${pattern.tests}"/>
     </jar>
   </target>
 
-    <!-- copy
-          + rdb configuration files
-          + all data files
-         into class path prior to jar step -->
-    <target name="copy-etc">
-        <copy todir="${classes.dir}/${etc.dir}">
-            <fileset dir="${etc.dir}" includes="**"/>
-        </copy>
-        <copy todir="${classes.dir}">
-            <fileset dir="${src.dir}" includes="**/data/**"/>
-        </copy>
-        <copy todir="${classes.dir}/${vocab.dir}">
-            <fileset dir="${vocab.dir}" includes="jena-model-spec.n3"/>
-            <fileset dir="${vocab.dir}" includes="daml+oil.daml"/>
-            <fileset dir="${vocab.dir}" includes="rdf-schema.rdf"/>
-            <fileset dir="${vocab.dir}" includes="owl.owl"/>
-        </copy>
-    </target>
+  <target name="optimise-javac-flags"
+    description="Set the javac flags that will produce an optmised jar with no debug symbols" >
+    <property name="java.debug"       value="false"/>
+    <property name="java.debuglevel"  value=""/>
+    <property name="java.deprecation" value="false"/>
+    <property name="java.optimize"    value="true"/>
+    <property name="java.source"      value="1.4"/>
+    <property name="java.target"      value="1.4"/>
+  </target>
 
-  <!-- Section: Javadoc -->
+  <target name="default-javac-flags"
+    description="Set the javac flags that will produce an debug jar with no compiler optimisation and all debug symbols" >
+    <!-- Note that in ant, if these flags are already set setting them again has no effect -->
+    <property name="java.debug"       value="true"/>
+    <property name="java.debuglevel"  value="source,lines,vars"/>
+    <property name="java.deprecation" value="false"/>
+    <property name="java.optimize"    value="false"/>
+    <property name="java.source"      value="1.4"/>
+    <property name="java.target"      value="1.4"/>
+  </target>
 
-  <target name="javadoc" depends="build-src" description="Make the javadoc">
-    <delete dir="${javadoc.dir}"/>
+
+  <!-- Generating Javadoc -->
+  <!-- ================== -->
+
+  <target name="clean-javadoc"
+   description="Clean out the old javadoc dir prior to regenerating new javadoc files">
+    <delete dir="${javadoc.dir}" quiet="true"/>
     <mkdir dir="${javadoc.dir}"/>
+  </target>
 
-    <!-- sourcefiles="" -->
-    <!-- Overview="overview.html" -->
-    <!-- was: overview="src/link2readme.html" -->
-
+  <target name="javadoc" depends="copy-src-tree,clean-javadoc"
+    description="Generate selected javadoc (i.e. just the user-facing packages) from the copied source tree">
     <javadoc
-     sourcepath="${src.dir}"
+     sourcepath="${bldsrc.dir}"
      destdir="${javadoc.dir}"
      source="${java.source}"
      author="true"
@@ -246,8 +204,7 @@
      Use="true"
      bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP"
      additionalparam="-breakiterator"
-     >
-
+    >
       <classpath refid="classpath"/>
       <package name="com.hp.hpl.jena.db"/>
       <package name="com.hp.hpl.jena.rdf.model"/>
@@ -274,58 +231,53 @@
       <package name="com.hp.hpl.jena.util"/>
       <package name="com.hp.hpl.jena.util.iterator"/>
       <package name="jena"/>
-
+      <!-- We group the Javadoc packages by section -->
       <group title="API - Application Programming Interface">
-    <package name="com.hp.hpl.jena.db"/>
-    <package name="com.hp.hpl.jena.rdf.model"/>
-    <package name="com.hp.hpl.jena.rdf.listeners"/>
-    <package name="com.hp.hpl.jena.rdf.arp"/>
-    <package name="com.hp.hpl.jena.rdf.arp.lang"/>
-    <package name="com.hp.hpl.jena.datatypes"/>
-    <package name="com.hp.hpl.jena.datatypes.xsd"/>
-    <package name="com.hp.hpl.jena.rdql"/>
-    <package name="com.hp.hpl.jena.shared"/>
-    <package name="com.hp.hpl.jena.vocabulary"/>
-    <package name="com.hp.hpl.jena.xmloutput"/>
-    <package name="com.hp.hpl.jena.ontology"/>
-    <package name="com.hp.hpl.jena.ontology.daml"/>
-    <package name="com.hp.hpl.jena.reasoner"/>
-    <package name="com.hp.hpl.jena.reasoner.rulesys"/>
-    <package name="com.hp.hpl.jena.reasoner.rulesys.builtins"/>
-    <package name="com.hp.hpl.jena.reasoner.dig"/>
+        <package name="com.hp.hpl.jena.db"/>
+        <package name="com.hp.hpl.jena.rdf.model"/>
+        <package name="com.hp.hpl.jena.rdf.listeners"/>
+        <package name="com.hp.hpl.jena.rdf.arp"/>
+        <package name="com.hp.hpl.jena.rdf.arp.lang"/>
+        <package name="com.hp.hpl.jena.datatypes"/>
+        <package name="com.hp.hpl.jena.datatypes.xsd"/>
+        <package name="com.hp.hpl.jena.rdql"/>
+        <package name="com.hp.hpl.jena.shared"/>
+        <package name="com.hp.hpl.jena.vocabulary"/>
+        <package name="com.hp.hpl.jena.xmloutput"/>
+        <package name="com.hp.hpl.jena.ontology"/>
+        <package name="com.hp.hpl.jena.ontology.daml"/>
+        <package name="com.hp.hpl.jena.reasoner"/>
+        <package name="com.hp.hpl.jena.reasoner.rulesys"/>
+        <package name="com.hp.hpl.jena.reasoner.rulesys.builtins"/>
+        <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
+        <package name="com.hp.hpl.jena.reasoner.dig"/>
       </group>
-
       <group title="SPI - System Programming Interface">
-    <package name="com.hp.hpl.jena.enhanced"/>
-    <package name="com.hp.hpl.jena.graph"/>
-    <package name="com.hp.hpl.jena.graph.compose"/>
-    <package name="com.hp.hpl.jena.graph.query"/>
-    <package name="com.hp.hpl.jena.reasoner.transitiveReasoner"/>
-    <package name="com.hp.hpl.jena.util"/>
-    <package name="com.hp.hpl.jena.util.iterator"/>
+        <package name="com.hp.hpl.jena.enhanced"/>
+        <package name="com.hp.hpl.jena.graph"/>
+        <package name="com.hp.hpl.jena.graph.compose"/>
+        <package name="com.hp.hpl.jena.graph.query"/>
+        <package name="com.hp.hpl.jena.util"/>
+        <package name="com.hp.hpl.jena.util.iterator"/>
       </group>
-
       <group title="Command line tools">
-    <package name="jena" />
+        <package name="jena" />
       </group>
     </javadoc>
   </target>
 
-  <target name="javadoc-all" depends="build-src">
-    <!-- This is a javadoc task to build the javadoc for developers to look at -->
-    <delete dir="${javadoc.dir}"/>
-    <mkdir dir="${javadoc.dir}"/>
-
+  <target name="javadoc-all" depends="copy-src-tree,clean-javadoc"
+    description="Generate Javadoc for the whole of Jena, not just the user-facing packages">
     <javadoc
-     sourcepath="${src.dir}"
+     sourcepath="${bldsrc.dir}"
      destdir="${javadoc.dir}"
-     maxmemory="128m"
+     maxmemory="200m"
      author="true"
      version="true"
      classpathref="classpath"
      windowtitle="${Name} Framework"
      doctitle="${Name} Framework"
-     overview="${src.dir}/link2readme.html"
+     overview="${bldsrc.dir}/link2readme.html"
      bottom="Copyright &#169; 2000, 2001, 2002, 2003, 2004, 2005 Hewlett-Packard. All Rights Reserved."
      packagenames="com.hp.hpl.*"
      additionalparam="-breakiterator"
@@ -334,29 +286,29 @@
   </target>
 
 
-  <!-- Section: Create distribution area -->
+  <!-- Creating a Jena distribution -->
+  <!-- ============================ -->
 
-  <target name="package"
-      depends="bin,javadoc,distribution-init,copy,zip"/>
+  <target name="package" depends="copy-dist,zip-dist"
+      description="Aggregate task to perform the steps of creating a Jena distribution"/>
 
-  <target name="distribution-init">
+  <target name="clean-dist"
+    description="Clean the distribution directory prior to creating the distro">
+    <delete dir="${dist.dir}" quiet="true"/>
     <mkdir dir="${dist.dir}"/>
   </target>
 
-  <target name="copy" depends="distribution-init">
+  <target name="copy-dist" depends="make-jar,javadoc,clean-dist"
+    description="Copy the various elements of a distribution into one directory tree">
+    <!-- Libraries, including jena.jar" -->
     <copy todir="${dist.dir}/${lib.dir}">
       <fileset dir="${lib.dir}" includes="**/*.jar"/>
       <fileset dir="${lib.dir}" includes="readme.html"/>
     </copy>
-
-
-    <!-- Source : We could zip this up -->
-    <copy todir="${dist.dir}/${orig-src.dir}">
-      <fileset dir="${src.dir}"
-           includes="**"
-           excludes="org/**"/>
+    <!-- Source - we could zip this up -->
+    <copy todir="${dist.dir}/${src.dir}">
+      <fileset dir="${bldsrc.dir}" includes="**"/>
     </copy>
-
     <!-- Misc files -->
     <copy todir="${dist.dir}" file="build.xml"/>
     <copy todir="${dist.dir}" file="copyright.txt"/>
@@ -367,126 +319,83 @@
     <copy todir="${dist.dir}" file="test.sh"/>
     <copy todir="${dist.dir}" file="test-db.sh"/>
     <copy todir="${dist.dir}" file="readme.html"/>
-
-    <!-- RDQL support files : scripts to build the Java
-     <copy todir="${dist.dir}" file="doExprNodes"/>
-     <copy todir="${dist.dir}">
-     <fileset dir="." includes="Expr*.java"/>
-     </copy>
-    -->
-
-    <!-- Dependences -->
-
-    <!-- lib directory include jena.jar -->
-    <copy todir="${lib.dir}">
-      <fileset dir="lib" includes="*.jar"/>
+    <copy todir="${dist.dir}/${etc.dir}">
+      <fileset dir="${etc.dir}" includes="**"/>
     </copy>
-    <!-- Should all be in the lib directory -->
-
     <!-- Documentation : Try to be clear here -->
     <!-- Javadoc is part of the documentation directory -->
     <copy todir="${dist.dir}/${doc.dir}">
       <fileset dir="${doc.dir}">
-    <include name="**"/>
-    <exclude name="**/*.content.html"/>
-    <exclude name="template.html"/>
-    <!-- Scripts -->
-    <exclude name="produce"/>
-    <exclude name="merge"/>
-    <exclude name="linkcheck"/>
-    <exclude name="release"/>
-    <exclude name="readme-site.txt"/>
+        <include name="**"/>
+        <!-- Ignore the raw source and scripts we use to prepare the docs -->
+        <exclude name="**/*.content.html"/>
+        <exclude name="template.html"/>
+        <exclude name="produce"/>
+        <exclude name="merge"/>
+        <exclude name="linkcheck"/>
+        <exclude name="release"/>
+        <exclude name="readme-site.txt"/>
       </fileset>
     </copy>
-
+    <!-- Vocabularies and schemas -->
     <copy todir="${dist.dir}/${vocab.dir}">
       <fileset dir="${vocab.dir}" includes="**"/>
     </copy>
-
+    <!-- Debug data - testing and modules -->
     <copy todir="${dist.dir}/modules">
       <fileset dir="modules" includes="**"/>
     </copy>
-
-    <copy todir="${dist.dir}/${etc.dir}">
-      <fileset dir="${etc.dir}" includes="**"/>
-    </copy>
-
-    <!-- Exclude any zips of the RDQL test scripts -->
     <copy todir="${dist.dir}/${test.dir}">
+      <!-- Exclude any zips of the RDQL test scripts -->
       <fileset dir="${test.dir}"
            includes="**"
            excludes="${test.dir}/RDQL/rdql-tests-jena*.zip"/>
     </copy>
-
-
     <!-- Junk that creeps in -->
     <delete>
       <fileset dir="${dist.dir}" includes="**/.nbattrs"/>
     </delete>
-
   </target>
 
-  <!-- Problem : seems to unpack directories to "no access" on Linux -->
-  <!-- It was an ant 1.3 problem - fixed in ant 1.4 -->
-  <!-- Temp fix is this external zip target -->
-
-  <target name="zip" depends="zip-internal"/>
-
-  <target name="zip-external" >
-    <!--
-      You need to have installed the WinZip
-      command line interface
-      http://www.winzip.com/wzcline.cgi
-      obviously you need to get the path right.
-    -->
-    <exec dir="${dist.root}"
-      output="zip.log"
-      executable="C:\\Program Files\\WinZip\\wzzip.exe"  >
-      <!-- ${dist.name}.zip is the name of the output -->
-      <!-- ${dist.name} is the directory to zip -->
-      <arg line="-r -P ${dist.name}.zip ${dist.name}"/>
-    </exec>
-  </target>
-
-  <target name="zip-internal" >
-    <!-- Build the zip of everything -->
+  <target name="zip-dist"
+    description="Create a zip file of everything in the distribution directory">
     <zip zipfile="${dist.root}/${dist.zip.name}">
       <fileset dir="dist" includes="${dist.name}/**"/>
     </zip>
   </target>
 
-  <target name="test">
-    <echo>install test</echo>
+  <!-- Unit testing -->
+  <!-- ============ -->
+
+  <target name="test-jar"
+    description="Run the unit tests using ${jarfile}; see target 'test-dev' to run unit tests on compiled classes">
+    <echo>Unit tests running against ${jarfile}</echo>
     <junit fork="yes" printsummary="yes">
       <classpath>
-    <fileset dir="${lib.dir}" includes="*.jar"/>
+        <fileset dir="${lib.dir}" includes="*.jar"/>
       </classpath>
       <test name="com.hp.hpl.jena.test.TestPackage"/>
     </junit>
   </target>
 
-  <!-- uses the latest built jena code - not the jar in the lib -->
-  <target name="dev-test">
-    <echo>developer test</echo>
+  <target name="test-dev" depends="compile-jena"
+    description="Run the unit tests using the contents of ${classes.dir}; see target 'test-jar' to run unit tests on jena.jar">
+    <echo>Unit tests running against classes in ${classes.dir}</echo>
     <junit fork="yes" printsummary="yes">
       <classpath>
-    <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
-    <pathelement location="${classes.dir}"/>
+        <fileset dir="${lib.dir}" includes="*.jar" excludes="${jarfile}"/>
+        <pathelement location="${classes.dir}"/>
       </classpath>
       <test name="com.hp.hpl.jena.test.TestPackage"/>
     </junit>
   </target>
 
-
-  <target name="clean">
-    <delete includeEmptyDirs="true">
-      <fileset dir="${dist.dir}"/>
-    </delete>
-  </target>
 
   <!-- Using schemagen to produce vocabularies -->
+  <!-- ======================================= -->
 
-  <target name="vocabs" depends="ont-events, owl-vocab, ontdoc-vocab" />
+  <target name="vocabs" depends="ont-events, owl-vocab, ontdoc-vocab"
+    description="Target to generate schemagen classes for vocabulary schemas that have been updated"/>
 
   <target name="check.ont-events">
     <uptodate property="ont-events.build.notreq"
@@ -540,14 +449,5 @@
     </java>
   </target>
 
-    <!-- internal tools targets: delegated to build-internal antfile -->
-
-    <target name="tools-compile">
-        <ant antfile="build-itnernal.xml" target="tools-compile"/>
-    </target>
-
-    <target name="contrib">
-        <ant antfile="build-internal.xml" target="contrib"/>
-    </target>
 
 </project>

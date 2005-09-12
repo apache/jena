@@ -11,6 +11,7 @@ concurrent.jar
 icu4j.jar
 jakarta-oro-2.0.5.jar
 jena.jar
+jenatest.jar
 junit.jar
 log4j-1.2.7.jar
 xercesImpl.jar
@@ -22,7 +23,7 @@ CP=""
 for jar in $LIBS
 do
   jar="lib/${jar}"
-  [ -e "$jar" ] || echo "No such jar: $jar" 1>&2 
+  [ -e "$jar" ] || echo "No such jar: $jar" 1>&2
 
   if [ "$CP" == "" ]
   then
