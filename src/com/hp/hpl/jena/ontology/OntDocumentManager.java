@@ -7,10 +7,10 @@
  * Web                http://sourceforge.net/projects/jena/
  * Created            10 Feb 2003
  * Filename           $RCSfile: OntDocumentManager.java,v $
- * Revision           $Revision: 1.47 $
+ * Revision           $Revision: 1.48 $
  * Release status     $State: Exp $
  *
- * Last modified on   $Date: 2005-09-08 15:38:29 $
+ * Last modified on   $Date: 2005-09-12 14:51:07 $
  *               by   $Author: ian_dickinson $
  *
  * (c) Copyright 2002, 2003, 2004, 2005 Hewlett-Packard Development Company, LP
@@ -64,7 +64,7 @@ import com.hp.hpl.jena.shared.impl.PrefixMappingImpl;
  * list</a>.</p>
  * @author Ian Dickinson, HP Labs
  *         (<a  href="mailto:Ian.Dickinson@hp.com" >email</a>)
- * @version CVS $Id: OntDocumentManager.java,v 1.47 2005-09-08 15:38:29 ian_dickinson Exp $
+ * @version CVS $Id: OntDocumentManager.java,v 1.48 2005-09-12 14:51:07 ian_dickinson Exp $
  */
 public class OntDocumentManager
 {
@@ -175,8 +175,7 @@ public class OntDocumentManager
      * @param path The search path to search for initial metadata, which will
      * also replace the current search path for this document manager.  Use
      * null to prevent loading of any initial ontology metadata. The path is a series
-     * of URL's, separated by the {@link #PATH_DELIMITER}, which defaults to
-     * semi-colon (;).
+     * of URL's, separated by a semi-colon (;).
      */
     public OntDocumentManager( String path ) {
         this( null, path );
